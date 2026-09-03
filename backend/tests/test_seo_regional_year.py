@@ -223,25 +223,37 @@ def test_public_grammar_no_mid_dot_no_internals(region_year_client):
 
 
 def test_sitemap_regional_years_matches_ssr(region_year_client, auth_env):
-    """Двусторонняя сверка sitemap-секции regional-years ↔ SSR."""
+    """Двусторонняя сверка sitemap-секции regional-years ↔ SSR.
+
+    В карте только последние REGIONAL_YEAR_LOOKBACK лет (INDEX_POLICY).
+    Более старые годы остаются живым SSR (noindex), но не в sitemap.
+    """
+    from app.services.index_policy import regional_year_min
     from app.services.seo_regional_year import render_region_indicator_year_html
     from app.services.site_urls import _regional_year_urls
 
     async def _check():
         async with auth_env["session_maker"]() as db:
-            urls = await _regional_year_urls(db, date.today())
+            today = date.today()
+            urls = await _regional_year_urls(db, today)
             paths_list = sorted(u.path for u in urls)
+            year_min = regional_year_min(today)
+            in_sitemap = [y for y in range(2018, 2024) if y >= year_min]
 
-            # moskva и tatarstan — kind=region, все 6 лет в карте.
             for slug in ("moskva", "respublika-tatarstan"):
-                for y in range(2018, 2024):
+                for y in in_sitemap:
                     assert f"/russia/region/{slug}/{CODE}/{y}" in paths_list
+                for y in range(2018, 2024):
+                    if y < year_min:
+                        assert f"/russia/region/{slug}/{CODE}/{y}" not in paths_list
             # lastmod = 31 декабря СВОЕГО года (регионы обновляются раз в год).
             assert all(
                 u.lastmod == f"{u.path.rsplit('/', 1)[1]}-12-31" for u in urls
             )
-            # Перми тоже есть — по всем трем субъектам.
-            assert f"/russia/region/permskiy-kray/{CODE}/2020" in paths_list
+            # Перми — только годы внутри lookback.
+            assert f"/russia/region/permskiy-kray/{CODE}/{in_sitemap[-1]}" in paths_list
+            if 2020 < year_min:
+                assert f"/russia/region/permskiy-kray/{CODE}/2020" not in paths_list
 
             # Каждая карта-URL рендерится 200.
             for path in paths_list:

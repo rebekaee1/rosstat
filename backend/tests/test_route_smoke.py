@@ -318,6 +318,16 @@ def test_regions_heatmap(route_client):
     assert body["polarity"] is None
     assert route_client.get("/api/v1/regions/heatmap/no-such").status_code == 404
 
+    series = route_client.get("/api/v1/regions/heatmap-series/naselenie")
+    assert series.status_code == 200
+    series_body = series.json()
+    assert series_body["years"] == [2023, 2024]
+    assert series_body["last_year"] == 2024
+    assert "moskva" in series_body["values_by_year"]["2024"]
+    # heatmap — один год (первый кадр); series держит всю историю для ползунка.
+    assert body["year"] == series_body["last_year"]
+    assert set(series_body["values_by_year"]) == {"2023", "2024"}
+
 
 def test_region_profile_vs_and_indicator(route_client):
     prof = route_client.get("/api/v1/regions/moskva")

@@ -5,6 +5,9 @@ import {
   resolveLocale,
   PRODUCTION_APEX_HOSTS,
   localeCookieDomain,
+  languageAlternateOrigin,
+  buildLanguageSwitchUrl,
+  isProductionLocaleHost,
 } from './locale.js';
 import { MESSAGES } from './messages.js';
 
@@ -44,6 +47,97 @@ describe('htmlLang / ogLocale', () => {
     expect(htmlLang('ru')).toBe('ru');
     expect(ogLocale('en')).toBe('en_US');
     expect(ogLocale('ru')).toBe('ru_RU');
+  });
+});
+
+describe('language switcher until cutover', () => {
+  it('does not treat localhost as a production locale host', () => {
+    expect(isProductionLocaleHost('localhost')).toBe(false);
+    expect(isProductionLocaleHost('127.0.0.1')).toBe(false);
+    expect(isProductionLocaleHost('frontend')).toBe(false);
+    expect(isProductionLocaleHost('forecasteconomy.com')).toBe(true);
+    expect(isProductionLocaleHost('ru.forecasteconomy.com')).toBe(true);
+  });
+
+  it('localhost EN stays on the current origin with preview_locale=en', () => {
+    expect(languageAlternateOrigin('en', {
+      hostname: 'localhost',
+      currentOrigin: 'http://localhost:3000',
+      apexLocaleEn: false,
+    })).toBe('http://localhost:3000');
+
+    const next = buildLanguageSwitchUrl('en', {
+      href: 'http://localhost:3000/',
+      hostname: 'localhost',
+      apexLocaleEn: false,
+    });
+    const url = new URL(next);
+    expect(url.origin).toBe('http://localhost:3000');
+    expect(url.hostname).not.toBe('forecasteconomy.com');
+    expect(url.searchParams.get('preview_locale')).toBe('en');
+    expect(url.searchParams.get('locale_pref')).toBe('en');
+  });
+
+  it('apex until cutover stays on the same host with preview_locale=en', () => {
+    expect(languageAlternateOrigin('en', {
+      hostname: 'forecasteconomy.com',
+      currentOrigin: 'https://forecasteconomy.com',
+      apexLocaleEn: false,
+    })).toBe('https://forecasteconomy.com');
+
+    const next = buildLanguageSwitchUrl('en', {
+      href: 'https://forecasteconomy.com/russia/today',
+      hostname: 'forecasteconomy.com',
+      apexLocaleEn: false,
+    });
+    const url = new URL(next);
+    expect(url.origin).toBe('https://forecasteconomy.com');
+    expect(url.pathname).toBe('/russia/today');
+    expect(url.searchParams.get('preview_locale')).toBe('en');
+  });
+
+  it('RU from an EN preview drops preview_locale and stays on origin', () => {
+    const next = buildLanguageSwitchUrl('ru', {
+      href: 'http://localhost:5173/?preview_locale=en&x=1',
+      hostname: 'localhost',
+      apexLocaleEn: false,
+    });
+    const url = new URL(next);
+    expect(url.origin).toBe('http://localhost:5173');
+    expect(url.searchParams.get('preview_locale')).toBeNull();
+    expect(url.searchParams.get('locale_pref')).toBe('ru');
+    expect(url.searchParams.get('x')).toBe('1');
+  });
+
+  it('after cutover on prod hosts path-identical host-swap without preview', () => {
+    expect(languageAlternateOrigin('en', {
+      hostname: 'ru.forecasteconomy.com',
+      currentOrigin: 'https://ru.forecasteconomy.com',
+      apexLocaleEn: true,
+    })).toBe('https://forecasteconomy.com');
+    expect(languageAlternateOrigin('ru', {
+      hostname: 'forecasteconomy.com',
+      currentOrigin: 'https://forecasteconomy.com',
+      apexLocaleEn: true,
+    })).toBe('https://ru.forecasteconomy.com');
+
+    const toEn = new URL(buildLanguageSwitchUrl('en', {
+      href: 'https://ru.forecasteconomy.com/russia/indicator/cpi',
+      hostname: 'ru.forecasteconomy.com',
+      apexLocaleEn: true,
+    }));
+    expect(toEn.origin).toBe('https://forecasteconomy.com');
+    expect(toEn.pathname).toBe('/russia/indicator/cpi');
+    expect(toEn.searchParams.get('preview_locale')).toBeNull();
+    expect(toEn.searchParams.get('locale_pref')).toBe('en');
+
+    const localhostCutover = new URL(buildLanguageSwitchUrl('en', {
+      href: 'http://localhost:3000/',
+      hostname: 'localhost',
+      apexLocaleEn: true,
+    }));
+    expect(localhostCutover.origin).toBe('http://localhost:3000');
+    expect(localhostCutover.searchParams.get('preview_locale')).toBe('en');
   });
 });
 

@@ -61,7 +61,8 @@ function LocaleFlag({ locale, className }) {
 
 /**
  * Язык в шапке: флаг текущей локали, клик открывает список флагов.
- * Переход — тот же switchLanguage (хост en.* / ru.* / apex), не ?lang=.
+ * До cutover / localhost: тот же origin + ?preview_locale=en (не канон).
+ * После cutover на прод-хостах: path-identical host-swap (EN=apex, RU=ru.).
  */
 export default function LocaleSwitcher() {
   const t = useT();

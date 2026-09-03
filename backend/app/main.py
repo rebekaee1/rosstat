@@ -4,6 +4,7 @@ import json
 import logging
 import time
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone as dt_timezone
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,7 +18,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from app.api.router import api_router
 from app.config import settings
 from app.core.cache import close_redis, get_redis
-from app.database import engine
+from app.database import analytics_engine, engine
 
 class JsonFormatter(logging.Formatter):
     def format(self, record):
@@ -820,9 +821,10 @@ async def lifespan(app: FastAPI):
         # rollup'ов последних 2 суток + пороговые алерты-аномалии; раз в сутки
         # ночью — пересчёт хвоста истории.
         from app.tasks.analytics_rollups import rollups_15min_job, rollups_daily_job
+        _analytics_start = datetime.now(dt_timezone.utc) + timedelta(minutes=10)
         scheduler.add_job(
-            rollups_15min_job,
-            trigger=IntervalTrigger(minutes=15),
+            locked_job(rollups_15min_job, "analytics_rollups_15min", ttl_seconds=14 * 60),
+            trigger=IntervalTrigger(minutes=15, start_date=_analytics_start),
             id="analytics_rollups_15min",
             name="Analytics: sessionize + rollups (last 2 days) + anomaly alerts",
             replace_existing=True,
@@ -855,8 +857,8 @@ async def lifespan(app: FastAPI):
         if settings.clickhouse_enabled:
             from app.services.clickhouse_sync import clickhouse_sync_job
             scheduler.add_job(
-                clickhouse_sync_job,
-                trigger=IntervalTrigger(minutes=15),
+                locked_job(clickhouse_sync_job, "clickhouse_sync", ttl_seconds=14 * 60),
+                trigger=IntervalTrigger(minutes=15, start_date=_analytics_start),
                 id="clickhouse_sync",
                 name="ClickHouse OLAP sync (derived copy of PG, cursor batches)",
                 replace_existing=True,
@@ -878,6 +880,35 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Telegram poller enabled: every 30s")
 
+        from app.services.sitemap_static import sitemap_build_job
+        scheduler.add_job(
+            locked_job(sitemap_build_job, "sitemap_build", ttl_seconds=3 * 3600),
+            trigger=CronTrigger(hour=3, minute=40, timezone="Europe/Moscow"),
+            id="sitemap_build",
+            name="Nightly static gzip sitemap build → /var/www/sitemaps",
+            replace_existing=True,
+        )
+
+        from app.services.webmaster_indexing_daily import webmaster_indexing_daily_job
+        scheduler.add_job(
+            locked_job(
+                webmaster_indexing_daily_job, "webmaster_indexing_daily", ttl_seconds=1800
+            ),
+            trigger=CronTrigger(hour=8, minute=50, timezone="Europe/Moscow"),
+            id="webmaster_indexing_daily",
+            name="Yandex Webmaster daily indexing snapshot + alerts",
+            replace_existing=True,
+        )
+
+        from app.services.gsc_client import gsc_search_queries_job
+        scheduler.add_job(
+            locked_job(gsc_search_queries_job, "gsc_search_queries", ttl_seconds=1800),
+            trigger=CronTrigger(hour=9, minute=10, timezone="Europe/Moscow"),
+            id="gsc_search_queries",
+            name="Google Search Console search analytics sync",
+            replace_existing=True,
+        )
+
         asyncio.create_task(_cleanup_stuck_fetch_logs())
 
         # «New indicator initial ETL trap» + forecast gap-fill (steps>0 без
@@ -890,6 +921,7 @@ async def lifespan(app: FastAPI):
     if scheduler.running:
         scheduler.shutdown(wait=False)
     await engine.dispose()
+    await analytics_engine.dispose()
     await close_redis()
     logger.info("Shutdown complete.")
 
@@ -951,8 +983,15 @@ def _set_locale_preference_cookie(response: Response, value: str) -> None:
 
 
 def _persist_locale_pref_redirect(request: Request) -> Response | None:
-    """Первый hop переключателя: запомнить cookie на общем Domain и снять query."""
+    """Первый hop переключателя: запомнить cookie на общем Domain и снять query.
+
+    Cookie ``fe_locale_pref`` не читается в ``resolve_locale``. До cutover
+    язык = ``preview_locale``: 303 не должен его сбрасывать, а при
+    ``locale_pref=en`` сам ставит preview на том же пути.
+    """
     from urllib.parse import urlencode
+
+    from app.services.locale import PREVIEW_QUERY, apex_locale_en_enabled
 
     pref: str | None = None
     kept: list[tuple[str, str]] = []
@@ -960,9 +999,13 @@ def _persist_locale_pref_redirect(request: Request) -> Response | None:
         if key == "locale_pref" and (value or "").lower() in {"en", "ru"}:
             pref = (value or "").lower()
             continue
+        if key == PREVIEW_QUERY:
+            continue
         kept.append((key, value))
     if pref is None:
         return None
+    if not apex_locale_en_enabled() and pref == "en":
+        kept.append((PREVIEW_QUERY, "en"))
     original = request.headers.get("x-original-uri") or request.url.path
     public_path = original.partition("?")[0]
     target = public_path or "/"
@@ -1030,9 +1073,35 @@ class LocaleMiddleware(BaseHTTPMiddleware):
             reset_locale(token)
 
 
+class ScrapeGeoBlockMiddleware(BaseHTTPMiddleware):
+    """403 не-поисковым клиентам из RUSTATS_SCRAPE_BLOCK_COUNTRIES (SG)."""
+
+    async def dispatch(self, request: Request, call_next):
+        from app.services.scrape_guard import should_block
+
+        ip = pick_client_ip(
+            request.headers.get("x-forwarded-for", ""),
+            request.client.host if request.client else "",
+        )
+        blocked = should_block(
+            ip=ip,
+            ua=request.headers.get("user-agent"),
+            path=request.url.path,
+        )
+        if blocked:
+            return Response(
+                status_code=403,
+                content="Forbidden",
+                media_type="text/plain",
+                headers={"X-Robots-Tag": "noindex"},
+            )
+        return await call_next(request)
+
+
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(HttpStatusCounterMiddleware)
+app.add_middleware(ScrapeGeoBlockMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

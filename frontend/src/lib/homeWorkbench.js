@@ -352,6 +352,47 @@ export function worldYearItems(mapSeries, year) {
 }
 
 /**
+ * Снапшот последних значений → форма map-series на один (или несколько
+ * «хвостовых») год. Первый кадр карты на главной не ждёт JSON всех лет.
+ */
+export function mapSeriesFromSnapshot(snapshot) {
+  const items = snapshot?.items;
+  if (!items?.length) return null;
+  const valuesByYear = {};
+  for (const item of items) {
+    const year = Number(String(item?.date || '').slice(0, 4));
+    const code = item?.country_code;
+    if (!code || !Number.isFinite(year)) continue;
+    const key = String(year);
+    if (!valuesByYear[key]) valuesByYear[key] = {};
+    valuesByYear[key][code] = item;
+  }
+  const years = Object.keys(valuesByYear).map(Number).sort((a, b) => a - b);
+  if (!years.length) return null;
+  const last = String(years[years.length - 1]);
+  const benchmarkByYear = {};
+  if (snapshot.average != null) {
+    benchmarkByYear[last] = {
+      value: snapshot.average,
+      label: snapshot.average_label,
+      countries_count: Object.keys(valuesByYear[last] || {}).length,
+    };
+  }
+  return {
+    concept: snapshot.concept || {},
+    years,
+    values_by_year: valuesByYear,
+    benchmark_by_year: benchmarkByYear,
+  };
+}
+
+/** Полный map-series, если уже пришёл; иначе узкий снимок последнего года. */
+export function resolveHomeMapSeries(mapSeries, snapshot) {
+  if (mapSeries && mapSeries.values_by_year != null) return mapSeries;
+  return mapSeriesFromSnapshot(snapshot);
+}
+
+/**
  * Направление сортировки рейтинга приходит с сервера вместе с каталогом
  * показателей; локальный набор — фолбэк на время загрузки. Одна точка на
  * главную и страницу рейтинга: иначе один и тот же топ-20 идёт в разном порядке.

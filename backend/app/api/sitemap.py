@@ -210,24 +210,30 @@ def _render_urlset(urls, *, origin: str | None = None) -> str:
     )
 
 
+def _empty_sitemap_index() -> str:
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        "</sitemapindex>"
+    )
+
+
+def _is_ru_origin(origin: str) -> bool:
+    host = (urlparse(origin).hostname or "").lower()
+    return host.startswith("ru.")
+
+
 @router.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
 async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
-    """Sitemap-индекс: имена секций из SECTION_BUILDERS-реестра site_urls.
-
-    Строится МГНОВЕННО: простые секции — статический список, чанковые группы
-    разворачиваются из `chunk_counts` (дешёвые count-запросы, кэш). Ни одного
-    URL при этом не собирается — монолитный проход 2 млн URL здесь больше не
-    нужен (П-13). lastmod секций не ставится: поисковики читают lastmod самих
-    секций, время индекса = момент сборки.
-
-    ``<loc>`` абсолютные URL — на хосте запроса (apex vs ``ru.``). Пока
-    ``apex_locale_en=false`` и трафик на apex — тот же русский sitemap на
-    ``DOMAIN``, что и раньше.
-    """
+    """Sitemap-индекс. До cutover ru. отдаёт пустой индекс (один канон — apex)."""
     from app.core.cache import cache_get, cache_set
+    from app.services.locale import apex_locale_en_enabled
     from app.services.site_urls import section_names
 
     origin = _request_sitemap_origin(request)
+    if _is_ru_origin(origin) and not apex_locale_en_enabled():
+        return _index_304_or_full(_empty_sitemap_index(), request)
+
     cache_key = _sitemap_cache_key("index", origin)
     cached = await cache_get(cache_key)
     if cached:
@@ -276,6 +282,16 @@ async def sitemap_section(
     )
 
     origin = _request_sitemap_origin(request)
+    from app.services.sitemap_static import section_file
+    disk = section_file(section)
+    if disk.is_file():
+        from fastapi.responses import FileResponse
+        return FileResponse(
+            disk,
+            media_type="application/xml",
+            headers={"Cache-Control": "public, max-age=600"},
+        )
+
     cache_key = _sitemap_cache_key(f"section:{section}", origin)
     etag_key = _sitemap_cache_key(f"section-etag:{section}", origin)
     cached = await cache_get(cache_key)
@@ -379,6 +395,26 @@ def _render_seo_static(name: str, *, origin: str) -> str:
     base = origin.rstrip("/")
     host = urlparse(base).hostname or "forecasteconomy.com"
     return text.replace("__PUBLIC_ORIGIN__", base).replace("__PUBLIC_HOST__", host)
+
+
+@router.api_route("/sitemap-stats.json", methods=["GET", "HEAD"], include_in_schema=False)
+async def sitemap_stats():
+    """Счётчики статического билда — живые цифры, не хроника AGENTS.md."""
+    from app.services.sitemap_static import read_stats
+
+    stats = read_stats()
+    if not stats:
+        return Response(
+            content='{"available": false, "reason": "not built yet"}',
+            media_type="application/json",
+            headers={"Cache-Control": "public, max-age=60"},
+        )
+    import json as _json
+    return Response(
+        content=_json.dumps(stats, ensure_ascii=False),
+        media_type="application/json",
+        headers={"Cache-Control": "public, max-age=300"},
+    )
 
 
 @router.api_route("/robots.txt", methods=["GET", "HEAD"], include_in_schema=False)
@@ -717,7 +753,6 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
         neighbor_year_window,
         yearly_last_points,
     )
-    from app.services.site_urls import YEAR_LANDING_MIN_POINTS
 
     loc = get_locale()
     cache_key = f"j7:{loc}:{code}:{year}"
@@ -738,7 +773,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
             .order_by(IndicatorData.date)
         )
         rows = rows_q.all()
-        if len(rows) < YEAR_LANDING_MIN_POINTS:
+        if not rows:
             return Response(status_code=404)
         raw_values = [float(v) for v, _ in rows]
         first_date = rows[0][1]

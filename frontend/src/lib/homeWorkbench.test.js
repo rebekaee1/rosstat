@@ -24,6 +24,8 @@ import {
   defaultSortForConcept,
   worldRatingTitle,
   worldYearItems,
+  mapSeriesFromSnapshot,
+  resolveHomeMapSeries,
   mapSelectHref,
   mapSurfaceCountries,
   isWeoMapConcept,
@@ -147,6 +149,37 @@ describe('homeWorkbench', () => {
     })).toBe(2024);
     const items = worldYearItems(series, 2024);
     expect(worldRankingFromYearItems(items, 1)[0].country_slug).toBe('france');
+    const fromSnap = mapSeriesFromSnapshot({
+      items: [
+        {
+          country_code: 'DE',
+          country_slug: 'germany',
+          country_name: 'Германия',
+          date: '2025-06-01',
+          value: 3.1,
+        },
+        {
+          country_code: 'FR',
+          country_slug: 'france',
+          country_name: 'Франция',
+          date: '2024-12-31',
+          value: 7.2,
+        },
+      ],
+      concept: { name: 'Безработица', unit: '%' },
+      average: 5,
+      average_label: 'Среднее',
+    });
+    expect(fromSnap.years).toEqual([2024, 2025]);
+    expect(fromSnap.values_by_year['2025'].DE.value).toBeCloseTo(3.1);
+    expect(fromSnap.benchmark_by_year['2025'].value).toBe(5);
+    const emptySeries = { years: [], values_by_year: {}, concept: {} };
+    expect(resolveHomeMapSeries(emptySeries, { items: [{ country_code: 'DE', date: '2025-01-01', value: 1 }] }))
+      .toBe(emptySeries);
+    expect(resolveHomeMapSeries(null, {
+      items: [{ country_code: 'DE', date: '2025-01-01', value: 1 }],
+      concept: { slug: 'gdp-usd' },
+    }).years).toEqual([2025]);
     // Направление задаёт каталог: у безработицы первое место — минимум.
     expect(worldRankingFromYearItems(items, 1, 'asc')[0].country_slug).toBe('germany');
     expect(defaultSortForConcept('unemployment-rate', [])).toBe('asc');

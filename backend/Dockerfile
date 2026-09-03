@@ -28,7 +28,7 @@ COPY . .
 # проинициализировал том с владельцем appuser (иначе root и загрузка mmdb падает).
 # /app/og-cache — то же для дискового OG-кэша (П-16): пустой named volume при
 # первом маунте копирует владельца точки монтирования из образа.
-RUN mkdir -p /app/geoip /app/og-cache && chmod +x /app/entrypoint.sh && chown -R appuser:appuser /app
+RUN mkdir -p /app/geoip /app/og-cache /var/www/sitemaps && chmod +x /app/entrypoint.sh && chown -R appuser:appuser /app /var/www/sitemaps
 
 USER appuser
 

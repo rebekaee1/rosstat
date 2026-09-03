@@ -23,6 +23,8 @@ export const WORLD_GLOBAL_SEARCH_LIMIT = 100;
 
 const STALE = 10 * 60 * 1000;
 const GC = 30 * 60 * 1000;
+/** Главная: не крутить RQ retry×2 на тяжёлых world-запросах (скелетон карты, не пустой hero). */
+const WORLD_SURFACE_RETRY = 1;
 
 /** Locale in queryKey — иначе preview_locale=en оставляет RU payload в кэше. */
 function localeKey() {
@@ -63,6 +65,7 @@ export function useWorldCountries() {
       ),
     staleTime: STALE,
     gcTime: GC,
+    retry: WORLD_SURFACE_RETRY,
   });
 }
 
@@ -189,6 +192,7 @@ export function useWorldRatingConcepts({ enabled = true } = {}) {
     enabled,
     staleTime: STALE,
     gcTime: GC,
+    retry: WORLD_SURFACE_RETRY,
   });
 }
 
@@ -259,6 +263,7 @@ export function useWorldMapSeries(conceptSlug) {
     enabled: !!conceptSlug,
     staleTime: STALE,
     gcTime: GC,
+    retry: WORLD_SURFACE_RETRY,
   });
 }
 

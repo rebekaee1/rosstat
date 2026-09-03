@@ -26,7 +26,7 @@ from app.data.region_indicator_polarity import (
     region_rating_is_achievement,
     region_rating_order_by,
 )
-from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
+from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint, WebmasterSearchQuery
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
 from app.services.seo_i18n import (
@@ -331,6 +331,8 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         )
         section_names[ind.section_num] = copy["section"] or ind.section_name
 
+    featured_html = await _region_demand_links(db, slug, inds)
+
     n_catalog = len(inds)
     section_html = "".join(
         f"<section class=\"seo-section\"><h2>{escape(section_names[num])}</h2>"
@@ -405,6 +407,7 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(h1)}</h1>
 <p>{escape(lead)}</p>
+{featured_html}
 {section_html}
 {cross_html}
 </div>"""
@@ -424,6 +427,58 @@ async def render_region_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         ),
     )
     return 200, html
+
+
+async def _region_demand_links(db: AsyncSession, slug: str, inds: list) -> str:
+    """Топ-20 показателей региона по спросу Вебмастера, иначе флагманы MACRO."""
+
+    by_code = {ind.code: ind for ind in inds}
+    prefix = f"/russia/region/{slug}/"
+    demand_codes: list[str] = []
+    try:
+        rows = (await db.execute(
+            select(WebmasterSearchQuery.url, func.coalesce(func.sum(WebmasterSearchQuery.impressions), 0))
+            .where(WebmasterSearchQuery.url.contains(prefix))
+            .group_by(WebmasterSearchQuery.url)
+            .order_by(func.coalesce(func.sum(WebmasterSearchQuery.impressions), 0).desc())
+            .limit(120)
+        )).all()
+        for url, _imp in rows:
+            rest = (url or "").split(f"/region/{slug}/", 1)
+            if len(rest) < 2:
+                continue
+            code = rest[1].split("/", 1)[0].split("?", 1)[0]
+            if code in by_code and code not in demand_codes:
+                demand_codes.append(code)
+            if len(demand_codes) >= 20:
+                break
+    except Exception:  # noqa: BLE001
+        demand_codes = []
+    if len(demand_codes) < 8:
+        extra = [
+            ind.code for ind in inds
+            if (ind.table_code or "") in MACRO_BY_TABLE and ind.code not in demand_codes
+        ]
+        demand_codes.extend(extra)
+    demand_codes = demand_codes[:20]
+    if not demand_codes:
+        return ""
+    items = []
+    for code in demand_codes:
+        ind = by_code.get(code)
+        if ind is None:
+            continue
+        copy = _icopy(ind)
+        items.append(
+            f'<li><a href="{escape(paths.region_indicator(slug, ind.code))}">{escape(copy["name"] or ind.name)}</a></li>'
+        )
+    if not items:
+        return ""
+    heading = _rt("region_profile.top_demand") or "Часто смотрят"
+    return (
+        f'<section class="seo-section"><h2>{escape(heading)}</h2>'
+        f'<ul>{"".join(items)}</ul></section>'
+    )
 
 
 def _rating_copy(*, achievement: bool) -> dict[str, str]:

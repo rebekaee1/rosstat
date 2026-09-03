@@ -10,6 +10,7 @@ Disallow: /login
 Disallow: /register
 Disallow: /account
 Disallow: /russia/util/
+Disallow: /__honeypot__/
 
 User-agent: Yandex
 Allow: /
@@ -20,7 +21,7 @@ Disallow: /login
 Disallow: /register
 Disallow: /account
 Disallow: /russia/util/
-Host: __PUBLIC_ORIGIN__
+Disallow: /__honeypot__/
 
 User-agent: Googlebot
 Allow: /
@@ -31,8 +32,10 @@ Disallow: /login
 Disallow: /register
 Disallow: /account
 Disallow: /russia/util/
+Disallow: /__honeypot__/
 
 # Aggressive scrapers with no SEO value: cut the whole site.
+# 
 User-agent: Amazonbot
 Disallow: /
 
@@ -42,11 +45,12 @@ Disallow: /
 User-agent: Brightbot
 Disallow: /
 
-# Clean-param — Yandex directive for non-significant GET parameters (duplicate URLs).
-# mode= is NOT listed: each view-mode URL is a canonical page for CPI/housing/etc.
+# Clean-param — Yandex inter-section directive.
+# Tells the crawler which GET params are insignificant.
+# mode= is canonicalized to the base card URL; glue the parameter.
 # Rule length limit is 500 characters; split across lines.
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
 Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
 
 Sitemap: __PUBLIC_ORIGIN__/sitemap.xml

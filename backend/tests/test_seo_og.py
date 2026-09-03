@@ -769,10 +769,13 @@ def test_spa_ssr_gets_platform_deep_links():
     for href in ("/russia/region", "/russia/today", "/#countries", "/russia/calendar", "/compare", "/"):
         assert f'href="{href}"' in spa
     assert "Разделы платформы" in spa
-    # Браузер с JS не должен видеть SEO-тело как «сломанный сайт» до гидратации.
+    # fe-js клипает SEO только после React commit (__feRevealSpa), не при разборе HTML.
+    assert "window.__feRevealSpa=function" in spa
     assert 'classList.add("fe-js")' in spa
+    assert "__feRevealSpa();" not in spa
     assert "html.fe-js #root > .seo-page" in spa
     assert 'type="module"' in spa
+    assert 'class="fe-js"' not in spa
 
     token = set_locale("en")
     try:

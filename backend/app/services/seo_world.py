@@ -1320,10 +1320,18 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
             ind.name_ru,
         )
 
-    key_inds = sorted(
-        [i for i in inds if i.id in latest],
-        key=_key_sort,
-    )[:12]
+    def _is_curated_card(ind: WorldIndicator) -> bool:
+        try:
+            return concept_for_indicator(ind) is not None
+        except ValueError:
+            return True
+
+    curated_key = [
+        i for i in inds
+        if i.id in latest and _is_curated_card(i)
+    ]
+    pool = curated_key or [i for i in inds if i.id in latest]
+    key_inds = sorted(pool, key=_key_sort)[:12]
 
     key_rows = "".join(
         (

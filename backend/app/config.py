@@ -33,6 +33,28 @@ class Settings(BaseSettings):
     # О-15: пул соединений per-process; бюджет см. комментарий в database.py.
     db_pool_size: int = 5
     db_max_overflow: int = 10
+    db_pool_timeout: int = 10
+    db_statement_timeout_ms: int = 30_000
+    db_idle_in_transaction_timeout_ms: int = 120_000
+    # Отдельный пул аналитики (rollups / Pulse / BI / ClickHouse sync) —
+    # не может забрать соединения у витрины (инцидент 2026-09-03).
+    analytics_db_pool_size: int = 2
+    analytics_db_max_overflow: int = 2
+    analytics_db_pool_timeout: int = 15
+    analytics_db_statement_timeout_ms: int = 60_000
+    analytics_db_idle_in_transaction_timeout_ms: int = 120_000
+    # Каталог статических sitemap (ночной job → nginx try_files).
+    sitemap_dir: str = "/var/www/sitemaps"
+    # Google Search Console: meta google-site-verification (пусто = не эмитить).
+    google_site_verification: str = ""
+    # Bing Webmaster meta msvalidate.01.
+    bing_site_verification: str = ""
+    # Bearer-токен Search Analytics API. Пусто = джоб не синхронизирует.
+    gsc_access_token: str = ""
+    # ISO-коды стран, с которых режем не-поисковый трафик (скрейп с ротацией
+    # IP). Дефолт SG: 2026-09-03 Метрика — 1788 робот-визитов из Сингапура
+    # против 347 живых из РФ. Пусто = выкл.
+    scrape_block_countries: str = "SG"
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

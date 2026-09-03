@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { fireEvent, screen, within } from '@testing-library/react';
 import Navbar from './Navbar';
-import { switchLanguage } from '../i18n/locale';
+import { switchLanguage, buildLanguageSwitchUrl } from '../i18n/locale';
 import { resolveActiveNavId } from '../lib/navItems';
 import Footer from './Footer';
 import { renderPage, mockApiGet } from '../test/renderPage';
@@ -195,6 +195,18 @@ describe('Navbar H-4 menu', () => {
     fireEvent.click(within(nav).getByRole('menuitem', { name: 'English' }));
     expect(switchLanguage).toHaveBeenCalledTimes(1);
     expect(switchLanguage).toHaveBeenCalledWith('en');
+  });
+
+  it('до cutover English с localhost не уходит на прод-apex и ставит preview_locale=en', () => {
+    const next = buildLanguageSwitchUrl('en', {
+      href: 'http://localhost:3000/',
+      hostname: 'localhost',
+      apexLocaleEn: false,
+    });
+    const url = new URL(next);
+    expect(url.origin).toBe('http://localhost:3000');
+    expect(url.hostname).not.toBe('forecasteconomy.com');
+    expect(url.searchParams.get('preview_locale')).toBe('en');
   });
 });
 

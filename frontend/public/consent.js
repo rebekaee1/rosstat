@@ -104,13 +104,18 @@
 
   // Подразумеваемое согласие: грузим трекеры по умолчанию. Уважаем только
   // явный отказ в рамках ТЕКУЩЕЙ редакции политики (rec.v === CURRENT_V).
+  // На первом заходе не конкурируем с CSS/JS приложения — ждём window.load.
   var IMPLIED = { analytics: true, ads: true };
   var rec = null;
   try {
     var raw = window.localStorage.getItem(KEY);
     if (raw) rec = JSON.parse(raw);
   } catch { rec = null; }
-  try {
-    window.__feApplyConsent(rec && rec.v === CURRENT_V ? rec : IMPLIED);
-  } catch { window.__feApplyConsent(IMPLIED); }
+  var consentToApply = rec && rec.v === CURRENT_V ? rec : IMPLIED;
+  function applyNow() {
+    try { window.__feApplyConsent(consentToApply); }
+    catch { window.__feApplyConsent(IMPLIED); }
+  }
+  if (document.readyState === 'complete') applyNow();
+  else window.addEventListener('load', applyNow, { once: true });
 })();

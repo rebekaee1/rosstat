@@ -33,6 +33,18 @@ maxretry = 30
 findtime = 10m
 bantime  = 24h
 
+# ---- Jail 1b: стелс-обход без 429 ----
+# Ротация медленная: 1 стр / 2–5 с не набирает 2 r/s, 429 нет.
+# 80 успешных GET за 10 минут с одного IP — не человек.
+[nginx-volume]
+enabled  = true
+port     = http,https
+filter   = nginx-volume
+logpath  = /var/log/rosstat-nginx/security.log
+maxretry = 80
+findtime = 10m
+bantime  = 24h
+
 # ---- Jail 2: ханипот ----
 # Один запрос = бан: на /russia/util/links-exchange человек не попадает
 # никогда (ссылка невидима, tabindex=-1, robots Disallow). Любой hit —

@@ -6,24 +6,46 @@
 
 Кэш дашборда — Redis 15 минут: фронт поллит каждые 15 минут и получает
 свежий срез без пересчёта витрин на каждый запрос.
+
+Инцидент 2026-09-03: Depends(get_current_user)+get_db держали public-пул
+на весь расчёт дашборда (минуты) → витрина ждала соединение → SSL timeout.
+Админ-проверка открывает public-сессию на миллисекунды и закрывает её
+до тяжёлой работы. Расчёт — только analytics_session, и только на cache-miss.
 """
 
 from __future__ import annotations
 
+import asyncio
 import logging
+from contextlib import asynccontextmanager
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import get_db
+from app.database import get_analytics_db, get_db
 from app.models import EmailCredential, OAuthIdentity, User
-from app.security.auth import get_current_user
+from app.security.auth import current_session
+from app.services.api_i18n import api_detail
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/admin/bi", tags=["admin-bi"])
 
 _BI_CACHE_TTL = 15 * 60  # владелец: «подтягивала данные раз в 15 минут»
+# Один расчёт на воркер: два параллельных cache-miss удваивали RAM и пул.
+_DASHBOARD_LOCK = asyncio.Lock()
+
+
+@asynccontextmanager
+async def _override_aware_session(request: Request, dep):
+    """Короткая сессия: чтит FastAPI dependency_overrides (sqlite-тесты)."""
+    fn = request.app.dependency_overrides.get(dep, dep)
+    agen = fn()
+    session = await agen.__anext__()
+    try:
+        yield session
+    finally:
+        await agen.aclose()
 
 
 async def user_is_admin(db: AsyncSession, user: User) -> bool:
@@ -48,24 +70,38 @@ async def user_is_admin(db: AsyncSession, user: User) -> bool:
     return bool(emails & allowed)
 
 
-async def require_admin(
-    user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
-) -> User:
-    if not await user_is_admin(db, user):
-        # 404, а не 403: раздел невидим для обычных пользователей.
-        raise HTTPException(status_code=404, detail="Not found")
-    return user
+async def require_admin(request: Request) -> User:
+    """Админ-гейт без удержания public-пула на время дашборда/среза."""
+    sess = await current_session(request)
+    if not sess:
+        raise HTTPException(
+            status_code=401,
+            detail=api_detail("Не авторизован", "Not authenticated"),
+        )
+    async with _override_aware_session(request, get_db) as db:
+        from app.services.identity.service import get_user
+
+        user = await get_user(db, sess["user_id"])
+        if user is None or user.status != "active":
+            raise HTTPException(
+                status_code=401,
+                detail=api_detail("Не авторизован", "Not authenticated"),
+            )
+        if not await user_is_admin(db, user):
+            raise HTTPException(status_code=404, detail="Not found")
+        db.expunge(user)
+        return user
 
 
 @router.get("/dashboard")
 async def bi_dashboard(
+    request: Request,
     period: str = Query("30d", description="Пресет: today/yesterday/7d/30d/90d/custom"),
     date_from: str | None = Query(None, alias="from", description="МСК-дата начала (custom)"),
     date_to: str | None = Query(None, alias="to", description="МСК-дата конца (custom)"),
     days: int | None = Query(None, ge=1, le=365, description="Легаси-параметр: N последних дней"),
     fresh: bool = Query(False, description="Принудительный пересчёт мимо кэша"),
     _admin: User = Depends(require_admin),
-    db: AsyncSession = Depends(get_db),
 ):
     from app.core.cache import cache_get, cache_set
     from app.services.admin_bi import build_bi_dashboard
@@ -83,9 +119,23 @@ async def bi_dashboard(
         cached = await cache_get(cache_key)
         if cached:
             return cached
-    data = await build_bi_dashboard(db, p)
-    await cache_set(cache_key, data, ttl=ttl)
-    return data
+    async with _DASHBOARD_LOCK:
+        if not fresh:
+            cached = await cache_get(cache_key)
+            if cached:
+                return cached
+        try:
+            async with _override_aware_session(request, get_analytics_db) as db:
+                data = await build_bi_dashboard(db, p)
+        except HTTPException:
+            raise
+        except Exception:
+            logger.exception("BI dashboard build failed")
+            raise HTTPException(
+                status_code=503, detail="Витрины временно недоступны"
+            ) from None
+        await cache_set(cache_key, data, ttl=ttl)
+        return data
 
 
 @router.get("/slices/meta")
@@ -112,16 +162,23 @@ async def slices_query(
     _admin: User = Depends(require_admin),
 ):
     """Произвольный срез по OLAP-слою: метрика × до двух измерений × период.
-    Белый список измерений в clickhouse_sync — произвольный SQL исключён."""
+
+    Только ClickHouse, без Postgres-синка на запросе. Таймаут и 503 —
+    витрина сайта не участвует.
+    """
     from app.config import settings
     from app.services.clickhouse_sync import run_slice
 
     if not settings.clickhouse_enabled:
         raise HTTPException(status_code=503, detail="Слой ClickHouse выключен")
     try:
-        return await run_slice(metric, [d.strip() for d in dims.split(",") if d.strip()], days)
+        return await run_slice(
+            metric, [d.strip() for d in dims.split(",") if d.strip()], days
+        )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc))
     except Exception as exc:  # noqa: BLE001 — CH недоступен: мягкая деградация
         logger.warning("Slice query failed: %s", exc)
-        raise HTTPException(status_code=503, detail="Слой недоступен, синк догонит после подъёма")
+        raise HTTPException(
+            status_code=503, detail="Слой недоступен, синк догонит после подъёма"
+        )

@@ -17,7 +17,7 @@ from typing import Any
 
 from sqlalchemy import func, select
 
-from app.database import async_session
+from app.database import analytics_session
 from app.models import (
     BehaviorEvent,
     FrontendEvent,
@@ -62,7 +62,7 @@ async def build_day_bundle(d: date, period_start: date | None = None) -> dict[st
     start, end = _day_bounds(d)
     bundle: dict[str, Any] = {"day": d.isoformat()}
 
-    async with async_session() as db:
+    async with analytics_session() as db:
         bundle["inventory"] = await build_inventory(db)
 
         # --- Frontend (бизнес-события) --------------------------------------

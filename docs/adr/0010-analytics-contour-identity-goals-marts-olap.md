@@ -175,3 +175,11 @@ sunburst / calendar-heatmap; Recharts остаётся для линий и ба
   таблицей со схлопыванием недопечаток; пороги малых выборок; ошибки JS
   свои/сторонние; API-латентность таблицей p50/p75/max; РСЯ и sticky-шапка
   убраны с `/admin/*`. Alembic `20260706_bi21` (deleted/bot_score/is_internal).
+
+**2026-09-03 — изоляция аналитического пула.** Инцидент: rollups/Pulse/CH-синк
+держали `idle in transaction` на том же engine, что витрина. Канон:
+`analytics_engine` (pool 2+2, statement 60 с, idle-in-tx 120 с);
+публичный engine — timeout 30 с / pool_timeout 10 с. Короткие сессии
+по фазам. `/metrics`: pool/RSS/cgroup. Алерты memory_pressure /
+db_pool_saturation / idle_in_tx. ClickHouse лимит 448M; backend на 4 ГБ
+хосте 1 ГиБ (1536M — после апгрейда RAM).

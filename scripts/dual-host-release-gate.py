@@ -70,7 +70,11 @@ def main() -> int:
                 if _html_lang(soup) != expected_lang:
                     errors.append(f"{locale} {path}: lang={_html_lang(soup)!r} expected {expected_lang!r}")
                 canonical = soup.select_one('link[rel="canonical"]')
-                expected_origin = "https://ru.forecasteconomy.com" if locale == "ru" else "https://forecasteconomy.com"
+                # До cutover ru. каноничен на apex (один индекс Яндекса).
+                if locale == "ru" and not apex_is_en:
+                    expected_origin = "https://forecasteconomy.com"
+                else:
+                    expected_origin = "https://ru.forecasteconomy.com" if locale == "ru" else "https://forecasteconomy.com"
                 expected_canonical = expected_origin if path == "/" else expected_origin + path
                 if not canonical or canonical.get("href") != expected_canonical:
                     errors.append(f"{locale} {path}: canonical {canonical and canonical.get('href')!r}")
@@ -89,7 +93,12 @@ def main() -> int:
                     visible = soup.select_one("figure.seo-chart img")
                     if not visible or not visible.get("alt"): errors.append(f"{locale} {path}: no visible SEO image/alt")
                 if og:
-                    image_path = og.get("content", "").replace(expected_origin, "")
+                    og_content = og.get("content", "")
+                    image_path = (
+                        og_content
+                        .replace("https://forecasteconomy.com", "")
+                        .replace("https://ru.forecasteconomy.com", "")
+                    )
                     image = client.get(f"{origin.rstrip('/')}{image_path}")
                     if image.status_code != 200 or not image.headers.get("content-type", "").startswith("image/") or len(image.content) < 1000:
                         errors.append(f"{locale} {path}: broken OG {image.status_code}")

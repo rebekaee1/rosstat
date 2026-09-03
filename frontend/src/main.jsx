@@ -1,8 +1,8 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
-import App from './App.jsx';
+import SpaRoot from './SpaRoot.jsx';
+import { seedQueryClientFromHomeBootstrap } from './lib/homeBootstrap';
 import './index.css';
 
 // Самообновление до новой версии сайта. После деплоя хэшированные чанки
@@ -41,11 +41,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+seedQueryClientFromHomeBootstrap(queryClient);
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </StrictMode>,
+  <SpaRoot queryClient={queryClient} />,
 );

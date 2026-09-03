@@ -72,7 +72,7 @@ def auth_env(monkeypatch: pytest.MonkeyPatch):
 
     from app.config import settings
     from app.models import Base
-    from app.database import get_db
+    from app.database import get_analytics_db, get_db
     import app.core.cache as cache_mod
 
     monkeypatch.setattr(settings, "scheduler_enabled", False)
@@ -122,6 +122,7 @@ def auth_env(monkeypatch: pytest.MonkeyPatch):
 
     from app.main import app
     app.dependency_overrides[get_db] = _override_get_db
+    app.dependency_overrides[get_analytics_db] = _override_get_db
 
     fake = fakeredis.aioredis.FakeRedis(decode_responses=True)
     fake_state = fakeredis.aioredis.FakeRedis(decode_responses=True)
@@ -133,6 +134,7 @@ def auth_env(monkeypatch: pytest.MonkeyPatch):
     yield {"app": app, "session_maker": TestSession, "redis": fake, "state_redis": fake_state}
 
     app.dependency_overrides.pop(get_db, None)
+    app.dependency_overrides.pop(get_analytics_db, None)
     cache_mod._redis = prev_redis
     cache_mod._state_redis = prev_state
     try:

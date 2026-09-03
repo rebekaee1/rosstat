@@ -86,6 +86,10 @@ services:
     deploy:
       resources:
         limits:
+          # 4 ГБ хост (факт 2026-09-03: 3.8Gi RAM, своп уже занят): 1536M
+          # backend + 1G postgres уводят витрину в своп (главная 5–30 с).
+          # Защита сайта — analytics_engine и timeout'ы, не раздутие cgroup.
+          # 1536M — только после апгрейда хоста до 8 ГБ.
           memory: 1G
           cpus: '1.0'
     environment:
@@ -177,6 +181,7 @@ services:
       - geoip_data:/app/geoip
       # П-16: дисковый кэш OG-картинок — переживает rebuild/рестарт
       - og_cache:/app/og-cache
+      - sitemap_static:/var/www/sitemaps
     depends_on:
       postgres:
         condition: service_healthy
@@ -212,6 +217,7 @@ services:
       # каталог и владельца создаёт deploy-скрипт. Дефолтные access/error.log
       # не трогаем — docker logs продолжает работать как раньше.
       - /var/log/rosstat-nginx:/var/log/nginx/security:rw
+      - sitemap_static:/var/www/sitemaps:ro
     logging:
       driver: json-file
       options:
@@ -258,7 +264,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 700M
+          memory: 448M
           cpus: '0.5'
     ulimits:
       nofile:
@@ -277,4 +283,5 @@ volumes:
   redis_state_data:
   geoip_data:
   og_cache:
+  sitemap_static:
   clickhouse_data:

@@ -507,7 +507,8 @@ def test_sitemap_locs_follow_request_host(seeded_env):
             headers={"host": "ru.forecasteconomy.com"},
         )
         assert ru.status_code == 200
-        assert "https://ru.forecasteconomy.com/sitemap-core.xml" in ru.text
+        assert "<sitemapindex" in ru.text
+        assert "https://ru.forecasteconomy.com/sitemap-core.xml" not in ru.text
         assert "https://forecasteconomy.com/sitemap-core.xml" not in ru.text
 
         ru_core = tc.get(
@@ -538,7 +539,7 @@ def test_rss_robots_llms_follow_request_host(seeded_env):
 
         apex_robots = tc.get("/robots.txt")
         assert apex_robots.status_code == 200
-        assert "Host: https://forecasteconomy.com" in apex_robots.text
+        assert "Host:" not in apex_robots.text
         assert "Sitemap: https://forecasteconomy.com/sitemap.xml" in apex_robots.text
 
         ru_robots = tc.get(
@@ -546,9 +547,8 @@ def test_rss_robots_llms_follow_request_host(seeded_env):
             headers={"host": "ru.forecasteconomy.com"},
         )
         assert ru_robots.status_code == 200
-        assert "Host: https://ru.forecasteconomy.com" in ru_robots.text
+        assert "Host:" not in ru_robots.text
         assert "Sitemap: https://ru.forecasteconomy.com/sitemap.xml" in ru_robots.text
-        assert "https://forecasteconomy.com/sitemap.xml" not in ru_robots.text
 
         apex_llms = tc.get("/llms.txt")
         assert apex_llms.status_code == 200

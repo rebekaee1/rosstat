@@ -57,20 +57,27 @@ class SessionSignals:
     screen_h: int | None = None
 
 
-def _no_human_traces(s: SessionSignals) -> bool:
-    """Паттерн 41% прод-сессий: зашёл на одну страницу и не оставил ни одного
-    следа устройства ввода. Сам факт доставки dwell следом НЕ считается —
-    headless-браузеры доставляют dwell на pagehide не хуже людей (проверено
-    на калибровке 04–05.07); человеческие следы внутри dwell — скролл и
-    активное время. Тач-скролл мобильных даёт scroll_pct > 0 — мобильный
-    человек без мыши и кликов сюда не попадает."""
+def _no_input_traces(s: SessionSignals) -> bool:
+    """Нет мыши, кликов, скролла и активного времени. Dwell сам по себе
+    следом не считается — headless шлёт pagehide не хуже людей."""
     return (
-        s.pageviews <= 1
-        and s.clicks == 0
+        s.clicks == 0
         and s.moves == 0
         and s.max_scroll_pct == 0
         and s.active_ms == 0
     )
+
+
+def _no_human_traces(s: SessionSignals) -> bool:
+    """Паттерн 41% прод-сессий: зашёл на одну страницу и не оставил ни одного
+    следа устройства ввода. Тач-скролл мобильных даёт scroll_pct > 0 —
+    мобильный человек без мыши сюда не попадает."""
+    return s.pageviews <= 1 and _no_input_traces(s)
+
+
+def _ghost_crawl(s: SessionSignals) -> bool:
+    """Обход многих URL подряд без ввода (скрейп каталога в одной сессии)."""
+    return s.pageviews >= 4 and _no_input_traces(s)
 
 
 # (имя сигнала, вес, предикат) — единая точка калибровки и разложения счёта.
@@ -78,6 +85,7 @@ HEURISTICS: tuple[tuple[str, int, Any], ...] = (
     ("webdriver", 100, lambda s: s.is_webdriver),
     ("bot_ua", 100, lambda s: bool(s.ua_raw and _BOT_UA_RE.search(s.ua_raw))),
     ("no_human_traces", 70, _no_human_traces),
+    ("ghost_crawl", 70, _ghost_crawl),
     # Все клики сессии синтетические (isTrusted=false) — кликает скрипт.
     ("synthetic_clicks", 60, lambda s: s.synthetic_clicks > 0 and s.synthetic_clicks >= s.clicks),
     ("visitor_flood", 40, lambda s: s.visitor_sessions > VISITOR_SESSION_FLOOD),

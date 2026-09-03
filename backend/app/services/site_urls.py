@@ -34,9 +34,18 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Awaitable, Callable
 
+from app.services.index_policy import (
+    RUSSIA_YEAR_MIN_POINTS,
+    TIER1_PRIORITY,
+    TIER2_PRIORITY,
+    month_year_min,
+    regional_year_min,
+    world_year_min,
+    curated_world_dataset_ids,
+)
 from app.services.display import today_msk
 
-from sqlalchemy import Integer, func, select, tuple_
+from sqlalchemy import Integer, func, or_, select, tuple_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
@@ -60,11 +69,24 @@ REGIONAL_CHUNK = 10_000
 WORLD_CHUNK = 10_000
 
 # Годовая посадочная `/russia/indicator/{code}/{year}`: минимум точек за календарный год.
-YEAR_LANDING_MIN_POINTS = 1
+YEAR_LANDING_MIN_POINTS = RUSSIA_YEAR_MIN_POINTS
 # То же для мировых годовых лендингов /{country}/indicator/{code}/{year}.
 WORLD_YEAR_LANDING_MIN_POINTS = 1
 # Годовой рейтинг /world/rating/{concept}/{year} в sitemap: минимум стран в срезе года.
 _RATING_YEAR_MIN_COUNTRIES = 5
+
+
+def _world_year_filters(year_expr):
+    """Curated-концепты + lookback — INDEX_POLICY Tier 2 для мировых годов."""
+    datasets = curated_world_dataset_ids()
+    clauses = [
+        WorldCountry.is_active.is_(True),
+        WorldIndicator.is_listed.is_(True),
+        year_expr >= world_year_min(),
+    ]
+    if datasets:
+        clauses.append(WorldIndicator.dataset_id.in_(datasets))
+    return clauses
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,6 +118,8 @@ def is_redirect_only_indicator(code: str) -> bool:
 def is_recrawl_eligible(path: str) -> bool:
     """Путь можно подавать в переобход Вебмастера (остаётся в поиске)."""
     if "?" in path:
+        return False
+    if path.startswith("/__honeypot__") or path.endswith("/links-exchange"):
         return False
     for prefix in (f"/{paths.RUSSIA}/indicator/", "/indicator/"):
         if path.startswith(prefix):
@@ -138,6 +162,8 @@ async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             "daily",
             _sitemap_priority(listed=listed),
         ))
+    from app.services.index_policy import honeypot_path
+    urls.append(_u(honeypot_path(), today.isoformat(), "never", "0.1"))
     return urls
 
 
@@ -147,8 +173,13 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         select(Indicator.code, year_expr.label("y"), func.max(IndicatorData.date))
         .join(IndicatorData, IndicatorData.indicator_id == Indicator.id)
         .where(Indicator.is_active.is_(True), Indicator.is_listed.is_(True))
-        .group_by(Indicator.code, year_expr)
-        .having(func.count(IndicatorData.id) >= YEAR_LANDING_MIN_POINTS)
+        .group_by(Indicator.code, year_expr, Indicator.frequency)
+        .having(
+            or_(
+                Indicator.frequency == "annual",
+                func.count(IndicatorData.id) >= YEAR_LANDING_MIN_POINTS,
+            )
+        )
         .order_by(year_expr.desc(), Indicator.code)
     )
     urls = []
@@ -161,7 +192,7 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             paths.russia_indicator_year(code, year),
             (last_data or today).isoformat(),
             freq,
-            "0.4",
+            TIER2_PRIORITY if year < today.year else TIER1_PRIORITY,
         ))
     return urls
 
@@ -312,7 +343,11 @@ async def _regional_year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         select(Region.slug, RegionIndicator.code, RegionDataPoint.year)
         .join(Region, Region.id == RegionDataPoint.region_id)
         .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
-        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
+        .where(
+            Region.kind == "region",
+            RegionIndicator.is_listed.is_(True),
+            RegionDataPoint.year >= regional_year_min(),
+        )
         .group_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
         .order_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
     )
@@ -321,7 +356,7 @@ async def _regional_year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             paths.region_indicator_year(rslug, icode, int(year)),
             f"{int(year)}-12-31",
             "yearly",
-            "0.5",
+            TIER2_PRIORITY,
         )
         for rslug, icode, year in (await db.execute(stmt)).all()
     ]
@@ -597,10 +632,7 @@ async def _world_year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             )
             .join(WorldIndicator, WorldIndicator.id == WorldDataPoint.indicator_id)
             .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
-            .where(
-                WorldCountry.is_active.is_(True),
-                WorldIndicator.is_listed.is_(True),
-            )
+            .where(*_world_year_filters(year_expr))
             .group_by(
                 WorldDataPoint.indicator_id,
                 WorldIndicator.country_id,
@@ -649,6 +681,7 @@ async def _month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             Indicator.is_active.is_(True),
             Indicator.is_listed.is_(True),
             func.lower(Indicator.frequency).like("month%"),
+            year_expr >= month_year_min(),
         )
         .group_by(Indicator.code, year_expr, month_expr)
         .order_by(Indicator.code, year_expr.desc(), month_expr.desc())
@@ -973,7 +1006,11 @@ async def _regional_years_page(
         select(RegionIndicator.id, Region.slug, RegionDataPoint.year)
         .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
         .join(Region, Region.id == RegionDataPoint.region_id)
-        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
+        .where(
+            Region.kind == "region",
+            RegionIndicator.is_listed.is_(True),
+            RegionDataPoint.year >= regional_year_min(),
+        )
         .group_by(RegionIndicator.id, Region.slug, RegionDataPoint.year)
     )
     if after:
@@ -989,7 +1026,7 @@ async def _regional_years_page(
             paths.region_indicator_year(rslug, code_by_id[int(iid)], int(year)),
             f"{int(year)}-12-31",
             "yearly",
-            "0.5",
+            TIER2_PRIORITY,
         )
         for iid, rslug, year in rows
         if int(iid) in code_by_id
@@ -1018,7 +1055,7 @@ async def _world_years_page(
         )
         .join(WorldIndicator, WorldIndicator.id == WorldDataPoint.indicator_id)
         .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
-        .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True))
+        .where(*_world_year_filters(year_expr))
         .group_by(WorldDataPoint.indicator_id, year_expr)
     )
     if after:
@@ -1101,7 +1138,11 @@ _REG_YEARS_COUNT = select(func.count()).select_from(
     select(Region.slug, RegionIndicator.code, RegionDataPoint.year)
     .join(Region, Region.id == RegionDataPoint.region_id)
     .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
-    .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
+    .where(
+        Region.kind == "region",
+        RegionIndicator.is_listed.is_(True),
+        RegionDataPoint.year >= regional_year_min(),
+    )
     .group_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
     .subquery()
 )
@@ -1117,7 +1158,7 @@ _WORLD_YEARS_COUNT = select(func.count()).select_from(
     select(WorldIndicator.code.label("c"), func.extract("year", WorldDataPoint.date).label("y"))
     .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
     .join(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
-    .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True))
+    .where(*_world_year_filters(func.extract("year", WorldDataPoint.date)))
     .group_by(WorldIndicator.id, "c", "y")
     .subquery()
 )
@@ -1188,7 +1229,11 @@ def _regional_years_bounds_stmt() -> object:
         )
         .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
         .join(Region, Region.id == RegionDataPoint.region_id)
-        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
+        .where(
+            Region.kind == "region",
+            RegionIndicator.is_listed.is_(True),
+            RegionDataPoint.year >= regional_year_min(),
+        )
         .group_by(RegionIndicator.id, Region.slug, RegionDataPoint.year)
     )
 
@@ -1199,7 +1244,7 @@ def _world_years_bounds_stmt() -> object:
         select(WorldDataPoint.indicator_id.label("indicator_id"), year_expr)
         .join(WorldIndicator, WorldIndicator.id == WorldDataPoint.indicator_id)
         .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
-        .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True))
+        .where(*_world_year_filters(year_expr))
         .group_by(WorldDataPoint.indicator_id, year_expr)
     )
 

@@ -718,6 +718,49 @@ class WebmasterSearchQuery(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
+class WebmasterIndexingDaily(Base):
+    """Ежедневный снимок индексации Вебмастера (план 2026-09-03)."""
+    __tablename__ = "webmaster_indexing_daily"
+    __table_args__ = (
+        UniqueConstraint("host", "day", name="uq_webmaster_indexing_daily"),
+        Index("ix_webmaster_indexing_daily_day", "day"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    host: Mapped[str] = mapped_column(String(300), nullable=False)
+    day: Mapped[date] = mapped_column(Date, nullable=False)
+    in_search: Mapped[int | None] = mapped_column(Integer)
+    crawled_2xx: Mapped[int | None] = mapped_column(Integer)
+    crawled_3xx: Mapped[int | None] = mapped_column(Integer)
+    crawled_4xx: Mapped[int | None] = mapped_column(Integer)
+    crawled_5xx: Mapped[int | None] = mapped_column(Integer)
+    appeared: Mapped[int | None] = mapped_column(Integer)
+    excluded: Mapped[int | None] = mapped_column(Integer)
+    sitemap_errors: Mapped[int | None] = mapped_column(Integer)
+    raw_json: Mapped[dict | None] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
+class GscSearchQuery(Base):
+    """Google Search Console Search Analytics (дневные запросы)."""
+    __tablename__ = "gsc_search_queries"
+    __table_args__ = (
+        UniqueConstraint("date", "query", "page", name="uq_gsc_search_query"),
+        Index("ix_gsc_query_date", "date", "query"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    date: Mapped[date] = mapped_column(Date, nullable=False)
+    query: Mapped[str] = mapped_column(String(500), nullable=False)
+    page: Mapped[str | None] = mapped_column(String(1000))
+    impressions: Mapped[int | None] = mapped_column(Integer)
+    clicks: Mapped[int | None] = mapped_column(Integer)
+    ctr: Mapped[float | None] = mapped_column(Numeric(8, 4))
+    position: Mapped[float | None] = mapped_column(Numeric(8, 2))
+    raw_json: Mapped[dict | None] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
 class SeoPageSnapshot(Base):
     __tablename__ = "seo_page_snapshots"
     __table_args__ = (

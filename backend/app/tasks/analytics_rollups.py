@@ -24,7 +24,7 @@ from typing import Any
 from sqlalchemy import case, delete, func, select
 
 from app.config import settings
-from app.database import async_session
+from app.database import analytics_session
 from app.models import (
     BehaviorEvent,
     BehaviorSession,
@@ -350,27 +350,43 @@ async def rollup_daily_traffic(db, since_day: date) -> int:
     from app.services.analytics_marts import business_goal_ids, visit_has_business_goal
 
     biz_ids = await business_goal_ids(db)
+    # Только нужные колонки — не ORM-объекты со всем raw_json в идентичности.
     visits = (await db.execute(
-        select(RawMetrikaVisit).where(RawMetrikaVisit.visit_date >= since_day)
-    )).scalars().all()
+        select(
+            RawMetrikaVisit.visit_date,
+            RawMetrikaVisit.client_id_hash,
+            RawMetrikaVisit.duration_seconds,
+            RawMetrikaVisit.goals_json,
+            RawMetrikaVisit.traffic_source,
+            RawMetrikaVisit.raw_json,
+        ).where(RawMetrikaVisit.visit_date >= since_day)
+    )).all()
 
     agg: dict[tuple, dict[str, Any]] = {}
     visitors: dict[tuple, set] = defaultdict(set)
-    for v in visits:
-        if not v.visit_date:
+    for visit_date, client_id_hash, duration_seconds, goals_json, traffic_source, raw_json in visits:
+        if not visit_date:
             continue
-        key = (v.visit_date, _metrika_channel(v), _metrika_device(v), _visit_raw(v, "ym:s:isNewUser") == "1")
+        stub = RawMetrikaVisit(
+            visit_date=visit_date,
+            client_id_hash=client_id_hash,
+            duration_seconds=duration_seconds,
+            goals_json=goals_json,
+            traffic_source=traffic_source,
+            raw_json=raw_json,
+        )
+        key = (visit_date, _metrika_channel(stub), _metrika_device(stub), _visit_raw(stub, "ym:s:isNewUser") == "1")
         a = agg.setdefault(key, {"visits": 0, "pageviews": 0, "goal_visits": 0, "total_duration_sec": 0, "bounces": 0})
         a["visits"] += 1
         try:
-            a["pageviews"] += int(_visit_raw(v, "ym:s:pageViews") or 0)
+            a["pageviews"] += int(_visit_raw(stub, "ym:s:pageViews") or 0)
         except ValueError:
             pass
-        a["goal_visits"] += 1 if visit_has_business_goal(v, biz_ids) else 0
-        a["total_duration_sec"] += int(v.duration_seconds or 0)
-        a["bounces"] += 1 if _visit_raw(v, "ym:s:bounce") == "1" else 0
-        if v.client_id_hash:
-            visitors[key].add(v.client_id_hash)
+        a["goal_visits"] += 1 if visit_has_business_goal(stub, biz_ids) else 0
+        a["total_duration_sec"] += int(duration_seconds or 0)
+        a["bounces"] += 1 if _visit_raw(stub, "ym:s:bounce") == "1" else 0
+        if client_id_hash:
+            visitors[key].add(client_id_hash)
 
     await db.execute(delete(DailyTraffic).where(DailyTraffic.day >= since_day))
     rows = [
@@ -576,10 +592,15 @@ async def run_rollups(days: int = 2) -> dict[str, int]:
 
     since_day = msk_day(_utcnow() - timedelta(days=days))
     since_dt = msk_day_start_utc(since_day)
-    async with async_session() as db:
+    # Короткие сессии по фазам: одна длинная транзакция держала пул 20 мин
+    # (инцидент 2026-09-03).
+    async with analytics_session() as db:
         n_sessions = await sessionize(db, since_dt)
+    async with analytics_session() as db:
         n_traffic = await rollup_daily_traffic(db, since_day)
+    async with analytics_session() as db:
         n_goals = await rollup_daily_goals(db, since_day)
+    async with analytics_session() as db:
         n_pages = await rollup_daily_pages(db, since_day)
     return {"sessions": n_sessions, "traffic": n_traffic, "goals": n_goals, "pages": n_pages}
 
@@ -607,7 +628,7 @@ async def rollups_daily_job() -> None:
     except Exception:
         logger.exception("Rollups daily failed")
     try:
-        async with async_session() as db:
+        async with analytics_session() as db:
             await sync_metrika_goals(db)
     except Exception:
         logger.exception("Metrika goals sync failed")

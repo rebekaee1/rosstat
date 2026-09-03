@@ -91,6 +91,20 @@ def resolve_request_origin(host: str | None = None) -> str:
     return settings.public_origin
 
 
+def canonical_public_origin() -> str:
+    """Origin for ``<link rel=canonical>``.
+
+    Until cutover (``apex_locale_en=false``) all canonicals point at apex so
+    Yandex has one index. After cutover, canonical follows the request host
+    (ru. = RU, apex = EN).
+    """
+    from app.config import settings
+
+    if settings.apex_locale_en:
+        return get_request_origin()
+    return settings.public_origin
+
+
 def get_request_origin() -> str:
     """Origin bound for this request, else ``settings.public_origin``."""
     bound = _origin_var.get()

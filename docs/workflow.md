@@ -1,6 +1,6 @@
 # Рабочий процесс — Forecast Economy
 
-**Last updated:** 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
+**Last updated:** 2026-09-03 (post-deploy watch 15 мин + runbook «хост в свопе»). Ранее 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md).
 **See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки 6/6), [`../AGENTS.md::Шаг 4`](../AGENTS.md) (чеклист «новый индикатор» 7/7 — другая ось), [`adr/`](adr/) (архитектурные решения).
 
@@ -122,6 +122,26 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 - SSR главной + 2–3 категорий + 3–5 индикаторов через `User-Agent: YandexBot/3.0` → 200, осмысленные `<title>`, корректные ссылки.
 - `GET /sitemap.xml` → 200, валидный XML.
 - Headless E2E на 6+ страницах → 0 console errors / 0 4xx-5xx.
+
+`deploy.sh` после smoke держит **15-минутный watch**: TTFB главной, `/health/ready`,
+память контейнера backend, признак `OOMKilled`. Срыв — автооткат на предыдущий SHA.
+
+### Runbook: хост в свопе (2026-09-03)
+
+Симптомы: главная 5–30 с, `idle in transaction` в Postgres, RSS backend у лимита.
+
+Смотреть:
+
+```
+docker stats --no-stream
+docker compose exec postgres psql -c "select datname, state, now()-state_change as idle, query from pg_stat_activity where state <> 'idle' order by state_change"
+curl -sS https://forecasteconomy.com/api/v1/metrics | grep -E 'fe_db_pool|fe_process_rss|fe_cgroup_memory'
+```
+
+Делать: не рестартовать по кругу, если схема обогнала код (Deploy-scope trap).
+Аналитические джобы — на `analytics_engine`; если старый код ещё на проде —
+`docker compose restart backend` только после проверки, что это не alembic-голова.
+ClickHouse вторичен: можно `stop clickhouse` без влияния на витрину.
 
 Зелёный smoke = деплой принят. Красный = решение по rollback (`git reset --hard <prev>` + `pg_restore < backups/pre-deploy-*.sql.gz`).
 

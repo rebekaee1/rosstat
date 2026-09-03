@@ -226,3 +226,107 @@ def test_metrika_live_today_merge(monkeypatch):
     asyncio.run(admin_bi._merge_metrika_live_today(
         past, resolve_period("custom", "2026-01-01", "2026-01-07"), window_visits=[]))
     assert "metrika_live_today" not in past
+
+
+def test_retention_accepts_id_date_tuples():
+    """Инцидент 2026-09-03: retention больше не требует полные ORM-визиты."""
+    from datetime import date
+    from app.services.admin_bi import _retention
+
+    rows = [
+        ("a", date(2026, 8, 1)),
+        ("a", date(2026, 8, 3)),
+        ("b", date(2026, 8, 2)),
+    ]
+    out = _retention(rows)
+    assert out["unique_visitors"] == 2
+    assert out["returning_visitors"] == 1
+    assert out["returning_pct"] == 50.0
+
+
+def test_slices_meta_when_clickhouse_off(auth_client):
+    _register(auth_client, ADMIN_EMAIL)
+    r = auth_client.get("/api/v1/admin/bi/slices/meta")
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["available"] is False
+    assert "reason" in body
+
+
+def test_slices_query_503_when_clickhouse_off(auth_client):
+    """Вкладка «Срезы» не ходит в Postgres и не валит сайт: мягкая 503."""
+    _register(auth_client, ADMIN_EMAIL)
+    r = auth_client.get("/api/v1/admin/bi/slices?metric=sessions&dims=channel")
+    assert r.status_code == 503, r.text
+
+
+def test_slices_unknown_metric_422(auth_client):
+    _register(auth_client, ADMIN_EMAIL)
+    r = auth_client.get("/api/v1/admin/bi/slices?metric=not-a-metric")
+    # CH выключен → 503 раньше валидации метрики. Это честно: слой недоступен.
+    assert r.status_code in (422, 503)
+
+
+def test_dashboard_with_fat_metrika_json(auth_client, auth_env):
+    """Дашборд считает KPI/привлечение без загрузки полного raw_json в ORM."""
+    import asyncio
+
+    from app.models import RawMetrikaVisit
+    from app.services.analytics_period import as_period
+
+    _register(auth_client, ADMIN_EMAIL)
+    p = as_period(7)
+
+    async def _seed():
+        async with auth_env["session_maker"]() as db:
+            db.add(RawMetrikaVisit(
+                counter_id="107136069", visit_id="fat-1",
+                client_id_hash="c1", visit_date=p.end_date,
+                traffic_source="organic", duration_seconds=40,
+                start_url="https://forecasteconomy.com/indicator/cpi",
+                search_engine="yandex", search_phrase="инфляция",
+                goals_json={"goals": "[]"},
+                raw_json={
+                    "ym:s:deviceCategory": "1",
+                    "ym:s:browser": "chrome",
+                    "ym:s:pageViews": "3",
+                    "blob": "x" * 80_000,
+                },
+                row_hash="fat-1",
+            ))
+            await db.commit()
+
+    asyncio.run(_seed())
+    r = auth_client.get("/api/v1/admin/bi/dashboard?days=7")
+    assert r.status_code == 200, r.text
+    data = r.json()
+    assert data["acquisition"]["sources"].get("organic") == 1
+    assert data["metric_tree"]["north_star"]
+    assert sum(row["visits"] for row in data["kpi_daily"]) == 1
+    health = auth_client.get("/api/v1/health")
+    assert health.status_code == 200
+    assert health.json()["status"] == "ok"
+
+
+def test_dashboard_and_health_parallel(auth_client):
+    """Пока считается дашборд, public health отвечает 200 (sqlite: оба на одном движке теста)."""
+    import threading
+
+    _register(auth_client, ADMIN_EMAIL)
+    results = {}
+
+    def dash():
+        results["d"] = auth_client.get("/api/v1/admin/bi/dashboard?days=7")
+
+    def health():
+        results["h"] = auth_client.get("/api/v1/health")
+
+    t1 = threading.Thread(target=dash)
+    t2 = threading.Thread(target=health)
+    t1.start()
+    t2.start()
+    t1.join(timeout=30)
+    t2.join(timeout=30)
+    assert results["h"].status_code == 200
+    assert results["d"].status_code == 200
+    assert "metric_tree" in results["d"].json()

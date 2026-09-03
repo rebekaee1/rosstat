@@ -60,3 +60,24 @@ class YandexWebmasterClient:
         excluded_pages_count из summary (Н-24, аудит правдивости BI 2026-07-08)."""
         return await self.client.request(
             "GET", f"/v4/user/{user_id}/hosts/{host_id}/search-urls/events/samples/", params=params)
+
+    async def in_search_history(self, user_id: str, host_id: str, **params: Any) -> YandexResponse:
+        return await self.client.request(
+            "GET", f"/v4/user/{user_id}/hosts/{host_id}/search-urls/in-search/history/", params=params)
+
+    async def search_events_history(self, user_id: str, host_id: str, **params: Any) -> YandexResponse:
+        return await self.client.request(
+            "GET", f"/v4/user/{user_id}/hosts/{host_id}/search-urls/events/history/", params=params)
+
+    async def delete_user_sitemap(
+        self, user_id: str, host_id: str, sitemap_id: str, *, approved: bool = False
+    ) -> YandexResponse:
+        require_allowed_action(
+            "webmaster.sitemap.delete",
+            {"host": host_id, "sitemap_id": sitemap_id},
+            approved,
+        )
+        return await self.client.request(
+            "DELETE",
+            f"/v4/user/{user_id}/hosts/{host_id}/user-added-sitemaps/{sitemap_id}/",
+        )

@@ -1148,6 +1148,7 @@ async def world_compare_snapshot(
             "country_code": country.code,
             "country_slug": country.slug,
             "country_name": _country_display_name(country),
+            "indicator_code": indicator.code,
             "date": point_date.isoformat(),
             "value": round(value, 4),
             "unit": public_unit,

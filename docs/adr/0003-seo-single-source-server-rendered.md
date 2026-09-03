@@ -2,7 +2,7 @@
 
 **Status:** Accepted (в production на forecasteconomy.com).
 **Date:** 2026-05-07.
-**Last verified:** 2026-07-27 (SSR/SEO `/world`; см. Subsequent additions).
+**Last verified:** 2026-09-03 (статические sitemap + INDEX_POLICY).
 **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `SEO meta bundle` + «Asset-hash mismatch trap»).
 **Related:** [ADR-0002](0002-derived-always-reflects-source.md) (паттерн single-source-of-truth), [`../enterprise_resilience.md`](../enterprise_resilience.md) (asset-hash trap, CSP).
 **Code anchors:** `backend/app/services/seo_renderer.py`, `backend/app/services/seo_content.py`, `backend/app/api/seo_pages.py`, `frontend/nginx.conf` (location-блоки `/seo/*` и `/__spa-index.html`).
@@ -191,6 +191,13 @@ Backend в `seo_renderer.get_app_assets()` ходит на
 3. **Sitemap** — секции `world` (хаб+страны) и `world-indicators-{N}` чанками 10k; только `is_listed=true`; lastmod от последней точки.
 4. **nginx** — `/world*` с SPA на SSR-прокси (`/seo/world*`), named captures; код индикатора `[a-z0-9_.-]`.
 5. Тесты: `tests/test_seo_world.py`.
+
+**2026-09-03 — статические sitemap + INDEX_POLICY.** Робот больше не собирает
+чанки из БД на запросе (504 на `world-years-*`). Ночной job пишет
+`sitemap-{name}.xml.gz` в `settings.sitemap_dir`; nginx `try_files` +
+`if_modified_since off`. Политика «спрос × содержание» — `index_policy.py`
+(одна точка для sitemap и meta robots). До cutover `ru.` отдаёт пустой
+sitemap-индекс и canonical на apex. `?mode=` снимается с canonical.
 
 ## Out of scope (future work)
 

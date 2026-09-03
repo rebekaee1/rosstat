@@ -806,6 +806,7 @@ def test_world_compare_contract_and_snapshot(world_client):
     by_slug = {row["country_slug"]: row for row in payload["items"]}
     assert by_slug["germany"]["value"] == 11.43
     assert by_slug["germany"]["date"] == "2025-06-01"
+    assert by_slug["germany"]["indicator_code"] == "de-prc_hicp_midx-cp00-i15"
 
     map_series = world_client.get("/api/v1/world/compare/map-series/hicp-index")
     assert map_series.status_code == 200

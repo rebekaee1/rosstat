@@ -28,7 +28,7 @@ import httpx
 from sqlalchemy import select
 
 from app.config import settings
-from app.database import async_session
+from app.database import analytics_session
 from app.models import Hypothesis
 from app.services import pulse
 from app.services.alerting import digest_recipients
@@ -97,7 +97,7 @@ _HYP_SEPARATOR = "---HYPOTHESES---"
 
 async def _open_hypotheses() -> list[dict]:
     """Открытые гипотезы для контекста модели (id нужен для пересмотра)."""
-    async with async_session() as db:
+    async with analytics_session() as db:
         rows = (await db.execute(
             select(Hypothesis).where(Hypothesis.verdict.is_(None))
             .order_by(Hypothesis.created_at).limit(30)
@@ -112,7 +112,7 @@ async def _apply_hypothesis_updates(updates: list[dict]) -> int:
     """Изменения гипотез от LLM → таблица hypotheses. Возвращает число применённых."""
     applied = 0
     now = datetime.now(timezone.utc).replace(tzinfo=None)
-    async with async_session() as db:
+    async with analytics_session() as db:
         for upd in updates[:5]:
             if not isinstance(upd, dict) or not str(upd.get("statement") or "").strip():
                 continue

@@ -5,60 +5,60 @@
 ## Что есть на сайте
 
 - **100+ макроэкономических индикаторов** России в 12 категориях: цены, процентные ставки, валюты, деньги и бюджет, биржевые индексы, товарные рынки, рынок труда, ВВП и рост, население, внешняя торговля, бизнес и инвестиции, наука и образование.
-- **495 региональных показателей × 85 регионов России** — население, зарплаты, цены, жильё, промышленность, преступность и др., с 1990 года: __PUBLIC_ORIGIN__/regions
+- **495 региональных показателей × 85 регионов России** — население, зарплаты, цены, жильё, промышленность, преступность и др., с 1990 года: __PUBLIC_ORIGIN__/russia/region
 - **Доступная статистика стран** — страновые ряды из официальных международных источников (раздел «Мировая экономика»): __PUBLIC_ORIGIN__/world
-- **Показатели на сегодня** — актуальные значения курсов, ставки, инфляции, цен на топливо и золото: __PUBLIC_ORIGIN__/today
-- **Рейтинги регионов** по каждому показателю (лидеры/аутсайдеры, сравнение со средним по России): __PUBLIC_ORIGIN__/region-rating/{code}
-- **Сравнение регионов** попарно по ключевым показателям: __PUBLIC_ORIGIN__/region-vs/{a}-vs-{b}
+- **Показатели на сегодня** — актуальные значения курсов, ставки, инфляции, цен на топливо и золото: __PUBLIC_ORIGIN__/russia/today
+- **Рейтинги регионов** по каждому показателю (лидеры/аутсайдеры, сравнение со средним по России): __PUBLIC_ORIGIN__/russia/region-rating/{code}
+- **Сравнение регионов** попарно по ключевым показателям: __PUBLIC_ORIGIN__/russia/region-vs/{a}-vs-{b}
 - **Прогнозы** по ключевым макропоказателям (ИПЦ, курсы, ключевая ставка, безработица) — собственные модели, пересчёт после каждого релиза источника; методология: __PUBLIC_ORIGIN__/methodology
 - **Калькулятор инфляции** — пересчёт суммы между двумя датами через накопленный ИПЦ.
 - **Сравнение индикаторов** — сопоставление временных рядов, включая региональные и страновые.
-- **Календарь публикаций** — официальные даты релизов Росстата, ЦБ, Минфина, помесячные страницы /calendar/{год}/{месяц}.
+- **Календарь публикаций** — официальные даты релизов Росстата, ЦБ, Минфина, помесячные страницы /russia/calendar/{год}/{месяц}.
 - **Возрастная пирамида** — структура населения России с 1990 года.
 - **Embed-виджеты** для встраивания графиков на сторонние сайты.
 
 ## Категории и ключевые URL
 
 - Главная: __PUBLIC_ORIGIN__/
-- Цены и инфляция: __PUBLIC_ORIGIN__/category/prices
-- Процентные ставки: __PUBLIC_ORIGIN__/category/rates
-- Валюты: __PUBLIC_ORIGIN__/category/currencies
-- Деньги и бюджет: __PUBLIC_ORIGIN__/category/finance
-- Биржевые индексы: __PUBLIC_ORIGIN__/category/indices
-- Товарные рынки: __PUBLIC_ORIGIN__/category/commodities
-- Рынок труда: __PUBLIC_ORIGIN__/category/labor
-- ВВП и рост: __PUBLIC_ORIGIN__/category/gdp
-- Население: __PUBLIC_ORIGIN__/category/population
-- Внешняя торговля: __PUBLIC_ORIGIN__/category/trade
-- Бизнес и инвестиции: __PUBLIC_ORIGIN__/category/business
-- Наука и образование: __PUBLIC_ORIGIN__/category/science
-- Регионы России: __PUBLIC_ORIGIN__/regions
+- Цены и инфляция: __PUBLIC_ORIGIN__/russia/category/prices
+- Процентные ставки: __PUBLIC_ORIGIN__/russia/category/rates
+- Валюты: __PUBLIC_ORIGIN__/russia/category/currencies
+- Деньги и бюджет: __PUBLIC_ORIGIN__/russia/category/finance
+- Биржевые индексы: __PUBLIC_ORIGIN__/russia/category/indices
+- Товарные рынки: __PUBLIC_ORIGIN__/russia/category/commodities
+- Рынок труда: __PUBLIC_ORIGIN__/russia/category/labor
+- ВВП и рост: __PUBLIC_ORIGIN__/russia/category/gdp
+- Население: __PUBLIC_ORIGIN__/russia/category/population
+- Внешняя торговля: __PUBLIC_ORIGIN__/russia/category/trade
+- Бизнес и инвестиции: __PUBLIC_ORIGIN__/russia/category/business
+- Наука и образование: __PUBLIC_ORIGIN__/russia/category/science
+- Регионы России: __PUBLIC_ORIGIN__/russia/region
 - Мировая экономика: __PUBLIC_ORIGIN__/world
 
 ## Топ-страницы (наиболее востребованные)
 
-- Экономика России сегодня (сводка): __PUBLIC_ORIGIN__/today
-- Курс доллара сегодня: __PUBLIC_ORIGIN__/today/usd-rub
-- Ключевая ставка ЦБ сегодня: __PUBLIC_ORIGIN__/today/key-rate
-- Инфляция в России сейчас: __PUBLIC_ORIGIN__/today/cpi
-- Индекс потребительских цен (ИПЦ): __PUBLIC_ORIGIN__/indicator/cpi
-- Ключевая ставка ЦБ РФ: __PUBLIC_ORIGIN__/indicator/key-rate
-- Курс доллара к рублю (USD/RUB): __PUBLIC_ORIGIN__/indicator/usd-rub
-- Курс евро к рублю (EUR/RUB): __PUBLIC_ORIGIN__/indicator/eur-rub
-- Уровень безработицы: __PUBLIC_ORIGIN__/indicator/unemployment
-- ВВП России (номинальный): __PUBLIC_ORIGIN__/indicator/gdp-nominal
-- Средняя заработная плата: __PUBLIC_ORIGIN__/indicator/wages-nominal
-- Численность населения: __PUBLIC_ORIGIN__/indicator/population
-- Индекс МосБиржи: __PUBLIC_ORIGIN__/indicator/imoex
-- Цены на бензин: __PUBLIC_ORIGIN__/indicator/fuel-ai95
-- Рейтинг регионов по населению: __PUBLIC_ORIGIN__/region-rating/chislennost-naseleniya
+- Экономика России сегодня (сводка): __PUBLIC_ORIGIN__/russia/today
+- Курс доллара сегодня: __PUBLIC_ORIGIN__/russia/today/usd-rub
+- Ключевая ставка ЦБ сегодня: __PUBLIC_ORIGIN__/russia/today/key-rate
+- Инфляция в России сейчас: __PUBLIC_ORIGIN__/russia/today/cpi
+- Индекс потребительских цен (ИПЦ): __PUBLIC_ORIGIN__/russia/indicator/cpi
+- Ключевая ставка ЦБ РФ: __PUBLIC_ORIGIN__/russia/indicator/key-rate
+- Курс доллара к рублю (USD/RUB): __PUBLIC_ORIGIN__/russia/indicator/usd-rub
+- Курс евро к рублю (EUR/RUB): __PUBLIC_ORIGIN__/russia/indicator/eur-rub
+- Уровень безработицы: __PUBLIC_ORIGIN__/russia/indicator/unemployment
+- ВВП России (номинальный): __PUBLIC_ORIGIN__/russia/indicator/gdp-nominal
+- Средняя заработная плата: __PUBLIC_ORIGIN__/russia/indicator/wages-nominal
+- Численность населения: __PUBLIC_ORIGIN__/russia/indicator/population
+- Индекс МосБиржи: __PUBLIC_ORIGIN__/russia/indicator/imoex
+- Цены на бензин: __PUBLIC_ORIGIN__/russia/indicator/fuel-ai95
+- Рейтинг регионов по населению: __PUBLIC_ORIGIN__/russia/region-rating/chislennost-naseleniya
 
 ## Структура страниц (для программного доступа)
 
-- Карточка макроиндикатора: /indicator/{code} — график, история с первого доступного года, режимы представления, прогноз, методология, источник.
-- Годовая сводка: /indicator/{code}/{year} — значения показателя за конкретный год.
-- Регион: /region/{slug} — профиль региона со всеми показателями.
-- Показатель региона: /region/{slug}/{code} — ряд по годам, сравнение со средним по России.
+- Карточка макроиндикатора: /russia/indicator/{code} — график, история с первого доступного года, режимы представления, прогноз, методология, источник.
+- Годовая сводка: /russia/indicator/{code}/{year} — значения показателя за конкретный год.
+- Регион: /russia/region/{slug} — профиль региона со всеми показателями.
+- Показатель региона: /russia/region/{slug}/{code} — ряд по годам, сравнение со средним по России.
 - Страна / мировой показатель: /world/… — доступные страновые ряды из официальных источников.
 - На каждой странице указаны: последняя дата данных, единица измерения, официальный источник.
 

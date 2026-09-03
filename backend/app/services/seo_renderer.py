@@ -162,11 +162,11 @@ def _format_number(value) -> str:
     return format_number_ru(value, locale=get_locale())
 
 
-def _absolute(path: str) -> str:
-    """Absolute URL on the request host (canonical / JSON-LD url)."""
-    from app.services.locale import get_request_origin
+def _absolute(path: str, *, canonical: bool = False) -> str:
+    """Absolute URL. Canonical links use apex until language cutover."""
+    from app.services.locale import canonical_public_origin, get_request_origin
 
-    origin = get_request_origin()
+    origin = canonical_public_origin() if canonical else get_request_origin()
     if path == "/":
         return origin
     return f"{origin}{path}"
@@ -332,6 +332,54 @@ def _json_script(data: dict) -> str:
     )
 
 
+def _json_application_script(*, element_id: str, data: dict) -> str:
+    """Компактный JSON для SPA (в extra_head, вне #root — createRoot не сотрёт)."""
+    raw = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+    safe = (
+        raw.replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
+    return (
+        f'<script type="application/json" id="{escape(element_id)}">'
+        f"{safe}</script>"
+    )
+
+
+def _home_bootstrap_head(flagships: list) -> str:
+    """SSR-bootstrap главной: flagships, которые render_home_html уже считает.
+
+    QueryClient читает это как стартовый каталог listed-индикаторов (сразу
+    invalidate — полный /indicators доедет, staleTime 5 мин не заморозит срез).
+    Map-series сюда не кладём: слишком тяжёлый.
+    """
+    from app.services.i18n_display import public_name
+    from app.services.locale import get_locale
+    from app.services.seo_i18n import localize_category_name
+
+    locale = get_locale()
+    indicators = []
+    for ind in flagships:
+        name_en = (getattr(ind, "name_en", None) or "").strip() or None
+        indicators.append({
+            "code": ind.code,
+            "name": public_name(getattr(ind, "name", None), name_en),
+            "name_en": name_en,
+            "unit": getattr(ind, "unit", None) or "",
+            "category": localize_category_name(getattr(ind, "category", None)),
+            "category_ru": getattr(ind, "category", None),
+            "frequency": getattr(ind, "frequency", None),
+            "is_active": bool(getattr(ind, "is_active", True)),
+            "is_listed": bool(getattr(ind, "is_listed", True)),
+        })
+    return _json_application_script(
+        element_id="fe-bootstrap",
+        data={"locale": locale, "indicators": indicators},
+    )
+
+
 def _breadcrumbs(items: list[tuple[str, str]]) -> dict:
     return {
         "@context": "https://schema.org",
@@ -493,9 +541,10 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-honeylink{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .seo-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .seo-scroll table{min-width:26rem}
-/* SPA-SSR: пока грузится module-bundle, не показывать SEO-тело как «сайт».
-   Класс fe-js ставит inline-скрипт до paint; боты без JS видят контент как раньше.
-   React createRoot затем заменяет #root целиком. */
+/* SPA-SSR: клип SEO-тела только ПОСЛЕ первого React commit (класс fe-js
+   ставит main.jsx через window.__feRevealSpa). Иначе на 4G секунды пустого
+   #root: inline hide срабатывал до загрузки /assets/*, createRoot ещё нет.
+   Боты без JS класс не ставят — видят тело как раньше. */
 html.fe-js #root > .seo-page,
 html.fe-js #root > .seo-section,
 html.fe-js #root > .seo-platform-nav{
@@ -503,12 +552,15 @@ position:absolute!important;width:1px!important;height:1px!important;padding:0!i
 }
 </style>"""
 
-# Мгновенно прячет prerender для браузеров с JS (до загрузки /assets/*.js).
-# Без этого при медленном/заблокированном bundle пользователь видит SEO-HTML
-# и воспринимает его как сломанный сайт (демо/туннель, корпоративные сети).
+# Не клипаем SEO при разборе HTML: на 4G bundle едет секунды, и слепой fe-js
+# оставлял пустой #root. Inline только объявляет __feRevealSpa; main.jsx
+# вызывает его после createRoot commit (requestAnimationFrame). Если JS так
+# и не приехал — посетитель остаётся на SSR (H1, ссылки), а не на белом экране.
 _SPA_SSR_HIDE_SCRIPT = (
     '<script>'
+    'window.__feRevealSpa=function(){'
     'document.documentElement.classList.add("fe-js");'
+    '};'
     '</script>'
 )
 
@@ -677,10 +729,22 @@ YANDEX_VERIFICATION_CODES = (
 
 
 def _yandex_verification_meta() -> str:
-    return "\n".join(
+    tags = [
         f'<meta name="yandex-verification" content="{code}">'
         for code in YANDEX_VERIFICATION_CODES
-    )
+    ]
+    from app.config import settings
+    if settings.google_site_verification:
+        tags.append(
+            f'<meta name="google-site-verification" content="'
+            f'{escape(settings.google_site_verification)}">'
+        )
+    if settings.bing_site_verification:
+        tags.append(
+            f'<meta name="msvalidate.01" content="'
+            f'{escape(settings.bing_site_verification)}">'
+        )
+    return "\n".join(tags)
 
 
 async def build_document(
@@ -702,24 +766,22 @@ async def build_document(
     landing'и: у SPA-роутера нет такого маршрута, гидратация показала бы 404).
     """
     from app.services.locale import get_locale, html_lang, is_preview_locale, og_locale
+    from app.services.index_policy import robots_for_path, strip_mode_query
+
+    canonical_path = strip_mode_query(canonical_path)
+    if is_preview_locale():
+        robots_content = "noindex, follow"
+    else:
+        robots_content = robots_for_path(canonical_path)
 
     assets = await get_app_assets()
-    url = _absolute(canonical_path)
+    url = _absolute(canonical_path, canonical=True)
     safe_title = escape(title)
     safe_desc = escape(truncate_meta(clean_text(description), 300))
     safe_keywords = escape(clean_text(keywords or _default_keywords())[:400])
     structured = "\n".join(_json_script(item) for item in (json_ld or []))
     extras = extra_head or ""
     hreflang = _hreflang_head(canonical_path)
-    # Preview-локаль (?preview_locale=en до кутовера) — временная поверхность:
-    # боты не должны засовывать её в индекс (ссылки в noindex-странице
-    # по-прежнему обходятся, canonical остаётся у «настоящей» страницы).
-    robots_content = (
-        "noindex, follow" if is_preview_locale() else (
-            "index, follow, max-snippet:-1, max-image-preview:large, "
-            "max-video-preview:-1"
-        )
-    )
     css_preload = _css_preload(assets.head_links)
     og_url = escape(og_image or _absolute("/og-image-v2.png"))
     body_scripts = assets.body_scripts if include_app else ""
@@ -1125,6 +1187,7 @@ async def render_home_html(db: AsyncSession) -> str:
         body=body,
         json_ld=json_ld,
         keywords=page.keywords or None,
+        extra_head=_home_bootstrap_head(flagships),
     )
     return html
 
@@ -1443,8 +1506,7 @@ async def render_indicator_html(
         locale=loc,
     )
     canonical_path = paths.russia_indicator(indicator.code)
-    if resolved_mode and resolved_mode.mode != family.default_mode:
-        canonical_path = f"{canonical_path}?mode={resolved_mode.mode}"
+    # ?mode= не каноничен: INDEX_POLICY. Canonical всегда базовый URL карточки.
     # OG-картинка и видимый график — код карточки (URL), не sibling-режима:
     # /og/{base}.png всегда существует; /og/{base}-yoy.png на проде часто 404
     # (unlisted derived ещё без превью). Смысл режима остаётся в title/Dataset.
@@ -1570,7 +1632,7 @@ async def indicator_data_years(db: AsyncSession, indicator_id: int) -> list[int]
         select(year_expr.label("y"), func.count(IndicatorData.id))
         .where(IndicatorData.indicator_id == indicator_id)
         .group_by(year_expr)
-        .having(func.count(IndicatorData.id) >= YEAR_LANDING_MIN_POINTS)
+        .having(func.count(IndicatorData.id) >= 1)
         .order_by(year_expr)
     )
     return [int(y) for y, _cnt in result.all()]
@@ -1895,8 +1957,8 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
     по соседним годам, ссылка на живую карточку. Под long-tail запросы вида
     «инфляция в 2024 году», «население России 2025».
 
-    Порог — YEAR_LANDING_MIN_POINTS (согласован с sitemap). При одной точке
-    за год страница обогащается YoY, положением в истории и таблицей соседних лет.
+    Порог sitemap — YEAR_LANDING_MIN_POINTS для не-годовых рядов;
+    годовой ряд индексируется с одной точкой. Страница живая при ≥1 точке.
     """
     q = await db.execute(
         select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True))
@@ -1914,7 +1976,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         .order_by(IndicatorData.date)
     )
     rows = list(rows_q.scalars().all())
-    if len(rows) < YEAR_LANDING_MIN_POINTS:
+    if not rows:
         return 404, "Not found"
 
     years = await indicator_data_years(db, indicator.id)

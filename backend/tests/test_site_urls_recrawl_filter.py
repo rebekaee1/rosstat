@@ -78,3 +78,7 @@ class TestRecrawlEligible:
             "/compare?codes=cpi,key-rate",
             "/indicator/inflation",
         ]
+
+    def test_honeypot_is_not_recrawl_eligible(self):
+        assert is_recrawl_eligible("/__honeypot__/trap") is False
+        assert is_recrawl_eligible("/russia/util/links-exchange") is False

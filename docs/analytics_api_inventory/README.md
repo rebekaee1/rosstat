@@ -22,7 +22,8 @@ and `analytics-smoke.py` exits with `enabled=false`.
 | `metrika_logs.md` | `app/services/yandex_metrika_logs.py` | `partial` — `list_requests`, `create_request`, `request_info`, `download_part`, `clean_request`. Missing: fields catalog. |
 | `metrika_management.md` | `app/services/yandex_metrika_management.py` | `partial` — read of counters/goals/filters/grants + goal create/update/delete behind approval. Missing: counter writes, filter writes, segments/labels/notes/direct-links. |
 | `metrika_reporting.md` | `app/services/yandex_metrika_reporting.py` | `implemented` — все JSON-варианты `table` / `bytime` / `drilldown` / `comparison` / `comparison_drilldown`. CSV-варианты пока только через ручной HTTP. |
-| `yandex_webmaster.md` | `app/services/yandex_webmaster_client.py` | `partial` — host info/summary, diagnostics, sitemaps read, search queries popular, indexing history, recrawl queue + submit, internal broken links. Missing: important URLs, owners, SQI history, sitemap add/delete, search-URLs/events, external links. |
+| `yandex_webmaster.md` | `app/services/yandex_webmaster_client.py` | `partial` — host/summary, diagnostics, sitemaps read+delete, search queries, indexing + in-search/events history, recrawl. Missing: important URLs, owners, SQI, sitemap add, external links. |
+| `google_search_console.md` | `app/services/gsc_client.py` | `partial` — Search Analytics + verification meta. Domain property — owner. |
 
 Activation cheat-sheet:
 

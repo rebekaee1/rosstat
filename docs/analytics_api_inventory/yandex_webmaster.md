@@ -1,16 +1,14 @@
 # Yandex Webmaster API Inventory
 
-**Last verified:** 2026-07-07 (включён ежедневный синк популярных запросов).
+**Last verified:** 2026-09-03 (ежедневный синк in-search / indexing / events / sitemaps → `webmaster_indexing_daily`).
 **Implementation status:** `partial` — `app/services/yandex_webmaster_client.py`.
-Реализовано: `user`, `hosts`, `host`, `summary`, `diagnostics`, `sitemaps` (read),
-`search_queries_popular` (с 2026-07-07 — ежедневный синк 08:40 МСК в
-`webmaster_search_queries`: окно 7 дней по дню, идемпотентно;
-`analytics_backfill.backfill_webmaster_search_queries` — кормит BI «Спрос и SEO»),
+Реализовано: `user`, `hosts`, `host`, `summary`, `diagnostics`, `sitemaps` (read + user-added delete),
+`search_queries_popular` (ежедневный синк 08:40 МСК в `webmaster_search_queries`),
 `recrawl_queue` / `recrawl_quota` / `submit_recrawl`,
-`indexing_history`, `links_internal_broken_samples`. Не реализовано:
-important-urls (+ history), owners, verification (read+start), sqi_history,
-search-urls/in-search и search-urls/events (history+samples), links/external,
-sitemap add/delete (`POST/DELETE user-added-sitemaps`). Эти строки таблицы
+`indexing_history`, `in_search_history`, `search_events_history` / `search_events_samples`,
+`links_internal_broken_samples`. Ежедневный снимок: `webmaster_indexing_daily_job` 08:50 МСК.
+Не реализовано: important-urls (+ history), owners, verification (read+start), sqi_history,
+links/external, sitemap add (`POST user-added-sitemaps`). Эти строки таблицы
 ниже — целевой контракт.
 
 Base URL: `https://api.webmaster.yandex.net`.

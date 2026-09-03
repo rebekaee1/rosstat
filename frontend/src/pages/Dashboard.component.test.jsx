@@ -2,6 +2,7 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import Dashboard from './Dashboard';
 import { renderPage, mockApiGet } from '../test/renderPage';
+import api from '../lib/api';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -79,5 +80,18 @@ describe('Dashboard', () => {
     expect(screen.queryByText('Инструменты')).toBeNull();
     expect(screen.queryByRole('navigation', { name: 'Переходы по разделам' })).toBeNull();
     expect(screen.queryByText('Россия сегодня')).toBeNull();
+  });
+
+  it('рисует H1 и поиск до ответа indicators / world / map-series', () => {
+    vi.spyOn(api, 'get').mockReturnValue(new Promise(() => {}));
+
+    renderPage(<Dashboard />, { path: '/', route: '/' });
+
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
+      'Официальные макроэкономические индикаторы в одной рабочей среде',
+    );
+    expect(screen.getByText('Бесплатная аналитическая платформа экономических данных')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Открыть поиск индикаторов' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
   });
 });

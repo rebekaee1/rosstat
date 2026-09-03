@@ -15,6 +15,7 @@ registry) и сверяет с каждым вхождением известн�
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -88,6 +89,20 @@ def main() -> int:
         return 0
 
     errors: list[str] = []
+    inv = ROOT / "docs/site-inventory.json"
+    if not inv.is_file():
+        errors.append("docs/site-inventory.json отсутствует")
+    else:
+        try:
+            data = json.loads(inv.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            errors.append(f"docs/site-inventory.json: не JSON ({exc})")
+            data = {}
+        if data and ("as_of" not in data or "sitemap_urls" not in data):
+            errors.append(
+                "docs/site-inventory.json: нужны ключи as_of и sitemap_urls"
+            )
+
     for rel in DOCS:
         path = ROOT / rel
         for lineno, line in enumerate(

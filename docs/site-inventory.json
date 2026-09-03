@@ -1,0 +1,9 @@
+{
+  "as_of": "2026-09-03",
+  "source": "Webmaster API + plan diagnosis (до ночной статической сборки на проде)",
+  "note": "Живые цифры после деплоя — GET /sitemap-stats.json. Хроника AGENTS.md не источник. Обновляет scripts/sitemap-inventory.py.",
+  "sitemap_urls": 1640000,
+  "in_search_apex": 8464,
+  "crawl_apex_per_day": 764,
+  "organic_yandex_share": 0.88
+}

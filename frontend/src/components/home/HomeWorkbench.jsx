@@ -10,6 +10,7 @@ import {
   mapSelectHref,
   resolveActiveMapYear,
   resolveHomeConcept,
+  resolveHomeMapSeries,
   withRussiaOnHomeMap,
   worldRankingFromYearItems,
   worldYearItems,
@@ -18,6 +19,7 @@ import {
   formatWorldValue,
   ratingHref,
   useWorldCountries,
+  useWorldCompareSnapshot,
   useWorldMapSeries,
 } from '../../lib/worldApi';
 import { SkeletonBox } from '../Skeleton';
@@ -49,23 +51,25 @@ export default function HomeWorkbench({ ratingConcepts }) {
     [ratingConcepts?.data],
   );
   const concept = resolveHomeConcept(ratingConcepts?.data?.concepts || [], picked || undefined);
+  const snapshot = useWorldCompareSnapshot(concept);
   const mapSeries = useWorldMapSeries(concept);
+  const seriesPayload = resolveHomeMapSeries(mapSeries.data, snapshot.data);
   const fullRatingHref = ratingHref(concept, ratingConcepts?.data?.concepts);
 
-  const years = mapSeries.data?.years || [];
-  const activeYear = resolveActiveMapYear(years, mapYear, mapSeries.data?.values_by_year);
+  const years = seriesPayload?.years || [];
+  const activeYear = resolveActiveMapYear(years, mapYear, seriesPayload?.values_by_year);
   const baseYearItems = useMemo(
-    () => worldYearItems(mapSeries.data, activeYear),
-    [mapSeries.data, activeYear],
+    () => worldYearItems(seriesPayload, activeYear),
+    [seriesPayload, activeYear],
   );
 
   const { countries, yearItems, russiaIndicatorCode } = useMemo(
     () => withRussiaOnHomeMap({
       countries: countriesQ.data?.countries || [],
       yearItems: baseYearItems,
-      mapSeries: mapSeries.data,
+      mapSeries: seriesPayload,
     }),
-    [countriesQ.data, baseYearItems, mapSeries.data],
+    [countriesQ.data, baseYearItems, seriesPayload],
   );
 
   const sortDirection = defaultSortForConcept(concept, ratingConcepts?.data?.concepts);
@@ -73,11 +77,11 @@ export default function HomeWorkbench({ ratingConcepts }) {
     () => worldRankingFromYearItems(yearItems, HOME_RATING_LIMIT, sortDirection),
     [yearItems, sortDirection],
   );
-  const conceptUnit = mapSeries.data?.concept?.unit || '';
+  const conceptUnit = seriesPayload?.concept?.unit || '';
   const conceptName = homeConceptLabel(
     concept,
     t,
-    mapSeries.data?.concept?.name || t('home.map.metricFallback'),
+    seriesPayload?.concept?.name || t('home.map.metricFallback'),
   );
   const valuesByCode = useMemo(
     () => new Map(Object.entries(yearItems).map(([code, item]) => [code, item.value])),
@@ -85,7 +89,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
   );
   const detailsByCode = useMemo(() => new Map(Object.entries(yearItems)), [yearItems]);
   const benchmark = activeYear
-    ? mapSeries.data?.benchmark_by_year?.[String(activeYear)]
+    ? seriesPayload?.benchmark_by_year?.[String(activeYear)]
     : null;
 
   const onSelectCountry = (country, detail) => {
@@ -168,14 +172,15 @@ export default function HomeWorkbench({ ratingConcepts }) {
           </div>
         </div>
 
-        {(countriesQ.isError || mapSeries.isError) && (
+        {(mapSeries.isError && snapshot.isError) && (
           <ApiRetryBanner
             className="mb-4"
             onRetry={() => {
               countriesQ.refetch();
+              snapshot.refetch();
               mapSeries.refetch();
             }}
-            isFetching={countriesQ.isFetching || mapSeries.isFetching}
+            isFetching={countriesQ.isFetching || snapshot.isFetching || mapSeries.isFetching}
           >
             {t('home.map.loadError')}
           </ApiRetryBanner>
@@ -187,34 +192,30 @@ export default function HomeWorkbench({ ratingConcepts }) {
         */}
         <div className="relative">
           <div className="min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:ml-[calc(18rem+1.25rem)]">
-            {(countriesQ.isLoading || mapSeries.isLoading) ? (
-              <SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />
-            ) : (
-              <Suspense fallback={<SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />}>
-                <WorldMap
-                  countries={countries}
-                  valuesByCode={valuesByCode}
-                  detailsByCode={detailsByCode}
-                  unit={conceptUnit}
-                  metricName={conceptName}
-                  periodLabel={activeYear ? String(activeYear) : ''}
-                  colorMode={conceptColorMode(concept)}
-                  colorDirection={sortDirection}
-                  defaultScope="world"
-                  onSelect={onSelectCountry}
-                />
-                {years.length > 1 && activeYear != null && (
-                  <div className="mt-3 px-0.5 sm:mt-4 sm:px-1">
-                    <MapTimeline
-                      years={years}
-                      year={activeYear}
-                      onYearChange={setMapYear}
-                      metric={`home-world:${concept}`}
-                    />
-                  </div>
-                )}
-              </Suspense>
-            )}
+            <Suspense fallback={<SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />}>
+              <WorldMap
+                countries={countries}
+                valuesByCode={valuesByCode}
+                detailsByCode={detailsByCode}
+                unit={conceptUnit}
+                metricName={conceptName}
+                periodLabel={activeYear ? String(activeYear) : ''}
+                colorMode={conceptColorMode(concept)}
+                colorDirection={sortDirection}
+                defaultScope="world"
+                onSelect={onSelectCountry}
+              />
+              {years.length > 1 && activeYear != null && (
+                <div className="mt-3 px-0.5 sm:mt-4 sm:px-1">
+                  <MapTimeline
+                    years={years}
+                    year={activeYear}
+                    onYearChange={setMapYear}
+                    metric={`home-world:${concept}`}
+                  />
+                </div>
+              )}
+            </Suspense>
           </div>
 
           <div className="relative z-10 mt-4 flex max-h-[22rem] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:max-h-none lg:w-[18rem]">

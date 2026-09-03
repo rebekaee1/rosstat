@@ -108,8 +108,11 @@ echo "==> anti-scrape: каталог логов nginx для fail2ban (uid 101 
 install -d -m 0755 /var/log/rosstat-nginx
 chown 101:101 /var/log/rosstat-nginx
 
-echo "==> docker compose up -d"
-docker compose up -d frontend backend
+echo "==> docker compose up -d (все сервисы; тома postgres/redis-state не трогаем)"
+# Не `down -v` и не `--renew-anon-volumes`: postgres_data и redis_state_data
+# держат БД пользователей и сессии. Пересоздаются только сервисы, чей
+# compose-конфиг изменился (лимиты backend/ClickHouse, том sitemap).
+docker compose up -d
 
 echo "==> waiting for readiness (до 300s: миграции + seed)"
 ready=""
@@ -132,7 +135,12 @@ for _ in $(seq 1 24); do
   sleep 5
 done
 [ -n "$fe_ok" ] || { echo "FAIL: frontend не стал healthy за 120s"; docker compose logs frontend --tail=50; rollback; }
-docker compose ps --format 'table {{.Name}}\t{{.Status}}'
+
+echo "==> cache Redis DB 0 FLUSHDB (SSR/asset-hash); redis-state и DB 1 не трогаем"
+REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env | cut -d= -f2- | tr -d '\"' | tr -d "'")"
+docker compose exec -T redis redis-cli -a "${REDIS_PASSWORD:-changeme}" -n 0 FLUSHDB >/dev/null \
+  || { echo "FAIL: не удалось сбросить кэш Redis DB 0"; rollback; }
+
 docker compose ps --format 'table {{.Name}}\t{{.Status}}'
 
 # ── 5. Расширенный smoke (О-6) ─────────────────────────────────────────
@@ -182,7 +190,7 @@ https_probe() {
 for host in forecasteconomy.com ru.forecasteconomy.com; do
   https_probe "https://${host}/api/v1/health" "" \
     || { echo "FAIL: HTTPS smoke ${host}"; rollback; }
-  https_probe "https://${host}/russia/indicator/cpi" "https://${host}/russia/indicator/cpi" \
+  https_probe "https://${host}/russia/indicator/cpi" "https://forecasteconomy.com/russia/indicator/cpi" \
     || { echo "FAIL: canonical/SSR smoke ${host}"; rollback; }
 done
 # Гейт-скрипту нужны httpx/bs4: берём выделенный venv на хосте (вне репозитория,
@@ -197,6 +205,32 @@ done
   --ru-origin=https://ru.forecasteconomy.com \
   --en-origin=https://forecasteconomy.com \
   || { echo "FAIL: dual-host release gate"; rollback; }
+
+# ── 6b. 15-минутный post-deploy watch (инцидент 2026-09-03: OOM после smoke) ──
+echo "==> post-deploy watch 15 min"
+WATCH_FAIL=0
+for i in $(seq 1 15); do
+  TTFB=$(curl -o /dev/null -s -w '%{time_starttransfer}' -m 8 -A 'YandexBot/3.0' https://forecasteconomy.com/ || echo 99)
+  READY=$(curl -sf -m 5 http://127.0.0.1:8000/api/v1/health/ready | grep -c '"status": "ok"' || true)
+  OOM=$(docker inspect rosstat-backend-1 --format '{{.State.OOMKilled}}' 2>/dev/null || echo unknown)
+  MEM=$(docker stats --no-stream --format '{{.MemUsage}}' rosstat-backend-1 2>/dev/null || echo n/a)
+  echo "    min ${i}: ttfb=${TTFB}s ready=${READY} oom=${OOM} mem=${MEM}"
+  python3 - "${TTFB}" <<'PY' || WATCH_FAIL=1
+import sys
+try:
+    t = float(sys.argv[1])
+except ValueError:
+    sys.exit(1)
+sys.exit(0 if t < 5 else 1)
+PY
+  if [ "${READY}" != "1" ]; then WATCH_FAIL=1; fi
+  if [ "${OOM}" = "true" ]; then WATCH_FAIL=1; fi
+  if [ "${WATCH_FAIL}" = "1" ]; then
+    echo "FAIL: post-deploy watch"; rollback; exit 1
+  fi
+  sleep 60
+done
+echo "    watch ok"
 
 # ── 7. Чистка старых версионированных образов (держим 3 последних) ────
 docker images 'rosstat-backend' --format '{{.Tag}}' | grep -v '^latest$' | tail -n +4 \

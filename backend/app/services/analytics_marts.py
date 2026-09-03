@@ -17,11 +17,12 @@ import json
 import logging
 import re
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import load_only
 
 from app.data.bi_targets import NORTH_STAR_MILESTONES, TARGETS, next_milestone, status_for
 from app.models import (
@@ -141,6 +142,68 @@ def visit_is_robot(v: RawMetrikaVisit) -> bool:
     старые визиты до 2026-07-08) НЕ означает «не робот», означает «неизвестно»;
     вызывающий код должен это не путать с явным False."""
     return visit_field(v, "ym:s:isRobotPro") == "1"
+
+
+# SQL-разворот goals_json (формат Logs API: {"goals": "[123,456]"} | list).
+# Инцидент 2026-09-03: загрузка всех goals_json в Python держала сессию
+# 20 минут. Агрегация на стороне Postgres.
+_GOALS_ARRAY_SQL = """
+CASE
+  WHEN {col} IS NULL THEN '[]'::jsonb
+  WHEN jsonb_typeof(CAST({col} AS jsonb)) = 'array' THEN CAST({col} AS jsonb)
+  WHEN jsonb_typeof(COALESCE(CAST({col} AS jsonb) -> 'goals', 'null'::jsonb)) = 'array'
+    THEN CAST({col} AS jsonb) -> 'goals'
+  WHEN jsonb_typeof(COALESCE(CAST({col} AS jsonb) -> 'goals', 'null'::jsonb)) = 'string'
+       AND (CAST({col} AS jsonb) ->> 'goals') ~ '^\\s*\\['
+    THEN COALESCE((CAST({col} AS jsonb) ->> 'goals')::jsonb, '[]'::jsonb)
+  ELSE '[]'::jsonb
+END
+"""
+
+
+def goals_array_sql(col: str = "goals_json") -> str:
+    return _GOALS_ARRAY_SQL.format(col=col)
+
+
+async def count_visits_per_goal(
+    db: AsyncSession, start_date: date, end_date: date
+) -> dict[int, int]:
+    """goal_id → число визитов. Postgres — SQL; sqlite-тесты — Python."""
+    dialect = db.bind.dialect.name if db.bind is not None else ""
+    if dialect != "postgresql":
+        visits = (await db.execute(
+            select(RawMetrikaVisit.goals_json)
+            .where(
+                RawMetrikaVisit.visit_date >= start_date,
+                RawMetrikaVisit.visit_date <= end_date,
+                RawMetrikaVisit.goals_json.isnot(None),
+            )
+        )).all()
+        per_goal: Counter = Counter()
+        for (gj,) in visits:
+            stub = RawMetrikaVisit(goals_json=gj)
+            for gid in set(visit_goal_ids(stub)):
+                per_goal[gid] += 1
+        return dict(per_goal)
+
+    from sqlalchemy import text as sql_text
+
+    expr = goals_array_sql("v.goals_json")
+    rows = (await db.execute(
+        sql_text(
+            f"""
+            SELECT gid::int AS goal_id, count(*)::int AS n
+            FROM raw_metrika_visits v
+            CROSS JOIN LATERAL jsonb_array_elements_text({expr}) AS gid
+            WHERE v.visit_date >= :start_date AND v.visit_date <= :end_date
+              AND v.goals_json IS NOT NULL
+              AND gid ~ '^\\d+$'
+            GROUP BY 1
+            """
+        ),
+        {"start_date": start_date, "end_date": end_date},
+    )).all()
+    return {int(gid): int(n) for gid, n in rows}
 
 
 def visit_goal_ids(v: RawMetrikaVisit) -> list[int]:
@@ -460,7 +523,11 @@ async def mart_metrika_funnel(db: AsyncSession, period: Period | int = 30) -> di
     """Истинная конверсия Метрики: «достиг цели» = только macro/micro цели
     по словарю metrika_goals (раньше целью считалась любая из 92, включая
     скролл и ошибку). Разложение по целям с человеческими именами; словарь
-    включает soft-deleted цели — историческая goals_json резолвится всегда."""
+    включает soft-deleted цели — историческая goals_json резолвится всегда.
+
+    Не грузит ORM-визиты: Postgres считает SQL-агрегатом, sqlite-тесты —
+    только колонку goals_json.
+    """
     p = as_period(period)
     goal_dict = {
         g.goal_id: g for g in (await db.execute(select(MetrikaGoal))).scalars()
@@ -468,30 +535,75 @@ async def mart_metrika_funnel(db: AsyncSession, period: Period | int = 30) -> di
     business_ids = {
         gid for gid, g in goal_dict.items() if g.tier in (TIER_MACRO, TIER_MICRO)
     }
-    visits = (await db.execute(
-        select(RawMetrikaVisit).where(RawMetrikaVisit.visit_date >= p.start_date,
-                                      RawMetrikaVisit.visit_date <= p.end_date)
-    )).scalars().all()
+    total = int(await db.scalar(
+        select(func.count()).select_from(RawMetrikaVisit).where(
+            RawMetrikaVisit.visit_date >= p.start_date,
+            RawMetrikaVisit.visit_date <= p.end_date,
+        )
+    ) or 0)
 
-    total = len(visits)
-    any_goal = 0
-    business_goal = 0
+    per_goal_ids = await count_visits_per_goal(db, p.start_date, p.end_date)
+    dialect = db.bind.dialect.name if db.bind is not None else ""
+
+    if dialect == "postgresql":
+        from sqlalchemy import text as sql_text
+
+        expr = goals_array_sql("v.goals_json")
+        any_goal = int(await db.scalar(
+            sql_text(
+                f"""
+                SELECT count(*)::int
+                FROM raw_metrika_visits v
+                WHERE v.visit_date >= :start_date AND v.visit_date <= :end_date
+                  AND jsonb_array_length({expr}) > 0
+                """
+            ),
+            {"start_date": p.start_date, "end_date": p.end_date},
+        ) or 0)
+        if not goal_dict:
+            business_goal = any_goal
+        elif business_ids:
+            id_list = ",".join(str(int(i)) for i in business_ids)
+            business_goal = int(await db.scalar(
+                sql_text(
+                    f"""
+                    SELECT count(*)::int
+                    FROM raw_metrika_visits v
+                    WHERE v.visit_date >= :start_date AND v.visit_date <= :end_date
+                      AND EXISTS (
+                        SELECT 1 FROM jsonb_array_elements_text({expr}) AS gid
+                        WHERE gid ~ '^\\d+$' AND gid::int IN ({id_list})
+                      )
+                    """
+                ),
+                {"start_date": p.start_date, "end_date": p.end_date},
+            ) or 0)
+        else:
+            business_goal = 0
+    else:
+        gjs = (await db.execute(
+            select(RawMetrikaVisit.goals_json).where(
+                RawMetrikaVisit.visit_date >= p.start_date,
+                RawMetrikaVisit.visit_date <= p.end_date,
+            )
+        )).all()
+        any_goal = 0
+        business_goal = 0
+        for (gj,) in gjs:
+            stub = RawMetrikaVisit(goals_json=gj)
+            ids = visit_goal_ids(stub)
+            if not ids:
+                continue
+            any_goal += 1
+            hit_business = any(gid in business_ids for gid in ids)
+            if hit_business or not goal_dict:
+                business_goal += 1
+
     per_goal: Counter = Counter()
-    for v in visits:
-        ids = visit_goal_ids(v)
-        if not ids:
-            continue
-        any_goal += 1
-        hit_business = False
-        for gid in ids:
-            g = goal_dict.get(gid)
-            label = (g.name or g.event_name or str(gid)) if g else str(gid)
-            per_goal[label] += 1
-            if gid in business_ids or (g and g.tier in (TIER_MACRO, TIER_MICRO)):
-                hit_business = True
-        if hit_business or not goal_dict:
-            # без словаря (токен не настроен) фолбэк — любая цель
-            business_goal += 1
+    for gid, cnt in per_goal_ids.items():
+        g = goal_dict.get(gid)
+        label = (g.name or g.event_name or str(gid)) if g else str(gid)
+        per_goal[label] += cnt
 
     return {
         "source": "metrika",
@@ -537,17 +649,9 @@ async def mart_goal_reconciliation(db: AsyncSession, period: Period | int = 30) 
     goal_dict = {g.goal_id: g for g in (await db.execute(select(MetrikaGoal))).scalars()}
     mapped_events = {g.event_name for g in goal_dict.values() if g.event_name}
 
-    visits = (await db.execute(
-        select(RawMetrikaVisit.goals_json)
-        .where(RawMetrikaVisit.visit_date >= p.start_date,
-               RawMetrikaVisit.visit_date <= p.end_date,
-               RawMetrikaVisit.goals_json.isnot(None))
-    )).all()
-    per_goal: Counter = Counter()
-    for (gj,) in visits:
-        stub = RawMetrikaVisit(goals_json=gj)
-        for gid in set(visit_goal_ids(stub)):
-            per_goal[gid] += 1
+    per_goal: Counter = Counter(
+        await count_visits_per_goal(db, p.start_date, p.end_date)
+    )
 
     metrika_by_event: Counter = Counter()
     metrika_only: Counter = Counter()
@@ -598,6 +702,7 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
         select(BehaviorEvent.event_type, BehaviorEvent.page, BehaviorEvent.params_json)
         .where(BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end,
                BehaviorEvent.event_type.in_(("vital", "js_error", "api_timing")))
+        .limit(20000)
     )).all()
 
     vitals: dict[str, list[float]] = defaultdict(list)
@@ -718,22 +823,43 @@ async def mart_collection_quality(db: AsyncSession, period: Period | int = 7) ->
     stream_sessions = int(ev.stream_sessions or 0)
     events_total = int(ev.events or 0)
 
-    # Аномалии dwell: события, где страница «читалась» дольше 4 часов
-    # (клампится на инжесте с 2026-07-06 — счётчик должен идти к нулю).
-    dwell_rows = (await db.execute(
-        select(BehaviorEvent.params_json)
-        .where(BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
-               BehaviorEvent.event_type == "dwell")
-        .limit(50000)
-    )).scalars().all()
-    dwell_total = len(dwell_rows)
-    dwell_over_4h = sum(
-        1 for p in dwell_rows
-        if isinstance(p, dict) and isinstance(p.get("ms"), (int, float)) and p["ms"] > 4 * 3600 * 1000
-    )
-    dwell_with_active = sum(
-        1 for p in dwell_rows if isinstance(p, dict) and p.get("active_ms") is not None
-    )
+    # Аномалии dwell: Postgres считает на SQL; sqlite-тесты — выборка с лимитом.
+    dialect = db.bind.dialect.name if db.bind is not None else ""
+    if dialect == "postgresql":
+        from sqlalchemy import text as sql_text
+
+        dwell_total = int(await db.scalar(
+            select(func.count()).select_from(BehaviorEvent).where(
+                BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
+                BehaviorEvent.event_type == "dwell")
+        ) or 0)
+        dwell_over_4h = int(await db.scalar(sql_text("""
+            SELECT count(*)::int FROM behavior_events
+            WHERE occurred_at >= :since AND occurred_at < :until
+              AND event_type = 'dwell'
+              AND COALESCE((params_json->>'ms')::double precision, 0) > :lim
+        """), {"since": since, "until": until, "lim": 4 * 3600 * 1000}) or 0)
+        dwell_with_active = int(await db.scalar(sql_text("""
+            SELECT count(*)::int FROM behavior_events
+            WHERE occurred_at >= :since AND occurred_at < :until
+              AND event_type = 'dwell'
+              AND (params_json->>'active_ms') IS NOT NULL
+        """), {"since": since, "until": until}) or 0)
+    else:
+        dwell_rows = (await db.execute(
+            select(BehaviorEvent.params_json)
+            .where(BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
+                   BehaviorEvent.event_type == "dwell")
+            .limit(50000)
+        )).scalars().all()
+        dwell_total = len(dwell_rows)
+        dwell_over_4h = sum(
+            1 for p in dwell_rows
+            if isinstance(p, dict) and isinstance(p.get("ms"), (int, float)) and p["ms"] > 4 * 3600 * 1000
+        )
+        dwell_with_active = sum(
+            1 for p in dwell_rows if isinstance(p, dict) and p.get("active_ms") is not None
+        )
 
     # Калибровка к Метрике: небот-сессии vs визиты за последний ПОЛНЫЙ день
     # (Logs API отдаёт вчерашний день; сегодняшний сравнивать нечестно).
@@ -971,6 +1097,7 @@ async def mart_blocks(db: AsyncSession, period: Period | int = 30) -> dict[str, 
         .where(BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end,
                BehaviorEvent.event_type == "block_view",
                not_admin_page(BehaviorEvent.page))
+        .limit(30_000)
     )).all()
     agg: dict[tuple[str, str], dict[str, int]] = defaultdict(lambda: {"views": 0, "ms": 0})
     for page, params in rows:
@@ -1160,8 +1287,16 @@ async def mart_people(db: AsyncSession, period: Period | int = 30, limit: int = 
     session_to_visitor: dict[str, str] = {}
     if visitor_ids:
         for bs in (await db.execute(
-            select(BehaviorSession)
-            .where(BehaviorSession.visitor_id_hash.in_(visitor_ids))
+            select(BehaviorSession).options(load_only(
+                BehaviorSession.visitor_id_hash,
+                BehaviorSession.session_id_hash,
+                BehaviorSession.started_at,
+                BehaviorSession.device_type,
+                BehaviorSession.browser,
+                BehaviorSession.os,
+                BehaviorSession.city,
+                BehaviorSession.channel,
+            )).where(BehaviorSession.visitor_id_hash.in_(visitor_ids))
             .order_by(BehaviorSession.started_at)
         )).scalars():
             portraits[bs.visitor_id_hash] = bs

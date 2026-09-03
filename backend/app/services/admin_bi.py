@@ -8,11 +8,12 @@ vs покрытие, внутренние поиски сайта, граф вн
 Пульс-аналитика и инвентаризация датасета.
 
 Дизайн-принципы:
-- Объёмы «человеческих» таблиц малы (визиты ~1–2k/мес): их тянем в память и
-  агрегируем в Python — это даёт свободные срезы без SQL-акробатики.
+- Сырые визиты Метрики не грузим как ORM и не тащим raw_json:
+  окно BI — колонки + 8 JSON-ключей (Postgres) / сырой dict (sqlite-тесты);
+  retention — только (client_id, day).
 - behavior_events (сотни тысяч строк) агрегируем только на SQL.
-- Кэш — на уровне API-роутера (Redis, 15 минут): дашборд «самообновляется»
-  каждые 15 минут без нагрузки на БД.
+- Кэш — на уровне API-роутера (Redis, 15 минут) + single-flight на воркер:
+  дашборд «самообновляется» без двух параллельных расчётов.
 - Новые собираемые данные попадают сюда автоматически: внутренние поиски —
   единое событие search_query{context}; инвентаризация — dataset_inventory
   (перечисляет таблицы датасета целиком).
@@ -31,7 +32,7 @@ from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import extract, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import (
@@ -86,6 +87,105 @@ def _day(dt: datetime | date | None) -> str | None:
     return dt.isoformat()
 
 
+# Ключи raw_json, нужные витринам привлечения/аудитории/heatmap.
+# Полный blob визита (десятки КБ) в Python не грузим — инцидент 1 ГБ RAM.
+_METRIKA_JSON_KEYS = (
+    "ym:s:deviceCategory",
+    "ym:s:browser",
+    "ym:s:operatingSystemRoot",
+    "ym:s:regionCity",
+    "ym:s:UTMCampaign",
+    "ym:s:bounce",
+    "ym:s:pageViews",
+    "ym:s:dateTime",
+)
+
+
+class _VisitLite:
+    """Утка RawMetrikaVisit: колонки + узкий raw_json без ORM-идентичности."""
+
+    __slots__ = (
+        "client_id_hash", "visit_date", "traffic_source", "search_engine",
+        "search_phrase", "referer", "start_url", "duration_seconds",
+        "goals_json", "raw_json",
+    )
+
+    def __init__(
+        self, client_id_hash, visit_date, traffic_source, search_engine,
+        search_phrase, referer, start_url, duration_seconds, goals_json, raw_json,
+    ):
+        self.client_id_hash = client_id_hash
+        self.visit_date = visit_date
+        self.traffic_source = traffic_source
+        self.search_engine = search_engine
+        self.search_phrase = search_phrase
+        self.referer = referer
+        self.start_url = start_url
+        self.duration_seconds = duration_seconds
+        self.goals_json = goals_json
+        self.raw_json = raw_json or {}
+
+
+def _json_as_text(col, key: str):
+    indexed = col[key]
+    as_string = getattr(indexed, "as_string", None)
+    if callable(as_string):
+        return as_string()
+    return indexed.astext
+
+
+async def _load_window_visits(db: AsyncSession, p: Period) -> list[_VisitLite]:
+    """Визиты окна без ORM и без полного raw_json."""
+    base = [
+        RawMetrikaVisit.client_id_hash,
+        RawMetrikaVisit.visit_date,
+        RawMetrikaVisit.traffic_source,
+        RawMetrikaVisit.search_engine,
+        RawMetrikaVisit.search_phrase,
+        RawMetrikaVisit.referer,
+        RawMetrikaVisit.start_url,
+        RawMetrikaVisit.duration_seconds,
+        RawMetrikaVisit.goals_json,
+    ]
+    dialect = db.bind.dialect.name if db.bind is not None else ""
+    if dialect == "postgresql":
+        raw = RawMetrikaVisit.raw_json
+        json_cols = [
+            _json_as_text(raw, k).label(f"jk{i}")
+            for i, k in enumerate(_METRIKA_JSON_KEYS)
+        ]
+        rows = (await db.execute(
+            select(*base, *json_cols).where(
+                RawMetrikaVisit.visit_date >= p.start_date,
+                RawMetrikaVisit.visit_date <= p.end_date,
+            )
+        )).all()
+        out = []
+        n_base = len(base)
+        for row in rows:
+            blob = {}
+            for i, key in enumerate(_METRIKA_JSON_KEYS):
+                val = row[n_base + i]
+                if val:
+                    blob[key] = val
+            out.append(_VisitLite(*row[:n_base], blob))
+        return out
+
+    rows = (await db.execute(
+        select(*base, RawMetrikaVisit.raw_json).where(
+            RawMetrikaVisit.visit_date >= p.start_date,
+            RawMetrikaVisit.visit_date <= p.end_date,
+        )
+    )).all()
+    return [_VisitLite(*row[:9], row[9]) for row in rows]
+
+
+async def _release_read(db: AsyncSession) -> None:
+    """Закрыть read-транзакцию, не держа snapshot минутами."""
+    if db.in_transaction():
+        await db.commit()
+
+
 async def _kpi_daily(db: AsyncSession, p: Period) -> list[dict]:
     """Ряды по дням: визиты/посетители (Метрика), события, регистрации,
     скачивания, ошибки + live-слой из собственного потока behavior_events
@@ -95,7 +195,7 @@ async def _kpi_daily(db: AsyncSession, p: Period) -> list[dict]:
     days: dict[str, dict[str, Any]] = defaultdict(lambda: {
         "visits": 0, "visitors": set(), "ad_visits": 0, "events": 0,
         "registrations": 0, "downloads": 0, "errors": 0, "searches": 0,
-        "live_pageviews": 0, "live_sessions": set(),
+        "live_pageviews": 0, "live_sessions_n": 0,
         "own_sessions": 0, "own_visitors": 0,
     })
 
@@ -159,17 +259,23 @@ async def _kpi_daily(db: AsyncSession, p: Period) -> list[dict]:
     # Live-слой: собственный поток behavior.js (без лага Метрики).
     beh_msk_date = _msk_day_expr(BehaviorEvent.occurred_at, dialect)
     live_rows = (await db.execute(
-        select(beh_msk_date, BehaviorEvent.session_id_hash)
-        .where(BehaviorEvent.event_type == "pageview",
-               BehaviorEvent.occurred_at >= p.start,
-               BehaviorEvent.occurred_at < p.end,
-               ~func.coalesce(BehaviorEvent.page, "").like("/admin%"))
+        select(
+            beh_msk_date,
+            func.count(),
+            func.count(func.distinct(BehaviorEvent.session_id_hash)),
+        )
+        .where(
+            BehaviorEvent.event_type == "pageview",
+            BehaviorEvent.occurred_at >= p.start,
+            BehaviorEvent.occurred_at < p.end,
+            ~func.coalesce(BehaviorEvent.page, "").like("/admin%"),
+        )
+        .group_by(beh_msk_date)
     )).all()
-    for d_raw, session in live_rows:
+    for d_raw, pv, sess in live_rows:
         d = str(d_raw)
-        days[d]["live_pageviews"] += 1
-        if session:
-            days[d]["live_sessions"].add(session)
+        days[d]["live_pageviews"] = int(pv or 0)
+        days[d]["live_sessions_n"] = int(sess or 0)
 
     # Полный календарь окна: день без данных — явный ноль, а не дыра на оси
     # времени (иначе график сжимает пропуски и искажает динамику).
@@ -192,7 +298,7 @@ async def _kpi_daily(db: AsyncSession, p: Period) -> list[dict]:
             "errors": row["errors"],
             "searches": row["searches"],
             "live_pageviews": row["live_pageviews"],
-            "live_sessions": len(row["live_sessions"]),
+            "live_sessions": row["live_sessions_n"],
             "own_sessions": row["own_sessions"],
             "own_visitors": row["own_visitors"],
         })
@@ -232,7 +338,7 @@ async def _own_acquisition(db: AsyncSession, p: Period) -> dict:
     }
 
 
-def _acquisition(visits: list[RawMetrikaVisit], biz_ids: set[int] | None = None) -> dict:
+def _acquisition(visits: list, biz_ids: set[int] | None = None) -> dict:
     """Источники, поисковики, кампании, фразы, гео и устройства из сырых визитов.
     Конверсия кампаний — только business-tier цели (этап 2б BI 2.1)."""
     sources: Counter = Counter()
@@ -294,7 +400,7 @@ def _acquisition(visits: list[RawMetrikaVisit], biz_ids: set[int] | None = None)
     }
 
 
-def _funnel(visits: list[RawMetrikaVisit], registrations_by_day: dict[str, int],
+def _funnel(visits: list, registrations_by_day: dict[str, int],
             biz_ids: set[int] | None = None) -> dict:
     """Воронка «источник → вовлечение → цель» по каналам + сквозной счёт.
 
@@ -353,26 +459,28 @@ def _funnel(visits: list[RawMetrikaVisit], registrations_by_day: dict[str, int],
     }
 
 
-def _retention(all_visits: list[RawMetrikaVisit]) -> dict:
+def _retention(all_visits) -> dict:
     """Возвращаемость аудитории в двух масштабах.
 
-    Дневные когорты — рабочий инструмент, пока продукту недели (история
-    визитов с 2026-06-30): когорта = день первого визита, столбцы = вернулся
-    через N дней (1..14). Недельные когорты копятся параллельно и станут
-    главными, когда истории будет больше месяца. Возвращаемость (returning) —
-    посетитель активен более чем в одном КАЛЕНДАРНОМ ДНЕ (не неделе: внутри
-    одной недели возврат на следующий день — тоже возврат).
+    Принимает либо ORM-визиты, либо кортежи (client_id_hash, visit_date).
     """
     first_seen: dict[str, date] = {}
     days_active: dict[str, set[date]] = defaultdict(set)
 
-    for v in sorted(all_visits, key=lambda x: (x.visit_date or date.min)):
-        if not v.client_id_hash or not v.visit_date:
+    def _pair(item):
+        if hasattr(item, "client_id_hash"):
+            return item.client_id_hash, item.visit_date
+        return item[0], item[1]
+
+    for item in all_visits:
+        cid, visit_date = _pair(item)
+        if not cid or not visit_date:
             continue
-        cid = v.client_id_hash
         if cid not in first_seen:
-            first_seen[cid] = v.visit_date
-        days_active[cid].add(v.visit_date)
+            first_seen[cid] = visit_date
+        elif visit_date < first_seen[cid]:
+            first_seen[cid] = visit_date
+        days_active[cid].add(visit_date)
 
     # Дневные когорты: день первого визита → размер + вернувшиеся через N дней.
     day_cohorts: dict[str, dict[str, Any]] = defaultdict(lambda: {"size": 0, "returned": Counter()})
@@ -625,7 +733,7 @@ async def _navigation_graph(db: AsyncSession, p: Period) -> dict:
                BehaviorEvent.session_id_hash.isnot(None),
                ~func.coalesce(BehaviorEvent.page, "").like("/admin%"))
         .order_by(BehaviorEvent.session_id_hash, BehaviorEvent.occurred_at)
-        .limit(100000)
+        .limit(40000)
     )).all()
 
     transitions: Counter = Counter()
@@ -656,26 +764,44 @@ async def _navigation_graph(db: AsyncSession, p: Period) -> dict:
 
 
 async def _activity_heatmap(db: AsyncSession, p: Period,
-                            window_visits: list[RawMetrikaVisit] | None = None) -> list[dict]:
+                            window_visits: list | None = None) -> list[dict]:
     """Пульс недели: активность по (день недели × час МСК) из ДВУХ слоёв.
 
     count — НАШИ небот-сессии (server_sessions, истина с BI 2.1);
     visits — визиты Метрики по точному времени начала визита (сверка).
     """
-    rows = (await db.execute(
-        select(ServerSession.started_at)
-        .where(ServerSession.started_at >= p.start,
-               ServerSession.started_at < p.end,
-               ServerSession.is_bot.is_(False),
-               ServerSession.is_internal.is_(False))
-        .limit(200000)
-    )).scalars().all()
+    dialect = db.bind.dialect.name if db.bind is not None else ""
     grid: Counter = Counter()
-    for ts in rows:
-        if ts is None:
-            continue
-        msk = ts + timedelta(hours=3)  # UTC → МСК
-        grid[(msk.weekday(), msk.hour)] += 1
+    if dialect == "postgresql":
+        msk = ServerSession.started_at + timedelta(hours=3)
+        rows = (await db.execute(
+            select(extract("isodow", msk), extract("hour", msk), func.count())
+            .where(
+                ServerSession.started_at >= p.start,
+                ServerSession.started_at < p.end,
+                ServerSession.is_bot.is_(False),
+                ServerSession.is_internal.is_(False),
+            )
+            .group_by(extract("isodow", msk), extract("hour", msk))
+        )).all()
+        for isodow, hour, n in rows:
+            grid[(int(isodow) - 1, int(hour))] += int(n or 0)
+    else:
+        rows = (await db.execute(
+            select(ServerSession.started_at)
+            .where(
+                ServerSession.started_at >= p.start,
+                ServerSession.started_at < p.end,
+                ServerSession.is_bot.is_(False),
+                ServerSession.is_internal.is_(False),
+            )
+            .limit(50_000)
+        )).scalars().all()
+        for ts in rows:
+            if ts is None:
+                continue
+            msk = ts + timedelta(hours=3)
+            grid[(msk.weekday(), msk.hour)] += 1
 
     # Слой Метрики: ym:s:dateTime уже в таймзоне счётчика (МСК).
     visits_grid: Counter = Counter()
@@ -730,7 +856,7 @@ async def _content_structure(db: AsyncSession, p: Period) -> dict:
 
 
 async def _audience(db: AsyncSession, p: Period,
-                    window_visits: list[RawMetrikaVisit]) -> dict:
+                    window_visits: list) -> dict:
     """Портрет аудитории из СОБСТВЕННЫХ данных со сверкой с Метрикой.
     Директива владельца 2026-07-05: знать про посетителей всё — браузер, ОС,
     устройство, экран, язык, таймзону, источник — своими силами; Метрика —
@@ -755,47 +881,85 @@ async def _audience(db: AsyncSession, p: Period,
         full_devices[dev or "unknown"] += int(n or 0)
     sessions_total = sum(full_devices.values())
 
-    sessions = (await db.execute(
-        select(BehaviorSession).where(BehaviorSession.started_at >= p.start,
-                                      BehaviorSession.started_at < p.end)
-    )).scalars().all()
+    portrait_where = (
+        BehaviorSession.started_at >= p.start,
+        BehaviorSession.started_at < p.end,
+        or_(BehaviorSession.device_type.is_(None), BehaviorSession.device_type != "bot"),
+    )
+
+    async def _grouped(cols, filters=portrait_where):
+        return (await db.execute(
+            select(*cols, func.count()).where(*filters).group_by(*cols)
+        )).all()
 
     browsers: Counter = Counter()
-    browser_versions: Counter = Counter()
-    oses: Counter = Counter()
-    devices: Counter = Counter()
-    screens: Counter = Counter()
-    viewports: Counter = Counter()
-    languages: Counter = Counter()
-    timezones: Counter = Counter()
-    ref_hosts: Counter = Counter()
-    cities: Counter = Counter()
-    authed_count = 0
+    for browser, n in await _grouped((BehaviorSession.browser,)):
+        browsers[browser or "Неизвестен"] += int(n or 0)
 
-    for s in sessions:
-        if s.device_type == "bot":
-            continue
-        browsers[s.browser or "Неизвестен"] += 1
-        if s.browser and s.browser_version:
-            browser_versions[f"{s.browser} {s.browser_version}"] += 1
-        oses[(s.os or "Неизвестна") + (f" {s.os_version}" if s.os_version else "")] += 1
-        devices[s.device_type or "unknown"] += 1
-        if s.screen_w and s.screen_h:
-            screens[f"{s.screen_w}×{s.screen_h}"] += 1
-        if s.viewport_w:
-            viewports[f"{s.viewport_w}px"] += 1
-        if s.language:
-            languages[s.language] += 1
-        if s.timezone:
-            timezones[s.timezone] += 1
-        # Свой домен — внутренние переходы, а не «сайт-источник» (этап 3б).
-        if s.referrer_host and OWN_DOMAIN not in s.referrer_host:
-            ref_hosts[s.referrer_host] += 1
-        if s.city:
-            # DB-IP отдаёт округ в скобках («Moscow (Tsentralnyy ...)») — схлопываем.
-            cities[re.sub(r"\s*\(.+\)$", "", s.city)] += 1
-        if s.authed:
-            authed_count += 1
+    browser_versions: Counter = Counter()
+    for browser, ver, n in await _grouped(
+        (BehaviorSession.browser, BehaviorSession.browser_version),
+        (*portrait_where, BehaviorSession.browser.isnot(None),
+         BehaviorSession.browser_version.isnot(None)),
+    ):
+        browser_versions[f"{browser} {ver}"] += int(n or 0)
+
+    oses: Counter = Counter()
+    for os_name, ver, n in await _grouped((BehaviorSession.os, BehaviorSession.os_version)):
+        oses[(os_name or "Неизвестна") + (f" {ver}" if ver else "")] += int(n or 0)
+
+    devices: Counter = Counter()
+    for dev, n in await _grouped((BehaviorSession.device_type,)):
+        devices[dev or "unknown"] += int(n or 0)
+
+    screens: Counter = Counter()
+    for w, h, n in await _grouped(
+        (BehaviorSession.screen_w, BehaviorSession.screen_h),
+        (*portrait_where, BehaviorSession.screen_w.isnot(None),
+         BehaviorSession.screen_h.isnot(None)),
+    ):
+        screens[f"{w}×{h}"] += int(n or 0)
+
+    viewports: Counter = Counter()
+    for w, n in await _grouped(
+        (BehaviorSession.viewport_w,),
+        (*portrait_where, BehaviorSession.viewport_w.isnot(None)),
+    ):
+        viewports[f"{w}px"] += int(n or 0)
+
+    languages: Counter = Counter()
+    for lang, n in await _grouped(
+        (BehaviorSession.language,),
+        (*portrait_where, BehaviorSession.language.isnot(None)),
+    ):
+        languages[lang] += int(n or 0)
+
+    timezones: Counter = Counter()
+    for tz, n in await _grouped(
+        (BehaviorSession.timezone,),
+        (*portrait_where, BehaviorSession.timezone.isnot(None)),
+    ):
+        timezones[tz] += int(n or 0)
+
+    ref_hosts: Counter = Counter()
+    for host, n in await _grouped(
+        (BehaviorSession.referrer_host,),
+        (*portrait_where, BehaviorSession.referrer_host.isnot(None),
+         BehaviorSession.referrer_host != "",
+         ~BehaviorSession.referrer_host.contains(OWN_DOMAIN)),
+    ):
+        ref_hosts[host] += int(n or 0)
+
+    cities: Counter = Counter()
+    for city, n in await _grouped(
+        (BehaviorSession.city,),
+        (*portrait_where, BehaviorSession.city.isnot(None), BehaviorSession.city != ""),
+    ):
+        cities[re.sub(r"\s*\(.+\)$", "", city)] += int(n or 0)
+
+    authed_count = int(await db.scalar(
+        select(func.count()).where(*portrait_where, BehaviorSession.authed.is_(True))
+    ) or 0)
 
     # Референс Метрики для сверки: устройства/браузеры/гео из повизитного сырья.
     m_devices: Counter = Counter()
@@ -909,17 +1073,36 @@ async def _users_summary(db: AsyncSession, p: Period) -> dict:
     return {"total": total, "new_in_window": new}
 
 
+async def _soft_mart(name: str, coro, fallback):
+    """Тяжёлая витрина не валит весь дашборд: честная пустышка слоя."""
+    try:
+        return await coro
+    except Exception:
+        logger.exception("BI mart %s failed", name)
+        return fallback
+
+
 async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
     """Полный BI-снапшот. Тяжёлая функция — вызывать только через кэш (15 мин)."""
     p = as_period(period)
 
-    # Сырые визиты окна — общая основа привлечения и воронки.
-    window_visits = list((await db.execute(
-        select(RawMetrikaVisit).where(RawMetrikaVisit.visit_date >= p.start_date,
-                                      RawMetrikaVisit.visit_date <= p.end_date)
-    )).scalars().all())
-    # Retention считаем по всей истории визитов (когорты глубже окна).
-    all_visits = list((await db.execute(select(RawMetrikaVisit))).scalars().all())
+    window_visits = await _load_window_visits(db, p)
+    await _release_read(db)
+    # Retention: только (client_id, day), не ORM и не вся история без нужды —
+    # окно BI + 180 дней назад покрывает 12 недельных когорт.
+    retain_from = p.start_date - timedelta(days=180)
+    all_visit_days = list((await db.execute(
+        select(RawMetrikaVisit.client_id_hash, RawMetrikaVisit.visit_date)
+        .where(
+            RawMetrikaVisit.client_id_hash.isnot(None),
+            RawMetrikaVisit.visit_date.isnot(None),
+            RawMetrikaVisit.visit_date >= retain_from,
+            RawMetrikaVisit.visit_date <= p.end_date,
+        )
+    )).all())
+    await _release_read(db)
+    retention = _retention(all_visit_days)
+    del all_visit_days
 
     reg_msk = _msk_day_expr(User.created_at, db.bind.dialect.name)
     reg_rows = (await db.execute(
@@ -931,6 +1114,17 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
     # Business-tier цели Метрики: конверсия «Сегментов»/«Посадочных»/кампаний
     # считается только по ним (этап 2б BI 2.1).
     biz_ids = await business_goal_ids(db)
+
+    from app.services.analytics_period import msk_day as _msk_day
+    today_msk = _msk_day(datetime.now(timezone.utc))
+    has_today_visits = any(v.visit_date == today_msk for v in window_visits)
+
+    acquisition = _acquisition(window_visits, biz_ids)
+    funnel = _funnel(window_visits, registrations_by_day, biz_ids)
+    activity_heatmap = await _activity_heatmap(db, p, window_visits)
+    audience = await _audience(db, p, window_visits)
+    await _release_read(db)
+    del window_visits
 
     from app.services.analytics_marts import (
         mart_ad_costs,
@@ -965,41 +1159,58 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         "goal_reconciliation": await mart_goal_reconciliation(db, p),
         "segments": await mart_segments(db, p),
         "geo": await mart_geo(db, p),
-        "blocks": await mart_blocks(db, p),
+        "blocks": await _soft_mart(
+            "blocks", mart_blocks(db, p), {"blocks": []}),
         "page_quadrants": await mart_page_quadrants(db, p),
         "feature_adoption": await mart_feature_adoption(db, p),
         "embed_distribution": await mart_embed_distribution(db, p),
-        "experiments": await mart_experiments(db, p),
-        "people": await mart_people(db, p),
+        "experiments": await _soft_mart(
+            "experiments", mart_experiments(db, p),
+            {"experiments": [], "note": "слой недоступен"}),
+        "people": await _soft_mart(
+            "people", mart_people(db, p), {"people": []}),
         "reliability": await mart_reliability(db, p.tail(7)),
-        "collection_quality": await mart_collection_quality(db, p.tail(7)),
+        "collection_quality": await _soft_mart(
+            "collection_quality", mart_collection_quality(db, p.tail(7)),
+            {"error": "слой недоступен"}),
         "botness": await mart_botness(db, p.tail(7)),
         "ad_costs": await mart_ad_costs(db, p),
         "partner_revenue": await mart_partner_revenue(db, p),
         # --- операционные витрины ---
         "kpi_daily": await _kpi_daily(db, p),
-        "acquisition": _acquisition(window_visits, biz_ids),
+        "acquisition": acquisition,
         "own_acquisition": await _own_acquisition(db, p),
-        "funnel": _funnel(window_visits, registrations_by_day, biz_ids),
-        "retention": _retention(all_visits),
+        "funnel": funnel,
+        "retention": retention,
         "pages": await _pages_quality(db, p),
         "demand": await _demand_vs_coverage(db, p),
         "onsite_search": await _onsite_search(db, p),
         "navigation": await _navigation_graph(db, p),
-        "activity_heatmap": await _activity_heatmap(db, p, window_visits),
+        "activity_heatmap": activity_heatmap,
         "content_structure": await _content_structure(db, p),
-        "audience": await _audience(db, p, window_visits),
+        "audience": audience,
         "behavior_issues": await _behavior_issues(db, p),
         "events": await _events_breakdown(db, p),
         "hypotheses": await _hypotheses(db),
-        "dataset": await build_inventory(db),
+        "dataset": await _soft_mart(
+            "dataset", build_inventory(db),
+            {
+                "generated_at": datetime.now(timezone.utc)
+                .replace(tzinfo=None).isoformat(timespec="seconds"),
+                "sections": {},
+                "totals": {"rows": 0, "parameters": 0},
+                "error": "слой недоступен",
+            },
+        ),
     }
-    await _merge_metrika_live_today(dashboard, p, window_visits)
+    await _merge_metrika_live_today(
+        dashboard, p, has_today_visits=has_today_visits)
     return dashboard
 
 
 async def _merge_metrika_live_today(
-    dashboard: dict[str, Any], p: Period, window_visits: list
+    dashboard: dict[str, Any], p: Period, window_visits: list | None = None,
+    *, has_today_visits: bool | None = None,
 ) -> None:
     """Живой слой Метрики за сегодня (Reporting API) поверх Logs-данных.
 
@@ -1014,7 +1225,11 @@ async def _merge_metrika_live_today(
     today_msk = msk_day(datetime.now(timezone.utc))
     if p.end_date < today_msk:
         return
-    has_today_visits = any(v.visit_date == today_msk for v in window_visits)
+    if has_today_visits is None:
+        has_today_visits = any(
+            getattr(v, "visit_date", None) == today_msk
+            for v in (window_visits or [])
+        )
     if has_today_visits:
         return
     from app.services.metrika_acquisition import live_today_reference

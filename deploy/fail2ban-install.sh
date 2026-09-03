@@ -21,7 +21,7 @@ chown 101:101 /var/log/rosstat-nginx
 echo "==> конфиги fail2ban"
 install -m 0644 deploy/fail2ban/jail.local /etc/fail2ban/jail.local
 install -m 0644 deploy/fail2ban/filter.d-nginx-429.conf /etc/fail2ban/filter.d/nginx-429.conf
-install -m 0644 deploy/fail2ban/filter.d-honeytrap.conf /etc/fail2ban/filter.d/honeytrap.conf
+install -m 0644 deploy/fail2ban/filter.d-nginx-volume.conf /etc/fail2ban/filter.d/nginx-volume.conf
 
 echo "==> logrotate для security/honeypot"
 install -m 0644 deploy/fail2ban/logrotate-rosstat-nginx /etc/logrotate.d/rosstat-nginx
@@ -32,4 +32,4 @@ systemctl restart fail2ban
 
 echo "==> статус"
 fail2ban-client status
-echo "OK: fail2ban активен; jails: nginx-429, honeytrap, recidive"
+echo "OK: fail2ban активен; jails: nginx-429, nginx-volume, honeytrap, recidive"

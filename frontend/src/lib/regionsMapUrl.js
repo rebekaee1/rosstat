@@ -116,3 +116,45 @@ export function searchParamsEqual(a, b) {
 export function locationsEqual(a, b) {
   return a.pathname === b.pathname && a.search === b.search;
 }
+
+/**
+ * Первый кадр карты: choropleth из heatmap последнего года.
+ * heatmap-series (все годы) нужен ползунку и GIF — его можно догрузить следом.
+ * Если в URL уже есть год и он есть в series — берём его, не вспышку последнего.
+ */
+export function resolveRegionsMapPaint({ heatmap = null, series = null, urlYear = null } = {}) {
+  const seriesYears = Array.isArray(series?.years) ? series.years : [];
+  const heatYear = heatmap?.year ?? null;
+  const lastYear = series?.last_year
+    ?? (seriesYears.length ? seriesYears[seriesYears.length - 1] : heatYear);
+
+  let year = lastYear;
+  if (urlYear != null && seriesYears.includes(urlYear)) {
+    year = urlYear;
+  } else if (urlYear != null && heatYear === urlYear) {
+    year = urlYear;
+  }
+
+  let valuesBySlug = null;
+  const seriesSlice = year != null ? series?.values_by_year?.[String(year)] : null;
+  if (seriesSlice) {
+    valuesBySlug = new Map(Object.entries(seriesSlice));
+  } else if (heatmap?.values?.length && (year == null || year === heatYear)) {
+    valuesBySlug = new Map();
+    for (const row of heatmap.values) {
+      if (row?.slug != null && row.value != null) {
+        valuesBySlug.set(row.slug, row.value);
+      }
+    }
+    year = heatYear;
+  }
+
+  const years = seriesYears.length ? seriesYears : (heatYear != null ? [heatYear] : []);
+  return {
+    year,
+    years,
+    valuesBySlug,
+    indicator: series?.indicator || heatmap?.indicator || null,
+    hasHistory: seriesYears.length > 1,
+  };
+}

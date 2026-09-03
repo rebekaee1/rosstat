@@ -195,6 +195,31 @@ async def prometheus_metrics(db: AsyncSession = Depends(get_db), _=Depends(_chec
         "# TYPE fe_geoip_db_age_days gauge",
         f"fe_geoip_db_age_days {age if age is not None else -1:.1f}",
     ]
+
+    from app.database import pool_stats
+    from app.services.process_metrics import cgroup_memory, process_rss_bytes
+
+    pub = pool_stats("public")
+    an = pool_stats("analytics")
+    rss = process_rss_bytes()
+    cgroup_usage, cgroup_limit = cgroup_memory()
+    lines += [
+        "# HELP fe_db_pool_checked_out SQLAlchemy connections checked out",
+        "# TYPE fe_db_pool_checked_out gauge",
+        f'fe_db_pool_checked_out{{pool="public"}} {pub["checkedout"]}',
+        f'fe_db_pool_checked_out{{pool="analytics"}} {an["checkedout"]}',
+        "# HELP fe_db_pool_overflow SQLAlchemy overflow connections",
+        "# TYPE fe_db_pool_overflow gauge",
+        f'fe_db_pool_overflow{{pool="public"}} {pub["overflow"]}',
+        f'fe_db_pool_overflow{{pool="analytics"}} {an["overflow"]}',
+        "# HELP fe_process_rss_bytes Backend process RSS",
+        "# TYPE fe_process_rss_bytes gauge",
+        f"fe_process_rss_bytes {rss}",
+        "# HELP fe_cgroup_memory_bytes Cgroup memory usage and limit",
+        "# TYPE fe_cgroup_memory_bytes gauge",
+        f'fe_cgroup_memory_bytes{{kind="usage"}} {cgroup_usage}',
+        f'fe_cgroup_memory_bytes{{kind="limit"}} {cgroup_limit}',
+    ]
     return Response(content="\n".join(lines) + "\n", media_type="text/plain")
 
 

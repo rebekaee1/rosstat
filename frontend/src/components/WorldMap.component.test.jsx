@@ -203,6 +203,8 @@ describe('WorldMap tooltip', () => {
       />,
     );
     const btn = screen.getByRole('button', { name: /США/ });
+    expect(btn.getAttribute('fill')).toBeTruthy();
+    expect(btn.getAttribute('fill')).not.toMatch(/^url\(/);
     fireEvent.click(btn);
     expect(onSelect).toHaveBeenCalled();
     expect(onSelect.mock.calls[0][0].slug).toBe('united-states');

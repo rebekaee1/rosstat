@@ -24,7 +24,7 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, select
 
 from app.config import settings
-from app.database import async_session
+from app.database import analytics_session
 from app.models import BehaviorEvent, RawMetrikaVisit
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ async def _alert(alert_key: str, text: str) -> None:
 
 async def check_anomalies() -> None:
     now = datetime.now(timezone.utc).replace(tzinfo=None)
-    async with async_session() as db:
+    async with analytics_session() as db:
         hour_start = now.replace(minute=0, second=0, microsecond=0)
 
         async def _count_pv(a: datetime, b: datetime) -> int:
@@ -116,6 +116,52 @@ async def check_anomalies() -> None:
         except Exception:  # noqa: BLE001
             pass
 
+    await _check_host_pressure()
+
+
+async def _check_host_pressure() -> None:
+    """Память cgroup, насыщение пула, idle in transaction — инцидент 2026-09-03."""
+    from app.database import pool_stats
+    from app.services.process_metrics import memory_pressure_ratio
+    from sqlalchemy import text as sql_text
+
+    ratio = memory_pressure_ratio()
+    if ratio is not None and ratio >= 0.85:
+        await _alert(
+            "memory_pressure",
+            f"Память контейнера backend {round(ratio * 100)}% лимита (порог 85%).",
+        )
+
+    public = pool_stats("public")
+    analytics = pool_stats("analytics")
+    pub_cap = public["size"] + settings.db_max_overflow
+    an_cap = analytics["size"] + settings.analytics_db_max_overflow
+    if pub_cap and public["checkedout"] >= pub_cap:
+        await _alert(
+            "db_pool_saturation",
+            f"Публичный пул БД исчерпан: {public['checkedout']}/{pub_cap}.",
+        )
+    if an_cap and analytics["checkedout"] >= an_cap:
+        await _alert(
+            "db_pool_saturation",
+            f"Аналитический пул БД исчерпан: {analytics['checkedout']}/{an_cap}.",
+        )
+
+    try:
+        async with analytics_session() as db:
+            idle = int(await db.scalar(sql_text(
+                "SELECT count(*) FROM pg_stat_activity "
+                "WHERE state = 'idle in transaction' "
+                "AND now() - state_change > interval '2 minutes'"
+            )) or 0)
+        if idle > 0:
+            await _alert(
+                "idle_in_tx",
+                f"{idle} сессий Postgres idle in transaction дольше 2 минут.",
+            )
+    except Exception:  # noqa: BLE001
+        logger.debug("idle_in_tx check skipped", exc_info=True)
+
 
 BOT_CALIBRATION_TOLERANCE_PCT = 15  # коридор ±15% к визитам Метрики
 
@@ -128,7 +174,7 @@ async def check_bot_calibration() -> dict | None:
     from app.services.analytics_period import msk_day
 
     now = datetime.now(timezone.utc).replace(tzinfo=None)
-    async with async_session() as db:
+    async with analytics_session() as db:
         # Последний день, за который у Метрики есть данные (кроме сегодня —
         # день не закрыт, сравнение бессмысленно).
         last_metrika_day = await db.scalar(

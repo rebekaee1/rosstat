@@ -2804,11 +2804,12 @@ export default function AdminBI() {
   const isAdmin = Boolean(user?.is_admin);
   // custom без выбранной даты «с» — запрос не шлём (бэкенд упал бы в 30d молча).
   const customReady = period !== 'custom' || Boolean(customFrom);
+  const onSlices = tab === 'slices';
   const { data, isLoading: biLoading, isError, dataUpdatedAt, refetch, isFetching } = useQuery({
     queryKey: ['admin-bi', period, customFrom, customTo],
     queryFn: () => fetchDashboard(period, customFrom, customTo),
-    enabled: isAdmin && customReady,
-    refetchInterval: 15 * 60 * 1000,
+    enabled: isAdmin && customReady && !onSlices,
+    refetchInterval: onSlices ? false : 15 * 60 * 1000,
     staleTime: 14 * 60 * 1000,
     retry: 1,
   });
@@ -2866,9 +2867,10 @@ export default function AdminBI() {
           </span>
         )}
         <button
-          type="button" onClick={() => refetch()}
-          className="ml-auto flex items-center gap-1.5 text-[12px] text-text-tertiary hover:text-text-primary"
-          title="Обновить сейчас"
+          type="button" onClick={() => { if (!onSlices) refetch(); }}
+          disabled={onSlices}
+          className="ml-auto flex items-center gap-1.5 text-[12px] text-text-tertiary hover:text-text-primary disabled:opacity-40"
+          title={onSlices ? 'На вкладке «Срезы» полный дашборд не пересчитывается' : 'Обновить сейчас'}
         >
           <RefreshCw size={13} className={isFetching ? 'animate-spin' : ''} />
           {dataUpdatedAt ? `обновлено ${new Date(dataUpdatedAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : ''}
@@ -2894,12 +2896,12 @@ export default function AdminBI() {
         ))}
       </div>
 
-      {!customReady && (
+      {!onSlices && !customReady && (
         <p className="text-[14px] text-text-tertiary py-10 text-center">Выберите даты периода (московское время).</p>
       )}
-      {customReady && biLoading && <p className="text-[14px] text-text-tertiary py-10 text-center">Считаем витрины…</p>}
-      {isError && <p className="text-[14px] text-negative py-10 text-center">Не удалось загрузить данные. Попробуйте обновить.</p>}
-      {data && <Active d={data} onOpenSlices={openSlices} />}
+      {!onSlices && customReady && biLoading && <p className="text-[14px] text-text-tertiary py-10 text-center">Считаем витрины…</p>}
+      {!onSlices && isError && <p className="text-[14px] text-negative py-10 text-center">Не удалось загрузить данные. Попробуйте обновить.</p>}
+      {onSlices ? <SlicesTab /> : (data && <Active d={data} onOpenSlices={openSlices} />)}
     </div>
   );
 }

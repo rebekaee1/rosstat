@@ -224,18 +224,31 @@ def test_seo_snapshot_computes_indexed_share(monkeypatch):
                 "site_problems": {"RECOMMENDATION": 3},
             })
 
+        async def search_events_samples(self, user_id, host_id, limit=100):
+            return FakeResp({"samples": []})
+
     monkeypatch.setattr(ywc, "YandexWebmasterClient", FakeClient)
-
-    async def fake_collect_all_paths(db):
-        return ["/x"] * 43300
-
-    monkeypatch.setattr("app.services.site_urls.collect_all_paths", fake_collect_all_paths)
+    monkeypatch.setattr("app.services.sitemap_static.url_count_from_stats", lambda: 43300)
 
     class FakeDB:
         async def scalar(self, *a, **kw):
             return None  # нет строк webmaster_search_queries за сегодня
 
-    result = asyncio.run(pulse._seo_snapshot(FakeDB()))
+        async def execute(self, *a, **kw):
+            class _R:
+                def all(self):
+                    return []
+            return _R()
+
+    class _CM:
+        async def __aenter__(self):
+            return FakeDB()
+        async def __aexit__(self, *a):
+            return False
+
+    monkeypatch.setattr(pulse, "analytics_session", lambda: _CM())
+
+    result = asyncio.run(pulse._seo_snapshot(None))
     assert result["available"] is True
     assert result["searchable_pages"] == 3527
     assert result["sitemap_urls_total"] == 43300
@@ -276,17 +289,27 @@ def test_seo_snapshot_dual_host_summary(monkeypatch):
             return FakeResp({"samples": []})
 
     monkeypatch.setattr(ywc, "YandexWebmasterClient", FakeClient)
-
-    async def fake_collect_all_paths(db):
-        return ["/x"] * 43300
-
-    monkeypatch.setattr("app.services.site_urls.collect_all_paths", fake_collect_all_paths)
+    monkeypatch.setattr("app.services.sitemap_static.url_count_from_stats", lambda: 43300)
 
     class FakeDB:
         async def scalar(self, *a, **kw):
             return None
 
-    result = asyncio.run(pulse._seo_snapshot(FakeDB()))
+        async def execute(self, *a, **kw):
+            class _R:
+                def all(self):
+                    return []
+            return _R()
+
+    class _CM:
+        async def __aenter__(self):
+            return FakeDB()
+        async def __aexit__(self, *a):
+            return False
+
+    monkeypatch.setattr(pulse, "analytics_session", lambda: _CM())
+
+    result = asyncio.run(pulse._seo_snapshot(None))
     assert result["available"] is True
     assert set(result["summary_by_host"]) == {
         "forecasteconomy.com", "ru.forecasteconomy.com",
@@ -330,17 +353,27 @@ def test_seo_snapshot_single_host_before_cutover(monkeypatch):
             return FakeResp({"samples": []})
 
     monkeypatch.setattr(ywc, "YandexWebmasterClient", FakeClient)
-
-    async def fake_collect_all_paths(db):
-        return ["/x"] * 100
-
-    monkeypatch.setattr("app.services.site_urls.collect_all_paths", fake_collect_all_paths)
+    monkeypatch.setattr("app.services.sitemap_static.url_count_from_stats", lambda: 100)
 
     class FakeDB:
         async def scalar(self, *a, **kw):
             return None
 
-    result = asyncio.run(pulse._seo_snapshot(FakeDB()))
+        async def execute(self, *a, **kw):
+            class _R:
+                def all(self):
+                    return []
+            return _R()
+
+    class _CM:
+        async def __aenter__(self):
+            return FakeDB()
+        async def __aexit__(self, *a):
+            return False
+
+    monkeypatch.setattr(pulse, "analytics_session", lambda: _CM())
+
+    result = asyncio.run(pulse._seo_snapshot(None))
     assert result["available"] is True
     assert set(result["summary_by_host"]) == {"forecasteconomy.com"}
     assert seen_hosts.count("https:ru.forecasteconomy.com:443") == 0

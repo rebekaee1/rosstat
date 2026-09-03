@@ -23,7 +23,7 @@ import { exportNodeToPng } from '../lib/chartImage';
 import { buildRegionsMapGif, downloadBlob } from '../lib/regionsMapGif';
 import {
   parseRegionsMapLocation, buildRegionsMapLocation, buildRegionsMapHref,
-  locationsEqual, MAP_OVERVIEW, DEFAULT_MAP_CODE,
+  locationsEqual, MAP_OVERVIEW, DEFAULT_MAP_CODE, resolveRegionsMapPaint,
 } from '../lib/regionsMapUrl';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
@@ -275,19 +275,28 @@ export default function RegionsHome() {
     return activeMapCode;
   }, [isCustomMetric, activeMapCode, catalog.data]);
 
-  const series = useRegionsHeatmapSeries(activeMapCode, view === 'map' && !!activeMapCode);
+  const mapOn = view === 'map' && !!activeMapCode;
+  // heatmap последнего года — первый кадр choropleth (~8 КБ).
+  // series (все годы) — после heatmap, иначе оба бьют один public pool.
+  const heatmap = useRegionsHeatmap(activeMapCode, mapOn);
+  const series = useRegionsHeatmapSeries(
+    activeMapCode,
+    mapOn && (heatmap.isSuccess || heatmap.isError),
+  );
   const mapCardRef = useRef(null);
   const [exportingMap, setExportingMap] = useState(false);
   const [exportingGif, setExportingGif] = useState(false);
 
-  const seriesYears = series.data?.years || null;
-
-  // Год — из URL (?year=); если нет или вне ряда — последний доступный.
-  const mapYear = useMemo(() => {
-    if (!seriesYears?.length) return null;
-    if (urlYear != null && seriesYears.includes(urlYear)) return urlYear;
-    return seriesYears[seriesYears.length - 1];
-  }, [seriesYears, urlYear]);
+  const paint = useMemo(
+    () => resolveRegionsMapPaint({
+      heatmap: heatmap.data,
+      series: series.data,
+      urlYear,
+    }),
+    [heatmap.data, series.data, urlYear],
+  );
+  const seriesYears = paint.years.length ? paint.years : null;
+  const mapYear = paint.year;
 
   const syncMapUrl = useCallback((next) => {
     const desired = buildRegionsMapLocation(next);
@@ -350,12 +359,7 @@ export default function RegionsHome() {
     syncMapUrl({ view: 'map', indicator: DEFAULT_MAP_CODE });
   };
 
-  const heatmapValues = useMemo(() => {
-    if (!series.data || mapYear == null) return null;
-    const slice = series.data.values_by_year[String(mapYear)];
-    if (!slice) return null;
-    return new Map(Object.entries(slice));
-  }, [series.data, mapYear]);
+  const heatmapValues = paint.valuesBySlug;
 
   const namesBySlug = useMemo(() => {
     const out = {};
@@ -363,8 +367,8 @@ export default function RegionsHome() {
     return out;
   }, [data]);
 
-  const mapMetaTitle = series.data?.indicator?.name
-    ? t('regions.mapTitle', { name: series.data.indicator.name })
+  const mapMetaTitle = paint.indicator?.name
+    ? t('regions.mapTitle', { name: paint.indicator.name })
     : isOverview
       ? t('regions.mapOverviewTitle')
       : t('regions.hubTitle');
@@ -439,7 +443,7 @@ export default function RegionsHome() {
     setExportingGif(false);
   };
 
-  const gifAvailable = !!(activeMapCode && seriesYears && seriesYears.length > 1 && series.data);
+  const gifAvailable = !!(activeMapCode && paint.hasHistory && series.data);
 
   return (
     <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
@@ -694,12 +698,12 @@ export default function RegionsHome() {
           <div data-block="regions-map" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5 relative" ref={mapCardRef}>
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
               <div className="text-xs text-text-tertiary min-w-0">
-                {activeMapCode && series.data ? (
+                {activeMapCode && paint.indicator ? (
                   t('regions.home.mapCaptionMetric', {
-                    name: series.data.indicator.name,
+                    name: paint.indicator.name,
                     yearBit: mapYear != null ? t('regions.home.mapYearBit', { year: mapYear }) : '',
-                    unitBit: series.data.indicator.unit
-                      ? t('regions.home.mapUnitBit', { unit: series.data.indicator.unit })
+                    unitBit: paint.indicator.unit
+                      ? t('regions.home.mapUnitBit', { unit: paint.indicator.unit })
                       : '',
                   })
                 ) : (
@@ -737,7 +741,7 @@ export default function RegionsHome() {
               <RegionsMap
                 valuesBySlug={activeMapCode ? heatmapValues : null}
                 transitionMs={activeMapCode ? 650 : 150}
-                unit={series.data?.indicator?.unit || ''}
+                unit={paint.indicator?.unit || ''}
                 nameBySlug={namesBySlug}
                 brandMark
                 onSelect={(slug) => {

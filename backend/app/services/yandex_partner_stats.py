@@ -142,12 +142,12 @@ async def upsert_partner_revenue(
 
 async def sync_partner_revenue(period: str = _DEFAULT_PERIOD) -> dict[str, Any]:
     """Скачать статистику и записать в БД. Для планировщика и ручного прогона."""
-    from app.database import async_session
+    from app.database import analytics_session
 
     if not partner_configured():
         return {"ok": False, "reason": "token_missing", "rows": 0}
     rows = await fetch_partner_stats(period=period)
-    async with async_session() as db:
+    async with analytics_session() as db:
         n = await upsert_partner_revenue(db, rows)
         await db.commit()
     logger.info("Partner revenue sync: %d day(s) period=%s", n, period)

@@ -181,4 +181,94 @@ describe('HomeWorkbench', () => {
     expect(screen.getByText('Медиана по 48 странам с данными')).toBeTruthy();
     expect(screen.getByText(/12,40/)).toBeTruthy();
   });
+
+  it('рисует карту по snapshot, не дожидаясь полной истории map-series', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, INDICATORS],
+      ['/world/countries', {
+        countries: [
+          { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 10 },
+        ],
+        total: 1,
+      }],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [{ slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' }],
+        total: 1,
+      }],
+      [/^\/world\/compare\/snapshot\//, {
+        items: [{
+          country_code: 'DE',
+          country_slug: 'germany',
+          country_name: 'Германия',
+          date: '2025-12-31',
+          value: 3.1,
+          indicator_code: 'de-un',
+        }],
+        concept: { name: 'Безработица', unit: '%' },
+      }],
+      [/^\/world\/compare\/map-series\//, () => new Promise(() => {})],
+    ]);
+
+    renderPage(
+      <HomeWorkbench
+        ratingConcepts={{
+          data: {
+            concepts: [{ slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' }],
+          },
+        }}
+      />,
+      { path: '/', route: '/' },
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('world-map-stub')).toBeTruthy();
+      expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
+    });
+    expect(screen.getByRole('button', { name: /Германия/ }).textContent).toMatch(/3,10/);
+    expect(screen.queryByTestId('map-timeline-stub')).toBeNull();
+  });
+
+  it('не держит карту скелетоном, если map-series уже есть, а каталог стран ещё грузится', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, INDICATORS],
+      ['/world/countries', () => new Promise(() => {})],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [{ slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' }],
+        total: 1,
+      }],
+      [/^\/world\/compare\/map-series\//, {
+        years: [2025],
+        values_by_year: {
+          2025: {
+            DE: {
+              country_code: 'DE',
+              country_slug: 'germany',
+              country_name: 'Германия',
+              value: 3.1,
+            },
+          },
+        },
+        concept: { name: 'Безработица', unit: '%' },
+        benchmark_by_year: {},
+      }],
+    ]);
+
+    renderPage(
+      <HomeWorkbench
+        ratingConcepts={{
+          data: {
+            concepts: [{ slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' }],
+          },
+        }}
+      />,
+      { path: '/', route: '/' },
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('world-map-stub')).toBeTruthy();
+      expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
+    });
+  });
 });

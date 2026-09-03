@@ -362,7 +362,7 @@ def test_rollup_daily_goals_and_pages():
 def test_marts_on_empty_db():
     from app.services.analytics_marts import (
         mart_collection_quality, mart_experiments, mart_metric_tree,
-        mart_own_funnel, mart_segments,
+        mart_metrika_funnel, mart_own_funnel, mart_segments,
     )
 
     async def scenario(maker):
@@ -388,6 +388,42 @@ def test_marts_on_empty_db():
 
             exps = await mart_experiments(db, period=30)
             assert exps["experiments"] == [] and exps["note"]
+
+            mf = await mart_metrika_funnel(db, period=7)
+            assert mf["visits"] == 0
+            assert mf["visits_any_goal"] == 0
+            assert mf["conversion_pct"] == 0.0
+
+    _run_with_db(scenario)
+
+
+def test_mart_metrika_funnel_sqlite_goals_json_only():
+    """sqlite-фолбэк: воронка Метрики не грузит полный ORM, только goals_json."""
+    from app.models import RawMetrikaVisit
+    from app.services.analytics_marts import mart_metrika_funnel
+    from app.services.analytics_period import as_period
+
+    async def scenario(maker):
+        p = as_period(7)
+        async with maker() as db:
+            db.add_all([
+                RawMetrikaVisit(
+                    counter_id="1", visit_id="g1", visit_date=p.end_date,
+                    goals_json={"goals": "[100]"}, row_hash="g1",
+                    raw_json={"blob": "x" * 20_000},
+                ),
+                RawMetrikaVisit(
+                    counter_id="1", visit_id="g2", visit_date=p.end_date,
+                    goals_json={"goals": "[]"}, row_hash="g2",
+                ),
+            ])
+            await db.commit()
+            res = await mart_metrika_funnel(db, period=7)
+            assert res["visits"] == 2
+            assert res["visits_any_goal"] == 1
+            # без словаря целей — фолбэк: любая цель = business
+            assert res["visits_business_goal"] == 1
+            assert res["conversion_pct"] == 50.0
 
     _run_with_db(scenario)
 
@@ -511,6 +547,10 @@ def test_bot_score_heuristics():
     # Флуд сессий с одного visitor — добавка, но не приговор сам по себе.
     flood = sig(moves=2, active_ms=3000, visitor_sessions=50)
     assert 0 < score_session(flood) < BOT_THRESHOLD
+    # Обход каталога в одной сессии без ввода.
+    crawl = sig(pageviews=12)
+    assert score_session(crawl) >= BOT_THRESHOLD
+    assert "ghost_crawl" in signal_breakdown(crawl)
 
 
 def test_sessionize_sets_bot_score():

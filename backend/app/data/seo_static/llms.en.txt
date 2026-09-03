@@ -5,60 +5,60 @@
 ## What is on the site
 
 - **100+ macroeconomic indicators** for Russia in 12 categories: prices, interest rates, currencies, money and the budget, equity indices, commodity markets, labour market, GDP and growth, population, foreign trade, business and investment, science and education.
-- **495 regional indicators × 85 regions of Russia** — population, wages, prices, housing, industry, crime and more, from 1990: __PUBLIC_ORIGIN__/regions
+- **495 regional indicators × 85 regions of Russia** — population, wages, prices, housing, industry, crime and more, from 1990: __PUBLIC_ORIGIN__/russia/region
 - **Available country statistics** — country series from official international sources (World economy section): __PUBLIC_ORIGIN__/world
-- **Indicators for today** — current FX rates, the key rate, inflation, fuel and gold prices: __PUBLIC_ORIGIN__/today
-- **Regional rankings** for each indicator (leaders/laggards, comparison with the Russia-wide average): __PUBLIC_ORIGIN__/region-rating/{code}
-- **Region-vs-region comparison** on key indicators: __PUBLIC_ORIGIN__/region-vs/{a}-vs-{b}
+- **Indicators for today** — current FX rates, the key rate, inflation, fuel and gold prices: __PUBLIC_ORIGIN__/russia/today
+- **Regional rankings** for each indicator (leaders/laggards, comparison with the Russia-wide average): __PUBLIC_ORIGIN__/russia/region-rating/{code}
+- **Region-vs-region comparison** on key indicators: __PUBLIC_ORIGIN__/russia/region-vs/{a}-vs-{b}
 - **Forecasts** for key macro series (CPI, FX, key rate, unemployment) — in-house models, recalculated after each source release; methodology: __PUBLIC_ORIGIN__/methodology
 - **Inflation calculator** — convert an amount between two dates using cumulative CPI.
 - **Indicator comparison** — overlay time series, including regional and country series.
-- **Release calendar** — official Rosstat, CBR and Ministry of Finance release dates, monthly pages /calendar/{year}/{month}.
+- **Release calendar** — official Rosstat, CBR and Ministry of Finance release dates, monthly pages /russia/calendar/{year}/{month}.
 - **Population pyramid** — age structure of Russia since 1990.
 - **Embed widgets** for charts on third-party sites.
 
 ## Categories and key URLs
 
 - Home: __PUBLIC_ORIGIN__/
-- Prices and inflation: __PUBLIC_ORIGIN__/category/prices
-- Interest rates: __PUBLIC_ORIGIN__/category/rates
-- Currencies: __PUBLIC_ORIGIN__/category/currencies
-- Money and budget: __PUBLIC_ORIGIN__/category/finance
-- Equity indices: __PUBLIC_ORIGIN__/category/indices
-- Commodity markets: __PUBLIC_ORIGIN__/category/commodities
-- Labour market: __PUBLIC_ORIGIN__/category/labor
-- GDP and growth: __PUBLIC_ORIGIN__/category/gdp
-- Population: __PUBLIC_ORIGIN__/category/population
-- Foreign trade: __PUBLIC_ORIGIN__/category/trade
-- Business and investment: __PUBLIC_ORIGIN__/category/business
-- Science and education: __PUBLIC_ORIGIN__/category/science
-- Regions of Russia: __PUBLIC_ORIGIN__/regions
+- Prices and inflation: __PUBLIC_ORIGIN__/russia/category/prices
+- Interest rates: __PUBLIC_ORIGIN__/russia/category/rates
+- Currencies: __PUBLIC_ORIGIN__/russia/category/currencies
+- Money and budget: __PUBLIC_ORIGIN__/russia/category/finance
+- Equity indices: __PUBLIC_ORIGIN__/russia/category/indices
+- Commodity markets: __PUBLIC_ORIGIN__/russia/category/commodities
+- Labour market: __PUBLIC_ORIGIN__/russia/category/labor
+- GDP and growth: __PUBLIC_ORIGIN__/russia/category/gdp
+- Population: __PUBLIC_ORIGIN__/russia/category/population
+- Foreign trade: __PUBLIC_ORIGIN__/russia/category/trade
+- Business and investment: __PUBLIC_ORIGIN__/russia/category/business
+- Science and education: __PUBLIC_ORIGIN__/russia/category/science
+- Regions of Russia: __PUBLIC_ORIGIN__/russia/region
 - World economy: __PUBLIC_ORIGIN__/world
 
 ## Top pages (most demanded)
 
-- Russia's economy today (snapshot): __PUBLIC_ORIGIN__/today
-- USD exchange rate today: __PUBLIC_ORIGIN__/today/usd-rub
-- Bank of Russia key rate today: __PUBLIC_ORIGIN__/today/key-rate
-- Inflation in Russia now: __PUBLIC_ORIGIN__/today/cpi
-- Consumer price index (CPI): __PUBLIC_ORIGIN__/indicator/cpi
-- Bank of Russia key rate: __PUBLIC_ORIGIN__/indicator/key-rate
-- USD/RUB exchange rate: __PUBLIC_ORIGIN__/indicator/usd-rub
-- EUR/RUB exchange rate: __PUBLIC_ORIGIN__/indicator/eur-rub
-- Unemployment rate: __PUBLIC_ORIGIN__/indicator/unemployment
-- Russia's GDP (nominal): __PUBLIC_ORIGIN__/indicator/gdp-nominal
-- Average wages: __PUBLIC_ORIGIN__/indicator/wages-nominal
-- Population: __PUBLIC_ORIGIN__/indicator/population
-- MOEX Index: __PUBLIC_ORIGIN__/indicator/imoex
-- Gasoline prices: __PUBLIC_ORIGIN__/indicator/fuel-ai95
-- Regional ranking by population: __PUBLIC_ORIGIN__/region-rating/chislennost-naseleniya
+- Russia's economy today (snapshot): __PUBLIC_ORIGIN__/russia/today
+- USD exchange rate today: __PUBLIC_ORIGIN__/russia/today/usd-rub
+- Bank of Russia key rate today: __PUBLIC_ORIGIN__/russia/today/key-rate
+- Inflation in Russia now: __PUBLIC_ORIGIN__/russia/today/cpi
+- Consumer price index (CPI): __PUBLIC_ORIGIN__/russia/indicator/cpi
+- Bank of Russia key rate: __PUBLIC_ORIGIN__/russia/indicator/key-rate
+- USD/RUB exchange rate: __PUBLIC_ORIGIN__/russia/indicator/usd-rub
+- EUR/RUB exchange rate: __PUBLIC_ORIGIN__/russia/indicator/eur-rub
+- Unemployment rate: __PUBLIC_ORIGIN__/russia/indicator/unemployment
+- Russia's GDP (nominal): __PUBLIC_ORIGIN__/russia/indicator/gdp-nominal
+- Average wages: __PUBLIC_ORIGIN__/russia/indicator/wages-nominal
+- Population: __PUBLIC_ORIGIN__/russia/indicator/population
+- MOEX Index: __PUBLIC_ORIGIN__/russia/indicator/imoex
+- Gasoline prices: __PUBLIC_ORIGIN__/russia/indicator/fuel-ai95
+- Regional ranking by population: __PUBLIC_ORIGIN__/russia/region-rating/chislennost-naseleniya
 
 ## Page structure (for programmatic access)
 
-- Macro indicator card: /indicator/{code} — chart, history from the first available year, view modes, forecast, methodology, source.
-- Annual summary: /indicator/{code}/{year} — values for a specific year.
-- Region: /region/{slug} — regional profile with all indicators.
-- Regional indicator: /region/{slug}/{code} — annual series, comparison with the Russia-wide average.
+- Macro indicator card: /russia/indicator/{code} — chart, history from the first available year, view modes, forecast, methodology, source.
+- Annual summary: /russia/indicator/{code}/{year} — values for a specific year.
+- Region: /russia/region/{slug} — regional profile with all indicators.
+- Regional indicator: /russia/region/{slug}/{code} — annual series, comparison with the Russia-wide average.
 - Country / world indicator: /world/… — available country series from official sources.
 - Every page shows: date of the latest value, unit of measurement, official source.
 

@@ -10,6 +10,7 @@ Disallow: /login
 Disallow: /register
 Disallow: /account
 Disallow: /russia/util/
+Disallow: /__honeypot__/
 
 User-agent: Yandex
 Allow: /
@@ -20,7 +21,7 @@ Disallow: /login
 Disallow: /register
 Disallow: /account
 Disallow: /russia/util/
-Host: __PUBLIC_ORIGIN__
+Disallow: /__honeypot__/
 
 User-agent: Googlebot
 Allow: /
@@ -31,6 +32,7 @@ Disallow: /login
 Disallow: /register
 Disallow: /account
 Disallow: /russia/util/
+Disallow: /__honeypot__/
 
 # Агрессивные скрейперы без SEO-ценности: срезаем весь контент.
 # Решают только каталог/страницы, которые им и так не нужны.
@@ -45,10 +47,10 @@ Disallow: /
 
 # Clean-param — межсекционная директива Яндекса (Yandex.Webmaster → «Найдены страницы-дубли с GET-параметрами»).
 # Сообщает роботу, какие GET-параметры считать незначащими, чтобы не индексировать дубли и склеить сигналы на канонической странице.
-# mode= НЕ включён: у view-mode семей (ИПЦ, RUONIA, жильё) каждый режим — отдельная каноническая страница.
+# mode= с 2026-09-03 каноничен только на базовый URL карточки — параметр склеиваем.
 # Лимит длины правила — 500 символов; разбиваем на несколько строк.
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
 Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
 
 Sitemap: __PUBLIC_ORIGIN__/sitemap.xml

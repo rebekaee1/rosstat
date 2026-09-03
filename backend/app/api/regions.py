@@ -315,7 +315,6 @@ async def regions_heatmap_series(code: str, db: AsyncSession = Depends(get_db)):
         .join(Region, Region.id == RegionDataPoint.region_id)
         .where(RegionDataPoint.indicator_id == indicator.id,
                Region.kind == "region")
-        .order_by(RegionDataPoint.year)
     )).all()
     if not rows:
         raise HTTPException(404, "Нет данных по этому показателю")

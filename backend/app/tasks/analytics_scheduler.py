@@ -8,7 +8,7 @@ from html import escape
 from sqlalchemy import delete, func, select
 
 from app.config import settings
-from app.database import async_session
+from app.database import analytics_session
 from app.models import BehaviorEvent, Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
 from app.services.alerting import send_telegram_digest
 from app.services.analytics_ingestion import (
@@ -33,7 +33,7 @@ async def analytics_hourly_job() -> None:
         return
     counter_id = _primary_counter_id()
     yesterday = date.today() - timedelta(days=1)
-    async with async_session() as db:
+    async with analytics_session() as db:
         run = await start_sync_run(
             db,
             source="yandex_metrika",
@@ -73,7 +73,7 @@ async def analytics_hourly_job() -> None:
 
 
 async def _user_stats_lines() -> list[str]:
-    async with async_session() as db:
+    async with analytics_session() as db:
         total = await db.scalar(select(func.count(User.id))) or 0
         since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=1)
         new_users = (await db.execute(
@@ -121,7 +121,7 @@ async def _search_demand_lines(report_date: date) -> list[str]:
     выбранное, брошенное) + запросы с 0 результатов = пробелы в каталоге."""
     start = datetime.combine(report_date, time.min)
     end = start + timedelta(days=1)
-    async with async_session() as db:
+    async with analytics_session() as db:
         rows = (await db.execute(
             select(FrontendEvent.event_name, FrontendEvent.params_json).where(
                 FrontendEvent.event_name.in_(["search_query", "search_select", "search_abandon"]),
@@ -222,7 +222,7 @@ async def acquisition_daily_job() -> None:
         return
     from app.services.metrika_acquisition import sync_acquisition_for_day
     yesterday = date.today() - timedelta(days=1)
-    async with async_session() as db:
+    async with analytics_session() as db:
         out = await sync_acquisition_for_day(db, yesterday)
     logger.info("Acquisition sync %s: %s", yesterday, out)
 
@@ -253,7 +253,7 @@ async def webmaster_queries_daily_job() -> None:
         return
     from app.services.analytics_backfill import backfill_webmaster_search_queries
     today = date.today()
-    async with async_session() as db:
+    async with analytics_session() as db:
         n = await backfill_webmaster_search_queries(
             db, date_from=today - timedelta(days=7), date_to=today - timedelta(days=1))
     logger.info("Webmaster search queries sync: %s rows", n)
@@ -271,7 +271,7 @@ async def behavior_retention_job() -> None:
     if not days:
         return
     cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
-    async with async_session() as db:
+    async with analytics_session() as db:
         res = await db.execute(delete(BehaviorEvent).where(BehaviorEvent.occurred_at < cutoff))
         await db.commit()
     logger.info("Behavior retention: deleted %s rows older than %s days", res.rowcount, days)
@@ -303,7 +303,7 @@ async def telegram_daily_digest_job() -> None:
         parts.append("ℹ️ Метрика отключена (нет токена) — только статистика БД")
     try:
         from app.services.dataset_inventory import build_inventory, format_inventory_html
-        async with async_session() as db:
+        async with analytics_session() as db:
             inv = await build_inventory(db)
         parts.append(format_inventory_html(inv))
     except Exception:
@@ -318,7 +318,7 @@ async def analytics_daily_job() -> None:
         logger.info("Analytics daily sync skipped: analytics disabled")
         return
     counter_id = _primary_counter_id()
-    async with async_session() as db:
+    async with analytics_session() as db:
         run = await start_sync_run(
             db,
             source="yandex_metrika",

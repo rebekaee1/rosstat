@@ -9,6 +9,7 @@ import {
   locationsEqual,
   MAP_OVERVIEW,
   DEFAULT_MAP_CODE,
+  resolveRegionsMapPaint,
 } from './regionsMapUrl';
 
 describe('regionsMapUrl', () => {
@@ -93,5 +94,37 @@ describe('regionsMapUrl', () => {
       { pathname: '/russia/region/map/x', search: '?year=1' },
       { pathname: '/russia/region/map/x', search: '?year=1' },
     )).toBe(true);
+  });
+
+  it('первый кадр карты красится из heatmap, не дожидаясь всех лет', () => {
+    const heatmap = {
+      year: 2024,
+      indicator: { code: 'wages', name: 'Зарплата', unit: 'рублей' },
+      values: [
+        { slug: 'moskva', value: 100 },
+        { slug: 'tatarstan', value: 80 },
+      ],
+    };
+    const first = resolveRegionsMapPaint({ heatmap, series: null, urlYear: null });
+    expect(first.year).toBe(2024);
+    expect(first.years).toEqual([2024]);
+    expect(first.valuesBySlug.get('moskva')).toBe(100);
+    expect(first.indicator.name).toBe('Зарплата');
+    expect(first.hasHistory).toBe(false);
+
+    const series = {
+      years: [2020, 2024],
+      last_year: 2024,
+      indicator: { code: 'wages', name: 'Зарплата', unit: 'рублей' },
+      values_by_year: {
+        2020: { moskva: 70 },
+        2024: { moskva: 110, tatarstan: 85 },
+      },
+    };
+    const later = resolveRegionsMapPaint({ heatmap, series, urlYear: 2020 });
+    expect(later.year).toBe(2020);
+    expect(later.years).toEqual([2020, 2024]);
+    expect(later.valuesBySlug.get('moskva')).toBe(70);
+    expect(later.hasHistory).toBe(true);
   });
 });

@@ -28,7 +28,7 @@ from typing import Any
 from sqlalchemy import select
 
 from app.config import settings
-from app.database import async_session
+from app.database import analytics_session
 from app.models import (
     BehaviorEvent,
     BehaviorSession,
@@ -106,7 +106,7 @@ _COLUMN_GUARDS = [
 ]
 
 
-def _client():
+def _client(*, send_receive_timeout: int = 30):
     import clickhouse_connect
     return clickhouse_connect.get_client(
         host=settings.clickhouse_host,
@@ -115,7 +115,7 @@ def _client():
         username=settings.clickhouse_user,
         password=settings.clickhouse_password,
         connect_timeout=5,
-        send_receive_timeout=30,
+        send_receive_timeout=send_receive_timeout,
     )
 
 
@@ -149,61 +149,69 @@ async def last_sync_age_minutes() -> int | None:
     return int((datetime.now(timezone.utc).replace(tzinfo=None) - ts).total_seconds() / 60)
 
 
-async def _sync_events(db, ch) -> int:
-    """behavior_events + frontend_events: append-only по id-курсору."""
+async def _sync_events(ch) -> int:
+    """behavior_events + frontend_events: fetch batch → close PG → insert CH."""
     total = 0
     cursor = await _cursor_get("behavior_events")
     while True:
-        rows = (await db.execute(
-            select(BehaviorEvent).where(BehaviorEvent.id > cursor)
-            .order_by(BehaviorEvent.id).limit(_BATCH)
-        )).scalars().all()
-        if not rows:
-            break
-        ch.insert(
-            "behavior_events",
-            [[
+        async with analytics_session() as db:
+            rows = (await db.execute(
+                select(BehaviorEvent).where(BehaviorEvent.id > cursor)
+                .order_by(BehaviorEvent.id).limit(_BATCH)
+            )).scalars().all()
+            payload = [[
                 r.id, r.event_type or "", r.session_id_hash or "", r.visitor_id_hash or "",
                 r.user_id or "", 1 if r.authed else 0, r.page or "", r.element_path or "",
                 r.element_text or "", 1 if r.is_dead else 0, 1 if r.is_rage else 0,
                 json.dumps(r.params_json or {}, ensure_ascii=False), _dt(r.occurred_at),
-            ] for r in rows],
+            ] for r in rows] if rows else []
+            last_id = rows[-1].id if rows else None
+            n = len(rows)
+        if not payload:
+            break
+        ch.insert(
+            "behavior_events",
+            payload,
             column_names=[
                 "id", "event_type", "session_id_hash", "visitor_id_hash", "user_id",
                 "authed", "page", "element_path", "element_text", "is_dead", "is_rage",
                 "params", "occurred_at",
             ],
         )
-        cursor = rows[-1].id
-        total += len(rows)
+        cursor = last_id
+        total += n
         await _cursor_set("behavior_events", cursor)
-        if len(rows) < _BATCH:
+        if n < _BATCH:
             break
 
     cursor = await _cursor_get("frontend_events")
     while True:
-        rows = (await db.execute(
-            select(FrontendEvent).where(FrontendEvent.id > cursor)
-            .order_by(FrontendEvent.id).limit(_BATCH)
-        )).scalars().all()
-        if not rows:
-            break
-        ch.insert(
-            "frontend_events",
-            [[
+        async with analytics_session() as db:
+            rows = (await db.execute(
+                select(FrontendEvent).where(FrontendEvent.id > cursor)
+                .order_by(FrontendEvent.id).limit(_BATCH)
+            )).scalars().all()
+            payload = [[
                 r.id, r.event_name or "", r.session_id_hash or "", r.visitor_id_hash or "",
                 r.user_id or "", 1 if r.authed else 0, r.url or "",
                 json.dumps(r.params_json or {}, ensure_ascii=False), _dt(r.occurred_at),
-            ] for r in rows],
+            ] for r in rows] if rows else []
+            last_id = rows[-1].id if rows else None
+            n = len(rows)
+        if not payload:
+            break
+        ch.insert(
+            "frontend_events",
+            payload,
             column_names=[
                 "id", "event_name", "session_id_hash", "visitor_id_hash", "user_id",
                 "authed", "url", "params", "occurred_at",
             ],
         )
-        cursor = rows[-1].id
-        total += len(rows)
+        cursor = last_id
+        total += n
         await _cursor_set("frontend_events", cursor)
-        if len(rows) < _BATCH:
+        if n < _BATCH:
             break
     return total
 
@@ -324,8 +332,8 @@ async def clickhouse_sync_job() -> None:
         logger.warning("ClickHouse unavailable, sync skipped: %s", exc)
         return
     try:
-        async with async_session() as db:
-            n_events = await _sync_events(db, ch)
+        n_events = await _sync_events(ch)
+        async with analytics_session() as db:
             n_repl = await _sync_replacing(db, ch)
         from app.core.cache import get_state_redis
         r = await get_state_redis()
@@ -354,9 +362,8 @@ async def resync() -> None:
         await loop.run_in_executor(None, _ensure_schema, ch)
         for table in ("behavior_events", "frontend_events"):
             await _cursor_set(table, 0)
-        async with async_session() as db:
-            n_events = await _sync_events(db, ch)
-            # Бутстрап: replacing-слои льём всей историей, не 2-дневным окном.
+        n_events = await _sync_events(ch)
+        async with analytics_session() as db:
             n_repl = await _sync_replacing(db, ch, days=3650)
         from app.core.cache import get_state_redis
         r = await get_state_redis()
@@ -404,8 +411,15 @@ SLICE_DIMENSIONS = {
 }
 
 
+_SLICE_TIMEOUT_SEC = 20
+
+
 async def run_slice(metric: str, dims: list[str], days: int = 30, limit: int = 1000) -> dict[str, Any]:
-    """Конструктор среза: метрика × 1-2 измерения × период → строки."""
+    """Конструктор среза: метрика × 1-2 измерения × период → строки.
+
+    Только ClickHouse, без Postgres. Таймаут — чтобы зависший CH не держал
+    воркер; вызывающий код (BI «Срезы», Пульс) ловит исключение сам.
+    """
     if metric not in SLICE_METRICS:
         raise ValueError(f"Unknown metric: {metric}")
     table, expr = SLICE_METRICS[metric]
@@ -434,16 +448,22 @@ async def run_slice(metric: str, dims: list[str], days: int = 30, limit: int = 1
     loop = asyncio.get_running_loop()
 
     def _run():
-        ch = _client()
+        ch = _client(send_receive_timeout=_SLICE_TIMEOUT_SEC)
         try:
             res = ch.query(sql)
-            return res.column_names, res.result_rows
+            return list(res.column_names), res.result_rows
         finally:
             ch.close()
 
-    cols, rows = await loop.run_in_executor(None, _run)
+    try:
+        cols, rows = await asyncio.wait_for(
+            loop.run_in_executor(None, _run),
+            timeout=_SLICE_TIMEOUT_SEC + 5,
+        )
+    except TimeoutError as exc:
+        raise RuntimeError("ClickHouse slice timed out") from exc
     return {
         "metric": metric, "dimensions": sel_dims, "days": days, "sql": sql,
-        "columns": list(cols),
-        "rows": [list(r) for r in rows],
+        "columns": cols,
+        "rows": [dict(zip(cols, r, strict=False)) for r in rows],
     }

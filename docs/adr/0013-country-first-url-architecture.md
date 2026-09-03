@@ -272,3 +272,16 @@ IndexNow после ETL — карточки + годовые landing текущ
 по статическим секциям `site_urls`, отдельно на apex и `ru.` после cutover.
 Google Search Console (Domain property, sitemap shards, Request Indexing
 хабов) — руками владельца; Indexing API не строим.
+
+### 2026-09-03 — один канон до cutover (Р-А) и Proposed инверсия сплита (Р-Б)
+
+**Р-А (сделано в коде).** До `apex_locale_en` `ru.forecasteconomy.com` отдаёт
+`<link rel=canonical>` на apex, пустой `<sitemapindex>`, robots без `Host:`.
+Зеркало `ru.` не кормит Вебмастер sitemap'ом — иначе 22k холостых запросов
+робота в день. При cutover переключается одним флагом.
+
+**Р-Б (Proposed, в код не включается без слова владельца).** 88% органики —
+Яндекс на apex-URL. Переключение apex на EN переносит русские позиции на
+`ru.` через hreflang, который вес не переносит. Альтернатива: apex остаётся
+RU, EN живёт на `en.forecasteconomy.com`. Path-identical сохраняется.
+До подтверждения cutover-флаг не трогаем.

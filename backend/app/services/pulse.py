@@ -22,10 +22,11 @@ from sqlalchemy import func, select
 
 from app.config import settings
 from app.core.cache import get_state_redis
-from app.database import async_session
+from app.database import analytics_session
 from app.models import (
     AuthAudit,
     BehaviorEvent,
+    BehaviorSession,
     Consent,
     EmailCredential,
     FetchLog,
@@ -139,19 +140,16 @@ async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
     return acq
 
 
-async def _seo_snapshot(db) -> dict[str, Any]:
+async def _seo_snapshot(db=None) -> dict[str, Any]:
     """Индексация в Яндексе + спрос без покрытия — ежедневно в снапшот Пульса.
 
-    Н-24 (2026-07-08): владелец считал, что LLM-аналитик знает о доле
-    проиндексированных страниц — на деле эта цифра жила только в отдельном
-    ДЕТЕРМИНИРОВАННОМ еженедельном отчёте (`webmaster_indexing_report.py`,
-    пн 09:30, без LLM), в дневной снапшот не попадала вообще. Тянем summary
-    Вебмастера живым вызовом (дёшево, раз в день) + топ поисковых запросов
-    из уже синкнутой `webmaster_search_queries` (08:40 МСК)."""
+    HTTP к Вебмастеру выполняется без открытой PG-сессии. Число URL —
+    из `/sitemap-stats.json` (ночной билд), не полный проход реестра.
+    """
     if not settings.yandex_webmaster_token:
         return {"available": False, "reason": "webmaster token not configured"}
     try:
-        from app.services.site_urls import collect_all_paths
+        from app.services.sitemap_static import url_count_from_stats
         from app.services.webmaster_indexing_report import _report_host_ids
         from app.services.yandex_webmaster_client import YandexWebmasterClient
 
@@ -159,9 +157,6 @@ async def _seo_snapshot(db) -> dict[str, Any]:
         user = await client.user()
         user_id = user.data["user_id"]
 
-        # Dual-host (ADR-0013 §F): summary по каждому свойству Вебмастера
-        # (apex всегда, ru. после cutover). Верхний уровень снапшота — apex
-        # (обратная совместимость с memory_core/BI), полный срез — summary_by_host.
         summary_by_host: dict[str, dict[str, Any]] = {}
         host_ids = _report_host_ids()
         primary = None
@@ -184,13 +179,8 @@ async def _seo_snapshot(db) -> dict[str, Any]:
             return {"available": False, "reason": "summary fetch failed"}
         summary = primary
         searchable = summary.get("searchable_pages_count")
-        total_urls = len(await collect_all_paths(db))
+        total_urls = url_count_from_stats()
 
-        # Причины исключения страниц (Н-24, доп. проход 2026-07-08): summary
-        # даёт голое число excluded_pages_count без объяснения — LLM не может
-        # посоветовать, что чинить. search-urls/events/samples отдаёт по
-        # каждому событию reason (excluded_url_status); агрегируем top-5.
-        # Сэмпл тянем с apex: причины общесайтовые, LLM-срезу достаточно одного.
         exclusion_reasons: list[dict[str, Any]] = []
         try:
             events = (await client.search_events_samples(
@@ -209,47 +199,68 @@ async def _seo_snapshot(db) -> dict[str, Any]:
         except Exception:
             logger.warning("Pulse SEO snapshot: exclusion reasons unavailable", exc_info=True)
 
-        last_date = await db.scalar(select(func.max(WebmasterSearchQuery.date)))
+        last_date = None
         top_demand: list[dict[str, Any]] = []
         demand_by_host: list[dict[str, Any]] = []
-        if last_date:
-            rows = (await db.execute(
-                select(
-                    WebmasterSearchQuery.query,
-                    func.sum(WebmasterSearchQuery.impressions),
-                    func.sum(WebmasterSearchQuery.clicks),
-                    func.avg(WebmasterSearchQuery.position),
+        indexing_daily: dict[str, Any] | None = None
+        async with analytics_session() as seo_db:
+            last_date = await seo_db.scalar(select(func.max(WebmasterSearchQuery.date)))
+            if last_date:
+                rows = (await seo_db.execute(
+                    select(
+                        WebmasterSearchQuery.query,
+                        func.sum(WebmasterSearchQuery.impressions),
+                        func.sum(WebmasterSearchQuery.clicks),
+                        func.avg(WebmasterSearchQuery.position),
+                    )
+                    .where(WebmasterSearchQuery.date == last_date)
+                    .group_by(WebmasterSearchQuery.query)
+                    .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
+                    .limit(10)
+                )).all()
+                top_demand = [
+                    {
+                        "query": q, "impressions": int(i or 0), "clicks": int(c or 0),
+                        "avg_position": round(float(p), 1) if p is not None else None,
+                    }
+                    for q, i, c, p in rows
+                ]
+                host_rows = (await seo_db.execute(
+                    select(
+                        WebmasterSearchQuery.host,
+                        func.sum(WebmasterSearchQuery.impressions),
+                        func.sum(WebmasterSearchQuery.clicks),
+                    )
+                    .where(WebmasterSearchQuery.date == last_date)
+                    .group_by(WebmasterSearchQuery.host)
+                    .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
+                )).all()
+                demand_by_host = [
+                    {
+                        "host": h,
+                        "impressions": int(i or 0),
+                        "clicks": int(c or 0),
+                    }
+                    for h, i, c in host_rows
+                ]
+            try:
+                from app.models import WebmasterIndexingDaily
+                from app.services.display import today_msk
+                row = await seo_db.scalar(
+                    select(WebmasterIndexingDaily).where(
+                        WebmasterIndexingDaily.host == "forecasteconomy.com",
+                        WebmasterIndexingDaily.day == today_msk(),
+                    )
                 )
-                .where(WebmasterSearchQuery.date == last_date)
-                .group_by(WebmasterSearchQuery.query)
-                .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
-                .limit(10)
-            )).all()
-            top_demand = [
-                {
-                    "query": q, "impressions": int(i or 0), "clicks": int(c or 0),
-                    "avg_position": round(float(p), 1) if p is not None else None,
-                }
-                for q, i, c, p in rows
-            ]
-            host_rows = (await db.execute(
-                select(
-                    WebmasterSearchQuery.host,
-                    func.sum(WebmasterSearchQuery.impressions),
-                    func.sum(WebmasterSearchQuery.clicks),
-                )
-                .where(WebmasterSearchQuery.date == last_date)
-                .group_by(WebmasterSearchQuery.host)
-                .order_by(func.sum(WebmasterSearchQuery.impressions).desc())
-            )).all()
-            demand_by_host = [
-                {
-                    "host": h,
-                    "impressions": int(i or 0),
-                    "clicks": int(c or 0),
-                }
-                for h, i, c in host_rows
-            ]
+                if row:
+                    indexing_daily = {
+                        "in_search": row.in_search,
+                        "crawled_2xx": row.crawled_2xx,
+                        "crawled_5xx": row.crawled_5xx,
+                        "sitemap_errors": row.sitemap_errors,
+                    }
+            except Exception:
+                indexing_daily = None
         return {
             "available": True,
             "sitemap_urls_total": total_urls,
@@ -265,10 +276,70 @@ async def _seo_snapshot(db) -> dict[str, Any]:
             "top_search_queries_date": last_date.isoformat() if last_date else None,
             "top_search_queries": top_demand,
             "demand_by_host": demand_by_host,
+            "indexing_daily": indexing_daily,
         }
     except Exception:
         logger.warning("Pulse SEO snapshot failed", exc_info=True)
         return {"available": False, "reason": "fetch failed"}
+
+
+async def _bot_signals(d: date) -> dict[str, Any]:
+    """Агрегат бот-признаков behavior_sessions за день (план 2026-09-03)."""
+    start, end = _day_bounds(d)
+    async with analytics_session() as db:
+        total = int(await db.scalar(
+            select(func.count()).select_from(BehaviorSession).where(
+                BehaviorSession.started_at >= start, BehaviorSession.started_at < end,
+            )
+        ) or 0)
+        webdriver = int(await db.scalar(
+            select(func.count()).select_from(BehaviorSession).where(
+                BehaviorSession.started_at >= start, BehaviorSession.started_at < end,
+                BehaviorSession.is_webdriver.is_(True),
+            )
+        ) or 0)
+        by_country_rows = (await db.execute(
+            select(BehaviorSession.country, func.count())
+            .where(BehaviorSession.started_at >= start, BehaviorSession.started_at < end)
+            .group_by(BehaviorSession.country)
+            .order_by(func.count().desc())
+            .limit(8)
+        )).all()
+    share = round(100 * webdriver / total, 1) if total else 0
+    sg_n = 0
+    for k, v in by_country_rows:
+        name = (k or "").casefold()
+        if name in {"sg", "singapore", "сингапур"}:
+            sg_n += int(v)
+    sg_share = round(100 * sg_n / total, 1) if total else 0
+    if webdriver >= 30 and share >= 20:
+        try:
+            from app.services.analytics_alerts import _alert
+            await _alert(
+                "bot_wave",
+                f"Волна webdriver-сессий: {webdriver} из {total} ({share}%) за {d}.",
+            )
+        except Exception:  # noqa: BLE001
+            logger.warning("bot_wave alert failed", exc_info=True)
+    if sg_n >= 50 and sg_share >= 25:
+        try:
+            from app.services.analytics_alerts import _alert
+            await _alert(
+                "sg_scrape",
+                f"Скрейп из Сингапура: {sg_n} сессий ({sg_share}% от {total}) за {d}. "
+                "Гео-блок RUSTATS_SCRAPE_BLOCK_COUNTRIES=SG.",
+            )
+        except Exception:  # noqa: BLE001
+            logger.warning("sg_scrape alert failed", exc_info=True)
+    return {
+        "available": True,
+        "sessions": total,
+        "webdriver": webdriver,
+        "webdriver_share_pct": share,
+        "singapore": sg_n,
+        "singapore_share_pct": sg_share,
+        "top_countries": {str(k or "unknown"): int(v) for k, v in by_country_rows},
+    }
 
 
 async def build_snapshot(d: date) -> dict[str, Any]:
@@ -276,7 +347,7 @@ async def build_snapshot(d: date) -> dict[str, Any]:
     start, end = _day_bounds(d)
     snap: dict[str, Any] = {"date": d.isoformat()}
 
-    async with async_session() as db:
+    async with analytics_session() as db:
         # --- Пользователи -------------------------------------------------
         total_users = await db.scalar(select(func.count(User.id))) or 0
         new_users = (await db.execute(
@@ -502,19 +573,21 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         ) or 0
         snap["data"] = {"new_points": new_points}
 
-        # --- SEO / индексация в Яндексе --------------------------------------
-        snap["seo"] = await _seo_snapshot(db)
-
-        # --- ПОЛНЫЙ дневной контекст из единого слоя витрин (этап 6) ---------
-        # Директива владельца: LLM видит ВСЁ, что есть в аналитике за день.
-        # Те же функции кормят BI-дашборд — цифра в дайджесте Пульса и на
-        # экране BI по построению одна и та же.
-        try:
-            from app.services.analytics_marts import build_marts_daily_context
+    # HTTP Вебмастера и витрины — вне основной сессии (idle in transaction).
+    snap["seo"] = await _seo_snapshot()
+    try:
+        from app.services.analytics_marts import build_marts_daily_context
+        async with analytics_session() as db:
             snap["marts"] = await build_marts_daily_context(db)
-        except Exception:  # noqa: BLE001 — Пульс не падает из-за витрин
-            logger.exception("Pulse marts context failed")
-            snap["marts"] = {"error": "marts context unavailable"}
+    except Exception:  # noqa: BLE001 — Пульс не падает из-за витрин
+        logger.exception("Pulse marts context failed")
+        snap["marts"] = {"error": "marts context unavailable"}
+
+    try:
+        snap["bots"] = await _bot_signals(d)
+    except Exception:  # noqa: BLE001
+        logger.exception("Pulse bot signals failed")
+        snap["bots"] = {"available": False}
 
     return snap
 
@@ -522,7 +595,7 @@ async def build_snapshot(d: date) -> dict[str, Any]:
 async def build_acquisition(d: date) -> dict[str, Any]:
     """Свежий срез привлечения из хранилища (для обновления снапшота,
     зафиксированного в 23:57, — утренний синк Метрики приходит позже)."""
-    async with async_session() as db:
+    async with analytics_session() as db:
         return await _acquisition_from_warehouse(db, d)
 
 

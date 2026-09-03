@@ -25,7 +25,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import (
@@ -45,11 +45,24 @@ from app.models import (
 
 # Выборка последних строк для подсчёта фактических JSON-ключей: достаточно,
 # чтобы увидеть весь словарь параметров, и дёшево для ежедневного вызова.
-_JSON_SAMPLE_ROWS = 2000
+_JSON_SAMPLE_ROWS = 200
 
 
 def _table_columns(model) -> int:
     return len(model.__table__.columns)
+
+
+async def _row_count(db: AsyncSession, model) -> int:
+    """Точный COUNT на sqlite; на Postgres — оценка pg_class, иначе COUNT."""
+    dialect = db.bind.dialect.name if db.bind is not None else ""
+    if dialect == "postgresql":
+        est = await db.scalar(
+            text("SELECT reltuples::bigint FROM pg_class WHERE relname = :n"),
+            {"n": model.__tablename__},
+        )
+        if est is not None and int(est) > 0:
+            return int(est)
+    return int(await db.scalar(select(func.count()).select_from(model)) or 0)
 
 
 async def _json_keys(db: AsyncSession, model, json_col, order_col) -> set[str]:
@@ -82,7 +95,7 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
     sections: dict[str, dict[str, Any]] = {}
 
     # --- Поведенческий поток -------------------------------------------------
-    b_total = await db.scalar(select(func.count(BehaviorEvent.id))) or 0
+    b_total = await _row_count(db, BehaviorEvent)
     b_by_type = dict((await db.execute(
         select(BehaviorEvent.event_type, func.count()).group_by(BehaviorEvent.event_type)
     )).all())
@@ -97,7 +110,7 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
     # --- Портреты сессий собственного счётчика (аудитория, 2026-07-05) --------
     from app.models import BehaviorSession
 
-    s_total = await db.scalar(select(func.count(BehaviorSession.session_id_hash))) or 0
+    s_total = await _row_count(db, BehaviorSession)
     s_devices = dict((await db.execute(
         select(BehaviorSession.device_type, func.count())
         .group_by(BehaviorSession.device_type)
@@ -111,7 +124,7 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
     }
 
     # --- Бизнес-события фронта ----------------------------------------------
-    f_total = await db.scalar(select(func.count(FrontendEvent.id))) or 0
+    f_total = await _row_count(db, FrontendEvent)
     f_names = await db.scalar(select(func.count(func.distinct(FrontendEvent.event_name)))) or 0
     f_keys = await _json_keys(db, FrontendEvent, FrontendEvent.params_json, FrontendEvent.id)
     f_from, f_to = await _time_range(db, FrontendEvent.occurred_at)
@@ -122,7 +135,7 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
     }
 
     # --- Повизитная Метрика (Logs API) ----------------------------------------
-    v_total = await db.scalar(select(func.count(RawMetrikaVisit.id))) or 0
+    v_total = await _row_count(db, RawMetrikaVisit)
     v_keys = await _json_keys(db, RawMetrikaVisit, RawMetrikaVisit.raw_json, RawMetrikaVisit.id)
     v_from, v_to = await _time_range(db, RawMetrikaVisit.visit_date)
     sections["raw_metrika_visits"] = {
@@ -177,7 +190,7 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
     from app.models import DailyGoal, DailyPage, DailyTraffic, IdentityLink, MetrikaGoal, ServerSession
 
     sections["server_sessions"] = {
-        "rows": await db.scalar(select(func.count(ServerSession.id))) or 0,
+        "rows": await _row_count(db, ServerSession),
         "columns": _table_columns(ServerSession),
     }
     sections["identity_links"] = {
@@ -199,9 +212,9 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
 
     # --- Продуктовое ядро --------------------------------------------------------
     sections["core"] = {
-        "users": await db.scalar(select(func.count(User.id))) or 0,
-        "indicator_points": await db.scalar(select(func.count(IndicatorData.id))) or 0,
-        "region_points": await db.scalar(select(func.count(RegionDataPoint.id))) or 0,
+        "users": await _row_count(db, User),
+        "indicator_points": await _row_count(db, IndicatorData),
+        "region_points": await _row_count(db, RegionDataPoint),
     }
 
     inv["sections"] = sections

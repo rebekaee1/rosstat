@@ -185,7 +185,7 @@ def test_build_document_og_and_jsonld_follow_request_origin():
                 include_app=True,
             )
         )
-        assert 'href="https://ru.forecasteconomy.com/russia/indicator/cpi"' in html
+        assert 'href="https://forecasteconomy.com/russia/indicator/cpi"' in html
         assert 'href="https://ru.forecasteconomy.com/feed.xml"' in html
         assert 'content="https://ru.forecasteconomy.com/og-image-v2.png"' in html
         assert "hreflang=" not in html
@@ -491,6 +491,9 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
     token = set_locale("en")
     try:
         html_en = asyncio.run(seo_renderer.render_home_html(None))
+        assert 'id="fe-bootstrap"' in html_en
+        assert '"locale":"en"' in html_en
+        assert "Consumer Price Index" in html_en
         assert PAGE_META_EN["home"].title in html_en
         assert '<html lang="en"' in html_en or "lang=\"en\"" in html_en
         assert "Official data for Russia, regions, and countries" in html_en
@@ -1292,3 +1295,52 @@ def test_locale_pref_cookie_persist_without_geo_redirect(monkeypatch):
     assert persist is not None and persist.status_code == 303
     assert persist.headers["location"] == "/russia/category/gdp"
     assert "fe_locale_pref=en" in persist.headers.get("set-cookie", "")
+
+
+def test_persist_locale_pref_keeps_preview_until_cutover(monkeypatch):
+    """До cutover 303 не сбрасывает preview_locale и сам ставит его для EN."""
+    from urllib.parse import parse_qs, urlsplit
+
+    from starlette.requests import Request
+
+    from app.config import settings
+    from app.main import _persist_locale_pref_redirect
+
+    monkeypatch.setattr(settings, "apex_locale_en", False)
+
+    def _req(query: bytes, path: str = "/"):
+        return Request({
+            "type": "http",
+            "method": "GET",
+            "path": path,
+            "query_string": query,
+            "scheme": "http",
+            "server": ("localhost", 3000),
+            "headers": [(b"host", b"localhost:3000")],
+        })
+
+    persist = _persist_locale_pref_redirect(
+        _req(b"preview_locale=en&locale_pref=en", "/"),
+    )
+    assert persist is not None and persist.status_code == 303
+    loc = persist.headers["location"]
+    qs = parse_qs(urlsplit(loc).query)
+    assert loc.startswith("/")
+    assert "forecasteconomy.com" not in loc
+    assert qs.get("preview_locale") == ["en"]
+    assert "locale_pref" not in qs
+    assert "fe_locale_pref=en" in persist.headers.get("set-cookie", "")
+
+    injected = _persist_locale_pref_redirect(_req(b"locale_pref=en", "/russia"))
+    assert injected is not None
+    injected_qs = parse_qs(urlsplit(injected.headers["location"]).query)
+    assert injected.headers["location"].startswith("/russia")
+    assert injected_qs.get("preview_locale") == ["en"]
+
+    back_ru = _persist_locale_pref_redirect(
+        _req(b"preview_locale=en&locale_pref=ru", "/"),
+    )
+    assert back_ru is not None
+    ru_qs = parse_qs(urlsplit(back_ru.headers["location"]).query)
+    assert "preview_locale" not in ru_qs
+    assert "fe_locale_pref=ru" in back_ru.headers.get("set-cookie", "")

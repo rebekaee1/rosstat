@@ -4,7 +4,9 @@
  * Language = host, not ?lang=. Localhost and non-apex hosts default to ru.
  * Production apex stays ru until VITE_APEX_LOCALE_EN=true (cutover with
  * ru. as Russian canon). Explicit EN: X-FE-Locale / en.* / preview_locale.
- * Vite-only: ?preview_locale=en (noindex, not canonical).
+ * Until cutover the language switcher stays on the current origin and uses
+ * ?preview_locale=en (noindex, not canonical) — never navigates localhost
+ * onto production apex.
  */
 
 export const LOCALE_HEADER = 'X-FE-Locale';
@@ -69,8 +71,52 @@ export function ogLocale(locale) {
   return locale === 'en' ? 'en_US' : 'ru_RU';
 }
 
-/** Swap host for language switcher links (path-identical). */
-export function languageAlternateOrigin(locale, { ruOrigin, enOrigin } = {}) {
+/** Apex / ru. / en. production hosts — never localhost or docker names. */
+export function isProductionLocaleHost(hostname) {
+  const h = normalizeHost(hostname);
+  if (!h) return false;
+  if (PRODUCTION_APEX_HOSTS.has(h)) return true;
+  return (
+    h.endsWith('.forecasteconomy.com')
+    && (h.startsWith('ru.') || h.startsWith('en.'))
+  );
+}
+
+/**
+ * After cutover, production hosts swap EN=apex / RU=ru.
+ * Until then (and on localhost) the switcher stays on the current origin.
+ */
+export function usesHostSwapLanguageSwitch({ hostname, apexLocaleEn } = {}) {
+  return apexLocaleEnEnabled(apexLocaleEn) && isProductionLocaleHost(hostname);
+}
+
+function _windowOrigin() {
+  if (typeof window === 'undefined') return '';
+  return String(window.location.origin || '').replace(/\/$/, '');
+}
+
+function _windowHostname() {
+  if (typeof window === 'undefined') return '';
+  return window.location.hostname;
+}
+
+/**
+ * Origin for the language switcher.
+ * Until cutover / non-prod hosts: current origin (preview_locale does the rest).
+ * After cutover on prod hosts: path-identical host-swap.
+ */
+export function languageAlternateOrigin(locale, {
+  ruOrigin,
+  enOrigin,
+  hostname,
+  currentOrigin,
+  apexLocaleEn,
+} = {}) {
+  const host = hostname || _windowHostname();
+  const current = (currentOrigin || _windowOrigin()).replace(/\/$/, '');
+  if (!usesHostSwapLanguageSwitch({ hostname: host, apexLocaleEn })) {
+    return current;
+  }
   const ru = (ruOrigin || 'https://ru.forecasteconomy.com').replace(/\/$/, '');
   const en = (enOrigin || 'https://forecasteconomy.com').replace(/\/$/, '');
   return locale === 'en' ? en : ru;
@@ -98,16 +144,47 @@ export function setLocalePreference(locale, { hostname, protocol } = {}) {
   document.cookie = `${LOCALE_PREFERENCE_COOKIE}=${locale}; Path=/; Max-Age=31536000; SameSite=Lax${domainPart}${secure}`;
 }
 
-/** Navigate to the path-identical language host and persist explicit choice. */
-export function switchLanguage(locale) {
+/**
+ * Target URL for the language switcher (testable without navigation).
+ * Until cutover: same origin, EN sets preview_locale, RU clears it.
+ * After cutover on prod: host-swap, preview stripped.
+ * locale_pref stays so SSR persist can write the Domain cookie.
+ */
+export function buildLanguageSwitchUrl(locale, {
+  href,
+  hostname,
+  apexLocaleEn,
+  ruOrigin,
+  enOrigin,
+} = {}) {
+  if (!['ru', 'en'].includes(locale)) return href || '';
+  const currentHref = href || (typeof window !== 'undefined' ? window.location.href : '');
+  if (!currentHref) return '';
+  const current = new URL(currentHref);
+  const host = hostname || current.hostname;
+  const origin = languageAlternateOrigin(locale, {
+    hostname: host,
+    currentOrigin: current.origin,
+    apexLocaleEn,
+    ruOrigin,
+    enOrigin,
+  });
+  const url = new URL(`${current.pathname}${current.search}${current.hash}`, origin);
+  url.searchParams.set(LOCALE_PREF_QUERY, locale);
+  if (usesHostSwapLanguageSwitch({ hostname: host, apexLocaleEn })) {
+    url.searchParams.delete(PREVIEW_QUERY);
+  } else if (locale === 'en') {
+    url.searchParams.set(PREVIEW_QUERY, 'en');
+  } else {
+    url.searchParams.delete(PREVIEW_QUERY);
+  }
+  return url.toString();
+}
+
+/** Persist explicit choice, then navigate (preview until cutover, host-swap after). */
+export function switchLanguage(locale, opts) {
   if (typeof window === 'undefined') return;
   setLocalePreference(locale);
-  const origin = languageAlternateOrigin(locale);
-  const url = new URL(
-    `${window.location.pathname}${window.location.search}${window.location.hash}`,
-    origin,
-  );
-  // Первый hop: query виден на целевом хосте даже если cookie ещё host-only.
-  url.searchParams.set(LOCALE_PREF_QUERY, locale);
-  window.location.assign(url.toString());
+  const next = buildLanguageSwitchUrl(locale, opts);
+  if (next) window.location.assign(next);
 }

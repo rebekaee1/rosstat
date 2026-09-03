@@ -15,17 +15,22 @@ import {
 } from './api';
 import { useLocale } from '../i18n';
 
+export function indicatorsListQueryKey(locale, options = {}) {
+  const { category, includeInactive, includeUnlisted } = options;
+  return [
+    'indicators',
+    locale,
+    category ?? 'all',
+    includeInactive ? 'with_inactive' : 'active_only',
+    includeUnlisted ? 'with_unlisted' : 'listed_only',
+  ];
+}
+
 export function useIndicators(options = {}) {
   const { locale } = useLocale();
   const { category, includeInactive, includeUnlisted, enabled = true } = options;
   return useQuery({
-    queryKey: [
-      'indicators',
-      locale,
-      category ?? 'all',
-      includeInactive ? 'with_inactive' : 'active_only',
-      includeUnlisted ? 'with_unlisted' : 'listed_only',
-    ],
+    queryKey: indicatorsListQueryKey(locale, { category, includeInactive, includeUnlisted }),
     queryFn: ({ signal }) => fetchIndicators({ category, includeInactive, includeUnlisted }, { signal }),
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
