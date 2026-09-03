@@ -55,6 +55,16 @@ def test_etl_failure_and_zero_parse_respect_mute(monkeypatch):
     assert calls == [None, None]
 
 
+def test_realtime_login_alerts_broadcast(monkeypatch):
+    """Повторный вход (почта / OAuth) — тем же получателям, что регистрация."""
+    calls = _capture_send(monkeypatch)
+    monkeypatch.setattr(alerting.settings, "telegram_realtime_alerts_enabled", True)
+    monkeypatch.setattr(alerting.settings, "telegram_chat_id", "111", raising=False)
+    monkeypatch.setattr(alerting.settings, "telegram_digest_chat_ids", "222", raising=False)
+    asyncio.run(alerting.notify_login({"method": "OAuth (yandex)", "email": "a@b.c"}))
+    assert calls == ["111", "222"]
+
+
 def test_realtime_user_and_feedback_alerts_broadcast(monkeypatch):
     """Регистрации и обратная связь — всем получателям дайджеста
     (владелец + skrakan), указание владельца 2026-07-06."""

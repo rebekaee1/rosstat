@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { fireEvent, screen, within } from '@testing-library/react';
 import Navbar from './Navbar';
+import { switchLanguage } from '../i18n/locale';
 import { resolveActiveNavId } from '../lib/navItems';
 import Footer from './Footer';
 import { renderPage, mockApiGet } from '../test/renderPage';
@@ -16,11 +17,19 @@ vi.mock('gsap', () => ({
   },
 }));
 
+vi.mock('../i18n/locale', async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, switchLanguage: vi.fn() };
+});
+
 vi.mock('./IndicatorSearch', () => ({
   default: () => <div data-testid="indicator-search-stub" />,
 }));
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  switchLanguage.mockClear();
+  vi.restoreAllMocks();
+});
 
 function renderShell(route = '/') {
   mockApiGet([['/auth/me', { user: null }]]);
@@ -150,11 +159,42 @@ describe('Navbar H-4 menu', () => {
       for (const link of within(nav).queryAllByRole('link')) {
         expect(link.getAttribute('aria-current')).toBeNull();
       }
+
+      const triggers = within(nav).getAllByRole('button', { name: 'Language: English' });
+      expect(triggers.length).toBeGreaterThan(0);
+      expect(within(nav).queryByRole('button', { name: 'Язык: Русский' })).toBeNull();
+      expect(within(nav).queryByText('Русская версия')).toBeNull();
+
+      fireEvent.click(triggers[0]);
+      fireEvent.click(within(nav).getByRole('menuitem', { name: 'Русский' }));
+      expect(switchLanguage).toHaveBeenCalledWith('ru');
     } finally {
       const reset = new URL(window.location.href);
       reset.searchParams.delete('preview_locale');
       window.history.pushState({}, '', reset.toString());
     }
+  });
+
+  it('RU: в header флаг текущего языка, список — оба языка, English вызывает switchLanguage(en)', () => {
+    renderShell();
+
+    const nav = screen.getByRole('navigation');
+    const triggers = within(nav).getAllByRole('button', { name: 'Язык: Русский' });
+    expect(triggers.length).toBeGreaterThan(0);
+    expect(within(nav).queryByRole('button', { name: 'English' })).toBeNull();
+    expect(within(nav).queryByText('English')).toBeNull();
+
+    fireEvent.click(triggers[0]);
+    expect(within(nav).getByRole('menuitem', { name: 'Русский' }).getAttribute('aria-current')).toBe('true');
+    expect(within(nav).getByRole('menuitem', { name: 'English' })).toBeTruthy();
+
+    fireEvent.click(within(nav).getByRole('menuitem', { name: 'Русский' }));
+    expect(switchLanguage).not.toHaveBeenCalled();
+
+    fireEvent.click(triggers[0]);
+    fireEvent.click(within(nav).getByRole('menuitem', { name: 'English' }));
+    expect(switchLanguage).toHaveBeenCalledTimes(1);
+    expect(switchLanguage).toHaveBeenCalledWith('en');
   });
 });
 

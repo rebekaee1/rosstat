@@ -327,6 +327,60 @@ def test_sitemap_priority_listed_vs_unlisted():
     assert _sitemap_priority(listed=False, is_indicator=True) == "0.5"
 
 
+def test_sitemap_section_if_modified_since_still_200():
+    """Яндекс: при обращении к Sitemap сервер обязан вернуть 200.
+
+    Живой прод 2026-09-02: If-Modified-Since: Wed, 02 Sep 2026 12:00:00 GMT
+    на /sitemap-months.xml и /sitemap-world-years-12.xml давал 304, потому
+    что Last-Modified брался из max(<lastmod>) urlset (2025-01-01 / 2026-07-01).
+    """
+    from starlette.requests import Request
+
+    from app.api.sitemap import _xml_304_or_full, _xml_etag
+
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        "  <url>\n"
+        "    <loc>https://forecasteconomy.com/malta/indicator/x/2008</loc>\n"
+        "    <lastmod>2008-01-01</lastmod>\n"
+        "    <changefreq>yearly</changefreq>\n"
+        "    <priority>0.4</priority>\n"
+        "  </url>\n"
+        "</urlset>"
+    )
+    etag = _xml_etag(xml)
+
+    def _req(*header_pairs: tuple[bytes, bytes]) -> Request:
+        return Request(
+            {
+                "type": "http",
+                "asgi": {"version": "3.0"},
+                "http_version": "1.1",
+                "method": "GET",
+                "scheme": "https",
+                "path": "/sitemap-world-years-12.xml",
+                "raw_path": b"/sitemap-world-years-12.xml",
+                "query_string": b"",
+                "headers": list(header_pairs),
+                "client": ("127.0.0.1", 123),
+                "server": ("test", 80),
+            }
+        )
+
+    r = _xml_304_or_full(
+        xml,
+        etag,
+        _req((b"if-modified-since", b"Wed, 02 Sep 2026 12:00:00 GMT")),
+    )
+    assert r.status_code == 200
+    assert r.body.decode("utf-8").startswith("<?xml")
+    assert "last-modified" not in {k.lower() for k in r.headers}
+
+    cached = _xml_304_or_full(xml, etag, _req((b"if-none-match", etag.encode())))
+    assert cached.status_code == 304
+
+
 def test_sort_indicators_for_seo_puts_flagship_first():
     from app.services.seo_content import CATEGORY_META
     from app.services.seo_renderer import _sort_indicators_for_seo

@@ -90,6 +90,14 @@ async def _notify_new_user_safe(info: dict) -> None:
         logger.warning("notify_new_user failed", exc_info=True)
 
 
+async def _notify_login_safe(info: dict) -> None:
+    from app.services.alerting import notify_login
+    try:
+        await notify_login(info)
+    except Exception:
+        logger.warning("notify_login failed", exc_info=True)
+
+
 async def _start_session(response: Response, user: User) -> None:
     sid, csrf = await session_svc.create_session(str(user.id))
     set_session_cookies(response, sid, csrf)
@@ -182,6 +190,15 @@ async def login(body: LoginIn, request: Request, response: Response, db: AsyncSe
     await audit(db, user.id, "login", request)
     await db.commit()
     await _start_session(response, user)
+    await _notify_login_safe({
+        "method": "Email + пароль",
+        "email": ident,
+        "phone": None,
+        "display_name": user.display_name,
+        "ip": ip,
+        "user_agent": (request.headers.get("user-agent") or "")[:500],
+        "user_id": str(user.id),
+    })
     return {"user": await _serialize_with_admin(db, user)}
 
 

@@ -90,14 +90,14 @@ PRODUCT_CLAIM_ONLY_SURFACES = (
 )
 
 # EN-поверхности, где кириллица = утечка. Словарь messages.en.js содержит
-# «Русская версия» у переключателя языка — это имя целевого языка, не утечка.
+# «Русский» у переключателя языка — это имя целевого языка, не утечка.
 EN_NO_CYRILLIC = (
     'frontend/src/lib/compareCompatibility.js',
     'frontend/src/i18n/messages.en.js',
     'backend/app/data/i18n/indicator_copy_en.py',
 )
 EN_CYRILLIC_ALLOW = {
-    'frontend/src/i18n/messages.en.js': ('Русская версия',),
+    'frontend/src/i18n/messages.en.js': ('Русский',),
 }
 CYRILLIC_RE = re.compile(r'[А-Яа-яЁё]')
 

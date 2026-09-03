@@ -367,8 +367,11 @@ def test_render_russia_hub_html_locale_en_no_cyrillic_in_body(monkeypatch):
         assert PAGE_META_EN["russia"].h1 in html_en
         assert PAGE_META_EN["russia"].intro[:40] in html_en
         assert "Related sections" in html_en
-        assert "Economy today" in html_en
+        assert "Indicator categories" in html_en
         assert "Связанные разделы" not in html_en
+        related_en = re.search(r"Related sections.*?</ul>", html_en, re.DOTALL)
+        assert related_en, "missing related sections"
+        assert "Economy today" not in related_en.group(0)
         assert "Экономика сегодня" not in html_en
         # Main content blocks must stay Latin for locale=en.
         main = re.search(r"<main class=\"seo-page\">(.*?)</main>", html_en, re.DOTALL)
@@ -383,7 +386,10 @@ def test_render_russia_hub_html_locale_en_no_cyrillic_in_body(monkeypatch):
         assert status == 200
         assert PAGE_META["russia"].h1 in html_ru
         assert "Связанные разделы" in html_ru
-        assert "Экономика сегодня" in html_ru
+        assert "Категории показателей" in html_ru
+        related_ru = re.search(r"Связанные разделы.*?</ul>", html_ru, re.DOTALL)
+        assert related_ru, "missing related sections"
+        assert "Экономика сегодня" not in related_ru.group(0)
         assert "Related sections" not in html_ru
     finally:
         reset_locale(token_ru)

@@ -40,6 +40,14 @@ async def _notify_new_user_safe(info: dict) -> None:
         logger.warning("notify_new_user failed", exc_info=True)
 
 
+async def _notify_login_safe(info: dict) -> None:
+    from app.services.alerting import notify_login
+    try:
+        await notify_login(info)
+    except Exception:
+        logger.warning("notify_login failed", exc_info=True)
+
+
 def _safe_next(value: str | None) -> str:
     if not value or not value.startswith("/") or value.startswith("//"):
         return "/account"
@@ -194,17 +202,20 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
     await audit(db, user.id, intent if intent == "link" else "login", request, detail=provider)
     await db.commit()
 
+    auth_info = {
+        "method": f"OAuth ({provider})",
+        "email": profile.email,
+        "phone": profile.phone,
+        "display_name": profile.display_name,
+        "newsletter": newsletter,
+        "ip": request.client.host if request.client else None,
+        "user_agent": request.headers.get("user-agent"),
+        "user_id": str(user.id),
+    }
     if created:
-        await _notify_new_user_safe({
-            "method": f"OAuth ({provider})",
-            "email": profile.email,
-            "phone": profile.phone,
-            "display_name": profile.display_name,
-            "newsletter": newsletter,
-            "ip": request.client.host if request.client else None,
-            "user_agent": request.headers.get("user-agent"),
-            "user_id": str(user.id),
-        })
+        await _notify_new_user_safe(auth_info)
+    elif intent == "login":
+        await _notify_login_safe(auth_info)
 
     resp = RedirectResponse(safe_next, status_code=302)
     if intent == "login":

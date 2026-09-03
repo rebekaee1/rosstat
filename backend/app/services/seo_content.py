@@ -567,7 +567,6 @@ PAGE_META: dict[str, PageSeo] = {
             "показатели России, регионы России, Росстат, Банк России"
         ),
         links=(
-            (paths.today(), "Экономика сегодня"),
             (paths.russia_categories(), "Категории показателей"),
             (paths.russia_category("prices"), "Цены и инфляция"),
             (paths.region_hub(), "Регионы"),

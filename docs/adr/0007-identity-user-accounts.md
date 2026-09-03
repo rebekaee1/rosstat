@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-06-19
-- **Last verified:** 2026-06-19 (Phase 1 реализована локально: email+пароль, fake/Яндекс/VK OAuth, сессии в Redis, 152-ФЗ минимум).
+- **Last verified:** 2026-09-02 (прод: Яндекс ID живой; VK ID кабинет принимает только `/api/auth/vk/callback` без `/v1`).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 - **Контекст:** звонок-стратегия + грилл 2026-06-19. Личный кабинет как фундамент идентичности (lead-gen), от которого позже зависят монетизация, рассылки, download-gate.
 
@@ -149,3 +149,18 @@ Double-submit: cookie `XSRF-TOKEN` (не httpOnly, читается JS) + заг
 - **Цели Метрики.** `scripts/metrika-goals-audit.py` сверяет события фронта с
   целями счётчика (read-token) и создаёт недостающие JS-цели (`--create`,
   нужен write-token). 64 события без цели — список для владельца.
+
+### 2026-09-02 — прод: VK ID `redirect_uri` байт-в-байт с кабинетом
+
+Живой экран `id.vk.ru` для `client_id=54644188`: `error=invalid_request`,
+`redirect_uri is missing or invalid`, в payload приложения `name: DELETED`.
+Канонический путь `/api/v1/auth/oauth/vk/callback` кабинет **не** принимает.
+Тот же authorize с `https://forecasteconomy.com/api/auth/vk/callback` открывает
+форму «Вход в «forecasteconomy»». Compat-роутер это уже умеет; на проде нужен
+override `RUSTATS_OAUTH_VK_REDIRECT_URI` (пустое значение снова шлёт `/v1`).
+Яндекс ID: анонимная форма входа на `/v1` **не** значит, что Callback URL
+совпал. После аккаунта кабинет отдаёт `400 redirect_uri не совпадает с
+Callback URL`. Живой зарегистрированный URI — тот же compat-путь
+`https://forecasteconomy.com/api/auth/yandex/callback`; override
+`RUSTATS_OAUTH_YANDEX_REDIRECT_URI`. Cookie `fe_oauth` / сессия —
+`Domain=.forecasteconomy.com`. Кабинеты Яндекс/VK не трогать без явной команды.

@@ -260,7 +260,7 @@ def _index_304_or_full(xml: str, request: Request) -> Response:
 async def sitemap_section(
     section: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    """URL-набор ОДНОЙ секции: сборка только запрошенной группы, ETag/304.
+    """URL-набор ОДНОЙ секции: сборка только запрошенной группы.
 
     Мусорное имя отсекается без БД (реестр секций / префикс чанковой группы).
     Холодный miss стоит одну группу (не монолит — фикс П-13: 40+ с и 504).
@@ -341,61 +341,20 @@ def _xml_etag(xml: str) -> str:
     return f'W/"{hashlib.md5(xml.encode()).hexdigest()}"'
 
 
-def _xml_http_date(dt: datetime) -> str:
-    return format_datetime(dt.replace(microsecond=0), usegmt=True)
-
-
-def _last_modified_from_xml(xml: str) -> datetime | None:
-    """max(<lastmod>) urlset'а — HTTP-Last-Modified секции (или None)."""
-    mods = re.findall(r"<lastmod>([^<]+)</lastmod>", xml)
-    if not mods:
-        return None
-    try:
-        return max(
-            datetime.strptime(m[:10], "%Y-%m-%d") for m in mods
-        )
-    except ValueError:
-        return None
-
-
-def _xml_headers(xml: str, etag: str) -> dict[str, str]:
-    headers = {
+def _xml_headers(etag: str) -> dict[str, str]:
+    # Без Last-Modified: max(<lastmod>) лендингов — дата ряда (1960/2025), не
+    # дата файла. Яндекс требует HTTP 200 на Sitemap; IMS робота против этого
+    # заголовка давал 304 («Ошибка HTTP») на months / world-years-12..15.
+    return {
         "ETag": etag,
         "Cache-Control": "public, max-age=600",
     }
-    last_mod = _last_modified_from_xml(xml)
-    if last_mod is not None:
-        # 23:59:59 UTC: секция, обновлённая «сегодня», валидна весь день.
-        headers["Last-Modified"] = _xml_http_date(
-            last_mod.replace(
-                hour=23, minute=59, second=59, tzinfo=timezone.utc
-            )
-        )
-    return headers
 
 
 def _xml_304_or_full(xml: str, etag: str, request: Request) -> Response:
-    headers = _xml_headers(xml, etag)
+    headers = _xml_headers(etag)
     if request.headers.get("if-none-match") == etag:
         return Response(status_code=304, headers=headers)
-    ims = request.headers.get("if-modified-since")
-    if ims and "if-none-match" not in request.headers:
-        last_mod = _last_modified_from_xml(xml)
-        if last_mod is not None:
-            try:
-                ims_dt = datetime.strptime(
-                    ims, "%a, %d %b %Y %H:%M:%S %Z"
-                ).replace(tzinfo=timezone.utc)
-            except ValueError:
-                ims_dt = None
-            # Секция обновляется в течение дня «своего» lastmod — отдаём 304
-            # только когда Last-Modified секции строго старше IMS запроса.
-            if ims_dt is not None:
-                lm_utc = last_mod.replace(
-                    hour=23, minute=59, second=59, tzinfo=timezone.utc
-                )
-                if lm_utc <= ims_dt:
-                    return Response(status_code=304, headers=headers)
     return Response(content=xml, media_type="application/xml", headers=headers)
 
 

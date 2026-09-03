@@ -6,6 +6,7 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import IndicatorSearch from './IndicatorSearch';
+import LocaleSwitcher from './LocaleSwitcher';
 import { useAuth } from '../context/authContext';
 import { PRIMARY_NAV, primaryNav, resolveActiveNavId } from '../lib/navItems';
 import { useLocale, useT } from '../i18n';
@@ -74,7 +75,7 @@ const CALCULATOR_ITEMS = [
 
 export default function Navbar() {
   const t = useT();
-  const { locale, switchLanguage } = useLocale();
+  const { locale } = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
@@ -256,21 +257,14 @@ export default function Navbar() {
 
       <div className="hidden lg:flex items-center shrink-0 gap-2 xl:gap-3">
         <IndicatorSearch variant="pill" />
-        <button
-          type="button"
-          onClick={() => switchLanguage(locale === 'en' ? 'ru' : 'en')}
-          className={cn(FOCUS_RING, 'rounded-lg px-1 text-sm font-medium text-text-secondary hover:text-champagne')}
-          aria-label={t('nav.language')}
-        >
-          <span className="xl:hidden">{locale === 'en' ? 'RU' : 'EN'}</span>
-          <span className="hidden xl:inline">{t('nav.switchLanguage')}</span>
-        </button>
+        <LocaleSwitcher />
         <div className="h-5 w-px bg-border-subtle" aria-hidden />
         <AuthCluster />
       </div>
 
       <div className="lg:hidden ml-auto flex items-center gap-1">
         <IndicatorSearch className="!px-2 !py-1.5" />
+        <LocaleSwitcher />
         <button
           type="button"
           onClick={() => { setMobileOpen(!mobileOpen); track(events.NAV_MOBILE_TOGGLE); }}
@@ -300,13 +294,6 @@ export default function Navbar() {
             <NavLink to="/about" className={({ isActive }) => navItemClass(isActive)} onClick={closeAll}>
               {t('nav.about')}
             </NavLink>
-            <button
-              type="button"
-              className={navItemClass(false)}
-              onClick={() => switchLanguage(locale === 'en' ? 'ru' : 'en')}
-            >
-              {t('nav.switchLanguage')}
-            </button>
             <div className="mx-2 my-1 h-px bg-border-subtle" />
             <div className="px-2 pt-2">
               <AuthCluster mobile onNavigate={closeAll} />

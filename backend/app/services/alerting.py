@@ -164,6 +164,33 @@ async def notify_new_user(info: dict) -> None:
         await send_telegram("\n".join(lines), chat_id=cid, kind="new_user")
 
 
+async def notify_login(info: dict) -> None:
+    """Мгновенное уведомление о входе существующего пользователя.
+
+    Регистрация — `notify_new_user`. Повторный OAuth/почта раньше молчали:
+    сегодняшние Яндекс/VK (аккаунты с июня) в outbox не попали. Владелец
+    просил видеть входы тоже, не только первую регистрацию.
+    """
+    if not settings.telegram_realtime_alerts_enabled:
+        return
+
+    def esc(v) -> str:
+        return escape(str(v)) if v not in (None, "") else "—"
+
+    lines = [
+        "🔑 <b>Вход</b>",
+        f"Способ входа: {esc(info.get('method'))}",
+        f"Email: {esc(info.get('email'))}",
+        f"Телефон: {esc(info.get('phone'))}",
+        f"Имя: {esc(info.get('display_name'))}",
+        f"IP: {esc(info.get('ip'))}",
+        f"User-Agent: {esc((info.get('user_agent') or '')[:120])}",
+        f"ID: <code>{esc(info.get('user_id'))}</code>",
+    ]
+    for cid in digest_recipients():
+        await send_telegram("\n".join(lines), chat_id=cid, kind="login")
+
+
 async def notify_feedback(info: dict) -> None:
     """Мгновенная отправка обратной связи от авторизованного пользователя (ADR-0007 Phase 2)."""
     if not settings.telegram_realtime_alerts_enabled:

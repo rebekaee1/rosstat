@@ -640,7 +640,6 @@ PAGE_META_EN: dict[str, PageSeo] = {
             "Russia indicators, regions of Russia, Rosstat, Bank of Russia"
         ),
         links=(
-            (paths.today(), "Economy today"),
             (paths.russia_categories(), "Indicator categories"),
             (paths.russia_category("prices"), "Prices and inflation"),
             (paths.region_hub(), "Regions"),
