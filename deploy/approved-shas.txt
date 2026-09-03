@@ -16,3 +16,5 @@ d2038647e1ff16b9b07a32573305fb888c74d82d  # i18n UX batch (5 manager complaints)
 666d35fa8184c14b03f29fcb21bdc5e74424cbbb  # 666d35f OAuth cookie + Host locale + Russia compare + OG, owner-approved 2026-09-02
 
 ce29e48faaf85516695049faa7929b28a3272b9a  # ce29e48 dual-host gate pre-cutover, owner-approved 2026-09-02
+
+3cf9260f68bf2502cfe7b48a15421fc81ab6301a  # 3cf9260 sitemap 200 / language flags / login telegram, owner-approved 2026-09-03
