@@ -33,7 +33,34 @@ install -m 0644 deploy/fail2ban/logrotate-rosstat-nginx /etc/logrotate.d/rosstat
 echo "==> enable + restart fail2ban"
 systemctl enable fail2ban
 systemctl restart fail2ban
+# Сокет появляется не мгновенно; client status сразу после restart даёт
+# «Failed to access socket» при живом unit.
+for i in 1 2 3 4 5 6 7 8; do
+  if fail2ban-client ping >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
 
 echo "==> статус"
 fail2ban-client status
-echo "OK: fail2ban активен; jails: nginx-429, nginx-volume, honeytrap, recidive"
+
+assert_jail_reads_file() {
+  local jail="$1"
+  local expected="$2"
+  local out
+  out="$(fail2ban-client get "$jail" logpath 2>&1 || true)"
+  if echo "$out" | grep -qF "$expected"; then
+    echo "OK: $jail monitors $expected"
+  else
+    echo "FAIL: $jail не читает $expected (Ubuntu journal vs polling?)"
+    echo "$out"
+    exit 1
+  fi
+}
+
+assert_jail_reads_file nginx-429 /var/log/rosstat-nginx/security.log
+assert_jail_reads_file nginx-volume /var/log/rosstat-nginx/security.log
+assert_jail_reads_file honeytrap /var/log/rosstat-nginx/honeypot.log
+
+echo "OK: fail2ban активен; jails читают файлы: nginx-429, nginx-volume, honeytrap, recidive"

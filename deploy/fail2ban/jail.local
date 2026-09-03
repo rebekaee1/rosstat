@@ -4,18 +4,23 @@
 # /var/log/nginx/security -> /var/log/rosstat-nginx на хосте.
 #
 # Канареечный принцип: ban только по явным сигналам (429 от лимитера, 403
-# ханипота, 403 от UA-фильтра). Поисковые боты не попадают: у них свой
-# whitelist по IP (see ignoreip comment) и они не генерят 429 массово.
+# ханипота, объём HTML-каталога). Поисковые боты не попадают: ignoreregex
+# в фильтрах (тот же список, что $ssr_limit_key) и они не генерят 429 массово.
+#
+# Ubuntu 24: пакетный DEFAULT backend = systemd (journal). Без явного
+# polling logpath игнорируется — jail «enabled», файла нет, banned = 0.
 
 [DEFAULT]
 bantime  = 24h
 findtime = 10m
 maxretry = 5
+backend  = polling
 # Свои инфраструктуры не банить: докер-сеть, localhost, мониторинг.
 ignoreip = 127.0.0.1/8 ::1 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
 
-# Бан через iptables напрямую (docker перекрывает часть цепочек, но
-# DOCKER-USER смотрит весь входящий трафик до контейнеров).
+# Бан через iptables на 80/443 хоста. Caddy слушает эти порты на хосте
+# и проксирует на localhost:3000 — DROP клиента до прокси.
+
 banaction = iptables-multiport
 banaction_allports = iptables-allports
 
@@ -26,6 +31,7 @@ banaction_allports = iptables-allports
 # рецидивистов на неделю).
 [nginx-429]
 enabled  = true
+backend  = polling
 port     = http,https
 filter   = nginx-429
 logpath  = /var/log/rosstat-nginx/security.log
@@ -35,9 +41,11 @@ bantime  = 24h
 
 # ---- Jail 1b: стелс-обход без 429 ----
 # Ротация медленная: 1 стр / 2–5 с не набирает 2 r/s, 429 нет.
-# 80 успешных GET за 10 минут с одного IP — не человек.
+# 80 успешных HTML-каталога за 10 минут с одного IP — не человек.
+# Тикер /api/ и ассеты фильтр не считает. Гидра 1IP=1hit не покрыта.
 [nginx-volume]
 enabled  = true
+backend  = polling
 port     = http,https
 filter   = nginx-volume
 logpath  = /var/log/rosstat-nginx/security.log
@@ -47,10 +55,11 @@ bantime  = 24h
 
 # ---- Jail 2: ханипот ----
 # Один запрос = бан: на /russia/util/links-exchange человек не попадает
-# никогда (ссылка невидима, tabindex=-1, robots Disallow). Любой hit —
-# это краулер, вытащивший ссылку из HTML.
+# никогда (ссылка невидима, tabindex=-1, robots Disallow). Hit без
+# поискового UA — краулер, вытащивший ссылку из HTML.
 [honeytrap]
 enabled  = true
+backend  = polling
 port     = http,https
 filter   = honeytrap
 logpath  = /var/log/rosstat-nginx/honeypot.log
@@ -62,6 +71,7 @@ bantime  = 48h
 # Дважды забаненный за сутки получает неделю.
 [recidive]
 enabled  = true
+backend  = polling
 filter   = recidive
 logpath  = /var/log/fail2ban.log
 banaction = iptables-allports

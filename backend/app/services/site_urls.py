@@ -162,8 +162,10 @@ async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             "daily",
             _sitemap_priority(listed=listed),
         ))
-    from app.services.index_policy import honeypot_path
-    urls.append(_u(honeypot_path(), today.isoformat(), "never", "0.1"))
+    # Ханипот в карту не кладём: Яндекс ходит по sitemap вопреки
+    # robots Disallow. Ловушка живёт только в скрытой ссылке футера
+    # (/russia/util/links-exchange). /__honeypot__/trap остаётся 403
+    # в nginx, но без рекламы в XML.
     return urls
 
 

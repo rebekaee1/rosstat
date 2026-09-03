@@ -483,6 +483,8 @@ def test_sitemap_sections(seeded_env):
         core = tc.get("/sitemap-core.xml")
         assert core.status_code == 200
         assert "/russia/indicator/usd-rub" in core.text
+        assert "/__honeypot__" not in core.text
+        assert "links-exchange" not in core.text
 
         ratings = tc.get("/sitemap-ratings.xml")
         assert ratings.status_code == 200
@@ -493,6 +495,15 @@ def test_sitemap_sections(seeded_env):
         assert "/russia/region/map/chislennost-naseleniya" in maps.text
 
         assert tc.get("/sitemap-nope.xml").status_code == 404
+
+
+def test_sitemap_core_omits_honeypot(seeded_env):
+    """Ханипот не в карте: Яндекс ходит по sitemap, honeytrap банит с 1 хита."""
+    with TestClient(seeded_env["app"]) as tc:
+        core = tc.get("/sitemap-core.xml")
+        assert core.status_code == 200
+        assert "/__honeypot__" not in core.text
+        assert "links-exchange" not in core.text
 
 
 def test_sitemap_locs_follow_request_host(seeded_env):

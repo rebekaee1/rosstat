@@ -100,7 +100,7 @@ def robots_for_path(path: str, *, today: date | None = None) -> str:
 def is_noindex_path(path: str, *, today: date | None = None) -> bool:
     """Tier 3: страница живая, но не для индекса."""
     raw = (path or "").split("?", 1)[0].rstrip("/") or "/"
-    if raw == _HONEYPOT_PATH or raw.startswith("/__honeypot__/"):
+    if raw == honeypot_path() or raw.startswith("/__honeypot__/"):
         return True
     t = today or today_msk()
     m = _RE_REGION_YEAR.match(raw)
