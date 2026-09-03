@@ -71,6 +71,13 @@ CATALOG_YANDEX = (
     '"GET /russia/indicator/cpi HTTP/1.1" '
     '"Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"'
 )
+CATALOG_GOOGLEOTHER = (
+    '2026-09-03T18:15:16+00:00 66.249.77.129 200 '
+    '"GET /russia/region/respublika-krym/moschnost-elektrostantsiy HTTP/1.1" '
+    '"Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) '
+    'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 '
+    'Mobile Safari/537.36 (compatible; GoogleOther)"'
+)
 TICKER = (
     '2026-09-03T14:42:11+00:00 67.159.43.220 200 '
     '"GET /api/v1/ticker/live HTTP/1.1" '
@@ -143,6 +150,10 @@ def main() -> int:
     yandex_vol_ignored = bool(volume_ignore and volume_ignore.search(CATALOG_YANDEX))
     expect(yandex_vol_hit and yandex_vol_ignored,
            "nginx-volume: YandexBot ignored", fail)
+    go_hit = matched_ip(volume, CATALOG_GOOGLEOTHER) == "66.249.77.129"
+    go_ignored = bool(volume_ignore and volume_ignore.search(CATALOG_GOOGLEOTHER))
+    expect(go_hit and go_ignored,
+           "nginx-volume: GoogleOther ignored", fail)
 
     print()
     if fail:
