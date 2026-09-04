@@ -40,3 +40,5 @@ dc4864d4217265c8ed715b2b5c5c2a81fea68755  # dc4864d GoogleOther + 66.249.64.0/19
 b08b828b2ec3ad62ca5b8c386cf36ea65b35cad5  # b08b828 РСЯ кулдаун 15с, owner-approved 2026-09-04
 
 acf475067f613d3852065af87dc1f18628b903fa  # acf4750 BI в фоне + индекс world card + postgres 2.5G, owner-approved 2026-09-04
+
+fe8c5dd5cdd632f88b9b4aaf654119dc3d8f3da2  # fe8c5dd bind-cookie вместо гео-блока, owner-approved 2026-09-04
