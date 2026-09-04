@@ -8,7 +8,7 @@
 // Свежесть: Метрика Logs API отдаёт визиты с задержкой до суток, поэтому
 // свежие дни закрывает live-слой собственного счётчика behavior.js.
 // Доступ: backend отвечает 404 всем, кроме settings.admin_emails.
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   ResponsiveContainer, ComposedChart, Line, Area, Bar, BarChart, XAxis, YAxis,
@@ -141,12 +141,19 @@ const fmtInt = (n) => (n == null ? '—' : Number(n).toLocaleString('ru-RU'));
 const fmtPct = (n) => (n == null ? '—' : `${Number(n).toLocaleString('ru-RU')}%`);
 const clip = (s, n = 30) => (s && s.length > n ? `${s.slice(0, n - 1)}…` : s || '');
 
-function fetchDashboard(period, from, to) {
+// Бэкенд строит дашборд в фоне: холодный кэш → 202 {status:'building'},
+// устаревший снимок → 200 с cache_meta.stale. Клиентский таймаут 15 с больше
+// не режет сборку — мы опрашиваем, пока не придёт снимок.
+const BI_BUILD_POLL_MS = 3000;
+const isBuilding = (d) => d?.status === 'building';
+
+function fetchDashboard(period, from, to, fresh = false) {
   const qs = new URLSearchParams({ period });
   if (period === 'custom' && from) {
     qs.set('from', from);
     if (to) qs.set('to', to);
   }
+  if (fresh) qs.set('fresh', 'true');
   return api.get(`/admin/bi/dashboard?${qs}`).then((r) => r.data);
 }
 
@@ -2805,14 +2812,34 @@ export default function AdminBI() {
   // custom без выбранной даты «с» — запрос не шлём (бэкенд упал бы в 30d молча).
   const customReady = period !== 'custom' || Boolean(customFrom);
   const onSlices = tab === 'slices';
-  const { data, isLoading: biLoading, isError, dataUpdatedAt, refetch, isFetching } = useQuery({
+  // Кнопка «Обновить» просит пересчёт (fresh) один раз; опросы идут без него.
+  const freshRef = useRef(false);
+  const { data: raw, isLoading: biLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ['admin-bi', period, customFrom, customTo],
-    queryFn: () => fetchDashboard(period, customFrom, customTo),
+    queryFn: () => {
+      const fresh = freshRef.current;
+      freshRef.current = false;
+      return fetchDashboard(period, customFrom, customTo, fresh);
+    },
     enabled: isAdmin && customReady && !onSlices,
-    refetchInterval: onSlices ? false : 15 * 60 * 1000,
+    refetchInterval: (query) => {
+      if (onSlices) return false;
+      const d = query.state.data;
+      if (isBuilding(d) || d?.cache_meta?.refreshing) return BI_BUILD_POLL_MS;
+      return 15 * 60 * 1000;
+    },
     staleTime: 14 * 60 * 1000,
     retry: 1,
   });
+  const building = isBuilding(raw);
+  const data = building ? undefined : raw;
+  const meta = data?.cache_meta;
+  const builtAt = meta?.built_at ? new Date(`${meta.built_at}Z`) : null;
+  const refreshNow = () => {
+    if (onSlices) return;
+    freshRef.current = true;
+    refetch();
+  };
 
   if (isLoading) return null;
   if (!isAuthed) return <AdminLogin onSuccess={setUser} />;
@@ -2867,14 +2894,16 @@ export default function AdminBI() {
           </span>
         )}
         <button
-          type="button" onClick={() => { if (!onSlices) refetch(); }}
-          disabled={onSlices}
+          type="button" onClick={refreshNow}
+          disabled={onSlices || building || Boolean(meta?.refreshing)}
           className="ml-auto flex items-center gap-1.5 text-[12px] text-text-tertiary hover:text-text-primary disabled:opacity-40"
-          title={onSlices ? 'На вкладке «Срезы» полный дашборд не пересчитывается' : 'Обновить сейчас'}
+          title={onSlices ? 'На вкладке «Срезы» полный дашборд не пересчитывается' : 'Пересчитать сейчас (в фоне)'}
         >
-          <RefreshCw size={13} className={isFetching ? 'animate-spin' : ''} />
-          {dataUpdatedAt ? `обновлено ${new Date(dataUpdatedAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : ''}
-          <span className="hidden sm:inline"> — автообновление каждые 15 мин</span>
+          <RefreshCw size={13} className={isFetching || building || meta?.refreshing ? 'animate-spin' : ''} />
+          {builtAt ? `снимок ${builtAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : ''}
+          {meta?.refreshing
+            ? <span className="hidden sm:inline"> — пересчитываем в фоне</span>
+            : <span className="hidden sm:inline"> — автообновление каждые 15 мин</span>}
         </button>
       </div>
 
@@ -2899,8 +2928,17 @@ export default function AdminBI() {
       {!onSlices && !customReady && (
         <p className="text-[14px] text-text-tertiary py-10 text-center">Выберите даты периода (московское время).</p>
       )}
-      {!onSlices && customReady && biLoading && <p className="text-[14px] text-text-tertiary py-10 text-center">Считаем витрины…</p>}
-      {!onSlices && isError && <p className="text-[14px] text-negative py-10 text-center">Не удалось загрузить данные. Попробуйте обновить.</p>}
+      {!onSlices && customReady && (biLoading || building) && (
+        <p className="text-[14px] text-text-tertiary py-10 text-center">
+          Считаем витрины{raw?.elapsed_sec ? ` — ${raw.elapsed_sec} с` : '…'}
+          {raw?.queued_builds > 1 ? `, в очереди периодов: ${raw.queued_builds}` : ''}
+        </p>
+      )}
+      {!onSlices && isError && (
+        <p className="text-[14px] text-negative py-10 text-center">
+          {error?.response?.data?.detail || 'Не удалось загрузить данные. Попробуйте обновить.'}
+        </p>
+      )}
       {onSlices ? <SlicesTab /> : (data && <Active d={data} onOpenSlices={openSlices} />)}
     </div>
   );

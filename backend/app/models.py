@@ -196,6 +196,16 @@ class WorldIndicator(Base):
         Index("ix_world_indicators_country_category", "country_id", "category_ru"),
         Index("ix_world_indicators_provider_dataset", "provider", "dataset_id"),
         Index("ix_world_indicators_code", "code", unique=True),
+        # Соседи карточки (world_card_siblings): country_id + provider +
+        # (dataset_id = stem OR dataset_id LIKE 'stem\_%'). pattern_ops даёт
+        # префиксный LIKE по btree; без него планировщик шёл по uq-индексу
+        # (provider, country_id) и читал ~5,7k широких строк на каждую
+        # мировую карточку (инцидент 2026-09-04: терабайт чтений диска за 4 ч).
+        Index(
+            "ix_world_indicators_card_lookup",
+            "country_id", "provider", "dataset_id",
+            postgresql_ops={"dataset_id": "varchar_pattern_ops"},
+        ),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)

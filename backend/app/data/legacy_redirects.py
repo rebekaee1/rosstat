@@ -157,6 +157,11 @@ def world_card_primary_rank(ind) -> tuple:
     )
 
 
+def _like_escape(value: str) -> str:
+    """Литерал для LIKE с ESCAPE '\\': `\\`, `%`, `_` перестают быть спецсимволами."""
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
 async def world_card_siblings(db: AsyncSession, indicator) -> list:
     """Все ряды той же карточки (card_key без frequency)."""
     from app.data.eurostat_listing import card_key, dataset_stem
@@ -172,6 +177,10 @@ async def world_card_siblings(db: AsyncSession, indicator) -> list:
         unit_ru=indicator.unit_ru,
         slice_json=indicator.slice_json,
     )
+    # `_` в stem (ei_bsco) для LIKE — одиночный wildcard: без экранирования
+    # префикс индекса схлопывался до «ei», и планировщик читал сотни широких
+    # строк вместо ~14. Экранируем и stem, и разделитель частоты.
+    like_prefix = _like_escape(stem) + "\\_%"
     rows = (
         await db.execute(
             select(WorldIndicator).where(
@@ -179,7 +188,7 @@ async def world_card_siblings(db: AsyncSession, indicator) -> list:
                 WorldIndicator.provider == indicator.provider,
                 or_(
                     WorldIndicator.dataset_id == stem,
-                    WorldIndicator.dataset_id.like(f"{stem}_%"),
+                    WorldIndicator.dataset_id.like(like_prefix, escape="\\"),
                 ),
             )
         )

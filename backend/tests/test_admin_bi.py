@@ -50,7 +50,7 @@ def test_bi_dashboard_for_admin(auth_client):
     me = auth_client.get("/api/v1/auth/me").json()["user"]
     assert me.get("is_admin") is True
 
-    r = auth_client.get("/api/v1/admin/bi/dashboard?days=7")
+    r = auth_client.get("/api/v1/admin/bi/dashboard?days=7&wait=60")
     assert r.status_code == 200, r.text
     data = r.json()
     assert EXPECTED_SECTIONS <= set(data.keys())
@@ -80,11 +80,79 @@ def test_login_response_carries_is_admin(auth_client):
 
 
 def test_bi_dashboard_cached(auth_client):
-    """Повторный запрос отдаётся из кэша (generated_at не меняется)."""
+    """Повторный запрос отдаётся из кэша (generated_at не меняется), без wait."""
     _register(auth_client, ADMIN_EMAIL)
-    first = auth_client.get("/api/v1/admin/bi/dashboard?days=30").json()
+    first = auth_client.get("/api/v1/admin/bi/dashboard?days=30&wait=60").json()
     second = auth_client.get("/api/v1/admin/bi/dashboard?days=30").json()
     assert first["generated_at"] == second["generated_at"]
+    assert second["cache_meta"]["stale"] is False
+    assert second["cache_meta"]["refreshing"] is False
+
+
+def test_bi_dashboard_cold_cache_returns_202_and_single_flight(auth_client):
+    """Инцидент 2026-09-04: холодный кэш → 202 «считаем» сразу, а не ожидание
+    сборки дольше клиентского таймаута. Повторные опросы присоединяются к
+    идущей сборке, не запускают новую; в итоге снимок появляется в кэше."""
+    import time
+
+    from app.api import admin_bi as mod
+
+    _register(auth_client, ADMIN_EMAIL)
+    r1 = auth_client.get("/api/v1/admin/bi/dashboard?period=90d")
+    r2 = auth_client.get("/api/v1/admin/bi/dashboard?period=90d")
+    assert r1.status_code == 202, r1.text
+    assert r1.json()["status"] == "building"
+    assert r2.status_code == 202
+    # single-flight: по ключу не больше одной задачи
+    assert sum(1 for k in mod._INFLIGHT if ":90d:" in k) <= 1
+
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
+        r = auth_client.get("/api/v1/admin/bi/dashboard?period=90d")
+        if r.status_code == 200:
+            break
+        assert r.status_code == 202, r.text
+        time.sleep(0.2)
+    assert r.status_code == 200, r.text
+    assert "metric_tree" in r.json()
+    assert r.json()["cache_meta"]["stale"] is False
+
+
+def test_bi_dashboard_stale_snapshot_served_while_revalidating(auth_client):
+    """SWR: устаревший снимок отдаётся мгновенно с stale=true и refreshing=true,
+    пересчёт идёт в фоне, следующий свежий ответ имеет новый generated_at."""
+    import time
+
+    from app.api import admin_bi as mod
+    from app.core.cache import cache_get, cache_set
+
+    _register(auth_client, ADMIN_EMAIL)
+    first = auth_client.get("/api/v1/admin/bi/dashboard?days=7&wait=60")
+    assert first.status_code == 200, first.text
+
+    # Состариваем снимок: built_at далеко в прошлом. Redis-фейк привязан к
+    # loop'у приложения — ходим через portal TestClient.
+    from app.services.analytics_period import as_period
+    key = mod._snapshot_key(as_period(7))
+    snap = auth_client.portal.call(cache_get, key)
+    assert snap is not None
+    snap["built_at"] = time.time() - 10 * 3600
+    auth_client.portal.call(cache_set, key, snap, 3600)
+
+    stale = auth_client.get("/api/v1/admin/bi/dashboard?days=7")
+    assert stale.status_code == 200
+    assert stale.json()["cache_meta"]["stale"] is True
+    assert stale.json()["cache_meta"]["refreshing"] is True
+    assert stale.json()["generated_at"] == first.json()["generated_at"]
+
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
+        r = auth_client.get("/api/v1/admin/bi/dashboard?days=7")
+        if r.status_code == 200 and not r.json()["cache_meta"]["stale"]:
+            break
+        time.sleep(0.2)
+    assert r.json()["cache_meta"]["stale"] is False
+    assert r.json()["generated_at"] != first.json()["generated_at"]
 
 
 # --- Истинность цифр (инцидент 2026-07-05: конверсия 91-100%) ----------------
@@ -297,7 +365,7 @@ def test_dashboard_with_fat_metrika_json(auth_client, auth_env):
             await db.commit()
 
     asyncio.run(_seed())
-    r = auth_client.get("/api/v1/admin/bi/dashboard?days=7")
+    r = auth_client.get("/api/v1/admin/bi/dashboard?days=7&wait=60")
     assert r.status_code == 200, r.text
     data = r.json()
     assert data["acquisition"]["sources"].get("organic") == 1
@@ -316,7 +384,7 @@ def test_dashboard_and_health_parallel(auth_client):
     results = {}
 
     def dash():
-        results["d"] = auth_client.get("/api/v1/admin/bi/dashboard?days=7")
+        results["d"] = auth_client.get("/api/v1/admin/bi/dashboard?days=7&wait=60")
 
     def health():
         results["h"] = auth_client.get("/api/v1/health")

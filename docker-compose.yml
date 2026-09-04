@@ -9,14 +9,32 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "127.0.0.1:5434:5432"
+    # Инцидент 2026-09-04: база 2,9 ГБ (мир ~1,7 ГБ, behavior_events 0,5 ГБ) при
+    # дефолтных shared_buffers=128MB в cgroup 1G — рабочий набор не помещался,
+    # world_indicators читалась с диска терабайтами (hit 41%), любой BI-скан
+    # ставил диск. Хост 8 ГБ: postgres получает 2,5 ГБ, четверть — shared_buffers,
+    # остальное — page cache внутри cgroup. random_page_cost под SSD.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=${POSTGRES_SHARED_BUFFERS:-640MB}
+      - -c
+      - effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-1800MB}
+      - -c
+      - work_mem=${POSTGRES_WORK_MEM:-16MB}
+      - -c
+      - maintenance_work_mem=${POSTGRES_MAINTENANCE_WORK_MEM:-128MB}
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - track_io_timing=on
     restart: unless-stopped
     deploy:
       resources:
         limits:
-          # О-10: 512M было впритык при региональной перезаливке (~1M строк) +
-          # pg_dump бэкапа поверх рабочей нагрузки; 1G даёт запас без риска
-          # выесть память хоста (4GB VPS: backend ~1G + postgres 1G + прочее).
-          memory: 1G
+          # О-10: 512M было впритык при региональной перезаливке; 1G хватало
+          # до мирового слоя. Сейчас лимит задаётся env (прод 8 ГБ — 2.5G).
+          memory: ${POSTGRES_MEM_LIMIT:-2.5G}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U rustats"]
       interval: 10s
