@@ -220,11 +220,26 @@ done
 # ── 6b. 15-минутный post-deploy watch (инцидент 2026-09-03: OOM после smoke) ──
 # 2026-09-04: один curl -m 5 на /health/ready во время всплеска SSR (ферма)
 # дал ready=0 при живом сайте (TTFB 4.5 с) и откатил зелёный MJ12-деплой.
-# Ready — до 3 попыток по 8 с; OOM и устойчивый TTFB≥5 с по-прежнему откат.
+# Min 14 того же окна: TTFB 6.7 с при ready=1 и RSS ~870MiB (скачок памяти
+# ~11-й минуты, пересечение с 15-мин rollup) — снова ложный откат.
+# Ready — до 3 попыток по 8 с; TTFB — до 3 замеров, откат только если все ≥5 с.
+# OOM по-прежнему мгновенный откат.
 echo "==> post-deploy watch 15 min"
 WATCH_FAIL=0
 for i in $(seq 1 15); do
-  TTFB=$(curl -o /dev/null -s -w '%{time_starttransfer}' -m 8 -A 'YandexBot/3.0' https://forecasteconomy.com/ || echo 99)
+  TTFB=99
+  for _try in 1 2 3; do
+    t=$(curl -o /dev/null -s -w '%{time_starttransfer}' -m 8 -A 'YandexBot/3.0' https://forecasteconomy.com/ || echo 99)
+    TTFB=$t
+    python3 - "$t" <<'PY' && break
+import sys
+try:
+    sys.exit(0 if float(sys.argv[1]) < 5 else 1)
+except ValueError:
+    sys.exit(1)
+PY
+    sleep 2
+  done
   READY=0
   for _try in 1 2 3; do
     if curl -sf -m 8 http://127.0.0.1:8000/api/v1/health/ready | grep -qE '"status": ?"ok"'; then
