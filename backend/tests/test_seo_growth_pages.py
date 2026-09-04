@@ -560,6 +560,7 @@ def test_rss_robots_llms_follow_request_host(seeded_env):
         assert ru_robots.status_code == 200
         assert "Host:" not in ru_robots.text
         assert "Sitemap: https://ru.forecasteconomy.com/sitemap.xml" in ru_robots.text
+        assert "User-agent: MJ12bot\nDisallow: /" in ru_robots.text
         assert "User-agent: MJ12bot\nDisallow: /" in apex_robots.text
 
         apex_llms = tc.get("/llms.txt")
@@ -584,6 +585,17 @@ def test_seo_static_templates_match_frontend_public():
         backend = (root / "backend/app/data/seo_static" / name).read_text(encoding="utf-8")
         frontend = (root / "frontend/public" / name).read_text(encoding="utf-8")
         assert backend == frontend, f"{name} drifted between backend and frontend"
+
+
+def test_robots_mj12_disallow_on_ru_and_en_templates():
+    """Apex EN cutover отдаёт robots.en.txt — MJ12 должен быть в обоих шаблонах."""
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2] / "backend/app/data/seo_static"
+    needle = "User-agent: MJ12bot\nDisallow: /"
+    for name in ("robots.txt", "robots.en.txt"):
+        text = (root / name).read_text(encoding="utf-8")
+        assert needle in text, f"{name} missing MJ12bot Disallow"
 
 
 def _unique_internal_beyond_nav(html: str) -> set[str]:

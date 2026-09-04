@@ -45,6 +45,9 @@ Disallow: /
 User-agent: Brightbot
 Disallow: /
 
+User-agent: MJ12bot
+Disallow: /
+
 # Clean-param — Yandex inter-section directive.
 # Tells the crawler which GET params are insignificant.
 # mode= is canonicalized to the base card URL; glue the parameter.
