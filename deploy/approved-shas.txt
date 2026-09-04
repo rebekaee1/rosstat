@@ -42,3 +42,5 @@ b08b828b2ec3ad62ca5b8c386cf36ea65b35cad5  # b08b828 РСЯ кулдаун 15с, 
 acf475067f613d3852065af87dc1f18628b903fa  # acf4750 BI в фоне + индекс world card + postgres 2.5G, owner-approved 2026-09-04
 
 fe8c5dd5cdd632f88b9b4aaf654119dc3d8f3da2  # fe8c5dd bind-cookie вместо гео-блока, owner-approved 2026-09-04
+
+060e2c6f8b5a1d1d601a6a084b1a819b966c63e3  # 060e2c6 MJ12bot Disallow в robots.en.txt, owner-approved 2026-09-04
