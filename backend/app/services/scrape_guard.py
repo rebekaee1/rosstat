@@ -9,8 +9,14 @@
 - поисковики и соцкраулеры по UA не режутся;
 - приватный/невалидный IP (тесты, localhost) — skip;
 - куки нет — пропускаем и ставим (первый заход, SPA login);
-- кука от другого префикса — 403 без перевыдачи (ретрай не легитимирует);
-- пустой ``RUSTATS_SCRAPE_BLOCK_COUNTRIES`` выключает гео-слой.
+- кука от другого префикса — 403 на HTML и API без перевыдачи
+  (HTML больше не легитимирует чужую куку);
+- пустой ``RUSTATS_SCRAPE_BLOCK_COUNTRIES`` выключает гео-слой;
+- хостинговые ASN (Hetzner/OVH/Alibaba/AWS/…) режутся флагом
+  ``RUSTATS_SCRAPE_BLOCK_HOSTING`` (по умолчанию вкл); жилые прокси
+  этим слоем не покрыты;
+- UA ``Chrome/N.0.0.0 Safari/537.36`` (дефолт Playwright) — 403 на nginx
+  и в middleware; поисковики по UA не режутся.
 """
 from __future__ import annotations
 
@@ -25,6 +31,7 @@ from starlette.responses import Response
 
 from app.config import settings
 from app.services.geoip import lookup as geo_lookup
+from app.services.geoip import lookup_asn
 
 # Совпадает с nginx $ssr_limit_key плюс соцкраулеры OG и соседние Google/Amazon.
 _SEARCH_UA_RE = re.compile(
@@ -38,6 +45,63 @@ _SEARCH_UA_RE = re.compile(
 
 # Cursor-вкладка и headless-ферма не должны писать behavior/events.
 _NOISE_UA_RE = re.compile(r"HeadlessChrome|Cursor/", re.IGNORECASE)
+
+# Дефолт Playwright/Puppeteer: Chrome/N.0.0.0 Safari/537.36 в хвосте UA.
+# Совпадает с nginx $bad_bot. Живой Chrome — 145.0.7632.xx; Cursor вставляет
+# Electron/ перед Safari. 10_15_7 не используем: это freeze у всех Mac Chrome.
+_PLAYWRIGHT_CHROME_UA_RE = re.compile(
+    r"Chrome/[0-9]+\.0\.0\.0 Safari/537\.36$",
+    re.IGNORECASE,
+)
+
+# Хостинг / облако: бан сетей, не стран. 15169 Google и 13238 Яндекс
+# сюда не входят — поисковики и так пропускаются по UA.
+_HOSTING_ASN = frozenset({
+    16509, 14618, 7224,  # Amazon
+    396982,  # Google Cloud
+    8075,  # Microsoft
+    14061,  # DigitalOcean
+    16276, 35540,  # OVH
+    24940, 213230,  # Hetzner
+    20473,  # Choopa / Vultr
+    63949,  # Linode / Akamai Connected Cloud
+    45102, 37963, 55990,  # Alibaba
+    132203, 45090,  # Tencent
+    31898,  # Oracle
+    51167,  # Contabo
+    60068, 212238,  # Datacamp
+    9009,  # M247
+    12876,  # Scaleway
+    36352,  # ColoCrossing
+    40676,  # Psychz
+    53667,  # FranTech
+    8100,  # QuadraNet
+    28753, 30633, 60781,  # Leaseweb
+    8560,  # IONOS
+    47583,  # Hostinger
+    202053,  # UpCloud
+    199524,  # Gcore
+    54825,  # Equinix Metal
+})
+
+_HOSTING_ORG_RE = re.compile(
+    r"hetzner|ovhcloud|\bovh\b|digitalocean|linode|vultr|contabo|"
+    r"leaseweb|\bm247\b|datacamp|choopa|alibaba|alicloud|tencent|"
+    r"scaleway|colocrossing|psychz|frantech|quadranet|"
+    r"amazon-0[2-3]|amazon-aes|amazonaws|amazon\.com|"
+    r"google.?cloud|\bgcp\b|microsoft.?azure|\bazure\b|"
+    r"oracle.?cloud|oracle.?bmc|huawei.?cloud|"
+    r"akamai.?connected|hostinger|\bionos\b|upcloud|\bgcore\b",
+    re.IGNORECASE,
+)
+
+
+def is_hosting_network(asn: int | None, org: str | None) -> bool:
+    if isinstance(asn, int) and asn in _HOSTING_ASN:
+        return True
+    if org and _HOSTING_ORG_RE.search(org):
+        return True
+    return False
 
 _SKIP_PREFIXES = (
     "/api/v1/health",
@@ -65,6 +129,11 @@ def is_search_bot_ua(ua: str | None) -> bool:
 
 def is_noise_client_ua(ua: str | None) -> bool:
     return bool(ua and _NOISE_UA_RE.search(ua))
+
+
+def is_playwright_chrome_ua(ua: str | None) -> bool:
+    """Дефолтный UA автоматизации, не живой Chrome и не вкладка Cursor."""
+    return bool(ua and _PLAYWRIGHT_CHROME_UA_RE.search(ua))
 
 
 def ip_network_prefix(ip: str) -> str | None:
@@ -127,14 +196,25 @@ def verify_token(token: str | None, ip: str, when: datetime | None = None) -> bo
 
 
 def should_block(*, ip: str, ua: str | None, path: str) -> str | None:
-    """ISO-код страны, если режем гео-слоем. None — пропускаем."""
-    codes = blocked_country_codes()
-    if not codes:
-        return None
+    """Причина блока: AUTOMATION / HOSTING / ISO-страна, или None."""
     path = path or "/"
     if any(path.startswith(p) for p in _SKIP_PREFIXES):
         return None
     if is_search_bot_ua(ua):
+        return None
+    if is_playwright_chrome_ua(ua):
+        return "AUTOMATION"
+    if settings.scrape_block_hosting:
+        info = lookup_asn(ip)
+        asn = info.get("asn")
+        org = info.get("org")
+        if is_hosting_network(
+            asn if isinstance(asn, int) else None,
+            org if isinstance(org, str) else None,
+        ):
+            return "HOSTING"
+    codes = blocked_country_codes()
+    if not codes:
         return None
     geo = geo_lookup(ip)
     cc = (geo.get("country_code") or "").upper()
@@ -144,9 +224,8 @@ def should_block(*, ip: str, ua: str | None, path: str) -> str | None:
 
 
 def is_bind_protected_path(path: str) -> bool:
+    """HTML и API, кроме health/metrics/docs. Чужая кука не перевыпускается."""
     path = path or "/"
-    if not path.startswith("/api/"):
-        return False
     return not any(path.startswith(p) for p in _SKIP_PREFIXES)
 
 
@@ -163,12 +242,10 @@ def bind_decision(
         return BindDecision(block=False, set_cookie=False)
     if is_search_bot_ua(ua):
         return BindDecision(block=False, set_cookie=False)
-    if any((path or "/").startswith(p) for p in _SKIP_PREFIXES):
+    if not is_bind_protected_path(path):
         return BindDecision(block=False, set_cookie=False)
     if ip_network_prefix(ip) is None:
         return BindDecision(block=False, set_cookie=False)
-    if not is_bind_protected_path(path):
-        return BindDecision(block=False, set_cookie=True)
     if not cookie:
         return BindDecision(block=False, set_cookie=True)
     if verify_token(cookie, ip):

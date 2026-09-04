@@ -51,9 +51,11 @@ class Settings(BaseSettings):
     # Основная защита — bind-cookie (scrape_bind_enabled): ферма крутит
     # страны, гео ловит только перечисленные.
     scrape_block_countries: str = ""
-    # HMAC(IP-префикс, день) в cookie fe_bind. API с кукой чужого /24 → 403.
+    # HMAC(IP-префикс, день) в cookie fe_bind. HTML и API с кукой чужого /24 → 403.
     scrape_bind_enabled: bool = True
     scrape_bind_secret: str = ""
+    # Бан хостинговых ASN (не стран). Пустая ASN-база = fail-open.
+    scrape_block_hosting: bool = True
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"
@@ -155,6 +157,10 @@ class Settings(BaseSettings):
     geoip_db_path: str = "/app/geoip/dbip-city-lite.mmdb"
     geoip_download_url_template: str = (
         "https://download.db-ip.com/free/dbip-city-lite-{yyyy}-{mm}.mmdb.gz"
+    )
+    geoip_asn_db_path: str = "/app/geoip/dbip-asn-lite.mmdb"
+    geoip_asn_download_url_template: str = (
+        "https://download.db-ip.com/free/dbip-asn-lite-{yyyy}-{mm}.mmdb.gz"
     )
     geoip_auto_download: bool = True
 

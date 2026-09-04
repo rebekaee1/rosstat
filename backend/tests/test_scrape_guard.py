@@ -7,6 +7,7 @@ from app.services import scrape_guard
 
 
 def test_search_bot_ua_not_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG")
     monkeypatch.setattr(
         scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}
@@ -19,6 +20,7 @@ def test_search_bot_ua_not_blocked(monkeypatch):
 
 
 def test_singapore_chrome_is_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG")
     monkeypatch.setattr(
         scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}
@@ -31,6 +33,7 @@ def test_singapore_chrome_is_blocked(monkeypatch):
 
 
 def test_health_skip_even_from_sg(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG")
     monkeypatch.setattr(
         scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}
@@ -41,6 +44,7 @@ def test_health_skip_even_from_sg(monkeypatch):
 
 
 def test_empty_setting_disables_block(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
     monkeypatch.setattr(
         scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}
@@ -51,6 +55,7 @@ def test_empty_setting_disables_block(monkeypatch):
 
 
 def test_russia_not_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG")
     monkeypatch.setattr(
         scrape_guard, "geo_lookup", lambda ip: {"country_code": "RU"}
@@ -61,6 +66,7 @@ def test_russia_not_blocked(monkeypatch):
 
 
 def test_poland_chrome_is_blocked_with_default_list(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG,PL")
     monkeypatch.setattr(
         scrape_guard, "geo_lookup", lambda ip: {"country_code": "PL"}
@@ -73,6 +79,7 @@ def test_poland_chrome_is_blocked_with_default_list(monkeypatch):
 
 
 def test_googlebot_from_poland_not_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG,PL")
     monkeypatch.setattr(
         scrape_guard, "geo_lookup", lambda ip: {"country_code": "PL"}
@@ -173,6 +180,20 @@ def test_bind_html_sets_cookie(monkeypatch):
     assert d.set_cookie is True
 
 
+def test_bind_mismatch_blocks_html_without_reissue(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_secret", "test-secret")
+    token = scrape_guard.issue_token("8.8.8.10")
+    d = scrape_guard.bind_decision(
+        ip="1.1.1.1",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/russia/indicator/cpi",
+        cookie=token,
+    )
+    assert d.block is True
+    assert d.set_cookie is False
+
+
 def test_bind_private_ip_skips(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
     d = scrape_guard.bind_decision(
@@ -196,6 +217,37 @@ def test_attach_bind_cookie_httponly(monkeypatch):
     assert "samesite=lax" in header.lower()
 
 
+def test_playwright_chrome_ua_blocks_farm_not_people(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
+    farm = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+    )
+    real = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/145.0.7632.46 Safari/537.36"
+    )
+    cursor = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Cursor/3.18.25 Chrome/144.0.7559.236 "
+        "Electron/40.10.3 Safari/537.36"
+    )
+    assert scrape_guard.is_playwright_chrome_ua(farm)
+    assert not scrape_guard.is_playwright_chrome_ua(real)
+    assert not scrape_guard.is_playwright_chrome_ua(cursor)
+    assert scrape_guard.should_block(
+        ip="8.8.8.8", ua=farm, path="/russia/region/moskva"
+    ) == "AUTOMATION"
+    assert scrape_guard.should_block(ip="8.8.8.8", ua=real, path="/") is None
+    assert scrape_guard.should_block(ip="8.8.8.8", ua=cursor, path="/") is None
+    assert scrape_guard.should_block(
+        ip="8.8.8.8",
+        ua="Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
+        path="/",
+    ) is None
+
+
 def test_noise_ua():
     assert scrape_guard.is_noise_client_ua(
         "Mozilla/5.0 HeadlessChrome/145.0.0.0 Safari/537.36"
@@ -209,3 +261,75 @@ def test_noise_ua():
     assert not scrape_guard.is_noise_client_ua(
         "Mozilla/5.0 (compatible; YandexBot/3.0)"
     )
+
+
+def test_hosting_asn_blocks_chrome(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
+    monkeypatch.setattr(
+        scrape_guard,
+        "lookup_asn",
+        lambda ip: {"asn": 24940, "org": "Hetzner Online GmbH"},
+    )
+    assert scrape_guard.should_block(
+        ip="1.2.3.4",
+        ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/145.0.0.0",
+        path="/russia/indicator/cpi",
+    ) == "HOSTING"
+
+
+def test_hosting_org_blocks_without_known_asn(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
+    monkeypatch.setattr(
+        scrape_guard,
+        "lookup_asn",
+        lambda ip: {"asn": 999999, "org": "Alibaba Cloud LLC"},
+    )
+    assert scrape_guard.should_block(
+        ip="47.82.201.239",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/",
+    ) == "HOSTING"
+
+
+def test_hosting_skips_search_bot(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", True)
+    monkeypatch.setattr(
+        scrape_guard,
+        "lookup_asn",
+        lambda ip: {"asn": 24940, "org": "Hetzner Online GmbH"},
+    )
+    assert scrape_guard.should_block(
+        ip="1.2.3.4",
+        ua="Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
+        path="/",
+    ) is None
+
+
+def test_hosting_flag_off(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
+    monkeypatch.setattr(
+        scrape_guard,
+        "lookup_asn",
+        lambda ip: {"asn": 24940, "org": "Hetzner Online GmbH"},
+    )
+    assert scrape_guard.should_block(
+        ip="1.2.3.4", ua="Chrome", path="/"
+    ) is None
+
+
+def test_hosting_fail_open_without_asn(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
+    monkeypatch.setattr(
+        scrape_guard, "lookup_asn", lambda ip: {"asn": None, "org": None}
+    )
+    assert scrape_guard.should_block(ip="8.8.8.8", ua="Chrome", path="/") is None
+
+
+def test_is_hosting_network_google_asn_not_listed():
+    assert scrape_guard.is_hosting_network(15169, "GOOGLE") is False
+    assert scrape_guard.is_hosting_network(24940, "Hetzner Online GmbH") is True
+    assert scrape_guard.is_hosting_network(None, None) is False

@@ -1221,7 +1221,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
 
 
 class ScrapeGuardMiddleware(BaseHTTPMiddleware):
-    """Гео-блок (если включён) + bind-cookie: API с чужого /24 → 403."""
+    """Хостинг-ASN + гео (если включён) + bind-cookie: чужой /24 → 403."""
 
     async def dispatch(self, request: Request, call_next):
         from app.services.scrape_guard import (

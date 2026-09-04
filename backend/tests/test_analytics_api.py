@@ -170,7 +170,13 @@ def test_event_collector_ignores_headless_ua(auth_client, monkeypatch):
     r = auth_client.post(
         "/api/v1/analytics/events",
         json={"event_name": "indicator_view", "url": "https://forecasteconomy.com/"},
-        headers={"User-Agent": "Mozilla/5.0 HeadlessChrome/145.0.0.0 Safari/537.36"},
+        # Не Chrome/N.0.0.0 — тот UA режет scrape_guard как Playwright.
+        # Здесь проверяем молчаливый ignore коллектора по HeadlessChrome.
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 HeadlessChrome/145.0.7632.46 Safari/537.36"
+            )
+        },
     )
     assert r.status_code == 200
     assert r.json() == {"accepted": False, "reason": "ignored"}

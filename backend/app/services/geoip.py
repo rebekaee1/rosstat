@@ -24,6 +24,8 @@ logger = logging.getLogger(__name__)
 
 _reader = None
 _reader_mtime: float | None = None
+_asn_reader = None
+_asn_reader_mtime: float | None = None
 
 
 def _get_reader():
@@ -63,6 +65,26 @@ def _name(block: dict | None, lang: str = "ru") -> str | None:
     return names.get(lang) or names.get("en") or None
 
 
+def _get_asn_reader():
+    global _asn_reader, _asn_reader_mtime
+    path = settings.geoip_asn_db_path
+    try:
+        mtime = os.path.getmtime(path)
+    except OSError:
+        return None
+    if _asn_reader is not None and _asn_reader_mtime == mtime:
+        return _asn_reader
+    try:
+        import maxminddb
+        _asn_reader = maxminddb.open_database(path)
+        _asn_reader_mtime = mtime
+        logger.info("GeoIP ASN database loaded: %s", path)
+    except Exception as exc:  # noqa: BLE001 — ASN опционален
+        logger.warning("GeoIP ASN database open failed: %s", exc)
+        _asn_reader = None
+    return _asn_reader
+
+
 def lookup(ip: str | None) -> dict[str, str | None]:
     """IP → {country, region, city} (русские имена, фолбэк en). Никогда не бросает."""
     empty = {"country": None, "country_code": None, "region": None, "city": None}
@@ -96,19 +118,48 @@ def client_ip_from_headers(x_forwarded_for: str | None, fallback: str | None) ->
     return fallback
 
 
-async def download_geoip_db(force: bool = False) -> bool:
-    """Скачивает месячную сборку DB-IP Lite в settings.geoip_db_path.
+def lookup_asn(ip: str | None) -> dict[str, int | str | None]:
+    """IP → {asn, org}. Пусто, если базы нет. Никогда не бросает."""
+    empty: dict[str, int | str | None] = {"asn": None, "org": None}
+    if not ip:
+        return empty
+    reader = _get_asn_reader()
+    if reader is None:
+        return empty
+    try:
+        rec = reader.get(ip)
+    except Exception:
+        return empty
+    if rec is None:
+        return empty
+    asn: int | None = None
+    org: str | None = None
+    if isinstance(rec, dict):
+        raw_asn = rec.get("autonomous_system_number") or rec.get("asn")
+        raw_org = (
+            rec.get("autonomous_system_organization")
+            or rec.get("as_org")
+            or rec.get("organization")
+        )
+        if isinstance(raw_asn, int):
+            asn = raw_asn
+        elif isinstance(raw_asn, str) and raw_asn.isdigit():
+            asn = int(raw_asn)
+        if isinstance(raw_org, str) and raw_org.strip():
+            org = raw_org.strip()
+    return {"asn": asn, "org": org}
 
-    Возвращает True при успехе. Пробует текущий месяц, затем предыдущий
-    (сборка публикуется в первых числах). Идемпотентно: при живом файле
-    моложе 45 дней и force=False ничего не делает.
-    """
+
+async def _download_mmdb(
+    path: str, url_template: str, *, min_bytes: int, force: bool
+) -> bool:
     import httpx
 
-    path = settings.geoip_db_path
     if not force:
         try:
-            age_days = (datetime.now(timezone.utc).timestamp() - os.path.getmtime(path)) / 86400
+            age_days = (
+                datetime.now(timezone.utc).timestamp() - os.path.getmtime(path)
+            ) / 86400
             if age_days < 45:
                 return True
         except OSError:
@@ -119,7 +170,7 @@ async def download_geoip_db(force: bool = False) -> bool:
     candidates = []
     year, month = now.year, now.month
     for _ in range(2):
-        candidates.append(settings.geoip_download_url_template.format(yyyy=f"{year:04d}", mm=f"{month:02d}"))
+        candidates.append(url_template.format(yyyy=f"{year:04d}", mm=f"{month:02d}"))
         month -= 1
         if month == 0:
             year, month = year - 1, 12
@@ -128,14 +179,41 @@ async def download_geoip_db(force: bool = False) -> bool:
         for url in candidates:
             try:
                 resp = await client.get(url)
-                if resp.status_code != 200 or len(resp.content) < 1_000_000:
+                if resp.status_code != 200 or len(resp.content) < min_bytes:
                     continue
-                with tempfile.NamedTemporaryFile(delete=False, dir=os.path.dirname(path)) as tmp:
+                with tempfile.NamedTemporaryFile(
+                    delete=False, dir=os.path.dirname(path)
+                ) as tmp:
                     tmp.write(gzip.decompress(resp.content))
                     tmp_path = tmp.name
                 shutil.move(tmp_path, path)
-                logger.info("GeoIP database downloaded: %s (%d MB)", url, len(resp.content) // 1_048_576)
+                logger.info(
+                    "GeoIP database downloaded: %s (%d MB)",
+                    url,
+                    len(resp.content) // 1_048_576,
+                )
                 return True
             except Exception as exc:  # noqa: BLE001
                 logger.warning("GeoIP download failed (%s): %s", url, exc)
     return False
+
+
+async def download_geoip_db(force: bool = False) -> bool:
+    """Скачивает City Lite и ASN Lite в том geoip_data.
+
+    Возвращает True, если городская база на месте. ASN качается рядом;
+    отсутствие ASN = хостинг-блок fail-open до появления файла.
+    """
+    city_ok = await _download_mmdb(
+        settings.geoip_db_path,
+        settings.geoip_download_url_template,
+        min_bytes=1_000_000,
+        force=force,
+    )
+    await _download_mmdb(
+        settings.geoip_asn_db_path,
+        settings.geoip_asn_download_url_template,
+        min_bytes=100_000,
+        force=force,
+    )
+    return city_ok

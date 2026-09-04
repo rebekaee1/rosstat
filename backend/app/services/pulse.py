@@ -327,7 +327,7 @@ async def _bot_signals(d: date) -> dict[str, Any]:
             await _alert(
                 "sg_scrape",
                 f"Скрейп из Сингапура: {sg_n} сессий ({sg_share}% от {total}) за {d}. "
-                "Bind-cookie fe_bind (кросс-IP) + опциональный гео-блок.",
+                "Bind-cookie fe_bind (кросс-IP) + хостинговые ASN, не страны.",
             )
         except Exception:  # noqa: BLE001
             logger.warning("sg_scrape alert failed", exc_info=True)
