@@ -104,11 +104,10 @@ services:
     deploy:
       resources:
         limits:
-          # 4 ГБ хост (факт 2026-09-03: 3.8Gi RAM, своп уже занят): 1536M
-          # backend + 1G postgres уводят витрину в своп (главная 5–30 с).
-          # Защита сайта — analytics_engine и timeout'ы, не раздутие cgroup.
-          # 1536M — только после апгрейда хоста до 8 ГБ.
-          memory: 1G
+          # Хост 8 ГБ (после апгрейда 2026-09-03; на 4 ГБ 1536M + postgres
+          # уводили витрину в своп). Защита сайта — analytics_engine и
+          # timeout'ы; cgroup всё ещё потолок, не безлимит.
+          memory: 1536M
           cpus: '1.0'
     environment:
       RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:${POSTGRES_PASSWORD:-rustats_dev}@postgres:5432/rustats

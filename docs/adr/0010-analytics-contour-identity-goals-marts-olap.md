@@ -182,4 +182,4 @@ sunburst / calendar-heatmap; Recharts остаётся для линий и ба
 публичный engine — timeout 30 с / pool_timeout 10 с. Короткие сессии
 по фазам. `/metrics`: pool/RSS/cgroup. Алерты memory_pressure /
 db_pool_saturation / idle_in_tx. ClickHouse лимит 448M; backend на 4 ГБ
-хосте 1 ГиБ (1536M — после апгрейда RAM).
+хосте был 1 ГиБ. 2026-09-04: хост 8 ГБ, backend cgroup 1536M.
