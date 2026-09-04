@@ -1268,7 +1268,10 @@ class ScrapeGuardMiddleware(BaseHTTPMiddleware):
                 },
             )
         response = await call_next(request)
-        if decision.set_cookie and response.status_code < 500:
+        if (
+            decision.set_cookie
+            and 200 <= response.status_code < 300
+        ):
             attach_bind_cookie(response, ip)
         return response
 

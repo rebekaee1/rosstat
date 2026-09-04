@@ -221,6 +221,7 @@ def test_challenge_endpoint_exempt(monkeypatch):
     )
     assert d.block is False
     assert d.challenge is False
+    assert d.set_cookie is False
 
 
 def test_search_bot_skips_challenge(monkeypatch):
@@ -413,6 +414,7 @@ def test_scrape_challenge_http_rejects_farm_cores(client, monkeypatch):
         headers={"User-Agent": ua, "X-Forwarded-For": "8.8.8.8"},
     )
     assert r.status_code == 403
+    assert "fe_bind" not in (r.headers.get("set-cookie") or "").lower()
 
 
 def test_scrape_challenge_http_accepts_laptop(client, monkeypatch):

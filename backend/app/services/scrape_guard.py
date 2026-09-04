@@ -359,6 +359,8 @@ def bind_decision(
         return BindDecision(block=False, set_cookie=False)
     if not is_bind_protected_path(path):
         return BindDecision(block=False, set_cookie=False)
+    if path.startswith("/api/v1/scrape-challenge"):
+        return BindDecision(block=False, set_cookie=False)
     if ip_network_prefix(ip) is None:
         return BindDecision(block=False, set_cookie=False)
     if not cookie:
