@@ -459,8 +459,29 @@ function AddRegionSeries({
   );
 }
 
+function russiaLandingPool(indicators, worldItems, locale) {
+  const macros = [...(indicators || [])];
+  const seen = new Set(macros.map((item) => item.code));
+  for (const item of worldItems || []) {
+    if (item.country_slug !== 'russia' || seen.has(item.code)) continue;
+    seen.add(item.code);
+    const conceptName = locale === 'en'
+      ? (item.concept_name_en || item.concept_name)
+      : item.concept_name;
+    macros.push({
+      code: item.code,
+      name: conceptName,
+      name_en: item.concept_name_en || item.concept_name,
+      category: item.category || '',
+      unit: item.unit || '',
+      seo_keywords: '',
+    });
+  }
+  return macros;
+}
+
 function AddIndicator({
-  indicators, selected, onAdd, atCap, capHint, compatibilityFor,
+  indicators, selected, onAdd, atCap, capHint, compatibilityFor, placeholder,
 }) {
   const t = useT();
   const [query, setQuery] = useState('');
@@ -510,7 +531,7 @@ function AddIndicator({
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpenList(true)}
           onBlur={() => setTimeout(() => setOpenList(false), 150)}
-          placeholder={atCap ? capHint : t('compare.macroPlaceholder')}
+          placeholder={atCap ? capHint : (placeholder || t('compare.macroPlaceholder'))}
           className="flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary disabled:cursor-not-allowed"
         />
         <ChevronDown className="w-4 h-4 shrink-0 text-text-tertiary" />
@@ -766,27 +787,22 @@ function CompareSeriesPicker({
       {countryKey === 'russia' && !russiaBranch && (
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
-          {worldItems.some((item) => item.country_slug === 'russia') && (
-            <div className="mb-4">
-              <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-                {t('compare.russiaComparable')}
-              </div>
-              <p className="mb-3 text-xs leading-relaxed text-text-tertiary">
-                {t('compare.russiaComparableHint')}
-              </p>
-              <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
-                <AddWorldCountrySeries
-                  items={worldItems}
-                  countrySlug="russia"
-                  selected={selected}
-                  onAdd={onAdd}
-                  atCap={atCap}
-                  capHint={capHint}
-                  compatibilityFor={compatibilityFor}
-                />
-              </div>
+          <div className="mb-4">
+            <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+              {t('compare.conceptGroup')}
             </div>
-          )}
+            <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+              <AddIndicator
+                indicators={russiaLandingPool(indicators, worldItems, locale)}
+                selected={selected}
+                onAdd={onAdd}
+                atCap={atCap}
+                capHint={capHint}
+                compatibilityFor={compatibilityFor}
+                placeholder={t('compare.conceptSearch')}
+              />
+            </div>
+          </div>
           <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.russiaWhat')}
           </div>

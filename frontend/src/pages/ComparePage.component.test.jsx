@@ -100,6 +100,18 @@ describe('ComparePage', () => {
     });
   });
 
+  it('на шаге России поиск сразу по всему каталогу, плитки макро/регионы на месте', async () => {
+    mockCompareApis();
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    fireEvent.click(await screen.findByRole('button', { name: 'Россия' }));
+    expect(screen.getByRole('button', { name: /Макропоказатели/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Регионы/ })).toBeTruthy();
+    const input = await screen.findByPlaceholderText('Найти показатель…');
+    fireEvent.focus(input);
+    expect(screen.getByText('Индекс потребительских цен')).toBeTruthy();
+    expect(screen.getByText('Ключевая ставка ЦБ')).toBeTruthy();
+  });
+
   it('показывает шаг выбора страны с Россией первой', async () => {
     mockCompareApis();
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
@@ -184,9 +196,11 @@ describe('ComparePage', () => {
     const heading = await screen.findByRole('heading', { level: 1 });
     expect(heading.textContent).toBe('Compare indicators');
     fireEvent.click(await screen.findByRole('button', { name: 'Russia' }));
-    expect(await screen.findByText('Comparable with other countries')).toBeTruthy();
-    const input = screen.getByPlaceholderText('Select an indicator…');
+    expect(screen.getByRole('button', { name: /Macro indicators/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Regions/ })).toBeTruthy();
+    const input = screen.getByPlaceholderText('Find indicator…');
     fireEvent.focus(input);
+    expect(screen.getByText('Индекс потребительских цен')).toBeTruthy();
     fireEvent.change(input, { target: { value: 'gross' } });
     expect(screen.getByText('Gross domestic product')).toBeTruthy();
     expect(screen.queryByText(/валового внутреннего/i)).toBeNull();

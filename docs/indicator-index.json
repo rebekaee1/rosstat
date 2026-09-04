@@ -10136,7 +10136,7 @@
         },
         {
           "file": "frontend/src/pages/ComparePage.component.test.jsx",
-          "line": 129,
+          "line": 141,
           "kind": "other"
         },
         {
@@ -56276,7 +56276,7 @@
         },
         {
           "file": "backend/tests/test_seo_growth_pages.py",
-          "line": 638,
+          "line": 650,
           "kind": "tests"
         },
         {
