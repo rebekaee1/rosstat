@@ -48,3 +48,5 @@ fe8c5dd5cdd632f88b9b4aaf654119dc3d8f3da2  # fe8c5dd bind-cookie вместо г�
 9ba1ffbafc52eb7ce64080e548fe5c5d81582467  # 9ba1ffb watch retry ready, owner-approved 2026-09-04
 
 7299341b9962930a7d134a82e544daa982616028  # 7299341 watch TTFB retry, owner-approved 2026-09-04
+
+7c1b29c01656183c7dddb6094ec2dd2eed9f99f5  # 7c1b29c compare full catalog search, owner-approved 2026-09-04
