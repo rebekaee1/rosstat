@@ -54,3 +54,5 @@ fe8c5dd5cdd632f88b9b4aaf654119dc3d8f3da2  # fe8c5dd bind-cookie вместо г�
 6b0d16c3f02f02bdd6248d03bb73aa1cd2033217  # 6b0d16c bind HTML + hosting ASN + Playwright UA, owner-approved 2026-09-04
 
 539782eb5b123e70cdceac65e1dc2020b7cc1aaf  # 539782e stop banning live Chrome reduced UA, owner-incident 2026-09-04
+
+1b0095743f84217916c18a623bf553adad08b6a2  # 1b00957 JS challenge cores/WebGL, owner-approved 2026-09-04
