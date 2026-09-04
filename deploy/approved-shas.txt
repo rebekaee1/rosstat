@@ -50,3 +50,5 @@ fe8c5dd5cdd632f88b9b4aaf654119dc3d8f3da2  # fe8c5dd bind-cookie вместо г�
 7299341b9962930a7d134a82e544daa982616028  # 7299341 watch TTFB retry, owner-approved 2026-09-04
 
 7c1b29c01656183c7dddb6094ec2dd2eed9f99f5  # 7c1b29c compare full catalog search, owner-approved 2026-09-04
+
+6b0d16c3f02f02bdd6248d03bb73aa1cd2033217  # 6b0d16c bind HTML + hosting ASN + Playwright UA, owner-approved 2026-09-04
