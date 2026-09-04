@@ -4,19 +4,19 @@
 
 **Сгенерировано:** 2026-09-04
 
-**Файлов:** 949  ·  **Строк:** 261 469  ·  **Токенов (≈):** 2 651 390
+**Файлов:** 949  ·  **Строк:** 261 444  ·  **Токенов (≈):** 2 651 189
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 058 | 51 440 |
+| `(root)` | 8 | 2 058 | 51 514 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 516 | 161 416 | 1 556 953 |
+| `backend` | 516 | 161 392 | 1 556 705 |
 | `clickhouse` | 2 | 36 | 445 |
-| `deploy` | 9 | 444 | 4 721 |
-| `docs` | 39 | 11 528 | 205 333 |
-| `frontend` | 314 | 71 840 | 690 638 |
+| `deploy` | 9 | 446 | 4 751 |
+| `docs` | 39 | 11 528 | 205 323 |
+| `frontend` | 314 | 71 837 | 690 591 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 57 | 13 839 | 139 490 |
 
@@ -28,12 +28,12 @@
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
 | `backend/app/data/regional/indicators.json` | 6 440 | 56 948 |
 | `backend/seed_data.py` | 5 413 | 55 326 |
-| `docs/backlog.md` | 1 505 | 53 814 |
+| `docs/backlog.md` | 1 505 | 53 804 |
 | `backend/app/data/eurostat_listing_decisions.json` | 5 407 | 52 078 |
 | `frontend/src/pages/AdminBI.jsx` | 2 945 | 41 559 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 080 |
-| `CONTEXT.md` | 764 | 26 783 |
+| `CONTEXT.md` | 764 | 26 857 |
 | `backend/app/services/seo_renderer.py` | 2 612 | 26 099 |
 | `frontend/src/i18n/messages.ru.js` | 1 847 | 25 760 |
 | `frontend/src/i18n/messages.en.js` | 1 840 | 24 906 |
@@ -63,7 +63,7 @@
 | `docs/data_sources.md` | 518 | 10 824 |
 | `backend/tests/test_seo_world.py` | 1 001 | 10 512 |
 | `docs/research/_fpsr_raw/agent01.json` | 779 | 10 111 |
-| `frontend/nginx.conf` | 831 | 9 531 |
+| `frontend/nginx.conf` | 828 | 9 484 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 885 | 9 350 |
 | `backend/app/services/world_national_ingest.py` | 1 096 | 9 214 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 828 | 9 111 |
@@ -227,7 +227,6 @@
 | `backend/tests/test_rosstat_gdp.py` | 308 | 3 121 |
 | `docs/adr/0002-derived-always-reflects-source.md` | 136 | 3 094 |
 | `backend/tests/test_world_statcan_adapter.py` | 393 | 3 086 |
-| `backend/tests/test_scrape_guard.py` | 335 | 3 083 |
 | `docs/workflow.md` | 167 | 3 072 |
 | `frontend/public/fonts/fonts.css` | 273 | 3 070 |
 | `backend/tests/test_imf_weo_adapter.py` | 337 | 3 060 |
@@ -238,6 +237,7 @@
 | `backend/app/services/world_imf_ingest.py` | 330 | 3 019 |
 | `backend/app/services/world_eurostat_ingest.py` | 355 | 3 008 |
 | `backend/app/services/rosstat_labor_parser.py` | 329 | 2 990 |
+| `backend/tests/test_scrape_guard.py` | 326 | 2 986 |
 | `backend/app/api/export.py` | 339 | 2 980 |
 | `backend/app/services/rosstat_sdds_fetcher.py` | 320 | 2 967 |
 | `backend/app/api/admin_bi.py` | 318 | 2 958 |
@@ -314,7 +314,6 @@
 | `scripts/audit-public-language.py` | 256 | 2 250 |
 | `frontend/public/consent.js` | 202 | 2 235 |
 | `backend/app/data/world_national_core/us.yaml` | 219 | 2 225 |
-| `backend/app/services/scrape_guard.py` | 272 | 2 224 |
 | `backend/app/tasks/ticker_worker.py` | 241 | 2 208 |
 | `frontend/src/lib/compareRepresentation.test.js` | 206 | 2 205 |
 | `backend/app/api/oauth.py` | 233 | 2 202 |
@@ -333,6 +332,7 @@
 | `backend/app/services/br_pop_adapter.py` | 233 | 2 091 |
 | `scripts/metrika-baseline-snapshot.py` | 218 | 2 089 |
 | `frontend/src/lib/ppiViewModeContent.jsx` | 197 | 2 080 |
+| `backend/app/services/scrape_guard.py` | 257 | 2 073 |
 | `frontend/src/lib/searchSynonyms.js` | 218 | 2 073 |
 | `backend/app/api/forecasts.py` | 226 | 2 068 |
 | `frontend/src/components/Footer.jsx` | 230 | 2 067 |
@@ -589,6 +589,7 @@
 | `backend/tests/forecast_strategies/snapshots/housing_primary_2026_q1.json` | 222 | 915 |
 | `frontend/src/components/UnemploymentViewModePicker.jsx` | 129 | 913 |
 | `frontend/src/lib/regionsMapGif.test.js` | 124 | 911 |
+| `deploy/approved-shas.txt` | 54 | 910 |
 | `backend/app/services/moex_index_parser.py` | 104 | 909 |
 | `backend/alembic/versions/20260806_world_ingest_provenance.py` | 80 | 905 |
 | `backend/app/services/session.py` | 117 | 904 |
@@ -600,7 +601,6 @@
 | `frontend/src/lib/housingViewModeGroups.test.js` | 77 | 886 |
 | `backend/app/data/housing_historical.py` | 92 | 884 |
 | `backend/tests/forecast_strategies/test_monthly_auto.py` | 100 | 881 |
-| `deploy/approved-shas.txt` | 52 | 880 |
 | `backend/tests/test_cbr_bop.py` | 109 | 876 |
 | `backend/scripts/load-world-deep-slices.py` | 108 | 871 |
 | `frontend/src/lib/compareCompatibility.js` | 107 | 871 |

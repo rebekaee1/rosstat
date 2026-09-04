@@ -8671,7 +8671,7 @@
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 277,
+          "line": 268,
           "kind": "tests"
         },
         {
@@ -9196,7 +9196,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 295,
+          "line": 292,
           "kind": "other"
         },
         {

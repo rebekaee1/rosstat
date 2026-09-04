@@ -217,29 +217,20 @@ def test_attach_bind_cookie_httponly(monkeypatch):
     assert "samesite=lax" in header.lower()
 
 
-def test_playwright_chrome_ua_blocks_farm_not_people(monkeypatch):
+def test_reduced_chrome_ua_is_not_blocked(monkeypatch):
+    """Chrome 101+ шлёт Chrome/N.0.0.0 — это не признак Playwright."""
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
-    farm = (
+    reduced = (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
-    )
-    real = (
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/145.0.7632.46 Safari/537.36"
     )
     cursor = (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Cursor/3.18.25 Chrome/144.0.7559.236 "
         "Electron/40.10.3 Safari/537.36"
     )
-    assert scrape_guard.is_playwright_chrome_ua(farm)
-    assert not scrape_guard.is_playwright_chrome_ua(real)
-    assert not scrape_guard.is_playwright_chrome_ua(cursor)
-    assert scrape_guard.should_block(
-        ip="8.8.8.8", ua=farm, path="/russia/region/moskva"
-    ) == "AUTOMATION"
-    assert scrape_guard.should_block(ip="8.8.8.8", ua=real, path="/") is None
+    assert scrape_guard.should_block(ip="8.8.8.8", ua=reduced, path="/") is None
     assert scrape_guard.should_block(ip="8.8.8.8", ua=cursor, path="/") is None
     assert scrape_guard.should_block(
         ip="8.8.8.8",

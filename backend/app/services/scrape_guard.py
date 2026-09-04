@@ -15,8 +15,8 @@
 - хостинговые ASN (Hetzner/OVH/Alibaba/AWS/…) режутся флагом
   ``RUSTATS_SCRAPE_BLOCK_HOSTING`` (по умолчанию вкл); жилые прокси
   этим слоем не покрыты;
-- UA ``Chrome/N.0.0.0 Safari/537.36`` (дефолт Playwright) — 403 на nginx
-  и в middleware; поисковики по UA не режутся.
+- ``Chrome/N.0.0.0 Safari/537.36`` — это reduced UA живого Chrome
+  (с 101), его нельзя банить: ферма шлёт ту же строку.
 """
 from __future__ import annotations
 
@@ -45,14 +45,6 @@ _SEARCH_UA_RE = re.compile(
 
 # Cursor-вкладка и headless-ферма не должны писать behavior/events.
 _NOISE_UA_RE = re.compile(r"HeadlessChrome|Cursor/", re.IGNORECASE)
-
-# Дефолт Playwright/Puppeteer: Chrome/N.0.0.0 Safari/537.36 в хвосте UA.
-# Совпадает с nginx $bad_bot. Живой Chrome — 145.0.7632.xx; Cursor вставляет
-# Electron/ перед Safari. 10_15_7 не используем: это freeze у всех Mac Chrome.
-_PLAYWRIGHT_CHROME_UA_RE = re.compile(
-    r"Chrome/[0-9]+\.0\.0\.0 Safari/537\.36$",
-    re.IGNORECASE,
-)
 
 # Хостинг / облако: бан сетей, не стран. 15169 Google и 13238 Яндекс
 # сюда не входят — поисковики и так пропускаются по UA.
@@ -131,11 +123,6 @@ def is_noise_client_ua(ua: str | None) -> bool:
     return bool(ua and _NOISE_UA_RE.search(ua))
 
 
-def is_playwright_chrome_ua(ua: str | None) -> bool:
-    """Дефолтный UA автоматизации, не живой Chrome и не вкладка Cursor."""
-    return bool(ua and _PLAYWRIGHT_CHROME_UA_RE.search(ua))
-
-
 def ip_network_prefix(ip: str) -> str | None:
     """IPv4 /24, IPv6 /48. None — не глобальный адрес (localhost, тесты)."""
     try:
@@ -196,14 +183,12 @@ def verify_token(token: str | None, ip: str, when: datetime | None = None) -> bo
 
 
 def should_block(*, ip: str, ua: str | None, path: str) -> str | None:
-    """Причина блока: AUTOMATION / HOSTING / ISO-страна, или None."""
+    """Причина блока: HOSTING / ISO-страна, или None."""
     path = path or "/"
     if any(path.startswith(p) for p in _SKIP_PREFIXES):
         return None
     if is_search_bot_ua(ua):
         return None
-    if is_playwright_chrome_ua(ua):
-        return "AUTOMATION"
     if settings.scrape_block_hosting:
         info = lookup_asn(ip)
         asn = info.get("asn")
