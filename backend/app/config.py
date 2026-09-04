@@ -56,6 +56,10 @@ class Settings(BaseSettings):
     scrape_bind_secret: str = ""
     # Бан хостинговых ASN (не стран). Пустая ASN-база = fail-open.
     scrape_block_hosting: bool = True
+    # JS-ворота: HTML без fe_bind — заглушка, кука после проверки ядер/WebGL.
+    # Гидра 1 IP = 1 хит иначе забирает SSR с первого запроса.
+    scrape_challenge_enabled: bool = True
+    scrape_challenge_min_cores: int = 48
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

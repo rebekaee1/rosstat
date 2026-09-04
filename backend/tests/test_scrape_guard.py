@@ -145,6 +145,7 @@ def test_bind_mismatch_blocks_api(monkeypatch):
 
 def test_bind_missing_cookie_allows_and_sets(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", False)
     d = scrape_guard.bind_decision(
         ip="8.8.8.10",
         ua="Mozilla/5.0 Chrome/145",
@@ -170,6 +171,7 @@ def test_bind_search_bot_skips(monkeypatch):
 
 def test_bind_html_sets_cookie(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", False)
     d = scrape_guard.bind_decision(
         ip="8.8.8.10",
         ua="Mozilla/5.0 Chrome/145",
@@ -178,6 +180,76 @@ def test_bind_html_sets_cookie(monkeypatch):
     )
     assert d.block is False
     assert d.set_cookie is True
+    assert d.challenge is False
+
+
+def test_html_without_cookie_is_challenge(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    d = scrape_guard.bind_decision(
+        ip="8.8.8.10",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/russia/indicator/cpi",
+        cookie=None,
+    )
+    assert d.challenge is True
+    assert d.block is False
+    assert d.set_cookie is False
+
+
+def test_api_without_cookie_blocked_when_challenge_on(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    d = scrape_guard.bind_decision(
+        ip="8.8.8.10",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/api/v1/ticker/live",
+        cookie=None,
+    )
+    assert d.block is True
+    assert d.challenge is False
+
+
+def test_challenge_endpoint_exempt(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    d = scrape_guard.bind_decision(
+        ip="8.8.8.10",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/api/v1/scrape-challenge",
+        cookie=None,
+    )
+    assert d.block is False
+    assert d.challenge is False
+
+
+def test_search_bot_skips_challenge(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    d = scrape_guard.bind_decision(
+        ip="8.8.8.10",
+        ua="Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
+        path="/russia/indicator/cpi",
+        cookie=None,
+    )
+    assert d.challenge is False
+    assert d.block is False
+
+
+def test_automation_reason_cores_and_webgl():
+    ua = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+    )
+    assert scrape_guard.automation_reason({"hc": 8, "wd": 0, "plat": "MacIntel"}, ua) is None
+    assert scrape_guard.automation_reason({"hc": 177, "wd": 0, "plat": "MacIntel"}, ua) == "CORES"
+    assert scrape_guard.automation_reason({"hc": 8, "wd": 1, "plat": "MacIntel"}, ua) == "WEBDRIVER"
+    assert scrape_guard.automation_reason(
+        {"hc": 8, "webgl": "Google SwiftShader", "plat": "MacIntel"}, ua
+    ) == "WEBGL"
+    assert scrape_guard.automation_reason(
+        {"hc": 8, "plat": "Linux x86_64"}, ua
+    ) == "PLATFORM"
 
 
 def test_bind_mismatch_blocks_html_without_reissue(monkeypatch):
@@ -324,3 +396,37 @@ def test_is_hosting_network_google_asn_not_listed():
     assert scrape_guard.is_hosting_network(15169, "GOOGLE") is False
     assert scrape_guard.is_hosting_network(24940, "Hetzner Online GmbH") is True
     assert scrape_guard.is_hosting_network(None, None) is False
+
+
+def test_scrape_challenge_http_rejects_farm_cores(client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "scrape_challenge_enabled", True)
+    monkeypatch.setattr(settings, "scrape_block_hosting", False)
+    ua = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+    )
+    r = client.post(
+        "/api/v1/scrape-challenge",
+        json={"hc": 177, "plat": "MacIntel", "wd": 0},
+        headers={"User-Agent": ua, "X-Forwarded-For": "8.8.8.8"},
+    )
+    assert r.status_code == 403
+
+
+def test_scrape_challenge_http_accepts_laptop(client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "scrape_challenge_enabled", True)
+    monkeypatch.setattr(settings, "scrape_block_hosting", False)
+    ua = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+    )
+    r = client.post(
+        "/api/v1/scrape-challenge",
+        json={"hc": 8, "plat": "MacIntel", "wd": 0, "webgl": "Apple M1"},
+        headers={"User-Agent": ua, "X-Forwarded-For": "8.8.8.8"},
+    )
+    assert r.status_code == 204

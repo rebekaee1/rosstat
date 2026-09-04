@@ -58,12 +58,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 455,
+          "line": 456,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 457,
+          "line": 458,
           "kind": "other"
         },
         {
@@ -3993,7 +3993,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 468,
+          "line": 469,
           "kind": "other"
         },
         {
@@ -4570,7 +4570,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 673,
+          "line": 674,
           "kind": "other"
         },
         {
@@ -5377,7 +5377,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 434,
+          "line": 435,
           "kind": "other"
         },
         {
@@ -6126,7 +6126,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 468,
+          "line": 469,
           "kind": "other"
         },
         {
@@ -6584,7 +6584,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 434,
+          "line": 435,
           "kind": "other"
         },
         {
@@ -7546,7 +7546,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 563,
+          "line": 564,
           "kind": "other"
         },
         {
@@ -8666,12 +8666,22 @@
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 190,
+          "line": 192,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 268,
+          "line": 232,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_scrape_guard.py",
+          "line": 262,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_scrape_guard.py",
+          "line": 340,
           "kind": "tests"
         },
         {
@@ -16347,7 +16357,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 728,
+          "line": 729,
           "kind": "other"
         },
         {
@@ -17374,7 +17384,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 643,
+          "line": 644,
           "kind": "other"
         },
         {
@@ -17794,7 +17804,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 643,
+          "line": 644,
           "kind": "other"
         },
         {
@@ -18374,7 +18384,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 466,
+          "line": 467,
           "kind": "other"
         },
         {
@@ -18814,7 +18824,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 466,
+          "line": 467,
           "kind": "other"
         },
         {
@@ -19567,12 +19577,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 685,
+          "line": 686,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 687,
+          "line": 688,
           "kind": "other"
         },
         {
@@ -21972,7 +21982,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 556,
+          "line": 557,
           "kind": "other"
         },
         {
@@ -22676,7 +22686,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 556,
+          "line": 557,
           "kind": "other"
         },
         {
@@ -26272,7 +26282,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 612,
+          "line": 613,
           "kind": "other"
         },
         {
@@ -26572,7 +26582,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 612,
+          "line": 613,
           "kind": "other"
         },
         {
@@ -26867,7 +26877,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 612,
+          "line": 613,
           "kind": "other"
         },
         {
@@ -27187,22 +27197,22 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 606,
+          "line": 607,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 608,
+          "line": 609,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 610,
+          "line": 611,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 612,
+          "line": 613,
           "kind": "other"
         },
         {
@@ -28876,7 +28886,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 610,
+          "line": 611,
           "kind": "other"
         },
         {
@@ -29106,7 +29116,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 445,
+          "line": 446,
           "kind": "other"
         },
         {
@@ -29986,7 +29996,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 685,
+          "line": 686,
           "kind": "other"
         },
         {
@@ -31394,7 +31404,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 665,
+          "line": 666,
           "kind": "other"
         },
         {
@@ -34314,32 +34324,32 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 472,
+          "line": 473,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 484,
+          "line": 485,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 486,
+          "line": 487,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 563,
+          "line": 564,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 591,
+          "line": 592,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 627,
+          "line": 628,
           "kind": "other"
         },
         {
@@ -35008,7 +35018,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 677,
+          "line": 678,
           "kind": "other"
         },
         {
@@ -37959,12 +37969,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 445,
+          "line": 446,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 624,
+          "line": 625,
           "kind": "other"
         },
         {
@@ -39176,12 +39186,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 685,
+          "line": 686,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 687,
+          "line": 688,
           "kind": "other"
         },
         {
@@ -39574,7 +39584,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 466,
+          "line": 467,
           "kind": "other"
         },
         {
@@ -40024,7 +40034,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 466,
+          "line": 467,
           "kind": "other"
         },
         {
@@ -40494,7 +40504,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 466,
+          "line": 467,
           "kind": "other"
         },
         {
@@ -50868,7 +50878,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 434,
+          "line": 435,
           "kind": "other"
         },
         {
@@ -51906,7 +51916,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 434,
+          "line": 435,
           "kind": "other"
         },
         {
@@ -53295,7 +53305,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 728,
+          "line": 729,
           "kind": "other"
         },
         {
@@ -53439,7 +53449,7 @@
       "files": [
         {
           "file": ".env.example",
-          "line": 150,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -53469,12 +53479,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 706,
+          "line": 707,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 726,
+          "line": 727,
           "kind": "other"
         },
         {
@@ -54345,7 +54355,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 728,
+          "line": 729,
           "kind": "other"
         },
         {
@@ -54667,7 +54677,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 728,
+          "line": 729,
           "kind": "other"
         },
         {
@@ -57756,27 +57766,27 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 623,
+          "line": 624,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 653,
+          "line": 654,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 655,
+          "line": 656,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 695,
+          "line": 696,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 706,
+          "line": 707,
           "kind": "other"
         },
         {
@@ -58265,17 +58275,17 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 653,
+          "line": 654,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 655,
+          "line": 656,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 695,
+          "line": 696,
           "kind": "other"
         },
         {
@@ -60336,7 +60346,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 434,
+          "line": 435,
           "kind": "other"
         },
         {

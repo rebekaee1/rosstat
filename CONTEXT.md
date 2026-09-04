@@ -410,10 +410,11 @@ embed отвечают на запрошенном хосте — иначе clo
    Яндекс/Google не баним; 429 для лишних OG — краулер ретраит. Кэш PNG —
    следующий слой, не вместо потолка.
 4. **fail2ban**: jails читают файлы только с `backend = polling` (Ubuntu 24 дефолт — systemd journal, `logpath` молчит). failregex — **после** снятия ISO8601-даты (`^\s*<HOST> …`), иначе 0 матчей на живом логе. `nginx-429` / **`nginx-volume`** только HTML-каталог (не `/api/`, не тикер); `honeytrap`; `recidive`. Гидра «1 хит — новый IP» этим слоем не покрыта.
-5. **Bind-cookie** `fe_bind` = HMAC(IPv4 /24 или IPv6 /48, UTC-день). HTML и API 2xx ставят куку. Кука чужого префикса → 403 на HTML и API **без** перевыдачи (HTML больше не легитимирует украденную куку). Нет куки — пропускаем и ставим (первый заход, SPA). Поисковики и соцкраулеры по UA не режутся; приватный IP — skip. Гео `RUSTATS_SCRAPE_BLOCK_COUNTRIES` — аварийный рычаг (пусто = выкл).
+5. **Bind-cookie** `fe_bind` = HMAC(IPv4 /24 или IPv6 /48, UTC-день). Кука чужого префикса → 403 на HTML и API **без** перевыдачи. Поисковики по UA не режутся; приватный IP — skip. Гео `RUSTATS_SCRAPE_BLOCK_COUNTRIES` — аварийный рычаг (пусто = выкл).
 6. **Гигиена аналитики**: `behavior.js`/`track.js` молчат при `navigator.webdriver`, `HeadlessChrome`, `Cursor/`; сервер на `/analytics/behavior` и `/analytics/events` отвечает `accepted: false`.
 7. **MJ12bot** — `Disallow: /` в robots.txt (уважает robots; fail2ban банить незачем).
 8. **Хостинговые ASN** (не ISO-страны): DB-IP ASN Lite рядом с City Lite; Hetzner/OVH/Alibaba/AWS/GCP/Azure/… → 403. Поисковики по UA. Жилые/ISP-прокси этим слоем не покрыты. Флаг `RUSTATS_SCRAPE_BLOCK_HOSTING` (по умолчанию вкл); нет файла ASN — fail-open.
+9. **JS-ворота** (`RUSTATS_SCRAPE_CHALLENGE_ENABLED`): гидра 1 IP = 1 хит забирает SSR с первого запроса — IP-бан и «второй хит» бесполезны. Человеку без `fe_bind` отдаём заглушку без цифр; кука ставится после POST `/api/v1/scrape-challenge` (ядра, WebGL, webdriver, UA≠platform). Порог ядер 48: ферма 2026-09-04 светит 64–192, живой Mac/Ryzen — 8–32. Яндекс/Google/Claude по UA получают SSR сразу. Когда ферма начнёт врать `hc=8` — следующий слой (JA4/Cloudflare), не UA `Chrome/N.0.0.0`.
 
 Поисковики в `$ssr_limit_key` с пустым ключом. Проверка: `curl -A "Mozilla/5.0 research/1.0" -I https://forecasteconomy.com/` → 403; после `deploy/fail2ban-install.sh` на хосте `fail2ban-client get nginx-volume logpath` не пустой.
 

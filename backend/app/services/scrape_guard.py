@@ -16,7 +16,11 @@
   ``RUSTATS_SCRAPE_BLOCK_HOSTING`` (по умолчанию вкл); жилые прокси
   этим слоем не покрыты;
 - ``Chrome/N.0.0.0 Safari/537.36`` — это reduced UA живого Chrome
-  (с 101), его нельзя банить: ферма шлёт ту же строку.
+  (с 101), его нельзя банить: ферма шлёт ту же строку;
+- гидра 1 IP = 1 хит: бан по IP и «второй запрос» бесполезны. HTML без
+  ``fe_bind`` — заглушка, кука после JS (ядра / WebGL / webdriver).
+  Поисковики по UA сразу получают SSR. Ферма 2026-09-04 светит 64–192
+  ядра — живой ноутбук так не врёт.
 """
 from __future__ import annotations
 
@@ -101,6 +105,28 @@ _SKIP_PREFIXES = (
     "/api/docs",
     "/api/redoc",
     "/api/openapi.json",
+)
+
+# HTML-заглушка и публичные эмбеды не требуют прошедший challenge.
+_CHALLENGE_EXEMPT_PREFIXES = _SKIP_PREFIXES + (
+    "/api/v1/scrape-challenge",
+    "/api/v1/embed",
+    "/embed",
+    "/og/",
+    "/assets/",
+    "/fonts/",
+    "/favicon",
+    "/robots.txt",
+    "/sitemap",
+    "/consent.js",
+    "/llms.txt",
+    "/feed",
+)
+
+# Ферма 2026-09-04: 64–192 ядра. 16c/32t Ryzen репортит 32 — ниже порога.
+_HEADLESS_GL_RE = re.compile(
+    r"swiftshader|llvmpipe|virtualbox|vmware|microsoft basic render",
+    re.IGNORECASE,
 )
 
 COOKIE_NAME = "fe_bind"
@@ -214,10 +240,114 @@ def is_bind_protected_path(path: str) -> bool:
     return not any(path.startswith(p) for p in _SKIP_PREFIXES)
 
 
+def is_challenge_exempt_path(path: str) -> bool:
+    path = path or "/"
+    return any(path.startswith(p) for p in _CHALLENGE_EXEMPT_PREFIXES)
+
+
+def _ua_family(ua: str | None) -> str | None:
+    text = ua or ""
+    if re.search(r"Macintosh|Mac OS X|iPhone|iPad", text, re.I):
+        return "mac"
+    if re.search(r"Windows", text, re.I):
+        return "win"
+    if re.search(r"Android", text, re.I):
+        return "android"
+    if re.search(r"Linux|X11", text, re.I):
+        return "linux"
+    return None
+
+
+def _plat_family(plat: str | None) -> str | None:
+    text = (plat or "").lower()
+    if not text:
+        return None
+    if "mac" in text or text in {"iphone", "ipad"}:
+        return "mac"
+    if "win" in text:
+        return "win"
+    if "linux" in text or "x11" in text:
+        return "linux"
+    if "android" in text:
+        return "android"
+    return None
+
+
+def automation_reason(payload: dict, ua: str | None) -> str | None:
+    """Почему JS-ворота не пропускают. None — человек."""
+    if payload.get("wd") in (1, True, "1"):
+        return "WEBDRIVER"
+    try:
+        cores = int(payload.get("hc") or 0)
+    except (TypeError, ValueError):
+        cores = 0
+    limit = int(getattr(settings, "scrape_challenge_min_cores", 48) or 48)
+    if cores >= limit:
+        return "CORES"
+    gl = str(payload.get("webgl") or "")
+    if gl and _HEADLESS_GL_RE.search(gl):
+        return "WEBGL"
+    ua_os = _ua_family(ua)
+    plat_os = _plat_family(str(payload.get("plat") or ""))
+    if ua_os and plat_os and ua_os != plat_os:
+        return "PLATFORM"
+    return None
+
+
+CHALLENGE_HTML = """<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forecast Economy</title>
+<style>
+html,body{margin:0;height:100%;background:#0e1116;color:#c8c2b4;font:14px/1.4 system-ui,sans-serif}
+body{display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  var gl='';
+  try{
+    var c=document.createElement('canvas');
+    var g=c.getContext('webgl');
+    if(g){
+      var x=g.getExtension('WEBGL_debug_renderer_info');
+      gl=x?String(g.getParameter(x.UNMASKED_RENDERER_WEBGL)||''):'';
+    }
+  }catch(e){}
+  var tz='';
+  try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){}
+  fetch('/api/v1/scrape-challenge',{
+    method:'POST',
+    credentials:'same-origin',
+    headers:{'content-type':'application/json'},
+    body:JSON.stringify({
+      hc:navigator.hardwareConcurrency||0,
+      dm:navigator.deviceMemory||0,
+      tz:tz,
+      lang:navigator.language||'',
+      plat:navigator.platform||'',
+      webgl:gl.slice(0,120),
+      wd:navigator.webdriver?1:0
+    })
+  }).then(function(r){
+    if(r.ok) location.replace(location.href);
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>
+"""
+
+
 @dataclass(frozen=True)
 class BindDecision:
     block: bool
     set_cookie: bool
+    challenge: bool = False
 
 
 def bind_decision(
@@ -232,6 +362,10 @@ def bind_decision(
     if ip_network_prefix(ip) is None:
         return BindDecision(block=False, set_cookie=False)
     if not cookie:
+        if settings.scrape_challenge_enabled and not is_challenge_exempt_path(path):
+            if path.startswith("/api/"):
+                return BindDecision(block=True, set_cookie=False)
+            return BindDecision(block=False, set_cookie=False, challenge=True)
         return BindDecision(block=False, set_cookie=True)
     if verify_token(cookie, ip):
         return BindDecision(block=False, set_cookie=True)

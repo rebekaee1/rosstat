@@ -1221,14 +1221,16 @@ class LocaleMiddleware(BaseHTTPMiddleware):
 
 
 class ScrapeGuardMiddleware(BaseHTTPMiddleware):
-    """Хостинг-ASN + гео (если включён) + bind-cookie: чужой /24 → 403."""
+    """ASN/гео + JS-ворота + bind-cookie."""
 
     async def dispatch(self, request: Request, call_next):
         from app.services.scrape_guard import (
+            CHALLENGE_HTML,
             attach_bind_cookie,
             bind_decision,
             should_block,
         )
+        from starlette.responses import HTMLResponse
 
         ip = pick_client_ip(
             request.headers.get("x-forwarded-for", ""),
@@ -1256,6 +1258,14 @@ class ScrapeGuardMiddleware(BaseHTTPMiddleware):
                 content="Forbidden",
                 media_type="text/plain",
                 headers={"X-Robots-Tag": "noindex"},
+            )
+        if decision.challenge:
+            return HTMLResponse(
+                CHALLENGE_HTML,
+                headers={
+                    "X-Robots-Tag": "noindex",
+                    "Cache-Control": "no-store",
+                },
             )
         response = await call_next(request)
         if decision.set_cookie and response.status_code < 500:

@@ -1,7 +1,7 @@
 import time
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy import select, func, desc, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -31,6 +31,43 @@ _PG_BACKUP_HEARTBEAT_KEY = "fe:ops:pg_backup_last_ok"
 async def health():
     """Liveness: процесс жив и отвечает. Ничего внешнего не проверяет."""
     return {"status": "ok"}
+
+
+@router.post("/scrape-challenge")
+async def scrape_challenge(request: Request):
+    """JS-ворота: кука fe_bind только после проверки ядер/WebGL."""
+    from app.main import pick_client_ip
+    from app.services.scrape_guard import (
+        attach_bind_cookie,
+        automation_reason,
+        is_search_bot_ua,
+    )
+
+    if not settings.scrape_challenge_enabled:
+        return Response(status_code=204)
+    ua = request.headers.get("user-agent")
+    if is_search_bot_ua(ua):
+        return Response(status_code=204)
+    ip = pick_client_ip(
+        request.headers.get("x-forwarded-for", ""),
+        request.client.host if request.client else "",
+    )
+    try:
+        payload = await request.json()
+        if not isinstance(payload, dict):
+            payload = {}
+    except Exception:  # noqa: BLE001
+        payload = {}
+    if automation_reason(payload, ua):
+        return Response(
+            status_code=403,
+            content="Forbidden",
+            media_type="text/plain",
+            headers={"X-Robots-Tag": "noindex"},
+        )
+    resp = Response(status_code=204)
+    attach_bind_cookie(resp, ip)
+    return resp
 
 
 @router.get("/health/ready")
