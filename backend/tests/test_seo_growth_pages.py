@@ -560,6 +560,7 @@ def test_rss_robots_llms_follow_request_host(seeded_env):
         assert ru_robots.status_code == 200
         assert "Host:" not in ru_robots.text
         assert "Sitemap: https://ru.forecasteconomy.com/sitemap.xml" in ru_robots.text
+        assert "User-agent: MJ12bot\nDisallow: /" in apex_robots.text
 
         apex_llms = tc.get("/llms.txt")
         assert apex_llms.status_code == 200

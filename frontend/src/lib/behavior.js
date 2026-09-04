@@ -59,6 +59,17 @@ const ERRORS_MAX_PER_PAGE = 10;  // потолок js_error с одной стр
 const API_TIMING_SAMPLE = 5;     // латентность API — каждый 5-й запрос
 const BLOCK_RESCAN_MS = 3_000;   // как часто искать новые [data-block] в DOM
 
+/** Headless-ферма и вкладка Cursor не должны писать behavior/events. */
+export function isAutomationUa(ua, webdriver = false) {
+  if (webdriver) return true;
+  return /HeadlessChrome|Cursor\//i.test(ua || '');
+}
+
+export function isAutomationClient() {
+  if (typeof navigator === 'undefined') return false;
+  return isAutomationUa(navigator.userAgent, navigator.webdriver === true);
+}
+
 let _queue = [];
 let _identity = { authed: false, userId: null };
 let _pageLoadId = null;
@@ -580,6 +591,7 @@ function onLeave() {
  * полный паритет сбора. */
 export function behaviorInit() {
   if (_inited || typeof window === 'undefined') return;
+  if (isAutomationClient()) return;
   if (/^\/embed\//.test(window.location.pathname)) return;
   _enabled = consentAllows();
   _inited = true;

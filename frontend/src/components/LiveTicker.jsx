@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneForLocale } from '../lib/tickerLane';
+import { tickerRefetchInterval } from '../lib/tickerPoll';
 import { useLocale, useT } from '../i18n';
 
 /**
@@ -21,8 +22,6 @@ const TICKER_META = {
   'brent':         { label: 'Brent',   linkTo: russiaIndicatorPath('brent'),   decimals: 2 },
   'gold-rub-live': { labelKey: 'ticker.gold', linkTo: russiaIndicatorPath('gold-price'), decimals: 1 },
 };
-
-const POLL_INTERVAL_MS = 4000;
 
 function formatPrice(value, decimals, locale = 'ru') {
   if (value === null || value === undefined) return '—';
@@ -197,8 +196,20 @@ function TickerCell({ snapshot, nowMs }) {
 }
 
 async function fetchLiveTicker(lane) {
-  const r = await fetch(`/api/v1/ticker/live?lane=${encodeURIComponent(lane)}`, { cache: 'no-store' });
-  if (!r.ok) throw new Error(`Live ticker: HTTP ${r.status}`);
+  const r = await fetch(`/api/v1/ticker/live?lane=${encodeURIComponent(lane)}`, {
+    cache: 'no-store',
+    credentials: 'same-origin',
+  });
+  if (!r.ok) {
+    const err = new Error(`Live ticker: HTTP ${r.status}`);
+    err.status = r.status;
+    if (r.status === 429) {
+      const raw = Number.parseInt(r.headers.get('retry-after') || '60', 10);
+      const sec = Number.isFinite(raw) ? raw : 60;
+      err.retryAfterMs = Math.min(Math.max(sec, 1), 120) * 1000;
+    }
+    throw err;
+  }
   return r.json();
 }
 
@@ -209,7 +220,9 @@ export default function LiveTicker() {
   const { data, dataUpdatedAt } = useQuery({
     queryKey: ['ticker', 'live', lane],
     queryFn: () => fetchLiveTicker(lane),
-    refetchInterval: POLL_INTERVAL_MS,
+    retry: false,
+    refetchInterval: tickerRefetchInterval,
+    refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
     staleTime: 0,
   });

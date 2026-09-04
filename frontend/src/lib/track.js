@@ -1,5 +1,5 @@
 import { CATEGORIES } from './categories';
-import { visitorId } from './behavior';
+import { isAutomationClient, visitorId } from './behavior';
 import { SITE_ORIGIN } from './siteOrigin';
 
 const COUNTER_ID = 107136069;
@@ -86,6 +86,7 @@ export function withCategory(params, apiCategory) {
  * This lets call sites pass a single field instead of computing the slug each time.
  */
 export function track(event, params) {
+  if (isAutomationClient()) return;
   let payload = params;
   if (params && typeof params === 'object' && 'indicatorCategory' in params) {
     const { indicatorCategory, ...rest } = params;

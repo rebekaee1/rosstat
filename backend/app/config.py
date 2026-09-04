@@ -47,11 +47,13 @@ class Settings(BaseSettings):
     bing_site_verification: str = ""
     # Bearer-токен Search Analytics API. Пусто = джоб не синхронизирует.
     gsc_access_token: str = ""
-    # ISO-коды стран, с которых режем не-поисковый трафик (скрейп с ротацией
-    # IP). Дефолт SG,PL: 2026-09-03 Метрика — Сингапур 1788 робот-визитов;
-    # вечером тот же паттерн с Польши (Chrome, 1 страница, Direct, 0–20 с).
-    # Поисковики по UA не режутся. Пусто = выкл.
-    scrape_block_countries: str = "SG,PL"
+    # Аварийный гео-блок скрейпа (ISO через запятую). Пусто = выкл.
+    # Основная защита — bind-cookie (scrape_bind_enabled): ферма крутит
+    # страны, гео ловит только перечисленные.
+    scrape_block_countries: str = ""
+    # HMAC(IP-префикс, день) в cookie fe_bind. API с кукой чужого /24 → 403.
+    scrape_bind_enabled: bool = True
+    scrape_bind_secret: str = ""
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

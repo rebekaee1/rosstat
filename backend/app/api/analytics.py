@@ -16,6 +16,7 @@ from app.security.auth import current_session
 from app.services.action_policy import evaluate_action
 from app.services.action_executor import execute_approved_action
 from app.services.analytics_features import detect_page_opportunities, sync_run_impact, top_pages, top_search_phrases
+from app.services.scrape_guard import is_noise_client_ua
 from app.services.yandex_metrika_reporting import MetrikaReportingClient
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
@@ -260,6 +261,8 @@ async def collect_event(request: Request, payload: FrontendEventIn, db: AsyncSes
     # события всегда (питает «Пульс»), даже если analytics_enabled=false.
     if not settings.frontend_events_enabled:
         return {"accepted": False, "reason": "frontend events disabled"}
+    if is_noise_client_ua(request.headers.get("user-agent")):
+        return {"accepted": False, "reason": "ignored"}
     session_hash = hashlib.sha256(payload.session_id.encode("utf-8")).hexdigest() if payload.session_id else None
     visitor_hash = _hash_id(payload.visitor_id)
     # Атрибуция аудитории. Эндпоинт — POST (не кэшируется), поэтому чтение
@@ -544,7 +547,11 @@ async def collect_behavior_batch(
     executemany — при 100k посетителей/день вставка остаётся дешёвой."""
     if not settings.behavior_events_enabled:
         return {"accepted": False, "reason": "behavior events disabled"}
+    if is_noise_client_ua(request.headers.get("user-agent")):
+        return {"accepted": False, "reason": "ignored"}
     events = payload.events[: settings.behavior_batch_max_events]
+    if any(ev.get("wd") for ev in events):
+        return {"accepted": False, "reason": "ignored"}
     if not events:
         return {"accepted": True, "stored": 0}
     if await _is_duplicate_batch(payload.batch_id):

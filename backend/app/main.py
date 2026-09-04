@@ -1220,21 +1220,23 @@ class LocaleMiddleware(BaseHTTPMiddleware):
             reset_locale(token)
 
 
-class ScrapeGeoBlockMiddleware(BaseHTTPMiddleware):
-    """403 не-поисковым клиентам из RUSTATS_SCRAPE_BLOCK_COUNTRIES (SG, PL)."""
+class ScrapeGuardMiddleware(BaseHTTPMiddleware):
+    """Гео-блок (если включён) + bind-cookie: API с чужого /24 → 403."""
 
     async def dispatch(self, request: Request, call_next):
-        from app.services.scrape_guard import should_block
+        from app.services.scrape_guard import (
+            attach_bind_cookie,
+            bind_decision,
+            should_block,
+        )
 
         ip = pick_client_ip(
             request.headers.get("x-forwarded-for", ""),
             request.client.host if request.client else "",
         )
-        blocked = should_block(
-            ip=ip,
-            ua=request.headers.get("user-agent"),
-            path=request.url.path,
-        )
+        ua = request.headers.get("user-agent")
+        path = request.url.path
+        blocked = should_block(ip=ip, ua=ua, path=path)
         if blocked:
             return Response(
                 status_code=403,
@@ -1242,13 +1244,29 @@ class ScrapeGeoBlockMiddleware(BaseHTTPMiddleware):
                 media_type="text/plain",
                 headers={"X-Robots-Tag": "noindex"},
             )
-        return await call_next(request)
+        decision = bind_decision(
+            ip=ip,
+            ua=ua,
+            path=path,
+            cookie=request.cookies.get("fe_bind"),
+        )
+        if decision.block:
+            return Response(
+                status_code=403,
+                content="Forbidden",
+                media_type="text/plain",
+                headers={"X-Robots-Tag": "noindex"},
+            )
+        response = await call_next(request)
+        if decision.set_cookie and response.status_code < 500:
+            attach_bind_cookie(response, ip)
+        return response
 
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(HttpStatusCounterMiddleware)
-app.add_middleware(ScrapeGeoBlockMiddleware)
+app.add_middleware(ScrapeGuardMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

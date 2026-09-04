@@ -4,7 +4,7 @@
  * интерфейсом: tagName / id / classList / getAttribute / parentElement / children.
  */
 import { describe, it, expect } from 'vitest';
-import { _elementPath } from './behavior';
+import { _elementPath, isAutomationUa } from './behavior';
 
 function el(tag, { id = '', classes = [], attrs = {}, parent = null } = {}) {
   const node = {
@@ -56,5 +56,20 @@ describe('elementPath', () => {
     const path = _elementPath(node);
     expect(path.split(' > ').length).toBeLessThanOrEqual(6);
     expect(path.length).toBeLessThanOrEqual(380);
+  });
+});
+
+describe('isAutomationUa', () => {
+  it('webdriver — всегда автоматизация', () => {
+    expect(isAutomationUa('Mozilla/5.0 Chrome/145', true)).toBe(true);
+  });
+
+  it('HeadlessChrome и Cursor — шум', () => {
+    expect(isAutomationUa('Mozilla/5.0 HeadlessChrome/145.0.0.0')).toBe(true);
+    expect(isAutomationUa('Mozilla/5.0 Cursor/3.18.25 Chrome/144 Electron/40')).toBe(true);
+  });
+
+  it('обычный Chrome — не шум', () => {
+    expect(isAutomationUa('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/145.0.0.0')).toBe(false);
   });
 });

@@ -130,6 +130,52 @@ def test_behavior_batch_gated_by_flag(client, monkeypatch):
     assert r.json()["accepted"] is False
 
 
+def test_behavior_batch_ignores_cursor_ua(auth_client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "behavior_events_enabled", True)
+    r = auth_client.post(
+        "/api/v1/analytics/behavior",
+        json={"session_id": "cursor-sess", "events": [{"t": "click", "ts": 1}]},
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                "Cursor/3.18.25 Chrome/144.0.7559.236 Electron/40.10.3"
+            )
+        },
+    )
+    assert r.status_code == 200
+    assert r.json() == {"accepted": False, "reason": "ignored"}
+
+
+def test_behavior_batch_ignores_webdriver_flag(auth_client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "behavior_events_enabled", True)
+    r = auth_client.post(
+        "/api/v1/analytics/behavior",
+        json={
+            "session_id": "wd-sess",
+            "events": [{"t": "session_start", "ts": 1, "wd": 1}],
+        },
+    )
+    assert r.status_code == 200
+    assert r.json() == {"accepted": False, "reason": "ignored"}
+
+
+def test_event_collector_ignores_headless_ua(auth_client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "frontend_events_enabled", True)
+    r = auth_client.post(
+        "/api/v1/analytics/events",
+        json={"event_name": "indicator_view", "url": "https://forecasteconomy.com/"},
+        headers={"User-Agent": "Mozilla/5.0 HeadlessChrome/145.0.0.0 Safari/537.36"},
+    )
+    assert r.status_code == 200
+    assert r.json() == {"accepted": False, "reason": "ignored"}
+
+
 def test_behavior_batch_stores_known_types_only(auth_client, monkeypatch):
     """Батч: пишутся только известные типы, мусор отбрасывается молча."""
     from app.config import settings
