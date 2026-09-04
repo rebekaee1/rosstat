@@ -218,11 +218,21 @@ done
   || { echo "FAIL: dual-host release gate"; rollback; }
 
 # ── 6b. 15-минутный post-deploy watch (инцидент 2026-09-03: OOM после smoke) ──
+# 2026-09-04: один curl -m 5 на /health/ready во время всплеска SSR (ферма)
+# дал ready=0 при живом сайте (TTFB 4.5 с) и откатил зелёный MJ12-деплой.
+# Ready — до 3 попыток по 8 с; OOM и устойчивый TTFB≥5 с по-прежнему откат.
 echo "==> post-deploy watch 15 min"
 WATCH_FAIL=0
 for i in $(seq 1 15); do
   TTFB=$(curl -o /dev/null -s -w '%{time_starttransfer}' -m 8 -A 'YandexBot/3.0' https://forecasteconomy.com/ || echo 99)
-  READY=$(curl -sf -m 5 http://127.0.0.1:8000/api/v1/health/ready | grep -cE '"status": ?"ok"' || true)
+  READY=0
+  for _try in 1 2 3; do
+    if curl -sf -m 8 http://127.0.0.1:8000/api/v1/health/ready | grep -qE '"status": ?"ok"'; then
+      READY=1
+      break
+    fi
+    sleep 2
+  done
   OOM=$(docker inspect rosstat-backend-1 --format '{{.State.OOMKilled}}' 2>/dev/null || echo unknown)
   MEM=$(docker stats --no-stream --format '{{.MemUsage}}' rosstat-backend-1 2>/dev/null || echo n/a)
   echo "    min ${i}: ttfb=${TTFB}s ready=${READY} oom=${OOM} mem=${MEM}"
