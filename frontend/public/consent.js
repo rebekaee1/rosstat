@@ -60,15 +60,46 @@
     return rest ? '?' + rest : '';
   }
 
+  function pickAttr(params, name) {
+    try { return params.get(name) || ''; } catch { return ''; }
+  }
+  function attrsFromSearch(raw) {
+    var out = {};
+    try {
+      var p = new URLSearchParams(raw || '');
+      for (var i = 0; i < ATTRIBUTION.length; i++) {
+        var v = pickAttr(p, ATTRIBUTION[i]);
+        if (v) out[ATTRIBUTION[i]] = v;
+      }
+    } catch { /* ignore */ }
+    return out;
+  }
+
   var search = window.location.search;
   var hitSearch = stripParams(search, STRIP_ALWAYS);
+  try {
+    var hitParams = new URLSearchParams(hitSearch.charAt(0) === '?' ? hitSearch.slice(1) : hitSearch);
+    var fromRef = {};
+    try { fromRef = attrsFromSearch(new URL(document.referrer).search); } catch { /* нет referrer */ }
+    var fromStore = {};
+    try { fromStore = attrsFromSearch(sessionStorage.getItem('fe:attr:q') || ''); } catch { /* нет store */ }
+    for (var a = 0; a < ATTRIBUTION.length; a++) {
+      var key = ATTRIBUTION[a];
+      if (!hitParams.get(key) && fromRef[key]) hitParams.set(key, fromRef[key]);
+      if (!hitParams.get(key) && fromStore[key]) hitParams.set(key, fromStore[key]);
+    }
+    try { sessionStorage.removeItem('fe:attr:q'); } catch { /* ignore */ }
+    var merged = hitParams.toString();
+    hitSearch = merged ? '?' + merged : '';
+    try { window.__feAttr = attrsFromSearch(hitSearch); } catch { window.__feAttr = {}; }
+  } catch { /* ignore */ }
   var displaySearch = stripParams(hitSearch, ATTRIBUTION);
   var hitPath = window.location.pathname + hitSearch + window.location.hash;
   var cleanPath = window.location.pathname + displaySearch + window.location.hash;
 
   function firstReferer() {
     var stamped = '';
-    try { stamped = new URLSearchParams(search).get('utm_referrer') || ''; } catch (e) { stamped = ''; }
+    try { stamped = new URLSearchParams(hitSearch).get('utm_referrer') || new URLSearchParams(search).get('utm_referrer') || ''; } catch { stamped = ''; }
     var ref = document.referrer || '';
     try {
       var host = (location.hostname || '').replace(/^www\./, '');
@@ -79,7 +110,7 @@
       } else {
         ref = stamped;
       }
-    } catch (e) {
+    } catch {
       if (!ref) ref = stamped;
     }
     return ref;

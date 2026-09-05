@@ -1281,6 +1281,15 @@ def test_locale_host_redirect_after_cutover(monkeypatch):
     assert "utm_referrer=" in loc
     assert "yandex.ru" in loc
 
+    with_ysclid = _locale_host_redirect(_html_locale_request(
+        query=b"ysclid=lor7sw5p9o",
+        extra_headers=[(b"referer", b"https://yandex.ru/")],
+    ))
+    assert with_ysclid is not None
+    loc_y = with_ysclid.headers["location"]
+    assert "ysclid=lor7sw5p9o" in loc_y
+    assert "utm_referrer=" in loc_y
+
     from_self = _locale_host_redirect(_html_locale_request(
         extra_headers=[(b"referer", b"https://forecasteconomy.com/")],
     ))

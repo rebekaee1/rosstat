@@ -40,6 +40,7 @@ import {
   regionVsPath,
   russiaCategoryPath,
   russiaIndicatorPath,
+  russiaIndicatorYearPath,
   todayPath,
 } from './lib/sitePaths';
 import { WORLD_RATING_TO } from './lib/navItems';
@@ -307,6 +308,7 @@ function AppRoutes() {
 
             {/* Legacy → канон (клиентский safety; nginx 301 на проде) */}
             <Route path="/category/:slug" element={<RedirectTo build={({ slug }) => russiaCategoryPath(slug)} />} />
+            <Route path="/indicator/:code/:year" element={<RedirectTo build={({ code, year }) => russiaIndicatorYearPath(code, year)} />} />
             <Route path="/indicator/:code" element={<RedirectTo build={({ code }) => russiaIndicatorPath(code)} />} />
             <Route path="/today" element={<NavigateKeepSearch to={todayPath()} />} />
             <Route path="/today/:code" element={<RedirectTo build={({ code }) => todayPath(code)} />} />

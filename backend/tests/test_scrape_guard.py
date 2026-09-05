@@ -270,10 +270,15 @@ def test_bind_mismatch_html_is_challenge_again(monkeypatch):
 
 
 def test_challenge_html_reloads_not_replace():
-    assert "location.reload()" in scrape_guard.CHALLENGE_HTML
-    assert "location.replace" not in scrape_guard.CHALLENGE_HTML
-    assert "utm_referrer" in scrape_guard.CHALLENGE_HTML
-    assert "consent.js" not in scrape_guard.CHALLENGE_HTML
+    html = scrape_guard.CHALLENGE_HTML
+    assert "location.reload()" in html
+    assert "location.replace" not in html
+    assert "utm_referrer" in html
+    assert "ysclid" in html
+    assert "fe:attr:q" in html
+    assert "mc.yandex.ru/metrika/tag.js" in html
+    assert "107136069" in html
+    assert "consent.js" not in html
 
 
 def test_bind_private_ip_skips(monkeypatch):

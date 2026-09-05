@@ -342,6 +342,8 @@ async def _upsert_behavior_session(
     utm_source = _str_or_none(ev.get("us"), 120)
     utm_medium = _str_or_none(ev.get("um"), 120)
     yclid = _str_or_none(ev.get("yclid"), 64)
+    ysclid = _str_or_none(ev.get("ysclid"), 64)
+    utm_referrer = _str_or_none(ev.get("ur"), 1000)
     geo = geo_lookup(client_ip)
 
     values = {
@@ -355,7 +357,12 @@ async def _upsert_behavior_session(
         "referrer": referrer,
         "referrer_host": referrer_host(referrer),
         "channel": classify_channel(
-            referrer=referrer, utm_source=utm_source, utm_medium=utm_medium, yclid=yclid,
+            referrer=referrer,
+            utm_source=utm_source,
+            utm_medium=utm_medium,
+            yclid=yclid,
+            ysclid=ysclid,
+            utm_referrer=utm_referrer,
         ),
         "utm_source": utm_source,
         "utm_medium": utm_medium,
@@ -463,6 +470,7 @@ async def _upsert_synthetic_portrait(
         pass
     qp = lambda k, n: _str_or_none((q.get(k) or [None])[0], n)  # noqa: E731
     utm_source, utm_medium, yclid = qp("utm_source", 120), qp("utm_medium", 120), qp("yclid", 64)
+    ysclid, utm_referrer = qp("ysclid", 64), qp("utm_referrer", 1000)
 
     values = {
         "session_id_hash": session_hash,
@@ -474,7 +482,12 @@ async def _upsert_synthetic_portrait(
         "referrer": referrer,
         "referrer_host": referrer_host(referrer),
         "channel": classify_channel(
-            referrer=referrer, utm_source=utm_source, utm_medium=utm_medium, yclid=yclid,
+            referrer=referrer,
+            utm_source=utm_source,
+            utm_medium=utm_medium,
+            yclid=yclid,
+            ysclid=ysclid,
+            utm_referrer=utm_referrer,
         ),
         "utm_source": utm_source,
         "utm_medium": utm_medium,

@@ -67,8 +67,11 @@ beforeEach(() => {
   document.head.innerHTML = '';
   document.body.innerHTML = '';
   window.localStorage.clear();
+  window.sessionStorage.clear();
+  Object.defineProperty(document, 'referrer', { configurable: true, value: '' });
   delete window.__feApplyConsent;
   delete window.__feAdsGate;
+  delete window.__feAttr;
   delete window.ym;
   delete window.yaContextCb;
 });
@@ -170,6 +173,37 @@ describe('атрибуция поиска', () => {
     expect(hit).toBeTruthy();
     expect(hit[2]).toContain('ysclid=abc');
     expect(hit[3].referer).toContain('yandex.ru');
+  });
+
+  it('достаёт ysclid с собственного referrer после path-cut', () => {
+    const hits = [];
+    window.ym = function ym() {
+      hits.push([...arguments]);
+    };
+    window.history.replaceState(null, '', '/russia/indicator/imoex/2008');
+    Object.defineProperty(document, 'referrer', {
+      configurable: true,
+      value: 'https://ru.forecasteconomy.com/indicator/imoex/2008?ysclid=fromref',
+    });
+    boot();
+    const hit = hits.find((args) => args[1] === 'hit');
+    expect(hit).toBeTruthy();
+    expect(hit[2]).toContain('ysclid=fromref');
+  });
+
+  it('достаёт ysclid из sessionStorage ворот', () => {
+    const hits = [];
+    window.ym = function ym() {
+      hits.push([...arguments]);
+    };
+    window.history.replaceState(null, '', '/russia/region-vs/bronnicy-vs-moskva');
+    window.sessionStorage.setItem('fe:attr:q', '?ysclid=fromgate');
+    boot();
+    const hit = hits.find((args) => args[1] === 'hit');
+    expect(hit).toBeTruthy();
+    expect(hit[2]).toContain('ysclid=fromgate');
+    expect(window.__feAttr.ysclid).toBe('fromgate');
+    expect(window.sessionStorage.getItem('fe:attr:q')).toBeNull();
   });
 });
 

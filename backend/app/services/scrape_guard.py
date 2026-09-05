@@ -337,22 +337,57 @@ body{display:flex;align-items:center;justify-content:center}
     })
   }).then(function(r){
     if(!r.ok) return;
+    var ATTR=['ysclid','yclid','gclid','fbclid','utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_referrer'];
     try {
-      var ref = document.referrer || '';
-      if (ref) {
-        var rh = new URL(ref).hostname.replace(/^www\\./,'');
-        var host = (location.hostname || '').replace(/^www\\./,'');
-        var apex = host.replace(/^ru\\./,'');
-        if (rh && rh !== host && rh !== apex && rh !== 'ru.' + apex) {
-          var u = new URL(location.href);
-          if (!u.searchParams.get('utm_referrer')) {
-            u.searchParams.set('utm_referrer', ref.slice(0, 2000));
-            history.replaceState(null, '', u.pathname + u.search + u.hash);
+      var u=new URL(location.href);
+      var ref=document.referrer||'';
+      if(ref){
+        try{
+          var ru=new URL(ref);
+          for(var i=0;i<ATTR.length;i++){
+            var k=ATTR[i];
+            if(!u.searchParams.get(k)&&ru.searchParams.get(k)) u.searchParams.set(k,ru.searchParams.get(k));
           }
-        }
+          var rh=ru.hostname.replace(/^www\\./,'');
+          var host=(location.hostname||'').replace(/^www\\./,'');
+          var apex=host.replace(/^ru\\./,'');
+          if(rh&&rh!==host&&rh!==apex&&rh!=='ru.'+apex&&!u.searchParams.get('utm_referrer')){
+            u.searchParams.set('utm_referrer',ref.slice(0,2000));
+          }
+        }catch(e2){}
       }
-    } catch (e) {}
-    location.reload();
+      history.replaceState(null,'',u.pathname+u.search+u.hash);
+      try{sessionStorage.setItem('fe:attr:q',u.search);}catch(e4){}
+    }catch(e){}
+    var hitRef=document.referrer||'';
+    try{
+      var stamped=(new URL(location.href)).searchParams.get('utm_referrer')||'';
+      if(hitRef){
+        var hh=new URL(hitRef).hostname.replace(/^www\\./,'');
+        var h2=(location.hostname||'').replace(/^www\\./,'');
+        var ap=h2.replace(/^ru\\./,'');
+        if(hh===h2||hh===ap||hh==='ru.'+ap) hitRef=stamped;
+      }else{
+        hitRef=stamped;
+      }
+    }catch(e3){}
+    var gone=false;
+    function go(){if(gone)return;gone=true;location.reload();}
+    setTimeout(go,800);
+    (function(m,e,t,s,i,k,a){
+      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      k=e.createElement(t);a=e.getElementsByTagName(t)[0];
+      k.async=1;k.src=s;
+      k.onload=function(){
+        try{
+          m[i](107136069,'init',{defer:true,clickmap:false,webvisor:false,accurateTrackBounce:false,trackLinks:false});
+          m[i](107136069,'hit',location.pathname+location.search,{referer:hitRef});
+        }catch(err){}
+        setTimeout(go,250);
+      };
+      if(a) a.parentNode.insertBefore(k,a); else e.head.appendChild(k);
+    })(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=107136069','ym');
   }).catch(function(){});
 })();
 </script>

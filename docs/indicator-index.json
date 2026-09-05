@@ -7551,7 +7551,7 @@
         },
         {
           "file": "backend/app/api/analytics.py",
-          "line": 519,
+          "line": 532,
           "kind": "other"
         },
         {
@@ -7591,7 +7591,7 @@
         },
         {
           "file": "backend/app/api/seo_pages.py",
-          "line": 159,
+          "line": 160,
           "kind": "other"
         },
         {
@@ -7956,47 +7956,47 @@
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 156,
+          "line": 160,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 165,
+          "line": 169,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 166,
+          "line": 170,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 186,
+          "line": 190,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 217,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_analytics2.py",
-          "line": 331,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_analytics2.py",
-          "line": 332,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_analytics2.py",
-          "line": 333,
+          "line": 221,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
           "line": 335,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_analytics2.py",
+          "line": 336,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_analytics2.py",
+          "line": 337,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_analytics2.py",
+          "line": 339,
           "kind": "tests"
         },
         {
@@ -8037,6 +8037,11 @@
         {
           "file": "backend/tests/test_analytics_api.py",
           "line": 219,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_attribution_query.py",
+          "line": 36,
           "kind": "tests"
         },
         {
@@ -8351,22 +8356,27 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1292,
+          "line": 1280,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1299,
+          "line": 1316,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1321,
+          "line": 1323,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1337,
+          "line": 1345,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1361,
           "kind": "tests"
         },
         {
@@ -8681,7 +8691,7 @@
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 348,
+          "line": 355,
           "kind": "tests"
         },
         {
@@ -9593,6 +9603,11 @@
           "file": "frontend/src/lib/compareRepresentation.test.js",
           "line": 198,
           "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/consentAdsGate.component.test.jsx",
+          "line": 169,
+          "kind": "other"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.audit.test.js",
@@ -20902,17 +20917,17 @@
         },
         {
           "file": "frontend/src/lib/cleanUrl.test.js",
-          "line": 14,
+          "line": 19,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/cleanUrl.test.js",
-          "line": 24,
+          "line": 29,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/cleanUrl.test.js",
-          "line": 42,
+          "line": 45,
           "kind": "tests"
         },
         {
@@ -32443,6 +32458,61 @@
           "kind": "seed"
         },
         {
+          "file": "backend/tests/test_analytics2.py",
+          "line": 100,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_attribution_query.py",
+          "line": 23,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_attribution_query.py",
+          "line": 30,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_attribution_query.py",
+          "line": 42,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_attribution_query.py",
+          "line": 43,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_attribution_query.py",
+          "line": 44,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_attribution_query.py",
+          "line": 49,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 105,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 109,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 114,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 121,
+          "kind": "tests"
+        },
+        {
           "file": "docs/data_sources.md",
           "line": 138,
           "kind": "other"
@@ -32465,6 +32535,16 @@
         {
           "file": "frontend/src/lib/categories.js",
           "line": 99,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/consentAdsGate.component.test.jsx",
+          "line": 183,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/consentAdsGate.component.test.jsx",
+          "line": 186,
           "kind": "other"
         },
         {
@@ -56426,17 +56506,17 @@
         },
         {
           "file": "frontend/src/lib/cleanUrl.test.js",
-          "line": 14,
+          "line": 19,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/cleanUrl.test.js",
-          "line": 24,
+          "line": 29,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/cleanUrl.test.js",
-          "line": 42,
+          "line": 45,
           "kind": "tests"
         },
         {

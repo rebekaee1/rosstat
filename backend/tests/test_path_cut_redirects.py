@@ -96,3 +96,32 @@ class TestSsrSingleHop:
         assert r.status_code == 301
         loc = _assert_relative_location(r.headers["location"])
         assert loc.startswith("/world/rating/")
+
+    def test_path_cut_year_keeps_ysclid(self):
+        """15:57 IMOEX 2008: path-cut без query → домик вместо поиска."""
+        from app.main import app
+
+        r = TestClient(app).get(
+            "/seo/indicator-year/imoex/2008",
+            follow_redirects=False,
+            headers={
+                "X-Path-Cut-Legacy": "1",
+                "X-Original-URI": "/indicator/imoex/2008?ysclid=lor7sw5p9o",
+            },
+        )
+        assert r.status_code == 301
+        loc = _assert_relative_location(r.headers["location"])
+        assert loc.startswith(paths.russia_indicator_year("imoex", 2008))
+        assert "ysclid=lor7sw5p9o" in loc
+
+    def test_path_cut_year_query_string(self):
+        from app.main import app
+
+        r = TestClient(app).get(
+            "/seo/indicator-year/imoex/2008?ysclid=abc&mode=ignored",
+            follow_redirects=False,
+            headers={"X-Path-Cut-Legacy": "1"},
+        )
+        assert r.status_code == 301
+        loc = _assert_relative_location(r.headers["location"])
+        assert "ysclid=abc" in loc

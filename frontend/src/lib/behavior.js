@@ -335,6 +335,19 @@ function emitSessionStart() {
   let tz = null;
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { /* ignore */ }
   const q = new URLSearchParams(window.location.search);
+  const ATTR_KEYS = ['ysclid', 'yclid', 'gclid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_referrer'];
+  try {
+    const fromRef = new URL(document.referrer).searchParams;
+    for (const key of ATTR_KEYS) {
+      if (!q.get(key) && fromRef.get(key)) q.set(key, fromRef.get(key));
+    }
+  } catch { /* referrer пуст или чужой origin без query */ }
+  try {
+    const fromWin = window.__feAttr || {};
+    for (const key of ATTR_KEYS) {
+      if (!q.get(key) && fromWin[key]) q.set(key, fromWin[key]);
+    }
+  } catch { /* нет моста от consent.js */ }
   const conn = navigator.connection || null;
   let theme = null;
   try { theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch { /* ignore */ }
@@ -357,6 +370,8 @@ function emitSessionStart() {
     ut: q.get('utm_term'),
     uco: q.get('utm_content'),
     yclid: q.get('yclid'),
+    ysclid: q.get('ysclid'),
+    ur: q.get('utm_referrer'),
     ymuid: ymUid(),
     conn: conn && conn.effectiveType ? String(conn.effectiveType).slice(0, 16) : null,
     dl: conn && typeof conn.downlink === 'number' ? conn.downlink : null,

@@ -31,6 +31,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
 from app.services import site_paths as paths
+from app.services.attribution_query import merge_attribution_query
 from app.services.locale import get_locale
 from app.data.legacy_redirects import (
     LEGACY_REGION_SLUG_PREFIXES,
@@ -153,16 +154,19 @@ async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_facto
         return status, html
 
 
-def _permanent_redirect(path: str) -> Response:
+def _permanent_redirect(path: str, request: Request | None = None) -> Response:
     """301 на канонический публичный путь (А-2/А-3 + path-cut).
 
     Location — относительный (`/russia/indicator/cpi`), без хоста и схемы:
     браузер и робот резолвят против текущего запроса (localhost:3000 и
     https://forecasteconomy.com одинаково; нет потери порта и даунгрейда HTTPS).
     Абсолютный канон живёт в `<link rel="canonical">` целевой страницы.
+    ``ysclid`` / ``yclid`` / UTM с исходного URL переезжают на Location —
+    иначе Метрика теряет фразу после path-cut.
     """
     if not path.startswith("/"):
         path = f"/{path}"
+    path = merge_attribution_query(path, request)
     return Response(
         status_code=301,
         headers={"Location": path, "Cache-Control": "no-cache"},
@@ -234,13 +238,13 @@ async def seo_indicator(
     # А-2/А-3 + path-cut: резолвер уже отдаёт финальный /russia/… путь.
     target = resolve_legacy_indicator(code) or resolve_unlisted_indicator(code)
     if target:
-        return _permanent_redirect(target)
+        return _permanent_redirect(target, request)
     # Старый публичный /indicator/{code} (X-Path-Cut-Legacy) → канон /russia/…
     if request.headers.get("x-path-cut-legacy") == "1":
         dest = paths.russia_indicator(code)
         if mode:
             dest = f"{dest}?mode={mode}"
-        return _permanent_redirect(dest)
+        return _permanent_redirect(dest, request)
     status, html = await _cached_html(
         code, f"indicator:{code}:{mode or ''}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_html(code, db, mode=mode),
@@ -259,7 +263,7 @@ async def seo_regions(request: Request, db: AsyncSession = Depends(get_db)):
         year = request.query_params.get("year")
         if year and re.fullmatch(r"\d{4}", year):
             target = f"{target}?year={year}"
-        return _permanent_redirect(target)
+        return _permanent_redirect(target, request)
     status, html = await render_regions_home_html(db)
     return _html_response(status, html, request)
 
@@ -299,7 +303,7 @@ async def seo_region(slug: str, request: Request, db: AsyncSession = Depends(get
     if status == 404:
         canonical = await _canonical_region_slug(slug, db)
         if canonical:
-            return _permanent_redirect(paths.region(canonical))
+            return _permanent_redirect(paths.region(canonical), request)
     return _html_response(status, html, request)
 
 
@@ -314,7 +318,7 @@ async def seo_region_indicator(
     if status == 404:
         canonical = await _canonical_region_slug(slug, db)
         if canonical:
-            return _permanent_redirect(paths.region_indicator(canonical, code))
+            return _permanent_redirect(paths.region_indicator(canonical, code), request)
     return _html_response(status, html, request)
 
 
@@ -387,10 +391,10 @@ async def seo_indicator_year(
         base_path = target.split("?")[0]
         # Категория (снятый ряд) — без годового хвоста.
         if "/category/" in base_path:
-            return _permanent_redirect(target.split("?")[0])
-        return _permanent_redirect(f"{base_path}/{year}")
+            return _permanent_redirect(target.split("?")[0], request)
+        return _permanent_redirect(f"{base_path}/{year}", request)
     if request.headers.get("x-path-cut-legacy") == "1":
-        return _permanent_redirect(paths.russia_indicator_year(code, year))
+        return _permanent_redirect(paths.russia_indicator_year(code, year), request)
     status, html = await _cached_html(
         code, f"indicator-year:{code}:{year}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_year_html(code, year, db),
@@ -415,18 +419,18 @@ async def seo_indicator_month(
 
 
 @router.api_route("/seo/world", methods=["GET", "HEAD"], include_in_schema=False)
-async def seo_world_home():
+async def seo_world_home(request: Request):
     """Витрина мира переехала на главную: карта, рейтинг и каталог стран теперь там.
 
     Отдельная страница дублировала главную один в один, поэтому она снята,
     а ссылочный вес адреса передаётся постоянным перенаправлением.
     """
-    return _permanent_redirect(paths.home())
+    return _permanent_redirect(paths.home(), request)
 
 
 @router.api_route("/seo/world/rating", methods=["GET", "HEAD"], include_in_schema=False)
-async def seo_world_rating_default():
-    return _permanent_redirect(paths.world_rating(WORLD_RATING_DEFAULT_CONCEPT))
+async def seo_world_rating_default(request: Request):
+    return _permanent_redirect(paths.world_rating(WORLD_RATING_DEFAULT_CONCEPT), request)
 
 
 async def _rating_year_info(
@@ -456,8 +460,8 @@ async def seo_world_rating(
         requested = int(year_raw)
         if requested in years:
             if default_year is not None and requested == default_year:
-                return _permanent_redirect(paths.world_rating(concept_slug))
-            return _permanent_redirect(paths.world_rating_year(concept_slug, requested))
+                return _permanent_redirect(paths.world_rating(concept_slug), request)
+            return _permanent_redirect(paths.world_rating_year(concept_slug, requested), request)
     status, html = await _cached_html(
         "ssr-world", f"world-rating:{concept_slug}::{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_rating_html(concept_slug, db),
@@ -482,7 +486,7 @@ async def seo_world_rating_year(
     if requested not in years:
         return _html_response(404, "Not found")
     if default_year is not None and requested == default_year:
-        return _permanent_redirect(paths.world_rating(concept_slug))
+        return _permanent_redirect(paths.world_rating(concept_slug), request)
     status, html = await _cached_html(
         "ssr-world", f"world-rating:{concept_slug}:{year}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_rating_html(concept_slug, db, year=requested),
@@ -495,7 +499,7 @@ async def seo_world_country(
     slug: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
     if request.headers.get("x-path-cut-legacy") == "1":
-        return _permanent_redirect(paths.country(slug))
+        return _permanent_redirect(paths.country(slug), request)
     status, html = await _cached_html(
         "ssr-world", f"world:{slug}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_country_html(slug, db),
@@ -510,13 +514,13 @@ async def seo_world_indicator(
     # Вторичные частоты → финальный /{slug}/indicator/{primary}?mode=…
     target = await resolve_world_frequency_sibling(db, slug, code)
     if target:
-        return _permanent_redirect(target)
+        return _permanent_redirect(target, request)
     if request.headers.get("x-path-cut-legacy") == "1":
         mode = request.query_params.get("mode")
         dest = paths.indicator(slug, code)
         if mode:
             dest = f"{dest}?mode={mode}"
-        return _permanent_redirect(dest)
+        return _permanent_redirect(dest, request)
     status, html = await _cached_html(
         "ssr-world", f"world:{slug}:{code}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_indicator_html(slug, code, db),
@@ -537,9 +541,9 @@ async def seo_world_indicator_year(
     # годовой лендинг живёт только на primary-ряде).
     target = await resolve_world_frequency_sibling(db, slug, code)
     if target:
-        return _permanent_redirect(f"{target.split('?')[0]}/{year}")
+        return _permanent_redirect(f"{target.split('?')[0]}/{year}", request)
     if request.headers.get("x-path-cut-legacy") == "1":
-        return _permanent_redirect(paths.indicator_year(slug, code, year))
+        return _permanent_redirect(paths.indicator_year(slug, code, year), request)
     status, html = await _cached_html(
         "ssr-world", f"world-year:{slug}:{code}:{year}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_indicator_year_html(slug, code, int(year), db),
@@ -562,7 +566,7 @@ async def seo_world_vs(
     if status == 301:
         # Редирект до кэша: каноническая пара переезжает, не-канонический
         # URL никогда не должен закэшироваться как содержимое.
-        return _permanent_redirect(payload)
+        return _permanent_redirect(payload, request)
     if status == 200:
         # Кэшируется только 200 (как в singleflight _cached_html): ключ —
         # каноническая упорядоченная пара, рендер уже выполнен один раз.
@@ -593,5 +597,5 @@ async def seo_region_indicator_year(
     if status == 404:
         canonical = await _canonical_region_slug(slug, db)
         if canonical:
-            return _permanent_redirect(paths.region_indicator(canonical, code) + f"/{year}")
+            return _permanent_redirect(paths.region_indicator(canonical, code) + f"/{year}", request)
     return _html_response(status, html, request)

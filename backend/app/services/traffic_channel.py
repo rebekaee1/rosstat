@@ -5,14 +5,18 @@ server_sessions, rollup'ы, сверка с Метрикой). Приорите�
 логику Метрики (last non-direct click доопределяется на уровне витрин):
 
 1. Рекламные метки (yclid / utm_medium=cpc|cpm|paid) → ``ad``.
-2. utm_source без рекламного medium → ``campaign`` (рассылки, посевы).
-3. Referrer-домен: поисковик → ``search``, соцсеть/мессенджер → ``social``,
-   свой домен → ``internal``, прочее → ``referral``.
-4. Ничего → ``direct``.
+2. ``ysclid`` (клик из поиска Яндекса) → ``search``.
+3. utm_source без рекламного medium → ``campaign`` (рассылки, посевы).
+4. ``utm_referrer`` / referrer-домен: поисковик → ``search``, соцсеть →
+   ``social``, свой домен → ``internal``, прочее → ``referral``.
+   Клик-id с собственного referrer (path-cut) достаются из query.
+5. Ничего → ``direct``.
 """
 from __future__ import annotations
 
 from urllib.parse import urlparse
+
+from app.services.attribution_query import click_ids_from_url
 
 _SEARCH_HOSTS = (
     "yandex.", "ya.ru", "google.", "bing.com", "duckduckgo.com", "mail.ru",
@@ -66,12 +70,37 @@ def classify_channel(
     utm_source: str | None = None,
     utm_medium: str | None = None,
     yclid: str | None = None,
+    ysclid: str | None = None,
+    utm_referrer: str | None = None,
 ) -> str:
+    salvaged = click_ids_from_url(referrer)
+    yclid = yclid or salvaged.get("yclid")
+    ysclid = ysclid or salvaged.get("ysclid")
+    utm_referrer = utm_referrer or salvaged.get("utm_referrer")
     medium = (utm_medium or "").strip().lower()
     if yclid or medium in _AD_MEDIUMS:
         return "ad"
+    if ysclid:
+        return "search"
     if (utm_source or "").strip():
         return "campaign"
+    stamped_host = referrer_host(utm_referrer)
+    if stamped_host:
+        if any(
+            stamped_host.startswith(h) or ("." + h) in ("." + stamped_host)
+            for h in _SEARCH_HOSTS
+        ):
+            return "search"
+        if any(
+            stamped_host == h or stamped_host.endswith("." + h) or stamped_host.startswith(h)
+            for h in _SOCIAL_HOSTS
+        ):
+            return "social"
+        if not any(
+            stamped_host == h or stamped_host.endswith("." + h) or stamped_host.startswith(h)
+            for h in _OWN_HOSTS
+        ):
+            return "referral"
     host = referrer_host(referrer)
     if not host:
         return "direct"
