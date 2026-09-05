@@ -34,6 +34,7 @@ engine = create_async_engine(
     max_overflow=settings.db_max_overflow,
     pool_timeout=settings.db_pool_timeout,
     pool_pre_ping=True,
+    pool_recycle=1800,
     json_serializer=_json_serializer,
     connect_args={"server_settings": _PUBLIC_SERVER_SETTINGS},
 )
@@ -56,6 +57,7 @@ analytics_engine = create_async_engine(
     max_overflow=settings.analytics_db_max_overflow,
     pool_timeout=settings.analytics_db_pool_timeout,
     pool_pre_ping=True,
+    pool_recycle=1800,
     json_serializer=_json_serializer,
     connect_args={"server_settings": _ANALYTICS_SERVER_SETTINGS},
 )
@@ -66,13 +68,32 @@ analytics_session = async_sessionmaker(
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session() as session:
+    """Сессия без checkout до первого execute.
+
+    ``async with async_session()`` сразу открывает транзакцию и забирает
+    соединение из пула. SSR/OG на cache-hit БД не трогают, но Depends всё
+    равно держал коннект на весь запрос — бот-прожиг /seo/region исчерпывал
+    QueuePool (5+10) и отдавал 500.
+    """
+    session = async_session()
+    try:
         yield session
+    except Exception:
+        await session.rollback()
+        raise
+    finally:
+        await session.close()
 
 
 async def get_analytics_db() -> AsyncGenerator[AsyncSession, None]:
-    async with analytics_session() as session:
+    session = analytics_session()
+    try:
         yield session
+    except Exception:
+        await session.rollback()
+        raise
+    finally:
+        await session.close()
 
 
 def pool_stats(target="public") -> dict[str, int]:

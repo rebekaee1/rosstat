@@ -156,6 +156,20 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             self._note_fail_open(client_ip)
         return await call_next(request)
 
+def _is_pool_timeout(exc: BaseException) -> bool:
+    """QueuePool timeout часто обёрнут в ExceptionGroup от BaseHTTPMiddleware."""
+    from sqlalchemy.exc import TimeoutError as SATimeoutError
+
+    if isinstance(exc, SATimeoutError):
+        return True
+    if isinstance(exc, BaseExceptionGroup):
+        return any(_is_pool_timeout(inner) for inner in exc.exceptions)
+    cause = getattr(exc, "__cause__", None)
+    if cause is not None and cause is not exc:
+        return _is_pool_timeout(cause)
+    return False
+
+
 class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
     """Н-13: серверный error-rate. Считаем ответы по классам статусов
     (in-process, отдаются в /metrics) и алертим на всплеск 5xx.
@@ -176,7 +190,15 @@ class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
             status = response.status_code
-        except Exception:
+        except Exception as exc:
+            if _is_pool_timeout(exc):
+                self._record(503, request.url.path)
+                return Response(
+                    status_code=503,
+                    content="Service Unavailable",
+                    media_type="text/plain",
+                    headers={"Retry-After": "5"},
+                )
             self._record(500, request.url.path)
             raise
         self._record(status, request.url.path)

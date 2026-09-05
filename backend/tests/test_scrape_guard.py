@@ -253,8 +253,9 @@ def test_automation_reason_cores_and_webgl():
     ) == "PLATFORM"
 
 
-def test_bind_mismatch_blocks_html_without_reissue(monkeypatch):
+def test_bind_mismatch_html_is_challenge_again(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_secret", "test-secret")
     token = scrape_guard.issue_token("8.8.8.10")
     d = scrape_guard.bind_decision(
@@ -263,8 +264,14 @@ def test_bind_mismatch_blocks_html_without_reissue(monkeypatch):
         path="/russia/indicator/cpi",
         cookie=token,
     )
-    assert d.block is True
+    assert d.challenge is True
+    assert d.block is False
     assert d.set_cookie is False
+
+
+def test_challenge_html_reloads_not_replace():
+    assert "location.reload()" in scrape_guard.CHALLENGE_HTML
+    assert "location.replace" not in scrape_guard.CHALLENGE_HTML
 
 
 def test_bind_private_ip_skips(monkeypatch):

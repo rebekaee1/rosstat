@@ -113,6 +113,8 @@ async def _ssr_key(namespace: str, variant: str, sig: str) -> str:
 # должен выполниться один раз, остальные ждут результат (in-process singleflight).
 _render_locks: dict[str, asyncio.Lock] = {}
 _RENDER_LOCKS_MAX = 2000
+# Параллельные miss'ы разных URL не должны забрать весь QueuePool.
+_RENDER_SEM = asyncio.Semaphore(6)
 
 
 async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_factory):
@@ -144,7 +146,8 @@ async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_facto
         cached = await cache_get(key)  # мог появиться, пока ждали лок
         if isinstance(cached, str) and cached:
             return 200, cached
-        status, html = await render_coro_factory()
+        async with _RENDER_SEM:
+            status, html = await render_coro_factory()
         if status == 200:
             await cache_set(key, html, ttl)
         return status, html

@@ -8,9 +8,11 @@
 Правила bind:
 - поисковики и соцкраулеры по UA не режутся;
 - приватный/невалидный IP (тесты, localhost) — skip;
-- куки нет — пропускаем и ставим (первый заход, SPA login);
-- кука от другого префикса — 403 на HTML и API без перевыдачи
-  (HTML больше не легитимирует чужую куку);
+- куки нет — HTML: JS-ворота; API: 403;
+- кука от другого префикса — API 403, HTML снова ворота
+  (не пустой 403: живой человек после смены соты/VPN должен пройти);
+- ``location.reload()`` после ворот, не ``replace``: иначе Метрика
+  видит внутренний переход и теряет organic/search;
 - пустой ``RUSTATS_SCRAPE_BLOCK_COUNTRIES`` выключает гео-слой;
 - хостинговые ASN (Hetzner/OVH/Alibaba/AWS/…) режутся флагом
   ``RUSTATS_SCRAPE_BLOCK_HOSTING`` (по умолчанию вкл); жилые прокси
@@ -334,7 +336,7 @@ body{display:flex;align-items:center;justify-content:center}
       wd:navigator.webdriver?1:0
     })
   }).then(function(r){
-    if(r.ok) location.replace(location.href);
+    if(r.ok) location.reload();
   }).catch(function(){});
 })();
 </script>
@@ -371,6 +373,13 @@ def bind_decision(
         return BindDecision(block=False, set_cookie=True)
     if verify_token(cookie, ip):
         return BindDecision(block=False, set_cookie=True)
+    # Чужой /24: API режем (ферма крутит IP), HTML — снова ворота.
+    # Иначе живой человек после смены соты/VPN получает пустой 403,
+    # а location.replace на заглушке превращал Яндекс во «внутренний переход».
+    if settings.scrape_challenge_enabled and not is_challenge_exempt_path(path):
+        if path.startswith("/api/"):
+            return BindDecision(block=True, set_cookie=False)
+        return BindDecision(block=False, set_cookie=False, challenge=True)
     return BindDecision(block=True, set_cookie=False)
 
 

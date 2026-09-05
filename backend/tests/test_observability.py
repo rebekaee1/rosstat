@@ -81,6 +81,17 @@ def test_staleness_sla_covers_known_frequencies():
 # Н-13: серверные счётчики статусов
 # ---------------------------------------------------------------------------
 
+def test_pool_timeout_is_detected_inside_exception_group():
+    from sqlalchemy.exc import TimeoutError as SATimeoutError
+
+    from app.main import _is_pool_timeout
+
+    inner = SATimeoutError("QueuePool limit of size 5 overflow 10 reached")
+    assert _is_pool_timeout(inner) is True
+    assert _is_pool_timeout(ExceptionGroup("unhandled", [inner])) is True
+    assert _is_pool_timeout(RuntimeError("other")) is False
+
+
 def test_http_status_counters_increment(client):
     from app.main import HttpStatusCounterMiddleware as M
 
