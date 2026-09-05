@@ -1123,6 +1123,31 @@ def _public_request_url(request: Request) -> tuple[str, str]:
     return public_path or "/", public_query
 
 
+def _with_utm_referrer(query: str, request: Request) -> str:
+    """Сохранить внешний Referer при 307 apex → ru.
+
+    Caddy шлёт ``Referrer-Policy: strict-origin-when-cross-origin``. После
+    смены хоста ``document.referrer`` = ``https://forecasteconomy.com``, и
+    Метрика видит внутренний переход вместо Яндекса (скрины 2026-09-05:
+    38/38 визитов — «внутренние переходы», при живых поисковых фразах).
+    """
+    from urllib.parse import parse_qsl, urlencode, urlparse
+
+    from app.services.locale import apex_host
+
+    if any(k == "utm_referrer" for k, _ in parse_qsl(query, keep_blank_values=True)):
+        return query
+    referer = (request.headers.get("referer") or "").strip()
+    if not referer:
+        return query
+    host = (urlparse(referer).hostname or "").lower().removeprefix("www.")
+    apex = apex_host()
+    if not host or host == apex or host == f"ru.{apex}" or host.endswith(f".{apex}"):
+        return query
+    extra = urlencode({"utm_referrer": referer[:2000]})
+    return f"{query}&{extra}" if query else extra
+
+
 def _locale_host_redirect(request: Request) -> Response | None:
     """После cutover: флажок и гео людей с apex EN на ru. (ботов не трогаем).
 
@@ -1157,9 +1182,10 @@ def _locale_host_redirect(request: Request) -> Response | None:
     public_path, public_query = _public_request_url(request)
 
     def _to(origin: str) -> Response:
+        query = _with_utm_referrer(public_query, request)
         target = f"{origin}{public_path}"
-        if public_query:
-            target += f"?{public_query}"
+        if query:
+            target += f"?{query}"
         return Response(
             status_code=307,
             headers={

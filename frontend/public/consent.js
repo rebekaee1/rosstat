@@ -20,10 +20,11 @@
  * Раздаётся nginx как /consent.js с no-cache (см. frontend/nginx.conf) —
  * иначе stale-версия пережила бы релиз.
  *
- * Внутри сохранена логика очистки URL от служебных меток (ybaip/etext/...):
- * defer:true отключает автоматический первый hit Метрики, вручную шлём
- * очищенный URL — «Страницы входа» не дублируются. utm_* НЕ удаляем — они
- * нужны Метрике для атрибуции source/medium/campaign.
+ * Первый hit — с ysclid/yclid/utm_referrer и внешним referer. Иначе после
+ * 307 apex→ru. Метрика видит внутренний переход (document.referrer = свой
+ * хост), а поисковые фразы в Вебвизоре остаются. После hit — replaceState
+ * без меток, чтобы «Страницы входа» не размножались. utm_source/medium
+ * в адресной строке не трогаем до hit.
  */
 (function () {
   var KEY = 'fe:consent:v1';
@@ -31,16 +32,16 @@
   var COUNTER = 107136069;
 
   // --- URL hygiene: выполняется всегда, до любых хитов ---
-  var TRACKING = ['etext', 'ybaip', 'yclid', 'ysclid', 'gclid', 'fbclid', '_openstat', 'openstat', 'clid', 'yandex_referrer', '_ga', 'utm_referrer', 'from', 'ref', 'ref_src', 'source', 'mc_cid', 'mc_eid', 'igshid'];
+  var STRIP_ALWAYS = ['etext', 'ybaip', '_openstat', 'openstat', 'clid', 'yandex_referrer', '_ga', 'from', 'ref', 'ref_src', 'source', 'mc_cid', 'mc_eid', 'igshid'];
+  var ATTRIBUTION = ['yclid', 'ysclid', 'gclid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_referrer'];
   // Часть «меток» совпадает с рабочими параметрами страниц: у калькуляторов
   // from/to — это годы периода. Вырезать их — значит ломать любую
   // расшаренную ссылку, поэтому на таких путях они неприкосновенны.
   var FUNCTIONAL_PARAMS = [
     { prefix: '/calculator', keep: ['from', 'to'] },
   ];
-  var search = window.location.search;
-  var cleanedSearch = search;
-  if (search && search.length > 1) {
+  function stripParams(search, names) {
+    if (!search || search.length <= 1) return search || '';
     var path = window.location.pathname;
     var keep = [];
     for (var f = 0; f < FUNCTIONAL_PARAMS.length; f++) {
@@ -50,18 +51,38 @@
     }
     var params = new URLSearchParams(search);
     var changed = false;
-    for (var i = 0; i < TRACKING.length; i++) {
-      if (keep.indexOf(TRACKING[i]) !== -1) continue;
-      if (params.has(TRACKING[i])) { params.delete(TRACKING[i]); changed = true; }
+    for (var i = 0; i < names.length; i++) {
+      if (keep.indexOf(names[i]) !== -1) continue;
+      if (params.has(names[i])) { params.delete(names[i]); changed = true; }
     }
-    if (changed) {
-      var rest = params.toString();
-      cleanedSearch = rest ? '?' + rest : '';
-    }
+    if (!changed) return search;
+    var rest = params.toString();
+    return rest ? '?' + rest : '';
   }
-  var cleanPath = window.location.pathname + cleanedSearch + window.location.hash;
-  if (cleanedSearch !== search && typeof history !== 'undefined' && typeof history.replaceState === 'function') {
-    try { history.replaceState(history.state, '', cleanPath); } catch { /* ignore */ }
+
+  var search = window.location.search;
+  var hitSearch = stripParams(search, STRIP_ALWAYS);
+  var displaySearch = stripParams(hitSearch, ATTRIBUTION);
+  var hitPath = window.location.pathname + hitSearch + window.location.hash;
+  var cleanPath = window.location.pathname + displaySearch + window.location.hash;
+
+  function firstReferer() {
+    var stamped = '';
+    try { stamped = new URLSearchParams(search).get('utm_referrer') || ''; } catch (e) { stamped = ''; }
+    var ref = document.referrer || '';
+    try {
+      var host = (location.hostname || '').replace(/^www\./, '');
+      var apex = host.replace(/^ru\./, '');
+      if (ref) {
+        var rh = new URL(ref).hostname.replace(/^www\./, '');
+        if (rh === host || rh === apex || rh === 'ru.' + apex) ref = stamped;
+      } else {
+        ref = stamped;
+      }
+    } catch (e) {
+      if (!ref) ref = stamped;
+    }
+    return ref;
   }
 
   var loaded = { analytics: false, ads: false };
@@ -136,7 +157,10 @@
       triggerEvent: true,
       childIframe: true
     });
-    window.ym(COUNTER, 'hit', cleanPath, { title: document.title, referer: document.referrer });
+    window.ym(COUNTER, 'hit', hitPath, { title: document.title, referer: firstReferer() });
+    if (displaySearch !== search && typeof history !== 'undefined' && typeof history.replaceState === 'function') {
+      try { history.replaceState(history.state, '', cleanPath); } catch { /* ignore */ }
+    }
   }
 
   function loadAds() {

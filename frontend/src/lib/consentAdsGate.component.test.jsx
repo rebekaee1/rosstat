@@ -154,6 +154,25 @@ describe('гейт рекламы: роботы', () => {
   });
 });
 
+describe('атрибуция поиска', () => {
+  it('первый hit несёт ysclid и utm_referrer, пока document.referrer пуст', () => {
+    const hits = [];
+    window.ym = function ym() {
+      hits.push([...arguments]);
+    };
+    window.history.replaceState(
+      null,
+      '',
+      '/russia/indicator/cpi?ysclid=abc&utm_referrer=' + encodeURIComponent('https://yandex.ru/search/?text=ipc'),
+    );
+    boot();
+    const hit = hits.find((args) => args[1] === 'hit');
+    expect(hit).toBeTruthy();
+    expect(hit[2]).toContain('ysclid=abc');
+    expect(hit[3].referer).toContain('yandex.ru');
+  });
+});
+
 describe('явный выбор в баннере', () => {
   it('согласие кликом открывает рекламу без второго жеста', () => {
     boot();

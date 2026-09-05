@@ -4,9 +4,8 @@
 // если оставить их в URL для ym('hit'), Метрика регистрирует каждый клик
 // как уникальную «страницу входа» и не склеивает дубли.
 const TRACKING_PARAMS = new Set([
-  'etext', 'ybaip', 'yclid', 'ysclid', 'gclid', 'fbclid',
+  'etext', 'ybaip',
   '_openstat', 'openstat', 'clid', 'yandex_referrer', '_ga',
-  'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_referrer',
   'from', 'ref', 'ref_src', 'source',
   'mc_cid', 'mc_eid', 'igshid',
 ]);

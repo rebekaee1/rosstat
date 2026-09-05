@@ -7,7 +7,12 @@ describe('cleanSearch', () => {
   });
 
   it('strips multiple tracking params at once', () => {
-    expect(cleanSearch('?etext=abc&yclid=123&utm_source=ya')).toBe('');
+    expect(cleanSearch('?etext=abc&from=mail')).toBe('');
+  });
+
+  it('keeps search attribution until Metrika hit', () => {
+    expect(cleanSearch('?ysclid=lor7sw5p9o')).toBe('?ysclid=lor7sw5p9o');
+    expect(cleanSearch('?yclid=123&utm_source=ya')).toBe('?yclid=123&utm_source=ya');
   });
 
   it('preserves meaningful params alongside tracking ones', () => {
@@ -24,18 +29,16 @@ describe('cleanSearch', () => {
     expect(cleanSearch('?a=usd-rub&b=eur-rub')).toBe('?a=usd-rub&b=eur-rub');
   });
 
-  it('strips ysclid (Yandex Search ClickID)', () => {
-    expect(cleanSearch('?ysclid=lor7sw5p9o')).toBe('');
+  it('strips junk markers but not ClickID', () => {
+    expect(cleanSearch('?ybaip=1&openstat=ad&igshid=xyz')).toBe('');
+    expect(cleanSearch('?ysclid=lor7sw5p9o&etext=x')).toBe('?ysclid=lor7sw5p9o');
   });
 
-  it('strips ybaip / openstat / igshid', () => {
-    expect(cleanSearch('?ybaip=1&openstat=ad&igshid=xyz')).toBe('');
-  });
 });
 
 describe('cleanPathWithSearch', () => {
   it('combines clean path with cleaned search', () => {
-    expect(cleanPathWithSearch('/russia/category/prices', '?etext=foo&utm_source=ya')).toBe('/russia/category/prices');
+    expect(cleanPathWithSearch('/russia/category/prices', '?etext=foo&from=mail')).toBe('/russia/category/prices');
   });
 
   it('preserves meaningful query params', () => {

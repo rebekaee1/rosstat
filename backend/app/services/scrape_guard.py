@@ -336,7 +336,23 @@ body{display:flex;align-items:center;justify-content:center}
       wd:navigator.webdriver?1:0
     })
   }).then(function(r){
-    if(r.ok) location.reload();
+    if(!r.ok) return;
+    try {
+      var ref = document.referrer || '';
+      if (ref) {
+        var rh = new URL(ref).hostname.replace(/^www\\./,'');
+        var host = (location.hostname || '').replace(/^www\\./,'');
+        var apex = host.replace(/^ru\\./,'');
+        if (rh && rh !== host && rh !== apex && rh !== 'ru.' + apex) {
+          var u = new URL(location.href);
+          if (!u.searchParams.get('utm_referrer')) {
+            u.searchParams.set('utm_referrer', ref.slice(0, 2000));
+            history.replaceState(null, '', u.pathname + u.search + u.hash);
+          }
+        }
+      }
+    } catch (e) {}
+    location.reload();
   }).catch(function(){});
 })();
 </script>

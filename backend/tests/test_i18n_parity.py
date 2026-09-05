@@ -1272,6 +1272,21 @@ def test_locale_host_redirect_after_cutover(monkeypatch):
     assert ru_ip is not None and ru_ip.status_code == 307
     assert ru_ip.headers["location"] == "https://ru.forecasteconomy.com/russia/indicator/cpi"
 
+    from_yandex = _locale_host_redirect(_html_locale_request(
+        extra_headers=[(b"referer", b"https://yandex.ru/search/?text=%D0%B8%D0%BF%D1%86")],
+    ))
+    assert from_yandex is not None
+    loc = from_yandex.headers["location"]
+    assert loc.startswith("https://ru.forecasteconomy.com/russia/indicator/cpi?")
+    assert "utm_referrer=" in loc
+    assert "yandex.ru" in loc
+
+    from_self = _locale_host_redirect(_html_locale_request(
+        extra_headers=[(b"referer", b"https://forecasteconomy.com/")],
+    ))
+    assert from_self is not None
+    assert "utm_referrer" not in from_self.headers["location"]
+
     monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "US"})
     assert _locale_host_redirect(_html_locale_request(
         extra_headers=[(b"accept-language", b"ru-RU,ru;q=0.9")],

@@ -272,6 +272,8 @@ def test_bind_mismatch_html_is_challenge_again(monkeypatch):
 def test_challenge_html_reloads_not_replace():
     assert "location.reload()" in scrape_guard.CHALLENGE_HTML
     assert "location.replace" not in scrape_guard.CHALLENGE_HTML
+    assert "utm_referrer" in scrape_guard.CHALLENGE_HTML
+    assert "consent.js" not in scrape_guard.CHALLENGE_HTML
 
 
 def test_bind_private_ip_skips(monkeypatch):
