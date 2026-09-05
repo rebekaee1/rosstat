@@ -60,3 +60,5 @@ fe8c5dd5cdd632f88b9b4aaf654119dc3d8f3da2  # fe8c5dd bind-cookie вместо г�
 a16c71b1f779bc4798b8d85c6de36d30a5ade1b2  # a16c71b no fe_bind on challenge 403, owner-approved 2026-09-04
 
 1f48f879b563f47fe9dbea17f612aef4eb6e15e9  # 1f48f87 SSR pool 503 + Metrika reload, owner-incident 2026-09-05
+
+12cd261f676606f338fa9eeb09a01b8e296ee864  # 12cd261 Metrika utm_referrer after apex→ru + challenge, owner-incident 2026-09-05
