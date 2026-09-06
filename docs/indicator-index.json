@@ -8686,17 +8686,17 @@
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 262,
+          "line": 298,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 293,
+          "line": 329,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 379,
+          "line": 415,
           "kind": "tests"
         },
         {
