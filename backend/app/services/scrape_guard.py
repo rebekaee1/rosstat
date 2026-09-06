@@ -8,23 +8,17 @@
 Правила bind:
 - поисковики и соцкраулеры по UA не режутся;
 - приватный/невалидный IP (тесты, localhost) — skip;
-- куки нет — HTML: JS-ворота; API: 403;
-- кука от другого префикса — API 403, HTML снова ворота
-  (не пустой 403: живой человек после смены соты/VPN должен пройти);
-- ``location.reload()`` после ворот, не ``replace``: иначе Метрика
-  видит внутренний переход и теряет organic/search;
+- куки нет — HTML: сразу сайт + ``fe_bind``; API: 403;
+- кука от другого префикса — API 403, HTML сайт и новая кука
+  (смена соты/VPN не должна показывать заглушку);
 - пустой ``RUSTATS_SCRAPE_BLOCK_COUNTRIES`` выключает гео-слой;
 - хостинговые ASN (Hetzner/OVH/Alibaba/AWS/…) режутся флагом
   ``RUSTATS_SCRAPE_BLOCK_HOSTING`` (по умолчанию вкл); жилые прокси
   этим слоем не покрыты;
 - ``Chrome/N.0.0.0 Safari/537.36`` — это reduced UA живого Chrome
   (с 101), его нельзя банить: ферма шлёт ту же строку;
-- гидра 1 IP = 1 хит: бан по IP и «второй запрос» бесполезны. HTML без
-  ``fe_bind`` — заглушка, кука после JS (ядра / WebGL / webdriver).
-  Поисковики по UA сразу получают SSR. Ферма 2026-09-04 светит 64–192
-  ядра — живой ноутбук так не врёт;
-- клик из поиска/рекламы (``ysclid`` / ``yclid`` / ``gclid`` или
-  referrer поисковика) ворота не видит: заглушка с выдачи теряла людей.
+- HTML-заглушку больше не отдаём: человек всегда получает страницу.
+  Гидра снова видит SSR с первого хита; режем хостинг и API без куки.
 """
 from __future__ import annotations
 
@@ -249,26 +243,6 @@ def is_challenge_exempt_path(path: str) -> bool:
     return any(path.startswith(p) for p in _CHALLENGE_EXEMPT_PREFIXES)
 
 
-_CLICK_ID_MIN_LEN = 8
-
-
-def is_trusted_acquisition(query: str = "", referer: str | None = None) -> bool:
-    """Клик из выдачи или Директа — сразу страница, без тёмной заглушки."""
-    from app.services.attribution_query import click_ids_from_url
-    from app.services.traffic_channel import referrer_host, search_engine_name
-
-    ids = click_ids_from_url(f"http://local/?{query}") if query else {}
-    ids.update(click_ids_from_url(referer))
-    for key in ("ysclid", "yclid", "gclid"):
-        if len((ids.get(key) or "").strip()) >= _CLICK_ID_MIN_LEN:
-            return True
-    if search_engine_name(referrer_host(referer)):
-        return True
-    if search_engine_name(referrer_host(ids.get("utm_referrer"))):
-        return True
-    return False
-
-
 def _ua_family(ua: str | None) -> str | None:
     text = ua or ""
     if re.search(r"Macintosh|Mac OS X|iPhone|iPad", text, re.I):
@@ -426,13 +400,7 @@ class BindDecision:
 
 
 def bind_decision(
-    *,
-    ip: str,
-    ua: str | None,
-    path: str,
-    cookie: str | None,
-    query: str = "",
-    referer: str | None = None,
+    *, ip: str, ua: str | None, path: str, cookie: str | None
 ) -> BindDecision:
     if not settings.scrape_bind_enabled:
         return BindDecision(block=False, set_cookie=False)
@@ -444,26 +412,27 @@ def bind_decision(
         return BindDecision(block=False, set_cookie=False)
     if ip_network_prefix(ip) is None:
         return BindDecision(block=False, set_cookie=False)
-    trusted = is_trusted_acquisition(query, referer)
+    html = not path.startswith("/api/")
     if not cookie:
-        if settings.scrape_challenge_enabled and not is_challenge_exempt_path(path):
-            if path.startswith("/api/"):
-                return BindDecision(block=True, set_cookie=False)
-            if trusted:
-                return BindDecision(block=False, set_cookie=True)
-            return BindDecision(block=False, set_cookie=False, challenge=True)
+        if (
+            settings.scrape_challenge_enabled
+            and not is_challenge_exempt_path(path)
+            and not html
+        ):
+            return BindDecision(block=True, set_cookie=False)
         return BindDecision(block=False, set_cookie=True)
     if verify_token(cookie, ip):
         return BindDecision(block=False, set_cookie=True)
-    # Чужой /24: API режем (ферма крутит IP), HTML — снова ворота.
-    # Иначе живой человек после смены соты/VPN получает пустой 403,
-    # а location.replace на заглушке превращал Яндекс во «внутренний переход».
-    if settings.scrape_challenge_enabled and not is_challenge_exempt_path(path):
-        if path.startswith("/api/"):
-            return BindDecision(block=True, set_cookie=False)
-        if trusted:
-            return BindDecision(block=False, set_cookie=True)
-        return BindDecision(block=False, set_cookie=False, challenge=True)
+    # Чужой /24: API режем (ферма крутит IP). HTML — сайт и новая кука:
+    # человек после смены соты не должен смотреть заглушку.
+    if (
+        settings.scrape_challenge_enabled
+        and not is_challenge_exempt_path(path)
+        and not html
+    ):
+        return BindDecision(block=True, set_cookie=False)
+    if html:
+        return BindDecision(block=False, set_cookie=True)
     return BindDecision(block=True, set_cookie=False)
 
 
