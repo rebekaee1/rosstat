@@ -69,6 +69,7 @@ beforeEach(() => {
   window.localStorage.clear();
   window.sessionStorage.clear();
   Object.defineProperty(document, 'referrer', { configurable: true, value: '' });
+  Object.defineProperty(document, 'cookie', { configurable: true, get: () => '', set: () => {} });
   delete window.__feApplyConsent;
   delete window.__feAdsGate;
   delete window.__feAttr;
@@ -239,5 +240,35 @@ describe('явный выбор в баннере', () => {
     boot();
     window.dispatchEvent(new Event('pointermove'));
     expect(adsRequested()).toBe(false);
+  });
+});
+
+describe('первый hit Метрики: официальные метки', () => {
+  it('не вырезает from и Openstat до hit', () => {
+    expect(SRC).toMatch(/STRIP_ALWAYS = \[[^\]]*'ybaip'/);
+    expect(SRC).not.toMatch(/STRIP_ALWAYS = \[[^\]]*'\bfrom\b'/);
+    expect(SRC).not.toMatch(/STRIP_ALWAYS = \[[^\]]*'_openstat'/);
+    expect(SRC).toContain("'from'");
+    expect(SRC).toContain("'_openstat'");
+    expect(SRC).toContain('STRIP_AFTER_HIT');
+  });
+
+  it('ChatGPT без Referer получает официальный utm_referrer до hit', () => {
+    window.history.replaceState(null, '', '/indicator/cpi?utm_source=chatgpt.com');
+    boot();
+    expect(window.__feAttr.utm_source).toBe('chatgpt.com');
+    expect(window.__feAttr.utm_referrer).toBe('https://chatgpt.com/');
+    const hit = (window.ym.a || []).find((args) => args[1] === 'hit');
+    expect(hit).toBeTruthy();
+    expect(String(hit[2])).toContain('utm_referrer=');
+    expect(hit[3].referer).toBe('https://chatgpt.com/');
+  });
+
+  it('from=email доходит до hit, потом вырезается из адреса', () => {
+    window.history.replaceState({}, '', '/indicator/cpi?from=email');
+    boot();
+    const hit = (window.ym.a || []).find((args) => args[1] === 'hit');
+    expect(String(hit[2])).toContain('from=email');
+    expect(window.location.search).not.toContain('from=email');
   });
 });

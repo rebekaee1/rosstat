@@ -603,9 +603,9 @@ function OverviewTab({ d }) {
   const [cmpTraffic, toggleCmpTraffic] = useMetrikaCompare('traffic-daily');
   const showMetrikaLine = cmpTraffic && metrikaPoints >= 3;
   const [cmpSources, toggleCmpSources] = useMetrikaCompare('sources-overview');
-  const srcDonut = Object.entries(d.own_acquisition?.channels || {})
+  const srcDonut = Object.entries(d.own_acquisition?.source_slices || d.own_acquisition?.channels || {})
     .map(([k, v]) => ({ name: channelLabel(k), value: v }));
-  const metrikaSrcDonut = Object.entries(d.acquisition?.sources || {})
+  const metrikaSrcDonut = Object.entries(d.acquisition?.source_slices || d.acquisition?.sources || {})
     .map(([k, v]) => ({ name: channelLabel(k), value: v }));
 
   return (
@@ -650,8 +650,8 @@ function OverviewTab({ d }) {
       <div className="grid lg:grid-cols-3 gap-5">
         <Card title="Структура источников" icon={Megaphone} span="lg:col-span-1" source="own"
           compare={{ on: cmpSources, toggle: toggleCmpSources }}
-          insight="Каналы сессий нашего счётчика за период (без ботов). Канал определяется по рекламным меткам, UTM и сайту-источнику перехода."
-        hint="Каждая небот-сессия нашего счётчика получает канал: рекламные метки (yclid/UTM) → реклама или кампания, сайт перехода → поиск/соцсети/сайты, без признаков — прямой заход. Читать: доля платного трафика против бесплатного.">
+          insight="Каналы сессий нашего счётчика за период (без ботов). ChatGPT, Алиса и Perplexity вынесены из «сайтов» и «поиска». Нейро Яндекса неотличима от обычного поиска: отдельной метки нет."
+        hint="Каждая небот-сессия нашего счётчика получает канал по меткам первого перехода. Пустой Referer — прямой заход по HTTP, не «откуда узнал». Last-click Метрики сюда не подмешивается. Воскресенье и среду не сравнивать как одно и то же.">
           <Donut data={srcDonut} centerLabel="сессий" />
           {cmpSources && (
             <MetrikaOverlay>
@@ -683,8 +683,8 @@ function AcquisitionTab({ d }) {
   const a = d.acquisition || {};
   const own = d.own_acquisition || {};
   const aud = d.audience || {};
-  const srcDonut = Object.entries(own.channels || {}).map(([k, v]) => ({ name: channelLabel(k), value: v }));
-  const metrikaSrcDonut = Object.entries(a.sources || {}).map(([k, v]) => ({ name: channelLabel(k), value: v }));
+  const srcDonut = Object.entries(own.source_slices || own.channels || {}).map(([k, v]) => ({ name: channelLabel(k), value: v }));
+  const metrikaSrcDonut = Object.entries(a.source_slices || a.sources || {}).map(([k, v]) => ({ name: channelLabel(k), value: v }));
   const devDonut = Object.entries(aud.devices || {}).map(([k, v]) => ({ name: deviceLabel(k), value: v }));
   const metrikaDevDonut = Object.entries(a.devices || {}).map(([k, v]) => ({ name: deviceLabel(k), value: v }));
   const ads = (a.ad_campaigns || []).filter((c) => c.visits > 0)
@@ -702,8 +702,8 @@ function AcquisitionTab({ d }) {
     <div className="grid lg:grid-cols-2 gap-5">
       <Card title="Структура источников трафика" icon={Megaphone} source="own"
         compare={{ on: cmpSrc, toggle: toggleCmpSrc }}
-        insight="Каналы сессий нашего счётчика (без ботов): баланс платного и органического трафика — основа стоимости привлечения."
-        hint="Каналы небот-сессий нашего счётчика за период: канал определяется по рекламным меткам первого перехода, сайту-источнику или отсутствию признаков (прямой заход). Кнопка «⇄ Метрика» накладывает те же доли по визитам Метрики для сверки.">
+        insight="Каналы сессий без ботов. ChatGPT, Алиса и Perplexity названы отдельно. Нейро неотличима от поиска Яндекса. Сверка с Метрикой — люди (isRobot=No), не график «с роботами»."
+        hint="Пустой Referer = прямой заход по HTTP (закладка, приложение, озвучка). Карточка Direct честна по протоколу и ложна как «откуда узнал». Last-click Метрики: вчерашний Директ сегодня может приписать адресной строке. Дни недели несравнимы напрямую.">
         <Donut data={srcDonut} centerLabel="сессий" />
         {cmpSrc && (
           <MetrikaOverlay>

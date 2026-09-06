@@ -1299,6 +1299,15 @@ def test_locale_host_redirect_after_cutover(monkeypatch):
     assert from_self is not None
     assert "utm_referrer" not in from_self.headers["location"]
 
+    from_chatgpt = _locale_host_redirect(_html_locale_request(
+        query=b"utm_source=chatgpt.com",
+    ))
+    assert from_chatgpt is not None
+    loc_ai = from_chatgpt.headers["location"]
+    assert "utm_source=chatgpt.com" in loc_ai
+    assert "utm_referrer=" in loc_ai
+    assert "chatgpt.com" in loc_ai
+
     monkeypatch.setattr("app.services.geoip.lookup", lambda ip: {"country_code": "US"})
     assert _locale_host_redirect(_html_locale_request(
         extra_headers=[(b"accept-language", b"ru-RU,ru;q=0.9")],

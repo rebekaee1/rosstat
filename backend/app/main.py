@@ -1135,17 +1135,21 @@ def _with_utm_referrer(query: str, request: Request) -> str:
 
     from app.services.locale import apex_host
 
-    if any(k == "utm_referrer" for k, _ in parse_qsl(query, keep_blank_values=True)):
+    from app.services.attribution_query import apply_ai_utm_referrer
+
+    params = dict(parse_qsl(query, keep_blank_values=True))
+    if params.get("utm_referrer"):
         return query
     referer = (request.headers.get("referer") or "").strip()
-    if not referer:
-        return query
-    host = (urlparse(referer).hostname or "").lower().removeprefix("www.")
-    apex = apex_host()
-    if not host or host == apex or host == f"ru.{apex}" or host.endswith(f".{apex}"):
-        return query
-    extra = urlencode({"utm_referrer": referer[:2000]})
-    return f"{query}&{extra}" if query else extra
+    if referer:
+        host = (urlparse(referer).hostname or "").lower().removeprefix("www.")
+        apex = apex_host()
+        if host and host != apex and host != f"ru.{apex}" and not host.endswith(f".{apex}"):
+            params["utm_referrer"] = referer[:2000]
+            return urlencode(params)
+    if apply_ai_utm_referrer(params):
+        return urlencode(params)
+    return query
 
 
 def _locale_host_redirect(request: Request) -> Response | None:

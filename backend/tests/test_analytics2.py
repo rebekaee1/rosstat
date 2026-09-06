@@ -108,6 +108,11 @@ def test_taxonomy_covers_frontend_registry():
     ({"referrer": "https://metrika.yandex.ru/"}, "referral"),
     ({"referrer": "https://ru.forecasteconomy.com/?etext=2202.abc"}, "ad"),
     ({"etext": "2202.abc"}, "ad"),
+    ({"utm_source": "chatgpt.com"}, "referral"),
+    ({"utm_source": "perplexity.ai"}, "referral"),
+    ({"referrer": "https://alice.yandex.ru/"}, "referral"),
+    ({"referrer": "https://e.mail.ru/inbox"}, "referral"),
+    ({"referrer": "https://go.mail.ru/search?q=ипц"}, "search"),
 ])
 def test_classify_channel(kwargs, expected):
     from app.services.traffic_channel import classify_channel

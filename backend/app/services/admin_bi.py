@@ -9,7 +9,7 @@ vs покрытие, внутренние поиски сайта, граф вн
 
 Дизайн-принципы:
 - Сырые визиты Метрики не грузим как ORM и не тащим raw_json:
-  окно BI — колонки + 8 JSON-ключей (Postgres) / сырой dict (sqlite-тесты);
+  окно BI — колонки + узкий набор JSON-ключей (Postgres) / сырой dict (sqlite-тесты);
   retention — только (client_id, day).
 - behavior_events (сотни тысяч строк) агрегируем только на SQL.
 - Кэш — на уровне API-роутера (Redis, 15 минут) + single-flight на воркер:
@@ -46,7 +46,7 @@ from app.models import (
     User,
     WebmasterSearchQuery,
 )
-from app.services.analytics_marts import OWN_DOMAIN
+from app.services.analytics_marts import OWN_DOMAIN, visit_is_robot
 from app.services.analytics_period import Period, as_period, msk_day_expr as _msk_day_expr
 
 logger = logging.getLogger(__name__)
@@ -95,9 +95,12 @@ _METRIKA_JSON_KEYS = (
     "ym:s:operatingSystemRoot",
     "ym:s:regionCity",
     "ym:s:UTMCampaign",
+    "ym:s:UTMSource",
     "ym:s:bounce",
     "ym:s:pageViews",
     "ym:s:dateTime",
+    "ym:s:isRobot",
+    "ym:s:isRobotPro",
 )
 
 
@@ -169,7 +172,7 @@ async def _load_window_visits(db: AsyncSession, p: Period) -> list[_VisitLite]:
                 if val:
                     blob[key] = val
             out.append(_VisitLite(*row[:n_base], blob))
-        return out
+        return [v for v in out if not visit_is_robot(v)]
 
     rows = (await db.execute(
         select(*base, RawMetrikaVisit.raw_json).where(
@@ -177,7 +180,7 @@ async def _load_window_visits(db: AsyncSession, p: Period) -> list[_VisitLite]:
             RawMetrikaVisit.visit_date <= p.end_date,
         )
     )).all()
-    return [_VisitLite(*row[:9], row[9]) for row in rows]
+    return [v for v in (_VisitLite(*row[:9], row[9]) for row in rows) if not visit_is_robot(v)]
 
 
 async def _release_read(db: AsyncSession) -> None:
@@ -310,7 +313,7 @@ async def _own_acquisition(db: AsyncSession, p: Period) -> dict:
     поисковики из referrer-хостов портретов. Метрика-аналог — `_acquisition`.
     """
     from app.models import BehaviorSession
-    from app.services.traffic_channel import search_engine_name
+    from app.services.traffic_channel import assistant_name, search_engine_name
 
     ch_rows = (await db.execute(
         select(ServerSession.channel, func.count())
@@ -331,9 +334,38 @@ async def _own_acquisition(db: AsyncSession, p: Period) -> dict:
     for host, n in eng_rows:
         engines[search_engine_name(host) or "(не определён)"] += int(n or 0)
 
+    # Имена ассистентов в пироге: ChatGPT / Алиса / Perplexity. Нейро
+    # Яндекса отдельной метки не даёт — остаётся внутри поиска.
+    named_rows = (await db.execute(
+        select(
+            BehaviorSession.channel,
+            BehaviorSession.referrer_host,
+            BehaviorSession.utm_source,
+            func.count(),
+        )
+        .where(
+            BehaviorSession.started_at >= p.start,
+            BehaviorSession.started_at < p.end,
+            or_(
+                BehaviorSession.is_webdriver.is_(False),
+                BehaviorSession.is_webdriver.is_(None),
+            ),
+        )
+        .group_by(
+            BehaviorSession.channel,
+            BehaviorSession.referrer_host,
+            BehaviorSession.utm_source,
+        )
+    )).all()
+    slices: Counter = Counter()
+    for ch, host, utm_source, n in named_rows:
+        label = assistant_name(host=host, utm_source=utm_source) or (ch or "unknown")
+        slices[label] += int(n or 0)
+
     return {
         "source": "own",
         "channels": channels,
+        "source_slices": dict(slices.most_common()),
         "search_engines": dict(engines.most_common(10)),
     }
 
@@ -341,7 +373,10 @@ async def _own_acquisition(db: AsyncSession, p: Period) -> dict:
 def _acquisition(visits: list, biz_ids: set[int] | None = None) -> dict:
     """Источники, поисковики, кампании, фразы, гео и устройства из сырых визитов.
     Конверсия кампаний — только business-tier цели (этап 2б BI 2.1)."""
+    from app.services.traffic_channel import assistant_name
+
     sources: Counter = Counter()
+    source_slices: Counter = Counter()
     engines: Counter = Counter()
     campaigns: dict[str, dict[str, Any]] = defaultdict(lambda: {
         "visits": 0, "goal_visits": 0, "bounce_like": 0, "duration_sum": 0,
@@ -354,6 +389,11 @@ def _acquisition(visits: list, biz_ids: set[int] | None = None) -> dict:
     for v in visits:
         src = v.traffic_source or "unknown"
         sources[src] += 1
+        named = assistant_name(
+            referrer=v.referer,
+            utm_source=_visit_field(v, "ym:s:UTMSource") or None,
+        )
+        source_slices[named or src] += 1
         if v.search_engine:
             engines[v.search_engine] += 1
         if v.search_phrase:
@@ -391,6 +431,7 @@ def _acquisition(visits: list, biz_ids: set[int] | None = None) -> dict:
 
     return {
         "sources": dict(sources.most_common()),
+        "source_slices": dict(source_slices.most_common()),
         "search_engines": dict(engines.most_common(20)),
         "top_phrases": dict(phrases.most_common(200)),
         "top_cities": dict(cities.most_common(40)),

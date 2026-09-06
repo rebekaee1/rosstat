@@ -32,8 +32,20 @@
   var COUNTER = 107136069;
 
   // --- URL hygiene: выполняется всегда, до любых хитов ---
-  var STRIP_ALWAYS = ['ybaip', '_openstat', 'openstat', 'clid', 'yandex_referrer', '_ga', 'from', 'ref', 'ref_src', 'source', 'mc_cid', 'mc_eid', 'igshid'];
+  // Официальные метки Метрики (from, Openstat) нельзя вырезать до первого hit:
+  // https://yandex.ru/support/metrica/ru/general/source-tags
+  var STRIP_ALWAYS = ['ybaip', 'clid', '_ga', 'ref', 'ref_src', 'source', 'mc_cid', 'mc_eid', 'igshid'];
   var ATTRIBUTION = ['yclid', 'ysclid', 'gclid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_referrer', 'etext'];
+  var STRIP_AFTER_HIT = ATTRIBUTION.concat(['from', '_openstat', 'openstat', 'yandex_referrer']);
+  // Приложение ChatGPT / Perplexity часто шлёт только utm_source, без Referer.
+  // Штатная замена referer — utm_referrer (отчёт «Сайты»).
+  var AI_UTM_REFERRER = {
+    'chatgpt.com': 'https://chatgpt.com/',
+    'openai': 'https://chatgpt.com/',
+    'chat.openai.com': 'https://chatgpt.com/',
+    'perplexity': 'https://www.perplexity.ai/',
+    'perplexity.ai': 'https://www.perplexity.ai/'
+  };
   // Часть «меток» совпадает с рабочими параметрами страниц: у калькуляторов
   // from/to — это годы периода. Вырезать их — значит ломать любую
   // расшаренную ссылку, поэтому на таких путях они неприкосновенны.
@@ -94,12 +106,29 @@
       if (!hitParams.get(key) && fromStore[key]) hitParams.set(key, fromStore[key]);
       if (!hitParams.get(key) && fromCookie[key]) hitParams.set(key, fromCookie[key]);
     }
+    try {
+      if (!hitParams.get('utm_referrer')) {
+        var us = (hitParams.get('utm_source') || '').toLowerCase();
+        var aiRef = AI_UTM_REFERRER[us];
+        var docRef = document.referrer || '';
+        var ownRef = false;
+        if (docRef) {
+          try {
+            var host = (location.hostname || '').replace(/^www\./, '');
+            var apex = host.replace(/^ru\./, '');
+            var rh = new URL(docRef).hostname.replace(/^www\./, '');
+            ownRef = rh === host || rh === apex || rh === 'ru.' + apex;
+          } catch { ownRef = false; }
+        }
+        if (aiRef && (!docRef || ownRef)) hitParams.set('utm_referrer', aiRef);
+      }
+    } catch { /* ignore */ }
     try { sessionStorage.removeItem('fe:attr:q'); } catch { /* ignore */ }
     var merged = hitParams.toString();
     hitSearch = merged ? '?' + merged : '';
     try { window.__feAttr = attrsFromSearch(hitSearch); } catch { window.__feAttr = {}; }
   } catch { /* ignore */ }
-  var displaySearch = stripParams(hitSearch, ATTRIBUTION);
+  var displaySearch = stripParams(hitSearch, STRIP_AFTER_HIT);
   var hitPath = window.location.pathname + hitSearch + window.location.hash;
   var cleanPath = window.location.pathname + displaySearch + window.location.hash;
 

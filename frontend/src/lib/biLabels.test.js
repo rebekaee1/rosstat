@@ -40,6 +40,8 @@ describe('biLabels — словарь ярлыков BI', () => {
   it('каналы: пустое значение не уходит сырым', () => {
     expect(channelLabel('')).toBe('(не определён)');
     expect(channelLabel('search')).toBe('Поисковые системы');
+    expect(channelLabel('ChatGPT')).toBe('ChatGPT');
+    expect(channelLabel('Алиса')).toBe('Алиса');
   });
 
   it('разделы страниц — зеркало page_section бэкенда', () => {

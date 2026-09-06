@@ -251,8 +251,10 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
     # без всяких признаков — «direct», НЕ пустота.
     if own_portrait is not None:
         channel = own_portrait.channel or classify_channel(
-            own_portrait.referrer, own_portrait.utm_source,
-            own_portrait.utm_medium, own_portrait.yclid,
+            referrer=own_portrait.referrer,
+            utm_source=own_portrait.utm_source,
+            utm_medium=own_portrait.utm_medium,
+            yclid=own_portrait.yclid,
         )
         device = own_portrait.device_type
     else:
@@ -261,8 +263,10 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
             channel = ev_channel
         elif fallback_portrait is not None:
             channel = fallback_portrait.channel or classify_channel(
-                fallback_portrait.referrer, fallback_portrait.utm_source,
-                fallback_portrait.utm_medium, fallback_portrait.yclid,
+                referrer=fallback_portrait.referrer,
+                utm_source=fallback_portrait.utm_source,
+                utm_medium=fallback_portrait.utm_medium,
+                yclid=fallback_portrait.yclid,
             )
         else:
             channel = "direct"

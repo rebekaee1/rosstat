@@ -28,7 +28,22 @@ ATTR_QUERY_KEYS = (
     "utm_content",
     "utm_referrer",
     "etext",
+    "from",
+    "_openstat",
+    "openstat",
 )
+
+# ChatGPT / Perplexity часто ставят только utm_source и не шлют Referer
+# (приложение, озвучка). Без utm_referrer Метрика кладёт визит в Direct.
+# Официальный способ отнести переход к «Сайтам»:
+# https://yandex.ru/support/metrica/ru/general/source-tags#utm-referrer
+AI_UTM_REFERRER = {
+    "chatgpt.com": "https://chatgpt.com/",
+    "openai": "https://chatgpt.com/",
+    "chat.openai.com": "https://chatgpt.com/",
+    "perplexity": "https://www.perplexity.ai/",
+    "perplexity.ai": "https://www.perplexity.ai/",
+}
 
 ATTR_COOKIE_NAME = "fe_attr"
 ATTR_COOKIE_MAX_AGE = 1800
@@ -45,6 +60,18 @@ def incoming_query(request: Request | None) -> str:
     return raw
 
 
+def apply_ai_utm_referrer(params: dict[str, str]) -> bool:
+    """Дописать официальный utm_referrer для известных ИИ-меток. True = изменили."""
+    if params.get("utm_referrer"):
+        return False
+    src = (params.get("utm_source") or "").strip().lower()
+    ref = AI_UTM_REFERRER.get(src)
+    if not ref:
+        return False
+    params["utm_referrer"] = ref
+    return True
+
+
 def merge_attribution_query(path: str, request: Request | None = None) -> str:
     """Дописать клик-id к Location, не затирая уже стоящие параметры (mode)."""
     dest_path, _, dest_q = path.partition("?")
@@ -56,6 +83,8 @@ def merge_attribution_query(path: str, request: Request | None = None) -> str:
         if val and key not in dest:
             dest[key] = val
             changed = True
+    if apply_ai_utm_referrer(dest):
+        changed = True
     if not dest:
         return dest_path or path
     if not dest_q and not changed:
@@ -92,6 +121,7 @@ def attribution_payload(request: Request | None) -> dict[str, str]:
         return {}
     incoming = dict(parse_qsl(incoming_query(request), keep_blank_values=True))
     out = {key: incoming[key] for key in ATTR_QUERY_KEYS if incoming.get(key)}
+    apply_ai_utm_referrer(out)
     if out.get("utm_referrer"):
         return out
     referer = (request.headers.get("referer") or "").strip()

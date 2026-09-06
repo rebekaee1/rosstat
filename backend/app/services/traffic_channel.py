@@ -6,12 +6,14 @@ server_sessions, rollup'ы, сверка с Метрикой). Приорите�
 
 1. Рекламные метки (yclid / etext / utm_medium=cpc|cpm|paid) → ``ad``.
 2. ``ysclid`` (клик из поиска Яндекса) → ``search``.
-3. utm_source без рекламного medium → ``campaign`` (рассылки, посевы).
-4. ``utm_referrer`` / referrer-домен: поисковик → ``search``, соцсеть →
+3. Известный ИИ-ассистент (ChatGPT / Алиса / Perplexity) → ``referral``.
+   Не поиск: Алиса живёт на ``alice.yandex.ru``, не в выдаче.
+4. utm_source без рекламного medium → ``campaign`` (рассылки, посевы).
+5. ``utm_referrer`` / referrer-домен: поисковик → ``search``, соцсеть →
    ``social``, свой домен → ``internal``, прочее → ``referral``.
    Кабинеты Яндекса (oauth / webmaster / metrika / ads) — не поиск.
    Клик-id с собственного referrer (path-cut) достаются из query.
-5. Ничего → ``direct``.
+6. Ничего → ``direct``.
 """
 from __future__ import annotations
 
@@ -20,10 +22,10 @@ from urllib.parse import urlparse
 from app.services.attribution_query import click_ids_from_url
 
 _SEARCH_HOSTS = (
-    "yandex.", "ya.ru", "google.", "bing.com", "duckduckgo.com", "mail.ru",
+    "yandex.", "ya.ru", "google.", "bing.com", "duckduckgo.com",
     "go.mail.ru", "rambler.ru", "nova.rambler.ru", "search.brave.com", "baidu.com",
 )
-# Хост начинается с yandex., но это не выдача: вход, Вебмастер, кабинет.
+# Хост начинается с yandex., но это не выдача: вход, Вебмастер, кабинет, Алиса.
 _YANDEX_SERVICE_PREFIXES = (
     "oauth.yandex.",
     "passport.yandex.",
@@ -34,7 +36,39 @@ _YANDEX_SERVICE_PREFIXES = (
     "mail.yandex.",
     "disk.yandex.",
     "calendar.yandex.",
+    "alice.yandex.",
+    "dialogs.yandex.",
+    "dialog.yandex.",
 )
+# Почта Mail.ru — не поиск. Раньше матчилась по суффиксу mail.ru.
+_NOT_SEARCH_HOSTS = (
+    "e.mail.ru",
+    "light.mail.ru",
+    "touch.mail.ru",
+    "account.mail.ru",
+    "auth.mail.ru",
+)
+
+# Человеческие имена для пирога. Нейро Яндекса отдельной метки не шлёт —
+# остаётся внутри поиска Яндекса, выдумать нельзя.
+_ASSISTANT_HOSTS: tuple[tuple[str, str], ...] = (
+    ("chatgpt.com", "ChatGPT"),
+    ("chat.openai.com", "ChatGPT"),
+    ("openai.com", "ChatGPT"),
+    ("perplexity.ai", "Perplexity"),
+    ("alice.yandex.", "Алиса"),
+    ("gemini.google.com", "Gemini"),
+    ("claude.ai", "Claude"),
+    ("you.com", "You.com"),
+    ("copilot.microsoft.com", "Copilot"),
+)
+_ASSISTANT_UTM = {
+    "chatgpt.com": "ChatGPT",
+    "openai": "ChatGPT",
+    "chat.openai.com": "ChatGPT",
+    "perplexity": "Perplexity",
+    "perplexity.ai": "Perplexity",
+}
 _SOCIAL_HOSTS = (
     "vk.com", "vk.ru", "ok.ru", "t.me", "telegram.", "web.telegram.",
     "twitter.com", "x.com", "facebook.com", "instagram.com", "linkedin.com",
@@ -62,13 +96,40 @@ def _is_yandex_service_host(host: str) -> bool:
     return any(h == p.rstrip(".") or h.startswith(p) for p in _YANDEX_SERVICE_PREFIXES)
 
 
+def _is_mail_web_host(host: str) -> bool:
+    h = host.lower().removeprefix("www.")
+    return any(h == p or h.endswith("." + p) for p in _NOT_SEARCH_HOSTS)
+
+
 def _is_search_host(host: str | None) -> bool:
     if not host:
         return False
     h = host.lower().removeprefix("www.")
-    if _is_yandex_service_host(h):
+    if _is_yandex_service_host(h) or _is_mail_web_host(h):
         return False
     return any(h.startswith(s) or ("." + s) in ("." + h) for s in _SEARCH_HOSTS)
+
+
+def assistant_name(
+    *,
+    referrer: str | None = None,
+    utm_source: str | None = None,
+    utm_referrer: str | None = None,
+    host: str | None = None,
+) -> str | None:
+    """Человеческое имя ИИ-источника или None, если это не ассистент."""
+    src = (utm_source or "").strip().lower()
+    if src in _ASSISTANT_UTM:
+        return _ASSISTANT_UTM[src]
+    hosts = [host, referrer_host(utm_referrer), referrer_host(referrer)]
+    for candidate in hosts:
+        if not candidate:
+            continue
+        h = candidate.lower().removeprefix("www.")
+        for prefix, name in _ASSISTANT_HOSTS:
+            if h == prefix.rstrip(".") or h.startswith(prefix) or h.endswith("." + prefix.rstrip(".")):
+                return name
+    return None
 
 
 def search_engine_name(host: str | None) -> str | None:
@@ -112,6 +173,10 @@ def classify_channel(
         return "ad"
     if ysclid:
         return "search"
+    if assistant_name(
+        referrer=referrer, utm_source=utm_source, utm_referrer=utm_referrer,
+    ):
+        return "referral"
     if (utm_source or "").strip():
         return "campaign"
     stamped_host = referrer_host(utm_referrer)

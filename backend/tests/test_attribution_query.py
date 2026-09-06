@@ -89,6 +89,26 @@ def test_attach_attribution_cookie_readable(monkeypatch):
     assert "httponly" not in header.lower()
 
 
+def test_attribution_payload_stamps_chatgpt_utm_referrer():
+    req = Request({
+        "type": "http",
+        "method": "GET",
+        "path": "/",
+        "query_string": b"utm_source=chatgpt.com",
+        "headers": [],
+    })
+    payload = attribution_payload(req)
+    assert payload["utm_source"] == "chatgpt.com"
+    assert payload["utm_referrer"] == "https://chatgpt.com/"
+
+
+def test_merge_stamps_ai_utm_referrer():
+    req = _req(query="utm_source=perplexity")
+    out = merge_attribution_query("/russia/indicator/cpi", req)
+    assert "utm_source=perplexity" in out
+    assert "utm_referrer=" in out
+
+
 def test_nginx_301s_keep_query():
     text = (Path(__file__).resolve().parents[2] / "frontend" / "nginx.conf").read_text()
     for i, line in enumerate(text.splitlines(), 1):

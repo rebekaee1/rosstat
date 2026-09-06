@@ -96,6 +96,9 @@ _VISIT_FIELDS: list[str] = [
 # по одному с хвоста (см. _create_request_with_optional_fields).
 _OPTIONAL_FIELDS: list[str] = [
     "ym:s:lastSearchPhrase",
+    # isRobot — роботы по строгим правилам и по поведению (Logs API).
+    # Снимаем с хвоста при 400: сначала Pro-only, потом общее поле.
+    "ym:s:isRobot",
     # isRobotPro — доля роботности по антифрод-данным Директа; только Метрика
     # Pro и только с 2025-04-19 (Н-24, аудит правдивости BI 2026-07-08). Летит
     # в raw_json как есть; helper — analytics_marts.py::visit_is_robot.

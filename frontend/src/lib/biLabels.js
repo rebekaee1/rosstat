@@ -21,6 +21,13 @@ export const CHANNEL_RU = {
   social: 'Социальные сети',
   saved: 'Сохранённые страницы',
   unknown: 'Не определён',
+  ChatGPT: 'ChatGPT',
+  Алиса: 'Алиса',
+  Perplexity: 'Perplexity',
+  Gemini: 'Gemini',
+  Claude: 'Claude',
+  'You.com': 'You.com',
+  Copilot: 'Copilot',
 };
 
 export const channelLabel = (k) => CHANNEL_RU[k] || (k ? k : '(не определён)');

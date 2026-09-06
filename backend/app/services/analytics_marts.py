@@ -136,11 +136,16 @@ def visit_os(v: RawMetrikaVisit) -> str:
 
 
 def visit_is_robot(v: RawMetrikaVisit) -> bool:
-    """True, если Метрика-Про пометила визит как роботный (isRobotPro=1).
+    """True, если Метрика пометила визит как роботный.
 
-    Поле доступно не на всех тарифах — отсутствие в raw_json (обычный тариф,
-    старые визиты до 2026-07-08) НЕ означает «не робот», означает «неизвестно»;
-    вызывающий код должен это не путать с явным False."""
+    ``ym:s:isRobot`` — строгие правила и поведение (есть на обычном тарифе).
+    ``ym:s:isRobotPro`` — антифрод Директа, только Pro с 2025-04-19.
+    Нет поля в raw_json — неизвестно, не «не робот»: возвращаем False, чтобы
+    не выкинуть историю до появления поля.
+    """
+    robot = visit_field(v, "ym:s:isRobot").strip().lower()
+    if robot in {"1", "yes", "true"}:
+        return True
     return visit_field(v, "ym:s:isRobotPro") == "1"
 
 

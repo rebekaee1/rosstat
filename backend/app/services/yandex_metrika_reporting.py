@@ -9,6 +9,19 @@ from app.services.yandex_client import YandexOAuthClient, YandexResponse
 
 ReportKind = Literal["data", "bytime", "drilldown", "comparison", "comparison/drilldown"]
 
+# Официальный пример Reporting API: фильтр людей, включая роботов по поведению.
+# https://yandex.ru/dev/metrika/ru/stat/examples#robots
+# Это режим отчёта, не необратимая настройка счётчика.
+HUMANS_ONLY = "ym:s:isRobot=='No'"
+
+
+def without_robots(filters: str | None = None) -> str:
+    if filters and "ym:s:isRobot" in filters:
+        return filters
+    if filters:
+        return f"({filters}) AND {HUMANS_ONLY}"
+    return HUMANS_ONLY
+
 
 class MetrikaReportingClient:
     base_url = "https://api-metrika.yandex.net"
@@ -35,6 +48,7 @@ class MetrikaReportingClient:
         group: str | None = None,
         csv: bool = False,
         extra: dict[str, Any] | None = None,
+        exclude_robots: bool = True,
     ) -> YandexResponse:
         suffix = ".csv" if csv else ""
         path = f"/stat/v1/data/{kind}{suffix}" if kind != "data" else f"/stat/v1/data{suffix}"
@@ -50,6 +64,8 @@ class MetrikaReportingClient:
             params["date1"] = str(date_from)
         if date_to:
             params["date2"] = str(date_to)
+        if exclude_robots:
+            filters = without_robots(filters)
         if filters:
             params["filters"] = filters
         if segment:
