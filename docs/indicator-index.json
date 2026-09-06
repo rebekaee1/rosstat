@@ -7551,7 +7551,7 @@
         },
         {
           "file": "backend/app/api/analytics.py",
-          "line": 532,
+          "line": 535,
           "kind": "other"
         },
         {
@@ -7956,47 +7956,47 @@
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 160,
+          "line": 165,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 169,
+          "line": 174,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 170,
+          "line": 175,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 190,
+          "line": 195,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 221,
+          "line": 226,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 335,
+          "line": 340,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 336,
+          "line": 341,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 337,
+          "line": 342,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_analytics2.py",
-          "line": 339,
+          "line": 344,
           "kind": "tests"
         },
         {
@@ -8041,7 +8041,7 @@
         },
         {
           "file": "backend/tests/test_attribution_query.py",
-          "line": 36,
+          "line": 41,
           "kind": "tests"
         },
         {
@@ -8361,22 +8361,22 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1316,
+          "line": 1319,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1323,
+          "line": 1326,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1345,
+          "line": 1348,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1361,
+          "line": 1364,
           "kind": "tests"
         },
         {
@@ -8681,17 +8681,17 @@
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 233,
+          "line": 262,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 264,
+          "line": 293,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_guard.py",
-          "line": 355,
+          "line": 379,
           "kind": "tests"
         },
         {
@@ -9607,6 +9607,11 @@
         {
           "file": "frontend/src/lib/consentAdsGate.component.test.jsx",
           "line": 169,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/consentAdsGate.component.test.jsx",
+          "line": 199,
           "kind": "other"
         },
         {
@@ -32464,32 +32469,32 @@
         },
         {
           "file": "backend/tests/test_attribution_query.py",
-          "line": 23,
+          "line": 28,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_attribution_query.py",
-          "line": 30,
+          "line": 35,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_attribution_query.py",
-          "line": 42,
+          "line": 47,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_attribution_query.py",
-          "line": 43,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_attribution_query.py",
-          "line": 44,
+          "line": 48,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_attribution_query.py",
           "line": 49,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_attribution_query.py",
+          "line": 54,
           "kind": "tests"
         },
         {
