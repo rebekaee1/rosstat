@@ -178,12 +178,9 @@ FastAPI — `fe_bind` на этих URL не ставится. Старт OAuth,
 
 ### 2026-09-06 — VK ID базовый домен vs `ru.`
 
-Живой экран `id.vk.ru` с телефона: «Error loading» / «The platform's
-settings don't show this base domain». `redirect_uri` кабинета
-(`https://forecasteconomy.com/api/auth/vk/callback`) совпал; authorize
-с Referer `https://ru.forecasteconomy.com/register` остаётся на ошибке,
-с Referer apex открывает форму. Документация VK ID: базовый домен без
-ведущей точки не покрывает поддомены (для всех — `.forecasteconomy.com`).
-Кабинет не трогаем. Старт VK с `ru.`/`www.` сначала 302 на тот же path
-на хосте callback, затем на `id.vk.ru` — Referer уже apex. Гео `/api/`
-не редиректит.
+Живой экран `id.vk.ru` с телефона: «Ошибка загрузки» / базовый домен.
+`redirect_uri` кабинета совпал. Живая проверка после hop-only: браузер
+оставлял `document.referrer=https://ru.forecasteconomy.com/` через цепочку
+302 — VK `invalid_origin`. Кабинет не трогаем. Старт с `ru.` → 302 на apex
+→ HTML-мост (`location.replace` + `Referrer-Policy: origin`) → `id.vk.ru`
+уже с Referer apex.

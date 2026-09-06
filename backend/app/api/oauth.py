@@ -4,12 +4,14 @@ GET /auth/oauth/{provider}/start  → 302 на провайдера (state в Re
 GET /auth/oauth/{provider}/callback → обмен кода, резолв, сессия, 302 на next.
 Callback — чистый 302 без HTML/JS (требование VK ID).
 """
+import json
 import logging
 import secrets
+from html import escape
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -78,28 +80,61 @@ def _request_hostname(request: Request) -> str:
     return raw.split(",")[0].split(":")[0].strip().lower()
 
 
-def _vk_base_domain_hop(request: Request, provider: str) -> RedirectResponse | None:
-    """VK ID сверяет Referer с базовым доменом кабинета.
+def _vk_callback_hostname() -> str:
+    return (urlparse(_redirect_uri("vk")).hostname or "").lower()
 
-    Callback кабинета — apex ``forecasteconomy.com``. Старт с ``ru.`` оставляет
-    Referer ``ru.forecasteconomy.com`` → экран «базовый домен не указан».
-    Скачок на тот же start на хосте callback (гео ``/api/`` не трогает)
-    меняет Referer до id.vk.ru. Чужой Host не редиректим.
+
+def _vk_base_domain_hop(request: Request, provider: str) -> RedirectResponse | None:
+    """Согнать старт VK на хост callback (обычно apex).
+
+    Кабинет VK ID знает ``forecasteconomy.com``, не ``ru.``. Один 302
+    Referer не меняет: браузер тащит origin документа через цепочку.
+    Hop нужен, чтобы следующий ответ (HTML-мост) отдался уже с apex.
     """
     if provider != "vk":
         return None
-    public = urlparse(_redirect_uri("vk"))
-    want = (public.hostname or "").lower()
+    want = _vk_callback_hostname()
     got = _request_hostname(request)
     if not want or not got or got == want:
         return None
     apex = want.removeprefix("www.")
     if got != f"www.{apex}" and not got.endswith(f".{apex}"):
         return None
+    public = urlparse(_redirect_uri("vk"))
     dest = f"{public.scheme}://{want}{request.url.path}"
     if request.url.query:
         dest = f"{dest}?{request.url.query}"
     return RedirectResponse(dest, status_code=302)
+
+
+def _vk_authorize_bridge(authorize_url: str) -> HTMLResponse:
+    """Документ на хосте callback → location.replace на id.vk.ru.
+
+    После этого Referer для VK = apex, не ``ru.``. Чистый 302 с ``ru.``
+    оставлял ``document.referrer=https://ru.forecasteconomy.com/``.
+    """
+    parsed = urlparse(authorize_url)
+    if parsed.scheme != "https" or (parsed.hostname or "") not in {"id.vk.ru", "id.vk.com"}:
+        raise ValueError("vk authorize host refused")
+    href = escape(authorize_url, quote=True)
+    js = json.dumps(authorize_url)
+    html = (
+        "<!doctype html><html lang=\"ru\"><head>"
+        "<meta charset=\"utf-8\">"
+        "<meta name=\"referrer\" content=\"origin\">"
+        f"<meta http-equiv=\"refresh\" content=\"0;url={href}\">"
+        "<title>VK ID</title></head><body>"
+        f"<script>location.replace({js});</script>"
+        f"<a href=\"{href}\">Continue</a>"
+        "</body></html>"
+    )
+    return HTMLResponse(
+        html,
+        headers={
+            "Cache-Control": "no-store",
+            "Referrer-Policy": "origin",
+        },
+    )
 
 
 def _oauth_cookie_kwargs() -> dict:
@@ -151,7 +186,10 @@ async def oauth_start(provider: str, request: Request, intent: str = "login", ne
     await oauth_state.store_state(state, payload)
 
     url = prov.authorize_url(state=state, code_challenge=challenge, redirect_uri=_redirect_uri(provider))
-    resp = RedirectResponse(url, status_code=302)
+    if provider == "vk" and _request_hostname(request) == _vk_callback_hostname():
+        resp = _vk_authorize_bridge(url)
+    else:
+        resp = RedirectResponse(url, status_code=302)
     resp.set_cookie(OAUTH_COOKIE, state, max_age=settings.auth_oauth_state_ttl_seconds, **_oauth_cookie_kwargs())
     return resp
 

@@ -219,7 +219,8 @@ def test_vk_start_from_ru_hops_to_apex_before_vk(auth_client, monkeypatch):
     assert "id.vk.ru" not in loc
 
 
-def test_vk_start_from_apex_goes_to_vk(auth_client, monkeypatch):
+def test_vk_start_from_apex_serves_html_bridge(auth_client, monkeypatch):
+    """302 на VK с ru. не меняет document.referrer — нужен HTML на apex."""
     _vk_start_settings(monkeypatch)
     r = auth_client.get(
         "/api/v1/auth/oauth/vk/start",
@@ -227,10 +228,13 @@ def test_vk_start_from_apex_goes_to_vk(auth_client, monkeypatch):
         headers={"X-Forwarded-Host": "forecasteconomy.com"},
         follow_redirects=False,
     )
-    assert r.status_code == 302
-    loc = r.headers["location"]
-    assert loc.startswith("https://id.vk.ru/authorize")
-    assert "redirect_uri=https%3A%2F%2Fforecasteconomy.com%2Fapi%2Fauth%2Fvk%2Fcallback" in loc
+    assert r.status_code == 200
+    assert "text/html" in r.headers.get("content-type", "")
+    body = r.text
+    assert "location.replace(" in body
+    assert "https://id.vk.ru/authorize" in body
+    assert "redirect_uri=https%3A%2F%2Fforecasteconomy.com%2Fapi%2Fauth%2Fvk%2Fcallback" in body
+    assert "fe_oauth=" in r.headers.get("set-cookie", "")
 
 
 def test_vk_start_foreign_host_does_not_hop(auth_client, monkeypatch):
