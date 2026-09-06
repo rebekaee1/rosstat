@@ -32,8 +32,8 @@
   var COUNTER = 107136069;
 
   // --- URL hygiene: выполняется всегда, до любых хитов ---
-  var STRIP_ALWAYS = ['etext', 'ybaip', '_openstat', 'openstat', 'clid', 'yandex_referrer', '_ga', 'from', 'ref', 'ref_src', 'source', 'mc_cid', 'mc_eid', 'igshid'];
-  var ATTRIBUTION = ['yclid', 'ysclid', 'gclid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_referrer'];
+  var STRIP_ALWAYS = ['ybaip', '_openstat', 'openstat', 'clid', 'yandex_referrer', '_ga', 'from', 'ref', 'ref_src', 'source', 'mc_cid', 'mc_eid', 'igshid'];
+  var ATTRIBUTION = ['yclid', 'ysclid', 'gclid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_referrer', 'etext'];
   // Часть «меток» совпадает с рабочими параметрами страниц: у калькуляторов
   // from/to — это годы периода. Вырезать их — значит ломать любую
   // расшаренную ссылку, поэтому на таких путях они неприкосновенны.
@@ -83,10 +83,16 @@
     try { fromRef = attrsFromSearch(new URL(document.referrer).search); } catch { /* нет referrer */ }
     var fromStore = {};
     try { fromStore = attrsFromSearch(sessionStorage.getItem('fe:attr:q') || ''); } catch { /* нет store */ }
+    var fromCookie = {};
+    try {
+      var cm = document.cookie.match(/(?:^|; )fe_attr=([^;]*)/);
+      if (cm) fromCookie = attrsFromSearch('?' + decodeURIComponent(cm[1].replace(/\+/g, ' ')));
+    } catch { /* нет куки */ }
     for (var a = 0; a < ATTRIBUTION.length; a++) {
       var key = ATTRIBUTION[a];
       if (!hitParams.get(key) && fromRef[key]) hitParams.set(key, fromRef[key]);
       if (!hitParams.get(key) && fromStore[key]) hitParams.set(key, fromStore[key]);
+      if (!hitParams.get(key) && fromCookie[key]) hitParams.set(key, fromCookie[key]);
     }
     try { sessionStorage.removeItem('fe:attr:q'); } catch { /* ignore */ }
     var merged = hitParams.toString();

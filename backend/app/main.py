@@ -1186,7 +1186,7 @@ def _locale_host_redirect(request: Request) -> Response | None:
         target = f"{origin}{public_path}"
         if query:
             target += f"?{query}"
-        return Response(
+        resp = Response(
             status_code=307,
             headers={
                 "Location": target,
@@ -1194,6 +1194,18 @@ def _locale_host_redirect(request: Request) -> Response | None:
                 "Cache-Control": "private, no-store",
             },
         )
+        from app.services.attribution_query import attach_attribution_cookie
+        from app.services.scrape_guard import attach_bind_cookie
+
+        attach_attribution_cookie(resp, request)
+        attach_bind_cookie(
+            resp,
+            pick_client_ip(
+                request.headers.get("x-forwarded-for", ""),
+                request.client.host if request.client else "",
+            ),
+        )
+        return resp
 
     if on_apex and preference == "ru":
         return _to(ru_public_origin())
@@ -1316,9 +1328,9 @@ class ScrapeGuardMiddleware(BaseHTTPMiddleware):
                 },
             )
         response = await call_next(request)
-        if (
-            decision.set_cookie
-            and 200 <= response.status_code < 300
+        if decision.set_cookie and (
+            200 <= response.status_code < 300
+            or response.status_code in {301, 302, 303, 307, 308}
         ):
             attach_bind_cookie(response, ip)
         return response

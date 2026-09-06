@@ -8,7 +8,8 @@
 Правила bind:
 - поисковики и соцкраулеры по UA не режутся;
 - приватный/невалидный IP (тесты, localhost) — skip;
-- куки нет — HTML: сразу сайт + ``fe_bind``; API: 403;
+- куки нет — HTML: сразу сайт + ``fe_bind``; API данных: 403;
+  маяк/тикер (``/analytics/*``, ``/ticker``) без куки не режем;
 - кука от другого префикса — API 403, HTML сайт и новая кука
   (смена соты/VPN не должна показывать заглушку);
 - пустой ``RUSTATS_SCRAPE_BLOCK_COUNTRIES`` выключает гео-слой;
@@ -116,6 +117,14 @@ _CHALLENGE_EXEMPT_PREFIXES = _SKIP_PREFIXES + (
     "/consent.js",
     "/llms.txt",
     "/feed",
+)
+
+# Свой счётчик и тикер: первый маяк часто уходит до того, как браузер
+# приклеит fe_bind (307 apex→ru., гонка с HTML). 403 здесь режет людей,
+# не ферму. Данные /api/v1/indicators* по-прежнему требуют куку.
+_TELEMETRY_PREFIXES = (
+    "/api/v1/analytics/",
+    "/api/v1/ticker",
 )
 
 # Ферма 2026-09-04: 64–192 ядра. 16c/32t Ryzen репортит 32 — ниже порога.
@@ -229,6 +238,11 @@ def is_bind_protected_path(path: str) -> bool:
 def is_challenge_exempt_path(path: str) -> bool:
     path = path or "/"
     return any(path.startswith(p) for p in _CHALLENGE_EXEMPT_PREFIXES)
+
+
+def is_telemetry_path(path: str) -> bool:
+    path = path or "/"
+    return any(path.startswith(p) for p in _TELEMETRY_PREFIXES)
 
 
 def _ua_family(ua: str | None) -> str | None:
@@ -400,6 +414,8 @@ def bind_decision(
         return BindDecision(block=False, set_cookie=False)
     if ip_network_prefix(ip) is None:
         return BindDecision(block=False, set_cookie=False)
+    if is_telemetry_path(path):
+        return BindDecision(block=False, set_cookie=not cookie or not verify_token(cookie, ip))
     html = not path.startswith("/api/")
     if not cookie:
         if (

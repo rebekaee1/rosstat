@@ -103,6 +103,11 @@ def test_taxonomy_covers_frontend_registry():
     ({"referrer": "https://www.rbc.ru/economics/"}, "referral"),
     ({}, "direct"),
     ({"referrer": ""}, "direct"),
+    ({"referrer": "https://oauth.yandex.ru/"}, "referral"),
+    ({"referrer": "https://webmaster.yandex.ru/site/https:ru.forecasteconomy.com:443"}, "referral"),
+    ({"referrer": "https://metrika.yandex.ru/"}, "referral"),
+    ({"referrer": "https://ru.forecasteconomy.com/?etext=2202.abc"}, "ad"),
+    ({"etext": "2202.abc"}, "ad"),
 ])
 def test_classify_channel(kwargs, expected):
     from app.services.traffic_channel import classify_channel

@@ -15,7 +15,7 @@ from app.models import SeoPageSnapshot
 TRACKING_PARAMS = {
     "etext", "ybaip", "yclid", "ysclid", "gclid", "fbclid", "_openstat",
     "openstat", "clid", "yandex_referrer", "_ga", "utm_source", "utm_medium",
-    "utm_campaign", "utm_term", "utm_content", "utm_referrer", "from", "ref",
+    "utm_campaign", "utm_term", "utm_content", "utm_referrer", "etext", "from", "ref",
     "ref_src", "source", "mc_cid", "mc_eid", "igshid",
 }
 

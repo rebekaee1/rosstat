@@ -1280,6 +1280,9 @@ def test_locale_host_redirect_after_cutover(monkeypatch):
     assert loc.startswith("https://ru.forecasteconomy.com/russia/indicator/cpi?")
     assert "utm_referrer=" in loc
     assert "yandex.ru" in loc
+    yandex_cookies = " ".join(from_yandex.headers.getlist("set-cookie"))
+    assert "fe_attr=" in yandex_cookies
+    assert "utm_referrer" in yandex_cookies
 
     with_ysclid = _locale_host_redirect(_html_locale_request(
         query=b"ysclid=lor7sw5p9o",

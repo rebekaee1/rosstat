@@ -4,11 +4,12 @@
 server_sessions, rollup'ы, сверка с Метрикой). Приоритет сигналов повторяет
 логику Метрики (last non-direct click доопределяется на уровне витрин):
 
-1. Рекламные метки (yclid / utm_medium=cpc|cpm|paid) → ``ad``.
+1. Рекламные метки (yclid / etext / utm_medium=cpc|cpm|paid) → ``ad``.
 2. ``ysclid`` (клик из поиска Яндекса) → ``search``.
 3. utm_source без рекламного medium → ``campaign`` (рассылки, посевы).
 4. ``utm_referrer`` / referrer-домен: поисковик → ``search``, соцсеть →
    ``social``, свой домен → ``internal``, прочее → ``referral``.
+   Кабинеты Яндекса (oauth / webmaster / metrika / ads) — не поиск.
    Клик-id с собственного referrer (path-cut) достаются из query.
 5. Ничего → ``direct``.
 """
@@ -21,6 +22,18 @@ from app.services.attribution_query import click_ids_from_url
 _SEARCH_HOSTS = (
     "yandex.", "ya.ru", "google.", "bing.com", "duckduckgo.com", "mail.ru",
     "go.mail.ru", "rambler.ru", "nova.rambler.ru", "search.brave.com", "baidu.com",
+)
+# Хост начинается с yandex., но это не выдача: вход, Вебмастер, кабинет.
+_YANDEX_SERVICE_PREFIXES = (
+    "oauth.yandex.",
+    "passport.yandex.",
+    "webmaster.yandex.",
+    "metrika.yandex.",
+    "partner.yandex.",
+    "ads.yandex.",
+    "mail.yandex.",
+    "disk.yandex.",
+    "calendar.yandex.",
 )
 _SOCIAL_HOSTS = (
     "vk.com", "vk.ru", "ok.ru", "t.me", "telegram.", "web.telegram.",
@@ -44,9 +57,23 @@ _ENGINE_NAMES: tuple[tuple[str, str], ...] = (
 )
 
 
+def _is_yandex_service_host(host: str) -> bool:
+    h = host.lower().removeprefix("www.")
+    return any(h == p.rstrip(".") or h.startswith(p) for p in _YANDEX_SERVICE_PREFIXES)
+
+
+def _is_search_host(host: str | None) -> bool:
+    if not host:
+        return False
+    h = host.lower().removeprefix("www.")
+    if _is_yandex_service_host(h):
+        return False
+    return any(h.startswith(s) or ("." + s) in ("." + h) for s in _SEARCH_HOSTS)
+
+
 def search_engine_name(host: str | None) -> str | None:
     """Имя поисковика по referrer-хосту; None — хост не поисковый."""
-    if not host:
+    if not host or not _is_search_host(host):
         return None
     h = host.lower().removeprefix("www.")
     for prefix, name in _ENGINE_NAMES:
@@ -72,13 +99,16 @@ def classify_channel(
     yclid: str | None = None,
     ysclid: str | None = None,
     utm_referrer: str | None = None,
+    etext: str | None = None,
 ) -> str:
     salvaged = click_ids_from_url(referrer)
+    salvaged.update(click_ids_from_url(utm_referrer))
     yclid = yclid or salvaged.get("yclid")
     ysclid = ysclid or salvaged.get("ysclid")
     utm_referrer = utm_referrer or salvaged.get("utm_referrer")
+    etext = etext or salvaged.get("etext")
     medium = (utm_medium or "").strip().lower()
-    if yclid or medium in _AD_MEDIUMS:
+    if yclid or etext or medium in _AD_MEDIUMS:
         return "ad"
     if ysclid:
         return "search"
@@ -86,10 +116,7 @@ def classify_channel(
         return "campaign"
     stamped_host = referrer_host(utm_referrer)
     if stamped_host:
-        if any(
-            stamped_host.startswith(h) or ("." + h) in ("." + stamped_host)
-            for h in _SEARCH_HOSTS
-        ):
+        if _is_search_host(stamped_host):
             return "search"
         if any(
             stamped_host == h or stamped_host.endswith("." + h) or stamped_host.startswith(h)
@@ -106,7 +133,7 @@ def classify_channel(
         return "direct"
     if any(host == h or host.endswith("." + h) or host.startswith(h) for h in _OWN_HOSTS):
         return "internal"
-    if any(host.startswith(h) or ("." + h) in ("." + host) for h in _SEARCH_HOSTS):
+    if _is_search_host(host):
         return "search"
     if any(host == h or host.endswith("." + h) or host.startswith(h) for h in _SOCIAL_HOSTS):
         return "social"

@@ -136,7 +136,7 @@ def test_bind_mismatch_blocks_api(monkeypatch):
     d = scrape_guard.bind_decision(
         ip="1.1.1.1",
         ua="Mozilla/5.0 Chrome/145",
-        path="/api/v1/ticker/live",
+        path="/api/v1/indicators",
         cookie=token,
     )
     assert d.block is True
@@ -197,13 +197,42 @@ def test_html_without_cookie_is_site(monkeypatch):
     assert d.set_cookie is True
 
 
+def test_telemetry_without_cookie_not_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    for path in ("/api/v1/ticker/live", "/api/v1/analytics/behavior", "/api/v1/analytics/events"):
+        d = scrape_guard.bind_decision(
+            ip="8.8.8.10",
+            ua="Mozilla/5.0 Chrome/145",
+            path=path,
+            cookie=None,
+        )
+        assert d.block is False, path
+        assert d.set_cookie is True, path
+
+
+def test_telemetry_mismatch_not_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_secret", "test-secret")
+    token = scrape_guard.issue_token("8.8.8.10")
+    d = scrape_guard.bind_decision(
+        ip="1.1.1.1",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/api/v1/analytics/behavior",
+        cookie=token,
+    )
+    assert d.block is False
+    assert d.set_cookie is True
+
+
 def test_api_without_cookie_blocked_when_challenge_on(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
     monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
     d = scrape_guard.bind_decision(
         ip="8.8.8.10",
         ua="Mozilla/5.0 Chrome/145",
-        path="/api/v1/ticker/live",
+        path="/api/v1/indicators",
         cookie=None,
     )
     assert d.block is True

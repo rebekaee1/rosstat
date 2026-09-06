@@ -344,6 +344,7 @@ async def _upsert_behavior_session(
     yclid = _str_or_none(ev.get("yclid"), 64)
     ysclid = _str_or_none(ev.get("ysclid"), 64)
     utm_referrer = _str_or_none(ev.get("ur"), 1000)
+    etext = _str_or_none(ev.get("etext"), 200)
     geo = geo_lookup(client_ip)
 
     values = {
@@ -363,6 +364,7 @@ async def _upsert_behavior_session(
             yclid=yclid,
             ysclid=ysclid,
             utm_referrer=utm_referrer,
+            etext=etext,
         ),
         "utm_source": utm_source,
         "utm_medium": utm_medium,
@@ -470,7 +472,7 @@ async def _upsert_synthetic_portrait(
         pass
     qp = lambda k, n: _str_or_none((q.get(k) or [None])[0], n)  # noqa: E731
     utm_source, utm_medium, yclid = qp("utm_source", 120), qp("utm_medium", 120), qp("yclid", 64)
-    ysclid, utm_referrer = qp("ysclid", 64), qp("utm_referrer", 1000)
+    ysclid, utm_referrer, etext = qp("ysclid", 64), qp("utm_referrer", 1000), qp("etext", 200)
 
     values = {
         "session_id_hash": session_hash,
@@ -488,6 +490,7 @@ async def _upsert_synthetic_portrait(
             yclid=yclid,
             ysclid=ysclid,
             utm_referrer=utm_referrer,
+            etext=etext,
         ),
         "utm_source": utm_source,
         "utm_medium": utm_medium,

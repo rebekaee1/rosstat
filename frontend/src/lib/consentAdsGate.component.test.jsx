@@ -191,6 +191,23 @@ describe('атрибуция поиска', () => {
     expect(hit[2]).toContain('ysclid=fromref');
   });
 
+  it('достаёт ysclid из куки fe_attr после 307', () => {
+    const hits = [];
+    window.ym = function ym() {
+      hits.push([...arguments]);
+    };
+    window.history.replaceState(null, '', '/russia/indicator/cpi');
+    Object.defineProperty(document, 'cookie', {
+      configurable: true,
+      get: () => 'fe_attr=' + encodeURIComponent('ysclid=fromcookie&utm_referrer=https://yandex.ru/'),
+    });
+    boot();
+    const hit = hits.find((args) => args[1] === 'hit');
+    expect(hit).toBeTruthy();
+    expect(hit[2]).toContain('ysclid=fromcookie');
+    expect(hit[3].referer).toContain('yandex.ru');
+  });
+
   it('достаёт ysclid из sessionStorage ворот', () => {
     const hits = [];
     window.ym = function ym() {

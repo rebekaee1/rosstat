@@ -6,7 +6,12 @@ from pathlib import Path
 
 from starlette.requests import Request
 
+from starlette.responses import Response
+
 from app.services.attribution_query import (
+    ATTR_COOKIE_NAME,
+    attach_attribution_cookie,
+    attribution_payload,
     click_ids_from_url,
     incoming_query,
     merge_attribution_query,
@@ -49,6 +54,39 @@ def test_click_ids_from_own_referrer():
         "https://ru.forecasteconomy.com/indicator/imoex/2008?ysclid=x"
     )
     assert found["ysclid"] == "x"
+
+
+def test_attribution_payload_stamps_external_referer():
+    req = Request({
+        "type": "http",
+        "method": "GET",
+        "path": "/",
+        "query_string": b"ysclid=abc",
+        "headers": [(b"referer", b"https://yandex.ru/search/?text=ipc")],
+    })
+    payload = attribution_payload(req)
+    assert payload["ysclid"] == "abc"
+    assert payload["utm_referrer"].startswith("https://yandex.ru/")
+
+
+def test_attach_attribution_cookie_readable(monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "auth_cookie_secure", False)
+    monkeypatch.setattr(settings, "debug", True)
+    req = Request({
+        "type": "http",
+        "method": "GET",
+        "path": "/",
+        "query_string": b"yclid=1",
+        "headers": [],
+    })
+    resp = Response(status_code=307)
+    attach_attribution_cookie(resp, req)
+    header = resp.headers.get("set-cookie", "")
+    assert f"{ATTR_COOKIE_NAME}=" in header
+    assert "yclid=1" in header
+    assert "httponly" not in header.lower()
 
 
 def test_nginx_301s_keep_query():

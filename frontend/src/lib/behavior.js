@@ -335,7 +335,7 @@ function emitSessionStart() {
   let tz = null;
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { /* ignore */ }
   const q = new URLSearchParams(window.location.search);
-  const ATTR_KEYS = ['ysclid', 'yclid', 'gclid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_referrer'];
+  const ATTR_KEYS = ['ysclid', 'yclid', 'gclid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_referrer', 'etext'];
   try {
     const fromRef = new URL(document.referrer).searchParams;
     for (const key of ATTR_KEYS) {
@@ -348,6 +348,15 @@ function emitSessionStart() {
       if (!q.get(key) && fromWin[key]) q.set(key, fromWin[key]);
     }
   } catch { /* нет моста от consent.js */ }
+  try {
+    const cm = document.cookie.match(/(?:^|; )fe_attr=([^;]*)/);
+    if (cm) {
+      const fromCk = new URLSearchParams(decodeURIComponent(cm[1].replace(/\+/g, ' ')));
+      for (const key of ATTR_KEYS) {
+        if (!q.get(key) && fromCk.get(key)) q.set(key, fromCk.get(key));
+      }
+    }
+  } catch { /* нет куки */ }
   const conn = navigator.connection || null;
   let theme = null;
   try { theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch { /* ignore */ }
@@ -355,7 +364,18 @@ function emitSessionStart() {
   try { orient = (window.screen.orientation && window.screen.orientation.type) ? (window.screen.orientation.type.startsWith('portrait') ? 'portrait' : 'landscape') : null; } catch { /* ignore */ }
   push('session_start', {
     ua: (navigator.userAgent || '').slice(0, 500),
-    ref: document.referrer || null,
+    ref: (function () {
+      const stamped = q.get('utm_referrer') || '';
+      const raw = document.referrer || '';
+      try {
+        if (!raw) return stamped || null;
+        const rh = new URL(raw).hostname.replace(/^www\./, '');
+        const host = (location.hostname || '').replace(/^www\./, '');
+        const apex = host.replace(/^ru\./, '');
+        if (rh === host || rh === apex || rh === `ru.${apex}`) return stamped || raw;
+      } catch { /* чужой referrer */ }
+      return raw || stamped || null;
+    })(),
     sw: (window.screen && window.screen.width) || null,
     sh: (window.screen && window.screen.height) || null,
     vw: window.innerWidth,
@@ -372,6 +392,7 @@ function emitSessionStart() {
     yclid: q.get('yclid'),
     ysclid: q.get('ysclid'),
     ur: q.get('utm_referrer'),
+    etext: q.get('etext'),
     ymuid: ymUid(),
     conn: conn && conn.effectiveType ? String(conn.effectiveType).slice(0, 16) : null,
     dl: conn && typeof conn.downlink === 'number' ? conn.downlink : null,
