@@ -68,3 +68,5 @@ a16c71b1f779bc4798b8d85c6de36d30a5ade1b2  # a16c71b no fe_bind on challenge 403,
 219b9c81c455a38d3d558ee939742e64dc86b805  # 219b9c8 HTML без заглушки + VPN/хостинг не 403, owner-approved 2026-09-06
 
 efa1a728185891f3f844be7bec1b75272effb0ea  # efa1a72 фраза после 307 + маяк без 403, owner-approved 2026-09-06
+
+a111ea75dc691a5638629ee6fb118abd65b06d36  # a111ea7 люди в Метрике + utm_referrer ChatGPT, owner-approved 2026-09-06
