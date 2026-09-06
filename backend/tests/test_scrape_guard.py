@@ -341,70 +341,19 @@ def test_noise_ua():
     )
 
 
-def test_hosting_asn_blocks_chrome(monkeypatch):
+def test_hosting_asn_does_not_block_page(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", True)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
-    monkeypatch.setattr(
-        scrape_guard,
-        "lookup_asn",
-        lambda ip: {"asn": 24940, "org": "Hetzner Online GmbH"},
-    )
     assert scrape_guard.should_block(
         ip="1.2.3.4",
         ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/145.0.0.0",
         path="/russia/indicator/cpi",
-    ) == "HOSTING"
-
-
-def test_hosting_org_blocks_without_known_asn(monkeypatch):
-    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", True)
-    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
-    monkeypatch.setattr(
-        scrape_guard,
-        "lookup_asn",
-        lambda ip: {"asn": 999999, "org": "Alibaba Cloud LLC"},
-    )
+    ) is None
     assert scrape_guard.should_block(
         ip="47.82.201.239",
         ua="Mozilla/5.0 Chrome/145",
         path="/",
-    ) == "HOSTING"
-
-
-def test_hosting_skips_search_bot(monkeypatch):
-    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", True)
-    monkeypatch.setattr(
-        scrape_guard,
-        "lookup_asn",
-        lambda ip: {"asn": 24940, "org": "Hetzner Online GmbH"},
-    )
-    assert scrape_guard.should_block(
-        ip="1.2.3.4",
-        ua="Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
-        path="/",
     ) is None
-
-
-def test_hosting_flag_off(monkeypatch):
-    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
-    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
-    monkeypatch.setattr(
-        scrape_guard,
-        "lookup_asn",
-        lambda ip: {"asn": 24940, "org": "Hetzner Online GmbH"},
-    )
-    assert scrape_guard.should_block(
-        ip="1.2.3.4", ua="Chrome", path="/"
-    ) is None
-
-
-def test_hosting_fail_open_without_asn(monkeypatch):
-    monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", True)
-    monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
-    monkeypatch.setattr(
-        scrape_guard, "lookup_asn", lambda ip: {"asn": None, "org": None}
-    )
-    assert scrape_guard.should_block(ip="8.8.8.8", ua="Chrome", path="/") is None
 
 
 def test_is_hosting_network_google_asn_not_listed():

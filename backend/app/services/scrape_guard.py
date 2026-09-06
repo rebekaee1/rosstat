@@ -12,9 +12,7 @@
 - кука от другого префикса — API 403, HTML сайт и новая кука
   (смена соты/VPN не должна показывать заглушку);
 - пустой ``RUSTATS_SCRAPE_BLOCK_COUNTRIES`` выключает гео-слой;
-- хостинговые ASN (Hetzner/OVH/Alibaba/AWS/…) режутся флагом
-  ``RUSTATS_SCRAPE_BLOCK_HOSTING`` (по умолчанию вкл); жилые прокси
-  этим слоем не покрыты;
+- хостинговые ASN больше не 403: VPN/облако — живые люди;
 - ``Chrome/N.0.0.0 Safari/537.36`` — это reduced UA живого Chrome
   (с 101), его нельзя банить: ферма шлёт ту же строку;
 - HTML-заглушку больше не отдаём: человек всегда получает страницу.
@@ -33,7 +31,6 @@ from starlette.responses import Response
 
 from app.config import settings
 from app.services.geoip import lookup as geo_lookup
-from app.services.geoip import lookup_asn
 
 # Совпадает с nginx $ssr_limit_key плюс соцкраулеры OG и соседние Google/Amazon.
 _SEARCH_UA_RE = re.compile(
@@ -213,15 +210,6 @@ def should_block(*, ip: str, ua: str | None, path: str) -> str | None:
         return None
     if is_search_bot_ua(ua):
         return None
-    if settings.scrape_block_hosting:
-        info = lookup_asn(ip)
-        asn = info.get("asn")
-        org = info.get("org")
-        if is_hosting_network(
-            asn if isinstance(asn, int) else None,
-            org if isinstance(org, str) else None,
-        ):
-            return "HOSTING"
     codes = blocked_country_codes()
     if not codes:
         return None

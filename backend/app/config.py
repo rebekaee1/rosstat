@@ -54,8 +54,9 @@ class Settings(BaseSettings):
     # HMAC(IP-префикс, день) в cookie fe_bind. HTML и API с кукой чужого /24 → 403.
     scrape_bind_enabled: bool = True
     scrape_bind_secret: str = ""
-    # Бан хостинговых ASN (не стран). Пустая ASN-база = fail-open.
-    scrape_block_hosting: bool = True
+    # Раньше 403 на Hetzner/OVH/… — резало людей на VPN. Флаг оставлен,
+    # should_block его больше не применяет.
+    scrape_block_hosting: bool = False
     # HTML всегда отдаём. Флаг режет только API без fe_bind.
     scrape_challenge_enabled: bool = True
     scrape_challenge_min_cores: int = 48
