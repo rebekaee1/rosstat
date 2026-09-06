@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-06
 
-**Файлов:** 952  ·  **Строк:** 262 811  ·  **Токенов (≈):** 2 664 002
+**Файлов:** 952  ·  **Строк:** 262 912  ·  **Токенов (≈):** 2 665 003
 
 ## По верхним папкам
 
@@ -12,10 +12,10 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 2 060 | 51 698 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 519 | 162 481 | 1 566 241 |
+| `backend` | 519 | 162 568 | 1 567 065 |
 | `clickhouse` | 2 | 36 | 445 |
-| `deploy` | 9 | 464 | 5 008 |
-| `docs` | 39 | 11 539 | 205 510 |
+| `deploy` | 9 | 466 | 5 036 |
+| `docs` | 39 | 11 551 | 205 659 |
 | `frontend` | 314 | 72 084 | 693 240 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 57 | 13 839 | 139 490 |
@@ -177,11 +177,11 @@
 | `backend/app/services/pulse_report.py` | 373 | 4 168 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 210 | 4 168 |
 | `frontend/src/lib/worldMocks.js` | 405 | 4 150 |
+| `docs/adr/0007-identity-user-accounts.md` | 189 | 4 132 |
 | `backend/tests/test_calendar_seed.py` | 442 | 4 079 |
 | `backend/app/services/world_adapters/estat_api.py` | 438 | 4 057 |
 | `docs/analytics_api_inventory/frontend_instrumentation.md` | 279 | 4 010 |
 | `backend/tests/test_admin_bi.py` | 400 | 3 997 |
-| `docs/adr/0007-identity-user-accounts.md` | 177 | 3 983 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 142 | 3 955 |
 | `docs/adr/0013-country-first-url-architecture.md` | 302 | 3 916 |
 | `frontend/src/pages/DemographicsPage.jsx` | 380 | 3 901 |
@@ -280,6 +280,7 @@
 | `backend/app/data/world_concept_russia.py` | 227 | 2 652 |
 | `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 185 | 2 651 |
 | `frontend/src/lib/track.js` | 282 | 2 643 |
+| `backend/tests/test_auth_oauth.py` | 245 | 2 634 |
 | `scripts/regional/fetch_emiss_fuel.py` | 279 | 2 615 |
 | `backend/tests/test_view_model_families.py` | 258 | 2 611 |
 | `frontend/src/lib/categories.js` | 276 | 2 599 |
@@ -289,6 +290,7 @@
 | `backend/app/services/seo_region_compare.py` | 266 | 2 548 |
 | `frontend/src/lib/compareRepresentation.js` | 237 | 2 530 |
 | `backend/scripts/apply-eurostat-listing-decisions.py` | 298 | 2 526 |
+| `backend/app/api/oauth.py` | 266 | 2 524 |
 | `scripts/regional/unit_normalize.py` | 290 | 2 504 |
 | `frontend/src/components/GenericIndicatorView.jsx` | 262 | 2 503 |
 | `frontend/src/lib/consentAdsGate.component.test.jsx` | 274 | 2 499 |
@@ -318,7 +320,6 @@
 | `backend/app/data/world_national_core/us.yaml` | 219 | 2 225 |
 | `backend/app/tasks/ticker_worker.py` | 241 | 2 208 |
 | `frontend/src/lib/compareRepresentation.test.js` | 206 | 2 205 |
-| `backend/app/api/oauth.py` | 233 | 2 202 |
 | `backend/app/services/calendar_sources/enrichment.py` | 265 | 2 200 |
 | `frontend/src/lib/api.js` | 220 | 2 184 |
 | `backend/app/services/analytics_alerts.py` | 208 | 2 179 |
@@ -329,7 +330,6 @@
 | `frontend/src/pages/Terms.jsx` | 172 | 2 140 |
 | `backend/tests/test_indicator_year_landing.py` | 247 | 2 138 |
 | `backend/app/data/world_national_core/br.yaml` | 211 | 2 132 |
-| `backend/tests/test_auth_oauth.py` | 191 | 2 132 |
 | `backend/app/services/rosstat_ind_parser.py` | 282 | 2 111 |
 | `backend/app/services/br_pop_adapter.py` | 233 | 2 091 |
 | `scripts/metrika-baseline-snapshot.py` | 218 | 2 089 |
@@ -488,6 +488,7 @@
 | `frontend/src/components/TelemetryCard.jsx` | 116 | 1 200 |
 | `frontend/src/lib/sitePaths.js` | 184 | 1 200 |
 | `frontend/src/pages/RegionRatingPage.component.test.jsx` | 140 | 1 196 |
+| `deploy/approved-shas.txt` | 74 | 1 195 |
 | `frontend/src/pages/Register.jsx` | 103 | 1 195 |
 | `docs/research/_fpsr_raw/build_excel.py` | 173 | 1 186 |
 | `frontend/src/components/calendar/CalendarHero.jsx` | 128 | 1 186 |
@@ -500,7 +501,6 @@
 | `backend/app/services/bot_score.py` | 114 | 1 174 |
 | `backend/app/data/eurostat_deep_expand.py` | 153 | 1 168 |
 | `backend/tests/test_yandex_partner_stats.py` | 158 | 1 168 |
-| `deploy/approved-shas.txt` | 72 | 1 167 |
 | `backend/tests/test_region_units.py` | 137 | 1 157 |
 | `scripts/regional/emiss_dimnames.json` | 97 | 1 157 |
 | `backend/alembic/versions/8524e35ba1ee_init_schema.py` | 98 | 1 156 |

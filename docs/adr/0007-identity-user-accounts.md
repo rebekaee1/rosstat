@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-06-19
-- **Last verified:** 2026-09-02 (прод: Яндекс ID живой; VK ID кабинет принимает только `/api/auth/vk/callback` без `/v1`).
+- **Last verified:** 2026-09-06 (VK ID с `ru.`: ошибка базового домена; старт скачет на apex).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 - **Контекст:** звонок-стратегия + грилл 2026-06-19. Личный кабинет как фундамент идентичности (lead-gen), от которого позже зависят монетизация, рассылки, download-gate.
 
