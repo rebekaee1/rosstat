@@ -1272,6 +1272,7 @@ class ScrapeGuardMiddleware(BaseHTTPMiddleware):
     """ASN/гео + JS-ворота + bind-cookie."""
 
     async def dispatch(self, request: Request, call_next):
+        from app.services.attribution_query import incoming_query
         from app.services.scrape_guard import (
             CHALLENGE_HTML,
             attach_bind_cookie,
@@ -1299,6 +1300,8 @@ class ScrapeGuardMiddleware(BaseHTTPMiddleware):
             ua=ua,
             path=path,
             cookie=request.cookies.get("fe_bind"),
+            query=incoming_query(request),
+            referer=request.headers.get("referer"),
         )
         if decision.block:
             return Response(

@@ -22,7 +22,9 @@
 - гидра 1 IP = 1 хит: бан по IP и «второй запрос» бесполезны. HTML без
   ``fe_bind`` — заглушка, кука после JS (ядра / WebGL / webdriver).
   Поисковики по UA сразу получают SSR. Ферма 2026-09-04 светит 64–192
-  ядра — живой ноутбук так не врёт.
+  ядра — живой ноутбук так не врёт;
+- клик из поиска/рекламы (``ysclid`` / ``yclid`` / ``gclid`` или
+  referrer поисковика) ворота не видит: заглушка с выдачи теряла людей.
 """
 from __future__ import annotations
 
@@ -247,6 +249,26 @@ def is_challenge_exempt_path(path: str) -> bool:
     return any(path.startswith(p) for p in _CHALLENGE_EXEMPT_PREFIXES)
 
 
+_CLICK_ID_MIN_LEN = 8
+
+
+def is_trusted_acquisition(query: str = "", referer: str | None = None) -> bool:
+    """Клик из выдачи или Директа — сразу страница, без тёмной заглушки."""
+    from app.services.attribution_query import click_ids_from_url
+    from app.services.traffic_channel import referrer_host, search_engine_name
+
+    ids = click_ids_from_url(f"http://local/?{query}") if query else {}
+    ids.update(click_ids_from_url(referer))
+    for key in ("ysclid", "yclid", "gclid"):
+        if len((ids.get(key) or "").strip()) >= _CLICK_ID_MIN_LEN:
+            return True
+    if search_engine_name(referrer_host(referer)):
+        return True
+    if search_engine_name(referrer_host(ids.get("utm_referrer"))):
+        return True
+    return False
+
+
 def _ua_family(ua: str | None) -> str | None:
     text = ua or ""
     if re.search(r"Macintosh|Mac OS X|iPhone|iPad", text, re.I):
@@ -404,7 +426,13 @@ class BindDecision:
 
 
 def bind_decision(
-    *, ip: str, ua: str | None, path: str, cookie: str | None
+    *,
+    ip: str,
+    ua: str | None,
+    path: str,
+    cookie: str | None,
+    query: str = "",
+    referer: str | None = None,
 ) -> BindDecision:
     if not settings.scrape_bind_enabled:
         return BindDecision(block=False, set_cookie=False)
@@ -416,10 +444,13 @@ def bind_decision(
         return BindDecision(block=False, set_cookie=False)
     if ip_network_prefix(ip) is None:
         return BindDecision(block=False, set_cookie=False)
+    trusted = is_trusted_acquisition(query, referer)
     if not cookie:
         if settings.scrape_challenge_enabled and not is_challenge_exempt_path(path):
             if path.startswith("/api/"):
                 return BindDecision(block=True, set_cookie=False)
+            if trusted:
+                return BindDecision(block=False, set_cookie=True)
             return BindDecision(block=False, set_cookie=False, challenge=True)
         return BindDecision(block=False, set_cookie=True)
     if verify_token(cookie, ip):
@@ -430,6 +461,8 @@ def bind_decision(
     if settings.scrape_challenge_enabled and not is_challenge_exempt_path(path):
         if path.startswith("/api/"):
             return BindDecision(block=True, set_cookie=False)
+        if trusted:
+            return BindDecision(block=False, set_cookie=True)
         return BindDecision(block=False, set_cookie=False, challenge=True)
     return BindDecision(block=True, set_cookie=False)
 

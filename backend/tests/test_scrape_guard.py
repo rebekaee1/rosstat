@@ -197,6 +197,62 @@ def test_html_without_cookie_is_challenge(monkeypatch):
     assert d.set_cookie is False
 
 
+def test_ysclid_skips_challenge_and_sets_cookie(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    d = scrape_guard.bind_decision(
+        ip="8.8.8.10",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/russia/indicator/cpi",
+        cookie=None,
+        query="ysclid=123456789012345678",
+    )
+    assert d.challenge is False
+    assert d.block is False
+    assert d.set_cookie is True
+
+
+def test_short_ysclid_still_challenge(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    d = scrape_guard.bind_decision(
+        ip="8.8.8.10",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/russia/indicator/cpi",
+        cookie=None,
+        query="ysclid=1",
+    )
+    assert d.challenge is True
+
+
+def test_yandex_referer_skips_challenge(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    d = scrape_guard.bind_decision(
+        ip="8.8.8.10",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/russia/indicator/cpi",
+        cookie=None,
+        referer="https://yandex.ru/search/?text=cpi",
+    )
+    assert d.challenge is False
+    assert d.set_cookie is True
+
+
+def test_yclid_skips_challenge(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    d = scrape_guard.bind_decision(
+        ip="8.8.8.10",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/",
+        cookie=None,
+        query="yclid=98765432109876",
+    )
+    assert d.challenge is False
+    assert d.set_cookie is True
+
+
 def test_api_without_cookie_blocked_when_challenge_on(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
     monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
