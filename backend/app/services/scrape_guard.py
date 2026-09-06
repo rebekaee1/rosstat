@@ -9,7 +9,8 @@
 - поисковики и соцкраулеры по UA не режутся;
 - приватный/невалидный IP (тесты, localhost) — skip;
 - куки нет — HTML: сразу сайт + ``fe_bind``; API данных: 403;
-  маяк/тикер (``/analytics/*``, ``/ticker``) без куки не режем;
+  маяк/тикер (``/analytics/*``, ``/ticker``) и вход (``/api/v1/auth/*``,
+  ``/api/auth/*``) без куки не режем;
 - кука от другого префикса — API 403, HTML сайт и новая кука
   (смена соты/VPN не должна показывать заглушку);
 - пустой ``RUSTATS_SCRAPE_BLOCK_COUNTRIES`` выключает гео-слой;
@@ -125,6 +126,15 @@ _CHALLENGE_EXEMPT_PREFIXES = _SKIP_PREFIXES + (
 _TELEMETRY_PREFIXES = (
     "/api/v1/analytics/",
     "/api/v1/ticker",
+)
+
+# /login и /register — статический SPA (nginx try_files), FastAPI куку
+# не ставит. Старт/callback OAuth и POST /register без fe_bind давали
+# 403 «Forbidden» / форму «Аккаунт недоступен». Мобильный IP после
+# VK/Яндекса (другой /24) ломал callback тем же правилом.
+_AUTH_PREFIXES = (
+    "/api/v1/auth/",
+    "/api/auth/",
 )
 
 # Ферма 2026-09-04: 64–192 ядра. 16c/32t Ryzen репортит 32 — ниже порога.
@@ -243,6 +253,11 @@ def is_challenge_exempt_path(path: str) -> bool:
 def is_telemetry_path(path: str) -> bool:
     path = path or "/"
     return any(path.startswith(p) for p in _TELEMETRY_PREFIXES)
+
+
+def is_auth_path(path: str) -> bool:
+    path = path or "/"
+    return any(path.startswith(p) for p in _AUTH_PREFIXES)
 
 
 def _ua_family(ua: str | None) -> str | None:
@@ -414,7 +429,7 @@ def bind_decision(
         return BindDecision(block=False, set_cookie=False)
     if ip_network_prefix(ip) is None:
         return BindDecision(block=False, set_cookie=False)
-    if is_telemetry_path(path):
+    if is_telemetry_path(path) or is_auth_path(path):
         return BindDecision(block=False, set_cookie=not cookie or not verify_token(cookie, ip))
     html = not path.startswith("/api/")
     if not cookie:

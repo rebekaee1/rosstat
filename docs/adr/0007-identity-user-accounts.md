@@ -164,3 +164,14 @@ Callback URL`. Живой зарегистрированный URI — тот ж
 `https://forecasteconomy.com/api/auth/yandex/callback`; override
 `RUSTATS_OAUTH_YANDEX_REDIRECT_URI`. Cookie `fe_oauth` / сессия —
 `Domain=.forecasteconomy.com`. Кабинеты Яндекс/VK не трогать без явной команды.
+
+### 2026-09-06 — `fe_bind` не режет вход
+
+`/login` и `/register` отдаёт nginx как SPA (`try_files /index.html`), без
+FastAPI — `fe_bind` на этих URL не ставится. Старт OAuth, callback
+(`/api/auth/{vk,yandex}/callback`), `/auth/me` и POST `/register` шли как
+«API без куки» → 403 `Forbidden`. На форме это выглядело как «Аккаунт
+недоступен»; после VK на мобильном callback часто приходил с другого /24
+и снова 403. Живые кабинеты принимали `redirect_uri` (apex `/api/auth/…`).
+`bind_decision` пропускает `/api/v1/auth/` и `/api/auth/` так же, как
+телеметрию; ряды `/api/v1/indicators*` по-прежнему требуют куку.

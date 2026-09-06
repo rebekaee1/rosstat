@@ -15,14 +15,19 @@ export function AuthProvider({ children }) {
       try {
         return await fetchMe({ signal });
       } catch (e) {
-        if (e?.response?.status === 401) return null; // аноним — это не ошибка
+        const status = e?.response?.status;
+        // 401 — гость. 403 на /me — scrape-guard без fe_bind (SPA /login
+        // и /register куку не ставят), не «аккаунт недоступен».
+        if (status === 401 || status === 403) return null;
         throw e;
       }
     },
-    // 401 = аноним, не ретраим; транзиентные сбои (deploy, сеть) — до 2 ретраев,
+    // 401/403 = гость, не ретраим; транзиентные сбои (deploy, сеть) — до 2 ретраев,
     // иначе живая сессия на секунду недоступного бэка выглядела бы как разлогин.
-    retry: (failureCount, error) =>
-      error?.response?.status !== 401 && failureCount < 2,
+    retry: (failureCount, error) => {
+      const status = error?.response?.status;
+      return status !== 401 && status !== 403 && failureCount < 2;
+    },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

@@ -211,6 +211,42 @@ def test_telemetry_without_cookie_not_blocked(monkeypatch):
         assert d.set_cookie is True, path
 
 
+def test_auth_without_cookie_not_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    for path in (
+        "/api/v1/auth/me",
+        "/api/v1/auth/oauth/providers",
+        "/api/v1/auth/oauth/vk/start",
+        "/api/v1/auth/oauth/yandex/callback",
+        "/api/auth/vk/callback",
+        "/api/v1/auth/register",
+    ):
+        d = scrape_guard.bind_decision(
+            ip="8.8.8.10",
+            ua="Mozilla/5.0 Chrome/145",
+            path=path,
+            cookie=None,
+        )
+        assert d.block is False, path
+        assert d.set_cookie is True, path
+
+
+def test_auth_ip_mismatch_not_blocked(monkeypatch):
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
+    monkeypatch.setattr(scrape_guard.settings, "scrape_bind_secret", "test-secret")
+    token = scrape_guard.issue_token("8.8.8.10")
+    d = scrape_guard.bind_decision(
+        ip="1.1.1.1",
+        ua="Mozilla/5.0 Chrome/145",
+        path="/api/auth/vk/callback",
+        cookie=token,
+    )
+    assert d.block is False
+    assert d.set_cookie is True
+
+
 def test_telemetry_mismatch_not_blocked(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
     monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
