@@ -189,3 +189,57 @@ def test_oauth_start_cookie_uses_shared_apex_domain(oauth_client, monkeypatch):
     header = r.headers.get("set-cookie", "")
     assert "fe_oauth=" in header
     assert "Domain=.forecasteconomy.com" in header
+
+
+def _vk_start_settings(monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "oauth_vk_client_id", "54644188")
+    monkeypatch.setattr(
+        settings,
+        "oauth_vk_redirect_uri",
+        "https://forecasteconomy.com/api/auth/vk/callback",
+    )
+    monkeypatch.setattr(settings, "auth_public_base_url", "https://forecasteconomy.com")
+
+
+def test_vk_start_from_ru_hops_to_apex_before_vk(auth_client, monkeypatch):
+    """VK ID режет Referer ru. как чужой базовый домен — сначала скачок на apex."""
+    _vk_start_settings(monkeypatch)
+    r = auth_client.get(
+        "/api/v1/auth/oauth/vk/start",
+        params={"intent": "login", "next": "/register"},
+        headers={"X-Forwarded-Host": "ru.forecasteconomy.com"},
+        follow_redirects=False,
+    )
+    assert r.status_code == 302
+    loc = r.headers["location"]
+    assert loc.startswith("https://forecasteconomy.com/api/v1/auth/oauth/vk/start")
+    assert "next=%2Fregister" in loc or "next=/register" in loc
+    assert "id.vk.ru" not in loc
+
+
+def test_vk_start_from_apex_goes_to_vk(auth_client, monkeypatch):
+    _vk_start_settings(monkeypatch)
+    r = auth_client.get(
+        "/api/v1/auth/oauth/vk/start",
+        params={"intent": "login", "next": "/register"},
+        headers={"X-Forwarded-Host": "forecasteconomy.com"},
+        follow_redirects=False,
+    )
+    assert r.status_code == 302
+    loc = r.headers["location"]
+    assert loc.startswith("https://id.vk.ru/authorize")
+    assert "redirect_uri=https%3A%2F%2Fforecasteconomy.com%2Fapi%2Fauth%2Fvk%2Fcallback" in loc
+
+
+def test_vk_start_foreign_host_does_not_hop(auth_client, monkeypatch):
+    _vk_start_settings(monkeypatch)
+    r = auth_client.get(
+        "/api/v1/auth/oauth/vk/start",
+        headers={"X-Forwarded-Host": "evil.example"},
+        follow_redirects=False,
+    )
+    assert r.status_code == 302
+    assert "evil.example" not in r.headers["location"]
+    assert r.headers["location"].startswith("https://id.vk.ru/authorize")

@@ -6,6 +6,7 @@ Callback — чистый 302 без HTML/JS (требование VK ID).
 """
 import logging
 import secrets
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import RedirectResponse
@@ -72,6 +73,35 @@ def _redirect_uri(provider: str) -> str:
     return f"{base}/api/v1/auth/oauth/{provider}/callback"
 
 
+def _request_hostname(request: Request) -> str:
+    raw = request.headers.get("x-forwarded-host") or request.headers.get("host") or ""
+    return raw.split(",")[0].split(":")[0].strip().lower()
+
+
+def _vk_base_domain_hop(request: Request, provider: str) -> RedirectResponse | None:
+    """VK ID сверяет Referer с базовым доменом кабинета.
+
+    Callback кабинета — apex ``forecasteconomy.com``. Старт с ``ru.`` оставляет
+    Referer ``ru.forecasteconomy.com`` → экран «базовый домен не указан».
+    Скачок на тот же start на хосте callback (гео ``/api/`` не трогает)
+    меняет Referer до id.vk.ru. Чужой Host не редиректим.
+    """
+    if provider != "vk":
+        return None
+    public = urlparse(_redirect_uri("vk"))
+    want = (public.hostname or "").lower()
+    got = _request_hostname(request)
+    if not want or not got or got == want:
+        return None
+    apex = want.removeprefix("www.")
+    if got != f"www.{apex}" and not got.endswith(f".{apex}"):
+        return None
+    dest = f"{public.scheme}://{want}{request.url.path}"
+    if request.url.query:
+        dest = f"{dest}?{request.url.query}"
+    return RedirectResponse(dest, status_code=302)
+
+
 def _oauth_cookie_kwargs() -> dict:
     kw = {"httponly": True, "secure": settings.auth_cookie_secure, "samesite": "lax", "path": "/"}
     domain = effective_auth_cookie_domain()
@@ -94,6 +124,9 @@ async def oauth_providers():
 
 @router.get("/{provider}/start")
 async def oauth_start(provider: str, request: Request, intent: str = "login", next: str = "/account", newsletter: int = 0):
+    hop = _vk_base_domain_hop(request, provider)
+    if hop is not None:
+        return hop
     prov = get_provider(provider)
     if prov is None:
         return _fail("oauth_disabled")
