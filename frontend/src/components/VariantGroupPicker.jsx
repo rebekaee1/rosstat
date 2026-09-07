@@ -48,11 +48,7 @@ export default function VariantGroupPicker({
           }}
           className="mb-0"
         />
-      ) : (
-        <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary lg:hidden">
-          {groupLabel}
-        </p>
-      )}
+      ) : null}
 
       <div className={useMobileSelect ? 'hidden lg:block' : undefined}>
         <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
