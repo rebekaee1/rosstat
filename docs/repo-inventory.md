@@ -2,9 +2,9 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-09-06
+**Сгенерировано:** 2026-09-07
 
-**Файлов:** 952  ·  **Строк:** 262 912  ·  **Токенов (≈):** 2 665 003
+**Файлов:** 952  ·  **Строк:** 262 953  ·  **Токенов (≈):** 2 665 361
 
 ## По верхним папкам
 
@@ -12,10 +12,10 @@
 |-------|-------:|------:|------------:|
 | `(root)` | 8 | 2 060 | 51 698 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 519 | 162 568 | 1 567 065 |
+| `backend` | 519 | 162 610 | 1 567 443 |
 | `clickhouse` | 2 | 36 | 445 |
-| `deploy` | 9 | 466 | 5 036 |
-| `docs` | 39 | 11 551 | 205 659 |
+| `deploy` | 9 | 468 | 5 063 |
+| `docs` | 39 | 11 548 | 205 612 |
 | `frontend` | 314 | 72 084 | 693 240 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 57 | 13 839 | 139 490 |
@@ -177,7 +177,7 @@
 | `backend/app/services/pulse_report.py` | 373 | 4 168 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 210 | 4 168 |
 | `frontend/src/lib/worldMocks.js` | 405 | 4 150 |
-| `docs/adr/0007-identity-user-accounts.md` | 189 | 4 132 |
+| `docs/adr/0007-identity-user-accounts.md` | 186 | 4 085 |
 | `backend/tests/test_calendar_seed.py` | 442 | 4 079 |
 | `backend/app/services/world_adapters/estat_api.py` | 438 | 4 057 |
 | `docs/analytics_api_inventory/frontend_instrumentation.md` | 279 | 4 010 |
@@ -250,6 +250,7 @@
 | `frontend/src/components/Navbar.jsx` | 307 | 2 913 |
 | `frontend/src/lib/worldViewModes.test.js` | 308 | 2 900 |
 | `backend/app/services/rosstat_gdp_parser.py` | 319 | 2 859 |
+| `backend/app/api/oauth.py` | 304 | 2 847 |
 | `backend/app/data/legacy_redirects.py` | 310 | 2 837 |
 | `frontend/src/pages/Account.jsx` | 267 | 2 830 |
 | `backend/tests/test_analytics_api.py` | 303 | 2 828 |
@@ -273,6 +274,7 @@
 | `backend/scripts/audit-world-titles.py` | 291 | 2 699 |
 | `scripts/audit-world-titles.py` | 291 | 2 698 |
 | `backend/app/services/base_parser.py` | 270 | 2 693 |
+| `backend/tests/test_auth_oauth.py` | 249 | 2 689 |
 | `backend/tests/test_og_fit.py` | 296 | 2 686 |
 | `docs/adr/0011-world-eurostat-data-plane.md` | 192 | 2 670 |
 | `backend/app/services/indexnow.py` | 286 | 2 664 |
@@ -280,7 +282,6 @@
 | `backend/app/data/world_concept_russia.py` | 227 | 2 652 |
 | `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 185 | 2 651 |
 | `frontend/src/lib/track.js` | 282 | 2 643 |
-| `backend/tests/test_auth_oauth.py` | 245 | 2 634 |
 | `scripts/regional/fetch_emiss_fuel.py` | 279 | 2 615 |
 | `backend/tests/test_view_model_families.py` | 258 | 2 611 |
 | `frontend/src/lib/categories.js` | 276 | 2 599 |
@@ -290,7 +291,6 @@
 | `backend/app/services/seo_region_compare.py` | 266 | 2 548 |
 | `frontend/src/lib/compareRepresentation.js` | 237 | 2 530 |
 | `backend/scripts/apply-eurostat-listing-decisions.py` | 298 | 2 526 |
-| `backend/app/api/oauth.py` | 266 | 2 524 |
 | `scripts/regional/unit_normalize.py` | 290 | 2 504 |
 | `frontend/src/components/GenericIndicatorView.jsx` | 262 | 2 503 |
 | `frontend/src/lib/consentAdsGate.component.test.jsx` | 274 | 2 499 |
@@ -483,12 +483,12 @@
 | `frontend/src/components/LocaleSwitcher.jsx` | 148 | 1 240 |
 | `frontend/vite.config.js` | 134 | 1 235 |
 | `scripts/audit-compare-representations.py` | 142 | 1 226 |
+| `deploy/approved-shas.txt` | 76 | 1 222 |
 | `docs/adr/0005-official-calendar-source-bound.md` | 62 | 1 220 |
 | `backend/app/services/action_policy.py` | 146 | 1 217 |
 | `frontend/src/components/TelemetryCard.jsx` | 116 | 1 200 |
 | `frontend/src/lib/sitePaths.js` | 184 | 1 200 |
 | `frontend/src/pages/RegionRatingPage.component.test.jsx` | 140 | 1 196 |
-| `deploy/approved-shas.txt` | 74 | 1 195 |
 | `frontend/src/pages/Register.jsx` | 103 | 1 195 |
 | `docs/research/_fpsr_raw/build_excel.py` | 173 | 1 186 |
 | `frontend/src/components/calendar/CalendarHero.jsx` | 128 | 1 186 |
