@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-06-19
-- **Last verified:** 2026-09-07 (VK с `ru.`: return-locale + fe_oauth до apex-bounce).
+- **Last verified:** 2026-09-07 (VK scope `email phone`; return-locale + fe_oauth до apex-bounce).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 - **Контекст:** звонок-стратегия + грилл 2026-06-19. Личный кабинет как фундамент идентичности (lead-gen), от которого позже зависят монетизация, рассылки, download-gate.
 
@@ -78,7 +78,7 @@ Double-submit: cookie `XSRF-TOKEN` (не httpOnly, читается JS) + заг
 ### 2026-06-19 — Phase 2 (UX, гейт скачиваний, телефоны, аналитика-бот)
 
 - **Download-gate (домен Export).** Генерация Excel/CSV перенесена с клиента на backend (`app/api/export.py`, `POST /export/table`): убирает ~430 КБ `xlsx` из бандла и даёт жёсткий конверсионный гейт. Гость — `download_anon_limit` (по умолчанию 2) выгрузок на «сессию скачиваний» (opaque cookie `fe_dl` + счётчик `fe:dl:{id}` в Redis, TTL `download_anon_window_seconds`); авторизованный (валидная сессия) — безлимит, счётчик не трогаем. Это не security-граница (данные публичны через API), а UX-гейт. При превышении — 403 `{code: "download_limit"}`, фронт ловит и показывает модалку регистрации.
-- **Телефон в `OAuthIdentity.phone`** (миграция `20260619_oauth_phone`). Канал рассылки наряду с email. Яндекс — `default_phone.number` (только при scope `login:default_phone`), VK — `phone` (только при scope `phone`); scope конфигурируем (`oauth_*_scope`), по умолчанию без телефона, чтобы не падал authorize у приложений без разрешения. Email-регистрация телефон не собирает.
+- **Телефон в `OAuthIdentity.phone`** (миграция `20260619_oauth_phone`). Канал рассылки наряду с email. Яндекс — `default_phone.number` (только при scope `login:default_phone`), VK — `phone` (только при scope `phone`); scope конфигурируем (`oauth_*_scope`). Дефолт VK с 2026-09-07 — `email phone` (см. ниже). Email-регистрация телефон не собирает.
 - **Согласия.** Кроме `kind="pd"` (ПДн) при регистрации пишем опциональный `kind="newsletter"` (информационная рассылка email/телефон). Чекбокс рассылки в `Register.jsx` (предотмечен, добровольный, не блокирует регистрацию).
 - **`GET /api/v1/auth/oauth/providers`** — список включённых публичных провайдеров; фронт (`OAuthButtons.jsx`) скрывает несконфигурированные кнопки. Брендовые кнопки в цветах Яндекс (#FC3F1D) и VK (#0077FF).
 - **Redirect override.** `oauth_{yandex,vk}_redirect_uri` — полный override `redirect_uri`, если в кабинете провайдера зарегистрирован нестандартный путь/порт. Плюс compat-роутер `app-level /api/auth/{provider}/{start,callback}` (без `/v1`) для совпадения с такими кабинетами.
@@ -194,3 +194,12 @@ apex HTML-мосту, Chrome/Safari bounce-tracking снимал → `error=oaut
 на английском `/login`. Mint state + cookie на `ru.`-hop (user-gesture);
 apex reuse без повторного `Set-Cookie`. Early fail читает Redis `next` по
 `state` из query, чтобы даже при потере cookie увести на `ru./login`.
+
+### 2026-09-07 — VK scope `email phone`
+
+На проде у всех VK-входов в `oauth_identities` были только имя/аватар:
+`RUSTATS_OAUTH_VK_SCOPE=email`, а телефон не запрашивался. Дефолт провайдера
+и прод-env — `email phone` (официальный формат VK ID). Поля придут в
+`user_info`, только если в кабинете VK ID у приложения 54644188 включены
+доступы email/phone и пользователь их разрешил; иначе снова имя. Кабинет
+VK без явной команды владельца не трогаем.

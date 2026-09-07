@@ -337,3 +337,17 @@ def test_callback_oauth_state_redirects_to_ru_next_from_redis(oauth_client):
     )
     assert r.status_code == 302
     assert r.headers["location"] == "http://testserver/login?error=oauth_state"
+
+
+def test_vk_default_scope_requests_email_and_phone():
+    from urllib.parse import parse_qs, urlsplit
+
+    from app.services.oauth.vk import VkProvider
+
+    url = VkProvider("54644188").authorize_url(
+        state="s",
+        code_challenge="c",
+        redirect_uri="https://forecasteconomy.com/api/auth/vk/callback",
+    )
+    scope = parse_qs(urlsplit(url).query)["scope"][0]
+    assert set(scope.split()) == {"email", "phone"}

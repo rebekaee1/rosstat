@@ -225,7 +225,7 @@ class Settings(BaseSettings):
     oauth_vk_client_id: str = ""
     oauth_vk_client_secret: str = ""   # классический VK; для VK ID PKCE не требуется
     oauth_vk_service_key: str = ""      # сервисный ключ VK (server-to-server), опц.
-    oauth_vk_scope: str = ""            # пусто = дефолт провайдера (email)
+    oauth_vk_scope: str = ""            # пусто = дефолт провайдера (email phone)
     # Полный override redirect_uri (если в кабинете провайдера зарегистрирован
     # нестандартный путь/порт). Пусто = строим из auth_public_base_url.
     oauth_yandex_redirect_uri: str = ""

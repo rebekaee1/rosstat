@@ -15,8 +15,10 @@ from app.services.oauth.base import OAuthProvider, OAuthProfile
 _AUTHORIZE = "https://id.vk.ru/authorize"
 _TOKEN = "https://id.vk.ru/oauth2/auth"
 _USERINFO = "https://id.vk.ru/oauth2/user_info"
-# scope "phone" выдаёт телефон, только если приложение VK ID имеет разрешение.
-_DEFAULT_SCOPE = "email"
+# email + phone: в authorize как `scope=email phone`. Оба поля приходят в
+# user_info только если в кабинете VK ID у приложения включены эти доступы
+# и пользователь их разрешил; иначе остаёмся с именем/аватаром.
+_DEFAULT_SCOPE = "email phone"
 _TIMEOUT = httpx.Timeout(10.0)
 
 
