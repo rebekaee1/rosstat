@@ -51,10 +51,59 @@ async def _notify_login_safe(info: dict) -> None:
         logger.warning("notify_login failed", exc_info=True)
 
 
+def _allowed_return_host(host: str | None) -> bool:
+    """Same-site hosts only: apex / www / ru. / en. / localhost (tests)."""
+    from app.services.locale import apex_host
+
+    h = (host or "").strip().lower()
+    if not h:
+        return False
+    if h in {"localhost", "127.0.0.1", "testserver", "test"}:
+        return True
+    apex = apex_host()
+    return h == apex or h == f"www.{apex}" or h.endswith(f".{apex}")
+
+
 def _safe_next(value: str | None) -> str:
-    if not value or not value.startswith("/") or value.startswith("//"):
+    """Post-login redirect: relative path or absolute same-site URL.
+
+    OAuth callback живёт на apex (кабинет провайдера), а вход часто
+    стартует с ``ru.``. Относительный ``/account`` после callback оставляет
+    пользователя на английском apex — фронт передаёт абсолютный next
+    с хоста старта; здесь принимаем только same-site.
+    """
+    if not value:
         return "/account"
-    return value
+    value = value.strip()
+    if value.startswith("/") and not value.startswith("//"):
+        return value
+    parsed = urlparse(value)
+    if parsed.scheme not in ("http", "https") or not _allowed_return_host(parsed.hostname):
+        return "/account"
+    path = parsed.path or "/account"
+    if not path.startswith("/") or path.startswith("//"):
+        path = "/account"
+    netloc = parsed.hostname or ""
+    if parsed.port and parsed.port not in (80, 443):
+        netloc = f"{netloc}:{parsed.port}"
+    query = f"?{parsed.query}" if parsed.query else ""
+    fragment = f"#{parsed.fragment}" if parsed.fragment else ""
+    return f"{parsed.scheme}://{netloc}{path}{query}{fragment}"
+
+
+def _path_on_next_origin(safe_next: str, path: str) -> str:
+    """``/login`` / ``/account`` на том же origin, что и абсолютный next."""
+    if not path.startswith("/") or path.startswith("//"):
+        path = "/login"
+    parsed = urlparse(safe_next)
+    if parsed.scheme in ("http", "https") and parsed.netloc:
+        return f"{parsed.scheme}://{parsed.netloc}{path}"
+    return path
+
+
+def _redirect_with_error(to: str, error: str) -> str:
+    sep = "&" if "?" in to else "?"
+    return f"{to}{sep}error={error}"
 
 
 _REDIRECT_OVERRIDES = {
@@ -146,7 +195,7 @@ def _oauth_cookie_kwargs() -> dict:
 
 
 def _fail(error: str, *, to: str = "/login") -> RedirectResponse:
-    resp = RedirectResponse(f"{to}?error={error}", status_code=302)
+    resp = RedirectResponse(_redirect_with_error(to, error), status_code=302)
     resp.delete_cookie(OAUTH_COOKIE, path="/", domain=effective_auth_cookie_domain() or None)
     return resp
 
@@ -214,6 +263,7 @@ async def fake_authorize(request: Request, state: str, redirect_uri: str):
 @router.get("/{provider}/callback")
 async def oauth_callback(provider: str, request: Request, db: AsyncSession = Depends(get_db)):
     qp = request.query_params
+    # next из cookie-state ещё не прочитан — fail без locale-hop на apex /login.
     if qp.get("error"):
         return _fail("oauth_denied")
 
@@ -227,18 +277,20 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
     if tx is None or tx.get("provider") != provider:
         return _fail("oauth_state")
 
-    prov = get_provider(provider)
-    if prov is None:
-        return _fail("oauth_disabled")
-
     intent = tx.get("intent", "login")
     safe_next = _safe_next(tx.get("next"))
+    fail_login = _path_on_next_origin(safe_next, "/login")
+    fail_account = _path_on_next_origin(safe_next, "/account")
+
+    prov = get_provider(provider)
+    if prov is None:
+        return _fail("oauth_disabled", to=fail_login)
 
     current_user = None
     if intent == "link":
         current_user = await get_optional_user(request, db)
         if current_user is None:
-            return _fail("oauth_state")
+            return _fail("oauth_state", to=fail_login)
 
     try:
         tokens = await prov.exchange_code(
@@ -249,16 +301,16 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
         profile = await prov.fetch_profile(tokens)
     except Exception:
         logger.exception("OAuth exchange/userinfo failed for provider=%s", provider)
-        return _fail("oauth_failed")
+        return _fail("oauth_failed", to=fail_login)
 
     try:
         user, created = await resolve_oauth(db, profile, intent, current_user)
     except IdentityConflict:
         await db.rollback()
-        return _fail("link_conflict", to="/account")
+        return _fail("link_conflict", to=fail_account)
     except LinkRequiresAuth:
         await db.rollback()
-        return _fail("oauth_state")
+        return _fail("oauth_state", to=fail_login)
 
     newsletter = bool(tx.get("newsletter"))
     if created and intent == "login":

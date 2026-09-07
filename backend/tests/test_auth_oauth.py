@@ -247,3 +247,26 @@ def test_vk_start_foreign_host_does_not_hop(auth_client, monkeypatch):
     assert r.status_code == 302
     assert "evil.example" not in r.headers["location"]
     assert r.headers["location"].startswith("https://id.vk.ru/authorize")
+
+
+def test_safe_next_allows_absolute_ru_account(monkeypatch):
+    from app.api.oauth import _safe_next
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
+    assert _safe_next("https://ru.forecasteconomy.com/account") == (
+        "https://ru.forecasteconomy.com/account"
+    )
+    assert _safe_next("https://ru.forecasteconomy.com/account#feedback") == (
+        "https://ru.forecasteconomy.com/account#feedback"
+    )
+    assert _safe_next("/account") == "/account"
+    assert _safe_next("https://evil.example/account") == "/account"
+    assert _safe_next("//evil.example/account") == "/account"
+
+
+def test_fake_login_returns_to_absolute_ru_account(oauth_client):
+    """Callback на том же testserver — Location остаётся абсолютным same-site."""
+    next_url = "http://testserver/account"
+    r = fake_login(oauth_client, sub="ru-next", email="runext@example.com", next=next_url)
+    assert r.headers["location"] == next_url

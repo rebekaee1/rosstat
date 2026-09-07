@@ -172,10 +172,28 @@ export const updateProfile = (displayName) =>
 export const fetchDownloadQuota = ({ signal } = {}) =>
   api.get('/export/quota', { signal }).then((r) => r.data);
 
+/**
+ * Post-OAuth return URL. Callback живёт на apex, поэтому относительный
+ * `/account` оставлял бы пользователя на EN-хосте после входа с ``ru.``.
+ * Передаём абсолютный same-origin next с хоста старта.
+ */
+export function absoluteAuthNext(next = '/account') {
+  let path = typeof next === 'string' ? next.trim() : '/account';
+  if (!path || path.startsWith('//') || (path.startsWith('/') === false && !/^https?:\/\//i.test(path))) {
+    path = '/account';
+  }
+  if (/^https?:\/\//i.test(path)) return path;
+  if (!path.startsWith('/') || path.startsWith('//')) path = '/account';
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return `${String(window.location.origin).replace(/\/$/, '')}${path}`;
+  }
+  return path;
+}
+
 // OAuth — полностраничный редирект на backend start-эндпоинт.
 // newsletter=1 фиксирует согласие на рассылку (из всплывающего окна перед входом).
 export const oauthStartUrl = (provider, { intent = 'login', next = '/account', newsletter = false } = {}) => {
-  const qs = new URLSearchParams({ intent, next });
+  const qs = new URLSearchParams({ intent, next: absoluteAuthNext(next) });
   if (newsletter) qs.set('newsletter', '1');
   return `/api/v1/auth/oauth/${provider}/start?${qs.toString()}`;
 };
