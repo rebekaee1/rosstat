@@ -217,6 +217,8 @@ def test_vk_start_from_ru_hops_to_apex_before_vk(auth_client, monkeypatch):
     assert loc.startswith("https://forecasteconomy.com/api/v1/auth/oauth/vk/start")
     assert "next=%2Fregister" in loc or "next=/register" in loc
     assert "id.vk.ru" not in loc
+    # fe_oauth ставится на ru-hop (user-gesture), не только на apex bounce-HTML.
+    assert "fe_oauth=" in r.headers.get("set-cookie", "")
 
 
 def test_vk_start_from_apex_serves_html_bridge(auth_client, monkeypatch):
@@ -235,6 +237,49 @@ def test_vk_start_from_apex_serves_html_bridge(auth_client, monkeypatch):
     assert "https://id.vk.ru/authorize" in body
     assert "redirect_uri=https%3A%2F%2Fforecasteconomy.com%2Fapi%2Fauth%2Fvk%2Fcallback" in body
     assert "fe_oauth=" in r.headers.get("set-cookie", "")
+
+
+def test_vk_apex_reuses_ru_minted_state_without_new_cookie(auth_client, monkeypatch):
+    """После hop cookie уже есть: apex-мост reuse state и не пишет Set-Cookie снова."""
+    _vk_start_settings(monkeypatch)
+    monkeypatch.setattr(
+        __import__("app.config", fromlist=["settings"]).settings,
+        "auth_cookie_domain",
+        ".forecasteconomy.com",
+    )
+    hop = auth_client.get(
+        "/api/v1/auth/oauth/vk/start",
+        params={
+            "intent": "login",
+            "next": "https://ru.forecasteconomy.com/account",
+            "newsletter": "1",
+        },
+        headers={"X-Forwarded-Host": "ru.forecasteconomy.com"},
+        follow_redirects=False,
+    )
+    assert hop.status_code == 302
+    cookie_header = hop.headers.get("set-cookie", "")
+    assert "fe_oauth=" in cookie_header
+    state = cookie_header.split("fe_oauth=", 1)[1].split(";", 1)[0]
+
+    bridge = auth_client.get(
+        "/api/v1/auth/oauth/vk/start",
+        params={
+            "intent": "login",
+            "next": "https://ru.forecasteconomy.com/account",
+            "newsletter": "1",
+        },
+        headers={
+            "X-Forwarded-Host": "forecasteconomy.com",
+            "Cookie": f"fe_oauth={state}",
+        },
+        follow_redirects=False,
+    )
+    assert bridge.status_code == 200
+    assert f"state={state}" in bridge.text
+    # Reuse-путь не должен ставить новую fe_oauth (bounce-tracking).
+    set_cookie = bridge.headers.get("set-cookie", "")
+    assert "fe_oauth=" not in set_cookie
 
 
 def test_vk_start_foreign_host_does_not_hop(auth_client, monkeypatch):
@@ -270,3 +315,25 @@ def test_fake_login_returns_to_absolute_ru_account(oauth_client):
     next_url = "http://testserver/account"
     r = fake_login(oauth_client, sub="ru-next", email="runext@example.com", next=next_url)
     assert r.headers["location"] == next_url
+
+
+def test_callback_oauth_state_redirects_to_ru_next_from_redis(oauth_client):
+    """Потеря fe_oauth: error=oauth_state, но Location на origin из Redis next."""
+    next_url = "http://testserver/account"
+    r1 = oauth_client.get(
+        "/api/v1/auth/oauth/fake/start",
+        params={"intent": "login", "next": next_url},
+        follow_redirects=False,
+    )
+    assert r1.status_code == 302
+    authorize = urlsplit(r1.headers["location"])
+    state = parse_qs(authorize.query)["state"][0]
+    # Callback без cookie — как после bounce-tracking.
+    oauth_client.cookies.clear()
+    r = oauth_client.get(
+        "/api/v1/auth/oauth/fake/callback",
+        params={"code": "x", "state": state},
+        follow_redirects=False,
+    )
+    assert r.status_code == 302
+    assert r.headers["location"] == "http://testserver/login?error=oauth_state"

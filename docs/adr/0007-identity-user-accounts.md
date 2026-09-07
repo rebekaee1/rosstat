@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-06-19
-- **Last verified:** 2026-09-06 (VK ID с `ru.`: ошибка базового домена; старт скачет на apex).
+- **Last verified:** 2026-09-07 (VK с `ru.`: return-locale + fe_oauth до apex-bounce).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 - **Контекст:** звонок-стратегия + грилл 2026-06-19. Личный кабинет как фундамент идентичности (lead-gen), от которого позже зависят монетизация, рассылки, download-gate.
 
@@ -184,3 +184,13 @@ FastAPI — `fe_bind` на этих URL не ставится. Старт OAuth,
 302 — VK `invalid_origin`. Кабинет не трогаем. Старт с `ru.` → 302 на apex
 → HTML-мост (`location.replace` + `Referrer-Policy: origin`) → `id.vk.ru`
 уже с Referer apex.
+
+### 2026-09-07 — OAuth return-locale + `fe_oauth` до apex-bounce
+
+Callback провайдера на apex: относительный `next=/account` оставлял EN-кабинет.
+Фронт передаёт абсолютный same-site `next` с хоста старта (`absoluteAuthNext`);
+`_safe_next` принимает его. Отдельно: `fe_oauth`, выставленный только на
+apex HTML-мосту, Chrome/Safari bounce-tracking снимал → `error=oauth_state`
+на английском `/login`. Mint state + cookie на `ru.`-hop (user-gesture);
+apex reuse без повторного `Set-Cookie`. Early fail читает Redis `next` по
+`state` из query, чтобы даже при потере cookie увести на `ru./login`.

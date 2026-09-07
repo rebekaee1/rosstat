@@ -18,12 +18,16 @@ class OAuthProfile:
     phone: str | None = None  # default_phone (Яндекс) / phone (VK), если выдан scope'ом
 
 
+def pkce_challenge_s256(verifier: str) -> str:
+    """S256 code_challenge от уже сохранённого code_verifier."""
+    digest = hashlib.sha256(verifier.encode("ascii")).digest()
+    return base64.urlsafe_b64encode(digest).decode("ascii").rstrip("=")
+
+
 def generate_pkce() -> tuple[str, str]:
     """Вернуть (code_verifier, code_challenge S256)."""
     verifier = secrets.token_urlsafe(64)[:128]
-    digest = hashlib.sha256(verifier.encode("ascii")).digest()
-    challenge = base64.urlsafe_b64encode(digest).decode("ascii").rstrip("=")
-    return verifier, challenge
+    return verifier, pkce_challenge_s256(verifier)
 
 
 class OAuthProvider(ABC):

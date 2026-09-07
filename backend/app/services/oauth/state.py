@@ -16,6 +16,23 @@ async def store_state(state: str, payload: dict) -> None:
     await r.set(_PREFIX + state, json.dumps(payload), ex=settings.auth_oauth_state_ttl_seconds)
 
 
+def _decode_payload(raw: str | bytes | None) -> dict | None:
+    if raw is None:
+        return None
+    try:
+        return json.loads(raw)
+    except (ValueError, TypeError):
+        return None
+
+
+async def peek_state(state: str) -> dict | None:
+    """Прочитать транзит без удаления (reuse на apex-bridge / fail-redirect)."""
+    if not state:
+        return None
+    r = await get_state_redis()
+    return _decode_payload(await r.get(_PREFIX + state))
+
+
 async def consume_state(state: str) -> dict | None:
     if not state:
         return None
@@ -23,9 +40,4 @@ async def consume_state(state: str) -> dict | None:
     key = _PREFIX + state
     raw = await r.get(key)
     await r.delete(key)
-    if raw is None:
-        return None
-    try:
-        return json.loads(raw)
-    except (ValueError, TypeError):
-        return None
+    return _decode_payload(raw)

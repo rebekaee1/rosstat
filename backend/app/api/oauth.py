@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.database import get_db
 from app.services import session as session_svc
-from app.services.oauth.base import generate_pkce
+from app.services.oauth.base import generate_pkce, pkce_challenge_s256
 from app.services.oauth.registry import get_provider, enabled_public_providers
 from app.services.oauth import state as oauth_state
 from app.services.oauth.fake import FakeProvider, encode_code
@@ -200,6 +200,48 @@ def _fail(error: str, *, to: str = "/login") -> RedirectResponse:
     return resp
 
 
+def _attach_oauth_cookie(resp, state: str) -> None:
+    resp.set_cookie(
+        OAUTH_COOKIE,
+        state,
+        max_age=settings.auth_oauth_state_ttl_seconds,
+        **_oauth_cookie_kwargs(),
+    )
+
+
+async def _mint_oauth_tx(
+    *,
+    provider: str,
+    intent: str,
+    safe_next: str,
+    newsletter: bool,
+    request: Request,
+) -> tuple[str, str]:
+    """Создать Redis-транзит + PKCE. Возвращает (state, code_challenge)."""
+    state = secrets.token_urlsafe(32)
+    verifier, challenge = generate_pkce()
+    payload = {
+        "provider": provider,
+        "code_verifier": verifier,
+        "intent": intent,
+        "next": safe_next,
+        "newsletter": bool(newsletter),
+    }
+    if intent == "link":
+        sess = await current_session(request)
+        payload["user_id"] = sess["user_id"] if sess else None
+    await oauth_state.store_state(state, payload)
+    return state, challenge
+
+
+async def _fail_login_from_state(state: str | None) -> str:
+    """Куда слать oauth_state/denied, если cookie уже потеряна, а state в query жив."""
+    tx = await oauth_state.peek_state(state or "")
+    if not tx:
+        return "/login"
+    return _path_on_next_origin(_safe_next(tx.get("next")), "/login")
+
+
 @router.get("/providers")
 async def oauth_providers():
     """Список включённых OAuth-провайдеров — фронт скрывает несконфигурированные."""
@@ -208,38 +250,85 @@ async def oauth_providers():
 
 @router.get("/{provider}/start")
 async def oauth_start(provider: str, request: Request, intent: str = "login", next: str = "/account", newsletter: int = 0):
-    hop = _vk_base_domain_hop(request, provider)
-    if hop is not None:
-        return hop
-    prov = get_provider(provider)
-    if prov is None:
-        return _fail("oauth_disabled")
     if intent not in ("login", "link"):
         intent = "login"
     safe_next = _safe_next(next)
+    prov = get_provider(provider)
+
+    # VK: mint + fe_oauth на хосте старта (ru.), затем hop на apex.
+    # Cookie только на apex HTML-мосту Chrome/Safari bounce-tracking снимает
+    # → callback без fe_oauth → error=oauth_state на английском /login.
+    hop = _vk_base_domain_hop(request, provider)
+    if hop is not None:
+        if prov is None:
+            return _fail("oauth_disabled")
+        if intent == "link":
+            sess = await current_session(request)
+            if not sess:
+                return _fail("oauth_disabled")
+        state, _challenge = await _mint_oauth_tx(
+            provider=provider,
+            intent=intent,
+            safe_next=safe_next,
+            newsletter=bool(newsletter),
+            request=request,
+        )
+        _attach_oauth_cookie(hop, state)
+        return hop
+
+    if prov is None:
+        return _fail("oauth_disabled")
 
     if intent == "link":
         sess = await current_session(request)
         if not sess:
             return _fail("oauth_disabled")  # связывание требует сессии
 
-    state = secrets.token_urlsafe(32)
-    verifier, challenge = generate_pkce()
-    payload = {
-        "provider": provider, "code_verifier": verifier, "intent": intent,
-        "next": safe_next, "newsletter": bool(newsletter),
-    }
-    if intent == "link":
-        sess = await current_session(request)
-        payload["user_id"] = sess["user_id"] if sess else None
-    await oauth_state.store_state(state, payload)
+    # Apex после hop: reuse state из cookie, мост БЕЗ нового Set-Cookie
+    # (повторная запись на bounce-документе снова попадает под ITP).
+    existing = request.cookies.get(OAUTH_COOKIE)
+    existing_tx = await oauth_state.peek_state(existing) if existing else None
+    if (
+        provider == "vk"
+        and existing
+        and existing_tx
+        and existing_tx.get("provider") == provider
+        and existing_tx.get("code_verifier")
+        and _request_hostname(request) == _vk_callback_hostname()
+    ):
+        if (
+            existing_tx.get("next") != safe_next
+            or bool(existing_tx.get("newsletter")) != bool(newsletter)
+            or existing_tx.get("intent") != intent
+        ):
+            existing_tx = {
+                **existing_tx,
+                "next": safe_next,
+                "newsletter": bool(newsletter),
+                "intent": intent,
+            }
+            await oauth_state.store_state(existing, existing_tx)
+        challenge = pkce_challenge_s256(existing_tx["code_verifier"])
+        url = prov.authorize_url(
+            state=existing,
+            code_challenge=challenge,
+            redirect_uri=_redirect_uri(provider),
+        )
+        return _vk_authorize_bridge(url)
 
+    state, challenge = await _mint_oauth_tx(
+        provider=provider,
+        intent=intent,
+        safe_next=safe_next,
+        newsletter=bool(newsletter),
+        request=request,
+    )
     url = prov.authorize_url(state=state, code_challenge=challenge, redirect_uri=_redirect_uri(provider))
     if provider == "vk" and _request_hostname(request) == _vk_callback_hostname():
         resp = _vk_authorize_bridge(url)
     else:
         resp = RedirectResponse(url, status_code=302)
-    resp.set_cookie(OAUTH_COOKIE, state, max_age=settings.auth_oauth_state_ttl_seconds, **_oauth_cookie_kwargs())
+    _attach_oauth_cookie(resp, state)
     return resp
 
 
@@ -263,19 +352,25 @@ async def fake_authorize(request: Request, state: str, redirect_uri: str):
 @router.get("/{provider}/callback")
 async def oauth_callback(provider: str, request: Request, db: AsyncSession = Depends(get_db)):
     qp = request.query_params
-    # next из cookie-state ещё не прочитан — fail без locale-hop на apex /login.
-    if qp.get("error"):
-        return _fail("oauth_denied")
-
     state = qp.get("state")
+    # next живёт в Redis по state: даже при потере fe_oauth уводим на ru./login,
+    # а не на английский apex (кабинет callback всегда на forecasteconomy.com).
+    if qp.get("error"):
+        return _fail("oauth_denied", to=await _fail_login_from_state(state))
+
     code = qp.get("code")
     cookie_state = request.cookies.get(OAUTH_COOKIE)
     if not state or not code or not cookie_state or cookie_state != state:
-        return _fail("oauth_state")
+        return _fail("oauth_state", to=await _fail_login_from_state(state))
 
     tx = await oauth_state.consume_state(state)
     if tx is None or tx.get("provider") != provider:
-        return _fail("oauth_state")
+        fail_to = (
+            _path_on_next_origin(_safe_next(tx.get("next")), "/login")
+            if tx
+            else "/login"
+        )
+        return _fail("oauth_state", to=fail_to)
 
     intent = tx.get("intent", "login")
     safe_next = _safe_next(tx.get("next"))
