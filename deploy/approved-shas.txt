@@ -80,3 +80,5 @@ a111ea75dc691a5638629ee6fb118abd65b06d36  # a111ea7 люди в Метрике +
 98ab7f09e340d964854103ccc0dd229a8ca79619  # 98ab7f0 OAuth bounce+return-locale + variant mobile, owner-approved 2026-09-07
 
 3d8b5c612b27ec71dd4353e8001341e30a9365c4  # 3d8b5c6 VK scope email phone, owner-approved 2026-09-07
+# 2026-09-10: owner requested research, fixes, GitHub push and production deployment.
+9ad2fbd1bea175486d5742661c3686c92f99a7d1
