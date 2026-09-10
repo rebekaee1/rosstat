@@ -85,3 +85,4 @@ a111ea75dc691a5638629ee6fb118abd65b06d36  # a111ea7 люди в Метрике +
 # 2026-09-10: live-acceptance corrections within the authorized production repair.
 0a6bc05b940ff62119b06d284b4357b4c225f827
 7b44c9505d981f3a8fc74473e9cfec7e9cf31430  # owner requested researched fixes and deploy 2026-09-10
+49d61c5f17a0b9901311863a1380c624b6bf6c37  # live acceptance follow-up; same owner-authorized repair release 2026-09-10
