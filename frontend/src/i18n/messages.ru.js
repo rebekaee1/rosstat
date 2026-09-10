@@ -1132,6 +1132,12 @@ export default {
   'download.downloadLabel': 'Скачать {label}',
   'download.chartPng': 'Скачать график картинкой (PNG)',
   'download.guestHistory': 'Гостям — последние {years}. Весь период истории — после входа',
+  'download.resume.retryOnPage': 'Вы вернулись к выбранному графику. Повторите на странице нажатие CSV или Excel: данные выгрузки не удалось сохранить на время входа.',
+  'download.resume.back': 'Вернуться к графику',
+  'download.resume.title': 'Продолжить выгрузку',
+  'download.resume.body': 'Вы вошли в аккаунт. Скачайте выбранные данные — период и режим сохранены.',
+  'download.resume.action': 'Скачать выбранный файл',
+  'download.resume.error': 'Не удалось скачать файл. Попробуйте ещё раз.',
   'download.limit.title': 'Доступно после регистрации',
   'download.limit.body':
     'Скачивание данных и графиков доступно зарегистрированным пользователям. '
@@ -1416,6 +1422,8 @@ export default {
   'calendar.hero.nextEvent': 'Ближайшее событие',
   'calendar.hero.msk': 'МСК',
   'calendar.event.fact': 'Факт',
+  'calendar.event.officialRule': 'по графику источника',
+  'calendar.event.awaitingConfirmation': 'публикация пока не подтверждена',
   'calendar.event.official': 'официально',
   'calendar.event.importance': '{level} важность',
   'calendar.event.importance.high': 'Высокая',

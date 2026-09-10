@@ -1,5 +1,6 @@
 import { trackFile, track, events } from './track';
 import { exportTable } from './api';
+import { rememberExport, clearPendingExport } from './authReturn';
 
 // Генерация файла перенесена на бэкенд (гейт лимита + минус ~430 КБ xlsx из
 // бандла). Здесь — только подготовка точек/подписи и сохранение ответа-blob.
@@ -56,8 +57,9 @@ function emitDownloaded(remaining) {
 }
 
 // Лимит гостевых скачиваний: глобальное событие подхватывает модалка регистрации.
-function handleLimit(err, indicatorCode) {
+function handleLimit(err, indicatorCode, payload) {
   if (err?.code === 'download_limit') {
+    rememberExport(payload);
     track(events.DOWNLOAD_LIMIT_HIT, { indicator: indicatorCode });
     window.dispatchEvent(new CustomEvent('fe:download-limit'));
     return true;
@@ -68,36 +70,51 @@ function handleLimit(err, indicatorCode) {
 export async function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
   const modeLabel = CPI_MODE_LABELS[mode] || mode || 'data';
   const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
-  try {
-    const { blob, remaining } = await exportTable({
+  const payload = {
       format: 'xlsx',
       filename,
       valueLabel: valueLabel(mode, meta),
       points: toPoints(chartData),
-    });
+      meta: { indicator_name: meta.name, unit: meta.unit, source: meta.source,
+        source_url: meta.source_url, frequency: meta.frequency, provenance: meta.provenance },
+  };
+  try {
+    const { blob, remaining } = await exportTable(payload);
     saveBlob(blob, filename);
     emitDownloaded(remaining);
     return true;
   } catch (err) {
-    if (handleLimit(err, indicatorCode)) return false;
+    if (handleLimit(err, indicatorCode, payload)) return false;
     throw err;
   }
 }
 
 export async function downloadCSV(chartData, mode, indicatorCode, range, meta = {}) {
   const filename = `${indicatorCode}_${mode || 'data'}_${range}.csv`;
-  try {
-    const { blob, remaining } = await exportTable({
+  const payload = {
       format: 'csv',
       filename,
       valueLabel: meta.name || 'Значение',
       points: toPoints(chartData),
-    });
+      meta: { indicator_name: meta.name, unit: meta.unit, source: meta.source,
+        source_url: meta.source_url, frequency: meta.frequency, provenance: meta.provenance },
+  };
+  try {
+    const { blob, remaining } = await exportTable(payload);
     saveBlob(blob, filename);
     emitDownloaded(remaining);
     return true;
   } catch (err) {
-    if (handleLimit(err, indicatorCode)) return false;
+    if (handleLimit(err, indicatorCode, payload)) return false;
     throw err;
   }
+}
+
+// Explicit user click after auth; replay the exact selected data, not a new default view.
+export async function resumeExport(payload) {
+  const { blob, remaining } = await exportTable(payload);
+  saveBlob(blob, payload.filename);
+  emitDownloaded(remaining);
+  clearPendingExport();
+  track(payload.format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { resumed_after_auth: true });
 }

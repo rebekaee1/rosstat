@@ -7,6 +7,7 @@ import { apiErrorMessage } from '../lib/apiErrorMessage';
 import OAuthButtons from '../components/OAuthButtons';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
+import { safeReturnTo, authLink } from '../lib/authReturn';
 
 export default function Login() {
   const t = useT();
@@ -14,6 +15,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
   const [params] = useSearchParams();
+  const next = safeReturnTo(params.get('next'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -34,7 +36,7 @@ export default function Login() {
       const user = await loginUser({ email, password });
       setUser(user);
       track(events.AUTH_LOGIN, { method: 'email' });
-      navigate('/account');
+      navigate(next, { replace: true });
     } catch (err) {
       setError(apiErrorMessage(err, t, 'auth.login.errorCredentials'));
     } finally {
@@ -48,7 +50,7 @@ export default function Login() {
       <h1 className="text-2xl font-display font-bold text-text-primary mb-1 text-center">{t('auth.login.title')}</h1>
       <p className="text-sm text-text-secondary mb-6 text-center">{t('auth.login.subtitle')}</p>
 
-      <OAuthButtons intent="login" dividerLabel={t('auth.oauth.divider')} />
+      <OAuthButtons next={next} intent="login" dividerLabel={t('auth.oauth.divider')} />
 
       <form onSubmit={submit} className="space-y-4">
         <div>
@@ -79,7 +81,7 @@ export default function Login() {
       </form>
 
       <div className="flex items-center justify-between mt-6 text-sm">
-        <Link to="/register" className="text-champagne hover:underline">{t('auth.login.createAccount')}</Link>
+        <Link to={authLink('/register', next)} className="text-champagne hover:underline">{t('auth.login.createAccount')}</Link>
         <span className="text-text-tertiary cursor-not-allowed" title={t('auth.login.forgotSoon')}>{t('auth.login.forgot')}</span>
       </div>
       </div>

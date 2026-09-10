@@ -245,3 +245,84 @@ def test_year_og_single_point_returns_png(year_landing_client):
     assert r.status_code == 200
     assert r.headers["content-type"].startswith("image/png")
     assert len(r.content) > 1000
+
+
+def test_year_landing_does_not_promise_a_forecast_or_invent_coverage(year_landing_client, auth_env):
+    """A historical daily series has only June/July observations and no forecast."""
+    import json
+    from app.services.locale import set_locale, reset_locale
+
+    async def render(locale):
+        token = set_locale(locale)
+        try:
+            async with auth_env['session_maker']() as db:
+                return await render_indicator_year_html('usd-index', 2024, db)
+        finally:
+            reset_locale(token)
+
+    for locale, heading, false_heading in (
+        ('ru', 'Полная история и график', 'График и прогноз'),
+        ('en', 'Full history and chart', 'Chart and forecast'),
+    ):
+        status, html = asyncio.run(render(locale))
+        assert status == 200
+        assert f'<h2>{heading}</h2>' in html
+        assert f'<h2>{false_heading}</h2>' not in html
+        datasets = [json.loads(raw) for raw in re.findall(
+            r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
+        dataset = next(d for d in datasets if d.get('@type') == 'Dataset')
+        assert dataset['temporalCoverage'] == '2024-06-01/2024-07-01'
+
+
+def test_old_year_links_keep_neighbouring_years(year_landing_client, auth_env):
+    from sqlalchemy import select
+
+    async def render():
+        async with auth_env['session_maker']() as db:
+            indicator = (await db.execute(select(Indicator).where(
+                Indicator.code == 'population'))).scalar_one()
+            for year in range(2000, 2016):
+                db.add(IndicatorData(indicator_id=indicator.id, date=date(year, 1, 1), value=140))
+            await db.commit()
+            return await render_indicator_year_html('population', 2005, db)
+
+    status, html = asyncio.run(render())
+    assert status == 200
+    other_years = html.split('<h2>Другие годы</h2>')[1].split('</section>')[0]
+    assert '/population/2004' in other_years
+    assert '/population/2006' in other_years
+    assert '/population/2025' not in other_years
+
+
+def test_derived_cpi_provenance_follows_rendered_series(year_landing_client, auth_env):
+    from app.services.seo_renderer import render_indicator_html
+    from app.services.locale import set_locale, reset_locale
+
+    async def render(locale):
+        token = set_locale(locale)
+        try:
+            async with auth_env['session_maker']() as db:
+                yoy = Indicator(code='cpi-yoy', name='Годовая инфляция', name_en='Annual inflation',
+                                frequency='monthly', unit='%', source='Росстат', category='Цены',
+                                is_active=True, is_listed=True)
+                db.add(yoy)
+                await db.flush()
+                for month, value in ((1, 5.5), (2, 6.0)):
+                    db.add(IndicatorData(indicator_id=yoy.id, date=date(2024, month, 1), value=value))
+                await db.flush()
+                derived = await render_indicator_html('cpi-yoy', db)
+                year = await render_indicator_year_html('cpi-yoy', 2024, db)
+                base = await render_indicator_html('cpi', db)
+                # Roll back this locale's seed to allow the second locale to use the same code.
+                return derived, year, base
+        finally:
+            reset_locale(token)
+
+    for locale, notice in (('ru', 'Расчёт Forecast Economy'), ('en', 'Calculated by Forecast Economy')):
+        derived, year, base = asyncio.run(render(locale))
+        for status, html in (derived, year):
+            assert status == 200
+            assert notice in html
+            assert 'class="seo-data-provenance"' in html
+        assert base[0] == 200
+        assert 'class="seo-data-provenance"' not in base[1]

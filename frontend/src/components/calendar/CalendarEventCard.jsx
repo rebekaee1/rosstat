@@ -182,7 +182,8 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
               {sourceLabel}
             </span>
             <ImportanceDots level={event.importance} />
-            <span className="text-[10px] text-text-tertiary">{t('calendar.event.official')}</span>
+            <span className="text-[10px] text-text-tertiary">{t(event.date_confidence === 'official_rule' ? 'calendar.event.officialRule' : 'calendar.event.official')}
+              {event.status === 'awaiting_confirmation' && `; ${t('calendar.event.awaitingConfirmation')}`}</span>
           </div>
           {event.scheduled_time && (
             <span className="text-sm font-mono text-text-secondary shrink-0">

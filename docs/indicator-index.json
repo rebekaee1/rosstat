@@ -93,12 +93,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 86,
+          "line": 87,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 344,
+          "line": 345,
           "kind": "other"
         },
         {
@@ -118,12 +118,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 478,
+          "line": 479,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4998,
+          "line": 4999,
           "kind": "seed"
         },
         {
@@ -168,7 +168,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 62,
+          "line": 83,
           "kind": "other"
         },
         {
@@ -610,12 +610,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3516,
+          "line": 3517,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3525,
+          "line": 3526,
           "kind": "seed"
         },
         {
@@ -875,12 +875,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3474,
+          "line": 3475,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3490,
+          "line": 3491,
           "kind": "seed"
         },
         {
@@ -930,7 +930,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1537,
+          "line": 1545,
           "kind": "other"
         },
         {
@@ -1192,7 +1192,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4340,
+          "line": 4341,
           "kind": "seed"
         },
         {
@@ -1980,7 +1980,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3863,
+          "line": 3864,
           "kind": "seed"
         },
         {
@@ -2627,12 +2627,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 63,
+          "line": 64,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 244,
+          "line": 245,
           "kind": "other"
         },
         {
@@ -2647,7 +2647,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1931,
+          "line": 1932,
           "kind": "seed"
         },
         {
@@ -2727,7 +2727,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 59,
+          "line": 80,
           "kind": "other"
         },
         {
@@ -3123,12 +3123,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 62,
+          "line": 63,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 238,
+          "line": 239,
           "kind": "other"
         },
         {
@@ -3138,17 +3138,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1957,
+          "line": 1958,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3292,
+          "line": 3293,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4998,
+          "line": 4999,
           "kind": "seed"
         },
         {
@@ -3173,7 +3173,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 59,
+          "line": 80,
           "kind": "other"
         },
         {
@@ -3510,12 +3510,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 61,
+          "line": 62,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 232,
+          "line": 233,
           "kind": "other"
         },
         {
@@ -3535,17 +3535,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1956,
+          "line": 1957,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3263,
+          "line": 3264,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4998,
+          "line": 4999,
           "kind": "seed"
         },
         {
@@ -3645,7 +3645,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 59,
+          "line": 80,
           "kind": "other"
         },
         {
@@ -4028,12 +4028,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 74,
+          "line": 75,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 321,
+          "line": 322,
           "kind": "other"
         },
         {
@@ -4043,12 +4043,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1830,
+          "line": 1831,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4999,
+          "line": 5000,
           "kind": "seed"
         },
         {
@@ -4468,7 +4468,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3646,
+          "line": 3647,
           "kind": "seed"
         },
         {
@@ -4695,7 +4695,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4244,
+          "line": 4245,
           "kind": "seed"
         },
         {
@@ -4780,12 +4780,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 66,
+          "line": 67,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 282,
+          "line": 283,
           "kind": "other"
         },
         {
@@ -4800,7 +4800,7 @@
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 129,
+          "line": 131,
           "kind": "other"
         },
         {
@@ -4810,7 +4810,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 211,
+          "line": 212,
           "kind": "seed"
         },
         {
@@ -4845,7 +4845,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 57,
+          "line": 78,
           "kind": "other"
         },
         {
@@ -4905,12 +4905,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1267,
+          "line": 1273,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1268,
+          "line": 1274,
           "kind": "other"
         },
         {
@@ -5442,7 +5442,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4528,
+          "line": 4529,
           "kind": "seed"
         },
         {
@@ -5803,12 +5803,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 58,
+          "line": 59,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 203,
+          "line": 204,
           "kind": "other"
         },
         {
@@ -5818,12 +5818,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3624,
+          "line": 3625,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5010,
+          "line": 5011,
           "kind": "seed"
         },
         {
@@ -6161,12 +6161,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 75,
+          "line": 76,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 324,
+          "line": 325,
           "kind": "other"
         },
         {
@@ -6186,12 +6186,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1791,
+          "line": 1792,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4999,
+          "line": 5000,
           "kind": "seed"
         },
         {
@@ -6649,7 +6649,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4374,
+          "line": 4375,
           "kind": "seed"
         },
         {
@@ -7001,7 +7001,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4077,
+          "line": 4078,
           "kind": "seed"
         },
         {
@@ -7600,6 +7600,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/data/cpi_provenance.py",
+          "line": 2,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 26,
           "kind": "other"
@@ -7716,12 +7721,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 48,
+          "line": 49,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 113,
+          "line": 114,
           "kind": "other"
         },
         {
@@ -7836,27 +7841,27 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 936,
+          "line": 944,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 937,
+          "line": 945,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 114,
+          "line": 116,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 124,
+          "line": 126,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 131,
+          "line": 133,
           "kind": "other"
         },
         {
@@ -7901,42 +7906,42 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 54,
+          "line": 55,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1240,
+          "line": 1241,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1406,
+          "line": 1407,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1494,
+          "line": 1495,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5348,
+          "line": 5352,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5349,
+          "line": 5353,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5350,
+          "line": 5354,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5361,
+          "line": 5365,
           "kind": "seed"
         },
         {
@@ -8117,6 +8122,31 @@
         {
           "file": "backend/tests/test_calendar_seed.py",
           "line": 409,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_calendar_truth.py",
+          "line": 98,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_calendar_truth.py",
+          "line": 103,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_cpi_provenance.py",
+          "line": 7,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_cpi_provenance.py",
+          "line": 15,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_cpi_provenance.py",
+          "line": 31,
           "kind": "tests"
         },
         {
@@ -8447,6 +8477,11 @@
         {
           "file": "backend/tests/test_indicator_year_landing.py",
           "line": 205,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 315,
           "kind": "tests"
         },
         {
@@ -9240,48 +9275,63 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/components/DownloadLimitModal.test.jsx",
+          "line": 13,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/DownloadLimitModal.test.jsx",
+          "line": 14,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/DownloadLimitModal.test.jsx",
+          "line": 18,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/components/GenericIndicatorView.jsx",
           "line": 33,
           "kind": "family"
         },
         {
           "file": "frontend/src/components/GenericIndicatorView.jsx",
-          "line": 151,
+          "line": 153,
           "kind": "family"
         },
         {
           "file": "frontend/src/components/GenericIndicatorView.jsx",
-          "line": 172,
+          "line": 174,
           "kind": "family"
         },
         {
           "file": "frontend/src/components/GenericIndicatorView.jsx",
-          "line": 194,
+          "line": 196,
           "kind": "family"
         },
         {
           "file": "frontend/src/components/GenericIndicatorView.jsx",
-          "line": 205,
+          "line": 207,
           "kind": "family"
         },
         {
           "file": "frontend/src/components/IndicatorChart.jsx",
-          "line": 90,
+          "line": 91,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChart.jsx",
-          "line": 94,
+          "line": 95,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChart.jsx",
-          "line": 256,
+          "line": 264,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChart.jsx",
-          "line": 490,
+          "line": 498,
           "kind": "other"
         },
         {
@@ -9291,12 +9341,12 @@
         },
         {
           "file": "frontend/src/components/IndicatorChartSection.jsx",
-          "line": 198,
+          "line": 196,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChartSection.jsx",
-          "line": 346,
+          "line": 344,
           "kind": "other"
         },
         {
@@ -9316,12 +9366,12 @@
         },
         {
           "file": "frontend/src/components/WorldChartSection.jsx",
-          "line": 559,
+          "line": 557,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldChartSection.jsx",
-          "line": 568,
+          "line": 566,
           "kind": "other"
         },
         {
@@ -9386,7 +9436,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1269,
+          "line": 1275,
           "kind": "other"
         },
         {
@@ -9436,7 +9486,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1270,
+          "line": 1276,
           "kind": "other"
         },
         {
@@ -9507,6 +9557,51 @@
         {
           "file": "frontend/src/i18n/viewModeContent.en.test.js",
           "line": 17,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 9,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 13,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 19,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 20,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 21,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 23,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 32,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 34,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 48,
           "kind": "tests"
         },
         {
@@ -9635,68 +9730,98 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/lib/cpiProvenance.js",
+          "line": 3,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/cpiProvenance.js",
+          "line": 4,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/cpiProvenance.test.js",
+          "line": 8,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiProvenance.test.js",
+          "line": 10,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/cpiViewModeContent.audit.test.js",
           "line": 21,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 15,
+          "line": 16,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 54,
+          "line": 55,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 68,
+          "line": 69,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 89,
+          "line": 90,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 93,
+          "line": 94,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 111,
+          "line": 112,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 132,
+          "line": 133,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 136,
+          "line": 137,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 250,
+          "line": 159,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 349,
+          "line": 252,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 413,
+          "line": 329,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 430,
+          "line": 352,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeContent.jsx",
+          "line": 416,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeContent.jsx",
+          "line": 433,
           "kind": "family"
         },
         {
@@ -9806,13 +9931,23 @@
         },
         {
           "file": "frontend/src/lib/excel.js",
-          "line": 8,
+          "line": 9,
           "kind": "other"
         },
         {
           "file": "frontend/src/lib/excel.js",
-          "line": 16,
+          "line": 17,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/excelProvenance.test.js",
+          "line": 13,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/excelProvenance.test.js",
+          "line": 16,
+          "kind": "tests"
         },
         {
           "file": "frontend/src/lib/format.js",
@@ -10060,6 +10195,21 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 145,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 150,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 151,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/sitePaths.test.js",
           "line": 32,
           "kind": "tests"
@@ -10140,6 +10290,16 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/pages/AuthReturn.test.jsx",
+          "line": 17,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/AuthReturn.test.jsx",
+          "line": 18,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/pages/CalculatorPage.component.test.jsx",
           "line": 143,
           "kind": "other"
@@ -10216,12 +10376,12 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 214,
+          "line": 215,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 589,
+          "line": 597,
           "kind": "other"
         },
         {
@@ -10566,6 +10726,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/data/cpi_provenance.py",
+          "line": 2,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 32,
           "kind": "other"
@@ -10612,12 +10777,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 49,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 122,
+          "line": 123,
           "kind": "other"
         },
         {
@@ -10642,22 +10807,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 70,
+          "line": 71,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1288,
+          "line": 1289,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1428,
+          "line": 1429,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1516,
+          "line": 1517,
           "kind": "seed"
         },
         {
@@ -10697,7 +10862,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 60,
+          "line": 81,
           "kind": "other"
         },
         {
@@ -10757,12 +10922,12 @@
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 24,
+          "line": 25,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 251,
+          "line": 253,
           "kind": "family"
         },
         {
@@ -10892,7 +11057,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 589,
+          "line": 597,
           "kind": "other"
         },
         {
@@ -10988,17 +11153,17 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1221,
+          "line": 1229,
           "kind": "seo"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1265,
+          "line": 1266,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5223,
+          "line": 5227,
           "kind": "seed"
         },
         {
@@ -11064,7 +11229,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1691,
+          "line": 1692,
           "kind": "seed"
         },
         {
@@ -11125,7 +11290,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1594,
+          "line": 1595,
           "kind": "seed"
         },
         {
@@ -11181,7 +11346,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1503,
+          "line": 1504,
           "kind": "seed"
         },
         {
@@ -11262,7 +11427,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1249,
+          "line": 1250,
           "kind": "seed"
         },
         {
@@ -11348,11 +11513,16 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1415,
+          "line": 1416,
           "kind": "seed"
         },
         {
           "file": "backend/tests/test_calculation_engine.py",
+          "line": 17,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_cpi_provenance.py",
           "line": 17,
           "kind": "tests"
         },
@@ -11374,6 +11544,26 @@
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
           "line": 24,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiProvenance.test.js",
+          "line": 9,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 144,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 151,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 157,
           "kind": "tests"
         }
       ]
@@ -11423,6 +11613,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/data/cpi_provenance.py",
+          "line": 2,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 38,
           "kind": "other"
@@ -11469,12 +11664,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 50,
+          "line": 51,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 131,
+          "line": 132,
           "kind": "other"
         },
         {
@@ -11499,22 +11694,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 85,
+          "line": 86,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1336,
+          "line": 1337,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1450,
+          "line": 1451,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1538,
+          "line": 1539,
           "kind": "seed"
         },
         {
@@ -11529,7 +11724,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 60,
+          "line": 81,
           "kind": "other"
         },
         {
@@ -11584,12 +11779,12 @@
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 33,
+          "line": 34,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 252,
+          "line": 254,
           "kind": "family"
         },
         {
@@ -11735,12 +11930,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1313,
+          "line": 1314,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5224,
+          "line": 5228,
           "kind": "seed"
         },
         {
@@ -11801,7 +11996,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1713,
+          "line": 1714,
           "kind": "seed"
         },
         {
@@ -11862,7 +12057,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1619,
+          "line": 1620,
           "kind": "seed"
         },
         {
@@ -11918,7 +12113,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1525,
+          "line": 1526,
           "kind": "seed"
         },
         {
@@ -11994,7 +12189,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1297,
+          "line": 1298,
           "kind": "seed"
         },
         {
@@ -12060,7 +12255,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1437,
+          "line": 1438,
           "kind": "seed"
         },
         {
@@ -12116,7 +12311,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1669,
+          "line": 1670,
           "kind": "seed"
         },
         {
@@ -12192,7 +12387,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1569,
+          "line": 1570,
           "kind": "seed"
         },
         {
@@ -12253,7 +12448,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1481,
+          "line": 1482,
           "kind": "seed"
         },
         {
@@ -12318,6 +12513,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/data/cpi_provenance.py",
+          "line": 2,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 44,
           "kind": "other"
@@ -12364,12 +12564,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 51,
+          "line": 52,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 140,
+          "line": 141,
           "kind": "other"
         },
         {
@@ -12394,22 +12594,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 100,
+          "line": 101,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1384,
+          "line": 1385,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1472,
+          "line": 1473,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1560,
+          "line": 1561,
           "kind": "seed"
         },
         {
@@ -12424,7 +12624,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 60,
+          "line": 81,
           "kind": "other"
         },
         {
@@ -12479,12 +12679,12 @@
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 42,
+          "line": 43,
           "kind": "family"
         },
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
-          "line": 253,
+          "line": 255,
           "kind": "family"
         },
         {
@@ -12630,12 +12830,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1361,
+          "line": 1362,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5225,
+          "line": 5229,
           "kind": "seed"
         },
         {
@@ -12701,7 +12901,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1735,
+          "line": 1736,
           "kind": "seed"
         },
         {
@@ -12762,7 +12962,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1644,
+          "line": 1645,
           "kind": "seed"
         },
         {
@@ -12818,7 +13018,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1547,
+          "line": 1548,
           "kind": "seed"
         },
         {
@@ -12899,7 +13099,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1345,
+          "line": 1346,
           "kind": "seed"
         },
         {
@@ -12975,7 +13175,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1459,
+          "line": 1460,
           "kind": "seed"
         },
         {
@@ -13036,17 +13236,17 @@
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 114,
+          "line": 116,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 123,
+          "line": 125,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 131,
+          "line": 133,
           "kind": "other"
         },
         {
@@ -13056,7 +13256,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1393,
+          "line": 1394,
           "kind": "seed"
         },
         {
@@ -13075,8 +13275,33 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_cpi_provenance.py",
+          "line": 6,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_cpi_provenance.py",
+          "line": 30,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 117,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 305,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 313,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 314,
           "kind": "tests"
         },
         {
@@ -13207,12 +13432,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 80,
+          "line": 81,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 332,
+          "line": 333,
           "kind": "other"
         },
         {
@@ -13222,12 +13447,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 558,
+          "line": 559,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5000,
+          "line": 5001,
           "kind": "seed"
         },
         {
@@ -13647,12 +13872,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 81,
+          "line": 82,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 333,
+          "line": 334,
           "kind": "other"
         },
         {
@@ -13662,12 +13887,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 592,
+          "line": 593,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5000,
+          "line": 5001,
           "kind": "seed"
         },
         {
@@ -14087,22 +14312,22 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 79,
+          "line": 80,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 331,
+          "line": 332,
           "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 523,
+          "line": 524,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5000,
+          "line": 5001,
           "kind": "seed"
         },
         {
@@ -14552,12 +14777,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 83,
+          "line": 84,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 335,
+          "line": 336,
           "kind": "other"
         },
         {
@@ -14567,12 +14792,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 660,
+          "line": 661,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5001,
+          "line": 5002,
           "kind": "seed"
         },
         {
@@ -14992,12 +15217,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 84,
+          "line": 85,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 336,
+          "line": 337,
           "kind": "other"
         },
         {
@@ -15007,12 +15232,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 694,
+          "line": 695,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5001,
+          "line": 5002,
           "kind": "seed"
         },
         {
@@ -15432,22 +15657,22 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 82,
+          "line": 83,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 334,
+          "line": 335,
           "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 626,
+          "line": 627,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5001,
+          "line": 5002,
           "kind": "seed"
         },
         {
@@ -15948,12 +16173,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 92,
+          "line": 93,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 353,
+          "line": 354,
           "kind": "other"
         },
         {
@@ -15978,12 +16203,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2389,
+          "line": 2390,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2480,
+          "line": 2481,
           "kind": "seed"
         },
         {
@@ -16271,12 +16496,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2451,
+          "line": 2452,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2485,
+          "line": 2486,
           "kind": "seed"
         },
         {
@@ -16422,17 +16647,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2455,
+          "line": 2456,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2483,
+          "line": 2484,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2491,
+          "line": 2492,
           "kind": "seed"
         },
         {
@@ -16581,12 +16806,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3530,
+          "line": 3531,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3539,
+          "line": 3540,
           "kind": "seed"
         },
         {
@@ -16846,12 +17071,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3495,
+          "line": 3496,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3511,
+          "line": 3512,
           "kind": "seed"
         },
         {
@@ -17079,12 +17304,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 78,
+          "line": 79,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 337,
+          "line": 338,
           "kind": "other"
         },
         {
@@ -17104,12 +17329,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 378,
+          "line": 379,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5002,
+          "line": 5003,
           "kind": "seed"
         },
         {
@@ -17459,12 +17684,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 444,
+          "line": 445,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5002,
+          "line": 5003,
           "kind": "seed"
         },
         {
@@ -17879,12 +18104,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 410,
+          "line": 411,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5002,
+          "line": 5003,
           "kind": "seed"
         },
         {
@@ -18454,12 +18679,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 76,
+          "line": 77,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 327,
+          "line": 328,
           "kind": "other"
         },
         {
@@ -18489,17 +18714,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1904,
+          "line": 1905,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1918,
+          "line": 1919,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5003,
+          "line": 5004,
           "kind": "seed"
         },
         {
@@ -18894,12 +19119,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 77,
+          "line": 78,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 327,
+          "line": 328,
           "kind": "other"
         },
         {
@@ -18934,17 +19159,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1869,
+          "line": 1870,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1892,
+          "line": 1893,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5003,
+          "line": 5004,
           "kind": "seed"
         },
         {
@@ -19351,7 +19576,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3702,
+          "line": 3703,
           "kind": "seed"
         },
         {
@@ -19481,7 +19706,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3731,
+          "line": 3732,
           "kind": "seed"
         },
         {
@@ -19837,12 +20062,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3212,
+          "line": 3213,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5003,
+          "line": 5004,
           "kind": "seed"
         },
         {
@@ -20264,7 +20489,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3896,
+          "line": 3897,
           "kind": "seed"
         },
         {
@@ -20797,12 +21022,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 65,
+          "line": 66,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 273,
+          "line": 274,
           "kind": "other"
         },
         {
@@ -20827,12 +21052,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 940,
+          "line": 948,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 128,
+          "line": 130,
           "kind": "other"
         },
         {
@@ -20842,7 +21067,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 180,
+          "line": 181,
           "kind": "seed"
         },
         {
@@ -20877,7 +21102,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 57,
+          "line": 78,
           "kind": "other"
         },
         {
@@ -20932,12 +21157,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1266,
+          "line": 1272,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1267,
+          "line": 1273,
           "kind": "other"
         },
         {
@@ -21477,7 +21702,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4177,
+          "line": 4178,
           "kind": "seed"
         },
         {
@@ -22187,12 +22412,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 87,
+          "line": 88,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 347,
+          "line": 348,
           "kind": "other"
         },
         {
@@ -22237,7 +22462,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2306,
+          "line": 2315,
           "kind": "seo"
         },
         {
@@ -22257,42 +22482,42 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2556,
+          "line": 2557,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2569,
+          "line": 2570,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2618,
+          "line": 2619,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2621,
+          "line": 2622,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2625,
+          "line": 2626,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2640,
+          "line": 2641,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2659,
+          "line": 2660,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5190,
+          "line": 5194,
           "kind": "seed"
         },
         {
@@ -22517,7 +22742,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1138,
+          "line": 1144,
           "kind": "other"
         },
         {
@@ -22529,6 +22754,11 @@
           "file": "frontend/src/i18n/messages.ru.js",
           "line": 1026,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/authReturn.test.js",
+          "line": 46,
+          "kind": "tests"
         },
         {
           "file": "frontend/src/lib/calendarGrouping.js",
@@ -22682,7 +22912,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 264,
+          "line": 265,
           "kind": "other"
         },
         {
@@ -22771,27 +23001,27 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2306,
+          "line": 2315,
           "kind": "seo"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2574,
+          "line": 2575,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2642,
+          "line": 2643,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2655,
+          "line": 2656,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5004,
+          "line": 5005,
           "kind": "seed"
         },
         {
@@ -23189,7 +23419,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3447,
+          "line": 3448,
           "kind": "seed"
         },
         {
@@ -23316,12 +23546,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2715,
+          "line": 2716,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5204,
+          "line": 5208,
           "kind": "seed"
         },
         {
@@ -23549,17 +23779,17 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 93,
+          "line": 94,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 355,
+          "line": 356,
           "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2775,
+          "line": 2776,
           "kind": "seed"
         },
         {
@@ -23890,12 +24120,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 94,
+          "line": 95,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 357,
+          "line": 358,
           "kind": "other"
         },
         {
@@ -23910,12 +24140,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3416,
+          "line": 3417,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3434,
+          "line": 3435,
           "kind": "seed"
         },
         {
@@ -24197,7 +24427,7 @@
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 133,
+          "line": 135,
           "kind": "other"
         },
         {
@@ -24207,7 +24437,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4723,
+          "line": 4724,
           "kind": "seed"
         },
         {
@@ -24252,12 +24482,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1271,
+          "line": 1277,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1272,
+          "line": 1278,
           "kind": "other"
         },
         {
@@ -24331,7 +24561,7 @@
       "files": [
         {
           "file": "backend/seed_data.py",
-          "line": 4746,
+          "line": 4747,
           "kind": "seed"
         },
         {
@@ -24749,12 +24979,12 @@
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 134,
+          "line": 136,
           "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4755,
+          "line": 4756,
           "kind": "seed"
         },
         {
@@ -24784,12 +25014,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1272,
+          "line": 1278,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1273,
+          "line": 1279,
           "kind": "other"
         },
         {
@@ -25276,12 +25506,12 @@
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 135,
+          "line": 137,
           "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4784,
+          "line": 4785,
           "kind": "seed"
         },
         {
@@ -25301,12 +25531,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1273,
+          "line": 1279,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1274,
+          "line": 1280,
           "kind": "other"
         },
         {
@@ -25743,7 +25973,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4212,
+          "line": 4213,
           "kind": "seed"
         },
         {
@@ -25833,7 +26063,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4276,
+          "line": 4277,
           "kind": "seed"
         },
         {
@@ -26362,7 +26592,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3073,
+          "line": 3074,
           "kind": "seed"
         },
         {
@@ -26662,7 +26892,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3109,
+          "line": 3110,
           "kind": "seed"
         },
         {
@@ -26947,7 +27177,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3146,
+          "line": 3147,
           "kind": "seed"
         },
         {
@@ -27327,12 +27557,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 59,
+          "line": 60,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 215,
+          "line": 216,
           "kind": "other"
         },
         {
@@ -27387,7 +27617,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 942,
+          "line": 950,
           "kind": "seo"
         },
         {
@@ -27402,22 +27632,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 792,
+          "line": 793,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1060,
+          "line": 1061,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1083,
+          "line": 1084,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1161,
+          "line": 1162,
           "kind": "seed"
         },
         {
@@ -27823,12 +28053,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 881,
+          "line": 882,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1140,
+          "line": 1141,
           "kind": "seed"
         },
         {
@@ -28020,7 +28250,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1069,
+          "line": 1070,
           "kind": "seed"
         },
         {
@@ -28246,12 +28476,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 60,
+          "line": 61,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 222,
+          "line": 223,
           "kind": "other"
         },
         {
@@ -28286,22 +28516,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 825,
+          "line": 826,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1107,
+          "line": 1108,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1131,
+          "line": 1132,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1192,
+          "line": 1193,
           "kind": "seed"
         },
         {
@@ -28582,7 +28812,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1171,
+          "line": 1172,
           "kind": "seed"
         },
         {
@@ -28713,7 +28943,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1116,
+          "line": 1117,
           "kind": "seed"
         },
         {
@@ -28819,7 +29049,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1092,
+          "line": 1093,
           "kind": "seed"
         },
         {
@@ -28981,7 +29211,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1045,
+          "line": 1046,
           "kind": "seed"
         },
         {
@@ -29196,17 +29426,17 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 67,
+          "line": 68,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 291,
+          "line": 292,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 132,
+          "line": 134,
           "kind": "other"
         },
         {
@@ -29236,7 +29466,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3830,
+          "line": 3831,
           "kind": "seed"
         },
         {
@@ -29291,7 +29521,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 57,
+          "line": 78,
           "kind": "other"
         },
         {
@@ -29356,12 +29586,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1270,
+          "line": 1276,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1271,
+          "line": 1277,
           "kind": "other"
         },
         {
@@ -29387,6 +29617,16 @@
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
           "line": 98,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 146,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 154,
           "kind": "tests"
         },
         {
@@ -29416,7 +29656,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 270,
+          "line": 271,
           "kind": "other"
         }
       ]
@@ -29888,7 +30128,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3717,
+          "line": 3718,
           "kind": "seed"
         },
         {
@@ -30071,17 +30311,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 988,
+          "line": 989,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5018,
+          "line": 5019,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5020,
+          "line": 5021,
           "kind": "seed"
         },
         {
@@ -30437,12 +30677,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1017,
+          "line": 1018,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5018,
+          "line": 5019,
           "kind": "seed"
         },
         {
@@ -30966,7 +31206,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3006,
+          "line": 3007,
           "kind": "seed"
         },
         {
@@ -31037,7 +31277,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3039,
+          "line": 3040,
           "kind": "seed"
         },
         {
@@ -31121,12 +31361,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 56,
+          "line": 57,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 185,
+          "line": 186,
           "kind": "other"
         },
         {
@@ -31136,12 +31376,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3680,
+          "line": 3681,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5004,
+          "line": 5005,
           "kind": "seed"
         },
         {
@@ -31529,22 +31769,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2071,
+          "line": 2072,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2938,
+          "line": 2939,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2967,
+          "line": 2968,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3030,
+          "line": 3031,
           "kind": "seed"
         },
         {
@@ -31865,22 +32105,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2100,
+          "line": 2101,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2149,
+          "line": 2150,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2997,
+          "line": 2998,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3063,
+          "line": 3064,
           "kind": "seed"
         },
         {
@@ -32071,7 +32311,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2947,
+          "line": 2948,
           "kind": "seed"
         },
         {
@@ -32157,7 +32397,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2129,
+          "line": 2130,
           "kind": "seed"
         },
         {
@@ -32243,7 +32483,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2917,
+          "line": 2918,
           "kind": "seed"
         },
         {
@@ -32329,7 +32569,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2976,
+          "line": 2977,
           "kind": "seed"
         },
         {
@@ -32454,7 +32694,7 @@
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 136,
+          "line": 138,
           "kind": "other"
         },
         {
@@ -32479,7 +32719,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3961,
+          "line": 3962,
           "kind": "seed"
         },
         {
@@ -32549,12 +32789,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1274,
+          "line": 1280,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1275,
+          "line": 1281,
           "kind": "other"
         },
         {
@@ -33223,12 +33463,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 88,
+          "line": 89,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 347,
+          "line": 348,
           "kind": "other"
         },
         {
@@ -33278,42 +33518,42 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2580,
+          "line": 2581,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2593,
+          "line": 2594,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2618,
+          "line": 2619,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2621,
+          "line": 2622,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2626,
+          "line": 2627,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2640,
+          "line": 2641,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2683,
+          "line": 2684,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5191,
+          "line": 5195,
           "kind": "seed"
         },
         {
@@ -33592,22 +33832,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2598,
+          "line": 2599,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2666,
+          "line": 2667,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2679,
+          "line": 2680,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5004,
+          "line": 5005,
           "kind": "seed"
         },
         {
@@ -33930,7 +34170,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3460,
+          "line": 3461,
           "kind": "seed"
         },
         {
@@ -34047,12 +34287,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2728,
+          "line": 2729,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5204,
+          "line": 5208,
           "kind": "seed"
         },
         {
@@ -34189,12 +34429,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1218,
+          "line": 1219,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5222,
+          "line": 5226,
           "kind": "seed"
         },
         {
@@ -34320,12 +34560,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1220,
+          "line": 1228,
           "kind": "seo"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1202,
+          "line": 1203,
           "kind": "seed"
         },
         {
@@ -34519,17 +34759,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1585,
+          "line": 1586,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1682,
+          "line": 1683,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1968,
+          "line": 1969,
           "kind": "seed"
         },
         {
@@ -34688,17 +34928,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1610,
+          "line": 1611,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1704,
+          "line": 1705,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2002,
+          "line": 2003,
           "kind": "seed"
         },
         {
@@ -34797,17 +35037,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1635,
+          "line": 1636,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1726,
+          "line": 1727,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2026,
+          "line": 2027,
           "kind": "seed"
         },
         {
@@ -34901,17 +35141,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1660,
+          "line": 1661,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1748,
+          "line": 1749,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2048,
+          "line": 2049,
           "kind": "seed"
         },
         {
@@ -34994,7 +35234,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3773,
+          "line": 3774,
           "kind": "seed"
         },
         {
@@ -35178,12 +35418,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 70,
+          "line": 71,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 315,
+          "line": 316,
           "kind": "other"
         },
         {
@@ -35198,7 +35438,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2742,
+          "line": 2743,
           "kind": "seed"
         },
         {
@@ -35755,12 +35995,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 52,
+          "line": 53,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 149,
+          "line": 150,
           "kind": "other"
         },
         {
@@ -35780,17 +36020,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2159,
+          "line": 2160,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2511,
+          "line": 2512,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5010,
+          "line": 5011,
           "kind": "seed"
         },
         {
@@ -36050,7 +36290,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 65,
+          "line": 66,
           "kind": "other"
         },
         {
@@ -36198,12 +36438,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2250,
+          "line": 2251,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5013,
+          "line": 5014,
           "kind": "seed"
         },
         {
@@ -36650,12 +36890,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2220,
+          "line": 2221,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5013,
+          "line": 5014,
           "kind": "seed"
         },
         {
@@ -37040,12 +37280,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2190,
+          "line": 2191,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5013,
+          "line": 5014,
           "kind": "seed"
         },
         {
@@ -37487,12 +37727,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2280,
+          "line": 2281,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5013,
+          "line": 5014,
           "kind": "seed"
         },
         {
@@ -37872,7 +38112,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2499,
+          "line": 2500,
           "kind": "seed"
         },
         {
@@ -37932,12 +38172,12 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 65,
+          "line": 66,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 107,
+          "line": 108,
           "kind": "other"
         },
         {
@@ -38184,42 +38424,42 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 69,
+          "line": 70,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 311,
+          "line": 312,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 313,
+          "line": 314,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 359,
+          "line": 360,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 573,
+          "line": 583,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 581,
+          "line": 591,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 600,
+          "line": 610,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 607,
+          "line": 617,
           "kind": "other"
         },
         {
@@ -38284,12 +38524,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 934,
+          "line": 942,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 130,
+          "line": 132,
           "kind": "other"
         },
         {
@@ -38304,17 +38544,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 115,
+          "line": 116,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5174,
+          "line": 5178,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5177,
+          "line": 5181,
           "kind": "seed"
         },
         {
@@ -38340,6 +38580,11 @@
         {
           "file": "backend/tests/test_calendar_seed.py",
           "line": 393,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_cpi_provenance.py",
+          "line": 16,
           "kind": "tests"
         },
         {
@@ -38659,12 +38904,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1268,
+          "line": 1274,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1269,
+          "line": 1275,
           "kind": "other"
         },
         {
@@ -38774,7 +39019,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 269,
+          "line": 270,
           "kind": "other"
         },
         {
@@ -39356,12 +39601,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3183,
+          "line": 3184,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5005,
+          "line": 5006,
           "kind": "seed"
         },
         {
@@ -39729,12 +39974,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 73,
+          "line": 74,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 319,
+          "line": 320,
           "kind": "other"
         },
         {
@@ -39744,12 +39989,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 273,
+          "line": 274,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5005,
+          "line": 5006,
           "kind": "seed"
         },
         {
@@ -40179,12 +40424,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 72,
+          "line": 73,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 319,
+          "line": 320,
           "kind": "other"
         },
         {
@@ -40204,17 +40449,17 @@
         },
         {
           "file": "backend/app/tasks/analytics_scheduler.py",
-          "line": 185,
+          "line": 186,
           "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1758,
+          "line": 1759,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5005,
+          "line": 5006,
           "kind": "seed"
         },
         {
@@ -40679,12 +40924,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 71,
+          "line": 72,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 317,
+          "line": 318,
           "kind": "other"
         },
         {
@@ -40729,22 +40974,22 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 938,
+          "line": 946,
           "kind": "seo"
         },
         {
           "file": "backend/app/tasks/analytics_scheduler.py",
-          "line": 185,
+          "line": 186,
           "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 306,
+          "line": 307,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5005,
+          "line": 5006,
           "kind": "seed"
         },
         {
@@ -41211,7 +41456,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 130,
+          "line": 131,
           "kind": "other"
         }
       ]
@@ -41368,7 +41613,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3991,
+          "line": 3992,
           "kind": "seed"
         },
         {
@@ -41862,12 +42107,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 85,
+          "line": 86,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 341,
+          "line": 342,
           "kind": "other"
         },
         {
@@ -41877,12 +42122,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 342,
+          "line": 343,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5005,
+          "line": 5006,
           "kind": "seed"
         },
         {
@@ -42346,7 +42591,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4435,
+          "line": 4436,
           "kind": "seed"
         },
         {
@@ -42963,12 +43208,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3586,
+          "line": 3587,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3595,
+          "line": 3596,
           "kind": "seed"
         },
         {
@@ -43209,12 +43454,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3572,
+          "line": 3573,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3581,
+          "line": 3582,
           "kind": "seed"
         },
         {
@@ -43390,12 +43635,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3558,
+          "line": 3559,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3567,
+          "line": 3568,
           "kind": "seed"
         },
         {
@@ -44861,7 +45106,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2311,
+          "line": 2312,
           "kind": "seed"
         },
         {
@@ -44982,6 +45227,31 @@
         {
           "file": "backend/tests/test_indicator_year_landing.py",
           "line": 244,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 283,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 287,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 292,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 293,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 294,
           "kind": "tests"
         },
         {
@@ -45431,27 +45701,27 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1210,
+          "line": 1216,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1279,
+          "line": 1285,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1336,
+          "line": 1342,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1659,
+          "line": 1667,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1660,
+          "line": 1668,
           "kind": "other"
         },
         {
@@ -45476,17 +45746,17 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1337,
+          "line": 1343,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1660,
+          "line": 1668,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1661,
+          "line": 1669,
           "kind": "other"
         },
         {
@@ -45810,7 +46080,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2371,
+          "line": 2372,
           "kind": "seed"
         },
         {
@@ -45949,7 +46219,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2337,
+          "line": 2338,
           "kind": "seed"
         },
         {
@@ -46083,7 +46353,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2354,
+          "line": 2355,
           "kind": "seed"
         },
         {
@@ -46326,12 +46596,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 57,
+          "line": 58,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 194,
+          "line": 195,
           "kind": "other"
         },
         {
@@ -46361,27 +46631,27 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2522,
+          "line": 2523,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2817,
+          "line": 2818,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2842,
+          "line": 2843,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2873,
+          "line": 2874,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2908,
+          "line": 2909,
           "kind": "seed"
         },
         {
@@ -46567,6 +46837,11 @@
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
           "line": 33,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiProvenance.test.js",
+          "line": 11,
           "kind": "tests"
         },
         {
@@ -46822,7 +47097,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2885,
+          "line": 2886,
           "kind": "seed"
         },
         {
@@ -46933,7 +47208,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2856,
+          "line": 2857,
           "kind": "seed"
         },
         {
@@ -47024,7 +47299,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2826,
+          "line": 2827,
           "kind": "seed"
         },
         {
@@ -47120,7 +47395,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2805,
+          "line": 2806,
           "kind": "seed"
         },
         {
@@ -47259,7 +47534,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3745,
+          "line": 3746,
           "kind": "seed"
         },
         {
@@ -47435,7 +47710,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3759,
+          "line": 3760,
           "kind": "seed"
         },
         {
@@ -47611,12 +47886,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 55,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 176,
+          "line": 177,
           "kind": "other"
         },
         {
@@ -47631,12 +47906,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3601,
+          "line": 3602,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5010,
+          "line": 5011,
           "kind": "seed"
         },
         {
@@ -47998,7 +48273,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4049,
+          "line": 4050,
           "kind": "seed"
         },
         {
@@ -48496,7 +48771,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4021,
+          "line": 4022,
           "kind": "seed"
         },
         {
@@ -49009,17 +49284,17 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 68,
+          "line": 69,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 300,
+          "line": 301,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 305,
+          "line": 306,
           "kind": "other"
         },
         {
@@ -49064,17 +49339,17 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 935,
+          "line": 943,
           "kind": "seo"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 243,
+          "line": 244,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 249,
+          "line": 250,
           "kind": "seed"
         },
         {
@@ -49174,7 +49449,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 57,
+          "line": 78,
           "kind": "other"
         },
         {
@@ -49259,7 +49534,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 269,
+          "line": 270,
           "kind": "other"
         }
       ]
@@ -49733,12 +50008,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 90,
+          "line": 91,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 350,
+          "line": 351,
           "kind": "other"
         },
         {
@@ -49753,17 +50028,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3321,
+          "line": 3322,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3334,
+          "line": 3335,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3386,
+          "line": 3387,
           "kind": "seed"
         },
         {
@@ -49892,22 +50167,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3339,
+          "line": 3340,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3370,
+          "line": 3371,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3383,
+          "line": 3384,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5006,
+          "line": 5007,
           "kind": "seed"
         },
         {
@@ -50379,12 +50654,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 91,
+          "line": 92,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 350,
+          "line": 351,
           "kind": "other"
         },
         {
@@ -50399,17 +50674,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3345,
+          "line": 3346,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3358,
+          "line": 3359,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3409,
+          "line": 3410,
           "kind": "seed"
         },
         {
@@ -50543,22 +50818,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3363,
+          "line": 3364,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3393,
+          "line": 3394,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3406,
+          "line": 3407,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5006,
+          "line": 5007,
           "kind": "seed"
         },
         {
@@ -51068,7 +51343,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4405,
+          "line": 4406,
           "kind": "seed"
         },
         {
@@ -51398,7 +51673,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3812,
+          "line": 3813,
           "kind": "seed"
         },
         {
@@ -51549,7 +51824,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3929,
+          "line": 3930,
           "kind": "seed"
         },
         {
@@ -52086,7 +52361,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4497,
+          "line": 4498,
           "kind": "seed"
         },
         {
@@ -52409,7 +52684,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4560,
+          "line": 4561,
           "kind": "seed"
         },
         {
@@ -52492,7 +52767,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3792,
+          "line": 3793,
           "kind": "seed"
         },
         {
@@ -52685,12 +52960,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 89,
+          "line": 90,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 347,
+          "line": 348,
           "kind": "other"
         },
         {
@@ -52745,27 +53020,27 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 1952,
+          "line": 1953,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2604,
+          "line": 2605,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2617,
+          "line": 2618,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2707,
+          "line": 2708,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5192,
+          "line": 5196,
           "kind": "seed"
         },
         {
@@ -53029,22 +53304,22 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2631,
+          "line": 2632,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2690,
+          "line": 2691,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2704,
+          "line": 2705,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5007,
+          "line": 5008,
           "kind": "seed"
         },
         {
@@ -53450,7 +53725,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2468,
+          "line": 2469,
           "kind": "seed"
         },
         {
@@ -53569,7 +53844,7 @@
       "files": [
         {
           "file": ".env.example",
-          "line": 153,
+          "line": 155,
           "kind": "other"
         },
         {
@@ -53829,12 +54104,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 53,
+          "line": 54,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 158,
+          "line": 159,
           "kind": "other"
         },
         {
@@ -53874,7 +54149,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 941,
+          "line": 949,
           "kind": "seo"
         },
         {
@@ -53914,12 +54189,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 729,
+          "line": 730,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5007,
+          "line": 5008,
           "kind": "seed"
         },
         {
@@ -54364,7 +54639,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 264,
+          "line": 265,
           "kind": "other"
         },
         {
@@ -54510,7 +54785,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2436,
+          "line": 2437,
           "kind": "seed"
         },
         {
@@ -54832,7 +55107,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 2421,
+          "line": 2422,
           "kind": "seed"
         },
         {
@@ -55110,7 +55385,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4308,
+          "line": 4309,
           "kind": "seed"
         },
         {
@@ -55638,7 +55913,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4106,
+          "line": 4107,
           "kind": "seed"
         },
         {
@@ -55669,6 +55944,11 @@
         {
           "file": "backend/tests/test_indicator_year_landing.py",
           "line": 238,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 259,
           "kind": "tests"
         },
         {
@@ -56296,12 +56576,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 64,
+          "line": 65,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 264,
+          "line": 265,
           "kind": "other"
         },
         {
@@ -56341,12 +56621,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 939,
+          "line": 947,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_today.py",
-          "line": 127,
+          "line": 129,
           "kind": "other"
         },
         {
@@ -56361,7 +56641,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 147,
+          "line": 148,
           "kind": "seed"
         },
         {
@@ -56456,7 +56736,7 @@
         },
         {
           "file": "docs/adr/0005-official-calendar-source-bound.md",
-          "line": 57,
+          "line": 78,
           "kind": "other"
         },
         {
@@ -56531,12 +56811,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1265,
+          "line": 1271,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1266,
+          "line": 1272,
           "kind": "other"
         },
         {
@@ -57119,7 +57399,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4140,
+          "line": 4141,
           "kind": "seed"
         },
         {
@@ -57746,7 +58026,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 959,
+          "line": 960,
           "kind": "seed"
         },
         {
@@ -58011,12 +58291,12 @@
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 54,
+          "line": 55,
           "kind": "other"
         },
         {
           "file": "backend/app/services/calendar_sources/official_calendar.py",
-          "line": 167,
+          "line": 168,
           "kind": "other"
         },
         {
@@ -58056,52 +58336,52 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 758,
+          "line": 759,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 857,
+          "line": 858,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 861,
+          "line": 862,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 879,
+          "line": 880,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 889,
+          "line": 890,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 895,
+          "line": 896,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 903,
+          "line": 904,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 957,
+          "line": 958,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3252,
+          "line": 3253,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5007,
+          "line": 5008,
           "kind": "seed"
         },
         {
@@ -58341,7 +58621,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 264,
+          "line": 265,
           "kind": "other"
         },
         {
@@ -58480,17 +58760,17 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 785,
+          "line": 786,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 864,
+          "line": 865,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 902,
+          "line": 903,
           "kind": "seed"
         },
         {
@@ -58625,7 +58905,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 383,
+          "line": 384,
           "kind": "other"
         }
       ]
@@ -58686,7 +58966,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 905,
+          "line": 906,
           "kind": "seed"
         },
         {
@@ -58929,12 +59209,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 923,
+          "line": 924,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 5022,
+          "line": 5023,
           "kind": "seed"
         },
         {
@@ -59149,7 +59429,7 @@
       "files": [
         {
           "file": "backend/seed_data.py",
-          "line": 948,
+          "line": 949,
           "kind": "seed"
         },
         {
@@ -59292,12 +59572,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3240,
+          "line": 3241,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4821,
+          "line": 4822,
           "kind": "seed"
         },
         {
@@ -59410,7 +59690,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4654,
+          "line": 4655,
           "kind": "seed"
         },
         {
@@ -59595,7 +59875,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4623,
+          "line": 4624,
           "kind": "seed"
         },
         {
@@ -59816,7 +60096,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4591,
+          "line": 4592,
           "kind": "seed"
         },
         {
@@ -60051,7 +60331,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4689,
+          "line": 4690,
           "kind": "seed"
         },
         {
@@ -60261,7 +60541,7 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 4466,
+          "line": 4467,
           "kind": "seed"
         },
         {
@@ -60617,12 +60897,12 @@
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3544,
+          "line": 3545,
           "kind": "seed"
         },
         {
           "file": "backend/seed_data.py",
-          "line": 3553,
+          "line": 3554,
           "kind": "seed"
         },
         {

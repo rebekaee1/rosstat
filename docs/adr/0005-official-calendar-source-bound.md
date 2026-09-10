@@ -50,6 +50,27 @@ Trade-off:
 
 ## Subsequent additions (after acceptance)
 
+### 2026-09-10 — Evidence must survive scheduling and source outages
+
+Live reconciliation with `Grafik_srochn_2026.docx` showed that the Rosstat
+nth-working-day rules do not establish publication dates (August IPI: official
+23 September, synthetic rule: 11 September). Rosstat and Minfin rule candidates
+are now private `estimated` rows; the public guard also excludes their legacy
+`official_rule` rows immediately. Documented CBR rules remain public.
+The official Rosstat document parser is enabled by default and exposed through
+`RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED` in Compose.
+
+An elapsed scheduled date never proves publication. Without a matched actual
+value the API shows `awaiting_confirmation`; ingestion and the scheduler no
+longer promote elapsed dates, and the scheduler repairs legacy false release
+statuses. Published observations still confirm release. A lower-confidence
+candidate cannot overwrite a saved explicit date when fetching the plan fails.
+Source HTTP and document parsing run outside the serving event loop.
+
+Regression coverage: `backend/tests/test_calendar_truth.py` exercises the real
+list, detail, upcoming and iCal routes, ingestion, the scheduler, and preservation
+of explicit dates during source outages. No calendar rows are deleted by this repair.
+
 ### 2026-05-10 — Coverage expansion without estimates
 
 Calendar ingest расширен только source-bound способами:

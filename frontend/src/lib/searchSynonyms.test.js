@@ -136,3 +136,32 @@ describe('codeMatchesTargets / expandSearchQuery', () => {
     expect(expandSearchQuery('что угодно')).toBe('что угодно');
   });
 });
+
+describe('intent ranking with noisy metadata and hidden siblings', () => {
+  const noisy = [
+    { code: 'fuel-yoy', name: 'Бензин', category: 'Инфляция', is_listed: false },
+    { code: 'gold-reserves', name: 'Резервы', seo_keywords: 'gold золото' },
+    { code: 'cpi-food-yoy', name: 'Продукты', category: 'Инфляция', is_listed: false },
+    { code: 'cpi', name: 'Индекс потребительских цен', category: 'Цены' },
+    { code: 'gold-price', name: 'Учётная цена золота', name_en: 'Gold price' },
+  ];
+  it('puts CPI before category-only inflation matches without dropping any match', () => {
+    const found = filterSearchIndicators(noisy, 'инфляция', { limit: 0 }).map(x => x.code);
+    expect(found[0]).toBe('cpi');
+    expect(new Set(found)).toEqual(new Set(['fuel-yoy', 'cpi-food-yoy', 'cpi']));
+  });
+  it('puts gold price before gold in reserve metadata', () => {
+    expect(filterSearchIndicators(noisy, 'gold')[0].code).toBe('gold-price');
+  });
+  it('keeps a hidden sibling directly accessible by exact code', () => {
+    expect(filterSearchIndicators(noisy, 'cpi-food-yoy')[0].code).toBe('cpi-food-yoy');
+  });
+  it('exact name beats a broad canonical synonym', () => {
+    const found = filterSearchIndicators([...noisy, { code: 'specific', name: 'Инфляция' }], 'инфляция');
+    expect(found[0].code).toBe('specific');
+  });
+  it('retains the full matching catalogue when explicitly unlimited', () => {
+    const many = Array.from({ length: 700 }, (_, i) => ({ code: `item-${i}`, category: 'Инфляция' }));
+    expect(filterSearchIndicators([...many, noisy[3]], 'инфляция', { limit: 0 })).toHaveLength(701);
+  });
+});

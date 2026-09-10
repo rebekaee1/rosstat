@@ -1,3 +1,4 @@
+import { cpiProvenance } from './cpiProvenance';
 import { Formula, ProdLimits } from '../components/MathFormula';
 import { getHousingViewModeContent } from './housingViewModeContent';
 import { getPpiViewModeContent } from './ppiViewModeContent';
@@ -154,7 +155,8 @@ function inflationFootnote(ipcFoot) {
     <span className="block mt-2 text-text-tertiary normal-case tracking-normal text-[10px]">
       ИПЦ
       <sub>i</sub>
-      {` — ${ipcFoot} за i-й месяц (% к предыдущему месяцу).`}
+      {` — ${ipcFoot} за i-й месяц (% к предыдущему месяцу). `}
+      {cpiProvenance('cpi', 'inflation')}
     </span>
   );
 }
@@ -324,6 +326,7 @@ function buildYoy(code) {
           <sub>i</sub>
           {` — ${s.ipcFoot} за i-й месяц года (% к предыдущему месяцу). `}
           Прогноз — то же произведение по точкам месячного прогноза.
+          {' '}{cpiProvenance('cpi', 'yoy')}
         </span>
       </>
     ),

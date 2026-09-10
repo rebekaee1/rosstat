@@ -116,6 +116,7 @@ services:
       OG_CACHE_DIR: /app/og-cache
       RUSTATS_ROSSTAT_CA_CERT: /app/certs/russiantrustedca2024.pem
       RUSTATS_SCHEDULER_ENABLED: "true"
+      RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED: ${RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED:-true}
       # World Eurostat ingest запускается только после двух shadow-прогонов и
       # включается отдельным env; не конкурирует с российским daily ETL.
       RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED: ${RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED:-false}

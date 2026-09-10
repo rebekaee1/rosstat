@@ -110,7 +110,9 @@ export default function GenericIndicatorView({
 
   const downloadMeta = useMemo(() => ({
     name: effectiveIndicator?.name, unit: effectiveIndicator?.unit,
-  }), [effectiveIndicator?.name, effectiveIndicator?.unit]);
+    source: effectiveIndicator?.source, source_url: effectiveIndicator?.source_url,
+    frequency: effectiveIndicator?.frequency,
+  }), [effectiveIndicator]);
 
   const handleFullData = useCallback((d) => setFullChartData(d), []);
 

@@ -23,11 +23,11 @@ from sqlalchemy import func, select
 from app.config import settings
 from app.core.cache import get_state_redis
 from app.database import analytics_session
+from app.services.identity.consents import newsletter_subscriber_count_query
 from app.models import (
     AuthAudit,
     BehaviorEvent,
     BehaviorSession,
-    Consent,
     EmailCredential,
     FetchLog,
     FrontendEvent,
@@ -354,7 +354,7 @@ async def build_snapshot(d: date) -> dict[str, Any]:
             select(User).where(User.created_at >= start, User.created_at < end)
         )).scalars().all()
         newsletter = await db.scalar(
-            select(func.count(func.distinct(Consent.user_id))).where(Consent.kind == "newsletter")
+            newsletter_subscriber_count_query()
         ) or 0
 
         new_list = []

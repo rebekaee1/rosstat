@@ -53,10 +53,8 @@ function ruYears(n) {
 function DownloadButton({ label, onDownload, blocked, hint }) {
   const t = useT();
   const handleClick = () => {
-    if (blocked) {
-      window.dispatchEvent(new CustomEvent('fe:download-limit'));
-      return;
-    }
+    // Let the export API enforce the guest limit: excel.js then retains the
+    // exact payload for completion after auth, instead of losing the intent.
     onDownload?.();
   };
   const tooltip = blocked ? t('download.dataBlocked') : hint;

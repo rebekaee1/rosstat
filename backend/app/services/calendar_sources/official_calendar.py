@@ -8,6 +8,7 @@ from datetime import date, datetime, timedelta
 import requests
 from bs4 import BeautifulSoup
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.concurrency import run_in_threadpool
 
 from app.database import async_session as async_session_factory
 from app.services.calendar_sources.common import CalendarCandidate, stable_key, upsert_calendar_candidates
@@ -367,13 +368,10 @@ async def refresh_official_calendar(
     today: date | None = None,
     db: AsyncSession | None = None,
 ) -> int:
-    today = today or date.today()
-    candidates = build_rule_candidates(today=today, months_ahead=months_ahead)
-    candidates.extend(build_cbr_daily_rule_candidates(today=today, months_ahead=months_ahead))
-    candidates.extend(build_cbr_monetary_policy_candidates(today=today, months_ahead=months_ahead))
-    candidates.extend(fetch_cbr_calendar_candidates(today=today, months_ahead=months_ahead))
-    candidates.extend(fetch_rosstat_plan_candidates_safe(today=today, months_ahead=months_ahead))
-    candidates = prefer_explicit_plan_candidates(candidates)
+    from app.services.display import today_msk
+
+    today = today or today_msk()
+    candidates = await run_in_threadpool(_collect_calendar_candidates, today, months_ahead)
 
     async def _persist(session: AsyncSession) -> int:
         from app.services.calendar_sources.enrichment import (
@@ -392,6 +390,18 @@ async def refresh_official_calendar(
         return await _persist(db)
     async with async_session_factory() as session:
         return await _persist(session)
+
+
+def _collect_calendar_candidates(today: date, months_ahead: int) -> list[CalendarCandidate]:
+    """Synchronous source HTTP/parsing must not block the serving event loop."""
+    candidates = build_rule_candidates(today=today, months_ahead=months_ahead)
+    candidates.extend(build_cbr_daily_rule_candidates(today=today, months_ahead=months_ahead))
+    candidates.extend(build_cbr_monetary_policy_candidates(today=today, months_ahead=months_ahead))
+    candidates.extend(fetch_cbr_calendar_candidates(today=today, months_ahead=months_ahead))
+    candidates.extend(fetch_rosstat_plan_candidates_safe(today=today, months_ahead=months_ahead))
+    candidates = prefer_explicit_plan_candidates(candidates)
+
+    return candidates
 
 
 def build_rule_candidates(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
@@ -428,7 +438,7 @@ def prefer_explicit_plan_candidates(candidates: list[CalendarCandidate]) -> list
     for c in candidates:
         is_shadowed_rule = (
             c.source == "rosstat"
-            and c.date_confidence == "official_rule"
+            and c.date_confidence in ("official_rule", "estimated")
             and c.indicator_code is not None
             and c.reference_period is not None
             and (c.indicator_code, c.reference_period) in explicit_refs
@@ -441,7 +451,7 @@ def prefer_explicit_plan_candidates(candidates: list[CalendarCandidate]) -> list
 def fetch_rosstat_plan_candidates_safe(*, today: date, months_ahead: int) -> list[CalendarCandidate]:
     """Кандидаты официального графика публикаций Росстата (official_explicit).
 
-    По умолчанию выключено (`calendar_rosstat_plan_enabled=false`): источник —
+    Включено по умолчанию после сверки с живым документом: источник —
     docx «График размещения срочных информаций и справок» со страницы «План
     выпуска публикаций» rosstat.gov.ru/publications-plans. Включение —
     CALENDAR_ROSSTAT_PLAN_ENABLED=true в .env. Прогон сети только при
@@ -481,7 +491,7 @@ def build_rosstat_rule_candidates(*, today: date, months_ahead: int) -> list[Cal
                 source="rosstat",
                 indicator_code=rule["code"],
                 scheduled_date=scheduled,
-                date_confidence="official_rule",
+                date_confidence="estimated",
                 reference_period=_month_ref(ref_month, ref_year),
                 importance=rule["importance"],
                 source_url=rule["source_url"],
@@ -506,7 +516,7 @@ def build_rosstat_rule_candidates(*, today: date, months_ahead: int) -> list[Cal
                 source="rosstat",
                 indicator_code=rule["code"],
                 scheduled_date=scheduled,
-                date_confidence="official_rule",
+                date_confidence="estimated",
                 reference_period=f"Q{q} {q_end.year}",
                 importance=rule["importance"],
                 source_url=ROSSTAT_GDP_URL,
@@ -540,7 +550,7 @@ def build_minfin_rule_candidates(*, today: date, months_ahead: int) -> list[Cale
                 source="minfin",
                 indicator_code=rule["code"],
                 scheduled_date=scheduled,
-                date_confidence="official_rule",
+                date_confidence="estimated",
                 reference_period=_month_ref(ref_month, ref_year),
                 importance=rule["importance"],
                 source_url=MINFIN_SCHEDULE_URL,

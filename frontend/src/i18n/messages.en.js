@@ -1132,6 +1132,12 @@ export default {
   'download.downloadLabel': 'Download {label}',
   'download.chartPng': 'Download chart as image (PNG)',
   'download.guestHistory': 'Guests — last {years}. Full history after sign-in',
+  'download.resume.retryOnPage': 'You are back at your selected chart. Click CSV or Excel again: the download data could not be retained during sign-in.',
+  'download.resume.back': 'Back to chart',
+  'download.resume.title': 'Continue download',
+  'download.resume.body': 'You are signed in. Download your selected data with the same period and view.',
+  'download.resume.action': 'Download selected file',
+  'download.resume.error': 'Download failed. Please try again.',
   'download.limit.title': 'Available after registration',
   'download.limit.body':
     'Downloading data and charts is available to registered users. '
@@ -1415,6 +1421,8 @@ export default {
   'calendar.hero.nextEvent': 'Next event',
   'calendar.hero.msk': 'MSK',
   'calendar.event.fact': 'Actual',
+  'calendar.event.officialRule': 'source schedule',
+  'calendar.event.awaitingConfirmation': 'publication not yet confirmed',
   'calendar.event.official': 'official',
   'calendar.event.importance': '{level} importance',
   'calendar.event.importance.high': 'High',

@@ -9,6 +9,7 @@ import { track, events } from '../lib/track';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useT } from '../i18n';
+import { authLink, prepareAuthReturn } from '../lib/authReturn';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
 // Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».
@@ -104,7 +105,14 @@ export default function RegisterNudge() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] print:hidden max-sm:bottom-3 max-sm:right-3">
+    <>
+    <aside className="sm:hidden mx-4 my-6 flex items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 py-3 print:hidden">
+      <Link to={isAuthed ? variant.ctaTo : authLink('/register')}
+        onClick={() => { prepareAuthReturn(); track(variant.ev.cta); }}
+        className={cn(FOCUS_RING, 'flex-1 text-sm text-champagne')}>{t(variant.ctaKey)}</Link>
+      <button type="button" onClick={dismiss} aria-label={t('common.close')} className={cn(FOCUS_RING, 'p-2 text-text-tertiary')}><X className="w-4 h-4" /></button>
+    </aside>
+    <div className="hidden sm:block fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] print:hidden">
       {!expanded ? (
         <button
           type="button"
@@ -152,8 +160,8 @@ export default function RegisterNudge() {
           <p className="px-5 pb-3 text-xs text-text-tertiary">{t(variant.noteKey)}</p>
           <div className="flex items-center gap-3 px-5 py-3 border-t border-border-subtle bg-obsidian-lighter/30">
             <Link
-              to={variant.ctaTo}
-              onClick={() => track(variant.ev.cta)}
+              to={isAuthed ? variant.ctaTo : authLink('/register')}
+              onClick={() => { prepareAuthReturn(); track(variant.ev.cta); }}
               className={cn(FOCUS_RING, 'flex-1 text-center rounded-xl bg-champagne text-white text-sm font-semibold py-2 hover:bg-champagne-muted transition-colors')}
             >
               {t(variant.ctaKey)}
@@ -169,5 +177,6 @@ export default function RegisterNudge() {
         </div>
       )}
     </div>
+    </>
   );
 }

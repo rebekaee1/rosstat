@@ -1,3 +1,4 @@
+import { cpiProvenance } from '../lib/cpiProvenance';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, GitCompare } from 'lucide-react';
@@ -456,9 +457,14 @@ export default function IndicatorDetail() {
     setFullChartData(data);
   }, [setFullChartData]);
 
+  const provenance = cpiProvenance(code, chartMode, locale);
   const downloadMeta = useMemo(() => ({
-    name: effectiveIndicator?.name, unit: effectiveIndicator?.unit,
-  }), [effectiveIndicator?.name, effectiveIndicator?.unit]);
+    name: provenance ? `${effectiveIndicator?.name} — ${locale === 'en' ? 'annual change (calculated)' : 'годовое изменение (расчёт)'}` : effectiveIndicator?.name,
+    unit: provenance ? '%' : effectiveIndicator?.unit,
+    source: effectiveIndicator?.source, source_url: effectiveIndicator?.source_url,
+    frequency: provenance && safeViewMode === 'inflation-quarter' ? 'quarterly'
+      : provenance && ['inflation-year', 'yoy'].includes(safeViewMode) ? 'annual' : effectiveIndicator?.frequency, provenance,
+  }), [effectiveIndicator, provenance, locale, safeViewMode]);
 
   const downloadMode = isPriceCategory ? chartMode : null;
 
@@ -558,6 +564,8 @@ export default function IndicatorDetail() {
         headerRef={headerRef}
         displayFrequency={effectiveIndicator?.frequency}
       />
+
+      {provenance && <p role="note" className="mb-4 text-sm text-text-secondary">{provenance}</p>}
 
       <IndicatorTelemetryGrid
         indicator={effectiveIndicator}

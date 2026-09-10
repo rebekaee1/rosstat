@@ -98,11 +98,16 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
     changed = 0
 
     for candidate in candidates:
-        if candidate.date_confidence not in OFFICIAL_CONFIDENCES:
-            raise ValueError(f"Unsupported public calendar confidence: {candidate.date_confidence}")
+        if candidate.date_confidence not in (*OFFICIAL_CONFIDENCES, "estimated"):
+            raise ValueError(f"Unsupported calendar confidence: {candidate.date_confidence}")
 
         indicator_id = code_to_id.get(candidate.indicator_code) if candidate.indicator_code else None
         existing = await _find_existing_event(db, candidate, indicator_id)
+        # A temporary plan-fetch failure must never erase a previously verified
+        # date through the natural-key fallback or a lower-confidence refresh.
+        if (existing is not None and existing.date_confidence == "official_explicit"
+                and candidate.date_confidence != "official_explicit"):
+            continue
         metadata = merge_metadata(
             existing.metadata_json if existing else None,
             candidate,
@@ -118,9 +123,7 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
 
         # Preserve early-release enrichment: if IndicatorData already filled
         # actual_value, do not downgrade status back to scheduled on sync.
-        if existing is not None and (existing.actual_value or existing.status == "released"):
-            status = "released"
-        elif candidate.scheduled_date < fetched_at.date():
+        if existing is not None and (existing.actual_value is not None and existing.actual_value != ""):
             status = "released"
         else:
             status = "scheduled"
@@ -134,7 +137,7 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
                 indicator_id=indicator_id,
                 scheduled_date=candidate.scheduled_date,
                 scheduled_time=candidate.scheduled_time,
-                is_estimated=False,
+                is_estimated=candidate.date_confidence == "estimated",
                 reference_period=candidate.reference_period,
                 importance=candidate.importance,
                 status=status,
@@ -168,7 +171,7 @@ async def upsert_calendar_candidates(db: AsyncSession, candidates: list[Calendar
         existing.indicator_id = indicator_id
         existing.scheduled_date = candidate.scheduled_date
         existing.scheduled_time = candidate.scheduled_time
-        existing.is_estimated = False
+        existing.is_estimated = candidate.date_confidence == "estimated"
         existing.reference_period = candidate.reference_period
         existing.importance = candidate.importance
         existing.status = status

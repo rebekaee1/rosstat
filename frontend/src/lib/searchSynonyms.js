@@ -167,7 +167,7 @@ function fuzzyMatch(ind, q) {
 }
 
 /**
- * Ранжированный фильтр: точная подстрока → синонимы → fuzzy.
+ * Ранг: точное имя/код → canonical intent → имя → семейство → метаданные → fuzzy.
  * Fuzzy включается только если точных подстрочных совпадений нет.
  */
 export function filterSearchIndicators(indicators, rawQuery, { limit = 600 } = {}) {
@@ -176,14 +176,22 @@ export function filterSearchIndicators(indicators, rawQuery, { limit = 600 } = {
   const list = Array.isArray(indicators) ? indicators : [];
   const targets = resolveSynonymTargets(q);
 
-  const exact = [];
-  const synonym = [];
+  // Stable ranking inside each tier preserves catalogue order without hiding
+  // derived/unlisted siblings. Exact metadata matches must not bury intent.
+  const tiers = [[], [], [], [], []];
+  let hasSubstring = false;
   for (const ind of list) {
-    if (haystackOf(ind).includes(q)) {
-      exact.push(ind);
-      continue;
-    }
-    if (codeMatchesTargets(ind, targets)) synonym.push(ind);
+    const codes = itemCodes(ind);
+    const names = [ind.name, ind.name_en].filter(Boolean).map(normalizeSearchQuery);
+    const substring = haystackOf(ind).includes(q);
+    const synonym = codeMatchesTargets(ind, targets);
+    hasSubstring ||= substring;
+    if (!substring && !synonym) continue;
+    const tier = codes.includes(q) || names.includes(q) ? 0
+      : codes.some(code => targets.includes(code)) ? 1
+        : names.some(name => name.includes(q)) ? 2
+          : synonym ? 3 : 4;
+    tiers[tier].push(ind);
   }
 
   const seen = new Set();
@@ -194,10 +202,9 @@ export function filterSearchIndicators(indicators, rawQuery, { limit = 600 } = {
     seen.add(key);
     out.push(ind);
   };
-  exact.forEach(push);
-  synonym.forEach(push);
+  tiers.forEach(tier => tier.forEach(push));
 
-  if (exact.length === 0) {
+  if (!hasSubstring) {
     for (const ind of list) {
       const key = ind.code || ind.key || ind.concept_slug;
       if (!key || seen.has(key)) continue;

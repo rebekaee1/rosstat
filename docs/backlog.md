@@ -1503,3 +1503,18 @@ ADR-0006 «Subsequent additions» дополнен описанием решен
 
 - F1: Криптовалюты (BTC, ETH, USDT через CoinGecko) — Никита решил, что не нужно для аналитической платформы.
 - F2: Региональные разрезы (например, инфляция по 82 субъектам РФ) — масштаб 100+ ×, требует отдельного UI с картой и фильтрами.
+
+
+## 2026-09-10 — Подтверждённые ошибки исследования: стабилизация пользовательских сценариев
+
+Scope approved by owner: repair, commit, GitHub push, production deploy and live acceptance; redesign remains a separate decision.
+
+- Calendar: official Rosstat DOCX enabled, unverified Rosstat/Minfin rule dates kept private, elapsed dates no longer prove publication; retain verified dates on source failure; source fetching off the event loop. ADR-0005 and calendar_truth route/ingest/scheduler regression.
+- CPI: the existing YoY derived from rounded monthly observations remains unchanged and is explicitly labelled as a calculation in card/methodology/SSR/today and downloads. A separate direct official YoY history is not invented.
+- Exports: metadata now reaches CSV/XLSX (source, unit, frequency, calculation provenance), unknown source is not called Eurostat. Bounded worker construction protects serving requests. Guest auth preserves safe return URL and graph state, offers explicit resume for stored export payloads or a clear retry-on-page fallback for large/unavailable storage.
+- Account: failed logout/delete retains state and shows the error. Newsletter counts follow the latest opt-in/revocation, including re-subscription.
+- Search: exact names/codes and canonical synonym intent outrank category/keyword noise; all matches and hidden siblings remain reachable. Mobile registration invitation uses normal document flow.
+- Compare: differences between percentage values use percentage points; index differences use index points; empty legend fragments removed.
+- Historical SEO: no unconditional forecast promise for daily gold/FX; nearby year links preserved for old pages, Dataset coverage ends at the last actual observation. A 20-URL baseline/acceptance manifest lives in the local modern-strategy research artifacts.
+
+Remaining product/research decisions: design reference selection, commercial offer/pricing, password recovery/email verification, official direct YoY series if a complete source is established. Search-engine LOW_QUALITY and 10,000 real daily users are outcomes to measure, not guaranteed by this release. Device-clock freshness is a potential edge case; no affected real session established in the audit.

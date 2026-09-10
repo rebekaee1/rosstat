@@ -9,7 +9,8 @@ from sqlalchemy import delete, func, select
 
 from app.config import settings
 from app.database import analytics_session
-from app.models import BehaviorEvent, Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
+from app.services.identity.consents import newsletter_subscriber_count_query
+from app.models import BehaviorEvent, EmailCredential, FrontendEvent, OAuthIdentity, User
 from app.services.alerting import send_telegram_digest
 from app.services.analytics_ingestion import (
     finish_sync_run,
@@ -80,7 +81,7 @@ async def _user_stats_lines() -> list[str]:
             select(User).where(User.created_at >= since).order_by(User.created_at.desc())
         )).scalars().all()
         newsletter = await db.scalar(
-            select(func.count(func.distinct(Consent.user_id))).where(Consent.kind == "newsletter")
+            newsletter_subscriber_count_query()
         ) or 0
 
         lines = [

@@ -235,3 +235,15 @@ export function applyCompareTransform(points, transform) {
   }
   return points;
 }
+
+/** Absolute subtraction of rate levels is measured in percentage points. */
+export function compareDifferenceUnit(unit, { indexed = false, locale = 'ru' } = {}) {
+  if (indexed || /^(индекс|index|пункты|points)$/i.test(unit || '')) return locale === 'en' ? 'index points' : 'п. индекса';
+  if (typeof unit === 'string' && /^%($|\s)/.test(unit)) return unit.replace('%', locale === 'en' ? 'p.p.' : 'п.п.');
+  return unit;
+}
+
+export function compareLegendParts(parts) {
+  return parts.filter((part) => typeof part === 'string')
+    .map((part) => part.replace(/^\s*,\s*/, '').trim()).filter(Boolean).join(', ');
+}

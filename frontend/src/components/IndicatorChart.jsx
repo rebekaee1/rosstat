@@ -1,3 +1,4 @@
+import { rememberAuthView, restoredAuthView } from '../lib/authReturn';
 import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import {
@@ -188,13 +189,20 @@ export default function IndicatorChart({
     label: t(opt.labelKey),
   }));
   const defaultRange = RANGE_DEFAULTS[rangePreset] || RANGE_DEFAULTS.default;
-  const [range, setRange] = useState(defaultRange);
-  const [windowOverride, setWindowOverride] = useState(null);
-  const [offset, setOffset] = useState(0);
+  const viewKey = `${indicatorCode}:${chartMode ?? mode}:${rangePreset}`;
+  const [savedView] = useState(() => restoredAuthView(viewKey));
+  const [range, setRange] = useState(savedView?.range ?? defaultRange);
+  const [windowOverride, setWindowOverride] = useState(savedView?.windowOverride ?? null);
+  const [offset, setOffset] = useState(savedView?.offset ?? 0);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [prevPreset, setPrevPreset] = useState(rangePreset);
-  const [chartType, setChartType] = useState(defaultChartType);
+  const [chartType, setChartType] = useState(savedView?.chartType ?? defaultChartType);
+  useEffect(() => {
+    const save = () => rememberAuthView(viewKey, { range, windowOverride, offset, chartType });
+    window.addEventListener('fe:auth-leave', save);
+    return () => window.removeEventListener('fe:auth-leave', save);
+  }, [viewKey, range, windowOverride, offset, chartType]);
   // Ширина plot-area: на мобилке 7 длинных тиков («май 2022») наезжают друг
   // на друга при interval={0} — бюджет тиков считаем от фактической ширины.
   const [plotWidth, setPlotWidth] = useState(0);

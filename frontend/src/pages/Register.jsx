@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import useDocumentMeta from '../lib/useMeta';
 import { useAuth } from '../context/authContext';
 import { registerUser } from '../lib/api';
@@ -7,12 +7,15 @@ import { apiErrorMessage } from '../lib/apiErrorMessage';
 import OAuthButtons from '../components/OAuthButtons';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
+import { safeReturnTo, authLink } from '../lib/authReturn';
 
 export default function Register() {
   const t = useT();
   useDocumentMeta({ title: t('auth.register.metaTitle'), path: '/register', robots: 'noindex, nofollow' });
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const { setUser } = useAuth();
+  const next = safeReturnTo(params.get('next'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [consent, setConsent] = useState(false);
@@ -33,7 +36,7 @@ export default function Register() {
       setUser(user);
       track(events.AUTH_SIGNUP, { method: 'email', newsletter: newsletter ? 1 : 0 });
       if (newsletter) track(events.NEWSLETTER_OPT_IN, { channel: 'email' });
-      navigate('/account');
+      navigate(next, { replace: true });
     } catch (err) {
       setError(apiErrorMessage(err, t, 'auth.register.error'));
     } finally {
@@ -49,7 +52,7 @@ export default function Register() {
         {t('auth.register.subtitle')}
       </p>
 
-      <OAuthButtons intent="login" dividerLabel={t('auth.oauth.divider')} />
+      <OAuthButtons next={next} intent="login" dividerLabel={t('auth.oauth.divider')} />
 
       <form onSubmit={submit} className="space-y-4">
         <div>
@@ -95,7 +98,7 @@ export default function Register() {
       </form>
 
       <p className="text-sm text-text-secondary mt-6 text-center">
-        {t('auth.register.haveAccount')} <Link to="/login" className="text-champagne hover:underline">{t('common.login')}</Link>
+        {t('auth.register.haveAccount')} <Link to={authLink('/login', next)} className="text-champagne hover:underline">{t('common.login')}</Link>
       </p>
       </div>
     </div>

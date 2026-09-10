@@ -312,6 +312,14 @@ def _enrich_description(desc: str, current, unit: str,
     return f"{snippet} {desc}"
 
 
+def _cpi_provenance_note(code: str, locale: str | None = None) -> str:
+    from app.data.cpi_provenance import cpi_provenance
+    from app.services.locale import get_locale
+
+    text = cpi_provenance(code, locale or get_locale())
+    return f'<p class="seo-data-provenance">{escape(text)}</p>' if text else ""
+
+
 def _forecast_ssr_enabled(indicator: Indicator) -> bool:
     """B1/B2 пилот V2+V4+V5: whitelist ∩ реальный модельный прогноз."""
     if indicator.code not in FORECAST_SSR_PILOT_CODES:
@@ -2206,13 +2214,14 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         ).format(name=name, year=year)
 
     year_link_tpl = yt("year_link") or "{name} в {year} году"
-    year_links = _links_list(
-        tuple(
-            (paths.russia_indicator_year(code, y), year_link_tpl.format(name=name, year=y))
-            for y in years
-            if y != year
-        )[-12:]
-    )
+    # Keep adjacent historical years reachable from old landing pages too.
+    # Taking the last twelve years globally sent a 2000 page straight to 2015+.
+    nearby_years = sorted(sorted((y for y in years if y != year),
+                                 key=lambda y: (abs(y - year), y))[:12])
+    year_links = _links_list(tuple(
+        (paths.russia_indicator_year(code, y), year_link_tpl.format(name=name, year=y))
+        for y in nearby_years
+    ))
     canonical_path = paths.russia_indicator_year(code, year)
     year_trail_fn = (
         crumbs.global_market_indicator_year_trail
@@ -2227,15 +2236,16 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         year,
         canonical_path,
     )
-    chart_h2 = yt("h2_chart") or "График и прогноз"
+    chart_h2 = yt("h2_chart") or "Полная история и график"
     other_h2 = yt("h2_other_years") or "Другие годы"
-    chart_p_tpl = yt("chart_p") or "Полная история, интерактивный график и прогноз — на странице {_link}."
+    chart_p_tpl = yt("chart_p") or "Полная история и интерактивный график — на странице {_link}."
     chart_p = chart_p_tpl.format(_link=_link(paths.russia_indicator(code), name))
     h1_text = title.split(" — ")[0]
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(year_trail)}
 <h1>{escape(h1_text)}</h1>
 <p>{escape(desc)}</p>
+{_cpi_provenance_note(code)}
 {_seo_chart_figure(paths.og_indicator(paths.RUSSIA, code, year), chart_alt, chart_caption, href=paths.russia_indicator(code))}
 {data_section}
 <section><h2>{escape(chart_h2)}</h2><p>{chart_p}</p></section>
@@ -2243,10 +2253,9 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
 </main>"""
     # temporalCoverage — по факту, не «до 31 декабря» для незакрытого года (В-26).
     # Для годового ряда с одной точкой покрытие — дата этой точки.
-    if single_point:
-        coverage_end = _iso_date(last.date)
-    else:
-        coverage_end = _iso_date(last.date) if current_year else f"{year}-12-31"
+    # A closed calendar year does not prove observations exist through December.
+    # Describe the actual observations, including incomplete historical series.
+    coverage_end = _iso_date(last.date)
     jsonld_name = (yt("jsonld_name") or "{name} — {year} год").format(name=name, year=year)
     json_ld = [
         _site_json_ld(),
@@ -2597,7 +2606,7 @@ def _indicator_body(
 {_seo_chart_figure(paths.og_indicator(paths.RUSSIA, og_code), chart_alt, chart_caption, href=paths.russia_indicator(og_code))}
 {forecast_note}<section><h2>{escape(section_current)}</h2>
 <ul>
-<li>{escape(li_latest_tpl.format(value=current_text))}</li>
+<li>{escape(li_latest_tpl.format(value=current_text))}{_cpi_provenance_note(value_code, loc)}</li>
 <li>{escape(li_date_tpl.format(date=_format_date(current.date if current else None)))}</li>
 <li>{escape(li_freq_tpl.format(frequency=freq_text))}</li>
 <li>{li_source_tpl.format(source=source_link)}</li>

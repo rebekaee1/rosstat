@@ -459,28 +459,19 @@ async def staleness_check_job() -> list[tuple[str, int]]:
 
 
 async def _promote_past_events() -> None:
-    """Bulk-update stale 'scheduled' events whose date has passed → 'released'.
-
-    Also enrich from IndicatorData (early publications still on a future
-    scheduled_date) so upcoming API stops advertising already-released rows.
-    """
-    today = datetime.now(timezone.utc).replace(tzinfo=None).date()
+    """Repair legacy elapsed-date promotions, then confirm from published data."""
     async with async_session() as db:
         result = await db.execute(
             update(EconomicEvent)
             .where(
-                EconomicEvent.status == "scheduled",
-                EconomicEvent.scheduled_date < today,
+                EconomicEvent.status == "released",
+                EconomicEvent.actual_value.is_(None),
             )
-            .values(
-                status="released",
-                updated_at=datetime.now(timezone.utc).replace(tzinfo=None),
-            )
+            .values(status="scheduled", updated_at=datetime.now(timezone.utc).replace(tzinfo=None))
         )
-        count = result.rowcount
         await db.commit()
-        if count:
-            logger.info("Promoted %d stale calendar events: scheduled → released", count)
+        if result.rowcount:
+            logger.info("Removed %d unconfirmed calendar release statuses", result.rowcount)
         try:
             from app.services.calendar_sources.enrichment import (
                 enrich_events_from_indicator_data,

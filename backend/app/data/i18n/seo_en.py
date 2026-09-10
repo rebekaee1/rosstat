@@ -1425,10 +1425,10 @@ YEAR_TEMPLATES_EN: dict[str, str] = {
     "h2_totals": "{year} totals",
     "h2_neighbors": "Dynamics over neighbouring years",
     "h2_all_values": "All values for {year}",
-    "h2_chart": "Chart and forecast",
+    "h2_chart": "Full history and chart",
     "h2_other_years": "Other years",
     "chart_p": (
-        "Full history, interactive chart and forecast — on the {_link} page."
+        "Full history and interactive chart — on the {_link} page."
     ),
     "year_link": "{name} in {year}",
     "chart_alt_single": (

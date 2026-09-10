@@ -206,11 +206,11 @@ export const fetchOAuthProviders = ({ signal } = {}) =>
  * Серверная выгрузка таблицы (Excel/CSV) с гейтом лимита.
  * Возвращает Blob; при 403 download_limit бросает ошибку с code='download_limit'.
  */
-export const exportTable = async ({ format, filename, valueLabel, points }) => {
+export const exportTable = async ({ format, filename, valueLabel, points, meta }) => {
   try {
     const res = await api.post(
       '/export/table',
-      { format, filename, value_label: valueLabel, points },
+      { format, filename, value_label: valueLabel, points, meta },
       { responseType: 'blob' },
     );
     const raw = res.headers?.['x-download-remaining'];

@@ -335,8 +335,8 @@ function AppRoutes() {
         </Suspense>
         </ErrorBoundary>
       </main>
-      <Footer />
       <RegisterNudge />
+      <Footer />
       <DownloadLimitModal />
     </AuthProvider>
     </LocaleProvider>

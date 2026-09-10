@@ -5,7 +5,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import PlainTextResponse
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func, and_, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -23,7 +23,10 @@ PUBLIC_CONFIDENCES = ("official_explicit", "official_rule")
 def _public_calendar_conditions():
     """Rows visible to users must be source-bound, not only confidence-tagged."""
     return [
-        EconomicEvent.date_confidence.in_(PUBLIC_CONFIDENCES),
+        or_(
+            EconomicEvent.date_confidence == "official_explicit",
+            and_(EconomicEvent.date_confidence == "official_rule", EconomicEvent.source == "cbr"),
+        ),
         EconomicEvent.is_estimated.is_(False),
         EconomicEvent.event_key.is_not(None),
         EconomicEvent.source_url.is_not(None),
@@ -34,7 +37,8 @@ def _public_calendar_conditions():
 
 def _is_public_source_bound_event(ev: EconomicEvent) -> bool:
     return (
-        ev.date_confidence in PUBLIC_CONFIDENCES
+        (ev.date_confidence == "official_explicit"
+         or (ev.date_confidence == "official_rule" and ev.source == "cbr"))
         and ev.is_estimated is False
         and bool(ev.event_key)
         and bool(ev.source_url)
@@ -44,9 +48,11 @@ def _is_public_source_bound_event(ev: EconomicEvent) -> bool:
 
 
 def _effective_status(ev: EconomicEvent) -> str:
-    """Auto-promote 'scheduled' → 'released' when the date has passed."""
-    if ev.status == "scheduled" and ev.scheduled_date < today_msk():
+    """A scheduled date is not evidence that the source published the data."""
+    if ev.actual_value is not None and ev.actual_value != "":
         return "released"
+    if ev.status in ("scheduled", "released"):
+        return "awaiting_confirmation" if ev.scheduled_date < today_msk() else "scheduled"
     return ev.status
 
 
@@ -97,7 +103,7 @@ async def list_events(
 
     # Locale in key: event.title is localized via event_public_title (RU/EN race otherwise).
     cache_key = (
-        f"fe:calendar:sourcebound:{get_locale()}:{from_date}:{to_date}:"
+        f"fe:calendar:sourcebound-v2:{get_locale()}:{from_date}:{to_date}:"
         f"{source}:{importance}:{event_type}:{limit}:{offset}"
     )
     cached = await cache_get(cache_key)
@@ -149,7 +155,7 @@ async def upcoming_events(
     importance_min: int = Query(1, ge=1, le=3),
 ):
     cache_key = (
-        f"fe:calendar:upcoming:sourcebound:{get_locale()}:{limit}:{importance_min}"
+        f"fe:calendar:upcoming:sourcebound-v2:{get_locale()}:{limit}:{importance_min}"
     )
     cached = await cache_get(cache_key)
     if cached:

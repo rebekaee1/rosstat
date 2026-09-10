@@ -29,7 +29,7 @@ import useSearchTracking from '../lib/useSearchTracking';
 import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
-  REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
+  compareDifferenceUnit, compareLegendParts, REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
   applyCompareTransform, isIndexableBase, rebaseToHundred, resolveStepOverride,
   worldCompareRepresentationsFor, worldCompareTransformFor,
 } from '../lib/compareRepresentation';
@@ -1661,11 +1661,11 @@ export default function ComparePage() {
                     <span className="w-3 h-0.5 rounded-full" style={{ backgroundColor: s.color }} />
                     <span style={{ color: s.color }}>{s.ind?.name || s.code}</span>
                     <span className="text-text-tertiary">
-                      ({s.repLabel}{dropped
-                        ? t('compare.notRebased')
+                      ({compareLegendParts([s.repLabel, ...(dropped
+                        ? [t('compare.notRebased')]
                         : indexed
-                          ? t('compare.start100')
-                          : `, ${unitSuffix(s.unit)}${s.ind?.frequency ? `, ${freqLabel(s.ind.frequency, t)}` : ''}, ${axisFor(i) === 'left' ? t('compare.axisLeft') : t('compare.axisRight')}`})
+                          ? [t('compare.start100')]
+                          : [unitSuffix(s.unit), s.ind?.frequency ? freqLabel(s.ind.frequency, t) : '', axisFor(i) === 'left' ? t('compare.axisLeft') : t('compare.axisRight')])])})
                     </span>
                   </span>
                 );
@@ -1825,7 +1825,7 @@ export default function ComparePage() {
                         metric.change > 0 ? 'text-positive' : metric.change < 0 ? 'text-negative' : 'text-text-primary',
                       )}>
                         {metric.change > 0 ? '+' : ''}
-                        {formatValueWithUnit(metric.change, displayUnit)}
+                        {formatValueWithUnit(metric.change, compareDifferenceUnit(metric.item.unit || '%', { indexed, locale }))}
                       </div>
                     </div>
                   </div>

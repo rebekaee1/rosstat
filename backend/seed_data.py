@@ -18,6 +18,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from app.data.cpi_provenance import cpi_provenance
 from app.database import async_session
 from app.models import Indicator, IndicatorData, SeedState
 from app.services.forecast_pipeline import retrain_indicator_forecast
@@ -5023,6 +5024,9 @@ MONTHLY_AUTO_FORECAST_CODES = {
 }
 
 for _ind in INDICATORS:
+    if _notice := cpi_provenance(_ind["code"]):
+        _ind["description"] += " " + _notice
+        _ind["methodology"] = _notice
     if _ind["code"] in MONTHLY_AUTO_FORECAST_CODES:
         _cfg = _ind.setdefault("model_config_json", {})
         _cfg["forecast_steps"] = 12

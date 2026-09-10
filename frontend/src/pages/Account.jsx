@@ -47,28 +47,30 @@ export default function Account() {
   }
   if (!user) return null;
 
-  const run = async (fn, okMsg) => {
+  const run = async (fn, okMsg, refresh = true) => {
     setBusy(true); setErr(null); setMsg(null);
     try {
       await fn();
       if (okMsg) setMsg(okMsg);
-      await refetch();
+      if (refresh) await refetch();
+      return true;
     } catch (e) {
       setErr(apiErrorMessage(e, t, 'account.errorGeneric'));
+      return false;
     } finally {
       setBusy(false);
     }
   };
 
   const doLogout = async () => {
-    await run(() => logoutUser());
+    if (!await run(() => logoutUser(), null, false)) return;
     setUser(null);
     navigate('/');
   };
 
   const doDelete = async () => {
     if (!window.confirm(t('account.deleteConfirm'))) return;
-    await run(() => deleteAccount());
+    if (!await run(() => deleteAccount(), null, false)) return;
     setUser(null);
     navigate('/');
   };

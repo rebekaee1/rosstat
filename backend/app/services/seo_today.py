@@ -9,6 +9,8 @@ canonical, интент «актуальное значение прямо се�
 
 from __future__ import annotations
 
+from app.data.cpi_provenance import cpi_provenance
+
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
 
@@ -380,6 +382,10 @@ async def render_today_indicator_html(code: str, db: AsyncSession) -> tuple[int,
             f"Данные официального источника ({escape(indicator.source)}); "
             f"страница обновляется автоматически по мере выхода новых значений."
         )
+    from app.services.locale import get_locale
+    provenance = cpi_provenance(spec.series_code, get_locale())
+    if provenance:
+        body_lead += " " + escape(provenance)
     chart_alt = (
         today_template("chart_alt") or "{query} сегодня — график, последнее значение {value}, источник {source}"
     ).format(query=query, value=value_text, source=source)

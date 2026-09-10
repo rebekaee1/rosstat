@@ -25,6 +25,7 @@ from app.security import download_quota as dq
 from app.services.api_i18n import api_detail
 from app.services.display import format_number_ru, today_msk
 from app.services.locale import get_locale
+from app.services.export_render import ExportAdmission, render_export_async, reserve_export_admission
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/export", tags=["export"])
@@ -48,6 +49,7 @@ class ExportMeta(BaseModel):
     country: str | None = None
     source: str | None = None
     source_url: str | None = None
+    provenance: str | None = None
 
 
 class ExportIn(BaseModel):
@@ -62,6 +64,7 @@ class ExportIn(BaseModel):
     country: str | None = None
     source: str | None = None
     source_url: str | None = None
+    provenance: str | None = None
     meta: ExportMeta | None = None
 
     @field_validator("format")
@@ -136,6 +139,7 @@ def _resolve_meta(body: ExportIn | None = None, **kwargs) -> dict[str, str]:
         "country": str(get("country") or "").strip(),
         "source": str(get("source") or "").strip(),
         "source_url": str(get("source_url") or "").strip(),
+        "provenance": str(get("provenance") or "").strip(),
         "exported_at": exported_at,
         "exported_date": today_msk().isoformat(),
     }
@@ -160,7 +164,8 @@ def _export_labels() -> dict[str, str]:
             "facts": "Actual",
             "forecasts": "Forecast",
             "forecast_value": "Forecast {label}",
-            "default_source": "Eurostat",
+            "default_source": "Not specified",
+            "provenance": "Calculation",
         }
     return {
         "indicator": "Показатель",
@@ -179,7 +184,8 @@ def _export_labels() -> dict[str, str]:
         "facts": "Факт",
         "forecasts": "Прогноз",
         "forecast_value": "Прогноз {label}",
-        "default_source": "Евростат",
+        "default_source": "Не указан",
+        "provenance": "Расчёт",
     }
 
 
@@ -198,6 +204,8 @@ def _meta_rows(meta: dict[str, str], value_label: str) -> list[tuple[str, str]]:
         rows.append((labels["country"], meta["country"]))
     source = meta.get("source") or labels["default_source"]
     rows.append((labels["source"], source))
+    if meta.get("provenance"):
+        rows.append((labels["provenance"], meta["provenance"]))
     if meta.get("source_url"):
         rows.append((labels["source_url"], meta["source_url"]))
     rows.append((labels["exported_at"], meta.get("exported_at") or meta.get("exported_date") or ""))
@@ -262,6 +270,17 @@ def _build_csv(
     return ("\ufeff" + "\n".join(lines)).encode("utf-8")
 
 
+def _build_table(body: ExportIn, authenticated: bool) -> bytes:
+    """All O(points) preparation and file construction belong to the worker."""
+    points = body.points if authenticated else _limit_history(body.points)
+    facts, forecasts = _split(points)
+    meta = _resolve_meta(body)
+    if not meta.get("indicator_name") and body.value_label:
+        meta["indicator_name"] = body.value_label
+    builder = _build_xlsx if body.format == "xlsx" else _build_csv
+    return builder(facts, forecasts, body.value_label, meta)
+
+
 def _content_disposition(filename: str) -> str:
     ascii_fallback = "export." + (filename.rsplit(".", 1)[-1] if "." in filename else "dat")
     return f"attachment; filename=\"{ascii_fallback}\"; filename*=UTF-8''{quote(filename)}"
@@ -291,6 +310,7 @@ async def export_table(
     request: Request,
     user: User | None = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
+    admission: ExportAdmission = Depends(reserve_export_admission),
 ):
     set_cookie_id: str | None = None
     if user is None:
@@ -311,19 +331,9 @@ async def export_table(
                 },
             )
 
-    # Полный период истории — бонус за регистрацию: гостю обрезаем глубину.
-    points = body.points if user is not None else _limit_history(body.points)
-    facts, forecasts = _split(points)
-    meta = _resolve_meta(body)
-    # Если клиент не передал имя — вытащим из value_label.
-    if not meta.get("indicator_name") and body.value_label:
-        meta["indicator_name"] = body.value_label
-    if body.format == "xlsx":
-        data = _build_xlsx(facts, forecasts, body.value_label, meta)
-        media = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    else:
-        data = _build_csv(facts, forecasts, body.value_label, meta)
-        media = "text/csv; charset=utf-8"
+    data = await render_export_async(_build_table, body, user is not None, admission=admission)
+    media = ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+             if body.format == "xlsx" else "text/csv; charset=utf-8")
 
     resp = Response(content=data, media_type=media)
     resp.headers["Content-Disposition"] = _content_disposition(body.filename)

@@ -113,9 +113,8 @@ class Settings(BaseSettings):
 
     # Официальный график публикаций Росстата («План выпуска публикаций»,
     # Grafik_srochn_YYYY.docx): события date_confidence='official_explicit'
-    # с полным provenance. Выключен до выката — включается одной переменной
-    # CALENDAR_ROSSTAT_PLAN_ENABLED=true в .env.
-    calendar_rosstat_plan_enabled: bool = False
+    # с полным provenance. Live-validated 2026-09-10; estimates stay private.
+    calendar_rosstat_plan_enabled: bool = True
 
     # Alerting
     telegram_bot_token: str = ""

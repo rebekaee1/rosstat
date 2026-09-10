@@ -205,7 +205,7 @@ def test_quarterly_gdp_release_present_in_window(today: date):
 # --- Official-source calendar pipeline --------------------------------------
 
 
-def test_rosstat_cpi_april_2026_uses_official_rule_date():
+def test_rosstat_rule_dates_are_private_estimates():
     events = build_rosstat_rule_candidates(today=date(2026, 5, 10), months_ahead=1)
     cpi = [
         e for e in events
@@ -213,7 +213,7 @@ def test_rosstat_cpi_april_2026_uses_official_rule_date():
     ]
     assert len(cpi) == 1
     assert cpi[0].scheduled_date == date(2026, 5, 15)
-    assert cpi[0].date_confidence == "official_rule"
+    assert cpi[0].date_confidence == "estimated"
     assert cpi[0].source_url
 
     cpi_family = {
@@ -255,7 +255,7 @@ def test_minfin_budget_uses_14th_workday_rule():
     ]
     assert len(may_budget) == 1
     assert may_budget[0].scheduled_date == date(2026, 5, 22)
-    assert may_budget[0].date_confidence == "official_rule"
+    assert may_budget[0].date_confidence == "estimated"
     assert {
         e.indicator_code for e in events
         if e.reference_period == "апрель 2026"
@@ -296,7 +296,7 @@ def test_public_calendar_requires_source_bound_provenance():
     source_bound = EconomicEvent(
         title="Source-bound row",
         event_type="data_release",
-        source="rosstat",
+        source="cbr",
         scheduled_date=date(2026, 5, 15),
         is_estimated=False,
         date_confidence="official_rule",
