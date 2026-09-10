@@ -66,6 +66,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   const arm = useCallback(() => setShouldLoad(true), []);
   const [query, setQuery] = useState('');
   const [hi, setHi] = useState(0); // highlighted result index
+  const triggerRef = useRef(null);
   const inputRef = useRef(null);
   const listRef = useRef(null);
   // Спрос-аналитика поиска (звонок 2026-06-19): refs, чтобы читать актуальный
@@ -161,6 +162,14 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   // Cmd+K / Ctrl+K — открыть; Escape — закрыть; '/' — открыть (если не в инпуте)
   useEffect(() => {
     const onKey = (e) => {
+      if (e.defaultPrevented) return;
+      // Every Navbar/inline instance is mounted, but only one visible trigger
+      // may claim a global shortcut. Portals escape CSS-hidden parents.
+      if (!open) {
+        if (document.querySelector('[data-fe-search-dialog]')) return;
+        const trigger = triggerRef.current;
+        if (!trigger || trigger.getClientRects().length === 0 || getComputedStyle(trigger).visibility === 'hidden') return;
+      }
       const isMod = e.metaKey || e.ctrlKey;
       if (isMod && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
@@ -269,6 +278,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
         // Хедер-десктоп (звонок 2026-06-19): лупа + подпись «Поиск», чуть шире
         // прежней иконки — поиск был малозаметен.
         <button
+          ref={triggerRef}
           type="button"
           onClick={() => { arm(); setOpen(true); }}
           onMouseEnter={arm}
@@ -287,6 +297,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
         </button>
       ) : variant === 'inline' ? (
         <button
+          ref={triggerRef}
           type="button"
           onClick={() => { arm(); setOpen(true); }}
           onMouseEnter={arm}
@@ -307,6 +318,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
         </button>
       ) : (
         <button
+          ref={triggerRef}
           type="button"
           onClick={() => { arm(); setOpen(true); }}
           onMouseEnter={arm}
@@ -327,6 +339,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
         <div
           className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4"
           role="dialog"
+          data-fe-search-dialog
           aria-modal="true"
           aria-label={t('search.dialogAria')}
         >

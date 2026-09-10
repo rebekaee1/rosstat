@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-10
 
-**Файлов:** 978  ·  **Строк:** 265 405  ·  **Токенов (≈):** 2 696 300
+**Файлов:** 979  ·  **Строк:** 265 475  ·  **Токенов (≈):** 2 697 290
 
 ## По верхним папкам
 
@@ -14,9 +14,9 @@
 | `.github` | 1 | 150 | 1 250 |
 | `backend` | 534 | 164 276 | 1 586 188 |
 | `clickhouse` | 2 | 36 | 445 |
-| `deploy` | 9 | 478 | 5 207 |
-| `docs` | 40 | 11 650 | 208 233 |
-| `frontend` | 323 | 72 625 | 701 055 |
+| `deploy` | 9 | 479 | 5 232 |
+| `docs` | 40 | 11 650 | 208 289 |
+| `frontend` | 324 | 72 694 | 701 964 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 58 | 13 968 | 141 029 |
 
@@ -28,7 +28,7 @@
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
 | `backend/app/data/regional/indicators.json` | 6 440 | 56 948 |
 | `backend/seed_data.py` | 5 417 | 55 372 |
-| `docs/backlog.md` | 1 520 | 54 393 |
+| `docs/backlog.md` | 1 520 | 54 449 |
 | `backend/app/data/eurostat_listing_decisions.json` | 5 407 | 52 078 |
 | `frontend/src/pages/AdminBI.jsx` | 2 959 | 41 930 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
@@ -153,6 +153,7 @@
 | `backend/tests/test_en_catalog.py` | 466 | 4 614 |
 | `frontend/src/i18n/legalPages.en.jsx` | 383 | 4 593 |
 | `backend/app/services/analytics_report_bundle.py` | 435 | 4 580 |
+| `frontend/src/components/IndicatorSearch.jsx` | 449 | 4 572 |
 | `frontend/src/lib/format.test.js` | 474 | 4 557 |
 | `backend/app/services/world_adapters/cfets_chinamoney.py` | 527 | 4 546 |
 | `backend/app/services/world_adapters/bcb_sgs.py` | 518 | 4 540 |
@@ -160,7 +161,6 @@
 | `backend/app/services/metrika_acquisition.py` | 449 | 4 486 |
 | `frontend/src/lib/worldViewModes.js` | 552 | 4 469 |
 | `backend/app/services/world_cards.py` | 529 | 4 459 |
-| `frontend/src/components/IndicatorSearch.jsx` | 436 | 4 421 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `backend/app/services/seo_i18n.py` | 568 | 4 397 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 393 |
@@ -458,10 +458,10 @@
 | `backend/tests/test_auth_account.py` | 124 | 1 412 |
 | `frontend/src/lib/russiaHomeCards.test.js` | 138 | 1 398 |
 | `backend/tests/test_calendar_truth.py` | 112 | 1 394 |
+| `deploy/approved-shas.txt` | 87 | 1 391 |
 | `frontend/src/components/YandexRSY.test.js` | 186 | 1 388 |
 | `scripts/e2e/navbar-overlap.mjs` | 140 | 1 381 |
 | `scripts/pg-backup.sh` | 115 | 1 372 |
-| `deploy/approved-shas.txt` | 86 | 1 366 |
 | `backend/tests/test_world_fred_adapter.py` | 180 | 1 364 |
 | `backend/app/services/world_forecast_pipeline.py` | 173 | 1 362 |
 | `backend/tests/test_webmaster_integrity.py` | 102 | 1 342 |
@@ -662,6 +662,7 @@
 | `backend/app/services/world_source_adapter.py` | 100 | 771 |
 | `backend/app/api/ticker.py` | 107 | 766 |
 | `frontend/src/lib/sitePaths.test.js` | 72 | 763 |
+| `frontend/src/components/IndicatorSearch.component.test.jsx` | 56 | 758 |
 | `frontend/src/lib/utm.js` | 74 | 758 |
 | `frontend/src/components/CbrTermSliceRateViewModePicker.jsx` | 106 | 747 |
 | `backend/app/services/yandex_metrika_logs.py` | 72 | 737 |
