@@ -20,7 +20,8 @@ _START_TIME = time.time()
 _ETL_FRESH_HOURS = 36
 
 # Н-25: возраст heartbeat pg-backup (cron 04:00 + запас). Ключ пишет
-# scripts/pg-backup.sh; отсутствие ключа (dev, свежий Redis) — не деградация,
+# scripts/pg-backup.sh в state Redis; cache Redis читается лишь для совместимости.
+# Отсутствие ключа (dev, свежий Redis) — не деградация,
 # только просроченный существующий heartbeat.
 _PG_BACKUP_FRESH_HOURS = 30
 _PG_BACKUP_HEARTBEAT_KEY = "fe:ops:pg_backup_last_ok"
@@ -129,10 +130,13 @@ async def health_ready(response: Response, db: AsyncSession = Depends(get_db)):
         except Exception:
             checks["etl_last_ok_age_hours"] = "unknown"
 
-    # Н-25: heartbeat pg-backup (пишется cron-скриптом в cache-Redis).
-    if checks["cache_redis"] == "ok":
+    # Operational state survives deployment cache FLUSHDB. Read old cache
+    # location only when no durable heartbeat exists (rolling upgrade).
+    if checks["state_redis"] == "ok":
         try:
-            raw = await (await get_redis()).get(_PG_BACKUP_HEARTBEAT_KEY)
+            raw = await (await get_state_redis()).get(_PG_BACKUP_HEARTBEAT_KEY)
+            if raw is None and checks["cache_redis"] == "ok":
+                raw = await (await get_redis()).get(_PG_BACKUP_HEARTBEAT_KEY)
             if raw is not None:
                 backup_age_h = (time.time() - float(raw)) / 3600
                 checks["pg_backup_age_hours"] = f"{backup_age_h:.1f}"

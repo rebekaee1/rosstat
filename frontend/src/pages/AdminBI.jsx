@@ -1192,7 +1192,7 @@ function DemandTab({ d }) {
         ) : <Empty note="Данные Вебмастера за период отсутствуют — Яндекс отдаёт статистику запросов с задержкой в несколько дней." />}
       </Card>
       <Card title="Спрос по свойству Вебмастера (хост)" icon={Search} source="metrika"
-        insight="Срез показов и кликов по языковому свойству: forecasteconomy.com (EN) и ru.forecasteconomy.com (RU). После cutover 2026-09-03 ru. — русский канон; нули у ru. значат, что Вебмастер ещё не видит свойство или синк хоста пустой."
+        insight="Срез показов и кликов по языковому свойству: forecasteconomy.com (EN) и ru.forecasteconomy.com (RU). После cutover 2026-09-03 ru. — русский канон. Отсутствующее наблюдение не означает ноль; проверяйте дату и полноту синка отдельно."
         hint="Агрегаты webmaster_search_queries по полю host за то же окно, что и карта возможностей. Читать: какой языковой витрины касается спрос.">
         {(dem.webmaster_by_host || []).length ? (
           <div className="overflow-x-auto">
@@ -1775,14 +1775,12 @@ function MetricTreeTab({ d }) {
           <div className="text-[13px] text-text-secondary">Цель: 10 000 реальных людей в день</div>
           <div className="flex flex-wrap items-baseline gap-3 mt-2">
             <span className="text-4xl font-bold tabular-nums text-text-primary">{fmtInt(Math.round(audience.period_average_daily_visitors || 0))}</span>
-            <span className="text-sm text-text-secondary">уникальных посетителей в день — оценка</span>
+            <span className="text-sm text-text-secondary">браузерных идентификаторов в день — оценка</span>
           </div>
           <p className="text-xs text-text-secondary mt-2">Среднее за выбранный период. {fmtInt(audience.period_unique_visitors || 0)} уникальных идентификаторов за весь период; {fmtInt(audience.observed_sessions || 0)} сессий.</p>
           <p className="text-xs text-text-tertiary mt-2 max-w-3xl">{audience.caveat}</p>
           {audience.includes_partial_today && <p className="text-xs text-text-tertiary mt-1">Сегодняшний день ещё не завершён и входит в среднее.</p>}
-          <div className="h-2 rounded-full bg-obsidian overflow-hidden mt-4" role="progressbar" aria-label="Оценка дневной аудитории относительно цели" aria-valuemin={0} aria-valuemax={10000} aria-valuenow={Math.min(audience.period_average_daily_visitors || 0, 10000)}>
-            <div className="h-full rounded-full" style={{ width: `${Math.min((audience.period_average_daily_visitors || 0) / 10000 * 100, 100)}%`, background: GOLD }} />
-          </div>
+          <p className="text-xs text-text-secondary mt-3">Этот счётчик включает неопределённый трафик и не подтверждает достижение цели по реальным людям.</p>
         </section>
       )}
       <section className="rounded-2xl bg-surface border border-border-subtle p-6">
@@ -1838,7 +1836,7 @@ function MetricTreeTab({ d }) {
       </div>
 
       <Card title="Календарь трафика: каждый день года" icon={CalendarClock} source="own"
-        insight="Ритм платформы одним взглядом: тёмные клетки — сильные дни (сессии нашего счётчика без ботов, палитра масштабируется по максимуму года). Провалы и всплески видны сразу — к каждому должен находиться источник (публикация, реклама, сезон)."
+        insight="Ритм платформы одним взглядом: тёмные клетки — сильные дни (сессии нашего счётчика без распознанных ботов, палитра масштабируется по максимуму года). Провалы и всплески видны сразу — к каждому должен находиться источник (публикация, реклама, сезон)."
         hint="Каждая клетка — день (МСК), насыщенность — число сессий нашего счётчика. Читать: сезонность, провалы (инциденты) и всплески (публикации, реклама) видны сразу.">
         <EChart option={calOption} height={180} />
       </Card>

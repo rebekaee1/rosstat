@@ -42,30 +42,32 @@ async def sync_webmaster_indexing_daily(day: date | None = None, *, alert: bool 
             in_search = appeared = excluded = sitemap_errors = None
             c2 = c3 = c4 = c5 = None
             try:
+                # Sparse search history can disconnect on a narrow interval without
+                # observations. Request a short lookback, then keep only this day.
                 hist = (await client.in_search_history(
-                    user_id, host_id, date_from=day.isoformat(), date_to=day.isoformat(),
+                    user_id, host_id, date_from=(day - timedelta(days=7)).isoformat(), date_to=(day + timedelta(days=1)).isoformat(),
                 )).data
                 payload["in_search"] = hist
-                in_search = _latest_value(hist)
+                in_search = _latest_value(_history_for_day(hist, day))
             except Exception:
                 payload["errors"]["in-search/history"] = "fetch_or_parse_failed"
                 logger.warning("in-search/history failed host=%s", host, exc_info=True)
             try:
                 idx = (await client.indexing_history(
-                    user_id, host_id, date_from=day.isoformat(), date_to=day.isoformat(), indexing_indicator="DOWNLOADED",
+                    user_id, host_id, date_from=day.isoformat(), date_to=(day + timedelta(days=1)).isoformat(), indexing_indicator="DOWNLOADED",
                 )).data
                 payload["indexing"] = idx
-                codes = _http_breakdown(idx)
+                codes = _http_breakdown(_history_for_day(idx, day))
                 c2, c3, c4, c5 = _http_classes(codes)
             except Exception:
                 payload["errors"]["indexing/history"] = "fetch_or_parse_failed"
                 logger.warning("indexing/history failed host=%s", host, exc_info=True)
             try:
                 events = (await client.search_events_history(
-                    user_id, host_id, date_from=day.isoformat(), date_to=day.isoformat(),
+                    user_id, host_id, date_from=(day - timedelta(days=7)).isoformat(), date_to=(day + timedelta(days=1)).isoformat(),
                 )).data
                 payload["events"] = events
-                appeared, excluded = _events_counts(events)
+                appeared, excluded = _events_counts(_history_for_day(events, day))
             except Exception:
                 payload["errors"]["events/history"] = "fetch_or_parse_failed"
                 logger.warning("events/history failed host=%s", host, exc_info=True)
@@ -120,6 +122,34 @@ async def sync_webmaster_indexing_daily(day: date | None = None, *, alert: bool 
     if alert:
         await _alerting(day)
     return stored
+
+
+def _history_for_day(payload: dict, day: date) -> dict:
+    """Provider dates bound timestamps, not inclusive calendar dates.
+
+    Request [day, day+1), then retain only observations belonging to this MSK
+    date. This also prevents double counting if endpoint boundary rules differ.
+    """
+    def on_day(point):
+        try:
+            ts = datetime.fromisoformat(str(point["date"]).replace("Z", "+00:00"))
+            if ts.tzinfo is not None:
+                ts = ts.astimezone(timezone(timedelta(hours=3)))
+            return ts.date() == day
+        except (KeyError, TypeError, ValueError):
+            return False
+
+    result = dict(payload)
+    if "history" in result:
+        result["history"] = [p for p in result["history"] or [] if on_day(p)]
+    indicators = result.get("indicators")
+    if isinstance(indicators, dict):
+        result["indicators"] = {key: [p for p in points or [] if on_day(p)]
+                                for key, points in indicators.items()}
+    elif isinstance(indicators, list):
+        result["indicators"] = [{**series, "history": [p for p in series.get("history", []) if on_day(p)]}
+                                for series in indicators]
+    return result
 
 
 def _latest_value(payload: dict) -> int | None:

@@ -37,3 +37,11 @@ Capacity planning assumption: 10k DAU × 1.3 sessions/person × 15% in peak hour
 Run `./scripts/check-all.sh` and `python3 scripts/test-crawler-routing.py`. Deploy using `scripts/deploy.sh` with the approved runtime commit and approval-only wrapper. Run `build_static_sitemaps()` in the backend container; verify every manifest section on both public hosts, host-correct loc, gzip, and repeated publication. Verify training403/robots200/search200, public PNG and landing metadata, readiness and current frontend assets. Run Webmaster sync with `alert=False` for manual verification so the audit does not send messages.
 
 Historical sessionize has no upper bound: do not loop dates and call it a bounded rebuild. Use the conservative known-crawler repair if a historical correction is needed.
+
+## Live acceptance corrections
+
+Real provider verification exposed an additional boundary issue: equal Webmaster start/end dates return an empty interval. Daily HTTP queries now use the next day as the exclusive end; sparse search/events histories use a seven-day lookback and are filtered to the requested MSK day. A real API check returned September 9 index observations 24,859 / 3,770 and September 3 crawl 5xx counts 510 / 88.
+
+Deployment cache FLUSHDB also erased the backup heartbeat. The heartbeat now lives in durable state Redis; readiness supports the legacy cache key only when the state key is absent. Successful backup files remain independent of monitoring state.
+
+The own-counter unique-identity estimate is displayed as a diagnostic, without a progress bar toward verified people. In the September sample it is much higher than Metrika People; unknown automation must not be presented as goal achievement.
