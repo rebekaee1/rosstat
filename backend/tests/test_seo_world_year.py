@@ -192,7 +192,7 @@ def test_annual_single_point_year_page(world_year_client):
     h1 = re.search(r"<h1>([^<]+)</h1>", html).group(1)
     assert "Численность населения" in h1
     assert "2023" in h1
-    assert "<title>Численность населения в 2023 году — значение и динамика" in html
+    assert "<title>Численность населения в Германии в 2023 году — значение и динамика" in html
 
     assert "Динамика соседних лет" in html
     assert "<strong>2023</strong>" in html
@@ -347,3 +347,13 @@ def test_sitemap_world_years_http_section(world_year_client):
         f"https://forecasteconomy.com/germany/indicator/{CODE_ANNUAL}/2023"
         in section.text
     )
+
+
+@pytest.mark.parametrize("frequency,n_rows,current", [("annual",1,False),("annual",1,True),("monthly",12,False),("quarterly",4,False),("weekly",52,False),("daily",365,False),("monthly",1,False),("monthly",3,True)])
+def test_russian_year_metadata_identifies_country(frequency, n_rows, current):
+    from app.services.seo_world_year import _title_desc
+    title, desc = _title_desc(name="Показатель", country_name="Германии", year=2026,
+        frequency=frequency, n_rows=n_rows, current_year=current, period_note="",
+        summary_label="Значение", summary_text="123", source="Eurostat", en=False, yt=lambda key: None)
+    assert "Показатель в Германии в 2026 году" in title
+    assert "Показатель в Германии в 2026 году" in desc

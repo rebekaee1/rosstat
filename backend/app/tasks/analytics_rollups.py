@@ -131,7 +131,7 @@ async def sessionize(db, since: datetime) -> int:
 
     gap = timedelta(minutes=SESSION_GAP_MIN)
     # Частота сессий per-visitor нужна антибот-скорингу — считаем чанки заранее.
-    visitor_session_counts: dict[str, int] = defaultdict(int)
+    visitor_session_counts: dict[tuple[str, date], int] = defaultdict(int)
     visitor_chunks: list[tuple[str, list]] = []
     for visitor, evs in by_visitor.items():
         chunks: list[list] = []
@@ -154,7 +154,8 @@ async def sessionize(db, since: datetime) -> int:
                 merged.append(chunk)
             elif merged:
                 merged[-1].extend(chunk)
-        visitor_session_counts[visitor] = len(merged)
+        for chunk in merged:
+            visitor_session_counts[(visitor, msk_day(chunk[0].occurred_at))] += 1
         visitor_chunks.extend((visitor, chunk) for chunk in merged)
 
     # Самоисключение (этап 3б): сессии владельца/админов помечаются
@@ -166,7 +167,7 @@ async def sessionize(db, since: datetime) -> int:
     for visitor, chunk in visitor_chunks:
         row = _finalize_session(
             visitor, chunk, portraits, goals_by_session, known_visitors,
-            visitor_session_counts[visitor],
+            visitor_session_counts[(visitor, msk_day(chunk[0].occurred_at))],
             fallback_portrait=portraits_by_visitor.get(visitor),
         )
         row["is_internal"] = (

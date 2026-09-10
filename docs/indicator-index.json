@@ -2701,6 +2701,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_intent_copy.py",
+          "line": 16,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_view_model_families.py",
           "line": 116,
           "kind": "tests"
@@ -9221,7 +9226,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 292,
+          "line": 311,
           "kind": "other"
         },
         {
@@ -38448,6 +38453,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_intent_copy.py",
+          "line": 8,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_copy.py",
+          "line": 9,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_seo_growth_pages.py",
           "line": 23,
           "kind": "tests"
@@ -45227,6 +45242,11 @@
         {
           "file": "docs/data_sources.md",
           "line": 432,
+          "kind": "other"
+        },
+        {
+          "file": "docs/traffic-platform-2026-09-10.md",
+          "line": 19,
           "kind": "other"
         },
         {
@@ -53549,7 +53569,7 @@
       "files": [
         {
           "file": ".env.example",
-          "line": 152,
+          "line": 153,
           "kind": "other"
         },
         {
@@ -56396,7 +56416,7 @@
         },
         {
           "file": "backend/tests/test_seo_growth_pages.py",
-          "line": 650,
+          "line": 655,
           "kind": "tests"
         },
         {

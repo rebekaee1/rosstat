@@ -84,9 +84,7 @@ let _recentClicks = [];
 let _timer = null;
 let _inited = false;
 let _enabled = true;
-// активное время: суммируем разрывы между действиями, если разрыв < ACTIVE_GAP_MS
-let _activeMs = 0;
-let _lastActivityTs = 0;
+const _attention = createAttentionClock();
 let _errorCount = 0;
 let _apiCallCounter = 0;
 // блочная аналитика: имя блока → { enter: ts|null, ms: суммарно видим }
@@ -135,12 +133,48 @@ function ymUid() {
   }
 }
 
-function markActivity() {
-  const now = Date.now();
-  if (_lastActivityTs && now - _lastActivityTs < ACTIVE_GAP_MS) {
-    _activeMs += now - _lastActivityTs;
+/** Input-backed attention and passive visible time are separate observations.
+ * Neither proves a human; browser automation can produce trusted input too. */
+export function createAttentionClock() {
+  let visible = false;
+  let tick = 0;
+  let inputAt = null;
+  let active = 0;
+  let seen = 0;
+  function advance(now) {
+    if (visible) {
+      seen += Math.max(0, now - tick);
+      if (inputAt !== null) active += Math.max(0, Math.min(now, inputAt + ACTIVE_GAP_MS) - tick);
+    }
+    tick = now;
   }
-  _lastActivityTs = now;
+  return {
+    reset(now, isVisible) { tick = now; visible = isVisible; inputAt = null; active = 0; seen = 0; },
+    visibility(now, isVisible) {
+      advance(now); visible = isVisible;
+      if (!visible) inputAt = null;
+    },
+    input(now, trusted, isVisible) {
+      advance(now);
+      visible = isVisible;
+      if (trusted && visible) inputAt = now;
+      if (!visible) inputAt = null;
+    },
+    snapshot(now) {
+      advance(now);
+      const result = { active_ms: active, visible_ms: seen };
+      active = 0; seen = 0;
+      return result;
+    },
+  };
+}
+
+function attentionVisible() {
+  return document.visibilityState !== 'hidden' && document.hasFocus();
+}
+
+function markActivity(event) {
+  _attention.input(Date.now(), event?.isTrusted === true, attentionVisible());
 }
 
 function consentAllows() {
@@ -265,12 +299,14 @@ const DWELL_MAX_MS = 4 * 3600 * 1000; // страховка от вкладок,
 
 function emitDwell() {
   if (!_pageLoadId || !_pageEnteredAt) return;
-  markActivity();
   const now = Date.now();
+  const attention = _attention.snapshot(now);
   const ms = Math.min(now - _pageEnteredAt, DWELL_MAX_MS);
   push('dwell', {
     ms,
-    active_ms: Math.min(_activeMs, ms),
+    active_ms: Math.min(attention.active_ms, ms),
+    visible_ms: Math.min(attention.visible_ms, ms),
+    attention_version: 2,
     scroll_pct: _maxScrollPct,
     clicks: _clickCount,
     move_px: Math.round(_moveDistance),
@@ -278,7 +314,6 @@ function emitDwell() {
   // Сегментация: dwell закрывает отрезок и обнуляет счётчики — повторный
   // visibilitychange не дублирует уже отправленное время (лечит dwell > 4ч).
   _pageEnteredAt = now;
-  _activeMs = 0;
   _clickCount = 0;
   _moveDistance = 0;
 }
@@ -512,8 +547,7 @@ function enterPage(url) {
   _maxScrollPct = 0;
   _clickCount = 0;
   _moveDistance = 0;
-  _activeMs = 0;
-  _lastActivityTs = Date.now();
+  _attention.reset(Date.now(), attentionVisible());
   _errorCount = 0;
   _formsSeen = new Set();
   push('pageview', {
@@ -640,18 +674,21 @@ export function behaviorInit() {
   setupVitals();
   setupBlockObserver();
 
-  document.addEventListener('click', (e) => { markActivity(); onClick(e); }, { capture: true, passive: true });
-  document.addEventListener('mousemove', (e) => { markActivity(); onMove(e); }, { passive: true });
-  window.addEventListener('scroll', () => { markActivity(); onScroll(); }, { passive: true });
+  document.addEventListener('click', (e) => { markActivity(e); onClick(e); }, { capture: true, passive: true });
+  document.addEventListener('mousemove', (e) => { markActivity(e); onMove(e); }, { passive: true });
+  window.addEventListener('scroll', (e) => { markActivity(e); onScroll(); }, { passive: true });
   document.addEventListener('keydown', markActivity, { passive: true });
   document.addEventListener('copy', onCopy);
   document.addEventListener('focusin', onFormFocus, { passive: true });
   document.addEventListener('submit', onFormSubmit, { capture: true });
   window.addEventListener('pagehide', onLeave);
   document.addEventListener('visibilitychange', () => {
+    _attention.visibility(Date.now(), attentionVisible());
     if (document.visibilityState === 'hidden') onLeave();
-    else markActivity();
   });
+
+  window.addEventListener('blur', () => _attention.visibility(Date.now(), false));
+  window.addEventListener('focus', () => _attention.visibility(Date.now(), attentionVisible()));
 
   _timer = setInterval(flush, FLUSH_INTERVAL_MS);
 }
@@ -670,8 +707,7 @@ export function _resetForTests() {
   _clickCount = 0;
   _moveDistance = 0;
   _lastMove = { x: 0, y: 0, t: 0 };
-  _activeMs = 0;
-  _lastActivityTs = 0;
+  _attention.reset(0, false);
   _errorCount = 0;
   _apiCallCounter = 0;
   _blocks = new Map();

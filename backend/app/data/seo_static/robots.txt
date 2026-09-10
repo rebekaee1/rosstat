@@ -36,6 +36,19 @@ Disallow: /__honeypot__/
 
 # Агрессивные скрейперы без SEO-ценности: срезаем весь контент.
 # Решают только каталог/страницы, которые им и так не нужны.
+# Training/archive collection is disabled; search and user fetchers remain allowed.
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
 User-agent: Amazonbot
 Disallow: /
 

@@ -29,6 +29,7 @@ import logging
 import os
 import random
 import tempfile
+import threading
 import time
 from pathlib import Path
 
@@ -158,6 +159,8 @@ _FONT_PATH = _FONT_DIR / "Inter-Variable.ttf"
 _CACHE: dict[str, tuple[float, bytes]] = {}
 _CACHE_TTL = 3600.0
 _CACHE_MAX = 600
+_CACHE_MAX_BYTES = 64 * 1024 * 1024
+_CACHE_LOCK = threading.RLock()
 
 
 def _font(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont:
@@ -1248,15 +1251,32 @@ def _disk_path(code: str) -> Path:
     return _DISK_DIR / (hashlib.md5(code.encode()).hexdigest() + ".png")
 
 
+def _remember_og(code: str, png: bytes) -> None:
+    """Apply both bounds to disk promotions as well as new renders."""
+    with _CACHE_LOCK:
+        _CACHE.pop(code, None)
+        if len(png) > _CACHE_MAX_BYTES:
+            return
+        while _CACHE and (
+            len(_CACHE) >= _CACHE_MAX
+            or sum(len(entry[1]) for entry in _CACHE.values()) + len(png) > _CACHE_MAX_BYTES
+        ):
+            oldest = min(_CACHE, key=lambda k: _CACHE[k][0])
+            _CACHE.pop(oldest, None)
+        _CACHE[code] = (time.monotonic(), png)
+
+
 def cached_og(code: str) -> bytes | None:
-    entry = _CACHE.get(code)
-    if entry and time.monotonic() - entry[0] < _CACHE_TTL:
-        return entry[1]
+    with _CACHE_LOCK:
+        entry = _CACHE.get(code)
+        if entry and time.monotonic() - entry[0] < _CACHE_TTL:
+            return entry[1]
+        _CACHE.pop(code, None)
     try:
         p = _disk_path(code)
         if p.exists() and time.time() - p.stat().st_mtime < _CACHE_TTL:
             png = p.read_bytes()
-            _CACHE[code] = (time.monotonic(), png)
+            _remember_og(code, png)
             return png
     except OSError:
         pass
@@ -1264,15 +1284,21 @@ def cached_og(code: str) -> bytes | None:
 
 
 def store_og(code: str, png: bytes) -> None:
-    if len(_CACHE) >= _CACHE_MAX:
-        oldest = min(_CACHE, key=lambda k: _CACHE[k][0])
-        _CACHE.pop(oldest, None)
-    _CACHE[code] = (time.monotonic(), png)
+    _remember_og(code, png)
+    tmp: Path | None = None
     try:
         _DISK_DIR.mkdir(parents=True, exist_ok=True)
-        tmp = _disk_path(code).with_suffix(".tmp")
-        tmp.write_bytes(png)
-        tmp.replace(_disk_path(code))
+        destination = _disk_path(code)
+        # Separate workers may render the same key concurrently. A shared
+        # hash.tmp can be replaced while another writer still owns its inode.
+        # Each writer closes its unique sibling before atomic publication.
+        with tempfile.NamedTemporaryFile(
+            dir=_DISK_DIR, prefix=f".{destination.stem}-", suffix=".tmp", delete=False,
+        ) as handle:
+            tmp = Path(handle.name)
+            handle.write(png)
+        tmp.replace(destination)
+        tmp = None
         # Редкая (≈1/200 записей) уборка протухших файлов, чтобы каталог не рос вечно.
         if random.random() < 0.005:
             cutoff = time.time() - 2 * _CACHE_TTL
@@ -1284,3 +1310,9 @@ def store_og(code: str, png: bytes) -> None:
                     continue
     except OSError:
         logger.debug("OG disk cache write failed for %s", code, exc_info=True)
+    finally:
+        if tmp is not None:
+            try:
+                tmp.unlink(missing_ok=True)
+            except OSError:
+                pass

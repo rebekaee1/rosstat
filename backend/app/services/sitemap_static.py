@@ -1,131 +1,188 @@
-"""Ночная сборка статических sitemap на диск (план 2026-09-03).
+"""Publish complete, host-specific sitemap generations for nginx.
 
-Робот читает файлы через nginx try_files — ни одного запроса в БД на обходе.
-Индекс `/sitemap.xml` остаётся на backend (host-aware: до cutover ru. = пустой).
-Секции `sitemap-{name}.xml` пишутся в `settings.sitemap_dir`.
+Readers use ``current/<host>/sitemap-*.xml``. A failed build never replaces
+current; legacy shared-origin files are deliberately not consumed.
 """
 from __future__ import annotations
 
+import fcntl
 import gzip
 import json
 import logging
 import os
+import re
+import shutil
 import tempfile
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 from app.config import settings
 from app.database import analytics_session
 
 logger = logging.getLogger(__name__)
-
 STATS_NAME = "sitemap-stats.json"
+_GENERATION = re.compile(r"^[0-9a-f]{32}$")
+_SECTION = re.compile(r"^[a-z0-9-]+$")
 
 
 def sitemap_dir() -> Path:
     return Path(settings.sitemap_dir)
 
 
-def section_file(name: str) -> Path:
-    return sitemap_dir() / f"sitemap-{name}.xml"
+def _current_generation() -> Path | None:
+    root = sitemap_dir()
+    current = root / "current"
+    if not current.is_symlink():
+        return None
+    resolved = current.resolve()
+    if resolved.parent != (root / "generations").resolve() or not _GENERATION.fullmatch(resolved.name):
+        return None
+    return resolved if resolved.is_dir() else None
 
 
-def stats_file() -> Path:
-    return sitemap_dir() / STATS_NAME
+def section_file(name: str, origin: str) -> Path | None:
+    if not _SECTION.fullmatch(name):
+        return None
+    generation = _current_generation()
+    if generation is None:
+        return None
+    host = urlparse(origin).hostname
+    stats = _read_json(generation / STATS_NAME)
+    host_stats = stats.get("hosts", {}).get(host, {})
+    if name not in host_stats.get("sections", {}):
+        return None
+    return generation / host / f"sitemap-{name}.xml"
 
 
-def read_stats() -> dict:
-    path = stats_file()
-    if not path.is_file():
-        return {}
+def _read_json(path: Path) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        result = json.loads(path.read_text(encoding="utf-8"))
+        return result if isinstance(result, dict) else {}
     except (OSError, json.JSONDecodeError):
         return {}
 
 
+def read_stats() -> dict:
+    generation = _current_generation()
+    return _read_json(generation / STATS_NAME) if generation else {}
+
+
+def published_sections(origin: str) -> list[str] | None:
+    host = urlparse(origin).hostname
+    entry = read_stats().get("hosts", {}).get(host)
+    return list(entry["sections"]) if entry is not None else None
+
+
 def url_count_from_stats() -> int | None:
-    stats = read_stats()
-    total = stats.get("urls_total")
+    total = read_stats().get("urls_total")
     return int(total) if total is not None else None
 
 
 def _atomic_write(path: Path, data: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    path.parent.mkdir(parents=True, exist_ok=True, mode=0o755)
+    os.chmod(path.parent, 0o755)
     fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=".tmp-", suffix=path.suffix)
     try:
         with os.fdopen(fd, "wb") as fh:
             fh.write(data)
             fh.flush()
+            os.fchmod(fh.fileno(), 0o644)
             os.fsync(fh.fileno())
         os.replace(tmp, path)
     except Exception:
-        try:
-            os.unlink(tmp)
-        except OSError:
-            pass
+        Path(tmp).unlink(missing_ok=True)
         raise
 
 
-def write_xml(name: str, xml: str) -> Path:
-    """Пишет XML и gzip-близнец (nginx gzip_static)."""
+def _write_xml(directory: Path, name: str, xml: str) -> None:
     raw = xml.encode("utf-8")
-    dest = section_file(name)
+    dest = directory / f"sitemap-{name}.xml"
     _atomic_write(dest, raw)
-    _atomic_write(Path(str(dest) + ".gz"), gzip.compress(raw, compresslevel=6))
-    return dest
-
-
-def write_stats(payload: dict) -> Path:
-    dest = stats_file()
-    body = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
-    _atomic_write(dest, body)
-    return dest
+    _atomic_write(Path(str(dest) + ".gz"), gzip.compress(raw, compresslevel=6, mtime=0))
 
 
 async def build_static_sitemaps() -> dict:
-    """Собрать все секции на диск. Тяжёлая работа — только analytics_session."""
+    """Resolve each section once; publish both hosts as one atomic generation.
+
+    flock is nonblocking so another scheduler/manual build cannot interleave
+    publication or cleanup, without blocking the async worker's event loop.
+    """
     from app.api.sitemap import _render_urlset
-    from app.services.locale import en_public_origin
+    from app.services.locale import en_public_origin, ru_public_origin, apex_locale_en_enabled
     from app.services.site_urls import resolve_section, section_names
 
-    origin = en_public_origin().rstrip("/")
-    started = datetime.now(timezone.utc).replace(tzinfo=None)
-    sections: dict[str, int] = {}
-    errors: list[str] = []
-
-    async with analytics_session() as db:
-        names = await section_names(db)
-        for name in names:
-            try:
-                urls = await resolve_section(db, name)
-            except Exception as exc:  # noqa: BLE001
-                logger.exception("sitemap section %s failed", name)
-                errors.append(f"{name}: {exc}")
-                continue
-            xml = _render_urlset(urls or [], origin=origin)
-            write_xml(name, xml)
-            sections[name] = len(urls)
-            logger.info("sitemap %s: %d urls", name, len(urls))
-
-    stats = {
-        "built_at": started.isoformat(timespec="seconds"),
-        "origin": origin,
-        "sections": sections,
-        "urls_total": sum(sections.values()),
-        "section_count": len(sections),
-        "errors": errors,
-    }
-    write_stats(stats)
-    logger.info(
-        "static sitemaps: %d sections, %d urls, %d errors",
-        len(sections), stats["urls_total"], len(errors),
-    )
-    return stats
+    root = sitemap_dir()
+    root.mkdir(parents=True, exist_ok=True, mode=0o755)
+    os.chmod(root, 0o755)
+    with (root / ".build.lock").open("a") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise RuntimeError("A sitemap build is already running") from None
+        parent = root / "generations"
+        parent.mkdir(exist_ok=True, mode=0o755)
+        os.chmod(parent, 0o755)
+        generation = parent / uuid.uuid4().hex
+        generation.mkdir(mode=0o755)
+        os.chmod(generation, 0o755)
+        previous = _current_generation()
+        origins = [en_public_origin().rstrip("/")]
+        if apex_locale_en_enabled():
+            origins.append(ru_public_origin().rstrip("/"))
+        sections: dict[str, int] = {}
+        started = datetime.now(timezone.utc)
+        try:
+            async with analytics_session() as db:
+                names = await section_names(db)
+                for name in names:
+                    if not _SECTION.fullmatch(name):
+                        raise ValueError(f"Invalid sitemap section: {name}")
+                    urls = await resolve_section(db, name)
+                    if urls is None:
+                        raise ValueError(f"Unresolved sitemap section: {name}")
+                    if not urls:
+                        continue  # Empty chunks must not be advertised.
+                    for origin in origins:
+                        _write_xml(generation / urlparse(origin).hostname, name,
+                                   _render_urlset(urls, origin=origin))
+                    sections[name] = len(urls)
+            if not sections:
+                raise ValueError("Refusing to publish an empty sitemap generation")
+            hosts = {urlparse(origin).hostname: {
+                "origin": origin, "sections": sections,
+                "urls_total": sum(sections.values()), "section_count": len(sections),
+            } for origin in origins}
+            stats = {
+                "built_at": started.isoformat(timespec="seconds"),
+                "completed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "generation": generation.name,
+                "origin": origins[0], "sections": sections,
+                "urls_total": sum(sections.values()), "section_count": len(sections),
+                "hosts": hosts, "published_urls_total": sum(h["urls_total"] for h in hosts.values()),
+                "errors": [],
+            }
+            _atomic_write(generation / STATS_NAME, json.dumps(stats, ensure_ascii=False, indent=2).encode())
+            link = root / f".current-{generation.name}"
+            link.symlink_to(Path("generations") / generation.name)
+            os.replace(link, root / "current")
+        except Exception:
+            shutil.rmtree(generation)
+            raise
+        # Only this module's UUID directories; keep the previous generation
+        # for in-flight reads and rollback. Never touch legacy files/other dirs.
+        keep = {generation, previous}
+        for candidate in parent.iterdir():
+            if candidate not in keep and _GENERATION.fullmatch(candidate.name) and candidate.is_dir() and not candidate.is_symlink():
+                try:
+                    shutil.rmtree(candidate)
+                except OSError:
+                    logger.warning("Cannot remove old sitemap generation %s", candidate, exc_info=True)
+        logger.info("Published sitemap generation %s: %d URLs across %d hosts", generation.name, stats["published_urls_total"], len(hosts))
+        return stats
 
 
 async def sitemap_build_job() -> None:
-    try:
-        await build_static_sitemaps()
-    except Exception:
-        logger.exception("sitemap_build_job failed")
+    # Let the scheduler's existing error listener observe a failed publication.
+    await build_static_sitemaps()

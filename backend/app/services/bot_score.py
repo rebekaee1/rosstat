@@ -12,8 +12,8 @@
 (analytics_rollups.sessionize) на каждый пересчёт окна — пересчёт истории
 автоматически перечищает все витрины (они фильтруют по is_bot).
 
-Калибровка: веса подобраны так, чтобы небот-сессии попадали в коридор ±15%
-к визитам Метрики (ежедневная сверка — analytics_alerts.check_bot_calibration).
+Отсутствие бот-сигнала не доказывает человека. Пустые сессии остаются
+неопределёнными; веса нельзя подгонять к другому счётчику с иной популяцией.
 """
 from __future__ import annotations
 
@@ -29,12 +29,12 @@ BOT_THRESHOLD = 60
 _BOT_UA_RE = re.compile(
     r"bot|spider|crawl|slurp|headless|phantom|selenium|puppeteer|playwright"
     r"|python-requests|python/|aiohttp|httpx|curl/|wget/|go-http-client"
-    r"|okhttp|java/|libwww|scrapy|feedfetcher|facebookexternalhit|preview",
+    r"|meta-externalagent|meta-externalfetcher|okhttp|java/|libwww|scrapy|feedfetcher|facebookexternalhit|preview",
     re.IGNORECASE,
 )
 
-# Больше стольких сессий с одного visitor за окно пересчёта — машинная частота.
-VISITOR_SESSION_FLOOD = 30
+# Больше стольких сессий с одного visitor за МСК-день — машинная частота.
+VISITOR_SESSION_FLOOD = 30  # within one MSK calendar day
 
 
 @dataclass(frozen=True)
@@ -46,7 +46,7 @@ class SessionSignals:
     active_ms: int          # суммарное активное время из dwell
     max_scroll_pct: int     # максимальная глубина скролла из dwell
     synthetic_clicks: int   # кликов с isTrusted=false (скриптовые)
-    visitor_sessions: int   # сессий этого visitor в окне пересчёта
+    visitor_sessions: int   # сессий этого visitor за МСК-день
     # Портрет (behavior_sessions), может отсутствовать у старых данных:
     has_portrait: bool = False
     is_webdriver: bool = False
@@ -83,9 +83,9 @@ def _ghost_crawl(s: SessionSignals) -> bool:
 # (имя сигнала, вес, предикат) — единая точка калибровки и разложения счёта.
 HEURISTICS: tuple[tuple[str, int, Any], ...] = (
     ("webdriver", 100, lambda s: s.is_webdriver),
-    ("bot_ua", 100, lambda s: bool(s.ua_raw and _BOT_UA_RE.search(s.ua_raw))),
-    ("no_human_traces", 70, _no_human_traces),
-    ("ghost_crawl", 70, _ghost_crawl),
+    ("bot_ua", 100, lambda s: is_known_bot_ua(s.ua_raw)),
+    ("no_human_traces", 20, _no_human_traces),
+    ("ghost_crawl", 40, _ghost_crawl),
     # Все клики сессии синтетические (isTrusted=false) — кликает скрипт.
     ("synthetic_clicks", 60, lambda s: s.synthetic_clicks > 0 and s.synthetic_clicks >= s.clicks),
     ("visitor_flood", 40, lambda s: s.visitor_sessions > VISITOR_SESSION_FLOOD),
@@ -98,6 +98,11 @@ HEURISTICS: tuple[tuple[str, int, Any], ...] = (
     # человека уже покрыто no_human_traces; сам по себе пропуск портрета не
     # штрафуем — 21% исторических сессий без портрета из-за бага доставки.
 )
+
+
+def is_known_bot_ua(ua: str | None) -> bool:
+    """Shared explicit automation identity; no behavioural inference."""
+    return bool(ua and _BOT_UA_RE.search(ua))
 
 
 def score_session(s: SessionSignals) -> int:

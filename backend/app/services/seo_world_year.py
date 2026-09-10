@@ -109,6 +109,7 @@ def _title_desc(
         )
         return title, desc
 
+    name = f"{name} в {country_name}"
     if freq == "annual":
         title = (
             f"{name} в {year} году — актуальное годовое значение"

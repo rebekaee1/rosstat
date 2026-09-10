@@ -48,7 +48,7 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         "unit": "%",
     },
     "key-rate": {
-        "name": "Key rate",
+        "name": "Bank of Russia key rate",
         "description": "The key rate is the Bank of Russia’s main monetary policy instrument. It anchors money-market rates and influences lending and deposit pricing across the banking system. Before 13 September 2013 the historical series uses the refinancing rate, which served the same policy role.",
         "methodology": "Official Bank of Russia key rate in percent per annum: each point is the rate in force from the decision date; between Board of Directors meetings the value does not change. Before 13 September 2013 the series historically shows the refinancing rate; from 2016 that rate was set equal to the key rate. The card also offers averages over week, month, quarter and year — computed from the same official series.",
         "unit": "%",

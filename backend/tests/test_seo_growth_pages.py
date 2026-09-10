@@ -506,7 +506,7 @@ def test_sitemap_core_omits_honeypot(seeded_env):
         assert "links-exchange" not in core.text
 
 
-def test_sitemap_locs_follow_request_host(seeded_env):
+def test_sitemap_locs_follow_request_host(seeded_env, monkeypatch):
     """Host-aware sitemap: ru. Host → absolute loc on ru.; default Host → DOMAIN."""
     with TestClient(seeded_env["app"]) as tc:
         apex = tc.get("/sitemap.xml")
@@ -526,6 +526,11 @@ def test_sitemap_locs_follow_request_host(seeded_env):
             "/sitemap-core.xml",
             headers={"host": "ru.forecasteconomy.com"},
         )
+        # Before cutover, neither the index nor direct child URLs advertise RU.
+        assert ru_core.status_code == 404
+        from app.config import settings
+        monkeypatch.setattr(settings, "apex_locale_en", True)
+        ru_core = tc.get("/sitemap-core.xml", headers={"host": "ru.forecasteconomy.com"})
         assert ru_core.status_code == 200
         assert "https://ru.forecasteconomy.com/russia/" in ru_core.text
         assert "https://forecasteconomy.com/russia/" not in ru_core.text

@@ -326,14 +326,15 @@ async def mart_metric_tree(db: AsyncSession, period: Period | int = 30) -> dict[
     # сверке mart_metrika_funnel. Среднее за период против предыдущего
     # окна той же длины.
     traffic = (await db.execute(
-        select(ServerSession.day, func.count(), func.count(func.distinct(ServerSession.visitor_id_hash)))
+        select(ServerSession.day, func.count(), func.count(func.distinct(ServerSession.visitor_id_hash)),
+               func.max(ServerSession.computed_at))
         .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
                ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
         .group_by(ServerSession.day).order_by(ServerSession.day)
     )).all()
     visits_by_day = [
         {"day": d.isoformat(), "visits": int(n or 0), "visitors": int(u or 0)}
-        for d, n, u in traffic
+        for d, n, u, _computed in traffic
     ]
     span = p.days
     prev_from = p.start_date - timedelta(days=span)
@@ -462,6 +463,25 @@ async def mart_metric_tree(db: AsyncSession, period: Period | int = 30) -> dict[
             "status": status_for(ns_value, TARGETS["visits_per_day"]),
             "series": visits_by_day,
             "source": "own",
+        },
+        "audience_daily": {
+            "metric": "estimated_daily_unique_visitors",
+            "label": "Уникальные посетители в день (оценка)",
+            "source": "server_sessions",
+            "identity": "first_party_visitor_id_per_msk_day",
+            "target_final": 10_000,
+            "period_average_daily_visitors": round(sum(x["visitors"] for x in visits_by_day) / span, 1),
+            "period_unique_visitors": int(period_visitors),
+            "observed_sessions": cur_total,
+            "series": [{"day": x["day"], "estimated_visitors": x["visitors"],
+                        "observed_sessions": x["visits"]} for x in visits_by_day],
+            "measured_at": max((r[3].isoformat() + "Z" for r in traffic if r[3]), default=None),
+            "days_with_observations": len(visits_by_day),
+            "requested_days": span,
+            "includes_partial_today": p.end_date >= (_since(0) + timedelta(hours=3)).date(),
+            "status": "estimate_not_verified_people",
+            "exclusions": "known_or_high_score_bot_and_internal",
+            "caveat": "Идентификаторы браузеров, не доказанные люди. Неопределённые сессии включены; один человек на разных устройствах может считаться несколько раз. Среднее по дням не равно уникальным за весь период.",
         },
         "calendar": calendar,
         "drivers": [

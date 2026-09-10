@@ -41,7 +41,6 @@ from app.data.indicator_seo import (
     forecast_ssr_image_name,
 )
 from app.data.global_market_indicators import is_global_market_indicator
-from app.services.og_image import EN_MONTHS_NOM, RU_MONTH_NOM
 from app.models import Indicator, IndicatorData
 from app.services.display import (
     today_msk,
@@ -50,6 +49,7 @@ from app.services.display import (
     display_value_text,
     format_date_locale,
     format_date_ru,
+    format_month_year,
     format_number_ru,
     is_cpi_index,
     value_period_phrase,
@@ -2577,13 +2577,12 @@ def _indicator_body(
             name=name,
         )
         m_link_tpl = month_link_tpl or (
-            "{name} в {month_year}" if not en else "{name} in {month_year}"
+            "{name} за {month_year}" if not en else "{name} in {month_year}"
         )
-        month_names = (EN_MONTHS_NOM if en else RU_MONTH_NOM)
         month_links = _links_list(tuple(
             (
                 paths.indicator_month(paths.RUSSIA, indicator.code, y, m),
-                m_link_tpl.format(name=name, month_year=f"{month_names[m - 1]} {y}"),
+                m_link_tpl.format(name=name, month_year=format_month_year(date(y, m, 1), locale=loc)),
             )
             for y, m in data_month_pairs
         ))

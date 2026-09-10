@@ -4,7 +4,7 @@
  * интерфейсом: tagName / id / classList / getAttribute / parentElement / children.
  */
 import { describe, it, expect } from 'vitest';
-import { _elementPath, isAutomationUa } from './behavior';
+import { _elementPath, isAutomationUa, createAttentionClock } from './behavior';
 
 function el(tag, { id = '', classes = [], attrs = {}, parent = null } = {}) {
   const node = {
@@ -71,5 +71,36 @@ describe('isAutomationUa', () => {
 
   it('обычный Chrome — не шум', () => {
     expect(isAutomationUa('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/145.0.0.0')).toBe(false);
+  });
+});
+
+describe('attention clock', () => {
+  it('does not turn a passive 2.8-second load into input activity', () => {
+    const clock = createAttentionClock();
+    clock.reset(0, true);
+    expect(clock.snapshot(2800)).toEqual({ active_ms: 0, visible_ms: 2800 });
+    clock.input(3000, false, true);
+    expect(clock.snapshot(5000)).toEqual({ active_ms: 0, visible_ms: 2200 });
+  });
+
+  it('counts trusted visible activity, caps inactivity and never double counts dwell', () => {
+    const clock = createAttentionClock();
+    clock.reset(0, true);
+    clock.input(1000, true, true);
+    expect(clock.snapshot(5000)).toEqual({ active_ms: 4000, visible_ms: 5000 });
+    expect(clock.snapshot(30000)).toEqual({ active_ms: 11000, visible_ms: 25000 });
+    expect(clock.snapshot(30000)).toEqual({ active_ms: 0, visible_ms: 0 });
+  });
+
+  it('excludes hidden time and does not treat focus as user input', () => {
+    const clock = createAttentionClock();
+    clock.reset(0, true);
+    clock.input(1000, true, true);
+    clock.visibility(2000, false);
+    clock.input(3000, true, false);
+    clock.visibility(10000, true);
+    expect(clock.snapshot(12000)).toEqual({ active_ms: 1000, visible_ms: 4000 });
+    clock.reset(12000, false);
+    expect(clock.snapshot(20000)).toEqual({ active_ms: 0, visible_ms: 0 });
   });
 });

@@ -38,8 +38,10 @@ from app.services.geoip import lookup as geo_lookup
 _SEARCH_UA_RE = re.compile(
     r"yandex|googlebot|googleother|google-inspectiontool|adsbot-google|"
     r"bingbot|mail\.ru|duckduckbot|applebot|gptbot|"
-    r"petalbot|amazonbot|amzn-searchbot|claudebot|perplexitybot|youbot|"
-    r"meta-externalagent|facebookexternalhit|twitterbot|telegrambot|"
+    r"petalbot|amazonbot|amzn-searchbot|claudebot|claude-searchbot|claude-user|"
+    r"oai-searchbot|chatgpt-user|perplexitybot|youbot|"
+    r"meta-externalagent|meta-externalfetcher|meta-webindexer|"
+    r"facebookexternalhit|twitterbot|telegrambot|"
     r"slackbot|linkedinbot|whatsapp|discordbot|vkshare",
     re.IGNORECASE,
 )

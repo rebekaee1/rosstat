@@ -24,6 +24,7 @@ from app.services.display import (
     is_cpi_index,
     localize_unit,
 )
+from app.services.og_render import render_og_async
 from app.services.locale import get_locale
 from app.services.og_image import (
     fmt_yoy,
@@ -234,12 +235,17 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
     if _is_ru_origin(origin) and not apex_locale_en_enabled():
         return _index_304_or_full(_empty_sitemap_index(), request)
 
-    cache_key = _sitemap_cache_key("index", origin)
+    from app.services.sitemap_static import read_stats
+    generation = read_stats().get("generation", "dynamic")
+    cache_key = _sitemap_cache_key(f"index:{generation}", origin)
     cached = await cache_get(cache_key)
     if cached:
         return _index_304_or_full(cached, request)
 
-    names = await section_names(db)
+    from app.services.sitemap_static import published_sections
+    names = published_sections(origin)
+    if names is None:
+        names = await section_names(db)
     entries = "\n".join(
         f"  <sitemap>\n    <loc>{origin}/sitemap-{name}.xml</loc>\n  </sitemap>"
         for name in names
@@ -283,14 +289,13 @@ async def sitemap_section(
 
     origin = _request_sitemap_origin(request)
     from app.services.sitemap_static import section_file
-    disk = section_file(section)
-    if disk.is_file():
-        from fastapi.responses import FileResponse
-        return FileResponse(
-            disk,
-            media_type="application/xml",
-            headers={"Cache-Control": "public, max-age=600"},
-        )
+    from app.services.locale import apex_locale_en_enabled
+    if _is_ru_origin(origin) and not apex_locale_en_enabled():
+        return Response(status_code=404)
+    disk = section_file(section, origin)
+    if disk is not None and disk.is_file():
+        xml = await asyncio.to_thread(disk.read_text, encoding="utf-8")
+        return _xml_304_or_full(xml, _xml_etag(xml), request)
 
     cache_key = _sitemap_cache_key(f"section:{section}", origin)
     etag_key = _sitemap_cache_key(f"section-etag:{section}", origin)
@@ -610,7 +615,8 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
             (overlay or {}).get("name") or indicator.name_en,
             locale=loc,
         )
-        png = render_indicator_og(
+        png = await render_og_async(
+            render_indicator_og,
             code=code,
             name=name,
             value_text=core_number,
@@ -719,7 +725,8 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
             (overlay or {}).get("name") or indicator.name_en,
             locale=loc,
         )
-        png = render_indicator_og(
+        png = await render_og_async(
+            render_indicator_og,
             code=cache_key,
             name=name,
             value_text=core_number,
@@ -851,7 +858,8 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
             (overlay or {}).get("name") or indicator.name_en,
             locale=loc,
         )
-        png = render_indicator_og(
+        png = await render_og_async(
+            render_indicator_og,
             code=code,
             name=name,
             value_text=year_number,
@@ -919,7 +927,8 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
             else:
                 value_text = f"{_fmt_ru(values[-1])} {unit}".strip()
                 ind_name, region_name = indicator.name, region.name
-            png = render_indicator_og(
+            png = await render_og_async(
+                render_indicator_og,
                 code=cache_key,
                 name=f"{ind_name} \u2014 {region_name}",
                 value_text=value_text,
@@ -951,7 +960,8 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
         else:
             value_text = f"{_fmt_ru(values[-1])} {unit}".strip()
             ind_name, region_name = indicator.name, region.name
-        png = render_indicator_og(
+        png = await render_og_async(
+            render_indicator_og,
             code=cache_key,
             name=f"{ind_name} \u2014 {region_name}",
             value_text=value_text,
@@ -1047,7 +1057,8 @@ async def og_image_region_indicator_year(
 
         ind_name = copy["name"] or indicator.name
         region_name = region_display_name(slug, region.name)
-        png = render_indicator_og(
+        png = await render_og_async(
+            render_indicator_og,
             code=cache_key,
             name=f"{ind_name} \u2014 {region_name}",
             value_text=value_text,
@@ -1112,7 +1123,8 @@ async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
             if loc == "en"
             else ("лучшие значения" if achievement else "наибольшие значения")
         )
-        png = render_rating_og(
+        png = await render_og_async(
+            render_rating_og,
             name=(REGION_INDICATORS_EN.get(indicator.code) or {}).get("name")
             or indicator.name,
             year=int(last_year),
@@ -1156,7 +1168,8 @@ async def og_image_today_hub(db: AsyncSession = Depends(get_db)):
             items.append((query, f"{_format_number(rows[0].value)} {unit}".strip()))
         if not items:
             return Response(status_code=404)
-        png = render_today_hub_og(
+        png = await render_og_async(
+            render_today_hub_og,
             date_text=_locale_date(_date.today()), items=items, locale=loc,
         )
         store_og(cache_key, png)
@@ -1209,7 +1222,8 @@ async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depend
         ]
         if not rows:
             return Response(status_code=404)
-        png = render_region_vs_og(
+        png = await render_og_async(
+            render_region_vs_og,
             name_a=payload["region_a"]["name"],
             name_b=payload["region_b"]["name"],
             rows=rows,
@@ -1327,7 +1341,8 @@ async def og_image_world_vs(
                     f"+{_fmt(abs(diff))}{diff_sfx} — {leader}",
                     "",
                 ))
-            png = render_region_vs_og(
+            png = await render_og_async(
+                render_region_vs_og,
                 name_a=_country_label(country_a),
                 name_b=_country_label(country_b),
                 rows=rows,
@@ -1438,7 +1453,8 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
         ).scalar() or len(inds)
 
         if loc == "en":
-            png = render_world_country_og(
+            png = await render_og_async(
+                render_world_country_og,
                 country_name=country.name_en,
                 indicators_count=int(n_listed),
                 items=items,
@@ -1450,7 +1466,9 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
         else:
             from app.services.seo_world import _genitive
 
-            png = render_world_country_og(
+            png = await render_og_async(
+
+                render_world_country_og,
                 country_name=_genitive(country),
                 indicators_count=int(n_listed),
                 items=items,
@@ -1493,7 +1511,8 @@ async def og_image_world_rating(concept_slug: str, db: AsyncSession = Depends(ge
         unit = concept["unit"]
         if loc != "en":
             unit = unit_suffix(unit) or unit
-        png = render_world_rating_og(
+        png = await render_og_async(
+            render_world_rating_og,
             name=concept["name"],
             year=int(payload["active_year"]),
             unit=unit,
@@ -1556,7 +1575,8 @@ async def og_image_world_rating_year(
         unit = concept["unit"]
         if loc != "en":
             unit = unit_suffix(unit) or unit
-        png = render_world_rating_og(
+        png = await render_og_async(
+            render_world_rating_og,
             name=concept["name"],
             year=int(year),
             unit=unit,
@@ -1643,7 +1663,8 @@ async def og_image_world_indicator(
             subject = _world_subject(indicator.name_ru)
             prep = country_prepositional(country.slug, country.name_ru)
             name = f"{subject} в {prep}"
-        png = render_indicator_og(
+        png = await render_og_async(
+            render_indicator_og,
             code=cache_key,
             name=name,
             value_text=value_text,
@@ -1779,7 +1800,9 @@ async def og_image_world_indicator_year(
             prep = country_prepositional(country.slug, country.name_ru)
             name = f"{subject} в {prep}"
 
-        png = render_indicator_og(
+        png = await render_og_async(
+
+            render_indicator_og,
             code=cache_key,
             name=name,
             value_text=value_text,

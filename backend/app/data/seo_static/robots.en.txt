@@ -36,6 +36,19 @@ Disallow: /__honeypot__/
 
 # Aggressive scrapers with no SEO value: cut the whole site.
 # 
+# Training/archive collection is disabled; search and user fetchers remain allowed.
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
 User-agent: Amazonbot
 Disallow: /
 

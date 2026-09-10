@@ -31,6 +31,10 @@ class YandexWebmasterClient:
     async def sitemaps(self, user_id: str, host_id: str) -> YandexResponse:
         return await self.client.request("GET", f"/v4/user/{user_id}/hosts/{host_id}/sitemaps/")
 
+    async def sitemap_children(self, user_id: str, host_id: str, sitemap_id: str, **params: Any) -> YandexResponse:
+        return await self.client.request(
+            "GET", f"/v4/user/{user_id}/hosts/{host_id}/sitemaps/", params={"parent_id": sitemap_id, **params})
+
     async def search_queries_popular(self, user_id: str, host_id: str, **params: Any) -> YandexResponse:
         return await self.client.request("GET", f"/v4/user/{user_id}/hosts/{host_id}/search-queries/popular/", params=params)
 

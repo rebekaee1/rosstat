@@ -544,7 +544,7 @@ def test_bot_score_heuristics():
     assert score_session(sig(has_portrait=True, ua_raw="Mozilla/5.0 (compatible; YandexBot/3.0)")) >= BOT_THRESHOLD
     # Паттерн 41% прода: 1 pageview, ноль следов человека.
     s = sig()
-    assert score_session(s) >= BOT_THRESHOLD
+    assert score_session(s) < BOT_THRESHOLD
     assert "no_human_traces" in signal_breakdown(s)
     # Живой человек: движение мыши + активное время → не бот.
     human = sig(moves=3, active_ms=8000)
@@ -553,7 +553,7 @@ def test_bot_score_heuristics():
     assert score_session(sig(max_scroll_pct=45)) < BOT_THRESHOLD
     # Headless с доставленным dwell, но без единого следа ввода — бот
     # (dwell сам по себе следом не считается).
-    assert score_session(sig()) >= BOT_THRESHOLD
+    assert score_session(sig()) < BOT_THRESHOLD
     # Только синтетические клики (isTrusted=false) — бот.
     assert score_session(sig(clicks=2, synthetic_clicks=2)) >= BOT_THRESHOLD
     # Настоящие клики среди синтетических — сигнал не срабатывает.
@@ -563,7 +563,7 @@ def test_bot_score_heuristics():
     assert 0 < score_session(flood) < BOT_THRESHOLD
     # Обход каталога в одной сессии без ввода.
     crawl = sig(pageviews=12)
-    assert score_session(crawl) >= BOT_THRESHOLD
+    assert score_session(crawl) < BOT_THRESHOLD
     assert "ghost_crawl" in signal_breakdown(crawl)
 
 
@@ -586,7 +586,7 @@ def test_sessionize_sets_bot_score():
                 )
 
             db.add_all([
-                # Бот: одиночный pageview без следов.
+                # Неопределённый визит: одиночный pageview без следов.
                 ev("bot1", "pageview", 0),
                 # Человек: pageview + мышь + dwell с active_ms.
                 ev("hum1", "pageview", 0),
@@ -598,7 +598,85 @@ def test_sessionize_sets_bot_score():
             n = await ar.sessionize(db, base - timedelta(minutes=5))
             assert n == 2
             rows = {s.visitor_id_hash: s for s in (await db.execute(select(ServerSession))).scalars()}
-            assert rows["bot1"].is_bot and rows["bot1"].bot_score >= 60
+            assert not rows["bot1"].is_bot and 0 < rows["bot1"].bot_score < 60
             assert not rows["hum1"].is_bot and rows["hum1"].bot_score < 60
 
+    _run_with_db(scenario)
+
+
+def test_daily_unique_audience_does_not_count_sessions_as_people():
+    from app.models import ServerSession
+    from app.services.analytics_marts import mart_metric_tree
+    from app.services.analytics_period import resolve_period
+
+    async def scenario(maker):
+        async with maker() as db:
+            base = datetime(2026, 9, 1, 10)
+            for offset, visitor, bot, internal in ((0, "repeat", False, False),
+                    (1, "repeat", False, False), (24, "repeat", False, False),
+                    (25, "new", False, False), (26, "robot", True, False),
+                    (27, "admin", False, True)):
+                ts = base + timedelta(hours=offset)
+                db.add(ServerSession(day=ts.date(), visitor_id_hash=visitor,
+                    started_at=ts, ended_at=ts, is_bot=bot, is_internal=internal))
+            await db.commit()
+            period = resolve_period("custom", "2026-09-01", "2026-09-02")
+            result = (await mart_metric_tree(db, period))["audience_daily"]
+            assert result["period_average_daily_visitors"] == 1.5
+            assert result["period_unique_visitors"] == 2
+            assert result["observed_sessions"] == 4
+            assert result["target_final"] == 10000
+            assert result["status"] == "estimate_not_verified_people"
+    _run_with_db(scenario)
+
+
+def test_known_crawler_repair_requires_matching_session_time():
+    from sqlalchemy import select
+    from app.models import BehaviorSession, ServerSession
+    from app.services.analytics_repair import reclassify_known_crawlers_day
+
+    async def scenario(maker):
+        async with maker() as db:
+            base = datetime(2026, 9, 4, 10)
+            for i in range(3):
+                ts = base + timedelta(hours=i)
+                db.add(ServerSession(day=ts.date(), visitor_id_hash="same-visitor",
+                    started_at=ts, ended_at=ts + timedelta(minutes=5), is_bot=False, bot_score=0))
+            db.add_all([
+                BehaviorSession(session_id_hash="crawler", visitor_id_hash="same-visitor",
+                    started_at=base + timedelta(seconds=1), ua_raw="meta-externalagent/1.1"),
+                BehaviorSession(session_id_hash="normal", visitor_id_hash="same-visitor",
+                    started_at=base + timedelta(hours=1, seconds=1), ua_raw="Mozilla/5.0 Chrome/145"),
+                # Known UA between sessions must not contaminate the next session.
+                BehaviorSession(session_id_hash="outside", visitor_id_hash="same-visitor",
+                    started_at=base + timedelta(hours=1, minutes=30), ua_raw="ClaudeBot/1.0"),
+            ])
+            await db.commit()
+            dry = await reclassify_known_crawlers_day(db, base.date())
+            assert dry["known_crawler_sessions"] == 1 and dry["updated"] == 0
+            assert not any((await db.execute(select(ServerSession.is_bot))).scalars())
+            await reclassify_known_crawlers_day(db, base.date(), apply=True)
+            flags = (await db.execute(select(ServerSession.is_bot).order_by(ServerSession.started_at))).scalars().all()
+            assert flags == [True, False, False]
+            again = await reclassify_known_crawlers_day(db, base.date(), apply=True)
+            assert again["updated"] == 0
+    _run_with_db(scenario)
+
+
+def test_visitor_flood_uses_msk_day_not_refresh_window():
+    from sqlalchemy import select
+    from app.models import BehaviorEvent, ServerSession
+    from app.tasks.analytics_rollups import sessionize
+
+    async def scenario(maker):
+        async with maker() as db:
+            base = datetime(2026, 7, 1, 10)
+            for i in range(35):
+                db.add(BehaviorEvent(event_type="pageview", visitor_id_hash="daily-reader",
+                    session_id_hash=f"day-{i}", occurred_at=base + timedelta(days=i), page="/"))
+            await db.commit()
+            await sessionize(db, base - timedelta(minutes=1))
+            scores = (await db.execute(select(ServerSession.bot_score))).scalars().all()
+            assert len(scores) == 35
+            assert all(score < 60 for score in scores)
     _run_with_db(scenario)

@@ -1738,13 +1738,14 @@ function DriverNode({ node }) {
 function MetricTreeTab({ d }) {
   const tree = d.metric_tree || {};
   const ns = tree.north_star || {};
+  const audience = tree.audience_daily;
   const milestone = ns.milestone || 10000;
   const nsColor = STATUS_COLOR[ns.status] || GOLD;
   const series = (ns.series || []).map((x) => ({ v: x.visits }));
 
   // Calendar-heatmap года: НАШИ сессии по дням за 365 дней (tree.calendar),
   // независимо от выбранного периода; палитра автоскейлится по максимуму.
-  const calOption = useMemo(() => {
+  const calOption = (() => {
     const src = tree.calendar || ns.series || [];
     const calData = src.map((x) => [x.day, x.visits]);
     const calMax = Math.max(1, ...src.map((x) => x.visits));
@@ -1765,14 +1766,29 @@ function MetricTreeTab({ d }) {
       },
       series: [{ type: 'heatmap', coordinateSystem: 'calendar', data: calData }],
     };
-  }, [tree.calendar, ns.series]);
+  })();
 
   return (
     <div className="space-y-5">
+      {audience && (
+        <section className="rounded-2xl bg-surface border border-border-subtle p-6">
+          <div className="text-[13px] text-text-secondary">Цель: 10 000 реальных людей в день</div>
+          <div className="flex flex-wrap items-baseline gap-3 mt-2">
+            <span className="text-4xl font-bold tabular-nums text-text-primary">{fmtInt(Math.round(audience.period_average_daily_visitors || 0))}</span>
+            <span className="text-sm text-text-secondary">уникальных посетителей в день — оценка</span>
+          </div>
+          <p className="text-xs text-text-secondary mt-2">Среднее за выбранный период. {fmtInt(audience.period_unique_visitors || 0)} уникальных идентификаторов за весь период; {fmtInt(audience.observed_sessions || 0)} сессий.</p>
+          <p className="text-xs text-text-tertiary mt-2 max-w-3xl">{audience.caveat}</p>
+          {audience.includes_partial_today && <p className="text-xs text-text-tertiary mt-1">Сегодняшний день ещё не завершён и входит в среднее.</p>}
+          <div className="h-2 rounded-full bg-obsidian overflow-hidden mt-4" role="progressbar" aria-label="Оценка дневной аудитории относительно цели" aria-valuemin={0} aria-valuemax={10000} aria-valuenow={Math.min(audience.period_average_daily_visitors || 0, 10000)}>
+            <div className="h-full rounded-full" style={{ width: `${Math.min((audience.period_average_daily_visitors || 0) / 10000 * 100, 100)}%`, background: GOLD }} />
+          </div>
+        </section>
+      )}
       <section className="rounded-2xl bg-surface border border-border-subtle p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="text-[13px] text-text-tertiary">{ns.label || 'Сессии в день'} — North Star — наш счётчик</div>
+            <div className="text-[13px] text-text-tertiary">{ns.label || 'Сессии в день'} — операционный показатель</div>
             <div className="flex items-baseline gap-3 mt-1">
               <span className="text-4xl font-bold tabular-nums text-text-primary">{fmtInt(Math.round(ns.value || 0))}</span>
               {ns.wow_pct != null && (
@@ -1792,7 +1808,7 @@ function MetricTreeTab({ d }) {
             </div>
             <div className="mt-3 max-w-md">
               <div className="flex justify-between text-[11px] text-text-tertiary mb-1">
-                <span>до вехи {fmtInt(milestone)}</span>
+                <span>до вехи {fmtInt(milestone)} сессий</span>
                 <span className="tabular-nums">{Math.min(Math.round((ns.value || 0) / milestone * 100), 100)}%</span>
               </div>
               <div className="h-2 rounded-full bg-obsidian overflow-hidden">

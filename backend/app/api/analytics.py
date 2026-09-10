@@ -616,7 +616,7 @@ async def collect_behavior_batch(
         # Гигиена dwell: старые клиентские бандлы из кэша не клампят ms —
         # страхуемся на инжесте, иначе «19 часов на странице» портит витрины.
         if etype == "dwell":
-            for key in ("ms", "active_ms"):
+            for key in ("ms", "active_ms", "visible_ms"):
                 v = extra.get(key)
                 if isinstance(v, (int, float)) and v > _DWELL_MAX_MS:
                     extra[key] = _DWELL_MAX_MS

@@ -53,16 +53,17 @@ def _delta(current: int | None, previous: int | None) -> str:
 def _http_breakdown(history: dict) -> dict[str, int]:
     """Суммарные счётчики обхода по классам HTTP-кодов за период истории."""
     totals: dict[str, int] = {}
-    for series in history.get("indicators", {}).values() if isinstance(history.get("indicators"), dict) else []:
-        for point in series:
-            code = str(point.get("indicator") or "")
-            totals[code] = totals.get(code, 0) + int(point.get("value") or 0)
-    # Альтернативный формат ответа: список серий.
-    if not totals:
-        for series in history.get("indicators", []) if isinstance(history.get("indicators"), list) else []:
-            code = str(series.get("indicator") or "")
-            for point in series.get("history", []) or []:
-                totals[code] = totals.get(code, 0) + int(point.get("value") or 0)
+    indicators = history.get("indicators") or {}
+    if isinstance(indicators, dict):
+        series = indicators.items()
+    else:
+        series = ((s.get("indicator", ""), s.get("history", [])) for s in indicators)
+    for code, points in series:
+        for point in points or []:
+            value = point.get("value")
+            if value is not None:
+                key = str(point.get("indicator") or code)
+                totals[key] = totals.get(key, 0) + int(value)
     return totals
 
 
@@ -123,7 +124,7 @@ async def _host_report_block(client, user_id, host_id: str, redis) -> str | None
         pretty = ", ".join(f"{k}: {v}" for k, v in problems.items())
         lines.append(f"Проблемы сайта: {pretty}")
     try:
-        history = (await client.indexing_history(user_id, host_id)).data
+        history = (await client.indexing_history(user_id, host_id, indexing_indicator="DOWNLOADED")).data
         totals = _http_breakdown(history)
         if totals:
             crawl = ", ".join(
