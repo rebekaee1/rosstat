@@ -10,6 +10,10 @@ set -euo pipefail
 
 cd /opt/rosstat
 
+# Serialize publication, container replacement and pruning across deploys.
+exec 9>/var/lock/rosstat-deploy.lock
+flock -n 9 || { echo "FAIL: другой деплой уже выполняется"; exit 1; }
+
 # ── 1. Preflight: бэкап БД перед миграциями (О-2) ─────────────────────
 echo "==> preflight: pg backup"
 ./scripts/pg-backup.sh || { echo "FAIL: backup failed — деплой остановлен"; exit 1; }
@@ -86,24 +90,79 @@ done
 
 # ── 3. Build: версионированные образы для отката (О-4) ────────────────
 echo "==> docker compose build (tag=${NEW_SHA})"
-docker compose build frontend backend
+# Retain the actual running images, not whatever 'latest' a previous build left.
+for service in backend frontend; do
+  container=$(docker compose ps -q "$service")
+  [ -n "$container" ] || { echo "FAIL: running ${service} required for rollback"; exit 1; }
+  image=$(docker inspect --format '{{.Image}}' "$container")
+  docker tag "$image" "rosstat-${service}:${PREV_SHA}"
+  if [ "$service" = frontend ]; then PREV_FRONTEND_IMAGE="$image"; else PREV_BACKEND_IMAGE="$image"; fi
+done
+preparation_failed() {
+  trap - ERR
+  git reset --hard "${PREV_SHA}"
+  docker tag "${PREV_BACKEND_IMAGE}" rosstat-backend
+  docker tag "${PREV_FRONTEND_IMAGE}" rosstat-frontend
+  echo "FAIL: подготовка релиза не завершена; работающие контейнеры не менялись"
+  exit 1
+}
+trap preparation_failed ERR
+docker compose build --build-arg "VITE_BUILD_ID=${APPROVED_TARGET}" frontend backend
 docker tag rosstat-backend "rosstat-backend:${NEW_SHA}"
 docker tag rosstat-frontend "rosstat-frontend:${NEW_SHA}"
 
+# Compose resolves .env too: use its effective mount rather than a different
+# shell default. Keep a helper copy because rollback restores the previous git.
+ASSET_ARCHIVE=$(docker compose config --format json | python3 -c '
+import json, sys
+volumes = json.load(sys.stdin)["services"]["frontend"]["volumes"]
+print(next(v["source"] for v in volumes if v["target"] == "/var/cache/frontend-assets"))')
+ASSET_WORK=$(mktemp -d)
+cp scripts/frontend-asset-archive.py "${ASSET_WORK}/archive.py"
+cleanup_assets() { rm -rf "${ASSET_WORK}"; }
+trap cleanup_assets EXIT
+publish_frontend_assets() {
+  local image="$1" container result=0
+  container=$(docker create "$image") || return 1
+  mkdir -p "${ASSET_WORK}/html"
+  docker cp "${container}:/usr/share/nginx/html/." "${ASSET_WORK}/html" || result=1
+  docker rm "$container" >/dev/null || result=1
+  if [ "$result" = 0 ]; then
+    python3 "${ASSET_WORK}/archive.py" publish --archive "$ASSET_ARCHIVE" --source "${ASSET_WORK}/html" || result=1
+  fi
+  rm -rf "${ASSET_WORK}/html"
+  return "$result"
+}
+# Complete old+new asset publication precedes exposing new HTML. Prune only
+# after acceptance so both rollback and old tabs remain safe during the watch.
+PREV_ASSET_RELEASE=$(publish_frontend_assets "${PREV_FRONTEND_IMAGE}")
+NEW_ASSET_RELEASE=$(publish_frontend_assets "rosstat-frontend:${NEW_SHA}")
+RETAINED_PROBE=$(python3 - "$ASSET_ARCHIVE" "$PREV_ASSET_RELEASE" "$NEW_ASSET_RELEASE" <<'PY'
+import json, pathlib, sys
+root = pathlib.Path(sys.argv[1]) / "releases"
+previous = json.loads((root / f"{sys.argv[2]}.json").read_text())
+current = set(json.loads((root / f"{sys.argv[3]}.json").read_text()))
+# Prefer a path absent in the new image to actually exercise nginx's fallback.
+print(next((name for name in previous if name not in current), previous[0]))
+PY
+)
+
 rollback() {
+  trap - ERR
   echo "==> ROLLBACK to ${PREV_SHA}"
   git reset --hard "${PREV_SHA}"
-  if docker image inspect "rosstat-backend:${PREV_SHA}" >/dev/null 2>&1; then
-    docker tag "rosstat-backend:${PREV_SHA}" rosstat-backend
-    docker tag "rosstat-frontend:${PREV_SHA}" rosstat-frontend
-    docker compose up -d frontend backend
-    echo "    откат выполнен (образы ${PREV_SHA})"
-  else
-    echo "    образов ${PREV_SHA} нет — пересобираю из git"
-    docker compose build frontend backend && docker compose up -d frontend backend
-  fi
+  docker tag "${PREV_BACKEND_IMAGE}" rosstat-backend
+  docker tag "${PREV_FRONTEND_IMAGE}" rosstat-frontend
+  docker compose up -d frontend backend
+  # Mark the restored release as newest before pruning, including when rolling
+  # back after repeated unsuccessful deploy attempts.
+  publish_frontend_assets "${PREV_FRONTEND_IMAGE}"
+  python3 "${ASSET_WORK}/archive.py" prune --archive "$ASSET_ARCHIVE" --keep 3
+  echo "    откат выполнен (образы ${PREV_SHA})"
   exit 1
 }
+# ERR catches compose/up failures too; previously set -e skipped rollback.
+trap rollback ERR
 
 # ── 4. Up + ожидание readiness (реальный /health/ready, Н-1) ──────────
 echo "==> anti-scrape: каталог логов nginx для fail2ban (uid 101 = nginx)"
@@ -159,6 +218,12 @@ if [ -z "$ASSET" ]; then echo "FAIL: SSR HTML без ассетов"; rollback; 
 curl -sf -o /dev/null "http://localhost:3000${ASSET}" \
   || { echo "FAIL: SSR ссылается на несуществующий ассет ${ASSET} (asset-hash trap)"; rollback; }
 echo "    ok (${ASSET})"
+
+echo "==> smoke: previous release asset"
+curl -sf -o "${ASSET_WORK}/retained-probe" "http://localhost:3000/assets/${RETAINED_PROBE}" \
+  && cmp -s "${ASSET_WORK}/retained-probe" "${ASSET_ARCHIVE}/assets/${RETAINED_PROBE}" \
+  || { echo "FAIL: старый ассет недоступен или заменён HTML: ${RETAINED_PROBE}"; rollback; }
+echo "    ok (${RETAINED_PROBE})"
 
 echo "==> smoke: OG image"
 curl -sf -o /dev/null http://localhost:3000/og/cpi.png || { echo "FAIL: OG image"; rollback; }
@@ -267,6 +332,10 @@ PY
   sleep 60
 done
 echo "    watch ok"
+
+echo "==> assets: retain three accepted/recent frontend builds"
+python3 "${ASSET_WORK}/archive.py" prune --archive "$ASSET_ARCHIVE" --keep 3
+trap - ERR
 
 # ── 7. Чистка старых версионированных образов (держим 3 последних) ────
 docker images 'rosstat-backend' --format '{{.Tag}}' | grep -v '^latest$' | tail -n +4 \

@@ -33,7 +33,6 @@ const SYNONYM_GROUPS = [
   { targets: ['fuel-diesel'], keys: ['дизель', 'солярка', 'diesel'] },
   { targets: ['unemployment', 'unemployment-rate'], keys: ['безработица', 'unemployment', 'безработ'] },
   { targets: ['wages'], keys: ['зарплата', 'зпл', 'з/п', 'заработная', 'wages', 'salary', 'зп', 'мрот', 'минимальная зарплата', 'minimum wage'] },
-  { targets: ['ipi', 'ppi'], keys: ['сталь', 'steel', 'прокат', 'металл'] },
   { targets: ['usd-rub'], keys: ['курс доллара', 'доллар', 'usd', 'dollar', 'usdrub'] },
   { targets: ['eur-rub'], keys: ['курс евро', 'евро', 'eur', 'euro'] },
   { targets: ['cny-rub'], keys: ['курс юаня', 'юань', 'cny', 'yuan', 'renminbi'] },

@@ -111,7 +111,7 @@ async def build_static_sitemaps() -> dict:
     """
     from app.api.sitemap import _render_urlset
     from app.services.locale import en_public_origin, ru_public_origin, apex_locale_en_enabled
-    from app.services.site_urls import resolve_section, section_names
+    from app.services.site_urls import iter_url_sections
 
     root = sitemap_dir()
     root.mkdir(parents=True, exist_ok=True, mode=0o755)
@@ -135,13 +135,9 @@ async def build_static_sitemaps() -> dict:
         started = datetime.now(timezone.utc)
         try:
             async with analytics_session() as db:
-                names = await section_names(db)
-                for name in names:
+                async for name, urls in iter_url_sections(db):
                     if not _SECTION.fullmatch(name):
                         raise ValueError(f"Invalid sitemap section: {name}")
-                    urls = await resolve_section(db, name)
-                    if urls is None:
-                        raise ValueError(f"Unresolved sitemap section: {name}")
                     if not urls:
                         continue  # Empty chunks must not be advertised.
                     for origin in origins:

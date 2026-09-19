@@ -1,12 +1,16 @@
 # Enterprise resilience — практики и инварианты
 
-**Last updated:** 2026-07-06 (CTO-аудит, Волны 1/4: наблюдаемость и операционка выросли — реальный readiness `/health/ready` (БД + оба Redis + планировщик + возраст ETL как мягкая деградация), APScheduler-listener EVENT_JOB_ERROR/MISSED → Telegram, staleness-монитор индикаторов (10:00 МСК), алерты derived/retrain/backup-heartbeat/lockout/5xx-spike/rate-limit-fail-open, 5xx-счётчики в `/metrics`; deploy.sh с автооткатом на SHA-теги; Redis: maxmemory + выделенный `redis-state` (noeviction+AOF) для сессий; распределённые локи мутационных джобов (state-Redis SET NX); prod-assertions при `debug=false` (warn-режим); body-limit/таймауты на nginx и Caddy. Ранее 2026-05-22: nginx no-cache always на SSR routes.)
+**Last updated:** 2026-09-20 (локальный пакет `fix/history-access-reliability`: история, per-IP доступ, архив ассетов и происхождение метрик Пульса; прод не принят).
+
+**Previous:** 2026-07-06 (CTO-аудит, Волны 1/4: наблюдаемость и операционка выросли — реальный readiness `/health/ready` (БД + оба Redis + планировщик + возраст ETL как мягкая деградация), APScheduler-listener EVENT_JOB_ERROR/MISSED → Telegram, staleness-монитор индикаторов (10:00 МСК), алерты derived/retrain/backup-heartbeat/lockout/5xx-spike/rate-limit-fail-open, 5xx-счётчики в `/metrics`; deploy.sh с автооткатом на SHA-теги; Redis: maxmemory + выделенный `redis-state` (noeviction+AOF) для сессий; распределённые локи мутационных джобов (state-Redis SET NX); prod-assertions при `debug=false` (warn-режим); body-limit/таймауты на nginx и Caddy. Ранее 2026-05-22: nginx no-cache always на SSR routes.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md) (раздел «Operational invariants and traps»).
 **See also:** [`workflow.md`](workflow.md) (smoke C, прод-деплой), [`adr/0003-seo-single-source-server-rendered.md`](adr/0003-seo-single-source-server-rendered.md) (asset-hash trap), [`../AGENTS.md::Шаг 4 — чеклист «новый индикатор»`](../AGENTS.md) (другая ось: 7/7 при добавлении indicator, против 6/6 канарейки ниже).
 
 Чеклист для каждой доработки API/парсера/UI/деплоя — по уровням системы.
 
 ## API и backend
+
+**Доступ, локальная реализация 2026-09-20.** nginx ограничивает SSR по IP (5 r/s), региональные страницы и OG — строгой зоной (2 r/s); заявленный поисковый UA не освобождает от лимита. Общего SSR-бакета больше нет; общий OG-потолок 8 r/s и 4 соединения сохранён отдельно. `$bad_bot` удалён, но отдельная политика training/archive crawlers остаётся. Отсутствующая/чужая `fe_bind`, страна и ASN не блокируют HTML/API; cookie лишь перевыпускается. X-Forwarded-For принимается только от доверенного proxy peer. Это ограничение объёма, не гарантия распознавания распределённого скрейпинга; host-level fail2ban требует отдельной проверки на приёмке. Контекст — [CONTEXT](../CONTEXT.md#history-access-reliability-2026-09-20).
 
 - **Rate limit (Redis-based)** — все `/api/*` ограничены: 120/мин на IP для основного API, 600/мин для `/api/v1/embed/*`. Окно 60 сек, ключ `rl:<ip>` / `rle:<ip>`. При превышении — `429 {detail: "Rate limit exceeded"}` с `Retry-After: 60`. При недоступном Redis — middleware пропускает запрос (`logger.warning` + allow). `RateLimitMiddleware` в `backend/app/main.py`.
 - **CORS** — белый список фиксирован: `forecasteconomy.com`, `www.forecasteconomy.com`, `localhost:{5173,5174,3000}`. Только `GET, OPTIONS`. Любой новый внешний потребитель — добавить явно в `app/main.py`.
@@ -36,6 +40,10 @@
 
 ## Frontend и кэш
 
+**Архив релизов, локальная реализация 2026-09-20.** Hashed-ассеты старого работающего и нового frontend публикуются атомарно по файлам с manifest в общий архив до выдачи нового HTML; nginx использует read-only fallback. HTML, source maps и фиксированные имена исключены. На успешном деплое prune оставляет три релиза только после smoke/watch; при rollback сначала повторно публикуется восстановленный релиз. Reload при `vite:preloadError` ограничен одной попыткой на release и требует сохранённого sessionStorage guard: при недоступном storage цикла reload нет. Архив не заменяет совместную сборку backend/frontend и не гарантирует бессрочный replay. Порядок и одобрение SHA — [workflow](workflow.md#прод-деплой).
+
+**История SEO, 2026-09-20.** Возраст URL не основание для `noindex`; полнота данных и каноничность остаются обязательными. Для годовых страниц РФ пороги quarterly/annual/monthly — 4/1/6 точек; мировой годовой sitemap сохраняет curated-гейт, не включает все ряды. Месячная история публикуется чанками `months-N`, статическая генерация — потоково. Детали — [CONTEXT](../CONTEXT.md#history-access-reliability-2026-09-20).
+
 - **Asset-hash mismatch trap** — Vite строит файлы вида `index-<hash>.js`. Если backend и frontend пересобраны не вместе, новый `__spa-index.html` будет ссылаться на ассеты, которых уже нет на nginx-сервинге (или наоборот). **Правило:** `docker compose build backend frontend` всегда вместе перед `up -d`. См. `Caddyfile` для текущего fallback на `/__spa-index.html`.
 - **nginx no-cache always на SSR HTML** — без флага `always` в `add_header Cache-Control` сам заголовок не применялся к 4xx/5xx и переопределялся upstream-заголовком. Браузер кэшировал stale HTML на часы. Фикс 2026-05-22: `proxy_hide_header Cache-Control` + `add_header Cache-Control "no-cache, no-store, must-revalidate" always` на всех SSR-routes (`/`, `/about`, `/privacy`, `/compare`, `/calculator`, `/calendar`, `/demographics`, `/widgets`, `/category/*`, `/indicator/*`, `/__spa-index.html`, `/embed/*`). Ассеты в `/assets/` остаются `max-age=31536000, immutable`. См. `frontend/nginx.conf`. Закрывает Browser-cache trap из `CONTEXT.md::Operational invariants and traps`.
 - **CSP в Caddyfile** — белые списки прописаны для Yandex.Metrika (`mc.yandex.ru`, `mc.yandex.com`), Sentry frontend (`sentry.io`, `*.ingest.sentry.io`), Yandex.Webmaster, шрифтов Google. Любой новый внешний скрипт — добавить в CSP, иначе он будет заблокирован.
@@ -49,6 +57,8 @@
 - **DB indexes** — `data_points (indicator_id, period_start, frequency)` уникальный, `forecast_runs (indicator_id, created_at desc)`. См. `migrations/`.
 
 ## Мониторинг
+
+**Пульс, локальная реализация 2026-09-20.** UTM-строки, платное привлечение Метрики, органический поиск, доход РСЯ и расходы на рекламу не смешиваются. Нет снимка за день — нет данных, а не нулевой трафик/доход; различаются `missing`, `failed`, `stale`, `invalid`, сохраняются metadata периода, счётчика и семплирования. Сумма дохода за окно не выдаётся за дневной доход, отсутствие расходов не доказывает прибыль. Приёмка — [backlog](backlog.md#history-access-reliability-2026-09-20).
 
 - **Health endpoints** — `/api/v1/health/live` (тривиальный liveness), `/api/v1/health/ready` (readiness: SELECT 1 + PING обоих Redis + `scheduler.running`; устаревший ETL — мягкая `degraded: true`, не 503 — см. Р-8), `/api/v1/analytics/health` (failed analytics syncs за 24ч). Docker-healthcheck и deploy-smoke смотрят на `/health/ready`; external uptime monitor — на `/health/live` + `/health/ready`.
 - **JSON-логи** — все backend-логи в stdout как JSON (`{ts, level, logger, msg, exc?}`). Удобно вбирать в любой коллектор.

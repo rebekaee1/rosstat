@@ -10,24 +10,17 @@ Tier 3 — `noindex,follow`, не в sitemap, доступны по ссылка
 """
 from __future__ import annotations
 
-import re
 from datetime import date
 from typing import Literal
-
-from app.services.display import today_msk
 
 Tier = Literal[1, 2, 3]
 
 # --- Пороги (одна таблица) -------------------------------------------------
 
-# Годовые лендинги макро РФ: минимум точек за календарный год.
+# Минимум наблюдений за год: полный квартальный/годовой ряд либо
+# прежний порог шесть для месячных и более частых рядов.
 RUSSIA_YEAR_MIN_POINTS = 6
-# Региональные годовые: последние N лет listed-пар.
-REGIONAL_YEAR_LOOKBACK = 5
-# Мировые годовые: только curated-концепты, последние N лет.
-WORLD_YEAR_LOOKBACK = 10
-# Месячные лендинги макро: текущий + прошлый календарный год.
-MONTH_LOOKBACK_YEARS = 1
+RUSSIA_YEAR_MIN_POINTS_BY_FREQUENCY = {"annual": 1, "quarterly": 4}
 # Мировые карточки Tier 2: минимум точек и не «сырое» машинное имя.
 WORLD_CARD_MIN_POINTS = 8
 
@@ -38,38 +31,6 @@ TIER2_PRIORITY = "0.4"
 MODE_CANONICAL = False
 
 _HONEYPOT_PATH = "/__honeypot__/trap"
-
-# /russia/region/{slug}/{code}/{year}
-_RE_REGION_YEAR = re.compile(
-    r"^/russia/region/[^/]+/[^/]+/(\d{4})$"
-)
-# /russia/indicator/{code}/{year}  (не месяц YYYY-MM)
-_RE_RU_YEAR = re.compile(
-    r"^/russia/indicator/[^/]+/(\d{4})$"
-)
-# /russia/indicator/{code}/{year}-{mm}
-_RE_RU_MONTH = re.compile(
-    r"^/russia/indicator/[^/]+/(\d{4})-(\d{2})$"
-)
-# /{country}/indicator/{code}/{year}  (не russia)
-_RE_WORLD_YEAR = re.compile(
-    r"^/(?!russia/)[a-z0-9-]+/indicator/[^/]+/(\d{4})$"
-)
-
-
-def regional_year_min(today: date | None = None) -> int:
-    t = today or today_msk()
-    return t.year - REGIONAL_YEAR_LOOKBACK
-
-
-def world_year_min(today: date | None = None) -> int:
-    t = today or today_msk()
-    return t.year - WORLD_YEAR_LOOKBACK
-
-
-def month_year_min(today: date | None = None) -> int:
-    t = today or today_msk()
-    return t.year - MONTH_LOOKBACK_YEARS
 
 
 def curated_world_dataset_ids() -> frozenset[str]:
@@ -102,16 +63,8 @@ def is_noindex_path(path: str, *, today: date | None = None) -> bool:
     raw = (path or "").split("?", 1)[0].rstrip("/") or "/"
     if raw == honeypot_path() or raw.startswith("/__honeypot__/"):
         return True
-    t = today or today_msk()
-    m = _RE_REGION_YEAR.match(raw)
-    if m and int(m.group(1)) < regional_year_min(t):
-        return True
-    m = _RE_RU_MONTH.match(raw)
-    if m and int(m.group(1)) < month_year_min(t):
-        return True
-    m = _RE_WORLD_YEAR.match(raw)
-    if m and int(m.group(1)) < world_year_min(t):
-        return True
+    # Возраст не определяет полезность истории. Наличие данных и канон
+    # проверяют маршруты и sitemap, а не календарный cutoff по URL.
     return False
 
 

@@ -127,10 +127,11 @@ def test_year_page_200_core_blocks(region_year_client):
     ), "ожидалась ранг-фраза нейтральной подачи"
     assert "из 3" in html
 
-    # Сравнение со средним по России за тот же год (Москва ниже общероссийского).
-    assert "Сравнение со средним по России" in html
-    assert "В среднем по России в 2023 году" in html
-    assert "ниже среднероссийского" in html
+    assert "Россия в целом" in html
+    assert "По России в целом в 2023 году" in html
+    assert "146\u202f750\u202f000" in html
+    assert "В среднем по России" not in html
+    assert "ниже среднероссийского" not in html
 
     # Таблица динамики: короткий ряд (<16) — все годы с заголовком по имени.
     assert f"{IND_NAME} в регионе Москва по годам" in html
@@ -225,10 +226,8 @@ def test_public_grammar_no_mid_dot_no_internals(region_year_client):
 def test_sitemap_regional_years_matches_ssr(region_year_client, auth_env):
     """Двусторонняя сверка sitemap-секции regional-years ↔ SSR.
 
-    В карте только последние REGIONAL_YEAR_LOOKBACK лет (INDEX_POLICY).
-    Более старые годы остаются живым SSR (noindex), но не в sitemap.
+    В карте все существующие годы listed-пар независимо от возраста.
     """
-    from app.services.index_policy import regional_year_min
     from app.services.seo_regional_year import render_region_indicator_year_html
     from app.services.site_urls import _regional_year_urls
 
@@ -237,23 +236,15 @@ def test_sitemap_regional_years_matches_ssr(region_year_client, auth_env):
             today = date.today()
             urls = await _regional_year_urls(db, today)
             paths_list = sorted(u.path for u in urls)
-            year_min = regional_year_min(today)
-            in_sitemap = [y for y in range(2018, 2024) if y >= year_min]
-
             for slug in ("moskva", "respublika-tatarstan"):
-                for y in in_sitemap:
-                    assert f"/russia/region/{slug}/{CODE}/{y}" in paths_list
                 for y in range(2018, 2024):
-                    if y < year_min:
-                        assert f"/russia/region/{slug}/{CODE}/{y}" not in paths_list
+                    assert f"/russia/region/{slug}/{CODE}/{y}" in paths_list
+                assert f"/russia/region/{slug}/{CODE}/2017" not in paths_list
             # lastmod = 31 декабря СВОЕГО года (регионы обновляются раз в год).
             assert all(
                 u.lastmod == f"{u.path.rsplit('/', 1)[1]}-12-31" for u in urls
             )
-            # Перми — только годы внутри lookback.
-            assert f"/russia/region/permskiy-kray/{CODE}/{in_sitemap[-1]}" in paths_list
-            if 2020 < year_min:
-                assert f"/russia/region/permskiy-kray/{CODE}/2020" not in paths_list
+            assert f"/russia/region/permskiy-kray/{CODE}/2020" in paths_list
 
             # Каждая карта-URL рендерится 200.
             for path in paths_list:
@@ -321,10 +312,11 @@ def test_en_year_page_core_blocks(region_year_client):
         r"In 2023, Moscow is among the three regions", html
     ), "ожидалась EN ранг-фраза нейтральной подачи"
 
-    # Сравнение с РФ (Москва ниже общероссийского).
-    assert "Comparison with the Russian average" in html
-    assert "The Russian average in 2023" in html
-    assert "below the national average" in html
+    assert "Russia as a whole" in html
+    assert "Russia as a whole in 2023" in html
+    assert "146,750,000" in html
+    assert "Russian average" not in html
+    assert "below the national average" not in html
 
     # CTA и «Другие годы».
     assert "Chart and full data" in html
@@ -395,3 +387,54 @@ def test_en_number_typography_punct(region_year_client):
     # 2022: 13_110_000 − 13_100_000 = +10 000.
     assert "Change versus 2021: +10,000" in html
     assert "thousand people" in html  # EN-юнит из каталога
+
+
+@pytest.mark.parametrize("locale", ["ru", "en"])
+def test_live_population_values_and_old_year_navigation(region_year_client, auth_env, locale):
+    from sqlalchemy import select, update
+    from app.models import Region, RegionDataPoint, RegionIndicator
+
+    async def _history():
+        async with auth_env["session_maker"]() as db:
+            indicator = (await db.execute(select(RegionIndicator).where(
+                RegionIndicator.code == CODE
+            ))).scalar_one()
+            indicator.unit = "тысяч человек"
+            for slug, value in (("moskva", 12827.7), ("russia", 147840.7)):
+                region_id = (await db.execute(select(Region.id).where(
+                    Region.slug == slug
+                ))).scalar_one()
+                await db.execute(update(RegionDataPoint).where(
+                    RegionDataPoint.region_id == region_id,
+                    RegionDataPoint.indicator_id == indicator.id,
+                    RegionDataPoint.year == 2018,
+                ).values(value=value))
+                if slug == "moskva":
+                    db.add_all(RegionDataPoint(
+                        region_id=region_id, indicator_id=indicator.id,
+                        year=y, value=10000 + y,
+                    ) for y in range(1950, 2018))
+            await db.commit()
+
+    asyncio.run(_history())
+    headers = {"X-FE-Locale": locale}
+    html = region_year_client.get(
+        f"/seo/region-indicator-year/moskva/{CODE}/2018", headers=headers
+    ).text
+    assert ("147,840.7" if locale == "en" else "147\u202f840,7") in html
+    assert ("12,827.7" if locale == "en" else "12\u202f827,7") in html
+    assert "Russian average" not in html
+    assert "В среднем по России" not in html
+    for year in (1950, 1960, 2018, 2023):
+        response = region_year_client.get(
+            f"/seo/region-indicator-year/moskva/{CODE}/{year}", headers=headers
+        )
+        assert response.status_code == 200
+        links = set(map(int, re.findall(
+            rf'href="/russia/region/moskva/{CODE}/(\d{{4}})"', response.text
+        ))) - {year}
+        for adjacent in (year - 1, year + 1):
+            if 1950 <= adjacent <= 2023:
+                assert adjacent in links
+        assert {1950, 2023} - {year} <= links
+        assert len(links) <= 15

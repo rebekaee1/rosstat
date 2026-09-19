@@ -19,14 +19,14 @@ from app.main import _RATE_LIMIT_LUA, pick_client_ip
 def test_spoofed_left_entries_are_ignored():
     """Подделанные клиентом левые элементы не влияют на ключ лимита."""
     # Старый Caddy (append) + nginx (append): spoof, реальный клиент, docker-хоп
-    assert pick_client_ip("1.2.3.4, 93.184.216.34, 172.18.0.1", "peer") == "93.184.216.34"
+    assert pick_client_ip("1.2.3.4, 93.184.216.34, 172.18.0.1", "172.18.0.2") == "93.184.216.34"
     # Ротация фейков не меняет результат
-    assert pick_client_ip("5.6.7.8, 93.184.216.34, 172.18.0.1", "peer") == "93.184.216.34"
+    assert pick_client_ip("5.6.7.8, 93.184.216.34, 172.18.0.1", "172.18.0.2") == "93.184.216.34"
 
 
 def test_current_prod_chain_caddy_rewrites():
     """Актуальный Caddy (перезаписывает XFF) + nginx append."""
-    assert pick_client_ip("93.184.216.34, 172.18.0.1", "peer") == "93.184.216.34"
+    assert pick_client_ip("93.184.216.34, 172.18.0.1", "172.18.0.2") == "93.184.216.34"
 
 
 def test_no_header_falls_back_to_peer():
@@ -36,15 +36,15 @@ def test_no_header_falls_back_to_peer():
 
 def test_all_private_chain_dev_mode():
     """Вся цепочка приватная (dev за локальным прокси) — ближайший к клиенту."""
-    assert pick_client_ip("192.168.1.50, 127.0.0.1", "peer") == "192.168.1.50"
+    assert pick_client_ip("192.168.1.50, 127.0.0.1", "172.18.0.2") == "192.168.1.50"
 
 
 def test_garbage_header_falls_back():
-    assert pick_client_ip("not-an-ip, ещё мусор", "peer") == "peer"
+    assert pick_client_ip("not-an-ip, ещё мусор", "172.18.0.2") == "172.18.0.2"
 
 
 def test_ipv6_client_behind_proxies():
-    assert pick_client_ip("2a02:6b8::1, 172.18.0.1", "peer") == "2a02:6b8::1"
+    assert pick_client_ip("2a02:6b8::1, 172.18.0.1", "172.18.0.2") == "2a02:6b8::1"
 
 
 # --- Б-6: атомарный INCR+EXPIRE ----------------------------------------------

@@ -245,6 +245,8 @@ services:
       # не трогаем — docker logs продолжает работать как раньше.
       - /var/log/rosstat-nginx:/var/log/nginx/security:rw
       - sitemap_static:/var/www/sitemaps:ro
+      # Published before replacement; only hashed files, never old HTML.
+      - ${FRONTEND_ASSET_ARCHIVE:-/var/lib/rosstat/frontend-assets}:/var/cache/frontend-assets:ro
     logging:
       driver: json-file
       options:

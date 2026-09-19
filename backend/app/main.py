@@ -51,13 +51,21 @@ _TRUSTED_PROXY_NETS = tuple(
 def pick_client_ip(forwarded_for: str, fallback: str) -> str:
     """Реальный клиентский IP из X-Forwarded-For.
 
-    Заголовок append-only (nginx делает $proxy_add_x_forwarded_for), поэтому
-    ЛЕВЫЕ элементы может подделать клиент. Идём справа налево, пропуская наши
+    XFF читается только от доверенного socket peer. Nginx передаёт уже
+    очищенный real-IP; для старых append-only цепочек идём справа налево,
+    поскольку ЛЕВЫЕ элементы может подделать клиент. Пропускаем наши
     доверенные прокси-хопы; первый недоверенный ВАЛИДНЫЙ адрес — клиент.
     Брать первый слева (как раньше) нельзя: ротация фейковых XFF давала обход
     rate-limit. Невалидные токены не могут стать ключом лимита — иначе ротация
     мусорных строк открывала бы тот же обход.
     """
+    try:
+        peer = ipaddress.ip_address(fallback)
+    except ValueError:
+        return fallback
+    if not any(peer in net for net in _TRUSTED_PROXY_NETS):
+        return str(peer)
+
     chain = []
     for part in forwarded_for.split(","):
         part = part.strip()
@@ -67,12 +75,12 @@ def pick_client_ip(forwarded_for: str, fallback: str) -> str:
             chain.append((part, ipaddress.ip_address(part)))
         except ValueError:
             continue  # мусор — не хоп и не клиент
-    for raw, addr in reversed(chain):
+    for _, addr in reversed(chain):
         if not any(addr in net for net in _TRUSTED_PROXY_NETS):
-            return raw
+            return str(addr)
     # Вся цепочка из приватных адресов (dev за локальным прокси) — берём
     # ближайший к клиенту, иначе fallback на peer-адрес сокета.
-    return chain[0][0] if chain else fallback
+    return str(chain[0][1]) if chain else str(peer)
 
 
 # Атомарный INCR+EXPIRE: между incr и expire нет окна, в котором сбой оставил
@@ -1281,7 +1289,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
 
 
 class ScrapeGuardMiddleware(BaseHTTPMiddleware):
-    """ASN/гео + JS-ворота + bind-cookie."""
+    """Maintain the optional bind cookie without country/VPN/first-visit gates."""
 
     async def dispatch(self, request: Request, call_next):
         from app.services.scrape_guard import (

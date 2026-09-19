@@ -24,15 +24,12 @@ def publication(tmp_path, monkeypatch):
     async def session():
         yield None
 
-    async def names(db):
-        return ["core", "empty"]
-
-    async def resolve(db, name):
-        return [] if name == "empty" else [SiteUrl("/russia", "2026-09-10", "daily", "0.8")]
+    async def sections(db):
+        yield "core", [SiteUrl("/russia", "2026-09-10", "daily", "0.8")]
+        yield "empty", []
 
     monkeypatch.setattr(sm, "analytics_session", session)
-    monkeypatch.setattr(urls, "section_names", names)
-    monkeypatch.setattr(urls, "resolve_section", resolve)
+    monkeypatch.setattr(urls, "iter_url_sections", sections)
     return tmp_path
 
 
@@ -59,10 +56,12 @@ def test_failed_generation_preserves_current(publication, monkeypatch):
     import app.services.site_urls as urls
     original = asyncio.run(sm.build_static_sitemaps())
 
-    async def broken(db, name):
+    async def broken(db):
+        yield "core", [SiteUrl("/new", "2026-09-20", "daily", "0.8")]
+        assert sm.read_stats() == original
         raise RuntimeError("DB unavailable")
 
-    monkeypatch.setattr(urls, "resolve_section", broken)
+    monkeypatch.setattr(urls, "iter_url_sections", broken)
     with pytest.raises(RuntimeError, match="DB unavailable"):
         asyncio.run(sm.build_static_sitemaps())
     assert sm.read_stats() == original
@@ -78,6 +77,81 @@ def test_rebuild_keeps_previous_and_ignores_legacy(publication):
     remaining = {p.name for p in (publication / "generations").iterdir()}
     assert remaining == {"not-ours", builds[1]["generation"], builds[2]["generation"]}
     assert (publication / "sitemap-core.xml").exists()
+
+
+def test_late_host_write_failure_preserves_current(publication, monkeypatch):
+    original = asyncio.run(sm.build_static_sitemaps())
+    real_write = sm._write_xml
+    writes = []
+
+    def write(directory, name, xml):
+        writes.append(directory.name)
+        assert sm.read_stats() == original
+        if len(writes) == 2:
+            raise OSError("disk full")
+        real_write(directory, name, xml)
+
+    monkeypatch.setattr(sm, "_write_xml", write)
+    with pytest.raises(OSError, match="disk full"):
+        asyncio.run(sm.build_static_sitemaps())
+    assert len(writes) == 2
+    assert sm.read_stats() == original
+    assert len(list((publication / "generations").iterdir())) == 1
+
+
+def test_publication_consumes_one_chunk_before_fetching_next(publication, monkeypatch):
+    import app.services.site_urls as urls
+    original_write = sm._write_xml
+    written = []
+
+    def write(directory, name, xml):
+        original_write(directory, name, xml)
+        written.append((directory.name, name))
+
+    async def sections(db):
+        for i in range(1, 5):
+            assert len(written) == 2 * (i - 1)
+            yield f"regional-years-{i}", [SiteUrl(f"/history/{i}", "2018-01-01", "yearly", "0.4")]
+
+    monkeypatch.setattr(sm, "_write_xml", write)
+    monkeypatch.setattr(urls, "iter_url_sections", sections)
+    result = asyncio.run(sm.build_static_sitemaps())
+    assert result["section_count"] == 4
+    assert result["published_urls_total"] == 8
+
+
+def test_section_iterator_bypasses_cached_bounds_and_continues_empty_pages(monkeypatch):
+    from dataclasses import replace
+    import app.services.site_urls as urls
+
+    calls = []
+
+    async def fetch(db, today, after, limit):
+        calls.append(after)
+        if after is None:
+            return [], (1,)
+        if after == (1,):
+            return [SiteUrl("/history/2018", "2018-01-01", "yearly", "0.4")], (2,)
+        return [], None
+
+    async def forbidden(*args, **kwargs):
+        raise AssertionError("Static publication must not use cached chunk boundaries")
+
+    monkeypatch.setattr(urls, "_SIMPLE_SECTION_ORDER", ["regional-years-"])
+    monkeypatch.setattr(urls, "_CHUNKED_SOURCES", {
+        "regional-years-": replace(urls._CHUNKED_SOURCES["regional-years-"], fetch=fetch, size=1),
+    })
+    monkeypatch.setattr(urls, "chunk_counts", forbidden)
+    monkeypatch.setattr(urls, "_chunk_bounds", forbidden)
+
+    async def check():
+        sections = [item async for item in urls.iter_url_sections(None)]
+        assert sections[0] == ("regional-years-1", [])
+        assert sections[1][0] == "regional-years-2"
+        assert sections[1][1][0].path == "/history/2018"
+        assert calls == [None, (1,), (2,)]
+
+    asyncio.run(check())
 
 
 def test_cutover_off_does_not_publish_ru(publication, monkeypatch):

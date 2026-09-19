@@ -3,7 +3,7 @@
 Программатик-страницы под спрос вида «население Москвы 2024», «зарплата
 в Татарстане по годам 2019»: значение выбранного года, изменение к прошлому
 доступному году, МЕСТО РЕГИОНА ИМЕННО ЗА ЭТОТ ГОД (главное отличие от карточки,
-которая ранжирует по последнему году), сравнение со средним по России,
+которая ранжирует по последнему году), общероссийское значение того же показателя,
 динамика соседних лет и ссылка на живую карточку.
 
 Слои в ответственности модуля: только рендер. Роуты в API, OG-картинки
@@ -42,7 +42,6 @@ from app.services.seo_i18n import (
     translate_source,
 )
 from app.services.seo_regional import (
-    _fmt,
     _icopy,
     _pct,
     _rank_phrase,
@@ -63,7 +62,7 @@ from app.services.seo_renderer import (
 
 _ALLOWED_REGION_KINDS = ("region", "district", "country")
 
-# Сколько последних лет показывать ссылками «Другие годы».
+# Ограниченное окно соседних лет плюс края истории.
 _OTHER_YEARS_LIMIT = 15
 # Начиная с такой длины ряда страница получает контрольные годы каждые пять лет
 # и точную таблицу последнего десятилетия вместо одной полной таблицы.
@@ -81,11 +80,13 @@ _YEAR_TEMPLATES_EN = {
     "desc_main": "{indicator} in {region} in {year}: {value}{unit}.",
     "change_vs": "Change versus {prev_year}: {abs}{unit}.",
     "change_vs_pct": "Change versus {prev_year}: {abs}{unit} (indicator {pct}).",
-    "rf_h2": "Comparison with the Russian average",
-    "rf_para": "The Russian average in {year} was {value}{unit}.",
-    "rf_above": " The region's value is above the national average.",
-    "rf_below": " The region's value is below the national average.",
-    "rf_level": " The region's value is in line with the national average.",
+    "rf_h2": "Russia as a whole",
+    "rf_para": "Russia as a whole in {year}: {value}{unit}.",
+    "rf_note": (
+        " This is the national value of the same indicator, not an arithmetic "
+        "average across regions. Absolute counts describe the scale; rates and "
+        "per-capita values describe the national level."
+    ),
     "rank_h2": "Place among Russian regions",
     "rank_full_link": "full regional ranking",
     "rank_sentence": "In {year}, {region} {rank_phrase}{rating_ref}.",
@@ -112,13 +113,6 @@ _YEAR_TEMPLATES_EN = {
     ),
 }
 
-_RF_TAIL_RU = {
-    "above": " Значение региона выше среднероссийского.",
-    "below": " Значение региона ниже среднероссийского.",
-    "level": " Значение региона на уровне общероссийского.",
-}
-
-
 def _t(key: str, **kwargs) -> str | None:
     """EN-шаблон этого рендера; на RU-локали или без ключа — None."""
     if get_locale() != "en":
@@ -128,10 +122,8 @@ def _t(key: str, **kwargs) -> str | None:
 
 
 def _fmt_locale(value: float) -> str:
-    """Число в типографике локали: RU — `_fmt`, EN — display-форматтер."""
-    if get_locale() == "en":
-        return format_number_ru(value)
-    return _fmt(value)
+    """Единая точность значений и типографика текущей локали."""
+    return format_number_ru(value)
 
 
 def _h1(indicator: str, region: str, year: int) -> str:
@@ -179,13 +171,6 @@ def _pct_en(cur: float, base: float) -> str | None:
         return f"{verb} {format_number_ru(round(cur / base, 1))}-fold"
     by = format_number_ru(round(abs(pct), 1))
     return f"{verb}{(_rt('region_indicator.pct_by') or ' by {pct}%').format(pct=by)}"
-
-
-def _rel_rf_word(cur: float, rf: float) -> str:
-    """Отношение к среднему по России: ключ above / below / level."""
-    if abs(cur - rf) / (abs(rf) or 1) < 0.005:
-        return "level"
-    return "above" if cur > rf else "below"
 
 
 def _table(values: list[tuple[int, float]], year: int, unit_head: str) -> str:
@@ -257,7 +242,7 @@ async def render_region_indicator_year_html(
     en = get_locale() == "en"
     src_label = translate_source("Росстат")
 
-    # Средний уровень по России за тот же год
+    # Национальная точка источника: её агрегация зависит от показателя.
     rf_value: float | None = None
     if region.slug != "russia":
         rf = await _region(db, "russia")
@@ -343,19 +328,21 @@ async def render_region_indicator_year_html(
 
     rf_paragraph = ""
     if rf_value is not None:
-        rel = _rel_rf_word(value, float(rf_value))
         if en:
             rf_paragraph = (
                 f"<section class=\"seo-section\">"
                 f"<h2>{escape(_t('rf_h2') or '')}</h2>"
                 f"<p>{_t('rf_para', year=year, value=_fmt_locale(float(rf_value)), unit=unit_sfx)}"
-                f"{_t(f'rf_{rel}') or ''}</p></section>"
+                f"{_t('rf_note') or ''}</p></section>"
             )
         else:
             rf_paragraph = (
-                f"<section class=\"seo-section\"><h2>Сравнение со средним по России</h2>"
-                f"<p>В среднем по России в {year} году — {_fmt(float(rf_value))}"
-                f"{unit_sfx}.{_RF_TAIL_RU[rel]}</p></section>"
+                f"<section class=\"seo-section\"><h2>Россия в целом</h2>"
+                f"<p>По России в целом в {year} году — {_fmt_locale(float(rf_value))}"
+                f"{unit_sfx}. Это общероссийское значение того же показателя, "
+                "а не среднее арифметическое по регионам. Абсолютные величины "
+                "характеризуют масштаб, относительные и среднедушевые — "
+                "общероссийский уровень.</p></section>"
             )
 
     rank_section = ""
@@ -448,10 +435,11 @@ async def render_region_indicator_year_html(
             f"на странице {anchor}."
         )
 
+    nearby = neighbor_year_window(points, year, size=_OTHER_YEARS_LIMIT - 1)
     others = sorted(
-        (y for y in years if y != year),
+        ({y for y, _v, _d in nearby} | {years[0], years[-1]}) - {year},
         reverse=True,
-    )[:_OTHER_YEARS_LIMIT]
+    )
     other_links = _links_list([
         (
             paths.region_indicator_year(slug, code, y),

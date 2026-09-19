@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://rustats:rustats@localhost:5432/rustats"
     database_echo: bool = False
     # О-15: пул соединений per-process; бюджет см. комментарий в database.py.
-    db_pool_size: int = 6
+    db_pool_size: int = 5
     db_max_overflow: int = 10
     db_pool_timeout: int = 10
     db_statement_timeout_ms: int = 30_000

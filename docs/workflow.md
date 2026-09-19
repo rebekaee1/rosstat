@@ -1,6 +1,8 @@
 # Рабочий процесс — Forecast Economy
 
-**Last updated:** 2026-09-03 (post-deploy watch 15 мин + runbook «хост в свопе»). Ранее 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
+**Last updated:** 2026-09-20 (уточнены approved-SHA gate, проверка миграций диапазона и порядок публикации архива ассетов; локальная реализация, не разрешение на прод).
+
+**Previous:** 2026-09-03 (post-deploy watch 15 мин + runbook «хост в свопе»). Ранее 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md).
 **See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки 6/6), [`../AGENTS.md::Шаг 4`](../AGENTS.md) (чеклист «новый индикатор» 7/7 — другая ось), [`adr/`](adr/) (архитектурные решения).
 
@@ -104,10 +106,10 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 
 ## Прод-деплой
 
-Стандартная процедура (через SSH из агента, по explicit команде пользователя):
+**Регламент 2026-09-20: `main` не означает разрешение на выкладку.** Нужна явная команда владельца «деплой до `<sha>`, включая всё, что он тянет» и полный целевой SHA в `deploy/approved-shas.txt`. Пустой/отсутствующий список = запрет. Эта документация не одобряет ни один SHA.
 
-1. `git push origin main` — закатить ветку.
-2. `ssh root@201.51.11.170 'bash /opt/rosstat/scripts/deploy.sh'` — скрипт сам делает: preflight `pg-backup.sh` (hard fail при провале), dirty-guard + `merge --ff-only`, сборку **обоих** образов вместе (asset-hash trap) с тегом = SHA, `up -d`, ожидание `/health/ready` (до 300s: alembic + сидеры из `entrypoint.sh`), расширенный smoke (data-endpoint, SSR ссылается на реально существующие ассеты, OG-картинка), Caddy reload **после** smoke, автооткат на предыдущий SHA при провале.
+1. До запуска показать весь диапазон прод → цель: `git log --oneline <PROD_SHA>..<TARGET_SHA>` и изменения `backend/alembic/versions/` в том же диапазоне. При наличии миграций отдельно запросить подтверждение с описанием влияния на данные и возможности отката; guard удаления миграций не заменяет эту проверку. Push — только по отдельной явной команде и после зелёного `./scripts/check-all.sh`.
+2. Только после выполнения этих условий — `ssh fe-prod 'bash /opt/rosstat/scripts/deploy.sh'`. Скрипт fetch/ff-only ориентируется на `origin/main`, поэтому заранее сверить его с одобренной целью, не выкатывать накопившийся `main` и не обходить scope guard. Скрипт выполняет preflight `pg-backup.sh` (hard fail), dirty/scope/migration guards, совместную сборку backend+frontend, `up -d`, readiness, smoke данных/SSR-ассетов/OG, Caddy reload и post-deploy watch. Откат образов не откатывает схему БД; при несовместимости действовать по [CONTEXT, раздел Deploy-scope trap](../CONTEXT.md), а не перезапускать старый код по кругу.
 3. Backend на старте автоматически прогоняет `_catch_up_empty_indicators()` — ETL для всех `is_active=true` индикаторов с 0 точками; провалы алертятся в Telegram.
 4. `redis-cli -n 0 FLUSHDB` — если правки касались форматирования/SSR, добавлены derived (forecast retrain trap), или изменился `seo_renderer.py`. Только DB 0 — кэш; DB 1 = state (сессии), не трогать.
 5. Если деплой добавляет новые derived (`DERIVED_SPECS` пополнен): `docker compose exec backend python -c "import asyncio; from app.services.forecaster import retrain_indicator_forecast; asyncio.run(retrain_indicator_forecast('<source_code>'))"` для каждого изменённого источника. Daily ETL не подхватит автоматически (см. `enterprise_resilience.md::forecast retrain trap`).
@@ -126,6 +128,8 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 `deploy.sh` после smoke держит **15-минутный watch**: TTFB главной, `/health/ready`,
 память контейнера backend, признак `OOMKilled`. Срыв — автооткат на предыдущий SHA.
 
+**Архив ассетов (локальная реализация 2026-09-20).** `scripts/deploy.sh` под общей блокировкой публикует hashed-ассеты фактически работающего frontend и новой сборки через `scripts/frontend-asset-archive.py` **до** замены контейнеров и выдачи нового HTML. nginx читает архив как fallback; HTML, source maps и файлы без хэша туда не попадают. На успешном пути `prune --keep 3` выполняется только после smoke и 15-минутного watch. На пути отката сначала повторно публикуется восстановленный frontend, затем выполняется очистка. Проверять старый ассет, отсутствующий в новой сборке, и навигацию старой вкладки; retention ограничен тремя релизами, это не бессрочная гарантия Вебвизора. Приёмка пакета — [backlog](backlog.md#history-access-reliability-2026-09-20).
+
 ### Runbook: хост в свопе (2026-09-03)
 
 Симптомы: главная 5–30 с, `idle in transaction` в Postgres, RSS backend у лимита.
@@ -143,7 +147,7 @@ curl -sS https://forecasteconomy.com/api/v1/metrics | grep -E 'fe_db_pool|fe_pro
 `docker compose restart backend` только после проверки, что это не alembic-голова.
 ClickHouse вторичен: можно `stop clickhouse` без влияния на витрину.
 
-Зелёный smoke = деплой принят. Красный = решение по rollback (`git reset --hard <prev>` + `pg_restore < backups/pre-deploy-*.sql.gz`).
+Зелёный smoke сам по себе не завершает приёмку: нужны успешный watch и проверка исходных пользовательских сценариев. Красный результат — разбор совместимости кода и схемы по [CONTEXT](../CONTEXT.md), не автоматическое восстановление БД поверх новых пользовательских данных.
 
 ## История
 

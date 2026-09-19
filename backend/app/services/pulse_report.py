@@ -67,9 +67,26 @@ Last-click Метрики не значит, что человек сегодн�
 ChatGPT / Алиса / Perplexity называй, если они есть в данных; Нейро Яндекса
 отдельной метки не имеет и сидит внутри поиска Яндекса. Роботов в прямых
 не путай с людьми.
-Если «Переходы по рекламе» / ad_campaigns вчера были ненулевые, а сегодня
-ноль — это остановка кампании в Директе (кабинет), не «Метрика не пишет».
-Назови это явно, не прячь в «трафик обычный».
+Падение рекламных визитов до нуля не доказывает остановку кампании: причина
+неизвестна без подтверждения из рекламного кабинета. Отделяй наблюдение от
+гипотезы, не утверждай ни отключение рекламы, ни сбой Метрики по одному нулю.
+traffic_sources с id=ad — платное привлечение, не обязательно Яндекс.Директ.
+id=organic — органический поиск. ad_campaigns — строки UTM-отчёта Метрики,
+не число активных кампаний и не статусы кампаний рекламного кабинета.
+metadata.reports описывает сохранённые отчёты: missing — отсутствует,
+failed — известен сбой синхронизации, stale — есть только другой день,
+invalid — нет пригодного ответа. metadata.sync — журнал нашей синхронизации,
+не статус API или рекламной кампании. available с пустым полным отчётом —
+фактический ноль в выгрузке; null или отсутствующий отчёт не равны нулю.
+Учитывай дату, sampled и полноту total_rows/returned_rows; суммы ограниченной
+выборки не выдавай за весь трафик. Старые записи памяти без metadata могут
+содержать неподтверждённые нули и выводы: не используй их как доказательство.
+Партнёрский доход marts.partner_revenue — доход площадки от РСЯ, не расходы
+на Директ и не платное привлечение. Держи отдельно платное привлечение,
+органический поиск и доход РСЯ. days содержит даты дохода: для отчётного дня
+используй только совпадающую дату, отсутствие строки не означает нулевой доход.
+Не выдавай total_revenue_rub за сутки: это сумма окна витрины. Расходы ad_costs
+и доход партнёра — разные показатели; прибыль без сопоставимых данных неизвестна.
 
 Блок seo — индексация в Яндексе: sitemap_urls_total (сколько URL публикует
 сайт), searchable_pages (сколько реально в поиске по Вебмастеру),
@@ -235,6 +252,54 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
         return None
 
 
+def _acquisition_lines(snapshot: dict) -> list[str]:
+    acq = snapshot.get("acquisition") or {}
+    metrics = pulse.acquisition_metrics(acq)
+    lines = []
+    for label, key in (("Платное привлечение", "metrika_ad_visits"),
+                       ("Органический поиск", "metrika_organic_visits")):
+        value = metrics[key]
+        lines.append(f"{label}: {value} визитов (Метрика)" if value is not None
+                     else f"{label}: нет данных за отчётный день")
+    rows = metrics["metrika_campaign_rows"]
+    if rows is not None:
+        visits = metrics["metrika_campaign_visits"]
+        visits_text = visits if visits is not None else "нет данных"
+        lines.append(f"UTM-кампании: строк отчёта {rows}, "
+                     f"визитов {visits_text}; "
+                     "число активных кампаний неизвестно")
+    metadata = acq.get("metadata") or {}
+    labels = {"traffic_sources": "Источники Метрики", "ad_campaigns": "UTM-отчёт"}
+    states = {"missing": "нет данных", "failed": "сбой синхронизации",
+              "stale": "устаревшие данные", "invalid": "непригодный ответ"}
+    for report_type, label in labels.items():
+        info = (metadata.get("reports") or {}).get(report_type) or {}
+        if info.get("status") in states:
+            suffix = f"; последний день {info['date_to']}" if info.get("date_to") else ""
+            lines.append(f"{label}: {states[info['status']]}{suffix}")
+        if info.get("sampled"):
+            lines.append(f"{label}: выборочные данные")
+        if (info.get("total_rows") is not None and info.get("returned_rows") is not None
+                and info["total_rows"] > info["returned_rows"]):
+            lines.append(f"{label}: неполная выборка, строк {info['returned_rows']} "
+                         f"из {info['total_rows']}; суммы только по полученным строкам")
+    if (metadata.get("sync") or {}).get("status") == "failed":
+        lines.append("Метрика: последний запуск — сбой синхронизации; "
+                     "сохранённые числа не подтверждают успешное обновление")
+    if acq.get("refresh_error"):
+        lines.append("Метрика: не удалось обновить данные из хранилища; "
+                     "использован сохранённый снимок")
+    partner = (snapshot.get("marts") or {}).get("partner_revenue") or {}
+    day = next((row for row in partner.get("days", [])
+                if row.get("day") == snapshot.get("date")), None)
+    if day is not None and day.get("revenue_rub") is not None:
+        lines.append(f"Доход РСЯ за отчётный день: {day['revenue_rub']} руб. "
+                     "(доход площадки, не расходы на привлечение)")
+    else:
+        lines.append("Доход РСЯ: нет данных за отчётный день")
+    return lines
+
+
 def _fallback_summary(snapshot: dict) -> str:
     """Детерминированная сводка, если LLM недоступен."""
     u = snapshot.get("users", {})
@@ -255,13 +320,7 @@ def _fallback_summary(snapshot: dict) -> str:
         f"🏭 Упавших ETL-индикаторов: {len(etl.get('failed_indicator_ids', []))}",
         f"➕ Новых точек данных: {snapshot.get('data', {}).get('new_points', 0)}",
     ]
-    acq = snapshot.get("acquisition", {})
-    sources = acq.get("traffic_sources") or {}
-    ad = next((row.get("visits", 0) for row in sources.values() if row.get("id") == "ad"), 0)
-    campaigns = acq.get("ad_campaigns") or {}
-    lines.append(
-        f"📣 Директ: {ad} визитов, кампаний {len(campaigns)}"
-    )
+    lines.extend(escape(line) for line in _acquisition_lines(snapshot))
     return "\n".join(lines)
 
 
@@ -299,22 +358,12 @@ def _raw_digits_block(snapshot: dict) -> str:
     acq = snapshot.get("acquisition", {})
     if acq.get("traffic_sources"):
         top = ", ".join(
-            f"{name}: {row.get('visits', 0)}"
+            f"{name}: {row['visits'] if row.get('visits') is not None else 'нет данных'}"
             for name, row in sorted(acq["traffic_sources"].items(),
-                                    key=lambda kv: -kv[1].get("visits", 0))
+                                    key=lambda kv: -(kv[1].get("visits") or 0))
         )
         parts.append(f"Источники (Метрика): {escape(top)}")
-        ad = next(
-            (row.get("visits", 0) for row in acq["traffic_sources"].values()
-             if row.get("id") == "ad"),
-            0,
-        )
-        campaigns = acq.get("ad_campaigns") or {}
-        camp_visits = sum(row.get("visits", 0) for row in campaigns.values())
-        parts.append(
-            f"Директ: визиты {ad}, кампании {len(campaigns)}, "
-            f"визиты по кампаниям {camp_visits}"
-        )
+    parts.extend(escape(line) for line in _acquisition_lines(snapshot))
     if acq.get("search_phrases_top"):
         top = ", ".join(
             f"«{p['phrase'][:40]}» ×{p['visits']}" for p in acq["search_phrases_top"][:10]
@@ -337,11 +386,11 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
     # а синк Метрики за этот день отрабатывает только утром (08:20).
     try:
         acquisition = await pulse.build_acquisition(d)
-        if acquisition:
-            snapshot["acquisition"] = acquisition
-            await pulse.store_snapshot(snapshot)
+        snapshot["acquisition"] = acquisition
+        await pulse.store_snapshot(snapshot)
     except Exception:
         logger.warning("Pulse acquisition refresh failed", exc_info=True)
+        snapshot["acquisition"] = {**(snapshot.get("acquisition") or {}), "refresh_error": True}
     memory = await pulse.load_memory(days=7, before=d)
 
     summary = await _llm_summary(snapshot, memory)

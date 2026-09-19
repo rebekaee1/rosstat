@@ -2,7 +2,7 @@
 
 This is the implementation of ADR-0003 (SEO single-source-of-truth):
 - Backend renders full HTML with `<title>`, `<meta>`, OG, JSON-LD, visible content.
-- Vite asset hashes are discovered at runtime via `__spa-index.html` (TTL 5 min).
+- Vite asset hashes are discovered via `__spa-index.html`; keep the last good shell on errors.
 - Nginx ALWAYS proxies indexable routes (`/`, `/category/*`, `/indicator/*`,
   `/about|privacy|...`) to backend `/seo/*` — for all User-Agents, not just bots.
 
@@ -78,8 +78,7 @@ class AppAssets:
 
 _APP_ASSETS: AppAssets | None = None
 _APP_ASSETS_EXPIRES = 0.0
-# После выката frontend hashed charts-*.js исчезают. 300 с держали
-# старый shell в SSR и давали 404 чанка. 15 с — потолок рассинхрона.
+# Short discovery TTL complements retained assets; it cannot protect old tabs alone.
 _APP_ASSETS_TTL = 15
 
 
@@ -91,7 +90,9 @@ def _fallback_assets() -> AppAssets:
             '<link rel="icon" type="image/svg+xml" href="/favicon.svg">\n'
             '<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">'
         ),
-        body_scripts='<script type="module" src="/src/main.jsx"></script>',
+        body_scripts=(
+            '<script type="module" src="/src/main.jsx"></script>' if settings.debug else ""
+        ),
     )
 
 
@@ -117,14 +118,19 @@ async def get_app_assets() -> AppAssets:
         for script in soup.find_all("script"):
             if script.get("src") and script.get("type") == "module":
                 body_scripts.append(str(script))
+        if not body_scripts:
+            raise ValueError("Frontend shell has no module entrypoint")
         _APP_ASSETS = AppAssets("\n".join(head_links), "\n".join(body_scripts))
         _APP_ASSETS_EXPIRES = now + _APP_ASSETS_TTL
         return _APP_ASSETS
     except Exception as exc:
         logger.warning("Failed to fetch frontend app shell from %s: %s", settings.seo_app_shell_url, exc)
-        _APP_ASSETS = _fallback_assets()
-        _APP_ASSETS_EXPIRES = now + 30
-        return _APP_ASSETS
+        # A transient shell outage must not replace a working production bundle
+        # with the development entrypoint. Retained release assets keep it valid.
+        if _APP_ASSETS is not None:
+            _APP_ASSETS_EXPIRES = now + 5
+            return _APP_ASSETS
+        return _fallback_assets()
 
 
 def clean_text(value: str | None, fallback: str = "") -> str:
@@ -1084,7 +1090,7 @@ async def render_page_html(page_slug: str) -> tuple[int, str]:
             "description": page.description,
             "url": _absolute(page.path),
             "inLanguage": in_language(),
-            "isPartOf": {"@id": f"{_absolute("/")}/#website"},
+            "isPartOf": {"@id": f"{_absolute('/')}/#website"},
         },
     ]
     html = await build_document(
@@ -1167,7 +1173,7 @@ async def render_home_html(db: AsyncSession) -> str:
             "description": page.description,
             "url": _absolute("/"),
             "inLanguage": in_language(),
-            "isPartOf": {"@id": f"{_absolute("/")}/#website"},
+            "isPartOf": {"@id": f"{_absolute('/')}/#website"},
         },
         {
             "@context": "https://schema.org",

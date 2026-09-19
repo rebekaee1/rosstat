@@ -25,6 +25,7 @@ from app.core.cache import get_state_redis
 from app.database import analytics_session
 from app.services.identity.consents import newsletter_subscriber_count_query
 from app.models import (
+    AnalyticsSyncRun,
     AuthAudit,
     BehaviorEvent,
     BehaviorSession,
@@ -88,10 +89,11 @@ async def _etl_snapshot(db, start: datetime, end: datetime) -> dict[str, Any]:
 
 
 async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
-    """Привлечение за день из Метрика-хранилища: источники трафика, поисковики,
-    фразы, рефереры, рекламные кампании, повизитное сырьё. Пусто = синк ещё
-    не отработал (наполняется `metrika_acquisition.sync_acquisition_for_day`,
-    08:20 МСК за вчера)."""
+    """Привлечение и происхождение данных из хранилища основного счётчика.
+
+    Статусы описывают сохранённые отчёты, а не доступность живого API.
+    Отчёт за другой день не подставляется вместо отсутствующих данных.
+    """
     def _snapshot_rows(response_json: dict | None) -> dict[str, dict[str, Any]]:
         out: dict[str, dict[str, Any]] = {}
         for row in (response_json or {}).get("data", []):
@@ -100,26 +102,64 @@ async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
             name = str(dims[0].get("name")) if dims else "?"
             out[name] = {
                 "id": dims[0].get("id") if dims else None,
-                "visits": int(metrics[0] or 0) if len(metrics) > 0 else 0,
-                "users": int(metrics[1] or 0) if len(metrics) > 1 else 0,
+                "visits": int(metrics[0]) if metrics and metrics[0] is not None else None,
+                "users": int(metrics[1]) if len(metrics) > 1 and metrics[1] is not None else None,
             }
         return out
 
-    acq: dict[str, Any] = {}
-    snap_rows = (await db.execute(
-        select(MetrikaReportSnapshot.report_type, MetrikaReportSnapshot.response_json)
-        .where(MetrikaReportSnapshot.date_from == d, MetrikaReportSnapshot.date_to == d,
-               MetrikaReportSnapshot.report_type.in_(
-                   ["traffic_sources", "search_engines", "referrers", "ad_campaigns"]))
-        .order_by(MetrikaReportSnapshot.captured_at)
-    )).all()
-    for report_type, response_json in snap_rows:  # последний снапшот дня побеждает
-        acq[report_type] = _snapshot_rows(response_json)
+    counter_id = settings.analytics_allowed_counter_ids.split(",")[0].strip()
+    runs = (await db.execute(
+        select(AnalyticsSyncRun)
+        .where(AnalyticsSyncRun.source == "yandex_metrika",
+               AnalyticsSyncRun.job_type == "daily_acquisition_reports",
+               AnalyticsSyncRun.date_from == d, AnalyticsSyncRun.date_to == d)
+        .order_by(AnalyticsSyncRun.started_at.desc(), AnalyticsSyncRun.id.desc())
+    )).scalars().all()
+    run = next((r for r in runs if (r.metadata_json or {}).get("counter_id", counter_id)
+                == counter_id), None)
+    metadata: dict[str, Any] = {"counter_id": counter_id, "reports": {}, "sync": None}
+    if run is not None:
+        metadata["sync"] = {
+            "status": run.status, "started_at": run.started_at.isoformat(),
+            "completed_at": run.completed_at.isoformat() if run.completed_at else None,
+        }
+    acq: dict[str, Any] = {"metadata": metadata}
+    for report_type in ("traffic_sources", "search_engines", "referrers", "ad_campaigns"):
+        row = (await db.execute(
+            select(MetrikaReportSnapshot)
+            .where(MetrikaReportSnapshot.counter_id == counter_id,
+                   MetrikaReportSnapshot.report_type == report_type,
+                   MetrikaReportSnapshot.date_from == MetrikaReportSnapshot.date_to,
+                   MetrikaReportSnapshot.date_to <= d)
+            .order_by(MetrikaReportSnapshot.date_to.desc(),
+                      MetrikaReportSnapshot.captured_at.desc(), MetrikaReportSnapshot.id.desc())
+            .limit(1)
+        )).scalar_one_or_none()
+        info: dict[str, Any] = {"status": "missing"}
+        if row is not None:
+            info.update({
+                "date_from": row.date_from.isoformat(), "date_to": row.date_to.isoformat(),
+                "captured_at": row.captured_at.isoformat(), "sampled": row.sampled,
+                "sample_share": float(row.sample_share) if row.sample_share is not None else None,
+                "status": "stale" if row.date_to != d else "available",
+            })
+            response = row.response_json or {}
+            if row.date_to == d:
+                if isinstance(response.get("data"), list):
+                    acq[report_type] = _snapshot_rows(response)
+                    info["total_rows"] = response.get("total_rows")
+                    info["returned_rows"] = len(response["data"])
+                    info["sampled"] = response.get("sampled", row.sampled)
+                else:
+                    info["status"] = "invalid"
+        if run is not None and run.status == "failed" and info["status"] != "available":
+            info["status"] = "failed"
+        metadata["reports"][report_type] = info
 
     phrases = (await db.execute(
         select(MetrikaSearchPhrase.phrase, MetrikaSearchPhrase.search_engine,
                MetrikaSearchPhrase.visits)
-        .where(MetrikaSearchPhrase.date == d)
+        .where(MetrikaSearchPhrase.date == d, MetrikaSearchPhrase.counter_id == counter_id)
         .order_by(MetrikaSearchPhrase.visits.desc()).limit(25)
     )).all()
     if phrases:
@@ -128,12 +168,13 @@ async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
         ]
 
     visits_total = await db.scalar(
-        select(func.count(RawMetrikaVisit.id)).where(RawMetrikaVisit.visit_date == d)
+        select(func.count(RawMetrikaVisit.id)).where(
+            RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id)
     ) or 0
     if visits_total:
         by_source = dict((await db.execute(
             select(RawMetrikaVisit.traffic_source, func.count())
-            .where(RawMetrikaVisit.visit_date == d)
+            .where(RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id)
             .group_by(RawMetrikaVisit.traffic_source)
         )).all())
         acq["raw_visits"] = {"total": visits_total, "by_source": by_source}
@@ -618,6 +659,34 @@ async def get_or_build_snapshot(d: date) -> dict[str, Any]:
     return snap
 
 
+def acquisition_metrics(acq: dict[str, Any]) -> dict[str, Any]:
+    """Числа сохранённых отчётов; отсутствие отчёта не является нулём."""
+    reports = (acq.get("metadata") or {}).get("reports") or {}
+
+    def visits(report_type: str, channel: str | None = None) -> int | None:
+        rows = acq.get(report_type)
+        info = reports.get(report_type) or {}
+        if not isinstance(rows, dict) or info.get("status", "available") != "available":
+            return None
+        matching = [v for v in rows.values() if channel is None or v.get("id") == channel]
+        partial = (info.get("total_rows") is not None and info.get("returned_rows") is not None
+                   and info["total_rows"] > info["returned_rows"])
+        if not matching and (partial or info.get("sampled")):
+            return None
+        if any(v.get("visits") is None for v in matching):
+            return None
+        return sum(v["visits"] for v in matching)
+
+    campaigns = acq.get("ad_campaigns")
+    return {
+        "metrika_visits": visits("traffic_sources"),
+        "metrika_ad_visits": visits("traffic_sources", "ad"),
+        "metrika_organic_visits": visits("traffic_sources", "organic"),
+        "metrika_campaign_rows": len(campaigns) if isinstance(campaigns, dict) else None,
+        "metrika_campaign_visits": visits("ad_campaigns"),
+    }
+
+
 def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
     """Компактное числовое ядро дня для памяти (десятки байт, не килобайты)."""
     ev = snap.get("events", {})
@@ -639,21 +708,8 @@ def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
         "behavior_clicks": snap.get("behavior", {}).get("by_type", {}).get("click", 0),
         "behavior_dead": sum(d.get("n", 0) for d in snap.get("behavior", {}).get("dead_clicks_top", [])),
         "behavior_rage": sum(d.get("n", 0) for d in snap.get("behavior", {}).get("rage_clicks_top", [])),
-        # Привлечение: суммарные визиты дня по Метрике и сколько из них реклама —
-        # главный KPI владельца (трафик и его состав) в трендовой памяти.
-        "metrika_visits": sum(
-            v.get("visits", 0)
-            for v in snap.get("acquisition", {}).get("traffic_sources", {}).values()
-        ),
-        "metrika_ad_visits": sum(
-            v.get("visits", 0)
-            for v in snap.get("acquisition", {}).get("traffic_sources", {}).values()
-            if v.get("id") == "ad"
-        ),
-        "metrika_ad_campaigns": sum(
-            v.get("visits", 0)
-            for v in snap.get("acquisition", {}).get("ad_campaigns", {}).values()
-        ),
+        **acquisition_metrics(snap.get("acquisition") or {}),
+        "acquisition_metadata": (snap.get("acquisition") or {}).get("metadata"),
         "seo_indexed_share_pct": snap.get("seo", {}).get("indexed_share_pct"),
         "seo_searchable_pages": snap.get("seo", {}).get("searchable_pages"),
     }

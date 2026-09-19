@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from datetime import date
 from html import escape
+from statistics import fmean
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,7 +22,6 @@ from app.models import WorldIndicator, WorldDataPoint
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
 from app.services.display import (
-    annual_summary,
     display_value_text,
     format_number_ru,
     localize_unit,
@@ -46,15 +46,65 @@ _NEIGHBOR_WINDOW = 10
 _OTHER_YEARS_MAX = 15
 
 
-def _ru_kind_by_label(summary_label: str) -> str | None:
-    """Русская подпись итога → ключ EN-шаблона (как в РФ-эталоне)."""
-    return {
-        "Рост цен за год": "summary_chain",
-        "Итог за год (сумма)": "summary_sum",
-        "Значение на конец года": "summary_last",
-        "Среднее за год": "summary_avg",
-        "Итог за год": "summary_avg",
-    }.get(summary_label)
+def _observation_summary(
+    rows: list[tuple[date, float]], frequency: str, unit: str, *, en: bool
+) -> tuple[str, str]:
+    """Без метаданных об агрегации world описываем наблюдения, не итог."""
+    if len(rows) == 1:
+        label = (
+            ("Annual value" if en else "Годовое значение")
+            if frequency == "annual"
+            else ("Published observation" if en else "Опубликованное наблюдение")
+        )
+        value = rows[0][1]
+    else:
+        label = (
+            "Mean of published observations" if en
+            else "Среднее по опубликованным наблюдениям"
+        )
+        value = fmean(v for _d, v in rows)
+    return label, display_value_text(None, value, unit or None)
+
+
+def _coverage_note(
+    rows: list[tuple[date, float]], frequency: str, *, en: bool
+) -> str:
+    """Календарное покрытие M/Q проверяем по периодам, не числу строк."""
+    dates = [d for d, _v in rows]
+    if frequency == "annual" and len(rows) == 1:
+        return ""
+    period_size = {"monthly": 1, "quarterly": 3}.get(frequency)
+    if period_size:
+        expected = 12 // period_size
+        periods = {(d.month - 1) // period_size for d in dates}
+        incomplete = len(periods) < expected
+        unit = ("months" if frequency == "monthly" else "quarters") if en else (
+            "месяцев" if frequency == "monthly" else "кварталов"
+        )
+        prefix = (
+            ("Incomplete year: " if en else "Неполное покрытие года: ")
+            if incomplete else ("Coverage: " if en else "Покрытие: ")
+        )
+        coverage = prefix + (
+            f"{len(periods)} of {expected} {unit}." if en
+            else f"{len(periods)} из {expected} {unit}."
+        )
+    else:
+        coverage = (
+            f"Published observations: {len(rows)}. Full-year coverage is not confirmed."
+            if en else f"Опубликовано наблюдений: {len(rows)}. Полнота покрытия года не подтверждена."
+        )
+    bounds = (
+        f" Observation dates: {_format_date(dates[0])} — {_format_date(dates[-1])}."
+        if en else f" Даты наблюдений: {_format_date(dates[0])} — {_format_date(dates[-1])}."
+    )
+    method = (
+        " No annual total is calculated; the arithmetic mean of available observations "
+        "is not an official annual value."
+        if en else " Годовой итог не рассчитывается; среднее арифметическое доступных "
+        "наблюдений не является официальным годовым значением."
+    )
+    return coverage + bounds + method
 
 
 def _title_desc(
@@ -81,22 +131,21 @@ def _title_desc(
         label_out = summary_label.lower()
 
     if en:
+        if n_rows > 1:
+            title = f"{name} in {country_name}, {year} — published observations"
+            desc = (
+                f"{name} in {country_name}, {year}{period_note}: {n_rows} observations, "
+                f"{label_out} — {summary_bit}. Official data — {source}."
+            )
+            return title, desc
         if freq == "annual":
             title_key = "title_annual_current" if current_year else "title_annual"
         elif current_year:
             title_key = "title_ytd"
-        elif n_rows == 1:
-            title_key = "title_single"
-        elif freq == "quarterly":
-            title_key = "title_quarterly"
-        elif freq == "weekly":
-            title_key = "title_weekly"
-        elif freq == "daily":
-            title_key = "title_daily"
         else:
-            title_key = "title_monthly"
+            title_key = "title_single"
         title = yt(title_key).format(name=name, year=year, country=country_name)
-        desc_key = "desc_single" if (n_rows == 1 or freq == "annual") else "desc_multi"
+        desc_key = "desc_single" if freq == "annual" and n_rows == 1 else "desc_multi"
         desc = yt(desc_key).format(
             name=name,
             year=year,
@@ -110,7 +159,7 @@ def _title_desc(
         return title, desc
 
     name = f"{name} в {country_name}"
-    if freq == "annual":
+    if freq == "annual" and n_rows == 1:
         title = (
             f"{name} в {year} году — актуальное годовое значение"
             if current_year
@@ -127,24 +176,17 @@ def _title_desc(
     elif n_rows == 1:
         title = f"{name} в {year} году — значение и динамика"
     elif freq == "quarterly":
-        title = f"{name} в {year} году — данные по кварталам и итоги"
+        title = f"{name} в {year} году — наблюдения по кварталам"
     elif freq == "weekly":
-        title = f"{name} в {year} году — данные по неделям и итоги"
+        title = f"{name} в {year} году — наблюдения по неделям"
     elif freq == "daily":
-        title = f"{name} в {year} году — дневные данные и итоги"
+        title = f"{name} в {year} году — дневные наблюдения"
     else:
-        title = f"{name} в {year} году — данные по месяцам и итоги"
-    if n_rows == 1:
-        desc = (
-            f"{name} в {year} году{period_note}: {label_out} — {summary_bit}. "
-            f"Сравнение с прошлым годом и положение в истории ряда. "
-            f"Официальные данные — {source}."
-        )
-    else:
-        desc = (
-            f"{name} в {year} году{period_note}: {n_rows} значений, "
-            f"{label_out} — {summary_bit}. Официальные данные — {source}."
-        )
+        title = f"{name} в {year} году — наблюдения по месяцам"
+    desc = (
+        f"{name} в {year} году{period_note}: {n_rows} наблюдений, "
+        f"{label_out} — {summary_bit}. Официальные данные — {source}."
+    )
     return title, desc
 
 
@@ -162,7 +204,6 @@ async def render_world_indicator_year_html(
         _prep,
         _source_label,
         _unit_of,
-        _unit_sfx,
     )
 
     country = await _country(db, slug)
@@ -203,9 +244,9 @@ async def render_world_indicator_year_html(
     place = country_label if en else prep
     display = _display_name(indicator)
     unit = _unit_of(indicator)
-    unit_sfx = _unit_sfx(unit)
     # Русская каноническая единица → локализованная для показа (EN: pp вместо п.п.).
     shown_unit = ((localize_unit(unit) or unit) if unit else "") if en else unit
+    unit_sfx = f" {shown_unit}" if shown_unit else ""
     source = _source_label(indicator.source, indicator.provider)
     frequency = normalize_frequency(indicator.frequency) or ""
     values = [v for _d, v in year_rows]
@@ -232,22 +273,17 @@ async def render_world_indicator_year_html(
     prev_year = year - 1 if (year - 1) in last_by_year else None
     prev_value = last_by_year[year - 1][0] if prev_year is not None else None
     neighbors = neighbor_year_window(series_lp, year, size=_NEIGHBOR_WINDOW)
-    other_years = [y for y in sorted(last_by_year) if y != year]
+    navigation = neighbor_year_window(series_lp, year, size=_OTHER_YEARS_MAX - 1)
+    other_years = sorted(
+        ({y for y, _v, _d in navigation} | {series_lp[0][0], series_lp[-1][0]}) - {year}
+    )
 
-    summary_label, summary_text = annual_summary(None, values, unit)
-    if yt("summary_avg"):
-        kind_key = _ru_kind_by_label(summary_label)
-        if kind_key and yt(kind_key):
-            summary_label = yt(kind_key)
+    summary_label, summary_text = _observation_summary(
+        year_rows, frequency, shown_unit, en=en
+    )
+    coverage_note = _coverage_note(year_rows, frequency, en=en)
     n_rows = len(year_rows)
-    single_point = n_rows == 1
-    if single_point:
-        summary_label = (
-            yt("summary_annual_value")
-            if frequency == "annual"
-            else yt("summary_value")
-        ) or ("Годовое значение" if frequency == "annual" else "Значение")
-        summary_text = display_value_text(None, last_value, shown_unit or None)
+    single_point = n_rows == 1 and frequency == "annual"
     if current_year:
         summary_label = (
             yt("summary_as_of") or "{label} (на {date})"
@@ -377,7 +413,10 @@ async def render_world_indicator_year_html(
                 yt("h2_ytd") or "{name} в {year} году: данные с начала года"
             ).format(name=display, year=year)
         else:
-            totals_head = (yt("h2_totals") or "Итоги {year} года").format(year=year)
+            totals_head = (
+                f"Published observations in {year}" if en
+                else f"Опубликованные наблюдения за {year} год"
+            )
         range_label = yt("range_minmax") or "Минимум и максимум"
         vmin, vmax = min(values), max(values)
         data_rows = "".join(
@@ -386,19 +425,17 @@ async def render_world_indicator_year_html(
             for d, v in year_rows
         )
         li_start = (
-            yt("li_year_start") or "Значение на начало года: {value} ({date})"
+            "First observation: {value} ({date})" if en
+            else "Первое наблюдение: {value} ({date})"
         ).format(
-            value=f"{format_number_ru(first_value)}{unit_sfx}",
+            value=display_value_text(None, first_value, shown_unit),
             date=_format_date(first_date),
         )
-        end_tpl = yt("li_latest") if current_year else yt("li_year_end")
-        end_fallback = (
-            "Последнее значение: {value} ({date})"
-            if current_year
-            else "Значение на конец года: {value} ({date})"
-        )
-        li_end = (end_tpl or end_fallback).format(
-            value=f"{format_number_ru(last_value)}{unit_sfx}",
+        li_end = (
+            "Last observation: {value} ({date})" if en
+            else "Последнее наблюдение: {value} ({date})"
+        ).format(
+            value=display_value_text(None, last_value, shown_unit),
             date=_format_date(last_date),
         )
         all_h2 = (yt("h2_all_values") or "Все значения за {year} год").format(year=year)
@@ -427,15 +464,16 @@ async def render_world_indicator_year_html(
             source=source,
         )
         image_caption = (
-            yt("image_caption_multi") or "{name} в {year} году — график и итоги"
-        ).format(name=display, year=year)
+            f"{display}, {year} — chart of published observations" if en
+            else f"{display} в {year} году — график опубликованных наблюдений"
+        )
 
     year_link_tpl = yt("year_link") or "{name} в {year} году"
     year_links_html = _links_list(
         tuple(
             (paths.indicator_year(slug, code, y), year_link_tpl.format(name=display, year=y))
             for y in other_years
-        )[-_OTHER_YEARS_MAX:]
+        )
     )
     other_years_h2 = yt("h2_other_years") or "Другие годы"
 
@@ -462,6 +500,7 @@ async def render_world_indicator_year_html(
 {_breadcrumbs_nav(trail)}
 <h1>{escape(h1_text)}</h1>
 <p>{escape(desc)}</p>
+{f'<p>{escape(coverage_note)}</p>' if coverage_note else ''}
 {_seo_chart_figure(og_path, chart_alt, chart_caption, href=card_path, loading="eager")}
 {data_section}
 <section><h2>{escape(card_h2)}</h2><p>{card_p}</p></section>

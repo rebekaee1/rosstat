@@ -36,16 +36,14 @@ from typing import Awaitable, Callable
 
 from app.services.index_policy import (
     RUSSIA_YEAR_MIN_POINTS,
+    RUSSIA_YEAR_MIN_POINTS_BY_FREQUENCY,
     TIER1_PRIORITY,
     TIER2_PRIORITY,
-    month_year_min,
-    regional_year_min,
-    world_year_min,
     curated_world_dataset_ids,
 )
 from app.services.display import today_msk
 
-from sqlalchemy import Integer, func, or_, select, tuple_
+from sqlalchemy import Integer, case, func, select, tuple_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
@@ -76,17 +74,13 @@ WORLD_YEAR_LANDING_MIN_POINTS = 1
 _RATING_YEAR_MIN_COUNTRIES = 5
 
 
-def _world_year_filters(year_expr):
-    """Curated-концепты + lookback — INDEX_POLICY Tier 2 для мировых годов."""
-    datasets = curated_world_dataset_ids()
-    clauses = [
+def _world_year_filters():
+    """Curated-концепты — INDEX_POLICY Tier 2 независимо от возраста года."""
+    return [
         WorldCountry.is_active.is_(True),
         WorldIndicator.is_listed.is_(True),
-        year_expr >= world_year_min(),
+        WorldIndicator.dataset_id.in_(curated_world_dataset_ids()),
     ]
-    if datasets:
-        clauses.append(WorldIndicator.dataset_id.in_(datasets))
-    return clauses
 
 
 @dataclass(frozen=True, slots=True)
@@ -177,9 +171,10 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         .where(Indicator.is_active.is_(True), Indicator.is_listed.is_(True))
         .group_by(Indicator.code, year_expr, Indicator.frequency)
         .having(
-            or_(
-                Indicator.frequency == "annual",
-                func.count(IndicatorData.id) >= YEAR_LANDING_MIN_POINTS,
+            func.count(IndicatorData.id) >= case(
+                RUSSIA_YEAR_MIN_POINTS_BY_FREQUENCY,
+                value=func.lower(Indicator.frequency),
+                else_=YEAR_LANDING_MIN_POINTS,
             )
         )
         .order_by(year_expr.desc(), Indicator.code)
@@ -348,7 +343,6 @@ async def _regional_year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         .where(
             Region.kind == "region",
             RegionIndicator.is_listed.is_(True),
-            RegionDataPoint.year >= regional_year_min(),
         )
         .group_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
         .order_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
@@ -634,7 +628,7 @@ async def _world_year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             )
             .join(WorldIndicator, WorldIndicator.id == WorldDataPoint.indicator_id)
             .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
-            .where(*_world_year_filters(year_expr))
+            .where(*_world_year_filters())
             .group_by(
                 WorldDataPoint.indicator_id,
                 WorldIndicator.country_id,
@@ -661,17 +655,11 @@ async def _world_year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     return urls
 
 
-async def _month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Месячные лендинги РФ: /russia/indicator/{code}/{year}-{mm}.
-
-    GROUP BY (code, year, month) отдаёт только реально существующие месяцы
-    ряда — страница, отдающая 404 из-за отсутствия точек, в sitemap не
-    попадает. Порядок: свежие месяцы и listed-ряды первыми (порядок секций
-    = приоритет очереди переобхода).
-    """
+def _months_stmt():
+    """Только существующие месяцы активных listed-рядов месячной частоты."""
     year_expr = func.extract("year", IndicatorData.date)
     month_expr = func.extract("month", IndicatorData.date)
-    stmt = (
+    return (
         select(
             Indicator.code,
             year_expr.label("y"),
@@ -683,13 +671,14 @@ async def _month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             Indicator.is_active.is_(True),
             Indicator.is_listed.is_(True),
             func.lower(Indicator.frequency).like("month%"),
-            year_expr >= month_year_min(),
         )
         .group_by(Indicator.code, year_expr, month_expr)
-        .order_by(Indicator.code, year_expr.desc(), month_expr.desc())
     )
+
+
+def _month_rows_urls(rows, today: date) -> list[SiteUrl]:
     urls = []
-    for code, year, month, _last in (await db.execute(stmt)).all():
+    for code, year, month, _last in rows:
         if is_redirect_only_indicator(code):
             continue
         year, month = int(year), int(month)
@@ -701,6 +690,27 @@ async def _month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             "0.5",
         ))
     return urls
+
+
+async def _month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    rows = (await db.execute(_months_stmt().order_by(Indicator.code, "y", "m"))).all()
+    return _month_rows_urls(rows, today)
+
+
+async def _months_page(
+    db: AsyncSession, today: date, after: tuple | None, limit: int
+) -> tuple[list[SiteUrl], tuple | None]:
+    year = func.extract("year", IndicatorData.date).cast(Integer)
+    month = func.extract("month", IndicatorData.date).cast(Integer)
+    stmt = _months_stmt()
+    if after:
+        stmt = stmt.having(
+            tuple_(Indicator.code, year, month)
+            > tuple_(str(after[0]), int(after[1]), int(after[2]))
+        )
+    rows = (await db.execute(stmt.order_by(Indicator.code, year, month).limit(limit))).all()
+    last = rows[-1] if rows else None
+    return _month_rows_urls(rows, today), ((last[0], int(last[1]), int(last[2])) if last else None)
 
 
 async def _world_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
@@ -950,7 +960,7 @@ async def _chunk_bounds(
     """Ключи границ чанков группы: [None, end_1, end_2, …, end_last-1, None].
 
     Первый элемент — None (чанк 1 читается с начала группы), дальше — ключи
-    ПОСЛЕДНЕЙ строки каждого не-последнего чанка (rn = chunk, 2·chunk, …):
+    ПОСЛЕДНЕЙ строки каждого не-последнего чанка (rn = chunk, 2 * chunk, …):
     страница читается «row(sort) > ключ, LIMIT chunk», поэтому ключ границы
     принадлежит предыдущему чанку и сам в следующий не попадает. Последний
     элемент — None: последний чанк читается до конца группы. Число чанков =
@@ -965,7 +975,7 @@ async def _chunk_bounds(
 
     from app.core.cache import cache_get, cache_set
 
-    cache_key = f"fe:sitemap:chunk-bounds:{key}"
+    cache_key = f"fe:sitemap:chunk-bounds:history-v2:{key}"
     raw = await cache_get(cache_key)
     if isinstance(raw, list) and raw:
         return [tuple(b) if b is not None else None for b in raw]
@@ -1011,7 +1021,6 @@ async def _regional_years_page(
         .where(
             Region.kind == "region",
             RegionIndicator.is_listed.is_(True),
-            RegionDataPoint.year >= regional_year_min(),
         )
         .group_by(RegionIndicator.id, Region.slug, RegionDataPoint.year)
     )
@@ -1057,7 +1066,7 @@ async def _world_years_page(
         )
         .join(WorldIndicator, WorldIndicator.id == WorldDataPoint.indicator_id)
         .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
-        .where(*_world_year_filters(year_expr))
+        .where(*_world_year_filters())
         .group_by(WorldDataPoint.indicator_id, year_expr)
     )
     if after:
@@ -1119,7 +1128,7 @@ async def _world_years_page(
 
 _CHUNK_COUNTS_TTL = 6 * 3600
 
-_CHUNK_COUNTS_KEY = "fe:sitemap:chunk-counts"
+_CHUNK_COUNTS_KEY = "fe:sitemap:chunk-counts:history-v2"
 
 _CHUNK_BOUNDS_TTL = 3600
 
@@ -1143,7 +1152,6 @@ _REG_YEARS_COUNT = select(func.count()).select_from(
     .where(
         Region.kind == "region",
         RegionIndicator.is_listed.is_(True),
-        RegionDataPoint.year >= regional_year_min(),
     )
     .group_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
     .subquery()
@@ -1160,7 +1168,7 @@ _WORLD_YEARS_COUNT = select(func.count()).select_from(
     select(WorldIndicator.code.label("c"), func.extract("year", WorldDataPoint.date).label("y"))
     .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
     .join(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
-    .where(*_world_year_filters(func.extract("year", WorldDataPoint.date)))
+    .where(*_world_year_filters())
     .group_by(WorldIndicator.id, "c", "y")
     .subquery()
 )
@@ -1178,7 +1186,7 @@ _SIMPLE_SECTION_ORDER = [
     "calendar",
     "world-vs",
     "years",
-    "months",
+    "months-",
     "world-indicators-",
     "regional-",
     "regional-years-",
@@ -1234,7 +1242,6 @@ def _regional_years_bounds_stmt() -> object:
         .where(
             Region.kind == "region",
             RegionIndicator.is_listed.is_(True),
-            RegionDataPoint.year >= regional_year_min(),
         )
         .group_by(RegionIndicator.id, Region.slug, RegionDataPoint.year)
     )
@@ -1246,8 +1253,16 @@ def _world_years_bounds_stmt() -> object:
         select(WorldDataPoint.indicator_id.label("indicator_id"), year_expr)
         .join(WorldIndicator, WorldIndicator.id == WorldDataPoint.indicator_id)
         .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
-        .where(*_world_year_filters(year_expr))
+        .where(*_world_year_filters())
         .group_by(WorldDataPoint.indicator_id, year_expr)
+    )
+
+
+def _months_bounds_stmt():
+    return _months_stmt().with_only_columns(
+        Indicator.code.label("code"),
+        func.extract("year", IndicatorData.date).cast(Integer).label("year"),
+        func.extract("month", IndicatorData.date).cast(Integer).label("month"),
     )
 
 
@@ -1256,6 +1271,13 @@ def _world_years_bounds_stmt() -> object:
 # build_chunk; простые секции — мимо этой таблицы, напрямую через
 # _SIMPLE_SECTION_BUILDERS.
 _CHUNKED_SOURCES: dict[str, _ChunkSource] = {
+    "months-": _ChunkSource(
+        fetch=_months_page, size=REGIONAL_CHUNK,
+        bounds=_months_bounds_stmt,
+        sort=(Indicator.code, func.extract("year", IndicatorData.date).cast(Integer),
+              func.extract("month", IndicatorData.date).cast(Integer)),
+        count=select(func.count()).select_from(_months_bounds_stmt().subquery()),
+    ),
     "world-indicators-": _ChunkSource(
         fetch=_world_cards_page, size=WORLD_CHUNK,
         bounds=_world_cards_bounds_stmt,
@@ -1294,7 +1316,6 @@ _SIMPLE_SECTION_BUILDERS: dict[str, Callable[[AsyncSession, date], Awaitable[lis
     "calendar": _calendar_month_urls,
     "world-vs": _world_vs_urls,
     "years": _year_urls,
-    "months": _month_urls,
 }
 
 
@@ -1416,6 +1437,10 @@ async def resolve_section(db: AsyncSession, section: str) -> list[dict | list] |
     `chunk_no` может превысить фактическое число чанков (данные опустели) —
     вернётся пустой список, секция отдаст 404/выпадет из индекса.
     """
+    if section == "months":
+        # Старый sitemap URL остаётся ограниченным первым чанком;
+        # актуальный индекс перечисляет все months-N.
+        return await build_chunk(db, "months-", 1)
     if section in _SIMPLE_SECTION_BUILDERS:
         return await _SIMPLE_SECTION_BUILDERS[section](db, today_msk())
     parsed = _chunked_prefix_for(section)
@@ -1425,12 +1450,36 @@ async def resolve_section(db: AsyncSession, section: str) -> list[dict | list] |
     return await build_chunk(db, prefix, chunk_no)
 
 
+async def iter_url_sections(db: AsyncSession):
+    """Свежая последовательная сборка без TTL-границ и накопления всего реестра.
+
+    Статическая генерация не должна потерять хвост истории из-за устаревшего
+    числа чанков или перескочить строки при истечении кэша в середине сборки.
+    """
+    today = today_msk()
+    for name in _SIMPLE_SECTION_ORDER:
+        if name in _SIMPLE_SECTION_BUILDERS:
+            yield name, await _SIMPLE_SECTION_BUILDERS[name](db, today)
+            continue
+        source = _CHUNKED_SOURCES[name]
+        after = None
+        chunk = 1
+        while True:
+            page, cursor = await source.fetch(db, today, after, source.size)
+            if cursor is None:
+                break
+            if cursor == after:
+                raise ValueError(f"Sitemap cursor did not advance: {name}")
+            yield f"{name}{chunk}", page
+            after = cursor
+            chunk += 1
+
+
 async def collect_url_sections(db: AsyncSession) -> dict[str, list[SiteUrl]]:
     """Полный реестр (совместимость: IndexNow/recrawl/скрипты).
 
-    Секциям соответствуют builder'ы SECTION_BUILDERS; чанки собираются
-    последовательно через keyset-пагинацию — полный проход остаётся
-    потоковым по группам, без монолитной выгрузки 2 млн URL.
+    Возвращаемый словарь накапливает весь реестр в памяти. Для публикации
+    использовать iter_url_sections, который отдаёт по одному чанку.
     """
     await _fill_section_builders(db)
     sections: dict[str, list[SiteUrl]] = {}

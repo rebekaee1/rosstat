@@ -1,25 +1,10 @@
-"""Анти-скрейп: привязка сессии к IP-префиксу + опциональный гео-блок.
+"""Legacy bind-cookie compatibility, not proof of human identity.
 
-Ферма 2026-09-03/04: headless Chrome, ротация IP на каждый запрос
-(SG → PL → CN/FR/BR). Гео-блок ловил только перечисленные страны — гидра
-уходила в другие. Bind ломает кросс-IP сессию: кука HMAC(prefix, день)
-с HTML/API не подходит запросу с другого /24 (IPv6 /48).
-
-Правила bind:
-- поисковики и соцкраулеры по UA не режутся;
-- приватный/невалидный IP (тесты, localhost) — skip;
-- куки нет — HTML и первый API данных: сайт + ``fe_bind`` (график
-  не должен быть пустым из‑за гонки Set-Cookie / XHR);
-  маяк/тикер (``/analytics/*``, ``/ticker``) и вход (``/api/v1/auth/*``,
-  ``/api/auth/*``) без куки не режем;
-- кука от другого префикса — API 403, HTML сайт и новая кука
-  (смена соты/VPN не должна показывать заглушку);
-- пустой ``RUSTATS_SCRAPE_BLOCK_COUNTRIES`` выключает гео-слой;
-- хостинговые ASN больше не 403: VPN/облако — живые люди;
-- ``Chrome/N.0.0.0 Safari/537.36`` — это reduced UA живого Chrome
-  (с 101), его нельзя банить: ферма шлёт ту же строку;
-- HTML-заглушку больше не отдаём: человек всегда получает страницу.
-  Гидра видит SSR с первого хита; API с чужим /24 режем.
+Missing/mismatched cookies, countries and hosting networks never deny access.
+The optional cookie is renewed after network changes; no JS gate is served.
+Scraping volume is bounded by nginx per-IP SSR/OG limits and the API limiter.
+Claimed crawler User-Agents grant no exemption from those limits. This does
+not distinguish a low-rate browser-looking scraper from a human visitor.
 """
 from __future__ import annotations
 
@@ -33,9 +18,8 @@ from datetime import datetime, timedelta, timezone
 from starlette.responses import Response
 
 from app.config import settings
-from app.services.geoip import lookup as geo_lookup
 
-# Совпадает с nginx $ssr_limit_key плюс соцкраулеры OG и соседние Google/Amazon.
+# A routing/analytics hint only; never use this as verified crawler identity.
 _SEARCH_UA_RE = re.compile(
     r"yandex|googlebot|googleother|google-inspectiontool|adsbot-google|"
     r"bingbot|mail\.ru|duckduckbot|applebot|gptbot|"
@@ -50,8 +34,7 @@ _SEARCH_UA_RE = re.compile(
 # Cursor-вкладка и headless-ферма не должны писать behavior/events.
 _NOISE_UA_RE = re.compile(r"HeadlessChrome|Cursor/", re.IGNORECASE)
 
-# Хостинг / облако: бан сетей, не стран. 15169 Google и 13238 Яндекс
-# сюда не входят — поисковики и так пропускаются по UA.
+# Legacy network classification, not an access-control decision.
 _HOSTING_ASN = frozenset({
     16509, 14618, 7224,  # Amazon
     396982,  # Google Cloud
@@ -123,9 +106,7 @@ _CHALLENGE_EXEMPT_PREFIXES = _SKIP_PREFIXES + (
     "/feed",
 )
 
-# Свой счётчик и тикер: первый маяк часто уходит до того, как браузер
-# приклеит fe_bind (307 apex→ru., гонка с HTML). 403 здесь режет людей,
-# не ферму. Данные /api/v1/indicators* по-прежнему требуют куку.
+# Telemetry avoids rewriting a valid cookie on every frequent beacon.
 _TELEMETRY_PREFIXES = (
     "/api/v1/analytics/",
     "/api/v1/ticker",
@@ -226,24 +207,16 @@ def verify_token(token: str | None, ip: str, when: datetime | None = None) -> bo
 
 
 def should_block(*, ip: str, ua: str | None, path: str) -> str | None:
-    """Причина блока: HOSTING / ISO-страна, или None."""
-    path = path or "/"
-    if any(path.startswith(p) for p in _SKIP_PREFIXES):
-        return None
-    if is_search_bot_ua(ua):
-        return None
-    codes = blocked_country_codes()
-    if not codes:
-        return None
-    geo = geo_lookup(ip)
-    cc = (geo.get("country_code") or "").upper()
-    if cc and cc in codes:
-        return cc
+    """Legacy compatibility: country/ASN/UA are not proof of automation.
+
+    Even stale deployment settings must not deny first visits or VPN users.
+    Request-volume limits live in nginx and RateLimitMiddleware, not cookies.
+    """
     return None
 
 
 def is_bind_protected_path(path: str) -> bool:
-    """HTML и API, кроме health/metrics/docs. Чужая кука не перевыпускается."""
+    """Paths eligible for optional cookie renewal, excluding health/docs."""
     path = path or "/"
     return not any(path.startswith(p) for p in _SKIP_PREFIXES)
 
@@ -423,8 +396,6 @@ def bind_decision(
     *, ip: str, ua: str | None, path: str, cookie: str | None
 ) -> BindDecision:
     if not settings.scrape_bind_enabled:
-        return BindDecision(block=False, set_cookie=False)
-    if is_search_bot_ua(ua):
         return BindDecision(block=False, set_cookie=False)
     if not is_bind_protected_path(path):
         return BindDecision(block=False, set_cookie=False)

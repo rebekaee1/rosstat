@@ -1,4 +1,4 @@
-"""Гео-блок (аварийный) + bind-cookie: поисковики проходят, чужой /24 — 403."""
+"""Country/VPN access and optional bind-cookie compatibility."""
 from datetime import datetime, timedelta, timezone
 
 from starlette.responses import Response
@@ -10,7 +10,7 @@ def test_search_bot_ua_not_blocked(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG")
     monkeypatch.setattr(
-        scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}, raising=False
     )
     assert scrape_guard.should_block(
         ip="1.2.3.4",
@@ -19,24 +19,24 @@ def test_search_bot_ua_not_blocked(monkeypatch):
     ) is None
 
 
-def test_singapore_chrome_is_blocked(monkeypatch):
+def test_singapore_chrome_is_not_blocked_by_legacy_setting(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG")
     monkeypatch.setattr(
-        scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}, raising=False
     )
     assert scrape_guard.should_block(
         ip="1.2.3.4",
         ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
         path="/russia/region/moskva",
-    ) == "SG"
+    ) is None
 
 
 def test_health_skip_even_from_sg(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG")
     monkeypatch.setattr(
-        scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}, raising=False
     )
     assert scrape_guard.should_block(
         ip="1.2.3.4", ua="Chrome", path="/api/v1/health/ready"
@@ -47,7 +47,7 @@ def test_empty_setting_disables_block(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "")
     monkeypatch.setattr(
-        scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "SG"}, raising=False
     )
     assert scrape_guard.should_block(
         ip="1.2.3.4", ua="Chrome", path="/"
@@ -58,31 +58,31 @@ def test_russia_not_blocked(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG")
     monkeypatch.setattr(
-        scrape_guard, "geo_lookup", lambda ip: {"country_code": "RU"}
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "RU"}, raising=False
     )
     assert scrape_guard.should_block(
         ip="5.6.7.8", ua="Chrome", path="/"
     ) is None
 
 
-def test_poland_chrome_is_blocked_with_default_list(monkeypatch):
+def test_poland_chrome_is_not_blocked_by_legacy_setting(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG,PL")
     monkeypatch.setattr(
-        scrape_guard, "geo_lookup", lambda ip: {"country_code": "PL"}
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "PL"}, raising=False
     )
     assert scrape_guard.should_block(
         ip="1.2.3.4",
         ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
         path="/",
-    ) == "PL"
+    ) is None
 
 
 def test_googlebot_from_poland_not_blocked(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_hosting", False)
     monkeypatch.setattr(scrape_guard.settings, "scrape_block_countries", "SG,PL")
     monkeypatch.setattr(
-        scrape_guard, "geo_lookup", lambda ip: {"country_code": "PL"}
+        scrape_guard, "geo_lookup", lambda ip: {"country_code": "PL"}, raising=False
     )
     assert scrape_guard.should_block(
         ip="1.2.3.4",
@@ -156,7 +156,7 @@ def test_bind_missing_cookie_allows_and_sets(monkeypatch):
     assert d.set_cookie is True
 
 
-def test_bind_search_bot_skips(monkeypatch):
+def test_bind_claimed_search_bot_renews_like_other_clients(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
     token = scrape_guard.issue_token("8.8.8.10")
     d = scrape_guard.bind_decision(
@@ -166,7 +166,7 @@ def test_bind_search_bot_skips(monkeypatch):
         cookie=token,
     )
     assert d.block is False
-    assert d.set_cookie is False
+    assert d.set_cookie is True
 
 
 def test_bind_html_sets_cookie(monkeypatch):

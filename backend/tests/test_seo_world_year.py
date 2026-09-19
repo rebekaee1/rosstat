@@ -220,9 +220,11 @@ def test_monthly_multi_point_year_page(world_year_client):
     assert r.status_code == 200
     html = r.text
 
-    assert "Значение на начало года" in html
-    assert "Значение на конец года" in html
-    assert "Среднее за год" in html
+    assert "Первое наблюдение" in html
+    assert "Последнее наблюдение" in html
+    assert "Среднее по опубликованным наблюдениям" in html
+    assert "Годовой итог не рассчитывается" in html
+    assert "Среднее за год" not in html
     assert "Минимум и максимум" in html
     assert "Количество наблюдений: 12" in html
 
@@ -357,3 +359,102 @@ def test_russian_year_metadata_identifies_country(frequency, n_rows, current):
         summary_label="Значение", summary_text="123", source="Eurostat", en=False, yt=lambda key: None)
     assert "Показатель в Германии в 2026 году" in title
     assert "Показатель в Германии в 2026 году" in desc
+
+
+@pytest.mark.parametrize("locale", ["ru", "en"])
+@pytest.mark.parametrize("frequency,months,coverage", [
+    ("monthly", list(range(1, 13)), "12"),
+    ("monthly", [2, 5, 12], "3"),
+    ("quarterly", [1, 4, 7, 10], "4"),
+    ("quarterly", [1, 2, 7, 10], "3"),
+    ("weekly", [2, 9], None),
+    ("daily", [2, 9], None),
+])
+def test_observation_summary_coverage_units(locale, frequency, months, coverage):
+    from app.services.locale import set_locale, reset_locale
+    from app.services.seo_world_year import _observation_summary, _coverage_note
+    token = set_locale(locale)
+    try:
+        en = locale == "en"
+        rows = [(date(2018, m, 1), float(i + 1)) for i, m in enumerate(months)]
+        label, text = _observation_summary(rows, frequency, "%", en=en)
+        assert label == ("Mean of published observations" if en else "Среднее по опубликованным наблюдениям")
+        assert text.endswith(" %")
+        assert text.startswith(str((len(rows) + 1) / 2).rstrip("0").rstrip(".").replace(".", "." if en else ","))
+        note = _coverage_note(rows, frequency, en=en)
+        assert ("No annual total" if en else "Годовой итог не рассчитывается") in note
+        if coverage is None:
+            assert ("not confirmed" if en else "не подтверждена") in note
+        else:
+            expected = "12" if frequency == "monthly" else "4"
+            assert f"{coverage} {'of' if en else 'из'} {expected}" in note
+            if coverage != expected:
+                assert ("Incomplete year" if en else "Неполное покрытие года") in note
+    finally:
+        reset_locale(token)
+
+
+@pytest.mark.parametrize("locale", ["ru", "en"])
+def test_partial_historical_year_and_sparse_history(world_year_client, auth_env, locale):
+    from sqlalchemy import delete, select
+    from app.models import WorldIndicator, WorldDataPoint
+
+    async def _history():
+        async with auth_env["session_maker"]() as db:
+            indicator_id = (await db.execute(select(WorldIndicator.id).where(
+                WorldIndicator.code == CODE_MONTHLY
+            ))).scalar_one()
+            await db.execute(delete(WorldDataPoint).where(
+                WorldDataPoint.indicator_id == indicator_id,
+                WorldDataPoint.date >= date(2024, 1, 1),
+                WorldDataPoint.date < date(2024, 12, 1),
+            ))
+            db.add_all(WorldDataPoint(
+                indicator_id=indicator_id, date=date(y, 3, 1), value=10 + y,
+            ) for y in range(1950, 2023, 2))
+            await db.commit()
+
+    asyncio.run(_history())
+    headers = {"X-FE-Locale": locale}
+    html = world_year_client.get(
+        f"/seo/world-indicator-year/germany/{CODE_MONTHLY}/2024", headers=headers
+    ).text
+    assert ("Incomplete year: 1 of 12 months" if locale == "en" else "Неполное покрытие года: 1 из 12 месяцев") in html
+    assert ("Published observation" if locale == "en" else "Опубликованное наблюдение") in html
+    assert "Изменение к 2023 году" not in html
+    assert "Comparison with the previous year" not in html
+    assert "Annual value" not in html
+    assert "Годовое значение" not in html
+    datasets = [b for b in _jsonld(html) if b.get("@type") == "Dataset"]
+    assert datasets[0]["temporalCoverage"] == "2024-12-01/2024-12-01"
+    for year, previous, following in ((1960, 1958, 1962), (2024, 2023, 2025)):
+        html = world_year_client.get(
+            f"/seo/world-indicator-year/germany/{CODE_MONTHLY}/{year}", headers=headers
+        ).text
+        links = set(map(int, re.findall(
+            rf'href="/germany/indicator/{CODE_MONTHLY}/(\d{{4}})"', html
+        ))) - {year}
+        assert {previous, following, 1950, 2025} - {year} <= links
+        assert len(links) <= 15
+
+
+@pytest.mark.parametrize("locale", ["ru", "en"])
+@pytest.mark.parametrize("unit", ["млн евро", "%", "индекс (2015 = 100)", "человек", ""])
+def test_world_mean_preserves_unit_without_inventing_annual_total(locale, unit):
+    from app.services.locale import set_locale, reset_locale
+    from app.services.display import display_value_text
+    from app.services.seo_world_year import _observation_summary, _coverage_note
+    token = set_locale(locale)
+    try:
+        rows = [(date(2018, 1, 1), 100.0), (date(2018, 4, 1), 200.0)]
+        label, text = _observation_summary(rows, "quarterly", unit, en=locale == "en")
+        assert text == display_value_text(None, 150.0, unit)
+        assert "sum" not in label.lower()
+        assert "итог" not in label.lower()
+        annual_rows = rows[:1]
+        label, text = _observation_summary(annual_rows, "annual", unit, en=locale == "en")
+        assert label == ("Annual value" if locale == "en" else "Годовое значение")
+        assert text == display_value_text(None, 100.0, unit)
+        assert _coverage_note(annual_rows, "annual", en=locale == "en") == ""
+    finally:
+        reset_locale(token)

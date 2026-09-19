@@ -746,7 +746,7 @@ def test_ssr_chrome_topnav_keeps_hub_deep_links():
     assert "Разделы платформы" in _ssr_platform_deep_links()
 
 
-def test_spa_ssr_gets_platform_deep_links():
+def test_spa_ssr_gets_platform_deep_links(monkeypatch):
     """SPA-SSR (include_app=True) без chrome обязан получить блок выхода в хабы.
 
     Иначе тонкие семейства (/russia/today/*, /russia/calendar/*) оставляют боту одни крошки.
@@ -756,6 +756,15 @@ def test_spa_ssr_gets_platform_deep_links():
     from app.services.locale import reset_locale, set_locale
     from app.services.seo_renderer import build_document
 
+    from app.services import seo_renderer
+
+    async def assets():
+        return seo_renderer.AppAssets(
+            '<link rel="stylesheet" href="/assets/main-test.css">',
+            '<script type="module" src="/assets/main-test.js"></script>',
+        )
+
+    monkeypatch.setattr(seo_renderer, "get_app_assets", assets)
     spa = asyncio.run(
         build_document(
             title="Тест",
@@ -828,6 +837,52 @@ def test_build_document_og_image_override():
     )
     assert 'og:image" content="https://forecasteconomy.com/og/russia/cpi.png"' in html
     assert "og-image-v2.png" not in html
+
+
+def test_production_asset_fallback_does_not_request_development_source(monkeypatch):
+    from app.services import seo_renderer
+
+    monkeypatch.setattr(seo_renderer.settings, "debug", False)
+    assert seo_renderer._fallback_assets().body_scripts == ""
+    monkeypatch.setattr(seo_renderer.settings, "debug", True)
+    assert "/src/main.jsx" in seo_renderer._fallback_assets().body_scripts
+
+
+def test_app_assets_preserve_last_good_shell(monkeypatch):
+    import asyncio
+    from unittest.mock import AsyncMock
+
+    import httpx
+    from app.services import seo_renderer
+
+    good = seo_renderer.AppAssets(
+        '<link rel="stylesheet" href="/assets/main-old.css">',
+        '<script type="module" src="/assets/main-old.js"></script>',
+    )
+    monkeypatch.setattr(seo_renderer, "_APP_ASSETS", good)
+    monkeypatch.setattr(seo_renderer, "_APP_ASSETS_EXPIRES", 0.0)
+    monkeypatch.setattr(
+        httpx.AsyncClient, "get", AsyncMock(side_effect=httpx.ConnectError("shell unavailable"))
+    )
+    assert asyncio.run(seo_renderer.get_app_assets()) == good
+
+
+def test_app_assets_reject_non_shell_response(monkeypatch):
+    import asyncio
+    from unittest.mock import AsyncMock
+
+    import httpx
+    from app.services import seo_renderer
+
+    good = seo_renderer.AppAssets("styles", "scripts")
+    monkeypatch.setattr(seo_renderer, "_APP_ASSETS", good)
+    monkeypatch.setattr(seo_renderer, "_APP_ASSETS_EXPIRES", 0.0)
+    response = httpx.Response(
+        200, text="<html><body>Temporarily unavailable</body></html>",
+        request=httpx.Request("GET", "http://frontend/__spa-index.html"),
+    )
+    monkeypatch.setattr(httpx.AsyncClient, "get", AsyncMock(return_value=response))
+    assert asyncio.run(seo_renderer.get_app_assets()) == good
 
 
 def _extract_title(html: str) -> str:

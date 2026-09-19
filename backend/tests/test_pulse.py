@@ -126,16 +126,204 @@ def test_memory_core_is_compact():
         "behavior_rage": 5,
         "metrika_visits": 280,
         "metrika_ad_visits": 130,
-        "metrika_ad_campaigns": 0,
+        "metrika_organic_visits": 120,
+        "metrika_campaign_rows": None,
+        "metrika_campaign_visits": None,
+        "acquisition_metadata": None,
         "seo_indexed_share_pct": None,
         "seo_searchable_pages": None,
     }
 
 
+def test_acquisition_warehouse_preserves_zero_missing_failed_and_stale(tmp_path, monkeypatch):
+    from app.config import settings
+    monkeypatch.setattr(settings, "analytics_allowed_counter_ids", "test")
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.models import (
+        AnalyticsSyncRun, MetrikaReportSnapshot, MetrikaSearchPhrase, RawMetrikaVisit,
+    )
+    from app.services.pulse import _acquisition_from_warehouse
+
+    async def run():
+        engine = create_async_engine(f"sqlite+aiosqlite:///{tmp_path / 'acq.db'}")
+        async with engine.begin() as conn:
+            for model in (AnalyticsSyncRun, MetrikaReportSnapshot, MetrikaSearchPhrase, RawMetrikaVisit):
+                await conn.run_sync(model.__table__.create)
+        Session = async_sessionmaker(engine, expire_on_commit=False)
+        async with Session() as db:
+            missing = await _acquisition_from_warehouse(db, date(2026, 9, 18))
+            assert missing["metadata"]["reports"]["traffic_sources"]["status"] == "missing"
+            db.add(MetrikaReportSnapshot(
+                counter_id="test", report_type="traffic_sources", query_hash="zero",
+                date_from=date(2026, 9, 18), date_to=date(2026, 9, 18),
+                captured_at=datetime(2026, 9, 19, 5), response_json={"data": [], "total_rows": 0},
+            ))
+            await db.commit()
+            zero = await _acquisition_from_warehouse(db, date(2026, 9, 18))
+            assert zero["traffic_sources"] == {}
+            assert zero["metadata"]["reports"]["traffic_sources"]["status"] == "available"
+            assert memory_core({**SNAP, "acquisition": zero})["metrika_ad_visits"] == 0
+            stale = await _acquisition_from_warehouse(db, date(2026, 9, 19))
+            assert "traffic_sources" not in stale
+            assert stale["metadata"]["reports"]["traffic_sources"]["status"] == "stale"
+            assert stale["metadata"]["reports"]["traffic_sources"]["date_to"] == "2026-09-18"
+            db.add(AnalyticsSyncRun(
+                source="yandex_metrika", job_type="daily_acquisition_reports", status="failed",
+                date_from=date(2026, 9, 19), date_to=date(2026, 9, 19),
+                started_at=datetime(2026, 9, 20, 5), error_message="fixture failure",
+            ))
+            await db.commit()
+            failed = await _acquisition_from_warehouse(db, date(2026, 9, 19))
+            assert failed["metadata"]["sync"]["status"] == "failed"
+            assert failed["metadata"]["reports"]["traffic_sources"]["status"] == "failed"
+            assert memory_core({**SNAP, "acquisition": failed})["metrika_ad_visits"] is None
+            db.add(MetrikaReportSnapshot(
+                counter_id="test", report_type="traffic_sources", query_hash="null",
+                date_from=date(2026, 9, 19), date_to=date(2026, 9, 19),
+                captured_at=datetime(2026, 9, 20, 6), response_json={"data": [{
+                    "dimensions": [{"id": "ad", "name": "Ads"}], "metrics": [None, None],
+                }]},
+            ))
+            db.add(MetrikaReportSnapshot(
+                counter_id="another-counter", report_type="traffic_sources", query_hash="foreign",
+                date_from=date(2026, 9, 19), date_to=date(2026, 9, 19),
+                captured_at=datetime(2026, 9, 20, 7), response_json={"data": []},
+            ))
+            await db.commit()
+            partial = await _acquisition_from_warehouse(db, date(2026, 9, 19))
+            assert partial["metadata"]["sync"]["status"] == "failed"
+            assert partial["metadata"]["reports"]["traffic_sources"]["status"] == "available"
+            assert partial["traffic_sources"]["Ads"]["visits"] is None
+            assert memory_core({**SNAP, "acquisition": partial})["metrika_ad_visits"] is None
+            assert "Ads: нет данных" in _raw_digits_block({**SNAP, "acquisition": partial})
+        await engine.dispose()
+
+    asyncio.run(run())
+
+
+def test_pulse_acquisition_zero_and_revenue_are_separate():
+    snap = {**SNAP, "acquisition": {"traffic_sources": {}, "ad_campaigns": {}},
+            "marts": {"partner_revenue": {
+                "connected": True, "total_revenue_rub": 999.99,
+                "days": [{"day": SNAP["date"], "revenue_rub": 12.34, "shows": 88, "hits": 19}],
+            }}}
+    for render in (_fallback_summary, _raw_digits_block):
+        text = render(snap)
+        assert "Платное привлечение: 0 визитов" in text
+        assert "Органический поиск: 0 визитов" in text
+        assert "UTM-кампании: строк отчёта 0" in text
+        assert "Доход РСЯ за отчётный день: 12.34 руб." in text
+        assert "999.99" not in text
+        assert "Директ:" not in text
+        assert "остановка кампании" not in text
+    snap["marts"]["partner_revenue"]["days"] = []
+    assert "Доход РСЯ: нет данных за отчётный день" in _fallback_summary(snap)
+
+
+def test_acquisition_quality_labels_and_html_escaping():
+    for state, label in (("missing", "нет данных"), ("failed", "сбой синхронизации"),
+                         ("stale", "устаревшие данные")):
+        snap = {**SNAP, "acquisition": {"metadata": {"reports": {
+            "traffic_sources": {"status": state, "date_to": "2026-06-30"},
+        }}}}
+        for render in (_fallback_summary, _raw_digits_block):
+            text = render(snap)
+            assert label in text
+            assert "Платное привлечение: 0" not in text
+    snap = {**SNAP, "acquisition": {"traffic_sources": {
+        "<ad & other>": {"id": "ad", "visits": 123, "users": 99},
+    }, "ad_campaigns": {"<campaign>": {"visits": 123}}}}
+    raw = _raw_digits_block(snap)
+    assert "&lt;ad &amp; other&gt;: 123" in raw
+    assert "строк отчёта 1, визитов 123" in raw
+    assert "число активных кампаний неизвестно" in raw
+
+
+def test_acquisition_partial_report_does_not_invent_missing_channel_zero():
+    snap = {**SNAP, "acquisition": {
+        "traffic_sources": {"Organic": {"id": "organic", "visits": 120}},
+        "metadata": {"reports": {"traffic_sources": {
+            "status": "available", "total_rows": 3, "returned_rows": 1,
+        }}},
+    }}
+    assert memory_core(snap)["metrika_ad_visits"] is None
+    for render in (_fallback_summary, _raw_digits_block):
+        text = render(snap)
+        assert "Платное привлечение: нет данных" in text
+        assert "Органический поиск: 120 визитов" in text
+        assert "неполная выборка" in text
+
+
+def test_llm_payload_keeps_zero_missing_and_quality_metadata(monkeypatch):
+    import json
+    from unittest.mock import AsyncMock
+    from app.services import pulse_report
+
+    seen = []
+
+    class Client:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+        async def post(self, url, json, headers):
+            seen.append(json)
+            import httpx
+            return httpx.Response(200, json={"choices": [{
+                "message": {"content": "Наблюдение без причинного вывода.---HYPOTHESES---[]"},
+            }]})
+
+    monkeypatch.setattr(pulse_report.httpx, "AsyncClient", Client)
+    monkeypatch.setattr(pulse_report.settings, "openrouter_api_key", "fixture-key")
+    monkeypatch.setattr(pulse_report, "_open_hypotheses", AsyncMock(return_value=[]))
+    monkeypatch.setattr(pulse_report, "send_message", AsyncMock(side_effect=AssertionError("no send")))
+    for acq in ({"traffic_sources": {}, "ad_campaigns": {}}, {}, {
+        "metadata": {"reports": {"traffic_sources": {"status": "failed"}}},
+    }):
+        snap = {**SNAP, "acquisition": acq}
+        assert asyncio.run(pulse_report._llm_summary(snap, [memory_core(snap)]))
+        content = seen[-1]["messages"][1]["content"]
+        data = json.loads(content.split("Снапшот за отчётный день:\n")[1]
+                          .split("\n\nОткрытые гипотезы")[0])
+        assert data["acquisition"] == acq
+        assert data["users"]["total"] == 12
+        digits = _raw_digits_block(data)
+        assert ("Платное привлечение: 0 визитов" in digits) == ("traffic_sources" in acq)
+        assert "Директ:" not in digits
+
+
+def test_pulse_prompt_does_not_infer_campaign_state():
+    from app.services.pulse_report import _SYSTEM_PROMPT
+
+    assert "это остановка кампании в Директе" not in _SYSTEM_PROMPT
+    assert "не доказывает остановку" in _SYSTEM_PROMPT
+    assert "missing" in _SYSTEM_PROMPT and "stale" in _SYSTEM_PROMPT
+    assert "partner_revenue" in _SYSTEM_PROMPT
+    assert "не число активных кампаний" in _SYSTEM_PROMPT
+
+
+def test_acquisition_missing_is_not_zero():
+    snap = {**SNAP, "acquisition": {}}
+    for render in (_fallback_summary, _raw_digits_block):
+        text = render(snap)
+        assert "Платное привлечение: нет данных" in text
+        assert "Органический поиск: нет данных" in text
+        assert "Директ:" not in text
+    core = memory_core(snap)
+    assert core["metrika_ad_visits"] is None
+    assert core["metrika_visits"] is None
+
+
 def test_fallback_summary_mentions_key_numbers():
     text = _fallback_summary(SNAP)
     assert "12" in text and "Скачиваний: 4" in text and "Ошибок фронта: 2" in text
-    assert "Директ: 130" in text
+    assert "Платное привлечение: 130 визитов" in text
 
 
 def test_fallback_summary_splits_audience():
@@ -164,7 +352,7 @@ def test_raw_digits_reports_acquisition():
     block = _raw_digits_block(SNAP)
     assert "Источники (Метрика):" in block
     assert "Переходы по рекламе: 130" in block
-    assert "Директ: визиты 130" in block
+    assert "Платное привлечение: 130 визитов" in block
     assert "инфляция в россии 2026" in block
 
 

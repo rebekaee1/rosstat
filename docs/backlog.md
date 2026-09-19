@@ -1,6 +1,8 @@
 # Backlog — текущие правки в работе
 
-**Last updated:** 2026-09-04, день (**JS-ворота против гидры 1IP=1хит** — HTML без цифр, пока JS не сдаст ядра; ферма светит 64–192. Ранее тем же днём (**инцидент: Chrome/N.0.0.0 = живой Chrome**, правило снято. Bind HTML + хостинговые ASN остаются. Гео пуст.)
+**Last updated:** 2026-09-20 — локальный пакет `fix/history-access-reliability`, ожидает одобрения прод-выкладки и приёмки; запись ниже.
+
+**Previous:** 2026-09-04, день (**JS-ворота против гидры 1IP=1хит** — HTML без цифр, пока JS не сдаст ядра; ферма светит 64–192. Ранее тем же днём (**инцидент: Chrome/N.0.0.0 = живой Chrome**, правило снято. Bind HTML + хостинговые ASN остаются. Гео пуст.)
 
 **Previous:** 2026-09-04, ночь (**инцидент «открыл BI — встал сайт»** — владелец ждал дашборд 3 минуты, тикер и рейтинг стран пропали. Диагноз по проду: сборка 7d = 36 с против таймаута фронта 15 с → 499/ретраи/очередь оборванных сборок под замком; параллельно `world_card_siblings` читал ~5,5k широких страниц на каждую мировую карточку (LIKE `stem_%` без экранирования `_`), при 1,7 запр/с ботов — 136 млн блоков с диска за 4 часа при `shared_buffers=128MB`/cgroup 1G. Правки: `api/admin_bi.py` — фоновая single-flight сборка, 202 «считаем», SWR-снимок на сутки, `wait=` для тестов; `AdminBI.jsx` — опрос 3 с, «снимок HH:MM — пересчитываем в фоне», кнопка обновить = `fresh`; Alembic `20260904_world_card_lookup_idx` (CONCURRENTLY, pattern_ops) + `_like_escape` в `legacy_redirects.py` (план: 5 476 → 14 страниц, 42 → 0,2 мс, проверено на проде в откаченной транзакции); compose: postgres 2.5G, `shared_buffers=640MB`, `effective_cache_size=1800MB`, `random_page_cost=1.1` через env. Тесты: `test_admin_bi.py` (+202/single-flight/SWR), `AdminBI.component.test.jsx` (+опрос). Trap — `CONTEXT.md::BI-in-request trap`. Деплой — по команде владельца.)
 
@@ -27,6 +29,19 @@
 > Живой бэклог планируемых работ. Каждая правка имеет ID, описание, затронутые файлы, риски, зависимости и приоритет. Когда правка сделана — переносится в раздел «История» внизу с датой и SHA коммита/деплоя.
 
 ---
+
+## History-access-reliability (2026-09-20)
+
+**ID:** HAR-20260920. **Приоритет:** высокий. **Статус:** реализовано локально в незакоммиченной ветке `fix/history-access-reliability`; ожидает явного одобрения целевого SHA для продакшена и внешней приёмки. Эта запись не разрешает коммит, push, деплой или добавление SHA в allowlist.
+
+- История: сняты возрастные `noindex`/sitemap-отсечки, годовые пороги РФ quarterly/annual/monthly — 4/1/6; мировой годовой sitemap сохраняет curated-гейт. Навигация годов не теряет крайние периоды; месячные sitemap разбиты на чанки, статическая генерация потоковая. Файлы: `index_policy.py`, `seo_renderer.py`, `seo_regional_year.py`, `seo_world_year.py`, `site_urls.py`, `sitemap_static.py` и профильные тесты.
+- Доступ: nginx per-IP лимиты без UA-освобождения; общий SSR-бакет снят, отдельный OG-потолок сохранён; `fe_bind`/гео/ASN не дают 403. Файлы: `frontend/nginx.conf`, `backend/app/main.py`, `services/scrape_guard.py`, тесты доступа и лимитов.
+- Ассеты: publish old+new до нового HTML, prune после успешного watch либо после повторной публикации rollback-релиза; guard reload на release. Файлы: `scripts/deploy.sh`, `scripts/frontend-asset-archive.py`, `docker-compose.yml`, `frontend/Dockerfile`, `frontend/nginx.conf`, `frontend/src/main.jsx`, `lib/chunkRecovery.js`, профильные тесты и `scripts/e2e/asset-retention.mjs`.
+- Пульс: UTM-отчёт не число активных кампаний, `ad` не обязательно Директ, РСЯ — доход площадки отдельно от расходов; missing/failed/stale/invalid не нули. Файлы: `services/pulse.py`, `pulse_report.py`, `backend/tests/test_pulse.py`.
+
+**Риски и оставшаяся приёмка:** рост объёма sitemap/обхода; общий IP у людей и роботов; настройки host-level fail2ban; конечный retention старых ассетов; лаги/семплирование Метрики. После одобрения проверить исторические RU/EN URL и sitemap под исходными Host, первый HTML/API без cookie и после смены сети, реальные лимиты, старую вкладку через смену релиза/откат, отчёт Пульса за выбранный день и его доставку. Наличие тестов в diff не означает, что все проверки или прод-приёмка пройдены.
+
+Инварианты — [CONTEXT](../CONTEXT.md#history-access-reliability-2026-09-20), [enterprise_resilience](enterprise_resilience.md); approved SHA, обзор всего диапазона миграций и post-deploy watch — [workflow](workflow.md#прод-деплой).
 
 ## Звонок 14 (2026-08-12) — страна как первый сегмент, .ru/.com, рейтинг стран
 

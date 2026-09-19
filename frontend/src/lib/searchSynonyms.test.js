@@ -86,12 +86,38 @@ describe('filterSearchIndicators', () => {
     expect(codes('безработица')).toContain('unemployment');
   });
 
-  it('опечатка «зарплата» через «зпл» находит wages', () => {
-    expect(codes('зпл')).toContain('wages-nominal');
+  it.each(['зарплата', 'зпл', 'з/п'])('«%s» находит зарплату', (query) => {
+    expect(codes(query)).toContain('wages-nominal');
   });
 
-  it('«сталь» не пустой поиск', () => {
-    expect(codes('сталь').length).toBeGreaterThan(0);
+  describe('поиск стали без подмены общими индексами', () => {
+    const broadIndices = [
+      CATALOG.find(ind => ind.code === 'ipi'),
+      { code: 'ppi', name: 'Индекс цен производителей', name_en: 'Producer price index' },
+      { code: 'ipi-manufacturing', name: 'Обрабатывающая промышленность', name_en: 'Manufacturing production' },
+      { code: 'ppi-manufacturing', name: 'Цены производителей обрабатывающей промышленности' },
+    ];
+    const steel = { code: 'fixture-commodity-001', name: 'Сталь — объём производства', name_en: 'Crude steel production' };
+
+    it.each(['steel', 'сталь', 'ste', 'стал', 'прокат', 'металл'])(
+      '«%s» не выдаёт общие индексы, если профильного ряда нет', (query) => {
+        expect(filterSearchIndicators(broadIndices, query)).toEqual([]);
+        expect(resolveSynonymTargets(query)).toEqual([]);
+      },
+    );
+
+    it.each(['steel', 'сталь', 'ste', 'стал', 'Crude steel production', 'Сталь — объём производства'])(
+      '«%s» находит профильное название, включая частичное совпадение', (query) => {
+        expect(filterSearchIndicators([...broadIndices, steel], query)).toEqual([steel]);
+      },
+    );
+
+    it.each(['steel', 'сталь'])(
+      '«%s» сохраняет точное совпадение имени без нерелевантных индексов', (query) => {
+        const exact = { code: 'fixture-exact', name: query };
+        expect(filterSearchIndicators([...broadIndices, steel, exact], query)).toEqual([exact, steel]);
+      },
+    );
   });
 
   it('опечатка «инфляцая» находит инфляцию', () => {
@@ -138,6 +164,12 @@ describe('codeMatchesTargets / expandSearchQuery', () => {
     expect(codeMatchesTargets('cpi-food', ['cpi'])).toBe(true);
     expect(codeMatchesTargets('noise', ['cpi'])).toBe(false);
   });
+
+  it.each(['steel', 'сталь', 'прокат', 'металл', 'steel production'])(
+    'сохраняет исходный запрос «%s» для мирового поиска', (query) => {
+      expect(expandSearchQuery(query)).toBe(query);
+    },
+  );
 
   it('короткий синоним раскрывается в латинский код для world-search', () => {
     expect(expandSearchQuery('ипц')).toBe('cpi');
