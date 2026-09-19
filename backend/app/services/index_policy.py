@@ -23,10 +23,9 @@ Tier = Literal[1, 2, 3]
 # Годовые лендинги макро РФ: минимум точек за календарный год.
 RUSSIA_YEAR_MIN_POINTS = 6
 # Региональные годовые: последние N лет listed-пар.
-# Хабы региона уже в regional-*; годы кормят очередь обхода, не спрос.
-REGIONAL_YEAR_LOOKBACK = 3
+REGIONAL_YEAR_LOOKBACK = 5
 # Мировые годовые: только curated-концепты, последние N лет.
-WORLD_YEAR_LOOKBACK = 3
+WORLD_YEAR_LOOKBACK = 10
 # Месячные лендинги макро: текущий + прошлый календарный год.
 MONTH_LOOKBACK_YEARS = 1
 # Мировые карточки Tier 2: минимум точек и не «сырое» машинное имя.
