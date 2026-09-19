@@ -88,3 +88,4 @@ a111ea75dc691a5638629ee6fb118abd65b06d36  # a111ea7 люди в Метрике +
 49d61c5f17a0b9901311863a1380c624b6bf6c37  # live acceptance follow-up; same owner-authorized repair release 2026-09-10
 0793647367bfe5bf81954b286a2990f91403ed2d  # explicit owner SHA approval 2026-09-20; history/access/assets/Pulse; no new migrations
 b5f24ffb65e523a7771bc69f7b48b9c854234bec  # explicit owner SHA approval 2026-09-20; retained assets fix; SSH bundle delivery
+3753a9cfbfabdf995e38380919996a9d99bc1e87  # explicit owner SHA approval 2026-09-20; paced release gate; full package via SSH
