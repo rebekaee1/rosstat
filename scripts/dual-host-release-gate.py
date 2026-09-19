@@ -9,6 +9,7 @@ for humans does not fire.
 from __future__ import annotations
 import argparse
 import re
+import time
 import httpx
 from bs4 import BeautifulSoup
 
@@ -63,6 +64,9 @@ def main() -> int:
         expected_lang = "en" if locale == "en" and apex_is_en else "ru"
         with httpx.Client(timeout=30, follow_redirects=False, headers={"Host": host, "User-Agent": "YandexBot/3.0"}) as client:
             for path in paths:
+                # The gate shares one client IP across both hosts and must obey
+                # the production per-IP crawl budget, including image requests.
+                time.sleep(0.6)
                 response = client.get(f"{origin.rstrip('/')}{path}")
                 if response.status_code != 200:
                     errors.append(f"{locale} {path}: HTTP {response.status_code}"); continue
@@ -103,6 +107,7 @@ def main() -> int:
                         .replace("https://forecasteconomy.com", "")
                         .replace("https://ru.forecasteconomy.com", "")
                     )
+                    time.sleep(0.6)
                     image = client.get(f"{origin.rstrip('/')}{image_path}")
                     if image.status_code != 200 or not image.headers.get("content-type", "").startswith("image/") or len(image.content) < 1000:
                         errors.append(f"{locale} {path}: broken OG {image.status_code}")
