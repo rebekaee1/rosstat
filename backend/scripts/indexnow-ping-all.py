@@ -85,7 +85,11 @@ async def ping_section(
             "host": host,
             "key": settings.indexnow_key,
             "keyLocation": f"{base}/{settings.indexnow_key}.txt",
-            "urlList": batch,
+            # IndexNow rejects relative paths (HTTP 422 invalidUrlList).
+            "urlList": [
+                path if path.startswith("http://") or path.startswith("https://") else f"{base}{path}"
+                for path in batch
+            ],
         }
         for attempt in range(1, _RETRIES + 1):
             try:
