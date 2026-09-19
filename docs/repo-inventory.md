@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-20
 
-**Файлов:** 986  ·  **Строк:** 266 930  ·  **Токенов (≈):** 2 716 871
+**Файлов:** 986  ·  **Строк:** 266 939  ·  **Токенов (≈):** 2 716 961
 
 ## По верхним папкам
 
@@ -14,9 +14,9 @@
 | `.github` | 1 | 150 | 1 250 |
 | `backend` | 535 | 165 134 | 1 596 935 |
 | `clickhouse` | 2 | 36 | 445 |
-| `deploy` | 9 | 480 | 5 261 |
+| `deploy` | 9 | 481 | 5 294 |
 | `docs` | 40 | 11 679 | 209 969 |
-| `frontend` | 326 | 72 825 | 703 469 |
+| `frontend` | 326 | 72 833 | 703 526 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 62 | 14 387 | 145 745 |
 
@@ -62,7 +62,7 @@
 | `backend/app/data/eurostat_dim_labels_ru.py` | 1 218 | 10 863 |
 | `docs/data_sources.md` | 518 | 10 824 |
 | `backend/tests/test_seo_world.py` | 1 001 | 10 512 |
-| `frontend/nginx.conf` | 877 | 10 209 |
+| `frontend/nginx.conf` | 885 | 10 266 |
 | `docs/research/_fpsr_raw/agent01.json` | 779 | 10 111 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 885 | 9 350 |
 | `backend/app/services/world_national_ingest.py` | 1 096 | 9 214 |
@@ -450,6 +450,7 @@
 | `backend/app/services/cbr_reserves_parser.py` | 166 | 1 465 |
 | `backend/tests/test_world_rank_values.py` | 158 | 1 461 |
 | `backend/app/data/region_indicator_polarity.py` | 131 | 1 460 |
+| `deploy/approved-shas.txt` | 89 | 1 453 |
 | `backend/tests/test_world_boe_iadb_adapter.py` | 205 | 1 445 |
 | `backend/tests/test_upsert.py` | 166 | 1 439 |
 | `backend/tests/test_forecaster.py` | 174 | 1 431 |
@@ -458,7 +459,6 @@
 | `frontend/src/lib/cpiViewModeContent.test.js` | 161 | 1 426 |
 | `backend/tests/conftest.py` | 166 | 1 424 |
 | `backend/tests/test_world_us_bls_bea_adapters.py` | 194 | 1 424 |
-| `deploy/approved-shas.txt` | 88 | 1 420 |
 | `backend/tests/test_market_history_backfill.py` | 163 | 1 417 |
 | `backend/tests/test_auth_account.py` | 124 | 1 412 |
 | `frontend/src/lib/russiaHomeCards.test.js` | 138 | 1 398 |
