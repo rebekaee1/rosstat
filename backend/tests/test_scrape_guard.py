@@ -129,7 +129,7 @@ def test_token_accepts_yesterday(monkeypatch):
     assert scrape_guard.verify_token(token, "8.8.8.10", when=now)
 
 
-def test_bind_mismatch_blocks_api(monkeypatch):
+def test_bind_mismatch_reissues_api_cookie(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_secret", "test-secret")
     token = scrape_guard.issue_token("8.8.8.10")
@@ -139,8 +139,8 @@ def test_bind_mismatch_blocks_api(monkeypatch):
         path="/api/v1/indicators",
         cookie=token,
     )
-    assert d.block is True
-    assert d.set_cookie is False
+    assert d.block is False
+    assert d.set_cookie is True
 
 
 def test_bind_missing_cookie_allows_and_sets(monkeypatch):
@@ -262,7 +262,7 @@ def test_telemetry_mismatch_not_blocked(monkeypatch):
     assert d.set_cookie is True
 
 
-def test_api_without_cookie_blocked_when_challenge_on(monkeypatch):
+def test_api_without_cookie_sets_bind(monkeypatch):
     monkeypatch.setattr(scrape_guard.settings, "scrape_bind_enabled", True)
     monkeypatch.setattr(scrape_guard.settings, "scrape_challenge_enabled", True)
     d = scrape_guard.bind_decision(
@@ -271,7 +271,8 @@ def test_api_without_cookie_blocked_when_challenge_on(monkeypatch):
         path="/api/v1/indicators",
         cookie=None,
     )
-    assert d.block is True
+    assert d.block is False
+    assert d.set_cookie is True
     assert d.challenge is False
 
 

@@ -650,6 +650,10 @@ def memory_core(snap: dict[str, Any]) -> dict[str, Any]:
             for v in snap.get("acquisition", {}).get("traffic_sources", {}).values()
             if v.get("id") == "ad"
         ),
+        "metrika_ad_campaigns": sum(
+            v.get("visits", 0)
+            for v in snap.get("acquisition", {}).get("ad_campaigns", {}).values()
+        ),
         "seo_indexed_share_pct": snap.get("seo", {}).get("indexed_share_pct"),
         "seo_searchable_pages": snap.get("seo", {}).get("searchable_pages"),
     }

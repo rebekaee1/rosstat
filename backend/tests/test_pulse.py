@@ -126,6 +126,7 @@ def test_memory_core_is_compact():
         "behavior_rage": 5,
         "metrika_visits": 280,
         "metrika_ad_visits": 130,
+        "metrika_ad_campaigns": 0,
         "seo_indexed_share_pct": None,
         "seo_searchable_pages": None,
     }
@@ -134,6 +135,7 @@ def test_memory_core_is_compact():
 def test_fallback_summary_mentions_key_numbers():
     text = _fallback_summary(SNAP)
     assert "12" in text and "Скачиваний: 4" in text and "Ошибок фронта: 2" in text
+    assert "Директ: 130" in text
 
 
 def test_fallback_summary_splits_audience():
@@ -162,6 +164,7 @@ def test_raw_digits_reports_acquisition():
     block = _raw_digits_block(SNAP)
     assert "Источники (Метрика):" in block
     assert "Переходы по рекламе: 130" in block
+    assert "Директ: визиты 130" in block
     assert "инфляция в россии 2026" in block
 
 

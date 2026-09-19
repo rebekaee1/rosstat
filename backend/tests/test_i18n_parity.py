@@ -1317,6 +1317,9 @@ def test_locale_host_redirect_after_cutover(monkeypatch):
     assert _locale_host_redirect(_html_locale_request(ua="YandexBot/3.0")) is None
     assert _locale_host_redirect(_html_locale_request(ua="Googlebot/2.1")) is None
     assert _locale_host_redirect(_html_locale_request(ua="GPTBot/1.0")) is None
+    assert _locale_host_redirect(_html_locale_request(ua="OAI-SearchBot/1.3")) is None
+    assert _locale_host_redirect(_html_locale_request(ua="GoogleOther")) is None
+    assert _locale_host_redirect(_html_locale_request(ua="facebookexternalhit/1.1")) is None
     assert _locale_host_redirect(_html_locale_request(path="/api/v1/health/ready")) is None
     assert _locale_host_redirect(_html_locale_request(cookie="fe_locale_pref=en")) is None
     assert _locale_host_redirect(_html_locale_request(query=b"locale_pref=en")) is None

@@ -15,6 +15,7 @@ const CATALOG = [
   { code: 'fuel-ai95', name: 'АИ-95', name_en: 'AI-95', category: 'Цены' },
   { code: 'fuel-ai92', name: 'АИ-92', name_en: 'AI-92', category: 'Цены' },
   { code: 'fuel-diesel', name: 'Дизельное топливо', name_en: 'Diesel', category: 'Цены' },
+  { code: 'ipi', name: 'Индекс промышленного производства', name_en: 'Industrial production', category: 'Бизнес' },
   { code: 'unemployment', name: 'Уровень незанятости', name_en: 'Jobless rate', category: 'Труд' },
   { code: 'wages-nominal', name: 'Средняя оплата труда', name_en: 'Average wage', category: 'Труд' },
   { code: 'brent', name: 'Нефть марки Brent', name_en: 'Brent crude', category: 'Сырьё' },
@@ -83,6 +84,14 @@ describe('filterSearchIndicators', () => {
 
   it('«безработица» находит unemployment', () => {
     expect(codes('безработица')).toContain('unemployment');
+  });
+
+  it('опечатка «зарплата» через «зпл» находит wages', () => {
+    expect(codes('зпл')).toContain('wages-nominal');
+  });
+
+  it('«сталь» не пустой поиск', () => {
+    expect(codes('сталь').length).toBeGreaterThan(0);
   });
 
   it('опечатка «инфляцая» находит инфляцию', () => {

@@ -35,7 +35,6 @@ from app.models import Region, RegionDataPoint, RegionIndicator
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
 from app.services.display import format_number_ru
-from app.services.index_policy import regional_year_min
 from app.services.locale import get_locale
 from app.services.seo_i18n import (
     region_display_name,
@@ -450,7 +449,7 @@ async def render_region_indicator_year_html(
         )
 
     others = sorted(
-        (y for y in years if y != year and y >= regional_year_min()),
+        (y for y in years if y != year),
         reverse=True,
     )[:_OTHER_YEARS_LIMIT]
     other_links = _links_list([

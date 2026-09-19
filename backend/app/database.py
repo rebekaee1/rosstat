@@ -11,7 +11,7 @@ def _json_serializer(obj):
 
 
 # О-15: бюджет соединений настраиваемый и посчитанный.
-# Дефолт: UVICORN_WORKERS(2) × (pool 5 + overflow 10) = 30 стабильных
+# Дефолт: UVICORN_WORKERS(2) × (pool 6 + overflow 10) = 32 стабильных
 # + транзиенты (alembic/seed на старте, pg_dump бэкапа) ≈ 35–40 —
 # втрое ниже дефолтного max_connections=100 Postgres. При росте числа
 # воркеров сначала пересчитать: workers × (size + overflow) < 80.

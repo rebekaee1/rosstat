@@ -2,7 +2,6 @@ import asyncio
 import ipaddress
 import json
 import logging
-import re
 import time
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone as dt_timezone
@@ -1087,11 +1086,6 @@ _GEO_EXCLUDED_PREFIXES = (
 _GEO_EXCLUDED_EXACT = frozenset({
     "/robots.txt", "/llms.txt", "/feed.xml", "/health", "/favicon.ico",
 })
-_SEARCH_BOT_UA = re.compile(
-    r"yandex|googlebot|bingbot|mail\.ru|duckduckbot|applebot|gptbot|"
-    r"petalbot|amazonbot|claudebot|perplexitybot|youbot",
-    re.IGNORECASE,
-)
 _GEO_RU_CODES: frozenset[str] | None = None
 
 
@@ -1171,7 +1165,9 @@ def _locale_host_redirect(request: Request) -> Response | None:
 
     if not _is_html_navigation(request):
         return None
-    if _SEARCH_BOT_UA.search(request.headers.get("user-agent", "") or ""):
+    from app.services.scrape_guard import is_search_bot_ua
+
+    if is_search_bot_ua(request.headers.get("user-agent")):
         return None
     host = normalize_host(
         request.headers.get("x-forwarded-host") or request.headers.get("host")

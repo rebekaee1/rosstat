@@ -8,7 +8,8 @@
 Правила bind:
 - поисковики и соцкраулеры по UA не режутся;
 - приватный/невалидный IP (тесты, localhost) — skip;
-- куки нет — HTML: сразу сайт + ``fe_bind``; API данных: 403;
+- куки нет — HTML и первый API данных: сайт + ``fe_bind`` (график
+  не должен быть пустым из‑за гонки Set-Cookie / XHR);
   маяк/тикер (``/analytics/*``, ``/ticker``) и вход (``/api/v1/auth/*``,
   ``/api/auth/*``) без куки не режем;
 - кука от другого префикса — API 403, HTML сайт и новая кука
@@ -18,7 +19,7 @@
 - ``Chrome/N.0.0.0 Safari/537.36`` — это reduced UA живого Chrome
   (с 101), его нельзя банить: ферма шлёт ту же строку;
 - HTML-заглушку больше не отдаём: человек всегда получает страницу.
-  Гидра снова видит SSR с первого хита; режем хостинг и API без куки.
+  Гидра видит SSR с первого хита; API с чужим /24 режем.
 """
 from __future__ import annotations
 
@@ -433,28 +434,10 @@ def bind_decision(
         return BindDecision(block=False, set_cookie=False)
     if is_telemetry_path(path) or is_auth_path(path):
         return BindDecision(block=False, set_cookie=not cookie or not verify_token(cookie, ip))
-    html = not path.startswith("/api/")
-    if not cookie:
-        if (
-            settings.scrape_challenge_enabled
-            and not is_challenge_exempt_path(path)
-            and not html
-        ):
-            return BindDecision(block=True, set_cookie=False)
-        return BindDecision(block=False, set_cookie=True)
-    if verify_token(cookie, ip):
-        return BindDecision(block=False, set_cookie=True)
-    # Чужой /24: API режем (ферма крутит IP). HTML — сайт и новая кука:
-    # человек после смены соты не должен смотреть заглушку.
-    if (
-        settings.scrape_challenge_enabled
-        and not is_challenge_exempt_path(path)
-        and not html
-    ):
-        return BindDecision(block=True, set_cookie=False)
-    if html:
-        return BindDecision(block=False, set_cookie=True)
-    return BindDecision(block=True, set_cookie=False)
+    # HTML и API: сайт + fe_bind. Чужой /24 — новая кука, не 403:
+    # человек на VPN/CGNAT не должен получать пустой график.
+    # Ферму режем UA и лимитами nginx, не страной и не IP-префиксом.
+    return BindDecision(block=False, set_cookie=True)
 
 
 def attach_bind_cookie(response: Response, ip: str) -> None:

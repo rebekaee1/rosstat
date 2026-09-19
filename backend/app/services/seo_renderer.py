@@ -78,7 +78,9 @@ class AppAssets:
 
 _APP_ASSETS: AppAssets | None = None
 _APP_ASSETS_EXPIRES = 0.0
-_APP_ASSETS_TTL = 300
+# После выката frontend hashed charts-*.js исчезают. 300 с держали
+# старый shell в SSR и давали 404 чанка. 15 с — потолок рассинхрона.
+_APP_ASSETS_TTL = 15
 
 
 def _fallback_assets() -> AppAssets:

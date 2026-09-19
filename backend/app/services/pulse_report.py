@@ -67,6 +67,9 @@ Last-click Метрики не значит, что человек сегодн�
 ChatGPT / Алиса / Perplexity называй, если они есть в данных; Нейро Яндекса
 отдельной метки не имеет и сидит внутри поиска Яндекса. Роботов в прямых
 не путай с людьми.
+Если «Переходы по рекламе» / ad_campaigns вчера были ненулевые, а сегодня
+ноль — это остановка кампании в Директе (кабинет), не «Метрика не пишет».
+Назови это явно, не прячь в «трафик обычный».
 
 Блок seo — индексация в Яндексе: sitemap_urls_total (сколько URL публикует
 сайт), searchable_pages (сколько реально в поиске по Вебмастеру),
@@ -252,6 +255,13 @@ def _fallback_summary(snapshot: dict) -> str:
         f"🏭 Упавших ETL-индикаторов: {len(etl.get('failed_indicator_ids', []))}",
         f"➕ Новых точек данных: {snapshot.get('data', {}).get('new_points', 0)}",
     ]
+    acq = snapshot.get("acquisition", {})
+    sources = acq.get("traffic_sources") or {}
+    ad = next((row.get("visits", 0) for row in sources.values() if row.get("id") == "ad"), 0)
+    campaigns = acq.get("ad_campaigns") or {}
+    lines.append(
+        f"📣 Директ: {ad} визитов, кампаний {len(campaigns)}"
+    )
     return "\n".join(lines)
 
 
@@ -294,6 +304,17 @@ def _raw_digits_block(snapshot: dict) -> str:
                                     key=lambda kv: -kv[1].get("visits", 0))
         )
         parts.append(f"Источники (Метрика): {escape(top)}")
+        ad = next(
+            (row.get("visits", 0) for row in acq["traffic_sources"].values()
+             if row.get("id") == "ad"),
+            0,
+        )
+        campaigns = acq.get("ad_campaigns") or {}
+        camp_visits = sum(row.get("visits", 0) for row in campaigns.values())
+        parts.append(
+            f"Директ: визиты {ad}, кампании {len(campaigns)}, "
+            f"визиты по кампаниям {camp_visits}"
+        )
     if acq.get("search_phrases_top"):
         top = ", ".join(
             f"«{p['phrase'][:40]}» ×{p['visits']}" for p in acq["search_phrases_top"][:10]

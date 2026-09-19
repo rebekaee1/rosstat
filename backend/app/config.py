@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://rustats:rustats@localhost:5432/rustats"
     database_echo: bool = False
     # О-15: пул соединений per-process; бюджет см. комментарий в database.py.
-    db_pool_size: int = 5
+    db_pool_size: int = 6
     db_max_overflow: int = 10
     db_pool_timeout: int = 10
     db_statement_timeout_ms: int = 30_000
@@ -51,7 +51,8 @@ class Settings(BaseSettings):
     # Основная защита — bind-cookie (scrape_bind_enabled): ферма крутит
     # страны, гео ловит только перечисленные.
     scrape_block_countries: str = ""
-    # HMAC(IP-префикс, день) в cookie fe_bind. HTML и API с кукой чужого /24 → 403.
+    # HMAC(IP-префикс, день) в cookie fe_bind. HTML и API всегда 200 +
+    # перевыпуск куки; 403 по чужому /24 резал людей на VPN.
     scrape_bind_enabled: bool = True
     scrape_bind_secret: str = ""
     # Раньше 403 на Hetzner/OVH/… — резало людей на VPN. Флаг оставлен,

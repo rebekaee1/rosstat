@@ -16,7 +16,8 @@ def test_russia_year_min_points_is_six():
 def test_old_regional_year_is_noindex():
     today = date(2026, 9, 3)
     assert is_noindex_path("/russia/region/moskva/chislennost-naseleniya/2018", today=today)
-    assert not is_noindex_path("/russia/region/moskva/chislennost-naseleniya/2024", today=today)
+    assert is_noindex_path("/russia/region/moskva/chislennost-naseleniya/2022", today=today)
+    assert not is_noindex_path("/russia/region/moskva/chislennost-naseleniya/2023", today=today)
 
 
 def test_old_month_landing_is_noindex():
@@ -28,7 +29,8 @@ def test_old_month_landing_is_noindex():
 def test_old_world_year_is_noindex():
     today = date(2026, 9, 3)
     assert is_noindex_path("/germany/indicator/de-foo/2010", today=today)
-    assert not is_noindex_path("/germany/indicator/de-cpi/2022", today=today)
+    assert is_noindex_path("/germany/indicator/de-cpi/2022", today=today)
+    assert not is_noindex_path("/germany/indicator/de-cpi/2023", today=today)
 
 
 def test_hubs_stay_indexable():

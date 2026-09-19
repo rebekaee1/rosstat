@@ -11,16 +11,23 @@ import './index.css';
 // как «поехавший» сайт. Ловим vite:preloadError и один раз перезагружаем
 // страницу — браузер получает свежий HTML (он no-cache) и новые ассеты.
 // Одноразовый флаг в sessionStorage защищает от цикла перезагрузок.
-window.addEventListener('vite:preloadError', (event) => {
-  const KEY = 'fe:chunk-reload';
-  if (sessionStorage.getItem(KEY)) return; // уже перезагружались — не зацикливаемся
-  sessionStorage.setItem(KEY, String(Date.now()));
-  event.preventDefault();
+const CHUNK_RELOAD_KEY = 'fe:chunk-reload';
+const CHUNK_RELOAD_COOLDOWN_MS = 60_000;
+
+function reloadForMissingChunk(event) {
+  const prev = Number(sessionStorage.getItem(CHUNK_RELOAD_KEY) || 0);
+  if (prev && Date.now() - prev < CHUNK_RELOAD_COOLDOWN_MS) return;
+  sessionStorage.setItem(CHUNK_RELOAD_KEY, String(Date.now()));
+  event?.preventDefault?.();
   window.location.reload();
-});
-window.addEventListener('load', () => {
-  // Успешная загрузка — сбрасываем флаг, чтобы следующий деплой тоже покрывался.
-  setTimeout(() => sessionStorage.removeItem('fe:chunk-reload'), 10000);
+}
+
+window.addEventListener('vite:preloadError', reloadForMissingChunk);
+window.addEventListener('unhandledrejection', (event) => {
+  const msg = String(event.reason?.message || event.reason || '');
+  if (/ChunkLoadError|Failed to fetch dynamically imported module|Loading chunk/i.test(msg)) {
+    reloadForMissingChunk(event);
+  }
 });
 
 if (import.meta.env.VITE_SENTRY_DSN) {
