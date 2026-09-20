@@ -24,6 +24,7 @@ from app.services.seo_renderer import (
     _absolute,
     _breadcrumbs,
     _breadcrumbs_nav,
+    _seo_chart_figure,
     build_document,
 )
 from app.services.world_subnational_ingest import (
@@ -79,6 +80,33 @@ def _kind(country_code: str) -> str:
     return passport.region_kind_label_en if _en() else passport.region_kind_label_ru
 
 
+def og_subnational_hub(country_slug: str) -> str:
+    return f"/og/world/{country_slug}/regions.png"
+
+
+def og_subnational_region(country_slug: str, region_slug: str) -> str:
+    return f"/og/world/{country_slug}/region/{region_slug}.png"
+
+
+def og_subnational_indicator(country_slug: str, region_slug: str, code: str) -> str:
+    return f"/og/world/{country_slug}/region/{region_slug}/{code}.png"
+
+
+def _image_ld(og_path: str, name: str, description: str) -> dict:
+    abs_url = _absolute(og_path)
+    return {
+        "@context": "https://schema.org",
+        "@type": "ImageObject",
+        "contentUrl": abs_url,
+        "url": abs_url,
+        "name": name,
+        "description": description,
+        "representativeOfPage": True,
+        "width": 1200,
+        "height": 630,
+    }
+
+
 async def render_subnational_hub_html(country_slug: str, db: AsyncSession) -> tuple[int, str]:
     country = await _country(db, country_slug)
     if country is None:
@@ -120,8 +148,28 @@ async def render_subnational_hub_html(country_slug: str, db: AsyncSession) -> tu
     )
     loc_label = "Indicators" if _en() else "Показатели"
     list_label = kind_plural
+    og_path = og_subnational_hub(country.slug)
+    passport = load_subnational_passport(country.code.lower())
+    default_ind = next((i for i in indicators if i.code == passport.default_indicator), None)
+    default_name = _iname(default_ind) if default_ind else ""
+    if _en():
+        alt = (
+            f"{kind_plural} — {country_name}: ranking by {default_name}"
+            if default_name
+            else f"{kind_plural} — {country_name}"
+        )
+        caption = f"{kind_plural} — {country_name}. Official statistics. forecasteconomy.com"
+    else:
+        alt = (
+            f"{kind_plural} — {country_name}: рейтинг по показателю «{default_name}»"
+            if default_name
+            else f"{kind_plural} — {country_name}"
+        )
+        caption = f"{kind_plural} — {country_name}. Официальная статистика. forecasteconomy.com"
+    figure = _seo_chart_figure(og_path, alt, caption, href=path, loading="eager")
     body = (
         f"<h1>{escape(kind_plural)} — {escape(country_name)}</h1>"
+        f"{figure}"
         f"<p>{escape(description)}</p>"
         f"<h2>{escape(loc_label)}</h2><ul>{metrics}</ul>"
         f"<h2>{escape(list_label)}</h2>"
@@ -136,8 +184,10 @@ async def render_subnational_hub_html(country_slug: str, db: AsyncSession) -> tu
             "description": description,
             "url": _absolute(path),
             "inLanguage": "en" if loc == "en" else "ru",
+            "image": _absolute(og_path),
         },
         _breadcrumbs(trail),
+        _image_ld(og_path, title, alt),
     ]
     html = await build_document(
         title=title,
@@ -146,6 +196,7 @@ async def render_subnational_hub_html(country_slug: str, db: AsyncSession) -> tu
         body=_breadcrumbs_nav(trail) + body,
         json_ld=json_ld,
         keywords=f"{country_name}, {kind_plural}",
+        og_image=_absolute(og_path),
     )
     return 200, html
 
@@ -212,8 +263,18 @@ async def render_subnational_region_html(
     th_ind = "Indicator" if _en() else "Показатель"
     th_val = "Latest" if _en() else "Последнее"
     th_date = "Period" if _en() else "Период"
+    og_path = og_subnational_region(country.slug, region.slug)
+    place = f"{region_name} — {country_name}"
+    if _en():
+        alt = f"{place}: key official indicators"
+        caption = f"{place}. Official statistics. forecasteconomy.com"
+    else:
+        alt = f"{place}: ключевые официальные показатели"
+        caption = f"{place}. Официальная статистика. forecasteconomy.com"
+    figure = _seo_chart_figure(og_path, alt, caption, href=path, loading="eager")
     body = (
         f"<h1>{escape(region_name)}</h1>"
+        f"{figure}"
         f"<p>{escape(kind)}, {escape(country_name)}</p>"
         f"<table><thead><tr><th>{th_ind}</th><th>{th_val}</th><th>{th_date}</th></tr></thead>"
         f"<tbody>{''.join(rows_html)}</tbody></table>"
@@ -232,8 +293,10 @@ async def render_subnational_region_html(
             "url": _absolute(path),
             "spatialCoverage": region_name,
             "inLanguage": "en" if loc == "en" else "ru",
+            "image": _absolute(og_path),
         },
         _breadcrumbs(trail),
+        _image_ld(og_path, title, alt),
     ]
     html = await build_document(
         title=title,
@@ -242,6 +305,7 @@ async def render_subnational_region_html(
         body=_breadcrumbs_nav(trail) + body,
         json_ld=json_ld,
         keywords=f"{region_name}, {country_name}",
+        og_image=_absolute(og_path),
     )
     return 200, html
 
@@ -314,8 +378,39 @@ async def render_subnational_indicator_html(
     meth_h = "Methodology" if _en() else "Методология"
     src_h = "Source" if _en() else "Источник"
     latest_h = "Latest value" if _en() else "Последнее значение"
+    og_path = og_subnational_indicator(country.slug, region.slug, indicator.code)
+    src_label = src or ("official source" if _en() else "официальный источник")
+    if last:
+        last_value = f"{format_number_ru(last[1], locale=loc)} {unit}".strip()
+        last_period = period_label(last[0], indicator.frequency, loc)
+        if _en():
+            alt = (
+                f"{region_name} {ind_name.lower()} — chart, latest value "
+                f"{last_value} ({last_period}), source {src_label}"
+            )
+            caption = (
+                f"{ind_name} in {region_name}, {country_name}. "
+                f"Source: {src_label}. forecasteconomy.com"
+            )
+        else:
+            alt = (
+                f"{ind_name} — {region_name}: график динамики, последнее значение "
+                f"{last_value} ({last_period}), источник {src_label}"
+            )
+            caption = (
+                f"{ind_name} — {region_name}, {country_name}. "
+                f"Источник: {src_label}. forecasteconomy.com"
+            )
+    elif _en():
+        alt = f"{region_name} {ind_name.lower()} — chart, source {src_label}"
+        caption = f"{ind_name} in {region_name}. Source: {src_label}. forecasteconomy.com"
+    else:
+        alt = f"{ind_name} — {region_name}: график, источник {src_label}"
+        caption = f"{ind_name} — {region_name}. Источник: {src_label}. forecasteconomy.com"
+    figure = _seo_chart_figure(og_path, alt, caption, href=path, loading="eager")
     body = (
         f"<h1>{escape(ind_name)} — {escape(region_name)}</h1>"
+        f"{figure}"
         f"<p><strong>{escape(latest_h)}:</strong> {escape(last_txt)}</p>"
         f"<p>{escape(desc)}</p>"
         f"<h2>{escape(meth_h)}</h2><p>{escape(meth)}</p>"
@@ -338,8 +433,10 @@ async def render_subnational_indicator_html(
             "url": _absolute(path),
             "spatialCoverage": region_name,
             "inLanguage": "en" if loc == "en" else "ru",
+            "image": _absolute(og_path),
         },
         _breadcrumbs(trail),
+        _image_ld(og_path, title, alt),
     ]
     html = await build_document(
         title=title,
@@ -348,5 +445,6 @@ async def render_subnational_indicator_html(
         body=_breadcrumbs_nav(trail) + body,
         json_ld=json_ld,
         keywords=f"{ind_name}, {region_name}, {country_name}",
+        og_image=_absolute(og_path),
     )
     return 200, html

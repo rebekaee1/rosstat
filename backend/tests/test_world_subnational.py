@@ -198,6 +198,9 @@ def test_subnational_ssr_hub_and_card(subnational_client):
     assert "<title>" in hub.text
     assert "BreadcrumbList" in hub.text
     assert "United States" in hub.text
+    assert "/og/world/united-states/regions.png" in hub.text
+    assert "ImageObject" in hub.text
+    assert 'class="seo-chart"' in hub.text
 
     card = subnational_client.get(
         "/seo/world/united-states/region/california/unemployment-rate",
@@ -207,6 +210,11 @@ def test_subnational_ssr_hub_and_card(subnational_client):
     assert "Unemployment" in card.text
     assert "California" in card.text
     assert "BreadcrumbList" in card.text
+    assert 'property="og:image"' in card.text
+    assert "/og/world/united-states/region/california/unemployment-rate.png" in card.text
+    assert "ImageObject" in card.text
+    assert 'class="seo-chart"' in card.text
+    assert 'name="twitter:image"' in card.text
 
     ru = subnational_client.get("/seo/regions")
     assert ru.status_code in (200, 404)
@@ -222,6 +230,11 @@ def test_world_regions_in_static_sitemap_sections():
 
 def test_country_region_paths():
     from app.services import site_paths as paths
+    from app.services.seo_world_subnational import (
+        og_subnational_hub,
+        og_subnational_indicator,
+        og_subnational_region,
+    )
 
     assert paths.country_regions("united-states") == "/united-states/regions"
     assert paths.country_region("united-states", "california") == "/united-states/region/california"
@@ -229,6 +242,13 @@ def test_country_region_paths():
         "united-states", "california", "unemployment-rate",
     ) == "/united-states/region/california/unemployment-rate"
     assert paths.region_hub() == "/russia/region"
+    assert og_subnational_hub("united-states") == "/og/world/united-states/regions.png"
+    assert og_subnational_region("united-states", "california") == (
+        "/og/world/united-states/region/california.png"
+    )
+    assert og_subnational_indicator(
+        "united-states", "california", "unemployment-rate",
+    ) == "/og/world/united-states/region/california/unemployment-rate.png"
 
 
 def test_en_catalog_subnational_paths():
@@ -238,3 +258,86 @@ def test_en_catalog_subnational_paths():
     assert has_en_path("/united-states/region/california")
     assert has_en_path("/united-states/region/california/unemployment-rate")
     assert has_en_path("/russia/region/moskva")
+
+
+def _assert_png(response):
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("image/png")
+    assert response.content[:8] == b"\x89PNG\r\n\x1a\n"
+    assert len(response.content) > 0
+
+
+def test_subnational_og_png(subnational_client):
+    card = subnational_client.get(
+        "/api/v1/og-image/world-region/united-states/california/unemployment-rate.png",
+        headers={"X-FE-Locale": "en"},
+    )
+    _assert_png(card)
+
+    profile = subnational_client.get(
+        "/api/v1/og-image/world-region/united-states/california.png",
+        headers={"X-FE-Locale": "en"},
+    )
+    _assert_png(profile)
+
+    hub = subnational_client.get(
+        "/api/v1/og-image/world-regions/united-states.png",
+        headers={"X-FE-Locale": "en"},
+    )
+    _assert_png(hub)
+
+    missing = subnational_client.get(
+        "/api/v1/og-image/world-region/united-states/atlantis/unemployment-rate.png",
+        headers={"X-FE-Locale": "en"},
+    )
+    assert missing.status_code == 404
+    assert subnational_client.get(
+        "/api/v1/og-image/world-region/united-states/atlantis.png",
+        headers={"X-FE-Locale": "en"},
+    ).status_code == 404
+
+
+def test_subnational_og_locale_labels(subnational_client):
+    en = subnational_client.get(
+        "/api/v1/og-image/world-region/united-states/california/unemployment-rate.png",
+        headers={"X-FE-Locale": "en"},
+    )
+    ru = subnational_client.get(
+        "/api/v1/og-image/world-region/united-states/california/unemployment-rate.png",
+    )
+    _assert_png(en)
+    _assert_png(ru)
+    assert en.content != ru.content
+
+    ru_ssr = subnational_client.get(
+        "/seo/world/united-states/region/california/unemployment-rate",
+    )
+    assert ru_ssr.status_code == 200
+    assert "Калифорния" in ru_ssr.text
+    assert "Уровень безработицы" in ru_ssr.text
+    assert "/og/world/united-states/region/california/unemployment-rate.png" in ru_ssr.text
+
+
+def test_subnational_og_nginx_rewrites():
+    from pathlib import Path
+
+    text = (
+        Path(__file__).resolve().parents[2] / "frontend" / "nginx.conf"
+    ).read_text()
+    block = text.split("location ^~ /og/", 1)[1].split("\n    }", 1)[0]
+    indicator = "/og/world/([a-z0-9-]+)/region/([a-z0-9-]+)/([a-z0-9-]+)\\.png"
+    profile = "/og/world/([a-z0-9-]+)/region/([a-z0-9-]+)\\.png"
+    hub = "/og/world/([a-z0-9-]+)/regions\\.png"
+    rating = "/og/world/rating/"
+    generic = "/og/world/([a-z0-9-]+)/([a-z0-9_.-]+)\\.png"
+    assert indicator in block
+    assert profile in block
+    assert hub in block
+    assert "/api/v1/og-image/world-region/$1/$2/$3.png" in block
+    assert "/api/v1/og-image/world-region/$1/$2.png" in block
+    assert "/api/v1/og-image/world-regions/$1.png" in block
+    assert block.index(rating) < block.index(indicator)
+    assert block.index(indicator) < block.index(profile)
+    assert block.index(profile) < block.index(hub)
+    assert block.index(hub) < block.index(generic)
+

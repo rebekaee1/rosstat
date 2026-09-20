@@ -1819,6 +1819,309 @@ async def og_image_world_indicator_year(
     )
 
 
+@router.get(
+    "/api/v1/og-image/world-region/{country}/{region}/{indicator}.png",
+    include_in_schema=False,
+)
+async def og_image_world_region_indicator(
+    country: str, region: str, indicator: str, db: AsyncSession = Depends(get_db)
+):
+    """PNG-график субнационального ряда: og:image + видимый <img> SSR."""
+    from app.models import (
+        SubnationalDataPoint,
+        SubnationalIndicator,
+        SubnationalRegion,
+    )
+    from app.services.og_image import cached_og, render_indicator_og, store_og
+    from app.services.seo_world_subnational import _country, _cname, _iname, _iunit, _rname
+    from app.services.world_subnational_ingest import period_label
+
+    loc = get_locale()
+    cache_key = f"wr:v1:{loc}:{country}:{region}:{indicator}"
+    png = cached_og(cache_key)
+    if png is None:
+        host = await _country(db, country)
+        if host is None:
+            return Response(status_code=404)
+        territory = (
+            await db.execute(
+                select(SubnationalRegion).where(
+                    SubnationalRegion.country_code == host.code,
+                    SubnationalRegion.slug == region,
+                )
+            )
+        ).scalar_one_or_none()
+        series = (
+            await db.execute(
+                select(SubnationalIndicator).where(
+                    SubnationalIndicator.country_code == host.code,
+                    SubnationalIndicator.code == indicator,
+                    SubnationalIndicator.is_listed.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+        if territory is None or series is None:
+            return Response(status_code=404)
+        rows = (
+            await db.execute(
+                select(SubnationalDataPoint.period, SubnationalDataPoint.value)
+                .where(
+                    SubnationalDataPoint.indicator_id == series.id,
+                    SubnationalDataPoint.region_id == territory.id,
+                )
+                .order_by(SubnationalDataPoint.period)
+            )
+        ).all()
+        if not rows:
+            return Response(status_code=404)
+        values = [float(v) for _p, v in rows]
+        unit = (_iunit(series) or "").strip()
+        value_text = f"{format_number_ru(values[-1], locale=loc)} {unit}".strip()
+        last_period = rows[-1][0]
+        first_period = rows[0][0]
+        date_text = period_label(last_period, series.frequency, loc)
+        png = await render_og_async(
+            render_indicator_og,
+            code=cache_key,
+            name=_iname(series),
+            value_text=value_text,
+            date_text=date_text,
+            values=values,
+            x_labels=(str(first_period.year), str(last_period.year)),
+            subtitle=f"{_rname(territory)} \u2014 {_cname(host)}",
+            period_text=date_text,
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@router.get(
+    "/api/v1/og-image/world-region/{country}/{region}.png",
+    include_in_schema=False,
+)
+async def og_image_world_region_profile(
+    country: str, region: str, db: AsyncSession = Depends(get_db)
+):
+    """PNG-сводка штата/региона: таблица ключевых показателей."""
+    from app.models import (
+        SubnationalDataPoint,
+        SubnationalIndicator,
+        SubnationalRegion,
+    )
+    from app.services.og_image import cached_og, render_world_country_og, store_og
+    from app.services.seo_world_subnational import (
+        _cname,
+        _country,
+        _iname,
+        _iunit,
+        _kind,
+        _rname,
+    )
+    from app.services.world_subnational_ingest import load_subnational_passport, period_label
+
+    loc = get_locale()
+    en = loc == "en"
+    cache_key = f"wr:v2:{loc}:{country}:{region}"
+    png = cached_og(cache_key)
+    if png is None:
+        host = await _country(db, country)
+        if host is None:
+            return Response(status_code=404)
+        territory = (
+            await db.execute(
+                select(SubnationalRegion).where(
+                    SubnationalRegion.country_code == host.code,
+                    SubnationalRegion.slug == region,
+                )
+            )
+        ).scalar_one_or_none()
+        if territory is None:
+            return Response(status_code=404)
+        inds = (
+            await db.execute(
+                select(SubnationalIndicator)
+                .where(
+                    SubnationalIndicator.country_code == host.code,
+                    SubnationalIndicator.is_listed.is_(True),
+                )
+                .order_by(SubnationalIndicator.code)
+            )
+        ).scalars().all()
+        if not inds:
+            return Response(status_code=404)
+        default_code = load_subnational_passport(host.code.lower()).default_indicator
+        inds = sorted(inds, key=lambda ind: (0 if ind.code == default_code else 1, ind.code))
+        ids = [i.id for i in inds]
+        rn = func.row_number().over(
+            partition_by=SubnationalDataPoint.indicator_id,
+            order_by=SubnationalDataPoint.period.desc(),
+        ).label("rn")
+        sub = (
+            select(
+                SubnationalDataPoint.indicator_id,
+                SubnationalDataPoint.value,
+                SubnationalDataPoint.period,
+                rn,
+            )
+            .where(
+                SubnationalDataPoint.region_id == territory.id,
+                SubnationalDataPoint.indicator_id.in_(ids),
+            )
+            .subquery()
+        )
+        latest = {
+            iid: (float(value), period)
+            for iid, value, period in (
+                await db.execute(
+                    select(sub.c.indicator_id, sub.c.value, sub.c.period).where(
+                        sub.c.rn == 1
+                    )
+                )
+            ).all()
+        }
+        items: list[tuple[str, str]] = []
+        for ind in inds:
+            got = latest.get(ind.id)
+            if got is None:
+                continue
+            value, period = got
+            unit = (_iunit(ind) or "").strip()
+            when = period_label(period, ind.frequency, loc)
+            label = _iname(ind)
+            label = label if len(label) <= 42 else label[:41] + "…"
+            value_text = f"{format_number_ru(value, locale=loc)} {unit}".strip()
+            if when:
+                value_text = f"{value_text} ({when})"
+            items.append((label, value_text))
+            if len(items) >= 6:
+                break
+        if not items:
+            return Response(status_code=404)
+        place = f"{_rname(territory)} \u2014 {_cname(host)}"
+        png = await render_og_async(
+            render_world_country_og,
+            country_name=place,
+            indicators_count=len(items),
+            items=items,
+            eyebrow_label=_kind(host.code),
+            title_template="{country}",
+            count_template=(
+                f"{len(items)} indicators" if en else f"{len(items)} показателей"
+            ),
+            footer_note=(
+                "official statistics" if en else "официальная статистика"
+            ),
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@router.get(
+    "/api/v1/og-image/world-regions/{country}.png",
+    include_in_schema=False,
+)
+async def og_image_world_regions_hub(
+    country: str, db: AsyncSession = Depends(get_db)
+):
+    """PNG-барчарт хаба субнациональных регионов: топ-8 дефолтного показателя."""
+    from app.models import (
+        SubnationalDataPoint,
+        SubnationalIndicator,
+        SubnationalRegion,
+    )
+    from app.services.og_image import cached_og, render_rating_og, store_og
+    from app.services.seo_world_subnational import (
+        _cname,
+        _country,
+        _iname,
+        _iunit,
+        _kind_plural,
+        _rname,
+    )
+    from app.services.world_subnational_ingest import load_subnational_passport
+
+    loc = get_locale()
+    en = loc == "en"
+    cache_key = f"wrs:v1:{loc}:{country}"
+    png = cached_og(cache_key)
+    if png is None:
+        host = await _country(db, country)
+        if host is None:
+            return Response(status_code=404)
+        passport = load_subnational_passport(host.code.lower())
+        series = (
+            await db.execute(
+                select(SubnationalIndicator).where(
+                    SubnationalIndicator.country_code == host.code,
+                    SubnationalIndicator.code == passport.default_indicator,
+                    SubnationalIndicator.is_listed.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+        if series is None:
+            return Response(status_code=404)
+        last_period = (
+            await db.execute(
+                select(func.max(SubnationalDataPoint.period)).where(
+                    SubnationalDataPoint.indicator_id == series.id
+                )
+            )
+        ).scalar()
+        if last_period is None:
+            return Response(status_code=404)
+        rows = (
+            await db.execute(
+                select(SubnationalRegion, SubnationalDataPoint.value)
+                .join(
+                    SubnationalDataPoint,
+                    SubnationalDataPoint.region_id == SubnationalRegion.id,
+                )
+                .where(
+                    SubnationalDataPoint.indicator_id == series.id,
+                    SubnationalDataPoint.period == last_period,
+                )
+            )
+        ).all()
+        if not rows:
+            return Response(status_code=404)
+        ranked = [
+            (_rname(territory), float(value)) for territory, value in rows
+        ]
+        ranked.sort(key=lambda item: item[1], reverse=not bool(series.better_is_low))
+        kind_plural = _kind_plural(host.code)
+        if series.better_is_low:
+            order_label = "best values" if en else "лучшие значения"
+        else:
+            order_label = "largest values" if en else "наибольшие значения"
+        png = await render_og_async(
+            render_rating_og,
+            name=f"{kind_plural} \u2014 {_cname(host)}",
+            year=int(last_period.year),
+            unit=(_iunit(series) or "").strip(),
+            rows=ranked,
+            total=len(ranked),
+            order_label=order_label,
+            title_label=_iname(series),
+            scope_word=kind_plural.lower(),
+            count_template="{n} of {total} {scope}" if en else "{n} из {total}",
+            locale=loc,
+        )
+        store_og(cache_key, png)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
 def _html_response(status_code: int, html: str) -> Response:
     return Response(content=html, status_code=status_code, media_type="text/html; charset=utf-8")
 

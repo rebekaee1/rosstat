@@ -162,24 +162,38 @@ _CACHE_MAX = 600
 _CACHE_MAX_BYTES = 64 * 1024 * 1024
 _CACHE_LOCK = threading.RLock()
 
+# PIL ImageFont.truetype держит REG-дескриптор файла. Без кэша каждый OG-рендер
+# открывает Inter/Golos заново; объекты с __del__ плохо собирает GC.
+_FONT_CACHE: dict[tuple[str, int, int], ImageFont.FreeTypeFont] = {}
+_FONT_FILE_BYTES: dict[str, bytes] = {}
+
+
+def _cached_truetype(path: Path, size: int, *axes: float) -> ImageFont.FreeTypeFont:
+    key = (str(path), size, int(axes[-1]) if axes else 0)
+    cached = _FONT_CACHE.get(key)
+    if cached is not None:
+        return cached
+    blob = _FONT_FILE_BYTES.get(str(path))
+    if blob is None:
+        blob = path.read_bytes()
+        _FONT_FILE_BYTES[str(path)] = blob
+    font = ImageFont.truetype(io.BytesIO(blob), size)
+    if axes:
+        try:
+            font.set_variation_by_axes(list(axes))
+        except OSError:
+            pass
+    _FONT_CACHE[key] = font
+    return font
+
 
 def _font(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont:
-    font = ImageFont.truetype(str(_FONT_PATH), size)
-    try:
-        font.set_variation_by_axes([14.0, 700 if bold else 400])
-    except OSError:
-        pass
-    return font
+    return _cached_truetype(_FONT_PATH, size, 14.0, 700.0 if bold else 400.0)
 
 
 def FG(size: int, wght: int = 400) -> ImageFont.FreeTypeFont:
     """Golos Text variable: вес 400–900."""
-    f = ImageFont.truetype(str(_GOLOS_PATH), size)
-    try:
-        f.set_variation_by_axes([wght])
-    except OSError:
-        pass
-    return f
+    return _cached_truetype(_GOLOS_PATH, size, float(wght))
 
 
 def _wrap_text(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
@@ -706,11 +720,13 @@ def _layout_rating(
     title_label: str | None,
     count_template: str | None = None,
     kind: str = "regions",
+    scope_word: str | None = None,
     locale: str | None = None,
 ) -> dict:
     labels = _rating_labels(locale, kind=kind)
     tl = title_label or labels["title_label"]
     ct = count_template or labels["count_template"]
+    sw = scope_word or labels["scope_word"]
     limit = WIDTH - 128
     title_lines, title_size = _wrap_fit_lines(f"{name}: {tl}", 44, 700, limit, 24)
 
@@ -723,7 +739,7 @@ def _layout_rating(
         )
     val_texts = [_fmt_axis(v, locale=locale) for _n, v in top]
     val_size = min((_fit_font_size(t, 24, 700, 380, 14) for t in val_texts), default=24)
-    note = f"{order_label} — {ct.format(n=len(top), total=total, scope=labels['scope_word'])}"
+    note = f"{order_label} — {ct.format(n=len(top), total=total, scope=sw)}"
     if unit:
         note += f" — {unit}"
     footer_size = _fit_font_size(note, 26, 400, limit, 14)
@@ -913,7 +929,7 @@ def render_rating_og(
     L = _layout_rating(
         name=name, rows=rows, total=total, unit=unit,
         order_label=order_label, title_label=title_label,
-        count_template=count_template, locale=locale,
+        count_template=count_template, scope_word=scope_word, locale=locale,
     )
 
     img = Image.new("RGB", (WIDTH, HEIGHT), BG)
@@ -990,7 +1006,7 @@ def render_world_rating_og(
     L = _layout_rating(
         name=name, rows=rows, total=total, unit=unit,
         order_label=order_label, title_label=title_label,
-        count_template=count_template, locale=locale,
+        count_template=count_template, scope_word=scope_word, locale=locale,
     )
 
     img = Image.new("RGB", (WIDTH, HEIGHT), BG)

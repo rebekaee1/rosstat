@@ -982,3 +982,23 @@ def test_mode_pop_gg_meta_matches_canonical_card(auth_env):
 
     assert _dataset_name(html_mode) == _dataset_name(html_base)
     assert "г/г" not in _dataset_name(html_mode).lower()
+
+
+def test_subnational_og_nginx_rewrites_before_generic_world():
+    from pathlib import Path
+
+    text = (
+        Path(__file__).resolve().parents[2] / "frontend" / "nginx.conf"
+    ).read_text()
+    block = text.split("location ^~ /og/", 1)[1].split("\n    }", 1)[0]
+    indicator = "/og/world/([a-z0-9-]+)/region/([a-z0-9-]+)/([a-z0-9-]+)\\.png"
+    hub = "/og/world/([a-z0-9-]+)/regions\\.png"
+    rating = "/og/world/rating/"
+    generic = "/og/world/([a-z0-9-]+)/([a-z0-9_.-]+)\\.png$"
+    assert indicator in block
+    assert hub in block
+    assert "/api/v1/og-image/world-region/$1/$2/$3.png" in block
+    assert "/api/v1/og-image/world-regions/$1.png" in block
+    assert block.index(rating) < block.index(indicator)
+    assert block.index(hub) < block.index(generic)
+
