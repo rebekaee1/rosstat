@@ -89,3 +89,4 @@ a111ea75dc691a5638629ee6fb118abd65b06d36  # a111ea7 люди в Метрике +
 0793647367bfe5bf81954b286a2990f91403ed2d  # explicit owner SHA approval 2026-09-20; history/access/assets/Pulse; no new migrations
 b5f24ffb65e523a7771bc69f7b48b9c854234bec  # explicit owner SHA approval 2026-09-20; retained assets fix; SSH bundle delivery
 3753a9cfbfabdf995e38380919996a9d99bc1e87  # explicit owner SHA approval 2026-09-20; paced release gate; full package via SSH
+e936751140ae5ee5d45198c81bc77f699d463874  # explicit owner SHA approval 2026-09-20; IndexNow history job + absolute URL ping; no new migrations
