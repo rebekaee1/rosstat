@@ -139,6 +139,33 @@ def _rank_rows(rows: list[tuple], *, better_is_low: bool) -> list[dict]:
     return out
 
 
+async def _rank_for_period(
+    db: AsyncSession,
+    indicator: SubnationalIndicator,
+    period: date,
+) -> list[dict]:
+    peers = (
+        await db.execute(
+            select(
+                SubnationalRegion.slug,
+                SubnationalRegion.name_en,
+                SubnationalRegion.name_ru,
+                SubnationalDataPoint.value,
+            )
+            .join(SubnationalRegion, SubnationalRegion.id == SubnationalDataPoint.region_id)
+            .where(
+                SubnationalDataPoint.indicator_id == indicator.id,
+                SubnationalDataPoint.period == period,
+            )
+        )
+    ).all()
+    named = [
+        (slug, name_en if _en() else name_ru, value)
+        for slug, name_en, name_ru, value in peers
+    ]
+    return _rank_rows(named, better_is_low=bool(indicator.better_is_low))
+
+
 @router.get("")
 async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key("world", f"subnat:hub:{country_slug}:{get_locale()}")
@@ -202,9 +229,13 @@ async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
         ],
         "indicators": indicator_payload,
         "sections": [
-            {"name": name, "indicators": items}
-            for name, items in sections.items()
+            {"num": idx, "name": name, "indicators": items}
+            for idx, (name, items) in enumerate(sections.items(), 1)
         ],
+        "totals": {
+            "regions": len(regions),
+            "indicators": len(indicator_payload),
+        },
     }
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
     return payload
@@ -332,7 +363,7 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
     items = []
     loc = get_locale()
     for ind in indicators:
-        last = (
+        last_two = (
             await db.execute(
                 select(SubnationalDataPoint.period, SubnationalDataPoint.value)
                 .where(
@@ -340,44 +371,39 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
                     SubnationalDataPoint.region_id == region.id,
                 )
                 .order_by(SubnationalDataPoint.period.desc())
-                .limit(1)
+                .limit(2)
             )
-        ).first()
+        ).all()
+        last = last_two[0] if last_two else None
+        prev = last_two[1] if len(last_two) > 1 else None
         rank = None
         of = None
         if last is not None:
-            peers = (
-                await db.execute(
-                    select(SubnationalDataPoint.region_id, SubnationalDataPoint.value)
-                    .where(
-                        SubnationalDataPoint.indicator_id == ind.id,
-                        SubnationalDataPoint.period == last[0],
-                    )
-                )
-            ).all()
-            ranked = _rank_rows(
-                [(str(rid), "", value) for rid, value in peers],
-                better_is_low=bool(ind.better_is_low),
-            )
+            ranked = await _rank_for_period(db, ind, last[0])
             of = len(ranked)
-            match = next((row for row in ranked if row["slug"] == str(region.id)), None)
-            # rank_rows uses slug as first field — here we stuffed region_id
-            match = next((row for row in ranked if row["slug"] == str(region.id)), None)
+            match = next((row for row in ranked if row["slug"] == region.slug), None)
             if match:
                 rank = match["rank"]
         items.append({
             "code": ind.code,
             "name": _iname(ind),
+            "label": _iname(ind),
             "unit": _iunit(ind),
             "frequency": ind.frequency,
             "section": _section(ind),
             "value": round(float(last[1]), 4) if last else None,
+            "prev_value": round(float(prev[1]), 4) if prev else None,
+            "year": last[0].year if last else None,
             "period": period_key(last[0], ind.frequency) if last else None,
             "period_label": period_label(last[0], ind.frequency, loc) if last else None,
             "rank": rank,
             "of": of,
             "better_is_low": bool(ind.better_is_low),
         })
+
+    sections: dict[str, list] = {}
+    for item in items:
+        sections.setdefault(item["section"] or ("Topics" if _en() else "Темы"), []).append(item)
 
     payload = {
         "country": {
@@ -396,6 +422,12 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
         "kind_label": labels["kind"],
         "kind_label_plural": labels["kind_plural"],
         "indicators": items,
+        "sections": [
+            {"num": idx, "name": name, "indicators": inds}
+            for idx, (name, inds) in enumerate(sections.items(), 1)
+        ],
+        "catalog_total": len(items),
+        "available_total": sum(1 for item in items if item["value"] is not None),
     }
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
     return payload
@@ -446,26 +478,32 @@ async def region_indicator(
     series = [_point_payload(p, v, indicator.frequency) for p, v in points]
 
     last = points[-1] if points else None
-    rank = None
-    of = None
-    if last is not None:
-        peers = (
-            await db.execute(
-                select(SubnationalDataPoint.region_id, SubnationalDataPoint.value)
-                .where(
-                    SubnationalDataPoint.indicator_id == indicator.id,
-                    SubnationalDataPoint.period == last[0],
-                )
+    ranked = await _rank_for_period(db, indicator, last[0]) if last is not None else []
+    of = len(ranked)
+    match = next((row for row in ranked if row["slug"] == region.slug), None)
+    rank_position = match["rank"] if match else None
+    rank_payload = None
+    if rank_position is not None:
+        rank_payload = {
+            "position": rank_position,
+            "total": of,
+            "year": last[0].year,
+            "rank_as_achievement": bool(indicator.better_is_low),
+            "top": ranked[:5],
+        }
+
+    siblings = (
+        await db.execute(
+            select(SubnationalIndicator)
+            .where(
+                SubnationalIndicator.country_code == country.code,
+                SubnationalIndicator.is_listed.is_(True),
+                SubnationalIndicator.section_en == indicator.section_en,
+                SubnationalIndicator.code != indicator.code,
             )
-        ).all()
-        ranked = _rank_rows(
-            [(str(rid), "", value) for rid, value in peers],
-            better_is_low=bool(indicator.better_is_low),
+            .order_by(SubnationalIndicator.code)
         )
-        of = len(ranked)
-        match = next((row for row in ranked if row["slug"] == str(region.id)), None)
-        if match:
-            rank = match["rank"]
+    ).scalars().all()
 
     national = None
     if indicator.national_code:
@@ -524,10 +562,15 @@ async def region_indicator(
             "source": (indicator.source_en if _en() else indicator.source_ru) or "",
             "source_url": source_url,
             "better_is_low": bool(indicator.better_is_low),
+            "national_code": indicator.national_code,
         },
         "series": series,
         "national": national,
-        "rank": rank,
+        "siblings": [
+            {"code": sib.code, "name": _iname(sib)}
+            for sib in siblings
+        ],
+        "rank": rank_payload,
         "of": of,
         "last_value": round(float(last[1]), 4) if last else None,
         "last_period": period_key(last[0], indicator.frequency) if last else None,

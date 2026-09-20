@@ -1899,5 +1899,37 @@ export default {
   'world.regions.open': 'Open',
   'world.regions.profileDescription': 'Latest official indicators for {region} ({country}) and rank among territories.',
   'world.regions.seriesDescription': '{indicator} in {region} ({country}). Official series and latest value.',
+  'world.regions.profileIntro':
+    'Official statistics for {country}: {catalog} {catalogWord} across {sections} sections.',
+  'world.regions.stat.indicators': '{n} indicators',
+  'world.regions.stat.regions': '{n} territories',
+  'world.regions.searchPlaceholder': 'Find a territory…',
+  'world.regions.searchAria': 'Search territories',
+  'world.regions.noRegions': 'No territories found for “{query}”',
+  'world.regions.listHeading': 'Territories',
+  'world.regions.addCountry': '+ {country}',
+  'world.regions.vsCountry': '— {country}',
+  'world.regions.comparePlaceholder': 'Compare with a territory',
+  'world.regions.compareOther': 'Compare with another territory',
+  'world.regions.rankAchieve': 'Rank among {kind}, {year}',
+  'world.regions.rankNeutral': 'Position in the list, {year}',
+  'world.regions.topAchieve': 'Best values, {year}',
+  'world.regions.topNeutral': 'Highest values, {year}',
+  'world.regions.openNational': 'Open the country indicator',
+  'world.regions.nationalTitle': 'Country-wide indicator',
+  'world.regions.nationalBody':
+    'This series has a national card. In Compare you can overlay the territory and the country on one chart.',
+  'world.regions.mapCaptionMetric':
+    '{name}{yearBit}{unitBit}. Click a territory to open its series.',
+  'world.regions.mapCaptionOverview':
+    'Click a territory to open its card with all indicators.',
+  'world.regions.mapYearBit': ', {year}',
+  'world.regions.mapUnitBit': ', {unit}',
+  'world.regions.mapHintMetric':
+    'Color intensity is the territory’s position versus the others in the selected year. Use the slider or play to see how the ranking changed over time. ',
+  'world.regions.mapHintOverview': 'Overview: a click opens the territory profile. ',
+  'world.regions.mapHintZoom':
+    'The +/− buttons zoom the map; when zoomed in you can pan it.',
+  'world.regions.mapClickTitle': 'A click opens the territory card',
 };
 

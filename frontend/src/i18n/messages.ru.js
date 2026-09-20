@@ -1908,5 +1908,37 @@ export default {
   'world.regions.open': 'Открыть',
   'world.regions.profileDescription': 'Последние официальные показатели {region} ({country}) и место среди территорий.',
   'world.regions.seriesDescription': '{indicator} — {region} ({country}). Официальный ряд и последнее значение.',
+  'world.regions.profileIntro':
+    'Официальная статистика {country}: {catalog} {catalogWord} в {sections} разделах.',
+  'world.regions.stat.indicators': '{n} показателей',
+  'world.regions.stat.regions': '{n} территорий',
+  'world.regions.searchPlaceholder': 'Найти территорию…',
+  'world.regions.searchAria': 'Поиск территории',
+  'world.regions.noRegions': 'По запросу «{query}» территорий не найдено',
+  'world.regions.listHeading': 'Территории',
+  'world.regions.addCountry': '+ {country}',
+  'world.regions.vsCountry': '— {country}',
+  'world.regions.comparePlaceholder': 'Сравнить с территорией',
+  'world.regions.compareOther': 'Сравнить с другой территорией',
+  'world.regions.rankAchieve': 'Место среди {kind}, {year}',
+  'world.regions.rankNeutral': 'Положение в списке, {year}',
+  'world.regions.topAchieve': 'Лучшие значения, {year}',
+  'world.regions.topNeutral': 'Наибольшие значения, {year}',
+  'world.regions.openNational': 'Открыть показатель страны',
+  'world.regions.nationalTitle': 'Показатель по стране в целом',
+  'world.regions.nationalBody':
+    'У этого ряда есть общенациональная карточка. В сравнении можно наложить территорию и страну на один график.',
+  'world.regions.mapCaptionMetric':
+    '{name}{yearBit}{unitBit}. Нажмите на территорию, чтобы открыть ряд.',
+  'world.regions.mapCaptionOverview':
+    'Нажмите на территорию, чтобы открыть её карточку со всеми показателями.',
+  'world.regions.mapYearBit': ', {year} год',
+  'world.regions.mapUnitBit': ', {unit}',
+  'world.regions.mapHintMetric':
+    'Интенсивность цвета — позиция относительно других территорий в выбранном году. Ползунок и «play» показывают, как менялась расстановка по годам. ',
+  'world.regions.mapHintOverview': 'Режим обзора: клик открывает профиль территории. ',
+  'world.regions.mapHintZoom':
+    'Кнопки «+»/«−» приближают карту, в приближении её можно перетаскивать.',
+  'world.regions.mapClickTitle': 'Клик открывает карточку территории',
 };
 

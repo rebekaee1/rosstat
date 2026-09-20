@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  ChevronRight, Search, Globe2, BarChart3, ArrowUpRight, TrendingUp,
+  ChevronRight, Search, Globe2, BarChart3, ArrowUpRight,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -295,26 +295,20 @@ export default function WorldCountry() {
 
       {data && (
         <>
-          <section className="relative mb-6 overflow-hidden rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:mb-8 sm:rounded-[2rem] sm:p-8">
-            <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-champagne/10 blur-3xl" />
-            <div className="relative grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)] lg:items-center lg:gap-7">
+          <div className="mb-8">
+            <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne">
+              <Globe2 size={13} />
+              {localizedDisplay(locale, data.country.region, data.country.region_en)}
+            </div>
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)] lg:items-start lg:gap-7">
               <div>
-                <div className="mb-3 flex items-center gap-3 sm:mb-4">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-champagne/20 bg-champagne/8 font-mono text-sm font-semibold text-champagne sm:h-12 sm:w-12">
-                    {data.country.code}
-                  </span>
-                  <div>
-                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-                      <Globe2 size={12} />
-                      {localizedDisplay(locale, data.country.region, data.country.region_en)}
-                    </div>
-                    <div className="mt-1 text-xs text-text-tertiary">{data.country.name_en}</div>
-                  </div>
-                </div>
-                <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-5xl">
+                <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
                   {countryMeta?.h1 || countryName}
                 </h1>
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:mt-4">
+                {data.country.name_en && data.country.name_en !== countryName && (
+                  <div className="mt-1 text-xs text-text-tertiary">{data.country.name_en}</div>
+                )}
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
                   {t('world.country.coverage', {
                     indicators: `${totalIndicators} ${locale === 'en'
                       ? (totalIndicators === 1 ? t('world.unit.indicator_one') : t('world.unit.indicator_many'))
@@ -352,23 +346,20 @@ export default function WorldCountry() {
               </div>
             </div>
 
-            <div className="relative mt-7 grid gap-2 border-t border-border-subtle pt-5 sm:grid-cols-3 sm:gap-4">
+            <div className="mt-7 grid gap-2 sm:grid-cols-3 sm:gap-4">
               {(data.overview || []).slice(0, 3).map((item) => (
                 <Link
                   key={item.concept_slug}
                   to={indicatorPath(slug, item.indicator_code)}
-                  className="group min-w-0 rounded-xl bg-obsidian-light/65 px-3 py-3 transition-colors hover:bg-champagne/[0.08]"
+                  className="group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="font-mono text-lg font-semibold tabular-nums text-text-primary">
-                      {formatWorldValue(item.value, undefined, locale)}
-                    </div>
-                    <TrendingUp size={13} className="mt-1 shrink-0 text-champagne" />
-                  </div>
-                  <div className="mt-1 line-clamp-1 text-[10px] text-text-secondary group-hover:text-text-primary">
+                  <div className="text-[11px] uppercase tracking-wide text-text-tertiary">
                     {localizedDisplay(locale, item.name, item.name_en)}
                   </div>
-                  <div className="mt-1 truncate font-mono text-[9px] text-text-tertiary">
+                  <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
+                    {formatWorldValue(item.value, undefined, locale)}
+                  </div>
+                  <div className="mt-1.5 font-mono text-[11px] text-text-tertiary">
                     {formatIndicatorDate(item.date, item.frequency, locale)}
                   </div>
                 </Link>
@@ -379,12 +370,12 @@ export default function WorldCountry() {
                 </div>
               )}
             </div>
-          </section>
+          </div>
 
           {data.country?.has_regions && (
             <Link
               to={countryRegionsPath(slug)}
-              className="mb-8 flex items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-surface px-5 py-4 transition-colors hover:border-champagne/40"
+              className="mb-8 flex items-center justify-between gap-4 rounded-xl border border-border-subtle bg-surface px-5 py-4 transition-colors hover:border-border-champagne"
             >
               <div>
                 <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
@@ -397,7 +388,7 @@ export default function WorldCountry() {
                   {t('world.regions.cardBody')}
                 </p>
               </div>
-              <span className="shrink-0 rounded-xl bg-champagne/15 px-3 py-1.5 text-sm text-champagne">
+              <span className="shrink-0 rounded-full bg-champagne/15 px-3 py-1.5 text-sm text-champagne">
                 {t('world.regions.open')}
               </span>
             </Link>

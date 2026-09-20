@@ -37,7 +37,7 @@ function DownloadButton({ label, onDownload, blocked, hint }) {
           'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors text-xs font-mono uppercase tracking-wider',
           blocked
             ? 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer'
-            : 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30',
+            : 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn',
         )}
         title={blocked ? t('download.dataBlocked') : t('download.downloadLabel', { label })}
       >
@@ -67,7 +67,7 @@ function ImageButton({ onDownload, authed }) {
         className={cn(
           'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors text-xs font-mono uppercase tracking-wider',
           authed
-            ? 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30'
+            ? 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn'
             : 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer',
         )}
         title={tooltip}

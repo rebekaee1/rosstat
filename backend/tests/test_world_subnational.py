@@ -176,6 +176,8 @@ def test_subnational_profile_and_series(subnational_client):
     ur = next(i for i in profile["indicators"] if i["code"] == "unemployment-rate")
     assert ur["value"] == 5.0
     assert ur["rank"] == 2
+    assert ur["prev_value"] == 5.1
+    assert {s["name"] for s in profile["sections"]} == {"Труд", "Счета"}
 
     s = subnational_client.get(
         "/api/v1/world/united-states/regions/region/california/unemployment-rate"
@@ -185,6 +187,9 @@ def test_subnational_profile_and_series(subnational_client):
     assert series["series"][0]["year"] == 2024
     assert series["national"]["code"] == "us-unemployment-rate"
     assert series["national"]["series"][-1]["value"] == 3.9
+    assert series["rank"]["position"] == 2
+    assert series["rank"]["total"] == 2
+    assert series["rank"]["top"][0]["slug"] == "new-york"
     assert "BLS" in series["indicator"]["source"]
     assert "fred" not in (series["indicator"]["description"] or "").lower()
 
