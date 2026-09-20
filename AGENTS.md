@@ -234,6 +234,7 @@
  - `0011-world-eurostat-data-plane.md` — мировой Eurostat как отдельный TOC-driven data plane: shadow/provenance, curated concepts и fail-closed агрегации частот.
  - `0012-world-multi-provider-official-first-forecasts.md` — multi-provider world: только официальные первоисточники, provider-aware identity, единый adapter contract и quality-gated M/Q прогнозы.
  - `0013-country-first-url-architecture.md` — страна = первый сегмент URL; регионы внутри `/russia`; path-cut на `.com`, затем path-identical переезд на `.ru` (Proposed; карта — `docs/backlog.md`).
+ - `0014-subnational-regions-generic.md` — субнациональные регионы любой страны кроме России (штаты США первыми): bounded context страна × регион × показатель × период поверх официальных рядов (FRED), карта/хаб/профили под `/{country}/regions`, ADR-0008 остаётся за Россией.
 
 После этих файлов агент способен ответить на ~90% вопросов и делать осмысленные правки.
 

@@ -31,6 +31,7 @@
 | [`docs/adr/0011`](docs/adr/0011-world-eurostat-data-plane.md) | Eurostat-мир: отдельный TOC-driven data plane, shadow/provenance и fail-closed частоты |
 | [`docs/adr/0012`](docs/adr/0012-world-multi-provider-official-first-forecasts.md) | Multi-provider world: только официальные первоисточники, provider-aware identity, единый adapter contract и quality-gated прогнозы |
 | [`docs/adr/0013`](docs/adr/0013-country-first-url-architecture.md) | Страна = первый сегмент URL; регионы внутри `/russia`; path-миграция на `.com`, затем path-identical переезд на `.ru` |
+| [`docs/adr/0014`](docs/adr/0014-subnational-regions-generic.md) | Субнациональные регионы (штаты США и далее) — generic bounded context страна × регион × показатель × период; Россия остаётся в ADR-0008 |
 | [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md) | Семейство до продакшена: продуктовая модель, уровни UI A/B/C; эталоны **ИПЦ** (4×10) и **жильё** (2×3); фазы A–G |
 
 ---
