@@ -145,6 +145,8 @@ class NationalSeriesSpec:
     # чтобы точки в world_data_points лежали в единицах карточки (и рейтинг
     # сравнивал сопоставимые значения). Применяется до reconcile_points.
     value_scale: float = 1.0
+    # mean|sum|last для расчётных квартал/год; невалидное/пустое → None.
+    aggregation: str | None = None
 
 
 @dataclass(frozen=True)
@@ -242,6 +244,9 @@ def _parse_series_row(row: Mapping[str, Any], *, index: int) -> NationalSeriesSp
     else:
         is_listed = bool(listed_raw)
 
+    aggregation_raw = str(row.get("aggregation") or "").strip().lower()
+    aggregation = aggregation_raw if aggregation_raw in {"mean", "sum", "last"} else None
+
     return NationalSeriesSpec(
         code_suffix=str(row["code_suffix"]).strip(),
         name_ru=str(row["name_ru"]).strip(),
@@ -260,6 +265,7 @@ def _parse_series_row(row: Mapping[str, Any], *, index: int) -> NationalSeriesSp
         methodology=_collapse_ws(row.get("methodology")),
         is_listed=is_listed,
         value_scale=float(row.get("value_scale") or 1.0),
+        aggregation=aggregation,
     )
 
 

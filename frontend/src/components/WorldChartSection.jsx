@@ -1,113 +1,18 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useQueries } from '@tanstack/react-query';
 import {
-  Terminal, Download, Lock, Image as ImageIcon, GitCompare, X, Search, Check, HelpCircle,
+  Terminal, Download, Lock, Image as ImageIcon, HelpCircle,
 } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
-import useSearchTracking from '../lib/useSearchTracking';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
 import { ChartSkeleton } from './Skeleton';
 import { worldChartTitle, worldRangePreset } from '../lib/worldViewModes';
-import {
-  fetchWorldAverageSeries,
-  fetchWorldCompareSeries,
-  fetchWorldIndicatorMode,
-  useWorldCompareCatalog,
-} from '../lib/worldApi';
-import { rebaseWorldComparison } from '../lib/worldComparison';
-import { countryMatchesQuery } from '../lib/worldCompareSearch';
-import {
-  WORLD_RANKING_AVERAGE_CONCEPTS,
-  WORLD_RANKING_MEDIAN_CONCEPTS,
-} from '../lib/homeWorkbench';
 import { useLocale, useT } from '../i18n';
-
-const COMPARISON_COLORS = ['#397C8C', '#7856A8', '#C86B5B', '#4D8A64'];
-const MAX_COMPARISONS = COMPARISON_COLORS.length;
-
-function isAbsoluteLevel(unit, modeMeta) {
-  const normalized = (unit || '').toLowerCase();
-  return modeMeta?.type === 'level'
-    && !normalized.includes('%')
-    && !normalized.includes('индекс')
-    && !normalized.includes('index')
-    && !normalized.includes('п.п.');
-}
-
-function averageCountryLabel(conceptSlug, t) {
-  if (WORLD_RANKING_MEDIAN_CONCEPTS.has(conceptSlug)) {
-    return t('world.chart.medianCountries');
-  }
-  return t('world.chart.averageCountries');
-}
-
-function ComparisonPicker({
-  options,
-  selectedIds,
-  onToggle,
-  onOpen,
-}) {
-  const t = useT();
-  const [query, setQuery] = useState('');
-  const [open, setOpen] = useState(false);
-  const selected = new Set(selectedIds);
-  const filtered = options.filter((option) => countryMatchesQuery(option, query));
-  useSearchTracking('world-chart-countries', open ? query : '', filtered.length);
-  return (
-    <div className="relative min-w-0 flex-1">
-      <Search size={14} className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-text-tertiary" />
-      <input
-        type="search"
-        value={query}
-        onFocus={() => {
-          setOpen(true);
-          onOpen();
-        }}
-        onBlur={() => setTimeout(() => setOpen(false), 120)}
-        onChange={(event) => {
-          setQuery(event.target.value);
-          setOpen(true);
-          onOpen();
-        }}
-        placeholder={selectedIds.length ? t('world.chart.addCountry') : t('world.findCountry')}
-        aria-label={t('world.chart.searchCompareAria')}
-        className="w-full rounded-xl border border-border-subtle bg-obsidian-light py-2.5 pl-9 pr-3 text-xs text-text-primary outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
-      />
-      {open && (
-        <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-border-subtle bg-white p-1.5 shadow-2xl">
-          {filtered.length ? filtered.map((option) => {
-            const checked = selected.has(option.code);
-            const disabled = !checked && selectedIds.length >= MAX_COMPARISONS;
-            return (
-              <button
-                key={option.code}
-                type="button"
-                disabled={disabled}
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => {
-                  onToggle(option.code);
-                  setQuery('');
-                }}
-                className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-xs text-text-secondary transition-colors hover:bg-obsidian-light hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-35"
-              >
-                <span className="truncate">{option.country_name}</span>
-                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${checked ? 'border-champagne bg-champagne text-white' : 'border-border-subtle'}`}>
-                  {checked && <Check size={12} />}
-                </span>
-              </button>
-            );
-          }) : (
-            <div className="px-3 py-5 text-center text-xs text-text-tertiary">{t('world.chart.countryNotFound')}</div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
+import { useCountryComparison } from '../lib/useCountryComparison';
+import CountryComparePanel from './CountryComparePicker';
 
 /**
  * Секция графика мировой карточки.
@@ -184,6 +89,7 @@ export default function WorldChartSection({
   dataPoints,
   forecastData = [],
   forecastEnabled = false,
+  forecastGateStatus = null,
   showForecast = false,
   onToggleForecast,
   chartLoading,
@@ -193,10 +99,11 @@ export default function WorldChartSection({
   onDownloadExcel,
   frequency,
   aggregated = false,
+  aggregation = null,
   unit: unitOverride,
   country,
   conceptSlug,
-  comparisonPeers = [],
+  comparisonPeers,
 }) {
   const { blocked: downloadBlocked, isAuthed: downloadAuthed } = useDownloadAccess();
   const { locale } = useLocale();
@@ -205,133 +112,46 @@ export default function WorldChartSection({
   const unit = unitOverride || modeMeta?.unit || indicator?.unit || '';
   const activeFreq = frequency || modeMeta?.freq || indicator?.frequency;
   const title = worldChartTitle(indicator, modeMeta, activeFreq, locale);
-  const [comparisonPickerActive, setComparisonPickerActive] = useState(false);
-  // Meta карточки уже несёт строго совместимых peers. Общий каталог нужен
-  // только старым карточкам без peers и загружается по первому намерению сравнить.
-  const compareCatalog = useWorldCompareCatalog({
-    enabled: comparisonPickerActive,
+  const {
+    pickerOptions,
+    activeComparisonIds,
+    selectedComparisons,
+    comparisonQueries,
+    comparisonScale,
+    setComparisonScale,
+    toggleComparison,
+    setComparisonPickerActive,
+    compareCodes,
+    rebased,
+    loadedComparisonSeries,
+    displayedDataPoints,
+    displayedComparisonSeries,
+    displayedUnit,
+    displayedTitle,
+  } = useCountryComparison({
+    surface: 'world',
+    peers: comparisonPeers,
+    conceptSlug,
+    countrySlug: country?.slug,
+    dataPoints,
+    unit,
+    title,
+    modeMeta,
   });
-  const [comparisonIds, setComparisonIds] = useState([]);
-  const [comparisonScale, setComparisonScale] = useState('values');
-  const comparisonOptions = useMemo(() => {
-    const bySlug = new Map();
-    const add = (item) => {
-      if (!item?.country_slug || item.country_slug === country?.slug) return;
-      if (!bySlug.has(item.country_slug)) bySlug.set(item.country_slug, item);
-    };
-    (comparisonPeers || []).forEach((item) => add({
-      ...item,
-      country_name: locale === 'en'
-        ? (item.country_name_en || item.country_name)
-        : item.country_name,
-      code: `peer:${item.country_slug}:${item.indicator_code}`,
-    }));
-    (compareCatalog.data?.items || [])
-      .filter((item) => item.concept_slug === conceptSlug)
-      .forEach((item) => add({
-        ...item,
-        country_name: locale === 'en'
-          ? (item.country_name_en || item.country_name)
-          : item.country_name,
-      }));
-    return [...bySlug.values()].sort((a, b) => a.country_name.localeCompare(b.country_name, locale));
-  }, [comparisonPeers, compareCatalog.data, conceptSlug, country?.slug, locale]);
-  const pickerOptions = useMemo(() => {
-    const result = [...comparisonOptions];
-    if (WORLD_RANKING_AVERAGE_CONCEPTS.has(conceptSlug)) {
-      result.unshift({
-        code: 'average',
-        country_name: averageCountryLabel(conceptSlug, t),
-      });
-    }
-    return result;
-  }, [comparisonOptions, conceptSlug, t]);
-  const activeComparisonIds = comparisonIds.filter((id) => (
-    pickerOptions.some((option) => option.code === id)
-  ));
-  const comparisonQueries = useQueries({
-    queries: activeComparisonIds.map((id) => ({
-      queryKey: ['world-card-comparison', id, conceptSlug, modeMeta?.id, locale],
-      queryFn: async ({ signal }) => {
-        if (id === 'average') {
-          return fetchWorldAverageSeries(conceptSlug, modeMeta?.id, { signal });
-        }
-        const option = comparisonOptions.find((item) => item.code === id);
-        if (!option) return null;
-        if (option.country_slug === 'russia') {
-          return fetchWorldCompareSeries('russia', conceptSlug, { signal });
-        }
-        return fetchWorldIndicatorMode(
-          option.country_slug,
-          option.indicator_code,
-          modeMeta?.id,
-          { signal },
-        );
-      },
-      enabled: !!id && !!modeMeta?.id,
-      staleTime: 10 * 60 * 1000,
-    })),
-  });
-  const comparisonIdsKey = activeComparisonIds.join('|');
-  const queryData = [
-    comparisonQueries[0]?.data,
-    comparisonQueries[1]?.data,
-    comparisonQueries[2]?.data,
-    comparisonQueries[3]?.data,
-  ];
-  const selectedComparisons = useMemo(
-    () => activeComparisonIds.map((id, index) => {
-      const option = pickerOptions.find((item) => item.code === id);
-      const payload = queryData[index];
-      return {
-        id,
-        option,
-        label: payload?.meta?.country_name
-          || option?.country_name
-          || t('chart.compareSeries'),
-        color: COMPARISON_COLORS[index],
-        data: payload?.points || payload?.data || [],
-      };
-    }),
-    // Query payload objects are stable in TanStack Query; fixed slots keep the
-    // resulting series stable and prevent chart → onFullData render loops.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [comparisonIdsKey, pickerOptions, locale, queryData[0], queryData[1], queryData[2], queryData[3]],
-  );
-  const loadedComparisonSeries = useMemo(
-    () => selectedComparisons.filter((item) => item.data.length > 0),
-    [selectedComparisons],
-  );
-  const rebased = useMemo(
-    () => (comparisonScale === 'index'
-      ? rebaseWorldComparison(dataPoints || [], loadedComparisonSeries)
-      : null),
-    [comparisonScale, dataPoints, loadedComparisonSeries],
-  );
-  const displayedDataPoints = rebased?.base || dataPoints;
-  const displayedComparisonSeries = rebased?.series || loadedComparisonSeries;
-  const displayedUnit = rebased ? t('world.chart.rebasedUnit') : unit;
-  const displayedTitle = rebased ? t('world.chart.rebasedTitle', { title }) : title;
   const effectiveShowForecast = forecastEnabled && showForecast && !rebased;
-  const toggleComparison = (id) => {
-    if (
-      !activeComparisonIds.includes(id)
-      && activeComparisonIds.length === 0
-      && isAbsoluteLevel(unit, modeMeta)
-    ) {
-      setComparisonScale('index');
-    }
-    setComparisonIds((current) => {
-      if (current.includes(id)) return current.filter((item) => item !== id);
-      if (current.length >= MAX_COMPARISONS) return current;
-      return [...current, id];
-    });
-  };
-  const compareCodes = activeComparisonIds
-    .filter((id) => id !== 'average')
-    .map((id) => pickerOptions.find((item) => item.code === id))
-    .filter((item) => item?.country_slug && conceptSlug)
-    .map((item) => `w:${item.country_slug}:${conceptSlug}`);
+  // IndicatorChart ждёт российскую оболочку {forecast: {values}}, а world API
+  // отдаёт массив точек — без обёртки пунктир на графике не появляется.
+  const chartForecastPayload = useMemo(
+    () => ({
+      forecast: { values: Array.isArray(forecastData) ? forecastData : [] },
+    }),
+    [forecastData],
+  );
+  const forecastNote = forecastEnabled
+    ? (forecastGateStatus === 'advisory'
+      ? t('world.chart.forecastAdvisory')
+      : t('world.chart.forecastPassed'))
+    : t('world.chart.forecastGate');
 
   const handleDownloadImage = async () => {
     if (!downloadAuthed) {
@@ -413,7 +233,7 @@ export default function WorldChartSection({
             </label>
             {!forecastEnabled && (
               <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border-subtle bg-obsidian px-3 py-2 text-[11px] leading-4 text-text-secondary opacity-0 shadow-xl transition-opacity group-hover/forecast:opacity-100">
-                {t('world.chart.forecastGate')}
+                {forecastNote}
               </div>
             )}
           </div>
@@ -423,85 +243,21 @@ export default function WorldChartSection({
         </div>
       </div>
 
-      {pickerOptions.length > 0 && (
-        <div className="mb-4 rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-            <div className="min-w-0 sm:min-w-[11rem]">
-              <div className="flex items-center gap-2 text-xs font-medium text-text-primary">
-                <GitCompare size={14} className="text-champagne" />
-                {t('world.chart.compare')}
-              </div>
-              <div className="mt-1 text-[10px] text-text-tertiary">
-                {t('world.chart.compareLimit', { n: MAX_COMPARISONS })}
-              </div>
-            </div>
-            <ComparisonPicker
-              options={pickerOptions}
-              selectedIds={activeComparisonIds}
-              onToggle={toggleComparison}
-                  onOpen={() => setComparisonPickerActive(true)}
-            />
-            {activeComparisonIds.length > 0 && (
-              <div className="inline-flex shrink-0 rounded-lg bg-obsidian-light p-0.5">
-                {[
-                  ['values', t('world.chart.scaleValues')],
-                  ['index', t('world.chart.scaleIndex')],
-                ].map(([id, label]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => setComparisonScale(id)}
-                    className={`rounded-md px-2.5 py-1.5 text-[10px] transition-colors ${comparisonScale === id ? 'bg-white text-text-primary shadow-sm' : 'text-text-tertiary hover:text-text-primary'}`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {activeComparisonIds.length > 0 && (
-            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border-subtle pt-3">
-              {selectedComparisons.map((item, index) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => toggleComparison(item.id)}
-                  className="inline-flex max-w-full items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1.5 text-[11px] text-text-secondary transition-colors hover:border-border-champagne hover:text-text-primary"
-                  title={t('world.chart.removeSeries')}
-                >
-                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: COMPARISON_COLORS[index] }} />
-                  <span className="truncate">{item.label}</span>
-                  {comparisonQueries[index]?.isLoading && <span className="text-text-tertiary">…</span>}
-                  {comparisonQueries[index]?.isError && <span className="text-danger">{t('common.noData')}</span>}
-                  <X size={11} className="shrink-0 text-text-tertiary" />
-                </button>
-              ))}
-              {conceptSlug && compareCodes.length > 0 && (
-                <Link
-                  to={`/compare?codes=${encodeURIComponent(
-                    [`w:${country.slug}:${conceptSlug}`, ...compareCodes].join(','),
-                  )}`}
-                  className="ml-auto text-xs text-champagne hover:underline"
-                >
-                  {t('world.chart.openFullCompare')}
-                </Link>
-              )}
-            </div>
-          )}
-
-          {rebased && (
-            <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
-              {t('world.chart.rebaseNote', { date: rebased.startDate })}
-            </p>
-          )}
-          {comparisonScale === 'index' && loadedComparisonSeries.length > 0 && !rebased && (
-            <p className="mt-3 text-[10px] text-text-secondary">
-              {t('world.chart.rebaseFail')}
-            </p>
-          )}
-        </div>
-      )}
+      <CountryComparePanel
+        pickerOptions={pickerOptions}
+        activeComparisonIds={activeComparisonIds}
+        selectedComparisons={selectedComparisons}
+        comparisonQueries={comparisonQueries}
+        comparisonScale={comparisonScale}
+        onToggle={toggleComparison}
+        onOpen={() => setComparisonPickerActive(true)}
+        onScale={setComparisonScale}
+        conceptSlug={conceptSlug}
+        countrySlug={country?.slug}
+        compareCodes={compareCodes}
+        rebased={rebased}
+        loadedComparisonSeries={loadedComparisonSeries}
+      />
 
       {comparisonQueries.some((query) => query.isError) && (
         <p className="mb-3 text-[12px] text-text-secondary">
@@ -511,21 +267,25 @@ export default function WorldChartSection({
 
       {aggregated && (
         <p className="mb-3 text-[12px] text-text-secondary">
-          {t('world.chart.aggregated', {
-            source: indicator?.source || t('world.chart.sourceFallback'),
-          })}
+          {aggregation?.policy === 'sum'
+            ? t('world.mode.hint.sum')
+            : aggregation?.policy === 'last'
+              ? t('world.mode.hint.last')
+              : aggregation?.policy === 'mean'
+                ? t('world.mode.hint.mean')
+                : t('world.chart.aggregated', {
+                  source: indicator?.source || t('world.chart.sourceFallback'),
+                })}
         </p>
       )}
 
-      {!forecastEnabled && (
-        <p className="mb-3 text-[12px] leading-5 text-text-secondary">
-          {t('world.chart.forecastGate')}
-          {' '}
-          <Link to="/methodology" className="text-champagne hover:underline">
-            {t('common.methodology')}
-          </Link>
-        </p>
-      )}
+      <p className="mb-3 text-[12px] leading-5 text-text-secondary">
+        {forecastNote}
+        {' '}
+        <Link to="/methodology" className="text-champagne hover:underline">
+          {t('common.methodology')}
+        </Link>
+      </p>
 
       {showForecast && forecastEnabled && !rebased && (
         <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
@@ -556,7 +316,7 @@ export default function WorldChartSection({
             key={`${code}-${modeMeta?.id}-${activeFreq}`}
             mode="cpi"
             cpiData={displayedDataPoints || []}
-            forecastData={forecastData}
+            forecastData={chartForecastPayload}
             showForecast={effectiveShowForecast}
             onFullData={onFullData}
             cpiChartTitle={displayedTitle}

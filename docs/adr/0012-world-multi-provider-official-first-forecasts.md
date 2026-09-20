@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-06
-- **Last verified:** 2026-08-29 (WEO Russia cards listed, T10/T10a annual modes, ingest all WorldCountry; IMF still not in OFFICIAL_PROVIDER_POLICIES).
+- **Last verified:** 2026-09-20 (advisory world gate, `annual_auto`, official national providers in policy; IMF still excluded).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0011`](0011-world-eurostat-data-plane.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md).
 
 ---
@@ -110,3 +110,34 @@ Ingest `run_imf_weo_ingest` пишет ряды всем `world_countries`, не
 активного населения; `PCPIPCH` — уже изменение цен за год (карта hicp не
 считает повторный YoY). Российский overlay `weo-government-debt-gdp` — карточка
 каталога T10a, как баланс бюджета. e-Stat / ECOS по-прежнему key-gated.
+
+### 2026-09-20 — консультативный quality gate, годовая частота, `annual_auto`
+
+Директива руководителя (звонок 2026-09-06): прогнозы нужны на русской витрине
+по годовым рядам и по странам мира на месячной, квартальной и годовой частоте;
+пустая карточка «модель не прошла проверку — прогноза нет» не принимается.
+
+1. **Годовые российские ряды.** Стратегия `annual_auto` — 1:1 порт
+   `Прогноз_годовых_данных.ipynb` (ADF + multi-window OLS, окна `//15`,
+   горизонт ≤ 4, в seed 2 года). WEO и годовые агрегаты биржи не трогаем.
+2. **Мир, три частоты.** Eligibility: `monthly` / `quarterly` / `annual`;
+   для года — `annual_auto`, `season=1`, горизонт 2. В policy добавлены
+   официальные национальные провайдеры с живым адаптером (FRED/BLS/BEA и др.).
+   `imf` по-прежнему вне policy.
+3. **Гейт консультативный.** `RUSTATS_WORLD_FORECAST_GATE_STRICT=false` по
+   умолчанию: технически успешный прогноз публикуется (`is_current=True`) со
+   статусом `passed` (MASE < 1 и лучше seasonal-naive) или новым `advisory`
+   (гейт не пройден, метаданные backtest сохраняются). `failed` остаётся
+   только для технических причин (короткая/рваная история, нечисловые
+   значения, модель не сошлась, неправдоподобная экстраполяция). API и UI
+   показывают `advisory` как опубликованный прогноз с честным текстом.
+
+### 2026-09-20 — сравнение стран на российской карточке
+
+Российская карточка, у которой есть честный world-концепт
+(`RUSSIA_CONCEPT_LINKS` + карточка-алиас вроде `cpi` → `hicp-index`),
+получает в мете блок `world_compare` и тот же UI сравнения, что мировая
+карточка: пикер страны-пира и вторая линия на графике. Единицы обязаны
+совпадать с концептом (инфляция — г/г, не индекс и не неделя); иначе блок
+скрыт. Пиры и выборка членов понятия — `app.services.world_compare`, не
+копия роутера.

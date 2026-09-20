@@ -6,7 +6,7 @@ via SDMX 3.0; правило года наблюдений: поточные WEO
 + national statistical/cadastre sources; население США/Бразилии — адаптеры
 `census` (PEP CSV) и `ibge` (SIDRA 6579+1209), инжест `world_pop_ingest`).
 
-**Last updated:** 2026-08-29 (IMF WEO: российские `weo-gdp-usd` / `weo-gdp-per-capita-usd` / `weo-budget-balance-gdp` / `weo-government-debt-gdp` — карточки каталога; ingest пишет всем `world_countries`; LP/LUR/PCPIPCH — карта населения/безработицы/инфляции без RU-overlay). Ранее 2026-08-29 (IMF WEO: российские `weo-gdp-usd` / `weo-gdp-per-capita-usd` / `weo-budget-balance-gdp` — карточки каталога, T10/T10a; ingest пишет всем `world_countries`). Ранее 2026-08-28 (мировой блок: национальные паспорта national-core перенесены из worktree в репозиторий как постоянный ежедневный ETL — 19 официальных провайдеров по 10 странам, job `world_national_core` 02:10 МСК, раздел «Национальные паспорта» ниже). Ранее 2026-08-27 (региональный блок: помесячные цены на топливо по субъектам — раздел «Региональный блок» ниже; ЕМИСС 31448/57699/59002). Ранее 2026-08-23 (IMF WEO: добавлен `GGXCNL_NGDP` — баланс бюджета сектора государственного управления, overlay `weo-budget-balance-gdp`; source 117 / seed 939). Ранее 2026-08-16 (демография/наука: discovery со страниц разделов + EDN_12 для лагов demo21; сырьё: Yahoo desk снят с витрины — `natural-gas` → EIA `DHHNGSP` через `fred_csv`; `coal`/`copper`/`silver`/`wheat`/`soybean` → World Bank Pink Sheet monthly `world_bank_pink_sheet`; `steel` деактивирован / unlisted. Ранее тем же днём: FRED CSV `fred_csv` для `usd-index`/`ust-10y`/`brent`; `gold-usd` не заведён — нет свободного дневного ряда). Ранее 2026-07-06 (CTO-аудит, Волна 5: счётчик source-индикаторов актуализирован — 109 (было заявлено 75); добавленные с 2026-05-31 семейства покрыты соответствующими разделами ниже и docstrings парсеров: демография (`rosstat_demo`), наука/инновации (`rosstat_science`), основные фонды (`rosstat_fixed_assets`), ИПП-разделы (`rosstat_ind`), крипта BTC/ETH/SOL (`binance_btcusdt`), биржевые индексы и товарные MOEX (`moex_index`, `moex_brent_daily`), недельные цены топлива (`rosstat_weekly_price`), денежные агрегаты M0/M1/M2 (`cbr_monetary_agg`). Два parser_type зарегистрированы, но в seed не используются (задел): `cbr_dataservice_sum` — суммирование нескольких DataService-элементов по дате, `cbr_monetary_html` — HTML-таблицы денежной статистики ЦБ; не удалять без ревизии прод-БД. Ранее 2026-05-31: T13 — данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` поля индикаторов в `seed_data.py` не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).)
+**Last updated:** 2026-09-20 (субнациональные регионы США, ADR-0014; ранее США national-core: 59 курируемых рядов FRED). Ранее 2026-08-29 (IMF WEO: российские `weo-gdp-usd` / `weo-gdp-per-capita-usd` / `weo-budget-balance-gdp` / `weo-government-debt-gdp` — карточки каталога; ingest пишет всем `world_countries`; LP/LUR/PCPIPCH — карта населения/безработицы/инфляции без RU-overlay). Ранее 2026-08-29 (IMF WEO: российские `weo-gdp-usd` / `weo-gdp-per-capita-usd` / `weo-budget-balance-gdp` — карточки каталога, T10/T10a; ingest пишет всем `world_countries`). Ранее 2026-08-28 (мировой блок: национальные паспорта national-core перенесены из worktree в репозиторий как постоянный ежедневный ETL — 19 официальных провайдеров по 10 странам, job `world_national_core` 02:10 МСК, раздел «Национальные паспорта» ниже). Ранее 2026-08-27 (региональный блок: помесячные цены на топливо по субъектам — раздел «Региональный блок» ниже; ЕМИСС 31448/57699/59002). Ранее 2026-08-23 (IMF WEO: добавлен `GGXCNL_NGDP` — баланс бюджета сектора государственного управления, overlay `weo-budget-balance-gdp`; source 117 / seed 939). Ранее 2026-08-16 (демография/наука: discovery со страниц разделов + EDN_12 для лагов demo21; сырьё: Yahoo desk снят с витрины — `natural-gas` → EIA `DHHNGSP` через `fred_csv`; `coal`/`copper`/`silver`/`wheat`/`soybean` → World Bank Pink Sheet monthly `world_bank_pink_sheet`; `steel` деактивирован / unlisted. Ранее тем же днём: FRED CSV `fred_csv` для `usd-index`/`ust-10y`/`brent`; `gold-usd` не заведён — нет свободного дневного ряда). Ранее 2026-07-06 (CTO-аудит, Волна 5: счётчик source-индикаторов актуализирован — 109 (было заявлено 75); добавленные с 2026-05-31 семейства покрыты соответствующими разделами ниже и docstrings парсеров: демография (`rosstat_demo`), наука/инновации (`rosstat_science`), основные фонды (`rosstat_fixed_assets`), ИПП-разделы (`rosstat_ind`), крипта BTC/ETH/SOL (`binance_btcusdt`), биржевые индексы и товарные MOEX (`moex_index`, `moex_brent_daily`), недельные цены топлива (`rosstat_weekly_price`), денежные агрегаты M0/M1/M2 (`cbr_monetary_agg`). Два parser_type зарегистрированы, но в seed не используются (задел): `cbr_dataservice_sum` — суммирование нескольких DataService-элементов по дате, `cbr_monetary_html` — HTML-таблицы денежной статистики ЦБ; не удалять без ревизии прод-БД. Ранее 2026-05-31: T13 — данный файл стал основным местом хранения технических деталей источников — имена файлов, листы, строки/колонки, API-id; публичные `methodology` поля индикаторов в `seed_data.py` не выдают этих внутренностей, см. правило [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).)
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`CONTEXT.md`](../CONTEXT.md).
 **Related:** docstrings парсеров `backend/app/services/{cbr_*,minfin_*,rosstat_*}_parser.py` (per-parser internals: traps, схема `model_config_json`, особенности формата), [`docs/adr/0004`](adr/0004-rosstat-russian-canonical-sdds-deprecated.md) (Rosstat русский canonical).
 
@@ -399,7 +399,8 @@ dimensions, единицу и частоту. `world_dataset_state` хранит
 
 **Национальные паспорта (national-core, ежедневный ETL).** Регулярный контур
 19 официальных провайдеров по 10 странам не из ЕС/ЕАСТ: StatCan + Банк Канады,
-ONS + Банк Англии, ABS + RBA, FRED/BLS/BEA (США), BOJ + e-Stat (Япония),
+ONS + Банк Англии, ABS + RBA, FRED/BLS/BEA (США, 59 курируемых рядов
+keyless CSV в `us.yaml`), BOJ + e-Stat (Япония),
 ECOS Банка Кореи, BCB (Бразилия), Banxico (Мексика), NBS + CFETS (Китай),
 MOSPI + RBI (Индия). Курируемые pick-листы — `backend/app/data/world_national_core/<cc>.yaml`
 (код/имя/единица/частота/series-id/публичные тексты на каждый ряд); wire-протокол
@@ -407,7 +408,8 @@ MOSPI + RBI (Индия). Курируемые pick-листы — `backend/app/
 (контракт `WorldSourceAdapter`); оркестрация и upsert — `world_national_ingest.py`.
 Расписание: job `world_national_core` ежедневно 02:10 МСК (перед Eurostat-очередью),
 запись аудита — `world_ingest_runs.source='world_national_core'`. Ручной прогон:
-`docker compose exec backend python scripts/load-world-national.py --country ca`.
+`docker compose exec backend python /app/scripts/load-world-national.py --country ca`.
+Для США: `docker compose exec backend python /app/scripts/load-world-national.py --country us`.
 Key-gated адаптеры (e-Stat Японии `RUSTATS_ESTAT_APP_ID`, ECOS Кореи
 `RUSTATS_ECOS_API_KEY`, RBA за 403 с нашего IP) падают изолированно по ряду,
 не вали остальные; их ряды помечены `world_dataset_state.status='error'` до
@@ -477,6 +479,42 @@ golden-series теста и фиксации здесь.
 - API: `/api/v1/regions/{slug}/i/{code}/monthly` (точки {year, month, value, label} + ряд РФ для сравнения; рейтинг цен по регионам не строится осознанно — «место в рейтинге цен» вводило бы в заблуждение).
 - SSR/OG: `seo_regional.py` рендерит месяц-карточку (таблица по месяцам, сравнение к прошлому месяцу и к году назад), `sitemap.py::og_image_region_indicator` рисует помесячный постер.
 - Мост в федеральный блок: `16.20/16.21/16.22` → `MACRO_BY_TABLE` → карточки `fuel-ai92`/`fuel-ai95`/`fuel-diesel`. Годовые опт/розница без моста — федерального аналога той же методологии нет.
+
+---
+
+## Субнациональные регионы мира (ADR-0014, FRED / национальные ведомства)
+
+Отдельный bounded context `subnational_*` для стран кроме России. Российский
+годовой сборник (раздел выше) не расширяем: здесь месячные / квартальные /
+годовые ряды. Паспорт страны — `backend/app/data/world_subnational/<cc>.yaml`.
+Загрузчик `backend/scripts/load-world-subnational.py --country us`.
+
+### США (50 штатов + округ Колумбия)
+
+Транспорт: публичный CSV FRED без ключа `https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}`.
+FRED редистрибуирует официальные ряды BLS LAUS/CES, BEA, Census, FHFA. Публичные
+поля карточки называют ведомство-первоисточник, не идентификатор серии.
+
+`{geo}` — почтовый код штата (CA, NY, DC); `{fips}` — двузначный FIPS (06, 36, 11).
+
+| Код | Шаблон серии | Частота | Единица | Первоисточник |
+|-----|--------------|---------|---------|---------------|
+| `unemployment-rate` | `{geo}UR` | monthly | % | BLS LAUS |
+| `nonfarm-employment` | `{geo}NA` | monthly | тыс. чел. | BLS CES |
+| `labor-force-participation` | `LBSSA{fips}` | monthly | % | BLS |
+| `real-gdp` | `{geo}RGSP` | annual | млн долл. 2017 | BEA |
+| `nominal-gdp` | `{geo}NGSP` | annual | млн долл. | BEA |
+| `personal-income-per-capita` | `{geo}PCPI` | annual | долл. | BEA |
+| `median-household-income` | `MEHOINUS{geo}A672N` | annual | долл. 2023 | Census |
+| `population` | `{geo}POP` | annual | тыс. чел. | Census |
+| `house-price-index` | `{geo}STHPI` | quarterly | индекс 1980Q1=100 | FHFA |
+| `building-permits` | `{geo}BPPRIV` | monthly | единиц (поток, sum) | Census |
+| `homeownership-rate` | `{geo}HOWN` | annual | % | Census |
+| `minimum-wage` | `STTMINWG{geo}` | annual | долл./час | DOL |
+
+Отброшены: бедность (нестабильный id SAIPE), налоговые поступления штата (нет ряда DC), недельные первичные заявки (шум). Территории (PR и др.) не включены — нет полной геометрии в `geoAlbersUsa` и полного набора серий.
+
+Геометрия карты: U.S. Census Bureau cartographic boundary files, пакет `us-atlas` (`states-10m.json`, public domain / ISC). Генератор `scripts/regional/build_us_states_map_paths.mjs`, проекция `geoAlbersUsa`, результат `frontend/src/lib/usStatesMap.json`.
 
 ---
 

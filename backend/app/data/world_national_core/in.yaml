@@ -16,6 +16,7 @@ series:
     unit: INDEX
     unit_ru: индекс (2012 = 100)
     frequency: monthly
+    aggregation: mean
     provider: mospi
     dataset_id: CPI
     series_id: cpi-general-combined
@@ -48,6 +49,7 @@ series:
     unit: INDEX
     unit_ru: индекс (2011–12 = 100)
     frequency: monthly
+    aggregation: mean
     provider: mospi
     dataset_id: IIP
     series_id: iip-general
@@ -75,6 +77,7 @@ series:
     unit: INDEX
     unit_ru: индекс (2011–12 = 100)
     frequency: monthly
+    aggregation: mean
     provider: mospi
     dataset_id: WPI
     series_id: wpi-all-commodities
@@ -100,6 +103,7 @@ series:
     unit: INR_CRORE
     unit_ru: крор рупий
     frequency: quarterly
+    aggregation: sum
     provider: mospi
     dataset_id: NAS
     series_id: gdp-constant
@@ -128,6 +132,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: annual
+    aggregation: mean
     provider: mospi
     dataset_id: PLFS
     series_id: ur-annual
@@ -160,6 +165,7 @@ series:
     unit: INR_PER_USD
     unit_ru: рупий за 1 доллар США
     frequency: monthly
+    aggregation: mean
     provider: rbi
     dataset_id: RBI
     series_id: usd-inr-avg
@@ -186,6 +192,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: rbi
     dataset_id: repo
     series_id: repo-rate

@@ -225,3 +225,23 @@ def russia_link_for_concept(concept_slug: str) -> RussiaConceptLink | None:
 
 def russia_eligible(concept_slug: str) -> bool:
     return concept_slug in RUSSIA_CONCEPT_LINKS
+
+
+# Карточка каталога, с которой открывают связанный sibling-ряд.
+# Пример: hicp-index смотрит на `cpi-yoy`, а посетитель сидит на `/russia/indicator/cpi`.
+_RUSSIA_CARD_ALIASES: dict[str, str] = {
+    "cpi": "hicp-index",
+}
+
+_RUSSIA_CODE_TO_CONCEPT: dict[str, str] = {
+    **{link.indicator_code: slug for slug, link in RUSSIA_CONCEPT_LINKS.items()},
+    **_RUSSIA_CARD_ALIASES,
+}
+
+
+def concept_slug_for_russia_code(indicator_code: str) -> str | None:
+    """Обратный индекс: код российской карточки/ряда → curated world-concept.
+
+    Fail-closed: нет честной связки — ``None``, блок сравнения не показываем.
+    """
+    return _RUSSIA_CODE_TO_CONCEPT.get(indicator_code)

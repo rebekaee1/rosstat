@@ -58,6 +58,9 @@ from app.models import (
     WorldCountry,
     WorldDataPoint,
     WorldIndicator,
+    SubnationalDataPoint,
+    SubnationalIndicator,
+    SubnationalRegion,
 )
 from app.services import site_paths as paths
 from app.services.seo_content import CATEGORIES, STATIC_PAGES
@@ -435,6 +438,85 @@ async def _world_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             "weekly",
             "0.8",
         ))
+    return urls
+
+
+async def _world_regions_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """Субнациональные хабы / профили / карточки (только is_listed)."""
+    urls: list[SiteUrl] = []
+    last_by_country = (
+        select(
+            SubnationalIndicator.country_code.label("cc"),
+            func.max(SubnationalDataPoint.period).label("last_data"),
+        )
+        .join(SubnationalDataPoint, SubnationalDataPoint.indicator_id == SubnationalIndicator.id)
+        .where(SubnationalIndicator.is_listed.is_(True))
+        .group_by(SubnationalIndicator.country_code)
+        .subquery()
+    )
+    hubs = (
+        await db.execute(
+            select(WorldCountry.slug, WorldCountry.code, last_by_country.c.last_data)
+            .join(last_by_country, last_by_country.c.cc == WorldCountry.code)
+            .where(WorldCountry.is_active.is_(True))
+        )
+    ).all()
+    for slug, code, last_data in hubs:
+        lastmod = (last_data or today).isoformat()
+        urls.append(_u(paths.country_regions(slug), lastmod, "weekly", "0.7"))
+        regions = (
+            await db.execute(
+                select(SubnationalRegion.slug)
+                .where(SubnationalRegion.country_code == code)
+                .order_by(SubnationalRegion.sort_order)
+            )
+        ).scalars().all()
+        indicators = (
+            await db.execute(
+                select(SubnationalIndicator.code)
+                .where(
+                    SubnationalIndicator.country_code == code,
+                    SubnationalIndicator.is_listed.is_(True),
+                )
+                .order_by(SubnationalIndicator.code)
+            )
+        ).scalars().all()
+        last_pair = (
+            select(
+                SubnationalRegion.slug.label("rslug"),
+                SubnationalIndicator.code.label("icode"),
+                func.max(SubnationalDataPoint.period).label("last_data"),
+            )
+            .select_from(SubnationalDataPoint)
+            .join(SubnationalRegion, SubnationalRegion.id == SubnationalDataPoint.region_id)
+            .join(SubnationalIndicator, SubnationalIndicator.id == SubnationalDataPoint.indicator_id)
+            .where(
+                SubnationalRegion.country_code == code,
+                SubnationalIndicator.is_listed.is_(True),
+            )
+            .group_by(SubnationalRegion.slug, SubnationalIndicator.code)
+            .subquery()
+        )
+        pair_last = {
+            (rslug, icode): last
+            for rslug, icode, last in (
+                await db.execute(select(last_pair.c.rslug, last_pair.c.icode, last_pair.c.last_data))
+            ).all()
+        }
+        for region_slug in regions:
+            urls.append(_u(
+                paths.country_region(slug, region_slug), lastmod, "weekly", "0.6",
+            ))
+            for icode in indicators:
+                pair_mod = pair_last.get((region_slug, icode))
+                if pair_mod is None:
+                    continue
+                urls.append(_u(
+                    paths.country_region_indicator(slug, region_slug, icode),
+                    pair_mod.isoformat(),
+                    "weekly",
+                    "0.5",
+                ))
     return urls
 
 
@@ -1183,6 +1265,7 @@ _SIMPLE_SECTION_ORDER = [
     "region-vs",
     "world-ratings",
     "world",
+    "world-regions",
     "calendar",
     "world-vs",
     "years",
@@ -1313,6 +1396,7 @@ _SIMPLE_SECTION_BUILDERS: dict[str, Callable[[AsyncSession, date], Awaitable[lis
     "region-vs": _region_vs_urls,
     "world-ratings": _world_rating_urls,
     "world": _world_hub_urls,
+    "world-regions": _world_regions_urls,
     "calendar": _calendar_month_urls,
     "world-vs": _world_vs_urls,
     "years": _year_urls,

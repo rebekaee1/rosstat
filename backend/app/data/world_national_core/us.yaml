@@ -1,11 +1,12 @@
 # United States national-core passport (official FRED CSV + optional BLS/BEA APIs).
-# Live-probed 2026-08-12 via FRED keyless graph CSV (fred.stlouisfed.org/graph/fredgraph.csv).
-# Loader: scripts/load-world-national.py --country us
-# Providers: fred → FredStLouisAdapter (St. Louis Fed; redistributes BLS/BEA/Census/Fed);
-#            bls  → BlsApiAdapter (needs RUSTATS_BLS_API_KEY when edge blocks keyless);
-#            bea  → BeaApiAdapter (needs RUSTATS_BEA_API_KEY).
-# Passport rows use fred so ingest works without API keys. Expand with live-probed
-# series; loader is idempotent and does not touch existing eurostat rows for US.
+# Live-probed 2026-09-20 via FRED keyless graph CSV (fred.stlouisfed.org/graph/fredgraph.csv).
+# Loader: backend/scripts/load-world-national.py --country us
+# 59 curated series (9 original + 50 added). Passport rows use fred so ingest
+# works without API keys. Loader is idempotent and does not touch existing
+# eurostat/IMF rows for US. Case-Shiller, equity indexes, UMich sentiment and
+# ICE HY skipped (licence). Daily twins prefer monthly (GS10 not DGS10).
+# Population: existing `us-population-census` (Census PEP, annual) — POPTHM
+# not added to avoid a second population card.
 
 country_code: US
 
@@ -17,6 +18,7 @@ series:
     unit: INDEX
     unit_ru: индекс (1982–84 = 100)
     frequency: monthly
+    aggregation: mean
     provider: fred
     dataset_id: "CPIAUCSL"
     series_id: "CPIAUCSL"
@@ -42,6 +44,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: fred
     dataset_id: "UNRATE"
     series_id: "UNRATE"
@@ -65,6 +68,7 @@ series:
     unit: THOUSANDS
     unit_ru: тыс. человек
     frequency: monthly
+    aggregation: mean
     provider: fred
     dataset_id: "PAYEMS"
     series_id: "PAYEMS"
@@ -88,6 +92,7 @@ series:
     unit: USD_BN_CHAINED
     unit_ru: млрд долларов США (цены 2017)
     frequency: quarterly
+    aggregation: mean
     provider: fred
     dataset_id: "GDPC1"
     series_id: "GDPC1"
@@ -111,6 +116,7 @@ series:
     unit: USD_MN
     unit_ru: млн долларов США
     frequency: monthly
+    aggregation: sum
     provider: fred
     dataset_id: "RSAFS"
     series_id: "RSAFS"
@@ -134,6 +140,7 @@ series:
     unit: INDEX
     unit_ru: индекс (2017 = 100)
     frequency: monthly
+    aggregation: mean
     provider: fred
     dataset_id: "INDPRO"
     series_id: "INDPRO"
@@ -157,6 +164,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: fred
     dataset_id: "FEDFUNDS"
     series_id: "FEDFUNDS"
@@ -180,6 +188,7 @@ series:
     unit: INDEX
     unit_ru: индекс
     frequency: daily
+    aggregation: mean
     provider: fred
     dataset_id: "DTWEXBGS"
     series_id: "DTWEXBGS"
@@ -203,6 +212,7 @@ series:
     unit: USD_PER_EUR
     unit_ru: долларов США за 1 евро
     frequency: daily
+    aggregation: mean
     provider: fred
     dataset_id: "DEXUSEU"
     series_id: "DEXUSEU"
@@ -217,3 +227,1203 @@ series:
       Федеральный резервный банк Сент-Луиса. Частота публикации — дневная
       (рабочие дни). Единица измерения на графике — число долларов США за один
       евро. Значения соответствуют официальному среднему дневному курсу.
+
+  - code_suffix: cpi-core
+    name_ru: Базовый индекс потребительских цен
+    name_en: Consumer Price Index (all urban consumers, less food and energy)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (1982–84 = 100)
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "CPILFESL"
+    series_id: "CPILFESL"
+    source_url: "https://fred.stlouisfed.org/series/CPILFESL"
+    analog_ru: Базовый ИПЦ
+    is_listed: true
+    description: >
+      Базовый индекс потребительских цен США для всех городских потребителей
+      без продовольствия и энергоносителей, с сезонной корректировкой.
+      Показывает устойчивую динамику стоимости потребительской корзины,
+      очищенную от наиболее волатильных компонентов.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США. Частота публикации — месячная. Единица
+      измерения на графике — индекс (1982–84 = 100). На графике — официальный
+      сезонно скорректированный национальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: pce-price
+    name_ru: Индекс цен расходов на личное потребление
+    name_en: Personal Consumption Expenditures Price Index
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2017 = 100)
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "PCEPI"
+    series_id: "PCEPI"
+    source_url: "https://fred.stlouisfed.org/series/PCEPI"
+    analog_ru: ИПЦ
+    is_listed: true
+    description: >
+      Индекс цен расходов на личное потребление в США, с сезонной
+      корректировкой. Показывает изменение цен на товары и услуги, которые
+      приобретают домохозяйства, в методологии национальных счетов.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — индекс (2017 = 100). На графике — официальный
+      сезонно скорректированный национальный ряд.
+
+  - code_suffix: pce-price-core
+    name_ru: Базовый индекс цен расходов на личное потребление
+    name_en: Personal Consumption Expenditures Price Index (less food and energy)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (2017 = 100)
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "PCEPILFE"
+    series_id: "PCEPILFE"
+    source_url: "https://fred.stlouisfed.org/series/PCEPILFE"
+    analog_ru: Базовый ИПЦ
+    is_listed: true
+    description: >
+      Базовый индекс цен расходов на личное потребление в США без
+      продовольствия и энергоносителей, с сезонной корректировкой. Показывает
+      устойчивую динамику потребительских цен в методологии национальных
+      счетов.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — индекс (2017 = 100). На графике — официальный
+      сезонно скорректированный национальный ряд.
+
+  - code_suffix: ppi-all
+    name_ru: Индекс цен производителей
+    name_en: Producer Price Index (all commodities)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (1982 = 100)
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "PPIACO"
+    series_id: "PPIACO"
+    source_url: "https://fred.stlouisfed.org/series/PPIACO"
+    analog_ru: Индекс цен производителей
+    is_listed: true
+    description: >
+      Индекс цен производителей США по всем товарным группам без сезонной
+      корректировки. Показывает изменение цен на товары на стадии производства
+      относительно базового периода.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США. Частота публикации — месячная. Единица
+      измерения на графике — индекс (1982 = 100). На графике — официальный
+      национальный ряд без сезонной корректировки и без дополнительных
+      преобразований.
+
+  - code_suffix: gasoline
+    name_ru: Розничная цена бензина
+    name_en: US Regular All Formulations Gas Price
+    category_ru: Цены
+    unit: USD_PER_GALLON
+    unit_ru: долларов США за галлон
+    frequency: weekly
+    aggregation: mean
+    provider: fred
+    dataset_id: "GASREGW"
+    series_id: "GASREGW"
+    source_url: "https://fred.stlouisfed.org/series/GASREGW"
+    analog_ru: Цена бензина
+    is_listed: true
+    description: >
+      Средняя розничная цена обычного бензина в США. Показывает стоимость
+      галлона топлива для конечного потребителя на данной неделе.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Управления
+      энергетической информации США. Частота публикации — недельная. Единица
+      измерения на графике — доллары США за галлон. На графике — официальный
+      национальный ряд без дополнительных преобразований.
+
+  - code_suffix: rent
+    name_ru: Индекс арендной платы за жильё
+    name_en: Consumer Price Index (rent of primary residence)
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (1982–84 = 100)
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "CUUR0000SEHA"
+    series_id: "CUUR0000SEHA"
+    source_url: "https://fred.stlouisfed.org/series/CUUR0000SEHA"
+    analog_ru: Индекс цен на жильё
+    is_listed: true
+    description: >
+      Индекс потребительских цен на аренду основного жилья в США без сезонной
+      корректировки. Показывает, как меняется стоимость аренды жилья
+      относительно базового периода.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США. Частота публикации — месячная. Единица
+      измерения на графике — индекс (1982–84 = 100). На графике — официальный
+      национальный ряд без сезонной корректировки.
+
+  - code_suffix: labor-force-participation
+    name_ru: Уровень экономической активности
+    name_en: Labor Force Participation Rate
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "CIVPART"
+    series_id: "CIVPART"
+    source_url: "https://fred.stlouisfed.org/series/CIVPART"
+    analog_ru: Уровень экономической активности
+    is_listed: true
+    description: >
+      Уровень экономической активности гражданского населения США, с сезонной
+      корректировкой. Показывает долю экономически активного населения в
+      численности гражданского населения.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США (обследование домохозяйств). Частота публикации
+      — месячная. Единица измерения на графике — процент. На графике —
+      официальный сезонно скорректированный национальный ряд.
+
+  - code_suffix: employment-population
+    name_ru: Отношение занятости к численности населения
+    name_en: Employment-Population Ratio
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "EMRATIO"
+    series_id: "EMRATIO"
+    source_url: "https://fred.stlouisfed.org/series/EMRATIO"
+    analog_ru: Уровень занятости
+    is_listed: true
+    description: >
+      Отношение числа занятых к численности гражданского населения США, с
+      сезонной корректировкой. Показывает, какая доля населения имеет работу.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США (обследование домохозяйств). Частота публикации
+      — месячная. Единица измерения на графике — процент. На графике —
+      официальный сезонно скорректированный национальный ряд.
+
+  - code_suffix: unemployed
+    name_ru: Численность безработных
+    name_en: Unemployment Level
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. человек
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "UNEMPLOY"
+    series_id: "UNEMPLOY"
+    source_url: "https://fred.stlouisfed.org/series/UNEMPLOY"
+    analog_ru: Численность безработных
+    is_listed: true
+    description: >
+      Численность безработных в гражданском населении США, с сезонной
+      корректировкой. Показывает, сколько человек не имеют работы и активно её
+      ищут.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США (обследование домохозяйств). Частота публикации
+      — месячная. Единица измерения на графике — тысячи человек. На графике —
+      официальный сезонно скорректированный национальный ряд.
+
+  - code_suffix: u6-unemployment
+    name_ru: Расширенный уровень безработицы
+    name_en: Total Unemployed, Plus Marginally Attached and Part Time for Economic Reasons
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "U6RATE"
+    series_id: "U6RATE"
+    source_url: "https://fred.stlouisfed.org/series/U6RATE"
+    analog_ru: Уровень безработицы
+    is_listed: true
+    description: >
+      Расширенный уровень недоиспользования рабочей силы в США, с сезонной
+      корректировкой. Помимо безработных учитывает лиц, слабо связанных с
+      рынком труда, и занятых неполное время по экономическим причинам.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США. Частота публикации — месячная. Единица
+      измерения на графике — процент. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: initial-claims
+    name_ru: Первичные обращения за пособием по безработице
+    name_en: Initial Claims
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. человек
+    frequency: weekly
+    aggregation: mean
+    provider: fred
+    dataset_id: "ICSA"
+    series_id: "ICSA"
+    source_url: "https://fred.stlouisfed.org/series/ICSA"
+    analog_ru: Численность безработных
+    is_listed: true
+    description: >
+      Число первичных обращений за пособием по безработице в США за неделю, с
+      сезонной корректировкой. Показывает приток новых получателей пособия и
+      служит оперативным индикатором увольнений.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      Министерства труда США. Частота публикации — недельная. Единица
+      измерения на графике — тысячи человек. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: job-openings
+    name_ru: Число вакансий
+    name_en: Job Openings (total nonfarm)
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. единиц
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "JTSJOL"
+    series_id: "JTSJOL"
+    source_url: "https://fred.stlouisfed.org/series/JTSJOL"
+    analog_ru: Потребность в работниках
+    is_listed: true
+    description: >
+      Число вакансий вне сельского хозяйства в США, с сезонной корректировкой.
+      Показывает масштаб незаполненного спроса работодателей на рабочую силу.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США. Частота публикации — месячная. Единица
+      измерения на графике — тысячи единиц. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: quits-rate
+    name_ru: Коэффициент увольнений по собственному желанию
+    name_en: Quits Rate (total nonfarm)
+    category_ru: Рынок труда
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "JTSQUR"
+    series_id: "JTSQUR"
+    source_url: "https://fred.stlouisfed.org/series/JTSQUR"
+    analog_ru: Текучесть кадров
+    is_listed: true
+    description: >
+      Доля работников вне сельского хозяйства в США, уволившихся по
+      собственному желанию за месяц, с сезонной корректировкой. Показывает
+      готовность занятых менять работу.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США. Частота публикации — месячная. Единица
+      измерения на графике — процент. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: average-hourly-earnings
+    name_ru: Средняя почасовая оплата труда
+    name_en: Average Hourly Earnings of All Employees (total private)
+    category_ru: Рынок труда
+    unit: USD_PER_HOUR
+    unit_ru: долларов США в час
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "CES0500000003"
+    series_id: "CES0500000003"
+    source_url: "https://fred.stlouisfed.org/series/CES0500000003"
+    analog_ru: Средняя заработная плата
+    is_listed: true
+    description: >
+      Средняя почасовая оплата труда работников частного сектора США, с
+      сезонной корректировкой. Показывает уровень оплаты часа работы на
+      предприятиях и в организациях.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      трудовой статистики США (обследование заведений). Частота публикации —
+      месячная. Единица измерения на графике — доллары США в час. На графике —
+      официальный сезонно скорректированный национальный ряд.
+
+  - code_suffix: gdp-nominal
+    name_ru: Валовой внутренний продукт в текущих ценах
+    name_en: Gross Domestic Product
+    category_ru: ВВП
+    unit: USD_BN
+    unit_ru: млрд долларов США
+    frequency: quarterly
+    aggregation: mean
+    provider: fred
+    dataset_id: "GDP"
+    series_id: "GDP"
+    source_url: "https://fred.stlouisfed.org/series/GDP"
+    analog_ru: ВВП номинальный
+    is_listed: true
+    description: >
+      Номинальный валовой внутренний продукт США в текущих ценах, с сезонной
+      корректировкой в пересчёте на год. Показывает объём экономики в ценах
+      соответствующего периода.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — квартальная. Единица
+      измерения на графике — миллиарды долларов США. На графике — официальный
+      сезонно скорректированный ряд в годовом пересчёте.
+
+  - code_suffix: gdp-real-growth
+    name_ru: Темп прироста реального валового внутреннего продукта
+    name_en: Real Gross Domestic Product (percent change at annual rate)
+    category_ru: ВВП
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: quarterly
+    aggregation: mean
+    provider: fred
+    dataset_id: "A191RL1Q225SBEA"
+    series_id: "A191RL1Q225SBEA"
+    source_url: "https://fred.stlouisfed.org/series/A191RL1Q225SBEA"
+    analog_ru: Темп прироста ВВП
+    is_listed: true
+    description: >
+      Квартальный темп прироста реального валового внутреннего продукта США, с
+      сезонной корректировкой в пересчёте на год. Показывает, на сколько
+      процентов изменился объём экономики к предыдущему кварталу в годовом
+      выражении.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — квартальная. Единица
+      измерения на графике — процент в годовом пересчёте. На графике —
+      официальный сезонно скорректированный национальный ряд.
+
+  - code_suffix: personal-consumption
+    name_ru: Расходы на личное потребление
+    name_en: Personal Consumption Expenditures
+    category_ru: ВВП
+    unit: USD_BN
+    unit_ru: млрд долларов США
+    frequency: quarterly
+    aggregation: mean
+    provider: fred
+    dataset_id: "PCEC"
+    series_id: "PCEC"
+    source_url: "https://fred.stlouisfed.org/series/PCEC"
+    analog_ru: Расходы на конечное потребление
+    is_listed: true
+    description: >
+      Расходы на личное потребление в США в текущих ценах, с сезонной
+      корректировкой в пересчёте на год. Показывает стоимость товаров и услуг,
+      приобретённых домохозяйствами.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — квартальная. Единица
+      измерения на графике — миллиарды долларов США. На графике — официальный
+      сезонно скорректированный ряд в годовом пересчёте.
+
+  - code_suffix: private-investment
+    name_ru: Валовые частные внутренние инвестиции
+    name_en: Gross Private Domestic Investment
+    category_ru: ВВП
+    unit: USD_BN
+    unit_ru: млрд долларов США
+    frequency: quarterly
+    aggregation: mean
+    provider: fred
+    dataset_id: "GPDI"
+    series_id: "GPDI"
+    source_url: "https://fred.stlouisfed.org/series/GPDI"
+    analog_ru: Инвестиции в основной капитал
+    is_listed: true
+    description: >
+      Валовые частные внутренние инвестиции в США в текущих ценах, с сезонной
+      корректировкой в пересчёте на год. Показывает вложения частного сектора
+      в основной капитал, запасы и жилищное строительство.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — квартальная. Единица
+      измерения на графике — миллиарды долларов США. На графике — официальный
+      сезонно скорректированный ряд в годовом пересчёте.
+
+  - code_suffix: personal-income
+    name_ru: Личные доходы
+    name_en: Personal Income
+    category_ru: ВВП
+    unit: USD_BN
+    unit_ru: млрд долларов США
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "PI"
+    series_id: "PI"
+    source_url: "https://fred.stlouisfed.org/series/PI"
+    analog_ru: Денежные доходы населения
+    is_listed: true
+    description: >
+      Личные доходы населения США в текущих ценах, с сезонной корректировкой в
+      пересчёте на год. Показывает поступления домохозяйств от труда,
+      собственности и трансфертов.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — миллиарды долларов США. На графике — официальный
+      сезонно скорректированный ряд в годовом пересчёте.
+
+  - code_suffix: disposable-income-real
+    name_ru: Реальные располагаемые личные доходы
+    name_en: Real Disposable Personal Income
+    category_ru: ВВП
+    unit: USD_BN_CHAINED
+    unit_ru: млрд долларов США (цены 2017)
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "DSPIC96"
+    series_id: "DSPIC96"
+    source_url: "https://fred.stlouisfed.org/series/DSPIC96"
+    analog_ru: Реальные располагаемые доходы
+    is_listed: true
+    description: >
+      Реальные располагаемые личные доходы населения США в постоянных ценах
+      2017 года, с сезонной корректировкой в пересчёте на год. Показывает
+      покупательную способность доходов после налогов.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — миллиарды долларов США в постоянных ценах 2017
+      года. На графике — официальный сезонно скорректированный ряд в годовом
+      пересчёте.
+
+  - code_suffix: saving-rate
+    name_ru: Норма личных сбережений
+    name_en: Personal Saving Rate
+    category_ru: ВВП
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "PSAVERT"
+    series_id: "PSAVERT"
+    source_url: "https://fred.stlouisfed.org/series/PSAVERT"
+    analog_ru: Норма сбережений
+    is_listed: true
+    description: >
+      Норма личных сбережений в США, с сезонной корректировкой. Показывает
+      долю располагаемого личного дохода, которую домохозяйства не направляют
+      на потребление.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — процент. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: gdp-per-capita-real
+    name_ru: Реальный валовой внутренний продукт на душу населения
+    name_en: Real Gross Domestic Product Per Capita
+    category_ru: ВВП
+    unit: USD_CHAINED_PC
+    unit_ru: долларов США (цены 2017) на человека
+    frequency: quarterly
+    aggregation: mean
+    provider: fred
+    dataset_id: "A939RX0Q048SBEA"
+    series_id: "A939RX0Q048SBEA"
+    source_url: "https://fred.stlouisfed.org/series/A939RX0Q048SBEA"
+    analog_ru: ВВП на душу населения
+    is_listed: true
+    description: >
+      Реальный валовой внутренний продукт США на душу населения в постоянных
+      ценах 2017 года, с сезонной корректировкой. Показывает объём экономики в
+      расчёте на одного человека без влияния изменения цен.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — квартальная. Единица
+      измерения на графике — доллары США в постоянных ценах 2017 года на
+      человека. На графике — официальный сезонно скорректированный
+      национальный ряд.
+
+  - code_suffix: capacity-utilization
+    name_ru: Загрузка производственных мощностей
+    name_en: Capacity Utilization (total industry)
+    category_ru: Бизнес и инвестиции
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "TCU"
+    series_id: "TCU"
+    source_url: "https://fred.stlouisfed.org/series/TCU"
+    analog_ru: Загрузка мощностей
+    is_listed: true
+    description: >
+      Уровень использования производственных мощностей промышленности США, с
+      сезонной корректировкой. Показывает, какая доля доступных мощностей
+      задействована в выпуске.
+    methodology: >
+      Ряд публикует Совет управляющих Федеральной резервной системы через
+      Федеральный резервный банк Сент-Луиса. Частота публикации — месячная.
+      Единица измерения на графике — процент. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: durable-goods-orders
+    name_ru: Заказы на товары длительного пользования
+    name_en: "Manufacturers' New Orders (durable goods)"
+    category_ru: Бизнес и инвестиции
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    aggregation: sum
+    provider: fred
+    dataset_id: "DGORDER"
+    series_id: "DGORDER"
+    source_url: "https://fred.stlouisfed.org/series/DGORDER"
+    analog_ru: Заказы на продукцию
+    is_listed: true
+    description: >
+      Новые заказы производителей США на товары длительного пользования, с
+      сезонной корректировкой. Показывает стоимость заказов, полученных за
+      месяц.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      переписи населения США. Частота публикации — месячная. Единица измерения
+      на графике — миллионы долларов США. На графике — официальный сезонно
+      скорректированный национальный ряд.
+
+  - code_suffix: business-inventories
+    name_ru: Товарные запасы предприятий
+    name_en: Total Business Inventories
+    category_ru: Бизнес и инвестиции
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    aggregation: last
+    provider: fred
+    dataset_id: "BUSINV"
+    series_id: "BUSINV"
+    source_url: "https://fred.stlouisfed.org/series/BUSINV"
+    analog_ru: Запасы
+    is_listed: true
+    description: >
+      Совокупные товарные запасы предприятий США на конец месяца, с сезонной
+      корректировкой. Показывает стоимость запасов в торговле и
+      промышленности.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      переписи населения США. Частота публикации — месячная. Единица измерения
+      на графике — миллионы долларов США. На графике — официальный сезонно
+      скорректированный ряд запасов на конец периода.
+
+  - code_suffix: auto-sales
+    name_ru: Продажи автомобилей
+    name_en: Total Vehicle Sales
+    category_ru: Бизнес и инвестиции
+    unit: MN_UNITS_SAAR
+    unit_ru: млн автомобилей в год
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "TOTALSA"
+    series_id: "TOTALSA"
+    source_url: "https://fred.stlouisfed.org/series/TOTALSA"
+    analog_ru: Продажи автомобилей
+    is_listed: true
+    description: >
+      Продажи легковых и лёгких коммерческих автомобилей в США, с сезонной
+      корректировкой в пересчёте на год. Показывает темп продаж на внутреннем
+      рынке.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — миллионы автомобилей в годовом пересчёте. На
+      графике — официальный сезонно скорректированный ряд в годовом пересчёте.
+
+  - code_suffix: housing-starts
+    name_ru: Закладка новых домов
+    name_en: Housing Starts (total new privately owned)
+    category_ru: Бизнес и инвестиции
+    unit: THOUSANDS_SAAR
+    unit_ru: тыс. единиц в год
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "HOUST"
+    series_id: "HOUST"
+    source_url: "https://fred.stlouisfed.org/series/HOUST"
+    analog_ru: Ввод жилья
+    is_listed: true
+    description: >
+      Число начатых строек нового частного жилья в США, с сезонной
+      корректировкой в пересчёте на год. Показывает активность жилищного
+      строительства на стадии закладки.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      переписи населения США. Частота публикации — месячная. Единица измерения
+      на графике — тысячи единиц в годовом пересчёте. Значения уже приведены
+      источником к годовому темпу, поэтому при своде по более низкой частоте
+      берётся среднее, а не сумма.
+
+  - code_suffix: building-permits
+    name_ru: Разрешения на строительство жилья
+    name_en: New Private Housing Units Authorized by Building Permits
+    category_ru: Бизнес и инвестиции
+    unit: THOUSANDS_SAAR
+    unit_ru: тыс. единиц в год
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "PERMIT"
+    series_id: "PERMIT"
+    source_url: "https://fred.stlouisfed.org/series/PERMIT"
+    analog_ru: Разрешения на строительство
+    is_listed: true
+    description: >
+      Число новых единиц частного жилья, на которые выданы разрешения на
+      строительство в США, с сезонной корректировкой в пересчёте на год.
+      Показывает намерения застройщиков на ближайшие месяцы.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      переписи населения США. Частота публикации — месячная. Единица измерения
+      на графике — тысячи единиц в годовом пересчёте. Значения уже приведены
+      источником к годовому темпу, поэтому при своде берётся среднее.
+
+  - code_suffix: new-home-sales
+    name_ru: Продажи новых домов
+    name_en: New One Family Houses Sold
+    category_ru: Бизнес и инвестиции
+    unit: THOUSANDS_SAAR
+    unit_ru: тыс. единиц в год
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "HSN1F"
+    series_id: "HSN1F"
+    source_url: "https://fred.stlouisfed.org/series/HSN1F"
+    analog_ru: Продажи жилья
+    is_listed: true
+    description: >
+      Продажи новых одноквартирных домов в США, с сезонной корректировкой в
+      пересчёте на год. Показывает спрос на новое жильё на первичном рынке.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      переписи населения США. Частота публикации — месячная. Единица измерения
+      на графике — тысячи единиц в годовом пересчёте. Значения уже приведены
+      источником к годовому темпу, поэтому при своде берётся среднее.
+
+  - code_suffix: median-home-price
+    name_ru: Медианная цена продажи жилья
+    name_en: Median Sales Price of Houses Sold
+    category_ru: Цены
+    unit: USD
+    unit_ru: долларов США
+    frequency: quarterly
+    aggregation: mean
+    provider: fred
+    dataset_id: "MSPUS"
+    series_id: "MSPUS"
+    source_url: "https://fred.stlouisfed.org/series/MSPUS"
+    analog_ru: Цена жилья
+    is_listed: true
+    description: >
+      Медианная цена продажи домов в США за квартал. Показывает типичную
+      стоимость сделки на рынке жилья: половина домов продана дороже этой
+      цены, половина — дешевле.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      переписи населения США. Частота публикации — квартальная. Единица
+      измерения на графике — доллары США. На графике — официальный
+      национальный ряд без дополнительных преобразований.
+
+  - code_suffix: fhfa-house-price
+    name_ru: Индекс цен на жильё
+    name_en: All-Transactions House Price Index
+    category_ru: Цены
+    unit: INDEX
+    unit_ru: индекс (1 кв. 1991 = 100)
+    frequency: quarterly
+    aggregation: mean
+    provider: fred
+    dataset_id: "USSTHPI"
+    series_id: "USSTHPI"
+    source_url: "https://fred.stlouisfed.org/series/USSTHPI"
+    analog_ru: Индекс цен на жильё
+    is_listed: true
+    description: >
+      Индекс цен на жильё в США по всем сделкам. Показывает изменение
+      стоимости жилой недвижимости относительно первого квартала 1991 года.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      Федерального агентства по жилищному финансированию США. Частота
+      публикации — квартальная. Единица измерения на графике — индекс (1 кв.
+      1991 = 100). На графике — официальный национальный ряд без
+      дополнительных преобразований.
+
+  - code_suffix: mortgage-30y
+    name_ru: Ставка по 30-летней ипотеке
+    name_en: "30-Year Fixed Rate Mortgage Average"
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: weekly
+    aggregation: mean
+    provider: fred
+    dataset_id: "MORTGAGE30US"
+    series_id: "MORTGAGE30US"
+    source_url: "https://fred.stlouisfed.org/series/MORTGAGE30US"
+    analog_ru: Ставка по ипотеке
+    is_listed: true
+    description: >
+      Средняя ставка по 30-летнему ипотечному кредиту с фиксированной ставкой
+      в США. Показывает стоимость долгосрочного жилищного кредита на данной
+      неделе.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      еженедельного обзора ставок первичного рынка ипотеки США. Частота
+      публикации — недельная. Единица измерения на графике — процент годовых.
+      На графике — официальный национальный ряд без дополнительных
+      преобразований.
+
+  - code_suffix: treasury-10y
+    name_ru: Доходность 10-летних казначейских облигаций
+    name_en: Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "GS10"
+    series_id: "GS10"
+    source_url: "https://fred.stlouisfed.org/series/GS10"
+    analog_ru: Доходность ОФЗ
+    is_listed: true
+    description: >
+      Среднемесячная доходность 10-летних казначейских облигаций США
+      постоянной срочности. Показывает уровень долгосрочных процентных ставок
+      на рынке государственного долга.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Совета
+      управляющих Федеральной резервной системы. Частота публикации —
+      месячная. Единица измерения на графике — процент годовых. На графике —
+      официальный национальный ряд.
+
+  - code_suffix: treasury-2y
+    name_ru: Доходность 2-летних казначейских облигаций
+    name_en: Market Yield on U.S. Treasury Securities at 2-Year Constant Maturity
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "GS2"
+    series_id: "GS2"
+    source_url: "https://fred.stlouisfed.org/series/GS2"
+    analog_ru: Доходность ОФЗ
+    is_listed: true
+    description: >
+      Среднемесячная доходность 2-летних казначейских облигаций США постоянной
+      срочности. Показывает уровень краткосрочных ставок на рынке
+      государственного долга.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Совета
+      управляющих Федеральной резервной системы. Частота публикации —
+      месячная. Единица измерения на графике — процент годовых. На графике —
+      официальный национальный ряд.
+
+  - code_suffix: yield-curve-10y-2y
+    name_ru: Спред доходности 10-летних и 2-летних казначейских облигаций
+    name_en: 10-Year Treasury Minus 2-Year Treasury
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: п.п.
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "T10Y2YM"
+    series_id: "T10Y2YM"
+    source_url: "https://fred.stlouisfed.org/series/T10Y2YM"
+    analog_ru: Спред доходности
+    is_listed: true
+    description: >
+      Разность доходностей 10-летних и 2-летних казначейских облигаций США.
+      Положительное значение означает нормальную кривую, отрицательное —
+      инверсию.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Совета
+      управляющих Федеральной резервной системы. Частота публикации —
+      месячная. Единица измерения на графике — процентные пункты. На графике —
+      официальный национальный ряд; значения могут быть отрицательными.
+
+  - code_suffix: inflation-breakeven-10y
+    name_ru: 10-летние инфляционные ожидания рынка
+    name_en: 10-Year Breakeven Inflation Rate
+    category_ru: Финансы
+    unit: PERCENT
+    unit_ru: "%"
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "T10YIEM"
+    series_id: "T10YIEM"
+    source_url: "https://fred.stlouisfed.org/series/T10YIEM"
+    analog_ru: Инфляционные ожидания
+    is_listed: true
+    description: >
+      Среднемесячная 10-летняя безубыточная инфляция, рассчитанная по
+      казначейским облигациям США. Показывает, какую среднегодовую инфляцию
+      закладывает рынок на десятилетие вперёд.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Совета
+      управляющих Федеральной резервной системы. Частота публикации —
+      месячная. Единица измерения на графике — процент годовых. На графике —
+      официальный национальный ряд.
+
+  - code_suffix: m2
+    name_ru: Денежная масса M2
+    name_en: M2 Money Stock
+    category_ru: Финансы
+    unit: USD_BN
+    unit_ru: млрд долларов США
+    frequency: monthly
+    aggregation: last
+    provider: fred
+    dataset_id: "M2SL"
+    series_id: "M2SL"
+    source_url: "https://fred.stlouisfed.org/series/M2SL"
+    analog_ru: Денежная масса М2
+    is_listed: true
+    description: >
+      Денежный агрегат M2 США на конец месяца, с сезонной корректировкой.
+      Показывает объём наличных, депозитов до востребования и близких к
+      деньгам сберегательных инструментов.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Совета
+      управляющих Федеральной резервной системы. Частота публикации —
+      месячная. Единица измерения на графике — миллиарды долларов США. На
+      графике — официальный сезонно скорректированный ряд запаса на конец
+      периода.
+
+  - code_suffix: fed-balance-sheet
+    name_ru: Баланс Федеральной резервной системы
+    name_en: Assets of All Federal Reserve Banks
+    category_ru: Финансы
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: weekly
+    aggregation: last
+    provider: fred
+    dataset_id: "WALCL"
+    series_id: "WALCL"
+    source_url: "https://fred.stlouisfed.org/series/WALCL"
+    analog_ru: Баланс центрального банка
+    is_listed: true
+    description: >
+      Совокупные активы всех федеральных резервных банков США. Показывает
+      размер баланса Федеральной резервной системы на конец недели.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Совета
+      управляющих Федеральной резервной системы. Частота публикации —
+      недельная. Единица измерения на графике — миллионы долларов США. На
+      графике — официальный ряд запаса на конец периода.
+
+  - code_suffix: federal-debt
+    name_ru: Государственный долг федерального правительства
+    name_en: "Federal Debt: Total Public Debt"
+    category_ru: Государственные финансы
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: quarterly
+    aggregation: last
+    provider: fred
+    dataset_id: "GFDEBTN"
+    series_id: "GFDEBTN"
+    source_url: "https://fred.stlouisfed.org/series/GFDEBTN"
+    analog_ru: Государственный долг
+    is_listed: true
+    description: >
+      Совокупный государственный долг федерального правительства США на конец
+      квартала. Показывает накопленный объём обязательств федерального
+      казначейства.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      Министерства финансов США. Частота публикации — квартальная. Единица
+      измерения на графике — миллионы долларов США. На графике — официальный
+      ряд запаса на конец периода.
+
+  - code_suffix: federal-debt-gdp
+    name_ru: Государственный долг федерального правительства к ВВП
+    name_en: "Federal Debt: Total Public Debt as Percent of Gross Domestic Product"
+    category_ru: Государственные финансы
+    unit: PC_GDP
+    unit_ru: "% ВВП"
+    frequency: quarterly
+    aggregation: last
+    provider: fred
+    dataset_id: "GFDEGDQ188S"
+    series_id: "GFDEGDQ188S"
+    source_url: "https://fred.stlouisfed.org/series/GFDEGDQ188S"
+    analog_ru: Государственный долг к ВВП
+    is_listed: true
+    description: >
+      Отношение совокупного долга федерального правительства США к валовому
+      внутреннему продукту. Показывает долговую нагрузку федерального уровня
+      относительно размера экономики.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      Министерства финансов США и Бюро экономического анализа. Частота
+      публикации — квартальная. Единица измерения на графике — процент ВВП. На
+      графике — официальный национальный ряд; это долг федерального
+      правительства, а не сектора государственного управления в целом.
+
+  - code_suffix: budget-balance
+    name_ru: Сальдо федерального бюджета
+    name_en: Federal Surplus or Deficit
+    category_ru: Государственные финансы
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    aggregation: sum
+    provider: fred
+    dataset_id: "MTSDS133FMS"
+    series_id: "MTSDS133FMS"
+    source_url: "https://fred.stlouisfed.org/series/MTSDS133FMS"
+    analog_ru: Дефицит бюджета
+    is_listed: true
+    description: >
+      Месячное сальдо федерального бюджета США: положительное значение —
+      профицит, отрицательное — дефицит. Показывает разницу между доходами и
+      расходами федерального правительства за месяц.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      Министерства финансов США. Частота публикации — месячная. Единица
+      измерения на графике — миллионы долларов США. На графике — официальный
+      ряд без сезонной корректировки; значения знакопеременные.
+
+  - code_suffix: federal-receipts
+    name_ru: Доходы федерального бюджета
+    name_en: Federal Receipts
+    category_ru: Государственные финансы
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    aggregation: sum
+    provider: fred
+    dataset_id: "MTSR133FMS"
+    series_id: "MTSR133FMS"
+    source_url: "https://fred.stlouisfed.org/series/MTSR133FMS"
+    analog_ru: Доходы бюджета
+    is_listed: true
+    description: >
+      Доходы федерального бюджета США за месяц. Показывает поступления налогов
+      и иных платежей в федеральную казну.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      Министерства финансов США. Частота публикации — месячная. Единица
+      измерения на графике — миллионы долларов США. На графике — официальный
+      ряд без сезонной корректировки.
+
+  - code_suffix: federal-outlays
+    name_ru: Расходы федерального бюджета
+    name_en: Federal Outlays
+    category_ru: Государственные финансы
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    aggregation: sum
+    provider: fred
+    dataset_id: "MTSO133FMS"
+    series_id: "MTSO133FMS"
+    source_url: "https://fred.stlouisfed.org/series/MTSO133FMS"
+    analog_ru: Расходы бюджета
+    is_listed: true
+    description: >
+      Расходы федерального бюджета США за месяц. Показывает выплаты
+      федерального правительства по программам и обслуживанию долга.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      Министерства финансов США. Частота публикации — месячная. Единица
+      измерения на графике — миллионы долларов США. На графике — официальный
+      ряд без сезонной корректировки.
+
+  - code_suffix: budget-balance-annual
+    name_ru: Сальдо федерального бюджета за финансовый год
+    name_en: Federal Surplus or Deficit (fiscal year)
+    category_ru: Государственные финансы
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: annual
+    aggregation: last
+    provider: fred
+    dataset_id: "FYFSD"
+    series_id: "FYFSD"
+    source_url: "https://fred.stlouisfed.org/series/FYFSD"
+    analog_ru: Дефицит бюджета
+    is_listed: true
+    description: >
+      Сальдо федерального бюджета США за финансовый год: положительное
+      значение — профицит, отрицательное — дефицит. Показывает итог исполнения
+      бюджета за год.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным
+      Административно-бюджетного управления США. Частота публикации — годовая
+      (финансовый год). Единица измерения на графике — миллионы долларов США.
+      На графике — официальный ряд; значения знакопеременные.
+
+  - code_suffix: trade-balance
+    name_ru: Торговый баланс товаров и услуг
+    name_en: "Trade Balance: Goods and Services"
+    category_ru: Внешняя торговля
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    aggregation: sum
+    provider: fred
+    dataset_id: "BOPGSTB"
+    series_id: "BOPGSTB"
+    source_url: "https://fred.stlouisfed.org/series/BOPGSTB"
+    analog_ru: Торговый баланс
+    is_listed: true
+    description: >
+      Сальдо торговли товарами и услугами США за месяц: положительное значение
+      — профицит, отрицательное — дефицит. Показывает разницу между экспортом
+      и импортом.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — миллионы долларов США. На графике — официальный
+      сезонно скорректированный ряд; значения знакопеременные.
+
+  - code_suffix: exports
+    name_ru: Экспорт товаров и услуг
+    name_en: Exports of Goods and Services
+    category_ru: Внешняя торговля
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    aggregation: sum
+    provider: fred
+    dataset_id: "BOPTEXP"
+    series_id: "BOPTEXP"
+    source_url: "https://fred.stlouisfed.org/series/BOPTEXP"
+    analog_ru: Экспорт
+    is_listed: true
+    description: >
+      Экспорт товаров и услуг США за месяц, с сезонной корректировкой.
+      Показывает стоимость поставок резидентов за границу.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — миллионы долларов США. На графике — официальный
+      сезонно скорректированный национальный ряд.
+
+  - code_suffix: imports
+    name_ru: Импорт товаров и услуг
+    name_en: Imports of Goods and Services
+    category_ru: Внешняя торговля
+    unit: USD_MN
+    unit_ru: млн долларов США
+    frequency: monthly
+    aggregation: sum
+    provider: fred
+    dataset_id: "BOPTIMP"
+    series_id: "BOPTIMP"
+    source_url: "https://fred.stlouisfed.org/series/BOPTIMP"
+    analog_ru: Импорт
+    is_listed: true
+    description: >
+      Импорт товаров и услуг США за месяц, с сезонной корректировкой.
+      Показывает стоимость закупок резидентов за границей.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — месячная. Единица
+      измерения на графике — миллионы долларов США. На графике — официальный
+      сезонно скорректированный национальный ряд.
+
+  - code_suffix: current-account
+    name_ru: Сальдо текущего счёта платёжного баланса
+    name_en: Balance on Current Account
+    category_ru: Внешняя торговля
+    unit: USD_BN
+    unit_ru: млрд долларов США
+    frequency: quarterly
+    aggregation: sum
+    provider: fred
+    dataset_id: "IEABC"
+    series_id: "IEABC"
+    source_url: "https://fred.stlouisfed.org/series/IEABC"
+    analog_ru: Текущий счёт
+    is_listed: true
+    description: >
+      Сальдо текущего счёта платёжного баланса США за квартал: положительное
+      значение — профицит, отрицательное — дефицит. Показывает баланс
+      торговли, первичных и вторичных доходов с остальным миром.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
+      экономического анализа США. Частота публикации — квартальная. Единица
+      измерения на графике — миллиарды долларов США. На графике — официальный
+      ряд; значения знакопеременные.
+
+  - code_suffix: fx-cny-usd
+    name_ru: Курс китайского юаня к доллару США
+    name_en: China / U.S. Foreign Exchange Rate
+    category_ru: Финансы
+    unit: CNY_PER_USD
+    unit_ru: юаней за 1 доллар США
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "EXCHUS"
+    series_id: "EXCHUS"
+    source_url: "https://fred.stlouisfed.org/series/EXCHUS"
+    analog_ru: Курс юаня
+    is_listed: true
+    description: >
+      Среднемесячный обменный курс китайского юаня к доллару США. Показывает,
+      сколько юаней приходится на один доллар США.
+    methodology: >
+      Ряд публикует Совет управляющих Федеральной резервной системы через
+      Федеральный резервный банк Сент-Луиса. Частота публикации — месячная.
+      Единица измерения на графике — число юаней за один доллар США. Значения
+      соответствуют официальному среднему курсу.
+
+  - code_suffix: wti-oil
+    name_ru: Цена нефти марки WTI
+    name_en: "Crude Oil Prices: West Texas Intermediate"
+    category_ru: Цены
+    unit: USD_PER_BARREL
+    unit_ru: долларов США за баррель
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "MCOILWTICO"
+    series_id: "MCOILWTICO"
+    source_url: "https://fred.stlouisfed.org/series/MCOILWTICO"
+    analog_ru: Цена нефти
+    is_listed: true
+    description: >
+      Среднемесячная спотовая цена нефти марки West Texas Intermediate.
+      Показывает стоимость барреля нефти на внутреннем рынке США.
+    methodology: >
+      Ряд публикует Федеральный резервный банк Сент-Луиса по данным Управления
+      энергетической информации США. Частота публикации — месячная. Единица
+      измерения на графике — доллары США за баррель. На графике — официальный
+      национальный ряд без дополнительных преобразований.

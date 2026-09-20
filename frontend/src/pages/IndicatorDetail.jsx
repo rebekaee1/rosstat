@@ -710,6 +710,8 @@ export default function IndicatorDetail() {
         emptyHint={chartEmptyHint}
         onDownloadCsv={handleDownloadCSV}
         onDownloadExcel={handleDownloadExcel}
+        worldCompare={indicator?.world_compare}
+        onNeedCompatibleMode={setViewMode}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">

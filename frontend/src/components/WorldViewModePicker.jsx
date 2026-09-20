@@ -9,6 +9,16 @@ import {
   groupModesFromApi,
 } from '../lib/worldViewModes';
 
+function aggregatedModeHint(item, t) {
+  if (item.disabled) return t('world.mode.hint.unavailable');
+  if (item.official) return undefined;
+  const policy = item.aggregation?.policy;
+  if (policy === 'sum') return t('world.mode.hint.sum');
+  if (policy === 'last') return t('world.mode.hint.last');
+  if (policy === 'mean') return t('world.mode.hint.mean');
+  return t('world.mode.hint.derived');
+}
+
 /** Эталон кнопок — CpiViewModePicker / GenericViewModePicker (Россия). */
 const btnCls = (active) => cn(
   'max-w-full shrink-0 whitespace-normal rounded-xl px-3 py-2 text-center text-xs font-medium leading-snug transition-colors',
@@ -42,10 +52,10 @@ export default function WorldViewModePicker({
       modes: g.modes?.map((m) => ({
         ...m,
         label: localizeViewModeLabel(m.label, locale),
-        hint: localizeViewModeLabel(m.hint, locale),
+        hint: aggregatedModeHint(m, t),
       })),
     }));
-  }, [modes, locale]);
+  }, [modes, locale, t]);
   const [expandedGroup, setExpandedGroup] = useState(
     () => expandedGroupForWorldMode(groups, currentMode),
   );
@@ -135,7 +145,7 @@ export default function WorldViewModePicker({
               key={`${expanded.id}-${item.mode}`}
               type="button"
               disabled={item.disabled}
-              title={item.disabled ? item.hint : (!item.official ? t('indicator.picker.derivedRecalc') : undefined)}
+              title={item.hint || undefined}
               onClick={() => onSubClick(expanded.id, item)}
               className={cn(
                 btnCls(!item.disabled && item.mode === currentMode),
@@ -146,7 +156,9 @@ export default function WorldViewModePicker({
               {item.label}
               {item.disabled && item.hint ? (
                 <span className="ml-1 text-[10px] opacity-70">{item.hint}</span>
-              ) : null}
+              ) : (!item.official && !item.disabled ? (
+                <span className="ml-1 text-[10px] opacity-70">{t('world.mode.badge.derived')}</span>
+              ) : null)}
             </button>
           ))}
         </div>

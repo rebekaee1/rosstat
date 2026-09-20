@@ -16,6 +16,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: boj
     dataset_id: "FM01"
     series_id: "STRDCLUCON"
@@ -38,6 +39,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: boj
     dataset_id: "IR01"
     series_id: "MADR1Z@D"
@@ -59,6 +61,7 @@ series:
     unit: JPY_PER_USD
     unit_ru: иен за 1 доллар США
     frequency: daily
+    aggregation: mean
     provider: boj
     dataset_id: "FM08"
     series_id: "FXERD04"
@@ -80,6 +83,7 @@ series:
     unit: JPY
     unit_ru: иены
     frequency: monthly
+    aggregation: last
     provider: boj
     dataset_id: "MD01"
     series_id: "MABS1AN11"
@@ -101,6 +105,7 @@ series:
     unit: JPY
     unit_ru: иены
     frequency: monthly
+    aggregation: last
     provider: boj
     dataset_id: "MD02"
     series_id: "MAM1NAM2M2MO"
@@ -122,6 +127,7 @@ series:
     unit: JPY
     unit_ru: иены
     frequency: monthly
+    aggregation: last
     provider: boj
     dataset_id: "MD02"
     series_id: "MAM1NAM3M3MO"
@@ -143,6 +149,7 @@ series:
     unit: INDEX
     unit_ru: индекс
     frequency: monthly
+    aggregation: mean
     provider: estat
     dataset_id: "0003427113"
     series_id: "cpi-all-items"
@@ -167,6 +174,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: estat
     dataset_id: "0003143513"
     series_id: "unemployment-rate"
@@ -188,6 +196,7 @@ series:
     unit: JPY_BN
     unit_ru: млрд иен
     frequency: quarterly
+    aggregation: mean
     provider: estat
     dataset_id: "0003411572"
     series_id: "gdp-real"

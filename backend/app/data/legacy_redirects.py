@@ -18,6 +18,9 @@ unlisted sibling-ряды из старых sitemap) — каждый 404 по �
    («tatarstan» → «respublika-tatarstan»): проверяется в SSR-роуте по БД.
 4. `resolve_world_frequency_sibling()` — квартальный/годовой близнец мировой
    карточки → `/{slug}/indicator/{primary}?mode=level-{freq}` (частота в query).
+   Фолбэк — ряд, слитый в карточку каталога (`catalog_merge_key`: темпы ГИПЦ
+   manr/mmor/mv12r, среднегодовой aind) и снятый с листинга →
+   `?mode={yoy|step|level}-{freq}` по мере ряда (2026-09-20).
 """
 
 from __future__ import annotations
@@ -240,20 +243,91 @@ async def resolve_world_frequency_sibling(
         return None
 
     siblings = await world_card_siblings(db, indicator)
-    if len(siblings) < 2:
-        return None
+    if len(siblings) >= 2:
+        primary = min(siblings, key=world_card_primary_rank)
+        # Unlisted/нулевой primary — не 301 ни на мёртвую карточку, ни на /world/{slug}.
+        if not getattr(primary, "is_listed", False):
+            return None
+        if primary.code == indicator.code:
+            return None
+        return f"{paths.indicator(slug, primary.code)}?mode=level-{_mode_freq(indicator)}"
 
-    primary = min(siblings, key=world_card_primary_rank)
-    # Unlisted/нулевой primary — не 301 ни на мёртвую карточку, ни на /world/{slug}.
-    if not getattr(primary, "is_listed", False):
-        return None
-    if primary.code == indicator.code:
-        return None
+    return await _resolve_world_catalog_merge(db, slug, indicator)
+
+
+def _mode_freq(indicator) -> str:
+    from app.data.eurostat_listing import normalize_frequency
 
     freq = normalize_frequency(indicator.frequency) or "monthly"
-    if freq not in ("monthly", "quarterly", "annual"):
-        freq = "monthly"
-    return f"{paths.indicator(slug, primary.code)}?mode=level-{freq}"
+    return freq if freq in ("monthly", "quarterly", "annual") else "monthly"
+
+
+# Мера снятого с листинга ряда → тип режима слитой карточки. Темп к
+# аналогичному периоду прошлого года (RCH_A, PCH_SM/SAME, скользящий 12-мес.)
+# → yoy; темп к предыдущему периоду (RCH_M, RT1, PCH_PRE, RT_M_DIF) → step.
+_MERGE_MODE_TYPE_BY_UNIT: dict[str, str] = {
+    "RCH_A": "yoy", "PCH_SM": "yoy", "PCH_SAME": "yoy", "RCH_MV12MAVR": "yoy",
+    "RCH_M": "step", "RT1": "step", "RT1_SCA": "step", "PCH_PRE": "step",
+    "RT_M_DIF": "step",
+}
+
+
+async def _resolve_world_catalog_merge(
+    db: AsyncSession, slug: str, indicator
+) -> str | None:
+    """Ряд, слитый в карточку каталога (ГИПЦ индекс + темпы, ooq/ooa) → 301.
+
+    После склейки (`catalog_merge_key`) темп ГИПЦ снят с листинга и в SSR
+    отдаёт 404, хотя тот же ряд живёт в матрице режимов primary-карточки.
+    Отправляем на listed primary группы с режимом по мере: RCH_A →
+    `yoy-{freq}`, RCH_M → `step-{freq}`, индекс → `level-{freq}`.
+    """
+    from app.data.eurostat_listing import (
+        catalog_merge_key,
+        catalog_stem_alias,
+        measure_preference_rank,
+    )
+    from app.models import WorldIndicator
+
+    if getattr(indicator, "is_listed", False):
+        return None
+    alias = catalog_stem_alias(indicator.dataset_id)
+    if not alias:
+        return None
+
+    def _mkey(ind) -> tuple:
+        return catalog_merge_key(
+            country_id=ind.country_id,
+            provider=getattr(ind, "provider", None),
+            dataset_id=ind.dataset_id,
+            unit=ind.unit,
+            unit_ru=ind.unit_ru,
+            slice_json=ind.slice_json,
+        )
+
+    key = _mkey(indicator)
+    conds = []
+    for stem in alias.split("|"):
+        conds.append(WorldIndicator.dataset_id == stem)
+        conds.append(WorldIndicator.dataset_id.like(_like_escape(stem) + "%", escape="\\"))
+    rows = (
+        await db.execute(
+            select(WorldIndicator).where(
+                WorldIndicator.country_id == indicator.country_id,
+                WorldIndicator.provider == indicator.provider,
+                WorldIndicator.is_listed.is_(True),
+                WorldIndicator.points_count > 0,
+                or_(*conds),
+            )
+        )
+    ).scalars().all()
+    members = [r for r in rows if r.code != indicator.code and _mkey(r) == key]
+    if not members:
+        return None
+    primary = min(members, key=measure_preference_rank)
+    unit = (indicator.unit or "").strip().upper().replace("-", "_")
+    mode_type = _MERGE_MODE_TYPE_BY_UNIT.get(unit, "level")
+    return f"{paths.indicator(slug, primary.code)}?mode={mode_type}-{_mode_freq(indicator)}"
 
 
 async def resolve_world_unlisted_indicator(

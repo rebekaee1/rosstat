@@ -51,8 +51,10 @@ def test_listing_decisions_hicp_duplicates_hidden():
 
     # канонический индекс явно закреплён полным режимом
     assert listing_mode_for_dataset("prc_hicp_midx") == "full_ok"
-    # содержательный срез при постоянных налогах остаётся
-    assert listing_mode_for_dataset("prc_hicp_cind") == "full_ok"
+    # содержательный срез при постоянных налогах скрыт с витрины (дубль ГИПЦ)
+    assert listing_mode_for_dataset("prc_hicp_cind") == "no"
+    assert listing_mode_for_dataset("prc_hicp_cmon") == "no"
+    assert listing_mode_for_dataset("prc_hicp_cann") == "no"
     # flash-оценки prc_hicp_fp (другое имя) не затронуты
     assert listing_mode_for_dataset("prc_hicp_fp") is None
 
@@ -65,6 +67,11 @@ def test_variant_group_key_house_price_stem_alias():
 
     # prc_hpi_ooq — свой стем (жильё собственников), вне алиаса
     assert variant_group_key(country_id=7, dataset_id="prc_hpi_ooq") != alias_group
+
+    # темпы ГИПЦ — не срезы variant-пикера
+    assert variant_group_key(country_id=7, dataset_id="prc_hicp_manr") != variant_group_key(
+        country_id=7, dataset_id="prc_hicp_midx"
+    )
 
     # чужие семьи не затронуты; страны не смешиваются
     assert variant_group_key(country_id=1, dataset_id="une_rt_m") == (1, "une_rt")

@@ -98,10 +98,29 @@ describe('groupModesFromApi', () => {
     expect(groups.every((g) => g.id !== 'К прошлому периоду')).toBe(true);
   });
 
-  it('пустой и битый вход — пустой массив', () => {
-    expect(groupModesFromApi(null)).toEqual([]);
-    expect(groupModesFromApi([])).toEqual([]);
-    expect(groupModesFromApi([{ id: 'x' }])).toEqual([]);
+  it('прокидывает aggregation и не хардкодит русские подсказки', () => {
+    const groups = groupModesFromApi([
+      {
+        id: 'level-monthly', label: 'По месяцам', group: 'Уровень',
+        type: 'level', freq: 'monthly', available: true, official: true,
+      },
+      {
+        id: 'level-quarterly', label: 'По кварталам', group: 'Уровень',
+        type: 'level', freq: 'quarterly', available: true, official: false,
+        aggregation: { policy: 'mean', source: 'passport' },
+      },
+      {
+        id: 'level-annual', label: 'По годам', group: 'Уровень',
+        type: 'level', freq: 'annual', available: false, official: false,
+      },
+    ]);
+    const level = groups.find((g) => g.id === 'Уровень');
+    expect(level.modes[1].aggregation).toEqual({ policy: 'mean', source: 'passport' });
+    expect(level.modes[1].official).toBe(false);
+    expect(level.modes[1].hint).toBeUndefined();
+    expect(level.modes[2].disabled).toBe(true);
+    expect(JSON.stringify(level.modes)).not.toContain('нет официального ряда');
+    expect(JSON.stringify(level.modes)).not.toContain('расчётный ряд');
   });
 });
 

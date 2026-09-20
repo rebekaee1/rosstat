@@ -16,6 +16,7 @@ series:
     unit: INDEX
     unit_ru: индекс (тот же месяц прошлого года = 100)
     frequency: monthly
+    aggregation: mean
     provider: nbs
     dataset_id: hgyd
     # Stream map key A01010G01 (YoY). Legacy A01030101 was MoM — do not use.
@@ -43,6 +44,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: nbs
     dataset_id: hgyd
     series_id: A020101
@@ -65,6 +67,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: nbs
     dataset_id: hgyd
     series_id: A0E0101
@@ -90,6 +93,7 @@ series:
     unit: CNY_YI
     unit_ru: 100 млн юаней
     frequency: quarterly
+    aggregation: sum
     provider: nbs
     dataset_id: hgjd
     series_id: A0101
@@ -115,6 +119,7 @@ series:
     unit: CNY_PER_USD
     unit_ru: юаней за 1 доллар США
     frequency: daily
+    aggregation: mean
     provider: cfets
     dataset_id: ccpr
     series_id: USD/CNY
@@ -138,6 +143,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: cfets
     dataset_id: lpr
     series_id: "1Y"
@@ -161,6 +167,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: cfets
     dataset_id: lpr
     series_id: "5Y"
@@ -183,6 +190,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: cfets
     dataset_id: shibor
     # YAML 1.1: bare ON becomes boolean true — must be quoted.
@@ -206,6 +214,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: cfets
     dataset_id: shibor
     series_id: 1W

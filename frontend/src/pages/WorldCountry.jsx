@@ -29,6 +29,7 @@ import {
 } from '../lib/breadcrumbs';
 import {
   countryPath,
+  countryRegionsPath,
   indicatorPath,
   russiaIndicatorPath,
   regionHubPath,
@@ -379,6 +380,28 @@ export default function WorldCountry() {
               )}
             </div>
           </section>
+
+          {data.country?.has_regions && (
+            <Link
+              to={countryRegionsPath(slug)}
+              className="mb-8 flex items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-surface px-5 py-4 transition-colors hover:border-champagne/40"
+            >
+              <div>
+                <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+                  {t('world.regions.cardKicker')}
+                </div>
+                <div className="mt-1 font-display text-xl font-bold text-text-primary">
+                  {data.country.region_kind_label_plural || t('world.regions.cardTitle')}
+                </div>
+                <p className="mt-1 text-sm text-text-secondary">
+                  {t('world.regions.cardBody')}
+                </p>
+              </div>
+              <span className="shrink-0 rounded-xl bg-champagne/15 px-3 py-1.5 text-sm text-champagne">
+                {t('world.regions.open')}
+              </span>
+            </Link>
+          )}
 
           <div className="relative mb-6">
             <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />

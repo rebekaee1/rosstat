@@ -277,8 +277,8 @@ def test_country_detail_aggregated_frequencies_badge(aggregation_world_client):
     assert set(item["aggregated_frequencies"]) == {"quarterly", "annual"}
 
 
-def test_aggregated_frequencies_absent_without_policy(auth_env):
-    """Ряд без курируемой политики не получает расчётных частот."""
+def test_aggregated_frequencies_fail_open_without_curated_policy(auth_env):
+    """Ряд без курируемой политики всё равно получает расчётные частоты."""
     from app.api.world import _aggregated_frequencies_for_card
 
     class FakeInd:
@@ -290,7 +290,7 @@ def test_aggregated_frequencies_absent_without_policy(auth_env):
             self.unit = unit
 
     unpolicyable = [FakeInd("zz_unknown_flux", "")]
-    assert _aggregated_frequencies_for_card(unpolicyable) == []
+    assert _aggregated_frequencies_for_card(unpolicyable) == ["quarterly", "annual"]
     policyable = [FakeInd("prc_hicp_midx", "I15")]
     assert _aggregated_frequencies_for_card(policyable) == ["quarterly", "annual"]
 
@@ -439,7 +439,7 @@ def test_crosswalk_codes_present_for_all_concepts():
         ("hicp-index", {"us-cpi-all", "uk-cpi-all", "jp-cpi-all", "kr-cpi-all", "cn-cpi-all", "br-cpi-ipca-yoy"}),
         ("unemployment-rate", {"us-unemployment-rate", "jp-unemployment-rate"}),
         ("population", {"au-population", "ca-population", "uk-population"}),
-        ("activity-rate", {"au-participation-rate", "uk-participation-rate"}),
+        ("activity-rate", {"au-participation-rate", "uk-participation-rate", "us-labor-force-participation"}),
     ):
         codes = set(national_codes_for_concept(concept_slug))
         assert expected_members <= codes, concept_slug

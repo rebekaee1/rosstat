@@ -8,6 +8,8 @@
 
 from __future__ import annotations
 
+from typing import Any, Sequence
+
 # concept_slug → { ISO alpha-2 → world_indicators.code }
 NATIONAL_CONCEPT_INDICATOR_CODES: dict[str, dict[str, str]] = {
     "unemployment-rate": {
@@ -28,13 +30,19 @@ NATIONAL_CONCEPT_INDICATOR_CODES: dict[str, dict[str, str]] = {
         "US": "us-population-census",
         "BR": "br-population-ibge",
     },
-    # Уровень экономической активности: у AU/UK национальное обследование
+    # Уровень экономической активности: у AU/UK/US национальное обследование
     # рабочей силы публикует долю экономически активного населения
     # (participation rate) в процентах — тот же смысл, что у Eurostat-среза
-    # lfsi_emp_a ACT; возрастная база национальная (AU: 15+, UK: 16+).
+    # lfsi_emp_a ACT; возрастная база национальная (AU: 15+, UK/US: 16+).
     "activity-rate": {
         "AU": "au-participation-rate",
         "UK": "uk-participation-rate",
+        "US": "us-labor-force-participation",
+    },
+    # 10-летняя доходность казначейских облигаций США — тот же смысл, что
+    # Eurostat irt_lt_mcby (критерий конвергенции, ~10 лет).
+    "long-term-interest-rate": {
+        "US": "us-treasury-10y",
     },
     # Потребительские цены: национальные индексы с разными базами.
     # Карта/рейтинг отдают изменение за год (%), не уровень индекса.
@@ -77,6 +85,69 @@ def national_codes_for_concept(concept_slug: str) -> frozenset[str]:
     return frozenset(mapping.values())
 
 
+_CONCEPT_BY_NATIONAL_CODE: dict[str, str] = {
+    code: slug
+    for slug, mapping in NATIONAL_CONCEPT_INDICATOR_CODES.items()
+    for code in mapping.values()
+}
+
+
+def concept_slug_for_national_code(indicator_code: str) -> str | None:
+    """Концепт, к которому national-ряд привязан crosswalk'ом, или None.
+
+    Обратный индекс к ``NATIONAL_CONCEPT_INDICATOR_CODES``: карточке
+    национального ряда (безработица США, CPI Канады) он даёт блок «Сравнение
+    стран» — без него `concept_for_indicator` видит только Eurostat/IMF-срезы.
+    """
+    return _CONCEPT_BY_NATIONAL_CODE.get(str(indicator_code or ""))
+
+
 def hicp_national_yoy_kind(indicator_code: str) -> str:
     """Как считать YoY для национального (или уже-готового) ряда цен."""
     return HICP_NATIONAL_YOY_KIND.get(indicator_code) or HICP_YOY_KIND_LEVEL
+
+
+def filter_weo_shadowed_from_country_listing(
+    indicators: Sequence[Any],
+    country_code: str,
+) -> list[Any]:
+    """Убрать WEO-карточки концепта, если у страны уже есть national/Eurostat ряд.
+
+    Ряд МВФ остаётся в БД и доступен по URL, в рейтинге и на карте. Из каталога
+    страны его не показываем, чтобы не дублировать месячный национальный ряд
+    годовой оценкой фонда (безработица, население, ИПЦ).
+    """
+    from app.data.world_concepts import concept_for_indicator
+
+    rows = list(indicators)
+    if not rows:
+        return rows
+    cc = (country_code or "").strip().upper()
+    listed_codes = {str(getattr(ind, "code", "") or "") for ind in rows}
+
+    covered: set[str] = set()
+    for slug, mapping in NATIONAL_CONCEPT_INDICATOR_CODES.items():
+        national_code = mapping.get(cc)
+        if national_code and national_code in listed_codes:
+            covered.add(slug)
+
+    for ind in rows:
+        provider = str(getattr(ind, "provider", "") or "").strip().lower()
+        if provider == "imf":
+            continue
+        concept = concept_for_indicator(ind)
+        if concept is not None:
+            covered.add(concept.slug)
+
+    if not covered:
+        return rows
+
+    out: list[Any] = []
+    for ind in rows:
+        provider = str(getattr(ind, "provider", "") or "").strip().lower()
+        if provider == "imf":
+            concept = concept_for_indicator(ind)
+            if concept is not None and concept.slug in covered:
+                continue
+        out.append(ind)
+    return out

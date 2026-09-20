@@ -21,6 +21,7 @@
  *   unit?: string,
  *   available?: boolean,
  *   official?: boolean,
+ *   aggregation?: { policy?: string, source?: string } | null,
  * }} WorldMode
  */
 
@@ -36,7 +37,7 @@
  *     available?: boolean,
  *     official?: boolean,
  *     disabled?: boolean,
- *     hint?: string,
+ *     aggregation?: { policy?: string, source?: string } | null,
  *   }>,
  * }} WorldModeGroup
  */
@@ -204,6 +205,7 @@ function normalizeModeEntry(m, fallbackFreq = 'monthly') {
     unit: m.unit,
     available: m.available !== false,
     official: m.official !== false,
+    aggregation: m.aggregation || null,
   };
 }
 
@@ -355,7 +357,7 @@ export function groupModesFromApi(modes) {
       available,
       official: m.official !== false,
       disabled: !available,
-      hint: !available ? 'нет официального ряда' : (!m.official ? 'расчётный ряд' : undefined),
+      aggregation: m.aggregation || null,
     });
   }
 
@@ -434,8 +436,8 @@ export function isEmptySeries(points) {
 /** Minimal RU→EN for chart title groups (mirrors viewModeLabels). */
 const LABELS_EN_INLINE = {
   'Уровень': 'Level',
-  'К прошлому периоду': 'Vs previous period',
-  'К году': 'Year on year',
+  'К прошлому периоду': 'Over previous period',
+  'К году': 'Year over year',
   'Индекс': 'Index',
   'По месяцам': 'Monthly',
   'По кварталам': 'Quarterly',

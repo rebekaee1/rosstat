@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Terminal, Download, Lock, Image as ImageIcon, HelpCircle } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
@@ -11,6 +11,8 @@ import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 import { useLocale, useT } from '../i18n';
 import { resolveChartTitle } from '../i18n/resolveViewModeCopy';
 import { forecastTooltipLabel, levelTooltipLabel } from '../i18n/chartTooltipLabels';
+import { useCountryComparison } from '../lib/useCountryComparison';
+import CountryComparePanel from './CountryComparePicker';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -168,6 +170,8 @@ export default function IndicatorChartSection({
 
   onDownloadCsv,
   onDownloadExcel,
+  worldCompare = null,
+  onNeedCompatibleMode = null,
 }) {
   const { locale } = useLocale();
   const t = useT();
@@ -234,6 +238,39 @@ export default function IndicatorChartSection({
     periodWeeklyDataPoints,
     periodMonthlyDataPoints,
   });
+  const chartUnit = chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'));
+  const compareConcept = worldCompare?.concept;
+  const currentCompareMode = safeViewMode || chartMode;
+  const compareCompatible = !compareConcept
+    || (compareConcept.compatible_modes || []).includes(currentCompareMode);
+  const compareBasePoints = (chartMode === 'inflation' && inflationResp?.actuals?.length)
+    ? inflationResp.actuals
+    : chartCpiData;
+  const comparison = useCountryComparison({
+    surface: 'russia',
+    peers: worldCompare?.peers,
+    conceptSlug: compareConcept?.slug,
+    countrySlug: 'russia',
+    dataPoints: compareBasePoints,
+    unit: chartUnit,
+    title: cpiChartTitle,
+    peerMode: compareConcept?.peer_mode,
+    peerValueScale: compareConcept?.peer_value_scale,
+  });
+  const handleToggleCompare = (id) => {
+    if (!compareCompatible && compareConcept?.default_mode) {
+      onNeedCompatibleMode?.(compareConcept.default_mode);
+    }
+    comparison.toggleComparison(id);
+  };
+  const overlayActive = compareCompatible && comparison.loadedComparisonSeries.length > 0;
+  const chartDataPoints = overlayActive ? comparison.displayedDataPoints : compareBasePoints;
+  const chartComparisonSeries = compareCompatible ? comparison.displayedComparisonSeries : [];
+  const chartDisplayUnit = overlayActive ? comparison.displayedUnit : chartUnit;
+  const chartDisplayTitle = overlayActive ? comparison.displayedTitle : cpiChartTitle;
+  const compareHint = compareConcept && !compareCompatible
+    ? t('world.chart.compareNeedsMode')
+    : null;
 
   // Недельный режим — без прогноза (созвон 2026-06-11).
   const forecastData = chartMode === 'quarterly' ? quarterlyForecastData
@@ -245,6 +282,16 @@ export default function IndicatorChartSection({
               : chartMode === 'period-weekly' ? periodWeeklyForecastData
                 : chartMode === 'period-monthly' ? periodMonthlyForecastData
                   : displayForecastData;
+  // Overlay переводит IndicatorChart в mode=cpi (cpiData + forecast.values).
+  // У инфляции г/г без overlay идёт inflation.forecast (~6–10 %), а
+  // displayForecastData — индекс ИПЦ (~100). Смешивать нельзя.
+  const inflationForecastValues = inflationResp?.forecast;
+  const overlayForecastData = useMemo(() => {
+    if (overlayActive && chartMode === 'inflation' && inflationForecastValues?.length) {
+      return { forecast: { values: inflationForecastValues } };
+    }
+    return forecastData;
+  }, [overlayActive, chartMode, inflationForecastValues, forecastData]);
 
   const handleForecastToggle = () => {
     if (!forecastEnabled) return;
@@ -330,6 +377,23 @@ export default function IndicatorChartSection({
         </div>
       </div>
 
+      <CountryComparePanel
+        pickerOptions={comparison.pickerOptions}
+        activeComparisonIds={comparison.activeComparisonIds}
+        selectedComparisons={comparison.selectedComparisons}
+        comparisonQueries={comparison.comparisonQueries}
+        comparisonScale={comparison.comparisonScale}
+        onToggle={handleToggleCompare}
+        onOpen={() => comparison.setComparisonPickerActive(true)}
+        onScale={comparison.setComparisonScale}
+        conceptSlug={compareConcept?.slug}
+        countrySlug="russia"
+        compareCodes={comparison.compareCodes}
+        rebased={compareCompatible ? comparison.rebased : null}
+        loadedComparisonSeries={compareCompatible ? comparison.loadedComparisonSeries : []}
+        hint={compareHint}
+      />
+
       {chartLoading ? (
         <ChartSkeleton />
       ) : (
@@ -337,7 +401,8 @@ export default function IndicatorChartSection({
           <IndicatorChart
             key={`${indicator?.code}-${chartMode}`}
             mode={
-              isUnemploymentFamily
+              overlayActive
+              || isUnemploymentFamily
               || ['quarterly', 'annual', 'weekly', 'index', 'yoy', 'qoq', 'mom', 'real',
                 'period-weekly', 'period-monthly'].includes(chartMode)
               || (isCbrTermSliceFamily && chartMode === 'level')
@@ -345,14 +410,14 @@ export default function IndicatorChartSection({
                 : chartMode
             }
             inflation={inflationResp}
-            cpiData={chartCpiData}
-            forecastData={forecastData}
-            showForecast={forecastEnabled && showForecast}
+            cpiData={chartDataPoints}
+            forecastData={overlayForecastData}
+            showForecast={forecastEnabled && showForecast && !(overlayActive && comparison.rebased)}
             onChartData={onChartData}
             onFullData={onFullData}
             onRangeChange={onRangeChange}
             referenceLineY={(isPriceCategory || isHousingFamily || isPpiFamily) && chartMode !== 'index' ? 0 : null}
-            cpiChartTitle={cpiChartTitle}
+            cpiChartTitle={chartDisplayTitle}
             levelTooltipLabel={levelTooltipLabel(t, {
               chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
               isCbrTermSliceFamily,
@@ -361,11 +426,14 @@ export default function IndicatorChartSection({
             forecastTooltipLabel={forecastTooltipLabel(t, { chartMode, indicator })}
             emptyHint={emptyHint}
             dateFormat={resolveDateFormat({ chartMode, frequency: indicator?.frequency, safeViewMode })}
-            unit={chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'))}
+            unit={chartDisplayUnit}
             rangePreset={rangePresetFor({ chartMode, indicator })}
             chartMode={chartMode}
             indicatorCode={code}
             indicatorCategory={indicator?.category}
+            numericTooltipOnly={chartComparisonSeries.length > 0}
+            actualSeriesLabel={chartComparisonSeries.length ? t('nav.russia') : ''}
+            comparisonSeries={chartComparisonSeries.length ? chartComparisonSeries : null}
           />
         </div>
       )}

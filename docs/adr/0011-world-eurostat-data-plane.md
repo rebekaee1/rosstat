@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-06
-- **Last verified:** 2026-08-06 (локально: временная карта, dataset-level Q/A policies, год из кварталов, строгие peers, мультисравнение и аналитическая сводка compare).
+- **Last verified:** 2026-09-20 (агрегация частот: curated → passport → semantic fallback).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md), [`ADR-0008`](0008-regional-bounded-context.md).
 
 ---
@@ -190,3 +190,39 @@ provenance; общий официальный adapter contract и порядок
 национальных источников закреплены в ADR-0012. Там же отдельно принят
 quality-gated прогнозный контур. Это не меняет TOC/shadow/reconcile правила
 данного ADR для Eurostat.
+
+### 2026-09-20 — агрегация частот: curated → passport → semantic fallback
+
+Fail-closed allowlist остаётся первым уровнем (`_CURATED_POLICIES`), но больше
+не единственным. Если пары `dataset_id × unit` нет в курируемом списке,
+политика берётся из национального паспорта (`aggregation: mean|sum|last` в
+`world_national_core/*.yaml`, ключ `(provider, dataset_id, unit)`). Если ключа
+нет или значение невалидно — семантический фолбэк всегда возвращает политику:
+потоки Eurostat (семейство датасета и единица-объёма одновременно) — `sum`,
+запасы `nrg_stk*` — `last`, всё остальное (индексы, ставки, доли, численность,
+темпы) — `mean`.
+
+Расчётный ряд по-прежнему уступает официальному sibling нужной частоты и
+публикуется с `official: false` и источником политики
+(`curated|passport|fallback`) в payload режимов. Неполный календарный период
+не публикуется.
+
+### 2026-09-20 — каталог страны: один смысл = одна карточка
+
+Витрина страны склеивает не только `_[mqa]`, но и частотную букву в конце
+стема без подчёркивания (`prc_hpi_ooq`/`ooa`, `hsvq`/`hsva`, `hsnq`/`hsna`)
+через `catalog_stem`. Темпы ГИПЦ (`prc_hicp_manr`/`mmor`/`mv12r`) входят в
+alias-группу каталога вместе с индексным `prc_hicp_midx` и не дают отдельных
+плиток: это режимы карточки. `prc_hicp_cind` (постоянные налоги) скрыт
+редакторским `no`. Датасеты `prc_ppp*` относятся к теме «ВВП», не «Цены».
+Переключатель частот карточки берёт официальные ряды всей merge-группы.
+Main table `tec00027` (среднегодовой ГИПЦ, 12-летний хвост `prc_hicp_ainr`)
+входит в ту же группу — вторая плитка в «Бизнесе» исчезает.
+
+Старые URL снятых с листинга темпов, ранее бывшие в индексе, не отдают 404:
+`resolve_world_frequency_sibling` (`legacy_redirects.py`) после card-sibling
+проверки ищет listed primary той же merge-группы и отвечает 301 на
+`/{slug}/indicator/{primary}?mode={yoy|step|level}-{freq}` по мере ряда
+(`RCH_A`/`PCH_SM`/`RCH_MV12MAVR` → `yoy`, `RCH_M`/`RT1`/`PCH_PRE`/`RT_M_DIF` →
+`step`, индексы → `level`). Ряды вне merge-групп (`prc_hicp_cind`) остаются на
+инварианте unlisted → 404 в SSR, 200 в API.

@@ -16,6 +16,7 @@ series:
     unit: INDEX
     unit_ru: индекс
     frequency: quarterly
+    aggregation: mean
     provider: abs
     dataset_id: "CPI"
     series_id: "1.10001.10.50.Q"
@@ -38,6 +39,7 @@ series:
     unit: INDEX
     unit_ru: индекс
     frequency: monthly
+    aggregation: mean
     provider: abs
     dataset_id: "CPI"
     series_id: "1.10001.10.50.M"
@@ -60,6 +62,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: abs
     dataset_id: "LF"
     series_id: "M13.3.1599.20.AUS.M"
@@ -83,6 +86,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: abs
     dataset_id: "LF"
     series_id: "M16.3.1599.20.AUS.M"
@@ -105,6 +109,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: abs
     dataset_id: "LF"
     series_id: "M12.3.1599.20.AUS.M"
@@ -127,6 +132,7 @@ series:
     unit: THOUSANDS
     unit_ru: тыс. человек
     frequency: monthly
+    aggregation: mean
     provider: abs
     dataset_id: "LF"
     series_id: "M3.3.1599.20.AUS.M"
@@ -149,6 +155,7 @@ series:
     unit: AUD_CHAINED
     unit_ru: млн австралийских долларов (цепные объёмы)
     frequency: quarterly
+    aggregation: sum
     provider: abs
     dataset_id: "ANA_AGG"
     series_id: "M1.GPM.20.AUS.Q"
@@ -171,6 +178,7 @@ series:
     unit: AUD_MN
     unit_ru: млн австралийских долларов
     frequency: monthly
+    aggregation: sum
     provider: abs
     dataset_id: "RT"
     series_id: "M1.20.20.AUS.M"
@@ -194,6 +202,7 @@ series:
     unit: AUD_MN
     unit_ru: млн австралийских долларов
     frequency: monthly
+    aggregation: sum
     provider: abs
     dataset_id: "ITGS"
     series_id: "M1.170.20.AUS.M"
@@ -216,6 +225,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: rba
     dataset_id: "F1"
     series_id: "FIRMMCRTD"
@@ -239,6 +249,7 @@ series:
     unit: USD_PER_AUD
     unit_ru: долларов США за 1 австралийский доллар
     frequency: daily
+    aggregation: mean
     provider: rba
     dataset_id: "F11.1"
     series_id: "FXRUSD"
@@ -261,6 +272,7 @@ series:
     unit: PERSONS
     unit_ru: человек
     frequency: quarterly
+    aggregation: mean
     provider: abs
     dataset_id: "ERP_COMP_Q"
     series_id: "10.AUS.Q"

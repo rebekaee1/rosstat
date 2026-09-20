@@ -13,6 +13,7 @@ series:
     unit: INDEX
     unit_ru: индекс (2002 = 100)
     frequency: monthly
+    aggregation: mean
     provider: statcan
     dataset_id: "18100004"
     series_id: "41690973"
@@ -35,6 +36,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: statcan
     dataset_id: "14100287"
     series_id: "2062815"
@@ -58,6 +60,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: statcan
     dataset_id: "14100287"
     series_id: "2062817"
@@ -81,6 +84,7 @@ series:
     unit: CAD_CHAINED
     unit_ru: млн канадских долларов (цены 2017)
     frequency: quarterly
+    aggregation: mean
     provider: statcan
     dataset_id: "36100104"
     series_id: "62305752"
@@ -104,6 +108,7 @@ series:
     unit: CAD_CHAINED
     unit_ru: млн канадских долларов (цены 2017)
     frequency: monthly
+    aggregation: mean
     provider: statcan
     dataset_id: "36100434"
     series_id: "65201210"
@@ -128,6 +133,7 @@ series:
     unit: CAD
     unit_ru: тыс. канадских долларов
     frequency: monthly
+    aggregation: sum
     provider: statcan
     dataset_id: "16100047"
     series_id: "800450"
@@ -152,6 +158,7 @@ series:
     unit: CAD
     unit_ru: тыс. канадских долларов
     frequency: monthly
+    aggregation: sum
     provider: statcan
     dataset_id: "20100056"
     series_id: "1446859483"
@@ -175,6 +182,7 @@ series:
     unit: CAD_MN
     unit_ru: млн канадских долларов
     frequency: monthly
+    aggregation: sum
     provider: statcan
     dataset_id: "12100011"
     series_id: "87008955"
@@ -198,6 +206,7 @@ series:
     unit: PERSONS
     unit_ru: человек
     frequency: quarterly
+    aggregation: mean
     provider: statcan
     dataset_id: "17100009"
     series_id: "1"
@@ -220,6 +229,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: boc_valet
     dataset_id: "V39079"
     series_id: "V39079"
@@ -242,6 +252,7 @@ series:
     unit: CAD_PER_USD
     unit_ru: канадских долларов за 1 доллар США
     frequency: daily
+    aggregation: mean
     provider: boc_valet
     dataset_id: "FXUSDCAD"
     series_id: "FXUSDCAD"
@@ -264,6 +275,7 @@ series:
     unit: CAD_MN
     unit_ru: млн канадских долларов
     frequency: monthly
+    aggregation: last
     provider: boc_valet
     dataset_id: "V41552798"
     series_id: "V41552798"

@@ -2,7 +2,7 @@
 
 Отдельный bounded context: world_countries / world_indicators / world_data_points.
 Карточки склеивают частоты по card_key; режимы — составной ?mode={type}-{freq}.
-Прогнозы изолированы в world_forecasts и проходят rolling-origin quality gate.
+Прогнозы изолированы в world_forecasts; quality gate консультативный (passed/advisory).
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ from datetime import date
 from statistics import median
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import and_, case, func, or_, select
+from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_get, cache_set, versioned_key
@@ -21,13 +21,14 @@ from app.services.api_i18n import api_detail
 from app.services.locale import get_locale
 from app.data.eurostat_listing import (
     catalog_merge_key,
+    catalog_stem,
     dataset_stem,
     is_stale_history,
     measure_preference_rank,
     normalize_frequency,
     variant_group_key,
 )
-from app.data.eurostat_titles_ru import listing_substance_score
+from app.data.eurostat_titles_ru import listing_category_ru, listing_substance_score
 from app.data.eurostat_units_ru import unit_suffix
 from app.data.world_concepts import (
     CONCEPT_BY_SLUG,
@@ -36,7 +37,12 @@ from app.data.world_concepts import (
     concept_public_name,
     concept_public_unit,
 )
-from app.data.world_concept_national import national_codes_for_concept
+from app.data.world_concept_national import (
+    NATIONAL_CONCEPT_INDICATOR_CODES,
+    concept_slug_for_national_code,
+    filter_weo_shadowed_from_country_listing,
+    national_codes_for_concept,
+)
 from app.data.world_concept_russia import (
     RUSSIA_CONCEPT_LINKS,
     RUSSIA_COUNTRY_PAYLOAD,
@@ -44,7 +50,6 @@ from app.data.world_concept_russia import (
     russia_link_for_concept,
     russia_list_country_payload,
 )
-from app.data.world_aggregation import aggregation_policy_for
 from app.data.global_market_indicators import market_indicator_codes_for_country
 from app.data.world_country_area import area_payload
 from app.data.world_country_population import population_payload as curated_population_payload
@@ -61,9 +66,10 @@ from app.models import (
     WorldIndicator,
 )
 from app.services.world_view_modes import is_signed_or_zero_crossing
+from app.services.world_forecaster import PUBLISHED_GATE_STATUSES
 from app.services.world_rank_values import (
+    apply_rank_series,
     latest_rank_point,
-    money_unit_compatible,
     rank_yoy_kind,
     ranking_display_name,
     ranking_period_method,
@@ -71,6 +77,12 @@ from app.services.world_rank_values import (
     ranking_value_mode,
     world_rating_title,
     yearly_last_points,
+)
+from app.services.world_compare import (
+    MONEY_COMPARE_CONCEPTS as _MONEY_COMPARE_CONCEPTS,
+    concept_members as _concept_members,
+    concept_member_rank as _concept_member_rank,
+    concept_unit_compatible as _concept_unit_compatible,
 )
 from app.services.world_russia_rank import (
     merge_russia_into_values_by_year,
@@ -81,8 +93,12 @@ from app.services.world_cards import (
     apply_resolved,
     build_modes_matrix,
     build_variants,
+    catalog_frequency_members,
+    catalog_frequency_members_from_index,
     display_name,
+    fill_missing_frequencies,
     frequencies_payload,
+    index_by_catalog_key,
     indicator_card_key,
     members_by_freq,
     mode_unit_for,
@@ -422,7 +438,7 @@ async def _load_current_world_forecast(
             .where(
                 WorldForecast.world_indicator_id == indicator_id,
                 WorldForecast.is_current.is_(True),
-                WorldForecast.gate_status == "passed",
+                WorldForecast.gate_status.in_(PUBLISHED_GATE_STATUSES),
             )
             .order_by(WorldForecast.created_at.desc())
             .limit(1)
@@ -476,6 +492,7 @@ async def _country_indicators_for_listing(
         return await _country_indicators(db, country_id)
 
     stems = {dataset_stem(ind.dataset_id) for ind in listed if ind.dataset_id}
+    stems |= {catalog_stem(ind.dataset_id) for ind in listed if ind.dataset_id}
     stems.discard("")
     if not stems:
         return listed
@@ -555,25 +572,8 @@ _AVERAGE_CONCEPTS = frozenset({
     "gdp-usd",
     "gdp-per-capita-usd",
 })
-_MONEY_COMPARE_CONCEPTS = frozenset({
-    "gdp-volume-quarterly",
-    "gdp-volume-annual",
-    "gdp-usd",
-    "gdp-per-capita-usd",
-})
-
-
 def _indicator_unit(indicator: WorldIndicator) -> str:
     return (indicator.unit_ru or indicator.unit or "").strip()
-
-
-def _concept_unit_compatible(concept, indicator: WorldIndicator) -> bool:
-    if concept.slug not in _MONEY_COMPARE_CONCEPTS:
-        return True
-    # Класс меры (CLV15_MEUR и т.п.), не дословный unit_ru: формулировки
-    # «млн евро в постоянных ценах» и «в постоянных ценах 2015 года, млн евро»
-    # — одна и та же сопоставимая единица.
-    return money_unit_compatible(concept.measure, indicator.unit, indicator.unit_ru)
 
 
 def _benchmark_value(concept_slug: str, values: list[float]) -> float:
@@ -616,90 +616,6 @@ def _average_series_copy(concept_slug: str) -> dict[str, str]:
     }
 
 
-def _concept_member_rank(indicator: WorldIndicator, national_codes: frozenset[str]) -> int:
-    """National, listed eurostat, unlisted eurostat, other listed, other unlisted.
-
-    Unlisted eurostat того же среза (national-passport suppress) должен
-    выигрывать у listed IMF: японская безработица une_rt_m глубже годовой
-    оценки фонда. Раньше равенство listed держалось на сортировке кодов.
-    """
-    if indicator.code in national_codes:
-        return 0
-    provider = str(indicator.provider or "").lower()
-    listed = bool(indicator.is_listed)
-    if provider == "eurostat":
-        return 1 if listed else 2
-    return 3 if listed else 4
-
-
-async def _concept_members(
-    db: AsyncSession,
-    concept,
-) -> list[tuple[WorldCountry, WorldIndicator]]:
-    # Не тянем всю таблицу world_indicators (после deep-expand — 100k+ строк):
-    # listed + dataset_id понятия (+ явный national crosswalk). Unlisted
-    # eurostat того же среза — только как fallback карты/рейтинга, когда у
-    # активной страны нет listed-члена (national-passport suppress или
-    # unlist после is_active=false). Каталог страны по-прежнему listed-only.
-    allowed = {
-        str(ds).lower()
-        for ds in concept.dataset_ids
-    }
-    if concept.provider_dataset_ids:
-        for ids in concept.provider_dataset_ids.values():
-            allowed.update(str(ds).lower() for ds in ids)
-    national_codes = national_codes_for_concept(concept.slug)
-    allowed_list = sorted(allowed)
-    listed_match = (
-        or_(
-            func.lower(WorldIndicator.dataset_id).in_(allowed_list),
-            WorldIndicator.code.in_(sorted(national_codes)),
-        )
-        if national_codes
-        else func.lower(WorldIndicator.dataset_id).in_(allowed_list)
-    )
-    rows = (
-        await db.execute(
-            select(WorldCountry, WorldIndicator)
-            .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
-            .where(
-                WorldCountry.is_active.is_(True),
-                or_(
-                    and_(WorldIndicator.is_listed.is_(True), listed_match),
-                    and_(
-                        WorldIndicator.is_listed.is_(False),
-                        WorldIndicator.points_count > 0,
-                        WorldIndicator.history_end >= date(2020, 1, 1),
-                        func.lower(WorldIndicator.dataset_id).in_(allowed_list),
-                    ),
-                ),
-            )
-            .order_by(WorldCountry.sort_order, WorldCountry.name_ru, WorldIndicator.code)
-        )
-    ).all()
-    members: list[tuple[WorldCountry, WorldIndicator]] = []
-    for country, indicator in rows:
-        if indicator.code in national_codes:
-            if _concept_unit_compatible(concept, indicator):
-                members.append((country, indicator))
-            continue
-        if (
-            concept_for_indicator(indicator) == concept
-            and _concept_unit_compatible(concept, indicator)
-        ):
-            members.append((country, indicator))
-    # Одна страна — один ряд: national, иначе listed eurostat, иначе unlisted.
-    by_country: dict[int, tuple[WorldCountry, WorldIndicator]] = {}
-    for country, indicator in members:
-        prev = by_country.get(country.id)
-        if prev is None or (
-            _concept_member_rank(indicator, national_codes)
-            < _concept_member_rank(prev[1], national_codes)
-        ):
-            by_country[country.id] = (country, indicator)
-    return list(by_country.values())
-
-
 def _card_members_map(
     inds: list[WorldIndicator],
 ) -> dict[tuple, list[WorldIndicator]]:
@@ -723,15 +639,14 @@ def _aggregated_frequencies_for_card(
     """Частоты, достижимые карточкой только агрегацией (не официальные ряды).
 
     Зеркало resolve_series_for_mode из world_cards: quarterly ← monthly,
-    annual ← quarterly|monthly — но по курируемым политикам
-    world_aggregation.aggregation_policy_for, без I/O.
+    annual ← quarterly|monthly. Политика агрегации fail-open.
     """
     by_freq = members_by_freq(members)
     official = set(by_freq)
     aggregated: list[str] = []
     for source_freq, targets in _AGGREGATION_SOURCE_TO_TARGET.items():
         source_ind = by_freq.get(source_freq)
-        if source_ind is None or aggregation_policy_for(source_ind) is None:
+        if source_ind is None:
             continue
         for target_freq in targets:
             if target_freq not in official and target_freq not in aggregated:
@@ -1473,7 +1388,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     политике (например annual у месячного индекса); клиент помечает такие
     режимы как расчётные.
     """
-    cache_key = await versioned_key("world", f"country:v11:{slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"country:v17:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1494,6 +1409,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     # Защита: all-zero не в каталоге страны (даже если is_listed ещё true).
     listed_signal = await _ids_with_nonzero_signal(db, [i.id for i in listed])
     listed = [i for i in listed if i.id in listed_signal]
+    listed = filter_weo_shadowed_from_country_listing(listed, country.code)
 
     # Второй уровень слияния: меры/базы одного смысла (уровень ↔ темп ↔
     # среднегодовой) — одна карточка. Внутри merge-группы primary выбирается
@@ -1543,12 +1459,19 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             elif rn == 2:
                 prev_map[iid] = float(v)
 
+    catalog_index = index_by_catalog_key(all_inds)
+
     by_cat: dict[str, list] = {}
     for mkey in merged_order:
         members_listed = merged_groups[mkey]
         primary = min(members_listed, key=measure_preference_rank)
         ind = primary
-        members = groups.get(indicator_card_key(ind)) or [ind]
+        members = catalog_frequency_members_from_index(
+            mkey,
+            listed_members=members_listed,
+            catalog_index=catalog_index,
+            groups=groups,
+        )
         by_freq = members_by_freq(members)
         last = last_map.get(ind.id)
         prev_val = prev_map.get(ind.id)
@@ -1564,6 +1487,11 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         aggregated_freqs = _aggregated_frequencies_for_card(members)
         name = _indicator_display_name(ind)
         catalog_name = display_name(ind.name_ru, ind.code)
+        cat_ru = listing_category_ru(
+            ind.dataset_id,
+            ind.category_ru,
+            provider=getattr(ind, "provider", None),
+        )
         if not is_public_catalog_name(catalog_name):
             # Нельзя осмысленно назвать по-русски — не обещаем в каталоге.
             continue
@@ -1592,8 +1520,8 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             "unit_ru": ind.unit_ru or ind.unit,
             "unit": unit,
             "unit_suffix": unit_suffix(unit),
-            "category_ru": ind.category_ru,
-            "category": ind.category_ru,
+            "category_ru": cat_ru,
+            "category": cat_ru,
             "frequency": primary_freq,
             "frequencies": freqs_sorted,
             # Частоты, доступные только через агрегационную политику (M4):
@@ -1609,7 +1537,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             # периоду»); каждый код — прямая ссылка на свой ряд.
             "merged_slices": merged_slices,
         }
-        by_cat.setdefault(ind.category_ru or "Прочее", []).append(item)
+        by_cat.setdefault(cat_ru or "Прочее", []).append(item)
 
     from app.services.seo_i18n import localize_category_name
 
@@ -1630,20 +1558,51 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         }
         for name, items in sorted(by_cat.items(), key=lambda kv: kv[0])
     ]
-    overview_candidates = []
+    # Шапка страны: один чип на концепт. Приоритет — национальный ряд из
+    # crosswalk (BLS 4,10 % за август, не WEO 4,38 % «за 2026»): чип и
+    # карточка каталога обязаны показывать одно и то же число. WEO/Eurostat
+    # берём только когда национального ряда нет и концепт матчится однозначно.
+    # Для hicp-index чип — изменение за год (как карта/рейтинг), не уровень.
+    all_by_code = {str(ind.code): ind for ind in all_inds}
+    overview_candidates: list[tuple] = []
     seen_concepts: set[str] = set()
     for concept in WORLD_CONCEPTS:
+        if concept.slug in seen_concepts:
+            continue
+        national_code = (NATIONAL_CONCEPT_INDICATOR_CODES.get(concept.slug) or {}).get(
+            (country.code or "").upper()
+        )
+        national = all_by_code.get(national_code) if national_code else None
+        if national is not None and int(national.points_count or 0) > 0:
+            overview_candidates.append((concept, national))
+            seen_concepts.add(concept.slug)
+            continue
         matches = [
             indicator
             for indicator in all_inds
             if concept_for_indicator(indicator) == concept
+            and int(indicator.points_count or 0) > 0
         ]
-        if len(matches) != 1 or concept.slug in seen_concepts:
+        if not matches:
             continue
-        overview_candidates.append((concept, matches[0]))
+        # Несколько рядов одного концепта: официальный ряд ведомства/Eurostat
+        # важнее годовой оценки МВФ, затем карточка каталога (is_listed),
+        # при равенстве — самая глубокая история.
+        best = max(
+            matches,
+            key=lambda ind: (
+                str(getattr(ind, "provider", "") or "").lower() != "imf",
+                bool(ind.is_listed),
+                int(ind.points_count or 0),
+            ),
+        )
+        overview_candidates.append((concept, best))
         seen_concepts.add(concept.slug)
 
-    overview_latest: dict[int, tuple[date, float]] = {}
+    # Хвост ряда: для yoy-концептов нужно ≥13 месячных точек, поэтому берём
+    # последние 14 на ряд одним запросом (для level используется только rn=1).
+    _OVERVIEW_TAIL = 14
+    overview_tail: dict[int, list[tuple[date, float]]] = defaultdict(list)
     if overview_candidates:
         overview_ids = [indicator.id for _, indicator in overview_candidates]
         ranked = (
@@ -1662,24 +1621,34 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         overview_rows = (
             await db.execute(
                 select(ranked.c.indicator_id, ranked.c.date, ranked.c.value)
-                .where(ranked.c.rn == 1)
+                .where(ranked.c.rn <= _OVERVIEW_TAIL)
             )
         ).all()
-        overview_latest = {
-            indicator_id: (point_date, float(value))
-            for indicator_id, point_date, value in overview_rows
-        }
+        for indicator_id, point_date, value in overview_rows:
+            overview_tail[indicator_id].append((point_date, float(value)))
 
     overview = []
     for concept, indicator in overview_candidates:
-        latest = overview_latest.get(indicator.id)
+        tail = overview_tail.get(indicator.id) or []
+        if not tail:
+            continue
+        mode = ranking_value_mode(concept.slug, [])
+        # Чип — последнее опубликованное значение, без «годового» отсечения
+        # текущего года, которое нужно только рейтингу.
+        series = apply_rank_series(tail, mode, yoy_kind=rank_yoy_kind(indicator))
+        latest = series[-1] if series else None
         if latest is None or latest[1] == 0:
             continue
+        # Имя чипа — как в рейтинге: для цен это «изменение за год», а не
+        # «гармонизированный индекс» (национальные CPI США/Канады — не HICP,
+        # а значение чипа — темп, не индекс).
         overview.append({
             "concept_slug": concept.slug,
-            "name": concept_public_name(concept),
-            "name_en": (concept.name_en or "").strip(),
-            "unit": concept_public_unit(concept),
+            "name": ranking_display_name(mode, concept.slug, concept_public_name(concept)),
+            "name_en": ranking_display_name(
+                mode, concept.slug, (concept.name_en or "").strip(), locale="en"
+            ),
+            "unit": ranking_public_unit(mode, concept_public_unit(concept)),
             "indicator_code": indicator.code,
             "frequency": normalize_frequency(indicator.frequency),
             "date": latest[0].isoformat(),
@@ -1706,6 +1675,17 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         },
         "market_indicators": await _country_market_indicators(db, country.slug),
     }
+    from app.services.world_subnational_ingest import country_has_subnational, load_subnational_passport
+    payload["country"]["has_regions"] = country_has_subnational(country.code)
+    if payload["country"]["has_regions"]:
+        passport = load_subnational_passport(country.code.lower())
+        en = get_locale() == "en"
+        payload["country"]["region_kind_label"] = (
+            passport.region_kind_label_en if en else passport.region_kind_label_ru
+        )
+        payload["country"]["region_kind_label_plural"] = (
+            passport.region_kind_label_en_plural if en else passport.region_kind_label_ru_plural
+        )
     from app.services.seo_i18n import localize_territory_fact
 
     if area is not None:
@@ -1724,7 +1704,17 @@ async def _card_context(
     groups = _card_members_map(all_inds)
     key = indicator_card_key(ind)
     members = groups.get(key) or [ind]
-    by_freq = members_by_freq(members)
+    by_freq = fill_missing_frequencies(
+        members_by_freq(members),
+        members_by_freq(
+            catalog_frequency_members(
+                ind,
+                listed_members=members,
+                groups=groups,
+                all_inds=all_inds,
+            )
+        ),
+    )
     primary = _primary_of_card(members) or ind
     return primary, by_freq, all_inds
 
@@ -1732,7 +1722,7 @@ async def _card_context(
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key(
-        "world", f"ind:v14:{slug}:{code}:{get_locale()}"
+        "world", f"ind:v18:{slug}:{code}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1826,12 +1816,19 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "indicator_code": peer_primary.code,
             "frequency": normalize_frequency(peer_primary.frequency),
         })
+    # Концепт для поверхности compare: Eurostat/IMF-срез напрямую, national-ряд
+    # (безработица США, CPI Канады) — через crosswalk. Единицы карточки этим
+    # не трогаем: у национальных индексов своя база.
     concept = concept_for_indicator(ind)
-    if (
-        concept is not None
-        and "compare" in concept.enabled_surfaces
-        and russia_eligible(concept.slug)
-    ):
+    if concept is None:
+        national_slug = concept_slug_for_national_code(ind.code)
+        concept = CONCEPT_BY_SLUG.get(national_slug) if national_slug else None
+    compare_concept_slug = (
+        concept.slug
+        if concept is not None and "compare" in concept.enabled_surfaces
+        else None
+    )
+    if compare_concept_slug is not None and russia_eligible(concept.slug):
         link = RUSSIA_CONCEPT_LINKS[concept.slug]
         loc = get_locale()
         peers.append({
@@ -1843,19 +1840,25 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "frequency": "annual",
         })
 
-    forecast_available = bool(await db.scalar(
-        select(func.count(WorldForecast.id)).where(
+    forecast_gate_status = await db.scalar(
+        select(WorldForecast.gate_status).where(
             WorldForecast.world_indicator_id.in_(
                 [member.id for member in by_freq.values()]
             ),
             WorldForecast.is_current.is_(True),
-            WorldForecast.gate_status == "passed",
-        )
-    ))
+            WorldForecast.gate_status.in_(PUBLISHED_GATE_STATUSES),
+        ).order_by(WorldForecast.created_at.desc()).limit(1)
+    )
+    forecast_available = forecast_gate_status is not None
 
     from app.services.seo_i18n import localize_category_name, translate_source
 
-    cat_disp = localize_category_name(ind.category_ru)
+    cat_ru = listing_category_ru(
+        ind.dataset_id,
+        ind.category_ru,
+        provider=getattr(ind, "provider", None),
+    )
+    cat_disp = localize_category_name(cat_ru)
     payload = {
         "country": _country_payload(country),
         "indicator": {
@@ -1869,8 +1872,8 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "unit_suffix": unit_suffix(unit),
             "frequency": normalize_frequency(ind.frequency),
             "category": cat_disp,
-            "category_ru": ind.category_ru,
-            "category_en": localize_category_name(ind.category_ru, locale="en"),
+            "category_ru": cat_ru,
+            "category_en": localize_category_name(cat_ru, locale="en"),
             "source": translate_source(ind.source) or ind.source,
             "source_url": ind.source_url,
             "description": _locale_safe_copy(ind.description),
@@ -1879,12 +1882,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "history_end": _fmt_date(ind.history_end),
             "points_count": ind.points_count,
             "archived": is_stale_history(ind.history_end),
-            "concept_slug": (
-                concept.slug
-                if (concept := concept_for_indicator(ind)) is not None
-                and "compare" in concept.enabled_surfaces
-                else None
-            ),
+            "concept_slug": compare_concept_slug,
         },
         "primary_code": primary.code,
         "frequencies": frequencies_payload(by_freq),
@@ -1892,6 +1890,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
         "modes": modes,
         "peers": peers,
         "forecast_available": forecast_available,
+        "forecast_gate_status": forecast_gate_status,
     }
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
     return payload
@@ -1909,7 +1908,7 @@ async def indicator_data(
 ):
     cache_key = await versioned_key(
         "world",
-        f"data:v4:{slug}:{code}:{mode}:{int(include_forecast)}:"
+        f"data:v7:{slug}:{code}:{mode}:{int(include_forecast)}:"
         f"{date_from}:{date_to}:{get_locale()}",
     )
     cached = await cache_get(cache_key)
@@ -1959,7 +1958,7 @@ async def indicator_data(
         candidates = [source]
         candidates.extend(
             candidate
-            for freq in ("monthly", "quarterly")
+            for freq in ("monthly", "quarterly", "annual")
             if (candidate := by_freq.get(freq)) is not None
             and candidate.id != source.id
         )
@@ -2042,6 +2041,7 @@ async def indicator_data(
                         if forecast.baseline_mase is not None else None
                     ),
                     "origins": forecast.origins,
+                    "gate_status": forecast.gate_status,
                 },
                 "source_code": candidate.code,
                 "derived": (
@@ -2092,6 +2092,14 @@ async def indicator_data(
         "unit": mode_unit,
         "unit_suffix": unit_suffix(mode_unit),
         "aggregated": resolved.aggregated,
+        "aggregation": (
+            {
+                "policy": resolved.aggregation_policy,
+                "source": resolved.aggregation_source or "fallback",
+            }
+            if resolved.aggregated
+            else None
+        ),
         "points": [{"date": d.isoformat(), "value": v} for d, v in transformed],
         "forecast": forecast_payload,
         "count": len(transformed),

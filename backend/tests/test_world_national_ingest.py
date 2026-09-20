@@ -160,8 +160,15 @@ def test_value_scale_default_and_parse():
     }
     spec = _parse_series_row(dict(base), index=0)
     assert spec.value_scale == 1.0
+    assert spec.aggregation is None
     spec = _parse_series_row({**base, "value_scale": 1000}, index=0)
     assert spec.value_scale == 1000.0
+    spec = _parse_series_row({**base, "aggregation": "mean"}, index=0)
+    assert spec.aggregation == "mean"
+    spec = _parse_series_row({**base, "aggregation": "SUM"}, index=0)
+    assert spec.aggregation == "sum"
+    spec = _parse_series_row({**base, "aggregation": "nope"}, index=0)
+    assert spec.aggregation is None
     with pytest.raises(ValueError):
         _parse_series_row({**base, "value_scale": "abc"}, index=0)
 
@@ -278,12 +285,20 @@ def test_load_us_yaml_structure():
     assert path.is_file()
     manifest = load_national_core_yaml("us")
     assert manifest.country_code == "US"
-    assert len(manifest.series) >= 6
+    assert len(manifest.series) >= 40
     by_suffix = {s.code_suffix: s for s in manifest.series}
     assert by_suffix["cpi-all"].provider == "fred"
     assert by_suffix["cpi-all"].series_id == "CPIAUCSL"
+    assert by_suffix["cpi-core"].series_id == "CPILFESL"
     assert by_suffix["policy-rate"].series_id == "FEDFUNDS"
     assert by_suffix["gdp-real"].series_id == "GDPC1"
+    assert by_suffix["housing-starts"].series_id == "HOUST"
+    assert by_suffix["housing-starts"].aggregation == "mean"
+    assert by_suffix["trade-balance"].series_id == "BOPGSTB"
+    assert by_suffix["trade-balance"].aggregation == "sum"
+    assert by_suffix["m2"].aggregation == "last"
+    assert all(s.aggregation in {"mean", "sum", "last"} for s in manifest.series)
+    assert len({s.series_id for s in manifest.series}) == len(manifest.series)
     assert build_indicator_code("US", "cpi-all") == "us-cpi-all"
     assert "Федеральный резервный банк Сент-Луиса" in (by_suffix["cpi-all"].methodology or "")
 

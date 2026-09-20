@@ -558,6 +558,10 @@ export default function WorldIndicatorPage() {
             dataPoints={points}
             forecastData={forecastPoints}
             forecastEnabled={forecastAvailable}
+            forecastGateStatus={
+              metaQ.data?.forecast_gate_status
+              || (forecastAvailable ? 'passed' : null)
+            }
             showForecast={showForecast}
             onToggleForecast={() => setShowForecast((current) => !current)}
             chartLoading={dataQ.isLoading}
@@ -567,6 +571,7 @@ export default function WorldIndicatorPage() {
             onDownloadExcel={handleDownloadExcel}
             frequency={activeFreq}
             aggregated={aggregated}
+            aggregation={dataQ.data?.aggregation || modeMeta?.aggregation || null}
             unit={displayUnit}
             country={country}
             conceptSlug={indicator.concept_slug}

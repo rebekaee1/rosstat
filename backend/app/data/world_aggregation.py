@@ -1,16 +1,27 @@
-"""Курируемая политика изменения частоты для мировых рядов.
+"""Политика изменения частоты для мировых рядов.
 
-Наличие подходящей единицы само по себе не доказывает метод агрегации. Поэтому
-каждый разрешённый dataset фиксируется явно; всё остальное остаётся fail-closed.
-Официальный ряд нужной частоты всегда имеет приоритет над расчётным.
+Приоритет: курируемый allowlist → паспорт национального ряда → семантический
+фолбэк. Официальный ряд нужной частоты всегда имеет приоритет над расчётным.
+Расчётный ряд помечается official=false. Фолбэк всегда возвращает политику.
 """
 
 from __future__ import annotations
 
+import logging
+from dataclasses import dataclass
 from datetime import date
+from pathlib import Path
 from typing import Any, Literal
 
+import yaml
+
 AggregationPolicy = Literal["sum", "mean", "last"]
+AggregationSource = Literal["curated", "passport", "fallback"]
+
+logger = logging.getLogger(__name__)
+
+_VALID_POLICIES = frozenset({"mean", "sum", "last"})
+_CORE_DIR = Path(__file__).resolve().parent / "world_national_core"
 
 _CURATED_POLICIES: dict[tuple[str, str], AggregationPolicy] = {
     # Индексы и балансы обследований: квартал/год = среднее месячных уровней.
@@ -174,15 +185,139 @@ for _unit, _datasets in _QUARTERLY_SUM_BY_UNIT.items():
     _CURATED_POLICIES.update({(_dataset, _unit): "sum" for _dataset in _datasets})
 
 
+# Потоки Eurostat: сумма только при одновременном совпадении семейства и
+# единицы-объёма. Префиксы собраны по реальным monthly dataset_id в БД
+# плюс родственные торговые/транспортные семейства.
+_FLOW_DATASET_PREFIXES: tuple[str, ...] = (
+    "ei_ete",
+    "ext_",
+    "nrg_cb",
+    "nrg_te",
+    "nrg_ti",
+    "nrg_chdd",
+    "road_go",
+    "avia_",
+    "mar_",
+    "rail_",
+    "tour_occ_ni",
+    "tour_occ_nin",
+)
+
+_VOLUME_UNITS = frozenset({
+    "THS_T",
+    "GWH",
+    "MIO_M3",
+    "TJ",
+    "KTOE",
+    "THS_TOE",
+    "NR",
+    "THS_NR",
+})
+
+_PASSPORT_POLICIES: dict[tuple[str, str, str], AggregationPolicy] | None = None
+
+
+@dataclass(frozen=True)
+class AggregationDecision:
+    policy: AggregationPolicy
+    source: AggregationSource
+
+
 def _unit_code(indicator: Any) -> str:
     return (getattr(indicator, "unit", None) or "").strip().upper().replace("-", "_")
 
 
-def aggregation_policy_for(indicator: Any) -> AggregationPolicy | None:
-    """Вернуть доказуемую политику либо None для неизвестной семантики."""
+def _parse_policy(raw: Any) -> AggregationPolicy | None:
+    val = str(raw or "").strip().lower()
+    if val in _VALID_POLICIES:
+        return val  # type: ignore[return-value]
+    return None
+
+
+def _load_passport_policies() -> dict[tuple[str, str, str], AggregationPolicy]:
+    """Ленивый реестр (provider, dataset_id, unit) → policy из YAML паспортов."""
+    global _PASSPORT_POLICIES
+    if _PASSPORT_POLICIES is not None:
+        return _PASSPORT_POLICIES
+    registry: dict[tuple[str, str, str], AggregationPolicy] = {}
+    if _CORE_DIR.is_dir():
+        for path in sorted(_CORE_DIR.glob("*.yaml")):
+            try:
+                raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+            except (OSError, yaml.YAMLError) as exc:
+                logger.warning("national-core YAML %s unreadable: %s", path.name, exc)
+                continue
+            if not isinstance(raw, dict):
+                continue
+            rows = raw.get("series")
+            if not isinstance(rows, list):
+                continue
+            for row in rows:
+                if not isinstance(row, dict):
+                    continue
+                policy = _parse_policy(row.get("aggregation"))
+                if policy is None:
+                    continue
+                provider = str(row.get("provider") or "").strip().lower()
+                dataset_id = str(row.get("dataset_id") or "").strip().lower()
+                unit = str(row.get("unit") or "").strip().upper().replace("-", "_")
+                if not provider or not dataset_id:
+                    continue
+                registry[(provider, dataset_id, unit)] = policy
+    _PASSPORT_POLICIES = registry
+    return registry
+
+
+def reset_passport_policy_cache() -> None:
+    """Для тестов: сбросить ленивый реестр после правки YAML."""
+    global _PASSPORT_POLICIES
+    _PASSPORT_POLICIES = None
+
+
+def _is_volume_unit(unit: str) -> bool:
+    if unit in _VOLUME_UNITS:
+        return True
+    return unit.startswith("MIO_")
+
+
+def _is_flow_dataset(dataset_id: str) -> bool:
+    return any(dataset_id.startswith(prefix) for prefix in _FLOW_DATASET_PREFIXES)
+
+
+def _fallback_policy(dataset_id: str, unit: str) -> AggregationPolicy:
+    if dataset_id.startswith("nrg_stk"):
+        return "last"
+    if _is_flow_dataset(dataset_id) and _is_volume_unit(unit):
+        return "sum"
+    return "mean"
+
+
+def aggregation_decision_for(indicator: Any) -> AggregationDecision:
+    """Трёхуровневая политика: curated → passport → semantic fallback."""
     dataset_id = (getattr(indicator, "dataset_id", None) or "").strip().lower()
     unit = _unit_code(indicator)
-    return _CURATED_POLICIES.get((dataset_id, unit))
+    curated = _CURATED_POLICIES.get((dataset_id, unit))
+    # В БД часть Eurostat-рядов хранит русскую подпись вместо кода единицы
+    # (например nrg_cb_cosm / «тыс. баррелей»). Если точной пары нет, берём
+    # курируемую политику датасета с пустым unit — она описывает сам ряд.
+    if curated is None and unit:
+        curated = _CURATED_POLICIES.get((dataset_id, ""))
+    if curated is not None:
+        return AggregationDecision(policy=curated, source="curated")
+    provider = (getattr(indicator, "provider", None) or "").strip().lower()
+    if provider:
+        passport = _load_passport_policies().get((provider, dataset_id, unit))
+        if passport is not None:
+            return AggregationDecision(policy=passport, source="passport")
+    return AggregationDecision(
+        policy=_fallback_policy(dataset_id, unit),
+        source="fallback",
+    )
+
+
+def aggregation_policy_for(indicator: Any) -> AggregationPolicy:
+    """Вернуть политику агрегации. Всегда не-None (fail-open с пометкой источника)."""
+    return aggregation_decision_for(indicator).policy
 
 
 def aggregate_series(

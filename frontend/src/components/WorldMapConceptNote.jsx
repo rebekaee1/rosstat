@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Info } from 'lucide-react';
 import { isWeoMapConcept } from '../lib/homeWorkbench';
 import { russiaCategoryPath } from '../lib/sitePaths';
-import { useT } from '../i18n';
+import { useLocale, useT } from '../i18n';
 
 const TIP_WIDTH_PX = 352; // ~22rem
 const TIP_GAP_PX = 6;
@@ -29,6 +29,7 @@ function tipPosition(anchorRect) {
  */
 export default function WorldMapConceptNote({ conceptSlug }) {
   const t = useT();
+  const { locale } = useLocale();
   const tipId = useId();
   const rootRef = useRef(null);
   const tipRef = useRef(null);
@@ -114,12 +115,14 @@ export default function WorldMapConceptNote({ conceptSlug }) {
           >
             {t('home.map.weoNote.methodology')}
           </Link>
-          <Link
-            to={russiaCategoryPath('gdp')}
-            className="font-medium text-champagne hover:underline"
-          >
-            {t('home.map.weoNote.russiaGdp')}
-          </Link>
+          {locale !== 'en' && (
+            <Link
+              to={russiaCategoryPath('gdp')}
+              className="font-medium text-champagne hover:underline"
+            >
+              {t('home.map.weoNote.russiaGdp')}
+            </Link>
+          )}
         </div>
       </div>,
       document.body,

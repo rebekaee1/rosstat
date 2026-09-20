@@ -57,16 +57,40 @@ VARIANT_WHITELIST_STEMS = frozenset()  # deprecated; variant_group_key боль�
 # об одном показателе. Штатный ключ «страна × stem» разводит их в разные
 # карточки без переключателя; алиас склеивает в одну variant-группу.
 # Каждый член — frozenset стемов; ключ группировки = alias-группа или stem.
+#
+# Темпы ГИПЦ (manr/mmor/mv12r) сюда НЕ входят: это режимы индексной карточки,
+# а не срезы variant-пикера. Их склеивает CATALOG_STEM_ALIASES.
 VARIANT_STEM_ALIASES: tuple[frozenset[str], ...] = (
     frozenset({"prc_hpi", "ei_hppi"}),  # индекс цен на жильё: основной ↔ быстрая оценка
     # ГИПЦ, один смысл: месячный индекс / среднегодовой / быстрая оценка flash
     # (release=FIN — измерение публикации, не смысла) / темп к предыдущему
     # периоду (ei_cphi, RT1). prc_hicp_cind (постоянные налоги) — другой
-    # показатель, сознательно вне группы.
+    # показатель, сознательно вне группы (редакторский no).
     frozenset({
         "prc_hicp_midx", "prc_hicp_aind", "prc_hicp_fp", "ei_cphi",
     }),
 )
+
+# Слияние каталога страны (не variant-пикер): индекс ГИПЦ + его темпы —
+# одна карточка, темпы уходят в merged_slices / матрицу режимов.
+CATALOG_STEM_ALIASES: tuple[frozenset[str], ...] = (
+    frozenset({
+        "prc_hicp_midx",
+        "prc_hicp_aind",
+        "prc_hicp_fp",
+        "ei_cphi",
+        "prc_hicp_manr",
+        "prc_hicp_mmor",
+        "prc_hicp_mv12r",
+        "prc_hicp_ainr",
+        # main table «ГИПЦ, среднегодовой» — 12-летний хвост prc_hicp_ainr,
+        # иначе висит второй карточкой в «Бизнесе».
+        "tec00027",
+    }),
+)
+
+# Последний токен Eurostat-id с приклеенной частотой без '_': ooq/ooa, hsvq/hsva.
+_GLUED_FREQ_LAST_TOKEN = re.compile(r"^(?P<root>[a-z]{2,})(?P<letter>[mqa])$")
 
 
 FREQ_ORDER = ("monthly", "quarterly", "annual", "weekly", "daily")
@@ -136,11 +160,49 @@ def measure_class(unit: str | None, unit_ru: str | None = None) -> str:
 
 
 def dataset_stem(dataset_id: str | None) -> str:
-    """Строгий stem набора: une_rt_m → une_rt. Без name-fallback и без широких alias."""
+    """Строгий stem набора: une_rt_m → une_rt. Без name-fallback и без широких alias.
+
+    Частоту без подчёркивания (``prc_hpi_ooq``) здесь не трогаем — это
+    ``catalog_stem``: иначе ``une_rt_a`` после штатного ``_a`` остаётся
+    ``une_rt``, а голая буква «a» у смыслового кода съелась бы.
+    """
     ds = (dataset_id or "").strip().lower()
     if not ds:
         return ""
     return _DATASET_FREQ_SUFFIX.sub("", ds)
+
+
+def catalog_stem(dataset_id: str | None) -> str:
+    """Стем для слияния каталога: dataset_stem + приклеенная частота Eurostat.
+
+    Часть таблиц Eurostat кодирует частоту последней буквой *без* ``_``
+    (``prc_hpi_ooq`` / ``prc_hpi_ooa``, ``prc_hpi_hsvq`` / ``hsva``,
+    ``prc_hpi_hsnq`` / ``hsna``, ``prc_hpi_inq`` / ``ina``). Штатный
+    ``dataset_stem`` это не режет: суффикс ``_[mqa]`` у ``une_rt_a`` уже
+    снят, а слепая обрезка последней буквы съела бы смысловые коды.
+
+    Эвристика без обращения к БД (ключ карточки — чистая функция):
+
+    1. Сначала снимаем ``_[mqawd]``.
+    2. Если в стеме есть ``_`` и последний токен = «≥2 латинских буквы +
+       ``m|q|a``», корень после снятия буквы тоже ≥2 букв, а полный корень
+       ≥ 6 символов — считаем букву частотой.
+
+    Sibling-проверка «оба варианта есть в БД» на этом слое невозможна.
+    Ложные склейки ловятся тестами ``une_rt_a`` / ``demo_minfind`` /
+    ``prc_hicp_midx`` (последний токен не ``m|q|a``).
+    """
+    stem = dataset_stem(dataset_id)
+    if not stem or "_" not in stem:
+        return stem
+    head, _, last = stem.rpartition("_")
+    match = _GLUED_FREQ_LAST_TOKEN.match(last)
+    if not match:
+        return stem
+    glued = f"{head}_{match.group('root')}"
+    if len(glued) < 6:
+        return stem
+    return glued
 
 
 def extra_dims_frozen(slice_json: dict[str, Any] | None) -> tuple[tuple[str, str], ...]:
@@ -247,15 +309,15 @@ def catalog_merge_key(
 
     Отличие от ``card_key``: measure_class проходит через
     catalog_measure_class (индекс и его темп — одна карточка), стемы —
-    по alias-группе (prc_hpi ↔ ei_hppi). Разные сущностные единицы
-    (уровень % vs численность), срезы (coicop FOOD vs CP00) и возрасты/полы
-    НЕ схлопываются.
+    ``catalog_stem`` + alias-группы (prc_hpi ↔ ei_hppi, ГИПЦ индекс+темпы).
+    Разные сущностные единицы (уровень % vs численность), срезы
+    (coicop FOOD vs CP00) и возрасты/полы НЕ схлопываются.
     """
     sl = slice_json or {}
     return (
         int(country_id),
         (provider or "eurostat").strip().lower(),
-        variant_stem_alias(dataset_stem(dataset_id)),
+        catalog_stem_alias(dataset_id),
         catalog_measure_class(unit or sl.get("unit"), unit_ru),
         normalize_age_code(sl.get("age")),
         normalize_sex_code(sl.get("sex")),
@@ -291,6 +353,19 @@ def measure_preference_rank(ind: Any) -> tuple:
     )
 
 
+def _stem_alias_from_groups(
+    stem: str,
+    groups: tuple[frozenset[str], ...],
+) -> str | None:
+    s = (stem or "").strip().lower()
+    if not s:
+        return None
+    for group in groups:
+        if s in group:
+            return "|".join(sorted(group))
+    return None
+
+
 def variant_stem_alias(stem: str) -> str:
     """Alias-ключ stem'а для variant-группы (кросс-стемовые семьи, M3).
 
@@ -301,10 +376,25 @@ def variant_stem_alias(stem: str) -> str:
     s = (stem or "").strip().lower()
     if not s:
         return s
-    for group in VARIANT_STEM_ALIASES:
-        if s in group:
-            return "|".join(sorted(group))
-    return s
+    return _stem_alias_from_groups(s, VARIANT_STEM_ALIASES) or s
+
+
+def catalog_stem_alias(dataset_id: str | None) -> str:
+    """Alias для слияния каталога: catalog_stem, затем catalog/variant группы.
+
+    Сначала CATALOG_STEM_ALIASES (ГИПЦ индекс + темпы), затем
+    VARIANT_STEM_ALIASES (жильё prc_hpi ↔ ei_hppi). Темпы не попадают
+    в variant-пикер, потому что variant_group_key смотрит только
+    VARIANT_STEM_ALIASES.
+    """
+    s = catalog_stem(dataset_id)
+    if not s:
+        return s
+    return (
+        _stem_alias_from_groups(s, CATALOG_STEM_ALIASES)
+        or _stem_alias_from_groups(s, VARIANT_STEM_ALIASES)
+        or s
+    )
 
 
 def variant_group_key(

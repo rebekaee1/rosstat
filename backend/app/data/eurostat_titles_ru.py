@@ -26,6 +26,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 CATEGORY_BY_PREFIX: list[tuple[str, str]] = [
+    ("prc_ppp", "ВВП"),
     ("prc_", "Цены"),
     ("ei_cphi", "Цены"),
     ("ei_hppi", "Цены"),
@@ -937,6 +938,26 @@ def category_for_dataset(dataset_id: str) -> str:
         if ds.startswith(prefix.lower()):
             return cat
     return "Прочее"
+
+
+def listing_category_ru(
+    dataset_id: str | None,
+    stored: str | None = None,
+    *,
+    provider: str | None = None,
+) -> str:
+    """Тема карточки: Eurostat — маппинг датасета, иначе сохранённое поле.
+
+    Нужно, чтобы смена префикса (``prc_ppp*`` → «ВВП») сразу попала на
+    витрину, не дожидаясь переингеста. Национальные провайдеры не трогаем.
+    """
+    prov = (provider or "eurostat").strip().lower()
+    if prov in {"", "eurostat"}:
+        mapped = category_for_dataset(dataset_id or "")
+        if mapped and mapped != "Прочее":
+            return mapped
+    raw = (stored or "").strip()
+    return raw or "Прочее"
 
 
 def unit_label_ru(unit_code: str | None) -> str:

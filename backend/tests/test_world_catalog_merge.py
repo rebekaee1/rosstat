@@ -163,6 +163,93 @@ def test_merge_key_provider_does_not_merge():
     assert k1 != k2
 
 
+def test_merge_key_hicp_rates_join_index():
+    """Темпы ГИПЦ (manr/mmor/mv12r) — та же карточка, что индекс midx."""
+    idx = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hicp_midx",
+        unit="I15", unit_ru="индекс (2015 = 100)",
+        slice_json={"freq": "M", "unit": "I15", "coicop": "CP00"},
+    )
+    for ds, unit, unit_ru in (
+        ("prc_hicp_manr", "RCH_A", "изменение за год"),
+        ("prc_hicp_mmor", "RCH_M", "изменение за месяц"),
+        ("prc_hicp_mv12r", "RCH_MV12MAVR", "среднее изменение за 12 месяцев"),
+    ):
+        k = catalog_merge_key(
+            country_id=7, provider="eurostat", dataset_id=ds,
+            unit=unit, unit_ru=unit_ru,
+            slice_json={"freq": "M", "unit": unit, "coicop": "CP00"},
+        )
+        assert k == idx, ds
+    # Среднегодовой ГИПЦ: полный ряд prc_hicp_ainr и main table tec00027
+    # (coicop18=TOTAL) — та же карточка, не вторая плитка в «Бизнесе».
+    for ds in ("prc_hicp_ainr", "tec00027"):
+        k = catalog_merge_key(
+            country_id=7, provider="eurostat", dataset_id=ds,
+            unit="INX_A_AVG", unit_ru="индекс, среднегодовой",
+            slice_json={"freq": "A", "unit": "INX_A_AVG", "coicop18": "TOTAL"},
+        )
+        assert k == idx, ds
+
+
+def test_merge_key_constant_tax_hicp_stays_apart():
+    """prc_hicp_cind — другой предмет, не склеивается с общим ГИПЦ."""
+    k_idx = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hicp_midx",
+        unit="I15", unit_ru="индекс (2015 = 100)",
+        slice_json={"freq": "M", "unit": "I15", "coicop": "CP00"},
+    )
+    k_cind = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hicp_cind",
+        unit="I15", unit_ru="индекс (2015 = 100)",
+        slice_json={"freq": "M", "unit": "I15", "coicop": "CP00"},
+    )
+    assert k_idx != k_cind
+
+
+def test_merge_key_glued_housing_frequency_pairs():
+    """ooq/ooa, hsvq/hsva, hsnq/hsna — одна карточка на пару частот."""
+    k_q = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hpi_ooq",
+        unit="I15_Q", unit_ru="индекс (2015 = 100)",
+        slice_json={"freq": "Q", "unit": "I15_Q", "purchase": "TOTAL"},
+    )
+    k_a = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hpi_ooa",
+        unit="I15_A_AVG", unit_ru="индекс (2015 = 100), среднегодовой",
+        slice_json={"freq": "A", "unit": "I15_A_AVG", "purchase": "TOTAL"},
+    )
+    assert k_q == k_a
+    # общий индекс жилья — другая карточка
+    k_hpi = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hpi_q",
+        unit="I15_Q", unit_ru="индекс (2015 = 100)",
+        slice_json={"freq": "Q", "unit": "I15_Q", "purchase": "TOTAL"},
+    )
+    assert k_q != k_hpi
+
+    k_hsv_q = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hpi_hsvq",
+        unit="EUR", unit_ru="евро",
+        slice_json={"freq": "Q", "unit": "EUR", "purchase": "TOTAL"},
+    )
+    k_hsv_a = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hpi_hsva",
+        unit="EUR", unit_ru="евро",
+        slice_json={"freq": "A", "unit": "EUR", "purchase": "TOTAL"},
+    )
+    assert k_hsv_q == k_hsv_a
+
+
+def test_ppp_category_is_gdp_not_prices():
+    from app.data.eurostat_titles_ru import category_for_dataset, listing_category_ru
+
+    assert category_for_dataset("prc_ppp_ind") == "ВВП"
+    assert category_for_dataset("prc_ppp_ind_1") == "ВВП"
+    assert listing_category_ru("prc_ppp_ind_1", "Цены") == "ВВП"
+    assert category_for_dataset("prc_hicp_midx") == "Цены"
+
+
 # --- предпочтение меры --------------------------------------------------------
 
 
@@ -233,6 +320,9 @@ def merged_catalog_client(auth_env):
                 _ind("at-prc_hicp_aind-cp00-inx-a-avg", "prc_hicp_aind", "INX_A_AVG",
                      "индекс, среднегодовой", "annual", 30,
                      {"freq": "A", "unit": "INX_A_AVG", "coicop": "CP00"}),
+                _ind("at-prc_hicp_manr-cp00-rch-a", "prc_hicp_manr", "RCH_A",
+                     "изменение за год", "monthly", 60,
+                     {"freq": "M", "unit": "RCH_A", "coicop": "CP00"}),
                 _ind("at-ei_cphi_m-total-rt1", "ei_cphi_m", "RT1",
                      "темп изменения к предыдущему периоду", "monthly", 60,
                      {"freq": "M", "unit": "RT1", "indic": "TOTAL"}),
@@ -246,6 +336,25 @@ def merged_catalog_client(auth_env):
                 _ind("at-ei_hppi_q-total-i25-nsa", "ei_hppi_q", "I25_NSA",
                      "индекс (2025 = 100)", "quarterly", 20,
                      {"freq": "Q", "unit": "I25_NSA", "indic": "TOTAL"}),
+                # жильё собственников: квартал + год
+                _ind("at-prc_hpi_ooq-total-i15-q", "prc_hpi_ooq", "I15_Q",
+                     "индекс (2015 = 100)", "quarterly", 36,
+                     {"freq": "Q", "unit": "I15_Q", "purchase": "TOTAL"}),
+                _ind("at-prc_hpi_ooa-total-i15-a-avg", "prc_hpi_ooa", "I15_A_AVG",
+                     "индекс (2015 = 100), среднегодовой", "annual", 14,
+                     {"freq": "A", "unit": "I15_A_AVG", "purchase": "TOTAL"}),
+                # стоимость сделок
+                _ind("at-prc_hpi_hsvq-total-eur", "prc_hpi_hsvq", "EUR",
+                     "евро", "quarterly", 36,
+                     {"freq": "Q", "unit": "EUR", "purchase": "TOTAL"}),
+                _ind("at-prc_hpi_hsva-total-eur", "prc_hpi_hsva", "EUR",
+                     "евро", "annual", 14,
+                     {"freq": "A", "unit": "EUR", "purchase": "TOTAL"}),
+                # ППС — хранится как «Цены», маппинг поднимает в ВВП
+                _ind("at-prc_ppp_ind_1-exp-pps-eu27-2020-gdp", "prc_ppp_ind_1",
+                     "PPS_EU27_2020_HAB", "ППС на душу", "annual", 20,
+                     {"freq": "A", "na_item": "EXP_PPS_EU27_2020_GDP"},
+                     cat="Цены"),
                 # coicop FOOD — отдельный срез, не сливается с CP00
                 _ind("at-prc_hicp_midx-food-i15", "prc_hicp_midx", "I15",
                      "индекс (2015 = 100)", "monthly", 60,
@@ -268,28 +377,38 @@ def merged_catalog_client(auth_env):
 
 
 def test_country_detail_merges_measures(merged_catalog_client):
-    """HICP-уровень (3 меры) и жильё (3 ряда) → 2 карточки + срез FOOD."""
+    """HICP-уровень+темпы и жильё → по одной карточке; ППС уходит в ВВП."""
     body = merged_catalog_client.get("/api/v1/world/countries/austria").json()
     cards = [i for cat in body["categories"] for i in cat["indicators"]]
     codes = [c["code"] for c in cards]
+    by_cat = {c["name_ru"]: [i["code"] for i in c["indicators"]] for c in body["categories"]}
 
     assert "at-prc_hicp_midx-cp00-i15" in codes
-    # среднегодовой и темп не дают отдельных карточек
+    # среднегодовой, темп ei_cphi и manr не дают отдельных карточек
     assert "at-prc_hicp_aind-cp00-inx-a-avg" not in codes
     assert "at-ei_cphi_m-total-rt1" not in codes
+    assert "at-prc_hicp_manr-cp00-rch-a" not in codes
     # жильё схлопнулось в квартальный индекс (глубже ei_hppi при равном ранге)
     assert "at-prc_hpi_q-total-i15-q" in codes
     assert "at-prc_hpi_a-total-i15-a-avg" not in codes
     assert "at-ei_hppi_q-total-i25-nsa" not in codes
+    # пары частот жилья собственников / сделок
+    assert "at-prc_hpi_ooq-total-i15-q" in codes
+    assert "at-prc_hpi_ooa-total-i15-a-avg" not in codes
+    assert "at-prc_hpi_hsvq-total-eur" in codes
+    assert "at-prc_hpi_hsva-total-eur" not in codes
     # срез FOOD — своя карточка
     assert "at-prc_hicp_midx-food-i15" in codes
+    # ППС не в «Ценах»
+    prices = by_cat.get("Цены") or []
+    assert "at-prc_ppp_ind_1-exp-pps-eu27-2020-gdp" not in prices
+    gdp = by_cat.get("ВВП") or []
+    assert "at-prc_ppp_ind_1-exp-pps-eu27-2020-gdp" in gdp
 
     hicp = next(c for c in cards if c["code"] == "at-prc_hicp_midx-cp00-i15")
     merged_codes = {m["code"] for m in hicp["merged_slices"]}
-    assert merged_codes == {
-        "at-prc_hicp_aind-cp00-inx-a-avg",
-        "at-ei_cphi_m-total-rt1",
-    }
+    assert "at-prc_hicp_aind-cp00-inx-a-avg" in merged_codes
+    assert "at-prc_hicp_manr-cp00-rch-a" in merged_codes
     # контракт merged_slices: {code, unit}
     for m in hicp["merged_slices"]:
         assert set(m.keys()) == {"code", "unit"}
@@ -298,16 +417,21 @@ def test_country_detail_merges_measures(merged_catalog_client):
     assert isinstance(hicp["frequencies"], list)
     assert all(isinstance(f, str) for f in hicp["frequencies"])
     assert "monthly" in hicp["frequencies"]
-    assert isinstance(hicp["aggregated_frequencies"], list)
+
+    oo = next(c for c in cards if c["code"] == "at-prc_hpi_ooq-total-i15-q")
+    assert "quarterly" in oo["frequencies"]
+    assert "annual" in oo["frequencies"]
+    hsv = next(c for c in cards if c["code"] == "at-prc_hpi_hsvq-total-eur")
+    assert "quarterly" in hsv["frequencies"]
+    assert "annual" in hsv["frequencies"]
 
 
 def test_country_detail_merged_card_carries_full_freq_matrix(merged_catalog_client):
-    """Частоты слитой карточки — от members card_key primary (контракт поля)."""
+    """Частоты слитой карточки — официальные ряды merge-группы, не только primary."""
     body = merged_catalog_client.get("/api/v1/world/countries/austria").json()
     cards = [i for cat in body["categories"] for i in cat["indicators"]]
     hicp = next(c for c in cards if c["code"] == "at-prc_hicp_midx-cp00-i15")
-    # primary prc_hicp_midx — месячный ряд; annual приходит через
-    # aggregated_frequencies (расчётная частота), frequencies — официальные.
     assert "monthly" in hicp["frequencies"]
-    assert "annual" not in hicp["frequencies"]
-    assert "annual" in hicp["aggregated_frequencies"]
+    # среднегодовой aind — официальный annual, не расчёт с месячного
+    assert "annual" in hicp["frequencies"]
+    assert "annual" not in hicp["aggregated_frequencies"]

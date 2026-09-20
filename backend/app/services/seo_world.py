@@ -18,14 +18,17 @@ from html import escape
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.data.eurostat_titles_ru import country_prepositional
+from app.data.eurostat_titles_ru import country_prepositional, listing_category_ru
 from app.data.eurostat_units_ru import unit_suffix
 from app.data.legacy_redirects import (
     strip_world_frequency_suffix,
     world_card_primary_rank,
     world_card_siblings,
 )
-from app.data.world_concept_national import national_codes_for_concept
+from app.data.world_concept_national import (
+    filter_weo_shadowed_from_country_listing,
+    national_codes_for_concept,
+)
 from app.data.world_concepts import (
     CONCEPT_BY_SLUG,
     WORLD_CONCEPTS,
@@ -1282,9 +1285,16 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     if not inds:
         return 404, "<h1>Нет показателей</h1>"
 
+    inds = filter_weo_shadowed_from_country_listing(list(inds), country.code)
+
     # Каталог = карточки (primary частоты), не ряды M/Q/A.
     inds = _pick_card_primaries(list(inds))
-    inds.sort(key=lambda i: (i.category_ru or "", _display_name(i)))
+    inds.sort(key=lambda i: (
+        listing_category_ru(
+            i.dataset_id, i.category_ru, provider=getattr(i, "provider", None),
+        ),
+        _display_name(i),
+    ))
 
     ids = [i.id for i in inds]
     rn = func.row_number().over(
@@ -1314,8 +1324,11 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     cat_rank = {name: i for i, name in enumerate(_KEY_CATEGORY_ORDER)}
 
     def _key_sort(ind: WorldIndicator) -> tuple:
+        cat = listing_category_ru(
+            ind.dataset_id, ind.category_ru, provider=getattr(ind, "provider", None),
+        )
         return (
-            cat_rank.get(ind.category_ru or "", 99),
+            cat_rank.get(cat or "", 99),
             -(ind.points_count or 0),
             ind.name_ru,
         )
@@ -1359,7 +1372,10 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
 
     by_cat: dict[str, list[WorldIndicator]] = {}
     for ind in inds:
-        by_cat.setdefault(ind.category_ru or "Прочее", []).append(ind)
+        cat = listing_category_ru(
+            ind.dataset_id, ind.category_ru, provider=getattr(ind, "provider", None),
+        )
+        by_cat.setdefault(cat or "Прочее", []).append(ind)
 
     sections = []
     for cat_ru in sorted(by_cat.keys(), key=lambda c: (cat_rank.get(c, 99), c)):

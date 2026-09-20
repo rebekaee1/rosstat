@@ -15,6 +15,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "433"
     series_id: "433"
@@ -39,6 +40,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "13522"
     series_id: "13522"
@@ -61,6 +63,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "24369"
     series_id: "24369"
@@ -83,6 +86,7 @@ series:
     unit: INDEX
     unit_ru: индекс (среднее 1995 = 100)
     frequency: quarterly
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "22109"
     series_id: "22109"
@@ -106,6 +110,7 @@ series:
     unit: INDEX
     unit_ru: индекс
     frequency: monthly
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "24364"
     series_id: "24364"
@@ -128,6 +133,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "432"
     series_id: "432"
@@ -150,6 +156,7 @@ series:
     unit: BRL_PER_USD
     unit_ru: бразильских реалов за 1 доллар США
     frequency: daily
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "1"
     series_id: "1"
@@ -172,6 +179,7 @@ series:
     unit: INDEX
     unit_ru: индекс
     frequency: monthly
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "21859"
     series_id: "21859"
@@ -194,6 +202,7 @@ series:
     unit: INDEX
     unit_ru: индекс
     frequency: monthly
+    aggregation: mean
     provider: bcb_sgs
     dataset_id: "1455"
     series_id: "1455"

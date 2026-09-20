@@ -35,6 +35,23 @@ def test_dataset_stem_strips_freq():
     assert dataset_stem("une_rt_a") == "une_rt"
     assert dataset_stem("sts_inpr_m") == "sts_inpr"
     assert dataset_stem("demo_minfind") == "demo_minfind"
+    # приклеенная частота — не dataset_stem (иначе une_rt_a съест букву)
+    assert dataset_stem("prc_hpi_ooq") == "prc_hpi_ooq"
+    assert dataset_stem("prc_hpi_ooa") == "prc_hpi_ooa"
+
+
+def test_catalog_stem_glues_trailing_freq_letter():
+    from app.data.eurostat_listing import catalog_stem
+
+    assert catalog_stem("prc_hpi_ooq") == catalog_stem("prc_hpi_ooa") == "prc_hpi_oo"
+    assert catalog_stem("prc_hpi_hsvq") == catalog_stem("prc_hpi_hsva") == "prc_hpi_hsv"
+    assert catalog_stem("prc_hpi_hsnq") == catalog_stem("prc_hpi_hsna") == "prc_hpi_hsn"
+    assert catalog_stem("prc_hpi_inq") == catalog_stem("prc_hpi_ina") == "prc_hpi_in"
+    # штатный _m/_q/_a уже снят — букву не трогаем
+    assert catalog_stem("une_rt_a") == "une_rt"
+    assert catalog_stem("une_rt_m") == "une_rt"
+    assert catalog_stem("demo_minfind") == "demo_minfind"
+    assert catalog_stem("prc_hicp_midx") == "prc_hicp_midx"
 
 
 def test_card_key_same_across_frequencies():
@@ -159,6 +176,7 @@ def test_resolve_only_official_frequency():
     assert r2 is not None
     assert r2.aggregated is True
     assert r2.aggregation_policy == "mean"
+    assert r2.aggregation_source == "curated"
 
 
 def test_calculated_frequency_uses_complete_periods_then_mode():
@@ -241,17 +259,22 @@ def test_quarterly_labour_rate_uses_annual_mean():
         ("namq_10_a10", "PC_GDP"),
     ],
 )
-def test_quarterly_ready_made_changes_and_gdp_shares_stay_closed(dataset_id, unit):
+def test_quarterly_ready_made_changes_use_fallback_mean(dataset_id, unit):
     quarterly = _Ind(
         code="unsupported", frequency="quarterly", points_count=8,
         history_start=date(2023, 1, 1), history_end=date(2024, 10, 1),
         dataset_id=dataset_id, unit=unit,
     )
-    assert resolve_series_for_mode(
+    resolved = resolve_series_for_mode(
         parsed=parse_mode_token("level-annual", native_freq="quarterly"),
         by_freq=members_by_freq([quarterly]),
         signed=False,
-    ) is None
+    )
+    assert resolved is not None
+    assert resolved.aggregated is True
+    assert resolved.official is False
+    assert resolved.aggregation_policy == "mean"
+    assert resolved.aggregation_source == "fallback"
 
 
 def test_curated_confidence_index_unlocks_complete_period_averages():
@@ -312,10 +335,42 @@ def test_flow_and_stock_datasets_use_different_period_semantics():
         signed=False,
     )
     assert flow_resolved is not None and flow_resolved.aggregation_policy == "sum"
+    assert flow_resolved.aggregation_source == "curated"
     assert stock_resolved is not None and stock_resolved.aggregation_policy == "last"
+    assert stock_resolved.aggregation_source == "curated"
 
 
-def test_modes_matrix_marks_unavailable():
+def test_fred_monthly_unlocks_quarterly_and_annual_matrix():
+    monthly = _Ind(
+        code="us-nonfarm-payrolls",
+        frequency="monthly",
+        points_count=400,
+        history_start=date(1990, 1, 1),
+        history_end=date(2026, 8, 1),
+        dataset_id="PAYEMS",
+        unit="THOUSANDS",
+        provider="fred",
+    )
+    modes = build_modes_matrix(
+        by_freq=members_by_freq([monthly]),
+        series_by_code=None,
+        unit="тыс. человек",
+    )
+    by_id = {m["id"]: m for m in modes}
+    for mode_id in (
+        "level-quarterly", "level-annual",
+        "step-quarterly", "step-annual",
+        "yoy-quarterly", "yoy-annual",
+    ):
+        assert by_id[mode_id]["available"] is True, mode_id
+        assert by_id[mode_id]["official"] is False, mode_id
+        assert by_id[mode_id]["aggregation"] == {
+            "policy": "mean",
+            "source": "passport",
+        }, mode_id
+
+
+def test_modes_matrix_marks_calculated_frequencies():
     monthly = _Ind(
         code="m", frequency="monthly", points_count=60,
         history_start=date(2020, 1, 1), history_end=date(2025, 1, 1),
@@ -325,7 +380,10 @@ def test_modes_matrix_marks_unavailable():
     by_id = {m["id"]: m for m in modes}
     assert by_id["level-monthly"]["available"] is True
     assert by_id["level-monthly"]["official"] is True
-    assert by_id["level-quarterly"]["available"] is False
+    assert by_id["level-quarterly"]["available"] is True
+    assert by_id["level-quarterly"]["official"] is False
+    assert by_id["level-quarterly"]["aggregation"]["policy"] == "mean"
+    assert by_id["level-quarterly"]["aggregation"]["source"] == "fallback"
     assert by_id["step-monthly"]["available"] is True
     assert by_id["yoy-monthly"]["available"] is True
 

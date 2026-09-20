@@ -16,6 +16,7 @@ series:
     unit: INDEX
     unit_ru: индекс (2015 = 100)
     frequency: monthly
+    aggregation: mean
     provider: ons
     dataset_id: "MM23"
     series_id: "D7BT"
@@ -41,6 +42,7 @@ series:
     unit: INDEX
     unit_ru: индекс (2015 = 100)
     frequency: monthly
+    aggregation: mean
     provider: ons
     dataset_id: "MM23"
     series_id: "L522"
@@ -65,6 +67,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: ons
     dataset_id: "LMS"
     series_id: "MGSX"
@@ -90,6 +93,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: ons
     dataset_id: "LMS"
     series_id: "LF24"
@@ -115,6 +119,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: monthly
+    aggregation: mean
     provider: ons
     dataset_id: "LMS"
     series_id: "MGWG"
@@ -140,6 +145,7 @@ series:
     unit: THOUSANDS
     unit_ru: тыс. человек
     frequency: monthly
+    aggregation: mean
     provider: ons
     dataset_id: "LMS"
     series_id: "MGRZ"
@@ -164,6 +170,7 @@ series:
     unit: GBP_MN
     unit_ru: млн фунтов стерлингов (цепные объёмы)
     frequency: quarterly
+    aggregation: sum
     provider: ons
     dataset_id: "QNA"
     series_id: "ABMI"
@@ -189,6 +196,7 @@ series:
     unit: INDEX
     unit_ru: индекс
     frequency: monthly
+    aggregation: mean
     provider: ons
     dataset_id: "DRSI"
     series_id: "J5EK"
@@ -213,6 +221,7 @@ series:
     unit: GBP_MN
     unit_ru: млн фунтов стерлингов
     frequency: monthly
+    aggregation: sum
     provider: ons
     dataset_id: "MRET"
     series_id: "IKBH"
@@ -238,6 +247,7 @@ series:
     unit: PERSONS
     unit_ru: человек
     frequency: annual
+    aggregation: mean
     provider: ons
     dataset_id: "pop"
     series_id: "UKPOP"
@@ -262,6 +272,7 @@ series:
     unit: PERCENT
     unit_ru: "%"
     frequency: daily
+    aggregation: mean
     provider: boe_iadb
     dataset_id: "IUDBEDR"
     series_id: "IUDBEDR"
@@ -284,6 +295,7 @@ series:
     unit: USD_PER_GBP
     unit_ru: долларов США за 1 фунт стерлингов
     frequency: daily
+    aggregation: mean
     provider: boe_iadb
     dataset_id: "XUDLUSS"
     series_id: "XUDLUSS"

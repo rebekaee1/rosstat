@@ -90,17 +90,19 @@ def test_signed_series_compares_in_units_not_percent():
     assert "forecast" not in types
 
 
-def test_positive_monthly_exposes_only_official_frequency():
+def test_positive_monthly_unlocks_calculated_quarter_and_year():
     series = [(date(2024, m, 1), 100.0 + m) for m in range(1, 13)]
     series += [(date(2025, m, 1), 120.0 + m) for m in range(1, 7)]
     modes = _matrix("monthly", series, unit="индекс")
     ids = _available(modes)
     assert {"level-monthly", "step-monthly", "yoy-monthly", "index-monthly"} <= ids
-    assert "level-quarterly" not in ids
-    assert "level-annual" not in ids
+    assert "level-quarterly" in ids
+    assert "level-annual" in ids
     assert "yoyabs-monthly" not in ids  # процентный YoY уже покрывает сравнение
     by_id = {m["id"]: m for m in modes}
     assert by_id["step-monthly"]["unit"] == "%"
+    assert by_id["level-quarterly"]["official"] is False
+    assert by_id["level-annual"]["official"] is False
     assert apply_mode(series, "level")[0][1] == series[0][1]
 
 
@@ -110,7 +112,9 @@ def test_quarterly_has_qoq_not_mom():
     ids = _available(modes)
     assert "step-quarterly" in ids
     assert "step-monthly" not in ids  # месячного ряда нет — агрегация вниз невозможна
-    assert "level-annual" not in ids
+    assert "level-annual" in ids
+    by_id = {m["id"]: m for m in modes}
+    assert by_id["level-annual"]["official"] is False
 
 
 def test_annual_has_no_subannual_steps():

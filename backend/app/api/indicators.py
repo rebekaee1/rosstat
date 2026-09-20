@@ -299,10 +299,16 @@ def _validate_code(code: str) -> None:
         raise HTTPException(status_code=400, detail="Invalid indicator code format")
 
 
+async def _world_compare_for_russia(db: AsyncSession, code: str) -> dict | None:
+    from app.services.world_compare import russia_world_compare_payload
+
+    return await russia_world_compare_payload(db, code)
+
+
 @router.get("/{code}", response_model=IndicatorDetail)
 async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
-    detail_key = await versioned_key(code, f"detail:{get_locale()}")
+    detail_key = await versioned_key(code, f"detail:v2:{get_locale()}")
     cached = await cache_get(detail_key)
     if cached:
         return cached
@@ -393,6 +399,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         hero_value=hero_value, hero_unit=hero_unit,
         hero_label=localize_hero_label(hero_label),
         hero_change=hero_change,
+        world_compare=await _world_compare_for_russia(db, indicator.code),
     )
 
     await cache_set(detail_key, detail.model_dump(mode="json"), settings.cache_ttl_meta)

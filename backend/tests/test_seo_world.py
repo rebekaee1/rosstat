@@ -342,10 +342,30 @@ def world_seo_client(auth_env):
                 points_count=8,
                 is_listed=False,
             )
+            # Темп ГИПЦ, слитый в карточку midx (CATALOG_STEM_ALIASES): снят
+            # с листинга, SSR обязан 301 на primary?mode=yoy-monthly.
+            hicp_rate = WorldIndicator(
+                country_id=de.id,
+                code="de-prc_hicp_manr-cp00-rch-a",
+                dataset_id="prc_hicp_manr",
+                slice_json={"unit": "RCH_A", "coicop": "CP00", "freq": "M"},
+                slice_hash="manr1",
+                name_ru="ГИПЦ, темп к аналогичному месяцу прошлого года",
+                name_quality="curated",
+                unit="RCH_A",
+                unit_ru="темп изменения к тому же месяцу прошлого года, %",
+                frequency="monthly",
+                category_ru="Цены",
+                source="Евростат",
+                history_start=date(2024, 1, 1),
+                history_end=date(2025, 6, 1),
+                points_count=18,
+                is_listed=False,
+            )
             db.add_all([
                 listed, listed_q, une_m, une_q, peer, no_year_value,
                 population, budget, debt, gdp_annual, long_rate, activity,
-                gdp_pc_eu, weo_gdp, weo_pc, raw,
+                gdp_pc_eu, weo_gdp, weo_pc, raw, hicp_rate,
             ])
             await db.flush()
             for ind in (listed, peer):
@@ -811,6 +831,17 @@ def test_world_rating_surface_nonempty_and_gated(world_seo_client):
 def test_seo_world_unlisted_404(world_seo_client):
     assert world_seo_client.get("/seo/world/germany/de-zz_raw_stub").status_code == 404
     assert world_seo_client.get("/seo/world/no-such-country").status_code == 404
+
+
+def test_seo_world_catalog_merged_rate_301(world_seo_client):
+    """Темп ГИПЦ, слитый в карточку индекса, → 301 на primary с режимом темпа."""
+    redir = world_seo_client.get(
+        "/seo/world/germany/de-prc_hicp_manr-cp00-rch-a", follow_redirects=False
+    )
+    assert redir.status_code == 301
+    loc = redir.headers["location"]
+    assert "/germany/indicator/de-prc_hicp_midx-cp00-i15" in loc
+    assert "mode=yoy-monthly" in loc
 
 
 def test_world_sitemap_listed_only(world_seo_client):

@@ -13,8 +13,10 @@ from typing import Any, Iterable, Sequence
 
 from app.data.eurostat_listing import (
     card_key,
+    catalog_merge_key,
     is_stale_history,
     listing_rank_tuple,
+    measure_preference_rank,
     meets_listing_depth,
     normalize_age_code,
     normalize_frequency,
@@ -22,7 +24,10 @@ from app.data.eurostat_listing import (
     variant_group_key,
 )
 from app.data.world_indicator_titles_ru import public_indicator_name
-from app.data.world_aggregation import aggregate_series, aggregation_policy_for
+from app.data.world_aggregation import (
+    aggregate_series,
+    aggregation_decision_for,
+)
 from app.services.world_view_modes import (
     apply_mode,
     is_signed_or_zero_crossing,
@@ -84,6 +89,7 @@ class ResolvedSeries:
     official: bool
     source_frequency: str
     aggregation_policy: str | None = None
+    aggregation_source: str | None = None
 
 
 def display_name(name_ru: str | None, code: str | None = None) -> str:
@@ -132,7 +138,7 @@ def pick_primary(members: Sequence[Any], substance_score_fn) -> Any | None:
 
 
 def members_by_freq(members: Sequence[Any]) -> dict[str, Any]:
-    """На частоту — лучший официальный ряд (по глубине)."""
+    """На частоту — лучший официальный ряд (уровень важнее темпа, затем глубина)."""
     best: dict[str, Any] = {}
     for m in members:
         if int(m.points_count or 0) <= 0:
@@ -141,9 +147,100 @@ def members_by_freq(members: Sequence[Any]) -> dict[str, Any]:
         if freq not in MODE_FREQS and freq not in ("weekly", "daily"):
             continue
         prev = best.get(freq)
-        if prev is None or int(m.points_count or 0) > int(prev.points_count or 0):
+        if prev is None or measure_preference_rank(m) < measure_preference_rank(prev):
             best[freq] = m
     return best
+
+
+def indicator_catalog_key(ind: Any) -> tuple:
+    return catalog_merge_key(
+        country_id=ind.country_id,
+        provider=getattr(ind, "provider", None),
+        dataset_id=ind.dataset_id,
+        unit=ind.unit,
+        unit_ru=ind.unit_ru,
+        slice_json=ind.slice_json or {},
+    )
+
+
+def catalog_frequency_members(
+    primary: Any,
+    listed_members: Sequence[Any] | None = None,
+    groups: dict | None = None,
+    all_inds: Sequence[Any] | None = None,
+) -> list[Any]:
+    """Ряды, из которых собирается переключатель частот слитой карточки."""
+    mkey = indicator_catalog_key(primary)
+    seen: set[int] = set()
+    out: list[Any] = []
+
+    def add(ind: Any) -> None:
+        token = getattr(ind, "id", None)
+        key = int(token) if token is not None else id(ind)
+        if key in seen:
+            return
+        seen.add(key)
+        out.append(ind)
+
+    sources: list[Any] = list(listed_members or ())
+    if all_inds:
+        for other in all_inds:
+            if indicator_catalog_key(other) == mkey:
+                sources.append(other)
+    if not sources:
+        sources = [primary]
+    for src in sources:
+        add(src)
+        if groups is not None:
+            for sib in groups.get(indicator_card_key(src)) or ():
+                add(sib)
+    return out
+
+
+def index_by_catalog_key(inds: Sequence[Any]) -> dict[tuple, list[Any]]:
+    """Один проход: catalog_merge_key → ряды. Для country_detail, не O(n²)."""
+    out: dict[tuple, list[Any]] = {}
+    for ind in inds:
+        out.setdefault(indicator_catalog_key(ind), []).append(ind)
+    return out
+
+
+def catalog_frequency_members_from_index(
+    mkey: tuple,
+    *,
+    listed_members: Sequence[Any],
+    catalog_index: dict[tuple, list[Any]],
+    groups: dict | None = None,
+) -> list[Any]:
+    seen: set[int] = set()
+    out: list[Any] = []
+
+    def add(ind: Any) -> None:
+        token = getattr(ind, "id", None)
+        key = int(token) if token is not None else id(ind)
+        if key in seen:
+            return
+        seen.add(key)
+        out.append(ind)
+
+    for src in list(listed_members) + list(catalog_index.get(mkey) or ()):
+        add(src)
+        if groups is not None:
+            for sib in groups.get(indicator_card_key(src)) or ():
+                add(sib)
+    return out or list(listed_members)
+
+
+def fill_missing_frequencies(
+    base: dict[str, Any],
+    extra: dict[str, Any],
+) -> dict[str, Any]:
+    """Дополнить официальные частоты, не подменяя уже выбранный ряд."""
+    out = dict(base)
+    for freq, ind in extra.items():
+        if freq not in out:
+            out[freq] = ind
+    return out
 
 
 def parse_mode_token(token: str | None, *, native_freq: str) -> ParsedMode:
@@ -214,9 +311,7 @@ def resolve_series_for_mode(
         source = by_freq.get(source_frequency)
         if source is None:
             continue
-        policy = aggregation_policy_for(source)
-        if policy is None:
-            continue
+        decision = aggregation_decision_for(source)
         return ResolvedSeries(
             source_code=source.code,
             frequency=freq,
@@ -224,7 +319,8 @@ def resolve_series_for_mode(
             aggregated=True,
             official=False,
             source_frequency=source_frequency,
-            aggregation_policy=policy,
+            aggregation_policy=decision.policy,
+            aggregation_source=decision.source,
         )
     return None
 
@@ -324,7 +420,14 @@ def build_modes_matrix(
             # step-monthly без monthly — недоступен даже через агрегацию
             if typ == "step" and freq == "monthly" and "monthly" not in by_freq:
                 available = False
+                resolved = None
             label = _mode_label(typ, freq)
+            aggregation = None
+            if available and resolved is not None and resolved.aggregated:
+                aggregation = {
+                    "policy": resolved.aggregation_policy,
+                    "source": resolved.aggregation_source or "fallback",
+                }
             out.append({
                 "id": parsed.id,
                 "label": label,
@@ -334,6 +437,7 @@ def build_modes_matrix(
                 "available": available,
                 "official": bool(resolved and resolved.official) if available else False,
                 "unit": mode_unit_for(parsed, unit, signed) if available else unit,
+                "aggregation": aggregation,
             })
     return out
 
@@ -349,15 +453,30 @@ def frequencies_payload(by_freq: dict[str, Any]) -> list[dict]:
     out = []
     for freq in MODE_FREQS:
         ind = by_freq.get(freq)
-        if ind is None:
+        if ind is not None:
+            out.append({
+                "freq": freq,
+                "code": ind.code,
+                "points_count": ind.points_count,
+                "history_start": ind.history_start.isoformat() if ind.history_start else None,
+                "history_end": ind.history_end.isoformat() if ind.history_end else None,
+                "official": True,
+            })
+            continue
+        parsed = ParsedMode(type="level", freq=freq, id=f"level-{freq}")
+        resolved = resolve_series_for_mode(
+            parsed=parsed, by_freq=by_freq, signed=False,
+        )
+        if resolved is None or not resolved.aggregated:
             continue
         out.append({
             "freq": freq,
-            "code": ind.code,
-            "points_count": ind.points_count,
-            "history_start": ind.history_start.isoformat() if ind.history_start else None,
-            "history_end": ind.history_end.isoformat() if ind.history_end else None,
-            "official": True,
+            "code": resolved.source_code,
+            "official": False,
+            "aggregation": {
+                "policy": resolved.aggregation_policy,
+                "source": resolved.aggregation_source or "fallback",
+            },
         })
     return out
 
