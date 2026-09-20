@@ -11,7 +11,7 @@ import useDocumentMeta from '../lib/useMeta';
 import {
   useWorldRegionIndicator, useWorldRegionsHub, formatSubnationalValue,
 } from '../lib/worldSubnationalApi';
-import { shortUnit, yearDelta } from '../lib/regionsApi';
+import { yearDelta } from '../lib/regionsApi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import ApiRetryBanner from '../components/ApiRetryBanner';

@@ -45,8 +45,12 @@ class Settings(BaseSettings):
     google_site_verification: str = ""
     # Bing Webmaster meta msvalidate.01.
     bing_site_verification: str = ""
-    # Bearer-токен Search Analytics API. Пусто = джоб не синхронизирует.
+    # Legacy bearer для разовых запросов; OAuth JSON предпочтительнее (refresh).
     gsc_access_token: str = ""
+    # authorized_user JSON с единственным scope webmasters.readonly, права 0600.
+    gsc_credentials_file: str = ""
+    # Пусто = sc-domain:<public_host>; Domain property покрывает apex и ru.
+    gsc_site_url: str = ""
     # Аварийный гео-блок скрейпа (ISO через запятую). Пусто = выкл.
     # Основная защита — bind-cookie (scrape_bind_enabled): ферма крутит
     # страны, гео ловит только перечисленные.

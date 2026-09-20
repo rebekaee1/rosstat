@@ -12,6 +12,10 @@ build/
 .env.local
 .env.*.local
 .env.bak-*
+# OAuth secrets, including locally downloaded Google desktop client files.
+gsc-oauth*.json
+client_secret*.json
+.secrets/
 backups/
 
 # Logs

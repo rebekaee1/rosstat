@@ -156,6 +156,8 @@ services:
       RUSTATS_GOOGLE_SITE_VERIFICATION: ${RUSTATS_GOOGLE_SITE_VERIFICATION:-}
       RUSTATS_BING_SITE_VERIFICATION: ${RUSTATS_BING_SITE_VERIFICATION:-}
       RUSTATS_GSC_ACCESS_TOKEN: ${RUSTATS_GSC_ACCESS_TOKEN:-}
+      RUSTATS_GSC_CREDENTIALS_FILE: ${RUSTATS_GSC_CREDENTIALS_FILE:-}
+      RUSTATS_GSC_SITE_URL: ${RUSTATS_GSC_SITE_URL:-}
       RUSTATS_DEBUG: ${RUSTATS_DEBUG:-false}
       # Личный кабинет (ADR-0007). fake-провайдер и debug по умолчанию off (prod-safe);
       # для локального E2E включаются явно через .env / переменные окружения.

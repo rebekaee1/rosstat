@@ -123,8 +123,8 @@ def year_landing_client(auth_env):
         yield tc
 
 
-def test_year_landing_min_points_is_six():
-    assert YEAR_LANDING_MIN_POINTS == 6
+def test_year_landing_min_points_matches_live_ssr():
+    assert YEAR_LANDING_MIN_POINTS == 1
 
 
 def test_year_change_and_history_copy():
@@ -199,10 +199,10 @@ def test_sitemap_years_match_ssr_200(year_landing_client, auth_env):
             # Годовой ряд: одна точка за год = полная страница, в sitemap.
             assert "/russia/indicator/population/2025" in paths
             assert "/russia/indicator/population/2016" in paths
-            # Месячный 2024: 6 точек — порог INDEX_POLICY.
+            # Месячный год с данными существует в SSR и включается в sitemap.
             assert "/russia/indicator/cpi/2024" in paths
-            # Месячный 2025: одна точка — живая страница, не в sitemap.
-            assert "/russia/indicator/cpi/2025" not in paths
+            # Месячный 2025: одна точка — тоже живая индексируемая страница.
+            assert "/russia/indicator/cpi/2025" in paths
             assert "/russia/indicator/population/2010" not in paths
 
             for path in sorted(paths):

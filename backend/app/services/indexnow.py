@@ -38,7 +38,9 @@ _QUEUE_PREFIX = "in:queue:"
 _DEBOUNCE_PREFIX = "in:sent:"
 _HISTORY_CURSOR_KEY = "in:history:cursor"
 _HISTORY_LOCK_KEY = "in:history:lock"
-_HISTORY_SECTION_PREFIXES = ("months-", "regional-years-", "world-years-")
+# v1 обходил только периоды. Его позиция не совместима с полным списком
+# чанков: повторяем bounded-проход с начала, чтобы не потерять новые группы.
+_HISTORY_CURSOR_VERSION = 2
 _HISTORY_RESTART_DAYS = 14
 _HISTORY_DEMAND_LIMIT = 300
 _HISTORY_CAP_MIN = 1_000
@@ -151,7 +153,7 @@ async def ping_updated_indicators(updated_codes: list[str]) -> bool:
 async def ping_full_site(db, *, origin: str | None = None, host: str | None = None) -> int:
     """Приоритетные секции (хабы/карточки), не слепой проход всех URL.
 
-    Длинный хвост (годовые региональные/мировые, месяцы РФ) кладёт
+    Все чанковые секции (карточки и периоды) кладёт
     ``indexnow_history_job`` в ту же очередь с дневным потолком.
     ``origin``/``host`` — второй хост после cutover.
     """
@@ -241,8 +243,11 @@ def _load_history_cursor(raw: str | None) -> dict:
         data = {}
     if not isinstance(data, dict):
         data = {}
+    if data.get("version") != _HISTORY_CURSOR_VERSION:
+        data = {}
     phase = int(data.get("phase") or 0)
     return {
+        "version": _HISTORY_CURSOR_VERSION,
         "phase": phase,
         "i": max(0, int(data.get("i") or 0)),
         "skip": max(0, int(data.get("skip") or 0)),
@@ -251,10 +256,12 @@ def _load_history_cursor(raw: str | None) -> dict:
 
 
 async def _history_section_names(db) -> list[str]:
-    from app.services.site_urls import section_names
+    from app.services.site_urls import _chunked_prefix_for, section_names
 
     names = await section_names(db)
-    return [name for name in names if name.startswith(_HISTORY_SECTION_PREFIXES)]
+    # Sitemap сам определяет опубликованные группы и число чанков. Отдельный
+    # allowlist здесь терял базовые мировые и региональные карточки.
+    return [name for name in names if _chunked_prefix_for(name) is not None]
 
 
 async def _queue_backed_up(redis, hosts: list[str], cap: int) -> bool:
@@ -285,8 +292,9 @@ async def enqueue_paths(
 async def enqueue_history_urls(db) -> dict:
     """Дневная порция длинного хвоста в очередь IndexNow, без прямого POST.
 
-    Сначала спрос Вебмастера, затем чанки months / regional-years / world-years.
-    Фаза 0 — год ≥ порога, фаза 1 — более старые. Курсор в state-Redis.
+    Сначала спрос Вебмастера, затем все чанковые секции реестра sitemap.
+    Фаза 0 — карточки без года и год ≥ порога, фаза 1 — более старые периоды.
+    Курсор в state-Redis; миграция его версии повторяет проход в том же лимите.
     """
     from app.core.cache import get_state_redis
     from app.services.demand_router import priority_recrawl_paths
@@ -340,7 +348,7 @@ async def enqueue_history_urls(db) -> dict:
             stats["resting"] = True
             stats["phase"] = 2
             return stats
-        cursor = {"phase": 0, "i": 0, "skip": 0, "done_on": ""}
+        cursor = _load_history_cursor(None)
 
     while remaining > 0:
         if cursor["phase"] >= 2:

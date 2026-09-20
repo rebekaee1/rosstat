@@ -756,34 +756,20 @@ def test_sitemap_includes_world_rating_years(world_seo_client):
     assert "?year=" not in r.text
 
 
-def test_sitemap_rating_year_min_coverage(world_seo_client):
-    """Годы рейтинга с покрытием < 5 стран — тонкий контент, в sitemap не идут.
-
-    Нац. ряды (например, CPI Канады с 1914-го) дают срезы года с 1-2 странами;
-    страницы остаются честными 200 по прямому URL, но не навязываются поисковику.
-    """
-    from app.services.site_urls import _RATING_YEAR_MIN_COUNTRIES
-
-    assert _RATING_YEAR_MIN_COUNTRIES == 5
+def test_sitemap_rating_year_includes_every_live_nondefault_year(world_seo_client):
+    """Число стран не исключает существующие 200/index годовые страницы."""
     r = world_seo_client.get("/sitemap-world-ratings.xml")
     assert r.status_code == 200
-    for m in re.finditer(
+    counts = []
+    for match in re.finditer(
         r"https://forecasteconomy\.com/world/rating/([a-z0-9-]+)/(\d{4})", r.text
     ):
-        concept_slug, year = m.group(1), int(m.group(2))
+        concept_slug, year = match.group(1), int(match.group(2))
         page = world_seo_client.get(f"/seo/world/rating/{concept_slug}/{year}")
         assert page.status_code == 200
-        # Строк таблицы рейтинга ≥ 5 (min coverage) — проверяем счётчик стран
-        # в ItemList JSON-LD (numberOfItems = число стран среза).
-        jsonld = _jsonld(page.text)
-        counts = [
-            b.get("numberOfItems")
-            for b in jsonld
-            if b.get("@type") == "ItemList"
-        ]
-        assert counts and all(c >= _RATING_YEAR_MIN_COUNTRIES for c in counts), (
-            concept_slug, year, counts,
-        )
+        counts.extend(b["numberOfItems"] for b in _jsonld(page.text) if b.get("@type") == "ItemList")
+    assert counts and min(counts) < 5
+    assert all(c > 0 for c in counts)
 
 
 def test_world_rating_surface_nonempty_and_gated(world_seo_client):

@@ -351,6 +351,124 @@ def test_indexnow_history_enqueues_both_hosts_after_cutover(monkeypatch):
     assert apex == ru
 
 
+def test_indexnow_history_uses_all_registered_chunked_sections(monkeypatch):
+    """Новая группа sitemap автоматически участвует в bounded-обходе."""
+    import app.services.indexnow as inx
+    import app.services.site_urls as site_urls
+
+    names = [
+        "core", "world-regions", "months-1", "world-indicators-1",
+        "regional-1", "regional-years-1", "world-years-1", "future-1",
+    ]
+
+    async def fake_names(_db):
+        return names
+
+    monkeypatch.setattr(site_urls, "section_names", fake_names)
+    monkeypatch.setitem(site_urls._CHUNKED_SOURCES, "future-", object())
+    assert asyncio.run(inx._history_section_names(object())) == names[2:]
+
+
+@pytest.mark.parametrize("old_phase", [0, 1, 2])
+def test_indexnow_history_migrates_legacy_cursor_without_skipping_cards(
+    monkeypatch, old_phase,
+):
+    """Старый offset/фаза/14-дневный отдых не пропускают добавленные карточки."""
+    import json
+    import app.services.indexnow as inx
+    import app.services.site_urls as site_urls
+    from app.services.display import today_msk
+
+    select_sections = inx._history_section_names
+    redis, inx = _history_env(monkeypatch, cap=3)
+
+    async def fake_names(_db):
+        return ["core", "world-indicators-1", "regional-1"]
+
+    async def fake_resolve(_db, section):
+        return [{"path": {
+            "world-indicators-1": "/germany/indicator/gdp",
+            "regional-1": "/russia/region/tulskaya-oblast/wages",
+        }[section]}]
+
+    monkeypatch.setattr(inx, "_history_section_names", select_sections)
+    monkeypatch.setattr(site_urls, "section_names", fake_names)
+    monkeypatch.setattr(site_urls, "resolve_section", fake_resolve)
+
+    async def scenario():
+        await redis.set(inx._HISTORY_CURSOR_KEY, json.dumps({
+            "phase": old_phase, "i": 12, "skip": 625,
+            "done_on": today_msk().isoformat(),
+        }))
+        stats = await inx.enqueue_history_urls(object())
+        queued = await redis.smembers(f"in:queue:{inx.settings.public_host}")
+        cursor = json.loads(await redis.get(inx._HISTORY_CURSOR_KEY))
+        return stats, queued, cursor
+
+    stats, queued, cursor = asyncio.run(scenario())
+    assert stats["queued"] == 3
+    assert not stats["resting"]
+    assert queued == {
+        "/russia/indicator/cpi", "/germany/indicator/gdp",
+        "/russia/region/tulskaya-oblast/wages",
+    }
+    assert cursor["version"] == inx._HISTORY_CURSOR_VERSION
+
+
+def test_indexnow_history_visits_all_chunk_types_with_cap_and_no_post(monkeypatch):
+    """Два хоста получают все карточки/периоды малыми порциями, один раз за цикл."""
+    import collections
+    import json
+    import app.services.indexnow as inx
+    import app.services.site_urls as site_urls
+
+    select_sections = inx._history_section_names
+    redis, inx = _history_env(monkeypatch, cap=3, apex=True)
+    chunks = {
+        "months-1": ["/russia/indicator/cpi/2001-01", "/russia/indicator/cpi/2025-01"],
+        "world-indicators-1": ["/germany/indicator/gdp", "/us/indicator/gdp"],
+        "regional-1": ["/russia/region/tulskaya-oblast/wages"],
+        "regional-years-1": ["/russia/region/tulskaya-oblast/wages/2024"],
+        "world-years-1": ["/germany/indicator/gdp/2001", "/germany/indicator/gdp/2025"],
+    }
+
+    async def fake_names(_db):
+        return ["core", *chunks]
+
+    async def fake_resolve(_db, section):
+        return [{"path": path} for path in chunks[section]]
+
+    async def no_post(*args, **kwargs):
+        pytest.fail("enqueue_history_urls must not send network requests")
+
+    monkeypatch.setattr(inx, "_history_section_names", select_sections)
+    monkeypatch.setattr(site_urls, "section_names", fake_names)
+    monkeypatch.setattr(site_urls, "resolve_section", fake_resolve)
+    monkeypatch.setattr(inx, "ping_urls", no_post)
+
+    async def scenario():
+        seen = collections.Counter()
+        hosts = [inx.settings.public_host, "ru.forecasteconomy.com"]
+        for _ in range(10):
+            stats = await inx.enqueue_history_urls(object())
+            queues = [await redis.smembers(f"in:queue:{host}") for host in hosts]
+            assert queues[0] == queues[1]
+            assert stats["queued"] <= 3
+            assert len(queues[0]) <= 3
+            seen.update(queues[0] - {"/russia/indicator/cpi"})
+            for host in hosts:
+                await redis.delete(f"in:queue:{host}")
+            cursor = json.loads(await redis.get(inx._HISTORY_CURSOR_KEY))
+            assert cursor["version"] == inx._HISTORY_CURSOR_VERSION
+            if cursor["phase"] == 2:
+                assert (await inx.enqueue_history_urls(object()))["resting"]
+                return seen
+        pytest.fail("bounded cursor did not finish its complete two-phase pass")
+
+    seen = asyncio.run(scenario())
+    assert seen == collections.Counter(path for paths in chunks.values() for path in paths)
+
+
 # ---------------------------------------------------------------------------
 # Маршруты /seo/* (monkeypatch рендеров — без БД)
 # ---------------------------------------------------------------------------

@@ -9,8 +9,8 @@ from app.services.index_policy import (
 )
 
 
-def test_russia_year_min_points_is_six():
-    assert RUSSIA_YEAR_MIN_POINTS == 6
+def test_russia_year_min_points_matches_live_ssr():
+    assert RUSSIA_YEAR_MIN_POINTS == 1
 
 
 def test_old_regional_year_is_indexable():
@@ -49,7 +49,7 @@ def test_honeypot_noindex():
     assert is_noindex_path("/__honeypot__/trap")
 
 
-def test_historical_sitemap_preserves_data_and_listing_gates(auth_env):
+def test_historical_sitemap_matches_public_ssr_gates(auth_env):
     import asyncio
     from app.models import Indicator, IndicatorData, Region, RegionIndicator, RegionDataPoint
     from app.services import site_urls as urls
@@ -93,7 +93,8 @@ def test_historical_sitemap_preserves_data_and_listing_gates(auth_env):
             today = date(2026, 9, 20)
             years = {u.path for u in await urls._year_urls(db, today)}
             assert years == {f"/russia/indicator/{c}/2018" for c in
-                             ("quarter-full", "annual-history", "month-full", "week-full")}
+                             ("quarter-full", "quarter-short", "annual-history", "month-full", "month-short",
+                              "month-hidden", "week-full", "day-short")}
             months = {u.path for u in await urls._month_urls(db, today)}
             assert months == {f"/russia/indicator/month-full/2018-{m:02d}" for m in range(1, 7)} | {
                 "/russia/indicator/month-short/2018-01"}
@@ -118,19 +119,21 @@ def test_historical_sitemap_preserves_data_and_listing_gates(auth_env):
             assert {u.path for u in await urls.resolve_section(db, "months-1")} == months
             assert {u.path for u in await urls.resolve_section(db, "months")} == months
             regional = {u.path for u in await urls._regional_year_urls(db, today)}
-            assert regional == {f"/russia/region/moskva/chislennost-naseleniya/{y}" for y in (2018, 2024)}
-            assert (await db.execute(urls._REG_YEARS_COUNT)).scalar_one() == 2
+            assert regional == {f"/russia/region/moskva/chislennost-naseleniya/{y}" for y in (2018, 2024)} | {
+                "/russia/region/moskva/hidden/2018"}
+            assert (await db.execute(urls._REG_YEARS_COUNT)).scalar_one() == 3
             bounds = (await db.execute(urls._regional_years_bounds_stmt())).all()
             assert {row[2] for row in bounds} == {2018, 2024}
             page, cursor = await urls._regional_years_page(db, today, None, 1)
-            next_page, _ = await urls._regional_years_page(db, today, cursor, 1)
-            assert {u.path for u in page + next_page} == regional
+            next_page, cursor = await urls._regional_years_page(db, today, cursor, 1)
+            final_page, _ = await urls._regional_years_page(db, today, cursor, 1)
+            assert {u.path for u in page + next_page + final_page} == regional
             assert page[0].path.endswith("/2018")
 
     asyncio.run(check())
 
 
-def test_historical_world_sitemap_preserves_curated_primary_and_data_gates(auth_env, monkeypatch):
+def test_world_sitemap_includes_all_public_datasets_and_preserves_validity(auth_env):
     import asyncio
     from app.models import WorldCountry, WorldIndicator, WorldDataPoint
     from app.services import site_urls as urls
@@ -138,39 +141,69 @@ def test_historical_world_sitemap_preserves_curated_primary_and_data_gates(auth_
     async def check():
         async with auth_env["session_maker"]() as db:
             country = WorldCountry(code="DE", slug="germany", name_ru="Германия", name_en="Germany")
-            db.add(country)
+            us = WorldCountry(code="US", slug="united-states", name_ru="США", name_en="United States")
+            db.add_all([country, us])
             await db.flush()
             for code, dataset, frequency, listed, years in (
                 ("de-une-primary", "une_rt_m", "monthly", True, (2010, 2024)),
                 ("de-une-secondary", "une_rt_m", "quarterly", True, (2010,)),
-                ("de-uncurated", "unknown_dataset", "annual", True, (2010,)),
+                ("de-uncurated", "unknown_dataset", "annual", True, (1880, 2010, 2100)),
+                ("us-gdp-real", "FRED_GDPC1", "quarterly", True, (1947, 2025)),
                 ("de-hidden", "demo_pjan", "annual", False, (2010,)),
                 ("de-empty", "prc_hicp_midx", "monthly", True, ()),
             ):
-                ind = WorldIndicator(country_id=country.id, code=code, dataset_id=dataset,
+                ind = WorldIndicator(country_id=us.id if code.startswith("us-") else country.id, code=code, dataset_id=dataset,
                                      slice_hash=code, slice_json={"unit": "PC_ACT", "sex": "T", "age": "TOTAL"},
                                      name_ru=code, name_quality="curated", frequency=frequency,
                                      unit="PC_ACT", unit_ru="%", points_count=len(years), is_listed=listed)
                 db.add(ind)
                 await db.flush()
                 db.add_all([WorldDataPoint(indicator_id=ind.id, date=date(y, 1, 1), value=1) for y in years])
+            inactive = WorldCountry(code="XX", slug="inactive", name_ru="Inactive", name_en="Inactive", is_active=False)
+            db.add(inactive)
+            await db.flush()
+            excluded = WorldIndicator(country_id=inactive.id, code="inactive-test", dataset_id="unknown_dataset",
+                slice_hash="inactive", name_ru="Inactive", frequency="annual", is_listed=True)
+            db.add(excluded)
+            await db.flush()
+            db.add(WorldDataPoint(indicator_id=excluded.id, date=date(2025, 1, 1), value=1))
             await db.commit()
             today = date(2026, 9, 20)
-            expected = {f"/germany/indicator/de-une-primary/{y}" for y in (2010, 2024)}
+            expected = {f"/germany/indicator/de-une-primary/{y}" for y in (2010, 2024)} | {
+                "/germany/indicator/de-uncurated/2010",
+                "/united-states/indicator/us-gdp-real/1947", "/united-states/indicator/us-gdp-real/2025",
+            }
             assert {u.path for u in await urls._world_year_urls(db, today)} == expected
+            cards = {path.rsplit("/", 1)[0] for path in expected}
+            assert {u.path for u in await urls._world_cards_urls(db, today)} == cards
+            assert (await db.execute(urls._WORLD_CARDS_COUNT)).scalar_one() == 4
+            source_cards = urls._CHUNKED_SOURCES["world-indicators-"]
+            card_bounds = await urls._chunk_bounds(db, "world-cards-test", source_cards.bounds, source_cards.sort, 2)
+            bounded_cards = []
+            for after in card_bounds[:-1]:
+                page, _ = await source_cards.fetch(db, today, after, 2)
+                bounded_cards.extend(page)
+            assert {u.path for u in bounded_cards} == cards
+            assert len(bounded_cards) == len(cards)
             # Bounds/count retain the secondary frequency; page filtering still excludes its 301.
-            assert (await db.execute(urls._WORLD_YEARS_COUNT)).scalar_one() == 3
-            assert {int(r[1]) for r in (await db.execute(urls._world_years_bounds_stmt())).all()} == {2010, 2024}
+            assert (await db.execute(urls._WORLD_YEARS_COUNT)).scalar_one() == 6
+            assert {int(r[1]) for r in (await db.execute(urls._world_years_bounds_stmt())).all()} == {1947, 2010, 2024, 2025}
             paths = set()
             cursor = None
-            for _ in range(4):
+            for _ in range(10):
                 page, cursor = await urls._world_years_page(db, today, cursor, 1)
                 paths.update(u.path for u in page)
                 if cursor is None:
                     break
             assert paths == expected
-            monkeypatch.setattr(urls, "curated_world_dataset_ids", lambda: frozenset())
-            assert await urls._world_year_urls(db, today) == []
-            assert await urls._world_years_page(db, today, None, 10) == ([], None)
+            assert cursor is None
+            source = urls._CHUNKED_SOURCES["world-years-"]
+            bounds = await urls._chunk_bounds(db, "world-years-test", source.bounds, source.sort, 2)
+            bounded = []
+            for after in bounds[:-1]:
+                page, _ = await source.fetch(db, today, after, 2)
+                bounded.extend(page)
+            assert {u.path for u in bounded} == expected
+            assert len(bounded) == len(expected)
 
     asyncio.run(check())

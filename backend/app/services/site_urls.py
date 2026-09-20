@@ -32,18 +32,17 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from datetime import date
+from itertools import combinations
 from typing import Awaitable, Callable
 
 from app.services.index_policy import (
     RUSSIA_YEAR_MIN_POINTS,
-    RUSSIA_YEAR_MIN_POINTS_BY_FREQUENCY,
     TIER1_PRIORITY,
     TIER2_PRIORITY,
-    curated_world_dataset_ids,
 )
 from app.services.display import today_msk
 
-from sqlalchemy import Integer, case, func, select, tuple_
+from sqlalchemy import Integer, func, select, tuple_, union_all
 from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
@@ -54,6 +53,7 @@ from app.models import (
     IndicatorData,
     Region,
     RegionDataPoint,
+    RegionMonthlyPoint,
     RegionIndicator,
     WorldCountry,
     WorldDataPoint,
@@ -73,16 +73,17 @@ WORLD_CHUNK = 10_000
 YEAR_LANDING_MIN_POINTS = RUSSIA_YEAR_MIN_POINTS
 # То же для мировых годовых лендингов /{country}/indicator/{code}/{year}.
 WORLD_YEAR_LANDING_MIN_POINTS = 1
-# Годовой рейтинг /world/rating/{concept}/{year} в sitemap: минимум стран в срезе года.
-_RATING_YEAR_MIN_COUNTRIES = 5
+# Те же виды территорий, для которых существуют публичные SSR-страницы.
+_PUBLIC_REGION_KINDS = ("region", "district", "country")
 
 
 def _world_year_filters():
-    """Curated-концепты — INDEX_POLICY Tier 2 независимо от возраста года."""
+    """Все существующие мировые годы публичных рядов, как у SSR."""
     return [
         WorldCountry.is_active.is_(True),
         WorldIndicator.is_listed.is_(True),
-        WorldIndicator.dataset_id.in_(curated_world_dataset_ids()),
+        WorldDataPoint.date >= date(1900, 1, 1),
+        WorldDataPoint.date < date(2100, 1, 1),
     ]
 
 
@@ -171,15 +172,10 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     stmt = (
         select(Indicator.code, year_expr.label("y"), func.max(IndicatorData.date))
         .join(IndicatorData, IndicatorData.indicator_id == Indicator.id)
-        .where(Indicator.is_active.is_(True), Indicator.is_listed.is_(True))
-        .group_by(Indicator.code, year_expr, Indicator.frequency)
-        .having(
-            func.count(IndicatorData.id) >= case(
-                RUSSIA_YEAR_MIN_POINTS_BY_FREQUENCY,
-                value=func.lower(Indicator.frequency),
-                else_=YEAR_LANDING_MIN_POINTS,
-            )
-        )
+        .where(Indicator.is_active.is_(True),
+               IndicatorData.date >= date(1990, 1, 1),
+               IndicatorData.date < date(2101, 1, 1))
+        .group_by(Indicator.code, year_expr)
         .order_by(year_expr.desc(), Indicator.code)
     )
     urls = []
@@ -202,7 +198,7 @@ async def _region_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     region_rows = (await db.execute(
         select(Region.slug, func.max(RegionDataPoint.year))
         .outerjoin(RegionDataPoint, RegionDataPoint.region_id == Region.id)
-        .where(Region.kind == "region")
+        .where(Region.kind.in_(_PUBLIC_REGION_KINDS))
         .group_by(Region.id, Region.slug, Region.sort_order)
         .order_by(Region.sort_order)
     )).all()
@@ -218,20 +214,42 @@ async def _region_hub_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     return urls
 
 
-async def _regional_pair_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    stmt = (
-        select(Region.slug, RegionIndicator.code, func.max(RegionDataPoint.year))
-        .join(Region, Region.id == RegionDataPoint.region_id)
-        .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
-        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
-        .group_by(Region.slug, RegionIndicator.code)
-        .order_by(Region.slug, RegionIndicator.code)
+# Годовые и месячные ряды используют одну публичную карточку. UNION ALL
+# допускает оба источника, GROUP BY ниже не даёт дублировать URL пары.
+_REGIONAL_PAIR_DATA = union_all(
+    select(RegionDataPoint.indicator_id, RegionDataPoint.region_id,
+           (RegionDataPoint.year * 10000 + 1231).label("last_day")),
+    select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.region_id,
+           (RegionMonthlyPoint.month * 100 + 1).label("last_day")),
+).subquery()
+
+
+def _regional_pairs_stmt():
+    return (
+        select(RegionIndicator.id, Region.slug, func.max(_REGIONAL_PAIR_DATA.c.last_day))
+        .select_from(_REGIONAL_PAIR_DATA)
+        .join(RegionIndicator, RegionIndicator.id == _REGIONAL_PAIR_DATA.c.indicator_id)
+        .join(Region, Region.id == _REGIONAL_PAIR_DATA.c.region_id)
+        .where(Region.kind.in_(_PUBLIC_REGION_KINDS))
+        .group_by(RegionIndicator.id, Region.slug)
     )
-    urls = []
-    for rslug, icode, last_year in (await db.execute(stmt)).all():
-        lastmod = f"{int(last_year)}-12-31" if last_year else today.isoformat()
-        urls.append(_u(paths.region_indicator(rslug, icode), lastmod, "monthly", "0.5"))
-    return urls
+
+
+def _regional_pair_lastmod(day: int | None, today: date) -> str:
+    if day is None:
+        return today.isoformat()
+    stamp = str(int(day))
+    return f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:]}"
+
+
+async def _regional_pair_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    rows = (await db.execute(_regional_pairs_stmt().order_by(RegionIndicator.id, Region.slug))).all()
+    code_by_id = await _region_indicator_codes(db, {int(r[0]) for r in rows})
+    return [
+        _u(paths.region_indicator(slug, code_by_id[int(iid)]),
+           _regional_pair_lastmod(day, today), "monthly", "0.5")
+        for iid, slug, day in rows
+    ]
 
 
 async def _rating_eligible_codes(db: AsyncSession) -> list[tuple[str, int]]:
@@ -267,7 +285,9 @@ async def _rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _map_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    return [
+    from app.services.seo_regional import MAP_OVERVIEW_CODE
+
+    return [_u(paths.region_map(MAP_OVERVIEW_CODE), today.isoformat(), "monthly", "0.65")] + [
         _u(paths.region_map(code), f"{y}-12-31", "monthly", "0.65")
         for code, y in await _rating_eligible_codes(db)
     ]
@@ -318,16 +338,24 @@ async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _region_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    from app.services.seo_region_compare import top_region_pairs
+    from app.services.region_compare_data import _KEY_TABLE_CODES
 
-    last_year = (await db.execute(
-        select(func.max(RegionDataPoint.year))
-    )).scalar_one_or_none()
-    lastmod = f"{int(last_year)}-12-31" if last_year else today.isoformat()
-    pairs = await top_region_pairs(db)
+    rows = (await db.execute(
+        select(RegionDataPoint.indicator_id, RegionDataPoint.year, Region.slug)
+        .join(Region, Region.id == RegionDataPoint.region_id)
+        .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
+        .where(Region.kind == "region", RegionIndicator.table_code.in_(_KEY_TABLE_CODES))
+    )).all()
+    coverage: dict[tuple[int, int], set[str]] = {}
+    for iid, year, slug in rows:
+        coverage.setdefault((int(iid), int(year)), set()).add(slug)
+    pair_years: dict[tuple[str, str], int] = {}
+    for (_iid, year), slugs in coverage.items():
+        for pair in combinations(sorted(slugs), 2):
+            pair_years[pair] = max(pair_years.get(pair, year), year)
     return [
-        _u(paths.region_vs(a, b), lastmod, "monthly", "0.6")
-        for a, b in pairs
+        _u(paths.region_vs(a, b), f"{year}-12-31", "monthly", "0.6")
+        for (a, b), year in sorted(pair_years.items())
     ]
 
 
@@ -344,8 +372,8 @@ async def _regional_year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         .join(Region, Region.id == RegionDataPoint.region_id)
         .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
         .where(
-            Region.kind == "region",
-            RegionIndicator.is_listed.is_(True),
+            Region.kind.in_(_PUBLIC_REGION_KINDS),
+            RegionDataPoint.year.between(1900, 2099),
         )
         .group_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
         .order_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
@@ -382,10 +410,7 @@ async def _world_rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         urls.append(_u(paths.world_rating(concept.slug), lastmod, "weekly", "0.7"))
         # База — self-canonical дефолтного года (path-URL дефолта 301 на неё),
         # поэтому дефолтный год в карту не идёт: один URL — одна страница.
-        # Нац. ряды (например, CPI Канады с 1914-го) дают годы с 1-6 странами —
-        # это тонкий контент: в sitemap только годы с осмысленным покрытием.
-        # Сами страницы остаются честными 200 по прямому URL, но не
-        # навязываются поисковику.
+        # Любой непустой год рейтинга уже имеет публичную SSR-страницу.
         default_year = payload.get("active_year")
         year_dates: dict[int, str] = {}
         for year_key, bucket in (payload.get("values_by_year") or {}).items():
@@ -393,9 +418,7 @@ async def _world_rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
                 y = int(year_key)
             except (TypeError, ValueError):
                 continue
-            if y == default_year:
-                continue
-            if len(bucket) < _RATING_YEAR_MIN_COUNTRIES:
+            if y == default_year or not 1900 <= y <= 2099:
                 continue
             dates = [item.get("date") for item in bucket.values() if item.get("date")]
             if dates:
@@ -646,7 +669,7 @@ async def _world_cards_page(
             WorldIndicator.code,
             func.max(WorldDataPoint.date).label("last_data"),
         )
-        .outerjoin(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
+        .join(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
         .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
         .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True))
         .group_by(WorldIndicator.id)
@@ -753,6 +776,8 @@ def _months_stmt():
             Indicator.is_active.is_(True),
             Indicator.is_listed.is_(True),
             func.lower(Indicator.frequency).like("month%"),
+            IndicatorData.date >= date(1900, 1, 1),
+            IndicatorData.date < date(2100, 1, 1),
         )
         .group_by(Indicator.code, year_expr, month_expr)
     )
@@ -796,96 +821,79 @@ async def _months_page(
 
 
 async def _world_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
-    """Сравнения стран: /{a}-vs-{b}/{concept}.
+    """Все канонические пары с данными, которые принимает SSR сравнения.
 
-    Комбинаторика «6 концептов × все пары стран» дала бы миллионы URL, из
-    которых подавляющее большинство — 404 (данных у пары нет). Берём
-    реалистичный срез: для каждого compare-концепта — страны, у которых
-    есть сопоставимый ряд (тот же матчинг, что у SSR-рендера: concept-контракт
-    или национальный crosswalk), и только СМЕЖНЫЕ пары в алфавитном порядке
-    слагов (n-1 пар на концепт, а не n×(n-1)/2). URL строятся через
-    canonical ``world_vs_path`` — не-канонический порядок пары отдаёт 301
-    и в sitemap не попадает (инвариант анти-301).
-
-    36k listed world-рядов запрещает ORM-материализацию и повторные проходы:
-    одна выборка лёгких колонок + один проход матчинга в Python (прокси-объект
-    с нужными матчеру атрибутами, как _RankProbe выше по файлу).
+    Выбор основного ряда и преобразование level/yoy — общие с SSR helpers.
+    Лёгкие метаданные и точки выбранных рядов читаются двумя батчами;
+    материализация ORM-каталога и SQL-запрос на каждую пару не нужны.
     """
     from types import SimpleNamespace
 
     from app.data.world_concept_national import national_codes_for_concept
-    from app.data.world_concepts import WORLD_CONCEPTS, concept_for_indicator
-    from app.services.seo_world import _concept_allowed_datasets, _same_public_unit
-    from app.services.seo_world_compare import world_vs_path
+    from app.data.world_concepts import WORLD_CONCEPTS
+    from app.services.seo_world import _concept_allowed_datasets
+    from app.services.seo_world_compare import _match_concept_pair, world_vs_path
+    from app.services.world_rank_values import apply_rank_series, ranking_value_mode
 
-    compare_concepts = [
-        c for c in WORLD_CONCEPTS if "compare" in c.enabled_surfaces
-    ]
-    allowed_union: set[str] = set()
-    national_by_concept: dict[str, set[str]] = {}
-    national_union: set[str] = set()
-    for concept in compare_concepts:
-        allowed_union |= _concept_allowed_datasets(concept)
-        codes = set(national_codes_for_concept(concept.slug))
-        national_by_concept[concept.slug] = codes
-        national_union |= codes
-
-    rows = (
-        await db.execute(
-            select(
-                WorldCountry.slug,
-                WorldIndicator.code,
-                WorldIndicator.dataset_id,
-                WorldIndicator.unit,
-                WorldIndicator.unit_ru,
-                WorldIndicator.provider,
-                WorldIndicator.slice_json,
-            )
-            .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
-            .where(
-                WorldCountry.is_active.is_(True),
-                WorldIndicator.is_listed.is_(True),
-            )
-        )
-    ).all()
-
-    slugs_by_concept: dict[str, set[str]] = {c.slug: set() for c in compare_concepts}
-    compare_by_slug = {c.slug: c for c in compare_concepts}
-    for cslug, code, dsid, unit, unit_ru, provider, slice_json in rows:
-        if (dsid or "").lower() not in allowed_union and code not in national_union:
-            continue
-        probe = SimpleNamespace(
-            code=code, dataset_id=dsid, unit=unit, unit_ru=unit_ru,
-            provider=provider, slice_json=slice_json,
-        )
-        # Реестр контрактов объявляет пересечение ошибкой данных; в sitemap
-        # (критичная поверхность) такое Row не должно ломать всю сборку.
-        try:
-            concept = concept_for_indicator(probe)
-        except ValueError:
-            concept = None
-        if concept is None or concept.slug not in compare_by_slug:
-            # Национальный crosswalk: ряд вне dataset-контракта, но явным
-            # кодом в списке понятия (тот же fallback, что у SSR-матчера).
-            for candidate in compare_concepts:
-                if code in national_by_concept[candidate.slug]:
-                    concept = candidate
-                    break
-            if concept is None:
-                continue
-        if not _same_public_unit(probe, concept):
-            continue
-        slugs_by_concept[concept.slug].add(cslug)
-
+    concepts = [c for c in WORLD_CONCEPTS if "compare" in c.enabled_surfaces]
+    allowed = set().union(*(_concept_allowed_datasets(c) for c in concepts))
+    national = set().union(*(set(national_codes_for_concept(c.slug)) for c in concepts))
+    rows = (await db.execute(
+        select(WorldCountry.slug, WorldIndicator.id, WorldIndicator.country_id,
+               WorldIndicator.code, WorldIndicator.dataset_id, WorldIndicator.unit,
+               WorldIndicator.unit_ru, WorldIndicator.provider, WorldIndicator.slice_json,
+               WorldIndicator.frequency)
+        .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
+        .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True),
+               func.lower(WorldIndicator.dataset_id).in_(sorted(allowed)) |
+               WorldIndicator.code.in_(sorted(national)))
+        .order_by(WorldIndicator.country_id, WorldIndicator.code)
+    )).all()
+    countries = {}
+    candidates: dict[int, list] = {}
+    for row in rows:
+        slug, iid, cid, code, dsid, unit, unit_ru, provider, slice_json, frequency = row
+        countries[cid] = SimpleNamespace(id=cid, slug=slug)
+        candidates.setdefault(cid, []).append(SimpleNamespace(
+            id=iid, country_id=cid, code=code, dataset_id=dsid, unit=unit,
+            unit_ru=unit_ru, provider=provider, slice_json=slice_json, frequency=frequency,
+        ))
+    members = {}
+    selected_ids = set()
+    for concept in concepts:
+        selected = []
+        for cid, country in countries.items():
+            indicator, _ = _match_concept_pair(candidates[cid], concept, country, country)
+            if indicator is not None:
+                selected.append((country, indicator))
+                selected_ids.add(indicator.id)
+        members[concept.slug] = sorted(selected, key=lambda item: item[0].slug)
+    if not selected_ids:
+        return []
+    raw_by_id: dict[int, list] = {iid: [] for iid in selected_ids}
+    for iid, point_date, value in (await db.execute(
+        select(WorldDataPoint.indicator_id, WorldDataPoint.date, WorldDataPoint.value)
+        .where(WorldDataPoint.indicator_id.in_(selected_ids))
+        .order_by(WorldDataPoint.indicator_id, WorldDataPoint.date)
+    )).all():
+        raw_by_id[iid].append((point_date, float(value)))
+    transformed: dict[tuple[int, str], list] = {}
     urls = []
-    for concept_slug, slugs in sorted(slugs_by_concept.items()):
-        ordered = sorted(slugs)
-        for a, b in zip(ordered, ordered[1:]):
+    for concept in concepts:
+        for member_a, member_b in combinations(members[concept.slug], 2):
+            country_a, ind_a = member_a
+            country_b, ind_b = member_b
+            mode = ranking_value_mode(concept.slug, (member_a, member_b))
+            for ind in (ind_a, ind_b):
+                key = (ind.id, mode)
+                if key not in transformed:
+                    transformed[key] = apply_rank_series(raw_by_id[ind.id], mode)
+            a, b = transformed[(ind_a.id, mode)], transformed[(ind_b.id, mode)]
+            if len(a) < 2 or len(b) < 2 or (mode == "level" and (a[-1][1] == 0 or b[-1][1] == 0)):
+                continue
             urls.append(_u(
-                world_vs_path(a, b, concept_slug),
-                today.isoformat(),
-                "weekly",
-                "0.4",
+                world_vs_path(country_a.slug, country_b.slug, concept.slug),
+                max(a[-1][0], b[-1][0]).isoformat(), "weekly", "0.4",
             ))
     return urls
 
@@ -913,7 +921,7 @@ async def _world_cards_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
                 WorldIndicator.points_count,
                 func.max(WorldDataPoint.date).label("last_data"),
             )
-            .outerjoin(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
+            .join(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
             .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
             .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True))
             .group_by(WorldIndicator.id)
@@ -1003,13 +1011,7 @@ async def _regional_pairs_page(
     сотни мс на страницу); код показателя добирается отдельным запросом по
     первичным ключам страницы.
     """
-    stmt = (
-        select(RegionIndicator.id, Region.slug, func.max(RegionDataPoint.year))
-        .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
-        .join(Region, Region.id == RegionDataPoint.region_id)
-        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
-        .group_by(RegionIndicator.id, Region.slug)
-    )
+    stmt = _regional_pairs_stmt()
     if after:
         stmt = stmt.having(
             tuple_(RegionIndicator.id, Region.slug)
@@ -1021,7 +1023,7 @@ async def _regional_pairs_page(
     urls = [
         _u(
             paths.region_indicator(rslug, code_by_id[int(iid)]),
-            f"{int(last_year)}-12-31" if last_year else today.isoformat(),
+            _regional_pair_lastmod(last_year, today),
             "monthly",
             "0.5",
         )
@@ -1057,7 +1059,7 @@ async def _chunk_bounds(
 
     from app.core.cache import cache_get, cache_set
 
-    cache_key = f"fe:sitemap:chunk-bounds:history-v2:{key}"
+    cache_key = f"fe:sitemap:chunk-bounds:public-v3:{key}"
     raw = await cache_get(cache_key)
     if isinstance(raw, list) and raw:
         return [tuple(b) if b is not None else None for b in raw]
@@ -1101,8 +1103,8 @@ async def _regional_years_page(
         .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
         .join(Region, Region.id == RegionDataPoint.region_id)
         .where(
-            Region.kind == "region",
-            RegionIndicator.is_listed.is_(True),
+            Region.kind.in_(_PUBLIC_REGION_KINDS),
+            RegionDataPoint.year.between(1900, 2099),
         )
         .group_by(RegionIndicator.id, Region.slug, RegionDataPoint.year)
     )
@@ -1210,30 +1212,22 @@ async def _world_years_page(
 
 _CHUNK_COUNTS_TTL = 6 * 3600
 
-_CHUNK_COUNTS_KEY = "fe:sitemap:chunk-counts:history-v2"
+_CHUNK_COUNTS_KEY = "fe:sitemap:chunk-counts:public-v3"
 
 _CHUNK_BOUNDS_TTL = 3600
 
 # Кэш глобального дедупа мировых карточек (см. `_world_primary_ids`).
 _WORLD_PRIMARY_IDS_KEY = "fe:sitemap:world-primary-ids"
 
-_REG_PAIRS_COUNT = select(func.count()).select_from(
-    select(Region.slug, RegionIndicator.code)
-    .select_from(RegionDataPoint)
-    .join(Region, Region.id == RegionDataPoint.region_id)
-    .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
-    .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
-    .group_by(Region.slug, RegionIndicator.code)
-    .subquery()
-)
+_REG_PAIRS_COUNT = select(func.count()).select_from(_regional_pairs_stmt().subquery())
 
 _REG_YEARS_COUNT = select(func.count()).select_from(
     select(Region.slug, RegionIndicator.code, RegionDataPoint.year)
     .join(Region, Region.id == RegionDataPoint.region_id)
     .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
     .where(
-        Region.kind == "region",
-        RegionIndicator.is_listed.is_(True),
+        Region.kind.in_(_PUBLIC_REGION_KINDS),
+        RegionDataPoint.year.between(1900, 2099),
     )
     .group_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
     .subquery()
@@ -1242,7 +1236,9 @@ _REG_YEARS_COUNT = select(func.count()).select_from(
 _WORLD_CARDS_COUNT = select(func.count()).select_from(
     select(WorldIndicator.id)
     .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
+    .join(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
     .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True))
+    .group_by(WorldIndicator.id)
     .subquery()
 )
 
@@ -1292,7 +1288,7 @@ def _world_cards_bounds_stmt() -> object:
         select(
             WorldIndicator.id.label("id"),
         )
-        .outerjoin(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
+        .join(WorldDataPoint, WorldDataPoint.indicator_id == WorldIndicator.id)
         .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
         .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True))
         .group_by(WorldIndicator.id)
@@ -1300,16 +1296,8 @@ def _world_cards_bounds_stmt() -> object:
 
 
 def _regional_pairs_bounds_stmt() -> object:
-    return (
-        select(
-            RegionIndicator.id.label("id"),
-            Region.slug.label("slug"),
-        )
-        .select_from(RegionDataPoint)
-        .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
-        .join(Region, Region.id == RegionDataPoint.region_id)
-        .where(Region.kind == "region", RegionIndicator.is_listed.is_(True))
-        .group_by(RegionIndicator.id, Region.slug)
+    return _regional_pairs_stmt().with_only_columns(
+        RegionIndicator.id.label("id"), Region.slug.label("slug"),
     )
 
 
@@ -1323,8 +1311,8 @@ def _regional_years_bounds_stmt() -> object:
         .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
         .join(Region, Region.id == RegionDataPoint.region_id)
         .where(
-            Region.kind == "region",
-            RegionIndicator.is_listed.is_(True),
+            Region.kind.in_(_PUBLIC_REGION_KINDS),
+            RegionDataPoint.year.between(1900, 2099),
         )
         .group_by(RegionIndicator.id, Region.slug, RegionDataPoint.year)
     )

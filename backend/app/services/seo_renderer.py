@@ -65,7 +65,6 @@ from app.services.seo_content import (
     PageSeo,
     SeoBlock,
 )
-from app.services.site_urls import YEAR_LANDING_MIN_POINTS
 
 logger = logging.getLogger(__name__)
 
@@ -2030,8 +2029,8 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
     по соседним годам, ссылка на живую карточку. Под long-tail запросы вида
     «инфляция в 2024 году», «население России 2025».
 
-    Порог sitemap — YEAR_LANDING_MIN_POINTS для не-годовых рядов;
-    годовой ряд индексируется с одной точкой. Страница живая при ≥1 точке.
+    Страница живая при ≥1 точке; sitemap включает каждый существующий
+    канонический год без отдельного порога плотности наблюдений.
     """
     q = await db.execute(
         select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True))
