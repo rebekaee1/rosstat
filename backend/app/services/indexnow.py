@@ -17,7 +17,9 @@ cutover можно пинговать ``ru.`` отдельно. Дефолт = `
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
+from datetime import date
 from urllib.parse import urlparse
 
 import httpx
@@ -34,6 +36,13 @@ _QUEUE_BATCH = 800
 _DEBOUNCE_TTL = 24 * 3600
 _QUEUE_PREFIX = "in:queue:"
 _DEBOUNCE_PREFIX = "in:sent:"
+_HISTORY_CURSOR_KEY = "in:history:cursor"
+_HISTORY_LOCK_KEY = "in:history:lock"
+_HISTORY_SECTION_PREFIXES = ("months-", "regional-years-", "world-years-")
+_HISTORY_RESTART_DAYS = 14
+_HISTORY_DEMAND_LIMIT = 300
+_HISTORY_CAP_MIN = 1_000
+_HISTORY_CAP_MAX = 50_000
 
 
 async def ping_urls(
@@ -140,10 +149,11 @@ async def ping_updated_indicators(updated_codes: list[str]) -> bool:
 
 
 async def ping_full_site(db, *, origin: str | None = None, host: str | None = None) -> int:
-    """Приоритетные секции (хабы/карточки), не слепой проход всех 2M URL.
+    """Приоритетные секции (хабы/карточки), не слепой проход всех URL.
 
-    Длинный хвост (годовые региональные/мировые) обходит очередь переобхода
-    Вебмастера, не IndexNow. ``origin``/``host`` — второй хост после cutover.
+    Длинный хвост (годовые региональные/мировые, месяцы РФ) кладёт
+    ``indexnow_history_job`` в ту же очередь с дневным потолком.
+    ``origin``/``host`` — второй хост после cutover.
     """
     return await ping_sections(db, origin=origin, host=host)
 
@@ -167,12 +177,91 @@ async def ping_sections(db, *, origin: str | None = None, host: str | None = Non
 
 
 def _ping_host(origin: str | None, host: str | None) -> str:
-    from urllib.parse import urlparse
-
     base = (origin or settings.public_origin).rstrip("/")
     if host:
         return host.split(":", 1)[0].strip().lower()
     return urlparse(base).hostname or settings.public_host
+
+
+def _indexnow_targets() -> list[tuple[str, str]]:
+    """(origin, host) для очереди: apex и, после cutover, ru."""
+    from app.services.locale import ru_public_origin
+
+    targets = [(settings.public_origin, settings.public_host)]
+    if settings.apex_locale_en:
+        targets.append((ru_public_origin(), "ru.forecasteconomy.com"))
+    return targets
+
+
+def path_year(path: str) -> int | None:
+    """Год из хвоста пути: ``/…/2018`` или ``/…/2018-01``."""
+    tail = (path or "").rstrip("/").rsplit("/", 1)[-1]
+    if len(tail) < 4 or not tail[:4].isdigit():
+        return None
+    if len(tail) not in (4, 7) or (len(tail) == 7 and tail[4] != "-"):
+        return None
+    year = int(tail[:4])
+    if year < 1900 or year > 2100:
+        return None
+    return year
+
+
+def _history_daily_cap() -> int:
+    cap = int(settings.indexnow_history_daily_cap)
+    if cap < 1:
+        return _HISTORY_CAP_MIN
+    return min(cap, _HISTORY_CAP_MAX)
+
+
+def _matches_history_phase(path: str, *, phase: int, year_min: int) -> bool:
+    year = path_year(path)
+    if phase == 0:
+        return year is None or year >= year_min
+    return year is not None and year < year_min
+
+
+def _section_paths(urls) -> list[str]:
+    paths: list[str] = []
+    for item in urls or []:
+        if hasattr(item, "path"):
+            path = item.path
+        elif isinstance(item, dict):
+            path = item.get("loc") or item.get("path")
+        else:
+            path = None
+        if path:
+            paths.append(path)
+    return paths
+
+
+def _load_history_cursor(raw: str | None) -> dict:
+    try:
+        data = json.loads(raw or "")
+    except (TypeError, json.JSONDecodeError):
+        data = {}
+    if not isinstance(data, dict):
+        data = {}
+    phase = int(data.get("phase") or 0)
+    return {
+        "phase": phase,
+        "i": max(0, int(data.get("i") or 0)),
+        "skip": max(0, int(data.get("skip") or 0)),
+        "done_on": str(data.get("done_on") or ""),
+    }
+
+
+async def _history_section_names(db) -> list[str]:
+    from app.services.site_urls import section_names
+
+    names = await section_names(db)
+    return [name for name in names if name.startswith(_HISTORY_SECTION_PREFIXES)]
+
+
+async def _queue_backed_up(redis, hosts: list[str], cap: int) -> bool:
+    for host in hosts:
+        if await redis.scard(f"{_QUEUE_PREFIX}{host}") >= cap:
+            return True
+    return False
 
 
 async def enqueue_paths(
@@ -191,6 +280,116 @@ async def enqueue_paths(
     unique = list(dict.fromkeys(paths))
     await redis.sadd(f"{_QUEUE_PREFIX}{ping_host}", *unique)
     return len(unique)
+
+
+async def enqueue_history_urls(db) -> dict:
+    """Дневная порция длинного хвоста в очередь IndexNow, без прямого POST.
+
+    Сначала спрос Вебмастера, затем чанки months / regional-years / world-years.
+    Фаза 0 — год ≥ порога, фаза 1 — более старые. Курсор в state-Redis.
+    """
+    from app.core.cache import get_state_redis
+    from app.services.demand_router import priority_recrawl_paths
+    from app.services.display import today_msk
+    from app.services.site_urls import resolve_section
+
+    if not settings.indexnow_enabled or not settings.indexnow_key:
+        return {"queued": 0, "skipped": "disabled"}
+
+    redis = await get_state_redis()
+    cap = _history_daily_cap()
+    year_min = int(settings.indexnow_history_year_min)
+    targets = _indexnow_targets()
+    hosts = [host for _, host in targets]
+    queued = 0
+
+    for origin, host in targets:
+        demand = [
+            path
+            for path, _lost in await priority_recrawl_paths(
+                db, days=30, limit=_HISTORY_DEMAND_LIMIT, host=host
+            )
+            if path
+        ][:cap]
+        queued = max(queued, await enqueue_paths(demand, origin=origin, host=host))
+
+    remaining = max(0, cap - queued)
+    stats = {
+        "queued": queued,
+        "backed_up": False,
+        "resting": False,
+        "phase": 0,
+        "section": "",
+    }
+    if remaining <= 0:
+        return stats
+    if await _queue_backed_up(redis, hosts, cap):
+        stats["backed_up"] = True
+        logger.info("IndexNow history: drain queue still full, skip chunks")
+        return stats
+
+    names = await _history_section_names(db)
+    cursor = _load_history_cursor(await redis.get(_HISTORY_CURSOR_KEY))
+    today = today_msk()
+    if cursor["phase"] >= 2:
+        try:
+            done_on = date.fromisoformat(cursor["done_on"])
+        except ValueError:
+            done_on = date(1970, 1, 1)
+        if (today - done_on).days < _HISTORY_RESTART_DAYS:
+            stats["resting"] = True
+            stats["phase"] = 2
+            return stats
+        cursor = {"phase": 0, "i": 0, "skip": 0, "done_on": ""}
+
+    while remaining > 0:
+        if cursor["phase"] >= 2:
+            cursor["done_on"] = today.isoformat()
+            break
+        if not names:
+            cursor["phase"] = 2
+            cursor["done_on"] = today.isoformat()
+            break
+        if cursor["i"] >= len(names):
+            cursor["phase"] += 1
+            cursor["i"] = 0
+            cursor["skip"] = 0
+            continue
+        section = names[cursor["i"]]
+        stats["section"] = section
+        stats["phase"] = cursor["phase"]
+        urls = await resolve_section(db, section)
+        filtered = [
+            path
+            for path in _section_paths(urls)
+            if _matches_history_phase(path, phase=cursor["phase"], year_min=year_min)
+        ]
+        skip = min(cursor["skip"], len(filtered))
+        take = filtered[skip : skip + remaining]
+        if take:
+            for origin, host in targets:
+                await enqueue_paths(take, origin=origin, host=host)
+            queued += len(take)
+            remaining -= len(take)
+            cursor["skip"] = skip + len(take)
+        else:
+            cursor["i"] += 1
+            cursor["skip"] = 0
+            await redis.set(_HISTORY_CURSOR_KEY, json.dumps(cursor))
+            continue
+        if cursor["skip"] >= len(filtered):
+            cursor["i"] += 1
+            cursor["skip"] = 0
+        await redis.set(_HISTORY_CURSOR_KEY, json.dumps(cursor))
+
+    if cursor["phase"] >= 2 and not cursor.get("done_on"):
+        cursor["done_on"] = today.isoformat()
+    await redis.set(_HISTORY_CURSOR_KEY, json.dumps(cursor))
+    stats["queued"] = queued
+    stats["phase"] = cursor["phase"]
+    stats["i"] = cursor["i"]
+    stats["skip"] = cursor["skip"]
+    return stats
 
 
 async def drain_indexnow_queue(*, limit: int = _QUEUE_BATCH) -> int:
@@ -253,7 +452,6 @@ async def indexnow_warm_job() -> None:
     """
     from app.core.cache import get_state_redis
     from app.services.demand_router import priority_recrawl_paths
-    from app.services.locale import ru_public_origin
 
     if not settings.indexnow_enabled or not settings.indexnow_key:
         return
@@ -266,17 +464,11 @@ async def indexnow_warm_job() -> None:
         from app.database import async_session
 
         async with async_session() as db:
-            hosts = [(None, None)]  # дефолт apex
-            if settings.apex_locale_en:
-                hosts.append((
-                    ru_public_origin(),
-                    "ru.forecasteconomy.com",
-                ))
-            for origin, host in hosts:
+            for origin, host in _indexnow_targets():
                 await ping_sections(db, origin=origin, host=host)
                 demand_paths = [
                     path for path, _lost in await priority_recrawl_paths(
-                        db, days=30, limit=150
+                        db, days=30, limit=150, host=host
                     )
                 ]
                 if demand_paths:
@@ -284,3 +476,23 @@ async def indexnow_warm_job() -> None:
         logger.info("IndexNow warm: hubs + demand-URL queued")
     finally:
         await redis.delete("in:warm:lock")
+
+
+async def indexnow_history_job() -> None:
+    """Ежедневная порция длинного хвоста sitemap в очередь IndexNow."""
+    from app.core.cache import get_state_redis
+
+    if not settings.indexnow_enabled or not settings.indexnow_key:
+        return
+    redis = await get_state_redis()
+    lock = await redis.set(_HISTORY_LOCK_KEY, "1", nx=True, ex=6 * 3600)
+    if not lock:
+        return
+    try:
+        from app.database import async_session
+
+        async with async_session() as db:
+            stats = await enqueue_history_urls(db)
+        logger.info("IndexNow history: %s", stats)
+    finally:
+        await redis.delete(_HISTORY_LOCK_KEY)

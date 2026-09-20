@@ -211,6 +211,146 @@ def test_ping_full_site_delegates_to_static_sections(monkeypatch):
     assert called["origin"] == "https://ru.forecasteconomy.com"
 
 
+def test_path_year_from_history_urls():
+    import app.services.indexnow as inx
+
+    assert inx.path_year("/russia/region/moskva/chislennost-naseleniya/2018") == 2018
+    assert inx.path_year("/russia/indicator/cpi/2018-01") == 2018
+    assert inx.path_year("/austria/indicator/at-x/1996") == 1996
+    assert inx.path_year("/russia/region/moskva/chislennost-naseleniya") is None
+
+
+def _history_env(monkeypatch, *, cap=3, apex=False):
+    import fakeredis.aioredis
+    import app.core.cache as cache_mod
+    import app.services.indexnow as inx
+    from app.services.site_urls import SiteUrl
+
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+
+    async def _get_state_redis():
+        return redis
+
+    chunks = {
+        "regional-years-1": [
+            SiteUrl("/russia/region/a/pop/2010", "2020-01-01", "yearly", "0.5"),
+            SiteUrl("/russia/region/a/pop/2018", "2020-01-01", "yearly", "0.5"),
+            SiteUrl("/russia/region/a/pop/2019", "2020-01-01", "yearly", "0.5"),
+            SiteUrl("/russia/region/b/pop/2020", "2020-01-01", "yearly", "0.5"),
+        ],
+        "regional-years-2": [
+            SiteUrl("/russia/region/c/pop/2005", "2020-01-01", "yearly", "0.5"),
+            SiteUrl("/russia/region/c/pop/2021", "2020-01-01", "yearly", "0.5"),
+            SiteUrl("/russia/region/d/pop/2022", "2020-01-01", "yearly", "0.5"),
+        ],
+    }
+
+    async def fake_names(_db):
+        return ["regional-years-1", "regional-years-2"]
+
+    async def fake_resolve(_db, section):
+        return chunks[section]
+
+    async def fake_demand(_db, *, days=30, limit=150, host=None):
+        return [("/russia/indicator/cpi", 10)]
+
+    monkeypatch.setattr(cache_mod, "get_state_redis", _get_state_redis)
+    monkeypatch.setattr(inx, "_history_section_names", fake_names)
+    monkeypatch.setattr("app.services.site_urls.resolve_section", fake_resolve)
+    monkeypatch.setattr(
+        "app.services.demand_router.priority_recrawl_paths", fake_demand
+    )
+    monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
+    monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
+    monkeypatch.setattr(inx.settings, "indexnow_history_daily_cap", cap)
+    monkeypatch.setattr(inx.settings, "indexnow_history_year_min", 2018)
+    monkeypatch.setattr(inx.settings, "apex_locale_en", apex)
+    return redis, inx
+
+
+def test_indexnow_history_prefers_fresh_years_and_respects_cap(monkeypatch):
+    redis, inx = _history_env(monkeypatch, cap=3)
+
+    async def scenario():
+        stats = await inx.enqueue_history_urls(object())
+        host = inx.settings.public_host
+        queued = await redis.smembers(f"in:queue:{host}")
+        return stats, queued
+
+    stats, queued = asyncio.run(scenario())
+    assert stats["queued"] == 3
+    assert queued == {
+        "/russia/indicator/cpi",
+        "/russia/region/a/pop/2018",
+        "/russia/region/a/pop/2019",
+    }
+    assert "/russia/region/a/pop/2010" not in queued
+    assert stats["phase"] == 0
+
+
+def test_indexnow_history_cursor_continues_next_day(monkeypatch):
+    redis, inx = _history_env(monkeypatch, cap=3)
+
+    async def scenario():
+        await inx.enqueue_history_urls(object())
+        await redis.delete(f"in:queue:{inx.settings.public_host}")
+        stats = await inx.enqueue_history_urls(object())
+        queued = await redis.smembers(f"in:queue:{inx.settings.public_host}")
+        return stats, queued
+
+    stats, queued = asyncio.run(scenario())
+    assert "/russia/region/b/pop/2020" in queued
+    assert "/russia/region/c/pop/2021" in queued
+    assert "/russia/region/a/pop/2018" not in queued
+    assert stats["queued"] == 3
+
+
+def test_indexnow_history_legacy_phase_after_fresh(monkeypatch):
+    redis, inx = _history_env(monkeypatch, cap=10)
+
+    async def scenario():
+        stats = await inx.enqueue_history_urls(object())
+        queued = await redis.smembers(f"in:queue:{inx.settings.public_host}")
+        return stats, queued
+
+    stats, queued = asyncio.run(scenario())
+    assert "/russia/region/a/pop/2018" in queued
+    assert "/russia/region/a/pop/2010" in queued
+    assert "/russia/region/c/pop/2005" in queued
+    assert stats["queued"] == 8
+    assert stats["phase"] == 2
+
+
+def test_indexnow_history_skips_chunks_when_queue_backed_up(monkeypatch):
+    redis, inx = _history_env(monkeypatch, cap=3)
+    host = inx.settings.public_host
+
+    async def scenario():
+        await redis.sadd(f"in:queue:{host}", *[f"/pad/{i}" for i in range(5)])
+        stats = await inx.enqueue_history_urls(object())
+        members = await redis.smembers(f"in:queue:{host}")
+        return stats, members
+
+    stats, members = asyncio.run(scenario())
+    assert stats["backed_up"] is True
+    assert "/russia/region/a/pop/2018" not in members
+    assert "/russia/indicator/cpi" in members
+
+
+def test_indexnow_history_enqueues_both_hosts_after_cutover(monkeypatch):
+    redis, inx = _history_env(monkeypatch, cap=3, apex=True)
+
+    async def scenario():
+        await inx.enqueue_history_urls(object())
+        apex = await redis.smembers(f"in:queue:{inx.settings.public_host}")
+        ru = await redis.smembers("in:queue:ru.forecasteconomy.com")
+        return apex, ru
+
+    apex, ru = asyncio.run(scenario())
+    assert "/russia/region/a/pop/2018" in apex
+    assert apex == ru
+
+
 # ---------------------------------------------------------------------------
 # Маршруты /seo/* (monkeypatch рендеров — без БД)
 # ---------------------------------------------------------------------------

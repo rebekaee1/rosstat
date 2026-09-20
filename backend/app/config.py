@@ -132,6 +132,10 @@ class Settings(BaseSettings):
     indexnow_enabled: bool = True
     indexnow_key: str = "a7c41d92e85f4b06b3d8f17c29e6a504"
     indexnow_endpoint: str = "https://yandex.com/indexnow"
+    # Дневная порция длинного хвоста (годовые регионы/мир, месяцы РФ).
+    # Джоба только кладёт в очередь; drain */10 мин шлёт батчи и стопает на 429.
+    indexnow_history_daily_cap: int = 30_000
+    indexnow_history_year_min: int = 2018
 
     # Автоподача переобхода Яндекс.Вебмастера: ежедневный дренаж квоты
     # (~150 URL/день) приоритетными страницами из site_urls-реестра.

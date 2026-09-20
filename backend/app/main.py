@@ -791,7 +791,11 @@ async def lifespan(app: FastAPI):
             logger.info("Weekly indexing report enabled: Mon 09:30 MSK")
 
         if settings.indexnow_enabled and settings.indexnow_key:
-            from app.services.indexnow import indexnow_drain_job, indexnow_warm_job
+            from app.services.indexnow import (
+                indexnow_drain_job,
+                indexnow_history_job,
+                indexnow_warm_job,
+            )
             scheduler.add_job(
                 indexnow_drain_job,
                 trigger=CronTrigger(minute="*/10", timezone="Europe/Moscow"),
@@ -806,7 +810,16 @@ async def lifespan(app: FastAPI):
                 name="IndexNow weekly warm (hubs + demand URLs, dual-host)",
                 replace_existing=True,
             )
-            logger.info("IndexNow drain enabled: every 10 min; warm: Tue 06:40 MSK")
+            scheduler.add_job(
+                indexnow_history_job,
+                trigger=CronTrigger(hour=4, minute=30, timezone="Europe/Moscow"),
+                id="indexnow_history",
+                name="IndexNow daily history quota (regional/world years, dual-host)",
+                replace_existing=True,
+            )
+            logger.info(
+                "IndexNow drain */10 min; warm Tue 06:40; history daily 04:30 MSK"
+            )
 
         if settings.telegram_digest_enabled:
             from app.tasks.analytics_scheduler import telegram_daily_digest_job
