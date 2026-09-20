@@ -1,20 +1,37 @@
 # Google Search Console API Inventory
 
-**Last verified:** 2026-09-21 (official API contracts and local tests).
-**Implementation status:** local implementation; live OAuth/API acceptance must be
-confirmed separately. `app/services/gsc_client.py` supports renewable read-only
-OAuth and the existing daily job (09:10 Moscow). A deployed code change alone
-does not mean Google credentials, permissions or scheduler configuration are active.
+**Last verified:** 2026-09-21 (live OAuth refresh, Sites, Sitemaps and Search Analytics).
+**Implementation status:** local read-only API access verified after user consent.
+The Search Console API is enabled; `sites` returned `sc-domain:forecasteconomy.com`
+with `permissionLevel: siteFullUser`. `app/services/gsc_client.py` supports renewable
+OAuth and the existing daily job (09:10 Moscow). Credentials are local; the
+production scheduler/credential mount has **not** been activated by this setup.
 
 **Provider UI, 2026-09-21:** `sc-domain:forecasteconomy.com` and the intended owner
 account were verified in Search Console. The existing Google Cloud project's
 OAuth Audience is **In production**, not Testing. The Russian sitemap was
-submitted in the UI alongside the apex sitemap and then showed **Success**,
-last read 2026-09-21; its discovered-page counter was still zero. The apex
-sitemap showed Success, last read 2026-09-20, with 906,780 discovered pages.
-Reading a sitemap index is not proof that its URLs are indexed. OAuth consent
-is pending and the Cloud Search Console API still needs enabling; direct API
-data access requires a successful live check.
+submitted in the UI alongside the apex sitemap and then showed **Success**.
+The subsequent API export confirms both sitemap indexes are processed
+(`isPending: false`) with zero errors and warnings:
+
+- Russian: `submitted: 839907`, downloaded `2026-09-20T21:04:11.381Z`
+  (2026-09-21 00:04 Moscow).
+- Apex: `submitted: 906780`, downloaded `2026-09-20T20:36:30.881Z`
+  (2026-09-20 23:36 Moscow).
+
+These are Google's sitemap snapshots, not the current complete site inventory or
+indexed-page totals. The returned `contents[].indexed: 0` is a **deprecated field**
+that Google explicitly says not to use; it does not mean zero indexed pages.
+Search Console API has no equivalent of the UI's full Page indexing report or a
+reliable total indexed-page counter. Use the UI for that report and bounded URL
+Inspection samples for individual URLs.
+
+**Initial private exports:** `analytics/gsc/{sites,sitemaps,web,image}.json`, all
+mode `0600`, ignored by git. Both search exports cover 2026-08-21 through 2026-09-17
+inclusive, 28 days in `America/Los_Angeles`, finalized data, dimensions
+`query,page,date`. Web returned **20,253 rows across 28 nonempty days**; Image
+returned **230 rows across 25 nonempty days**. Neither hit the configured daily
+row cap. These are query/page/day rows, not unique URLs or a complete index count.
 
 **Part of:** [`README.md`](README.md), ADR-0003.
 
@@ -121,9 +138,11 @@ remain Google/owner configuration; the client does not mutate them. Bing meta
 - [Search Analytics query](https://developers.google.com/webmaster-tools/v1/searchanalytics/query)
 - [Sites list](https://developers.google.com/webmaster-tools/v1/sites/list)
 - [Sitemaps list](https://developers.google.com/webmaster-tools/v1/sitemaps/list)
+- [Sitemap resource: deprecated indexed field](https://developers.google.com/webmaster-tools/v1/sitemaps)
 - [URL Inspection](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect)
 - [API quotas](https://developers.google.com/webmaster-tools/limits)
 
 Local tests: `backend/.venv/bin/python -m pytest backend/tests/test_gsc_client.py -q`.
-Provider acceptance requires successful token refresh plus `sites` and at least one
-real analytics/sitemap response; tests alone do not establish account access.
+Provider acceptance passed locally on 2026-09-21: successful OAuth refresh followed
+by real Sites, Sitemaps and web/image Search Analytics exports. URL Inspection is
+implemented and unit-tested; it was not called in this initial live acceptance.
