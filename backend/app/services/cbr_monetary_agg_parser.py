@@ -105,43 +105,46 @@ def fetch_monetary_agg(
         session.close()
 
     wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), data_only=True, read_only=True)
-    if "Денежные агрегаты" not in wb.sheetnames:
-        raise ValueError(f"Sheet «Денежные агрегаты» not found in monetary_agg.xlsx; available: {wb.sheetnames}")
-    ws = wb["Денежные агрегаты"]
+    try:
+        if "Денежные агрегаты" not in wb.sheetnames:
+            raise ValueError(f"Sheet «Денежные агрегаты» not found in monetary_agg.xlsx; available: {wb.sheetnames}")
+        ws = wb["Денежные агрегаты"]
 
-    cells = list(ws.iter_rows(values_only=True))
-    if not cells:
-        return []
+        cells = list(ws.iter_rows(values_only=True))
+        if not cells:
+            return []
 
-    header = cells[0]
-    # Cборка по столбцам: column index i → date header[i], значение = сумма по rows.
-    points: dict[date, float] = {}
-    for col_i in range(1, len(header)):
-        dt_raw = header[col_i]
-        if not isinstance(dt_raw, datetime):
-            continue
-        raw_date = dt_raw.date().replace(day=1)
-        if raw_date.year < year_from:
-            continue
-        total = 0.0
-        any_present = False
-        for r in rows:
-            if r - 1 >= len(cells):
+        header = cells[0]
+        # Cборка по столбцам: column index i → date header[i], значение = сумма по rows.
+        points: dict[date, float] = {}
+        for col_i in range(1, len(header)):
+            dt_raw = header[col_i]
+            if not isinstance(dt_raw, datetime):
                 continue
-            val = cells[r - 1][col_i] if col_i < len(cells[r - 1]) else None
-            if val is None:
+            raw_date = dt_raw.date().replace(day=1)
+            if raw_date.year < year_from:
                 continue
-            try:
-                total += float(val)
-                any_present = True
-            except (TypeError, ValueError):
+            total = 0.0
+            any_present = False
+            for r in rows:
+                if r - 1 >= len(cells):
+                    continue
+                val = cells[r - 1][col_i] if col_i < len(cells[r - 1]) else None
+                if val is None:
+                    continue
+                try:
+                    total += float(val)
+                    any_present = True
+                except (TypeError, ValueError):
+                    continue
+            if not any_present:
                 continue
-        if not any_present:
-            continue
-        shifted = _shift_month(raw_date, date_offset_months)
-        points[shifted] = round(total, 4)
+            shifted = _shift_month(raw_date, date_offset_months)
+            points[shifted] = round(total, 4)
 
-    return sorted(points.items())
+        return sorted(points.items())
+    finally:
+        wb.close()
 
 
 class CbrMonetaryAggParser(BaseParser):

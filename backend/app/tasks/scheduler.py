@@ -426,6 +426,20 @@ async def staleness_check_job() -> list[tuple[str, int]]:
     except Exception:
         logger.warning("Telegram outbox freshness check failed", exc_info=True)
 
+    from app.services.process_metrics import (
+        fd_pressure_high,
+        fd_soft_limit,
+        process_open_fds,
+    )
+
+    n_fd = process_open_fds()
+    fd_limit = fd_soft_limit()
+    logger.info(
+        "Staleness check: process open_fds=%s limit=%s",
+        n_fd,
+        fd_limit or "unknown",
+    )
+
     stale = find_stale(rows)
     if stale:
         from html import escape
@@ -446,15 +460,29 @@ async def staleness_check_job() -> list[tuple[str, int]]:
                 for code, age in stale[:25]
             )
             more = f"\n…и ещё {len(stale) - 25}" if len(stale) > 25 else ""
+            fd_line = f"\nfd {n_fd}/{fd_limit or '?'}"
             await send_telegram(
                 f"🟡 <b>Staleness check</b>\n{len(stale)} индикатор(ов) старше SLA "
-                f"своей частоты:\n{listing}{more}",
+                f"своей частоты:\n{listing}{more}{fd_line}",
                 kind="staleness",
             )
         logger.warning("Staleness check: %d stale indicator(s): %s",
                        len(stale), ", ".join(c for c, _ in stale[:40]))
     else:
         logger.info("Staleness check: all %d active indicators fresh", len(rows))
+
+    if fd_pressure_high():
+        logger.error(
+            "FD pressure high: open_fds=%s limit=%s",
+            n_fd,
+            fd_limit or "unknown",
+        )
+        if not stale:
+            await send_telegram(
+                f"🟡 <b>Staleness check</b>\nОткрытых файловых дескрипторов "
+                f"{n_fd} из {fd_limit or '?'} (больше 80% soft ulimit).",
+                kind="staleness",
+            )
     return stale
 
 

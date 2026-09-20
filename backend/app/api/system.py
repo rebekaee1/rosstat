@@ -147,6 +147,24 @@ async def health_ready(response: Response, db: AsyncSession = Depends(get_db)):
         except Exception:
             checks["pg_backup_age_hours"] = "unknown"
 
+    from app.services.process_metrics import (
+        fd_pressure_high,
+        fd_pressure_ratio,
+        fd_soft_limit,
+        process_open_fds,
+    )
+
+    n_fd = process_open_fds()
+    fd_limit = fd_soft_limit()
+    checks["open_fds"] = str(n_fd)
+    if fd_limit:
+        checks["open_fds_limit"] = str(fd_limit)
+    ratio = fd_pressure_ratio()
+    if ratio is not None:
+        checks["open_fds_pressure"] = f"{ratio:.2f}"
+        if fd_pressure_high(ratio=ratio):
+            degraded = True
+
     if not hard_ok:
         response.status_code = 503
     return {
@@ -260,6 +278,19 @@ async def prometheus_metrics(db: AsyncSession = Depends(get_db), _=Depends(_chec
         "# TYPE fe_cgroup_memory_bytes gauge",
         f'fe_cgroup_memory_bytes{{kind="usage"}} {cgroup_usage}',
         f'fe_cgroup_memory_bytes{{kind="limit"}} {cgroup_limit}',
+    ]
+
+    from app.services.process_metrics import fd_soft_limit, process_open_fds
+
+    n_fd = process_open_fds()
+    fd_limit = fd_soft_limit()
+    lines += [
+        "# HELP fe_process_open_fds Open file descriptors of the backend process",
+        "# TYPE fe_process_open_fds gauge",
+        f"fe_process_open_fds {n_fd}",
+        "# HELP fe_process_open_fds_limit Soft RLIMIT_NOFILE",
+        "# TYPE fe_process_open_fds_limit gauge",
+        f"fe_process_open_fds_limit {fd_limit}",
     ]
     return Response(content="\n".join(lines) + "\n", media_type="text/plain")
 

@@ -31,6 +31,7 @@ from app.models import (
     WorldIndicator,
     WorldIngestRun,
 )
+from app.services.world_adapters import close_http_resources
 from app.services.world_source_adapter import (
     WorldSeriesPayload,
     WorldSeriesRef,
@@ -961,6 +962,31 @@ async def ingest_country(
     adapters: dict[str, WorldSourceAdapter | None] = {}
     adapter_errors: dict[str, str] = {}
 
+    try:
+        return await _ingest_country_series(
+            db,
+            country_row=country_row,
+            selected=selected,
+            adapters=adapters,
+            adapter_errors=adapter_errors,
+            stats=stats,
+            dry_run=dry_run,
+        )
+    finally:
+        for adapter in adapters.values():
+            close_http_resources(adapter)
+
+
+async def _ingest_country_series(
+    db: AsyncSession,
+    *,
+    country_row: WorldCountry,
+    selected: tuple[NationalSeriesSpec, ...],
+    adapters: dict[str, WorldSourceAdapter | None],
+    adapter_errors: dict[str, str],
+    stats: CountryIngestStats,
+    dry_run: bool,
+) -> CountryIngestStats:
     for spec in selected:
         if spec.provider not in adapters and spec.provider not in adapter_errors:
             try:
@@ -976,7 +1002,7 @@ async def ingest_country(
         if adapter is None and not dry_run:
             err = adapter_errors.get(spec.provider) or "adapter unavailable"
             res = SeriesIngestResult(
-                code=build_indicator_code(manifest.country_code, spec.code_suffix),
+                code=build_indicator_code(country_row.code, spec.code_suffix),
                 provider=spec.provider,
                 dataset_id=spec.dataset_id,
                 error=err,

@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pytest
 
+from app.services.world_adapters import close_http_resources
 from app.services.world_national_ingest import (
     NATIONAL_CORE_COUNTRIES,
     load_national_core_yaml,
@@ -55,6 +56,7 @@ def test_passport_adapters_resolve_or_declare_key(country: str):
             )
             continue
         assert adapter.provider == provider
+        close_http_resources(adapter)
 
 
 _KEY_GATED = frozenset({"estat", "ecos"})

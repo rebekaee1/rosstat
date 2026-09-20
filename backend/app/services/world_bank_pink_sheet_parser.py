@@ -110,38 +110,41 @@ def _parse_pink_sheet_monthly(
     backfill_from: date | None = None,
 ) -> list[tuple[date, float]]:
     wb = openpyxl.load_workbook(BytesIO(content), data_only=True, read_only=True)
-    if "Monthly Prices" not in wb.sheetnames:
-        logger.warning("Pink Sheet workbook missing 'Monthly Prices' sheet")
-        return []
-    ws = wb["Monthly Prices"]
+    try:
+        if "Monthly Prices" not in wb.sheetnames:
+            logger.warning("Pink Sheet workbook missing 'Monthly Prices' sheet")
+            return []
+        ws = wb["Monthly Prices"]
 
-    name_row = next(ws.iter_rows(min_row=5, max_row=5, values_only=True), None)
-    if not name_row:
-        return []
+        name_row = next(ws.iter_rows(min_row=5, max_row=5, values_only=True), None)
+        if not name_row:
+            return []
 
-    col_idx: int | None = None
-    for i, name in enumerate(name_row):
-        if name is not None and str(name).strip() == column_name:
-            col_idx = i
-            break
-    if col_idx is None:
-        logger.warning("Pink Sheet column %r not found", column_name)
-        return []
+        col_idx: int | None = None
+        for i, name in enumerate(name_row):
+            if name is not None and str(name).strip() == column_name:
+                col_idx = i
+                break
+        if col_idx is None:
+            logger.warning("Pink Sheet column %r not found", column_name)
+            return []
 
-    out: list[tuple[date, float]] = []
-    for row in ws.iter_rows(min_row=7, values_only=True):
-        if not row or col_idx >= len(row):
-            continue
-        d = _parse_period(row[0])
-        if d is None:
-            continue
-        if backfill_from is not None and d < backfill_from:
-            continue
-        value = _parse_value(row[col_idx])
-        if value is None:
-            continue
-        out.append((d, value))
-    return out
+        out: list[tuple[date, float]] = []
+        for row in ws.iter_rows(min_row=7, values_only=True):
+            if not row or col_idx >= len(row):
+                continue
+            d = _parse_period(row[0])
+            if d is None:
+                continue
+            if backfill_from is not None and d < backfill_from:
+                continue
+            value = _parse_value(row[col_idx])
+            if value is None:
+                continue
+            out.append((d, value))
+        return out
+    finally:
+        wb.close()
 
 
 class WorldBankPinkSheetParser(BaseParser):

@@ -166,30 +166,33 @@ def _load_product_weights(session: requests.Session) -> dict[str, tuple[float, s
         return {}
 
     wb = openpyxl.load_workbook(BytesIO(r.content), data_only=True)
-    sheet_name = None
-    for sn in reversed(wb.sheetnames):
-        if sn != "Содержание":
-            sheet_name = sn
-            break
-    if not sheet_name:
-        return {}
+    try:
+        sheet_name = None
+        for sn in reversed(wb.sheetnames):
+            if sn != "Содержание":
+                sheet_name = sn
+                break
+        if not sheet_name:
+            return {}
 
-    ws = wb[sheet_name]
-    weights: dict[str, tuple[float, str]] = {}
-    for ri in range(7, ws.max_row + 1):
-        name = str(ws.cell(ri, 1).value or "").strip()
-        w_raw = ws.cell(ri, 3).value
-        local_code = ws.cell(ri, 2).value
-        if not name or w_raw is None:
-            continue
-        try:
-            w = float(w_raw)
-        except (ValueError, TypeError):
-            continue
-        segment = _classify_local_code(local_code)
-        if w > 0 and segment:
-            weights[name] = (w, segment)
-    return weights
+        ws = wb[sheet_name]
+        weights: dict[str, tuple[float, str]] = {}
+        for ri in range(7, ws.max_row + 1):
+            name = str(ws.cell(ri, 1).value or "").strip()
+            w_raw = ws.cell(ri, 3).value
+            local_code = ws.cell(ri, 2).value
+            if not name or w_raw is None:
+                continue
+            try:
+                w = float(w_raw)
+            except (ValueError, TypeError):
+                continue
+            segment = _classify_local_code(local_code)
+            if w > 0 and segment:
+                weights[name] = (w, segment)
+        return weights
+    finally:
+        wb.close()
 
 
 def _match_product(
@@ -224,74 +227,77 @@ def _parse_weekly_xlsx_multi(
     `years`: если задано — парсим только листы с этими годами (steady-state).
     """
     wb = openpyxl.load_workbook(BytesIO(weekly_content), data_only=True)
-    buckets: dict[str, list[WeeklyPoint]] = {
-        "all": [],
-        "food": [],
-        "nonfood": [],
-        "services": [],
-    }
-    match_cache: dict[str, tuple[float, str] | None] = {}
+    try:
+        buckets: dict[str, list[WeeklyPoint]] = {
+            "all": [],
+            "food": [],
+            "nonfood": [],
+            "services": [],
+        }
+        match_cache: dict[str, tuple[float, str] | None] = {}
 
-    for sheet_name in wb.sheetnames:
-        if sheet_name == "Содержание":
-            continue
-        try:
-            year = int(sheet_name)
-        except ValueError:
-            continue
-        if years is not None and year not in years:
-            continue
-
-        ws = wb[sheet_name]
-        header_row = 4
-
-        col_dates: list[tuple[int, date]] = []
-        for ci in range(2, ws.max_column + 1):
-            hdr = str(ws.cell(header_row, ci).value or "")
-            d = _parse_column_date(hdr, year)
-            if d:
-                col_dates.append((ci, d))
-
-        if not col_dates:
-            continue
-
-        products: list[tuple[int, str, float, str]] = []
-        for ri in range(5, ws.max_row + 1):
-            name = str(ws.cell(ri, 1).value or "").strip()
-            if not name or name.startswith("*") or name.startswith("…"):
+        for sheet_name in wb.sheetnames:
+            if sheet_name == "Содержание":
                 continue
-            matched = _match_product(name, weights, match_cache)
-            if matched is None:
+            try:
+                year = int(sheet_name)
+            except ValueError:
                 continue
-            w, segment = matched
-            products.append((ri, name, w, segment))
+            if years is not None and year not in years:
+                continue
 
-        for ci, d in col_dates:
-            sums: dict[str, tuple[float, float]] = {
-                key: (0.0, 0.0) for key in buckets
-            }
-            for ri, _name, w, segment in products:
-                raw = ws.cell(ri, ci).value
-                if raw is None or raw == "…" or raw == "":
-                    continue
-                try:
-                    val = float(str(raw).replace(",", ".").replace("\u2212", "-"))
-                except (ValueError, TypeError):
-                    continue
-                if not (95 < val < 110):
-                    continue
-                for key in ("all", segment):
-                    ws_sum, w_sum = sums[key]
-                    sums[key] = (ws_sum + w * val, w_sum + w)
+            ws = wb[sheet_name]
+            header_row = 4
 
-            for key, (weighted_sum, weight_sum) in sums.items():
-                if weight_sum > 0:
-                    aggregate = weighted_sum / weight_sum
-                    buckets[key].append(WeeklyPoint(date=d, value=round(aggregate, 2)))
+            col_dates: list[tuple[int, date]] = []
+            for ci in range(2, ws.max_column + 1):
+                hdr = str(ws.cell(header_row, ci).value or "")
+                d = _parse_column_date(hdr, year)
+                if d:
+                    col_dates.append((ci, d))
 
-    for key in buckets:
-        buckets[key].sort(key=lambda p: p.date)
-    return buckets
+            if not col_dates:
+                continue
+
+            products: list[tuple[int, str, float, str]] = []
+            for ri in range(5, ws.max_row + 1):
+                name = str(ws.cell(ri, 1).value or "").strip()
+                if not name or name.startswith("*") or name.startswith("…"):
+                    continue
+                matched = _match_product(name, weights, match_cache)
+                if matched is None:
+                    continue
+                w, segment = matched
+                products.append((ri, name, w, segment))
+
+            for ci, d in col_dates:
+                sums: dict[str, tuple[float, float]] = {
+                    key: (0.0, 0.0) for key in buckets
+                }
+                for ri, _name, w, segment in products:
+                    raw = ws.cell(ri, ci).value
+                    if raw is None or raw == "…" or raw == "":
+                        continue
+                    try:
+                        val = float(str(raw).replace(",", ".").replace("\u2212", "-"))
+                    except (ValueError, TypeError):
+                        continue
+                    if not (95 < val < 110):
+                        continue
+                    for key in ("all", segment):
+                        ws_sum, w_sum = sums[key]
+                        sums[key] = (ws_sum + w * val, w_sum + w)
+
+                for key, (weighted_sum, weight_sum) in sums.items():
+                    if weight_sum > 0:
+                        aggregate = weighted_sum / weight_sum
+                        buckets[key].append(WeeklyPoint(date=d, value=round(aggregate, 2)))
+
+        for key in buckets:
+            buckets[key].sort(key=lambda p: p.date)
+        return buckets
+    finally:
+        wb.close()
 
 
 def _parse_weekly_xlsx(

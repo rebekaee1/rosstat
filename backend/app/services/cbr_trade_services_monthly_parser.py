@@ -118,69 +118,72 @@ def parse_trade_services_monthly_xlsx(
     label_needle = _TARGET_LABEL[target]
 
     wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True)
-    ws = None
-    for sn in wb.sheetnames:
-        if "месяц" in sn.lower():
-            ws = wb[sn]
-            break
-    if ws is None:
-        raise ValueError("trade_monthly.xlsx: лист 'месяцы' не найден")
+    try:
+        ws = None
+        for sn in wb.sheetnames:
+            if "месяц" in sn.lower():
+                ws = wb[sn]
+                break
+        if ws is None:
+            raise ValueError("trade_monthly.xlsx: лист 'месяцы' не найден")
 
-    header_row_idx = None
-    dates: list[tuple[int, date]] = []
-    for ri in range(1, min(10, ws.max_row + 1)):
-        candidate_dates: list[tuple[int, date]] = []
-        for ci in range(2, ws.max_column + 1):
-            d = _parse_header_date(ws.cell(row=ri, column=ci).value)
-            if d:
-                candidate_dates.append((ci, d))
-        if len(candidate_dates) >= 3:
-            header_row_idx = ri
-            dates = candidate_dates
-            break
+        header_row_idx = None
+        dates: list[tuple[int, date]] = []
+        for ri in range(1, min(10, ws.max_row + 1)):
+            candidate_dates: list[tuple[int, date]] = []
+            for ci in range(2, ws.max_column + 1):
+                d = _parse_header_date(ws.cell(row=ri, column=ci).value)
+                if d:
+                    candidate_dates.append((ci, d))
+            if len(candidate_dates) >= 3:
+                header_row_idx = ri
+                dates = candidate_dates
+                break
 
-    if header_row_idx is None or not dates:
-        raise ValueError(
-            "trade_monthly.xlsx: header row с датами не найден в первых 10 строках",
+        if header_row_idx is None or not dates:
+            raise ValueError(
+                "trade_monthly.xlsx: header row с датами не найден в первых 10 строках",
+            )
+
+        data_row_idx = None
+        for ri in range(header_row_idx + 1, ws.max_row + 1):
+            label = ws.cell(row=ri, column=1).value
+            if not label:
+                continue
+            label_norm = str(label).strip().lower()
+            if label_norm == label_needle:
+                data_row_idx = ri
+                break
+
+        if data_row_idx is None:
+            raise ValueError(
+                f"trade_monthly.xlsx: row для '{label_needle}' не найдена",
+            )
+
+        points: list[DataPoint] = []
+        for ci, d in dates:
+            raw = ws.cell(row=data_row_idx, column=ci).value
+            if raw is None or raw == "":
+                continue
+            try:
+                val = float(raw)
+            except (TypeError, ValueError):
+                continue
+            points.append(DataPoint(date=d, value=round(val, 2)))
+
+        points.sort(key=lambda p: p.date)
+        logger.info(
+            "trade_monthly.xlsx '%s' (row=%d, label='%s'): %d points (%s → %s)",
+            target,
+            data_row_idx,
+            label_needle,
+            len(points),
+            points[0].date if points else "?",
+            points[-1].date if points else "?",
         )
-
-    data_row_idx = None
-    for ri in range(header_row_idx + 1, ws.max_row + 1):
-        label = ws.cell(row=ri, column=1).value
-        if not label:
-            continue
-        label_norm = str(label).strip().lower()
-        if label_norm == label_needle:
-            data_row_idx = ri
-            break
-
-    if data_row_idx is None:
-        raise ValueError(
-            f"trade_monthly.xlsx: row для '{label_needle}' не найдена",
-        )
-
-    points: list[DataPoint] = []
-    for ci, d in dates:
-        raw = ws.cell(row=data_row_idx, column=ci).value
-        if raw is None or raw == "":
-            continue
-        try:
-            val = float(raw)
-        except (TypeError, ValueError):
-            continue
-        points.append(DataPoint(date=d, value=round(val, 2)))
-
-    points.sort(key=lambda p: p.date)
-    logger.info(
-        "trade_monthly.xlsx '%s' (row=%d, label='%s'): %d points (%s → %s)",
-        target,
-        data_row_idx,
-        label_needle,
-        len(points),
-        points[0].date if points else "?",
-        points[-1].date if points else "?",
-    )
-    return points
+        return points
+    finally:
+        wb.close()
 
 
 class CbrTradeServicesMonthlyParser(BaseParser):

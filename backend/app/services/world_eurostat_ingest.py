@@ -218,6 +218,11 @@ async def _run_one_loader(entry: TocEntry) -> tuple[bool, str]:
         process.kill()
         await process.wait()
         return False, "loader timeout after 4 hours"
+    except BaseException:
+        if process.returncode is None:
+            process.kill()
+            await process.wait()
+        raise
     text_output = output.decode("utf-8", "replace")
     return process.returncode == 0, text_output[-2000:]
 

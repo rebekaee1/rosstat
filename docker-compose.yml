@@ -219,6 +219,10 @@ services:
       redis-state:
         condition: service_healthy
     restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       # readiness (Н-1): БД + оба Redis + планировщик; 503 = unhealthy
       test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health/ready"]
