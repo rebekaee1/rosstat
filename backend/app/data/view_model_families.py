@@ -159,11 +159,13 @@ _SUFFIX_NAME_EN: dict[str, str] = {
     "sum-month": "monthly sum",
     "sum-quarter": "quarterly sum",
     "sum-year": "annual sum",
-    "mom": "vs previous month",
-    "qoq": "vs previous quarter",
-    "yoy": "vs same period last year",
-    "yoy-quarter": "vs same quarter last year",
-    "yoy-year": "vs previous year",
+    # Формулировка «over …» — директива владельца 2026-09-06 (EN-витрина):
+    # «Over previous period» / «Year over year», не «vs».
+    "mom": "over previous month",
+    "qoq": "over previous quarter",
+    "yoy": "over same period previous year",
+    "yoy-quarter": "over same quarter previous year",
+    "yoy-year": "over previous year",
     "index": "index (first period = 100)",
     "rolling-12m": "rolling 12-month average",
 }

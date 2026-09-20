@@ -206,6 +206,21 @@ class WorldIndicator(Base):
             "country_id", "provider", "dataset_id",
             postgresql_ops={"dataset_id": "varchar_pattern_ops"},
         ),
+        # Триграммный GIN мирового поиска (ILIKE '%q%' по четырём текстовым
+        # колонкам), создан миграцией 20260826_world_search_trgm. Объявлен и в
+        # модели, чтобы autogenerate/check-migration-drift не считал его
+        # «лишним» индексом БД.
+        Index(
+            "ix_world_indicators_search_text_trgm",
+            "code", "name_ru", "name_en", "seo_keywords",
+            postgresql_using="gin",
+            postgresql_ops={
+                "code": "gin_trgm_ops",
+                "name_ru": "gin_trgm_ops",
+                "name_en": "gin_trgm_ops",
+                "seo_keywords": "gin_trgm_ops",
+            },
+        ),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
