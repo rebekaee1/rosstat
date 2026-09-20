@@ -34,7 +34,7 @@ _YOY_PERIOD_METHOD = (
     "для каждого календарного года — последнее доступное наблюдение"
 )
 _YOY_PERIOD_METHOD_EN = (
-    "Change versus the same period of the previous year; "
+    "Change over the same period of the previous year; "
     "for each calendar year — the latest available observation"
 )
 _LEVEL_PERIOD_METHOD = "Последнее опубликованное значение в каждом календарном году"

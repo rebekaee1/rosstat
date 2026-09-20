@@ -286,10 +286,10 @@ async def render_indicator_month_html(
             f"Официальные данные — {source}."
         )
 
-    mom_label = "Change versus previous month" if en else "Изменение к предыдущему месяцу"
+    mom_label = "Change over previous month" if en else "Изменение к предыдущему месяцу"
     prev_key = _month_label(prev_year, prev_month)
     yoy_label = (
-        f"Change versus {month_label_en.split()[0]} {year - 1}"
+        f"Change over {month_label_en.split()[0]} {year - 1}"
         if en
         else f"Изменение к тому же месяцу прошлого года ({_month_label(year - 1, month)})"
     )

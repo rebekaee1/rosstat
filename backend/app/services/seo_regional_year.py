@@ -78,8 +78,8 @@ _YEAR_TEMPLATES_EN = {
     ),
     "caption": "{indicator} in {region}, {year}. Source: {source}.",
     "desc_main": "{indicator} in {region} in {year}: {value}{unit}.",
-    "change_vs": "Change versus {prev_year}: {abs}{unit}.",
-    "change_vs_pct": "Change versus {prev_year}: {abs}{unit} (indicator {pct}).",
+    "change_vs": "Change over {prev_year}: {abs}{unit}.",
+    "change_vs_pct": "Change over {prev_year}: {abs}{unit} (indicator {pct}).",
     "rf_h2": "Russia as a whole",
     "rf_para": "Russia as a whole in {year}: {value}{unit}.",
     "rf_note": (

@@ -350,7 +350,7 @@ def test_en_change_and_jsonld(region_year_client):
     """EN: изменение к прошлому году, Dataset name/creator, trail-крошка."""
     html = _get_en(region_year_client, f"/seo/region-indicator-year/moskva/{CODE}/2023")
 
-    assert "Change versus 2022" in html
+    assert "Change over 2022" in html
     assert re.search(r"indicator\s+rose", html) or "rose" in html
 
     datasets = [b for b in _jsonld(html) if b.get("@type") == "Dataset"]
@@ -385,7 +385,7 @@ def test_en_number_typography_punct(region_year_client):
     html = _get_en(region_year_client, f"/seo/region-indicator-year/moskva/{CODE}/2022")
 
     # 2022: 13_110_000 − 13_100_000 = +10 000.
-    assert "Change versus 2021: +10,000" in html
+    assert "Change over 2021: +10,000" in html
     assert "thousand people" in html  # EN-юнит из каталога
 
 
