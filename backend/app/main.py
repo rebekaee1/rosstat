@@ -631,6 +631,28 @@ async def lifespan(app: FastAPI):
                 coalesce=True,
             )
 
+        if settings.world_subnational_ingest_enabled:
+            from app.services.world_subnational_ingest import world_subnational_ingest_job
+
+            scheduler.add_job(
+                locked_job(
+                    world_subnational_ingest_job,
+                    "world_subnational_ingest",
+                    ttl_seconds=4 * 3600,
+                ),
+                trigger=CronTrigger(
+                    day_of_week="sun",
+                    hour=settings.world_subnational_ingest_hour,
+                    minute=settings.world_subnational_ingest_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="world_subnational_ingest",
+                name="World subnational ingest (FRED state series)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
         # Н-3: «источник молча умер» (вечный no_new_data) — ежедневная сверка
         # max(data.date) против SLA частоты каждого индикатора, после утреннего ETL.
         from app.tasks.scheduler import staleness_check_job

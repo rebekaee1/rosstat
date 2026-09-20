@@ -400,6 +400,102 @@ class WorldForecastValue(Base):
     forecast: Mapped["WorldForecast"] = relationship(back_populates="values")
 
 
+# ---------------------------------------------------------------------------
+# Субнациональный bounded context (ADR-0014): штаты / земли / провинции
+# любой страны кроме России. Россия остаётся в ADR-0008 (годовой сборник).
+# Ось: страна × регион × показатель × период (monthly|quarterly|annual).
+# ---------------------------------------------------------------------------
+
+
+class SubnationalRegion(Base):
+    __tablename__ = "subnational_regions"
+    __table_args__ = (
+        UniqueConstraint("country_code", "slug", name="uq_subnational_region_country_slug"),
+        Index("ix_subnational_regions_country", "country_code"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    country_code: Mapped[str] = mapped_column(String(8), nullable=False)
+    slug: Mapped[str] = mapped_column(String(80), nullable=False)
+    name_en: Mapped[str] = mapped_column(String(150), nullable=False)
+    name_ru: Mapped[str] = mapped_column(String(150), nullable=False)
+    # kind: state | district | territory
+    kind: Mapped[str] = mapped_column(String(20), nullable=False, default="state")
+    geo_code: Mapped[str] = mapped_column(String(16), nullable=False, default="")
+    fips: Mapped[str | None] = mapped_column(String(8))
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    data_points: Mapped[list["SubnationalDataPoint"]] = relationship(
+        back_populates="region", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class SubnationalIndicator(Base):
+    __tablename__ = "subnational_indicators"
+    __table_args__ = (
+        UniqueConstraint("country_code", "code", name="uq_subnational_indicator_country_code"),
+        Index("ix_subnational_indicators_country", "country_code"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    country_code: Mapped[str] = mapped_column(String(8), nullable=False)
+    code: Mapped[str] = mapped_column(String(120), nullable=False)
+    name_en: Mapped[str] = mapped_column(String(400), nullable=False)
+    name_ru: Mapped[str] = mapped_column(String(400), nullable=False)
+    unit: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    unit_ru: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    unit_en: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    frequency: Mapped[str] = mapped_column(String(20), nullable=False, default="annual")
+    section_en: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    section_ru: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    provider: Mapped[str] = mapped_column(String(50), nullable=False, default="fred")
+    series_template: Mapped[str] = mapped_column(String(160), nullable=False)
+    aggregation: Mapped[str] = mapped_column(String(20), nullable=False, default="last")
+    description_en: Mapped[str | None] = mapped_column(Text)
+    description_ru: Mapped[str | None] = mapped_column(Text)
+    methodology_en: Mapped[str | None] = mapped_column(Text)
+    methodology_ru: Mapped[str | None] = mapped_column(Text)
+    source_en: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    source_ru: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    source_url_template: Mapped[str | None] = mapped_column(String(500))
+    is_listed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
+    national_code: Mapped[str | None] = mapped_column(String(120))
+    better_is_low: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+
+    data_points: Mapped[list["SubnationalDataPoint"]] = relationship(
+        back_populates="indicator", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class SubnationalDataPoint(Base):
+    __tablename__ = "subnational_data_points"
+    __table_args__ = (
+        UniqueConstraint(
+            "indicator_id", "region_id", "period",
+            name="uq_subnational_data_point",
+        ),
+        Index("ix_subnational_data_indicator_period", "indicator_id", "period"),
+        Index("ix_subnational_data_region", "region_id"),
+        Index(
+            "ix_subnational_data_region_indicator_period",
+            "region_id", "indicator_id", "period",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    indicator_id: Mapped[int] = mapped_column(
+        ForeignKey("subnational_indicators.id", ondelete="CASCADE"), nullable=False
+    )
+    region_id: Mapped[int] = mapped_column(
+        ForeignKey("subnational_regions.id", ondelete="CASCADE"), nullable=False
+    )
+    period: Mapped[date] = mapped_column(Date, nullable=False)
+    value: Mapped[float] = mapped_column(Numeric(20, 6), nullable=False)
+
+    indicator: Mapped["SubnationalIndicator"] = relationship(back_populates="data_points")
+    region: Mapped["SubnationalRegion"] = relationship(back_populates="data_points")
+
+
 class Forecast(Base):
     __tablename__ = "forecasts"
     # Partial-индекс из миграции 20260403: выборка текущего прогноза индикатора.

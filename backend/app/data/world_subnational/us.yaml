@@ -1,0 +1,685 @@
+# United States subnational passport (50 states + District of Columbia).
+# Official series via FRED keyless CSV (BLS LAUS/CES, BEA, Census, FHFA).
+# Live-probed 2026-09-20 on California, New York and District of Columbia.
+# Omitted: poverty (SAIPE series id is not a stable {geo} template) and
+# state tax collections (no District of Columbia series). Weekly claims skipped.
+# Placeholders: {geo} = postal code, {fips} = 2-digit FIPS, {series_id} after expand.
+# Loader: backend/scripts/load-world-subnational.py --country us
+
+country_code: US
+country_slug: united-states
+region_kind_label_en: State
+region_kind_label_ru: Штат
+region_kind_label_en_plural: States
+region_kind_label_ru_plural: Штаты
+default_indicator: unemployment-rate
+map_id: us-states
+
+regions:
+  - slug: alabama
+    name_en: Alabama
+    name_ru: Алабама
+    geo_code: AL
+    fips: "01"
+    kind: state
+    sort_order: 1
+  - slug: alaska
+    name_en: Alaska
+    name_ru: Аляска
+    geo_code: AK
+    fips: "02"
+    kind: state
+    sort_order: 2
+  - slug: arizona
+    name_en: Arizona
+    name_ru: Аризона
+    geo_code: AZ
+    fips: "04"
+    kind: state
+    sort_order: 3
+  - slug: arkansas
+    name_en: Arkansas
+    name_ru: Арканзас
+    geo_code: AR
+    fips: "05"
+    kind: state
+    sort_order: 4
+  - slug: california
+    name_en: California
+    name_ru: Калифорния
+    geo_code: CA
+    fips: "06"
+    kind: state
+    sort_order: 5
+  - slug: colorado
+    name_en: Colorado
+    name_ru: Колорадо
+    geo_code: CO
+    fips: "08"
+    kind: state
+    sort_order: 6
+  - slug: connecticut
+    name_en: Connecticut
+    name_ru: Коннектикут
+    geo_code: CT
+    fips: "09"
+    kind: state
+    sort_order: 7
+  - slug: delaware
+    name_en: Delaware
+    name_ru: Делавэр
+    geo_code: DE
+    fips: "10"
+    kind: state
+    sort_order: 8
+  - slug: district-of-columbia
+    name_en: District of Columbia
+    name_ru: Округ Колумбия
+    geo_code: DC
+    fips: "11"
+    kind: district
+    sort_order: 9
+  - slug: florida
+    name_en: Florida
+    name_ru: Флорида
+    geo_code: FL
+    fips: "12"
+    kind: state
+    sort_order: 10
+  - slug: georgia
+    name_en: Georgia
+    name_ru: Джорджия
+    geo_code: GA
+    fips: "13"
+    kind: state
+    sort_order: 11
+  - slug: hawaii
+    name_en: Hawaii
+    name_ru: Гавайи
+    geo_code: HI
+    fips: "15"
+    kind: state
+    sort_order: 12
+  - slug: idaho
+    name_en: Idaho
+    name_ru: Айдахо
+    geo_code: ID
+    fips: "16"
+    kind: state
+    sort_order: 13
+  - slug: illinois
+    name_en: Illinois
+    name_ru: Иллинойс
+    geo_code: IL
+    fips: "17"
+    kind: state
+    sort_order: 14
+  - slug: indiana
+    name_en: Indiana
+    name_ru: Индиана
+    geo_code: IN
+    fips: "18"
+    kind: state
+    sort_order: 15
+  - slug: iowa
+    name_en: Iowa
+    name_ru: Айова
+    geo_code: IA
+    fips: "19"
+    kind: state
+    sort_order: 16
+  - slug: kansas
+    name_en: Kansas
+    name_ru: Канзас
+    geo_code: KS
+    fips: "20"
+    kind: state
+    sort_order: 17
+  - slug: kentucky
+    name_en: Kentucky
+    name_ru: Кентукки
+    geo_code: KY
+    fips: "21"
+    kind: state
+    sort_order: 18
+  - slug: louisiana
+    name_en: Louisiana
+    name_ru: Луизиана
+    geo_code: LA
+    fips: "22"
+    kind: state
+    sort_order: 19
+  - slug: maine
+    name_en: Maine
+    name_ru: Мэн
+    geo_code: ME
+    fips: "23"
+    kind: state
+    sort_order: 20
+  - slug: maryland
+    name_en: Maryland
+    name_ru: Мэриленд
+    geo_code: MD
+    fips: "24"
+    kind: state
+    sort_order: 21
+  - slug: massachusetts
+    name_en: Massachusetts
+    name_ru: Массачусетс
+    geo_code: MA
+    fips: "25"
+    kind: state
+    sort_order: 22
+  - slug: michigan
+    name_en: Michigan
+    name_ru: Мичиган
+    geo_code: MI
+    fips: "26"
+    kind: state
+    sort_order: 23
+  - slug: minnesota
+    name_en: Minnesota
+    name_ru: Миннесота
+    geo_code: MN
+    fips: "27"
+    kind: state
+    sort_order: 24
+  - slug: mississippi
+    name_en: Mississippi
+    name_ru: Миссисипи
+    geo_code: MS
+    fips: "28"
+    kind: state
+    sort_order: 25
+  - slug: missouri
+    name_en: Missouri
+    name_ru: Миссури
+    geo_code: MO
+    fips: "29"
+    kind: state
+    sort_order: 26
+  - slug: montana
+    name_en: Montana
+    name_ru: Монтана
+    geo_code: MT
+    fips: "30"
+    kind: state
+    sort_order: 27
+  - slug: nebraska
+    name_en: Nebraska
+    name_ru: Небраска
+    geo_code: NE
+    fips: "31"
+    kind: state
+    sort_order: 28
+  - slug: nevada
+    name_en: Nevada
+    name_ru: Невада
+    geo_code: NV
+    fips: "32"
+    kind: state
+    sort_order: 29
+  - slug: new-hampshire
+    name_en: New Hampshire
+    name_ru: Нью-Гэмпшир
+    geo_code: NH
+    fips: "33"
+    kind: state
+    sort_order: 30
+  - slug: new-jersey
+    name_en: New Jersey
+    name_ru: Нью-Джерси
+    geo_code: NJ
+    fips: "34"
+    kind: state
+    sort_order: 31
+  - slug: new-mexico
+    name_en: New Mexico
+    name_ru: Нью-Мексико
+    geo_code: NM
+    fips: "35"
+    kind: state
+    sort_order: 32
+  - slug: new-york
+    name_en: New York
+    name_ru: Нью-Йорк
+    geo_code: NY
+    fips: "36"
+    kind: state
+    sort_order: 33
+  - slug: north-carolina
+    name_en: North Carolina
+    name_ru: Северная Каролина
+    geo_code: NC
+    fips: "37"
+    kind: state
+    sort_order: 34
+  - slug: north-dakota
+    name_en: North Dakota
+    name_ru: Северная Дакота
+    geo_code: ND
+    fips: "38"
+    kind: state
+    sort_order: 35
+  - slug: ohio
+    name_en: Ohio
+    name_ru: Огайо
+    geo_code: OH
+    fips: "39"
+    kind: state
+    sort_order: 36
+  - slug: oklahoma
+    name_en: Oklahoma
+    name_ru: Оклахома
+    geo_code: OK
+    fips: "40"
+    kind: state
+    sort_order: 37
+  - slug: oregon
+    name_en: Oregon
+    name_ru: Орегон
+    geo_code: OR
+    fips: "41"
+    kind: state
+    sort_order: 38
+  - slug: pennsylvania
+    name_en: Pennsylvania
+    name_ru: Пенсильвания
+    geo_code: PA
+    fips: "42"
+    kind: state
+    sort_order: 39
+  - slug: rhode-island
+    name_en: Rhode Island
+    name_ru: Род-Айленд
+    geo_code: RI
+    fips: "44"
+    kind: state
+    sort_order: 40
+  - slug: south-carolina
+    name_en: South Carolina
+    name_ru: Южная Каролина
+    geo_code: SC
+    fips: "45"
+    kind: state
+    sort_order: 41
+  - slug: south-dakota
+    name_en: South Dakota
+    name_ru: Южная Дакота
+    geo_code: SD
+    fips: "46"
+    kind: state
+    sort_order: 42
+  - slug: tennessee
+    name_en: Tennessee
+    name_ru: Теннесси
+    geo_code: TN
+    fips: "47"
+    kind: state
+    sort_order: 43
+  - slug: texas
+    name_en: Texas
+    name_ru: Техас
+    geo_code: TX
+    fips: "48"
+    kind: state
+    sort_order: 44
+  - slug: utah
+    name_en: Utah
+    name_ru: Юта
+    geo_code: UT
+    fips: "49"
+    kind: state
+    sort_order: 45
+  - slug: vermont
+    name_en: Vermont
+    name_ru: Вермонт
+    geo_code: VT
+    fips: "50"
+    kind: state
+    sort_order: 46
+  - slug: virginia
+    name_en: Virginia
+    name_ru: Виргиния
+    geo_code: VA
+    fips: "51"
+    kind: state
+    sort_order: 47
+  - slug: washington
+    name_en: Washington
+    name_ru: Вашингтон
+    geo_code: WA
+    fips: "53"
+    kind: state
+    sort_order: 48
+  - slug: west-virginia
+    name_en: West Virginia
+    name_ru: Западная Виргиния
+    geo_code: WV
+    fips: "54"
+    kind: state
+    sort_order: 49
+  - slug: wisconsin
+    name_en: Wisconsin
+    name_ru: Висконсин
+    geo_code: WI
+    fips: "55"
+    kind: state
+    sort_order: 50
+  - slug: wyoming
+    name_en: Wyoming
+    name_ru: Вайоминг
+    geo_code: WY
+    fips: "56"
+    kind: state
+    sort_order: 51
+
+indicators:
+  - code: unemployment-rate
+    name_en: 'Unemployment rate'
+    name_ru: 'Уровень безработицы'
+    unit: PERCENT
+    unit_en: "%"
+    unit_ru: "%"
+    frequency: monthly
+    section_en: 'Labor market'
+    section_ru: 'Рынок труда'
+    provider: fred
+    series_template: '{geo}UR'
+    aggregation: last
+    source_en: 'U.S. Bureau of Labor Statistics'
+    source_ru: 'Бюро трудовой статистики США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-unemployment-rate
+    better_is_low: true
+    is_listed: true
+    description_en: >
+      Share of the civilian labor force that is unemployed, seasonally adjusted. Read a value of 5 as five percent of the labor force without work and actively looking for a job.
+    description_ru: >
+      Доля безработных в гражданской рабочей силе штата, с сезонной корректировкой. Значение 5 означает пять процентов рабочей силы без работы при активном поиске занятости.
+    methodology_en: >
+      The series is the official Local Area Unemployment Statistics estimate for the state. Publication is monthly. The chart shows the seasonally adjusted rate as released, without further transformation.
+    methodology_ru: >
+      Ряд — официальная оценка по программе статистики локальных рынков труда. Частота публикации — месячная. На графике — сезонно скорректированный уровень безработицы без дополнительных преобразований.
+  - code: nonfarm-employment
+    name_en: 'Nonfarm employment'
+    name_ru: 'Занятые вне сельского хозяйства'
+    unit: THOUSANDS
+    unit_en: 'thous. persons'
+    unit_ru: 'тыс. человек'
+    frequency: monthly
+    section_en: 'Labor market'
+    section_ru: 'Рынок труда'
+    provider: fred
+    series_template: '{geo}NA'
+    aggregation: last
+    source_en: 'U.S. Bureau of Labor Statistics'
+    source_ru: 'Бюро трудовой статистики США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-nonfarm-payrolls
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Number of employees on nonfarm payrolls in the state, seasonally adjusted, in thousands of persons. Covers private industry and government; farm employment is excluded.
+    description_ru: >
+      Численность занятых на предприятиях вне сельского хозяйства в штате, с сезонной корректировкой, в тысячах человек. В охват входят частный сектор и государство; занятость в сельском хозяйстве не входит.
+    methodology_en: >
+      The series is the official Current Employment Statistics estimate for the state. Publication is monthly. The chart shows the seasonally adjusted level as released.
+    methodology_ru: >
+      Ряд — официальная оценка по программе текущей статистики занятости. Частота публикации — месячная. На графике — сезонно скорректированный уровень занятости без дополнительных преобразований.
+  - code: labor-force-participation
+    name_en: 'Labor force participation rate'
+    name_ru: 'Уровень участия в рабочей силе'
+    unit: PERCENT
+    unit_en: "%"
+    unit_ru: "%"
+    frequency: monthly
+    section_en: 'Labor market'
+    section_ru: 'Рынок труда'
+    provider: fred
+    series_template: "LBSSA{fips}"
+    aggregation: last
+    source_en: 'U.S. Bureau of Labor Statistics'
+    source_ru: 'Бюро трудовой статистики США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-labor-force-participation
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Share of the civilian noninstitutional population that is in the labor force, seasonally adjusted. A value of 62 means 62 percent of people aged 16 and over are working or actively looking for work.
+    description_ru: >
+      Доля гражданского населения вне институциональных учреждений, входящая в рабочую силу, с сезонной корректировкой. Значение 62 означает, что 62 процента людей в возрасте 16 лет и старше работают или активно ищут работу.
+    methodology_en: >
+      The series is the official smoothed seasonally adjusted state participation rate. Publication is monthly. The chart shows the official rate without further transformation.
+    methodology_ru: >
+      Ряд — официальный сезонно сглаженный уровень участия в рабочей силе штата. Частота публикации — месячная. На графике — официальная оценка без дополнительных преобразований.
+  - code: real-gdp
+    name_en: 'Real GDP'
+    name_ru: 'Реальный валовой региональный продукт'
+    unit: USD_MN_CHAINED
+    unit_en: 'mln chained 2017 USD'
+    unit_ru: 'млн долл. 2017 г.'
+    frequency: annual
+    section_en: Output
+    section_ru: Производство
+    provider: fred
+    series_template: '{geo}RGSP'
+    aggregation: last
+    source_en: 'U.S. Bureau of Economic Analysis'
+    source_ru: 'Бюро экономического анализа США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-gdp-real
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Real gross domestic product of the state in millions of chained 2017 dollars. The series measures the volume of goods and services produced in the state, holding prices fixed at the 2017 base.
+    description_ru: >
+      Реальный валовой продукт штата в миллионах долларов в ценах 2017 года. Ряд показывает объём товаров и услуг, произведённых на территории штата, в постоянных ценах базового 2017 года.
+    methodology_en: >
+      The series is the official annual real GDP by state. Publication is annual. The chart shows the chained-dollar level as released.
+    methodology_ru: >
+      Ряд — официальная годовая оценка реального валового продукта штата. Частота публикации — годовая. На графике — уровень в постоянных ценах без дополнительных преобразований.
+  - code: nominal-gdp
+    name_en: 'Nominal GDP'
+    name_ru: 'Номинальный валовой региональный продукт'
+    unit: USD_MN
+    unit_en: 'mln USD'
+    unit_ru: 'млн долл.'
+    frequency: annual
+    section_en: Output
+    section_ru: Производство
+    provider: fred
+    series_template: '{geo}NGSP'
+    aggregation: last
+    source_en: 'U.S. Bureau of Economic Analysis'
+    source_ru: 'Бюро экономического анализа США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-gdp-nominal
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Nominal gross domestic product of the state in millions of current dollars. The series measures the market value of goods and services produced in the state in prices of each year.
+    description_ru: >
+      Номинальный валовой продукт штата в миллионах текущих долларов. Ряд показывает рыночную стоимость товаров и услуг, произведённых на территории штата, в ценах соответствующего года.
+    methodology_en: >
+      The series is the official annual current-dollar GDP by state. Publication is annual. The chart shows the official level as released.
+    methodology_ru: >
+      Ряд — официальная годовая оценка валового продукта штата в текущих ценах. Частота публикации — годовая. На графике — официальный уровень без дополнительных преобразований.
+  - code: personal-income-per-capita
+    name_en: 'Personal income per capita'
+    name_ru: 'Личный доход на душу населения'
+    unit: USD
+    unit_en: USD
+    unit_ru: долл.
+    frequency: annual
+    section_en: Income
+    section_ru: Доходы
+    provider: fred
+    series_template: '{geo}PCPI'
+    aggregation: last
+    source_en: 'U.S. Bureau of Economic Analysis'
+    source_ru: 'Бюро экономического анализа США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Personal income per resident of the state, in current dollars. The series covers wages, proprietors' income, dividends, interest, rent and transfers, divided by resident population.
+    description_ru: >
+      Личный доход в расчёте на одного жителя штата, в текущих долларах. В охват входят оплата труда, доходы предпринимателей, дивиденды, проценты, рента и трансферты, делённые на численность постоянного населения.
+    methodology_en: >
+      The series is the official annual per capita personal income by state. Publication is annual. The chart shows the current-dollar level as released.
+    methodology_ru: >
+      Ряд — официальная годовая оценка личного дохода на душу населения штата. Частота публикации — годовая. На графике — уровень в текущих долларах без дополнительных преобразований.
+  - code: median-household-income
+    name_en: 'Median household income'
+    name_ru: 'Медианный доход домохозяйства'
+    unit: USD_2023
+    unit_en: '2023 USD'
+    unit_ru: 'долл. 2023 г.'
+    frequency: annual
+    section_en: Income
+    section_ru: Доходы
+    provider: fred
+    series_template: "MEHOINUS{geo}A672N"
+    aggregation: last
+    source_en: 'U.S. Census Bureau'
+    source_ru: 'Бюро переписи населения США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Median household income in the state, expressed in 2023 dollars. Half of households earn less than this amount, half earn more. Inflation adjustment uses a consistent price index so years can be compared.
+    description_ru: >
+      Медианный доход домохозяйства в штате, в долларах 2023 года. Половина домохозяйств получает меньше этой суммы, половина — больше. Пересчёт в постоянные цены позволяет сравнивать годы между собой.
+    methodology_en: >
+      The series is the official annual median household income by state, inflation-adjusted to 2023 dollars. Publication is annual. The chart shows the official series as released.
+    methodology_ru: >
+      Ряд — официальная годовая оценка медианного дохода домохозяйства штата, пересчитанная в доллары 2023 года. Частота публикации — годовая. На графике — официальный ряд без дополнительных преобразований.
+  - code: population
+    name_en: Population
+    name_ru: Население
+    unit: THOUSANDS
+    unit_en: 'thous. persons'
+    unit_ru: 'тыс. человек'
+    frequency: annual
+    section_en: Population
+    section_ru: Население
+    provider: fred
+    series_template: '{geo}POP'
+    aggregation: last
+    source_en: 'U.S. Census Bureau'
+    source_ru: 'Бюро переписи населения США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-population-census
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Resident population of the state, in thousands of persons. The series is the official annual population estimate used for per-capita economic statistics.
+    description_ru: >
+      Численность постоянного населения штата, в тысячах человек. Ряд — официальная годовая оценка населения, используемая в расчётах показателей на душу населения.
+    methodology_en: >
+      The series is the official annual resident population by state. Publication is annual. The chart shows the official level as released.
+    methodology_ru: >
+      Ряд — официальная годовая оценка постоянного населения штата. Частота публикации — годовая. На графике — официальный уровень без дополнительных преобразований.
+  - code: house-price-index
+    name_en: 'House price index'
+    name_ru: 'Индекс цен на жильё'
+    unit: INDEX
+    unit_en: 'index (1980 Q1 = 100)'
+    unit_ru: 'индекс (1 кв. 1980 = 100)'
+    frequency: quarterly
+    section_en: Housing
+    section_ru: Жильё
+    provider: fred
+    series_template: '{geo}STHPI'
+    aggregation: last
+    source_en: 'Federal Housing Finance Agency'
+    source_ru: 'Федеральное агентство жилищного финансирования США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-fhfa-house-price
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      All-transactions house price index for the state. The first quarter of 1980 equals 100. The series tracks the change in house prices, including both purchase and appraisal transactions.
+    description_ru: >
+      Индекс цен на жильё по всем сделкам штата. Первый квартал 1980 года принят за 100. Ряд отражает изменение цен на жилую недвижимость, включая сделки купли-продажи и оценки.
+    methodology_en: >
+      The series is the official quarterly all-transactions house price index. Publication is quarterly. The chart shows the official index without further transformation.
+    methodology_ru: >
+      Ряд — официальный квартальный индекс цен на жильё по всем сделкам. Частота публикации — квартальная. На графике — официальный индекс без дополнительных преобразований.
+  - code: building-permits
+    name_en: 'Building permits, private housing'
+    name_ru: 'Разрешения на строительство жилья'
+    unit: UNITS
+    unit_en: units
+    unit_ru: единиц
+    frequency: monthly
+    section_en: Housing
+    section_ru: Жильё
+    provider: fred
+    series_template: '{geo}BPPRIV'
+    aggregation: sum
+    source_en: 'U.S. Census Bureau'
+    source_ru: 'Бюро переписи населения США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-building-permits
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Number of new privately owned housing units authorized by building permits in the state during the month. This is a flow: each month is a new count, not a stock of permits outstanding.
+    description_ru: >
+      Число новых частных жилых единиц, на которые в штате выданы разрешения на строительство за месяц. Это поток: каждый месяц — новое число, а не накопленный запас разрешений.
+    methodology_en: >
+      The series is the official monthly count of private housing units authorized. Publication is monthly. The chart shows the monthly flow as released; yearly totals are the sum of months.
+    methodology_ru: >
+      Ряд — официальный месячный учёт разрешений на частное жилищное строительство. Частота публикации — месячная. На графике — месячный поток без дополнительных преобразований; годовой итог — сумма месяцев.
+  - code: homeownership-rate
+    name_en: 'Homeownership rate'
+    name_ru: 'Доля собственников жилья'
+    unit: PERCENT
+    unit_en: "%"
+    unit_ru: "%"
+    frequency: annual
+    section_en: Housing
+    section_ru: Жильё
+    provider: fred
+    series_template: '{geo}HOWN'
+    aggregation: last
+    source_en: 'U.S. Census Bureau'
+    source_ru: 'Бюро переписи населения США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Share of occupied housing units that are owner-occupied. A value of 65 means 65 percent of households in the state live in a dwelling they own.
+    description_ru: >
+      Доля занятых жилых единиц, в которых проживают собственники. Значение 65 означает, что 65 процентов домохозяйств штата живут в собственном жилье.
+    methodology_en: >
+      The series is the official annual homeownership rate by state. Publication is annual. The chart shows the official rate as released.
+    methodology_ru: >
+      Ряд — официальная годовая оценка доли собственников жилья в штате. Частота публикации — годовая. На графике — официальный уровень без дополнительных преобразований.
+  - code: minimum-wage
+    name_en: 'State minimum wage'
+    name_ru: 'Минимальная заработная плата'
+    unit: USD_PER_HOUR
+    unit_en: 'USD / hour'
+    unit_ru: 'долл./час'
+    frequency: annual
+    section_en: 'Labor market'
+    section_ru: 'Рынок труда'
+    provider: fred
+    series_template: "STTMINWG{geo}"
+    aggregation: last
+    source_en: 'U.S. Department of Labor'
+    source_ru: 'Министерство труда США'
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    better_is_low: false
+    is_listed: true
+    description_en: >
+      Statutory minimum wage in the state, in dollars per hour. Where a state has no separate statute, the series may be missing; the federal floor then applies.
+    description_ru: >
+      Установленная законом минимальная заработная плата в штате, в долларах в час. Если у штата нет собственного закона, ряд может отсутствовать — тогда действует федеральный минимум.
+    methodology_en: >
+      The series is the official annual state minimum wage. Publication is annual. Missing states are omitted rather than filled with the federal rate.
+    methodology_ru: >
+      Ряд — официальная годовая оценка минимальной заработной платы штата. Частота публикации — годовая. Штаты без собственного ряда не заполняются федеральным уровнем.

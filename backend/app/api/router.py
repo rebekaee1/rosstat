@@ -15,6 +15,7 @@ from app.api.export import router as export_router
 from app.api.regions import router as regions_router
 from app.api.admin_bi import router as admin_bi_router
 from app.api.world import router as world_router
+from app.api.world_subnational import router as world_subnational_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(indicators_router)
@@ -32,3 +33,4 @@ api_router.include_router(export_router)
 api_router.include_router(regions_router)
 api_router.include_router(admin_bi_router)
 api_router.include_router(world_router)
+api_router.include_router(world_subnational_router)

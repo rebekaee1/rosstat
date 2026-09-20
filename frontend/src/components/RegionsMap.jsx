@@ -41,7 +41,9 @@ export default function RegionsMap({
   theme = 'light',          // dark — тёмная territory-карточка (champagne accents)
   colorDirection = null,    // 'asc'/'desc' — привязка шкалы к порядку сортировки рейтинга
   className = '',           // доп. классы SVG-обёртки (например aspect-square)
+  mapData: mapDataProp = null, // чужая геометрия; compact viewBox России — только дефолт
 }) {
+  const geometry = mapDataProp || mapData;
   const compact = variant === 'compact';
   const dark = theme === 'dark';
   const { t } = useLocale();
@@ -53,7 +55,7 @@ export default function RegionsMap({
   const panRef = useRef(null); // { startX, startY, tx, ty, moved }
   const svgRef = useRef(null);
 
-  const viewBox = compact ? COMPACT_VIEWBOX : mapData.viewBox;
+  const viewBox = (compact && mapDataProp == null) ? COMPACT_VIEWBOX : geometry.viewBox;
   const [, , vbW, vbH] = useMemo(
     () => viewBox.split(' ').map(Number),
     [viewBox],
@@ -78,12 +80,12 @@ export default function RegionsMap({
   // кэша геометрии (баг: при зуме обводка «отставала» от актуальных полигонов,
   // когда stroke жил на fill-слое с /k и конкурировал с seal-обводкой).
   const hoverRegion = useMemo(
-    () => (hover ? mapData.regions.find((r) => r.slug === hover.slug) : null),
-    [hover],
+    () => (hover ? geometry.regions.find((r) => r.slug === hover.slug) : null),
+    [hover, geometry.regions],
   );
   const hoverMarker = useMemo(
-    () => (hover ? mapData.markers.find((m) => m.slug === hover.slug) : null),
-    [hover],
+    () => (hover ? (geometry.markers || []).find((m) => m.slug === hover.slug) : null),
+    [hover, geometry.markers],
   );
 
   const clampView = useCallback((next) => {
@@ -179,7 +181,7 @@ export default function RegionsMap({
           <g transform={`translate(${tx} ${ty}) scale(${k})`}>
             {/* Подложка-«шов»: обводка своим цветом фиксированной (не /k) толщины —
                 закрывает микрозазоры упрощённых полигонов при зуме. */}
-            {mapData.regions.map((r) => (
+            {geometry.regions.map((r) => (
               <path
                 key={`seal-${r.slug}`}
                 d={r.path}
@@ -193,7 +195,7 @@ export default function RegionsMap({
             ))}
             {/* Интерактивный слой: fill + тонкая постоянная обводка (screen px).
                 Hover-stroke сюда НЕ кладём — отдельный overlay ниже. */}
-            {mapData.regions.map((r) => (
+            {geometry.regions.map((r) => (
               <path
                 key={r.slug}
                 d={r.path}
@@ -212,7 +214,7 @@ export default function RegionsMap({
                 tabIndex={-1}
               />
             ))}
-            {mapData.markers.map((m) => (
+            {(geometry.markers || []).map((m) => (
               <circle
                 key={m.slug}
                 cx={m.cx}

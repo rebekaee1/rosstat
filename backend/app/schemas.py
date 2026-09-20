@@ -61,6 +61,9 @@ class IndicatorDetail(IndicatorSummary):
     first_date: date | None = None
     last_date: date | None = None
     updated_at: datetime | None = None
+    # Межстрановое сравнение: тот же концепт, что у мировой карточки.
+    # None — честной связки нет, блок на карточке не показываем.
+    world_compare: dict | None = None
 
 
 class IndicatorStats(BaseModel):

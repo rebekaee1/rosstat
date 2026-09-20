@@ -70,6 +70,7 @@ export default function RegionAnnualChart({
   regionName = '',
   height = 320,
   frequency = 'annual',
+  nationalLabel = null,
 }) {
   const { t, locale } = useLocale();
   const wrapRef = useRef(null);
@@ -87,8 +88,13 @@ export default function RegionAnnualChart({
   }, []);
 
   const monthly = frequency === 'monthly';
-  // Ключ точки: год (annual) или «YYYY-MM» (monthly) — join-ключ рядов РФ/сравнения.
-  const periodKey = (p) => (monthly ? (p.label || `${p.year}-${String(p.month).padStart(2, '0')}`) : p.year);
+  const quarterly = frequency === 'quarterly';
+  const dated = monthly || quarterly;
+  const periodKey = (p) => {
+    if (monthly) return p.label || `${p.year}-${String(p.month).padStart(2, '0')}`;
+    if (quarterly) return p.label || `${p.year}-Q${p.quarter || Math.ceil((p.month || 1) / 3)}`;
+    return p.year;
+  };
 
   const data = useMemo(() => {
     const rfByPeriod = new Map((russiaSeries || []).map(p => [periodKey(p), p.value]));
@@ -96,13 +102,17 @@ export default function RegionAnnualChart({
     return (series || []).map(p => ({
       period: periodKey(p),
       year: p.year,
-      label: monthly ? monthTickLabel(p, locale) : String(p.year),
+      label: monthly
+        ? monthTickLabel(p, locale)
+        : quarterly
+          ? (locale === 'en' ? `${p.year} Q${p.quarter || 1}` : `${p.quarter || 1} кв. ${p.year}`)
+          : String(p.year),
       value: p.value,
       compare: cmpByPeriod.get(periodKey(p)) ?? null,
       russia: rfByPeriod.get(periodKey(p)) ?? null,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [series, russiaSeries, compareSeries, monthly, locale]);
+  }, [series, russiaSeries, compareSeries, monthly, quarterly, locale]);
 
   const showRussia = useMemo(
     () => data.some(d => d.russia != null),
@@ -137,21 +147,21 @@ export default function RegionAnnualChart({
       0,
       plotWidth - leftAxisWidth - (dualAxis ? rightAxisWidth : 0) - 24,
     );
-    let budget = chartAxisTickBudget(axisW, monthly ? 7 : 4);
+    let budget = chartAxisTickBudget(axisW, dated ? 7 : 4);
     // Dual-axis на узком экране: 4 года вместо 6 — иначе подписи года
     // визуально «прыгают» между плотными промежутками.
     if (isNarrow && dualAxis) budget = Math.min(budget, 4);
     else if (isNarrow) budget = Math.min(budget, 5);
     return pickChartAxisTicks(data, budget, {
       dateKey: 'period',
-      cadence: monthly ? null : 'annual',
+      cadence: dated ? null : 'annual',
       plotWidthPx: axisW,
       formatLabel: (v) => {
         const d = data.find((x) => String(x.period) === String(v));
         return d ? d.label : String(v);
       },
     });
-  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow, monthly]);
+  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow, dated]);
 
   if (!data.length) return null;
 
@@ -162,7 +172,7 @@ export default function RegionAnnualChart({
     left: isNarrow ? 0 : 4,
   };
   const chartHeight = isNarrow ? Math.min(height, 260) : height;
-  const russiaLabel = t('regions.ind.russia');
+  const russiaLabel = nationalLabel || t('regions.ind.russia');
 
   return (
     <div>
@@ -284,7 +294,7 @@ export default function RegionAnnualChart({
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="inline-block w-4 border-t-2 border-dashed border-[#3A3A50]" />
-            {t('regions.ind.axisRussia')}
+            {nationalLabel || t('regions.ind.axisRussia')}
           </span>
         </div>
       )}
