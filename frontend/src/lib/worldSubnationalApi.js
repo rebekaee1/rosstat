@@ -21,6 +21,11 @@ export function useWorldRegionsHub(countrySlug) {
     queryFn: async () => (await api.get(`/world/${countrySlug}/regions`)).data,
     enabled: Boolean(countrySlug),
     staleTime: STALE,
+    retry: (count, err) => {
+      const status = err?.response?.status;
+      if (status && status >= 400 && status < 500 && status !== 429) return false;
+      return count < 1;
+    },
   });
 }
 

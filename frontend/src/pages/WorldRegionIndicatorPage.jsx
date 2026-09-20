@@ -2,7 +2,7 @@
 // Эталон — RegionIndicatorPage: RegionAnnualChart + сравнение + страна + YoY +
 // CSV/Excel/PNG (только для зарегистрированных), сетка StatCell, таблица.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import {
   Trophy, Table2, ChevronDown, ArrowUpRight,
   Download, Image as ImageIcon, GitCompare,
@@ -75,6 +75,7 @@ function pointLabel(p, isMonthly, locale) {
 
 export default function WorldRegionIndicatorPage() {
   const { countrySlug, slug, code } = useParams();
+  const { hash } = useLocation();
   const { t, locale } = useLocale();
   const { isAuthed } = useAuth();
   const chartRef = useRef(null);
@@ -221,6 +222,11 @@ export default function WorldRegionIndicatorPage() {
       world: true,
     });
   }, [payload?.indicator, countrySlug, slug, code]);
+
+  useEffect(() => {
+    if (hash !== '#chart' || !payload) return;
+    document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [hash, payload]);
 
   if (countrySlug === RUSSIA) {
     return <Navigate to={regionIndicatorPath(slug, code)} replace />;
@@ -557,12 +563,20 @@ export default function WorldRegionIndicatorPage() {
               <p className="mb-3 text-[13px] leading-relaxed text-text-secondary">
                 {t('world.regions.nationalBody')}
               </p>
-              <Link
-                to={indicatorPath(countrySlug, payload.indicator.national_code)}
-                className="inline-flex items-center gap-1 rounded-full bg-champagne/10 px-3 py-1.5 text-[13px] font-medium text-champagne transition-colors hover:bg-champagne/20"
-              >
-                {t('world.regions.openNational')} <ArrowUpRight size={13} />
-              </Link>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  to={indicatorPath(countrySlug, payload.indicator.national_code)}
+                  className="inline-flex items-center gap-1 rounded-full bg-champagne/10 px-3 py-1.5 text-[13px] font-medium text-champagne transition-colors hover:bg-champagne/20"
+                >
+                  {t('world.regions.openNational')} <ArrowUpRight size={13} />
+                </Link>
+                <Link
+                  to={`/compare?codes=w:${countrySlug}:${payload.indicator.national_code},s:${countrySlug}:${slug}:${code}`}
+                  className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne"
+                >
+                  <GitCompare size={13} /> {t('world.regions.compareNational', { country: countryName })}
+                </Link>
+              </div>
             </div>
           )}
 

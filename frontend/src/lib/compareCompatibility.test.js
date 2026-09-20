@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   activeCompatibilityNote,
   compareCompatibility,
+  parseSubnationalCompareCode,
   parseWorldCompareCode,
   sanitizeCompareCodes,
 } from './compareCompatibility';
@@ -72,5 +73,40 @@ describe('compareCompatibility', () => {
       'w:germany:unemployment-rate',
       'w:france:unemployment-rate',
     ])).toBeNull();
+  });
+
+  it('разбирает субнациональный код штата', () => {
+    expect(parseSubnationalCompareCode('s:united-states:california:unemployment-rate')).toEqual({
+      countrySlug: 'united-states',
+      regionSlug: 'california',
+      indicatorCode: 'unemployment-rate',
+    });
+    expect(parseSubnationalCompareCode('s:united-states:california')).toBeNull();
+  });
+
+  it('разрешает штаты одной страны и национальный ряд той же страны', () => {
+    expect(compareCompatibility(
+      ['s:united-states:california:unemployment-rate'],
+      's:united-states:texas:unemployment-rate',
+    ).allowed).toBe(true);
+    expect(compareCompatibility(
+      ['s:united-states:california:unemployment-rate'],
+      'w:united-states:us-unemployment-rate',
+    ).allowed).toBe(true);
+    expect(compareCompatibility(
+      ['w:united-states:us-unemployment-rate'],
+      's:united-states:california:unemployment-rate',
+    ).allowed).toBe(true);
+  });
+
+  it('закрывает штат США с чужой страной или макро РФ', () => {
+    expect(compareCompatibility(
+      ['s:united-states:california:unemployment-rate'],
+      'w:germany:unemployment-rate',
+    ).allowed).toBe(false);
+    expect(compareCompatibility(
+      ['s:united-states:california:unemployment-rate'],
+      'unemployment',
+    ).allowed).toBe(false);
   });
 });

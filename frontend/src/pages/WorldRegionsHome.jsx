@@ -55,7 +55,14 @@ function yearsFromPeriods(periods) {
 }
 
 function lastPeriodOfYear(periods, year) {
-  return (periods || []).find((p) => String(p.key).startsWith(String(year)))?.key;
+  const prefix = String(year);
+  let best = null;
+  for (const p of periods || []) {
+    const key = String(p.key || '');
+    if (!key.startsWith(prefix)) continue;
+    if (best == null || key > best) best = key;
+  }
+  return best;
 }
 
 function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {

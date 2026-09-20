@@ -20,6 +20,15 @@ export function parseWorldCompareCode(code) {
   return { countrySlug, conceptSlug };
 }
 
+/** Субнациональный ряд: `s:{страна}:{территория}:{показатель}`. */
+export function parseSubnationalCompareCode(code) {
+  const [kind, countrySlug, regionSlug, indicatorCode, ...rest] = String(code || '').split(':');
+  if (kind !== 's' || !countrySlug || !regionSlug || !indicatorCode || rest.length) {
+    return null;
+  }
+  return { countrySlug, regionSlug, indicatorCode };
+}
+
 function regionIndicatorCode(code) {
   if (!String(code || '').startsWith(REGION_PREFIX)) return null;
   const [, regionSlug, indicatorCode, ...rest] = code.split(':');
@@ -41,8 +50,12 @@ export function compareCompatibility(existingCodes, candidateCode) {
   if (!existing.length) return { allowed: true, note: null, noteKey: null };
 
   const candidateWorld = parseWorldCompareCode(candidateCode);
+  const candidateSub = parseSubnationalCompareCode(candidateCode);
   const existingWorld = existing
     .map(parseWorldCompareCode)
+    .filter(Boolean);
+  const existingSub = existing
+    .map(parseSubnationalCompareCode)
     .filter(Boolean);
   const worldConcepts = new Set(existingWorld.map((item) => item.conceptSlug));
 
@@ -56,12 +69,58 @@ export function compareCompatibility(existingCodes, candidateCode) {
     };
   }
 
+  const subCountries = new Set(existingSub.map((item) => item.countrySlug));
+  if (candidateSub) subCountries.add(candidateSub.countrySlug);
+  if (subCountries.size > 1) {
+    return {
+      allowed: false,
+      reasonKey: 'compare.compat.sameConcept',
+      reason: 'compare.compat.sameConcept',
+    };
+  }
+
+  const subCountry = candidateSub?.countrySlug || existingSub[0]?.countrySlug;
+  const worldCountries = new Set(existingWorld.map((item) => item.countrySlug));
+  if (candidateWorld) worldCountries.add(candidateWorld.countrySlug);
+  if (subCountry && worldCountries.size && ![...worldCountries].every((slug) => slug === subCountry)) {
+    return {
+      allowed: false,
+      reasonKey: 'compare.compat.noBridge',
+      reason: 'compare.compat.noBridge',
+    };
+  }
+
+  if (candidateSub && !existingWorld.length) {
+    const foreign = existing.filter((code) => (
+      !parseWorldCompareCode(code) && !parseSubnationalCompareCode(code)
+    ));
+    if (foreign.length) {
+      return {
+        allowed: false,
+        reasonKey: 'compare.compat.noBridge',
+        reason: 'compare.compat.noBridge',
+      };
+    }
+    return { allowed: true, note: null, noteKey: null };
+  }
+
   const conceptSlug = candidateWorld?.conceptSlug || existingWorld[0]?.conceptSlug;
-  if (!conceptSlug) return { allowed: true, note: null, noteKey: null };
+  if (!conceptSlug) {
+    if (existingSub.length && !candidateSub) {
+      return {
+        allowed: false,
+        reasonKey: 'compare.compat.noBridge',
+        reason: 'compare.compat.noBridge',
+      };
+    }
+    return { allowed: true, note: null, noteKey: null };
+  }
 
   const bridge = BRIDGES[conceptSlug];
-  const nonWorldCodes = existing.filter((code) => !parseWorldCompareCode(code));
-  if (!candidateWorld) nonWorldCodes.push(candidateCode);
+  const nonWorldCodes = existing.filter((code) => (
+    !parseWorldCompareCode(code) && !parseSubnationalCompareCode(code)
+  ));
+  if (!candidateWorld && !candidateSub) nonWorldCodes.push(candidateCode);
 
   if (!nonWorldCodes.length) return { allowed: true, note: null, noteKey: null };
   if (!bridge) {
@@ -102,6 +161,8 @@ export function activeCompatibilityNote(codes) {
   if (!world) return null;
   const bridge = BRIDGES[world.conceptSlug];
   if (!bridge) return null;
-  const hasNonWorld = codes.some((code) => !parseWorldCompareCode(code));
+  const hasNonWorld = codes.some((code) => (
+    !parseWorldCompareCode(code) && !parseSubnationalCompareCode(code)
+  ));
   return hasNonWorld ? bridge.noteKey : null;
 }

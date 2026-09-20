@@ -14,6 +14,7 @@ import { fetchIndicatorData } from '../lib/api';
 import api from '../lib/api';
 import { useRegionsLanding, useRegionsCatalog } from '../lib/regionsApi';
 import { fetchWorldCompareOrCard, useWorldCompareCatalog } from '../lib/worldApi';
+import { useWorldRegionsHub } from '../lib/worldSubnationalApi';
 import { useAuth } from '../context/authContext';
 import { useT, useLocale } from '../i18n';
 import { currentUiLocale } from '../i18n/locale';
@@ -36,10 +37,12 @@ import {
 import {
   activeCompatibilityNote,
   compareCompatibility,
+  parseSubnationalCompareCode,
   parseWorldCompareCode,
   sanitizeCompareCodes,
 } from '../lib/compareCompatibility';
 import {
+  countryRegionsPath,
   regionHubPath,
 } from '../lib/sitePaths';
 
@@ -189,6 +192,10 @@ function isWorldCode(code) {
   return !!parseWorldCompareCode(code);
 }
 
+function isSubnationalCode(code) {
+  return !!parseSubnationalCompareCode(code);
+}
+
 async function fetchRegionSeries(code, { signal }) {
   const [, slug, indCode] = code.split(':');
   const resp = await api.get(`/regions/${slug}/i/${indCode}`, { signal });
@@ -200,6 +207,35 @@ async function fetchRegionSeries(code, { signal }) {
       name: `${d.indicator.name} — ${d.region.name}`,
       unit: d.indicator.unit,
       frequency: 'annual',
+      category: 'compare.category.regions',
+    },
+  };
+}
+
+async function fetchSubnationalSeries(code, { signal }) {
+  const parsed = parseSubnationalCompareCode(code);
+  if (!parsed) throw new Error('compare.error.worldCode');
+  const resp = await api.get(
+    `/world/${parsed.countrySlug}/regions/region/${parsed.regionSlug}/${parsed.indicatorCode}`,
+    { signal },
+  );
+  const d = resp.data;
+  const loc = currentUiLocale();
+  const regionName = loc === 'en'
+    ? (d.region?.name_en || d.region?.name)
+    : d.region?.name;
+  return {
+    data: (d.series || []).map((p) => ({
+      date: p.date || (p.month
+        ? `${p.year}-${String(p.month).padStart(2, '0')}-01`
+        : `${p.year}-01-01`),
+      value: p.value,
+    })),
+    __regionMeta: {
+      code,
+      name: `${d.indicator.name} — ${regionName}`,
+      unit: d.indicator.unit,
+      frequency: d.indicator.frequency || 'annual',
       category: 'compare.category.regions',
     },
   };
@@ -459,6 +495,114 @@ function AddRegionSeries({
   );
 }
 
+function AddSubnationalSeries({
+  countrySlug, selected, onAdd, atCap, capHint, compatibilityFor,
+}) {
+  const t = useT();
+  const { locale } = useLocale();
+  const hub = useWorldRegionsHub(countrySlug);
+  const [regionSlug, setRegionSlug] = useState('');
+  const [indCode, setIndCode] = useState('');
+  const kindPlural = hub.data?.kind_label_plural || t('world.regions.fallbackKindPlural');
+
+  const regionGroups = useMemo(() => {
+    const items = (hub.data?.regions || [])
+      .map((r) => ({
+        value: r.slug,
+        label: locale === 'en' ? (r.name_en || r.name) : r.name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label, locale === 'en' ? 'en' : 'ru'));
+    return [{ label: '', items }];
+  }, [hub.data, locale]);
+
+  const indicatorGroups = useMemo(() => {
+    const sections = hub.data?.sections || [];
+    if (sections.length) {
+      return sections.map((s) => ({
+        label: s.name,
+        items: (s.indicators || [])
+          .filter((indicator) => !regionSlug
+            || !compatibilityFor
+            || compatibilityFor(`s:${countrySlug}:${regionSlug}:${indicator.code}`).allowed)
+          .map((i) => ({ value: i.code, label: i.name })),
+      })).filter((section) => section.items.length);
+    }
+    return [{
+      label: '',
+      items: (hub.data?.indicators || [])
+        .filter((indicator) => !regionSlug
+          || !compatibilityFor
+          || compatibilityFor(`s:${countrySlug}:${regionSlug}:${indicator.code}`).allowed)
+        .map((i) => ({ value: i.code, label: i.name })),
+    }].filter((section) => section.items.length);
+  }, [hub.data, compatibilityFor, countrySlug, regionSlug]);
+
+  const code = regionSlug && indCode ? `s:${countrySlug}:${regionSlug}:${indCode}` : null;
+  const already = code && selected.includes(code);
+  const compatibility = code && compatibilityFor
+    ? compatibilityFor(code)
+    : { allowed: true, reason: null };
+  const canAdd = code && !already && !atCap && compatibility.allowed;
+
+  const handleAdd = () => {
+    if (!canAdd) return;
+    onAdd(code);
+    track(events.REGION_COMPARE_ADD, { code, world: true });
+    setIndCode('');
+  };
+
+  return (
+    <div className="rounded-xl border border-border-subtle bg-surface p-3">
+      <AddCardHeader
+        icon={MapPin}
+        title={t('compare.addSubnationalTitle', { kind: kindPlural })}
+        hint={t('compare.addSubnationalHint')}
+      />
+      <div className="flex flex-col gap-2">
+        <ComboSelect
+          groups={regionGroups}
+          value={regionSlug}
+          onChange={setRegionSlug}
+          ariaLabel={t('compare.subnationalAria', { kind: kindPlural })}
+          placeholder={t('compare.subnationalPlaceholder', { kind: kindPlural })}
+          searchPlaceholder={t('compare.subnationalSearch')}
+          disabled={atCap}
+          trackContext="compare-world-region"
+        />
+        <ComboSelect
+          groups={indicatorGroups}
+          value={indCode}
+          onChange={setIndCode}
+          ariaLabel={t('compare.regionIndicatorAria')}
+          placeholder={t('compare.regionIndicatorPlaceholder')}
+          searchPlaceholder={t('compare.regionIndicatorSearch')}
+          disabled={atCap || !regionSlug}
+          trackContext="compare-world-region-indicator"
+        />
+        <button
+          type="button"
+          disabled={!canAdd}
+          onClick={handleAdd}
+          title={atCap
+            ? capHint
+            : already
+              ? t('compare.alreadyAdded')
+              : compatText(t, compatibility)}
+          className={cn(
+            'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+            canAdd
+              ? 'bg-champagne/15 text-champagne hover:bg-champagne/25'
+              : 'bg-obsidian-lighter text-text-tertiary cursor-not-allowed',
+          )}
+        >
+          <Plus className="h-3.5 w-3.5" />
+          {already ? t('compare.alreadyAddedShort') : t('compare.addSubnationalSeries')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function russiaLandingPool(indicators, worldItems, locale) {
   const macros = [...(indicators || [])];
   const seen = new Set(macros.map((item) => item.code));
@@ -677,7 +821,13 @@ function CompareSeriesPicker({
   const { locale } = useLocale();
   const [countryKey, setCountryKey] = useState(null);
   const [russiaBranch, setRussiaBranch] = useState(null);
+  const [worldBranch, setWorldBranch] = useState(null);
   const [countryQuery, setCountryQuery] = useState('');
+  const subnationalHub = useWorldRegionsHub(
+    countryKey && countryKey !== 'russia' ? countryKey : undefined,
+  );
+  const hasSubnational = Boolean(subnationalHub.data?.regions?.length);
+  const subnationalKind = subnationalHub.data?.kind_label_plural || t('world.regions.fallbackKindPlural');
 
   const countries = useMemo(() => {
     const map = new Map();
@@ -718,12 +868,14 @@ function CompareSeriesPicker({
   const resetCountry = () => {
     setCountryKey(null);
     setRussiaBranch(null);
+    setWorldBranch(null);
     setCountryQuery('');
   };
 
   const selectCountry = (key) => {
     setCountryKey(key);
     setRussiaBranch(null);
+    setWorldBranch(null);
     setCountryQuery('');
   };
 
@@ -878,9 +1030,51 @@ function CompareSeriesPicker({
         </div>
       )}
 
-      {countryKey && countryKey !== 'russia' && selectedCountry && (
+      {countryKey && countryKey !== 'russia' && selectedCountry && hasSubnational && !worldBranch && (
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
+          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            {t('compare.countryWhat', { country: selectedCountry.label })}
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => setWorldBranch('macro')}
+              className={BRANCH_BTN(false)}
+            >
+              <span className="flex items-center gap-2">
+                <Globe2 className="h-4 w-4 shrink-0" />
+                {t('compare.macro')}
+              </span>
+              <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
+                {t('compare.macroHint')}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setWorldBranch('regions')}
+              className={BRANCH_BTN(false)}
+            >
+              <span className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 shrink-0" />
+                {subnationalKind}
+              </span>
+              <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
+                {t('compare.subnationalBranchHint')}
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {countryKey && countryKey !== 'russia' && selectedCountry && (
+        (hasSubnational ? worldBranch === 'macro' : true)
+      ) && (
+        <div>
+          <PickerBack
+            label={hasSubnational ? t('compare.countryWhat', { country: selectedCountry.label }) : t('compare.backToCountry')}
+            onClick={hasSubnational ? () => setWorldBranch(null) : resetCountry}
+          />
           <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.countryIndicator', { country: selectedCountry.label })}
           </div>
@@ -895,6 +1089,32 @@ function CompareSeriesPicker({
               compatibilityFor={compatibilityFor}
             />
           </div>
+        </div>
+      )}
+
+      {countryKey && countryKey !== 'russia' && selectedCountry && worldBranch === 'regions' && (
+        <div>
+          <PickerBack
+            label={t('compare.countryWhat', { country: selectedCountry.label })}
+            onClick={() => setWorldBranch(null)}
+          />
+          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            {t('compare.subnationalSeries', { kind: subnationalKind })}
+          </div>
+          <AddSubnationalSeries
+            countrySlug={countryKey}
+            selected={selected}
+            onAdd={onAdd}
+            atCap={atCap}
+            capHint={capHint}
+            compatibilityFor={compatibilityFor}
+          />
+          <p className="mt-3 text-xs leading-relaxed text-text-tertiary">
+            {t('compare.compareRegionsCta')}{' '}
+            <Link to={countryRegionsPath(countryKey)} className="text-champagne hover:underline">
+              {t('compare.subnationalSection', { kind: subnationalKind })}
+            </Link>
+          </p>
         </div>
       )}
     </div>
@@ -1019,13 +1239,13 @@ export default function ComparePage() {
   // Смена набора рядов → окно к свежим данным.
   useEffect(() => { setPanOffset(0); }, [codes]);
 
-  const { data: indicators } = useIndicators();
+  const { data: indicators, isFetched: indicatorsFetched } = useIndicators();
   const { data: worldCompareCatalog } = useWorldCompareCatalog();
   const hasWorldSeries = codes.some(isWorldCode);
   const dataSpacesCount = [
-    codes.some(isWorldCode),
+    codes.some((code) => isWorldCode(code) || isSubnationalCode(code)),
     codes.some(isRegionCode),
-    codes.some((code) => !isWorldCode(code) && !isRegionCode(code)),
+    codes.some((code) => !isWorldCode(code) && !isRegionCode(code) && !isSubnationalCode(code)),
   ].filter(Boolean).length;
   const worldCompareItems = worldCompareCatalog?.items || [];
   const compatibilityNote = activeCompatibilityNote(codes);
@@ -1118,15 +1338,29 @@ export default function ComparePage() {
         isWorld: true,
       };
     }
-    // Региональный ряд (`r:{slug}:{code}`): годовой уровень без представлений —
-    // метаданные приходят вместе с данными (__regionMeta), резолвер не нужен.
-    if (isRegionCode(code)) {
+    // Региональный ряд (`r:{slug}:{code}`) и субнациональный (`s:{страна}:{slug}:{code}`):
+    // уровень без представлений, метаданные приходят вместе с данными.
+    if (isRegionCode(code) || isSubnationalCode(code)) {
       return {
         code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),
-        fetchCode: code, transform: null, unit: null, isRegion: true,
+        fetchCode: code, transform: null, unit: null,
+        isRegion: isRegionCode(code),
+        isSubnational: isSubnationalCode(code),
       };
     }
     const ind = indicators?.find((x) => x.code === code);
+    if (!indicatorsFetched) {
+      return {
+        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),
+        fetchCode: null, transform: null, unit: null, waitingCatalog: true,
+      };
+    }
+    if (!ind) {
+      return {
+        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),
+        fetchCode: null, transform: null, unit: null, unknown: true,
+      };
+    }
     const repId = repByCode[code] || REP_LEVEL;
     const spec = resolveCompareSeries(ind || { code }, repId)
       || { code, transform: null, unit: ind?.unit, repId: REP_LEVEL, label: t('common.value') };
@@ -1139,13 +1373,15 @@ export default function ComparePage() {
       fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform,
       unit: spec.unit, stepDeep: !!stepAlt,
     };
-  }), [codes, indicators, repByCode, step, worldMetaByCode, t]);
+  }), [codes, indicators, indicatorsFetched, repByCode, step, worldMetaByCode, t]);
 
   const results = useQueries({
     queries: resolved.map((r) => ({
       queryKey: ['indicator-data', r.fetchCode, undefined],
       queryFn: ({ signal }) => (r.isWorld
         ? fetchWorldSeries(r.fetchCode, { signal })
+        : r.isSubnational
+        ? fetchSubnationalSeries(r.fetchCode, { signal })
         : r.isRegion
         ? fetchRegionSeries(r.fetchCode, { signal })
         : fetchIndicatorData(r.fetchCode, undefined, { signal })),
@@ -1166,18 +1402,19 @@ export default function ComparePage() {
     color: PALETTE[i % PALETTE.length],
     ind: r.isWorld
       ? results[i]?.data?.__worldMeta
-      : r.isRegion ? results[i]?.data?.__regionMeta : r.ind,
+      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta : r.ind,
     rep: r.repId,
     repLabel: r.repLabel,
     unit: r.isWorld
       ? (r.repId === REP_LEVEL ? results[i]?.data?.__worldMeta?.unit : r.unit)
-      : r.isRegion ? results[i]?.data?.__regionMeta?.unit : r.unit,
+      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.unit : r.unit,
     isWorld: r.isWorld,
+    isSubnational: r.isSubnational,
     transform: r.transform,
     stepDeep: r.stepDeep,
     data: results[i]?.data,
-    loading: results[i]?.isLoading,
-    error: results[i]?.isError,
+    loading: results[i]?.isLoading || r.waitingCatalog,
+    error: results[i]?.isError || r.unknown,
   })), [resolved, results]);
 
   // Разные единицы измерения рядов (после резолва представления). Максимум две
@@ -1199,7 +1436,7 @@ export default function ComparePage() {
       // stepDeep: данные уже загружены на нативной частоте нужного шага
       // (реальный alternate_frequencies ряд) — повторная клиентская
       // агрегация не нужна и исказила бы уже готовые годовые/квартальные точки.
-      const pts = s.stepDeep || s.isWorld ? transformed : aggregateToStep(transformed, step);
+      const pts = s.stepDeep || s.isWorld || s.isSubnational ? transformed : aggregateToStep(transformed, step);
       return new Map(pts.map((p) => [p.date, p.value]));
     });
 
@@ -1637,9 +1874,11 @@ export default function ComparePage() {
         )}
 
         {loading ? (
-          <ChartSkeleton />
+          <div data-testid="compare-chart-skeleton">
+            <ChartSkeleton />
+          </div>
         ) : !hasData ? (
-          <div className="h-96 rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
+          <div className="h-96 rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8" data-testid="compare-empty">
             <GitCompare className="w-10 h-10 mb-4 opacity-20" />
             <p className="text-sm text-center max-w-md">
               {codes.length === 0

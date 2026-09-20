@@ -200,5 +200,7 @@ describe('WorldRegionIndicatorPage', () => {
     expect(screen.getByLabelText('Скачать Excel')).toBeTruthy();
     expect(screen.getByLabelText('Скачать график картинкой')).toBeTruthy();
     expect(screen.getByText('Таблица значений по годам')).toBeTruthy();
+    expect(screen.getByRole('link', { name: /Сравнить с США/ }).getAttribute('href'))
+      .toBe('/compare?codes=w:united-states:us-unemployment-rate,s:united-states:california:unemployment-rate');
   });
 });
