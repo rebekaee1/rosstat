@@ -88,6 +88,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        DEBIAN_MIRROR: ${DEBIAN_MIRROR:-deb.debian.org}
     # Прод-сервер резолвит api.telegram.org только в IPv6, а IPv6-маршрут до
     # Telegram у хостера мёртвый (ConnectTimeout) → уведомления и дайджест тихо
     # падали. Прибиваем имя к рабочему IPv4 Telegram API DC (стабильный годами).

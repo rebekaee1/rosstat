@@ -1,8 +1,14 @@
+# Зеркало Debian для apt (build-arg). По умолчанию — штатный deb.debian.org;
+# на стендах, где он недоступен, передать DEBIAN_MIRROR=mirror.yandex.ru.
+ARG DEBIAN_MIRROR=deb.debian.org
+
 FROM python:3.12-slim AS builder
+ARG DEBIAN_MIRROR
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN sed -i "s|deb.debian.org|${DEBIAN_MIRROR}|g" /etc/apt/sources.list.d/debian.sources && \
+    apt-get update && apt-get install -y --no-install-recommends \
     gcc libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
@@ -11,8 +17,10 @@ COPY requirements.txt constraints.txt ./
 RUN pip install --no-cache-dir --timeout 120 -r requirements.txt -c constraints.txt
 
 FROM python:3.12-slim
+ARG DEBIAN_MIRROR
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN sed -i "s|deb.debian.org|${DEBIAN_MIRROR}|g" /etc/apt/sources.list.d/debian.sources && \
+    apt-get update && apt-get install -y --no-install-recommends \
     libpq5 curl && \
     rm -rf /var/lib/apt/lists/* && \
     groupadd -r appuser && useradd -r -g appuser -d /app appuser
