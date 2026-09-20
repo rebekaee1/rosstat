@@ -5,7 +5,7 @@ import { mockApiGet, renderPage } from '../../test/renderPage';
 
 afterEach(() => vi.restoreAllMocks());
 
-function renderScope(countriesPayload) {
+function renderScope(countriesPayload, locale) {
   mockApiGet([
     ['/auth/me', { user: null }],
     ['/world/countries', countriesPayload || {
@@ -19,7 +19,7 @@ function renderScope(countriesPayload) {
       total: 55,
     }],
   ]);
-  return renderPage(<HomeDataScope />, { path: '/', route: '/' });
+  return renderPage(<HomeDataScope />, { path: '/', route: '/', locale });
 }
 
 describe('HomeDataScope — состав платформы в hero главной', () => {
@@ -81,5 +81,22 @@ describe('HomeDataScope — состав платформы в hero главно
     expect(block.textContent).not.toMatch(/lorem|заглушк|mock/i);
     // U+00B7 в литерале запрещён даже в тестовых .jsx — эскейп, см. noMiddleDot.test.js.
     expect(block.textContent).not.toContain('\u00B7');
+  });
+
+  it('EN: без российских плиток, источники международные', async () => {
+    renderScope(undefined, 'en');
+
+    expect(screen.getByRole('heading', { name: 'Inside the platform' })).toBeTruthy();
+    expect(screen.getByText(/indicators across world countries/)).toBeTruthy();
+    expect(screen.getByText(/countries worldwide/)).toBeTruthy();
+    expect(screen.queryByText(/Russian macro indicators/)).toBeNull();
+    expect(screen.queryByText('100+')).toBeNull();
+    expect(screen.queryByText(/regional indicators/)).toBeNull();
+    expect(screen.queryByText('495')).toBeNull();
+    expect(screen.getByText(/observation period/)).toBeTruthy();
+    expect(screen.getByText(
+      'Eurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks',
+    )).toBeTruthy();
+    expect(screen.queryByText(/Rosstat/)).toBeNull();
   });
 });

@@ -465,6 +465,12 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
 
     monkeypatch.setattr(seo_renderer, "_home_country_links", fake_country_links)
 
+    # EN home shelf is the United States (no Russia-first flagships).
+    async def fake_us_links(db):
+        return (("/united-states/indicator/us-cpi", "Consumer Price Index"),)
+
+    monkeypatch.setattr(seo_renderer, "_home_flagship_links_en", fake_us_links)
+
     cyrillic = re.compile(r"[А-Яа-яЁё]")
 
     def _json_ld_blobs(html: str) -> list[dict | list]:
@@ -496,7 +502,8 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
         assert "Consumer Price Index" in html_en
         assert PAGE_META_EN["home"].title in html_en
         assert '<html lang="en"' in html_en or "lang=\"en\"" in html_en
-        assert "Official data for Russia, regions, and countries" in html_en
+        assert "Official macroeconomic data for countries" in html_en
+        assert "Official data for Russia, regions, and countries" not in html_en
         assert ">Countries</h2>" in html_en
         assert "Официальные данные" not in html_en
         assert "Страны</h2>" not in html_en
@@ -523,6 +530,7 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
         assert PAGE_META["home"].title in html_ru
         assert "Официальные данные России, регионов и стран" in html_ru
         assert "Страны с официальной статистикой на платформе" in html_ru
+        assert "Official macroeconomic data for countries" not in html_ru
         assert "Official data for Russia, regions, and countries" not in html_ru
         lists_ru = _item_lists(_json_ld_blobs(html_ru))
         assert any(cyrillic.search(lst["name"] or "") for lst in lists_ru)
@@ -716,8 +724,9 @@ def test_export_csv_headers_follow_locale():
 def test_localize_view_mode_label_en():
     from app.services.seo_i18n import localize_hero_label, localize_view_mode_label
 
-    assert localize_view_mode_label("Год к году", locale="en") == "Year on year"
-    assert localize_hero_label("Год к году", locale="en") == "Year on year"
+    assert localize_view_mode_label("Год к году", locale="en") == "Year over year"
+    assert localize_hero_label("Год к году", locale="en") == "Year over year"
+    assert localize_view_mode_label("К прошлому периоду", locale="en") == "Over previous period"
     assert localize_view_mode_label("Год к году", locale="ru") == "Год к году"
 
 
@@ -1207,7 +1216,9 @@ def test_default_keywords_en():
     token = set_locale("en")
     try:
         kw = _default_keywords()
-        assert "Rosstat" in kw
+        assert "Eurostat" in kw
+        assert "IMF" in kw
+        assert "Rosstat" not in kw
         assert "макроэкономические" not in kw
     finally:
         reset_locale(token)

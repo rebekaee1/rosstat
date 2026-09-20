@@ -70,6 +70,11 @@ from app.services.seo_renderer import (
     render_not_found_html,
     render_page_html,
 )
+from app.services.seo_world_subnational import (
+    render_subnational_hub_html,
+    render_subnational_indicator_html,
+    render_subnational_region_html,
+)
 from app.services.seo_world_year import render_world_indicator_year_html
 
 router = APIRouter(tags=["seo-pages"])
@@ -490,6 +495,48 @@ async def seo_world_rating_year(
     status, html = await _cached_html(
         "ssr-world", f"world-rating:{concept_slug}:{year}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_rating_html(concept_slug, db, year=requested),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/world/{slug}/regions", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_world_subnational_hub(
+    slug: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    status, html = await _cached_html(
+        "ssr-world", f"world-regions:{slug}:{get_locale()}", _SSR_TTL_WORLD,
+        lambda: render_subnational_hub_html(slug, db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route(
+    "/seo/world/{slug}/region/{region_slug}/{code}",
+    methods=["GET", "HEAD"], include_in_schema=False,
+)
+async def seo_world_subnational_indicator(
+    slug: str, region_slug: str, code: str, request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    status, html = await _cached_html(
+        "ssr-world",
+        f"world-region-ind:{slug}:{region_slug}:{code}:{get_locale()}",
+        _SSR_TTL_WORLD,
+        lambda: render_subnational_indicator_html(slug, region_slug, code, db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route(
+    "/seo/world/{slug}/region/{region_slug}",
+    methods=["GET", "HEAD"], include_in_schema=False,
+)
+async def seo_world_subnational_region(
+    slug: str, region_slug: str, request: Request, db: AsyncSession = Depends(get_db)
+):
+    status, html = await _cached_html(
+        "ssr-world", f"world-region:{slug}:{region_slug}:{get_locale()}", _SSR_TTL_WORLD,
+        lambda: render_subnational_region_html(slug, region_slug, db),
     )
     return _html_response(status, html, request)
 

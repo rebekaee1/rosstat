@@ -175,6 +175,12 @@ describe('RussiaHome быстрые входы (SEO-требование)', () =
 
     expect(screen.queryByRole('link', { name: /Сегодня/ })).toBeNull();
 
+    const grid = screen.getByTestId('russia-sections-grid');
+    expect(grid.className).toMatch(/grid-cols-1/);
+    expect(grid.className).toMatch(/lg:grid-cols-3/);
+    expect(grid.className).not.toMatch(/lg:grid-cols-4/);
+    expect(grid.querySelectorAll('a')).toHaveLength(3);
+
     const regions = screen.getByRole('link', { name: /Регионы/ });
     expect(regions.getAttribute('href')).toBe('/russia/region');
 

@@ -6,15 +6,12 @@ import { FOCUS_RING } from '../lib/uiTokens';
 import { track, trackOutbound, events } from '../lib/track';
 import { openConsentSettings } from '../lib/consent';
 import {
-  calendarPath,
   comparePath,
-  demographicsPath,
-  regionHubPath,
   russiaCategoriesPath,
   russiaCategoryPath,
-  russiaHomePath,
 } from '../lib/sitePaths';
 import { WORLD_RATING_TO } from '../lib/navItems';
+import { footerCatalogColumn, footerHomeCountryColumn, footerSourceLinks } from '../lib/footerNav';
 import { useT, useLocale } from '../i18n';
 
 const footLink = cn(
@@ -22,18 +19,13 @@ const footLink = cn(
   'rounded-sm lift-hover inline-block hover:text-text-primary transition-colors'
 );
 
-const SOURCE_LINKS = [
-  { href: 'https://ec.europa.eu/eurostat', key: 'footer.eurostat' },
-  { href: 'https://www.imf.org', key: 'footer.imf' },
-  { href: 'https://rosstat.gov.ru', key: 'footer.rosstat' },
-  { href: 'https://cbr.ru', key: 'footer.cbr' },
-  { href: 'https://minfin.gov.ru', key: 'footer.minfin' },
-];
-
 export default function Footer() {
   const t = useT();
   const { locale } = useLocale();
   const categoryLabel = (c) => (locale === 'en' && c.nameEn ? c.nameEn : c.name);
+  const sourceLinks = footerSourceLinks(locale);
+  const homeCountry = footerHomeCountryColumn(locale);
+  const catalog = footerCatalogColumn(locale);
 
   return (
     <footer className="mt-auto bg-obsidian-light rounded-t-[3rem] border-t border-border-subtle">
@@ -51,7 +43,7 @@ export default function Footer() {
               {t('footer.sources')}
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
-              {SOURCE_LINKS.map((item) => (
+              {sourceLinks.map((item) => (
                 <li key={item.href}>
                   <a
                     href={item.href}
@@ -67,27 +59,46 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              <Link to={russiaCategoriesPath()} className={footLink}>
-                {t('footer.categories')}
-              </Link>
-            </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
-                <li key={c.slug}>
-                  <Link to={russiaCategoryPath(c.slug)} className={footLink}>
-                    {categoryLabel(c)}
-                  </Link>
-                </li>
-              ))}
-              {CATEGORIES.filter((c) => !c.apiCategory).map((c) => (
-                <li key={c.slug} className="text-text-tertiary/80">
-                  {categoryLabel(c)} <span className="text-[10px] uppercase">{t('common.soon')}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {catalog.kind === 'countries' ? (
+            <div>
+              <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
+                <Link to={catalog.headingTo} className={footLink}>
+                  {t(catalog.headingKey)}
+                </Link>
+              </h4>
+              <ul className="space-y-2 text-sm text-text-secondary">
+                {catalog.links.map((item) => (
+                  <li key={item.key}>
+                    <Link to={item.to} className={footLink}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div>
+              <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
+                <Link to={russiaCategoriesPath()} className={footLink}>
+                  {t('footer.categories')}
+                </Link>
+              </h4>
+              <ul className="space-y-2 text-sm text-text-secondary">
+                {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
+                  <li key={c.slug}>
+                    <Link to={russiaCategoryPath(c.slug)} className={footLink}>
+                      {categoryLabel(c)}
+                    </Link>
+                  </li>
+                ))}
+                {CATEGORIES.filter((c) => !c.apiCategory).map((c) => (
+                  <li key={c.slug} className="text-text-tertiary/80">
+                    {categoryLabel(c)} <span className="text-[10px] uppercase">{t('common.soon')}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
@@ -114,29 +125,16 @@ export default function Footer() {
 
           <div>
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
-              {t('footer.section.russia')}
+              {t(homeCountry.sectionKey)}
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
-              <li>
-                <Link to={russiaHomePath()} className={footLink}>
-                  {t('footer.russia')}
-                </Link>
-              </li>
-              <li>
-                <Link to={regionHubPath()} className={footLink}>
-                  {t('footer.regions')}
-                </Link>
-              </li>
-              <li>
-                <Link to={calendarPath()} className={footLink}>
-                  {t('footer.calendar')}
-                </Link>
-              </li>
-              <li>
-                <Link to={demographicsPath()} className={footLink}>
-                  {t('footer.demographics')}
-                </Link>
-              </li>
+              {homeCountry.links.map((item) => (
+                <li key={item.key}>
+                  <Link to={item.to} className={footLink}>
+                    {t(item.key)}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

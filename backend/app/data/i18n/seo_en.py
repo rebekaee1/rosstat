@@ -269,50 +269,47 @@ PAGE_META_EN: dict[str, PageSeo] = {
     "home": PageSeo(
         slug="home",
         path="/",
-        title="Forecast Economy — macroeconomic indicators for countries and Russia",
+        title="Forecast Economy — official macroeconomic indicators by country",
         description=(
-            "Official macroeconomic indicators for countries, Russia, and its regions: "
-            "charts, tables, comparisons, and forecasts from statistical agencies "
-            "and central banks."
+            "Official macroeconomic indicators from national statistical offices, "
+            "central banks, Eurostat, and the IMF: charts, tables, comparisons, "
+            "and forecasts."
         ),
         h1="Official macroeconomic indicators in one place",
         intro=(
             "Forecast Economy collects macroeconomic indicators for countries from "
             "national statistical agencies, central banks, Eurostat, and the IMF. "
             "Data come only from official primary sources and are shown as charts, "
-            "tables, comparisons, and forecasts. Coverage of Russia is especially deep. "
+            "tables, comparisons, and forecasts. "
             "Viewing is open to everyone; downloads require free registration."
         ),
         keywords=(
             "country macroeconomic indicators, country statistics, "
-            "Russia economy, Russia macroeconomics, Russia GDP, inflation in Russia, "
-            "CPI, key rate, USD RUB, EUR RUB, Bank of Russia FX rates, "
-            "Rosstat data, Bank of Russia, Eurostat, inflation forecast, "
-            "Russia economic data, country statistics"
+            "GDP, inflation, unemployment, interest rates, "
+            "Eurostat, IMF, Bureau of Labor Statistics, Federal Reserve, "
+            "official statistics, economic forecasts"
         ),
         links=(
-            (paths.today(), "Economy today: FX, key rate, inflation"),
-            (paths.russia_indicator("cpi"), "Consumer Price Index"),
-            (paths.region_hub(), "Regions of Russia"),
+            (paths.country("united-states"), "United States"),
+            (paths.indicator("united-states", "us-cpi-all"), "Consumer Price Index"),
+            (paths.indicator("united-states", "us-unemployment-rate"), "Unemployment rate"),
             ("/world/rating/gdp-usd", "Country rankings"),
-            (paths.demographics(), "Age structure of the population"),
-            ("/calculator", "Inflation calculator"),
             ("/compare", "Compare indicators"),
-            (paths.calendar(), "Release calendar"),
+            ("/about", "About"),
         ),
         blocks=(
             SeoBlock(
                 "About the platform",
-                "The platform provides more than 36,000 country indicators, "
-                "100+ Russian macroeconomic indicators, and 495 regional indicators. "
+                "The platform provides more than 36,000 country indicators from "
+                "official national and international sources. "
                 "Cards show history, view modes, tables, and comparable series; "
                 "forecasts appear only where the model has passed a quality check.",
             ),
             SeoBlock(
                 "Data sources",
-                "Official primary sources only: Eurostat, the IMF, national statistical "
-                "agencies of available countries, Rosstat, the Bank of Russia, "
-                "and the Ministry of Finance.",
+                "Official primary sources only: Eurostat, the IMF, the U.S. Bureau "
+                "of Labor Statistics, the Bureau of Economic Analysis, the Federal "
+                "Reserve, and national statistical offices and central banks.",
             ),
         ),
     ),
@@ -322,15 +319,15 @@ PAGE_META_EN: dict[str, PageSeo] = {
         title="About Forecast Economy",
         description=(
             "Analytics platform for official economic data by country: "
-            "charts, tables, comparisons, and forecasts. Russia has especially "
-            "deep macro and regional coverage."
+            "charts, tables, comparisons, and forecasts from national statistical "
+            "offices, central banks, Eurostat, and the IMF."
         ),
         h1="About Forecast Economy",
         intro=(
             "Forecast Economy is an analytics project for official economic "
             "statistics by country. We present official indicators in a comparable "
             "form: charts, tables, sources, analysis modes, and quality-checked "
-            "forecasts. Coverage of Russia is especially deep."
+            "forecasts."
         ),
         keywords=(
             "Forecast Economy, about, country economic data, "
@@ -343,9 +340,9 @@ PAGE_META_EN: dict[str, PageSeo] = {
         path="/methodology",
         title="Forecast methodology for economic indicators — Forecast Economy",
         description=(
-            "How forecasts of economic indicators for Russia and other countries "
-            "are built: series preparation, historical validation, statistical "
-            "models, intervals, updates, and limitations."
+            "How forecasts of economic indicators are built: series preparation, "
+            "historical validation, statistical models, intervals, updates, and "
+            "limitations."
         ),
         h1="Forecast methodology",
         intro=(
@@ -393,7 +390,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
                 "components, exports, imports, external debt) use a model on log differences; "
                 "series that change sign (current account, balances) use a model on level "
                 "differences; inflation uses a combined model with pronounced seasonality. "
-                "Derived series (annual totals, year-on-year and period-on-period change) "
+                "Derived series (annual totals, year-over-year and period-on-period change) "
                 "are obtained from the base-series forecast, so they stay consistent across "
                 "chart modes.",
             ),
@@ -469,14 +466,14 @@ PAGE_META_EN: dict[str, PageSeo] = {
         path="/compare",
         title="Compare indicators",
         description=(
-            "Compare country and Russian indicators on one chart: federal series, "
-            "regions, and comparable indicators for other countries."
+            "Compare official country indicators on one chart: national series "
+            "and comparable indicators from statistical offices and Eurostat."
         ),
         h1="Compare indicators",
         intro=(
-            "First choose a country, then an indicator. For Russia, federal series "
-            "and regional series are available. Two regions are compared in the "
-            "regions section."
+            "First choose a country, then an indicator. Series from national "
+            "statistical offices and Eurostat can share a chart when they are "
+            "comparable."
         ),
         keywords=(
             "compare indicators, overlay charts, inflation and key rate, "
@@ -682,7 +679,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
 # ---------------------------------------------------------------------------
 
 HOME_TEMPLATES_EN: dict[str, str] = {
-    "eyebrow": "Official data for Russia, regions, and countries",
+    "eyebrow": "Official macroeconomic data for countries",
     "h2_countries": "Countries",
     "h2_flagships": "Key indicators",
     "h2_tools": "Tools and sections",
@@ -1522,7 +1519,7 @@ INDICATOR_TEMPLATES_EN: dict[str, str] = {
     ),
     "block_read_body": (
         "The chart shows the selected view of the series. Switch modes above the "
-        "plot to change period-to-period, year-on-year or level presentation. "
+        "plot to change period-to-period, year-over-year or level presentation. "
         "The latest reading and date are on the telemetry cards."
     ),
     "block_freq_body": (

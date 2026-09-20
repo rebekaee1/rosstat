@@ -9,6 +9,8 @@
   /{country}
   /{country}/indicator/{code}[/{year}]
   /{country}/category/{slug}
+  /{country}/regions
+  /{country}/region/{slug}[/{code}]
   /russia/region[/{slug}[/{code}]]
   /russia/region-rating/{code}
   /russia/region-vs/{a}-vs-{b}
@@ -138,6 +140,23 @@ def russia_categories() -> str:
 def region_hub() -> str:
     """Список регионов России: /russia/region."""
     return f"/{RUSSIA}/region"
+
+
+def country_regions(country_slug: str) -> str:
+    """Хаб субнациональных регионов: /{country}/regions."""
+    return f"/{_slug(country_slug)}/regions"
+
+
+def country_region(country_slug: str, region_slug: str) -> str:
+    return f"/{_slug(country_slug)}/region/{_slug(region_slug)}"
+
+
+def country_region_indicator(country_slug: str, region_slug: str, code: str) -> str:
+    return f"/{_slug(country_slug)}/region/{_slug(region_slug)}/{_code(code)}"
+
+
+def country_region_map(country_slug: str, code: str) -> str:
+    return f"/{_slug(country_slug)}/region/map/{_code(code)}"
 
 
 def region_rating_hub() -> str:

@@ -19,11 +19,22 @@ import {
 } from './sitePaths';
 
 describe('breadcrumbs', () => {
-  it('категория России включает хаб Категории', () => {
+  it('категория России: Главная / Россия / имя — без хаба Категории', () => {
     const trail = russiaCategoryTrail('Валюты', 'currencies');
-    expect(trail.map((c) => c.name)).toEqual(['Главная', 'Россия', 'Категории', 'Валюты']);
+    expect(trail.map((c) => c.name)).toEqual(['Главная', 'Россия', 'Валюты']);
     expect(trail[1].path).toBe(russiaHomePath());
-    expect(trail[2].path).toBe(russiaCategoriesPath());
+    expect(trail.map((c) => c.path)).not.toContain(russiaCategoriesPath());
+  });
+
+  it('EN-крошки категории тоже без узла Categories', () => {
+    bindUiLocale('en');
+    try {
+      expect(russiaCategoryTrail('Currencies', 'currencies').map((c) => c.name)).toEqual([
+        'Home', 'Russia', 'Currencies',
+      ]);
+    } finally {
+      bindUiLocale(undefined);
+    }
   });
 
   it('индикатор России: Главная / Россия / категория / имя', () => {

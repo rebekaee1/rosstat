@@ -2,13 +2,18 @@ import { useMemo } from 'react';
 import { CalendarRange, Database, Globe2, Landmark, MapPinned, Network } from 'lucide-react';
 import { homeScopeCountriesCount } from '../../lib/homeWorkbench';
 import { useWorldCountries } from '../../lib/worldApi';
-import { useT } from '../../i18n';
+import { useLocale, useT } from '../../i18n';
 
-const SCOPE_STATS = [
+const SCOPE_STATS_RU = [
   { key: 'world', icon: Globe2 },
   { key: 'countries', icon: Network },
   { key: 'macro', icon: Landmark },
   { key: 'regions', icon: MapPinned },
+];
+
+const SCOPE_STATS_EN = [
+  { key: 'world', icon: Globe2 },
+  { key: 'countries', icon: Network },
 ];
 
 /**
@@ -18,6 +23,8 @@ const SCOPE_STATS = [
  */
 export default function HomeDataScope() {
   const t = useT();
+  const { locale } = useLocale();
+  const scopeStats = locale === 'en' ? SCOPE_STATS_EN : SCOPE_STATS_RU;
   const countriesQ = useWorldCountries();
   const countriesValue = useMemo(() => {
     const n = homeScopeCountriesCount(countriesQ.data);
@@ -45,7 +52,7 @@ export default function HomeDataScope() {
         </div>
 
         <dl className="mt-3.5 grid grid-cols-2 gap-x-3 gap-y-3.5">
-          {SCOPE_STATS.map(({ key, icon: Icon }) => (
+          {scopeStats.map(({ key, icon: Icon }) => (
             <div key={key} className="min-w-0">
               <dt className="flex items-center gap-1.5 text-[9px] font-medium uppercase tracking-[0.14em] text-text-tertiary">
                 <Icon size={11} className="shrink-0 text-champagne/70" aria-hidden="true" />

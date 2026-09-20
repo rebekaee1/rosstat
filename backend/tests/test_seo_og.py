@@ -891,3 +891,94 @@ def _extract_title(html: str) -> str:
     if start == -1 or end == -1:
         return ""
     return html[start + len("<title>") : end]
+
+
+def _extract_meta_attr(html: str, attr: str, key: str) -> str:
+    needle = f'{attr}="{key}" content="'
+    idx = html.find(needle)
+    if idx == -1:
+        return ""
+    start = idx + len(needle)
+    end = html.find('"', start)
+    return html[start:end] if end != -1 else ""
+
+
+def test_mode_pop_gg_meta_matches_canonical_card(auth_env):
+    """?mode=pop-gg не должен выдавать YoY-дельту за «актуальное значение».
+
+    Канон — URL без mode (INDEX_POLICY.MODE_CANONICAL=False). Title/description/OG
+    режимного дубля идентичны канонической карточке (уровень ставки, не п.п.).
+    """
+    import asyncio
+    import json
+    import re
+    from datetime import date
+
+    from app.models import Indicator, IndicatorData
+    from app.services.seo_renderer import render_indicator_html
+
+    async def _seed_and_render():
+        async with auth_env["session_maker"]() as db:
+            base = Indicator(
+                code="ruonia",
+                name="Ставка RUONIA",
+                unit="%",
+                frequency="daily",
+                category="Ставки",
+                source="Банк России",
+                is_active=True,
+                is_listed=True,
+                seo_title="RUONIA сегодня — ставка овернайт, график и история",
+                seo_description="Ставка RUONIA (межбанковский овернайт).",
+            )
+            yoy_year = Indicator(
+                code="ruonia-yoy-year",
+                name="Ставка RUONIA (г/г)",
+                unit="п.п.",
+                frequency="annual",
+                category="Ставки",
+                source="Банк России",
+                is_active=True,
+                is_listed=False,
+            )
+            db.add_all([base, yoy_year])
+            await db.flush()
+            db.add(IndicatorData(
+                indicator_id=base.id, date=date(2026, 9, 4), value=14.06,
+            ))
+            db.add(IndicatorData(
+                indicator_id=yoy_year.id, date=date(2025, 1, 1), value=-4.62,
+            ))
+            await db.commit()
+            st_mode, html_mode = await render_indicator_html(
+                "ruonia", db, mode="pop-gg",
+            )
+            st_base, html_base = await render_indicator_html("ruonia", db)
+            return st_mode, html_mode, st_base, html_base
+
+    st_mode, html_mode, st_base, html_base = asyncio.run(_seed_and_render())
+    assert st_mode == 200 and st_base == 200
+
+    desc_mode = _extract_meta_attr(html_mode, "name", "description")
+    desc_base = _extract_meta_attr(html_base, "name", "description")
+    assert _extract_title(html_mode) == _extract_title(html_base)
+    assert desc_mode == desc_base
+    assert _extract_meta_attr(html_mode, "property", "og:description") == (
+        _extract_meta_attr(html_base, "property", "og:description")
+    )
+    assert "14,06" in desc_mode
+    assert "п.п." not in desc_mode
+    assert "−4,62" not in desc_mode and "-4,62" not in desc_mode
+    assert "Актуальное значение — −4" not in desc_mode
+
+    def _dataset_name(html: str) -> str:
+        for raw in re.findall(
+            r'<script type="application/ld\+json">(.*?)</script>', html, re.S,
+        ):
+            block = json.loads(raw)
+            if block.get("@type") == "Dataset":
+                return block.get("name") or ""
+        return ""
+
+    assert _dataset_name(html_mode) == _dataset_name(html_base)
+    assert "г/г" not in _dataset_name(html_mode).lower()

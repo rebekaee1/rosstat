@@ -102,4 +102,7 @@ def has_en_path(path: str) -> bool:
     if len(segments) >= 3 and segments[2] == "indicator":
         if segments[1] in _country_slugs():
             return True
+    if len(segments) >= 3 and segments[2] in ("regions", "region"):
+        if segments[1] in _country_slugs() and segments[1] != "russia":
+            return True
     return False

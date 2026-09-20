@@ -50,9 +50,9 @@
 | `auto-loan-rate-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `birth-rate` | Население | annual | `generic` | — | ✓ | — |
+| `birth-rate` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `birth-rate-yoy` | Население | annual | `generic` | derived_from_source | — | — |
-| `births` | Население | annual | `generic` | — | ✓ | — |
+| `births` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `births-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `births-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 | `brent` | Товарные рынки | daily | `generic` | — | ✓ | — |
@@ -277,9 +277,9 @@
 | `current-account-yoy` | Торговля | quarterly | `generic` | — | — | — |
 | `current-account-yoy-abs` | Торговля | quarterly | `generic` | — | — | both, shadowed |
 | `current-account-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
-| `death-rate` | Население | annual | `generic` | — | ✓ | — |
+| `death-rate` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `death-rate-yoy` | Население | annual | `generic` | derived_from_source | — | — |
-| `deaths` | Население | annual | `generic` | — | ✓ | — |
+| `deaths` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `deaths-index` | Демография | annual | `generic` | derived_from_source | — | — |
 | `deaths-yoy` | Демография | annual | `generic` | derived_from_source | — | — |
 | `deposit-rate` | Ставки | monthly | `generic` | monthly_auto | ✓ | shadowed |
@@ -332,9 +332,9 @@
 | `deposits-individual-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `deposits-individual-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `deposits-individual-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
-| `depreciation-rate` | Бизнес | annual | `generic` | — | ✓ | — |
+| `depreciation-rate` | Бизнес | annual | `generic` | annual_auto | ✓ | — |
 | `depreciation-rate-yoy` | Бизнес | annual | `generic` | derived_from_source | — | — |
-| `doctoral-students` | Наука | annual | `generic` | — | ✓ | — |
+| `doctoral-students` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `doctoral-students-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `doctoral-students-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `employment` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
@@ -501,7 +501,7 @@
 | `gold-price-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
 | `gold-price-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `gold-price-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `grad-students` | Наука | annual | `generic` | — | ✓ | — |
+| `grad-students` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `grad-students-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `grad-students-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `housing-affordability` | Цены | monthly | `generic` | monthly_auto | ✓ | — |
@@ -573,7 +573,7 @@
 | `inflation-weekly-food` | Цены | weekly | `cpi` | generic_ols | — | — |
 | `inflation-weekly-nonfood` | Цены | weekly | `cpi` | generic_ols | — | — |
 | `inflation-weekly-services` | Цены | weekly | `cpi` | generic_ols | — | — |
-| `innovation-activity` | Наука | annual | `generic` | — | ✓ | — |
+| `innovation-activity` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `innovation-activity-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `international-reserves` | Финансы | weekly | `generic` | — | ✓ | — |
 | `international-reserves-avg-month` | Финансы | monthly | `generic` | — | — | — |
@@ -727,22 +727,22 @@
 | `natural-gas-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
 | `natural-gas-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `natural-gas-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `pensioners` | Население | annual | `generic` | — | ✓ | — |
+| `pensioners` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `pensioners-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `pensioners-yoy` | Население | annual | `generic` | derived_from_source | — | — |
-| `pop-over-working-age` | Население | annual | `generic` | — | ✓ | — |
+| `pop-over-working-age` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `pop-over-working-age-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `pop-over-working-age-yoy` | Население | annual | `generic` | derived_from_source | — | — |
-| `pop-under-working-age` | Население | annual | `generic` | — | ✓ | — |
+| `pop-under-working-age` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `pop-under-working-age-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `pop-under-working-age-yoy` | Население | annual | `generic` | derived_from_source | — | — |
-| `population` | Население | annual | `generic` | — | ✓ | — |
+| `population` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `population-index` | Население | annual | `generic` | derived_from_source | — | — |
-| `population-migration` | Население | annual | `generic` | — | ✓ | — |
+| `population-migration` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `population-migration-yoy` | Население | annual | `generic` | derived_from_source | — | — |
-| `population-natural-growth` | Население | annual | `generic` | — | ✓ | — |
+| `population-natural-growth` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `population-natural-growth-yoy` | Население | annual | `generic` | derived_from_source | — | — |
-| `population-total-growth` | Население | annual | `generic` | — | ✓ | — |
+| `population-total-growth` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `population-total-growth-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 | `population-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 | `ppi` | Цены | monthly | `ppi` | ppi_monthly | ✓ | — |
@@ -750,10 +750,10 @@
 | `ppi-mom` | Цены | monthly | `ppi` | derived_from_source | — | — |
 | `ppi-qoq` | Цены | quarterly | `ppi` | derived_from_source | — | — |
 | `ppi-yoy` | Цены | monthly | `ppi` | derived_from_source | — | — |
-| `rd-organizations` | Наука | annual | `generic` | — | ✓ | — |
+| `rd-organizations` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `rd-organizations-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `rd-organizations-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
-| `rd-personnel` | Наука | annual | `generic` | — | ✓ | — |
+| `rd-personnel` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `rd-personnel-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `rd-personnel-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `retail-trade` | Бизнес | monthly | `generic` | monthly_auto | ✓ | — |
@@ -840,7 +840,7 @@
 | `silver-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
 | `silver-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `silver-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `small-business-innovation` | Наука | annual | `generic` | — | ✓ | — |
+| `small-business-innovation` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `small-business-innovation-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `sol-usd` | Валюты | daily | `generic` | — | ✓ | — |
 | `sol-usd-avg-month` | Валюты | monthly | `generic` | — | — | — |
@@ -865,7 +865,7 @@
 | `soybean-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `soybean-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
 | `steel` | Товарные рынки | daily | `null` | — | — | no-stack |
-| `tech-innovation-share` | Наука | annual | `generic` | — | ✓ | — |
+| `tech-innovation-share` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `tech-innovation-share-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
 | `trade-balance` | Торговля | quarterly | `generic` | derived_from_source | ✓ | both, shadowed |
 | `trade-balance-monthly` | Торговля | monthly | `generic` | monthly_auto | — | — |
@@ -984,7 +984,7 @@
 | `wheat-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
 | `wheat-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `wheat-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
-| `working-age-population` | Население | annual | `generic` | — | ✓ | — |
+| `working-age-population` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `working-age-population-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `working-age-population-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 

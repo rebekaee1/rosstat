@@ -7,8 +7,8 @@ describe('localizeViewModeLabel', () => {
   });
 
   it('translates picker labels on en', () => {
-    expect(localizeViewModeLabel('Год к году', 'en')).toBe('Year on year');
-    expect(localizeViewModeLabel('К прошлому периоду', 'en')).toBe('Vs previous period');
+    expect(localizeViewModeLabel('Год к году', 'en')).toBe('Year over year');
+    expect(localizeViewModeLabel('К прошлому периоду', 'en')).toBe('Over previous period');
     expect(localizeViewModeLabel('нет официального ряда', 'en')).toBe('no official series');
     expect(localizeViewModeLabel('расчётный ряд', 'en')).toBe('derived series');
   });

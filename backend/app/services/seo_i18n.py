@@ -41,10 +41,11 @@ from app.services.seo_content import (
 _VIEW_MODE_LABEL_EN: dict[str, str] = {
     "На конец периода": "Period end",
     "Средняя за период": "Period average",
-    "К прошлому периоду": "Vs previous period",
-    "К соотв. периоду пред. года": "Vs same period previous year",
+    "К прошлому периоду": "Over previous period",
+    "К году": "Year over year",
+    "К соотв. периоду пред. года": "Over same period previous year",
     "Г/г": "YoY",
-    "Год к году": "Year on year",
+    "Год к году": "Year over year",
     "Кв/Кв": "QoQ",
     "М/м": "MoM",
     "Н/н": "WoW",
@@ -66,10 +67,11 @@ _VIEW_MODE_LABEL_EN: dict[str, str] = {
     "Годово": "Annual",
     "Частота отображения": "Display frequency",
     "Режим отображения": "Display mode",
+    "К прошлому году": "Over previous year",
 }
 
 _HERO_LABEL_EN: dict[str, str] = {
-    "Год к году": "Year on year",
+    "Год к году": "Year over year",
     "Изменение г/г": "YoY change",
 }
 

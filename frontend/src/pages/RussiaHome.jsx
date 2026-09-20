@@ -123,6 +123,13 @@ const QUICK_LINK_DEFS = [
   { to: demographicsPath(), titleKey: 'russia.link.demographics.title', descKey: 'russia.link.demographics.desc', icon: Users },
 ];
 
+const QUICK_GRID_LG = {
+  1: 'lg:grid-cols-1',
+  2: 'lg:grid-cols-2',
+  3: 'lg:grid-cols-3',
+  4: 'lg:grid-cols-4',
+}[QUICK_LINK_DEFS.length] || 'lg:grid-cols-3';
+
 function indicatorDate(dateStr, frequency, locale) {
   if (!dateStr) return '—';
   return formatDate(dateStr, resolveDateFormat({ frequency }), locale);
@@ -338,7 +345,10 @@ export default function RussiaHome() {
         >
           {t('russia.sections')}
         </h2>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div
+          data-testid="russia-sections-grid"
+          className={`grid grid-cols-1 gap-3 sm:grid-cols-2 ${QUICK_GRID_LG}`}
+        >
           {QUICK_LINK_DEFS.map((item) => {
             const Icon = item.icon;
             return (

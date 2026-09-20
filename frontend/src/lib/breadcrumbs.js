@@ -5,6 +5,9 @@
 import {
   calendarPath,
   countryPath,
+  countryRegionIndicatorPath,
+  countryRegionPath,
+  countryRegionsPath,
   demographicsPath,
   indicatorPath,
   regionHubPath,
@@ -64,10 +67,10 @@ export function russiaCategoriesTrail() {
 }
 
 export function russiaCategoryTrail(categoryName, categorySlug) {
+  // Хаб /russia/category остаётся живой страницей, но не уровнем крошек.
   return [
     homeCrumb(),
     russiaCrumb(),
-    russiaCategoriesCrumb(),
     crumb(russiaCategoryPath(categorySlug), categoryName),
   ];
 }
@@ -195,6 +198,35 @@ export function demographicsTrail() {
 
 export function worldCountryTrail(countryName, countrySlug) {
   return [homeCrumb(), crumb(countryPath(countrySlug), countryName)];
+}
+
+export function worldSubnationalHubTrail(countryName, countrySlug, kindPlural) {
+  return [
+    homeCrumb(),
+    crumb(countryPath(countrySlug), countryName),
+    crumb(countryRegionsPath(countrySlug), kindPlural),
+  ];
+}
+
+export function worldSubnationalRegionTrail(countryName, countrySlug, kindPlural, regionName, regionSlug) {
+  return [
+    homeCrumb(),
+    crumb(countryPath(countrySlug), countryName),
+    crumb(countryRegionsPath(countrySlug), kindPlural),
+    crumb(countryRegionPath(countrySlug, regionSlug), regionName),
+  ];
+}
+
+export function worldSubnationalIndicatorTrail(
+  countryName, countrySlug, kindPlural, regionName, regionSlug, indicatorName, indicatorCode,
+) {
+  return [
+    homeCrumb(),
+    crumb(countryPath(countrySlug), countryName),
+    crumb(countryRegionsPath(countrySlug), kindPlural),
+    crumb(countryRegionPath(countrySlug, regionSlug), regionName),
+    crumb(countryRegionIndicatorPath(countrySlug, regionSlug, indicatorCode), indicatorName),
+  ];
 }
 
 export function worldIndicatorTrail(countryName, countrySlug, indicatorName, indicatorCode) {

@@ -7,11 +7,14 @@
 
 import {
   comparePath,
+  countryPath,
   homePath,
   russiaHomePath,
   WORLD_RATING_DEFAULT_CONCEPT,
   worldRatingPath,
 } from './sitePaths';
+
+export const UNITED_STATES_SLUG = 'united-states';
 
 export const WORLD_RATING_TO = worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT);
 
@@ -25,6 +28,13 @@ export const WORLD_RATING_TO = worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT);
 export const PRIMARY_NAV = [
   { id: 'home', to: homePath(), match: homePath(), exact: true, labelKey: 'common.home' },
   { id: 'russia', to: russiaHomePath(), match: russiaHomePath(), labelKey: 'nav.russia' },
+  {
+    id: 'united-states',
+    to: countryPath(UNITED_STATES_SLUG),
+    match: countryPath(UNITED_STATES_SLUG),
+    labelKey: 'nav.unitedStates',
+    shortLabelKey: 'nav.usa',
+  },
   { id: 'world-rating', to: WORLD_RATING_TO, match: '/world/rating', labelKey: 'nav.worldRating' },
   {
     id: 'compare',
@@ -36,15 +46,16 @@ export const PRIMARY_NAV = [
 ];
 
 /**
- * Primary-пункты для локали: на EN рубрика «Россия» скрыта — весь русский
- * раздел (/russia, регионы, рейтинги) существует только в RU-витрине.
+ * Primary-пункты для локали: RU держит «Россия», EN — «United States»
+ * на том же месте. Страницы /russia на EN остаются, но не как главный пункт.
  * Подсветка активного пункта (`resolveActiveNavId`) считается по ПОЛНОМУ
  * PRIMARY_NAV, иначе скрытие ломало бы aria-current на страницах раздела.
  */
 export function primaryNav(locale) {
-  return locale === 'en'
-    ? PRIMARY_NAV.filter((item) => item.id !== 'russia')
-    : PRIMARY_NAV;
+  if (locale === 'en') {
+    return PRIMARY_NAV.filter((item) => item.id !== 'russia');
+  }
+  return PRIMARY_NAV.filter((item) => item.id !== 'united-states');
 }
 
 /** Самый длинный совпавший префикс среди пунктов; граница сегмента обязательна. */

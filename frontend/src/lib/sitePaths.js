@@ -120,6 +120,22 @@ export function regionHubPath() {
   return `/${RUSSIA}/region`;
 }
 
+export function countryRegionsPath(countrySlug) {
+  return `/${slug(countrySlug)}/regions`;
+}
+
+export function countryRegionPath(countrySlug, regionSlug) {
+  return `/${slug(countrySlug)}/region/${slug(regionSlug)}`;
+}
+
+export function countryRegionIndicatorPath(countrySlug, regionSlug, indicatorCode) {
+  return `/${slug(countrySlug)}/region/${slug(regionSlug)}/${code(indicatorCode)}`;
+}
+
+export function countryRegionMapPath(countrySlug, indicatorCode) {
+  return `/${slug(countrySlug)}/region/map/${code(indicatorCode)}`;
+}
+
 export function regionRatingHubPath() {
   return `/${RUSSIA}/region-rating`;
 }

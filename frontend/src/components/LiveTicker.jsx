@@ -46,6 +46,9 @@ function formatPct(pct, locale = 'ru') {
 }
 
 /** Компактная дата значения для не-внутридневных элементов: «15.08». */
+// RU-витрина живёт по Москве, EN — международная, часы в UTC.
+const tzFor = (locale) => (locale === 'en' ? 'UTC' : 'Europe/Moscow');
+
 function formatAsOfShort(isoDate, locale = 'ru') {
   if (!isoDate) return null;
   const d = isoDate.includes('T')
@@ -62,7 +65,7 @@ function formatAsOfShort(isoDate, locale = 'ru') {
   return d.toLocaleDateString(tag, {
     day: '2-digit',
     month: '2-digit',
-    timeZone: 'Europe/Moscow',
+    timeZone: tzFor(locale),
   });
 }
 
@@ -77,7 +80,7 @@ function formatAsOfTitle(isoDate, locale = 'ru') {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    timeZone: isoDate.includes('T') ? 'Europe/Moscow' : undefined,
+    timeZone: isoDate.includes('T') ? tzFor(locale) : undefined,
   });
 }
 
@@ -127,7 +130,7 @@ function TickerCell({ snapshot, nowMs }) {
     ? new Date(fetchedMs).toLocaleTimeString(locale === 'en' ? 'en-US' : 'ru-RU', {
       hour: '2-digit',
       minute: '2-digit',
-      timeZone: 'Europe/Moscow',
+      timeZone: tzFor(locale),
     })
     : null;
 

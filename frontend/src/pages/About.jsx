@@ -2,6 +2,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
 import { track, trackOutbound, events } from '../lib/track';
+import { footerSourceLinks } from '../lib/footerNav';
 
 export default function About() {
   const { locale } = useLocale();
@@ -28,17 +29,26 @@ export default function About() {
         <p className="text-text-secondary leading-relaxed mb-6">
           {t('about.intro.p2before')}
           {' '}
-          <a href="https://ec.europa.eu/eurostat" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://ec.europa.eu/eurostat')}>{t('footer.eurostat')}</a>,
-          {' '}
-          <a href="https://www.imf.org" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://www.imf.org')}>{t('footer.imf')}</a>,
-          {' '}
-          <a href="https://rosstat.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://rosstat.gov.ru')}>{t('footer.rosstat')}</a>,
-          {' '}
-          <a href="https://cbr.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://cbr.ru')}>{t('footer.cbr')}</a>
-          {' '}
-          {locale === 'en' ? 'and' : 'и'}
-          {' '}
-          <a href="https://minfin.gov.ru" className="text-champagne hover:underline" target="_blank" rel="noopener noreferrer" onClick={() => trackOutbound('https://minfin.gov.ru')}>{t('footer.minfin')}</a>
+          {footerSourceLinks(locale).map((item, i, items) => {
+            const link = (
+              <a
+                key={item.href}
+                href={item.href}
+                className="text-champagne hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackOutbound(item.href)}
+              >
+                {t(item.key)}
+              </a>
+            );
+            const andWord = locale === 'en' ? 'and' : 'и';
+            if (i === 0) return link;
+            if (i === items.length - 1) {
+              return <span key={item.href}> {andWord} {link}</span>;
+            }
+            return <span key={item.href}>, {link}</span>;
+          })}
           {' '}
           {t('about.intro.p2after')}
           {' '}

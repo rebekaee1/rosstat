@@ -5,11 +5,21 @@ from app.services import site_paths as paths
 from app.services.locale import reset_locale, set_locale
 
 
-def test_russia_category_trail_has_hub():
+def test_russia_category_trail_skips_hub():
     trail = b.russia_category_trail("Валюты", paths.russia_category("currencies"))
-    assert [name for _, name in trail] == ["Главная", "Россия", "Категории", "Валюты"]
+    assert [name for _, name in trail] == ["Главная", "Россия", "Валюты"]
     assert trail[1][0] == paths.russia_home()
-    assert trail[2][0] == paths.russia_categories()
+    assert trail[2][0] == paths.russia_category("currencies")
+    assert paths.russia_categories() not in [path for path, _ in trail]
+
+
+def test_russia_category_trail_en_skips_categories():
+    token = set_locale("en")
+    try:
+        trail = b.russia_category_trail("Currencies", paths.russia_category("currencies"))
+        assert [name for _, name in trail] == ["Home", "Russia", "Currencies"]
+    finally:
+        reset_locale(token)
 
 
 def test_russia_indicator_trail():

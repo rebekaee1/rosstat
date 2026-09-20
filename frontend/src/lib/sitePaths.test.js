@@ -17,6 +17,10 @@ import {
   regionRatingHubPath,
   regionRatingPath,
   regionVsPath,
+  countryRegionIndicatorPath,
+  countryRegionMapPath,
+  countryRegionPath,
+  countryRegionsPath,
   russiaCategoriesPath,
   russiaIndicatorPath,
   todayPath,
@@ -33,6 +37,12 @@ describe('sitePaths', () => {
     expect(categoryPath('russia', 'prices')).toBe('/russia/category/prices');
     expect(russiaIndicatorPath('cpi')).toBe('/russia/indicator/cpi');
     expect(regionHubPath()).toBe('/russia/region');
+    expect(countryRegionsPath('united-states')).toBe('/united-states/regions');
+    expect(countryRegionPath('united-states', 'california')).toBe('/united-states/region/california');
+    expect(countryRegionIndicatorPath('united-states', 'california', 'unemployment-rate'))
+      .toBe('/united-states/region/california/unemployment-rate');
+    expect(countryRegionMapPath('united-states', 'unemployment-rate'))
+      .toBe('/united-states/region/map/unemployment-rate');
     expect(regionPath('tatarstan')).toBe('/russia/region/tatarstan');
     expect(regionIndicatorPath('tatarstan', 'naselenie')).toBe('/russia/region/tatarstan/naselenie');
     expect(regionMapPath('naselenie')).toBe('/russia/region/map/naselenie');

@@ -60,7 +60,9 @@ def russia_categories_trail() -> list[Crumb]:
 
 
 def russia_category_trail(category_name: str, category_path: str) -> list[Crumb]:
-    return trail(home(), russia(), russia_categories(), (category_path, category_name))
+    # Хаб /russia/category остаётся живой страницей, но не уровнем крошек:
+    # как у мировой карточки, трейл страны не вставляет «Категории».
+    return trail(home(), russia(), (category_path, category_name))
 
 
 def russia_indicator_trail(
@@ -203,6 +205,50 @@ def demographics_trail() -> list[Crumb]:
 
 def world_country_trail(country_name: str, country_path: str) -> list[Crumb]:
     return trail(home(), (country_path, country_name))
+
+
+def world_subnational_hub_trail(
+    country_name: str,
+    country_path: str,
+    kind_plural: str,
+    hub_path: str,
+) -> list[Crumb]:
+    return trail(home(), (country_path, country_name), (hub_path, kind_plural))
+
+
+def world_subnational_region_trail(
+    country_name: str,
+    country_path: str,
+    kind_plural: str,
+    hub_path: str,
+    region_name: str,
+    region_path: str,
+) -> list[Crumb]:
+    return trail(
+        home(),
+        (country_path, country_name),
+        (hub_path, kind_plural),
+        (region_path, region_name),
+    )
+
+
+def world_subnational_indicator_trail(
+    country_name: str,
+    country_path: str,
+    kind_plural: str,
+    hub_path: str,
+    region_name: str,
+    region_path: str,
+    indicator_name: str,
+    indicator_path: str,
+) -> list[Crumb]:
+    return trail(
+        home(),
+        (country_path, country_name),
+        (hub_path, kind_plural),
+        (region_path, region_name),
+        (indicator_path, indicator_name),
+    )
 
 
 def world_indicator_trail(

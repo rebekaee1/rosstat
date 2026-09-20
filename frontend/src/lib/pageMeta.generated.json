@@ -198,9 +198,9 @@
     },
     "pages": {
       "about": {
-        "description": "Analytics platform for official economic data by country: charts, tables, comparisons, and forecasts. Russia has especially deep macro and regional coverage.",
+        "description": "Analytics platform for official economic data by country: charts, tables, comparisons, and forecasts from national statistical offices, central banks, Eurostat, and the IMF.",
         "h1": "About Forecast Economy",
-        "intro": "Forecast Economy is an analytics project for official economic statistics by country. We present official indicators in a comparable form: charts, tables, sources, analysis modes, and quality-checked forecasts. Coverage of Russia is especially deep.",
+        "intro": "Forecast Economy is an analytics project for official economic statistics by country. We present official indicators in a comparable form: charts, tables, sources, analysis modes, and quality-checked forecasts.",
         "path": "/about",
         "slug": "about",
         "title": "About Forecast Economy"
@@ -238,9 +238,9 @@
         "title": "Russia economic release calendar"
       },
       "compare": {
-        "description": "Compare country and Russian indicators on one chart: federal series, regions, and comparable indicators for other countries.",
+        "description": "Compare official country indicators on one chart: national series and comparable indicators from statistical offices and Eurostat.",
         "h1": "Compare indicators",
-        "intro": "First choose a country, then an indicator. For Russia, federal series and regional series are available. Two regions are compared in the regions section.",
+        "intro": "First choose a country, then an indicator. Series from national statistical offices and Eurostat can share a chart when they are comparable.",
         "path": "/compare",
         "slug": "compare",
         "title": "Compare indicators"
@@ -254,15 +254,15 @@
         "title": "Age structure of Russia's population"
       },
       "home": {
-        "description": "Official macroeconomic indicators for countries, Russia, and its regions: charts, tables, comparisons, and forecasts from statistical agencies and central banks.",
+        "description": "Official macroeconomic indicators from national statistical offices, central banks, Eurostat, and the IMF: charts, tables, comparisons, and forecasts.",
         "h1": "Official macroeconomic indicators in one place",
-        "intro": "Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, Eurostat, and the IMF. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Coverage of Russia is especially deep. Viewing is open to everyone; downloads require free registration.",
+        "intro": "Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, Eurostat, and the IMF. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.",
         "path": "/",
         "slug": "home",
-        "title": "Forecast Economy — macroeconomic indicators for countries and Russia"
+        "title": "Forecast Economy — official macroeconomic indicators by country"
       },
       "methodology": {
-        "description": "How forecasts of economic indicators for Russia and other countries are built: series preparation, historical validation, statistical models, intervals, updates, and limitations.",
+        "description": "How forecasts of economic indicators are built: series preparation, historical validation, statistical models, intervals, updates, and limitations.",
         "h1": "Forecast methodology",
         "intro": "Every forecast on Forecast Economy is produced by a statistical model trained on the official historical series of the indicator. We do not fit results to expectations or add expert assumptions: the forecast is determined by the source data and the algorithm. Below is the full calculation path — from series preparation to the confidence interval — and the indicators we deliberately do not forecast.",
         "path": "/methodology",

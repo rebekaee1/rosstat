@@ -11,7 +11,7 @@ import { getSiteOrigin } from './siteOrigin';
 // 2026-04-29 «страницы добавляются и удаляются» в Webmaster.
 const KEYWORDS = {
   ru: 'экономика России, макроэкономические данные, Росстат, Банк России, ВВП, инфляция, ставки, валюты',
-  en: 'Russia economy, macroeconomic data, Rosstat, Bank of Russia, GDP, inflation, interest rates, currencies',
+  en: 'macroeconomic indicators, official statistics, GDP, inflation, unemployment, interest rates, Eurostat, IMF',
 };
 
 function setMeta(name, content) {

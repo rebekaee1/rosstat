@@ -6,11 +6,11 @@
 const LABELS_EN = {
   'На конец периода': 'Period end',
   'Средняя за период': 'Period average',
-  'К прошлому периоду': 'Vs previous period',
-  'К году': 'Year on year',
-  'К соотв. периоду пред. года': 'Vs same period previous year',
+  'К прошлому периоду': 'Over previous period',
+  'К году': 'Year over year',
+  'К соотв. периоду пред. года': 'Over same period previous year',
   'Г/г': 'YoY',
-  'Год к году': 'Year on year',
+  'Год к году': 'Year over year',
   'Кв/Кв': 'QoQ',
   'Кв/кв': 'QoQ',
   'М/м': 'MoM',
@@ -63,7 +63,7 @@ const LABELS_EN = {
   'Месячные': 'Monthly',
   'Квартальные': 'Quarterly',
   'Годовые': 'Annual',
-  'К прошлому году': 'Vs previous year',
+  'К прошлому году': 'Over previous year',
   'Значение': 'Value',
 };
 

@@ -426,8 +426,8 @@ def _site_json_ld() -> dict:
                 "url": origin,
                 "name": "Forecast Economy",
                 "description": (
-                    "Analytical platform for official economic data on Russia, "
-                    "85 regions and available countries: charts, tables, comparisons and forecasts."
+                    "Analytical platform for official macroeconomic statistics by country: "
+                    "charts, tables, comparisons and forecasts."
                     if en
                     else (
                         "Аналитическая платформа официальных экономических данных России, "
@@ -465,8 +465,8 @@ DEFAULT_KEYWORDS = (
     "ВВП, инфляция, ставки, валюты"
 )
 DEFAULT_KEYWORDS_EN = (
-    "Russia economy, macroeconomic data, Rosstat, Bank of Russia, "
-    "GDP, inflation, interest rates, FX"
+    "macroeconomic indicators, official statistics, GDP, inflation, "
+    "unemployment, interest rates, Eurostat, IMF"
 )
 
 
@@ -1115,17 +1115,66 @@ async def _home_country_links(db: AsyncSession) -> tuple[tuple[str, str], ...]:
     return await listed_country_links(db)
 
 
+# EN storefront: the home-country shelf is the United States (mirrors the EN
+# navbar/footer). Order = what an economist opens first. Codes are the curated
+# FRED passport (`world_national_core/us.yaml`); unlisted/missing rows are
+# skipped, so a stale passport degrades to a shorter list, never to 500.
+HOME_FLAGSHIP_CODES_EN: tuple[str, ...] = (
+    "us-gdp-real",
+    "us-cpi-all",
+    "us-unemployment-rate",
+    "us-nonfarm-payrolls",
+    "us-policy-rate",
+    "us-treasury-10y",
+    "us-retail-sales",
+    "us-industrial-production",
+    "us-trade-balance",
+    "us-housing-starts",
+)
+HOME_COUNTRY_SLUG_EN = "united-states"
+
+
+async def _home_flagship_links_en(db: AsyncSession) -> tuple[tuple[str, str], ...]:
+    """US headline rows for the EN home SSR (links + JSON-LD ItemList)."""
+    from app.models import WorldCountry, WorldIndicator
+
+    stmt = (
+        select(WorldIndicator.code, WorldIndicator.name_en, WorldIndicator.name_ru)
+        .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
+        .where(
+            WorldCountry.slug == HOME_COUNTRY_SLUG_EN,
+            WorldIndicator.code.in_(HOME_FLAGSHIP_CODES_EN),
+            WorldIndicator.is_listed.is_(True),
+        )
+    )
+    rows = {code: (name_en, name_ru) for code, name_en, name_ru in (await db.execute(stmt)).all()}
+    out: list[tuple[str, str]] = []
+    for code in HOME_FLAGSHIP_CODES_EN:
+        if code not in rows:
+            continue
+        name_en, name_ru = rows[code]
+        name = (name_en or "").strip() or (name_ru or "").strip()
+        if name:
+            out.append((paths.indicator(HOME_COUNTRY_SLUG_EN, code), name))
+    return tuple(out)
+
+
 async def render_home_html(db: AsyncSession) -> str:
-    from app.services.locale import in_language
+    from app.services.locale import get_locale, in_language
     from app.services.seo_i18n import get_page_seo, home_template
 
     flagships = await _indicators_by_codes(db, FLAGSHIP_CODES)
     from app.services.i18n_display import public_name
 
-    flagship_links = tuple(
-        (paths.russia_indicator(ind.code), public_name(ind.name, ind.name_en))
-        for ind in flagships
-    )
+    if get_locale() == "en":
+        # International storefront: no Russia-first shelf in the visible body
+        # or in the ItemList — the EN home country is the United States.
+        flagship_links = await _home_flagship_links_en(db)
+    else:
+        flagship_links = tuple(
+            (paths.russia_indicator(ind.code), public_name(ind.name, ind.name_en))
+            for ind in flagships
+        )
     # Каталог стран переехал с отдельной витрины на главную — её серверная
     # копия обязана держать эти ссылки, иначе карточки стран теряют
     # внутреннюю перелинковку.
@@ -1189,10 +1238,10 @@ async def render_home_html(db: AsyncSession) -> str:
                 {
                     "@type": "ListItem",
                     "position": index + 1,
-                    "name": public_name(ind.name, ind.name_en),
-                    "url": _absolute(paths.russia_indicator(ind.code)),
+                    "name": name,
+                    "url": _absolute(href),
                 }
-                for index, ind in enumerate(flagships)
+                for index, (href, name) in enumerate(flagship_links)
             ],
         },
     ]
@@ -1396,6 +1445,7 @@ async def render_indicator_html(
         translate_source,
     )
     from app.services.display import localize_unit
+    from app.services.index_policy import MODE_CANONICAL
 
     q = await db.execute(select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True)))
     indicator = q.scalar_one_or_none()
@@ -1421,6 +1471,13 @@ async def render_indicator_html(
     source_label = overlay.get("source") or translate_source(indicator.source, loc) or indicator.source
 
     family = FAMILY_BY_BASE.get(code)
+    # ?mode= не каноничен (INDEX_POLICY.MODE_CANONICAL=False) и не в sitemap.
+    # SSR title/description/OG/JSON-LD и видимые значения обязаны совпадать
+    # с канонической карточкой: иначе Google отдаёт дельту режима
+    # («−4,62 п.п. за год») как «актуальное значение» показателя.
+    # Режим остаётся в SPA после гидратации query-string.
+    if not MODE_CANONICAL:
+        mode = None
     resolved_mode = resolve_view_mode(code, mode) if family else None
     data_code = data_indicator_code(code, mode) if family else code
     data_indicator = indicator
@@ -1525,7 +1582,7 @@ async def render_indicator_html(
     # ?mode= не каноничен: INDEX_POLICY. Canonical всегда базовый URL карточки.
     # OG-картинка и видимый график — код карточки (URL), не sibling-режима:
     # /og/{base}.png всегда существует; /og/{base}-yoy.png на проде часто 404
-    # (unlisted derived ещё без превью). Смысл режима остаётся в title/Dataset.
+    # (unlisted derived ещё без превью). Мета и Dataset — как у канона.
     og_path = _absolute(paths.og_indicator(paths.RUSSIA, indicator.code))
     if forecast_ssr:
         image_name = (
@@ -2391,6 +2448,50 @@ async def _related_indicators(db: AsyncSession, indicator: Indicator):
     return _sort_indicators_for_seo(list(result.scalars().all()), category)[:8]
 
 
+_SSR_VS_COUNTRY_LABELS = {
+    "germany": ("Германия", "Germany"),
+    "united-states": ("США", "United States"),
+    "france": ("Франция", "France"),
+    "china": ("Китай", "China"),
+    "japan": ("Япония", "Japan"),
+    "russia": ("Россия", "Russia"),
+}
+
+
+def _russia_world_compare_ssr_section(indicator_code: str, loc: str) -> str:
+    """Перелинковка карточки России на рейтинг концепта и пары стран."""
+    from app.services.world_compare import russia_world_compare_ssr_links
+
+    links = russia_world_compare_ssr_links(indicator_code)
+    if not links:
+        return ""
+    en = loc == "en"
+    heading = "Compare countries" if en else "Сравнение стран"
+    items: list[tuple[str, str]] = []
+    for href, kind in links:
+        if kind == "rating":
+            items.append((
+                href,
+                "Country ranking" if en else "Рейтинг стран",
+            ))
+            continue
+        # /germany-vs-russia/hicp-index
+        pair = href.strip("/").split("/")[0] if href else ""
+        left, _, right = pair.partition("-vs-")
+        names = []
+        for slug in (left, right):
+            ru_en = _SSR_VS_COUNTRY_LABELS.get(slug)
+            if ru_en:
+                names.append(ru_en[1] if en else ru_en[0])
+        if len(names) == 2:
+            items.append((href, f"{names[0]} and {names[1]}" if en else f"{names[0]} и {names[1]}"))
+    if not items:
+        return ""
+    return (
+        f"<section><h2>{escape(heading)}</h2>{_links_list(tuple(items))}</section>\n"
+    )
+
+
 def _indicator_body(
     indicator: Indicator,
     category: CategorySeo | None,
@@ -2606,6 +2707,7 @@ def _indicator_body(
         months_section = (
             f"<section><h2>{escape(months_h2_tpl)}</h2>{month_links}</section>\n"
         )
+    world_compare_section = _russia_world_compare_ssr_section(indicator.code, loc)
     chart_caption = chart_caption_tpl.format(name=name, source=src)
     return f"""<main class="seo-page">
 {_breadcrumbs_nav(crumb_trail)}
@@ -2624,5 +2726,5 @@ def _indicator_body(
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p></section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
-{years_section}{months_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
+{years_section}{months_section}{world_compare_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
 </main>"""

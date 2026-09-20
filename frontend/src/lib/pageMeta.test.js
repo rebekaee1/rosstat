@@ -32,7 +32,7 @@ describe('pageMeta single source', () => {
   it('home and category EN titles come from PAGE_META_EN (preview_locale path)', () => {
     const homeEn = getPageSeo('home', 'en');
     expect(homeEn.title).toBe(
-      'Forecast Economy — macroeconomic indicators for countries and Russia',
+      'Forecast Economy — official macroeconomic indicators by country',
     );
     expect(homeEn.title).not.toMatch(/[А-Яа-яЁё]/);
     expect(homeEn.description).not.toMatch(/[А-Яа-яЁё]/);

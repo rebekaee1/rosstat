@@ -60,17 +60,17 @@ export function getCpiChartTitleEn(chartMode, code, urlMode = null) {
       const period = mode === 'inflation-quarter' ? ' (by quarter)'
         : mode === 'inflation-year' ? ' (by year)' : '';
       return code === 'cpi'
-        ? `Inflation vs same period previous year (all goods and services, %)${period}`
-        : `Inflation vs same period previous year (${s.prices}, %)${period}`;
+        ? `Inflation over same period previous year (all goods and services, %)${period}`
+        : `Inflation over same period previous year (${s.prices}, %)${period}`;
     }
     case 'quarterly':
       return `Quarterly inflation — ${s.prices} (%)`;
     case 'annual':
-      return `Year-on-year change (Dec–Dec) — ${s.prices} (%)`;
+      return `Year-over-year change (Dec–Dec) — ${s.prices} (%)`;
     case 'period-monthly':
       return `Month growth from weekly readings — ${s.prices} (%)`;
     case 'yoy':
-      return `Year on year — ${s.prices} (%)`;
+      return `Year over year — ${s.prices} (%)`;
     case 'qoq':
       return `Quarter on quarter — ${s.prices} (%)`;
     case 'weekly':
@@ -102,17 +102,17 @@ export function getCpiTableTitleEn(chartMode, code, urlMode = null) {
       const period = mode === 'inflation-quarter' ? ' (by quarter)'
         : mode === 'inflation-year' ? ' (by year)' : '';
       return code === 'cpi'
-        ? `Historical data — inflation vs same period previous year (all goods and services)${period}`
-        : `Historical data — inflation vs same period previous year (${s.prices})${period}`;
+        ? `Historical data — inflation over same period previous year (all goods and services)${period}`
+        : `Historical data — inflation over same period previous year (${s.prices})${period}`;
     }
     case 'quarterly':
       return `Historical data — quarterly inflation (${s.prices})`;
     case 'annual':
-      return `Historical data — year-on-year change, Dec–Dec (${s.prices})`;
+      return `Historical data — year-over-year change, Dec–Dec (${s.prices})`;
     case 'period-monthly':
       return `Historical data — month growth from weekly readings (${s.prices})`;
     case 'yoy':
-      return `Historical data — year on year (${s.prices})`;
+      return `Historical data — year over year (${s.prices})`;
     case 'qoq':
       return `Historical data — quarter on quarter (${s.prices})`;
     case 'weekly':
@@ -137,7 +137,7 @@ const ANNUAL_INFLATION_FORMULA =
   '∏ᵢ₌₁¹² (CPIᵢ / 100) × 100 − 100';
 
 function inflationFootnote(ipcFoot) {
-  return `CPIᵢ — ${ipcFoot} for month i (% vs previous month).`;
+  return `CPIᵢ — ${ipcFoot} for month i (% over previous month).`;
 }
 
 function buildInflation(code, period = null) {
@@ -145,8 +145,8 @@ function buildInflation(code, period = null) {
   if (period === 'quarter') {
     return {
       description:
-        `Inflation versus the same quarter a year earlier: by how many percent ${s.prices} `
-        + 'changed relative to that quarter twelve months ago. The monthly year-on-year series '
+        `Inflation over the same quarter a year earlier: by how many percent ${s.prices} `
+        + 'changed relative to that quarter twelve months ago. The monthly year-over-year series '
         + 'is shown at quarterly frequency — the reading at each quarter-end.',
       methodology:
         `Formula (quarter-end): ${ANNUAL_INFLATION_FORMULA}. ${inflationFootnote(s.ipcFoot)}`,
@@ -156,14 +156,14 @@ function buildInflation(code, period = null) {
     return {
       description:
         `Calendar-year inflation: by how many percent ${s.prices} changed by year-end `
-        + 'versus the previous year-end (December to December). One point per completed year.',
+        + 'over the previous year-end (December to December). One point per completed year.',
       methodology:
         `Formula (December to December): ${ANNUAL_INFLATION_FORMULA}. ${inflationFootnote(s.ipcFoot)}`,
     };
   }
   return {
     description:
-      `Inflation versus the same period a year earlier: by how many percent ${s.prices} `
+      `Inflation over the same period a year earlier: by how many percent ${s.prices} `
       + 'changed relative to the same month last year. Computed as the product of twelve '
       + `consecutive ${s.ipcMonthly} divided by 100, minus 100%.`,
     methodology:
@@ -219,7 +219,7 @@ function buildStepMonthly(code) {
   const s = cpiSlice(code);
   return {
     description:
-      `Month-on-month change — by how many percent ${s.prices} moved versus the previous `
+      `Month-on-month change — by how many percent ${s.prices} moved over the previous `
       + 'month. Positive values are increases; negative values are declines.',
     methodology:
       `Formula: CPIᵢ − 100, where CPIᵢ is the ${s.ipcFoot} for month i `
@@ -232,7 +232,7 @@ function buildStepWeekly(code) {
   const weekly = WEEKLY_BY_CODE[code] ?? WEEKLY;
   return {
     description:
-      `Week-on-week change — by how many percent ${s.prices} moved versus the previous week. `
+      `Week-on-week change — by how many percent ${s.prices} moved over the previous week. `
       + 'Positive values are increases; negative values are declines.',
     methodology: weekly.methodology,
   };
@@ -269,12 +269,12 @@ function buildYoy(code) {
   const s = cpiSlice(code);
   return {
     description:
-      `Year-on-year change — by how many percent ${s.prices} moved versus the previous year. `
+      `Year-over-year change — by how many percent ${s.prices} moved over the previous year. `
       + 'Positive values are increases; negative values are declines. Computed on calendar years '
       + '— December to December, one point per completed year.',
     methodology:
       `Formula (calendar year, January–December): ${ANNUAL_INFLATION_FORMULA}. `
-      + `CPIᵢ — ${s.ipcFoot} for month i of the year (% vs previous month). `
+      + `CPIᵢ — ${s.ipcFoot} for month i of the year (% over previous month). `
       + 'Forecast uses the same product on monthly forecast points.',
   };
 }
@@ -283,7 +283,7 @@ function buildQoq(code) {
   const s = cpiSlice(code);
   return {
     description:
-      `Quarter-on-quarter change — by how many percent ${s.prices} moved versus the previous `
+      `Quarter-on-quarter change — by how many percent ${s.prices} moved over the previous `
       + 'quarter. Positive values are increases; negative values are declines.',
     methodology:
       'Formula at quarter ends: (LEVEL end Q / LEVEL end Q−1 − 1) × 100, '
@@ -307,7 +307,7 @@ function buildIndex(code, bucket = null) {
         + `across ${bucket === 'year' ? 'years' : 'quarters'} without monthly noise.`,
       methodology:
         `Monthly cumulative index INDEXₜ = 100 × (CPI₁/100) × … × (CPIₜ/100), where CPIᵢ is the `
-        + `monthly ${s.ipcFoot} vs the previous month. Then take the last value of each completed `
+        + `monthly ${s.ipcFoot} over the previous month. Then take the last value of each completed `
         + `${periodWord}. History covers the full series from 1991; readings before January 2000 `
         + 'are well below 100 — prices then were far below the base. Forecast continues the '
         + `cumulative curve from the monthly forecast to each completed ${periodWord} on the horizon.`,
@@ -320,7 +320,7 @@ function buildIndex(code, bucket = null) {
       + 'have evolved since 1991.',
     methodology:
       `Formula: INDEXₜ = 100 × (CPI₁/100) × (CPI₂/100) × … × (CPIₜ/100), where CPIᵢ is the `
-      + `monthly ${s.ipcFoot} vs the previous month. History from 1991; pre-2000 readings are `
+      + `monthly ${s.ipcFoot} over the previous month. History from 1991; pre-2000 readings are `
       + 'well below 100. Forecast continues the cumulative curve from the 12-month forecast of '
       + `${s.ipcMonthly}.`,
   };
@@ -381,9 +381,9 @@ export function getHousingChartTitleEn(chartMode, code, safeViewMode) {
   const s = housingSlice(code);
   switch (chartMode) {
     case 'yoy':
-      return `Vs same period previous year — ${s.marketShort} (%)`;
+      return `Over same period previous year — ${s.marketShort} (%)`;
     case 'annual':
-      return `Year on year — ${s.marketShort} (%)`;
+      return `Year over year — ${s.marketShort} (%)`;
     case 'qoq':
       return `Quarter on quarter — ${s.marketShort} (%)`;
     case 'index':
@@ -397,9 +397,9 @@ export function getHousingTableTitleEn(chartMode, code, safeViewMode) {
   const s = housingSlice(code);
   switch (chartMode) {
     case 'yoy':
-      return `Historical data — vs same period previous year (${s.marketGen})`;
+      return `Historical data — over same period previous year (${s.marketGen})`;
     case 'annual':
-      return `Historical data — year on year by calendar year (${s.marketGen})`;
+      return `Historical data — year over year by calendar year (${s.marketGen})`;
     case 'qoq':
       return `Historical data — quarter on quarter (${s.marketGen})`;
     case 'index':
@@ -415,11 +415,11 @@ function housingYoy(code) {
   const s = housingSlice(code);
   return {
     description:
-      `Pace of change in prices of ${s.marketWhat} versus the same quarter a year earlier, `
+      `Pace of change in prices of ${s.marketWhat} over the same quarter a year earlier, `
       + 'in percent. Four points a year — each quarter compared with the matching quarter '
       + 'twelve months before.',
     methodology:
-      'Mode “vs same period previous year”: how much the quarterly price index for '
+      'Mode “over same period previous year”: how much the quarterly price index for '
       + `${s.marketGen} changed relative to the same quarter last year. Built from the `
       + 'cumulative index with base 2010 = 100, updated quarterly by Rosstat. Positive '
       + 'values are price increases; negative values are declines.',
@@ -430,10 +430,10 @@ function housingAnnual(code) {
   const s = housingSlice(code);
   return {
     description:
-      `Calendar-year change in prices of ${s.marketWhat}: the year-end price level versus `
+      `Calendar-year change in prices of ${s.marketWhat}: the year-end price level over `
       + 'the previous year-end, in percent. One point per completed year.',
     methodology:
-      'Mode “period-on-period — year on year”: annual price growth for '
+      'Mode “period-on-period — year over year”: annual price growth for '
       + `${s.marketGen}, computed as the year-end index divided by the previous year-end. `
       + 'Unlike the quarterly same-period comparison (four points a year), this view has '
       + 'one point per year. Positive values are increases; negative values are declines.',
@@ -444,10 +444,10 @@ function housingQoq(code) {
   const s = housingSlice(code);
   return {
     description:
-      `Pace of change in prices of ${s.marketWhat} versus the previous quarter `
+      `Pace of change in prices of ${s.marketWhat} over the previous quarter `
       + '(quarter on quarter), in percent.',
     methodology:
-      'Mode “period-on-period — quarter on quarter”: growth versus the immediately preceding '
+      'Mode “period-on-period — quarter on quarter”: growth over the immediately preceding '
       + `quarter. Rosstat’s quarterly growth rates for ${s.marketGen} are used to rebuild the `
       + `quarterly index. Sample: ${s.sample}. The chart shows the reconstructed quarterly path `
       + 'aligned with the official publication.',
@@ -508,13 +508,13 @@ function ppiYoyPeriodSuffix(safeViewMode) {
 export function getPpiChartTitleEn(chartMode, safeViewMode) {
   switch (chartMode) {
     case 'yoy':
-      return `Inflation vs same period previous year — producer prices (%)${ppiYoyPeriodSuffix(safeViewMode)}`;
+      return `Inflation over same period previous year — producer prices (%)${ppiYoyPeriodSuffix(safeViewMode)}`;
     case 'mom':
       return 'Month on month — producer price index (%)';
     case 'qoq':
       return 'Quarter on quarter — producer price index (%)';
     case 'annual':
-      return 'Year-on-year change — producer prices (%)';
+      return 'Year-over-year change — producer prices (%)';
     case 'index':
       return `Producer price index (2010 = 100)${ppiIndexPeriodSuffix(safeViewMode)}`;
     default:
@@ -525,13 +525,13 @@ export function getPpiChartTitleEn(chartMode, safeViewMode) {
 export function getPpiTableTitleEn(chartMode, safeViewMode) {
   switch (chartMode) {
     case 'yoy':
-      return `Historical data — inflation vs same period previous year (%)${ppiYoyPeriodSuffix(safeViewMode)}`;
+      return `Historical data — inflation over same period previous year (%)${ppiYoyPeriodSuffix(safeViewMode)}`;
     case 'mom':
       return 'Historical data — month on month (%)';
     case 'qoq':
       return 'Historical data — quarter on quarter (%)';
     case 'annual':
-      return 'Historical data — year-on-year change (%)';
+      return 'Historical data — year-over-year change (%)';
     case 'index': {
       if (safeViewMode === 'index-quarterly') return 'Historical data — index at quarter-end';
       if (safeViewMode === 'index-annual') return 'Historical data — index at year-end';
@@ -545,12 +545,12 @@ export function getPpiTableTitleEn(chartMode, safeViewMode) {
 function ppiYoy() {
   return {
     description:
-      'Producer-price inflation versus the same period a year earlier: by how many percent '
+      'Producer-price inflation over the same period a year earlier: by how many percent '
       + 'wholesale prices of industrial products changed relative to the same month last year. '
       + 'The reading is recomputed every month, so the line shows the current annual pace on '
       + 'each date, not a calendar-year total.',
     methodology:
-      'Percent change in industrial producer prices versus the same month twelve months earlier. '
+      'Percent change in industrial producer prices over the same month twelve months earlier. '
       + 'Monthly series. Source: Rosstat. Covers mining, manufacturing, energy and water supply.',
   };
 }
@@ -558,12 +558,12 @@ function ppiYoy() {
 function ppiYoyQuarter() {
   return {
     description:
-      'Producer-price inflation versus the same quarter a year earlier: by how many percent '
+      'Producer-price inflation over the same quarter a year earlier: by how many percent '
       + 'wholesale prices changed relative to that quarter twelve months ago. The monthly '
-      + 'year-on-year series is shown at quarterly frequency — the reading at each quarter-end.',
+      + 'year-over-year series is shown at quarterly frequency — the reading at each quarter-end.',
     methodology:
-      'Percent change in industrial producer prices versus the same quarter a year earlier. '
-      + 'Takes the last month of each completed quarter from the monthly year-on-year path. '
+      'Percent change in industrial producer prices over the same quarter a year earlier. '
+      + 'Takes the last month of each completed quarter from the monthly year-over-year path. '
       + 'Source: Rosstat.',
   };
 }
@@ -572,7 +572,7 @@ function ppiYoyYear() {
   return {
     description:
       'Calendar-year producer-price inflation: by how many percent wholesale prices changed '
-      + 'by year-end versus the previous year-end (December to December). One point per '
+      + 'by year-end over the previous year-end (December to December). One point per '
       + 'completed year.',
     methodology:
       'December producer price level divided by the previous December, in percent. '
@@ -583,10 +583,10 @@ function ppiYoyYear() {
 function ppiMom() {
   return {
     description:
-      'Month-on-month change — by how many percent producer prices moved versus the previous '
+      'Month-on-month change — by how many percent producer prices moved over the previous '
       + 'month. Positive values are increases; negative values are declines.',
     methodology:
-      'Percent change in wholesale industrial prices versus the preceding month. Monthly series. '
+      'Percent change in wholesale industrial prices over the preceding month. Monthly series. '
       + 'Source: Rosstat. Month-on-month changes accumulate into the producer price index level.',
   };
 }
@@ -594,10 +594,10 @@ function ppiMom() {
 function ppiQoq() {
   return {
     description:
-      'Quarter-on-quarter change — by how many percent producer prices moved versus the previous '
+      'Quarter-on-quarter change — by how many percent producer prices moved over the previous '
       + 'quarter. Positive values are increases; negative values are declines.',
     methodology:
-      'Producer price level is taken at quarter-end, then the percent change versus the previous '
+      'Producer price level is taken at quarter-end, then the percent change over the previous '
       + 'quarter is computed. Source: Rosstat.',
   };
 }
@@ -605,7 +605,7 @@ function ppiQoq() {
 function ppiAnnual() {
   return {
     description:
-      'Year-on-year change — by how many percent producer prices moved versus the previous year. '
+      'Year-over-year change — by how many percent producer prices moved over the previous year. '
       + 'Positive values are increases; negative values are declines. Calendar years — December '
       + 'to December, one point per completed year.',
     methodology:
@@ -846,7 +846,7 @@ export function getCbrTermSliceViewModeContentEn({ chartMode = 'level', code = '
       `Chart shows the weighted-average annual rate ${subject} `
       + `${m.phrase}: ${depositNote}`
       + 'the reporting-month value from bank reporting. '
-      + 'This is a rate level, not the change versus the previous month.',
+      + 'This is a rate level, not the change over the previous month.',
     methodology:
       `Mode “rate level” for the ${m.variant}. The Bank of Russia publishes `
       + 'weighted-average rates by maturity; the term is chosen with the switcher above the '

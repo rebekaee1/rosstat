@@ -31,14 +31,14 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function renderShell(route = '/') {
+function renderShell(route = '/', locale) {
   mockApiGet([['/auth/me', { user: null }]]);
   return renderPage(
     <>
       <Navbar />
       <Footer />
     </>,
-    { path: '*', route },
+    { path: '*', route, locale },
   );
 }
 
@@ -156,6 +156,9 @@ describe('Navbar H-4 menu', () => {
       // считает по полному массиву; сам пункт ни на что не указывает).
       expect(within(nav).queryAllByRole('link', { name: 'Home' }).length).toBeGreaterThan(0);
       expect(within(nav).queryByRole('link', { name: 'Country rankings' })).toBeTruthy();
+      expect(within(nav).queryByRole('link', { name: /United States|USA/ })).toBeTruthy();
+      const usLinks = within(nav).queryAllByRole('link', { name: /United States|USA/ });
+      expect(usLinks.every((a) => a.getAttribute('href') === '/united-states')).toBe(true);
       for (const link of within(nav).queryAllByRole('link')) {
         expect(link.getAttribute('aria-current')).toBeNull();
       }
@@ -173,6 +176,42 @@ describe('Navbar H-4 menu', () => {
       reset.searchParams.delete('preview_locale');
       window.history.pushState({}, '', reset.toString());
     }
+  });
+
+  it('EN: пункт United States в шапке, колонка United States в футере, без Росстата в Sources', () => {
+    renderShell('/', 'en');
+
+    const nav = screen.getByRole('navigation');
+    expect(within(nav).queryByRole('link', { name: 'Россия' })).toBeNull();
+    expect(within(nav).queryByRole('link', { name: 'Russia' })).toBeNull();
+    const usNav = within(nav).getAllByRole('link', { name: /United States|USA/ });
+    expect(usNav[0].getAttribute('href')).toBe('/united-states');
+
+    const footer = screen.getByRole('contentinfo');
+    expect(within(footer).getByRole('heading', { name: 'United States' })).toBeTruthy();
+    expect(within(footer).getByRole('link', { name: 'Unemployment rate' }).getAttribute('href'))
+      .toBe('/united-states/indicator/us-unemployment-rate');
+    expect(within(footer).getByRole('link', { name: 'Consumer Price Index' }).getAttribute('href'))
+      .toBe('/united-states/indicator/us-cpi-all');
+    expect(within(footer).getByRole('link', { name: 'Real GDP' }).getAttribute('href'))
+      .toBe('/united-states/indicator/us-gdp-real');
+    expect(within(footer).getByRole('link', { name: 'Federal funds rate' }).getAttribute('href'))
+      .toBe('/united-states/indicator/us-policy-rate');
+    expect(within(footer).getByRole('link', { name: 'All countries' }).getAttribute('href'))
+      .toBe('/#countries');
+    expect(within(footer).queryByRole('link', { name: 'Rosstat' })).toBeNull();
+    expect(within(footer).queryByRole('link', { name: 'Bank of Russia' })).toBeNull();
+    expect(within(footer).getByRole('link', { name: 'Eurostat' })).toBeTruthy();
+    expect(within(footer).getByRole('link', { name: 'U.S. Bureau of Labor Statistics' })).toBeTruthy();
+    expect(footer.textContent).not.toMatch(/especially deep/i);
+  });
+
+  it('EN: на /united-states подсвечен United States', () => {
+    renderShell('/united-states', 'en');
+
+    const nav = screen.getByRole('navigation');
+    const us = within(nav).getAllByRole('link', { name: /United States|USA/ })[0];
+    expect(us.getAttribute('aria-current')).toBe('page');
   });
 
   it('RU: в header флаг текущего языка, список — оба языка, English вызывает switchLanguage(en)', () => {
@@ -218,7 +257,9 @@ describe('resolveActiveNavId', () => {
     expect(resolveActiveNavId('/russia/region/moskva')).toBe('russia');
     expect(resolveActiveNavId('/compare')).toBe('compare');
     expect(resolveActiveNavId('/')).toBe('home');
-    // Карточка страны — не пункт меню: подсветки быть не должно.
+    expect(resolveActiveNavId('/united-states')).toBe('united-states');
+    expect(resolveActiveNavId('/united-states/indicator/us-cpi-all')).toBe('united-states');
+    // Другая страна — не пункт меню.
     expect(resolveActiveNavId('/sweden')).toBeNull();
   });
 

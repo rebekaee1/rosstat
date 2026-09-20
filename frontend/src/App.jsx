@@ -69,6 +69,9 @@ const RegionIndicatorPage = lazy(() => import('./pages/RegionIndicatorPage'));
 const WorldRatingPage = lazy(() => import('./pages/WorldRatingPage'));
 const WorldCountry = lazy(() => import('./pages/WorldCountry'));
 const WorldIndicatorPage = lazy(() => import('./pages/WorldIndicatorPage'));
+const WorldRegionsHome = lazy(() => import('./pages/WorldRegionsHome'));
+const WorldRegionProfile = lazy(() => import('./pages/WorldRegionProfile'));
+const WorldRegionIndicatorPage = lazy(() => import('./pages/WorldRegionIndicatorPage'));
 const RussiaHome = lazy(() => import('./pages/RussiaHome'));
 const TodayHub = lazy(() => import('./pages/TodayHub'));
 const TodayIndicatorPage = lazy(() => import('./pages/TodayIndicatorPage'));
@@ -299,6 +302,12 @@ function AppRoutes() {
             <Route path="/russia/region-rating" element={<RegionRatingsHub />} />
             <Route path="/russia/region-rating/:code" element={<RegionRatingPage />} />
             <Route path="/russia/region-vs/:pair" element={<RegionComparePage />} />
+
+            {/* Субнациональные регионы других стран — до /:countrySlug */}
+            <Route path="/:countrySlug/regions" element={<WorldRegionsHome />} />
+            <Route path="/:countrySlug/region/map/:code" element={<WorldRegionsHome />} />
+            <Route path="/:countrySlug/region/:slug/:code" element={<WorldRegionIndicatorPage />} />
+            <Route path="/:countrySlug/region/:slug" element={<WorldRegionProfile />} />
 
             {/* Другие страны: /{slug}/indicator/{code} и /{slug} */}
             <Route path="/:countrySlug/indicator/:code/:year" element={<WorldIndicatorRoute />} />
