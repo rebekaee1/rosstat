@@ -5033,6 +5033,27 @@ for _ind in INDICATORS:
         _cfg["forecast_strategy"] = "monthly_auto"
 
 
+# --- Годовой прогноз (Прогноз_годовых_данных.ipynb, руководитель, 2026-09) ---
+#
+# Та же семья multi-window OLS, что monthly_auto: ADF-трансформ + окна
+# k∈[1, max(n//15, 2)), лаги по горизонту m≤4. Не включаем WEO (проекции МВФ)
+# и годовые агрегаты дневных/недельных биржевых рядов.
+ANNUAL_AUTO_FORECAST_CODES = {
+    "population", "population-natural-growth", "population-total-growth",
+    "population-migration", "births", "deaths", "birth-rate", "death-rate",
+    "working-age-population", "pop-under-working-age", "pop-over-working-age",
+    "pensioners", "depreciation-rate", "grad-students", "doctoral-students",
+    "rd-organizations", "rd-personnel", "innovation-activity",
+    "tech-innovation-share", "small-business-innovation",
+}
+
+for _ind in INDICATORS:
+    if _ind["code"] in ANNUAL_AUTO_FORECAST_CODES:
+        _cfg = _ind.setdefault("model_config_json", {})
+        _cfg["forecast_steps"] = 2
+        _cfg["forecast_strategy"] = "annual_auto"
+
+
 _SEED_HASH_KEY = "seed_schema_hash"
 
 

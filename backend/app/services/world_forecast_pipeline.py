@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import bump_namespaces
+from app.config import settings
 from app.data.world_forecast_policy import forecast_eligibility_for
 from app.database import async_session
 from app.models import (
@@ -19,7 +20,10 @@ from app.models import (
     WorldForecastValue,
     WorldIndicator,
 )
-from app.services.world_forecaster import train_quality_gated_world_forecast
+from app.services.world_forecaster import (
+    PUBLISHED_GATE_STATUSES,
+    train_quality_gated_world_forecast,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +35,7 @@ class WorldForecastRunSummary:
     failed: int = 0
     skipped: int = 0
     errors: int = 0
+    advisory: int = 0
 
 
 async def _deactivate_current(
@@ -82,6 +87,7 @@ async def retrain_world_indicator_forecast(
         horizon=eligibility.horizon,
         season=eligibility.season,
         strategy=eligibility.strategy,
+        strict=settings.world_forecast_gate_strict,
     )
 
     await _deactivate_current(db, indicator.id)
@@ -112,7 +118,7 @@ async def retrain_world_indicator_forecast(
         baseline_mase=gate.baseline_mase,
         origins=gate.origins,
         horizon=eligibility.horizon,
-        is_current=gate.status == "passed",
+        is_current=gate.status in PUBLISHED_GATE_STATUSES,
         created_at=datetime.now(timezone.utc).replace(tzinfo=None),
     )
     db.add(forecast)
@@ -130,14 +136,14 @@ async def retrain_world_indicator_forecast(
 
 
 async def world_forecast_job() -> WorldForecastRunSummary:
-    """Пересчитать все публичные M/Q primary-series; ошибки изолированы по ряду."""
+    """Пересчитать все публичные M/Q/A primary-series; ошибки изолированы по ряду."""
     async with async_session() as db:
         indicator_ids = list((
             await db.execute(
                 select(WorldIndicator.id)
                 .where(
                     WorldIndicator.is_listed.is_(True),
-                    WorldIndicator.frequency.in_(("monthly", "quarterly")),
+                    WorldIndicator.frequency.in_(("monthly", "quarterly", "annual")),
                 )
                 .order_by(WorldIndicator.id)
             )
@@ -149,6 +155,7 @@ async def world_forecast_job() -> WorldForecastRunSummary:
         "failed": 0,
         "skipped": 0,
         "errors": 0,
+        "advisory": 0,
     }
     changed = False
     for indicator_id in indicator_ids:
@@ -160,8 +167,8 @@ async def world_forecast_job() -> WorldForecastRunSummary:
                     continue
                 status = await retrain_world_indicator_forecast(db, indicator)
                 await db.commit()
-                counts[status] += 1
-                changed = changed or status in {"passed", "failed"}
+                counts[status] = counts.get(status, 0) + 1
+                changed = changed or status in {"passed", "failed", "advisory"}
         except Exception:  # noqa: BLE001 — один ряд не отменяет весь world run
             counts["errors"] += 1
             logger.exception("World forecast failed for indicator_id=%s", indicator_id)

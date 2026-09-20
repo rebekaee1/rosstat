@@ -10,6 +10,7 @@ from __future__ import annotations
 from seed_data import (
     INDICATORS,
     MONTHLY_AUTO_FORECAST_CODES,
+    ANNUAL_AUTO_FORECAST_CODES,
     _generated_sibling_codes,
 )
 from app.api.forecasts import DERIVED_CPI_FORECASTS
@@ -155,6 +156,10 @@ GENERIC_OLS_FORECAST_CODES: set[str] = {
 # стоявших с forecast_steps=0. Источник списка — seed_data.
 MONTHLY_AUTO_CODES = set(MONTHLY_AUTO_FORECAST_CODES)
 
+# Annual-Auto — порт Прогноз_годовых_данных.ipynb (демография/наука/износ).
+# WEO и годовые агрегаты биржи/крипты сюда не входят.
+ANNUAL_AUTO_CODES = set(ANNUAL_AUTO_FORECAST_CODES)
+
 # Generic-propagated — view-mode sibling-агрегаты (квартал/год/приросты/индекс),
 # сгенерированные из конфига view_model_families, чей базовый ряд forecastable:
 # прогноз протягивается через generic-pipeline (derived_from_source,
@@ -174,6 +179,7 @@ ALL_FORECAST_CODES = (
     | DERIVED_FROM_SOURCE_FORECAST_CODES
     | GENERIC_OLS_FORECAST_CODES
     | MONTHLY_AUTO_CODES
+    | ANNUAL_AUTO_CODES
     | GENERIC_PROPAGATED_FORECAST_CODES
 )
 
@@ -249,6 +255,35 @@ def test_monthly_auto_forecasts_have_named_strategy() -> None:
         )
         assert int(cfg.get("forecast_steps", 0) or 0) > 0, \
             f"{code} must have forecast_steps>0"
+
+
+def test_annual_auto_forecasts_have_named_strategy() -> None:
+    """Годовые ряды ноутбука руководителя: annual_auto, 2 шага, частота annual."""
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    for code in ANNUAL_AUTO_CODES:
+        assert code in by_code, f"{code} missing from seed_data.INDICATORS"
+        ind = by_code[code]
+        assert ind.get("frequency") == "annual", f"{code} must be annual"
+        cfg = ind["model_config_json"]
+        assert cfg.get("forecast_strategy") == "annual_auto", (
+            f"{code}: expected forecast_strategy='annual_auto', "
+            f"got '{cfg.get('forecast_strategy')}'"
+        )
+        assert int(cfg.get("forecast_steps", 0) or 0) == 2, \
+            f"{code} must have forecast_steps=2"
+
+
+def test_birth_rate_yoy_has_derived_forecast() -> None:
+    """Годовой Г/г рождаемости протягивается из annual_auto базы."""
+    by_code = {ind["code"]: ind for ind in INDICATORS}
+    base = by_code["birth-rate"]["model_config_json"]
+    assert base.get("forecast_strategy") == "annual_auto"
+    yoy = by_code["birth-rate-yoy"]["model_config_json"]
+    assert yoy.get("forecast_strategy") == "derived_from_source"
+    derived = yoy.get("derived_forecast") or {}
+    assert derived.get("source_code") == "birth-rate"
+    assert derived.get("operation") == "pipeline"
+    assert int(yoy.get("forecast_steps", 0) or 0) > 0
 
 
 def test_approved_notebook_forecasts_are_explicit_values() -> None:

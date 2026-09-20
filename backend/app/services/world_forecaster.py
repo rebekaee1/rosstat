@@ -1,10 +1,10 @@
-"""Единая авторская модель + строгий world quality gate.
+"""Единая авторская модель + world quality gate.
 
 Кандидат строится теми же зарегистрированными multi-window стратегиями, что
-используются для российских рядов: ``monthly_auto`` для месячных данных и
-``generic_quarterly``/``signed_quarterly`` для квартальных. World-контур
-добавляет rolling-origin проверку против seasonal-naive и публикует только
-ряды с MASE < 1 и доказанным выигрышем у ориентира.
+используются для российских рядов: ``monthly_auto`` / ``annual_auto`` и
+``generic_quarterly``/``signed_quarterly``. Rolling-origin MASE сохраняется
+в метаданных. По умолчанию гейт консультативный: технически успешный прогноз
+публикуется со статусом ``passed`` или ``advisory``.
 """
 
 from __future__ import annotations
@@ -17,6 +17,9 @@ from typing import Sequence
 
 from app.services.forecast_strategies import StrategyContext, resolve
 from app.services.forecaster import ForecastPoint, ForecastResult
+
+
+PUBLISHED_GATE_STATUSES: frozenset[str] = frozenset({"passed", "advisory"})
 
 
 @dataclass(frozen=True)
@@ -34,11 +37,29 @@ def _month_index(value: date) -> int:
     return value.year * 12 + value.month
 
 
-def _regular_cadence(dates: Sequence[date], step_months: int) -> bool:
-    return all(
-        _month_index(right) - _month_index(left) == step_months
-        for left, right in zip(dates, dates[1:])
-    )
+def _regular_cadence(
+    dates: Sequence[date],
+    step_months: int,
+    *,
+    max_missing: int = 2,
+) -> bool:
+    """Календарь с шагом ``step_months``.
+
+    Один-два пропущенных наблюдения (как дыра октября 2025 у FRED CPI
+    из-за паузы публикации) не считаем сломанным календарём. Дубли дат,
+    обратный порядок и шаг не кратный частоте — по-прежнему отказ.
+    """
+    missing = 0
+    for left, right in zip(dates, dates[1:]):
+        delta = _month_index(right) - _month_index(left)
+        if delta == step_months:
+            continue
+        if delta <= 0 or delta % step_months != 0:
+            return False
+        missing += delta // step_months - 1
+        if missing > max_missing:
+            return False
+    return True
 
 
 def _seasonal_projection(
@@ -136,6 +157,15 @@ def _run_primary_strategy(
     )
 
 
+def _backtest_layout(frequency: str, season: int) -> tuple[int, int, int, int, int, int]:
+    """step_months, test_horizon, requested_origins, min_origins, min_history, origin_floor."""
+    if frequency == "annual":
+        return 12, 1, 4, 4, 10, 10
+    if frequency == "monthly":
+        return 1, 3, 12, 6, season * 6, season * 4
+    return 3, 2, 8, 6, season * 6, season * 4
+
+
 def train_quality_gated_world_forecast(
     dates: Sequence[date],
     values: Sequence[float],
@@ -144,9 +174,14 @@ def train_quality_gated_world_forecast(
     horizon: int,
     season: int,
     strategy: str,
+    strict: bool = False,
 ) -> WorldForecastGate:
     resolved_strategy = _resolve_primary_strategy(strategy, values)
-    if len(dates) != len(values) or len(values) < season * 6:
+    (
+        step_months, test_horizon, requested_origins,
+        min_origins, min_history, origin_floor,
+    ) = _backtest_layout(frequency, season)
+    if len(dates) != len(values) or len(values) < min_history:
         return WorldForecastGate(
             "failed", "history_too_short", resolved_strategy, None, None, 0, None,
         )
@@ -155,17 +190,17 @@ def train_quality_gated_world_forecast(
             "failed", "non_finite_history", resolved_strategy, None, None, 0, None,
         )
 
-    step_months = 1 if frequency == "monthly" else 3
     if not _regular_cadence(dates, step_months):
         return WorldForecastGate(
             "failed", "irregular_calendar", resolved_strategy, None, None, 0, None,
         )
 
-    test_horizon = 3 if frequency == "monthly" else 2
-    requested_origins = 12 if frequency == "monthly" else 8
-    first_origin = max(season * 4, len(values) - requested_origins - test_horizon + 1)
+    first_origin = max(
+        origin_floor,
+        len(values) - requested_origins - test_horizon + 1,
+    )
     origins = list(range(first_origin, len(values) - test_horizon + 1))
-    if len(origins) < 6:
+    if len(origins) < min_origins:
         return WorldForecastGate(
             "failed", "not_enough_backtest_origins",
             resolved_strategy, None, None, 0, None,
@@ -217,14 +252,17 @@ def train_quality_gated_world_forecast(
             "failed", "non_finite_backtest",
             resolved_strategy, None, None, len(origins), None,
         )
+
+    quality_ok = mase < 1.0 and mase < baseline_mase * 0.98
     if mase >= 1.0:
+        quality_reason = "mase_not_below_one"
+    elif mase >= baseline_mase * 0.98:
+        quality_reason = "not_better_than_seasonal_naive"
+    else:
+        quality_reason = "beats_seasonal_naive"
+    if not quality_ok and strict:
         return WorldForecastGate(
-            "failed", "mase_not_below_one",
-            resolved_strategy, mase, baseline_mase, len(origins), None,
-        )
-    if mase >= baseline_mase * 0.98:
-        return WorldForecastGate(
-            "failed", "not_better_than_seasonal_naive",
+            "failed", quality_reason,
             resolved_strategy, mase, baseline_mase, len(origins), None,
         )
 
@@ -277,7 +315,8 @@ def train_quality_gated_world_forecast(
         bic=candidate_result.bic,
         points=points,
     )
+    status = "passed" if quality_ok else "advisory"
     return WorldForecastGate(
-        "passed", "beats_seasonal_naive",
+        status, quality_reason,
         resolved_strategy, mase, baseline_mase, len(origins), result,
     )

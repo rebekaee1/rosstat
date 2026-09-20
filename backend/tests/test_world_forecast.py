@@ -1,5 +1,6 @@
 from datetime import date
 from types import SimpleNamespace
+import math
 
 from dateutil.relativedelta import relativedelta
 
@@ -63,6 +64,18 @@ def test_gate_rejects_constant_and_irregular_series():
     assert irregular.status == "failed"
     assert irregular.reason == "irregular_calendar"
 
+    # Одна дыра в месячном календаре (как FRED CPI 2025-10) — не отказ.
+    one_gap = [*dates[:40], *dates[41:]]
+    gapped = train_quality_gated_world_forecast(
+        one_gap,
+        [float(index) for index in range(71)],
+        frequency="monthly",
+        horizon=12,
+        season=12,
+        strategy="monthly_auto",
+    )
+    assert gapped.reason != "irregular_calendar"
+
 
 def test_quarterly_auto_uses_shared_positive_and_signed_strategies():
     dates = _dates(date(2012, 1, 1), 56, 3)
@@ -87,6 +100,76 @@ def test_quarterly_auto_uses_shared_positive_and_signed_strategies():
     assert signed.strategy == "signed_quarterly"
 
 
+def test_annual_auto_world_forecast_publishes():
+    dates = _dates(date(2000, 1, 1), 25, 12)
+    values = [15.0 - 0.12 * index for index in range(25)]
+    gate = train_quality_gated_world_forecast(
+        dates,
+        values,
+        frequency="annual",
+        horizon=2,
+        season=1,
+        strategy="annual_auto",
+        strict=False,
+    )
+    assert gate.status in {"passed", "advisory"}
+    assert gate.result is not None
+    assert len(gate.result.points) == 2
+    assert gate.result.points[0].date == date(2025, 1, 1)
+    assert all(math.isfinite(float(point.value)) for point in gate.result.points)
+
+
+def test_quality_fail_is_advisory_unless_strict(monkeypatch):
+    from app.services import world_forecaster as wf
+    from app.services.forecaster import ForecastPoint, ForecastResult
+
+    dates = _dates(date(2018, 1, 1), 96, 1)
+    values = [
+        100.0 + (index % 12) * 2.0 + (index // 12) * 10.0
+        for index in range(96)
+    ]
+    real_run = wf._run_primary_strategy
+
+    def fake_run(dates, values, *, frequency, horizon, strategy_name):
+        result = real_run(
+            dates, values,
+            frequency=frequency, horizon=horizon, strategy_name=strategy_name,
+        )
+        if result is None:
+            return None
+        if horizon != 3:
+            return result
+        poisoned = [
+            ForecastPoint(
+                date=point.date, value=point.value * 80.0,
+                lower_bound=None, upper_bound=None,
+            )
+            for point in result.points
+        ]
+        return ForecastResult(
+            model_name=result.model_name, aic=result.aic, bic=result.bic,
+            points=poisoned,
+        )
+
+    monkeypatch.setattr(wf, "_run_primary_strategy", fake_run)
+    advisory = wf.train_quality_gated_world_forecast(
+        dates, values,
+        frequency="monthly", horizon=12, season=12,
+        strategy="monthly_auto", strict=False,
+    )
+    assert advisory.status == "advisory"
+    assert advisory.result is not None
+    assert len(advisory.result.points) == 12
+
+    failed = wf.train_quality_gated_world_forecast(
+        dates, values,
+        frequency="monthly", horizon=12, season=12,
+        strategy="monthly_auto", strict=True,
+    )
+    assert failed.status == "failed"
+    assert failed.result is None
+
+
 def test_policy_is_official_provider_and_freshness_fail_closed():
     base = dict(
         provider="eurostat",
@@ -107,6 +190,26 @@ def test_policy_is_official_provider_and_freshness_fail_closed():
     assert eligibility.registry_key == (
         "eurostat", "une_rt_m", "PC_ACT", "monthly", "monthly_auto",
     )
+
+    eurostat_annual = SimpleNamespace(
+        **{
+            **base,
+            "frequency": "annual",
+            "points_count": 20,
+            "history_end": date(2025, 1, 1),
+        }
+    )
+    annual_el, annual_reason = forecast_eligibility_for(
+        eurostat_annual, today=date(2026, 8, 6),
+    )
+    assert annual_reason == "eligible"
+    assert annual_el is not None
+    assert annual_el.strategy == "annual_auto"
+    assert annual_el.horizon == 2
+    assert annual_el.season == 1
+
+    fred = SimpleNamespace(**{**base, "provider": "fred"})
+    assert forecast_eligibility_for(fred, today=date(2026, 8, 6))[1] == "eligible"
 
     unknown = SimpleNamespace(**{**base, "provider": "news_aggregator"})
     assert forecast_eligibility_for(unknown)[1] == "provider_not_approved"

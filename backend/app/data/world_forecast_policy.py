@@ -44,20 +44,56 @@ class WorldForecastEligibility:
         )
 
 
-# Только уже подключённый официальный Eurostat. BEA/BLS/IBGE/MOSPI/NBS будут
-# добавлены отдельными строками после schema-probe и golden-series проверки.
+# Частоты и горизонты, общие для всех официальных провайдеров.
+_FREQ_STRATEGIES = {
+    "monthly": "monthly_auto",
+    "quarterly": "quarterly_auto",
+    "annual": "annual_auto",
+}
+_FREQ_MIN_POINTS = {"monthly": 72, "quarterly": 32, "annual": 14}
+_FREQ_HORIZONS = {"monthly": 12, "quarterly": 4, "annual": 2}
+_FREQ_SEASONS = {"monthly": 12, "quarterly": 4, "annual": 1}
+_FREQ_MAX_AGE_DAYS = {"monthly": 150, "quarterly": 260, "annual": 1400}
+
+
+def _official_policy(provider: str) -> ProviderForecastPolicy:
+    return ProviderForecastPolicy(
+        provider=provider,
+        strategies=_FREQ_STRATEGIES,
+        min_points=_FREQ_MIN_POINTS,
+        horizons=_FREQ_HORIZONS,
+        seasons=_FREQ_SEASONS,
+        max_age_days=_FREQ_MAX_AGE_DAYS,
+    )
+
+
+# Официальные первоисточники с живым адаптером. IMF/WEO сюда не входит:
+# у фонда собственные проекции, их не подменяем платформенной моделью.
+_OFFICIAL_PROVIDERS = (
+    "eurostat",
+    "fred",
+    "bls",
+    "bea",
+    "census",
+    "statcan",
+    "boc_valet",
+    "abs",
+    "rba",
+    "ons",
+    "boe_iadb",
+    "boj",
+    "estat",
+    "ecos",
+    "bcb_sgs",
+    "banxico_sie",
+    "nbs",
+    "cfets",
+    "mospi",
+    "rbi",
+)
+
 OFFICIAL_PROVIDER_POLICIES: dict[str, ProviderForecastPolicy] = {
-    "eurostat": ProviderForecastPolicy(
-        provider="eurostat",
-        strategies={
-            "monthly": "monthly_auto",
-            "quarterly": "quarterly_auto",
-        },
-        min_points={"monthly": 72, "quarterly": 32},
-        horizons={"monthly": 12, "quarterly": 4},
-        seasons={"monthly": 12, "quarterly": 4},
-        max_age_days={"monthly": 150, "quarterly": 260},
-    ),
+    provider: _official_policy(provider) for provider in _OFFICIAL_PROVIDERS
 }
 
 

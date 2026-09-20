@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import logging
 
+from app.services.forecast_strategies.annual_auto import annual_auto_strategy
 from app.services.forecast_strategies.approved import approved_strategy
 from app.services.forecast_strategies.base import ForecastStrategy
 from app.services.forecast_strategies.cpi_combined import cpi_combined_strategy
@@ -37,6 +38,7 @@ logger = logging.getLogger(__name__)
 
 
 STRATEGIES: dict[str, ForecastStrategy] = {
+    "annual_auto": annual_auto_strategy,
     "approved": approved_strategy,
     "cpi_combined": cpi_combined_strategy,
     "derived_from_source": derived_from_source_strategy,

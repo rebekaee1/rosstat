@@ -111,6 +111,12 @@ class Settings(BaseSettings):
     world_forecast_enabled: bool = False
     world_forecast_hour: int = 4
     world_forecast_minute: int = 20
+    # False: гейт MASE консультативный (status=advisory, прогноз публикуется).
+    # True: прежнее fail-closed поведение (публикуем только MASE < 1).
+    world_forecast_gate_strict: bool = False
+    world_subnational_ingest_enabled: bool = False
+    world_subnational_ingest_hour: int = 3
+    world_subnational_ingest_minute: int = 40
 
     # Официальный график публикаций Росстата («План выпуска публикаций»,
     # Grafik_srochn_YYYY.docx): события date_confidence='official_explicit'

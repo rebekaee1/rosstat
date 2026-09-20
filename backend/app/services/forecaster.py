@@ -70,8 +70,16 @@ def _get_horizon_lags(m: int) -> list[int]:
     return [12]
 
 
+def _get_annual_horizon_lags(m: int) -> list[int]:
+    """Лаги годового ноутбука: m∈{1,2,3} → [m, m+1]; m=4 → [m]."""
+    if m <= 3:
+        return [m, m + 1]
+    return [m]
+
+
 def _ols_step(df_aux: pd.Series, lags: list[int], horizon_m: int,
-              p_max: float = 0.01, cor_max: float = 0.7):
+              p_max: float = 0.01, cor_max: float = 0.7,
+              min_train: int = 10):
     """Single OLS model fit and predict for one window segment.
 
     Returns (prediction, mse_resid) or (None, None) on failure.
@@ -107,7 +115,7 @@ def _ols_step(df_aux: pd.Series, lags: list[int], horizon_m: int,
         X_p_list = list(X_p_df.iloc[0])
 
         train = train.dropna()
-        if len(train) < 10:
+        if len(train) < min_train:
             return None, None
 
         y = train['value']
@@ -159,7 +167,9 @@ def _multi_window_predict(data_col: pd.Series, window_size: int,
                           apply_rolling: bool = False,
                           k_range: range = range(1, 5),
                           min_window: int = 24,
-                          remove_outliers_after_rolling: bool = True):
+                          remove_outliers_after_rolling: bool = True,
+                          min_seg: int = 20,
+                          min_train: int = 10):
     """Run OLS across multiple window sizes, return inverse-variance weighted prediction.
 
     Parameters mirror Никита's notebook variants:
@@ -190,10 +200,10 @@ def _multi_window_predict(data_col: pd.Series, window_size: int,
         else:
             df_aux = _remove_outliers(df_aux.dropna())
 
-        if len(df_aux) < 20:
+        if len(df_aux) < min_seg:
             continue
 
-        pred, mse = _ols_step(df_aux, lags, horizon_m)
+        pred, mse = _ols_step(df_aux, lags, horizon_m, min_train=min_train)
         if pred is not None:
             preds.append(pred)
             varis.append(mse)
@@ -1181,6 +1191,88 @@ def train_monthly_auto(
         elif marker == "dif":
             value = first_value + sum_transformed + m * forecasts_aux[-1]
         else:  # log
+            value = first_value * float(np.exp(sum_transformed + m * forecasts_aux[-1]))
+
+        if not np.isfinite(value):
+            continue
+        points.append(ForecastPoint(
+            date=future_dates[m - 1].date(), value=round(value, 4),
+            lower_bound=None, upper_bound=None,
+        ))
+
+    logger.info("%s forecast (marker=%s): %d points, last=%.2f",
+                model_name, marker, len(points), points[-1].value if points else 0)
+    return ForecastResult(model_name=model_name, aic=None, bic=None, points=points)
+
+
+_ANNUAL_AUTO_MIN_OBS = 10
+_ANNUAL_AUTO_MAX_STEPS = 4
+
+
+def train_annual_auto(
+    dates: List[date],
+    values: List[float],
+    forecast_steps: int = 2,
+) -> ForecastResult:
+    """Generic annual forecast — порт `Прогноз_годовых_данных.ipynb`.
+
+    Та же семья multi-window OLS, что `train_monthly_auto`, с отличиями
+    годового ноутбука:
+
+      * окна: `k in range(1, max(len(data)//15, 2))` (у месячного `//60`);
+      * лаги: m∈{1,2,3} → `[m, m+1]`; m=4 → `[m]`; горизонт больше 4
+        обрезается (`forecast_steps ≤ 4`);
+      * ADF-трансформ как `_adf_transform`; для рядов с нулями/минусами
+        лог недопустим — остаёмся на первой разности (знаковые годовые:
+        миграционный/естественный прирост);
+      * реконструкция уровня: stationary → aux; dif →
+        `first + sum(data) + m·aux[m]`; log → `first·exp(sum+m·aux[m])`;
+      * даты: `last_date + relativedelta(years=m)`.
+
+    Минимум истории — 10 годовых точек; короче — пустой результат без
+    исключения. Переиспользует `_adf_transform`, `_remove_outliers`,
+    `_multi_window_predict`, `_ols_step`.
+    """
+    model_name = "Annual-Auto-MW"
+    steps = min(max(int(forecast_steps or 0), 0), _ANNUAL_AUTO_MAX_STEPS)
+    level = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float, name="value")
+    if steps <= 0 or len(level) < _ANNUAL_AUTO_MIN_OBS:
+        logger.info(
+            "%s: %d obs < %d or steps=%d, skipping",
+            model_name, len(level), _ANNUAL_AUTO_MIN_OBS, steps,
+        )
+        return ForecastResult(model_name=model_name, aic=None, bic=None, points=[])
+
+    data, marker = _adf_transform(level)
+    window_size = len(data)
+    k_max = max(window_size // 15, 2)
+    k_range = range(1, k_max)
+
+    first_value = float(level.iloc[0])
+    sum_transformed = float(np.sum(data))
+    last_stamp = level.index[-1]
+    future_dates = [last_stamp + relativedelta(years=m) for m in range(1, steps + 1)]
+
+    apply_rolling = marker != "stationary"
+    forecasts_aux: list[float] = []
+    points: list[ForecastPoint] = []
+    for m in range(1, steps + 1):
+        lags = _get_annual_horizon_lags(m)
+        pred = _multi_window_predict(
+            data, window_size, m, lags,
+            apply_rolling=apply_rolling, remove_outliers_after_rolling=False,
+            k_range=k_range, min_window=1, min_seg=8, min_train=6,
+        )
+        if pred is None:
+            tail = data.iloc[-min(5, len(data)):]
+            pred = float(np.median(tail)) if len(tail) else 0.0
+        forecasts_aux.append(pred)
+
+        if marker == "stationary":
+            value = forecasts_aux[-1]
+        elif marker == "dif":
+            value = first_value + sum_transformed + m * forecasts_aux[-1]
+        else:
             value = first_value * float(np.exp(sum_transformed + m * forecasts_aux[-1]))
 
         if not np.isfinite(value):

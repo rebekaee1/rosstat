@@ -307,7 +307,8 @@ async def retrain_indicator_forecast(
 
     # Approved/derived стратегии могут работать без 36 точек истории.
     requires_history = strategy_name not in ("approved", "derived_from_source")
-    if requires_history and len(all_data) < 36:
+    min_history = 10 if strategy_name == "annual_auto" else 36
+    if requires_history and len(all_data) < min_history:
         removed = await clear_current_forecasts(db, indicator)
         logger.warning(
             "Not enough data for forecast (%d points), removed %d stale forecast(s)",

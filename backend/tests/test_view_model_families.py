@@ -254,5 +254,15 @@ def test_weo_budget_family_is_signed_annual():
         assert not any(m.forecastable for m in fam.modes)
 
 
+def test_demography_annual_families_expose_forecast() -> None:
+    """T10/T10a демография: нативный уровень и Г/г прогнозируемы."""
+    for code in ("birth-rate", "population", "population-migration", "births"):
+        fam = vmf.FAMILY_BY_BASE[code]
+        native = next(m for m in fam.modes if m.is_native)
+        assert native.forecastable is True
+        yoy = next(m for m in fam.modes if m.mode == "yoy")
+        assert vmf._mode_forecastable(yoy, "annual", True) is True
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
