@@ -216,8 +216,12 @@ export default function WorldRegionsHome() {
   const geometry = MAPS[hub.data?.map_id] || usStatesMap;
   const periods = map.data?.periods || [];
   const indicators = hub.data?.indicators || [];
-  const presetCodes = new Set(indicators.slice(0, 8).map((i) => i.code));
-  const chipIndicators = indicators.slice(0, 8);
+  const chipIndicators = useMemo(() => {
+    const def = defaultCode && indicators.find((i) => i.code === defaultCode);
+    const rest = indicators.filter((i) => i.code !== defaultCode);
+    return (def ? [def, ...rest] : rest).slice(0, 8);
+  }, [indicators, defaultCode]);
+  const presetCodes = new Set(chipIndicators.map((i) => i.code));
   const isCustomMetric = !!(activeCode && !presetCodes.has(activeCode));
   const customName = indicators.find((i) => i.code === activeCode)?.name || '';
 
