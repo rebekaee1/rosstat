@@ -611,13 +611,16 @@ async def lifespan(app: FastAPI):
             )
 
         if settings.world_forecast_enabled:
-            from app.services.world_forecast_pipeline import world_forecast_job
+            from app.services.world_forecast_pipeline import (
+                WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
+                scheduled_world_forecast_job,
+            )
 
             scheduler.add_job(
                 locked_job(
-                    world_forecast_job,
+                    scheduled_world_forecast_job,
                     "world_forecast",
-                    ttl_seconds=3 * 3600,
+                    ttl_seconds=WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
                 ),
                 trigger=CronTrigger(
                     hour=settings.world_forecast_hour,

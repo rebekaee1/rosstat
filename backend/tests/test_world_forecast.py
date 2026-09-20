@@ -245,3 +245,143 @@ def test_series_identity_includes_provider_and_dimensions():
 
     assert bea.slice_hash != aggregator.slice_hash
     assert bea.slice_hash == WorldSeriesRef(provider="bea", **common).slice_hash
+
+
+def test_world_forecast_points_aggregate_to_annual_level():
+    from app.data.world_aggregation import aggregate_forecast_points
+
+    actual = [(date(2023, m, 1), 10.0) for m in range(1, 13)]
+    actual += [(date(2024, m, 1), 12.0) for m in range(1, 7)]
+    forecast = [
+        (date(2024, m, 1), 12.0, 11.0, 13.0) for m in range(7, 13)
+    ]
+    annual = aggregate_forecast_points(
+        actual, forecast,
+        source_frequency="monthly",
+        target_frequency="annual",
+        policy="mean",
+    )
+    assert len(annual) == 1
+    assert annual[0][0] == date(2024, 1, 1)
+    assert annual[0][1] == 12.0
+    assert annual[0][2] == round((12 * 6 + 11 * 6) / 12, 4)
+
+
+def test_world_forecast_priority_order_puts_us_and_concepts_first():
+    from app.config import Settings
+    from app.services.world_forecast_pipeline import (
+        WorldForecastCandidate,
+        parse_priority_countries,
+        sort_world_forecast_candidates,
+    )
+
+    default = Settings.model_fields["world_forecast_priority_countries"].default
+    assert default.startswith("united-states,germany")
+    assert "south-korea" in default
+    assert "korea" not in {part.strip() for part in default.split(",")}
+
+    priority = parse_priority_countries(default)
+
+    rows = [
+        WorldForecastCandidate(
+            id=50, country_slug="austria", provider="eurostat",
+            dataset_id="foo", code="at-foo", frequency="annual",
+        ),
+        WorldForecastCandidate(
+            id=3, country_slug="united-states", provider="imf",
+            dataset_id="weo", code="us-weo-lur", frequency="annual",
+        ),
+        WorldForecastCandidate(
+            id=4, country_slug="united-states", provider="fred",
+            dataset_id="gdp", code="us-gdp", frequency="quarterly",
+        ),
+        WorldForecastCandidate(
+            id=1, country_slug="united-states", provider="eurostat",
+            dataset_id="une_rt_m", code="us-une", frequency="monthly",
+        ),
+        WorldForecastCandidate(
+            id=2, country_slug="united-states", provider="bls",
+            dataset_id="ln", code="us-unemployment-rate", frequency="monthly",
+        ),
+        WorldForecastCandidate(
+            id=8, country_slug="germany", provider="eurostat",
+            dataset_id="abc", code="de-abc", frequency="monthly",
+        ),
+        WorldForecastCandidate(
+            id=7, country_slug="germany", provider="eurostat",
+            dataset_id="une_rt_m", code="de-une", frequency="monthly",
+        ),
+    ]
+    ordered = sort_world_forecast_candidates(rows, priority_countries=priority)
+    assert [row.country_slug for row in ordered] == [
+        "united-states", "united-states", "united-states", "united-states",
+        "germany", "germany",
+        "austria",
+    ]
+    us = [row.code for row in ordered if row.country_slug == "united-states"]
+    assert us == ["us-unemployment-rate", "us-une", "us-weo-lur", "us-gdp"]
+    de = [row.code for row in ordered if row.country_slug == "germany"]
+    assert de == ["de-une", "de-abc"]
+
+
+def test_world_forecast_unchanged_skip_by_fingerprint_and_force():
+    from datetime import datetime
+
+    from app.services.world_forecast_pipeline import (
+        forecast_fingerprint,
+        forecast_is_unchanged,
+    )
+
+    now = datetime(2026, 9, 20, 12, 0, 0)
+    history_end = date(2026, 8, 1)
+    latest = SimpleNamespace(
+        created_at=datetime(2026, 9, 19, 8, 0, 0),
+        model_params=forecast_fingerprint(history_end=history_end, points_count=120),
+        gate_status="failed",
+    )
+    assert forecast_is_unchanged(
+        latest, history_end=history_end, points_count=120,
+        now=now, max_age_days=30, force=False,
+    )
+    assert not forecast_is_unchanged(
+        latest, history_end=date(2026, 9, 1), points_count=120,
+        now=now, max_age_days=30, force=False,
+    )
+    assert not forecast_is_unchanged(
+        latest, history_end=history_end, points_count=121,
+        now=now, max_age_days=30, force=False,
+    )
+    assert not forecast_is_unchanged(
+        latest, history_end=history_end, points_count=120,
+        now=now, max_age_days=30, force=True,
+    )
+    stale = SimpleNamespace(
+        created_at=datetime(2026, 8, 1, 0, 0, 0),
+        model_params=forecast_fingerprint(history_end=history_end, points_count=120),
+        gate_status="passed",
+    )
+    assert not forecast_is_unchanged(
+        stale, history_end=history_end, points_count=120,
+        now=now, max_age_days=30, force=False,
+    )
+
+
+def test_world_forecast_legacy_row_without_fingerprint():
+    from datetime import datetime
+
+    from app.services.world_forecast_pipeline import forecast_is_unchanged
+
+    now = datetime(2026, 9, 20, 12, 0, 0)
+    latest = SimpleNamespace(
+        created_at=datetime(2026, 9, 19, 15, 0, 0),
+        model_params={"registry_key": ["eurostat"], "gate": "rolling_origin_mase"},
+        gate_status="passed",
+    )
+    assert forecast_is_unchanged(
+        latest, history_end=date(2026, 8, 1), points_count=80,
+        now=now, max_age_days=30, force=False,
+    )
+    assert not forecast_is_unchanged(
+        latest, history_end=date(2026, 9, 20), points_count=81,
+        now=now, max_age_days=30, force=False,
+    )

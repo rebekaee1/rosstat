@@ -56,6 +56,16 @@ docker compose exec backend python /app/scripts/rebuild-all-derived.py
 
 Прогон без guard'а (без проверки `source_codes`); first run выводит non-zero changes для stale серий, second run — все нули (idempotency check).
 
+### Ручной прогон мировых прогнозов
+
+Инкрементальный job listed M/Q/A `world_indicators` (отпечаток в `model_params`, приоритет стран). Полный прогон на холодную — часы; повтор без `--force` пропускает неизменённые ряды.
+
+```bash
+docker compose exec -T backend python -u /app/scripts/rebuild-world-forecasts.py --dry-run
+docker compose exec -T backend python -u /app/scripts/rebuild-world-forecasts.py --country austria --limit 30
+docker compose exec -T backend python -u /app/scripts/rebuild-world-forecasts.py --force
+```
+
 ### Ручной прогон ETL одного индикатора
 
 Для дебага парсера или ручного pull данных под конкретный `code` (например после правки `model_config_json.element_id` в CBR DataService — см. trap в docstring `cbr_dataservice_parser.py`):

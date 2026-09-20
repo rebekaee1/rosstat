@@ -114,6 +114,18 @@ class Settings(BaseSettings):
     # False: гейт MASE консультативный (status=advisory, прогноз публикуется).
     # True: прежнее fail-closed поведение (публикуем только MASE < 1).
     world_forecast_gate_strict: bool = False
+    # Инкрементальный world job: не переобучать ряд, если последняя запись
+    # world_forecasts с тем же отпечатком данных не старше N дней.
+    world_forecast_max_age_days: int = 30
+    # bump_namespaces("world", "ssr-world") каждые N успешных записей и в конце.
+    world_forecast_cache_bump_every: int = 200
+    # Порядок обхода: эти slug'и world_countries первыми, затем остальные.
+    # korea в каталоге — south-korea.
+    world_forecast_priority_countries: str = (
+        "united-states,germany,france,united-kingdom,italy,spain,austria,"
+        "canada,japan,china,india,brazil,mexico,australia,south-korea,"
+        "netherlands,poland"
+    )
     world_subnational_ingest_enabled: bool = False
     world_subnational_ingest_hour: int = 3
     world_subnational_ingest_minute: int = 40
