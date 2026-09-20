@@ -82,10 +82,16 @@ CATALOG_STEM_ALIASES: tuple[frozenset[str], ...] = (
         "prc_hicp_manr",
         "prc_hicp_mmor",
         "prc_hicp_mv12r",
+        # ECOICOP ver.2 (февраль 2026): живой месячный/годовой преемник
+        # замороженных midx/aind (1996–2025).
+        "prc_hicp_minr",
         "prc_hicp_ainr",
         # main table «ГИПЦ, среднегодовой» — 12-летний хвост prc_hicp_ainr,
         # иначе висит второй карточкой в «Бизнесе».
         "tec00027",
+        # короткие main table / operational tables — не отдельные плитки.
+        "tec00118",
+        "teicp000",
     }),
 )
 
@@ -260,9 +266,15 @@ _INDEX_UNITS = frozenset({
 # другое представление. Сливаются с индексом (владелец, 2026-08-28:
 # «ИПЦ индекс» + «ИПЦ темп к предыдущему периоду» = одна карточка).
 _CHANGE_UNITS = frozenset({
-    "RCH_A", "RCH_M", "RCH_MV12MAVR", "RT1", "RT1-SCA", "RT_M_DIF",
-    "PCH_SM", "PCH_PRE", "PCH_SAME",
+    "RCH_A", "RCH_M", "RCH_MV12MAVR", "RCH_A_AVG", "RT1", "RT1-SCA", "RT_M_DIF",
+    "PCH_SM", "PCH_PRE", "PCH_SAME", "PCH_M1",
 })
+
+
+def is_derived_change_unit(unit: str | None) -> bool:
+    """Темп/изменение — режим индексной карточки, не отдельный срез пикера."""
+    u = (unit or "").strip().upper().replace("-", "_")
+    return u in _CHANGE_UNITS
 
 
 def catalog_measure_class(
@@ -341,13 +353,20 @@ def _measure_preference_rank(
 
 
 def measure_preference_rank(ind: Any) -> tuple:
-    """Сортировочный ключ выбора главной меры: rank меры → глубина → код.
+    """Сортировочный ключ: мера → не снят с витрины → свежесть → глубина → код.
 
-    Меньше = лучше. При равном ранге меры берём самый глубокий ряд
-    (точки листинга — это качество), затем код для детерминизма.
+    Меньше = лучше. Редакторский ``no`` (дисконтинуированный набор) проигрывает
+    живому преемнику при равной мере. Затем более поздний ``history_end``,
+    затем глубина, затем код.
     """
+    mode = listing_mode_for_dataset(getattr(ind, "dataset_id", None))
+    retired = 1 if mode == "no" else 0
+    he = getattr(ind, "history_end", None)
+    he_ord = he.toordinal() if hasattr(he, "toordinal") else 0
     return (
         _measure_preference_rank(ind.unit, ind.unit_ru),
+        retired,
+        -he_ord,
         -int(ind.points_count or 0),
         getattr(ind, "code", "") or "",
     )
@@ -666,5 +685,19 @@ DEEP_DATASET_SLICES: dict[str, list[dict[str, str]]] = {
             "A2_2LT65",
             "A2_GE1_GE65",
         )
+    ],
+    # HICP ECOICOP ver.2: headline TOTAL. Авто-expand coicop18 (555 позиций)
+    # сверх капа — не грузим. Подиндексы в старом listed midx не было
+    # (только coicop=CP00). I15, не I25: та же база, что у замороженного
+    # midx, непрерывный график с 1996.
+    "prc_hicp_minr": [
+        {"freq": "M", "unit": "I15", "coicop18": "TOTAL"},
+        {"freq": "M", "unit": "RCH_A", "coicop18": "TOTAL"},
+        {"freq": "M", "unit": "RCH_M", "coicop18": "TOTAL"},
+        {"freq": "M", "unit": "RCH_MV12MAVR", "coicop18": "TOTAL"},
+    ],
+    "prc_hicp_ainr": [
+        {"freq": "A", "unit": "INX_A_AVG", "coicop18": "TOTAL"},
+        {"freq": "A", "unit": "RCH_A_AVG", "coicop18": "TOTAL"},
     ],
 }

@@ -23,6 +23,7 @@ from app.data.eurostat_listing import (
     catalog_merge_key,
     catalog_stem,
     dataset_stem,
+    is_derived_change_unit,
     is_stale_history,
     measure_preference_rank,
     normalize_frequency,
@@ -80,6 +81,7 @@ from app.services.world_rank_values import (
 )
 from app.services.world_compare import (
     MONEY_COMPARE_CONCEPTS as _MONEY_COMPARE_CONCEPTS,
+    choose_compare_indicator as _choose_compare_indicator,
     concept_members as _concept_members,
     concept_member_rank as _concept_member_rank,
     concept_unit_compatible as _concept_unit_compatible,
@@ -91,6 +93,8 @@ from app.services.world_russia_rank import (
 )
 from app.services.world_cards import (
     apply_resolved,
+    apply_resolved_forecast,
+    attach_mode_forecastable,
     build_modes_matrix,
     build_variants,
     catalog_frequency_members,
@@ -628,6 +632,8 @@ def _card_members_map(
 
 
 _AGGREGATION_SOURCE_TO_TARGET = {
+    "daily": ("monthly", "quarterly", "annual"),
+    "weekly": ("monthly", "quarterly", "annual"),
     "monthly": ("quarterly", "annual"),
     "quarterly": ("annual",),
 }
@@ -989,16 +995,8 @@ async def world_compare_series(
     country = await _country_by_slug(db, country_slug)
     indicators = await _country_indicators(db, country.id)
     national_codes = national_codes_for_concept(concept.slug)
-    members = [
-        indicator
-        for indicator in indicators
-        if concept_for_indicator(indicator) == concept
-        or (
-            indicator.code in national_codes
-            and _concept_unit_compatible(concept, indicator)
-        )
-    ]
-    if not members:
+    indicator = _choose_compare_indicator(indicators, concept, national_codes)
+    if indicator is None:
         raise HTTPException(
             404,
             api_detail(
@@ -1006,25 +1004,6 @@ async def world_compare_series(
                 "No comparable series for this country",
             ),
         )
-    if len(members) > 1 and any(
-        indicator.code in national_codes for indicator in members
-    ):
-        # Одна страна — один ряд: national crosswalk приоритетнее eurostat-дубля
-        # (инвариант _concept_members).
-        national_member = next(
-            indicator for indicator in members if indicator.code in national_codes
-        )
-        members = [national_member]
-    if len(members) > 1:
-        raise HTTPException(
-            409,
-            api_detail(
-                "Неоднозначный состав ряда для сравнения",
-                "Ambiguous series composition for comparison",
-            ),
-        )
-
-    indicator = members[0]
     points = await _load_points(db, indicator.id)
     meta = _compare_series_payload(country, indicator, concept)
     # Юнит национального ряда и IMF-инфляции (уже %) — родной из метаданных.
@@ -1388,7 +1367,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     политике (например annual у месячного индекса); клиент помечает такие
     режимы как расчётные.
     """
-    cache_key = await versioned_key("world", f"country:v17:{slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"country:v18:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1722,7 +1701,7 @@ async def _card_context(
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key(
-        "world", f"ind:v18:{slug}:{code}:{get_locale()}"
+        "world", f"ind:v20:{slug}:{code}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1740,6 +1719,22 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             404,
             api_detail("Индикатор не найден", "Indicator not found"),
         )
+
+    if not ind.is_listed:
+        from urllib.parse import urlparse
+
+        from app.data.legacy_redirects import resolve_world_frequency_sibling
+
+        merge_target = await resolve_world_frequency_sibling(db, slug, code)
+        if merge_target:
+            dest_code = urlparse(merge_target).path.rstrip("/").split("/")[-1]
+            if dest_code and dest_code != code:
+                payload = {
+                    "primary_code": dest_code,
+                    "redirect_to": merge_target,
+                }
+                await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+                return payload
 
     # точки primary — для знака ряда в матрице
     series_by_code: dict[str, list] = {}
@@ -1764,6 +1759,10 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             if p is None:
                 continue
             if variant_group_key(country_id=p.country_id, dataset_id=p.dataset_id) != vg:
+                continue
+            # prc_hicp_minr держит индекс и темпы в одном наборе: RCH_* —
+            # режимы карточки (как manr/mmor), не срезы variant-пикера.
+            if is_derived_change_unit(p.unit):
                 continue
             candidates.append(p)
         signal = await _ids_with_nonzero_signal(db, [p.id for p in candidates])
@@ -1840,16 +1839,33 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "frequency": "annual",
         })
 
-    forecast_gate_status = await db.scalar(
-        select(WorldForecast.gate_status).where(
-            WorldForecast.world_indicator_id.in_(
-                [member.id for member in by_freq.values()]
-            ),
-            WorldForecast.is_current.is_(True),
-            WorldForecast.gate_status.in_(PUBLISHED_GATE_STATUSES),
-        ).order_by(WorldForecast.created_at.desc()).limit(1)
+    member_ids = [member.id for member in by_freq.values()]
+    forecast_rows = []
+    if member_ids:
+        forecast_rows = list((
+            await db.execute(
+                select(WorldForecast.world_indicator_id, WorldForecast.gate_status)
+                .where(
+                    WorldForecast.world_indicator_id.in_(member_ids),
+                    WorldForecast.is_current.is_(True),
+                    WorldForecast.gate_status.in_(PUBLISHED_GATE_STATUSES),
+                )
+                .order_by(WorldForecast.created_at.desc())
+            )
+        ).all())
+    forecast_native_freqs = {
+        normalize_frequency(member.frequency)
+        for member in by_freq.values()
+        if any(row[0] == member.id for row in forecast_rows)
+    }
+    modes = attach_mode_forecastable(
+        modes, forecastable_native_freqs=forecast_native_freqs,
     )
-    forecast_available = forecast_gate_status is not None
+    forecast_gate_status = next(
+        (row[1] for row in forecast_rows),
+        None,
+    )
+    forecast_available = any(mode.get("forecastable") for mode in modes)
 
     from app.services.seo_i18n import localize_category_name, translate_source
 
@@ -1908,7 +1924,7 @@ async def indicator_data(
 ):
     cache_key = await versioned_key(
         "world",
-        f"data:v7:{slug}:{code}:{mode}:{int(include_forecast)}:"
+        f"data:v9:{slug}:{code}:{mode}:{int(include_forecast)}:"
         f"{date_from}:{date_to}:{get_locale()}",
     )
     cached = await cache_get(cache_key)
@@ -1954,7 +1970,7 @@ async def indicator_data(
         raise HTTPException(400, str(exc)) from exc
 
     forecast_payload = None
-    if include_forecast:
+    if include_forecast and parsed.freq not in ("daily", "weekly"):
         candidates = [source]
         candidates.extend(
             candidate
@@ -1962,12 +1978,16 @@ async def indicator_data(
             if (candidate := by_freq.get(freq)) is not None
             and candidate.id != source.id
         )
-        selected_actual_end = max((d for d, _ in transformed), default=None)
+        displayed_dates = {d for d, _ in transformed}
+        last_displayed = max(displayed_dates, default=None)
         seen_ids: set[int] = set()
         for candidate in candidates:
             if candidate.id in seen_ids:
                 continue
             seen_ids.add(candidate.id)
+            candidate_freq = normalize_frequency(candidate.frequency)
+            if candidate_freq in ("daily", "weekly"):
+                continue
             current = await _load_current_world_forecast(db, candidate.id)
             if current is None:
                 continue
@@ -1977,60 +1997,46 @@ async def indicator_data(
                 if candidate.id == source.id
                 else resolve_series_for_mode(
                     parsed=parsed,
-                    by_freq={normalize_frequency(candidate.frequency): candidate},
+                    by_freq={candidate_freq: candidate},
                     signed=signed,
                 )
             )
             if forecast_resolved is None:
                 continue
             candidate_actual = await _load_points(db, candidate.id)
-            combined = [
-                *candidate_actual,
-                *((value.date, float(value.value)) for value in forecast_values),
+            native_forecast = [
+                (
+                    value.date,
+                    float(value.value),
+                    float(value.lower_bound) if value.lower_bound is not None else None,
+                    float(value.upper_bound) if value.upper_bound is not None else None,
+                )
+                for value in forecast_values
             ]
             try:
-                candidate_actual_transformed = apply_resolved(
+                forecast_points = apply_resolved_forecast(
                     candidate_actual,
-                    forecast_resolved,
-                )
-                candidate_combined_transformed = apply_resolved(
-                    combined,
+                    native_forecast,
                     forecast_resolved,
                 )
             except ValueError:
                 continue
-            cutoff = max(
-                filter(
-                    None,
-                    [
-                        selected_actual_end,
-                        max((d for d, _ in candidate_actual_transformed), default=None),
-                    ],
-                ),
-                default=None,
-            )
             forecast_points = [
-                (d, v)
-                for d, v in candidate_combined_transformed
-                if cutoff is None or d > cutoff
+                row
+                for row in forecast_points
+                if last_displayed is None or row[0] > last_displayed
+                or row[0] not in displayed_dates
             ]
             if not forecast_points:
                 continue
-            interval_by_date = {}
-            if not forecast_resolved.aggregated and forecast_resolved.transform == "level":
-                interval_by_date = {
-                    value.date: {
-                        "lower_bound": (
-                            float(value.lower_bound)
-                            if value.lower_bound is not None else None
-                        ),
-                        "upper_bound": (
-                            float(value.upper_bound)
-                            if value.upper_bound is not None else None
-                        ),
-                    }
-                    for value in forecast_values
-                }
+            derived_from = (
+                forecast_resolved.source_frequency
+                if (
+                    forecast_resolved.aggregated
+                    or forecast_resolved.source_frequency != parsed.freq
+                )
+                else None
+            )
             forecast_payload = {
                 "model_name": forecast.model_name,
                 "strategy": forecast.strategy,
@@ -2048,16 +2054,15 @@ async def indicator_data(
                     forecast_resolved.aggregated
                     or forecast_resolved.transform != "level"
                 ),
+                "derived_from": derived_from,
                 "points": [
                     {
                         "date": d.isoformat(),
                         "value": v,
-                        **interval_by_date.get(d, {
-                            "lower_bound": None,
-                            "upper_bound": None,
-                        }),
+                        "lower_bound": lo,
+                        "upper_bound": hi,
                     }
-                    for d, v in forecast_points
+                    for d, v, lo, hi in forecast_points
                 ],
             }
             break
@@ -2096,6 +2101,7 @@ async def indicator_data(
             {
                 "policy": resolved.aggregation_policy,
                 "source": resolved.aggregation_source or "fallback",
+                "source_frequency": resolved.source_frequency,
             }
             if resolved.aggregated
             else None

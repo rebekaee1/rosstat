@@ -13,7 +13,7 @@ import { useIndicators } from '../lib/hooks';
 import { fetchIndicatorData } from '../lib/api';
 import api from '../lib/api';
 import { useRegionsLanding, useRegionsCatalog } from '../lib/regionsApi';
-import { fetchWorldCompareSeries, useWorldCompareCatalog } from '../lib/worldApi';
+import { fetchWorldCompareOrCard, useWorldCompareCatalog } from '../lib/worldApi';
 import { useAuth } from '../context/authContext';
 import { useT, useLocale } from '../i18n';
 import { currentUiLocale } from '../i18n/locale';
@@ -208,7 +208,7 @@ async function fetchRegionSeries(code, { signal }) {
 async function fetchWorldSeries(code, { signal }) {
   const parsed = parseWorldCompareCode(code);
   if (!parsed) throw new Error('compare.error.worldCode');
-  const payload = await fetchWorldCompareSeries(parsed.countrySlug, parsed.conceptSlug, { signal });
+  const payload = await fetchWorldCompareOrCard(parsed.countrySlug, parsed.conceptSlug, { signal });
   const loc = currentUiLocale();
   const countryName = loc === 'en'
     ? (payload.meta.country_name_en || payload.meta.country_name)
@@ -1150,6 +1150,11 @@ export default function ComparePage() {
         ? fetchRegionSeries(r.fetchCode, { signal })
         : fetchIndicatorData(r.fetchCode, undefined, { signal })),
       enabled: !!r.fetchCode,
+      retry: (count, err) => {
+        const status = err?.response?.status;
+        if (status && status >= 400 && status < 500 && status !== 429) return false;
+        return count < 1;
+      },
       staleTime: 60 * 60 * 1000,
       gcTime: 30 * 60 * 1000,
     })),
@@ -1313,6 +1318,7 @@ export default function ComparePage() {
   }, [chartRows, series]);
   const hasData = chartRows.length > 0;
   const loading = series.some((s) => s.loading);
+  const loadFailed = series.some((s) => s.error);
   const hasError = series.some((s) => s.error);
   // Формат дат оси: агрегированный шаг диктует гранулярность, иначе — частоты рядов.
   const compareDateFmt = step === 'year'
@@ -1638,7 +1644,9 @@ export default function ComparePage() {
             <p className="text-sm text-center max-w-md">
               {codes.length === 0
                 ? t('compare.emptyAdd')
-                : t('compare.emptyData')}
+                : loadFailed
+                  ? t('compare.emptyUnavailable')
+                  : t('compare.emptyData')}
             </p>
           </div>
         ) : (

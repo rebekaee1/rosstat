@@ -129,8 +129,8 @@ _LEVEL_UNITS = frozenset({
     "THS_PER", "THS", "THS_EUR", "NR", "EUR",
 })
 _DERIVED_UNITS = frozenset({
-    "RCH_A", "RCH_M", "RCH_MV12MAVR", "RT1", "RT1-SCA", "RT_M_DIF",
-    "PCH_SM", "PCH_PRE", "PCH_SAME",
+    "RCH_A", "RCH_M", "RCH_MV12MAVR", "RCH_A_AVG", "RT1", "RT1-SCA", "RT_M_DIF",
+    "PCH_SM", "PCH_PRE", "PCH_SAME", "PCH_M1",
 })
 
 _FREQ_TAIL_RE = re.compile(
@@ -1195,7 +1195,7 @@ def listing_substance_score(
     score += min(max(points_count, 0), 400) // 4
     ds = (dataset_id or "").lower()
     # национальные счета / канонические HICP — содержательнее micro-срезов LFS
-    if ds.startswith(("nama_", "namq_", "prc_hicp_midx", "prc_hicp_manr", "une_rt_")):
+    if ds.startswith(("nama_", "namq_", "prc_hicp_midx", "prc_hicp_minr", "prc_hicp_manr", "une_rt_")):
         score += 50
     if "nama_10r" in ds or "namq_10r" in ds or ds.startswith("lfsq_pg"):
         score -= 40
@@ -1377,6 +1377,23 @@ def compose_title(english_title: str, dataset_id: str = "") -> TitleResult:
 def resolve_dataset_title(dataset_id: str, english_title: str) -> TitleResult:
     """Единая точка: один перевод на набор."""
     return compose_title(english_title, dataset_id)
+
+
+DATASET_TITLES_EN: dict[str, str] = {
+    "prc_hicp_minr": "Harmonised index of consumer prices",
+    "prc_hicp_ainr": "Harmonised index of consumer prices",
+    "prc_hicp_midx": "Harmonised index of consumer prices",
+    "prc_hicp_aind": "Harmonised index of consumer prices",
+}
+
+
+def dataset_title_en(dataset_id: str, fallback: str | None = None) -> str:
+    """Публичное EN-имя набора; сырой TOC Eurostat может содержать жаргон классификации."""
+    ds = (dataset_id or "").strip().lower()
+    hit = DATASET_TITLES_EN.get(ds)
+    if hit:
+        return hit
+    return (fallback or "").strip()
 
 
 def is_listed_for_quality(quality: str) -> bool:
@@ -1594,6 +1611,15 @@ DATASET_EXPLAINERS_RU: dict[str, str] = {
     "lfsi_dwl_a": (
         "Ожидаемая продолжительность трудовой жизни — сколько лет в среднем "
         "человек проводит в составе рабочей силы за жизнь, а не возраст выхода на пенсию."
+    ),
+    "prc_hicp_minr": (
+        "Гармонизированный индекс потребительских цен по единой европейской "
+        "классификации потребительских расходов (ECOICOP версии 2): "
+        "сопоставимый индекс для стран Европы, база 2015 год = 100."
+    ),
+    "prc_hicp_ainr": (
+        "Годовой гармонизированный индекс потребительских цен по единой "
+        "европейской классификации потребительских расходов (ECOICOP версии 2)."
     ),
 }
 

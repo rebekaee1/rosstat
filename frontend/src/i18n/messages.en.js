@@ -376,7 +376,8 @@ export default {
   'compare.wantMore': 'More than two? Sign up →',
   'compare.downloadChart': 'Download chart',
   'compare.emptyAdd': 'Find and add indicators to build the chart.',
-  'compare.emptyData': 'Loading or unavailable for the selected series.',
+  'compare.emptyData': 'No points to plot for the selected series.',
+  'compare.emptyUnavailable': 'Could not load the selected series. Check the code in the address or pick an indicator below.',
   'compare.hintIndex': 'Rebased to 100 at the start of the period — common scale.',
   'compare.hintValues': 'Values in source units; each series has its own axis.',
   'compare.axisLeft': 'left axis',
@@ -952,13 +953,19 @@ export default {
   'world.mode.hint.mean': 'period average from monthly data, platform calculation',
   'world.mode.hint.sum': 'period total from monthly data, platform calculation',
   'world.mode.hint.last': 'period-end value, platform calculation',
+  'world.mode.hint.derivedWeekly': 'calculated from weekly observations for complete periods',
+  'world.mode.hint.derivedDaily': 'calculated from daily observations for complete periods',
   'world.mode.badge.derived': 'derived',
   'world.chart.forecastGate':
     'This series has no forecast yet: the history is too short or irregular, or the model did not converge.',
+  'world.chart.forecastHighFreq':
+    'Forecast is not published for daily and weekly series.',
   'world.chart.forecastPassed':
     'Forecast follows the platform methodology; on a retrospective check the model beat the seasonal benchmark.',
   'world.chart.forecastAdvisory':
     'Forecast follows the platform methodology; on a retrospective check the model did not beat the seasonal benchmark — treat it as a trend estimate.',
+  'world.chart.forecastDerived':
+    'The forecast at this frequency is calculated from the source-series forecast for complete calendar periods.',
   'world.chart.forecastStarts': 'The forecast starts after the last official observation.',
   'world.chart.forecastIncomplete': 'The selected transformation has no complete forecast period.',
   'world.chart.forecastHiddenRebase': 'The forecast is hidden when comparing on a common base of 100.',

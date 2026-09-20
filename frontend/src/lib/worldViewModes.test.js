@@ -36,6 +36,10 @@ describe('parse / normalize world mode tokens', () => {
       type: 'level',
       freq: 'monthly',
     });
+    expect(parseWorldModeToken('level-weekly')).toEqual({
+      type: 'level',
+      freq: 'weekly',
+    });
     expect(parseWorldModeToken('nope')).toBeNull();
   });
 
@@ -121,6 +125,23 @@ describe('groupModesFromApi', () => {
     expect(level.modes[2].disabled).toBe(true);
     expect(JSON.stringify(level.modes)).not.toContain('нет официального ряда');
     expect(JSON.stringify(level.modes)).not.toContain('расчётный ряд');
+  });
+
+  it('принимает недельную частоту в токене', () => {
+    const modes = [
+      {
+        id: 'level-weekly', label: 'По неделям', group: 'Уровень',
+        type: 'level', freq: 'weekly', available: true, official: true,
+      },
+      {
+        id: 'level-monthly', label: 'По месяцам', group: 'Уровень',
+        type: 'level', freq: 'monthly', available: true, official: false,
+        aggregation: { policy: 'mean', source: 'passport', source_frequency: 'weekly' },
+      },
+    ];
+    const groups = groupModesFromApi(modes);
+    expect(groups[0].modes.map((m) => m.mode)).toEqual(['level-weekly', 'level-monthly']);
+    expect(groups[0].modes[1].official).toBe(false);
   });
 });
 

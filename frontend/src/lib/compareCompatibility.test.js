@@ -12,6 +12,10 @@ describe('compareCompatibility', () => {
       countrySlug: 'germany',
       conceptSlug: 'unemployment-rate',
     });
+    expect(parseWorldCompareCode('w:united-states:us-unemployment-rate')).toEqual({
+      countrySlug: 'united-states',
+      conceptSlug: 'us-unemployment-rate',
+    });
     expect(parseWorldCompareCode('w:germany')).toBeNull();
   });
 

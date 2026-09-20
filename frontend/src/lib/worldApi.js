@@ -38,8 +38,10 @@ function localeKey() {
  */
 function shouldUseMock(err) {
   if (!import.meta.env.DEV) return false;
+  // Abort/timeout/429 без тела — не подменять живой ряд фикстурой HICP.
+  if (err?.code === 'ERR_CANCELED' || err?.name === 'CanceledError') return false;
   const status = err?.response?.status;
-  return status === 404 || status === 502 || status === 503 || status == null;
+  return status === 404 || status === 502 || status === 503;
 }
 
 async function withMockFallback(request, mockFactory) {
@@ -136,8 +138,10 @@ export function useWorldIndicatorData(
   } = {},
 ) {
   const dataCode = requestCode || code;
+  const FORECAST_SLOT = 4;
+  const queryKey = ['world-indicator-data', slug, dataCode, mode, includeForecast, from, to, localeKey()];
   return useQuery({
-    queryKey: ['world-indicator-data', slug, dataCode, mode, includeForecast, from, to, localeKey()],
+    queryKey,
     queryFn: ({ signal }) => {
       const params = {};
       if (mode) params.mode = mode;
@@ -150,6 +154,16 @@ export function useWorldIndicatorData(
       );
     },
     enabled: !!slug && !!dataCode && !!mode,
+    // Тоггл «Прогноз» меняет queryKey: без placeholder карточка на refetch
+    // на мгновение пустеет (телеметрия и таблица «(0)»). Держим прошлые точки
+    // только если отличается один include_forecast — смена ряда/режима/окна
+    // не должна на миг показывать чужие точки под новым заголовком.
+    placeholderData: (previous, previousQuery) => {
+      const prevKey = previousQuery?.queryKey;
+      if (!prevKey || prevKey.length !== queryKey.length) return undefined;
+      const sameSeries = queryKey.every((part, i) => i === FORECAST_SLOT || part === prevKey[i]);
+      return sameSeries ? previous : undefined;
+    },
     staleTime: STALE,
     gcTime: GC,
   });
@@ -216,6 +230,49 @@ export function worldIndicatorHref(countrySlug, indicatorCode) {
 
 export async function fetchWorldCompareSeries(countrySlug, conceptSlug, { signal } = {}) {
   return (await api.get(`/world/compare/series/${countrySlug}/${conceptSlug}`, { signal })).data;
+}
+
+/**
+ * Compare URL is `w:{country}:{key}` where key is either a curated concept
+ * (`unemployment-rate`) or a national indicator code (`us-unemployment-rate`).
+ * Concept endpoint first; 404/409 fall through to the country card series.
+ */
+export async function fetchWorldCompareOrCard(countrySlug, seriesKey, { signal } = {}) {
+  try {
+    return await fetchWorldCompareSeries(countrySlug, seriesKey, { signal });
+  } catch (err) {
+    const status = err?.response?.status;
+    if (status !== 404 && status !== 409) throw err;
+  }
+  const [metaResp, dataResp] = await Promise.all([
+    api.get(`/world/indicators/${countrySlug}/${seriesKey}`, { signal }),
+    api.get(`/world/indicators/${countrySlug}/${seriesKey}/data`, { signal }),
+  ]);
+  const loc = currentUiLocale();
+  const country = metaResp.data?.country || {};
+  const ind = metaResp.data?.indicator || {};
+  const points = dataResp.data?.points || dataResp.data?.data || [];
+  const countryName = loc === 'en'
+    ? (country.name_en || country.name)
+    : country.name;
+  const seriesName = loc === 'en'
+    ? (ind.name_en || ind.name)
+    : ind.name;
+  return {
+    meta: {
+      code: `w:${countrySlug}:${seriesKey}`,
+      indicator_code: ind.code || seriesKey,
+      country_slug: country.slug || countrySlug,
+      country_name: countryName,
+      country_name_en: country.name_en,
+      concept_slug: ind.concept_slug || seriesKey,
+      concept_name: seriesName,
+      concept_name_en: ind.name_en,
+      frequency: ind.frequency,
+      unit: ind.unit,
+    },
+    data: points.map((point) => ({ date: point.date, value: point.value })),
+  };
 }
 
 /** Официальный ряд curated-понятия (карточка страны / сравнение / калькулятор). */

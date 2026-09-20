@@ -171,12 +171,51 @@ async def concept_members(
     by_country: dict[int, tuple[WorldCountry, WorldIndicator]] = {}
     for country, indicator in members:
         prev = by_country.get(country.id)
-        if prev is None or (
-            concept_member_rank(indicator, national_codes)
-            < concept_member_rank(prev[1], national_codes)
-        ):
+        if prev is None or _compare_member_sort_key(
+            indicator, national_codes,
+        ) < _compare_member_sort_key(prev[1], national_codes):
             by_country[country.id] = (country, indicator)
     return list(by_country.values())
+
+
+def _compare_member_sort_key(
+    indicator: WorldIndicator,
+    national_codes: frozenset[str],
+) -> tuple:
+    """Меньше = лучше: national → listed eurostat → свежий хвост → код."""
+    end = indicator.history_end or date.min
+    return (
+        concept_member_rank(indicator, national_codes),
+        -end.toordinal(),
+        indicator.code or "",
+    )
+
+
+def choose_compare_indicator(
+    indicators: list[WorldIndicator],
+    concept,
+    national_codes: frozenset[str],
+) -> WorldIndicator | None:
+    """Один ряд страны для compare/series: не 409, если есть преемник.
+
+    National crosswalk важнее eurostat. Среди eurostat — listed, затем
+    более поздний ``history_end`` (живой ``prc_hicp_minr`` бьёт замороженный
+    ``prc_hicp_midx`` с тем же срезом корзины).
+    """
+    members = [
+        indicator
+        for indicator in indicators
+        if concept_for_indicator(indicator) == concept
+        or (
+            indicator.code in national_codes
+            and concept_unit_compatible(concept, indicator)
+        )
+    ]
+    if not members:
+        return None
+    national = [item for item in members if item.code in national_codes]
+    pool = national or members
+    return min(pool, key=lambda item: _compare_member_sort_key(item, national_codes))
 
 
 def _country_display_name(country: WorldCountry) -> str:

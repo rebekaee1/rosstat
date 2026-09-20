@@ -21,7 +21,8 @@
  *   unit?: string,
  *   available?: boolean,
  *   official?: boolean,
- *   aggregation?: { policy?: string, source?: string } | null,
+ *   aggregation?: { policy?: string, source?: string, source_frequency?: string } | null,
+ *   forecastable?: boolean,
  * }} WorldMode
  */
 
@@ -43,12 +44,12 @@
  */
 
 export const WORLD_MODE_TYPES = ['level', 'step', 'yoy', 'yoyabs', 'index'];
-export const WORLD_MODE_FREQS = ['monthly', 'quarterly', 'annual'];
+export const WORLD_MODE_FREQS = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'];
 
 const TYPE_SET = new Set(WORLD_MODE_TYPES);
 const FREQ_SET = new Set(WORLD_MODE_FREQS);
 
-const COMPOSITE_RE = /^(level|step|yoy|yoyabs|index)-(monthly|quarterly|annual)$/;
+const COMPOSITE_RE = /^(level|step|yoy|yoyabs|index)-(daily|weekly|monthly|quarterly|annual)$/;
 
 const TYPE_GROUP_LABEL = {
   level: 'Уровень',
@@ -206,6 +207,7 @@ function normalizeModeEntry(m, fallbackFreq = 'monthly') {
     available: m.available !== false,
     official: m.official !== false,
     aggregation: m.aggregation || null,
+    forecastable: m.forecastable,
   };
 }
 
@@ -358,6 +360,7 @@ export function groupModesFromApi(modes) {
       official: m.official !== false,
       disabled: !available,
       aggregation: m.aggregation || null,
+      forecastable: m.forecastable,
     });
   }
 
@@ -442,10 +445,14 @@ const LABELS_EN_INLINE = {
   'По месяцам': 'Monthly',
   'По кварталам': 'Quarterly',
   'По годам': 'Annual',
+  'По неделям': 'Weekly',
+  'По дням': 'Daily',
   'М/м': 'MoM',
   'Кв/кв': 'QoQ',
   'Кв/Кв': 'QoQ',
   'Г/г': 'YoY',
+  'Н/н': 'WoW',
+  'Д/д': 'DoD',
 };
 
 /**
@@ -480,7 +487,7 @@ export function worldRangePreset(frequency) {
   return 'default';
 }
 
-const FREQ_RANK = { monthly: 0, quarterly: 1, annual: 2, weekly: 3, daily: 4 };
+const FREQ_RANK = { daily: 0, weekly: 1, monthly: 2, quarterly: 3, annual: 4 };
 
 /**
  * Схлопнуть листинг страны: одна плитка на показатель, если API ещё отдаёт ряды.

@@ -90,6 +90,7 @@ export default function WorldChartSection({
   forecastData = [],
   forecastEnabled = false,
   forecastGateStatus = null,
+  forecastDerivedFrom = null,
   showForecast = false,
   onToggleForecast,
   chartLoading,
@@ -147,11 +148,16 @@ export default function WorldChartSection({
     }),
     [forecastData],
   );
-  const forecastNote = forecastEnabled
-    ? (forecastGateStatus === 'advisory'
-      ? t('world.chart.forecastAdvisory')
-      : t('world.chart.forecastPassed'))
-    : t('world.chart.forecastGate');
+  const highFreqNative = activeFreq === 'weekly' || activeFreq === 'daily'
+    || aggregation?.source_frequency === 'weekly'
+    || aggregation?.source_frequency === 'daily';
+  const forecastNote = !forecastEnabled
+    ? (highFreqNative ? t('world.chart.forecastHighFreq') : t('world.chart.forecastGate'))
+    : forecastDerivedFrom
+      ? t('world.chart.forecastDerived')
+      : (forecastGateStatus === 'advisory'
+        ? t('world.chart.forecastAdvisory')
+        : t('world.chart.forecastPassed'));
 
   const handleDownloadImage = async () => {
     if (!downloadAuthed) {
@@ -267,15 +273,19 @@ export default function WorldChartSection({
 
       {aggregated && (
         <p className="mb-3 text-[12px] text-text-secondary">
-          {aggregation?.policy === 'sum'
-            ? t('world.mode.hint.sum')
-            : aggregation?.policy === 'last'
-              ? t('world.mode.hint.last')
-              : aggregation?.policy === 'mean'
-                ? t('world.mode.hint.mean')
-                : t('world.chart.aggregated', {
-                  source: indicator?.source || t('world.chart.sourceFallback'),
-                })}
+          {aggregation?.source_frequency === 'weekly'
+            ? t('world.mode.hint.derivedWeekly')
+            : aggregation?.source_frequency === 'daily'
+              ? t('world.mode.hint.derivedDaily')
+              : aggregation?.policy === 'sum'
+                ? t('world.mode.hint.sum')
+                : aggregation?.policy === 'last'
+                  ? t('world.mode.hint.last')
+                  : aggregation?.policy === 'mean'
+                    ? t('world.mode.hint.mean')
+                    : t('world.chart.aggregated', {
+                      source: indicator?.source || t('world.chart.sourceFallback'),
+                    })}
         </p>
       )}
 
@@ -297,7 +307,7 @@ export default function WorldChartSection({
           </Link>
         </div>
       )}
-      {showForecast && forecastEnabled && forecastData.length === 0 && (
+      {showForecast && forecastEnabled && !chartLoading && forecastData.length === 0 && (
         <p className="mb-3 text-[11px] text-text-tertiary">
           {t('world.chart.forecastIncomplete')}
         </p>

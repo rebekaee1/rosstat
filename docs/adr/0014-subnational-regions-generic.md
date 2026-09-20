@@ -51,8 +51,17 @@ Ingest: `scripts/load-world-subnational.py`, weekly job под флагом
 - Российский regional (таблицы, сидер, API, UI `/russia/region`) не меняется
   по смыслу; параметризация карты обратно совместима.
 - Новая страна = новый YAML + геометрия карты, без правок ядра.
-- OG-картинки субнациональных страниц в этом заходе не заведены.
 
 ## Subsequent additions
 
-Нет.
+### 2026-09-20 — OG-картинки субнациональных страниц
+
+Три публичных пути (generic по стране, без `if country ==`):
+
+- `/og/world/{country}/regions.png` → `/api/v1/og-image/world-regions/{country}.png` (барчарт топ-8 дефолтного показателя)
+- `/og/world/{country}/region/{region}.png` → `/api/v1/og-image/world-region/{country}/{region}.png` (сводка 6 показателей)
+- `/og/world/{country}/region/{region}/{indicator}.png` → `/api/v1/og-image/world-region/{country}/{region}/{indicator}.png` (график ряда)
+
+Рендер переиспользует `render_rating_og` / `render_world_country_og` / `render_indicator_og`.
+SSR (`seo_world_subnational`): `og:image` + JSON-LD `ImageObject` + видимый `<figure class="seo-chart">`.
+nginx: правила в `location ^~ /og/` стоят после `/og/world/rating/…` и до generic `/og/world/{country}/{code}`.

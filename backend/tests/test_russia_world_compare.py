@@ -8,6 +8,7 @@ import pytest
 
 from app.data.world_concept_russia import concept_slug_for_russia_code
 from app.services.world_compare import (
+    choose_compare_indicator,
     peer_fetch_mode,
     russia_world_compare_ssr_links,
 )
@@ -39,6 +40,36 @@ def test_ssr_links_include_rating_and_vs_pair():
     assert "/world/rating/hicp-index" in hrefs
     assert any("-vs-" in href and "hicp-index" in href for href in hrefs)
     assert russia_world_compare_ssr_links("key-rate") is None
+
+
+def test_choose_compare_indicator_prefers_live_minr_over_frozen_midx():
+    from types import SimpleNamespace
+    from app.data.world_concepts import CONCEPT_BY_SLUG
+
+    concept = CONCEPT_BY_SLUG["hicp-index"]
+    midx = SimpleNamespace(
+        code="de-prc_hicp_midx-cp00-i15",
+        dataset_id="prc_hicp_midx",
+        unit="I15",
+        unit_ru="индекс 2015=100",
+        provider="eurostat",
+        is_listed=False,
+        history_end=date(2025, 12, 1),
+        slice_json={"unit": "I15", "coicop": "CP00", "freq": "M"},
+    )
+    minr = SimpleNamespace(
+        code="de-prc_hicp_minr-total-i15",
+        dataset_id="prc_hicp_minr",
+        unit="I15",
+        unit_ru="индекс 2015=100",
+        provider="eurostat",
+        is_listed=True,
+        history_end=date(2026, 8, 1),
+        slice_json={"unit": "I15", "coicop18": "TOTAL", "freq": "M"},
+    )
+    picked = choose_compare_indicator([midx, minr], concept, frozenset())
+    assert picked is not None
+    assert picked.code == "de-prc_hicp_minr-total-i15"
 
 
 def test_hicp_peer_mode_is_yoy_for_index_series():

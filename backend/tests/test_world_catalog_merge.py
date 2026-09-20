@@ -163,8 +163,33 @@ def test_merge_key_provider_does_not_merge():
     assert k1 != k2
 
 
-def test_merge_key_hicp_rates_join_index():
-    """Темпы ГИПЦ (manr/mmor/mv12r) — та же карточка, что индекс midx."""
+def test_merge_key_hicp_ecoicop_v2_joins_frozen_index():
+    """prc_hicp_minr coicop18=TOTAL и замороженный midx coicop=CP00 — одна карточка."""
+    k_old = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hicp_midx",
+        unit="I15", unit_ru="индекс (2015 = 100)",
+        slice_json={"freq": "M", "unit": "I15", "coicop": "CP00"},
+    )
+    k_new = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hicp_minr",
+        unit="I15", unit_ru="индекс (2015 = 100)",
+        slice_json={"freq": "M", "unit": "I15", "coicop18": "TOTAL"},
+    )
+    assert k_old == k_new
+    k_yoy = catalog_merge_key(
+        country_id=7, provider="eurostat", dataset_id="prc_hicp_minr",
+        unit="RCH_A", unit_ru="изменение за год",
+        slice_json={"freq": "M", "unit": "RCH_A", "coicop18": "TOTAL"},
+    )
+    assert k_yoy == k_new
+    for ds in ("tec00118", "teicp000"):
+        k = catalog_merge_key(
+            country_id=7, provider="eurostat", dataset_id=ds,
+            unit="RCH_A_AVG" if ds == "tec00118" else "PCH_M1",
+            unit_ru="изменение за год",
+            slice_json={"freq": "A" if ds == "tec00118" else "M", "coicop18": "TOTAL"},
+        )
+        assert k == k_new, ds
     idx = catalog_merge_key(
         country_id=7, provider="eurostat", dataset_id="prc_hicp_midx",
         unit="I15", unit_ru="индекс (2015 = 100)",
@@ -260,6 +285,23 @@ def test_measure_preference_level_beats_change_at_equal_depth():
     assert measure_preference_rank(idx) < measure_preference_rank(pch)
     winner = min([idx, pch], key=measure_preference_rank)
     assert winner.code == "at-idx"
+
+
+def test_measure_preference_discontinued_loses_to_successor():
+    """Редакторский no (замороженный aind) проигрывает живому ainr при равной мере."""
+    frozen = _mk(1, "at-aind", "prc_hicp_aind", "INX_A_AVG", "индекс", points=30)
+    frozen.history_end = date(2025, 1, 1)
+    live = _mk(2, "at-ainr", "prc_hicp_ainr", "INX_A_AVG", "индекс", points=30)
+    live.history_end = date(2025, 1, 1)
+    assert measure_preference_rank(live) < measure_preference_rank(frozen)
+    """При равной мере живой преемник (свежий history_end) важнее более глубокого замороженного."""
+    stale = _mk(1, "at-midx", "prc_hicp_midx", "I15", "индекс (2015 = 100)", points=360)
+    stale.history_end = date(2025, 12, 1)
+    live = _mk(2, "at-minr", "prc_hicp_minr", "I15", "индекс (2015 = 100)", points=300)
+    live.history_end = date(2026, 8, 1)
+    assert measure_preference_rank(live) < measure_preference_rank(stale)
+    winner = min([stale, live], key=measure_preference_rank)
+    assert winner.code == "at-minr"
 
 
 def test_measure_preference_deeper_wins_within_same_class():

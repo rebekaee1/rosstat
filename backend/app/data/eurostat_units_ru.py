@@ -360,6 +360,7 @@ def _t_en(en: str) -> str | None:
         "growth rate on previous period (t/t-1)": "темп изменения к предыдущему периоду",
         "annual rate of change": "изменение за год",
         "monthly rate of change": "изменение за месяц",
+        "annual average rate of change": "изменение за год",
         "moving 12 months average rate of change": "среднее изменение за 12 месяцев",
         "monthly rate differences between hicp and hicp at constant taxes": (
             "изменение за месяц, п.п."

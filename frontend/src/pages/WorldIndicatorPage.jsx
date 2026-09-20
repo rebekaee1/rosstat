@@ -151,9 +151,16 @@ export default function WorldIndicatorPage() {
     ? activeMode
     : (metaQ.data ? worldModeToLegacyDataToken(activeMode) : null);
 
-  const forecastAvailable = Boolean(metaQ.data?.forecast_available);
+  const forecastAvailable = modeMeta?.forecastable != null
+    ? Boolean(modeMeta.forecastable)
+    : (
+      Boolean(metaQ.data?.forecast_available)
+      && modeParsed?.freq !== 'weekly'
+      && modeParsed?.freq !== 'daily'
+    );
   const [showForecast, setShowForecast] = useState(false);
-  const dataQ = useWorldIndicatorData(slug, code, dataModeParam, {
+  const redirecting = Boolean(metaQ.data?.redirect_to);
+  const dataQ = useWorldIndicatorData(slug, code, redirecting ? null : dataModeParam, {
     requestCode: dataCode,
     includeForecast: forecastAvailable && showForecast,
   });
@@ -170,8 +177,26 @@ export default function WorldIndicatorPage() {
 
   const [fullChartData, setFullChartData] = useState([]);
 
+  // Канон URL: unlisted член merge-группы (замороженный ГИПЦ) → listed primary.
+  useEffect(() => {
+    const to = metaQ.data?.redirect_to;
+    if (!to || typeof to !== 'string') return;
+    const q = to.indexOf('?');
+    const pathname = q >= 0 ? to.slice(0, q) : to;
+    const rawSearch = q >= 0 ? to.slice(q + 1) : '';
+    const next = new URLSearchParams(rawSearch);
+    const preview = searchParams.get('preview_locale');
+    if (preview) next.set('preview_locale', preview);
+    const qs = next.toString();
+    navigate(
+      { pathname, search: qs ? `?${qs}` : '' },
+      { replace: true },
+    );
+  }, [metaQ.data?.redirect_to, navigate, searchParams]);
+
   // Канон URL: primary_code + составной ?mode= (preview_locale не теряем).
   useEffect(() => {
+    if (metaQ.data?.redirect_to) return;
     const primary = metaQ.data?.primary_code;
     if (primary && primary !== code) {
       const mode = activeMode || normalizeWorldModeToken(
@@ -429,7 +454,7 @@ export default function WorldIndicatorPage() {
         </ApiRetryBanner>
       )}
 
-      {metaQ.isLoading && (
+      {(metaQ.isLoading || redirecting) && (
         <div className="space-y-4">
           <SkeletonBox className="h-4 w-24" />
           <SkeletonBox className="h-14 w-3/4 max-w-full" />
@@ -558,8 +583,10 @@ export default function WorldIndicatorPage() {
             dataPoints={points}
             forecastData={forecastPoints}
             forecastEnabled={forecastAvailable}
+            forecastDerivedFrom={dataQ.data?.forecast?.derived_from || null}
             forecastGateStatus={
-              metaQ.data?.forecast_gate_status
+              dataQ.data?.forecast?.quality?.gate_status
+              || metaQ.data?.forecast_gate_status
               || (forecastAvailable ? 'passed' : null)
             }
             showForecast={showForecast}

@@ -44,14 +44,14 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         slug="hicp-index",
         name_ru="Гармонизированный индекс потребительских цен",
         unit_ru="индекс 2015=100",
-        dataset_ids=frozenset({"prc_hicp_midx"}),
+        dataset_ids=frozenset({"prc_hicp_midx", "prc_hicp_minr"}),
         measure="I15",
         required_slice={"coicop": "CP00"},
         frequency_policy="official_then_calculated",
         aggregation_policy="mean",
         enabled_surfaces=_RATING_SURFACES,
         provider_dataset_ids={
-            "eurostat": frozenset({"prc_hicp_midx"}),
+            "eurostat": frozenset({"prc_hicp_midx", "prc_hicp_minr"}),
             "imf": frozenset({"weo"}),
         },
         provider_required_slices={
@@ -263,6 +263,21 @@ def concept_public_unit(concept: WorldConcept, *, locale: str | None = None) -> 
 
 CONCEPT_BY_SLUG = {concept.slug: concept for concept in WORLD_CONCEPTS}
 _NON_SEMANTIC_SLICE_KEYS = frozenset({"freq", "unit", "time", "geo"})
+_COICOP_DIMS = frozenset({"coicop", "coicop18"})
+_ALL_ITEMS_COICOP = frozenset({"CP00", "TOT", "TOTAL", "T"})
+
+
+def _is_all_items_coicop(value: object) -> bool:
+    return str(value or "").strip().upper() in _ALL_ITEMS_COICOP
+
+
+def _slice_coicop_value(slice_json: Mapping[str, object] | None) -> str:
+    sl = slice_json or {}
+    for key in ("coicop", "coicop18"):
+        raw = sl.get(key)
+        if raw is not None and str(raw).strip():
+            return str(raw).strip()
+    return ""
 
 
 def _concept_pinned_slice(concept: WorldConcept, provider: str) -> Mapping[str, str]:
@@ -292,14 +307,27 @@ def concept_matches_indicator(concept: WorldConcept, indicator) -> bool:
     required_slice = _concept_pinned_slice(concept, provider)
     slice_json = indicator.slice_json or {}
     configured_keys = {key.lower() for key in required_slice}
+    # ECOICOP v1 coicop=CP00 и v2 coicop18=TOTAL — один итог корзины.
+    if any(k in _COICOP_DIMS for k in configured_keys):
+        configured_keys |= _COICOP_DIMS
     for key, raw in slice_json.items():
         normalized_key = str(key).strip().lower()
         if not normalized_key or normalized_key in _NON_SEMANTIC_SLICE_KEYS:
+            continue
+        if (
+            normalized_key in _COICOP_DIMS
+            and _is_all_items_coicop(raw)
+            and any(_is_all_items_coicop(required_slice.get(k)) for k in _COICOP_DIMS)
+        ):
             continue
         if normalized_key not in configured_keys and str(raw).strip():
             return False
     for key, expected in required_slice.items():
         actual = slice_json.get(key)
+        if key.lower() in _COICOP_DIMS:
+            actual = _slice_coicop_value(slice_json) or actual
+            if _is_all_items_coicop(expected) and _is_all_items_coicop(actual):
+                continue
         if key == "age":
             actual = normalize_age_code(actual)
             expected = normalize_age_code(expected)

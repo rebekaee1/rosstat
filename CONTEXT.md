@@ -196,6 +196,8 @@ Phase 4 (ставки) НЕ использует viewModeFamilies: `credit-rate-
 
 **Каскадный retrain.** После успешного retrain индикатора-источника (в `forecast_pipeline.retrain_indicator_forecast`) ищем все индикаторы, у которых `derived_forecast.source_code == this.code`, и retrain их рекурсивно с защитой от циклов. Это заменило старый side-effect `_propagate_cpi_forecast_to_derived`, который остался для cascade `cpi → cpi-{food,nonfood,services}-quarterly`, но `*-annual` (Dec-to-Dec) теперь живут отдельной стратегией.
 
+**World job** (`world_forecast_pipeline.world_forecast_job`): listed M/Q/A `world_indicators`, инкрементально по отпечатку `history_end`/`points_count`/`WORLD_FORECAST_METHOD_VERSION`, обход по приоритету стран и концепт-рядов; `bump_namespaces("world", "ssr-world")` каждые N успехов.
+
 ### ETL run
 
 Запуск одного парсера для одного индикатора. Записывается в `FetchLog`:
@@ -314,6 +316,23 @@ Eurostat — первый адаптер, а не универсальный и�
 ## Operational invariants and traps
 
 Вещи, которые ломаются неочевидно. Каждый пункт — проверенный пост-мортем.
+
+### Too-many-open-files trap: плановые job'ы копят fd до Errno 24 (2026-09-20)
+
+Контейнер backend с Docker-дефолтом `ulimit -n = 1024` на тестовом VPS три
+ночи подряд ронял `world_national_core`: `us.yaml` не открылся —
+`[Errno 24] Too many open files`. HTTP-путь (десятки запросов API/SSR) fd
+почти не растил: текли периодические job'ы внутри того же uvicorn.
+
+Что текло: `requests.Session` мировых адаптеров создавался на каждый
+провайдер/страну и не закрывался — urllib3 `HTTPAdapter.__del__` держит
+пулы в GC-циклах, сокеты остаются. Плюс `ImageFont.truetype` на каждый
+OG-рендер открывал файл шрифта; `openpyxl.load_workbook` без `close()` на
+файловом zip держит REG. Ловить: gauge `fe_process_open_fds` в `/metrics`,
+поле `open_fds` в `/health/ready` (degraded при >80% soft RLIMIT_NOFILE),
+строка fd в staleness-алерте. Починено: `close_http_resources` после
+ingest страны, owned-session в Eurostat HTTP, `wb.close()`, кэш шрифтов,
+`ulimits.nofile: 65536` у сервиса backend.
 
 ### Analytics-pool trap: аналитика делит пул и память с витриной (2026-09-03)
 

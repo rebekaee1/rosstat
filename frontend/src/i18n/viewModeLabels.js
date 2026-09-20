@@ -15,6 +15,7 @@ const LABELS_EN = {
   'Кв/кв': 'QoQ',
   'М/м': 'MoM',
   'Н/н': 'WoW',
+  'Д/д': 'DoD',
   'По месяцам': 'Monthly',
   'По кварталам': 'Quarterly',
   'По годам': 'Annual',

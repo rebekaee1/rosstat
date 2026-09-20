@@ -67,10 +67,11 @@ import logging
 import re
 import time
 import xml.etree.ElementTree as ET
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 from urllib.parse import urlencode
 
 import requests
@@ -89,14 +90,15 @@ DEFAULT_WORKERS = 8
 # case-insensitively; ``indic*`` uses prefix match via _priority_for_dim.
 HEADLINE_PRIORITY: dict[str, list[str]] = {
     "unit": [
-        "I15", "I10", "I05", "I96", "PC", "PC_ACT", "PC_POP", "PC_GDP",
-        "PCH_SAME", "PCH_SM", "PCH_PRE", "MIO_EUR", "CLV15_MEUR", "CP_MEUR",
+        "I15", "I10", "I05", "I96", "I25", "PC", "PC_ACT", "PC_POP", "PC_GDP",
+        "PCH_SAME", "PCH_SM", "PCH_PRE", "RCH_A", "RCH_M", "MIO_EUR", "CLV15_MEUR", "CP_MEUR",
         "THS_PER", "NR", "EUR", "RT", "INDEX",
     ],
     "s_adj": ["SCA", "SA", "NSA", "CA"],
     "nace_r2": ["B-D", "TOTAL", "B-E36", "C", "B", "F"],
     "nace_r1": ["TOTAL", "D", "C"],
     "coicop": ["CP00", "TOT_X_NRG", "TOT_X_NRG_FOOD"],
+    "coicop18": ["TOTAL", "CP00"],
     "sex": ["T", "TOTAL"],
     "age": ["TOTAL", "Y15-74", "Y_GE15", "Y15-64"],
     "na_item": ["B1GQ", "B1G", "P3", "P51G", "B11"],
@@ -255,6 +257,18 @@ class EurostatHttpError(RuntimeError):
 _NON_RETRYABLE_STATUS = frozenset({400, 404, 413, 414})
 
 
+@contextmanager
+def _session_scope(session: requests.Session | None) -> Iterator[requests.Session]:
+    """Own an ephemeral Session only when the caller did not pass one."""
+    owns = session is None
+    sess = session or requests.Session()
+    try:
+        yield sess
+    finally:
+        if owns:
+            sess.close()
+
+
 def http_get_json(url: str, *, use_cache: bool = True, session: requests.Session | None = None) -> dict:
     """GET JSON with disk cache, retries, backoff. Raises on persistent failure."""
     cp = _cache_path(url)
@@ -264,60 +278,60 @@ def http_get_json(url: str, *, use_cache: bool = True, session: requests.Session
         except (json.JSONDecodeError, OSError):
             pass
 
-    sess = session or requests.Session()
-    last_err: Exception | None = None
-    for attempt in range(MAX_RETRIES):
-        try:
-            resp = sess.get(url, timeout=HTTP_TIMEOUT)
-            if resp.status_code in _NON_RETRYABLE_STATUS:
-                raise EurostatHttpError(
-                    f"HTTP {resp.status_code} for {url}",
-                    status_code=resp.status_code,
-                )
-            if resp.status_code in (429, 500, 502, 503, 504):
-                raise requests.HTTPError(f"HTTP {resp.status_code}", response=resp)
-            resp.raise_for_status()
-            data = resp.json()
-            if use_cache:
-                try:
-                    cp.write_text(json.dumps(data), encoding="utf-8")
-                except OSError:
-                    pass
-            return data
-        except EurostatHttpError:
-            raise
-        except Exception as exc:  # noqa: BLE001 — retries wrap transport / 5xx
-            last_err = exc
-            sleep = min(2 ** attempt * 2.0, 45)
-            logger.warning("Eurostat GET failed (%s) attempt %d: %s", url[:80], attempt + 1, exc)
-            time.sleep(sleep)
-    raise RuntimeError(f"Eurostat GET failed after retries: {url}") from last_err
+    with _session_scope(session) as sess:
+        last_err: Exception | None = None
+        for attempt in range(MAX_RETRIES):
+            try:
+                resp = sess.get(url, timeout=HTTP_TIMEOUT)
+                if resp.status_code in _NON_RETRYABLE_STATUS:
+                    raise EurostatHttpError(
+                        f"HTTP {resp.status_code} for {url}",
+                        status_code=resp.status_code,
+                    )
+                if resp.status_code in (429, 500, 502, 503, 504):
+                    raise requests.HTTPError(f"HTTP {resp.status_code}", response=resp)
+                resp.raise_for_status()
+                data = resp.json()
+                if use_cache:
+                    try:
+                        cp.write_text(json.dumps(data), encoding="utf-8")
+                    except OSError:
+                        pass
+                return data
+            except EurostatHttpError:
+                raise
+            except Exception as exc:  # noqa: BLE001 — retries wrap transport / 5xx
+                last_err = exc
+                sleep = min(2 ** attempt * 2.0, 45)
+                logger.warning("Eurostat GET failed (%s) attempt %d: %s", url[:80], attempt + 1, exc)
+                time.sleep(sleep)
+        raise RuntimeError(f"Eurostat GET failed after retries: {url}") from last_err
 
 
 def http_get_text(url: str, *, session: requests.Session | None = None) -> str:
     """GET text/XML with retries; no JSON disk cache."""
-    sess = session or requests.Session()
-    last_err: Exception | None = None
-    for attempt in range(MAX_RETRIES):
-        try:
-            resp = sess.get(url, timeout=HTTP_TIMEOUT)
-            if resp.status_code in _NON_RETRYABLE_STATUS:
-                raise EurostatHttpError(
-                    f"HTTP {resp.status_code} for {url}",
-                    status_code=resp.status_code,
-                )
-            if resp.status_code in (429, 500, 502, 503, 504):
-                raise requests.HTTPError(f"HTTP {resp.status_code}", response=resp)
-            resp.raise_for_status()
-            return resp.text
-        except EurostatHttpError:
-            raise
-        except Exception as exc:  # noqa: BLE001
-            last_err = exc
-            sleep = min(2 ** attempt * 2.0, 45)
-            logger.warning("Eurostat GET text failed (%s) attempt %d: %s", url[:80], attempt + 1, exc)
-            time.sleep(sleep)
-    raise RuntimeError(f"Eurostat GET text failed after retries: {url}") from last_err
+    with _session_scope(session) as sess:
+        last_err: Exception | None = None
+        for attempt in range(MAX_RETRIES):
+            try:
+                resp = sess.get(url, timeout=HTTP_TIMEOUT)
+                if resp.status_code in _NON_RETRYABLE_STATUS:
+                    raise EurostatHttpError(
+                        f"HTTP {resp.status_code} for {url}",
+                        status_code=resp.status_code,
+                    )
+                if resp.status_code in (429, 500, 502, 503, 504):
+                    raise requests.HTTPError(f"HTTP {resp.status_code}", response=resp)
+                resp.raise_for_status()
+                return resp.text
+            except EurostatHttpError:
+                raise
+            except Exception as exc:  # noqa: BLE001
+                last_err = exc
+                sleep = min(2 ** attempt * 2.0, 45)
+                logger.warning("Eurostat GET text failed (%s) attempt %d: %s", url[:80], attempt + 1, exc)
+                time.sleep(sleep)
+        raise RuntimeError(f"Eurostat GET text failed after retries: {url}") from last_err
 
 
 def parse_period(period: str) -> date:
@@ -625,34 +639,34 @@ def fetch_dataset_structure_dsd(
 
 def fetch_dataset_structure(dataset_id: str, session: requests.Session | None = None) -> dict[str, list[str]]:
     """Structure probe: compact JSON → geo-pinned JSON → full DSD XML."""
-    sess = session or requests.Session()
-    # 1) cheap: last period, all geos
-    try:
-        url = build_data_url(dataset_id, {}, last_time_period=1)
-        return extract_dimensions(http_get_json(url, session=sess))
-    except EurostatHttpError as exc:
-        if exc.status_code not in (413, 414):
-            logger.warning("structure JSON failed %s: %s — trying geo pin / DSD", dataset_id, exc)
-        else:
-            logger.info("structure JSON 413 %s — trying geo-pinned probe", dataset_id)
-    except Exception as exc:  # noqa: BLE001
-        logger.warning("structure JSON failed %s: %s — trying geo pin / DSD", dataset_id, exc)
-
-    # 2) pin one country to shrink payload (members still useful for expand)
-    for geo in ("FR", "DE", "IT", "ES"):
+    with _session_scope(session) as sess:
+        # 1) cheap: last period, all geos
         try:
-            url = build_data_url(
-                dataset_id, {"geo": geo}, last_time_period=1, pin_geo=True
-            )
-            dims = extract_dimensions(http_get_json(url, session=sess))
-            if dims:
-                return dims
+            url = build_data_url(dataset_id, {}, last_time_period=1)
+            return extract_dimensions(http_get_json(url, session=sess))
+        except EurostatHttpError as exc:
+            if exc.status_code not in (413, 414):
+                logger.warning("structure JSON failed %s: %s — trying geo pin / DSD", dataset_id, exc)
+            else:
+                logger.info("structure JSON 413 %s — trying geo-pinned probe", dataset_id)
         except Exception as exc:  # noqa: BLE001
-            logger.debug("structure geo=%s failed %s: %s", geo, dataset_id, exc)
+            logger.warning("structure JSON failed %s: %s — trying geo pin / DSD", dataset_id, exc)
 
-    # 3) full DSD
-    logger.info("structure fallback DSD for %s", dataset_id)
-    return fetch_dataset_structure_dsd(dataset_id, session=sess)
+        # 2) pin one country to shrink payload (members still useful for expand)
+        for geo in ("FR", "DE", "IT", "ES"):
+            try:
+                url = build_data_url(
+                    dataset_id, {"geo": geo}, last_time_period=1, pin_geo=True
+                )
+                dims = extract_dimensions(http_get_json(url, session=sess))
+                if dims:
+                    return dims
+            except Exception as exc:  # noqa: BLE001
+                logger.debug("structure geo=%s failed %s: %s", geo, dataset_id, exc)
+
+        # 3) full DSD
+        logger.info("structure fallback DSD for %s", dataset_id)
+        return fetch_dataset_structure_dsd(dataset_id, session=sess)
 
 
 def _fetch_jsonstat_payload(
@@ -723,79 +737,79 @@ def fetch_and_parse_dataset(
     ``forced_slice`` — явный срез (для догрузки глубоких age/unit вариантов
     вместо единственного headline TOTAL).
     """
-    sess = session or requests.Session()
-    dims = fetch_dataset_structure(dataset_id, session=sess)
-    slice_ = (
-        dict(forced_slice)
-        if forced_slice
-        else choose_headline_slice(dims, dataset_id=dataset_id)
-    )
+    with _session_scope(session) as sess:
+        dims = fetch_dataset_structure(dataset_id, session=sess)
+        slice_ = (
+            dict(forced_slice)
+            if forced_slice
+            else choose_headline_slice(dims, dataset_id=dataset_id)
+        )
 
-    # Prefer catalog frequency if freq dim absent / mismatched
-    freq_code = (slice_.get("freq") or catalog_freq or "M").upper()
-    if "freq" in dims and freq_code in {m.upper() for m in dims["freq"]}:
-        # keep exact casing from members
-        for m in dims["freq"]:
-            if m.upper() == freq_code:
-                slice_["freq"] = m
-                break
-    frequency = FREQ_MAP.get(freq_code, "monthly")
-
-    payload = _fetch_jsonstat_payload(
-        dataset_id, slice_, session=sess, use_cache=use_cache
-    )
-    title_en = payload.get("label") or dataset_id
-
-    if "_multi_geo_parts" in payload:
-        series: dict[str, list[tuple[date, float]]] = {}
-        unit = ""
-        unit_label_en = ""
-        for geo, part in payload["_multi_geo_parts"].items():
-            part_series, u, ul = parse_jsonstat_values(part)
-            if u and not unit:
-                unit, unit_label_en = u, ul or ""
-            # part usually has one geo key
-            for g, pts in part_series.items():
-                if g in EXCLUDED_GEO_CODES or g not in WORLD_COUNTRIES:
-                    continue
-                series[g] = pts
-            if geo in WORLD_COUNTRIES and geo not in series:
-                # if geo dim collapsed, take any series
-                for pts in part_series.values():
-                    series[geo] = pts
+        # Prefer catalog frequency if freq dim absent / mismatched
+        freq_code = (slice_.get("freq") or catalog_freq or "M").upper()
+        if "freq" in dims and freq_code in {m.upper() for m in dims["freq"]}:
+            # keep exact casing from members
+            for m in dims["freq"]:
+                if m.upper() == freq_code:
+                    slice_["freq"] = m
                     break
-    else:
-        series, unit, unit_label_en = parse_jsonstat_values(payload)
-        if not unit and "unit" in slice_:
-            unit = slice_["unit"]
-            if not unit_label_en:
-                unit_label_en = (
-                    ((payload.get("dimension") or {}).get("unit") or {})
-                    .get("category", {})
-                    .get("label", {})
-                    .get(unit, "")
-                )
+        frequency = FREQ_MAP.get(freq_code, "monthly")
 
-    # Filter geos + min points
-    filtered: dict[str, list[tuple[date, float]]] = {}
-    for geo, pts in series.items():
-        if geo in EXCLUDED_GEO_CODES or geo not in WORLD_COUNTRIES:
-            continue
-        if len(pts) < MIN_POINTS:
-            continue
-        filtered[geo] = pts
+        payload = _fetch_jsonstat_payload(
+            dataset_id, slice_, session=sess, use_cache=use_cache
+        )
+        title_en = payload.get("label") or dataset_id
 
-    return DatasetParseResult(
-        dataset_id=dataset_id,
-        title_en=title_en,
-        frequency=frequency,
-        slice_=slice_,
-        slice_hash=slice_hash(slice_),
-        unit=unit,
-        series_by_geo=filtered,
-        source_url=f"https://ec.europa.eu/eurostat/databrowser/view/{dataset_id}/default/table",
-        unit_label_en=unit_label_en or "",
-    )
+        if "_multi_geo_parts" in payload:
+            series: dict[str, list[tuple[date, float]]] = {}
+            unit = ""
+            unit_label_en = ""
+            for geo, part in payload["_multi_geo_parts"].items():
+                part_series, u, ul = parse_jsonstat_values(part)
+                if u and not unit:
+                    unit, unit_label_en = u, ul or ""
+                # part usually has one geo key
+                for g, pts in part_series.items():
+                    if g in EXCLUDED_GEO_CODES or g not in WORLD_COUNTRIES:
+                        continue
+                    series[g] = pts
+                if geo in WORLD_COUNTRIES and geo not in series:
+                    # if geo dim collapsed, take any series
+                    for pts in part_series.values():
+                        series[geo] = pts
+                        break
+        else:
+            series, unit, unit_label_en = parse_jsonstat_values(payload)
+            if not unit and "unit" in slice_:
+                unit = slice_["unit"]
+                if not unit_label_en:
+                    unit_label_en = (
+                        ((payload.get("dimension") or {}).get("unit") or {})
+                        .get("category", {})
+                        .get("label", {})
+                        .get(unit, "")
+                    )
+
+        # Filter geos + min points
+        filtered: dict[str, list[tuple[date, float]]] = {}
+        for geo, pts in series.items():
+            if geo in EXCLUDED_GEO_CODES or geo not in WORLD_COUNTRIES:
+                continue
+            if len(pts) < MIN_POINTS:
+                continue
+            filtered[geo] = pts
+
+        return DatasetParseResult(
+            dataset_id=dataset_id,
+            title_en=title_en,
+            frequency=frequency,
+            slice_=slice_,
+            slice_hash=slice_hash(slice_),
+            unit=unit,
+            series_by_geo=filtered,
+            source_url=f"https://ec.europa.eu/eurostat/databrowser/view/{dataset_id}/default/table",
+            unit_label_en=unit_label_en or "",
+        )
 
 
 def fetch_deep_slices(
@@ -807,32 +821,32 @@ def fetch_deep_slices(
     """Загрузить срезы: ручной DEEP или авто-expand (headline + независимые разрезы)."""
     from app.data.eurostat_deep_expand import resolve_slice_specs
 
-    sess = session or requests.Session()
-    dims = fetch_dataset_structure(dataset_id, session=sess)
-    plan = resolve_slice_specs(dataset_id, dims)
-    for skip in plan.skips:
-        logger.info(
-            "deep-expand skip %s dim=%s n=%s reason=%s",
-            skip.dataset_id, skip.dim, skip.non_total_count, skip.reason,
-        )
-    out: list[DatasetParseResult] = []
-    for spec in plan.specs:
-        try:
-            out.append(
-                fetch_and_parse_dataset(
-                    dataset_id,
-                    catalog_freq=spec.get("freq"),
-                    session=sess,
-                    use_cache=use_cache,
-                    forced_slice=spec,
-                )
+    with _session_scope(session) as sess:
+        dims = fetch_dataset_structure(dataset_id, session=sess)
+        plan = resolve_slice_specs(dataset_id, dims)
+        for skip in plan.skips:
+            logger.info(
+                "deep-expand skip %s dim=%s n=%s reason=%s",
+                skip.dataset_id, skip.dim, skip.non_total_count, skip.reason,
             )
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("deep slice %s %s failed: %s", dataset_id, spec, exc)
-    if out:
-        return out
-    return [
-        fetch_and_parse_dataset(
-            dataset_id, session=sess, use_cache=use_cache,
-        )
-    ]
+        out: list[DatasetParseResult] = []
+        for spec in plan.specs:
+            try:
+                out.append(
+                    fetch_and_parse_dataset(
+                        dataset_id,
+                        catalog_freq=spec.get("freq"),
+                        session=sess,
+                        use_cache=use_cache,
+                        forced_slice=spec,
+                    )
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("deep slice %s %s failed: %s", dataset_id, spec, exc)
+        if out:
+            return out
+        return [
+            fetch_and_parse_dataset(
+                dataset_id, session=sess, use_cache=use_cache,
+            )
+        ]

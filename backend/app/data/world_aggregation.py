@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any, Literal
 
@@ -320,6 +320,110 @@ def aggregation_policy_for(indicator: Any) -> AggregationPolicy:
     return aggregation_decision_for(indicator).policy
 
 
+_DIRECT_AGGREGATION = frozenset({
+    ("monthly", "quarterly"),
+    ("monthly", "annual"),
+    ("quarterly", "annual"),
+    ("weekly", "monthly"),
+    ("daily", "monthly"),
+})
+_VIA_MONTHLY = frozenset({
+    ("weekly", "quarterly"),
+    ("weekly", "annual"),
+    ("daily", "quarterly"),
+    ("daily", "annual"),
+})
+
+ForecastPointTuple = tuple[date, float, float | None, float | None]
+
+
+def _month_end(year: int, month: int) -> date:
+    if month == 12:
+        return date(year, 12, 31)
+    return date(year, month + 1, 1) - timedelta(days=1)
+
+
+def _period_key(point_date: date, target: str) -> tuple[int, int]:
+    if target == "monthly":
+        return (point_date.year, point_date.month)
+    if target == "quarterly":
+        return (point_date.year, (point_date.month - 1) // 3 + 1)
+    return (point_date.year, 1)
+
+
+def _period_anchor(year: int, period_no: int, target: str) -> date:
+    if target == "monthly":
+        return date(year, period_no, 1)
+    if target == "quarterly":
+        return date(year, (period_no - 1) * 3 + 1, 1)
+    return date(year, 1, 1)
+
+
+def _observation_key(point_date: date, source: str) -> tuple[int, ...]:
+    if source == "monthly":
+        return (point_date.year, point_date.month)
+    if source == "quarterly":
+        return (point_date.year, (point_date.month - 1) // 3 + 1)
+    return (point_date.year, point_date.month, point_date.day)
+
+
+def _is_complete_high_freq(
+    obs_dates: list[date], year: int, month: int, source: str,
+) -> bool:
+    """Неделя/день → месяц: период закрыт, если есть наблюдение у конца месяца."""
+    if not obs_dates:
+        return False
+    month_end = _month_end(year, month)
+    latest = max(obs_dates)
+    if source == "weekly":
+        return latest >= month_end - timedelta(days=6) and len(obs_dates) >= 3
+    return latest >= month_end - timedelta(days=3) and len(obs_dates) >= 8
+
+
+def _period_is_complete(
+    source: str,
+    target: str,
+    observations: dict[tuple[int, ...], float],
+    year: int,
+    period_no: int,
+) -> bool:
+    if (source, target) == ("monthly", "quarterly"):
+        return len(observations) == 3
+    if (source, target) == ("monthly", "annual"):
+        return len(observations) == 12
+    if (source, target) == ("quarterly", "annual"):
+        return len(observations) == 4
+    if source in ("weekly", "daily") and target == "monthly":
+        dates = [date(key[0], key[1], key[2]) for key in observations]
+        return _is_complete_high_freq(dates, year, period_no, source)
+    return False
+
+
+def _reduce_values(values: list[float], policy: AggregationPolicy) -> float:
+    if policy == "sum":
+        return sum(values)
+    if policy == "mean":
+        return sum(values) / len(values)
+    if policy == "last":
+        return values[-1]
+    raise ValueError(f"unknown aggregation policy: {policy}")
+
+
+def _bucket_series(
+    series: list[tuple[date, float]],
+    *,
+    source: str,
+    target: str,
+) -> dict[tuple[int, int], dict[tuple[int, ...], float]]:
+    buckets: dict[tuple[int, int], dict[tuple[int, ...], float]] = {}
+    for point_date, raw_value in sorted(series, key=lambda point: point[0]):
+        period = _period_key(point_date, target)
+        buckets.setdefault(period, {})[_observation_key(point_date, source)] = float(
+            raw_value,
+        )
+    return buckets
+
+
 def aggregate_series(
     series: list[tuple[date, float]],
     *,
@@ -330,42 +434,140 @@ def aggregate_series(
     """Агрегировать только полные календарные периоды."""
     source = source_frequency.strip().lower()
     target = target_frequency.strip().lower()
-    if (source, target) not in {
-        ("monthly", "quarterly"),
-        ("monthly", "annual"),
-        ("quarterly", "annual"),
-    }:
+    if source == target:
+        return sorted((d, float(v)) for d, v in series)
+    if (source, target) in _VIA_MONTHLY:
+        monthly = aggregate_series(
+            series,
+            source_frequency=source,
+            target_frequency="monthly",
+            policy=policy,
+        )
+        return aggregate_series(
+            monthly,
+            source_frequency="monthly",
+            target_frequency=target,
+            policy=policy,
+        )
+    if (source, target) not in _DIRECT_AGGREGATION:
         raise ValueError(f"unsupported aggregation: {source} -> {target}")
 
-    buckets: dict[tuple[int, int], dict[tuple[int, int], float]] = {}
-    for point_date, raw_value in sorted(series, key=lambda point: point[0]):
-        if target == "quarterly":
-            period = (point_date.year, (point_date.month - 1) // 3 + 1)
-        else:
-            period = (point_date.year, 1)
-        observation = (
-            (point_date.year, point_date.month)
-            if source == "monthly"
-            else (point_date.year, (point_date.month - 1) // 3 + 1)
-        )
-        buckets.setdefault(period, {})[observation] = float(raw_value)
-
-    expected = 3 if (source, target) == ("monthly", "quarterly") else (
-        12 if source == "monthly" else 4
-    )
+    buckets = _bucket_series(series, source=source, target=target)
     result: list[tuple[date, float]] = []
     for (year, period_no), observations in sorted(buckets.items()):
-        if len(observations) != expected:
+        if not _period_is_complete(source, target, observations, year, period_no):
             continue
         values = [observations[key] for key in sorted(observations)]
-        if policy == "sum":
-            value = sum(values)
-        elif policy == "mean":
-            value = sum(values) / len(values)
-        elif policy == "last":
-            value = values[-1]
-        else:
-            raise ValueError(f"unknown aggregation policy: {policy}")
-        month = (period_no - 1) * 3 + 1 if target == "quarterly" else 1
-        result.append((date(year, month, 1), round(value, 4)))
+        result.append((
+            _period_anchor(year, period_no, target),
+            round(_reduce_values(values, policy), 4),
+        ))
+    return result
+
+
+def aggregate_forecast_points(
+    actual: list[tuple[date, float]],
+    forecast: list[ForecastPointTuple],
+    *,
+    source_frequency: str,
+    target_frequency: str,
+    policy: AggregationPolicy,
+) -> list[ForecastPointTuple]:
+    """Прогноз на целевой частоте: полные периоды, хвост добивается фактом+прогнозом.
+
+    Неполный будущий период (нет полного набора суб-точек даже после склейки)
+    отбрасывается. Границы доверия сворачиваются той же политикой; если у
+    прогнозной суб-точки нет границы — у периода её тоже нет.
+    """
+    source = source_frequency.strip().lower()
+    target = target_frequency.strip().lower()
+    if not forecast:
+        return []
+    if source == target:
+        last_actual = max((d for d, _ in actual), default=None)
+        return [
+            (d, float(v), lo, hi)
+            for d, v, lo, hi in sorted(forecast, key=lambda row: row[0])
+            if last_actual is None or d > last_actual
+        ]
+    if (source, target) in _VIA_MONTHLY:
+        monthly_actual = aggregate_series(
+            actual,
+            source_frequency=source,
+            target_frequency="monthly",
+            policy=policy,
+        )
+        monthly_forecast = aggregate_forecast_points(
+            actual,
+            forecast,
+            source_frequency=source,
+            target_frequency="monthly",
+            policy=policy,
+        )
+        return aggregate_forecast_points(
+            monthly_actual,
+            monthly_forecast,
+            source_frequency="monthly",
+            target_frequency=target,
+            policy=policy,
+        )
+
+    actual_dates = {
+        d
+        for d, _ in aggregate_series(
+            actual,
+            source_frequency=source,
+            target_frequency=target,
+            policy=policy,
+        )
+    }
+    merged: dict[date, float] = {d: float(v) for d, v in actual}
+    lower_by_obs: dict[tuple[int, ...], float | None] = {
+        _observation_key(d, source): float(v) for d, v in actual
+    }
+    upper_by_obs: dict[tuple[int, ...], float | None] = {
+        _observation_key(d, source): float(v) for d, v in actual
+    }
+    forecast_obs: set[tuple[int, ...]] = set()
+    for point_date, value, lower, upper in forecast:
+        merged[point_date] = float(value)
+        obs_key = _observation_key(point_date, source)
+        lower_by_obs[obs_key] = None if lower is None else float(lower)
+        upper_by_obs[obs_key] = None if upper is None else float(upper)
+        forecast_obs.add(obs_key)
+
+    merged_agg = aggregate_series(
+        sorted(merged.items()),
+        source_frequency=source,
+        target_frequency=target,
+        policy=policy,
+    )
+    bound_buckets = _bucket_series(
+        sorted(merged.items()), source=source, target=target,
+    )
+    result: list[ForecastPointTuple] = []
+    for anchor, value in merged_agg:
+        if anchor in actual_dates:
+            continue
+        period = _period_key(anchor, target)
+        observations = bound_buckets.get(period) or {}
+        if not any(key in forecast_obs for key in observations):
+            continue
+        lower_vals: list[float] = []
+        upper_vals: list[float] = []
+        bounds_ok = True
+        for obs_key in sorted(observations):
+            lo = lower_by_obs.get(obs_key)
+            hi = upper_by_obs.get(obs_key)
+            if lo is None or hi is None:
+                bounds_ok = False
+                break
+            lower_vals.append(lo)
+            upper_vals.append(hi)
+        result.append((
+            anchor,
+            value,
+            round(_reduce_values(lower_vals, policy), 4) if bounds_ok else None,
+            round(_reduce_values(upper_vals, policy), 4) if bounds_ok else None,
+        ))
     return result

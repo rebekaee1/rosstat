@@ -12,6 +12,9 @@ import {
 function aggregatedModeHint(item, t) {
   if (item.disabled) return t('world.mode.hint.unavailable');
   if (item.official) return undefined;
+  const src = item.aggregation?.source_frequency;
+  if (src === 'weekly') return t('world.mode.hint.derivedWeekly');
+  if (src === 'daily') return t('world.mode.hint.derivedDaily');
   const policy = item.aggregation?.policy;
   if (policy === 'sum') return t('world.mode.hint.sum');
   if (policy === 'last') return t('world.mode.hint.last');

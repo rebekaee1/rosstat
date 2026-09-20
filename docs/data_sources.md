@@ -397,6 +397,15 @@ dimensions, единицу и частоту. `world_dataset_state` хранит
 паре `provider × dataset_id`. Parser internals Eurostat — docstrings
 `app/services/eurostat_parser.py`, обновление — `world_eurostat_ingest.py`.
 
+**HICP / ECOICOP ver.2 (2026-09-20).** С февраля 2026 Eurostat публикует
+гармонизированный ИПЦ в наборах `prc_hicp_minr` (месячный) и `prc_hicp_ainr`
+(годовой): измерение корзины `coicop18=TOTAL` (не `coicop=CP00`), база
+индекса `I15` (2015=100; `I25` равноглубока, на витрине не параллелим).
+Замороженные `prc_hicp_midx` / `manr` / `mmor` / `aind` / `fp` (1996–2025)
+сняты с листинга, URL → 301 на `minr`. Карточка страны и концепт `hicp-index`
+берут живой ряд до последнего месяца источника. Темпы `RCH_A`/`RCH_M` того же
+набора — режимы карточки, не срезы variant-пикера (как `manr`/`mmor` раньше).
+
 **Национальные паспорта (national-core, ежедневный ETL).** Регулярный контур
 19 официальных провайдеров по 10 странам не из ЕС/ЕАСТ: StatCan + Банк Канады,
 ONS + Банк Англии, ABS + RBA, FRED/BLS/BEA (США, 59 курируемых рядов

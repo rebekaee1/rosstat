@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 import logging
 import sys
@@ -249,8 +250,14 @@ async def dedupe_names_for_datasets(dataset_ids: list[str]) -> int:
     return n
 
 
-async def main() -> int:
+async def main(only: list[str] | None = None) -> int:
     decisions = load_listing_decisions()
+    if only:
+        wanted = {d.strip().lower() for d in only if d.strip()}
+        decisions = {k: v for k, v in decisions.items() if k in wanted}
+        missing = wanted - set(decisions)
+        if missing:
+            log.warning("no decisions for: %s", ", ".join(sorted(missing)))
     log.info("decisions=%d", len(decisions))
     before = await _stats()
     log.info("BEFORE %s", before)
@@ -295,4 +302,12 @@ async def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(asyncio.run(main()))
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--only",
+        default="",
+        help="comma-separated dataset_id list; default = all decisions",
+    )
+    args = parser.parse_args()
+    only = [p.strip() for p in args.only.split(",") if p.strip()] or None
+    raise SystemExit(asyncio.run(main(only)))

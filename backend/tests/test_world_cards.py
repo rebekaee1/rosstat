@@ -367,6 +367,7 @@ def test_fred_monthly_unlocks_quarterly_and_annual_matrix():
         assert by_id[mode_id]["aggregation"] == {
             "policy": "mean",
             "source": "passport",
+            "source_frequency": "monthly",
         }, mode_id
 
 
@@ -384,6 +385,7 @@ def test_modes_matrix_marks_calculated_frequencies():
     assert by_id["level-quarterly"]["official"] is False
     assert by_id["level-quarterly"]["aggregation"]["policy"] == "mean"
     assert by_id["level-quarterly"]["aggregation"]["source"] == "fallback"
+    assert by_id["level-quarterly"]["aggregation"]["source_frequency"] == "monthly"
     assert by_id["step-monthly"]["available"] is True
     assert by_id["yoy-monthly"]["available"] is True
 
@@ -735,3 +737,98 @@ def test_build_variants_always_includes_label_en():
     en_gdp = variant_label(gdp, locale="en")
     assert "gross domestic product" in en_gdp.lower()
     assert not re.search(r"[А-Яа-яЁё]", en_gdp)
+
+
+def test_weekly_series_unlocks_derived_monthly_quarterly_annual():
+    from app.services.world_cards import (
+        attach_mode_forecastable,
+        frequencies_payload,
+    )
+
+    weekly = _Ind(
+        code="us-initial-claims",
+        frequency="weekly",
+        points_count=400,
+        history_start=date(1967, 1, 7),
+        history_end=date(2026, 9, 12),
+        dataset_id="ICSA",
+        unit="THOUSANDS",
+        provider="fred",
+    )
+    by_freq = members_by_freq([weekly])
+    parsed = parse_mode_token("level-weekly", native_freq="weekly")
+    assert parsed.freq == "weekly"
+    native = resolve_series_for_mode(parsed=parsed, by_freq=by_freq, signed=False)
+    assert native is not None and native.official is True and native.aggregated is False
+
+    monthly = resolve_series_for_mode(
+        parsed=parse_mode_token("level-monthly", native_freq="weekly"),
+        by_freq=by_freq, signed=False,
+    )
+    assert monthly is not None
+    assert monthly.aggregated is True
+    assert monthly.aggregation_policy == "mean"
+    assert monthly.source_frequency == "weekly"
+
+    freqs = frequencies_payload(by_freq)
+    assert [row["freq"] for row in freqs] == ["weekly", "monthly", "quarterly", "annual"]
+    assert freqs[0]["official"] is True
+    assert all(row["official"] is False for row in freqs[1:])
+
+    modes = build_modes_matrix(by_freq=by_freq, series_by_code=None, unit="тыс. человек")
+    by_id = {m["id"]: m for m in modes}
+    assert by_id["level-weekly"]["available"] is True
+    assert by_id["level-weekly"]["official"] is True
+    assert by_id["level-monthly"]["available"] is True
+    assert by_id["level-monthly"]["official"] is False
+    tagged = attach_mode_forecastable(modes, forecastable_native_freqs=set())
+    assert all(m["forecastable"] is False for m in tagged)
+
+
+def test_derived_annual_forecastable_when_monthly_has_forecast():
+    from app.services.world_cards import attach_mode_forecastable
+
+    monthly = _Ind(
+        code="us-nonfarm-payrolls",
+        frequency="monthly",
+        points_count=400,
+        history_start=date(1990, 1, 1),
+        history_end=date(2026, 8, 1),
+        dataset_id="PAYEMS",
+        unit="THOUSANDS",
+        provider="fred",
+    )
+    modes = build_modes_matrix(
+        by_freq=members_by_freq([monthly]),
+        series_by_code=None,
+        unit="тыс. человек",
+    )
+    tagged = attach_mode_forecastable(modes, forecastable_native_freqs={"monthly"})
+    by_id = {m["id"]: m for m in tagged}
+    assert by_id["level-monthly"]["forecastable"] is True
+    assert by_id["level-quarterly"]["forecastable"] is True
+    assert by_id["level-annual"]["forecastable"] is True
+    assert by_id["yoy-annual"]["forecastable"] is True
+
+
+def test_apply_resolved_forecast_yoy_uses_aggregated_level():
+    from app.services.world_cards import apply_resolved_forecast
+
+    monthly = _Ind(
+        code="hicp", frequency="monthly", points_count=24,
+        history_start=date(2024, 1, 1), history_end=date(2025, 8, 1),
+        dataset_id="prc_hicp_midx", unit="I15",
+    )
+    resolved = resolve_series_for_mode(
+        parsed=parse_mode_token("yoy-annual", native_freq="monthly"),
+        by_freq=members_by_freq([monthly]),
+        signed=False,
+    )
+    actual = [(date(2024, m, 1), 100.0) for m in range(1, 13)]
+    actual += [(date(2025, m, 1), 110.0) for m in range(1, 9)]
+    forecast = [
+        (date(2025, m, 1), 110.0, 109.0, 111.0) for m in range(9, 13)
+    ]
+    points = apply_resolved_forecast(actual, forecast, resolved)
+    assert [d for d, *_ in points] == [date(2025, 1, 1)]
+    assert points[0][1] == 10.0

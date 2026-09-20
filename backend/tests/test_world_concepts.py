@@ -85,6 +85,18 @@ def test_hicp_concept_excludes_yoy_series_and_other_baskets():
         concept,
         _indicator("prc_hicp_midx", "I15", {"coicop": "CP00"}),
     )
+    assert concept_matches_indicator(
+        concept,
+        _indicator("prc_hicp_minr", "I15", {"coicop18": "TOTAL"}),
+    )
+    assert not concept_matches_indicator(
+        concept,
+        _indicator("prc_hicp_minr", "RCH_A", {"coicop18": "TOTAL"}),
+    )
+    assert not concept_matches_indicator(
+        concept,
+        _indicator("prc_hicp_minr", "I15", {"coicop18": "CP01"}),
+    )
     assert not concept_matches_indicator(
         concept,
         _indicator("prc_hicp_manr", "RCH_A", {"coicop": "CP00"}),

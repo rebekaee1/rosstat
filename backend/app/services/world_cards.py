@@ -8,7 +8,7 @@ freq ∈ monthly|quarterly|annual. Легаси-токены мапятся в �
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 from typing import Any, Iterable, Sequence
 
 from app.data.eurostat_listing import (
@@ -25,6 +25,7 @@ from app.data.eurostat_listing import (
 )
 from app.data.world_indicator_titles_ru import public_indicator_name
 from app.data.world_aggregation import (
+    aggregate_forecast_points,
     aggregate_series,
     aggregation_decision_for,
 )
@@ -36,6 +37,9 @@ from app.services.world_view_modes import (
 
 MODE_TYPES = ("level", "step", "yoy", "yoyabs", "index")
 MODE_FREQS = ("monthly", "quarterly", "annual")
+HIGH_FREQS = ("daily", "weekly")
+ALL_FREQS = ("daily", "weekly", "monthly", "quarterly", "annual")
+_FORECAST_SOURCE_FREQS = frozenset({"monthly", "quarterly", "annual"})
 
 TYPE_GROUP = {
     "level": "Уровень",
@@ -46,12 +50,16 @@ TYPE_GROUP = {
 }
 
 FREQ_LABEL = {
+    "daily": "По дням",
+    "weekly": "По неделям",
     "monthly": "По месяцам",
     "quarterly": "По кварталам",
     "annual": "По годам",
 }
 
 STEP_LABEL = {
+    "daily": "Д/д",
+    "weekly": "Н/н",
     "monthly": "М/м",
     "quarterly": "Кв/кв",
     "annual": "Г/г",
@@ -144,7 +152,7 @@ def members_by_freq(members: Sequence[Any]) -> dict[str, Any]:
         if int(m.points_count or 0) <= 0:
             continue
         freq = normalize_frequency(m.frequency)
-        if freq not in MODE_FREQS and freq not in ("weekly", "daily"):
+        if freq not in ALL_FREQS:
             continue
         prev = best.get(freq)
         if prev is None or measure_preference_rank(m) < measure_preference_rank(prev):
@@ -247,7 +255,7 @@ def parse_mode_token(token: str | None, *, native_freq: str) -> ParsedMode:
     """Разобрать ?mode= в (type, freq). Легаси → композит."""
     raw = (token or "level").strip().lower()
     native = normalize_frequency(native_freq) or "monthly"
-    if native not in MODE_FREQS:
+    if native not in ALL_FREQS:
         native = "monthly"
 
     if raw in MODE_TYPES:
@@ -258,7 +266,7 @@ def parse_mode_token(token: str | None, *, native_freq: str) -> ParsedMode:
         typ, _, freq = raw.partition("-")
         typ = typ.strip()
         freq = normalize_frequency(freq.strip())
-        if typ in MODE_TYPES and freq in MODE_FREQS:
+        if typ in MODE_TYPES and freq in ALL_FREQS:
             return ParsedMode(type=typ, freq=freq, id=f"{typ}-{freq}")
 
     if raw in _LEGACY_TO_COMPOSITE:
@@ -301,8 +309,9 @@ def resolve_series_for_mode(
         )
 
     candidates = {
-        "quarterly": ("monthly",),
-        "annual": ("quarterly", "monthly"),
+        "monthly": ("weekly", "daily"),
+        "quarterly": ("monthly", "weekly", "daily"),
+        "annual": ("quarterly", "monthly", "weekly", "daily"),
     }.get(freq, ())
     transform = _transform_for(typ, freq, signed)
     if transform is None:
@@ -342,10 +351,49 @@ def _transform_for(typ: str, freq: str, signed: bool = False) -> str | None:
             return "mom_abs" if signed else "mom"
         if freq == "quarterly":
             return "qoq_abs" if signed else "qoq"
+        if freq in ("weekly", "daily"):
+            # Соседний период: qoq-трансформ режет по зазору дней, не по кварталу.
+            return "qoq_abs" if signed else "qoq"
         if freq == "annual":
             # год к году на годовом ряду = yoy
             return "yoy_abs" if signed else "yoy"
     return None
+
+
+def _yoy_nearest(
+    series: list[tuple[date, float]],
+    *,
+    abs_diff: bool,
+    window_days: int = 3,
+) -> list[tuple[date, float]]:
+    """YoY для дневных/недельных дат: ближайшее наблюдение год назад ± окно."""
+    by_date = {d: float(v) for d, v in series}
+    out: list[tuple[date, float]] = []
+    for point_date in sorted(by_date):
+        try:
+            target = date(point_date.year - 1, point_date.month, point_date.day)
+        except ValueError:
+            continue
+        prev = None
+        for delta in range(0, window_days + 1):
+            candidates = (target,) if delta == 0 else (
+                target + timedelta(days=delta),
+                target - timedelta(days=delta),
+            )
+            for cand in candidates:
+                if cand in by_date:
+                    prev = by_date[cand]
+                    break
+            if prev is not None:
+                break
+        if prev is None:
+            continue
+        value = by_date[point_date]
+        if abs_diff:
+            out.append((point_date, round(value - prev, 4)))
+        elif prev != 0:
+            out.append((point_date, round((value / prev - 1.0) * 100.0, 2)))
+    return out
 
 
 def apply_resolved(
@@ -368,7 +416,77 @@ def apply_resolved(
             target_frequency=resolved.frequency,
             policy=resolved.aggregation_policy,
         )
+    if resolved.frequency in HIGH_FREQS and tr in ("yoy", "yoy_abs"):
+        return _yoy_nearest(base, abs_diff=tr == "yoy_abs")
     return apply_mode(base, tr)
+
+
+def apply_resolved_forecast(
+    actual: list[tuple[date, float]],
+    forecast: list[tuple[date, float, float | None, float | None]],
+    resolved: ResolvedSeries,
+) -> list[tuple[date, float, float | None, float | None]]:
+    """Прогноз в частоте и трансформации режима.
+
+    Для расчётной частоты уровень (и границы) агрегируются той же политикой,
+    что и факт; step/yoy считаются от склеенного уровня. Неполный хвост
+    отбрасывается внутри aggregate_forecast_points.
+    """
+    if not forecast:
+        return []
+    if resolved.aggregated:
+        if not resolved.aggregation_policy:
+            raise ValueError("aggregation policy is required")
+        level_fc = aggregate_forecast_points(
+            actual,
+            forecast,
+            source_frequency=resolved.source_frequency,
+            target_frequency=resolved.frequency,
+            policy=resolved.aggregation_policy,
+        )
+        if resolved.transform == "level":
+            return level_fc
+        actual_level = aggregate_series(
+            actual,
+            source_frequency=resolved.source_frequency,
+            target_frequency=resolved.frequency,
+            policy=resolved.aggregation_policy,
+        )
+        merged = {d: v for d, v in actual_level}
+        for point_date, value, _lo, _hi in level_fc:
+            merged[point_date] = value
+        transformed = apply_mode(sorted(merged.items()), resolved.transform)
+        forecast_dates = {d for d, _v, _lo, _hi in level_fc}
+        return [
+            (d, v, None, None)
+            for d, v in transformed
+            if d in forecast_dates
+        ]
+
+    last_actual = max((d for d, _ in actual), default=None)
+    native_fc = [
+        (d, float(v), lo, hi)
+        for d, v, lo, hi in forecast
+        if last_actual is None or d > last_actual
+    ]
+    if resolved.transform == "level":
+        return native_fc
+    merged = {d: float(v) for d, v in actual}
+    for point_date, value, _lo, _hi in native_fc:
+        merged[point_date] = value
+    if resolved.frequency in HIGH_FREQS and resolved.transform in ("yoy", "yoy_abs"):
+        transformed = _yoy_nearest(
+            sorted(merged.items()),
+            abs_diff=resolved.transform == "yoy_abs",
+        )
+    else:
+        transformed = apply_mode(sorted(merged.items()), resolved.transform)
+    forecast_dates = {d for d, _v, _lo, _hi in native_fc}
+    return [
+        (d, v, None, None)
+        for d, v in transformed
+        if d in forecast_dates
+    ]
 
 
 def mode_unit_for(parsed: ParsedMode, base_unit: str, signed: bool = False) -> str:
@@ -397,7 +515,7 @@ def build_modes_matrix(
     # знак ряда — по самому мелкому официальному
     signed = False
     if series_by_code:
-        for freq in MODE_FREQS:
+        for freq in ALL_FREQS:
             ind = by_freq.get(freq)
             if ind is None:
                 continue
@@ -410,23 +528,24 @@ def build_modes_matrix(
         signed = False
 
     out: list[dict] = []
+    matrix_freqs = [
+        freq for freq in ALL_FREQS
+        if freq in MODE_FREQS or freq in by_freq
+    ]
     for typ in publishable_mode_types(signed):
-        for freq in MODE_FREQS:
+        for freq in matrix_freqs:
             parsed = ParsedMode(type=typ, freq=freq, id=f"{typ}-{freq}")
             resolved = resolve_series_for_mode(
                 parsed=parsed, by_freq=by_freq, signed=signed,
             )
             available = resolved is not None
-            # step-monthly без monthly — недоступен даже через агрегацию
-            if typ == "step" and freq == "monthly" and "monthly" not in by_freq:
-                available = False
-                resolved = None
             label = _mode_label(typ, freq)
             aggregation = None
             if available and resolved is not None and resolved.aggregated:
                 aggregation = {
                     "policy": resolved.aggregation_policy,
                     "source": resolved.aggregation_source or "fallback",
+                    "source_frequency": resolved.source_frequency,
                 }
             out.append({
                 "id": parsed.id,
@@ -451,7 +570,7 @@ def _mode_label(typ: str, freq: str) -> str:
 
 def frequencies_payload(by_freq: dict[str, Any]) -> list[dict]:
     out = []
-    for freq in MODE_FREQS:
+    for freq in ALL_FREQS:
         ind = by_freq.get(freq)
         if ind is not None:
             out.append({
@@ -462,6 +581,8 @@ def frequencies_payload(by_freq: dict[str, Any]) -> list[dict]:
                 "history_end": ind.history_end.isoformat() if ind.history_end else None,
                 "official": True,
             })
+            continue
+        if freq not in MODE_FREQS:
             continue
         parsed = ParsedMode(type="level", freq=freq, id=f"level-{freq}")
         resolved = resolve_series_for_mode(
@@ -476,8 +597,47 @@ def frequencies_payload(by_freq: dict[str, Any]) -> list[dict]:
             "aggregation": {
                 "policy": resolved.aggregation_policy,
                 "source": resolved.aggregation_source or "fallback",
+                "source_frequency": resolved.source_frequency,
             },
         })
+    return out
+
+
+def attach_mode_forecastable(
+    modes: list[dict],
+    *,
+    forecastable_native_freqs: set[str],
+) -> list[dict]:
+    """Пометить режимы, на которых можно показать прогноз.
+
+    Дневные и недельные нативы не прогнозируем. Расчётные квартал/год
+    наследуют опубликованный прогноз месячного или квартального ряда.
+    """
+    native = {
+        freq for freq in forecastable_native_freqs
+        if freq in _FORECAST_SOURCE_FREQS
+    }
+    out: list[dict] = []
+    for mode in modes:
+        freq = mode.get("freq")
+        if freq in HIGH_FREQS:
+            able = False
+        elif mode.get("official"):
+            if freq in native:
+                able = True
+            elif freq == "quarterly":
+                able = "monthly" in native
+            elif freq == "annual":
+                able = "monthly" in native or "quarterly" in native
+            else:
+                able = False
+        elif freq == "quarterly":
+            able = "monthly" in native
+        elif freq == "annual":
+            able = "monthly" in native or "quarterly" in native
+        else:
+            able = False
+        out.append({**mode, "forecastable": able})
     return out
 
 

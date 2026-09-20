@@ -35,6 +35,7 @@ from app.data.eurostat_titles_ru import (  # noqa: E402
     build_public_name,
     category_for_dataset,
     country_prepositional,
+    dataset_title_en,
     is_listed_for_quality,
     public_description,
     public_methodology,
@@ -286,6 +287,7 @@ async def upsert_indicator_meta(
         dataset_id=result.dataset_id,
     )
     quality = title.quality
+    name_en = (dataset_title_en(result.dataset_id, result.title_en) or "")[:400] or None
     listed = is_listed_for_quality(quality)
     if listed and (is_sensitive_topic(result.dataset_id) or not unit_is_listable(unit_ru)):
         listed = False
@@ -351,7 +353,7 @@ async def upsert_indicator_meta(
                 slice_json=result.slice_,
                 slice_hash=result.slice_hash,
                 name_ru=name_ru,
-                name_en=result.title_en[:400] if result.title_en else None,
+                name_en=name_en,
                 name_quality=quality,
                 unit=result.unit or unit_ru or "",
                 unit_ru=unit_ru,
@@ -377,7 +379,7 @@ async def upsert_indicator_meta(
     existing.provider = "eurostat"
     existing.slice_json = result.slice_
     existing.name_ru = name_ru
-    existing.name_en = (result.title_en or "")[:400] or existing.name_en
+    existing.name_en = name_en or existing.name_en
     existing.name_quality = quality
     existing.unit = result.unit or existing.unit
     existing.unit_ru = unit_ru or existing.unit_ru

@@ -275,10 +275,8 @@ function pointsForCode(code) {
 }
 
 export function getWorldMockData(slug, code, mode = 'level-monthly') {
-  const primaryKey = Object.keys(WORLD_MOCK_INDICATOR).find((k) => k.startsWith(`${slug}/`));
-  const meta = WORLD_MOCK_INDICATOR[`${slug}/${code}`]
-    || WORLD_MOCK_INDICATOR[primaryKey];
-  if (!meta && !code) return null;
+  const meta = WORLD_MOCK_INDICATOR[`${slug}/${code}`];
+  if (!meta) return null;
 
   let token = mode;
   // легаси
