@@ -27,6 +27,7 @@ sys.path.insert(0, "/app")
 from app.core.cache import bump_namespaces  # noqa: E402
 from app.data.eurostat_listing import (  # noqa: E402
     card_key,
+    is_derived_change_unit,
     is_headline_aggregate_slice,
     is_short_annual_singleton,
     is_stale_history,
@@ -180,6 +181,9 @@ async def retitle_all() -> tuple[int, dict[str, int]]:
             elif ok and not unit_is_listable(unit_ru):
                 ok = False
                 reasons[prov or "missing-unit"] += 1
+            elif ok and is_derived_change_unit(unit):
+                ok = False
+                reasons["derived-change-mode"] += 1
 
             siblings = by_card.get(ind_card_key[ind.id]) or [ind]
             avail_freqs = sorted({
@@ -651,6 +655,7 @@ async def fold_frequency_cards() -> dict[str, int]:
             if (i.name_quality or "") in ("curated", "composed")
             and not is_sensitive_topic(i.dataset_id)
             and unit_is_listable(i.unit_ru or "")
+            and not is_derived_change_unit(i.unit)
             and slice_reflected_in_name(i.name_ru, i.slice_json or {})
         ]
 

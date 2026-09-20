@@ -5,6 +5,7 @@
 - no → is_listed=false
 - full_ok → кандидаты через техворота, primary по card_key
 - headline_ok → TOTAL по варьирующим dim (иначе 1 лучший ряд на страну)
+- единицы темпа (RCH_A / RCH_M / …) не листингуются: это режимы карточки
 
 Уже listed датасеты вне файла не трогаем. Затем лёгкий дедуп имён
 внутри затронутых стран и bump world-кэша.
@@ -32,6 +33,7 @@ from app.data.eurostat_country_visibility import (  # noqa: E402
 )
 from app.data.eurostat_listing import (  # noqa: E402
     card_key,
+    is_derived_change_unit,
     is_headline_aggregate_slice,
     is_short_annual_singleton,
     is_stale_history,
@@ -79,6 +81,8 @@ def _passes_tech(ind: WorldIndicator, *, mode: str) -> bool:
     if is_sensitive_topic(ind.dataset_id):
         return False
     if not unit_is_listable(ind.unit_ru or ""):
+        return False
+    if is_derived_change_unit(ind.unit):
         return False
     if is_stale_history(ind.history_end):
         return False

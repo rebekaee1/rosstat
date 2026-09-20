@@ -288,13 +288,12 @@ def test_measure_preference_level_beats_change_at_equal_depth():
 
 
 def test_measure_preference_discontinued_loses_to_successor():
-    """Редакторский no (замороженный aind) проигрывает живому ainr при равной мере."""
+    """Редакторский no (замороженный aind/midx) проигрывает живому minr."""
     frozen = _mk(1, "at-aind", "prc_hicp_aind", "INX_A_AVG", "индекс", points=30)
     frozen.history_end = date(2025, 1, 1)
-    live = _mk(2, "at-ainr", "prc_hicp_ainr", "INX_A_AVG", "индекс", points=30)
+    live = _mk(2, "at-minr", "prc_hicp_minr", "I15", "индекс (2015 = 100)", points=30)
     live.history_end = date(2025, 1, 1)
     assert measure_preference_rank(live) < measure_preference_rank(frozen)
-    """При равной мере живой преемник (свежий history_end) важнее более глубокого замороженного."""
     stale = _mk(1, "at-midx", "prc_hicp_midx", "I15", "индекс (2015 = 100)", points=360)
     stale.history_end = date(2025, 12, 1)
     live = _mk(2, "at-minr", "prc_hicp_minr", "I15", "индекс (2015 = 100)", points=300)

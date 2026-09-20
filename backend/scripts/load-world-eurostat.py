@@ -44,6 +44,7 @@ from app.data.eurostat_titles_ru import (  # noqa: E402
 )
 from app.data.eurostat_listing import (  # noqa: E402
     DEEP_DATASET_SLICES,
+    is_derived_change_unit,
     meets_listing_depth,
 )
 from app.data.eurostat_units_ru import (  # noqa: E402
@@ -290,6 +291,8 @@ async def upsert_indicator_meta(
     name_en = (dataset_title_en(result.dataset_id, result.title_en) or "")[:400] or None
     listed = is_listed_for_quality(quality)
     if listed and (is_sensitive_topic(result.dataset_id) or not unit_is_listable(unit_ru)):
+        listed = False
+    if listed and is_derived_change_unit(result.unit):
         listed = False
     if listed and not meets_listing_depth(result.frequency, len(points)):
         listed = False

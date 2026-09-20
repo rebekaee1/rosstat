@@ -201,4 +201,19 @@ describe('messages parity', () => {
     expect(MESSAGES).toHaveProperty('ru');
     expect(MESSAGES).toHaveProperty('en');
   });
+
+  it('EN methodology uses international sources, not a Russia centre', () => {
+    const en = MESSAGES.en;
+    expect(en['meth.p.officialBody']).toMatch(/Eurostat/);
+    expect(en['meth.p.officialBody']).toMatch(/Bureau of Labor Statistics/);
+    expect(en['meth.p.officialBody']).toMatch(/Federal Reserve/);
+    expect(en['meth.p.officialBody']).not.toMatch(/Rosstat/);
+    expect(en['meth.p.officialBody']).not.toMatch(/Bank of Russia/);
+    expect(en['meth.worldRank.p1']).toMatch(/Eurostat/);
+    expect(en['meth.worldRank.p1']).not.toMatch(/Rosstat/);
+    expect(en['meth.worldRank.link']).toBe('GDP country ranking');
+    expect(en['meth.step.4body']).not.toMatch(/ruble/i);
+    expect(MESSAGES.ru['meth.p.officialBody']).toMatch(/Росстат/);
+    expect(MESSAGES.ru['meth.worldRank.link']).toBe('Категория ВВП России');
+  });
 });

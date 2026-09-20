@@ -22,6 +22,7 @@ from app.services.locale import get_locale
 from app.data.eurostat_listing import (
     catalog_merge_key,
     catalog_stem,
+    catalog_stem_alias,
     dataset_stem,
     is_derived_change_unit,
     is_stale_history,
@@ -497,6 +498,10 @@ async def _country_indicators_for_listing(
 
     stems = {dataset_stem(ind.dataset_id) for ind in listed if ind.dataset_id}
     stems |= {catalog_stem(ind.dataset_id) for ind in listed if ind.dataset_id}
+    for ind in listed:
+        alias = catalog_stem_alias(ind.dataset_id)
+        if alias:
+            stems.update(part for part in alias.split("|") if part)
     stems.discard("")
     if not stems:
         return listed

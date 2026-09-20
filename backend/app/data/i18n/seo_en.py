@@ -359,15 +359,18 @@ PAGE_META_EN: dict[str, PageSeo] = {
             "inflation forecast methodology, GDP forecast, time series extrapolation"
         ),
         links=(
-            (paths.russia_indicator("cpi"), "Consumer Price Index"),
-            (paths.russia_indicator("key-rate"), "Key rate"),
+            (paths.indicator("united-states", "us-cpi-all"), "U.S. CPI (BLS)"),
+            (paths.indicator("united-states", "us-policy-rate"), "Federal funds rate"),
+            ("/world/rating/gdp-usd", "GDP country ranking"),
             ("/about", "About"),
             ("/", "Home"),
         ),
         blocks=(
             SeoBlock(
                 "Principles",
-                "We forecast only series from official primary sources. "
+                "We forecast only series from official primary sources — Eurostat, "
+                "the U.S. Bureau of Labor Statistics, the Federal Reserve, and other "
+                "national statistical offices and central banks. "
                 "The forecast is produced from the series history by a fixed algorithm "
                 "and can be reproduced from published data. Alongside the central "
                 "estimate we show a confidence interval that widens with the forecast horizon.",
@@ -404,14 +407,14 @@ PAGE_META_EN: dict[str, PageSeo] = {
             SeoBlock(
                 "Cross-country GDP ranking",
                 "On the world map and in the country ranking, GDP and GDP per capita in "
-                "current US dollars for foreign countries come from the IMF World Economic "
-                "Outlook annual estimate. For Russia the ranking uses a platform calculation: "
-                "Rosstat’s annual GDP in rubles converted to US dollars at the Bank of Russia "
-                "average annual official exchange rate. Opening a country leads to the fund’s "
-                "series. Years the fund publishes as projections, including the current "
-                "calendar year, appear on the map as Outlook estimates. Russia’s quarterly "
-                "actuals are published by Rosstat and collected in the GDP category of the "
-                "Russia section.",
+                "current US dollars come from the IMF World Economic Outlook annual "
+                "estimate. National definitions and the fund’s currency conversions may "
+                "differ from a statistical office’s own accounts. Opening a country leads "
+                "to that country’s official series — Eurostat for EU members, the U.S. "
+                "Bureau of Labor Statistics and the Federal Reserve for the United States, "
+                "and other national offices and central banks. Years the fund publishes as "
+                "projections, including the current calendar year, appear on the map as "
+                "Outlook estimates.",
             ),
             SeoBlock(
                 "Limitations",

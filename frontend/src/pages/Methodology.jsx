@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
-import { russiaCategoryPath } from '../lib/sitePaths';
+import { russiaCategoryPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 
 const CARD = 'rounded-2xl bg-surface border border-border-subtle p-5 md:p-6';
@@ -109,7 +109,9 @@ export default function Methodology() {
           <p className={`${P} mb-4`}>{t('meth.worldRank.p1')}</p>
           <p className={`${P} mb-4`}>{t('meth.worldRank.p2')}</p>
           <Link
-            to={russiaCategoryPath('gdp')}
+            to={locale === 'en'
+              ? worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)
+              : russiaCategoryPath('gdp')}
             className="text-sm font-medium text-champagne hover:underline"
           >
             {t('meth.worldRank.link')}

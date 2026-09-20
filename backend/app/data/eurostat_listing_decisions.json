@@ -3123,9 +3123,9 @@
     "reason": "Discontinued (1996–2025), successor prc_hicp_ainr / prc_hicp_minr (ECOICOP ver.2)."
   },
   "prc_hicp_ainr": {
-    "listable": true,
-    "mode": "full_ok",
-    "reason": "Годовой HICP (индексы и темпы) — базовый ценовой индикатор; один срез, все страны."
+    "listable": false,
+    "mode": "no",
+    "reason": "Годовой официальный HICP (INX_A_AVG / RCH_A_AVG) — режим года на канонической месячной карточке prc_hicp_minr I15, не вторая плитка в каталоге."
   },
   "prc_hicp_apc": {
     "listable": true,
@@ -4022,9 +4022,9 @@
     "reason": "Согласен: оплата труда наёмных работников в процентах ВВП — базовый макропоказатель распределения."
   },
   "tec00027": {
-    "listable": true,
-    "mode": "full_ok",
-    "reason": "Согласен: среднегодовой гармонизированный индекс потребительских цен — базовый ценовой макроиндикатор."
+    "listable": false,
+    "mode": "no",
+    "reason": "Main table, 12-летний хвост среднегодового ГИПЦ; тот же смысл, что режим года на prc_hicp_minr I15."
   },
   "tec00038": {
     "listable": true,
@@ -4114,7 +4114,7 @@
   "tec00118": {
     "listable": false,
     "mode": "no",
-    "reason": "Main table, короткий хвост годового ГИПЦ; карточка — prc_hicp_minr / prc_hicp_ainr."
+    "reason": "Main table, короткий хвост годового ГИПЦ; карточка — prc_hicp_minr."
   },
   "tec00120": {
     "listable": true,

@@ -38,13 +38,16 @@ def test_listing_decisions_hicp_rates_hidden():
 def test_listing_decisions_hicp_duplicates_hidden():
     """Преемник ECOICOP ver.2 на витрине; замороженные наборы сняты.
 
-    prc_hicp_minr — канон. Замороженные midx/aind/fp и короткие main table
-    tec00118/teicp000 не дают вторую плитку ГИПЦ.
+    prc_hicp_minr I15 — единственная listed-карточка ГИПЦ. Замороженные
+    midx/aind/fp, годовой ainr / tec00027 (режим года) и короткие main table
+    tec00118/teicp000 не дают вторую плитку.
     """
+    load_listing_decisions.cache_clear()
     dec = load_listing_decisions()
     for ds in (
         "prc_hicp_midx", "prc_hicp_aind", "prc_hicp_fp",
         "prc_hicp_fpd", "prc_hicp_ct", "prc_hicp_cmon",
+        "prc_hicp_ainr", "tec00027",
         "tec00118", "teicp000",
     ):
         assert listing_mode_for_dataset(ds) == "no", ds
@@ -52,7 +55,6 @@ def test_listing_decisions_hicp_duplicates_hidden():
         assert dec[ds]["reason"], ds
 
     assert listing_mode_for_dataset("prc_hicp_minr") == "full_ok"
-    assert listing_mode_for_dataset("prc_hicp_ainr") == "full_ok"
     assert listing_mode_for_dataset("prc_hicp_cind") == "no"
     assert listing_mode_for_dataset("prc_hicp_cmon") == "no"
     assert listing_mode_for_dataset("prc_hicp_cann") == "no"
@@ -74,8 +76,10 @@ def test_variant_group_key_house_price_stem_alias():
     assert is_derived_change_unit("RCH_A")
     assert is_derived_change_unit("RCH_M")
     assert is_derived_change_unit("RCH_MV12MAVR")
+    assert is_derived_change_unit("RCH_A_AVG")
     assert not is_derived_change_unit("I15")
     assert not is_derived_change_unit("I25")
+    assert not is_derived_change_unit("INX_A_AVG")
 
     # чужие семьи не затронуты; страны не смешиваются
     assert variant_group_key(country_id=1, dataset_id="une_rt_m") == (1, "une_rt")

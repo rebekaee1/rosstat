@@ -308,6 +308,29 @@ def test_page_meta_en_parity_when_populated():
     assert not missing, f"PAGE_META_EN missing slugs: {sorted(missing)}"
 
 
+def test_en_methodology_is_international_not_russia_centric():
+    """EN /methodology: Eurostat / BLS / Fed, not Rosstat as the product pillar."""
+    seo = PAGE_META_EN["methodology"]
+    parts = [seo.title, seo.description, seo.h1, seo.intro or ""]
+    parts.extend(block.body for block in (seo.blocks or ()))
+    parts.extend(label for _href, label in (seo.links or ()))
+    blob = " ".join(parts)
+    assert "Rosstat" not in blob
+    assert "Bank of Russia" not in blob
+    assert "Eurostat" in blob
+    assert "Bureau of Labor Statistics" in blob
+    assert "Federal Reserve" in blob
+    hrefs = [href for href, _label in (seo.links or ())]
+    assert "/united-states/indicator/us-cpi-all" in hrefs
+    assert "/united-states/indicator/us-policy-rate" in hrefs
+    assert "/world/rating/gdp-usd" in hrefs
+    ru = PAGE_META["methodology"]
+    ru_blob = " ".join(
+        [ru.intro or ""] + [block.body for block in (ru.blocks or ())]
+    )
+    assert "Росстат" in ru_blob
+
+
 def test_category_meta_en_parity_when_populated():
     if not CATEGORY_META_EN:
         return

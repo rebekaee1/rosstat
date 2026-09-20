@@ -50,8 +50,22 @@ LEGACY_INDICATOR_REDIRECTS: dict[str, str] = {
 _BESPOKE_UNLISTED_CANONICAL: dict[str, str] = {
     "unemployment-quarterly": f"{paths.russia_indicator('unemployment')}?mode=quarterly",
     "unemployment-annual": f"{paths.russia_indicator('unemployment')}?mode=annual",
-    "trade-balance-yoy-abs": f"{paths.russia_indicator('trade-balance')}?mode=yoy_abs",
-    "current-account-yoy-abs": f"{paths.russia_indicator('current-account')}?mode=yoy_abs",
+    # T9s канон «Г/г» — mode=yoy (abs-pipeline), не устаревший yoy_abs.
+    "trade-balance-yoy-abs": f"{paths.russia_indicator('trade-balance')}?mode=yoy",
+    "current-account-yoy-abs": f"{paths.russia_indicator('current-account')}?mode=yoy",
+    # Bespoke ИПЦ / жильё: derived-URL → карточка parent + режим.
+    "inflation-weekly": f"{paths.russia_indicator('cpi')}?mode=step-weekly",
+    "inflation-annual": f"{paths.russia_indicator('cpi')}?mode=yoy",
+    "inflation-quarterly": f"{paths.russia_indicator('cpi')}?mode=index-quarterly",
+    "inflation-weekly-food": paths.russia_indicator("cpi-food"),
+    "inflation-weekly-nonfood": paths.russia_indicator("cpi-nonfood"),
+    "inflation-weekly-services": paths.russia_indicator("cpi-services"),
+    "housing-yoy-primary": f"{paths.russia_indicator('housing-price-primary')}?mode=yoy",
+    "housing-yoy-secondary": f"{paths.russia_indicator('housing-price-secondary')}?mode=yoy",
+    "housing-qoq-primary": f"{paths.russia_indicator('housing-price-primary')}?mode=qoq",
+    "housing-qoq-secondary": f"{paths.russia_indicator('housing-price-secondary')}?mode=qoq",
+    "housing-annual-primary": f"{paths.russia_indicator('housing-price-primary')}?mode=yoy-annual",
+    "housing-annual-secondary": f"{paths.russia_indicator('housing-price-secondary')}?mode=yoy-annual",
     # ИЦП: bespoke-режимы карточки /russia/indicator/ppi?mode=… (ppiViewMode*).
     "ppi-yoy": f"{paths.russia_indicator('ppi')}?mode=yoy",
     "ppi-qoq": f"{paths.russia_indicator('ppi')}?mode=qoq",
@@ -267,6 +281,7 @@ def _mode_freq(indicator) -> str:
 # → yoy; темп к предыдущему периоду (RCH_M, RT1, PCH_PRE, RT_M_DIF) → step.
 _MERGE_MODE_TYPE_BY_UNIT: dict[str, str] = {
     "RCH_A": "yoy", "PCH_SM": "yoy", "PCH_SAME": "yoy", "RCH_MV12MAVR": "yoy",
+    "RCH_A_AVG": "yoy",
     "RCH_M": "step", "RT1": "step", "RT1_SCA": "step", "PCH_PRE": "step",
     "RT_M_DIF": "step",
 }

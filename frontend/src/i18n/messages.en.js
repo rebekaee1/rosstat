@@ -1746,9 +1746,10 @@ export default {
   'meth.principlesTitle': 'Principles',
   'meth.p.officialTitle': 'Official data only',
   'meth.p.officialBody':
-    'Sources are publications by Rosstat, the Bank of Russia and the Ministry of Finance. '
-    + 'We do not use news digests or aggregator feeds. The primary source is shown on each '
-    + 'indicator card and can be verified directly.',
+    'Sources are publications by national statistical offices and central banks: Eurostat, '
+    + 'the U.S. Bureau of Labor Statistics, the Federal Reserve, and their peers in other '
+    + 'countries. We do not use news digests or aggregator feeds. The primary source is shown '
+    + 'on each indicator card and can be verified directly.',
   'meth.p.reproTitle': 'Reproducibility',
   'meth.p.reproBody':
     'The forecast is obtained from the series history by a fixed algorithm. With the same '
@@ -1783,8 +1784,8 @@ export default {
   'meth.step.4title': 'Weighting and return to indicator units',
   'meth.step.4body':
     'Estimates from different training windows are combined with weights from our team’s '
-    + 'method. The forecast is then converted back to the original units — rubles, percent '
-    + 'or index points.',
+    + 'method. The forecast is then converted back to the original units — percent, index '
+    + 'points or the unit published by the source.',
   'meth.worldTitle': 'Country forecast quality checks',
   'meth.world.p1':
     'For monthly and quarterly series of other countries a separate quality-control procedure '
@@ -1804,18 +1805,16 @@ export default {
   'meth.worldRankTitle': 'Cross-country GDP ranking',
   'meth.worldRank.p1':
     'On the world map and in the country ranking, GDP and GDP per capita in current US '
-    + 'dollars for foreign countries come from the IMF World Economic Outlook annual '
-    + 'estimate. For Russia the ranking uses a platform calculation: Rosstat’s annual GDP '
-    + 'in rubles converted to US dollars at the Bank of Russia average annual official '
-    + 'exchange rate. That keeps units comparable; national definitions and the fund’s '
-    + 'own currency conversions for other countries may differ.',
+    + 'dollars come from the IMF World Economic Outlook annual estimate. That keeps units '
+    + 'comparable across countries; national definitions and the fund’s currency conversions '
+    + 'may differ from a statistical office’s own accounts. Country cards use the official '
+    + 'national or European series — Eurostat for EU members, the Bureau of Labor Statistics '
+    + 'and the Federal Reserve for the United States, and other national offices elsewhere.',
   'meth.worldRank.p2':
-    'Opening a country on the map leads to the fund’s official series for that country. '
-    + 'Years the fund publishes as projections, including the current calendar year, appear '
-    + 'on the map as Outlook estimates, not as a closed statistical outturn. Russia’s '
-    + 'quarterly actuals are published by Rosstat and collected in the GDP category of '
-    + 'the Russia section.',
-  'meth.worldRank.link': 'Russia GDP category',
+    'Opening a country on the map leads to that country’s official series. Years the fund '
+    + 'publishes as projections, including the current calendar year, appear on the map as '
+    + 'Outlook estimates, not as a closed statistical outturn.',
+  'meth.worldRank.link': 'GDP country ranking',
   'meth.updateTitle': 'Updating the forecast',
   'meth.update.modelTitle': 'The model follows the data',
   'meth.update.modelBody':
