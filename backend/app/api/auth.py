@@ -146,12 +146,15 @@ async def register(body: RegisterIn, request: Request, response: Response, db: A
     await audit(db, user.id, "register", request)
     await db.commit()
     await _start_session(response, user)
+    from app.services.locale import get_locale
+
     await _notify_new_user_safe({
         "method": "Email + пароль",
         "email": body.email,
         "phone": None,
         "display_name": user.display_name,
         "newsletter": body.newsletter,
+        "locale": get_locale(),
         "ip": ip,
         "user_agent": ua,
         "user_id": str(user.id),

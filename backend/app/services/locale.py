@@ -177,6 +177,20 @@ def resolve_locale(
     return "ru"
 
 
+def locale_from_absolute_url(url: str | None) -> Locale | None:
+    """Locale of an absolute same-site URL (OAuth ``next``). Relative path → None.
+
+    Callback OAuth всегда на apex, поэтому язык регистрации нельзя брать
+    с Host callback: он лежит в return-URL, с которого стартовал вход.
+    """
+    if not url:
+        return None
+    host = urlsplit(url).hostname
+    if not host:
+        return None
+    return resolve_locale(host=host)
+
+
 def resolve_locale_from_request(request: Request) -> Locale:
     """Header → ``?preview_locale=`` → Referer preview → host.
 

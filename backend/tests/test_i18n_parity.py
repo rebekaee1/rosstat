@@ -140,6 +140,18 @@ def test_production_apex_is_en_when_cutover_enabled():
         assert resolve_locale(host=host, apex_locale_en=True) == "en"
 
 
+def test_locale_from_oauth_return_url(monkeypatch):
+    """OAuth next хранит хост старта: ru. = русская версия, apex = английская."""
+    from app.config import settings
+    from app.services.locale import locale_from_absolute_url
+
+    monkeypatch.setattr(settings, "apex_locale_en", True, raising=False)
+    assert locale_from_absolute_url("https://ru.forecasteconomy.com/account") == "ru"
+    assert locale_from_absolute_url("https://forecasteconomy.com/account") == "en"
+    assert locale_from_absolute_url("https://www.forecasteconomy.com/login") == "en"
+    assert locale_from_absolute_url("/account") is None
+
+
 def test_ru_subdomain_is_ru():
     assert resolve_locale(host="ru.forecasteconomy.com") == "ru"
     assert resolve_locale(host="ru.forecasteconomy.com", apex_locale_en=True) == "ru"

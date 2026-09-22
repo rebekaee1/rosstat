@@ -65,6 +65,25 @@ def test_realtime_login_alerts_broadcast(monkeypatch):
     assert calls == ["111", "222"]
 
 
+def test_new_user_message_names_site_version(monkeypatch):
+    """Регистрация пишет, с русской или английской версии пришёл человек."""
+    messages: list[str] = []
+
+    async def fake_send(message, chat_id=None, reply_markup=None, kind="alert"):
+        messages.append(message)
+        return True
+
+    monkeypatch.setattr(alerting, "send_telegram", fake_send)
+    monkeypatch.setattr(alerting.settings, "telegram_realtime_alerts_enabled", True)
+    monkeypatch.setattr(alerting.settings, "telegram_chat_id", "111", raising=False)
+    monkeypatch.setattr(alerting.settings, "telegram_digest_chat_ids", "222", raising=False)
+    asyncio.run(alerting.notify_new_user({"method": "email", "locale": "ru"}))
+    asyncio.run(alerting.notify_new_user({"method": "email", "locale": "en"}))
+    # По одному тексту на каждого получателя дайджеста.
+    assert messages[:2] and all("Версия сайта: русская" in m for m in messages[:2])
+    assert messages[2:] and all("Версия сайта: английская" in m for m in messages[2:])
+
+
 def test_realtime_user_and_feedback_alerts_broadcast(monkeypatch):
     """Регистрации и обратная связь — всем получателям дайджеста
     (владелец + skrakan), указание владельца 2026-07-06."""

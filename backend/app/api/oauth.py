@@ -220,12 +220,16 @@ async def _mint_oauth_tx(
     """Создать Redis-транзит + PKCE. Возвращает (state, code_challenge)."""
     state = secrets.token_urlsafe(32)
     verifier, challenge = generate_pkce()
+    from app.services.locale import get_locale
+
     payload = {
         "provider": provider,
         "code_verifier": verifier,
         "intent": intent,
         "next": safe_next,
         "newsletter": bool(newsletter),
+        # Язык хоста старта. Callback всегда на apex, Host там не про версию.
+        "locale": get_locale(),
     }
     if intent == "link":
         sess = await current_session(request)
@@ -420,12 +424,18 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
     await audit(db, user.id, intent if intent == "link" else "login", request, detail=provider)
     await db.commit()
 
+    from app.services.locale import locale_from_absolute_url
+
+    signup_locale = tx.get("locale")
+    if signup_locale not in ("ru", "en"):
+        signup_locale = locale_from_absolute_url(safe_next)
     auth_info = {
         "method": f"OAuth ({provider})",
         "email": profile.email,
         "phone": profile.phone,
         "display_name": profile.display_name,
         "newsletter": newsletter,
+        "locale": signup_locale,
         "ip": request.client.host if request.client else None,
         "user_agent": request.headers.get("user-agent"),
         "user_id": str(user.id),

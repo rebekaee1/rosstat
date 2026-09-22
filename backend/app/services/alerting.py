@@ -92,6 +92,16 @@ async def send_telegram(
     return ok
 
 
+def site_version_label(locale: str | None) -> str:
+    """Человеческая подпись версии сайта в Telegram: русская / английская."""
+    code = (locale or "").strip().lower()
+    if code == "ru":
+        return "русская"
+    if code == "en":
+        return "английская"
+    return "—"
+
+
 def digest_recipients() -> list[str]:
     """Получатели ежедневного дайджеста: primary + extra (config-driven, dedup).
 
@@ -150,6 +160,7 @@ async def notify_new_user(info: dict) -> None:
 
     lines = [
         "🆕 <b>Новый пользователь</b>",
+        f"Версия сайта: {site_version_label(info.get('locale'))}",
         f"Способ входа: {esc(info.get('method'))}",
         f"Email: {esc(info.get('email'))}",
         f"Телефон: {esc(info.get('phone'))}",
