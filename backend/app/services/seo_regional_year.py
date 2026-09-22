@@ -55,6 +55,7 @@ from app.services.seo_renderer import (
     _link,
     _links_list,
     _seo_chart_figure,
+    fast_answer_block,
     _site_json_ld,
     build_document,
     neighbor_year_window,
@@ -507,10 +508,9 @@ async def render_region_indicator_year_html(
     other_h2 = _t("other_years_h2") or "Другие годы"
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(trail)}
-<p class="seo-eyebrow">{escape(f"{section_name} — {region_name}") if section_name else escape(region_name)}</p>
-<h1>{escape(_h1(ind_name, region_name, year))}</h1>
+{fast_answer_block(eyebrow=f"{region_name}, {year}", title=_h1(ind_name, region_name, year), value=f"{_fmt_locale(value)}{f' {unit}' if unit else ''}", note=desc_main)}
 {figure_html}
-{''.join(paragraphs)}
+{''.join(paragraphs[1:])}
 {rank_section}
 {rf_paragraph}
 <section class="seo-section"><h2>{escape(dyn_h2)}</h2>

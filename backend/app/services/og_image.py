@@ -1,15 +1,15 @@
-"""Per-indicator OG-превью (PNG 1200×630) — постерный тёмный рендер.
+"""Per-indicator OG-превью (PNG 1200×630) — редакционная карточка быстрой ссылки.
 
 Раздаётся как `https://forecasteconomy.com/og/{code}.png` (nginx → backend
 `/api/v1/og-image/indicator/{code}.png`). Подключается в SSR через
 `build_document(og_image=...)` — у каждой карточки своё превью в соцсетях,
 мессенджерах и выдаче вместо одной общей картинки.
 
-Дизайн «J6» (утверждён владельцем 2026-08-22): тёмный градиентный фон,
-гигантское число с градиентом и тенью, золотая пилюля контекста, широкая
-лента динамики с неон-линией. Палитра проверена по WCAG-контрасту
-(текст >= 4.5:1, крупный текст >= 3:1). Гарнитура — Golos Text (OFL),
-кириллический дисплей; Inter остаётся фолбэком.
+Карточка быстрой ссылки (2026-09-22): жемчужный фон, чернильный текст,
+шампань, крупный ответ и плоский график. Картинка самодостаточна:
+название, число, период, подпись ряда и домен forecasteconomy.com
+справа внизу. Гарнитура — Golos Text (OFL), кириллический дисплей;
+Inter остаётся фолбэком. Тёмный постер J6 этим рендером заменён.
 
 Форматы чисел/дат двуязычны: локаль берётся из контекста запроса
 (`get_locale()` из `app.services.locale`, ставится middleware) либо задаётся
@@ -51,9 +51,9 @@ MUT = (168, 172, 196)
 AXIS_TXT = (146, 152, 182)
 PILL_TEXT = (28, 22, 10)
 
-_LEGACY_BG = (248, 249, 252)
-TEXT_PRIMARY = (26, 26, 46)
-CHAMPAGNE = (184, 148, 47)
+_LEGACY_BG = (238, 240, 244)
+TEXT_PRIMARY = (32, 42, 60)
+CHAMPAGNE = (173, 138, 72)
 # Легаси-константы светлых карточек (рейтинги регионов/стран, today-хаб,
 # сравнение регионов, страны мира) — до их перевода на тёмный постер.
 BG = _LEGACY_BG
@@ -435,6 +435,52 @@ def _draw_big_number(img: Image.Image, xy: tuple[int, int], text: str, size: int
     return bb
 
 
+def _pearl_base() -> Image.Image:
+    img = Image.new("RGBA", (WIDTH, HEIGHT), (238, 240, 244, 255))
+    wash = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+    ImageDraw.Draw(wash).ellipse((680, -240, 1420, 460), fill=(233, 223, 205, 120))
+    img.alpha_composite(wash)
+    return img
+
+
+def _draw_editorial_chart(
+    draw: ImageDraw.ImageDraw,
+    values: list[float],
+    box: tuple[int, int, int, int],
+) -> None:
+    """Плоский график на светлой поверхности: сетка, линия, последняя точка."""
+    x0, y0, x1, y1 = box
+    vals = list(values[-48:])
+    if len(vals) < 2:
+        vals = (vals + [vals[-1] if vals else 0.0])[:2] or [0.0, 0.0]
+    vmin, vmax = min(vals), max(vals)
+    pad = ((vmax - vmin) or abs(vmax) or 1.0) * 0.16
+    lo, hi = vmin - pad, vmax + pad
+    if lo == hi:
+        hi = lo + 1.0
+    span = hi - lo
+    n = len(vals)
+
+    def xy(i: int, v: float) -> tuple[float, float]:
+        x = x0 + (x1 - x0) * i / (n - 1)
+        y = y1 - (y1 - y0) * ((v - lo) / span)
+        return x, y
+
+    ink = (32, 42, 60, 36)
+    for k in range(4):
+        gy = y0 + (y1 - y0) * k / 3
+        draw.line([(x0, gy), (x1, gy)], fill=ink, width=1)
+    pts = [xy(i, v) for i, v in enumerate(vals)]
+    color = (162, 75, 52, 255) if vmax < 0 else (50, 111, 88, 255)
+    draw.line(pts, fill=color, width=4, joint="curve")
+    lx, ly = pts[-1]
+    draw.ellipse((lx - 6, ly - 6, lx + 6, ly + 6), fill=color)
+    rf = FG(15, 600)
+    muted = (103, 115, 134, 255)
+    draw.text((x0, y0 - 22), _fmt_axis(hi), font=rf, fill=muted)
+    draw.text((x0, y1 + 8), _fmt_axis(lo), font=rf, fill=muted)
+
+
 def render_indicator_og(
     *,
     code: str,
@@ -448,96 +494,78 @@ def render_indicator_og(
     subtitle: str | None = None,
     unit_suffix: str | None = None,
 ) -> bytes:
-    """Постер J6: гигантское значение + контекстная пилюля + лента динамики.
+    """Редакционная карточка: ответ, график, период и домен на самом изображении.
 
-    Чистая функция от данных — кэш на вызывающей стороне. `context_pill` —
-    золотая пилюля справа от числа (например «Годовая инфляция — 6,0%»);
-    `subtitle` — строка под заголовком (что показывает ряд); `period_text` —
-    метка периода у бренда («2025 год» для годовых лендингов); `x_labels` —
-    крайние подписи периода под лентой динамики.
-
-    Все тексты проходят через `_layout` (автоподбор кегля): значение с длинной
-    словесной единицей переносится на вторую строку, заголовок ужимается,
-    бейдж последней точки растёт по ширине текста — обрезаний у краёв нет.
+    Чистая функция от данных — кэш на вызывающей стороне. `period_text` —
+    метка периода в шапке («2025 год»). `subtitle` и `context_pill` остаются
+    пояснением ряда слева внизу. `x_labels` — крайние подписи под графиком.
+    `code` участвует в смысле числа на вызывающей стороне (знак «+»), здесь
+    нужен только как часть контракта рендера.
     """
-    L = _layout_indicator(
-        name=name,
-        value_text=value_text,
-        date_text=date_text,
-        subtitle=subtitle,
-        context_pill=context_pill,
-        unit_suffix=unit_suffix,
-        period_text=period_text,
-    )
+    del code  # знак числа уже собран в value_text
     margin = 56
-    img = _bg_rgba()
+    ink = (32, 42, 60, 255)
+    muted = (103, 115, 134, 255)
+    champ = (173, 138, 72, 255)
+    img = _pearl_base()
     draw = ImageDraw.Draw(img, "RGBA")
+    draw.rounded_rectangle(
+        (28, 22, WIDTH - 28, HEIGHT - 22), radius=28, fill=(255, 255, 255, 236),
+    )
 
-    # шапка: бренд — источник/период
-    draw.text((margin, 42), "F O R E C A S T   E C O N O M Y", font=FG(17, 700), fill=GOLD_BRIGHT)
-    right_txt = period_text or date_text or ""
+    draw.text((margin, 42), "forecasteconomy", font=FG(26, 700), fill=ink)
+    right_txt = period_text or ""
     if right_txt:
-        sf = FG(16, 600)
+        sf = FG(18, 600)
         rw = draw.textlength(right_txt, font=sf)
-        draw.text((WIDTH - margin - rw, 44), right_txt, font=sf, fill=MUT)
+        draw.text((WIDTH - margin - rw, 48), right_txt, font=sf, fill=muted)
 
-    # заголовок (до 2 строк, кегль подобран под полосу) + подзаголовок
-    nf = FG(L["title_size"], 800)
-    ty = 94
-    for line in L["title_lines"]:
-        draw.text((margin, ty), line, font=nf, fill=IVORY)
-        ty += L["title_line_h"]
-    if L["subtitle"]:
-        draw.text((margin + 1, ty + 4), L["subtitle"], font=FG(L["subtitle_size"], 500), fill=MUT)
+    title_w = WIDTH - margin * 2
+    title_lines, title_size = _wrap_fit_lines(name or " ", 36, 700, title_w, 20)
+    title_lines = title_lines[:3]
+    ty = 88
+    tf = FG(title_size, 700)
+    for line in title_lines:
+        draw.text((margin, ty), line, font=tf, fill=ink)
+        ty += int(title_size * 1.22)
 
-    # гигантское число: одна строка, либо число + единица второй строкой
-    num_line, unit_line = L["value_lines"]
-    vf = FG(L["value_size"], 800)
-    bb = _draw_big_number(img, (margin - 4, 208), num_line, L["value_size"])
-    draw = ImageDraw.Draw(img, "RGBA")
-    num_w = draw.textlength(num_line, font=vf)
-    unit_y = bb[3] - int(L["value_unit_size"] * 1.25)
+    num_line, unit_line = _split_value_lines(value_text or "—")
+    if unit_suffix and unit_suffix not in (value_text or ""):
+        unit_line = f"{unit_line} {unit_suffix}".strip() if unit_line else unit_suffix
+    left_limit = 500
+    num_size = _fit_font_size(num_line, 92, 700, left_limit, 36)
+    nf = FG(num_size, 700)
+    num_y = max(ty + 28, 210)
+    draw.text((margin, num_y), num_line, font=nf, fill=ink)
+    meta_y = num_y + int(num_size * 1.15)
     if unit_line:
-        draw.text((margin - 4, unit_y), unit_line,
-                  font=FG(L["value_unit_size"], 700), fill=(206, 210, 230))
-        num_w = max(num_w, draw.textlength(unit_line, font=FG(L["value_unit_size"], 700)))
+        uf = FG(_fit_font_size(unit_line, 28, 600, left_limit, 16), 600)
+        draw.text((margin, meta_y), unit_line, font=uf, fill=muted)
+        meta_y += 40
+    if date_text:
+        draw.text((margin, meta_y), date_text, font=FG(20, 600), fill=muted)
+        meta_y += 32
+    if context_pill:
+        pill_size = _fit_font_size(context_pill, 20, 600, left_limit, 14)
+        draw.text((margin, meta_y), context_pill, font=FG(pill_size, 600), fill=champ)
 
-    # правая колонка: период/база (date_text) + пилюля контекста
-    px, _ = L["context_pill_xy"]
-    if date_text and not period_text:
-        df2 = FG(21, 500)
-        draw.text((px, bb[1] + 20), date_text, font=df2, fill=MUT)
-    if L["context_pill"]:
-        pf = FG(L["context_pill_size"], 800)
-        pill_w = L["context_pill_w"]
-        pill_h = L["context_pill_h"]
-        pill_x, pill_y = px, bb[1] + 64
-        if pill_x + pill_w > WIDTH - margin:
-            pill_x, pill_y = margin, bb[3] + 24
-        draw.rounded_rectangle([pill_x, pill_y, pill_x + pill_w, pill_y + pill_h],
-                               radius=28, fill=GOLD + (255,))
-        draw.text((pill_x + 26, pill_y + 11), L["context_pill"], font=pf, fill=PILL_TEXT)
-
-    # лента динамики: бейдж последней точки — по ширине текста, без обрезки
-    chart_box = (60, 448, WIDTH - 60, 562)
-    if len(values) < 2:
-        values = (values + [values[-1] if values else 0.0])[:2] or [0.0, 0.0]
-    last_label = " ".join(part for part in (num_line, unit_line) if part)
-    peak_label = _fmt_axis(max(values[-48:])) if values else None
-    badge = _layout_badge(last_label, int(chart_box[2] - chart_box[0]) - 24)
-    _draw_poster_chart(img, values[-48:], chart_box, last_label,
-                       badge_rect=badge, peak_label=peak_label)
-    draw = ImageDraw.Draw(img, "RGBA")
-    xf = FG(15, 600)
+    chart = (600, max(ty + 36, 188), WIDTH - 72, 500)
+    _draw_editorial_chart(draw, values, chart)
+    xf = FG(16, 600)
     if x_labels:
-        l1, l2 = x_labels
-        draw.text((62, 582), l1, font=xf, fill=AXIS_TXT)
-        lw2 = draw.textlength(l2, font=xf)
-        draw.text((WIDTH - 62 - lw2, 582), l2, font=xf, fill=AXIS_TXT)
+        left_l, right_l = x_labels
+        draw.text((chart[0], 528), left_l, font=xf, fill=muted)
+        rw = draw.textlength(right_l, font=xf)
+        draw.text((chart[2] - rw, 528), right_l, font=xf, fill=muted)
+
+    note = subtitle or ""
+    if note:
+        note_size = _fit_font_size(note, 18, 500, 760, 13)
+        draw.text((margin, HEIGHT - 78), note, font=FG(note_size, 500), fill=muted)
     dom = "forecasteconomy.com"
-    df3 = FG(15, 700)
-    dw2 = draw.textlength(dom, font=df3)
-    draw.text((WIDTH - 62 - dw2, 604), dom, font=df3, fill=GOLD_SOFT)
+    df = FG(18, 700)
+    dw = draw.textlength(dom, font=df)
+    draw.text((WIDTH - margin - dw, HEIGHT - 78), dom, font=df, fill=champ)
 
     buf = io.BytesIO()
     img.convert("RGB").save(buf, format="PNG", optimize=False, compress_level=6)
@@ -545,15 +573,15 @@ def render_indicator_og(
 
 
 def _brand_header(draw: ImageDraw.ImageDraw, eyebrow_extra: str | None = None) -> None:
-    """Бренд-полоска + eyebrow — общая шапка всех OG-карточек."""
+    """Словесный знак — общая шапка рейтингов, стран и сравнений."""
     margin = 64
-    draw.rectangle([0, 0, WIDTH, 8], fill=CHAMPAGNE)
-    eyebrow_font = _font(26, bold=True)
-    eyebrow = "FORECAST ECONOMY"
-    draw.text((margin, 44), eyebrow, font=eyebrow_font, fill=CHAMPAGNE)
+    eyebrow_font = _font(28, bold=True)
+    eyebrow = "forecasteconomy"
+    draw.text((margin, 36), eyebrow, font=eyebrow_font, fill=TEXT_PRIMARY)
     if eyebrow_extra:
         ew = draw.textlength(eyebrow, font=eyebrow_font)
-        draw.text((margin + ew + 18, 44), f"— {eyebrow_extra}", font=eyebrow_font, fill=TEXT_SECONDARY)
+        extra_font = _font(20)
+        draw.text((margin + ew + 18, 42), eyebrow_extra, font=extra_font, fill=TEXT_SECONDARY)
 
 
 def _brand_footer(draw: ImageDraw.ImageDraw, note: str = "", *, size: int = 26) -> None:

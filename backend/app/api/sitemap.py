@@ -566,7 +566,7 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
     from app.services.seo_i18n import indicator_copy_en
 
     loc = get_locale()
-    cache_key = f"j7:{loc}:{code}"
+    cache_key = f"fe1:{loc}:{code}"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -667,7 +667,7 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
     year, month = int(period[:4]), int(period[5:])
 
     loc = get_locale()
-    cache_key = f"j7:month:{loc}:{code}:{period}"
+    cache_key = f"fe1:month:{loc}:{code}:{period}"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -762,7 +762,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
     )
 
     loc = get_locale()
-    cache_key = f"j7:{loc}:{code}:{year}"
+    cache_key = f"fe1:{loc}:{code}:{year}"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -889,7 +889,7 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
     from app.services.seo_regional import _fmt as _fmt_ru
 
     loc = get_locale()
-    cache_key = f"region:{loc}:{slug}:{code}"
+    cache_key = f"fe1:region:{loc}:{slug}:{code}"
     png = cached_og(cache_key)
     if png is None:
         region = (await db.execute(
@@ -999,7 +999,7 @@ async def og_image_region_indicator_year(
     from app.services.seo_renderer import neighbor_year_window
 
     loc = get_locale()
-    cache_key = f"j7:ryear:{loc}:{slug}:{code}:{year}"
+    cache_key = f"fe1:ryear:{loc}:{slug}:{code}:{year}"
     png = cached_og(cache_key)
     if png is None:
         region = (
@@ -1606,7 +1606,7 @@ async def og_image_world_indicator(
     from app.services.og_image import cached_og, render_indicator_og, store_og
 
     loc = get_locale()
-    cache_key = f"world:{loc}:{slug}:{code}"
+    cache_key = f"fe1:world:{loc}:{slug}:{code}"
     png = cached_og(cache_key)
     if png is None:
         country = (
@@ -1701,7 +1701,7 @@ async def og_image_world_indicator_year(
     from app.services.site_urls import WORLD_YEAR_LANDING_MIN_POINTS
 
     loc = get_locale()
-    cache_key = f"j7:wyear:{loc}:{country_slug}:{code}:{year}"
+    cache_key = f"fe1:wyear:{loc}:{country_slug}:{code}:{year}"
     png = cached_og(cache_key)
     if png is None:
         country = (
@@ -1837,7 +1837,7 @@ async def og_image_world_region_indicator(
     from app.services.world_subnational_ingest import period_label
 
     loc = get_locale()
-    cache_key = f"wr:v1:{loc}:{country}:{region}:{indicator}"
+    cache_key = f"fe1:wr:{loc}:{country}:{region}:{indicator}"
     png = cached_og(cache_key)
     if png is None:
         host = await _country(db, country)

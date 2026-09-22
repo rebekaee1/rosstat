@@ -39,6 +39,7 @@ from app.services.seo_renderer import (
     _link,
     _links_list,
     _seo_chart_figure,
+    fast_answer_block,
     _site_json_ld,
     build_document,
 )
@@ -393,8 +394,7 @@ async def render_indicator_month_html(
     og_path = _og_month_path(code, year, month)
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(trail)}
-<h1>{escape(h1)}</h1>
-<p>{escape(desc)}</p>
+{fast_answer_block(eyebrow=trail_label, title=h1, value=f"{format_number_ru(shown_last, signed=cpi_mode)}{' %' if cpi_mode else (f' {unit}' if unit else '')}", note=desc)}
 {_seo_chart_figure(og_path, chart_alt, chart_caption, href=card_path)}
 <section><h2>{escape(lead_h2)}</h2>
 <ul>

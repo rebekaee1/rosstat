@@ -696,7 +696,7 @@ def test_build_document_year_page_excludes_app(client):
             include_app=False,
         )
     )
-    body = html.split("<body>")[1]
+    body = html.split("<body", 1)[1]
     assert "modulepreload" not in html
     assert "/assets/behavior-standalone.js" in body
     # React-бандл (хэшированный index-*.js) в чистый SSR не попадает.

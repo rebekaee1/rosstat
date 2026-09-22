@@ -213,6 +213,18 @@ def _seo_chart_figure(
     )
 
 
+def fast_answer_block(*, eyebrow: str, title: str, value: str, note: str) -> str:
+    """Первый экран быстрой ссылки: что спросили, ответ, пояснение."""
+    return (
+        '<section class="seo-answer">'
+        f'<p class="seo-eyebrow">{escape(eyebrow)}</p>'
+        f'<h1>{escape(title)}</h1>'
+        f'<p class="seo-hero-value">{escape(value)}</p>'
+        f'<p class="seo-answer-note">{escape(note)}</p>'
+        "</section>"
+    )
+
+
 def _breadcrumbs_nav(items: list[tuple[str, str]]) -> str:
     """Видимые крошки: шеврон « / », последний узел без ссылки."""
     if not items:
@@ -573,6 +585,24 @@ html.fe-js #root > .seo-section,
 html.fe-js #root > .seo-platform-nav{
 position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important
 }
+body.seo-fast{background:radial-gradient(ellipse at 90% 3%,rgba(233,223,205,.45),transparent 38%),#eef0f4;color:#202a3c}
+body.seo-fast .seo-page{max-width:72rem;padding-top:1.6rem}
+body.seo-fast .seo-topbar{background:rgba(238,240,244,.92);border-bottom:1px solid #d5dbe3}
+body.seo-fast .seo-brand{font-size:1.35rem;font-weight:650;letter-spacing:-.04em;color:#202a3c}
+body.seo-fast .seo-topnav a{color:rgba(32,42,60,.72)}
+body.seo-fast .seo-topnav a:hover,body.seo-fast .seo-page a:hover{color:#ad8a48}
+body.seo-fast .seo-eyebrow{color:#ad8a48;letter-spacing:.14em}
+body.seo-fast .seo-page h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:540;letter-spacing:-.045em;line-height:1.12;color:#202a3c}
+body.seo-fast .seo-answer{padding:0 0 1.4rem}
+body.seo-fast .seo-hero-value{font-size:clamp(3rem,6vw,4.6rem);font-weight:500;letter-spacing:-.06em;line-height:1.05;margin:.35rem 0 .4rem;color:#202a3c}
+body.seo-fast .seo-answer-note{max-width:46rem;color:#526074;font-size:.95rem}
+body.seo-fast .seo-chart{border:1px solid #fff;border-radius:24px;background:linear-gradient(130deg,rgba(255,255,255,.85),rgba(255,255,255,.55));box-shadow:0 16px 45px -33px rgba(38,52,78,.35)}
+body.seo-fast .seo-page table{border:1px solid #fff;border-radius:18px;box-shadow:0 16px 45px -33px rgba(38,52,78,.28)}
+body.seo-fast .seo-cta-in{background:#202a3c;border:0;border-radius:22px;color:#f3f5f8}
+body.seo-fast .seo-cta p,body.seo-fast .seo-cta strong{color:#f3f5f8}
+body.seo-fast .seo-cta a.seo-btn{background:#f6f3ec;color:#263044;border:1px solid #d3c4a3}
+body.seo-fast .seo-cta a.seo-btn:hover{background:#fff;color:#263044}
+@media(max-width:640px){body.seo-fast .seo-page{padding-left:.9rem;padding-right:.9rem}body.seo-fast .seo-hero-value{font-size:2.7rem}body.seo-fast .seo-chart img{border-radius:16px}}
 </style>"""
 
 # Не клипаем SEO при разборе HTML: на 4G bundle едет секунды, и слепой fe-js
@@ -602,12 +632,12 @@ _SPA_SSR_HIDE_SCRIPT = (
 # RU-константы ниже — эталон и для тестов структуры href. EN — через
 # `_ssr_chrome_*()` / `_ssr_platform_deep_links()` по get_locale().
 _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
-<a class="seo-brand" href="/">Forecast<em>Economy</em></a>
+<a class="seo-brand" href="/">forecasteconomy</a>
 <nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
 </div></header>"""
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
-<a class="seo-brand" href="/">Forecast<em>Economy</em></a>
+<a class="seo-brand" href="/">forecasteconomy</a>
 <nav class="seo-topnav"><a href="/">Home</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
 </div></header>"""
 
@@ -817,7 +847,9 @@ async def build_document(
     )
     head_links = assets.head_links if include_app else _strip_preloads(assets.head_links)
     spa_hide = ""
+    body_class = ""
     if not include_app:
+        body_class = "seo-fast"
         # Чистые SSR-страницы получают брендовый хром: шапка-навигация + CTA на
         # платформу + футер об источниках. React-страницы — нет (гидратация
         # заменит #root своим layout'ом). Locale-aware: EN chrome на apex.
@@ -864,7 +896,7 @@ async def build_document(
 {head_links}
 {structured}
 </head>
-<body>
+<body class="{body_class}">
 {spa_hide}<div id="root">{body}</div>
 {body_scripts}
 </body>
@@ -925,7 +957,7 @@ def render_not_found_html(message: str | None = None) -> str:
 <title>{safe} — Forecast Economy</title>
 <meta name="robots" content="noindex, follow">
 </head>
-<body>
+<body class="seo-fast">
 {_ssr_chrome_header()}
 <main class="seo-page">
 <h1>{safe}</h1>
@@ -2315,8 +2347,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
     h1_text = title.split(" — ")[0]
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(year_trail)}
-<h1>{escape(h1_text)}</h1>
-<p>{escape(desc)}</p>
+{fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=desc)}
 {_cpi_provenance_note(code)}
 {_seo_chart_figure(paths.og_indicator(paths.RUSSIA, code, year), chart_alt, chart_caption, href=paths.russia_indicator(code))}
 {data_section}

@@ -36,6 +36,7 @@ from app.services.seo_renderer import (
     _link,
     _links_list,
     _seo_chart_figure,
+    fast_answer_block,
     _site_json_ld,
     build_document,
     neighbor_year_window,
@@ -498,8 +499,7 @@ async def render_world_indicator_year_html(
 
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(trail)}
-<h1>{escape(h1_text)}</h1>
-<p>{escape(desc)}</p>
+{fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=desc)}
 {f'<p>{escape(coverage_note)}</p>' if coverage_note else ''}
 {_seo_chart_figure(og_path, chart_alt, chart_caption, href=card_path, loading="eager")}
 {data_section}
