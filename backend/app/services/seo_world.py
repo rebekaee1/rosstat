@@ -448,32 +448,16 @@ def _join_sources(labels: list[str]) -> str:
     return f"{', '.join(uniq[:-1])}{conj}{uniq[-1]}"
 
 
-# Официальные сайты ведомств (веб-поиск подтверждает актуальность):
-# по одному адресу на организацию, без выдумывания путей к наборам.
-_SOURCE_SITE_BY_PROVIDER: dict[str, str] = {
-    "eurostat": "https://ec.europa.eu/eurostat",
-    "imf": "https://www.imf.org",
-    "statcan": "https://www.statcan.gc.ca",
-    "boc_valet": "https://www.bankofcanada.ca",
-    "abs": "https://www.abs.gov.au",
-    "rba": "https://www.rba.gov.au",
-    "ons": "https://www.ons.gov.uk",
-    "boe_iadb": "https://www.bankofengland.co.uk",
-    "fred": "https://fred.stlouisfed.org",
-    "census": "https://www.census.gov",
-    "ibge": "https://www.ibge.gov.br",
-    "bls": "https://www.bls.gov",
-    "bea": "https://www.bea.gov",
-    "boj": "https://www.boj.or.jp/en",
-    "estat": "https://www.stat.go.jp/english",
-    "ecos": "https://www.bok.or.kr/eng/main/contents.do",
-    "bcb_sgs": "https://www.bcb.gov.br/en",
-    "banxico_sie": "https://www.banxico.org.mx",
-    "nbs": "https://www.stats.gov.cn/english",
-    "cfets": "https://www.chinamoney.com.cn/english",
-    "mospi": "https://mospi.gov.in",
-    "rbi": "https://www.rbi.org.in",
-}
+def _on_site_provider_href(provider: str, *, country_slug: str | None = None) -> str:
+    """Клик по имени ведомства остаётся на сайте: страна, если она известна."""
+    if country_slug:
+        return paths.country(country_slug)
+    prov = (provider or "").strip().lower()
+    if prov in {"fred", "bls", "bea", "census"}:
+        return paths.country("united-states")
+    if prov in {"ons", "boe_iadb"}:
+        return paths.country("united-kingdom")
+    return "/#countries"
 
 # Русские подписи + EN для «Открыть … на сайте ведомства».
 from app.data.i18n.glossary_en import GLOSSARY_EN as _GLOSSARY_EN  # noqa: E402
@@ -486,19 +470,20 @@ _PROVIDER_OPEN_LABEL: dict[str, dict[str, str]] = {
 
 def _source_links_html(
     inds: list[WorldIndicator],
+    *,
+    country_slug: str | None = None,
 ) -> tuple[str, set[str]]:
-    """Кликабельные ссылки на официальные сайты ведомств из среза.
+    """Имена ведомств ведут на страницу страны или каталог стран сайта.
 
     Возвращает (HTML-фрагмент ссылок через запятую, публичные имена
     ведомств в ссылках). Рядам без provider возвращается Eurostat —
-    тот же фолбэк, что у _source_label. Пустая строка — когда ни один
-    ряд не сопоставлен известному ведомству (честно не выдумываем URL).
+    тот же фолбэк, что у _source_label.
     """
     from app.services.locale import get_locale
 
     en = get_locale() == "en"
     linked: list[str] = []
-    seen_urls: set[str] = set()
+    seen_labels: set[str] = set()
     names_in_links: set[str] = set()
     for ind in inds:
         prov = (getattr(ind, "provider", None) or "").strip().lower()
@@ -506,14 +491,16 @@ def _source_links_html(
             # Eurostat-ряды пишут provider пустым; source кириллицей.
             raw = (getattr(ind, "source", None) or "").strip().lower()
             prov = "eurostat" if raw in ("", "eurostat", "евростат") else ""
-        site = _SOURCE_SITE_BY_PROVIDER.get(prov)
-        if not site or site in seen_urls:
+        if prov not in _PROVIDER_OPEN_LABEL and prov != "eurostat":
             continue
-        seen_urls.add(site)
         label = _PROVIDER_OPEN_LABEL.get(prov, {}).get(
             "en" if en else "ru"
         ) or _source_label(None, prov)
-        linked.append(f'<a href="{escape(site)}" rel="noopener noreferrer">{escape(label)}</a>')
+        if not label or label in seen_labels:
+            continue
+        seen_labels.add(label)
+        href = _on_site_provider_href(prov, country_slug=country_slug)
+        linked.append(f'<a href="{escape(href)}">{escape(label)}</a>')
         names_in_links.add(_source_label(None, prov))
     return ", ".join(linked), names_in_links
 
@@ -1561,7 +1548,9 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     # что в плитке «Дата» ключевой таблицы) + кликабельные официальные сайты
     # ведомств, публикующих ряды страны.
     country_last_date = max((dt for dt, _ in latest.values()), default=None)
-    country_links_html, _country_linked_names = _source_links_html(list(inds))
+    country_links_html, _country_linked_names = _source_links_html(
+        list(inds), country_slug=slug,
+    )
     date_sentence = _period_sentence(
         country_last_date.isoformat() if country_last_date else None,
     )
@@ -1588,7 +1577,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
 {neighbors_html}
 <section class="seo-section"><h2>{escape(h2_source)}</h2>
 {''.join(source_parts)}</section>
-<section class="seo-section"><h2>{escape(h2_russia)}</h2>
+<section class="seo-section"><h2><a href="{escape(paths.region_hub())}">{escape(h2_russia)}</a></h2>
 <p>{russia_p}</p></section>
 </div>"""
 
@@ -1881,20 +1870,14 @@ async def render_world_indicator_html(
             f'<ul class="seo-pills">{items}</ul></section>'
         )
 
-    source_url = (indicator.source_url or "").strip()
-    open_src = _wt_ind("indicator_open_source")
-    # EN fail-closed: в подписи ссылки — источник самого ряда (уже
-    # локализованный _source_label), а не константа «Евростат»: у национальных
-    # паспортов (FRED/OECD/…) она просачивалась кириллицей в EN-страницу.
-    open_label = (
-        open_src.format(source=source)
-        if open_src
-        else f"Открыть ряд на сайте {source}"
+    # Имя ведомства ведёт на страницу страны, с которой открыт ряд.
+    source_href = _on_site_provider_href(
+        getattr(indicator, "provider", None) or "",
+        country_slug=slug,
     )
     source_link = (
-        f'<p><a href="{escape(source_url)}" rel="noopener noreferrer">'
-        f"{escape(open_label)}</a></p>"
-        if source_url
+        f'<p><a href="{escape(source_href)}">{escape(source)}</a></p>'
+        if source
         else ""
     )
 
@@ -2031,7 +2014,7 @@ async def render_world_indicator_html(
 <p>{source_p}</p>
 {date_sentence_p}{source_link}
 </section>
-<section class="seo-section"><h2>{escape(h2_russia)}</h2>
+<section class="seo-section"><h2><a href="{escape(paths.region_hub())}">{escape(h2_russia)}</a></h2>
 <p>{russia_p}</p></section>
 </div>"""
 

@@ -3,7 +3,7 @@ import { Activity, TrendingUp } from 'lucide-react';
 import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
-import { track, trackOutbound, events } from '../lib/track';
+import { track, events } from '../lib/track';
 import { openConsentSettings } from '../lib/consent';
 import {
   comparePath,
@@ -44,16 +44,10 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
               {sourceLinks.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={footLink}
-                    onClick={() => trackOutbound(item.href)}
-                  >
+                <li key={item.key}>
+                  <Link to={item.to} className={footLink}>
                     {t(item.key)}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

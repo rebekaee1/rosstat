@@ -8,6 +8,7 @@ import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
+import ChartBrandCaption from './ChartBrandCaption';
 import { ChartSkeleton } from './Skeleton';
 import { worldChartTitle, worldRangePreset } from '../lib/worldViewModes';
 import { useLocale, useT } from '../i18n';
@@ -321,7 +322,7 @@ export default function WorldChartSection({
       {chartLoading ? (
         <ChartSkeleton />
       ) : (
-        <div ref={chartRef} className="relative overflow-hidden rounded-[2rem]">
+        <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[2rem]">
           <IndicatorChart
             key={`${code}-${modeMeta?.id}-${activeFreq}`}
             mode="cpi"
@@ -344,6 +345,7 @@ export default function WorldChartSection({
             actualSeriesLabel={country?.name}
             comparisonSeries={displayedComparisonSeries}
           />
+          <ChartBrandCaption />
         </div>
       )}
     </section>

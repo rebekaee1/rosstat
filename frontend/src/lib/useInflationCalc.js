@@ -115,8 +115,8 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
     ? RUSSIA_SOURCE
     : (metaQ.data?.indicator?.source || '');
 
-  /** Прямая ссылка на источник ряда (мировая ветка); у России ведём на карточку ИПЦ. */
-  const sourceUrl = isRussia ? null : (metaQ.data?.indicator?.source_url || null);
+  /** Мировая ветка: имя ведомства ведёт на страницу страны. Россия — на карточку ИПЦ. */
+  const sourceUrl = isRussia || !resolvedSlug ? null : `/${resolvedSlug}`;
 
   const countryName = isRussia
     ? null

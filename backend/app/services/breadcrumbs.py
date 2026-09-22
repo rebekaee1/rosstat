@@ -71,7 +71,9 @@ def russia_indicator_trail(
     indicator_name: str,
     indicator_path: str,
 ) -> list[Crumb]:
-    items = [home(), russia()]
+    # «Россия» на карточке показателя открывает региональный разрез.
+    country = (paths.region_hub(), "Russia" if _en() else "Россия")
+    items = [home(), country]
     if category_name and category_path:
         items.append((category_path, category_name))
     items.append((indicator_path, indicator_name))

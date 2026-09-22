@@ -201,9 +201,15 @@ def _seo_chart_figure(
         img = (
             f'<a class="seo-chart-link" href="{escape(href)}#chart">{img}</a>'
         )
+    cleaned = caption
+    for suffix in (" forecasteconomy.com", ". forecasteconomy.com"):
+        if cleaned.endswith(suffix):
+            cleaned = cleaned[: -len(suffix)].rstrip(" .")
+            break
     return (
         f'<figure class="seo-chart">{img}'
-        f'<figcaption>{escape(caption)}</figcaption></figure>'
+        f'<figcaption><span class="seo-chart-cap">{escape(cleaned)}</span>'
+        f'<span class="seo-chart-brand">forecasteconomy.com</span></figcaption></figure>'
     )
 
 
@@ -500,11 +506,13 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-page tbody tr:last-child td{border-bottom:none}
 .seo-page tbody tr:hover{background:rgba(184,148,47,.05)}
 .seo-page td:last-child,.seo-page th:last-child{text-align:right;font-variant-numeric:tabular-nums}
-.seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04)}
-.seo-chart img{display:block;width:100%;max-width:1200px;height:auto}
+.seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04);max-width:100%}
+.seo-chart img{display:block;width:100%;max-width:100%;height:auto}
 .seo-chart-link{display:block;text-decoration:none!important;color:inherit}
 .seo-chart-link:hover{opacity:.97}
-.seo-chart figcaption{font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06)}
+.seo-chart figcaption{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:flex-end;gap:.35rem .75rem;font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06);text-align:right}
+.seo-chart-cap{flex:1 1 12rem;text-align:left}
+.seo-chart-brand{margin-left:auto;flex:0 0 auto;font-size:.75rem;letter-spacing:.02em;color:rgba(26,26,46,.45);white-space:nowrap}
 .seo-forecast-note{margin:0 0 1.5rem;font-size:.9375rem;line-height:1.55;color:rgba(26,26,46,.72)}
 .seo-topbar{position:sticky;top:0;z-index:10;background:rgba(248,249,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,0,0,.07)}
 .seo-topbar-in{max-width:56rem;margin:0 auto;padding:.8rem 1rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
@@ -2628,7 +2636,19 @@ def _indicator_body(
         f"<td>{escape(format_number_ru(display_value(value_code, row.value), signed=cpi_mode))}</td></tr>"
         for row in latest_rows
     )
-    source_link = _link(indicator.source_url, src) if indicator.source_url else escape(src)
+    # Подпись ведомства остаётся, клик не уводит с сайта.
+    low = (src or "").strip().lower()
+    if "минфин" in low:
+        source_href = paths.russia_indicator("budget-deficit")
+    elif "банк россии" in low or low in {"цб", "цб рф"}:
+        source_href = paths.russia_indicator("key-rate")
+    elif "росстат" in low or "rosstat" in low:
+        source_href = paths.russia_home()
+    elif low:
+        source_href = paths.russia_indicator(indicator.code)
+    else:
+        source_href = ""
+    source_link = _link(source_href, src) if source_href and src else escape(src)
     related_links = tuple(
         (
             paths.russia_indicator(ind.code),

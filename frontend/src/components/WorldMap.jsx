@@ -574,6 +574,7 @@ export function CountrySilhouette({
   frequencies = [],
   area = null,
   population = null,
+  slug = '',
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -624,24 +625,25 @@ export function CountrySilhouette({
     : '';
   const populationYear = population?.year
     || (population?.date ? String(population.date).slice(0, 4) : '');
+  const sourceHref = slug ? `/${slug}` : '/#countries';
   const sources = [];
   if (area?.source) {
     sources.push({
       label: localizeSource(area.source, locale),
-      url: area.source_url || '',
+      url: sourceHref,
       kind: 'area',
     });
   }
   if (population?.source && population.source !== area?.source) {
     sources.push({
       label: localizeSource(population.source, locale),
-      url: population.source_url || '',
+      url: sourceHref,
       kind: 'population',
     });
   } else if (!area?.source && population?.source) {
     sources.push({
       label: localizeSource(population.source, locale),
-      url: population.source_url || '',
+      url: sourceHref,
       kind: 'population',
     });
   }
@@ -707,8 +709,6 @@ export function CountrySilhouette({
                     {item.url ? (
                       <a
                         href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-[#d8c58b] underline-offset-2 hover:underline"
                       >
                         {item.label}

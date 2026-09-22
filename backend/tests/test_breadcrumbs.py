@@ -27,6 +27,7 @@ def test_russia_indicator_trail():
         "Цены", paths.russia_category("prices"), "ИПЦ", paths.russia_indicator("cpi"),
     )
     assert [name for _, name in trail] == ["Главная", "Россия", "Цены", "ИПЦ"]
+    assert trail[1][0] == paths.region_hub()
 
 
 def test_global_market_indicator_trail_skips_russia():

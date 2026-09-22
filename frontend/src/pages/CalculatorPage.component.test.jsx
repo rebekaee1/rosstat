@@ -320,9 +320,8 @@ describe('calculator source link (K4b)', () => {
     });
 
     const link = await screen.findByRole('link', { name: 'Евростат' });
-    expect(link.getAttribute('href')).toBe('https://www.example.com/source');
-    expect(link.getAttribute('target')).toBe('_blank');
-    expect(link.getAttribute('rel')).toMatch(/noopener/);
+    expect(link.getAttribute('href')).toBe('/germany');
+    expect(link.getAttribute('target')).toBeNull();
   });
 
   it('русская ветка ведёт на карточку ИПЦ', async () => {

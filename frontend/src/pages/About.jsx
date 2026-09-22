@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
-import { track, trackOutbound, events } from '../lib/track';
+import { track, events } from '../lib/track';
 import { footerSourceLinks } from '../lib/footerNav';
 
 export default function About() {
@@ -31,23 +32,20 @@ export default function About() {
           {' '}
           {footerSourceLinks(locale).map((item, i, items) => {
             const link = (
-              <a
-                key={item.href}
-                href={item.href}
+              <Link
+                key={item.key}
+                to={item.to}
                 className="text-champagne hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackOutbound(item.href)}
               >
                 {t(item.key)}
-              </a>
+              </Link>
             );
             const andWord = locale === 'en' ? 'and' : 'и';
             if (i === 0) return link;
             if (i === items.length - 1) {
-              return <span key={item.href}> {andWord} {link}</span>;
+              return <span key={item.key}> {andWord} {link}</span>;
             }
-            return <span key={item.href}>, {link}</span>;
+            return <span key={item.key}>, {link}</span>;
           })}
           {' '}
           {t('about.intro.p2after')}

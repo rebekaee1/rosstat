@@ -545,8 +545,9 @@ def test_seo_world_country(world_seo_client):
     # сайты ведомств (Eurostat + IMF: у страны есть национальный WEO-ряд).
     source_section = html.split("<h2>Источник данных</h2>", 1)[1].split("</section>", 1)[0]
     assert "Данные на" in source_section
-    assert 'href="https://ec.europa.eu/eurostat"' in source_section
-    assert 'href="https://www.imf.org"' in source_section
+    assert 'href="/germany"' in source_section
+    assert "https://ec.europa.eu" not in source_section
+    assert "https://www.imf.org" not in source_section
     # Датированная срезка в блоке: «Данные на <месяц> <год>» без дня —
     # месячный индекс не привязан к конкретной дате.
     assert re.search(r"Данные на [а-яё]+ \d{4}", source_section)
@@ -602,7 +603,8 @@ def test_seo_world_indicator(world_seo_client):
     # (databrowser), подписи выровнены.
     source_section = html.split("<h2>Источник данных</h2>", 1)[1].split("</section>", 1)[0]
     assert "Данные на июнь 2025" in source_section
-    assert 'href="https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_midx"' in source_section
+    assert 'href="/germany"' in source_section
+    assert "ec.europa.eu" not in source_section
 
 
 def test_seo_world_unemployment_freq_links_and_301(world_seo_client):
@@ -664,7 +666,8 @@ def test_seo_world_rating(world_seo_client):
     source_section = html.split("<h2>Источник данных</h2>", 1)[1]
     source_section = source_section.split("</section>", 1)[0]
     assert "Данные на" in source_section  # дата последнего среза (last_date)
-    assert 'href="https://ec.europa.eu/eurostat"' in source_section
+    assert 'href="/#countries"' in source_section
+    assert "ec.europa.eu" not in source_section
     assert "<h2>Источник</h2>" not in html  # подписи выровнены
     # Датированная срезка блока — месяц плитки «Последняя дата в срезе»
     # (в блоке источников без дня: месячный индекс не привязан к дате).

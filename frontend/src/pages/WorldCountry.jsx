@@ -326,6 +326,7 @@ export default function WorldCountry() {
                 <CountrySilhouette
                   code={data.country.code}
                   name={countryName}
+                  slug={slug}
                   region={data.country.region}
                   historyStart={data.coverage?.history_start}
                   historyEnd={data.coverage?.history_end}

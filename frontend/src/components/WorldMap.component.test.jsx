@@ -99,7 +99,7 @@ describe('CountrySilhouette', () => {
     expect(normalized).toContain('2026');
     expect(normalized).toContain('2025');
     const source = screen.getByRole('link', { name: 'Евростат' });
-    expect(source.getAttribute('href')).toContain('reg_area3');
+    expect(source.getAttribute('href')).toBe('/#countries');
   });
 
   it('на EN показывает Eurostat и km²', () => {

@@ -1,11 +1,11 @@
 import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ExternalLink } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
-import { trackOutbound } from '../../lib/track';
 import {
+  calendarPath,
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
 import { useT } from '../../i18n';
@@ -242,17 +242,12 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
               <ArrowUpRight className="w-3 h-3" />
             </Link>
           ))}
-          {event.source_url && (
-            <a
-              href={event.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackOutbound(event.source_url)}
-              className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors ml-auto"
-            >
-              Источник <ExternalLink className="w-3 h-3" />
-            </a>
-          )}
+          <Link
+            to={linkedIndicators[0] ? russiaIndicatorPath(linkedIndicators[0].code) : calendarPath()}
+            className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors ml-auto"
+          >
+            Источник
+          </Link>
         </div>
       </div>
     </div>

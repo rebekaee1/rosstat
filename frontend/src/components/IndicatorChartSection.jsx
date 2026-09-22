@@ -6,6 +6,7 @@ import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
+import ChartBrandCaption from './ChartBrandCaption';
 import { ChartSkeleton } from './Skeleton';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 import { useLocale, useT } from '../i18n';
@@ -397,7 +398,7 @@ export default function IndicatorChartSection({
       {chartLoading ? (
         <ChartSkeleton />
       ) : (
-        <div ref={chartRef} className="relative overflow-hidden rounded-[2rem]">
+        <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[2rem]">
           <IndicatorChart
             key={`${indicator?.code}-${chartMode}`}
             mode={
@@ -435,6 +436,7 @@ export default function IndicatorChartSection({
             actualSeriesLabel={chartComparisonSeries.length ? t('nav.russia') : ''}
             comparisonSeries={chartComparisonSeries.length ? chartComparisonSeries : null}
           />
+          <ChartBrandCaption />
         </div>
       )}
     </section>

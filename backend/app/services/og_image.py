@@ -537,7 +537,7 @@ def render_indicator_og(
     dom = "forecasteconomy.com"
     df3 = FG(15, 700)
     dw2 = draw.textlength(dom, font=df3)
-    draw.text((WIDTH // 2 - dw2 / 2, 582), dom, font=df3, fill=GOLD_SOFT)
+    draw.text((WIDTH - 62 - dw2, 604), dom, font=df3, fill=GOLD_SOFT)
 
     buf = io.BytesIO()
     img.convert("RGB").save(buf, format="PNG", optimize=False, compress_level=6)
@@ -558,10 +558,11 @@ def _brand_header(draw: ImageDraw.ImageDraw, eyebrow_extra: str | None = None) -
 
 def _brand_footer(draw: ImageDraw.ImageDraw, note: str = "", *, size: int = 26) -> None:
     footer_font = _font(size)
-    draw.text((64, HEIGHT - 42), "forecasteconomy.com", font=footer_font, fill=TEXT_TERTIARY)
+    label = "forecasteconomy.com"
+    lw = draw.textlength(label, font=footer_font)
     if note:
-        nw = draw.textlength(note, font=footer_font)
-        draw.text((WIDTH - 64 - nw, HEIGHT - 42), note, font=footer_font, fill=TEXT_TERTIARY)
+        draw.text((64, HEIGHT - 42), note, font=footer_font, fill=TEXT_TERTIARY)
+    draw.text((WIDTH - 64 - lw, HEIGHT - 42), label, font=footer_font, fill=TEXT_TERTIARY)
 
 
 def _layout(

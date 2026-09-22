@@ -15,21 +15,22 @@ import {
 
 export const US_SLUG = 'united-states';
 
+/** Подпись ведомства остаётся, клик ведёт на соответствующий раздел сайта. */
 export const FOOTER_SOURCE_LINKS_BY_LOCALE = {
   ru: [
-    { href: 'https://ec.europa.eu/eurostat', key: 'footer.eurostat' },
-    { href: 'https://www.imf.org', key: 'footer.imf' },
-    { href: 'https://rosstat.gov.ru', key: 'footer.rosstat' },
-    { href: 'https://cbr.ru', key: 'footer.cbr' },
-    { href: 'https://minfin.gov.ru', key: 'footer.minfin' },
+    { to: '/#countries', key: 'footer.eurostat' },
+    { to: '/#countries', key: 'footer.imf' },
+    { to: '/russia', key: 'footer.rosstat' },
+    { to: '/russia/indicator/key-rate', key: 'footer.cbr' },
+    { to: '/russia/indicator/budget-deficit', key: 'footer.minfin' },
   ],
   en: [
-    { href: 'https://ec.europa.eu/eurostat', key: 'footer.eurostat' },
-    { href: 'https://www.imf.org', key: 'footer.imf' },
-    { href: 'https://www.bls.gov', key: 'footer.bls' },
-    { href: 'https://www.bea.gov', key: 'footer.bea' },
-    { href: 'https://fred.stlouisfed.org', key: 'footer.fred' },
-    { href: 'https://www.census.gov', key: 'footer.census' },
+    { to: '/#countries', key: 'footer.eurostat' },
+    { to: '/#countries', key: 'footer.imf' },
+    { to: '/united-states/indicator/us-unemployment-rate', key: 'footer.bls' },
+    { to: '/united-states/indicator/us-gdp-real', key: 'footer.bea' },
+    { to: '/united-states', key: 'footer.fred' },
+    { to: '/united-states/regions', key: 'footer.census' },
   ],
 };
 

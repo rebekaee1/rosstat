@@ -1,7 +1,9 @@
-import { Info, Database, ExternalLink } from 'lucide-react';
-import { trackOutbound } from '../lib/track';
+import { Link } from 'react-router-dom';
+import { Info, Database } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
+import { footerSourceLinks } from '../lib/footerNav';
+import { russiaHomePath, russiaIndicatorPath } from '../lib/sitePaths';
 
 /**
  * Левая колонка под графиком: текст «Методология» + блок «Источник».
@@ -12,9 +14,14 @@ import { localizeSource } from '../i18n/viewModeLabels';
 export default function IndicatorMethodologyPanel({ indicator, content }) {
   const t = useT();
   const { locale } = useLocale();
-  const hasExternalSource = indicator?.source_url && indicator.source_url.startsWith('http');
   const sourceName = localizeSource(indicator?.source, locale);
   const sourceLabel = t('indicator.source', { source: sourceName });
+  const low = (indicator?.source || '').toLowerCase();
+  const named = footerSourceLinks(locale).find((item) => t(item.key).toLowerCase() === low);
+  let sourceTo = named?.to || (indicator?.code ? russiaIndicatorPath(indicator.code) : russiaHomePath());
+  if (low.includes('росстат') || low.includes('rosstat')) sourceTo = russiaHomePath();
+  if (low.includes('минфин')) sourceTo = russiaIndicatorPath('budget-deficit');
+  if (low.includes('банк россии')) sourceTo = russiaIndicatorPath('key-rate');
 
   return (
     <section data-block="methodology" className="lg:col-span-1 p-8 rounded-[2rem] bg-obsidian-light border border-border-subtle flex flex-col h-full">
@@ -36,26 +43,15 @@ export default function IndicatorMethodologyPanel({ indicator, content }) {
         )}
       </div>
 
-      {hasExternalSource ? (
+      {indicator?.source ? (
         <div className="mt-auto pt-6 border-t border-border-subtle">
-          <a
-            href={indicator.source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackOutbound(indicator.source_url)}
+          <Link
+            to={sourceTo}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-champagne hover:bg-champagne/10 transition-colors lift-hover w-full justify-center"
           >
             <Database className="w-3.5 h-3.5" />
             {sourceLabel}
-            <ExternalLink className="w-3 h-3 ml-auto opacity-50" />
-          </a>
-        </div>
-      ) : indicator?.source ? (
-        <div className="mt-auto pt-6 border-t border-border-subtle">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-text-secondary w-full justify-center">
-            <Database className="w-3.5 h-3.5" />
-            {sourceLabel}
-          </span>
+          </Link>
         </div>
       ) : null}
     </section>

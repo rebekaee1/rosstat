@@ -18,7 +18,7 @@ import { parseAmount, formatInput, fmtPct, years as yearsPhrase } from '../lib/c
 import { getSiteOrigin } from '../lib/siteOrigin';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
-import { track, trackOutbound, events } from '../lib/track';
+import { track, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
@@ -829,15 +829,12 @@ export default function CalculatorPage() {
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
                 {t('calc.inflation.source', { source: '' }).replace(/\s*$/, '')}{' '}
                 {sourceHref ? (
-                  <a
-                    href={sourceHref}
-                    target="_blank"
-                    rel="noopener"
+                  <Link
+                    to={sourceHref}
                     className="text-champagne hover:text-champagne-muted underline decoration-champagne/30 underline-offset-2 transition-colors"
-                    onClick={() => trackOutbound(sourceHref)}
                   >
                     {sourceLabel}
-                  </a>
+                  </Link>
                 ) : (
                   <Link
                     to={russiaIndicatorPath('cpi')}
