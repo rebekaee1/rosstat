@@ -125,6 +125,14 @@ def image_path_for_page(path: str) -> str | None:
     if parts[1:] == ["regions"]:
         from app.services.seo_world_subnational import og_subnational_hub
         return og_subnational_hub(country)
+    if len(parts) == 3 and parts[1] == "region-vs":
+        pair = _pair(parts[2])
+        if pair:
+            from app.services.seo_world_subnational_compare import og_subnational_compare
+            return og_subnational_compare(country, *pair)
+    if len(parts) == 5 and parts[1] == "region" and parts[2] != "map" and all(_SEGMENT.fullmatch(p) for p in parts[2:4]) and paths.is_public_year(parts[4]):
+        from app.services.seo_world_subnational_year import og_subnational_indicator_year
+        return og_subnational_indicator_year(country, parts[2], parts[3], int(parts[4]))
     if len(parts) in (3, 4) and parts[1] == "region" and parts[2] != "map" and all(_SEGMENT.fullmatch(p) for p in parts[2:]):
         from app.services.seo_world_subnational import og_subnational_indicator, og_subnational_region
         return og_subnational_region(country, parts[2]) if len(parts) == 3 else og_subnational_indicator(country, parts[2], parts[3])

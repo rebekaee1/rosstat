@@ -41,6 +41,7 @@ import { worldIndicatorTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
   indicatorPath,
+  indicatorYearPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
@@ -158,7 +159,7 @@ export default function WorldIndicatorPage() {
       && modeParsed?.freq !== 'weekly'
       && modeParsed?.freq !== 'daily'
     );
-  const [showForecast, setShowForecast] = useState(false);
+  const [showForecast, setShowForecast] = useState(true);
   const redirecting = Boolean(metaQ.data?.redirect_to);
   const dataQ = useWorldIndicatorData(slug, code, redirecting ? null : dataModeParam, {
     requestCode: dataCode,
@@ -215,7 +216,7 @@ export default function WorldIndicatorPage() {
   }, [activeMode, urlMode, setSearchParams]);
 
   useEffect(() => {
-    setShowForecast(false);
+    setShowForecast(true);
   }, [code, activeMode]);
 
   const setMode = useCallback((mode) => {
@@ -253,6 +254,7 @@ export default function WorldIndicatorPage() {
   const empty = !dataQ.isLoading && isEmptySeries(points);
   const last = points.length ? points[points.length - 1] : null;
   const telemetry = useMemo(() => computeWorldTelemetry(points), [points]);
+  const observedYears = slug === 'united-states' ? (metaQ.data?.observed_years || []) : [];
   const rawUnit = dataQ.data?.unit || dataQ.data?.unit_ru
     || modeMeta?.unit || indicator?.unit || indicator?.unit_ru || '';
   const displayUnit = localizeWorldUnit(rawUnit, locale);
@@ -354,11 +356,20 @@ export default function WorldIndicatorPage() {
     const hideRu = (text) => (
       text && /[А-Яа-яЁё]/.test(text) ? undefined : text
     );
+    const frequency = indicator?.frequency || '';
+    const frequencyDescription = ['annual', 'monthly', 'quarterly', 'weekly', 'daily'].includes(frequency)
+      ? `${frequency} statistical series` : 'published statistical series';
+    const article = frequency === 'annual' ? 'an' : 'a';
+    const source = sourceLabel || indicator?.source || 'the listed source';
+    const subject = displayName || indicator?.name_en || 'This indicator';
+    const place = countryName || 'this country';
+    const safeDescription = hideRu(description);
+    const safeMethodology = hideRu(methodology);
     return {
-      description: hideRu(description),
-      methodology: hideRu(methodology),
+      description: safeDescription || `${subject} is ${article} ${frequencyDescription} for ${place}. The chart shows the available observations and their dates.`,
+      methodology: safeMethodology || `Source: ${source}. Values use the published series; forecasts, where available, are marked separately from observations.`,
     };
-  }, [indicator?.description, indicator?.methodology, locale]);
+  }, [indicator?.description, indicator?.methodology, indicator?.frequency, indicator?.source, sourceLabel, displayName, countryName, indicator?.name_en, locale]);
 
   const methodologyIndicator = useMemo(() => {
     if (!indicator) return null;
@@ -596,10 +607,39 @@ export default function WorldIndicatorPage() {
             comparisonPeers={metaQ.data.peers || []}
           />
 
+          {observedYears.length > 0 && (
+            <section className="fe-panel mb-8 rounded-xl border border-border-subtle bg-surface p-4">
+              <h2 className="mb-2 text-sm font-semibold text-text-primary">
+                {locale === 'en' ? 'By year' : 'По годам'}
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {observedYears.map((year) => (
+                  <a key={year} href={indicatorYearPath(slug, metaQ.data.primary_code || code, year)} className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne">
+                    {year}
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
+            <section className="mb-8 rounded-xl border border-border-subtle bg-surface px-4 py-3 text-xs leading-relaxed text-text-secondary" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>
+              <strong className="text-champagne">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
+              {' — '}{dataQ.data.forecast.model_name}
+              {' — '}MASE {Number(dataQ.data.forecast.quality.mase).toFixed(2)}
+              <p className="mt-1">
+                {locale === 'en'
+                  ? 'We test the full forecast horizon on rolling historical windows against a seasonal-naive benchmark. Our forecast is published only when MASE is below 1 and the error is at least 2% lower. The range is indicative, based on historical errors.'
+                  : 'Мы проверяем весь горизонт прогноза на последовательных исторических отрезках и сравниваем с сезонной наивной моделью. Наш прогноз публикуется только при MASE ниже 1 и ошибке минимум на 2% меньше ориентира. Диапазон ориентировочный, он рассчитан по историческим ошибкам.'}
+              </p>
+            </section>
+          )}
+
           <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
             <IndicatorMethodologyPanel
               indicator={methodologyIndicator}
               content={methodologyContent}
+              sourcePath={indicator.source_url || indicatorPath(slug, code)}
             />
             <div className="rounded-[1.5rem] border border-border-subtle bg-obsidian-light p-5 sm:rounded-[2rem] sm:p-8 lg:col-span-2">
               <h3 className="mb-4 text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">

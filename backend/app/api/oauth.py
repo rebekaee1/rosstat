@@ -107,6 +107,7 @@ def _redirect_with_error(to: str, error: str) -> str:
 
 
 _REDIRECT_OVERRIDES = {
+    "google": "oauth_google_redirect_uri",
     "yandex": "oauth_yandex_redirect_uri",
     "vk": "oauth_vk_redirect_uri",
 }
@@ -253,9 +254,11 @@ async def oauth_providers():
 
 
 @router.get("/{provider}/start")
-async def oauth_start(provider: str, request: Request, intent: str = "login", next: str = "/account", newsletter: int = 0):
+async def oauth_start(provider: str, request: Request, intent: str = "login", next: str = "/account", newsletter: int = 0, consent: int = 0):
     if intent not in ("login", "link"):
         intent = "login"
+    if provider == "google" and intent == "login" and consent != 1:
+        return _fail("consent_required")
     safe_next = _safe_next(next)
     prov = get_provider(provider)
 
@@ -398,6 +401,13 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
             extra={"device_id": qp.get("device_id")},
         )
         profile = await prov.fetch_profile(tokens)
+        if provider == "google":
+            from app.services.locale import locale_from_absolute_url
+            start_locale = tx.get("locale")
+            profile.locale = (
+                start_locale if start_locale in ("ru", "en")
+                else locale_from_absolute_url(safe_next)
+            )
     except Exception:
         logger.exception("OAuth exchange/userinfo failed for provider=%s", provider)
         return _fail("oauth_failed", to=fail_login)
@@ -413,8 +423,9 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
 
     newsletter = bool(tx.get("newsletter"))
     if created and intent == "login":
-        # Согласие на обработку ПДн + (опц.) рассылку дано во всплывающем окне
-        # перед редиректом на провайдера (152-ФЗ: фиксируем версию/ip/ua).
+        # Выбор чекбоксов сделан во всплывающем окне перед редиректом.
+        # Фиксируем версию/ip/ua; заранее отмеченная рассылка сама по себе
+        # не доказывает действительное согласие для юрисдикций с opt-in.
         ip = request.client.host if request.client else "unknown"
         ua = (request.headers.get("user-agent") or "")[:500]
         db.add(Consent(user_id=user.id, kind="pd", version=AUTH_CONSENT_VERSION, ip=ip, user_agent=ua))

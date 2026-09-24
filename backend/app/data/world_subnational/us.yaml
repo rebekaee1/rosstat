@@ -3,6 +3,8 @@
 # Live-probed 2026-09-20 on California, New York and District of Columbia.
 # Omitted: poverty (SAIPE series id is not a stable {geo} template) and
 # state tax collections (no District of Columbia series). Weekly claims skipped.
+# BLS LAUS household counts start in 1976; source values are persons, stored
+# as thousands to align with the national CPS series on comparison charts.
 # Placeholders: {geo} = postal code, {fips} = 2-digit FIPS, {series_id} after expand.
 # Loader: backend/scripts/load-world-subnational.py --country us
 
@@ -13,6 +15,15 @@ region_kind_label_ru: Штат
 region_kind_label_en_plural: States
 region_kind_label_ru_plural: Штаты
 default_indicator: unemployment-rate
+featured_indicators:
+  - real-gdp
+  - unemployment-rate
+  - nonfarm-employment
+  - personal-income-per-capita
+  - population
+  - house-price-index
+  - building-permits
+  - median-household-income
 map_id: us-states
 
 regions:
@@ -533,9 +544,9 @@ indicators:
   - code: median-household-income
     name_en: 'Median household income'
     name_ru: 'Медианный доход домохозяйства'
-    unit: USD_2023
-    unit_en: '2023 USD'
-    unit_ru: 'долл. 2023 г.'
+    unit: USD_2025
+    unit_en: '2025 C-CPI-U dollars'
+    unit_ru: 'долл. 2025 г. (C-CPI-U)'
     frequency: annual
     section_en: Income
     section_ru: Доходы
@@ -548,13 +559,13 @@ indicators:
     better_is_low: false
     is_listed: true
     description_en: >
-      Median household income in the state, expressed in 2023 dollars. Half of households earn less than this amount, half earn more. Inflation adjustment uses a consistent price index so years can be compared.
+      Median household income in the state, expressed in 2025 C-CPI-U dollars. Half of households earn less than this amount, half earn more. Inflation adjustment uses a consistent price index so years can be compared.
     description_ru: >
-      Медианный доход домохозяйства в штате, в долларах 2023 года. Половина домохозяйств получает меньше этой суммы, половина — больше. Пересчёт в постоянные цены позволяет сравнивать годы между собой.
+      Медианный доход домохозяйства в штате, в долларах 2025 года по C-CPI-U. Половина домохозяйств получает меньше этой суммы, половина — больше. Пересчёт в постоянные цены позволяет сравнивать годы между собой.
     methodology_en: >
-      The series is the official annual median household income by state, inflation-adjusted to 2023 dollars. Publication is annual. The chart shows the official series as released.
+      The series is the official annual median household income by state, inflation-adjusted to 2025 C-CPI-U dollars. Publication is annual. The chart shows the official series as released.
     methodology_ru: >
-      Ряд — официальная годовая оценка медианного дохода домохозяйства штата, пересчитанная в доллары 2023 года. Частота публикации — годовая. На графике — официальный ряд без дополнительных преобразований.
+      Ряд — официальная годовая оценка медианного дохода домохозяйства штата, пересчитанная в доллары 2025 года по C-CPI-U. Частота публикации — годовая. На графике — официальный ряд без дополнительных преобразований.
   - code: population
     name_en: Population
     name_ru: Население
@@ -683,3 +694,113 @@ indicators:
       The series is the official annual state minimum wage. Publication is annual. Missing states are omitted rather than filled with the federal rate.
     methodology_ru: >
       Ряд — официальная годовая оценка минимальной заработной платы штата. Частота публикации — годовая. Штаты без собственного ряда не заполняются федеральным уровнем.
+
+  - code: civilian-labor-force
+    name_en: Civilian labor force
+    name_ru: Численность рабочей силы
+    unit: THOUSANDS
+    unit_en: thous. persons
+    unit_ru: тыс. человек
+    frequency: monthly
+    section_en: Labor market
+    section_ru: Рынок труда
+    provider: fred
+    series_template: '{geo}LF'
+    bls_series_template: 'LASST{fips}0000000000006'
+    value_scale: 0.001
+    aggregation: last
+    source_en: U.S. Bureau of Labor Statistics
+    source_ru: Бюро трудовой статистики США
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-civilian-labor-force
+    is_listed: true
+    description_en: >
+      Employed and unemployed residents aged 16 and older in the state's civilian labor force, seasonally adjusted. This household measure is distinct from payroll employment.
+    description_ru: >
+      Занятые и безработные жители штата от 16 лет в составе гражданской рабочей силы, с сезонной корректировкой. Показатель обследования домохозяйств отличается от занятости предприятий.
+    methodology_en: >
+      BLS Local Area Unemployment Statistics model estimate, monthly and seasonally adjusted. The published number of persons is divided by 1,000 for display alongside the national household-survey series. The complete source history is loaded, including revisions.
+    methodology_ru: >
+      Месячная сезонно скорректированная модельная оценка Бюро трудовой статистики США. Число человек разделено на тысячу для сопоставления с национальным рядом обследования домохозяйств. Загружается вся доступная история с пересмотрами.
+
+  - code: civilian-employment
+    name_en: Civilian employment
+    name_ru: Численность занятых жителей
+    unit: THOUSANDS
+    unit_en: thous. persons
+    unit_ru: тыс. человек
+    frequency: monthly
+    section_en: Labor market
+    section_ru: Рынок труда
+    provider: fred
+    series_template: 'LASST{fips}0000000000005'
+    bls_series_template: 'LASST{fips}0000000000005'
+    value_scale: 0.001
+    aggregation: last
+    source_en: U.S. Bureau of Labor Statistics
+    source_ru: Бюро трудовой статистики США
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-civilian-employment
+    is_listed: true
+    description_en: >
+      Employed residents aged 16 and older in the state, seasonally adjusted. This residence-based estimate includes groups outside nonfarm payroll employment.
+    description_ru: >
+      Число работающих жителей штата от 16 лет с сезонной корректировкой. Оценка по месту проживания охватывает группы, не входящие в занятость предприятий вне сельского хозяйства.
+    methodology_en: >
+      BLS Local Area Unemployment Statistics model estimate, monthly and seasonally adjusted. Source persons are divided by 1,000; the national comparison uses the same resident-employment concept but a different estimation method. The complete source history is loaded, including revisions.
+    methodology_ru: >
+      Месячная сезонно скорректированная модельная оценка Бюро трудовой статистики США. Число человек разделено на тысячу; национальная линия использует то же понятие занятости жителей, но другую методику оценки. Загружается вся доступная история с пересмотрами.
+
+  - code: unemployed-persons
+    name_en: Unemployed persons
+    name_ru: Численность безработных
+    unit: THOUSANDS
+    unit_en: thous. persons
+    unit_ru: тыс. человек
+    frequency: monthly
+    section_en: Labor market
+    section_ru: Рынок труда
+    provider: fred
+    series_template: 'LASST{fips}0000000000004'
+    bls_series_template: 'LASST{fips}0000000000004'
+    value_scale: 0.001
+    aggregation: last
+    source_en: U.S. Bureau of Labor Statistics
+    source_ru: Бюро трудовой статистики США
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-unemployed
+    is_listed: true
+    description_en: >
+      State residents without work who are available and actively seeking a job, seasonally adjusted. This is a count, not the unemployment rate.
+    description_ru: >
+      Жители штата без работы, которые готовы приступить к ней и активно её ищут, с сезонной корректировкой. Это численность, а не уровень безработицы.
+    methodology_en: >
+      BLS Local Area Unemployment Statistics model estimate, monthly and seasonally adjusted. Source persons are divided by 1,000 for comparison with the national unemployment level. The complete source history is loaded, including revisions.
+    methodology_ru: >
+      Месячная сезонно скорректированная модельная оценка Бюро трудовой статистики США. Число человек разделено на тысячу для сопоставления с национальной численностью безработных. Загружается вся доступная история с пересмотрами.
+
+  - code: government-employment
+    name_en: Government employment
+    name_ru: Занятые в государственном секторе
+    unit: THOUSANDS
+    unit_en: thous. persons
+    unit_ru: тыс. человек
+    frequency: monthly
+    section_en: Labor market
+    section_ru: Рынок труда
+    provider: fred
+    series_template: '{geo}GOVT'
+    aggregation: last
+    source_en: U.S. Bureau of Labor Statistics
+    source_ru: Бюро трудовой статистики США
+    source_url_template: 'https://fred.stlouisfed.org/series/{series_id}'
+    national_code: us-government-employment
+    is_listed: true
+    description_en: >
+      Employees on federal, state and local government payrolls in the state, seasonally adjusted. This establishment-survey measure is separate from household employment.
+    description_ru: >
+      Работники федеральных, штатных и местных государственных организаций на территории штата, с сезонной корректировкой. Оценка по предприятиям отличается от обследования домохозяйств.
+    methodology_en: >
+      BLS Current Employment Statistics, monthly and seasonally adjusted. Values are published in thousands of persons and loaded without conversion, including the complete available history and revisions.
+    methodology_ru: >
+      Месячная сезонно скорректированная оценка занятости Бюро трудовой статистики США. Значения опубликованы в тысячах человек и загружаются без пересчёта, со всей доступной историей и пересмотрами.

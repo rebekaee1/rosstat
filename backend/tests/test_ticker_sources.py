@@ -190,7 +190,7 @@ def test_ticker_lanes_keep_ecb_crosses_on_world_strip():
         "usd-cny",
         "btc-usd",
         "brent",
+        "gold-rub-live",
     )
-    assert "gold-rub-live" not in TICKER_SET_WORLD
     assert "usd-rub-live" in TICKER_SET_RUSSIA
     assert "eur-usd" not in TICKER_SET_RUSSIA

@@ -37,6 +37,31 @@ def test_etl_alerts_go_to_primary_only(monkeypatch):
     assert calls == [None, None]
 
 
+def test_world_ingest_reports_real_outcome_without_false_green(monkeypatch):
+    sent: list[tuple[str, str | None, str]] = []
+
+    async def fake_send(message, chat_id=None, reply_markup=None, kind="alert"):
+        sent.append((message, chat_id, kind))
+        return True
+
+    monkeypatch.setattr(alerting, "send_telegram", fake_send)
+    asyncio.run(alerting.alert_world_ingest_summary(
+        "Европа: Eurostat", status="shadow", checked=1853,
+        changed=0, failed=0, details="Данные не записаны.",
+    ))
+    asyncio.run(alerting.alert_world_ingest_summary(
+        "США: BEA", status="partial", checked=7,
+        changed=52, failed=1, details="Ошибка SQGDP <upstream>",
+        checked_label="Проверено архивов", changed_label="Изменено точек",
+    ))
+    assert len(sent) == 2
+    assert sent[0][1:] == (None, "world_ingest_summary")
+    assert "🟡" in sent[0][0] and "данные не обновлены" in sent[0][0]
+    assert "🟡" in sent[1][0] and "Ошибок: 1" in sent[1][0]
+    assert "Проверено архивов: 7 · Изменено точек: 52" in sent[1][0]
+    assert "&lt;upstream&gt;" in sent[1][0]
+
+
 def test_etl_failure_and_zero_parse_respect_mute(monkeypatch):
     """Повтор того же кода в mute-окне не шлёт Telegram (антидубль ETL/evening)."""
     calls = _capture_send(monkeypatch)
@@ -82,6 +107,25 @@ def test_new_user_message_names_site_version(monkeypatch):
     # По одному тексту на каждого получателя дайджеста.
     assert messages[:2] and all("Версия сайта: русская" in m for m in messages[:2])
     assert messages[2:] and all("Версия сайта: английская" in m for m in messages[2:])
+
+
+def test_google_registration_reaches_telegram_recipients(monkeypatch):
+    sent: list[tuple[str, str, str]] = []
+
+    async def fake_send(message, chat_id=None, reply_markup=None, kind="alert"):
+        sent.append((chat_id, kind, message))
+        return True
+
+    monkeypatch.setattr(alerting, "send_telegram", fake_send)
+    monkeypatch.setattr(alerting.settings, "telegram_realtime_alerts_enabled", True)
+    monkeypatch.setattr(alerting.settings, "telegram_chat_id", "111", raising=False)
+    monkeypatch.setattr(alerting.settings, "telegram_digest_chat_ids", "222", raising=False)
+    asyncio.run(alerting.notify_new_user({
+        "method": "OAuth (google)", "locale": "en", "newsletter": True,
+    }))
+    assert [chat_id for chat_id, _, _ in sent] == ["111", "222"]
+    assert all(kind == "new_user" for _, kind, _ in sent)
+    assert all("OAuth (google)" in message and "Рассылка: да" in message for _, _, message in sent)
 
 
 def test_realtime_user_and_feedback_alerts_broadcast(monkeypatch):

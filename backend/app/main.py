@@ -587,8 +587,8 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
-        # World Eurostat — отдельный TOC-driven контур, по умолчанию выключен.
-        # В shadow режиме журналирует changed-set без записи data points.
+        # Eurostat publishes API batches twice daily. Each database first gets
+        # two audited shadow runs, then bounded live refreshes with a backlog.
         if settings.world_eurostat_ingest_enabled:
             from app.services.world_eurostat_ingest import world_eurostat_ingest_job
 
@@ -605,6 +605,23 @@ async def lifespan(app: FastAPI):
                 ),
                 id="world_eurostat_ingest",
                 name="World Eurostat TOC-driven ingest",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
+            async def afternoon_eurostat_ingest():
+                return await world_eurostat_ingest_job(include_imf=False)
+
+            scheduler.add_job(
+                locked_job(
+                    afternoon_eurostat_ingest,
+                    "world_eurostat_ingest",
+                    ttl_seconds=6 * 3600,
+                ),
+                trigger=CronTrigger(hour=14, minute=20, timezone="Europe/Moscow"),
+                id="world_eurostat_ingest_afternoon",
+                name="Eurostat afternoon TOC refresh",
                 replace_existing=True,
                 max_instances=1,
                 coalesce=True,
@@ -634,6 +651,67 @@ async def lifespan(app: FastAPI):
                 coalesce=True,
             )
 
+        if settings.us_world_forecast_enabled and not settings.world_forecast_enabled:
+            from app.services.world_forecast_pipeline import (
+                WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
+                world_forecast_job,
+            )
+
+            async def scheduled_us_world_forecasts():
+                return await world_forecast_job(
+                    country_slugs=("united-states",),
+                    limit=settings.us_world_forecast_daily_limit,
+                    acquire_lock=False,
+                    eligible_only=True,
+                )
+
+            scheduler.add_job(
+                locked_job(
+                    scheduled_us_world_forecasts,
+                    "us_world_forecast",
+                    ttl_seconds=WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
+                ),
+                trigger=CronTrigger(hour=5, minute=20, timezone="Europe/Moscow"),
+                id="us_world_forecast",
+                name="US quality-gated national forecasts",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
+        if settings.europe_world_forecast_enabled and not settings.world_forecast_enabled:
+            from app.services.eurostat_parser import WORLD_COUNTRIES
+            from app.services.world_forecast_pipeline import (
+                WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
+                world_forecast_job,
+            )
+
+            european_slugs = tuple(sorted({
+                meta[0] for meta in WORLD_COUNTRIES.values() if meta[3] == "Европа"
+            }))
+
+            async def scheduled_europe_world_forecasts():
+                return await world_forecast_job(
+                    country_slugs=european_slugs,
+                    limit=settings.europe_world_forecast_daily_limit,
+                    acquire_lock=False,
+                    eligible_only=True,
+                )
+
+            scheduler.add_job(
+                locked_job(
+                    scheduled_europe_world_forecasts,
+                    "europe_world_forecast",
+                    ttl_seconds=WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
+                ),
+                trigger=CronTrigger(hour=21, minute=0, timezone="Europe/Moscow"),
+                id="europe_world_forecast",
+                name="Europe quality-gated forecasts (bounded daily batch)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
         if settings.world_subnational_ingest_enabled:
             from app.services.world_subnational_ingest import world_subnational_ingest_job
 
@@ -644,13 +722,34 @@ async def lifespan(app: FastAPI):
                     ttl_seconds=4 * 3600,
                 ),
                 trigger=CronTrigger(
-                    day_of_week="sun",
                     hour=settings.world_subnational_ingest_hour,
                     minute=settings.world_subnational_ingest_minute,
                     timezone="Europe/Moscow",
                 ),
                 id="world_subnational_ingest",
                 name="World subnational ingest (FRED state series)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
+        if settings.world_bea_regional_ingest_enabled:
+            from app.services.world_bea_regional import world_bea_regional_job
+
+            scheduler.add_job(
+                locked_job(
+                    world_bea_regional_job,
+                    "world_bea_regional",
+                    ttl_seconds=6 * 3600,
+                ),
+                trigger=CronTrigger(
+                    day_of_week="tue",
+                    hour=settings.world_bea_regional_ingest_hour,
+                    minute=settings.world_bea_regional_ingest_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="world_bea_regional",
+                name="BEA regional US/state ZIP revision check",
                 replace_existing=True,
                 max_instances=1,
                 coalesce=True,

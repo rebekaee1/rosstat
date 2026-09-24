@@ -17,6 +17,11 @@ function renderScope(countriesPayload, locale) {
         indicators_count: 1,
       })),
       total: 55,
+      world_indicators_count: 38146,
+      russia_macro_indicators_count: 145,
+      regional_indicators_count: 2377,
+      us_state_indicators_count: 1882,
+      us_states_count: 50,
     }],
   ]);
   return renderPage(<HomeDataScope />, { path: '/', route: '/', locale });
@@ -28,10 +33,10 @@ describe('HomeDataScope — состав платформы в hero главно
 
     expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
 
-    expect(screen.getByText('100+')).toBeTruthy();
+    await waitFor(() => expect(screen.getByText('145')).toBeTruthy());
     expect(screen.getByText(/макроиндикаторов России/)).toBeTruthy();
 
-    expect(screen.getByText('36 000+')).toBeTruthy();
+    expect(screen.getByText(/38\s*146/)).toBeTruthy();
     expect(screen.getByText(/показателей по странам мира/)).toBeTruthy();
 
     await waitFor(() => {
@@ -39,7 +44,7 @@ describe('HomeDataScope — состав платформы в hero главно
     });
     expect(screen.getByText(/стран мира/)).toBeTruthy();
 
-    expect(screen.getByText('495')).toBeTruthy();
+    expect(screen.getByText(/2\s*377/)).toBeTruthy();
     expect(screen.getByText(/региональных показателей/)).toBeTruthy();
     expect(screen.queryByText(/42\s*075/)).toBeNull();
     expect(screen.queryByText(/495\s*[×x]/)).toBeNull();
@@ -69,9 +74,9 @@ describe('HomeDataScope — состав платформы в hero главно
     renderScope();
 
     expect(screen.getByText(
-      'Евростат, МВФ, национальные статистические ведомства, Росстат, Банк России, Минфин России',
+      'Евростат, МВФ, Бюро экономического анализа США, Бюро трудовой статистики США, ФРС, Росстат, Банк России, Минфин России',
     )).toBeTruthy();
-    expect(screen.getByText(/06:00 и 20:00 МСК/)).toBeTruthy();
+    expect(screen.getByText(/обновляются автоматически/)).toBeTruthy();
   });
 
   it('нет текста-заглушки и запрещённого разделителя mid-dot', () => {
@@ -92,7 +97,7 @@ describe('HomeDataScope — состав платформы в hero главно
     expect(screen.queryByText(/Russian macro indicators/)).toBeNull();
     expect(screen.queryByText('100+')).toBeNull();
     expect(screen.queryByText(/regional indicators/)).toBeNull();
-    expect(screen.queryByText('495')).toBeNull();
+    expect(screen.queryByText('2,377')).toBeNull();
     expect(screen.getByText(/observation period/)).toBeTruthy();
     expect(screen.getByText(
       'Eurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks',

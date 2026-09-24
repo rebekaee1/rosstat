@@ -415,7 +415,7 @@ async def run_world_pop_ingest(
         run.completed_at = now
         await db.commit()
 
-    await bump_namespaces("world")
+    await bump_namespaces("world", "world-catalog")
     return {
         "run_id": run_id,
         "indicators": indicators,

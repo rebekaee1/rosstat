@@ -3,8 +3,9 @@
 Протокол: https://www.indexnow.org/ (Яндекс — участник, Bing — участник;
 Google не поддерживает, но узнаёт обновления через sitemap lastmod).
 
-Схема: после daily ETL scheduler собирает URL обновлённых индикаторов и
-отправляет один batch-POST. Ключ подтверждается файлом
+Схема: после daily ETL scheduler кладёт URL обновлённых индикаторов в очередь;
+общий drainer отправляет их в пределах единой дневной квоты для всех хостов.
+Ключ подтверждается файлом
 `frontend/public/{key}.txt` (отдаётся nginx как `https://host/{key}.txt`).
 
 Fire-and-forget: ошибка пинга никогда не валит ETL — только warning в лог.
@@ -19,10 +20,12 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from datetime import date
+from datetime import date, datetime, time, timedelta, timezone
+from math import ceil
 from urllib.parse import urlparse
 
 import httpx
+from redis.exceptions import WatchError
 
 from app.config import settings
 
@@ -38,13 +41,93 @@ _QUEUE_PREFIX = "in:queue:"
 _DEBOUNCE_PREFIX = "in:sent:"
 _HISTORY_CURSOR_KEY = "in:history:cursor"
 _HISTORY_LOCK_KEY = "in:history:lock"
-# v1 обходил только периоды. Его позиция не совместима с полным списком
-# чанков: повторяем bounded-проход с начала, чтобы не потерять новые группы.
-_HISTORY_CURSOR_VERSION = 2
+# v3 stores an independent (phase, section, offset) cursor per sitemap family.
+_HISTORY_CURSOR_VERSION = 3
 _HISTORY_RESTART_DAYS = 14
 _HISTORY_DEMAND_LIMIT = 300
 _HISTORY_CAP_MIN = 1_000
 _HISTORY_CAP_MAX = 50_000
+_DAILY_SEND_KEY_PREFIX = "in:daily-send:"
+_DAILY_SEND_CAP_MAX = 30_000
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def daily_send_cap() -> int:
+    """Effective hard ceiling: configuration may lower, never raise 30k/day."""
+    try:
+        return min(max(int(settings.indexnow_daily_send_cap), 0), _DAILY_SEND_CAP_MAX)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _daily_send_counter_key(now: datetime | None = None) -> tuple[str, int]:
+    now = now or _utc_now()
+    next_midnight = datetime.combine(
+        now.date() + timedelta(days=1), time.min, tzinfo=timezone.utc
+    )
+    # Keep yesterday's number briefly for operations, while the date in the key
+    # makes the quota switch atomically at 00:00 UTC.
+    ttl = max(60, ceil((next_midnight - now).total_seconds()) + 24 * 3600)
+    key = f"{_DAILY_SEND_KEY_PREFIX}global:{now:%Y%m%d}"
+    return key, ttl
+
+
+async def daily_send_remaining(host: str, *, redis=None) -> int:
+    """Remaining global URL-list budget shared by all public hosts today (UTC)."""
+    cap = daily_send_cap()
+    if cap <= 0:
+        return 0
+    if redis is None:
+        from app.core.cache import get_state_redis
+
+        redis = await get_state_redis()
+    key, _ttl = _daily_send_counter_key()
+    used = int(await redis.get(key) or 0)
+    return max(0, cap - used)
+
+
+async def reserve_daily_send_quota(
+    host: str, url_count: int, *, redis=None
+) -> bool:
+    """Atomically charge one POST attempt against the global UTC-day ceiling.
+
+    Reservation happens before HTTP. A timeout or 429 still consumes quota,
+    because the remote service may have received the request before the client
+    lost the response. Apex and ru requests share one counter across workers.
+    """
+    count = int(url_count)
+    if count <= 0:
+        return True
+    cap = daily_send_cap()
+    if cap <= 0 or count > cap:
+        return False
+    if redis is None:
+        from app.core.cache import get_state_redis
+
+        redis = await get_state_redis()
+    key, ttl = _daily_send_counter_key()
+    # WATCH + MULTI/EXEC makes the check-and-increment one conditional atomic
+    # reservation. Concurrent workers retry after a conflicting transaction;
+    # over-limit requests never create a transient over-count.
+    while True:
+        pipe = redis.pipeline(transaction=True)
+        try:
+            await pipe.watch(key)
+            used = int(await pipe.get(key) or 0)
+            if used + count > cap:
+                await pipe.unwatch()
+                return False
+            pipe.multi()
+            pipe.incrby(key, count)
+            pipe.expire(key, ttl)
+            await pipe.execute()
+            return True
+        except WatchError:
+            continue
+        finally:
+            await pipe.reset()
 
 
 async def ping_urls(
@@ -75,6 +158,14 @@ async def ping_urls(
         async with httpx.AsyncClient(timeout=30) as client:
             for i in range(0, len(unique_urls), _BATCH_LIMIT):
                 batch = unique_urls[i : i + _BATCH_LIMIT]
+                if not await reserve_daily_send_quota(ping_host, len(batch)):
+                    ok = False
+                    logger.info(
+                        "IndexNow: global daily send cap reached host=%s; defer %d URL(s)",
+                        ping_host,
+                        len(unique_urls) - i,
+                    )
+                    break
                 payload = {
                     "host": ping_host,
                     "key": settings.indexnow_key,
@@ -122,7 +213,7 @@ async def ping_urls(
 
 
 async def ping_updated_indicators(updated_codes: list[str]) -> bool:
-    """Пинг после ETL: карточки обновлённых индикаторов + главная + «сегодня»."""
+    """Поставить обновлённые карточки в очередь общей дневной квоты."""
     if not updated_codes:
         return False
     from app.services import site_paths as paths
@@ -142,12 +233,10 @@ async def ping_updated_indicators(updated_codes: list[str]) -> bool:
     url_paths += [
         paths.today(code) for code in updated_codes if code in TODAY_CODES
     ]
-    ok = await ping_urls(url_paths)
-    if settings.apex_locale_en:
-        from app.services.locale import ru_public_origin
-        ru_ok = await ping_urls(url_paths, origin=ru_public_origin())
-        return ok and ru_ok
-    return ok
+    queued = []
+    for origin, host in _indexnow_targets():
+        queued.append(await enqueue_paths(url_paths, origin=origin, host=host))
+    return all(count > 0 for count in queued)
 
 
 async def ping_full_site(db, *, origin: str | None = None, host: str | None = None) -> int:
@@ -245,14 +334,98 @@ def _load_history_cursor(raw: str | None) -> dict:
         data = {}
     if data.get("version") != _HISTORY_CURSOR_VERSION:
         data = {}
-    phase = int(data.get("phase") or 0)
+    families = data.get("families")
+    if not isinstance(families, dict):
+        families = {}
+    normalized: dict[str, dict] = {}
+    for prefix, state in families.items():
+        if not isinstance(state, dict):
+            state = {}
+        normalized[str(prefix)] = {
+            "phase": min(2, max(0, int(state.get("phase") or 0))),
+            "i": max(0, int(state.get("i") or 0)),
+            "skip": max(0, int(state.get("skip") or 0)),
+            "processed": max(0, int(state.get("processed") or 0)),
+        }
     return {
         "version": _HISTORY_CURSOR_VERSION,
-        "phase": phase,
-        "i": max(0, int(data.get("i") or 0)),
-        "skip": max(0, int(data.get("skip") or 0)),
+        "phase": 0,
+        "families": normalized,
         "done_on": str(data.get("done_on") or ""),
     }
+
+
+def _history_family_quotas(budget: int, weights: dict[str, int]) -> dict[str, int]:
+    """Split one day's remaining URLs proportionally with stable tie-breaking."""
+    active = [(name, max(0, int(weight))) for name, weight in weights.items()]
+    active = [(name, weight) for name, weight in active if weight > 0]
+    total = sum(weight for _name, weight in active)
+    if budget <= 0 or total <= 0:
+        return {}
+    floor = 1 if budget >= len(active) else 0
+    distributable = budget - floor * len(active)
+    quotas: dict[str, int] = {}
+    fractions: list[tuple[float, int, str]] = []
+    assigned = 0
+    for order, (name, weight) in enumerate(active):
+        exact = distributable * weight / total
+        quota = floor + int(exact)
+        quotas[name] = quota
+        assigned += quota
+        fractions.append((exact - int(exact), -order, name))
+    for _fraction, _order, name in sorted(fractions, reverse=True)[: budget - assigned]:
+        quotas[name] += 1
+    return quotas
+
+
+async def _enqueue_history_family(
+    db,
+    *,
+    prefix: str,
+    sections: list[str],
+    cursor: dict,
+    budget: int,
+    year_min: int,
+    targets: list[tuple[str, str]],
+) -> tuple[int, str]:
+    """Advance one family through fresh then older pages up to its share."""
+    from app.services.site_urls import resolve_section
+
+    queued = 0
+    last_section = ""
+    while budget > 0 and cursor["phase"] < 2:
+        if cursor["i"] >= len(sections):
+            if cursor["phase"] == 0:
+                cursor.update(phase=1, i=0, skip=0)
+            else:
+                cursor["phase"] = 2
+            continue
+
+        section = sections[cursor["i"]]
+        last_section = section
+        urls = await resolve_section(db, section)
+        filtered = [
+            path for path in _section_paths(urls)
+            if _matches_history_phase(path, phase=cursor["phase"], year_min=year_min)
+        ]
+        skip = min(cursor["skip"], len(filtered))
+        take = filtered[skip : skip + budget]
+        if take:
+            for origin, host in targets:
+                await enqueue_paths(take, origin=origin, host=host)
+            queued += len(take)
+            cursor["processed"] += len(take)
+            budget -= len(take)
+            cursor["skip"] = skip + len(take)
+
+        if cursor["skip"] >= len(filtered) or not filtered:
+            cursor.update(i=cursor["i"] + 1, skip=0)
+    while cursor["phase"] < 2 and cursor["i"] >= len(sections):
+        if cursor["phase"] == 0:
+            cursor.update(phase=1, i=0, skip=0)
+        else:
+            cursor["phase"] = 2
+    return queued, last_section
 
 
 async def _history_section_names(db) -> list[str]:
@@ -269,6 +442,36 @@ async def _queue_backed_up(redis, hosts: list[str], cap: int) -> bool:
         if await redis.scard(f"{_QUEUE_PREFIX}{host}") >= cap:
             return True
     return False
+
+
+def _fair_drain_budgets(
+    hosts: list[str], queue_sizes: dict[str, int], budget: int
+) -> dict[str, int]:
+    """Split this drain's global send budget across nonempty host queues.
+
+    A host with no queued URLs receives no share. If a smaller queue fills its
+    share, the unused part is redistributed among the still-active hosts.
+    """
+    allocations = {host: 0 for host in hosts}
+    active = [host for host in hosts if queue_sizes.get(host, 0) > 0]
+    remaining = max(0, int(budget))
+    while active and remaining > 0:
+        base, extra = divmod(remaining, len(active))
+        distributed = 0
+        for index, host in enumerate(active):
+            share = base + (1 if index < extra else 0)
+            capacity = max(0, int(queue_sizes.get(host, 0)) - allocations[host])
+            take = min(share, capacity)
+            allocations[host] += take
+            distributed += take
+        if distributed == 0:
+            break
+        remaining -= distributed
+        active = [
+            host for host in active
+            if allocations[host] < max(0, int(queue_sizes.get(host, 0)))
+        ]
+    return allocations
 
 
 async def enqueue_paths(
@@ -292,14 +495,14 @@ async def enqueue_paths(
 async def enqueue_history_urls(db) -> dict:
     """Дневная порция длинного хвоста в очередь IndexNow, без прямого POST.
 
-    Сначала спрос Вебмастера, затем все чанковые секции реестра sitemap.
-    Фаза 0 — карточки без года и год ≥ порога, фаза 1 — более старые периоды.
-    Курсор в state-Redis; миграция его версии повторяет проход в том же лимите.
+    Сначала спрос Вебмастера, затем семейства чанков с долей по числу URL.
+    У каждого семейства свой курсор: новые страницы не блокируют старые,
+    а крупные US/state years получают пропорциональную долю каждый день.
     """
     from app.core.cache import get_state_redis
     from app.services.demand_router import priority_recrawl_paths
     from app.services.display import today_msk
-    from app.services.site_urls import resolve_section
+    from app.services.site_urls import _chunked_prefix_for, chunk_item_counts
 
     if not settings.indexnow_enabled or not settings.indexnow_key:
         return {"queued": 0, "skipped": "disabled"}
@@ -328,6 +531,7 @@ async def enqueue_history_urls(db) -> dict:
         "resting": False,
         "phase": 0,
         "section": "",
+        "families": {},
     }
     if remaining <= 0:
         return stats
@@ -337,9 +541,16 @@ async def enqueue_history_urls(db) -> dict:
         return stats
 
     names = await _history_section_names(db)
+    sections_by_family: dict[str, list[str]] = {}
+    for name in names:
+        chunked = _chunked_prefix_for(name)
+        if chunked is not None:
+            prefix, _index = chunked
+            sections_by_family.setdefault(prefix, []).append(name)
+
     cursor = _load_history_cursor(await redis.get(_HISTORY_CURSOR_KEY))
     today = today_msk()
-    if cursor["phase"] >= 2:
+    if cursor["done_on"]:
         try:
             done_on = date.fromisoformat(cursor["done_on"])
         except ValueError:
@@ -350,53 +561,70 @@ async def enqueue_history_urls(db) -> dict:
             return stats
         cursor = _load_history_cursor(None)
 
-    while remaining > 0:
-        if cursor["phase"] >= 2:
-            cursor["done_on"] = today.isoformat()
-            break
-        if not names:
-            cursor["phase"] = 2
-            cursor["done_on"] = today.isoformat()
-            break
-        if cursor["i"] >= len(names):
-            cursor["phase"] += 1
-            cursor["i"] = 0
-            cursor["skip"] = 0
-            continue
-        section = names[cursor["i"]]
-        stats["section"] = section
-        stats["phase"] = cursor["phase"]
-        urls = await resolve_section(db, section)
-        filtered = [
-            path
-            for path in _section_paths(urls)
-            if _matches_history_phase(path, phase=cursor["phase"], year_min=year_min)
-        ]
-        skip = min(cursor["skip"], len(filtered))
-        take = filtered[skip : skip + remaining]
-        if take:
-            for origin, host in targets:
-                await enqueue_paths(take, origin=origin, host=host)
-            queued += len(take)
-            remaining -= len(take)
-            cursor["skip"] = skip + len(take)
-        else:
-            cursor["i"] += 1
-            cursor["skip"] = 0
-            await redis.set(_HISTORY_CURSOR_KEY, json.dumps(cursor))
-            continue
-        if cursor["skip"] >= len(filtered):
-            cursor["i"] += 1
-            cursor["skip"] = 0
-        await redis.set(_HISTORY_CURSOR_KEY, json.dumps(cursor))
+    for prefix in sections_by_family:
+        cursor["families"].setdefault(
+            prefix, {"phase": 0, "i": 0, "skip": 0, "processed": 0}
+        )
 
-    if cursor["phase"] >= 2 and not cursor.get("done_on"):
+    item_counts = await chunk_item_counts(db)
+    weights = {
+        prefix: max(1, int(item_counts.get(prefix, 0)) - state["processed"])
+        for prefix, state in cursor["families"].items()
+        if prefix in sections_by_family and state["phase"] < 2
+    }
+    last_section = ""
+
+    # Redistribute unused share when a small family finishes its full catalog.
+    while remaining > 0 and weights:
+        shares = _history_family_quotas(remaining, weights)
+        if not shares:
+            break
+        progressed = 0
+        for prefix in sections_by_family:
+            share = shares.get(prefix, 0)
+            if share <= 0:
+                continue
+            state = cursor["families"][prefix]
+            added, section = await _enqueue_history_family(
+                db,
+                prefix=prefix,
+                sections=sections_by_family[prefix],
+                cursor=state,
+                budget=share,
+                year_min=year_min,
+                targets=targets,
+            )
+            if section:
+                last_section = section
+            if added:
+                queued += added
+                remaining -= added
+                progressed += added
+            stats["families"][prefix] = stats["families"].get(prefix, 0) + added
+
+        for prefix, state in cursor["families"].items():
+            if prefix not in sections_by_family or state["phase"] >= 2:
+                weights.pop(prefix, None)
+                continue
+            weights[prefix] = max(
+                1, int(item_counts.get(prefix, 0)) - state["processed"]
+            )
+        if progressed == 0:
+            break
+
+    all_done = all(
+        cursor["families"].get(prefix, {}).get("phase", 2) >= 2
+        for prefix in sections_by_family
+    )
+    cursor["phase"] = 2 if all_done else min(
+        (state["phase"] for state in cursor["families"].values()), default=2
+    )
+    if all_done and not cursor.get("done_on"):
         cursor["done_on"] = today.isoformat()
     await redis.set(_HISTORY_CURSOR_KEY, json.dumps(cursor))
     stats["queued"] = queued
     stats["phase"] = cursor["phase"]
-    stats["i"] = cursor["i"]
-    stats["skip"] = cursor["skip"]
+    stats["section"] = last_section
     return stats
 
 
@@ -412,10 +640,22 @@ async def drain_indexnow_queue(*, limit: int = _QUEUE_BATCH) -> int:
         ru_host = "ru.forecasteconomy.com"
         hosts.append(ru_host)
         origins[ru_host] = ru_public_origin()
+    daily_remaining = await daily_send_remaining(hosts[0], redis=redis)
+    queue_sizes = {
+        host: int(await redis.scard(f"{_QUEUE_PREFIX}{host}"))
+        for host in hosts
+    }
+    drain_budget = min(max(0, int(limit)), daily_remaining)
+    budgets = _fair_drain_budgets(hosts, queue_sizes, drain_budget)
     sent = 0
     for ping_host in hosts:
+        host_budget = budgets.get(ping_host, 0)
+        if host_budget <= 0:
+            if daily_remaining <= 0:
+                logger.info("IndexNow drain: global daily send cap reached")
+            continue
         queue_key = f"{_QUEUE_PREFIX}{ping_host}"
-        batch = await redis.spop(queue_key, limit)
+        batch = await redis.spop(queue_key, host_budget)
         if not batch:
             continue
         if isinstance(batch, (bytes, str)):

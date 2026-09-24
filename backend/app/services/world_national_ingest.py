@@ -1113,7 +1113,7 @@ async def run_national_core_ingest(
         if points_touched:
             from app.core.cache import bump_namespaces
 
-            await bump_namespaces("world")
+            await bump_namespaces("world", "ssr-world", "world-catalog")
     except Exception:  # noqa: BLE001
         logger.warning("cache bump after national-core ingest failed", exc_info=True)
 
@@ -1125,4 +1125,24 @@ async def run_national_core_ingest(
         "failures": len(failures),
     }
     logger.info("national-core ingest done: %s (%s)", result, per_country)
+    from app.services.alerting import alert_world_ingest_summary
+
+    await alert_world_ingest_summary(
+        "национальные источники (США и другие страны)",
+        status="partial" if failures else "ok",
+        checked=len(countries), changed=points_touched, failed=len(failures),
+        checked_label="Проверено стран",
+        changed_label="Изменено точек",
+        details=(
+            f"Стран: {len(countries)}; рядов загружено: {indicators}; "
+            f"изменённых точек: {points_touched}. "
+            + (
+                f"США: рядов {per_country['us'].get('ok', 0)}, "
+                f"ошибок {per_country['us'].get('err', per_country['us'].get('error', 0))}, "
+                f"изменённых точек {per_country['us'].get('points', 0)}. "
+                if 'us' in per_country else ""
+            )
+            + (f"Ошибки: {', '.join(failures[:15])}" if failures else "")
+        ).strip(),
+    )
     return result

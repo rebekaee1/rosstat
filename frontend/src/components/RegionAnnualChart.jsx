@@ -32,11 +32,12 @@ function monthTickLabel(p, locale) {
   return `${names[m]} ${p.year}`;
 }
 
-function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, tickLabel }) {
+function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, tickLabel }) {
   if (!active || !payload?.length) return null;
   const region = payload.find(p => p.dataKey === 'value' && p.value != null);
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
   const russia = payload.find(p => p.dataKey === 'russia' && p.value != null);
+  const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
   const periodLabel = tickLabel ? tickLabel(label) : label;
   return (
     <div className="bg-surface border border-border-subtle rounded-lg px-3 py-2 shadow-lg text-xs">
@@ -56,6 +57,11 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
           {russiaLabel}: {formatRegionValue(russia.value)}
         </div>
       )}
+      {forecast && (
+        <div className="font-mono text-champagne mt-0.5">
+          {forecastLabel}: {formatRegionValue(forecast.value)}
+        </div>
+      )}
       {unit ? <div className="mt-1 text-[10px] text-text-tertiary">{unit}</div> : null}
     </div>
   );
@@ -73,6 +79,7 @@ export default function RegionAnnualChart({
   height = 320,
   frequency = 'annual',
   nationalLabel = null,
+  forecastSeries = null,
 }) {
   const { t, locale } = useLocale();
   const wrapRef = useRef(null);
@@ -102,7 +109,7 @@ export default function RegionAnnualChart({
   const data = useMemo(() => {
     const rfByPeriod = new Map((russiaSeries || []).map(p => [periodKey(p), p.value]));
     const cmpByPeriod = new Map((compareSeries || []).map(p => [periodKey(p), p.value]));
-    return (series || []).map(p => ({
+    const observed = (series || []).map(p => ({
       period: periodKey(p),
       year: p.year,
       label: monthly
@@ -113,9 +120,23 @@ export default function RegionAnnualChart({
       value: p.value,
       compare: cmpByPeriod.get(periodKey(p)) ?? null,
       russia: rfByPeriod.get(periodKey(p)) ?? null,
+      forecast: null,
     }));
+    if (forecastSeries?.length && observed.length) {
+      observed[observed.length - 1].forecast = observed[observed.length - 1].value;
+      for (const p of forecastSeries) {
+        observed.push({
+          period: periodKey(p), year: p.year,
+          label: monthly ? monthTickLabel(p, locale)
+            : quarterly ? (locale === 'en' ? `${p.year} Q${p.quarter || 1}` : `${p.quarter || 1} кв. ${p.year}`)
+              : String(p.year),
+          value: null, compare: null, russia: null, forecast: p.value,
+        });
+      }
+    }
+    return observed;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [series, russiaSeries, compareSeries, monthly, quarterly, locale]);
+  }, [series, russiaSeries, compareSeries, forecastSeries, monthly, quarterly, locale]);
 
   const showRussia = useMemo(
     () => data.some(d => d.russia != null),
@@ -137,7 +158,7 @@ export default function RegionAnnualChart({
   // Ширина осей — по самой длинной подписи; на узком экране жёстче клэмп,
   // иначе dual-axis съедает половину plot-area (скрин Белгород/Россия).
   const leftAxisWidth = useMemo(
-    () => compactTickAxisWidth(data.flatMap(d => [d.value, d.compare]), { narrow: isNarrow }),
+    () => compactTickAxisWidth(data.flatMap(d => [d.value, d.compare, d.forecast]), { narrow: isNarrow }),
     [data, isNarrow],
   );
   const rightAxisWidth = useMemo(() => {
@@ -251,6 +272,7 @@ export default function RegionAnnualChart({
                   regionName={regionName}
                   compareName={compareName}
                   russiaLabel={russiaLabel}
+                  forecastLabel={locale === 'en' ? 'Our forecast' : 'Наш прогноз'}
                   tickLabel={(v) => {
                     const d = data.find((x) => String(x.period) === String(v));
                     return d ? d.label : String(v);
@@ -290,6 +312,19 @@ export default function RegionAnnualChart({
                 strokeWidth={1.6}
                 strokeDasharray="5 4"
                 dot={false}
+                isAnimationActive={false}
+              />
+            )}
+            {forecastSeries?.length > 0 && (
+              <Line
+                yAxisId="region"
+                type="monotone"
+                dataKey="forecast"
+                stroke={CHART_THEME.gold || '#AD8A48'}
+                strokeWidth={2}
+                strokeDasharray="5 4"
+                dot={false}
+                activeDot={{ r: 3.5, fill: CHART_THEME.gold || '#AD8A48' }}
                 isAnimationActive={false}
               />
             )}

@@ -4,13 +4,13 @@
     python /app/scripts/indexnow-ping-all.py                  # план подачи (dry-run)
     python /app/scripts/indexnow-ping-all.py --apply          # подать секции по умолчанию
     python /app/scripts/indexnow-ping-all.py --sections months,world-vs --apply
-    python /app/scripts/indexnow-ping-all.py --sections world-years-1 --limit 10000 --apply
+    python /app/scripts/indexnow-ping-all.py --sections world-region-years-1 --limit 10000 --apply
 
 Источник URL — site_urls.collect_url_sections (единый реестр; порядок секций =
 приоритет подачи). По умолчанию подаются все «мелкие» секции каталога:
-всё, кроме чанков летних лендингов (regional-years-N, world-years-N) —
-миллионный массив летних URL льётся только явно, посекционно с --limit и по
-отдельному решению владельца.
+всё, кроме крупных годовых чанков (regional-years-N, world-years-N,
+world-region-years-N) — большие массивы летних URL подаются только явно,
+посекционно с --limit.
 
 Алиасы секций (как в collect_all_paths): ``regional`` → все regional-*,
 ``world`` → все world-* (включая world-years-N — перед --apply смотреть план).
@@ -34,6 +34,7 @@ import httpx  # noqa: E402
 
 from app.config import settings  # noqa: E402
 from app.database import async_session  # noqa: E402
+from app.services.indexnow import daily_send_cap, reserve_daily_send_quota  # noqa: E402
 from app.services.site_urls import collect_url_sections  # noqa: E402
 
 logger = logging.getLogger("indexnow-ping-all")
@@ -46,7 +47,11 @@ _BASE_PAUSE = 2.0
 _PAUSE_CAP = 60.0
 
 # Чанки летних лендингов (~1.6M URL) в дефолтный набор не входят.
-_VOLATILE_PREFIXES = ("regional-years-", "world-years-")
+_VOLATILE_PREFIXES = (
+    "regional-years-",
+    "world-years-",
+    "world-region-years-",
+)
 
 _NAME_WIDTH = 22
 
@@ -92,6 +97,10 @@ async def ping_section(
             ],
         }
         for attempt in range(1, _RETRIES + 1):
+            if not await reserve_daily_send_quota(host, len(batch)):
+                stats[-2] = stats.get(-2, 0) + len(urls) - offset
+                logger.info("IndexNow daily cap reached host=%s; stop direct run", host)
+                return stats
             try:
                 resp = await client.post(settings.indexnow_endpoint, json=payload)
             except httpx.HTTPError as exc:
@@ -142,7 +151,7 @@ async def main() -> int:
     parser.add_argument(
         "--sections", nargs="*", default=None,
         help="имена секций реестра или алиасы regional/world; "
-        "по умолчанию — все, кроме regional-years-N/world-years-N",
+        "по умолчанию — все, кроме крупных *_years-N чанков",
     )
     parser.add_argument(
         "--limit", type=int, default=None,
@@ -202,6 +211,10 @@ async def main() -> int:
             marker = "  (пропущена)"
         print(f"  {name:{_NAME_WIDTH}s} {len(urls):7d}{marker}")
     print(f"Итого к отправке: {total} URL, {batches} батч(ей) ≤{_BATCH_LIMIT}")
+    print(
+        "Суточный предел: "
+        f"{daily_send_cap():,} URL суммарно по хостам (UTC, включая ретраи)"
+    )
     print(f"Режим: {'ПОДАЧА (--apply)' if args.apply else 'dry-run (подача — с --apply)'}")
     if args.origin or args.host:
         print(f"Origin: {args.origin or '(default public_origin)'}")
@@ -232,6 +245,8 @@ async def main() -> int:
             print(f"  {name:{_NAME_WIDTH}s} {len(paths_list):7d}  [{summary}]")
             for code, count in stats.items():
                 stats_total[code] = stats_total.get(code, 0) + count
+            if -2 in stats:
+                break
 
     accepted = stats_total.get(200, 0) + stats_total.get(202, 0)
     rejected = total - accepted

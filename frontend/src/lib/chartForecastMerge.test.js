@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mergeActualForecastChartSeries } from './chartForecastMerge';
+import { buildForecastVisualSeries, mergeActualForecastChartSeries } from './chartForecastMerge';
 
 describe('mergeActualForecastChartSeries', () => {
   it('сохраняет опубликованный II квартал фактом при совпадении с якорем прогноза', () => {
@@ -14,7 +14,7 @@ describe('mergeActualForecastChartSeries', () => {
 
     expect(mergeActualForecastChartSeries(points, forecast)).toEqual([
       { date: '2026-01-01', actual: -3.93 },
-      { date: '2026-04-01', actual: 6.4, forecast: 6.4 },
+      { date: '2026-04-01', actual: 6.4 },
       { date: '2026-07-01', forecast: 6.36 },
     ]);
   });
@@ -32,7 +32,7 @@ describe('mergeActualForecastChartSeries', () => {
     const merged = mergeActualForecastChartSeries(points, forecast, { replacePartialActual: true });
 
     expect(merged).toEqual([
-      { date: '2025-12-01', actual: 10330.1, forecast: 10330.1 },
+      { date: '2025-12-01', actual: 10330.1 },
       { date: '2026-03-01', forecast: 9878.92 },
       { date: '2026-06-01', forecast: 7747.03 },
     ]);
@@ -44,7 +44,7 @@ describe('mergeActualForecastChartSeries', () => {
       [{ date: '2026-04-01', value: 6.4 }, { date: '2026-07-01', value: 6.3 }],
       { replacePartialActual: true },
     );
-    expect(merged[0]).toEqual({ date: '2026-04-01', actual: 6.4, forecast: 6.4 });
+    expect(merged[0]).toEqual({ date: '2026-04-01', actual: 6.4 });
   });
 
   it('без прогноза оставляет partial actual', () => {
@@ -58,5 +58,36 @@ describe('mergeActualForecastChartSeries', () => {
     const forecast = [{ date: '2026-03-01', value: 300 }];
     const merged = mergeActualForecastChartSeries(points, forecast);
     expect(merged[1]).toEqual({ date: '2026-03-01', forecast: 300 });
+  });
+
+  it('сохраняет опубликованный интервал прогноза для графика', () => {
+    const merged = mergeActualForecastChartSeries(
+      [{ date: '2025-12-01', value: 100 }],
+      [{ date: '2026-03-01', value: 105, lower_bound: 98, upper_bound: 112 }],
+    );
+    expect(merged[1]).toEqual({
+      date: '2026-03-01', forecast: 105,
+      forecastLower: 98, forecastUpper: 112, forecastRange: [98, 112],
+    });
+  });
+});
+
+describe('buildForecastVisualSeries', () => {
+  it('connects forecast at the last fact without changing the exported series', () => {
+    const rows = [
+      { date: '2026-01-01', actual: 10.95 },
+      { date: '2026-04-01', forecast: 10.62 },
+      { date: '2026-07-01', forecast: 9.13 },
+    ];
+
+    const visual = buildForecastVisualSeries(rows);
+    expect(visual.boundaryDate).toBe('2026-01-01');
+    expect(visual.data[0]).toEqual({ date: '2026-01-01', actual: 10.95, forecast: 10.95 });
+    expect(rows[0]).toEqual({ date: '2026-01-01', actual: 10.95 });
+  });
+
+  it('does not invent an anchor if the visible window contains only forecasts', () => {
+    const rows = [{ date: '2026-04-01', forecast: 10.62 }];
+    expect(buildForecastVisualSeries(rows)).toEqual({ data: rows, boundaryDate: '2026-04-01' });
   });
 });

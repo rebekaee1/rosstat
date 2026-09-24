@@ -5,9 +5,10 @@
 
 from __future__ import annotations
 
+from datetime import date
 from html import escape
 
-from sqlalchemy import select
+from sqlalchemy import Integer, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import (
@@ -32,6 +33,7 @@ from app.services.world_subnational_ingest import (
     load_subnational_passport,
     period_label,
 )
+from app.services.world_subnational_queries import latest_region_points
 
 _NOT_FOUND = (404, "Not found")
 
@@ -239,19 +241,13 @@ async def render_subnational_region_html(
             .order_by(SubnationalIndicator.code)
         )
     ).scalars().all()
+    recent_by_indicator = await latest_region_points(
+        db, region.id, [ind.id for ind in indicators], limit=1,
+    )
     rows_html = []
+    year_links = []
     for ind in indicators:
-        last = (
-            await db.execute(
-                select(SubnationalDataPoint.period, SubnationalDataPoint.value)
-                .where(
-                    SubnationalDataPoint.indicator_id == ind.id,
-                    SubnationalDataPoint.region_id == region.id,
-                )
-                .order_by(SubnationalDataPoint.period.desc())
-                .limit(1)
-            )
-        ).first()
+        last = next(iter(recent_by_indicator.get(ind.id, [])), None)
         value_txt = format_number_ru(last[1], locale=loc) if last else ("—" if _en() else "нет данных")
         when = period_label(last[0], ind.frequency, loc) if last else ""
         href = escape(paths.country_region_indicator(country.slug, region.slug, ind.code))
@@ -261,6 +257,22 @@ async def render_subnational_region_html(
             f"<tr><td>{label}</td>"
             f"<td>{escape(value_txt)} {unit}</td><td>{escape(when)}</td></tr>"
         )
+        if last:
+            year = last[0].year
+            year_links.append(
+                f'<li><a href="{escape(paths.country_region_indicator_year(country.slug, region.slug, ind.code, year))}">'
+                f'{escape(_iname(ind))}: {year}</a></li>'
+            )
+    peers = (await db.execute(select(SubnationalRegion).where(
+        SubnationalRegion.country_code == country.code,
+        SubnationalRegion.kind.in_(("state", "district")),
+        SubnationalRegion.id != region.id,
+    ).order_by(SubnationalRegion.sort_order, SubnationalRegion.slug))).scalars().all() if region.kind in ("state", "district") else []
+    compare_links = "".join(
+        f'<li><a href="{escape(paths.country_region_vs(country.slug, region.slug, peer.slug))}">'
+        f'{escape(region_name)} — {escape(_rname(peer))}</a></li>'
+        for peer in peers
+    )
     th_ind = "Indicator" if _en() else "Показатель"
     th_val = "Latest" if _en() else "Последнее"
     th_date = "Period" if _en() else "Период"
@@ -279,6 +291,8 @@ async def render_subnational_region_html(
         f"<p>{escape(kind)}, {escape(country_name)}</p>"
         f"<table><thead><tr><th>{th_ind}</th><th>{th_val}</th><th>{th_date}</th></tr></thead>"
         f"<tbody>{''.join(rows_html)}</tbody></table>"
+        + (f"<section><h2>{'By year' if _en() else 'По годам'}</h2><ul>{''.join(year_links)}</ul></section>" if year_links else "")
+        + (f"<section><h2>{'Compare US states and DC' if _en() else 'Сравнить штаты и округ Колумбия'}</h2><ul>{compare_links}</ul></section>" if compare_links else "")
     )
     trail = crumbs.world_subnational_region_trail(
         country_name, paths.country(country.slug),
@@ -361,6 +375,17 @@ async def render_subnational_indicator_html(
     ).all()
     if not points:
         return _NOT_FOUND
+    year_expr = func.extract("year", SubnationalDataPoint.period).cast(Integer)
+    all_years = (await db.execute(select(year_expr).where(
+        SubnationalDataPoint.indicator_id == indicator.id,
+        SubnationalDataPoint.region_id == region.id,
+        SubnationalDataPoint.period >= date(paths.PUBLIC_YEAR_MIN, 1, 1),
+        SubnationalDataPoint.period < date(paths.PUBLIC_YEAR_MAX + 1, 1, 1),
+    ).distinct().order_by(year_expr))).scalars().all()
+    years_html = "".join(
+        f'<li><a href="{escape(paths.country_region_indicator_year(country.slug, region.slug, code, year))}">'
+        f'{year}</a></li>' for year in all_years
+    )
     th_date = "Period" if _en() else "Период"
     th_val = "Value" if _en() else "Значение"
     unit = _iunit(indicator)
@@ -420,6 +445,8 @@ async def render_subnational_indicator_html(
         f"<p><strong>{escape(src_h)}:</strong> {escape(src)}</p>"
         f"<h2>{escape(about)}</h2>"
         f"<table><thead><tr><th>{th_date}</th><th>{th_val}</th></tr></thead><tbody>{rows}</tbody></table>"
+        +
+        (f"<h2>{'By year' if _en() else 'По годам'}</h2><ul>{years_html}</ul>" if years_html else "")
     )
     trail = crumbs.world_subnational_indicator_trail(
         country_name, paths.country(country.slug),

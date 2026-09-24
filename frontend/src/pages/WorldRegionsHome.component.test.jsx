@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import WorldRegionsHome from './WorldRegionsHome';
 import WorldRegionProfile from './WorldRegionProfile';
 import WorldRegionIndicatorPage from './WorldRegionIndicatorPage';
@@ -9,7 +9,11 @@ vi.mock('../components/RegionsMap', () => ({
   default: () => <div data-testid="map-stub">map</div>,
 }));
 vi.mock('../components/MapTimeline', () => ({
-  default: () => <div data-testid="timeline-stub">timeline</div>,
+  default: ({ year, onYearChange }) => (
+    <button type="button" data-testid="timeline-stub" onClick={() => onYearChange(2023)}>
+      timeline {year}
+    </button>
+  ),
 }));
 vi.mock('../components/RegionAnnualChart', () => ({
   default: () => <div data-testid="chart-stub">chart</div>,
@@ -55,7 +59,7 @@ const PROFILE = {
   region: { slug: 'california', name: 'Калифорния', name_en: 'California' },
   kind_label: 'Штат',
   kind_label_plural: 'Штаты',
-  catalog_total: 2,
+  catalog_total: 3,
   available_total: 2,
   indicators: [
     {
@@ -68,6 +72,7 @@ const PROFILE = {
       unit: 'млн $', value: 3000000, prev_value: null, year: 2023, period_label: '2023',
       section: 'Счета', rank: 1, of: 2,
     },
+    { code: 'unavailable', name: 'Нет данных', section: 'Цены', value: null },
   ],
   sections: [
     { num: 1, name: 'Труд', indicators: [
@@ -81,6 +86,9 @@ const PROFILE = {
         code: 'real-gdp', name: 'ВРП', unit: 'млн $', value: 3000000,
         year: 2023, period_label: '2023',
       },
+    ] },
+    { num: 3, name: 'Цены', indicators: [
+      { code: 'unavailable', name: 'Нет данных', value: null },
     ] },
   ],
 };
@@ -149,8 +157,8 @@ describe('WorldRegionsHome', () => {
       route: '/united-states/regions',
     });
 
-    expect(await screen.findByRole('heading', { name: 'Штаты — США' })).toBeTruthy();
-    expect(screen.getAllByRole('link', { name: /Калифорния/ })[0].getAttribute('href'))
+    expect(await screen.findByRole('heading', { name: 'Штаты США' })).toBeTruthy();
+    expect((await screen.findAllByRole('link', { name: /Калифорния/ }))[0].getAttribute('href'))
       .toBe('/united-states/region/california');
     expect(screen.getByPlaceholderText('Найти территорию…')).toBeTruthy();
   });
@@ -167,6 +175,27 @@ describe('WorldRegionsHome', () => {
     expect(screen.getByRole('tab', { name: 'Безработица' })).toBeTruthy();
     expect(screen.getByLabelText('Скачать карту картинкой')).toBeTruthy();
   });
+
+  it('сохраняет ползунок при загрузке следующего года во время перетаскивания', async () => {
+    const get = mockWorld();
+    const original = get.getMockImplementation();
+    get.mockImplementation((url, options) => {
+      if (url.includes('/regions/map/') && options?.params?.period === '2023-02') {
+        return new Promise(() => {});
+      }
+      return original(url, options);
+    });
+    renderPage(<WorldRegionsHome />, {
+      path: '/:countrySlug/region/map/:code',
+      route: '/united-states/region/map/unemployment-rate',
+    });
+
+    fireEvent.click(await screen.findByTestId('timeline-stub'));
+    await waitFor(() => expect(get).toHaveBeenCalledWith(
+      '/world/united-states/regions/map/unemployment-rate', { params: { period: '2023-02' } },
+    ));
+    expect(screen.getByTestId('timeline-stub')).toBeTruthy();
+  });
 });
 
 describe('WorldRegionProfile', () => {
@@ -178,7 +207,10 @@ describe('WorldRegionProfile', () => {
     });
 
     expect(await screen.findByRole('heading', { name: 'Калифорния' })).toBeTruthy();
-    expect(screen.getAllByRole('button', { name: /Труд/ }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('button', { name: /ВВП и производство/ }).length).toBeGreaterThan(0);
+    expect(screen.getByText(/2 показателя в 2 разделах/)).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /^Цены/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Труд и зарплаты/ }));
     expect(screen.getAllByRole('link', { name: /Безработица/ })[0].getAttribute('href'))
       .toBe('/united-states/region/california/unemployment-rate');
   });

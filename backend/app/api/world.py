@@ -2,7 +2,7 @@
 
 Отдельный bounded context: world_countries / world_indicators / world_data_points.
 Карточки склеивают частоты по card_key; режимы — составной ?mode={type}-{freq}.
-Прогнозы изолированы в world_forecasts; quality gate консультативный (passed/advisory).
+Прогнозы изолированы в world_forecasts; публичен только прошедший v2 quality gate.
 """
 
 from __future__ import annotations
@@ -61,6 +61,8 @@ from app.models import (
     Indicator,
     IndicatorData,
     RegionIndicator,
+    SubnationalIndicator,
+    SubnationalRegion,
     WorldCountry,
     WorldDataPoint,
     WorldForecast,
@@ -68,7 +70,12 @@ from app.models import (
     WorldIndicator,
 )
 from app.services.world_view_modes import is_signed_or_zero_crossing
-from app.services.world_forecaster import PUBLISHED_GATE_STATUSES
+from app.services.world_forecaster import (
+    PUBLISHED_GATE_STATUSES,
+    WORLD_FORECAST_METHOD_VERSION,
+    publishable_world_forecast,
+)
+from app.services.world_forecast_pipeline import world_forecast_source_ready
 from app.services.world_rank_values import (
     apply_rank_series,
     latest_rank_point,
@@ -449,7 +456,12 @@ async def _load_current_world_forecast(
             .limit(1)
         )
     ).scalar_one_or_none()
-    if forecast is None:
+    if forecast is None or not publishable_world_forecast(forecast):
+        return None
+    indicator = await db.get(WorldIndicator, indicator_id)
+    if indicator is None or not await world_forecast_source_ready(
+        db, indicator, forecast=forecast,
+    ):
         return None
     values = list((
         await db.execute(
@@ -496,9 +508,13 @@ async def _country_indicators_for_listing(
     if not listed:
         return await _country_indicators(db, country_id)
 
-    stems = {dataset_stem(ind.dataset_id) for ind in listed if ind.dataset_id}
-    stems |= {catalog_stem(ind.dataset_id) for ind in listed if ind.dataset_id}
-    for ind in listed:
+    # BEA's reviewed regional catalog has one listed row per table/line and no
+    # hidden frequency siblings.  Expanding its 1,800+ identities into OR
+    # predicates makes the country page needlessly expensive.
+    sibling_sources = [ind for ind in listed if ind.provider != "bea-regional"]
+    stems = {dataset_stem(ind.dataset_id) for ind in sibling_sources if ind.dataset_id}
+    stems |= {catalog_stem(ind.dataset_id) for ind in sibling_sources if ind.dataset_id}
+    for ind in sibling_sources:
         alias = catalog_stem_alias(ind.dataset_id)
         if alias:
             stems.update(part for part in alias.split("|") if part)
@@ -513,16 +529,18 @@ async def _country_indicators_for_listing(
             func.lower(WorldIndicator.dataset_id).like(f"{stem}\\_%", escape="\\")
         )
 
-    return list(
+    siblings = list(
         (
             await db.execute(
                 select(WorldIndicator).where(
                     WorldIndicator.country_id == country_id,
+                    WorldIndicator.is_listed.is_(False),
                     or_(*clauses),
                 )
             )
         ).scalars().all()
     )
+    return listed + siblings
 
 
 def _compare_concepts():
@@ -679,9 +697,12 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
     именем. Страны с нулём после отсева скрываем — каталог не обещает пустые
     страницы.
     """
-    # v4: EXISTS по listed-рядам вместо DISTINCT по всей world_data_points
+    # v7: country catalogue also carries live homepage inventory counters.
+    # EXISTS по listed-рядам вместо DISTINCT по всей world_data_points
     # (на полном датасете ~8M точек DISTINCT убивал воркеры → 504/500).
-    cache_key = await versioned_key("world", f"countries:v6:{get_locale()}")
+    # Forecast publication invalidates "world" repeatedly; country inventory
+    # changes only when source ingest changes the catalog or observed signal.
+    cache_key = await versioned_key("world-catalog", f"countries:v8:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -758,6 +779,8 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
         ).scalar()
         or 0
     )
+    ru_macro_indicators = ru_listed
+    ru_region_indicators = 0
     if ru_listed > 0:
         # Счётчик России = вся платформа: макрокаталог + региональные ряды
         # (все RegionIndicator × 85 субъектов). Иначе карточка РФ обещает меньше,
@@ -776,7 +799,26 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
         ru_row["region"] = _region_display(RUSSIA_COUNTRY_PAYLOAD["region_ru"])
         countries.append(ru_row)
 
-    payload = {"countries": countries, "total": len(countries)}
+    subnational_count = int((await db.execute(select(func.count(SubnationalIndicator.id)).where(
+        SubnationalIndicator.is_listed.is_(True),
+    ))).scalar() or 0)
+    us_state_indicators = int((await db.execute(select(func.count(SubnationalIndicator.id)).where(
+        SubnationalIndicator.country_code == "US",
+        SubnationalIndicator.is_listed.is_(True),
+    ))).scalar() or 0)
+    us_states = int((await db.execute(select(func.count(SubnationalRegion.id)).where(
+        SubnationalRegion.country_code == "US",
+        SubnationalRegion.kind == "state",
+    ))).scalar() or 0)
+    payload = {
+        "countries": countries,
+        "total": len(countries),
+        "world_indicators_count": sum(int(c.get("indicators_count") or 0) for c in countries if c.get("code") != "RU"),
+        "russia_macro_indicators_count": ru_macro_indicators,
+        "regional_indicators_count": ru_region_indicators + subnational_count,
+        "us_state_indicators_count": us_state_indicators,
+        "us_states_count": us_states,
+    }
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
     return payload
 
@@ -1706,7 +1748,7 @@ async def _card_context(
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key(
-        "world", f"ind:v20:{slug}:{code}:{get_locale()}"
+        "world", f"ind:v22:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -1849,7 +1891,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
     if member_ids:
         forecast_rows = list((
             await db.execute(
-                select(WorldForecast.world_indicator_id, WorldForecast.gate_status)
+                select(WorldForecast)
                 .where(
                     WorldForecast.world_indicator_id.in_(member_ids),
                     WorldForecast.is_current.is_(True),
@@ -1857,17 +1899,26 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
                 )
                 .order_by(WorldForecast.created_at.desc())
             )
-        ).all())
+        ).scalars().all())
+    member_by_id = {member.id: member for member in by_freq.values()}
+    forecast_rows = [
+        row for row in forecast_rows
+        if publishable_world_forecast(row)
+        and row.world_indicator_id in member_by_id
+        and await world_forecast_source_ready(
+            db, member_by_id[row.world_indicator_id], forecast=row,
+        )
+    ]
     forecast_native_freqs = {
         normalize_frequency(member.frequency)
         for member in by_freq.values()
-        if any(row[0] == member.id for row in forecast_rows)
+        if any(row.world_indicator_id == member.id for row in forecast_rows)
     }
     modes = attach_mode_forecastable(
         modes, forecastable_native_freqs=forecast_native_freqs,
     )
     forecast_gate_status = next(
-        (row[1] for row in forecast_rows),
+        (row.gate_status for row in forecast_rows),
         None,
     )
     forecast_available = any(mode.get("forecastable") for mode in modes)
@@ -1913,6 +1964,17 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
         "forecast_available": forecast_available,
         "forecast_gate_status": forecast_gate_status,
     }
+    if country.code == "US":
+        # The card already loaded the complete primary series above. Expose
+        # every observed year so the client can link the exact canonical set,
+        # independent of the currently selected chart mode.
+        observed_rows = series_by_code.get(primary.code)
+        if observed_rows is None:
+            observed_rows = await _load_points(db, primary.id)
+        payload["observed_years"] = sorted({
+            observation_date.year
+            for observation_date, _value in observed_rows
+        })
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
     return payload
 
@@ -1929,7 +1991,7 @@ async def indicator_data(
 ):
     cache_key = await versioned_key(
         "world",
-        f"data:v9:{slug}:{code}:{mode}:{int(include_forecast)}:"
+        f"data:v10:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:"
         f"{date_from}:{date_to}:{get_locale()}",
     )
     cached = await cache_get(cache_key)

@@ -106,18 +106,23 @@ class Settings(BaseSettings):
     # успешных shadow прогонов не меняет world_*; национальные паспорта
     # (world_national_core) пишут данные сразу и идут до длинной Eurostat-
     # очереди. Не смешивается с daily_update_job России.
-    world_eurostat_ingest_enabled: bool = False
-    world_eurostat_ingest_shadow: bool = True
+    world_eurostat_ingest_enabled: bool = True
+    # Automatic two-run shadow gate is enforced per database. This flag can
+    # force shadow mode during source incidents without disabling polling.
+    world_eurostat_ingest_shadow: bool = False
     world_eurostat_ingest_hour: int = 2
     world_eurostat_ingest_minute: int = 20
     # Прогнозы world_* изолированы от российского pipeline и выключены до
     # локального backfill + проверки quality-gate отчёта.
     world_forecast_enabled: bool = False
+    # Dedicated bounded US run: updates national FRED/BEA forecasts without
+    # turning on the much larger all-country forecast job.
+    us_world_forecast_enabled: bool = True
+    europe_world_forecast_enabled: bool = True
+    us_world_forecast_daily_limit: int = 500
+    europe_world_forecast_daily_limit: int = 3000
     world_forecast_hour: int = 4
     world_forecast_minute: int = 20
-    # False: гейт MASE консультативный (status=advisory, прогноз публикуется).
-    # True: прежнее fail-closed поведение (публикуем только MASE < 1).
-    world_forecast_gate_strict: bool = False
     # Инкрементальный world job: не переобучать ряд, если последняя запись
     # world_forecasts с тем же отпечатком данных не старше N дней.
     world_forecast_max_age_days: int = 30
@@ -130,9 +135,12 @@ class Settings(BaseSettings):
         "canada,japan,china,india,brazil,mexico,australia,south-korea,"
         "netherlands,poland"
     )
-    world_subnational_ingest_enabled: bool = False
+    world_subnational_ingest_enabled: bool = True
     world_subnational_ingest_hour: int = 3
     world_subnational_ingest_minute: int = 40
+    world_bea_regional_ingest_enabled: bool = True
+    world_bea_regional_ingest_hour: int = 4
+    world_bea_regional_ingest_minute: int = 20
 
     # Официальный график публикаций Росстата («План выпуска публикаций»,
     # Grafik_srochn_YYYY.docx): события date_confidence='official_explicit'
@@ -154,8 +162,10 @@ class Settings(BaseSettings):
     indexnow_enabled: bool = True
     indexnow_key: str = "a7c41d92e85f4b06b3d8f17c29e6a504"
     indexnow_endpoint: str = "https://yandex.com/indexnow"
+    # Общий жёсткий предел фактически отправленных URL на все хосты за UTC-день.
+    indexnow_daily_send_cap: int = 30_000
     # Дневная порция длинного хвоста (годовые регионы/мир, месяцы РФ).
-    # Джоба только кладёт в очередь; drain */10 мин шлёт батчи и стопает на 429.
+    # Джоба только кладёт в очередь; сетевые POST ограничены send_cap выше.
     indexnow_history_daily_cap: int = 30_000
     indexnow_history_year_min: int = 2018
 
@@ -242,6 +252,11 @@ class Settings(BaseSettings):
     auth_fake_provider_enabled: bool = False
     # Базовый внешний URL для построения OAuth redirect_uri (callback).
     auth_public_base_url: str = "http://localhost:5173"
+
+    # OAuth — Google OpenID Connect (только openid email profile)
+    oauth_google_client_id: str = ""
+    oauth_google_client_secret: str = ""
+    oauth_google_redirect_uri: str = ""
 
     # OAuth — Яндекс ID
     oauth_yandex_client_id: str = ""

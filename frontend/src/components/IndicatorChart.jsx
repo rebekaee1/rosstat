@@ -11,7 +11,7 @@ import {
   chartValueDigits, unitSuffix, cn, pickChartAxisTicks, chartAxisTickBudget,
 } from '../lib/format';
 import { track, events } from '../lib/track';
-import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
+import { buildForecastVisualSeries, mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 import { useT } from '../i18n';
 import { CHART_THEME } from '../lib/chartTheme';
 import ChartBrandCaption from './ChartBrandCaption';
@@ -29,6 +29,7 @@ const RANGE_PRESETS = {
     { key: 'all', labelKey: 'compare.range.all', months: null },
   ],
   quarterly: [
+    { key: '3y', labelKey: 'compare.range.3y', months: 36 },
     { key: '5y', labelKey: 'compare.range.5y', months: 60 },
     { key: '10y', labelKey: 'compare.range.10y', months: 120 },
     { key: '25y', labelKey: 'chart.range.25y', months: 300 },
@@ -51,7 +52,7 @@ const RANGE_PRESETS = {
 const RANGE_DEFAULTS = {
   default: '5y',
   annual: '10y',
-  quarterly: '10y',
+  quarterly: '5y',
   weekly: '1y',
   daily: '3y',
 };
@@ -123,7 +124,8 @@ function CustomTooltip({
       )}
 
       {forecast && !actual && (
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full" style={{ background: CHART_THEME.champagne }} />
             <span className="text-xs text-text-tertiary">{forecastLabel}</span>
@@ -131,6 +133,12 @@ function CustomTooltip({
           <span className="text-sm font-mono font-semibold text-champagne-muted">
             {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
           </span>
+          </div>
+          {forecast.payload?.forecastLower != null && forecast.payload?.forecastUpper != null && (
+            <div className="text-[11px] text-text-tertiary tabular-nums">
+              {t('chart.forecastRange')}: {formatValue(forecast.payload.forecastLower, valueDigits)}–{formatValue(forecast.payload.forecastUpper, valueDigits)}{unitSuffix(unit)}
+            </div>
+          )}
         </div>
       )}
       {comparisons.map((series, index) => (
@@ -269,7 +277,6 @@ export default function IndicatorChart({
       const fcValues = forecastData?.forecast?.values || [];
       base = mergeActualForecastChartSeries(points, fcValues, {
         showForecast,
-        bridgeLine: chartType !== 'bar',
         replacePartialActual: forecastData?.forecast?.replaces_partial_actual === true,
       });
     } else {
@@ -278,7 +285,6 @@ export default function IndicatorChart({
       const forecasts = inflation.forecast || [];
       base = mergeActualForecastChartSeries(actuals, forecasts, {
         showForecast,
-        bridgeLine: chartType !== 'bar',
       });
     }
 
@@ -294,7 +300,7 @@ export default function IndicatorChart({
       }
     }
     return [...rows.values()].sort((a, b) => a.date.localeCompare(b.date));
-  }, [inflation, cpiData, forecastData, showForecast, mode, chartType, resolvedComparisonSeries]);
+  }, [inflation, cpiData, forecastData, showForecast, mode, resolvedComparisonSeries]);
 
   const dataLen = chartData.length;
 
@@ -318,16 +324,6 @@ export default function IndicatorChart({
     [chartData, startIdx, endIdx]
   );
 
-  const forecastStartDate = useMemo(() => {
-    if (!showForecast) return null;
-    for (let i = 0; i < visibleData.length; i++) {
-      if (visibleData[i].forecast != null && visibleData[i].actual == null) {
-        return visibleData[i].date;
-      }
-    }
-    return null;
-  }, [visibleData, showForecast]);
-
   const forecastEndDate = useMemo(() => {
     if (!showForecast) return null;
     for (let i = visibleData.length - 1; i >= 0; i--) {
@@ -337,6 +333,16 @@ export default function IndicatorChart({
     }
     return null;
   }, [visibleData, showForecast]);
+  const forecastLast = useMemo(
+    () => [...visibleData].reverse().find((row) => row.forecast != null && row.actual == null),
+    [visibleData],
+  );
+  const { data: visualData, boundaryDate: forecastBoundaryDate } = useMemo(
+    () => showForecast && chartType !== 'bar'
+      ? buildForecastVisualSeries(visibleData)
+      : { data: visibleData, boundaryDate: null },
+    [visibleData, showForecast, chartType],
+  );
 
   useEffect(() => { onChartDataRef.current?.(visibleData); }, [visibleData]);
 
@@ -438,6 +444,8 @@ export default function IndicatorChart({
     for (const row of visibleData) {
       if (row.actual != null) { min = Math.min(min, row.actual); max = Math.max(max, row.actual); }
       if (row.forecast != null) { min = Math.min(min, row.forecast); max = Math.max(max, row.forecast); }
+      if (row.forecastLower != null) min = Math.min(min, row.forecastLower);
+      if (row.forecastUpper != null) max = Math.max(max, row.forecastUpper);
       for (const series of resolvedComparisonSeries) {
         const value = row[series.dataKey];
         if (value != null) { min = Math.min(min, value); max = Math.max(max, value); }
@@ -596,6 +604,16 @@ export default function IndicatorChart({
         </div>
       </div>
 
+      {showForecast && forecastLast && (
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-champagne/25 bg-champagne/[0.07] px-4 py-2.5 text-xs text-text-secondary">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-champagne" aria-hidden="true" />
+          <span className="font-semibold text-text-primary">{t('common.forecast')}</span>
+          <span>{formatDate(forecastLast.date, dateFormat)}</span>
+          <span className="font-semibold tabular-nums text-champagne">
+            {formatValue(forecastLast.forecast, digits)}{unitSuffix(unit)}
+          </span>
+        </div>
+      )}
       <div
         ref={chartAreaRef}
         onPointerDown={handlePointerDown}
@@ -611,7 +629,7 @@ export default function IndicatorChart({
         style={{ touchAction: 'pan-y' }}
       >
         <ResponsiveContainer width="100%" height={plotWidth > 0 && plotWidth < 600 ? 280 : 390}>
-          <ComposedChart data={visibleData} margin={{ top: 12, right: 36, bottom: 16, left: 0 }}>
+          <ComposedChart data={visualData} margin={{ top: 12, right: 36, bottom: 16, left: 0 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.15} />
@@ -670,23 +688,23 @@ export default function IndicatorChart({
 
             {/* Полоса прогноза: только для area/line. Для bar её скрываем —
                 столбцы прогноза уже отдельным цветом, заливка дублирует. */}
-            {forecastStartDate && forecastEndDate && showForecast && chartType !== 'bar' && (
+            {forecastBoundaryDate && forecastEndDate && showForecast && chartType !== 'bar' && (
               <ReferenceArea
-                x1={forecastStartDate}
+                x1={forecastBoundaryDate}
                 x2={forecastEndDate}
                 fill={CHART_THEME.champagne}
-                fillOpacity={0.06}
+                fillOpacity={0.11}
                 stroke="none"
                 ifOverflow="visible"
                 style={{ pointerEvents: 'none' }}
               />
             )}
-            {forecastStartDate && showForecast && chartType !== 'bar' && (
+            {forecastBoundaryDate && showForecast && chartType !== 'bar' && (
               <ReferenceLine
-                x={forecastStartDate}
-                stroke="rgba(173,138,72,0.45)"
+                x={forecastBoundaryDate}
+                stroke="rgba(173,138,72,0.7)"
                 strokeDasharray="4 4"
-                strokeWidth={1}
+                strokeWidth={1.5}
                 style={{ pointerEvents: 'none' }}
               />
             )}
@@ -704,7 +722,7 @@ export default function IndicatorChart({
               <Line
                 dataKey="actual"
                 stroke={CHART_THEME.ink}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
                 activeDot={isDragging ? false : { r: 4, fill: CHART_THEME.ink, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
@@ -714,7 +732,7 @@ export default function IndicatorChart({
               <Area
                 dataKey="actual"
                 stroke={CHART_THEME.ink}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 fill={`url(#${gradientId})`}
                 dot={false}
                 activeDot={isDragging ? false : { r: 4, fill: CHART_THEME.ink, stroke: '#FFFFFF', strokeWidth: 2 }}
@@ -723,12 +741,25 @@ export default function IndicatorChart({
               />
             )}
 
+            {showForecast && chartType !== 'bar' && (
+              <Area
+                dataKey="forecastRange"
+                fill={CHART_THEME.champagne}
+                fillOpacity={0.16}
+                stroke="none"
+                dot={false}
+                isAnimationActive={false}
+                connectNulls
+                tooltipType="none"
+                legendType="none"
+              />
+            )}
             {showForecast && (
               chartType === 'bar' ? (
                 <Bar
                   dataKey="forecast"
                   fill={CHART_THEME.champagne}
-                  fillOpacity={0.55}
+                  fillOpacity={0.8}
                   stroke={CHART_THEME.champagne}
                   isAnimationActive={false}
                   maxBarSize={28}
@@ -737,11 +768,13 @@ export default function IndicatorChart({
                 <Line
                   dataKey="forecast"
                   stroke={CHART_THEME.champagne}
-                  strokeWidth={2.5}
+                  strokeWidth={3.5}
                   connectNulls
-                  strokeDasharray="8 4"
-                  dot={false}
-                  activeDot={isDragging ? false : { r: 5, fill: CHART_THEME.champagne, stroke: '#FFFFFF', strokeWidth: 2 }}
+                  strokeDasharray="10 5"
+                  dot={(props) => props.payload?.date === forecastLast?.date
+                    ? <circle cx={props.cx} cy={props.cy} r="5" fill={CHART_THEME.champagne} stroke="#fff" strokeWidth="2" />
+                    : null}
+                  activeDot={isDragging ? false : { r: 7, fill: CHART_THEME.champagne, stroke: '#FFFFFF', strokeWidth: 2 }}
                   isAnimationActive={false}
                 />
               )

@@ -6,7 +6,7 @@
 """
 
 import asyncio
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 import pytest
 from fastapi.testclient import TestClient
@@ -75,6 +75,11 @@ def test_indexnow_batches_split(monkeypatch):
     monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
     monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
 
+    async def reserve(_host, _count):
+        return True
+
+    monkeypatch.setattr(inx, "reserve_daily_send_quota", reserve)
+
     paths = [f"/russia/region/x/i-{i}" for i in range(25_000)]
     ok = asyncio.run(inx.ping_urls(paths))
     assert ok is True
@@ -108,6 +113,11 @@ def test_indexnow_accepts_second_host_origin(monkeypatch):
     monkeypatch.setattr(inx.httpx, "AsyncClient", _FakeClient)
     monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
     monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
+
+    async def reserve(_host, _count):
+        return True
+
+    monkeypatch.setattr(inx, "reserve_daily_send_quota", reserve)
 
     ok = asyncio.run(
         inx.ping_urls(
@@ -186,6 +196,211 @@ def test_indexnow_queue_debounce_skips_second_drain(monkeypatch):
     ]
 
 
+def test_indexnow_daily_send_quota_is_atomic_global_across_hosts_and_utc_day(monkeypatch):
+    import fakeredis.aioredis
+    import app.core.cache as cache_mod
+    import app.services.indexnow as inx
+
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+    now = [datetime(2026, 9, 24, 23, 59, tzinfo=timezone.utc)]
+
+    async def _get_state_redis():
+        return redis
+
+    monkeypatch.setattr(cache_mod, "get_state_redis", _get_state_redis)
+    monkeypatch.setattr(inx, "_utc_now", lambda: now[0])
+    monkeypatch.setattr(inx.settings, "indexnow_daily_send_cap", 3)
+
+    async def scenario():
+        # Concurrent workers cannot reserve more than the remaining daily cap.
+        results = await asyncio.gather(
+            inx.reserve_daily_send_quota("forecasteconomy.com", 2),
+            inx.reserve_daily_send_quota("ru.forecasteconomy.com", 2),
+        )
+        assert sorted(results) == [False, True]
+        assert await inx.daily_send_remaining("forecasteconomy.com") == 1
+        assert await inx.daily_send_remaining("ru.forecasteconomy.com") == 1
+        assert not await inx.reserve_daily_send_quota("forecasteconomy.com", 2)
+        assert await inx.reserve_daily_send_quota("ru.forecasteconomy.com", 1)
+        now[0] = datetime(2026, 9, 25, 0, 0, tzinfo=timezone.utc)
+        assert await inx.daily_send_remaining("forecasteconomy.com") == 3
+        assert await inx.daily_send_remaining("ru.forecasteconomy.com") == 3
+        mixed_hosts = ["forecasteconomy.com", "ru.forecasteconomy.com"]
+        many = await asyncio.gather(*(
+            inx.reserve_daily_send_quota(mixed_hosts[i % 2], 1)
+            for i in range(50)
+        ))
+        assert sum(many) == 3
+        assert await inx.daily_send_remaining("forecasteconomy.com") == 0
+        assert await inx.daily_send_remaining("ru.forecasteconomy.com") == 0
+
+    asyncio.run(scenario())
+
+
+def test_indexnow_daily_send_ceiling_cannot_be_configured_above_30k(monkeypatch):
+    import app.services.indexnow as inx
+
+    monkeypatch.setattr(inx.settings, "indexnow_daily_send_cap", 50_000)
+    assert inx.daily_send_cap() == 30_000
+
+
+def test_manual_indexnow_apply_defaults_skip_large_us_history_and_obey_quota(monkeypatch):
+    import importlib.util
+    from pathlib import Path
+
+    script_path = Path(__file__).resolve().parents[1] / "scripts" / "indexnow-ping-all.py"
+    spec = importlib.util.spec_from_file_location("indexnow_ping_all", script_path)
+    script = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(script)
+
+    grouped = {
+        "core": ["/"],
+        "world-indicators-1": ["/united-states/indicator/gdp"],
+        "regional-years-1": ["/russia/region/a/gdp/2024"],
+        "world-years-1": ["/germany/indicator/gdp/2024"],
+        "world-region-years-1": ["/united-states/region/california/gdp/2024"],
+    }
+    selected, unknown = script.select_sections(grouped, None)
+    assert not unknown
+    assert selected == ["core", "world-indicators-1"]
+    explicit, unknown = script.select_sections(grouped, ["world-region-years-1"])
+    assert not unknown and explicit == ["world-region-years-1"]
+
+    sent = []
+
+    async def reject_quota(_host, _count):
+        return False
+
+    class FakeClient:
+        async def post(self, *args, **kwargs):
+            sent.append((args, kwargs))
+
+    monkeypatch.setattr(script, "reserve_daily_send_quota", reject_quota)
+    result = asyncio.run(
+        script.ping_section(
+            FakeClient(), ["/united-states/region/california/gdp/2024"],
+            base="https://forecasteconomy.com", host="forecasteconomy.com",
+        )
+    )
+    assert result == {-2: 1}
+    assert sent == []
+
+
+def test_indexnow_drain_obeys_daily_send_cap_and_resumes_next_utc_day(monkeypatch):
+    import fakeredis.aioredis
+    import app.core.cache as cache_mod
+    import app.services.indexnow as inx
+
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+    now = [datetime(2026, 9, 24, 12, 0, tzinfo=timezone.utc)]
+    posts = []
+
+    async def _get_state_redis():
+        return redis
+
+    class _FakeResponse:
+        status_code = 200
+        text = "ok"
+
+    class _FakeClient:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, url, json=None):
+            posts.append(json)
+            return _FakeResponse()
+
+    monkeypatch.setattr(cache_mod, "get_state_redis", _get_state_redis)
+    monkeypatch.setattr(inx, "_utc_now", lambda: now[0])
+    monkeypatch.setattr(inx.httpx, "AsyncClient", _FakeClient)
+    monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
+    monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
+    monkeypatch.setattr(inx.settings, "indexnow_daily_send_cap", 2)
+
+    async def scenario():
+        host = inx.settings.public_host
+        await inx.enqueue_paths([f"/indicator/{n}" for n in range(3)], host=host)
+        sent_today = await inx.drain_indexnow_queue()
+        blocked_today = await inx.drain_indexnow_queue()
+        queued_today = await redis.scard(f"in:queue:{host}")
+        now[0] = datetime(2026, 9, 25, 0, 0, tzinfo=timezone.utc)
+        sent_tomorrow = await inx.drain_indexnow_queue()
+        return sent_today, blocked_today, queued_today, sent_tomorrow
+
+    assert asyncio.run(scenario()) == (2, 0, 1, 1)
+    assert [len(post["urlList"]) for post in posts] == [2, 1]
+
+
+def test_indexnow_drain_shares_daily_cap_between_apex_and_ru(monkeypatch):
+    import fakeredis.aioredis
+    import app.core.cache as cache_mod
+    import app.services.indexnow as inx
+    import app.services.locale as locale_mod
+
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+    now = [datetime(2026, 9, 24, 12, 0, tzinfo=timezone.utc)]
+    posts = []
+
+    async def _get_state_redis():
+        return redis
+
+    class _FakeResponse:
+        status_code = 200
+        text = "ok"
+
+    class _FakeClient:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, url, json=None):
+            posts.append(json)
+            return _FakeResponse()
+
+    monkeypatch.setattr(cache_mod, "get_state_redis", _get_state_redis)
+    monkeypatch.setattr(inx, "_utc_now", lambda: now[0])
+    monkeypatch.setattr(inx.httpx, "AsyncClient", _FakeClient)
+    monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
+    monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
+    monkeypatch.setattr(inx.settings, "indexnow_daily_send_cap", 4)
+    monkeypatch.setattr(inx.settings, "apex_locale_en", True)
+    monkeypatch.setattr(locale_mod, "ru_public_origin", lambda: "https://ru.forecasteconomy.com")
+
+    async def scenario():
+        apex = inx.settings.public_host
+        ru = "ru.forecasteconomy.com"
+        await inx.enqueue_paths([f"/apex/{n}" for n in range(10)], host=apex)
+        await inx.enqueue_paths([f"/ru/{n}" for n in range(10)], host=ru)
+        sent_today = await inx.drain_indexnow_queue(limit=4)
+        remaining_apex = await redis.scard(f"in:queue:{apex}")
+        remaining_ru = await redis.scard(f"in:queue:{ru}")
+        await redis.delete(f"in:queue:{apex}")
+        now[0] = datetime(2026, 9, 25, 0, 0, tzinfo=timezone.utc)
+        sent_tomorrow = await inx.drain_indexnow_queue(limit=4)
+        return sent_today, remaining_apex, remaining_ru, sent_tomorrow
+
+    assert asyncio.run(scenario()) == (4, 8, 8, 4)
+    assert [post["host"] for post in posts] == [
+        inx.settings.public_host,
+        "ru.forecasteconomy.com",
+        "ru.forecasteconomy.com",
+    ]
+    assert [len(post["urlList"]) for post in posts] == [2, 2, 4]
+    assert sum(len(post["urlList"]) for post in posts[:2]) == 4
+    assert sum(len(post["urlList"]) for post in posts[2:]) == 4
+
+
 def test_ping_full_site_delegates_to_static_sections(monkeypatch):
     """Полный пинг не тянет years-чанки: только ping_sections."""
     import app.services.indexnow as inx
@@ -254,9 +469,13 @@ def _history_env(monkeypatch, *, cap=3, apex=False):
     async def fake_demand(_db, *, days=30, limit=150, host=None):
         return [("/russia/indicator/cpi", 10)]
 
+    async def fake_item_counts(_db):
+        return {"regional-years-": 7}
+
     monkeypatch.setattr(cache_mod, "get_state_redis", _get_state_redis)
     monkeypatch.setattr(inx, "_history_section_names", fake_names)
     monkeypatch.setattr("app.services.site_urls.resolve_section", fake_resolve)
+    monkeypatch.setattr("app.services.site_urls.chunk_item_counts", fake_item_counts)
     monkeypatch.setattr(
         "app.services.demand_router.priority_recrawl_paths", fake_demand
     )
@@ -338,7 +557,7 @@ def test_indexnow_history_skips_chunks_when_queue_backed_up(monkeypatch):
 
 
 def test_indexnow_history_enqueues_both_hosts_after_cutover(monkeypatch):
-    redis, inx = _history_env(monkeypatch, cap=3, apex=True)
+    redis, inx = _history_env(monkeypatch, cap=12, apex=True)
 
     async def scenario():
         await inx.enqueue_history_urls(object())
@@ -430,6 +649,10 @@ def test_indexnow_history_visits_all_chunk_types_with_cap_and_no_post(monkeypatc
         "regional-1": ["/russia/region/tulskaya-oblast/wages"],
         "regional-years-1": ["/russia/region/tulskaya-oblast/wages/2024"],
         "world-years-1": ["/germany/indicator/gdp/2001", "/germany/indicator/gdp/2025"],
+        "world-region-years-1": [
+            "/united-states/region/california/gdp/2001",
+            "/united-states/region/texas/gdp/2025",
+        ],
     }
 
     async def fake_names(_db):
@@ -438,12 +661,26 @@ def test_indexnow_history_visits_all_chunk_types_with_cap_and_no_post(monkeypatc
     async def fake_resolve(_db, section):
         return [{"path": path} for path in chunks[section]]
 
+    async def fake_item_counts(_db):
+        return {
+            prefix: len(paths)
+            for prefix, paths in (
+                ("months-", chunks["months-1"]),
+                ("world-indicators-", chunks["world-indicators-1"]),
+                ("regional-", chunks["regional-1"]),
+                ("regional-years-", chunks["regional-years-1"]),
+                ("world-years-", chunks["world-years-1"]),
+                ("world-region-years-", chunks["world-region-years-1"]),
+            )
+        }
+
     async def no_post(*args, **kwargs):
         pytest.fail("enqueue_history_urls must not send network requests")
 
     monkeypatch.setattr(inx, "_history_section_names", select_sections)
     monkeypatch.setattr(site_urls, "section_names", fake_names)
     monkeypatch.setattr(site_urls, "resolve_section", fake_resolve)
+    monkeypatch.setattr(site_urls, "chunk_item_counts", fake_item_counts)
     monkeypatch.setattr(inx, "ping_urls", no_post)
 
     async def scenario():
@@ -453,8 +690,8 @@ def test_indexnow_history_visits_all_chunk_types_with_cap_and_no_post(monkeypatc
             stats = await inx.enqueue_history_urls(object())
             queues = [await redis.smembers(f"in:queue:{host}") for host in hosts]
             assert queues[0] == queues[1]
-            assert stats["queued"] <= 3
-            assert len(queues[0]) <= 3
+            assert stats["queued"] <= 12
+            assert len(queues[0]) <= 12
             seen.update(queues[0] - {"/russia/indicator/cpi"})
             for host in hosts:
                 await redis.delete(f"in:queue:{host}")
@@ -467,6 +704,83 @@ def test_indexnow_history_visits_all_chunk_types_with_cap_and_no_post(monkeypatc
 
     seen = asyncio.run(scenario())
     assert seen == collections.Counter(path for paths in chunks.values() for path in paths)
+
+
+def test_indexnow_history_proportionally_reserves_daily_share_for_us_state_years(monkeypatch):
+    import fakeredis.aioredis
+    import app.core.cache as cache_mod
+    import app.services.indexnow as inx
+    import app.services.site_urls as site_urls
+
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+    prefixes = [
+        "months-", "world-indicators-", "regional-", "regional-years-",
+        "world-years-", "world-region-years-",
+    ]
+    names = [f"{prefix}1" for prefix in prefixes]
+    paths_by_section = {}
+    counts = {}
+    for prefix, name in zip(prefixes, names):
+        size = 500 if prefix == "world-region-years-" else 100
+        counts[prefix] = size
+        if prefix == "months-":
+            paths_by_section[name] = [
+                f"/russia/indicator/cpi-{i}/2000-01" for i in range(size)
+            ]
+        elif prefix == "world-indicators-":
+            paths_by_section[name] = [f"/germany/indicator/gdp-{i}" for i in range(size)]
+        elif prefix == "regional-":
+            paths_by_section[name] = [f"/russia/region/a/wage-{i}" for i in range(size)]
+        elif prefix == "regional-years-":
+            paths_by_section[name] = [
+                f"/russia/region/a/wage-{i}/{2000 + i % 100}" for i in range(size)
+            ]
+        elif prefix == "world-years-":
+            paths_by_section[name] = [
+                f"/germany/indicator/gdp-{i}/{2000 + i % 100}" for i in range(size)
+            ]
+        else:
+            paths_by_section[name] = [
+                f"/united-states/region/california/gdp-{i}/{2000 + i % 100}"
+                for i in range(size)
+            ]
+
+    async def _get_state_redis():
+        return redis
+
+    async def fake_names(_db):
+        return names
+
+    async def fake_resolve(_db, section):
+        return [{"path": path} for path in paths_by_section[section]]
+
+    async def fake_item_counts(_db):
+        return counts
+
+    async def no_demand(_db, *, days=30, limit=150, host=None):
+        return []
+
+    monkeypatch.setattr(cache_mod, "get_state_redis", _get_state_redis)
+    monkeypatch.setattr(inx, "_history_section_names", fake_names)
+    monkeypatch.setattr(site_urls, "resolve_section", fake_resolve)
+    monkeypatch.setattr(site_urls, "chunk_item_counts", fake_item_counts)
+    monkeypatch.setattr("app.services.demand_router.priority_recrawl_paths", no_demand)
+    monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
+    monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
+    monkeypatch.setattr(inx.settings, "indexnow_history_daily_cap", 300)
+    monkeypatch.setattr(inx.settings, "apex_locale_en", False)
+
+    async def scenario():
+        stats = await inx.enqueue_history_urls(object())
+        queued = await redis.smembers(f"in:queue:{inx.settings.public_host}")
+        return stats, queued
+
+    stats, queued = asyncio.run(scenario())
+    assert len(queued) == 300
+    assert stats["queued"] == 300
+    assert stats["families"]["world-region-years-"] >= 140
+    for prefix in prefixes[:-1]:
+        assert stats["families"][prefix] >= 25
 
 
 # ---------------------------------------------------------------------------

@@ -41,7 +41,7 @@ Opaque 256-bit id в httpOnly+Secure+SameSite=Lax cookie `fe_sess`; значен
 
 ### OAuth — без Authlib
 
-OAuth2 authorization-code + PKCE (S256) реализован вручную на `httpx`. Authlib не используется: его high-level starlette-клиент держит state/PKCE в session-cookie или framework-cache, чистого Redis-свапа нет (authlib#866) — конфликт с «state в Redis». Провайдеры — реестр в стиле `PARSER_REGISTRY` (`fake`/`yandex`/`vk`). Транзит OAuth (state→{code_verifier, intent, provider, next}) в Redis (TTL 10 мин) + короткоживущая cookie `fe_oauth` (SameSite=Lax) для привязки к браузеру (login-CSRF). Callback — чистый backend-эндпоинт (302), без HTML/JS (требование VK ID: встроенный контент утекает код через Referer).
+OAuth2 authorization-code + PKCE (S256) реализован вручную на `httpx`. Authlib не используется: его high-level starlette-клиент держит state/PKCE в session-cookie или framework-cache, чистого Redis-свапа нет (authlib#866) — конфликт с «state в Redis». Провайдеры — реестр в стиле `PARSER_REGISTRY` (`fake`/`google`/`yandex`/`vk`). Транзит OAuth (state→{code_verifier, intent, provider, next}) в Redis (TTL 10 мин) + короткоживущая cookie `fe_oauth` (SameSite=Lax) для привязки к браузеру (login-CSRF). Callback — чистый backend-эндпоинт (302), без HTML/JS (требование VK ID: встроенный контент утекает код через Referer).
 
 ### CSRF
 
@@ -203,3 +203,35 @@ apex reuse без повторного `Set-Cookie`. Early fail читает Red
 `user_info`, только если в кабинете VK ID у приложения 54644188 включены
 доступы email/phone и пользователь их разрешил; иначе снова имя. Кабинет
 VK без явной команды владельца не трогаем.
+
+### 2026-09-24 — Google для международной регистрации (локальная реализация)
+
+Google OpenID Connect использует тот же state/PKCE/cookie/identity-resolve поток.
+Google start требует `consent=1` после явной галочки во фронте; callback
+сверяет `sub` Google UserInfo с ID token и проверяет его issuer/audience/срок
+(ID token получен сервером прямо из TLS token endpoint).
+Scope строго `openid email profile`: сохраняем стабильный `sub`, email и
+признак его подтверждения, отображаемое имя, ссылку на фото и язык версии
+Сайта на момент входа (последний не приходит из Google UserInfo). Токены не
+сохраняются; Gmail, контакты, Drive и другие Google API не запрашиваются.
+В окне Google-входа рассылка отмечена по умолчанию; пользователь может снять
+галочку до продолжения. Новая Google-регистрация проходит через общий
+`notify_new_user` и отправляет в Telegram способ `OAuth (google)` и выбор
+по рассылке; повторный вход проходит через `notify_login`. Для пользователей
+из ЕС заранее отмеченная галочка не является действительным согласием на
+маркетинговую рассылку — перед фактической отправкой нужен отдельный
+правомерный механизм согласия.
+Регистрация работает для любого обладателя Google-аккаунта: Google OAuth не
+удостоверяет гражданство или страну проживания. Существующая аналитика Сайта
+продолжает действовать по своим настройкам cookie; новых трекеров нет.
+
+Для включения: в Google Cloud создать OAuth client типа **Web application**
+для публичного приложения, зарегистрировать точный redirect URI
+`https://forecasteconomy.com/api/v1/auth/oauth/google/callback`, задать
+`RUSTATS_OAUTH_GOOGLE_CLIENT_ID` и `RUSTATS_OAUTH_GOOGLE_CLIENT_SECRET` в
+секретах окружения. Если в кабинете выбран другой путь, задать также
+`RUSTATS_OAUTH_GOOGLE_REDIRECT_URI` с тем же значением. Проверить consent
+screen/публикацию External и домен. Пока ID/secret пустые, кнопка скрыта.
+После настройки проверить реальный вход с `forecasteconomy.com/register`,
+возврат на `/account`, запись Google identity, повторный вход в тот же User
+и отзыв/удаление кабинета. Локальные тесты не подтверждают работу Google Cloud.

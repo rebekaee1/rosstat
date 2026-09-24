@@ -37,10 +37,10 @@ describe('breadcrumbs', () => {
     }
   });
 
-  it('индикатор России: Главная / Россия / категория / имя, Россия ведёт в регионы', () => {
+  it('индикатор России: Главная / Россия / категория / имя, Россия ведёт на страну', () => {
     const trail = russiaIndicatorTrail('Цены', 'prices', 'ИПЦ', 'cpi');
     expect(trail.map((c) => c.name)).toEqual(['Главная', 'Россия', 'Цены', 'ИПЦ']);
-    expect(trail[1].path).toBe('/russia/region');
+    expect(trail[1].path).toBe(russiaHomePath());
   });
 
   it('мировой рыночный ряд: без России — Главная / категория / имя', () => {

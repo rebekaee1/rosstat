@@ -16,12 +16,24 @@ export default function Register() {
   const [params] = useSearchParams();
   const { setUser } = useAuth();
   const next = safeReturnTo(params.get('next'));
+  const googleUnavailable = params.get('google_unavailable') === '1';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [consent, setConsent] = useState(false);
   const [newsletter, setNewsletter] = useState(true);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+
+  const useEmailRegistration = () => {
+    const query = new URLSearchParams();
+    const requestedNext = params.get('next');
+    if (requestedNext) query.set('next', requestedNext);
+    query.set('google_unavailable', '1');
+    navigate(`/register?${query.toString()}#email`, { replace: true });
+    const emailField = document.getElementById('email');
+    emailField?.focus();
+    emailField?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -52,7 +64,19 @@ export default function Register() {
         {t('auth.register.subtitle')}
       </p>
 
-      <OAuthButtons next={next} intent="login" dividerLabel={t('auth.oauth.divider')} />
+      <OAuthButtons
+        next={next}
+        intent="login"
+        dividerLabel={t('auth.oauth.divider')}
+        showGoogleEmailFallback
+        onGoogleEmailFallback={useEmailRegistration}
+      />
+
+      {googleUnavailable && (
+        <div role="status" className="rounded-xl border border-champagne/30 bg-champagne/10 px-3.5 py-3 text-sm text-text-secondary mb-4">
+          {t('auth.register.googleUnavailable')}
+        </div>
+      )}
 
       <form onSubmit={submit} className="space-y-4">
         <div>

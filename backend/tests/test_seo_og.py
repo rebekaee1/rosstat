@@ -607,42 +607,32 @@ def test_og_image_cache_roundtrip():
     assert og_image.cached_og("missing") is None
 
 
-def test_indexnow_payload(monkeypatch):
+def test_ping_updated_indicators_queues_deduplicated_paths(monkeypatch):
     import asyncio
 
+    import fakeredis.aioredis
+    from app.core import cache
     from app.services import indexnow
 
-    captured = {}
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+    async def fake_state_redis():
+        return redis
 
-    class _FakeResponse:
-        status_code = 200
-        text = "ok"
-
-    class _FakeClient:
-        def __init__(self, **kwargs):
-            pass
-
-        async def __aenter__(self):
-            return self
-
-        async def __aexit__(self, *args):
-            return False
-
-        async def post(self, url, json=None):
-            captured["url"] = url
-            captured["payload"] = json
-            return _FakeResponse()
-
-    monkeypatch.setattr(indexnow.httpx, "AsyncClient", _FakeClient)
+    monkeypatch.setattr(cache, "get_state_redis", fake_state_redis)
     monkeypatch.setattr(indexnow.settings, "indexnow_enabled", True)
-    ok = asyncio.run(indexnow.ping_updated_indicators(["cpi", "key-rate", "cpi"]))
+    monkeypatch.setattr(indexnow.settings, "apex_locale_en", False)
+
+    async def scenario():
+        ok = await indexnow.ping_updated_indicators(["cpi", "key-rate", "cpi"])
+        paths = await redis.smembers(f"in:queue:{indexnow.settings.public_host}")
+        await redis.aclose()
+        return ok, paths
+
+    ok, paths = asyncio.run(scenario())
     assert ok
-    urls = captured["payload"]["urlList"]
-    assert "https://forecasteconomy.com/" in urls
-    assert "https://forecasteconomy.com/russia/indicator/cpi" in urls
-    # дубликаты схлопнуты
-    assert len(urls) == len(set(urls))
-    assert captured["payload"]["key"] == indexnow.settings.indexnow_key
+    assert "/" in paths
+    assert "/russia/indicator/cpi" in paths
+    assert len(paths) == len(set(paths))
 
 
 def test_universal_seo_indicator_year_route(client, monkeypatch):
@@ -1023,3 +1013,14 @@ def test_ssr_preserves_brand_font_preload_from_built_shell(monkeypatch):
     pure_ssr = seo_renderer._strip_preloads(assets.head_links)
     assert 'as="font"' in pure_ssr
     assert 'modulepreload' not in pure_ssr
+
+
+def test_quicklink_russia_breadcrumb_keeps_country_destination():
+    from bs4 import BeautifulSoup
+
+    from app.services.seo_renderer import _prepare_quicklink_body
+
+    body = '<main><nav><a href="/russia">Россия</a></nav></main>'
+    prepared = _prepare_quicklink_body(body, "/russia/indicator/cpi/2025")
+    link = BeautifulSoup(prepared, "html.parser").select_one("nav a")
+    assert link["href"] == "/russia"

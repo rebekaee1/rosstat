@@ -24,6 +24,7 @@ export default function Login() {
     oauth_state: t('auth.login.oauthState'),
     oauth_denied: t('auth.login.oauthDenied'),
     oauth_disabled: t('auth.login.oauthDisabled'),
+    consent_required: t('auth.register.consentRequired'),
   };
   const oauthError = oauthErrors[params.get('error')] || (params.get('error') ? t('auth.login.errorGeneric') : null);
   const [error, setError] = useState(oauthError);

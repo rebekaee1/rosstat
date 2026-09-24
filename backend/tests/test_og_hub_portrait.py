@@ -28,6 +28,36 @@ def test_every_hub_has_native_composition(renderer,kwargs,portrait,size):
         assert im.size==size
 
 
+def test_comparison_text_has_clear_surface_over_decorative_image():
+    png = og_image.render_region_vs_og(
+        name_a="Калифорния", name_b="Техас",
+        rows=[
+            ("Реальный ВРП ($ 2017 г.) · 2025", "3,39 трлн $", "2,28 трлн $"),
+            ("Безработица · август 2026", "5,1 %", "4,4 %"),
+            ("Занятость вне сельского хозяйства · август 2026", "18,18 млн", "14,47 млн"),
+            ("Доход на душу населения · 2025", "91 116 $", "72 364 $"),
+            ("Население · 2025", "39,36 млн", "31,71 млн"),
+            ("Цены на жильё (1980=100) · 2 кв. 2026", "975", "531,3"),
+        ],
+        eyebrow_label="Сравнение штатов",
+    )
+    with Image.open(io.BytesIO(png)) as im:
+        # Between the two numeric columns: no glyphs here, but the decorative
+        # sculpture crosses the table in the original image.
+        assert min(im.convert("RGB").getpixel((755, 350))) >= 240
+
+
+def test_long_comparison_title_has_clear_surface():
+    png = og_image.render_region_vs_og(
+        name_a="Северная Каролина", name_b="Южная Каролина",
+        rows=[("Безработица", "3,5 %", "4,1 %")],
+        eyebrow_label="Сравнение штатов",
+    )
+    with Image.open(io.BytesIO(png)) as im:
+        # The sculpture runs behind the second half of this long title.
+        assert min(im.convert("RGB").getpixel((760, 100))) >= 240
+
+
 @pytest.mark.parametrize("path", [
     "/api/v1/og-image/region-rating/wages.png?year=2020",
     "/api/v1/og-image/today.png",

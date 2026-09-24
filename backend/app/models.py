@@ -1406,6 +1406,7 @@ class OAuthIdentity(Base):
     phone: Mapped[str | None] = mapped_column(String(32))
     display_name: Mapped[str | None] = mapped_column(String(200))
     avatar_url: Mapped[str | None] = mapped_column(String(500))
+    locale: Mapped[str | None] = mapped_column(String(35))
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime)
 

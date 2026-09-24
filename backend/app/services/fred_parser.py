@@ -34,6 +34,7 @@ from datetime import date
 from typing import ClassVar
 
 import httpx
+import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
@@ -43,6 +44,30 @@ logger = logging.getLogger(__name__)
 
 _BASE_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv"
 _UA = "ForecastEconomy/1.0 (+https://forecasteconomy.com)"
+_EIA_BRENT_XLS = "https://www.eia.gov/dnav/pet/hist_xls/RBRTED.xls"
+
+
+def _fetch_eia_brent() -> list[tuple[date, float]]:
+    """EIA's own daily Brent workbook, with its published observation dates."""
+    with httpx.Client(timeout=60.0, follow_redirects=True) as client:
+        response = client.get(_EIA_BRENT_XLS)
+        response.raise_for_status()
+    table = pd.read_excel(io.BytesIO(response.content), sheet_name="Data 1", header=None)
+    return _parse_eia_brent_table(table)
+
+
+def _parse_eia_brent_table(table: pd.DataFrame) -> list[tuple[date, float]]:
+    if str(table.iat[1, 1]).strip() != "RBRTE":
+        raise ValueError("Unexpected EIA Brent series key")
+    result = []
+    for raw_date, raw_value in table.iloc[3:, :2].itertuples(index=False, name=None):
+        parsed_date = pd.to_datetime(raw_date, errors="coerce")
+        parsed_value = pd.to_numeric(raw_value, errors="coerce")
+        if pd.notna(parsed_date) and pd.notna(parsed_value):
+            result.append((parsed_date.date(), float(parsed_value)))
+    if not result:
+        raise ValueError("EIA Brent workbook contains no observations")
+    return result
 
 
 def _fetch_fred_csv(series_id: str) -> str:
@@ -121,6 +146,13 @@ class FredCsvParser(BaseParser):
                     raw_from,
                     indicator.code,
                 )
+
+        if series_id == "DCOILBRENTEU":
+            try:
+                points = await asyncio.to_thread(_fetch_eia_brent)
+                return [point for point in points if backfill_from is None or point[0] >= backfill_from], _EIA_BRENT_XLS
+            except Exception as exc:
+                logger.warning("Direct EIA Brent fetch failed; trying FRED mirror: %s", exc)
 
         try:
             text = await asyncio.to_thread(_fetch_fred_csv, series_id)

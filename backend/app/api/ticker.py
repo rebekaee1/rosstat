@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/ticker", tags=["ticker"])
 
 # Два набора ленты: `russia` — рублевые пары и учётное золото ЦБ;
-# `world` — справочные курсы ЕЦБ к доллару. Клиент выбирает lane по locale
+# `world` — справочные курсы ЕЦБ к доллару и учётное золото ЦБ в ₽/г. Клиент выбирает lane по locale
 # (ru → russia, en → world), не по path.
 # Золото в долларах за унцию в ленту не ставим: дневной LBMA-ряд нельзя
 # перепубликовать без лицензии IBA.
@@ -70,6 +70,7 @@ TICKER_SET_WORLD = (
     "usd-cny",
     "btc-usd",
     "brent",
+    "gold-rub-live",
 )
 TICKER_SETS = {
     "russia": TICKER_SET_RUSSIA,

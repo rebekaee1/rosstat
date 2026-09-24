@@ -28,8 +28,14 @@ def publication(tmp_path, monkeypatch):
         yield "core", [SiteUrl("/russia", "2026-09-10", "daily", "0.8")]
         yield "empty", []
 
+    async def no_dynamic_chunks(db):
+        # The synthetic publication contains only `core`; index fallback
+        # must not query a real database for absent US year chunks.
+        return {}
+
     monkeypatch.setattr(sm, "analytics_session", session)
     monkeypatch.setattr(urls, "iter_url_sections", sections)
+    monkeypatch.setattr(urls, "chunk_counts", no_dynamic_chunks)
     return tmp_path
 
 

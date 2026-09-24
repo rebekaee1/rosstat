@@ -3,8 +3,7 @@
 Кандидат строится теми же зарегистрированными multi-window стратегиями, что
 используются для российских рядов: ``monthly_auto`` / ``annual_auto`` и
 ``generic_quarterly``/``signed_quarterly``. Rolling-origin MASE сохраняется
-в метаданных. По умолчанию гейт консультативный: технически успешный прогноз
-публикуется со статусом ``passed`` или ``advisory``.
+в метаданных. Публичным является только прогноз, прошедший гейт качества.
 """
 
 from __future__ import annotations
@@ -19,7 +18,23 @@ from app.services.forecast_strategies import StrategyContext, resolve
 from app.services.forecaster import ForecastPoint, ForecastResult
 
 
-PUBLISHED_GATE_STATUSES: frozenset[str] = frozenset({"passed", "advisory"})
+WORLD_FORECAST_METHOD_VERSION = 2
+PUBLISHED_GATE_STATUSES: frozenset[str] = frozenset({"passed"})
+
+
+def publishable_world_forecast(forecast: object) -> bool:
+    """Old gate versions did not backtest the full published horizon."""
+    params = getattr(forecast, "model_params", None)
+    return (
+        getattr(forecast, "gate_status", None) in PUBLISHED_GATE_STATUSES
+        and isinstance(params, dict)
+        and params.get("method_version") == WORLD_FORECAST_METHOD_VERSION
+    )
+
+
+def is_percentage_unit(unit: str | None) -> bool:
+    normalized = (unit or "").strip().upper()
+    return "%" in normalized or normalized in {"PERCENT", "PERCENTAGE"}
 
 
 @dataclass(frozen=True)
@@ -37,29 +52,16 @@ def _month_index(value: date) -> int:
     return value.year * 12 + value.month
 
 
-def _regular_cadence(
-    dates: Sequence[date],
-    step_months: int,
-    *,
-    max_missing: int = 2,
-) -> bool:
-    """Календарь с шагом ``step_months``.
-
-    Один-два пропущенных наблюдения (как дыра октября 2025 у FRED CPI
-    из-за паузы публикации) не считаем сломанным календарём. Дубли дат,
-    обратный порядок и шаг не кратный частоте — по-прежнему отказ.
-    """
-    missing = 0
-    for left, right in zip(dates, dates[1:]):
+def _contiguous_tail_start(dates: Sequence[date], step_months: int) -> int | None:
+    """Последний непрерывный отрезок факта; пропущенные периоды не выдумываем."""
+    start = 0
+    for index, (left, right) in enumerate(zip(dates, dates[1:]), start=1):
         delta = _month_index(right) - _month_index(left)
-        if delta == step_months:
-            continue
         if delta <= 0 or delta % step_months != 0:
-            return False
-        missing += delta // step_months - 1
-        if missing > max_missing:
-            return False
-    return True
+            return None
+        if delta > step_months:
+            start = index
+    return start
 
 
 def _seasonal_projection(
@@ -157,13 +159,13 @@ def _run_primary_strategy(
     )
 
 
-def _backtest_layout(frequency: str, season: int) -> tuple[int, int, int, int, int, int]:
+def _backtest_layout(frequency: str, season: int, horizon: int) -> tuple[int, int, int, int, int, int]:
     """step_months, test_horizon, requested_origins, min_origins, min_history, origin_floor."""
     if frequency == "annual":
-        return 12, 1, 4, 4, 10, 10
+        return 12, horizon, 4, 3, 14, 10
     if frequency == "monthly":
-        return 1, 3, 12, 6, season * 6, season * 4
-    return 3, 2, 8, 6, season * 6, season * 4
+        return 1, horizon, 6, 6, season * 6, season * 4
+    return 3, horizon, 6, 6, season * 6, season * 5
 
 
 def train_quality_gated_world_forecast(
@@ -174,13 +176,17 @@ def train_quality_gated_world_forecast(
     horizon: int,
     season: int,
     strategy: str,
-    strict: bool = False,
+    strict: bool = True,
 ) -> WorldForecastGate:
     resolved_strategy = _resolve_primary_strategy(strategy, values)
     (
         step_months, test_horizon, requested_origins,
         min_origins, min_history, origin_floor,
-    ) = _backtest_layout(frequency, season)
+    ) = _backtest_layout(frequency, season, horizon)
+    if horizon < 1 or season < 1:
+        return WorldForecastGate(
+            "failed", "invalid_forecast_horizon", resolved_strategy, None, None, 0, None,
+        )
     if len(dates) != len(values) or len(values) < min_history:
         return WorldForecastGate(
             "failed", "history_too_short", resolved_strategy, None, None, 0, None,
@@ -190,10 +196,18 @@ def train_quality_gated_world_forecast(
             "failed", "non_finite_history", resolved_strategy, None, None, 0, None,
         )
 
-    if not _regular_cadence(dates, step_months):
+    tail_start = _contiguous_tail_start(dates, step_months)
+    if tail_start is None:
         return WorldForecastGate(
             "failed", "irregular_calendar", resolved_strategy, None, None, 0, None,
         )
+    if tail_start:
+        dates = dates[tail_start:]
+        values = values[tail_start:]
+        if len(values) < min_history:
+            return WorldForecastGate(
+                "failed", "recent_history_gap", resolved_strategy, None, None, 0, None,
+            )
 
     first_origin = max(
         origin_floor,
@@ -206,22 +220,21 @@ def train_quality_gated_world_forecast(
             resolved_strategy, None, None, 0, None,
         )
 
-    # Один общий denominator для всех rolling origins: seasonal-naive MAE по
-    # полной доступной фактической истории. Это делает MASE сопоставимым между
-    # origins и соответствует рекомендации Hyndman для rolling evaluation.
-    scale = _scale(values, season)
-    if scale is None:
-        return WorldForecastGate(
-            "failed", "constant_or_unscaled_series",
-            resolved_strategy, None, None, 0, None,
-        )
-
     candidate_errors: list[float] = []
-    baseline_errors: list[float] = []
+    candidate_scaled_errors: list[float] = []
+    baseline_scaled_errors: list[float] = []
     for origin in origins:
         train_dates = dates[:origin]
         train = values[:origin]
         actual = [float(value) for value in values[origin:origin + test_horizon]]
+        # MASE denominator известен только в точке origin. Полная история
+        # включала test targets и меняла решение гейта задним числом.
+        scale = _scale(train, season)
+        if scale is None:
+            return WorldForecastGate(
+                "failed", "constant_or_unscaled_series",
+                resolved_strategy, None, None, len(candidate_errors), None,
+            )
         candidate_result = _run_primary_strategy(
             train_dates,
             train,
@@ -234,6 +247,14 @@ def train_quality_gated_world_forecast(
                 "failed", "candidate_model_failed",
                 resolved_strategy, None, None, len(candidate_errors), None,
             )
+        if any(
+            _month_index(point.date) - _month_index(train_dates[-1]) != step_months * step
+            for step, point in enumerate(candidate_result.points, start=1)
+        ):
+            return WorldForecastGate(
+                "failed", "invalid_backtest_dates",
+                resolved_strategy, None, None, len(candidate_errors), None,
+            )
         candidate = [float(point.value) for point in candidate_result.points]
         baseline = _seasonal_projection(
             train, season=season, steps=test_horizon, drift=False,
@@ -241,12 +262,15 @@ def train_quality_gated_world_forecast(
         candidate_errors.extend(
             predicted - observed for predicted, observed in zip(candidate, actual)
         )
-        baseline_errors.extend(
-            predicted - observed for predicted, observed in zip(baseline, actual)
+        candidate_scaled_errors.extend(
+            abs(predicted - observed) / scale for predicted, observed in zip(candidate, actual)
+        )
+        baseline_scaled_errors.extend(
+            abs(predicted - observed) / scale for predicted, observed in zip(baseline, actual)
         )
 
-    mase = _mae(candidate_errors) / scale
-    baseline_mase = _mae(baseline_errors) / scale
+    mase = sum(candidate_scaled_errors) / len(candidate_scaled_errors)
+    baseline_mase = sum(baseline_scaled_errors) / len(baseline_scaled_errors)
     if not math.isfinite(mase) or not math.isfinite(baseline_mase):
         return WorldForecastGate(
             "failed", "non_finite_backtest",
@@ -278,6 +302,14 @@ def train_quality_gated_world_forecast(
             "failed", "candidate_model_failed",
             resolved_strategy, mase, baseline_mase, len(origins), None,
         )
+    if any(
+        _month_index(point.date) - _month_index(dates[-1]) != step_months * step
+        for step, point in enumerate(candidate_result.points, start=1)
+    ):
+        return WorldForecastGate(
+            "failed", "invalid_forecast_dates",
+            resolved_strategy, mase, baseline_mase, len(origins), None,
+        )
     predictions = [float(point.value) for point in candidate_result.points]
     max_history = max(abs(float(value)) for value in values) or 1.0
     if any(abs(value) > max_history * 5 for value in predictions):
@@ -291,20 +323,20 @@ def train_quality_gated_world_forecast(
         (error - residual_mean) ** 2 for error in candidate_errors
     ) / max(1, len(candidate_errors) - 1)
     sigma = math.sqrt(max(0.0, variance))
-    non_negative = min(float(value) for value in values) >= 0
     points: list[ForecastPoint] = []
     for step, source_point in enumerate(candidate_result.points, start=1):
         prediction = float(source_point.value)
         uncertainty = 1.96 * sigma * math.sqrt(step)
-        value = max(0.0, prediction) if non_negative else prediction
         lower = prediction - uncertainty
         upper = prediction + uncertainty
-        if non_negative:
-            lower = max(0.0, lower)
-            upper = max(0.0, upper)
+        if not all(math.isfinite(item) for item in (prediction, lower, upper)):
+            return WorldForecastGate(
+                "failed", "non_finite_forecast_interval",
+                resolved_strategy, mase, baseline_mase, len(origins), None,
+            )
         points.append(ForecastPoint(
             date=source_point.date,
-            value=float(value),
+            value=prediction,
             lower_bound=float(lower),
             upper_bound=float(upper),
         ))

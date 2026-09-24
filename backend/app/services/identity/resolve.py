@@ -64,6 +64,7 @@ def _new_identity(user: User, profile, email_norm: str | None) -> OAuthIdentity:
         phone=profile.phone,
         display_name=profile.display_name,
         avatar_url=profile.avatar_url,
+        locale=profile.locale,
         last_login_at=_utcnow(),
     )
 
@@ -90,7 +91,15 @@ async def resolve_oauth(
     # intent == "login"
     if existing is not None:
         existing.last_login_at = _utcnow()
-        if email_norm and not existing.email:
+        if profile.provider == "google":
+            # Google sub остаётся стабильным при смене email/имени/языка.
+            if email_norm:
+                existing.email = email_norm
+                existing.email_verified = profile.email_verified
+            existing.display_name = profile.display_name
+            existing.avatar_url = profile.avatar_url
+            existing.locale = profile.locale
+        elif email_norm and not existing.email:
             existing.email = email_norm
             existing.email_verified = profile.email_verified
         if profile.phone and not existing.phone:

@@ -21,6 +21,8 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
+import UsCatalogNav from '../components/UsCatalogNav';
+import { groupUsSections, shortUsIndicatorName } from '../lib/usCatalogTopics';
 import useSearchTracking from '../lib/useSearchTracking';
 import { CountrySilhouette } from '../components/WorldMap';
 import {
@@ -108,10 +110,10 @@ function FreqBadges({ item, t }) {
   );
 }
 
-function IndicatorRow({ item, slug, to }) {
+function IndicatorRow({ item, slug, to, sectionName }) {
   const t = useT();
   const { locale } = useLocale();
-  const name = indicatorPublicName(item, locale);
+  const name = shortUsIndicatorName(indicatorPublicName(item, locale), sectionName, locale);
   const unit = localizeWorldUnit(item.unit, locale);
   return (
     <Link
@@ -149,6 +151,7 @@ export default function WorldCountry() {
   const slug = countrySlug || slugParam;
   const { data, isLoading, isError, refetch, isFetching, error } = useWorldCountry(slug);
   const [query, setQuery] = useState('');
+  const [searchLimit, setSearchLimit] = useState(120);
   const [activeCategory, setActiveCategory] = useState('');
   const [isMobileSingle, setIsMobileSingle] = useState(
     () => typeof window !== 'undefined' && window.matchMedia
@@ -253,6 +256,12 @@ export default function WorldCountry() {
     [data],
   );
 
+  const isUsCatalog = slug === 'united-states';
+  const usTopics = useMemo(
+    () => isUsCatalog ? groupUsSections(filteredCategories, locale) : [],
+    [filteredCategories, isUsCatalog, locale],
+  );
+
   const matchCount = useMemo(
     () => filteredCategories.reduce((n, c) => n + c.indicators.length, 0),
     [filteredCategories],
@@ -262,13 +271,26 @@ export default function WorldCountry() {
 
   const resolvedActiveCategory = filteredCategories.some((cat) => cat.name === activeCategory)
     ? activeCategory
-    : (filteredCategories[0]?.name || '');
-  const visibleCategories = searching || !isMobileSingle
-    ? filteredCategories
-    : filteredCategories.filter((cat) => cat.name === resolvedActiveCategory);
+    : ((isUsCatalog ? usTopics[0]?.sections[0] : filteredCategories[0])?.name || '');
+  const activeUsTopic = usTopics.find((topic) => topic.sections.some((cat) => cat.name === resolvedActiveCategory));
+  const selectUsTopic = (id) => {
+    const first = usTopics.find((topic) => topic.id === id)?.sections[0];
+    if (first) setActiveCategory(first.name);
+  };
+  const denseCatalog = isUsCatalog && totalIndicators > 200;
+  let remaining = searchLimit;
+  const visibleCategories = searching
+    ? (isUsCatalog ? filteredCategories.map((cat) => {
+      const indicators = cat.indicators.slice(0, remaining);
+      remaining -= indicators.length;
+      return { ...cat, indicators };
+    }).filter((cat) => cat.indicators.length > 0) : filteredCategories)
+    : (isMobileSingle || denseCatalog
+      ? filteredCategories.filter((cat) => cat.name === resolvedActiveCategory)
+      : filteredCategories);
 
   useEffect(() => {
-    if (searching || isMobileSingle || filteredCategories.length < 2) return undefined;
+    if (searching || isMobileSingle || denseCatalog || filteredCategories.length < 2) return undefined;
     let frame = 0;
     const syncActive = () => {
       frame = 0;
@@ -291,7 +313,7 @@ export default function WorldCountry() {
       window.removeEventListener('resize', schedule);
       if (frame) window.cancelAnimationFrame(frame);
     };
-  }, [filteredCategories, searching, isMobileSingle]);
+  }, [filteredCategories, searching, isMobileSingle, denseCatalog]);
 
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
@@ -351,9 +373,9 @@ export default function WorldCountry() {
                     indicators: `${totalIndicators} ${locale === 'en'
                       ? (totalIndicators === 1 ? t('world.unit.indicator_one') : t('world.unit.indicator_many'))
                       : pluralRu(totalIndicators, [t('world.unit.indicator_one'), t('world.unit.indicator_few'), t('world.unit.indicator_many')])}`,
-                    sections: `${data.categories.length} ${locale === 'en'
-                      ? (data.categories.length === 1 ? t('world.unit.section_one') : t('world.unit.section_many'))
-                      : pluralRu(data.categories.length, [t('world.unit.section_one'), t('world.unit.section_few'), t('world.unit.section_many')])}`,
+                    sections: `${isUsCatalog ? usTopics.length : data.categories.length} ${locale === 'en'
+                      ? ((isUsCatalog ? usTopics.length : data.categories.length) === 1 ? t('world.unit.section_one') : t('world.unit.section_many'))
+                      : pluralRu(isUsCatalog ? usTopics.length : data.categories.length, [t('world.unit.section_one'), t('world.unit.section_few'), t('world.unit.section_many')])}`,
                     history: data.coverage?.history_start
                       ? t('world.country.historyFrom', { year: formatDate(data.coverage.history_start, 'annual', locale) })
                       : '.',
@@ -438,7 +460,7 @@ export default function WorldCountry() {
             <input
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => { setQuery(e.target.value); setSearchLimit(120); }}
               placeholder={t('world.country.findIndicator')}
               aria-label={t('world.country.findIndicatorAria')}
               className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
@@ -479,7 +501,7 @@ export default function WorldCountry() {
                 <>
                   {t('world.country.emptySearch', { query })}
                   {' '}
-                  <button type="button" onClick={() => setQuery('')} className="text-champagne hover:underline">
+                  <button type="button" onClick={() => { setQuery(''); setSearchLimit(120); }} className="text-champagne hover:underline">
                     {t('world.country.emptySearchReset')}
                   </button>
                 </>
@@ -495,7 +517,7 @@ export default function WorldCountry() {
             </div>
           )}
 
-          {!searching && (
+          {!searching && !isUsCatalog && (
             <MobileNavSelect
               label={t('world.country.themes')}
               value={resolvedActiveCategory}
@@ -512,8 +534,21 @@ export default function WorldCountry() {
             ? 'min-w-0 space-y-8'
             : 'grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]'}
           >
-            {!searching && (
-              <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
+            {!searching && isUsCatalog && (
+              <UsCatalogNav
+                topics={usTopics}
+                activeTopic={activeUsTopic?.id}
+                activeSection={resolvedActiveCategory}
+                onTopic={selectUsTopic}
+                onSection={setActiveCategory}
+                sectionKey={(cat) => cat.name}
+                sectionLabel={(cat) => localizedDisplay(locale, cat.name, cat.name_en)}
+                themesLabel={t('world.country.themes')}
+                detailLabel={locale === 'en' ? 'Detailed topics' : 'Подробные темы'}
+              />
+            )}
+            {!searching && !isUsCatalog && (
+              <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
                 <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
                   {t('world.country.themes')}
                 </div>
@@ -561,13 +596,24 @@ export default function WorldCountry() {
                   </div>
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {cat.indicators.map((ind) => (
-                      <IndicatorRow key={ind.code} item={ind} slug={slug} />
+                      <IndicatorRow key={ind.code} item={ind} slug={slug} sectionName={isUsCatalog ? cat.name_ru : undefined} />
                     ))}
                   </div>
                 </section>
               ))}
             </div>
           </div>
+          {isUsCatalog && searching && matchCount > searchLimit && (
+            <button
+              type="button"
+              onClick={() => setSearchLimit((current) => current + 120)}
+              className="mt-5 rounded-full border border-border-subtle bg-surface px-5 py-2.5 text-sm text-text-secondary hover:border-border-champagne hover:text-text-primary"
+            >
+              {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}
+              {locale === 'en' ? ' of ' : ' из '}
+              {Math.min(searchLimit, matchCount)} / {matchCount}
+            </button>
+          )}
         </>
       )}
     </div>

@@ -3,10 +3,10 @@ from datetime import date
 import io
 
 from bs4 import BeautifulSoup
-from PIL import Image
+from PIL import Image, ImageDraw
 import pytest
 
-from app.services.og_image import _chart_coordinates, render_indicator_og
+from app.services.og_image import _chart_coordinates, _glass_panel, render_indicator_og
 from app.services.seo_renderer import _prepare_quicklink_body, _preview_body_urls, _seo_chart_figure
 
 
@@ -27,6 +27,14 @@ def test_time_axis_preserves_a_missing_year():
     points, _ = _chart_coordinates([1, 2, 4], (0, 0, 300, 100),
                                    [date(2021, 1, 1), date(2022, 1, 1), date(2024, 1, 1)])
     assert points[1][1] == pytest.approx(100)
+
+
+def test_glass_panel_has_readable_pearl_surface_and_soft_shadow():
+    image = Image.new("RGBA", (220, 170), (38, 43, 56, 255))
+    _glass_panel(ImageDraw.Draw(image), (40, 35, 180, 120), radius=18)
+    assert image.getpixel((100, 75)) == (255, 255, 255, 249)
+    shadow_pixel = image.getpixel((100, 126))
+    assert 17 < shadow_pixel[0] < 38 and shadow_pixel[3] == 255
 
 
 @pytest.mark.parametrize("portrait,dimensions", [(False, (1200, 630)), (True, (1080, 1350))])
@@ -68,13 +76,13 @@ def test_visible_source_anchor_is_internal_and_table_scrolls(year):
 
 
 @pytest.mark.parametrize("label", ["Россия", "Russia"])
-def test_quicklink_country_name_links_to_regions_without_rewriting_indicator_links(label):
+def test_quicklink_country_name_keeps_country_destination_without_rewriting_indicator_links(label):
     body = (
         f'<a href="/russia">{label}</a>'
         '<a href="/russia/indicator/gdp-nominal-annual">GDP</a>'
     )
     soup = BeautifulSoup(_prepare_quicklink_body(body, "/world/vs/gdp-usd/russia-vs-germany"), "html.parser")
-    assert soup.find("a", string=label)["href"] == "/russia/region"
+    assert soup.find("a", string=label)["href"] == "/russia"
     assert soup.find("a", string="GDP")["href"] == "/russia/indicator/gdp-nominal-annual"
 
 

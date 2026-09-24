@@ -79,7 +79,8 @@ async def serialize_user(db: AsyncSession, user: User) -> dict:
         select(EmailCredential).where(EmailCredential.user_id == user.id)
     )
     methods = [
-        {"id": i.id, "provider": i.provider, "email": i.email, "display_name": i.display_name}
+        {"id": i.id, "provider": i.provider, "email": i.email,
+         "display_name": i.display_name, "avatar_url": i.avatar_url, "locale": i.locale}
         for i in identities
     ]
     # Primary email для UI: пароль-email, иначе первый email из OAuth-привязок.

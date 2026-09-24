@@ -42,4 +42,14 @@ describe('absoluteAuthNext', () => {
       encodeURIComponent('https://ru.forecasteconomy.com/account'),
     );
   });
+
+  it('passes explicit policy acknowledgement to Google OAuth start', () => {
+    vi.stubGlobal('window', {
+      location: { origin: 'https://forecasteconomy.com' },
+    });
+    const url = oauthStartUrl('google', { next: '/account', consent: true });
+    const params = new URL(url, 'https://forecasteconomy.com').searchParams;
+    expect(params.get('consent')).toBe('1');
+    expect(params.get('next')).toBe('https://forecasteconomy.com/account');
+  });
 });

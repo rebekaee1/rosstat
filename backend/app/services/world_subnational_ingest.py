@@ -1,4 +1,4 @@
-"""Субнациональный ingest: паспорт страны → FRED CSV → subnational_* таблицы.
+"""Субнациональный ingest: полный ряд FRED + свежие данные BLS → subnational_*.
 
 Отдельный bounded context (ADR-0014). Российский regional (ADR-0008) не трогаем.
 Паспорт ``app/data/world_subnational/<cc>.yaml`` — config-driven: никакой
@@ -11,8 +11,11 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import math
+import os
+import re
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -39,6 +42,40 @@ _HTTP_TIMEOUT = 90.0
 _CONCURRENCY = 4
 _RETRIES = 3
 _BATCH = 2000
+_REAL_INCOME_UNITS_RE = re.compile(r"<th[^>]*>Units</th>\s*<td[^>]*>(20\d{2}) C-CPI-U Dollars</td>", re.I)
+
+
+def fetch_real_income_vintage_sync(series_id: str) -> int:
+    """Read FRED's current real-dollar reference year; fail on unknown units."""
+    response = requests.get(f"https://fred.stlouisfed.org/data/{series_id}", timeout=25)
+    response.raise_for_status()
+    match = _REAL_INCOME_UNITS_RE.search(response.text)
+    if match is None:
+        raise ValueError(f"FRED {series_id}: real income Units metadata missing or changed")
+    return int(match.group(1))
+
+
+def _with_real_income_vintage(passport: SubnationalPassport, vintage: int) -> SubnationalPassport:
+    """Keep all 51 state labels aligned with the current FRED reference year."""
+    updated = []
+    for spec in passport.indicators:
+        if spec.code != "median-household-income":
+            updated.append(spec)
+            continue
+        old = re.search(r"USD_(20\d{2})", spec.unit)
+        if old is None:
+            raise ValueError("median-household-income passport has no real-dollar vintage")
+        prior = old.group(1)
+        now = str(vintage)
+        updated.append(replace(
+            spec, unit=f"USD_{now}", unit_en=f"{now} C-CPI-U dollars",
+            unit_ru=f"долл. {now} г. (C-CPI-U)",
+            description_en=spec.description_en.replace(prior, now),
+            description_ru=spec.description_ru.replace(prior, now),
+            methodology_en=spec.methodology_en.replace(prior, now),
+            methodology_ru=spec.methodology_ru.replace(prior, now),
+        ))
+    return replace(passport, indicators=tuple(updated))
 
 
 @dataclass(frozen=True)
@@ -70,6 +107,8 @@ class IndicatorSpec:
     source_ru: str
     source_url_template: str | None
     national_code: str | None
+    value_scale: float
+    bls_series_template: str | None
     better_is_low: bool
     is_listed: bool
     description_en: str
@@ -87,6 +126,7 @@ class SubnationalPassport:
     region_kind_label_en_plural: str
     region_kind_label_ru_plural: str
     default_indicator: str
+    featured_indicators: tuple[str, ...]
     map_id: str
     regions: tuple[RegionSpec, ...]
     indicators: tuple[IndicatorSpec, ...]
@@ -208,6 +248,9 @@ def _indicator_from_row(row: Mappingish, index: int) -> IndicatorSpec:
     agg = _as_str(row, "aggregation") or "last"
     if agg not in ("mean", "sum", "last"):
         raise ValueError(f"indicator {code}: bad aggregation {agg!r}")
+    value_scale = float(row.get("value_scale", 1.0))
+    if not math.isfinite(value_scale) or value_scale <= 0:
+        raise ValueError(f"indicator {code}: value_scale must be finite and positive")
     return IndicatorSpec(
         code=code,
         name_en=_as_str(row, "name_en") or code,
@@ -225,6 +268,8 @@ def _indicator_from_row(row: Mappingish, index: int) -> IndicatorSpec:
         source_ru=_as_str(row, "source_ru"),
         source_url_template=_as_str(row, "source_url_template") or None,
         national_code=_as_str(row, "national_code") or None,
+        value_scale=value_scale,
+        bls_series_template=_as_str(row, "bls_series_template") or None,
         better_is_low=bool(row.get("better_is_low", False)),
         is_listed=bool(row.get("is_listed", True)),
         description_en=_as_str(row, "description_en"),
@@ -261,6 +306,12 @@ def load_subnational_passport(country: str) -> SubnationalPassport:
     default = _as_str(raw, "default_indicator") or indicators[0].code
     if default not in codes:
         raise ValueError(f"{path}: default_indicator {default!r} not in indicators")
+    featured_raw = raw.get("featured_indicators") or []
+    if not isinstance(featured_raw, list) or any(not isinstance(code, str) for code in featured_raw):
+        raise ValueError(f"{path}: featured_indicators must be a list of codes")
+    featured = tuple(featured_raw)
+    if len(featured) != len(set(featured)) or any(code not in codes for code in featured):
+        raise ValueError(f"{path}: featured_indicators must be distinct passport codes")
     return SubnationalPassport(
         country_code=cc,
         country_slug=_as_str(raw, "country_slug") or cc.lower(),
@@ -269,6 +320,7 @@ def load_subnational_passport(country: str) -> SubnationalPassport:
         region_kind_label_en_plural=_as_str(raw, "region_kind_label_en_plural") or "Regions",
         region_kind_label_ru_plural=_as_str(raw, "region_kind_label_ru_plural") or "Регионы",
         default_indicator=default,
+        featured_indicators=featured,
         map_id=_as_str(raw, "map_id") or f"{cc.lower()}-regions",
         regions=regions,
         indicators=indicators,
@@ -300,13 +352,70 @@ def fetch_fred_csv_sync(series_id: str) -> list[tuple[date, float]] | None:
             )
             time.sleep(0.4 * (attempt + 1))
             continue
-        try:
-            observations = parse_fred_csv(response.text, series_id=sid)
-        except FredStLouisError:
-            return None
+        observations = parse_fred_csv(response.text, series_id=sid)
         return [(item.period, float(item.value)) for item in observations]
-    logger.warning("FRED fetch failed for %s: %s", sid, last_exc)
-    return None
+    raise FredStLouisError(f"FRED fetch failed for {sid}: {last_exc}")
+
+
+def fetch_bls_recent_sync(series_ids: list[str]) -> dict[str, list[tuple[date, float]]]:
+    """Recent BLS observations; full historical backfill remains in FRED CSV."""
+    from app.services.world_adapters.bls_api import BLS_V2_URL, parse_bls_period
+
+    if not series_ids or len(series_ids) > 20:
+        raise ValueError("BLS batch must contain 1–20 series")
+    year = date.today().year
+    request = {
+        "seriesid": series_ids,
+        "startyear": str(year - 5),
+        "endyear": str(year),
+    }
+    key = os.environ.get("RUSTATS_BLS_API_KEY", "").strip()
+    if key:
+        request["registrationkey"] = key
+    response = requests.post(BLS_V2_URL, json=request, timeout=_HTTP_TIMEOUT)
+    response.raise_for_status()
+    body = response.json()
+    if body.get("status") != "REQUEST_SUCCEEDED":
+        raise ValueError(f"BLS request failed: {body.get('status')}")
+    rows = body.get("Results", {}).get("series")
+    if not isinstance(rows, list):
+        raise ValueError("BLS response has no series")
+    result: dict[str, list[tuple[date, float]]] = {}
+    for row in rows:
+        sid = row.get("seriesID")
+        if sid not in series_ids:
+            raise ValueError(f"unexpected BLS series {sid!r}")
+        points = []
+        for item in row.get("data", []):
+            try:
+                period = parse_bls_period(item.get("year"), item.get("period"))
+            except (TypeError, ValueError):
+                continue
+            if period is None or not str(item.get("period", "")).startswith("M"):
+                continue
+            try:
+                value = float(str(item["value"]).replace(",", ""))
+            except (KeyError, TypeError, ValueError):
+                continue
+            if math.isfinite(value):
+                points.append((period, value))
+        if not points:
+            raise ValueError(f"BLS series {sid} has no numeric monthly data")
+        result[sid] = sorted(points)
+    if set(result) != set(series_ids):
+        raise ValueError(f"BLS omitted {sorted(set(series_ids) - set(result))}")
+    return result
+
+
+def merge_and_scale_points(
+    historical: list[tuple[date, float]],
+    recent: list[tuple[date, float]] | None,
+    scale: float,
+) -> list[tuple[date, float]]:
+    """Keep the historical floor, let the primary publisher revise recent dates."""
+    merged = dict(historical)
+    merged.update(recent or [])
+    return [(period, value * scale) for period, value in sorted(merged.items())]
 
 
 async def _upsert_regions(db: AsyncSession, passport: SubnationalPassport) -> dict[str, int]:
@@ -473,6 +582,14 @@ async def ingest_country(
     db: AsyncSession | None = None,
 ) -> list[SeriesReport]:
     passport = load_subnational_passport(country)
+    if any(
+        spec.code == "median-household-income"
+        for spec in passport.indicators
+    ) and (only is None or only.strip().lower() == "median-household-income"):
+        vintage = await asyncio.to_thread(
+            fetch_real_income_vintage_sync, "MEHOINUSCAA672N",
+        )
+        passport = _with_real_income_vintage(passport, vintage)
     own_session = db is None
 
     async def _run(session: AsyncSession) -> list[SeriesReport]:
@@ -502,6 +619,29 @@ async def ingest_country(
             *(_fetch(series_id) for _, _, series_id in jobs),
             return_exceptions=True,
         )
+        bls_by_fred_id: dict[str, list[tuple[date, float]]] = {}
+        bls_errors: dict[str, str] = {}
+        bls_ids = {
+            series_id: expand_series_template(
+                ind.bls_series_template,
+                geo=region.geo_code,
+                fips=region.fips,
+            )
+            for ind, region, series_id in jobs if ind.bls_series_template
+        }
+        recent_items = list(bls_ids.items())
+        for offset in range(0, len(recent_items), 20):
+            batch = recent_items[offset:offset + 20]
+            try:
+                current = await asyncio.to_thread(
+                    fetch_bls_recent_sync, [sid for _, sid in batch]
+                )
+                for fred_id, bls_id in batch:
+                    bls_by_fred_id[fred_id] = current[bls_id]
+            except Exception as exc:
+                logger.warning("BLS recent batch failed: %s", exc)
+                for fred_id, _ in batch:
+                    bls_errors[fred_id] = str(exc)[:300]
         out: list[SeriesReport] = []
         for i, ((ind, region, series_id), payload) in enumerate(zip(jobs, fetched), 1):
             if isinstance(payload, Exception):
@@ -524,11 +664,16 @@ async def ingest_country(
                 continue
             iid = indicator_ids[ind.code]
             rid = region_ids[region.slug]
-            n, _ = await _upsert_points(session, iid, rid, payload)
+            scaled = merge_and_scale_points(
+                payload, bls_by_fred_id.get(series_id), ind.value_scale,
+            )
+            n, _ = await _upsert_points(session, iid, rid, scaled)
             await session.commit()
             out.append(SeriesReport(
-                ind.code, region.slug, series_id, "loaded",
-                points=n, first=payload[0][0], last=payload[-1][0],
+                ind.code, region.slug, series_id,
+                "error" if series_id in bls_errors else "loaded",
+                points=n, first=scaled[0][0], last=scaled[-1][0],
+                detail=f"BLS recent overlay failed: {bls_errors[series_id]}" if series_id in bls_errors else "",
             ))
             if i % 10 == 0 or i == len(jobs):
                 logger.info("upsert progress %s/%s", i, len(jobs))
@@ -542,21 +687,58 @@ async def ingest_country(
 
 
 async def world_subnational_ingest_job() -> None:
-    """Еженедельный opt-in job: все паспорта в ``world_subnational/``."""
+    """Ежедневное обновление всех паспортов в ``world_subnational/``."""
     started = datetime.now(timezone.utc)
     countries = list_subnational_countries()
     logger.info("world_subnational ingest start countries=%s", countries)
+    touched = 0
+    failures: list[str] = []
+    checked = loaded_total = skipped_total = error_total = 0
     for cc in countries:
         try:
             reports = await ingest_country(cc.lower())
             loaded = sum(1 for r in reports if r.status == "loaded")
             skipped = sum(1 for r in reports if r.status == "skipped")
             errors = sum(1 for r in reports if r.status == "error")
+            checked += len(reports)
+            loaded_total += loaded
+            skipped_total += skipped
+            error_total += errors
+            touched += sum(r.points for r in reports)
             logger.info(
                 "world_subnational %s loaded=%s skipped=%s errors=%s",
                 cc, loaded, skipped, errors,
             )
+            if errors:
+                logger.error("world_subnational %s had %s failed series", cc, errors)
+                failures.append(f"{cc}:{errors}")
         except Exception:
             logger.exception("world_subnational ingest failed for %s", cc)
+            failures.append(cc)
+            error_total += 1
+    # Passport metadata can change even when every numeric observation is stable.
+    if countries:
+        try:
+            from app.core.cache import bump_namespaces
+
+            await bump_namespaces("world", "ssr-world", "world-catalog")
+        except Exception:
+            logger.warning("world_subnational cache bump failed", exc_info=True)
     elapsed = (datetime.now(timezone.utc) - started).total_seconds()
-    logger.info("world_subnational ingest done in %.1fs", elapsed)
+    logger.info("world_subnational ingest done in %.1fs points_touched=%s", elapsed, touched)
+    from app.services.alerting import alert_world_ingest_summary
+
+    await alert_world_ingest_summary(
+        "США: штаты, FRED/BLS",
+        status="partial" if failures else "ok",
+        checked=checked, changed=touched, failed=error_total,
+        checked_label="Проверено рядов",
+        changed_label="Изменено точек",
+        details=(
+            f"Рядов загружено: {loaded_total}; пропущено: {skipped_total}; "
+            f"изменённых точек: {touched}; время: {elapsed:.0f} с. "
+            + (f"Ошибки: {', '.join(failures[:15])}" if failures else "")
+        ).strip(),
+    )
+    if failures:
+        raise RuntimeError(f"world_subnational ingest failures: {', '.join(failures)}")

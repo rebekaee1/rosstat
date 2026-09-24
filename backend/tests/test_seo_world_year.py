@@ -435,7 +435,7 @@ def test_partial_historical_year_and_sparse_history(world_year_client, auth_env,
             rf'href="/germany/indicator/{CODE_MONTHLY}/(\d{{4}})\?preview_locale={locale}"', html
         ))) - {year}
         assert {previous, following, 1950, 2025} - {year} <= links
-        assert len(links) <= 15
+        assert links == (set(range(1950, 2023, 2)) | {2023, 2024, 2025}) - {year}
 
 
 @pytest.mark.parametrize("locale", ["ru", "en"])

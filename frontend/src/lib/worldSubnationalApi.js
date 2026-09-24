@@ -38,6 +38,13 @@ export function useWorldRegionsMap(countrySlug, code, period) {
     },
     enabled: Boolean(countrySlug && code),
     staleTime: STALE,
+    // Keep the timeline mounted while a new year is loading. A prior metric's
+    // map must never be shown as the selected metric's data.
+    placeholderData: (previous, query) => (
+      query?.queryKey?.[1] === countrySlug && query?.queryKey?.[2] === code
+        ? previous
+        : undefined
+    ),
   });
 }
 
@@ -57,6 +64,17 @@ export function useWorldRegionIndicator(countrySlug, slug, code) {
       await api.get(`/world/${countrySlug}/regions/region/${slug}/${code}`)
     ).data,
     enabled: Boolean(countrySlug && slug && code),
+    staleTime: STALE,
+  });
+}
+
+export function useWorldRegionForecast(countrySlug, slug, code, enabled = true) {
+  return useQuery({
+    queryKey: ['world-subnational-forecast', countrySlug, slug, code, localeKey()],
+    queryFn: async () => (
+      await api.get(`/world/${countrySlug}/regions/region/${slug}/${code}/forecast`)
+    ).data,
+    enabled: Boolean(enabled && countrySlug && slug && code),
     staleTime: STALE,
   });
 }

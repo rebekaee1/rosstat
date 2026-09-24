@@ -234,3 +234,33 @@ describe('WorldIndicatorPage EN overlay', () => {
     expect(document.body.textContent).not.toContain('2319,9');
   });
 });
+
+describe('WorldIndicatorPage US year links', () => {
+  it('shows every observed year from the canonical series', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/world\/indicators\/united-states\/us-test$/, {
+        country: { code: 'US', slug: 'united-states', name: 'США', name_en: 'United States' },
+        primary_code: 'us-test',
+        indicator: { code: 'us-test', name: 'Тестовый ряд', unit: '%', frequency: 'annual', source: 'FRED' },
+        modes: [{ id: 'level-annual', label: 'По годам', group: 'Уровень', type: 'level', freq: 'annual', unit: '%' }],
+        observed_years: [1901, 1950, 2025],
+        forecast_available: false,
+      }],
+      [/^\/world\/indicators\/united-states\/us-test\/data/, {
+        code: 'us-test', mode: 'level-annual', unit: '%', frequency: 'annual',
+        points: [{ date: '2025-01-01', value: 4.1 }], count: 1,
+      }],
+    ]);
+    renderPage(<WorldIndicatorPage />, {
+      path: '/:countrySlug/indicator/:code',
+      route: '/united-states/indicator/us-test',
+    });
+
+    await waitFor(() => {
+      for (const year of [1901, 1950, 2025]) {
+        expect(document.querySelector(`a[href="/united-states/indicator/us-test/${year}"]`)).toBeTruthy();
+      }
+    });
+  });
+});

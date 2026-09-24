@@ -2,6 +2,8 @@
 
 from urllib.parse import urlsplit, parse_qs
 
+import pytest
+
 from tests.conftest import csrf_headers
 
 
@@ -46,7 +48,10 @@ def test_oauth_newsletter_consent_recorded(oauth_client):
 
 def _clear_oauth(monkeypatch):
     from app.config import settings
-    for attr in ("oauth_yandex_client_id", "oauth_yandex_client_secret", "oauth_vk_client_id"):
+    for attr in (
+        "oauth_google_client_id", "oauth_google_client_secret",
+        "oauth_yandex_client_id", "oauth_yandex_client_secret", "oauth_vk_client_id",
+    ):
         monkeypatch.setattr(settings, attr, "")
 
 
@@ -64,6 +69,107 @@ def test_providers_endpoint_lists_configured(auth_client, monkeypatch):
     monkeypatch.setattr(settings, "oauth_yandex_client_secret", "sec")
     r = auth_client.get("/api/v1/auth/oauth/providers")
     assert r.json()["providers"] == ["yandex"]
+
+
+def test_google_provider_only_enabled_with_both_credentials(auth_client, monkeypatch):
+    from app.config import settings
+
+    _clear_oauth(monkeypatch)
+    monkeypatch.setattr(settings, "oauth_google_client_id", "google-client")
+    assert auth_client.get("/api/v1/auth/oauth/providers").json()["providers"] == []
+    monkeypatch.setattr(settings, "oauth_google_client_secret", "google-secret")
+    assert auth_client.get("/api/v1/auth/oauth/providers").json()["providers"] == ["google"]
+
+
+@pytest.mark.parametrize("newsletter_enabled", [False, True])
+def test_google_login_creates_profile_and_reuses_stable_subject(auth_client, monkeypatch, newsletter_enabled):
+    from app.api import oauth as oauth_api
+    from app.config import settings
+    from app.services.oauth.base import OAuthProfile
+    from app.services.oauth.google import GoogleProvider
+
+    _clear_oauth(monkeypatch)
+    monkeypatch.setattr(settings, "oauth_google_client_id", "google-client")
+    monkeypatch.setattr(settings, "oauth_google_client_secret", "google-secret")
+    monkeypatch.setattr(settings, "auth_public_base_url", "http://testserver")
+
+    async def exchange(self, *, code, code_verifier, redirect_uri, extra=None):
+        assert code == "google-code"
+        assert code_verifier
+        assert redirect_uri == "http://testserver/api/v1/auth/oauth/google/callback"
+        return {"access_token": "test-access"}
+
+    async def profile(self, tokens):
+        assert tokens == {"access_token": "test-access"}
+        return OAuthProfile(
+            provider="google", sub="google-123", email="person@example.com",
+            email_verified=True, display_name="Person One",
+            avatar_url="https://example.com/avatar.png",
+        )
+
+    monkeypatch.setattr(GoogleProvider, "exchange_code", exchange)
+    monkeypatch.setattr(GoogleProvider, "fetch_profile", profile)
+    signups = []
+    logins = []
+
+    async def capture_signup(info):
+        signups.append(info)
+
+    async def capture_login(info):
+        logins.append(info)
+
+    monkeypatch.setattr(oauth_api, "_notify_new_user_safe", capture_signup)
+    monkeypatch.setattr(oauth_api, "_notify_login_safe", capture_login)
+
+    def login():
+        start = auth_client.get(
+            "/api/v1/auth/oauth/google/start",
+            params={
+                "next": "http://testserver/account",
+                "consent": "1",
+                "newsletter": "1" if newsletter_enabled else "0",
+            },
+            follow_redirects=False,
+        )
+        assert start.status_code == 302
+        query = parse_qs(urlsplit(start.headers["location"]).query)
+        assert query["scope"] == ["openid email profile"]
+        assert query["code_challenge_method"] == ["S256"]
+        callback = auth_client.get(
+            "/api/v1/auth/oauth/google/callback",
+            params={"code": "google-code", "state": query["state"][0]},
+            follow_redirects=False,
+        )
+        assert callback.status_code == 302
+        assert callback.headers["location"] == "http://testserver/account"
+        return auth_client.get("/api/v1/auth/me").json()["user"]
+
+    first = login()
+    assert first["email"] == "person@example.com"
+    assert first["newsletter"] is newsletter_enabled
+    assert first["identities"][0]["provider"] == "google"
+    assert first["identities"][0]["avatar_url"] == "https://example.com/avatar.png"
+    assert first["identities"][0]["locale"] in ("ru", "en")
+    assert len(signups) == 1
+    assert signups[0]["method"] == "OAuth (google)"
+    assert signups[0]["newsletter"] is newsletter_enabled
+    assert signups[0]["locale"] == first["identities"][0]["locale"]
+    auth_client.post("/api/v1/auth/logout", headers=csrf_headers(auth_client))
+    second = login()
+    assert second["id"] == first["id"]
+    assert len(second["identities"]) == 1
+    assert len(logins) == 1
+    assert logins[0]["method"] == "OAuth (google)"
+
+
+def test_google_login_requires_explicit_policy_acknowledgement(auth_client, monkeypatch):
+    from app.config import settings
+    _clear_oauth(monkeypatch)
+    monkeypatch.setattr(settings, "oauth_google_client_id", "google-client")
+    monkeypatch.setattr(settings, "oauth_google_client_secret", "google-secret")
+    response = auth_client.get("/api/v1/auth/oauth/google/start", follow_redirects=False)
+    assert response.status_code == 302
+    assert response.headers["location"] == "/login?error=consent_required"
 
 
 def test_fake_login_new_user(oauth_client):

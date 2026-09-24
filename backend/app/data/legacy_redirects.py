@@ -276,6 +276,59 @@ def _mode_freq(indicator) -> str:
     return freq if freq in ("monthly", "quarterly", "annual") else "monthly"
 
 
+def is_retired_world_hicp(slug: str, code: str) -> bool:
+    """Only the retired 2015-base headline HICP index, never HICP rates."""
+    return bool(re.fullmatch(r"[a-z]{2}-prc_hicp_midx-cp00-i15", code))
+
+
+async def resolve_world_hicp_successor(
+    db: AsyncSession, slug: str, code: str, year: int | None = None,
+) -> str | None:
+    """Redirect an old HICP index URL when the same 2015-base index exists."""
+    if not is_retired_world_hicp(slug, code):
+        return None
+    from app.models import WorldCountry, WorldDataPoint, WorldIndicator
+    from sqlalchemy import func
+
+    old = (
+        await db.execute(
+            select(WorldIndicator).join(WorldCountry).where(
+                WorldCountry.slug == slug,
+                WorldIndicator.code == code,
+                WorldIndicator.dataset_id == "prc_hicp_midx",
+            )
+        )
+    ).scalar_one_or_none()
+    if old is None:
+        return None
+    successor_code = code.replace("-prc_hicp_midx-cp00-i15", "-prc_hicp_minr-total-i15")
+    successor = (
+        await db.execute(
+            select(WorldIndicator).where(
+                WorldIndicator.country_id == old.country_id,
+                WorldIndicator.code == successor_code,
+                WorldIndicator.dataset_id == "prc_hicp_minr",
+                WorldIndicator.is_listed.is_(True),
+            )
+        )
+    ).scalar_one_or_none()
+    if successor is None:
+        return None
+    if year is not None:
+        has_year = (
+            await db.execute(
+                select(WorldDataPoint.id).where(
+                    WorldDataPoint.indicator_id == successor.id,
+                    func.extract("year", WorldDataPoint.date) == year,
+                ).limit(1)
+            )
+        ).scalar_one_or_none()
+        if has_year is None:
+            return None
+        return paths.indicator_year(slug, successor_code, year)
+    return paths.indicator(slug, successor_code)
+
+
 # Мера снятого с листинга ряда → тип режима слитой карточки. Темп к
 # аналогичному периоду прошлого года (RCH_A, PCH_SM/SAME, скользящий 12-мес.)
 # → yoy; темп к предыдущему периоду (RCH_M, RT1, PCH_PRE, RT_M_DIF) → step.

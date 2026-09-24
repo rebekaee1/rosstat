@@ -88,7 +88,7 @@ async def run(args: argparse.Namespace) -> int:
             )
 
     try:
-        await bump_namespaces("world")
+        await bump_namespaces("world", "ssr-world", "world-catalog")
     except Exception as exc:  # noqa: BLE001
         log.warning("cache bump failed: %s", exc)
 

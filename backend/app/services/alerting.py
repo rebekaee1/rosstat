@@ -9,6 +9,10 @@ import httpx
 from app.config import settings
 
 logger = logging.getLogger(__name__)
+# httpx logs the full request URL at INFO; Telegram's URL embeds the bot token.
+# Keep transport URLs out of application logs while retaining warnings/errors.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 _TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 
@@ -280,3 +284,40 @@ async def alert_etl_summary(
     if failed:
         parts.append(f"Failed: {escape(', '.join(failed))}")
     await send_telegram("\n".join(parts), kind="etl_summary")
+
+
+async def alert_world_ingest_summary(
+    source: str,
+    *,
+    status: str,
+    checked: int,
+    changed: int,
+    failed: int,
+    details: str = "",
+    checked_label: str = "Проверено",
+    changed_label: str = "Изменено",
+) -> None:
+    """Report a *completed* world source run to the primary technical chat.
+
+    ``shadow`` means that source changes were inspected without publishing
+    observations. It must never be shown as a successful data refresh.
+    Empty successful polls are reduced to one heartbeat per source per day.
+    """
+    if status not in {"ok", "partial", "failed", "shadow"}:
+        raise ValueError(f"unsupported world ingest status: {status}")
+    if status == "ok" and changed == 0 and failed == 0:
+        if await alert_muted(f"world_ingest_noop:{source}", 20 * 3600):
+            return
+    symbol = {"ok": "🟢", "partial": "🟡", "failed": "🔴", "shadow": "🟡"}[status]
+    label = {
+        "ok": "завершено", "partial": "частично", "failed": "ошибка",
+        "shadow": "теневая проверка — данные не обновлены",
+    }[status]
+    parts = [
+        f"{symbol} <b>Обновление: {escape(source[:100])}</b>",
+        f"Итог: {label}",
+        f"{escape(checked_label)}: {checked} · {escape(changed_label)}: {changed} · Ошибок: {failed}",
+    ]
+    if details:
+        parts.append(escape(details[:1000]))
+    await send_telegram("\n".join(parts), kind="world_ingest_summary")

@@ -181,7 +181,7 @@ export default function Navbar() {
       <nav
         ref={navRef}
         className={cn(
-          'fe-navbar fixed top-11 md:top-12 inset-x-0 mx-auto z-[100]',
+          'fe-navbar fixed top-9 inset-x-0 mx-auto z-[100]',
           // Не transition-all: иначе transition тянет backdrop-filter и в
           // части движков blur на время/после смены soft↔surface пропадает.
           'transition-[transform,opacity,background-color,box-shadow,border-color] duration-500 ease-out',

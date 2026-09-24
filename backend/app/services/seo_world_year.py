@@ -211,16 +211,17 @@ async def render_world_indicator_year_html(
     if country is None:
         return 404, "Not found"
 
+    from app.data.legacy_redirects import is_retired_world_hicp
+
     indicator = (
         await db.execute(
             select(WorldIndicator).where(
                 WorldIndicator.country_id == country.id,
                 WorldIndicator.code == code,
-                WorldIndicator.is_listed.is_(True),
             )
         )
     ).scalar_one_or_none()
-    if indicator is None:
+    if indicator is None or not (indicator.is_listed or is_retired_world_hicp(slug, code)):
         return 404, "Not found"
 
     rows = (
@@ -274,10 +275,7 @@ async def render_world_indicator_year_html(
     prev_year = year - 1 if (year - 1) in last_by_year else None
     prev_value = last_by_year[year - 1][0] if prev_year is not None else None
     neighbors = neighbor_year_window(series_lp, year, size=_NEIGHBOR_WINDOW)
-    navigation = neighbor_year_window(series_lp, year, size=_OTHER_YEARS_MAX - 1)
-    other_years = sorted(
-        ({y for y, _v, _d in navigation} | {series_lp[0][0], series_lp[-1][0]}) - {year}
-    )
+    other_years = sorted({y for y, _v, _d in series_lp if y != year and paths.is_public_year(y)})
 
     summary_label, summary_text = _observation_summary(
         year_rows, frequency, shown_unit, en=en
@@ -499,6 +497,7 @@ async def render_world_indicator_year_html(
 
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(trail)}
+{f'<p>{escape("Архивный ряд ГИПЦ: Евростат прекратил выпуск этого набора; показана сохранённая история." if not en else "Archived HICP series: Eurostat discontinued this dataset; its published history is retained.")}</p>' if is_retired_world_hicp(slug, code) else ''}
 {fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=desc)}
 {f'<p>{escape(coverage_note)}</p>' if coverage_note else ''}
 {_seo_chart_figure(og_path, chart_alt, chart_caption, href=card_path, loading="eager")}

@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import date
+from unittest.mock import AsyncMock
 
 import pytest
 
 from app.services.world_subnational_ingest import (
+    FredStLouisError,
     expand_series_template,
+    fetch_bls_recent_sync,
+    fetch_fred_csv_sync,
     load_subnational_passport,
+    _with_real_income_vintage,
+    fetch_real_income_vintage_sync,
+    merge_and_scale_points,
     period_key,
     period_label,
     period_start,
@@ -26,10 +34,41 @@ def test_us_passport_loads_51_territories_and_listed_indicators():
     assert "district-of-columbia" in slugs
     assert passport.default_indicator == "unemployment-rate"
     listed = [i for i in passport.indicators if i.is_listed]
-    assert 8 <= len(listed) <= 12
+    assert len(listed) == 16
     codes = {i.code for i in listed}
     assert "unemployment-rate" in codes
     assert "real-gdp" in codes
+    assert {"civilian-labor-force", "civilian-employment", "unemployed-persons", "government-employment"} <= codes
+    scaled = {i.code: i for i in passport.indicators}
+    assert scaled["civilian-employment"].value_scale == 0.001
+    assert scaled["government-employment"].value_scale == 1.0
+    assert scaled["unemployed-persons"].national_code == "us-unemployed"
+    assert scaled["civilian-labor-force"].bls_series_template == "LASST{fips}0000000000006"
+
+
+def test_real_income_vintage_updates_all_public_labels():
+    passport = _with_real_income_vintage(load_subnational_passport("us"), 2026)
+    spec = next(s for s in passport.indicators if s.code == "median-household-income")
+    assert spec.unit == "USD_2026"
+    assert "2026" in spec.unit_en and "2026" in spec.unit_ru
+    assert all("2025" not in value for value in (
+        spec.description_en, spec.description_ru, spec.methodology_en, spec.methodology_ru,
+    ))
+
+
+def test_real_income_vintage_requires_official_units(monkeypatch):
+    from app.services import world_subnational_ingest as ingest
+
+    class Response:
+        text = '<th scope="row">Units</th><td>2025 C-CPI-U Dollars</td>'
+        def raise_for_status(self):
+            pass
+
+    monkeypatch.setattr(ingest.requests, "get", lambda *a, **kw: Response())
+    assert fetch_real_income_vintage_sync("MEHOINUSCAA672N") == 2025
+    Response.text = '<th>Units</th><td>Dollars</td>'
+    with pytest.raises(ValueError, match="Units metadata"):
+        fetch_real_income_vintage_sync("MEHOINUSCAA672N")
 
 
 def test_series_template_geo_and_fips():
@@ -37,6 +76,78 @@ def test_series_template_geo_and_fips():
     assert expand_series_template("LBSSA{fips}", geo="CA", fips="06") == "LBSSA06"
     assert expand_series_template("MEHOINUS{geo}A672N", geo="NY", fips="36") == "MEHOINUSNYA672N"
     assert expand_series_template("STTMINWG{ST}", geo="DC", fips="11") == "STTMINWGDC"
+    assert expand_series_template("LASST{fips}0000000000005", geo="CA", fips="06") == "LASST060000000000005"
+
+
+def test_fred_transient_failure_is_not_reported_as_missing(monkeypatch):
+    import requests
+    from app.services import world_subnational_ingest as ingest
+
+    def fail(*args, **kwargs):
+        raise requests.Timeout("temporary outage")
+
+    monkeypatch.setattr(ingest.requests, "get", fail)
+    monkeypatch.setattr(ingest.time, "sleep", lambda _: None)
+    with pytest.raises(FredStLouisError, match="fetch failed"):
+        fetch_fred_csv_sync("CALF")
+
+
+def test_bls_recent_points_replace_fred_lag_and_preserve_1976_history(monkeypatch):
+    from app.services import world_subnational_ingest as ingest
+
+    class Response:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"status": "REQUEST_SUCCEEDED", "Results": {"series": [{
+                "seriesID": "LASST060000000000005",
+                "data": [
+                    {"year": "2026", "period": "M08", "value": "18506343"},
+                    {"year": "2026", "period": "M07", "value": "18542859"},
+                ],
+            }]}}
+
+    monkeypatch.setattr(ingest.requests, "post", lambda *args, **kwargs: Response())
+    recent = fetch_bls_recent_sync(["LASST060000000000005"])
+    merged = merge_and_scale_points(
+        [(date(1976, 1, 1), 8873133), (date(2026, 7, 1), 18540000)],
+        recent["LASST060000000000005"],
+        0.001,
+    )
+    assert merged == [
+        (date(1976, 1, 1), 8873.133),
+        (date(2026, 7, 1), 18542.859),
+        (date(2026, 8, 1), 18506.343),
+    ]
+
+
+def test_subnational_scheduled_job_invalidates_world_caches(monkeypatch):
+    from app.services import world_subnational_ingest as ingest
+    from app.core import cache
+
+    monkeypatch.setattr(ingest, "list_subnational_countries", lambda: ["US"])
+    monkeypatch.setattr(ingest, "ingest_country", AsyncMock(return_value=[
+        ingest.SeriesReport("civilian-employment", "california", "LASST060000000000005", "loaded", points=1),
+    ]))
+    bump = AsyncMock()
+    monkeypatch.setattr(cache, "bump_namespaces", bump)
+
+    asyncio.run(ingest.world_subnational_ingest_job())
+    bump.assert_awaited_once_with("world", "ssr-world", "world-catalog")
+
+
+def test_subnational_scheduled_job_reports_series_failures(monkeypatch):
+    from app.services import world_subnational_ingest as ingest
+    from app.core import cache
+
+    monkeypatch.setattr(ingest, "list_subnational_countries", lambda: ["US"])
+    monkeypatch.setattr(ingest, "ingest_country", AsyncMock(return_value=[
+        ingest.SeriesReport("civilian-employment", "california", "LASST060000000000005", "error", detail="BLS unavailable"),
+    ]))
+    monkeypatch.setattr(cache, "bump_namespaces", AsyncMock())
+    with pytest.raises(RuntimeError, match="world_subnational ingest failures: US:1"):
+        asyncio.run(ingest.world_subnational_ingest_job())
 
 
 def test_period_key_and_parse_roundtrip():
@@ -231,6 +342,139 @@ def test_world_regions_in_static_sitemap_sections():
     names = section_names_static()
     assert "world-regions" in names
     assert names.index("world-regions") > names.index("world")
+
+
+def test_every_observed_year_of_nonfeatured_state_series_has_a_quicklink(
+    subnational_client, auth_env,
+):
+    from sqlalchemy import select
+    from app.models import SubnationalDataPoint, SubnationalIndicator, SubnationalRegion
+    from app.services.site_urls import _world_region_years_page
+    from app.services.sitemap_images import image_path_for_page
+
+    async def seed_and_collect():
+        async with auth_env["session_maker"]() as db:
+            ca = (await db.execute(select(SubnationalRegion).where(
+                SubnationalRegion.slug == "california",
+            ))).scalar_one()
+            custom = SubnationalIndicator(
+                country_code="US", code="custom-ratio",
+                name_en="Custom ratio", name_ru="Дополнительный показатель",
+                unit="PCT", unit_en="%", unit_ru="%", frequency="annual",
+                section_en="Other", section_ru="Прочее", provider="fred",
+                series_template="TEST", aggregation="last",
+                source_en="Official", source_ru="Официальный источник", is_listed=True,
+            )
+            db.add(custom)
+            await db.flush()
+            db.add_all([
+                SubnationalDataPoint(indicator_id=custom.id, region_id=ca.id,
+                                     period=date(1900, 1, 1), value=1.0),
+                SubnationalDataPoint(indicator_id=custom.id, region_id=ca.id,
+                                     period=date(2025, 1, 1), value=2.0),
+            ])
+            await db.commit()
+            urls = []
+            cursor = None
+            while True:
+                page, next_cursor = await _world_region_years_page(db, date(2026, 9, 24), cursor, 2)
+                urls.extend(page)
+                if not page:
+                    break
+                cursor = next_cursor
+            return urls
+
+    urls = asyncio.run(seed_and_collect())
+    paths = [url.path for url in urls]
+    assert len(paths) == len(set(paths))
+    for year in (1900, 2025):
+        path = f"/united-states/region/california/custom-ratio/{year}"
+        assert path in paths
+        assert image_path_for_page(path) == (
+            f"/og/world/united-states/region/california/custom-ratio/{year}.png"
+        )
+        response = subnational_client.get(
+            f"/seo/world/united-states/region/california/custom-ratio/{year}"
+        )
+        assert response.status_code == 200
+        assert path in response.text
+    assert subnational_client.get(
+        "/seo/world/united-states/region/california/custom-ratio/2024"
+    ).status_code == 404
+    card = subnational_client.get(
+        "/seo/world/united-states/region/california/custom-ratio"
+    )
+    assert card.status_code == 200
+    assert "/custom-ratio/1900" in card.text
+    assert "/custom-ratio/2025" in card.text
+
+
+def test_partial_state_year_compares_the_same_month(subnational_client, auth_env):
+    from sqlalchemy import select
+    from app.models import SubnationalDataPoint, SubnationalIndicator, SubnationalRegion
+
+    async def seed():
+        async with auth_env["session_maker"]() as db:
+            ca = (await db.execute(select(SubnationalRegion).where(
+                SubnationalRegion.slug == "california",
+            ))).scalar_one()
+            unemployment = (await db.execute(select(SubnationalIndicator).where(
+                SubnationalIndicator.code == "unemployment-rate",
+            ))).scalar_one()
+            db.add_all([
+                SubnationalDataPoint(indicator_id=unemployment.id, region_id=ca.id,
+                                     period=date(2025, 8, 1), value=5.0),
+                SubnationalDataPoint(indicator_id=unemployment.id, region_id=ca.id,
+                                     period=date(2025, 12, 1), value=6.0),
+                SubnationalDataPoint(indicator_id=unemployment.id, region_id=ca.id,
+                                     period=date(2026, 8, 1), value=5.5),
+            ])
+            await db.commit()
+
+    asyncio.run(seed())
+    response = subnational_client.get(
+        "/seo/world/united-states/region/california/unemployment-rate/2026"
+    )
+    assert response.status_code == 200
+    assert "Изменение к 2025: +0,5 %" in response.text
+    assert "-0,5 %" not in response.text
+
+
+def test_district_of_columbia_is_in_region_comparisons(subnational_client, auth_env):
+    from sqlalchemy import select
+    from app.models import SubnationalDataPoint, SubnationalIndicator, SubnationalRegion
+    from app.services.site_urls import _world_region_vs_urls
+
+    async def seed_and_collect():
+        async with auth_env["session_maker"]() as db:
+            unemployment = (await db.execute(select(SubnationalIndicator).where(
+                SubnationalIndicator.code == "unemployment-rate",
+            ))).scalar_one()
+            dc = SubnationalRegion(
+                country_code="US", slug="district-of-columbia", name_en="District of Columbia",
+                name_ru="Округ Колумбия", kind="district", geo_code="DC", fips="11",
+                sort_order=3,
+            )
+            db.add(dc)
+            await db.flush()
+            db.add(SubnationalDataPoint(
+                indicator_id=unemployment.id, region_id=dc.id,
+                period=date(2024, 2, 1), value=5.4,
+            ))
+            await db.commit()
+            return await _world_region_vs_urls(db, date(2026, 9, 24))
+
+    urls = asyncio.run(seed_and_collect())
+    paths = {url.path for url in urls}
+    assert len(paths) == 3  # 2 states + DC → all three unordered pairs
+    path = "/united-states/region-vs/california-vs-district-of-columbia"
+    assert path in paths
+    response = subnational_client.get(
+        "/seo/world/united-states/region-vs/california-vs-district-of-columbia"
+    )
+    assert response.status_code == 200
+    assert "Штаты и округ Колумбия" in response.text
+    assert path in response.text
 
 
 def test_country_region_paths():

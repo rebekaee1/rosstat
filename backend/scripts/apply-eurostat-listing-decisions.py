@@ -295,7 +295,7 @@ async def main(only: list[str] | None = None) -> int:
     log.info("name_deduped=%d", n_dedupe)
 
     try:
-        await bump_namespaces("world")
+        await bump_namespaces("world", "world-catalog", "ssr-world")
     except Exception as exc:  # noqa: BLE001
         log.warning("cache bump skipped: %s", exc)
 

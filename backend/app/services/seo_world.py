@@ -1635,16 +1635,17 @@ async def render_world_indicator_html(
     if country is None:
         return 404, "<h1>Страна не найдена</h1>"
 
+    from app.data.legacy_redirects import is_retired_world_hicp
+
     indicator = (
         await db.execute(
             select(WorldIndicator).where(
                 WorldIndicator.country_id == country.id,
                 WorldIndicator.code == code,
-                WorldIndicator.is_listed.is_(True),
             )
         )
     ).scalar_one_or_none()
-    if indicator is None:
+    if indicator is None or not (indicator.is_listed or is_retired_world_hicp(slug, code)):
         return 404, "<h1>Показатель не найден</h1>"
 
     rows = (
@@ -1660,6 +1661,7 @@ async def render_world_indicator_html(
     series = [(d, float(v)) for d, v in rows]
     first_date, first_value = series[0]
     last_date, last_value = series[-1]
+    years = sorted({d.year for d, _value in series if paths.is_public_year(d.year)})
     unit = _unit_of(indicator)
     unit_sfx = _unit_sfx(unit)
     source = _source_label(indicator.source, indicator.provider)
@@ -1750,6 +1752,14 @@ async def render_world_indicator_html(
         escape(desc_text),
         period_line,
     ]
+    if is_retired_world_hicp(slug, code):
+        paragraphs.insert(0, escape(
+            "Архивный ряд ГИПЦ: Евростат прекратил выпуск этого набора после "
+            "перехода на новую классификацию. Здесь сохранена опубликованная история."
+            if loc != "en" else
+            "Archived HICP series: Eurostat discontinued this dataset after a "
+            "classification change. Its published history remains available here."
+        ))
     if indicator.methodology and indicator.methodology.strip():
         method = indicator.methodology.strip()
         if not (
@@ -1762,6 +1772,12 @@ async def render_world_indicator_html(
             paragraphs.append(escape(method))
 
     paragraphs_html = "".join(f"<p>{p}</p>" for p in paragraphs)
+
+    years_html = "".join(
+        f'<li><a href="{escape(paths.indicator_year(slug, code, year))}">{year}</a></li>'
+        for year in years
+    )
+    years_heading = "By year" if loc == "en" else "По годам"
 
     recent = list(reversed(series[-24:]))
     table_rows = "".join(
@@ -2015,6 +2031,7 @@ async def render_world_indicator_html(
 {paragraphs_html}
 {freq_links_html}
 {table_html}
+<section class="seo-section"><h2>{escape(years_heading)}</h2><ul class="seo-pills">{years_html}</ul></section>
 {peers_html}
 {siblings_html}
 <section class="seo-section"><h2>{escape(h2_source)}</h2>

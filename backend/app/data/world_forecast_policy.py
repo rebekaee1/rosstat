@@ -74,6 +74,7 @@ _OFFICIAL_PROVIDERS = (
     "fred",
     "bls",
     "bea",
+    "bea-regional",
     "census",
     "statcan",
     "boc_valet",
@@ -125,6 +126,8 @@ def forecast_eligibility_for(
     today = today or date.today()
     if history_end is None:
         return None, "missing_history_end"
+    if history_end > today:
+        return None, "future_observation"
     if (today - history_end).days > policy.max_age_days[frequency]:
         return None, "series_is_stale"
 

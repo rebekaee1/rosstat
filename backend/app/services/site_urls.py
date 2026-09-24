@@ -547,6 +547,53 @@ async def _world_regions_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     return urls
 
 
+async def _world_region_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    """All data-backed pairs of US states and DC; one canonical order per pair."""
+    from app.services.world_subnational_ingest import load_subnational_passport
+
+    hosts = (await db.execute(select(WorldCountry.slug, WorldCountry.code).where(
+        WorldCountry.is_active.is_(True),
+    ))).all()
+    urls: list[SiteUrl] = []
+    for country_slug, country_code in hosts:
+        try:
+            featured = tuple(load_subnational_passport(country_code.lower()).featured_indicators)
+        except (FileNotFoundError, ValueError):
+            continue
+        if not featured:
+            continue
+        # Every emitted pair shares at least one featured indicator.  This
+        # matches the comparison renderer's data-backed 404 rule.
+        rows = (await db.execute(select(
+            SubnationalRegion.slug, SubnationalIndicator.code,
+            func.max(SubnationalDataPoint.period),
+        ).select_from(SubnationalDataPoint).join(
+            SubnationalRegion, SubnationalRegion.id == SubnationalDataPoint.region_id,
+        ).join(
+            SubnationalIndicator, SubnationalIndicator.id == SubnationalDataPoint.indicator_id,
+        ).where(
+            SubnationalRegion.country_code == country_code,
+            SubnationalRegion.kind.in_(("state", "district")),
+            SubnationalIndicator.country_code == country_code,
+            SubnationalIndicator.is_listed.is_(True),
+            SubnationalIndicator.code.in_(featured),
+        ).group_by(SubnationalRegion.slug, SubnationalIndicator.code))).all()
+        by_indicator: dict[str, list[tuple[str, date]]] = {}
+        for state_slug, indicator_code, last_date in rows:
+            by_indicator.setdefault(indicator_code, []).append((state_slug, last_date))
+        pair_dates: dict[tuple[str, str], date] = {}
+        for states in by_indicator.values():
+            for (a, date_a), (b, date_b) in combinations(states, 2):
+                key = tuple(sorted((a, b)))
+                paired_date = min(date_a, date_b)
+                if key not in pair_dates or pair_dates[key] < paired_date:
+                    pair_dates[key] = paired_date
+        for (a, b), last_date in sorted(pair_dates.items()):
+            urls.append(_u(paths.country_region_vs(country_slug, a, b),
+                           (last_date or today).isoformat(), "weekly", "0.5"))
+    return urls
+
+
 class _RankProbe:
     """Строчка-прокси для world_card_primary_rank без ORM-объекта."""
 
@@ -1205,6 +1252,72 @@ async def _world_years_page(
     return urls, ((int(last[0]), int(last[1])))
 
 
+def _world_region_years_base_stmt():
+    """US observations grouped by canonical state, listed series and year."""
+    year_expr = func.extract("year", SubnationalDataPoint.period).cast(Integer)
+    return (
+        select(
+            SubnationalDataPoint.indicator_id.label("indicator_id"),
+            SubnationalDataPoint.region_id.label("region_id"),
+            year_expr.label("year"),
+        )
+        .join(SubnationalIndicator, SubnationalIndicator.id == SubnationalDataPoint.indicator_id)
+        .join(SubnationalRegion, SubnationalRegion.id == SubnationalDataPoint.region_id)
+        .join(WorldCountry, WorldCountry.code == SubnationalRegion.country_code)
+        .where(
+            WorldCountry.code == "US",
+            WorldCountry.is_active.is_(True),
+            SubnationalIndicator.country_code == "US",
+            SubnationalIndicator.is_listed.is_(True),
+            SubnationalDataPoint.period >= date(paths.PUBLIC_YEAR_MIN, 1, 1),
+            SubnationalDataPoint.period < date(paths.PUBLIC_YEAR_MAX + 1, 1, 1),
+        )
+        .group_by(SubnationalDataPoint.indicator_id, SubnationalDataPoint.region_id, year_expr)
+    )
+
+
+async def _world_region_years_page(
+    db: AsyncSession, today: date, after: tuple | None, limit: int,
+) -> tuple[list[SiteUrl], tuple | None]:
+    """One bounded sitemap page for every observed US region × series × year."""
+    base = _world_region_years_base_stmt()
+    keys = (
+        SubnationalDataPoint.indicator_id,
+        SubnationalDataPoint.region_id,
+        func.extract("year", SubnationalDataPoint.period).cast(Integer),
+    )
+    stmt = base.add_columns(func.max(SubnationalDataPoint.period).label("last_date"))
+    if after:
+        # Keyset predicate is on grouping keys, so applying it before GROUP BY
+        # lets PostgreSQL use the indicator-led index for later sitemap pages.
+        stmt = stmt.where(tuple_(*keys) > tuple_(int(after[0]), int(after[1]), int(after[2])))
+    rows = (await db.execute(stmt.order_by(*keys).limit(limit))).all()
+    if not rows:
+        return [], None
+    indicator_meta = dict((await db.execute(select(
+        SubnationalIndicator.id, SubnationalIndicator.code,
+    ).where(SubnationalIndicator.id.in_({int(row[0]) for row in rows})))).all())
+    region_meta = dict((await db.execute(select(
+        SubnationalRegion.id, SubnationalRegion.slug,
+    ).where(SubnationalRegion.id.in_({int(row[1]) for row in rows})))).all())
+    country_slug = (await db.execute(select(WorldCountry.slug).where(
+        WorldCountry.code == "US", WorldCountry.is_active.is_(True),
+    ))).scalar_one()
+    urls = [
+        _u(
+            paths.country_region_indicator_year(
+                country_slug, region_meta[int(region_id)], indicator_meta[int(indicator_id)], int(year),
+            ),
+            last_date.isoformat(),
+            "weekly" if int(year) == today.year else "yearly",
+            "0.4",
+        )
+        for indicator_id, region_id, year, last_date in rows
+    ]
+    last = rows[-1]
+    return urls, (int(last[0]), int(last[1]), int(last[2]))
+
+
 # --- Счётчики чанков: один count(*) по каждой группе --------------------------
 #
 # Дешёвые запросы (без выгрузки строк): считают ровно те группы, что режутся
@@ -1216,7 +1329,8 @@ async def _world_years_page(
 
 _CHUNK_COUNTS_TTL = 6 * 3600
 
-_CHUNK_COUNTS_KEY = "fe:sitemap:chunk-counts:public-v3"
+_CHUNK_COUNTS_KEY = "fe:sitemap:chunk-counts:public-v4"
+_CHUNK_ITEM_COUNTS_KEY = "fe:sitemap:chunk-item-counts:public-v1"
 
 _CHUNK_BOUNDS_TTL = 3600
 
@@ -1266,6 +1380,8 @@ _SIMPLE_SECTION_ORDER = [
     "world-ratings",
     "world",
     "world-regions",
+    "world-region-years-",
+    "world-region-vs",
     "calendar",
     "world-vs",
     "years",
@@ -1333,6 +1449,10 @@ def _world_years_bounds_stmt() -> object:
     )
 
 
+def _world_region_years_bounds_stmt() -> object:
+    return _world_region_years_base_stmt()
+
+
 def _months_bounds_stmt():
     return _months_stmt().with_only_columns(
         Indicator.code.label("code"),
@@ -1377,6 +1497,13 @@ _CHUNKED_SOURCES: dict[str, _ChunkSource] = {
         sort=(WorldDataPoint.indicator_id, func.extract("year", WorldDataPoint.date)),
         count=_WORLD_YEARS_COUNT,
     ),
+    "world-region-years-": _ChunkSource(
+        fetch=_world_region_years_page, size=WORLD_CHUNK,
+        bounds=_world_region_years_bounds_stmt,
+        sort=(SubnationalDataPoint.indicator_id, SubnationalDataPoint.region_id,
+              func.extract("year", SubnationalDataPoint.period).cast(Integer)),
+        count=select(func.count()).select_from(_world_region_years_bounds_stmt().subquery()),
+    ),
 }
 
 _SIMPLE_SECTION_BUILDERS: dict[str, Callable[[AsyncSession, date], Awaitable[list[SiteUrl]]]] = {
@@ -1389,6 +1516,7 @@ _SIMPLE_SECTION_BUILDERS: dict[str, Callable[[AsyncSession, date], Awaitable[lis
     "world-ratings": _world_rating_urls,
     "world": _world_hub_urls,
     "world-regions": _world_regions_urls,
+    "world-region-vs": _world_region_vs_urls,
     "calendar": _calendar_month_urls,
     "world-vs": _world_vs_urls,
     "years": _year_urls,
@@ -1449,6 +1577,27 @@ async def chunk_counts(db: AsyncSession) -> dict[str, int]:
         n = (await db.execute(source.count)).scalar_one()
         counts[prefix] = max(1, -(-max(int(n), 0) // source.size))
     await cache_set(_CHUNK_COUNTS_KEY, counts, _CHUNK_COUNTS_TTL)
+    return counts
+
+
+async def chunk_item_counts(db: AsyncSession) -> dict[str, int]:
+    """Число URL-элементов в каждой чанковой группе.
+
+    IndexNow делит дневную порцию пропорционально этим объёмам: большой блок
+    региональных лет получает большую долю, но не задерживает остальные блоки.
+    Это те же bounded count-запросы, которыми строится sitemap.
+    """
+    from app.core.cache import cache_get, cache_set
+
+    cached = await cache_get(_CHUNK_ITEM_COUNTS_KEY)
+    if isinstance(cached, dict) and cached:
+        return {key: int(value) for key, value in cached.items()}
+
+    counts: dict[str, int] = {}
+    for prefix, source in _CHUNKED_SOURCES.items():
+        n = (await db.execute(source.count)).scalar_one()
+        counts[prefix] = max(int(n), 0)
+    await cache_set(_CHUNK_ITEM_COUNTS_KEY, counts, _CHUNK_COUNTS_TTL)
     return counts
 
 

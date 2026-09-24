@@ -15,6 +15,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import { worldSubnationalHubTrail } from '../lib/breadcrumbs';
+import { pluralRu } from '../lib/regionsApi';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
@@ -160,7 +161,7 @@ function RegionCard({ region, metric, countrySlug }) {
 
 export default function WorldRegionsHome() {
   const { countrySlug, code: mapCode } = useParams();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { isAuthed } = useAuth();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
@@ -183,7 +184,9 @@ export default function WorldRegionsHome() {
 
   const countryName = hub.data?.country?.name || countrySlug;
   const kindPlural = hub.data?.kind_label_plural || t('world.regions.fallbackKindPlural');
-  const title = t('world.regions.hubTitle', { kind: kindPlural, country: countryName });
+  const title = countrySlug === 'united-states' && locale === 'ru'
+    ? 'Штаты США'
+    : t('world.regions.hubTitle', { kind: kindPlural, country: countryName });
 
   useDocumentMeta({
     title: `${title} | Forecast Economy`,
@@ -192,20 +195,24 @@ export default function WorldRegionsHome() {
 
   const valuesBySlug = useMemo(() => {
     const m = new Map();
+    // The previous map stays in the query cache so the timeline never unmounts.
+    // Its values must not be presented as observations for the newly selected year.
+    if (map.isPlaceholderData) return m;
     for (const row of map.data?.values || []) {
       if (row.value != null) m.set(row.slug, row.value);
     }
     return m;
-  }, [map.data]);
+  }, [map.data, map.isPlaceholderData]);
 
   const metricBySlug = useMemo(() => {
     const o = {};
+    if (map.isPlaceholderData) return o;
     const unit = map.data?.indicator?.unit || '';
     for (const row of map.data?.values || []) {
       o[row.slug] = { value: row.value, rank: row.rank, unit };
     }
     return o;
-  }, [map.data]);
+  }, [map.data, map.isPlaceholderData]);
 
   const nameBySlug = useMemo(() => {
     const o = {};
@@ -226,7 +233,10 @@ export default function WorldRegionsHome() {
   const customName = indicators.find((i) => i.code === activeCode)?.name || '';
 
   const years = yearsFromPeriods(periods);
-  const mapYear = map.data?.period ? Number(String(map.data.period).slice(0, 4)) : null;
+  const requestedYear = period ? Number(String(period).slice(0, 4)) : null;
+  const mapYear = requestedYear && years.includes(requestedYear)
+    ? requestedYear
+    : (map.data?.period ? Number(String(map.data.period).slice(0, 4)) : null);
 
   const setView = (next) => {
     if (next === 'map') {
@@ -312,9 +322,13 @@ export default function WorldRegionsHome() {
           <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 font-mono text-xs text-text-tertiary">
             <span className="inline-flex items-center gap-1.5">
               <Database size={12} />
-              {t('world.regions.stat.indicators', { n: hub.data.totals.indicators })}
+              {locale === 'ru'
+                ? `${hub.data.totals.indicators} ${pluralRu(hub.data.totals.indicators, ['показатель', 'показателя', 'показателей'])}`
+                : t('world.regions.stat.indicators', { n: hub.data.totals.indicators })}
             </span>
-            <span>{t('world.regions.stat.regions', { n: hub.data.totals.regions })}</span>
+            <span>{locale === 'ru'
+              ? `${hub.data.totals.regions} ${pluralRu(hub.data.totals.regions, ['территория', 'территории', 'территорий'])}`
+              : t('world.regions.stat.regions', { n: hub.data.totals.regions })}</span>
           </div>
         )}
       </div>
@@ -465,6 +479,7 @@ export default function WorldRegionsHome() {
             <Suspense fallback={<SkeletonBox className="h-80 rounded-xl" />}>
               <RegionsMap
                 mapData={geometry}
+                ariaLabel={t('world.regions.mapAria', { country: countryName })}
                 valuesBySlug={activeCode ? valuesBySlug : null}
                 unit={map.data?.indicator?.unit || ''}
                 nameBySlug={nameBySlug}

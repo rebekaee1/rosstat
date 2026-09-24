@@ -182,8 +182,19 @@ def country_region_indicator(country_slug: str, region_slug: str, code: str) -> 
     return f"/{_slug(country_slug)}/region/{_slug(region_slug)}/{_code(code)}"
 
 
+def country_region_indicator_year(country_slug: str, region_slug: str, code: str, year: int | str) -> str:
+    return f"{country_region_indicator(country_slug, region_slug, code)}/{_year(year)}"
+
+
 def country_region_map(country_slug: str, code: str) -> str:
     return f"/{_slug(country_slug)}/region/map/{_code(code)}"
+
+
+def country_region_vs(country_slug: str, slug_a: str, slug_b: str) -> str:
+    a, b = sorted((_slug(slug_a), _slug(slug_b)))
+    if a == b:
+        raise ValueError("comparison needs two distinct regions")
+    return f"/{_slug(country_slug)}/region-vs/{a}-vs-{b}"
 
 
 def region_rating_hub() -> str:

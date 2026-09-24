@@ -16,6 +16,7 @@ class OAuthProfile:
     display_name: str | None = None
     avatar_url: str | None = None
     phone: str | None = None  # default_phone (Яндекс) / phone (VK), если выдан scope'ом
+    locale: str | None = None  # язык интерфейса при регистрации, если сохранён
 
 
 def pkce_challenge_s256(verifier: str) -> str:

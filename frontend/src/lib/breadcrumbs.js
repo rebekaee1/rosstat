@@ -76,8 +76,7 @@ export function russiaCategoryTrail(categoryName, categorySlug) {
 }
 
 export function russiaIndicatorTrail(categoryName, categorySlug, indicatorName, indicatorCode) {
-  // «Россия» на карточке показателя открывает региональный разрез.
-  const items = [homeCrumb(), crumb(regionHubPath(), t('crumb.russia'))];
+  const items = [homeCrumb(), russiaCrumb()];
   if (categoryName && categorySlug) {
     items.push(crumb(russiaCategoryPath(categorySlug), categoryName));
   }

@@ -252,7 +252,7 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
 
     from app.services.sitemap_static import read_stats
     generation = read_stats().get("generation", "dynamic")
-    cache_key = _sitemap_cache_key(f"index:{generation}", origin)
+    cache_key = _sitemap_cache_key(f"index:us-region-fast-v3:{generation}", origin)
     cached = await cache_get(cache_key)
     if cached:
         return _index_304_or_full(cached, request)
@@ -261,6 +261,17 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
     names = published_sections(origin)
     if names is None:
         names = await section_names(db)
+    else:
+        # An older atomic generation can still contain the former single
+        # world-region-years.xml.  Replace it in the index with bounded live
+        # chunks until the next static publication builds the full generation.
+        from app.services.site_urls import chunk_counts
+        names = [name for name in names if name != "world-region-years"]
+        if not any(name.startswith("world-region-years-") for name in names):
+            count = (await chunk_counts(db)).get("world-region-years-", 0)
+            names.extend(f"world-region-years-{index}" for index in range(1, count + 1))
+        if "world-region-vs" not in names and any(name.startswith("world-region-years-") for name in names):
+            names.append("world-region-vs")
     entries = "\n".join(
         f"  <sitemap>\n    <loc>{origin}/sitemap-{name}.xml</loc>\n  </sitemap>"
         for name in names
@@ -299,7 +310,8 @@ async def sitemap_section(
 
     _known_static = frozenset(
         ("core", "today", "ratings", "maps", "regions", "region-vs",
-         "world-ratings", "world", "calendar", "world-vs", "years", "months")
+         "world-ratings", "world", "world-regions", "world-region-vs",
+         "calendar", "world-vs", "years", "months")
     )
 
     origin = _request_sitemap_origin(request)
@@ -1711,6 +1723,7 @@ async def og_image_world_indicator(
 ):
     """PNG-график мирового показателя: og:image + видимый <img> SSR-страницы."""
     from app.data.eurostat_units_ru import unit_suffix
+    from app.data.legacy_redirects import is_retired_world_hicp
     from app.models import WorldCountry, WorldDataPoint, WorldIndicator
     from app.services.og_image import cached_og, render_indicator_og, store_og
 
@@ -1731,7 +1744,6 @@ async def og_image_world_indicator(
             await db.execute(
                 select(WorldIndicator).where(
                     WorldIndicator.code == code,
-                    WorldIndicator.is_listed.is_(True),
                 )
             )
         ).scalar_one_or_none()
@@ -1739,6 +1751,7 @@ async def og_image_world_indicator(
             country is None
             or indicator is None
             or indicator.country_id != country.id
+            or not (indicator.is_listed or is_retired_world_hicp(slug, code))
         ):
             return Response(status_code=404)
         rows = (
@@ -1810,6 +1823,7 @@ async def og_image_world_indicator_year(
     if not paths.is_public_year(year):
         return Response(status_code=404)
     from app.data.eurostat_titles_ru import country_prepositional
+    from app.data.legacy_redirects import is_retired_world_hicp
     from app.data.eurostat_units_ru import unit_suffix
     from app.models import WorldCountry, WorldDataPoint, WorldIndicator
     from app.services.og_image import cached_og, render_indicator_og, store_og
@@ -1833,7 +1847,6 @@ async def og_image_world_indicator_year(
             await db.execute(
                 select(WorldIndicator).where(
                     WorldIndicator.code == code,
-                    WorldIndicator.is_listed.is_(True),
                 )
             )
         ).scalar_one_or_none()
@@ -1841,6 +1854,7 @@ async def og_image_world_indicator_year(
             country is None
             or indicator is None
             or indicator.country_id != country.id
+            or not (indicator.is_listed or is_retired_world_hicp(country_slug, code))
         ):
             return Response(status_code=404)
 
@@ -1946,6 +1960,156 @@ async def og_image_world_indicator_year(
         media_type="image/png",
         headers={"Cache-Control": "public, max-age=3600"},
     )
+
+
+@router.get(
+    "/api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png",
+    include_in_schema=False,
+)
+async def og_image_world_region_vs(
+    country: str, slug_a: str, slug_b: str,
+    db: AsyncSession = Depends(get_db), portrait: bool = False,
+):
+    """Current pearl comparison poster, backed by matching state observation dates."""
+    from app.services.og_image import cached_og, render_region_vs_og, store_og
+    from app.services.seo_world_subnational import _rname
+    from app.services.seo_world_subnational_compare import subnational_compare_payload
+
+    if slug_a >= slug_b:
+        return Response(status_code=404)
+    loc = get_locale()
+    cache_key = f"fe1:wr-vs:v6:{loc}:{country}:{slug_a}:{slug_b}"
+    cache_key += ":portrait" if portrait else ":landscape"
+    png = cached_og(cache_key)
+    if png is None:
+        payload = await subnational_compare_payload(country, slug_a, slug_b, db)
+        if payload is None:
+            return Response(status_code=404)
+        short_names = {
+            "real-gdp": ("Реальный ВРП ($ 2017 г.)", "Real GDP (2017 $)"),
+            "unemployment-rate": ("Безработица", "Unemployment"),
+            "nonfarm-employment": ("Занятость вне сельского хоз.", "Nonfarm jobs"),
+            "personal-income-per-capita": ("Доход на душу населения", "Income per capita"),
+            "population": ("Население", "Population"),
+            "house-price-index": ("Цены на жильё (1980=100)", "House prices (1980=100)"),
+            "building-permits": ("Разрешения на строительство", "Building permits"),
+            "median-household-income": ("Медианный доход семьи", "Median household income"),
+        }
+
+        def _compact_value(value: float, unit: str) -> str:
+            u = (unit or "").lower()
+            amount = float(value)
+            if "млн долл" in u or "million" in u and ("dollar" in u or "usd" in u):
+                return f"{format_number_ru(round(amount / 1_000_000, 2), locale=loc)} {'tn' if loc == 'en' else 'трлн'} $"
+            if "тыс. человек" in u or "thousand people" in u:
+                return f"{format_number_ru(round(amount / 1_000, 2), locale=loc)} {'mn' if loc == 'en' else 'млн'}"
+            if "долл" in u or "dollar" in u or "usd" in u:
+                return f"{format_number_ru(round(amount), locale=loc)} $"
+            if u.strip() == "%" or "percent" in u:
+                return f"{format_number_ru(round(amount, 1), locale=loc)} %"
+            if "индекс" in u or "index" in u:
+                return format_number_ru(round(amount, 1), locale=loc)
+            return format_number_ru(round(amount, 1), locale=loc)
+
+        rows = []
+        for row in payload["rows"][:6]:
+            name = short_names.get(row["code"], (row["name"], row["name"]))[1 if loc == "en" else 0]
+            rows.append((f"{name} · {row['period_label']}",
+                         _compact_value(row["a"], row["unit"]),
+                         _compact_value(row["b"], row["unit"])))
+        png = await render_og_async(
+            render_region_vs_og,
+            portrait=portrait,
+            name_a=_rname(payload["a"]),
+            name_b=_rname(payload["b"]),
+            rows=rows,
+            eyebrow_label=("US states and DC" if loc == "en" else "Штаты и округ Колумбия")
+            if "district-of-columbia" in (slug_a, slug_b) else
+            ("State comparison" if loc == "en" else "Сравнение штатов"),
+            title_separator=" vs " if loc == "en" else " и ",
+            footer_note="Official US data" if loc == "en" else "Официальные данные США",
+        )
+        store_og(cache_key, png)
+    return Response(content=png, media_type="image/png", headers={"Cache-Control": "public, max-age=3600"})
+
+
+@router.get(
+    "/api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png",
+    include_in_schema=False,
+)
+async def og_image_world_region_indicator_year(
+    country: str, region: str, indicator: str, year: int,
+    db: AsyncSession = Depends(get_db), portrait: bool = False,
+):
+    """Selected-year state chart in the same current glass design as the series card."""
+    from app.models import SubnationalDataPoint, SubnationalIndicator, SubnationalRegion
+    from app.services.og_image import cached_og, render_indicator_og, store_og
+    from app.services.seo_world_subnational import _country, _cname, _iname, _iunit, _rname
+    from app.services.world_subnational_ingest import period_label
+
+    if not paths.is_public_year(year):
+        return Response(status_code=404)
+    loc = get_locale()
+    cache_key = f"fe1:wr-year:v2:{loc}:{country}:{region}:{indicator}:{year}"
+    cache_key += ":portrait" if portrait else ":landscape"
+    png = cached_og(cache_key)
+    if png is None:
+        host = await _country(db, country)
+        if host is None:
+            return Response(status_code=404)
+        territory = (await db.execute(select(SubnationalRegion).where(
+            SubnationalRegion.country_code == host.code,
+            SubnationalRegion.slug == region,
+        ))).scalar_one_or_none()
+        series = (await db.execute(select(SubnationalIndicator).where(
+            SubnationalIndicator.country_code == host.code,
+            SubnationalIndicator.code == indicator,
+            SubnationalIndicator.is_listed.is_(True),
+        ))).scalar_one_or_none()
+        if territory is None or series is None:
+            return Response(status_code=404)
+        rows = (await db.execute(select(SubnationalDataPoint.period, SubnationalDataPoint.value).where(
+            SubnationalDataPoint.indicator_id == series.id,
+            SubnationalDataPoint.region_id == territory.id,
+        ).order_by(SubnationalDataPoint.period))).all()
+        year_rows = [(period, float(value)) for period, value in rows if period.year == year]
+        if not year_rows:
+            return Response(status_code=404)
+        chosen = year_rows[-1]
+        value_text = f"{format_number_ru(float(chosen[1]), locale=loc)} {_iunit(series)}".strip()
+        label = period_label(chosen[0], series.frequency, loc)
+        if len(year_rows) >= 2:
+            # A monthly/quarterly yearly landing plots only that calendar
+            # year's observations; the axes must not silently show 1976–2026.
+            chart_rows = year_rows
+            x_labels = (
+                period_label(year_rows[0][0], series.frequency, loc),
+                period_label(year_rows[-1][0], series.frequency, loc),
+            )
+        else:
+            # Annual/sparse series need historical context. End the window at
+            # the selected year, with its point visibly highlighted.
+            last_by_year = {period.year: (period, float(value)) for period, value in rows if period.year <= year}
+            chart_rows = [last_by_year[y] for y in sorted(last_by_year)[-10:]]
+            x_labels = (str(chart_rows[0][0].year), str(year))
+        png = await render_og_async(
+            render_indicator_og,
+            portrait=portrait,
+            code=cache_key,
+            name=_iname(series),
+            value_text=value_text,
+            date_text=label,
+            values=[value for _period, value in chart_rows],
+            point_dates=[period for period, _value in chart_rows],
+            frequency=series.frequency,
+            selected_index=len(chart_rows) - 1,
+            source_label=(series.source_en if loc == "en" else series.source_ru) or "",
+            x_labels=x_labels,
+            subtitle=f"{_rname(territory)} — {_cname(host)}",
+            period_text=str(year) if loc == "en" else f"{year} год",
+        )
+        store_og(cache_key, png)
+    return Response(content=png, media_type="image/png", headers={"Cache-Control": "public, max-age=3600"})
 
 
 @router.get(

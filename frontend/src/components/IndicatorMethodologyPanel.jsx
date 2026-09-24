@@ -11,17 +11,23 @@ import { russiaHomePath, russiaIndicatorPath } from '../lib/sitePaths';
  * Текст методологии режим-зависимый и приходит из resolveViewModeContent /
  * API (generic). Блок источника — ссылка/бейдж в зависимости от URL.
  */
-export default function IndicatorMethodologyPanel({ indicator, content }) {
+export default function IndicatorMethodologyPanel({ indicator, content, sourcePath }) {
   const t = useT();
   const { locale } = useLocale();
   const sourceName = localizeSource(indicator?.source, locale);
   const sourceLabel = t('indicator.source', { source: sourceName });
   const low = (indicator?.source || '').toLowerCase();
   const named = footerSourceLinks(locale).find((item) => t(item.key).toLowerCase() === low);
-  let sourceTo = named?.to || (indicator?.code ? russiaIndicatorPath(indicator.code) : russiaHomePath());
-  if (low.includes('росстат') || low.includes('rosstat')) sourceTo = russiaHomePath();
-  if (low.includes('минфин')) sourceTo = russiaIndicatorPath('budget-deficit');
-  if (low.includes('банк россии')) sourceTo = russiaIndicatorPath('key-rate');
+  let sourceTo = sourcePath || named?.to || (indicator?.code ? russiaIndicatorPath(indicator.code) : russiaHomePath());
+  if (!sourcePath && (low.includes('росстат') || low.includes('rosstat'))) sourceTo = russiaHomePath();
+  if (!sourcePath && low.includes('минфин')) sourceTo = russiaIndicatorPath('budget-deficit');
+  if (!sourcePath && low.includes('банк россии')) sourceTo = russiaIndicatorPath('key-rate');
+  const description = content?.description || (locale === 'en'
+    ? `${indicator?.name || 'This indicator'} shows the published observations and their dates. Select a view above the chart to inspect its level or change over time.`
+    : `${indicator?.name || 'Показатель'}: на графике показаны опубликованные наблюдения и их даты. Режим над графиком позволяет изучить уровень или изменение ряда.`);
+  const methodology = content?.methodology || (locale === 'en'
+    ? `Source: ${sourceName || 'the listed data provider'}. Forecasts, when available, are shown separately from observations.`
+    : `Источник: ${sourceName || 'указанный поставщик данных'}. Прогноз, если он доступен, показан отдельно от фактических значений.`);
 
   return (
     <section data-block="methodology" className="lg:col-span-1 p-8 rounded-[2rem] bg-obsidian-light border border-border-subtle flex flex-col h-full">
@@ -34,11 +40,11 @@ export default function IndicatorMethodologyPanel({ indicator, content }) {
 
       <div className="prose prose-sm max-w-none">
         <p className="text-text-secondary leading-relaxed">
-          {content?.description}
+          {description}
         </p>
-        {content?.methodology && (
-          <div className="text-text-tertiary border-l-2 border-champagne/30 pl-4 my-4 font-mono text-[10px] uppercase tracking-wider">
-            {content.methodology}
+        {methodology && (
+          <div className="text-text-tertiary border-l-2 border-champagne/40 pl-4 my-4 text-xs leading-relaxed">
+            {methodology}
           </div>
         )}
       </div>

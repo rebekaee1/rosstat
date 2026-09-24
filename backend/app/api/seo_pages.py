@@ -37,6 +37,7 @@ from app.data.legacy_redirects import (
     LEGACY_REGION_SLUG_PREFIXES,
     resolve_legacy_indicator,
     resolve_unlisted_indicator,
+    resolve_world_hicp_successor,
     resolve_world_frequency_sibling,
 )
 from app.database import get_db
@@ -75,6 +76,8 @@ from app.services.seo_world_subnational import (
     render_subnational_indicator_html,
     render_subnational_region_html,
 )
+from app.services.seo_world_subnational_year import render_subnational_indicator_year_html
+from app.services.seo_world_subnational_compare import render_subnational_compare_html
 from app.services.seo_world_year import render_world_indicator_year_html
 
 router = APIRouter(tags=["seo-pages"])
@@ -109,7 +112,10 @@ async def _ssr_key(namespace: str, variant: str, sig: str) -> str:
 
     loc = get_locale()
     host = urlparse(get_request_origin()).hostname or "default"
-    folded = f"glass-manrope-6|{variant}|{loc}|{host}"
+    # World indicator SSR embeds forecast availability. The model-version
+    # suffix prevents persisted Redis HTML from exposing older gate results.
+    forecast_sig = "forecast-method-2" if namespace == "ssr-world" else ""
+    folded = f"glass-manrope-6|{forecast_sig}|{variant}|{loc}|{host}"
     return await versioned_key(
         namespace, f"ssr:{hashlib.md5(folded.encode()).hexdigest()[:16]}:{sig}"
     )
@@ -532,6 +538,46 @@ async def seo_world_subnational_hub(
 
 
 @router.api_route(
+    "/seo/world/{slug}/region-vs/{slug_a}-vs-{slug_b}",
+    methods=["GET", "HEAD"], include_in_schema=False,
+)
+async def seo_world_subnational_compare(
+    slug: str, slug_a: str, slug_b: str, request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    if slug_a == slug_b:
+        return _html_response(404, "Not found")
+    if slug_a > slug_b:
+        return _permanent_redirect(paths.country_region_vs(slug, slug_a, slug_b), request)
+    status, html = await _cached_html(
+        "ssr-world",
+        f"world-region-vs:v2:{slug}:{slug_a}:{slug_b}:{get_locale()}",
+        _SSR_TTL_WORLD,
+        lambda: render_subnational_compare_html(slug, slug_a, slug_b, db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route(
+    "/seo/world/{slug}/region/{region_slug}/{code}/{year}",
+    methods=["GET", "HEAD"], include_in_schema=False,
+)
+async def seo_world_subnational_indicator_year(
+    slug: str, region_slug: str, code: str, year: str, request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    if not paths.is_public_year(year):
+        return _html_response(404, "Not found")
+    status, html = await _cached_html(
+        "ssr-world",
+        f"world-region-ind-year:v1:{slug}:{region_slug}:{code}:{year}:{get_locale()}",
+        _SSR_TTL_WORLD,
+        lambda: render_subnational_indicator_year_html(slug, region_slug, code, int(year), db),
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route(
     "/seo/world/{slug}/region/{region_slug}/{code}",
     methods=["GET", "HEAD"], include_in_schema=False,
 )
@@ -579,6 +625,9 @@ async def seo_world_country(
 async def seo_world_indicator(
     slug: str, code: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
+    hicp_target = await resolve_world_hicp_successor(db, slug, code)
+    if hicp_target:
+        return _permanent_redirect(hicp_target, request)
     # Вторичные частоты → финальный /{slug}/indicator/{primary}?mode=…
     target = await resolve_world_frequency_sibling(db, slug, code)
     if target:
@@ -605,6 +654,9 @@ async def seo_world_indicator_year(
 ):
     if not paths.is_public_year(year):
         return _html_response(404, "Not found")
+    hicp_target = await resolve_world_hicp_successor(db, slug, code, int(year))
+    if hicp_target:
+        return _permanent_redirect(hicp_target, request)
     # Вторичные частоты → финальный /{slug}/indicator/{primary} (query отрезаем,
     # годовой лендинг живёт только на primary-ряде).
     target = await resolve_world_frequency_sibling(db, slug, code)

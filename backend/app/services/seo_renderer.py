@@ -658,7 +658,7 @@ _SPA_SSR_HIDE_SCRIPT = (
 # `_ssr_chrome_*()` / `_ssr_platform_deep_links()` по get_locale().
 _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
-<nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.region_hub()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.russia_home()}">Показатели</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
+<nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
 </div></header>"""
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
@@ -860,8 +860,6 @@ def _prepare_quicklink_body(body: str, canonical_path: str) -> str:
     soup = BeautifulSoup(body, "html.parser")
     parent = re.sub(r"/\d{4}(?:-\d{2})?/?$", "", canonical_path.split("?", 1)[0]) or "/"
     for anchor in soup.find_all("a", href=True):
-        if anchor.get_text(strip=True) in ("Россия", "Russia") and anchor["href"].rstrip("/") == paths.russia_home():
-            anchor["href"] = paths.region_hub()
         target = urlsplit(anchor["href"])
         if target.scheme in ("http", "https") or target.netloc:
             if target.hostname in ("forecasteconomy.com", "ru.forecasteconomy.com"):
@@ -1364,6 +1362,26 @@ async def render_home_html(db: AsyncSession) -> str:
     page = get_page_seo("home")
     if page is None:
         page = PAGE_META["home"]
+    page_blocks = page.blocks
+    if get_locale() != "en" and page_blocks:
+        from app.core.cache import cache_get, versioned_key
+        scope = await cache_get(await versioned_key("world-catalog", f"countries:v8:{get_locale()}"))
+        if scope:
+            world_count = int(scope.get("world_indicators_count") or 0)
+            ru_count = int(scope.get("russia_macro_indicators_count") or 0)
+            regional_count = int(scope.get("regional_indicators_count") or 0)
+            fmt = lambda value: f"{value:,}".replace(",", " ")
+            page_blocks = (
+                SeoBlock(
+                    "О платформе",
+                    f"На платформе доступны {fmt(world_count)} показателей по странам, "
+                    f"{fmt(ru_count)} макроэкономических показателей России и "
+                    f"{fmt(regional_count)} региональных показателей России и США. "
+                    "Карточки показывают историю, режимы представления, таблицы и сопоставимые ряды; "
+                    "прогноз публикуется только там, где модель прошла проверку качества.",
+                ),
+                *page_blocks[1:],
+            )
     eyebrow = home_template("eyebrow") or "Официальные данные России, регионов и стран"
     h2_countries = home_template("h2_countries") or "Страны"
     h2_flagships = home_template("h2_flagships") or "Ключевые индикаторы"
@@ -1380,7 +1398,7 @@ async def render_home_html(db: AsyncSession) -> str:
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
-{_blocks_html(page.blocks)}
+{_blocks_html(page_blocks)}
 <section><h2>{escape(h2_flagships)}</h2>{_links_list(flagship_links)}</section>
 <section id="countries"><h2>{escape(h2_countries)}</h2>{_links_list(country_links)}</section>
 <section><h2>{escape(h2_tools)}</h2>{_links_list(page.links)}</section>

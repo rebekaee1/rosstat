@@ -4,27 +4,28 @@
 
 **Сгенерировано:** 2026-09-24
 
-**Файлов:** 1085  ·  **Строк:** 503 416  ·  **Токенов (≈):** 4 786 501
+**Файлов:** 1109  ·  **Строк:** 547 078  ·  **Токенов (≈):** 5 466 311
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 158 | 54 171 |
+| `(root)` | 8 | 2 187 | 54 705 |
 | `.github` | 1 | 150 | 1 250 |
-| `backend` | 564 | 177 809 | 1 728 142 |
+| `backend` | 577 | 219 739 | 2 382 900 |
 | `clickhouse` | 2 | 36 | 445 |
 | `deploy` | 9 | 484 | 5 393 |
-| `docs` | 75 | 229 622 | 2 030 312 |
-| `frontend` | 352 | 77 385 | 794 779 |
+| `docs` | 79 | 230 075 | 2 038 397 |
+| `frontend` | 358 | 78 372 | 807 805 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 71 | 15 614 | 170 889 |
+| `scripts` | 72 | 15 877 | 174 296 |
 
 ## Все файлы (по убыванию токенов)
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
+| `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
 | `docs/design/local-acceptance/baseline-paced/http.json` | 23 844 | 219 383 |
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
@@ -42,80 +43,87 @@
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 080 |
-| `backend/app/services/seo_renderer.py` | 2 923 | 30 290 |
-| `CONTEXT.md` | 815 | 28 600 |
-| `frontend/src/i18n/messages.ru.js` | 1 955 | 27 409 |
-| `frontend/src/i18n/messages.en.js` | 1 946 | 26 444 |
-| `backend/app/api/sitemap.py` | 2 313 | 23 182 |
+| `backend/app/services/seo_renderer.py` | 2 941 | 30 535 |
+| `CONTEXT.md` | 816 | 28 645 |
+| `frontend/src/i18n/messages.ru.js` | 1 963 | 27 583 |
+| `frontend/src/i18n/messages.en.js` | 1 954 | 26 612 |
+| `backend/app/api/sitemap.py` | 2 477 | 25 359 |
+| `backend/app/api/world.py` | 2 362 | 22 271 |
 | `frontend/src/pages/ComparePage.jsx` | 2 117 | 21 929 |
-| `backend/app/api/world.py` | 2 300 | 21 495 |
 | `backend/app/services/seo_regional.py` | 2 109 | 20 942 |
-| `backend/app/services/og_image.py` | 1 834 | 19 813 |
+| `backend/app/services/og_image.py` | 1 879 | 20 374 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
-| `backend/app/models.py` | 1 469 | 18 813 |
-| `backend/app/services/seo_world.py` | 2 046 | 18 654 |
+| `backend/app/services/seo_world.py` | 2 063 | 18 888 |
+| `backend/app/models.py` | 1 470 | 18 828 |
 | `backend/app/data/i18n/indicator_copy_en.py` | 1 061 | 17 960 |
 | `backend/app/data/i18n/seo_en.py` | 1 566 | 17 464 |
 | `backend/app/services/analytics_marts.py` | 1 592 | 17 111 |
+| `backend/app/services/site_urls.py` | 1 737 | 16 982 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/data/eurostat_titles_ru.py` | 1 789 | 16 588 |
 | `docs/design/local-acceptance/final-narrow/browser.json` | 2 181 | 16 120 |
-| `backend/app/services/site_urls.py` | 1 588 | 15 230 |
+| `backend/app/main.py` | 1 515 | 15 253 |
 | `backend/app/data/view_model_families.py` | 1 233 | 14 779 |
-| `backend/app/main.py` | 1 416 | 14 269 |
-| `AGENTS.md` | 400 | 14 092 |
-| `backend/app/data/world_national_core/us.yaml` | 1 429 | 13 989 |
+| `backend/app/data/world_national_core/us.yaml` | 1 498 | 14 637 |
+| `AGENTS.md` | 404 | 14 165 |
 | `backend/tests/test_i18n_parity.py` | 1 472 | 13 085 |
+| `docs/data_sources.md` | 641 | 12 927 |
 | `backend/app/services/admin_bi.py` | 1 315 | 12 850 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
+| `backend/tests/test_seo_growth_pages.py` | 1 245 | 11 936 |
+| `frontend/nginx.conf` | 977 | 11 845 |
 | `frontend/src/pages/CalculatorPage.jsx` | 1 055 | 11 718 |
 | `backend/app/data/eurostat_unit_codelist_en.json` | 760 | 11 604 |
-| `docs/data_sources.md` | 565 | 11 581 |
 | `backend/tests/test_seo_world.py` | 1 065 | 11 451 |
-| `frontend/nginx.conf` | 949 | 11 340 |
 | `backend/app/data/eurostat_dim_labels_ru.py` | 1 218 | 10 863 |
 | `docs/design/local-acceptance/baseline-browser/browser.json` | 1 523 | 10 824 |
 | `docs/design/local-acceptance/final-source-audit.json` | 1 106 | 10 709 |
 | `docs/research/_fpsr_raw/agent01.json` | 779 | 10 111 |
 | `scripts/build-design-review.mjs` | 407 | 9 931 |
-| `backend/tests/test_seo_og.py` | 1 025 | 9 476 |
-| `backend/app/services/world_national_ingest.py` | 1 128 | 9 474 |
+| `backend/app/services/world_national_ingest.py` | 1 148 | 9 711 |
+| `backend/tests/test_seo_og.py` | 1 026 | 9 541 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 886 | 9 384 |
+| `backend/app/data/world_bea_regional/description_ru.json` | 477 | 9 258 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 838 | 9 207 |
 | `backend/scripts/repair-world-listing.py` | 972 | 9 101 |
-| `backend/tests/test_seo_growth_pages.py` | 931 | 8 893 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 832 | 8 808 |
 | `backend/app/services/derived_ops.py` | 840 | 8 754 |
+| `frontend/src/components/IndicatorChart.jsx` | 863 | 8 728 |
 | `frontend/src/i18n/viewModeContent.en.js` | 901 | 8 696 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 911 | 8 674 |
 | `frontend/src/pages/RegionsHome.jsx` | 776 | 8 596 |
-| `frontend/src/components/IndicatorChart.jsx` | 830 | 8 231 |
+| `backend/tests/test_world.py` | 888 | 8 459 |
 | `backend/app/services/pulse.py` | 738 | 8 221 |
-| `backend/tests/test_world.py` | 863 | 8 220 |
 | `scripts/audit-seo-title-dupes.py` | 909 | 8 178 |
 | `backend/app/services/eurostat_parser.py` | 852 | 8 110 |
 | `backend/tests/test_analytics2.py` | 682 | 7 965 |
+| `backend/app/api/seo_pages.py` | 721 | 7 791 |
+| `frontend/src/pages/WorldIndicatorPage.jsx` | 724 | 7 749 |
 | `scripts/build-indicator-index.py` | 700 | 7 623 |
 | `docs/research/_fpsr_raw/agent04.json` | 630 | 7 617 |
+| `backend/app/data/world_subnational/us.yaml` | 806 | 7 616 |
 | `docs/indicator-family-playbook.md` | 621 | 7 578 |
 | `frontend/src/components/WorldMap.jsx` | 748 | 7 569 |
 | `backend/tests/test_world_cards.py` | 834 | 7 525 |
+| `frontend/src/pages/WorldRegionIndicatorPage.jsx` | 653 | 7 513 |
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 643 | 7 425 |
 | `scripts/e2e/liquid-glass-acceptance.mjs` | 351 | 7 284 |
-| `backend/app/api/seo_pages.py` | 669 | 7 237 |
-| `backend/app/services/seo_content.py` | 609 | 7 222 |
+| `backend/app/services/seo_content.py` | 610 | 7 240 |
 | `docs/design/local-acceptance/inventory.json` | 1 430 | 7 192 |
 | `docs/research/_fpsr_raw/agent07.json` | 581 | 7 138 |
+| `backend/tests/test_world_subnational.py` | 683 | 7 124 |
+| `backend/app/services/world_subnational_ingest.py` | 744 | 7 057 |
 | `backend/app/services/world_adapters/nbs_stats.py` | 802 | 6 971 |
-| `frontend/src/pages/WorldIndicatorPage.jsx` | 684 | 6 971 |
+| `frontend/src/pages/WorldCountry.jsx` | 621 | 6 937 |
 | `frontend/src/pages/EmbedBuilder.jsx` | 536 | 6 930 |
 | `backend/app/api/analytics.py` | 656 | 6 905 |
 | `frontend/src/lib/pageMeta.generated.json` | 497 | 6 871 |
 | `docs/research/_fpsr_raw/agent09.json` | 471 | 6 863 |
-| `frontend/src/pages/WorldRegionIndicatorPage.jsx` | 610 | 6 854 |
+| `backend/app/services/world_forecast_pipeline.py` | 803 | 6 845 |
 | `docs/missed_data_audit.md` | 447 | 6 795 |
 | `backend/app/services/world_cards.py` | 808 | 6 786 |
 | `frontend/src/lib/behavior.js` | 720 | 6 780 |
+| `backend/app/services/indexnow.py` | 746 | 6 693 |
 | `backend/tests/test_pulse.py` | 668 | 6 693 |
 | `backend/app/services/world_adapters/abs_data.py` | 756 | 6 686 |
 | `docs/research/_fpsr_raw/agent02.json` | 489 | 6 660 |
@@ -124,7 +132,6 @@
 | `backend/app/tasks/analytics_rollups.py` | 644 | 6 523 |
 | `docs/research/_fpsr_raw/agent08.json` | 458 | 6 434 |
 | `backend/app/services/seo_today.py` | 635 | 6 300 |
-| `frontend/src/pages/WorldCountry.jsx` | 575 | 6 268 |
 | `docs/research/_fpsr_raw/agent03.json` | 503 | 6 238 |
 | `frontend/src/pages/WorldRatingPage.component.test.jsx` | 667 | 6 203 |
 | `backend/app/data/eurostat_listing.py` | 704 | 6 156 |
@@ -132,114 +139,115 @@
 | `backend/app/api/regions.py` | 668 | 6 046 |
 | `backend/scripts/export_seo_demand_quarter.py` | 554 | 5 996 |
 | `backend/app/services/seo_world_compare.py` | 624 | 5 990 |
-| `backend/app/data/world_subnational/us.yaml` | 685 | 5 978 |
 | `backend/app/services/world_adapters/mospi_api.py` | 653 | 5 972 |
 | `backend/app/services/minfin_budget_parser.py` | 643 | 5 946 |
-| `backend/scripts/load-world-eurostat.py` | 624 | 5 627 |
+| `backend/scripts/load-world-eurostat.py` | 624 | 5 634 |
 | `backend/tests/test_derived_ops.py` | 633 | 5 574 |
 | `docs/research/_fpsr_raw/agent05.json` | 541 | 5 566 |
-| `backend/app/services/world_forecast_pipeline.py` | 678 | 5 535 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
+| `frontend/src/pages/WorldRegionProfile.jsx` | 439 | 5 476 |
+| `backend/app/api/world_subnational.py` | 621 | 5 473 |
 | `backend/tests/test_world_search_compare_national.py` | 569 | 5 429 |
 | `backend/app/tasks/scheduler.py` | 524 | 5 409 |
+| `backend/tests/test_world_national_ingest.py` | 540 | 5 405 |
+| `frontend/src/pages/WorldRegionsHome.jsx` | 516 | 5 377 |
 | `backend/app/data/eurostat_units_ru.py` | 567 | 5 361 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `backend/app/services/pulse_report.py` | 443 | 5 288 |
+| `backend/app/services/seo_world_year.py` | 552 | 5 281 |
 | `backend/app/services/seo_regional_year.py` | 543 | 5 246 |
 | `frontend/src/pages/MortgageCalculatorPage.jsx` | 393 | 5 241 |
 | `frontend/src/lib/format.js` | 579 | 5 235 |
 | `backend/tests/test_world_catalog_merge.py` | 478 | 5 223 |
-| `backend/app/services/seo_world_year.py` | 553 | 5 221 |
 | `backend/app/services/world_adapters/fred_stlouis.py` | 596 | 5 211 |
 | `backend/app/services/telegram_bot.py` | 496 | 5 156 |
-| `frontend/src/pages/WorldRegionsHome.jsx` | 501 | 5 131 |
-| `backend/tests/test_world_national_ingest.py` | 518 | 5 127 |
 | `backend/app/services/calculation_engine.py` | 445 | 5 100 |
 | `scripts/audit-world-plausibility.py` | 480 | 5 091 |
 | `docs/research/_fpsr_raw/agent10.json` | 336 | 5 087 |
-| `backend/tests/test_seo_world_year.py` | 477 | 5 056 |
+| `backend/tests/test_seo_world_year.py` | 477 | 5 069 |
 | `scripts/catalog-harvest.py` | 523 | 5 054 |
-| `backend/app/services/world_subnational_ingest.py` | 562 | 5 005 |
 | `backend/app/services/world_adapters/statcan_wds.py` | 545 | 5 002 |
 | `frontend/src/pages/RussiaHome.jsx` | 480 | 4 980 |
-| `backend/app/api/world_subnational.py` | 582 | 4 977 |
 | `scripts/completeness.py` | 453 | 4 971 |
 | `backend/app/services/clickhouse_sync.py` | 469 | 4 946 |
 | `frontend/src/lib/homeWorkbench.js` | 540 | 4 932 |
 | `backend/app/data/world_aggregation.py` | 573 | 4 900 |
+| `docs/adr/0007-identity-user-accounts.md` | 237 | 4 864 |
 | `backend/app/api/indicators.py` | 496 | 4 853 |
 | `backend/app/services/world_adapters/ons_timeseries.py` | 573 | 4 845 |
 | `backend/app/services/world_adapters/ecos_bok.py` | 551 | 4 839 |
 | `backend/app/services/world_adapters/banxico_sie.py` | 555 | 4 831 |
+| `backend/tests/test_auth_oauth.py` | 459 | 4 805 |
 | `backend/tests/forecast_strategies/test_derived.py` | 534 | 4 789 |
 | `backend/app/services/forecast_strategies/derived_from_source.py` | 446 | 4 779 |
 | `backend/app/services/display.py` | 518 | 4 768 |
 | `scripts/regional/regions_registry.py` | 293 | 4 762 |
+| `frontend/src/i18n/legalPages.en.jsx` | 390 | 4 715 |
 | `backend/app/services/forecast_pipeline.py` | 508 | 4 705 |
 | `frontend/src/index.css` | 607 | 4 704 |
+| `backend/app/services/world_bea_regional.py` | 453 | 4 679 |
+| `backend/app/services/seo_world_subnational.py` | 480 | 4 671 |
 | `backend/tests/test_forecast_policy.py` | 442 | 4 660 |
 | `backend/app/services/world_adapters/rba_stats.py` | 551 | 4 618 |
 | `backend/tests/test_en_catalog.py` | 466 | 4 614 |
 | `frontend/src/components/IndicatorSearch.jsx` | 449 | 4 606 |
 | `frontend/src/components/IndicatorChartSection.jsx` | 435 | 4 602 |
-| `frontend/src/i18n/legalPages.en.jsx` | 383 | 4 593 |
 | `backend/app/services/analytics_report_bundle.py` | 435 | 4 580 |
 | `frontend/src/lib/format.test.js` | 474 | 4 557 |
 | `frontend/src/lib/worldViewModes.js` | 561 | 4 553 |
 | `backend/app/services/world_adapters/cfets_chinamoney.py` | 527 | 4 546 |
 | `backend/app/services/world_adapters/bcb_sgs.py` | 518 | 4 540 |
 | `backend/app/services/world_adapters/boe_iadb.py` | 539 | 4 515 |
-| `backend/app/services/indexnow.py` | 506 | 4 493 |
 | `backend/app/services/metrika_acquisition.py` | 449 | 4 486 |
-| `backend/tests/test_world_subnational.py` | 439 | 4 486 |
 | `docs/design/art-prompts/approved-collection.json` | 93 | 4 468 |
+| `backend/app/api/oauth.py` | 472 | 4 425 |
 | `backend/app/services/seo_i18n.py` | 570 | 4 418 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 393 |
 | `backend/alembic/versions/20260428_add_analytics_os_tables.py` | 327 | 4 373 |
 | `backend/app/services/world_adapters/boj_stat.py` | 492 | 4 366 |
+| `backend/tests/test_world_forecast.py` | 493 | 4 357 |
 | `frontend/public/sitemap.xml` | 573 | 4 353 |
-| `docs/adr/0007-identity-user-accounts.md` | 205 | 4 338 |
+| `backend/app/data/legacy_redirects.py` | 452 | 4 349 |
 | `backend/app/api/auth.py` | 458 | 4 337 |
 | `backend/tests/test_scrape_guard.py` | 463 | 4 333 |
-| `backend/app/api/oauth.py` | 461 | 4 289 |
 | `backend/app/services/seo_indicator_month.py` | 454 | 4 243 |
 | `backend/app/services/world_adapters/boc_valet.py` | 457 | 4 233 |
 | `backend/tests/test_seo_regional_year.py` | 440 | 4 218 |
-| `backend/app/services/seo_world_subnational.py` | 453 | 4 214 |
 | `backend/app/api/embed.py` | 483 | 4 185 |
+| `backend/app/config.py` | 347 | 4 179 |
 | `docs/adr/0003-seo-single-source-server-rendered.md` | 210 | 4 168 |
 | `frontend/src/lib/worldMocks.js` | 403 | 4 115 |
+| `backend/app/services/world_eurostat_ingest.py` | 461 | 4 075 |
 | `backend/tests/test_calendar_seed.py` | 442 | 4 075 |
 | `backend/tests/test_admin_bi.py` | 405 | 4 071 |
 | `backend/app/services/world_adapters/estat_api.py` | 438 | 4 057 |
+| `docker-compose.yml` | 337 | 4 039 |
 | `frontend/src/pages/DemographicsPage.jsx` | 386 | 4 038 |
 | `docs/analytics_api_inventory/frontend_instrumentation.md` | 279 | 4 010 |
-| `backend/app/config.py` | 332 | 3 999 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 142 | 3 955 |
 | `frontend/src/App.jsx` | 361 | 3 925 |
 | `docs/adr/0013-country-first-url-architecture.md` | 302 | 3 916 |
 | `scripts/deploy.sh` | 344 | 3 898 |
 | `frontend/src/pages/CompoundCalculatorPage.jsx` | 296 | 3 879 |
 | `backend/app/services/world_adapters/bea_api.py` | 440 | 3 876 |
-| `backend/app/data/legacy_redirects.py` | 399 | 3 868 |
-| `frontend/src/components/RegionsMap.jsx` | 365 | 3 865 |
+| `frontend/src/components/RegionsMap.jsx` | 366 | 3 873 |
 | `frontend/src/lib/biLabels.js` | 366 | 3 850 |
+| `frontend/src/pages/WorldCountry.component.test.jsx` | 434 | 3 846 |
 | `scripts/regional/backfill_word.py` | 337 | 3 810 |
-| `docker-compose.yml` | 324 | 3 762 |
 | `backend/app/services/rosstat_demo_parser.py` | 434 | 3 754 |
 | `backend/app/services/calendar_sources/rosstat_plan.py` | 395 | 3 737 |
 | `backend/app/services/emiss_regional_parser.py` | 402 | 3 719 |
-| `backend/app/services/world_pop_ingest.py` | 424 | 3 693 |
+| `backend/app/services/world_pop_ingest.py` | 424 | 3 698 |
 | `backend/app/services/world_rank_values.py` | 448 | 3 677 |
 | `backend/tests/test_route_smoke.py` | 380 | 3 676 |
-| `backend/tests/test_auth_oauth.py` | 353 | 3 674 |
 | `scripts/audit-indicator-unification.py` | 307 | 3 654 |
 | `frontend/src/lib/worldApi.js` | 440 | 3 648 |
 | `docs/workflow.md` | 181 | 3 643 |
 | `backend/tests/test_rosstat_weekly_inflation.py` | 355 | 3 620 |
 | `README.md` | 246 | 3 615 |
 | `backend/app/services/webmaster_indexing_daily.py` | 320 | 3 576 |
+| `frontend/src/pages/Privacy.jsx` | 278 | 3 571 |
 | `docs/enterprise_resilience.md` | 91 | 3 569 |
 | `backend/app/tasks/analytics_scheduler.py` | 340 | 3 559 |
 | `scripts/regional/parse_pril_2025.py` | 359 | 3 558 |
@@ -251,20 +259,20 @@
 | `docs/adr/0011-world-eurostat-data-plane.md` | 248 | 3 466 |
 | `frontend/src/components/WorldChartSection.jsx` | 351 | 3 461 |
 | `backend/app/services/scrape_guard.py` | 430 | 3 451 |
-| `frontend/src/pages/Privacy.jsx` | 271 | 3 432 |
-| `frontend/src/pages/WorldCountry.component.test.jsx` | 406 | 3 429 |
-| `frontend/src/pages/WorldRegionProfile.jsx` | 303 | 3 427 |
+| `scripts/build-us-bea-catalog.py` | 263 | 3 407 |
 | `backend/tests/test_rosstat_plan.py` | 323 | 3 365 |
+| `frontend/src/components/RegionAnnualChart.jsx` | 349 | 3 363 |
 | `backend/tests/forecast_strategies/snapshots/prod_generic_ols.json` | 985 | 3 333 |
 | `frontend/src/lib/worldViewModes.test.js` | 348 | 3 322 |
-| `backend/tests/test_world_forecast.py` | 387 | 3 293 |
 | `scripts/audit-world-country-coverage.py` | 345 | 3 293 |
 | `backend/app/data/world_national_core/uk.yaml` | 312 | 3 288 |
+| `backend/tests/test_og_hub_portrait.py` | 241 | 3 284 |
 | `backend/tests/forecast_strategies/fixtures/construction_work_series.json` | 1 | 3 279 |
 | `frontend/src/lib/inflationCalc.js` | 435 | 3 259 |
 | `frontend/src/pages/RegionProfile.jsx` | 299 | 3 242 |
 | `backend/scripts/audit-world-eurostat-underslice.py` | 355 | 3 236 |
 | `frontend/public/consent.js` | 292 | 3 214 |
+| `backend/app/services/world_forecaster.py` | 354 | 3 174 |
 | `frontend/src/pages/ComparePage.component.test.jsx` | 312 | 3 166 |
 | `frontend/src/pages/CalendarPage.jsx` | 331 | 3 160 |
 | `backend/app/services/analytics_backfill.py` | 340 | 3 148 |
@@ -276,24 +284,22 @@
 | `backend/app/api/export.py` | 349 | 3 118 |
 | `docs/adr/0002-derived-always-reflects-source.md` | 136 | 3 094 |
 | `backend/tests/test_world_statcan_adapter.py` | 393 | 3 086 |
+| `backend/app/services/alerting.py` | 323 | 3 062 |
 | `backend/tests/test_imf_weo_adapter.py` | 337 | 3 060 |
 | `backend/app/services/rosstat_science_parser.py` | 343 | 3 051 |
 | `frontend/src/components/home/HomeWorkbench.jsx` | 308 | 3 046 |
-| `backend/app/services/world_eurostat_ingest.py` | 360 | 3 042 |
+| `backend/tests/test_og_glass.py` | 216 | 3 040 |
 | `frontend/src/components/Navbar.component.test.jsx` | 269 | 3 040 |
-| `backend/app/services/world_imf_ingest.py` | 330 | 3 019 |
+| `backend/app/services/world_imf_ingest.py` | 330 | 3 024 |
 | `backend/app/data/world_national_core/au.yaml` | 292 | 3 000 |
-| `frontend/src/components/RegionAnnualChart.jsx` | 314 | 2 997 |
 | `backend/app/services/rosstat_labor_parser.py` | 329 | 2 990 |
 | `docs/design/local-acceptance/baseline-world-rating-target/browser.json` | 460 | 2 970 |
 | `backend/app/services/rosstat_sdds_fetcher.py` | 320 | 2 967 |
 | `backend/app/api/admin_bi.py` | 318 | 2 958 |
 | `backend/app/services/rosstat_weekly_price_parser.py` | 323 | 2 956 |
-| `backend/tests/test_og_hub_portrait.py` | 211 | 2 947 |
 | `scripts/audit-world-eurostat-source.py` | 338 | 2 946 |
-| `backend/tests/test_og_glass.py` | 208 | 2 940 |
 | `backend/app/services/world_adapters/rbi_rates.py` | 338 | 2 919 |
-| `frontend/src/components/Navbar.jsx` | 305 | 2 876 |
+| `frontend/src/components/Navbar.jsx` | 305 | 2 873 |
 | `frontend/src/pages/Account.jsx` | 269 | 2 864 |
 | `backend/app/services/rosstat_gdp_parser.py` | 319 | 2 859 |
 | `backend/app/data/world_national_core/ca.yaml` | 293 | 2 838 |
@@ -311,30 +317,33 @@
 | `backend/tests/test_world_abs_adapter.py` | 327 | 2 760 |
 | `backend/app/services/world_russia_rank.py` | 325 | 2 759 |
 | `backend/app/services/us_pop_adapter.py` | 304 | 2 752 |
-| `backend/app/services/world_forecaster.py` | 322 | 2 741 |
 | `frontend/src/embed/EmbedChart.jsx` | 219 | 2 736 |
 | `backend/tests/test_view_model_families.py` | 268 | 2 732 |
 | `backend/app/data/regional/regions.json` | 578 | 2 731 |
-| `backend/scripts/apply-eurostat-listing-decisions.py` | 317 | 2 723 |
+| `backend/scripts/apply-eurostat-listing-decisions.py` | 317 | 2 730 |
 | `backend/scripts/audit-world-titles.py` | 291 | 2 699 |
 | `scripts/audit-world-titles.py` | 291 | 2 698 |
 | `backend/app/services/base_parser.py` | 270 | 2 693 |
 | `backend/tests/test_world_concepts.py` | 294 | 2 690 |
+| `backend/tests/test_alerting.py` | 249 | 2 687 |
 | `backend/tests/test_og_fit.py` | 296 | 2 686 |
 | `frontend/src/lib/compareRepresentation.js` | 249 | 2 684 |
+| `docs/adr/0012-world-multi-provider-official-first-forecasts.md` | 185 | 2 678 |
 | `scripts/e2e/acceptance-matrix.mjs` | 217 | 2 660 |
 | `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 185 | 2 651 |
-| `backend/app/services/alerting.py` | 282 | 2 643 |
 | `frontend/src/lib/track.js` | 282 | 2 643 |
 | `scripts/regional/fetch_emiss_fuel.py` | 279 | 2 615 |
 | `frontend/src/lib/categories.js` | 276 | 2 599 |
+| `backend/app/services/seo_world_subnational_year.py` | 196 | 2 587 |
 | `backend/app/services/demand_router.py` | 263 | 2 580 |
 | `backend/scripts/export-design-gallery.py` | 168 | 2 560 |
 | `frontend/src/components/GenericIndicatorView.jsx` | 267 | 2 558 |
 | `backend/app/services/seo_region_compare.py` | 266 | 2 548 |
+| `backend/scripts/indexnow-ping-all.py` | 268 | 2 518 |
 | `docs/design/local-acceptance/performance-country-after.json` | 283 | 2 508 |
 | `scripts/regional/unit_normalize.py` | 290 | 2 504 |
 | `frontend/src/lib/consentAdsGate.component.test.jsx` | 274 | 2 499 |
+| `.env.example` | 216 | 2 494 |
 | `backend/app/services/gsc_client.py` | 206 | 2 482 |
 | `frontend/src/lib/indicatorVariants.js` | 257 | 2 466 |
 | `backend/tests/test_public_year_contract.py` | 163 | 2 465 |
@@ -344,39 +353,38 @@
 | `scripts/audit-world-truthfulness-report.md` | 145 | 2 419 |
 | `frontend/src/lib/searchSynonyms.test.js` | 208 | 2 415 |
 | `backend/app/data/world_country_area.py` | 258 | 2 407 |
+| `backend/tests/test_sitemap_static.py` | 237 | 2 401 |
 | `backend/tests/test_world_rba_adapter.py` | 319 | 2 400 |
 | `backend/tests/test_world_russia_rank.py` | 261 | 2 398 |
+| `frontend/src/lib/api.js` | 239 | 2 394 |
 | `backend/app/api/calendar.py` | 267 | 2 391 |
-| `backend/scripts/indexnow-ping-all.py` | 253 | 2 383 |
-| `frontend/src/lib/api.js` | 238 | 2 380 |
 | `frontend/src/pages/TodayIndicatorPage.jsx` | 220 | 2 379 |
 | `backend/scripts/google-search-console.py` | 193 | 2 378 |
 | `frontend/src/pages/CategoryPage.jsx` | 247 | 2 374 |
+| `backend/app/services/site_paths.py` | 334 | 2 366 |
 | `frontend/src/components/LiveTicker.jsx` | 260 | 2 359 |
-| `.env.example` | 205 | 2 355 |
 | `scripts/audit_world_lib.py` | 282 | 2 341 |
 | `backend/alembic/versions/20260706_analytics2.py` | 181 | 2 337 |
-| `backend/tests/test_sitemap_static.py` | 231 | 2 336 |
 | `frontend/src/components/home/HomeWorkbench.component.test.jsx` | 274 | 2 316 |
 | `backend/tests/test_parser_fixtures.py` | 283 | 2 304 |
 | `frontend/src/components/calendar/CalendarEventCard.jsx` | 255 | 2 302 |
-| `backend/app/services/site_paths.py` | 323 | 2 251 |
+| `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 266 | 2 286 |
 | `backend/tests/test_world_boc_valet_adapter.py` | 292 | 2 250 |
 | `scripts/audit-public-language.py` | 256 | 2 250 |
 | `backend/app/services/analytics_alerts.py` | 208 | 2 232 |
 | `docs/design/local-acceptance/performance-country-before.json` | 263 | 2 228 |
-| `docs/adr/0012-world-multi-provider-official-first-forecasts.md` | 157 | 2 224 |
 | `frontend/src/lib/searchSynonyms.js` | 225 | 2 218 |
+| `frontend/src/pages/WorldRegionsHome.component.test.jsx` | 238 | 2 218 |
 | `backend/app/api/forecasts.py` | 240 | 2 215 |
 | `backend/app/tasks/ticker_worker.py` | 241 | 2 208 |
 | `frontend/src/lib/compareRepresentation.test.js` | 206 | 2 205 |
 | `backend/app/services/calendar_sources/enrichment.py` | 265 | 2 200 |
 | `backend/app/data/world_national_core/cn.yaml` | 231 | 2 193 |
+| `frontend/src/components/OAuthButtons.jsx` | 212 | 2 187 |
 | `frontend/src/lib/useCountryComparison.js` | 258 | 2 184 |
 | `backend/app/data/world_national_core/br.yaml` | 220 | 2 182 |
-| `backend/tests/test_alerting.py` | 205 | 2 180 |
 | `backend/app/data/eurostat_dim_labels_en.py` | 237 | 2 157 |
-| `frontend/src/pages/Terms.jsx` | 172 | 2 151 |
+| `frontend/src/pages/Terms.jsx` | 172 | 2 154 |
 | `docs/analytics_api_inventory/google_search_console.md` | 148 | 2 147 |
 | `backend/app/services/calendar_sources/common.py` | 229 | 2 144 |
 | `frontend/src/i18n/messages.parity.test.js` | 219 | 2 121 |
@@ -404,7 +412,7 @@
 | `backend/scripts/backfill-metrika-history.py` | 189 | 1 982 |
 | `backend/seed_regional.py` | 193 | 1 976 |
 | `backend/app/data/world_national_core/jp.yaml` | 212 | 1 973 |
-| `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 236 | 1 971 |
+| `backend/app/services/seo_world_subnational_compare.py` | 160 | 1 971 |
 | `docs/design/local-acceptance/final-us-images-after.json` | 205 | 1 969 |
 | `backend/tests/test_sitemap_public_coverage.py` | 141 | 1 961 |
 | `scripts/seo-audit.py` | 198 | 1 961 |
@@ -425,7 +433,6 @@
 | `frontend/src/components/WorldMap.component.test.jsx` | 213 | 1 875 |
 | `backend/app/api/dashboard.py` | 239 | 1 872 |
 | `frontend/src/components/CookieConsent.jsx` | 207 | 1 870 |
-| `frontend/src/pages/WorldRegionsHome.component.test.jsx` | 206 | 1 866 |
 | `backend/tests/test_cbr_trade_monthly.py` | 214 | 1 864 |
 | `backend/tests/test_hero_yoy.py` | 184 | 1 862 |
 | `backend/scripts/audit-groups-submodes.py` | 173 | 1 859 |
@@ -437,25 +444,26 @@
 | `backend/alembic/versions/20260806_world_multi_provider_forecasts.py` | 238 | 1 820 |
 | `backend/app/services/sitemap_static.py` | 186 | 1 820 |
 | `frontend/src/components/RegisterNudge.jsx` | 182 | 1 815 |
-| `frontend/src/lib/breadcrumbs.js` | 269 | 1 811 |
 | `backend/app/services/traffic_channel.py` | 205 | 1 808 |
 | `backend/app/services/webmaster_recrawl.py` | 192 | 1 808 |
 | `backend/app/data/world_national_core/mx.yaml` | 176 | 1 804 |
 | `frontend/src/components/CountryComparePicker.jsx` | 176 | 1 797 |
-| `backend/app/services/breadcrumbs.py` | 279 | 1 793 |
-| `frontend/src/components/OAuthButtons.jsx` | 189 | 1 791 |
+| `frontend/src/lib/breadcrumbs.js` | 268 | 1 787 |
 | `backend/app/data/world_national_core/kr.yaml` | 190 | 1 769 |
 | `backend/scripts/load-world-auto-deep.py` | 223 | 1 767 |
 | `docs/adr/0008-regional-bounded-context.md` | 118 | 1 765 |
 | `backend/app/services/geoip.py` | 219 | 1 763 |
 | `backend/app/services/rosstat_ipi_parser.py` | 207 | 1 762 |
 | `backend/tests/test_minfin_budget.py` | 228 | 1 760 |
+| `docs/verification/us-eu-source-audit-2026-09-24.md` | 114 | 1 760 |
 | `scripts/regional/unit_fallbacks.py` | 115 | 1 760 |
+| `backend/app/services/breadcrumbs.py` | 277 | 1 759 |
 | `backend/app/data/i18n/regions_en.py` | 145 | 1 758 |
 | `frontend/src/components/WorldConceptPicker.jsx` | 216 | 1 754 |
 | `backend/scripts/metrika-goals-redesign.py` | 182 | 1 744 |
 | `backend/tests/test_gsc_client.py` | 163 | 1 732 |
 | `scripts/regional/build_map_paths.py` | 190 | 1 724 |
+| `backend/app/services/sitemap_images.py` | 139 | 1 712 |
 | `scripts/regional/append_fuel_to_artifact.py` | 179 | 1 705 |
 | `backend/tests/test_world_aggregation.py` | 206 | 1 704 |
 | `frontend/src/components/DataTable.jsx` | 164 | 1 688 |
@@ -463,15 +471,15 @@
 | `backend/app/services/goal_taxonomy.py` | 217 | 1 656 |
 | `backend/tests/test_rosstat_wages_backfill.py` | 167 | 1 641 |
 | `backend/tests/test_display_adapter.py` | 164 | 1 636 |
+| `docs/verification/us-indicators-2026-09-24.md` | 39 | 1 636 |
 | `backend/tests/test_us_br_pop_adapter.py` | 190 | 1 635 |
 | `backend/app/services/http_client.py` | 207 | 1 634 |
 | `scripts/test-crawler-routing.py` | 132 | 1 632 |
 | `backend/app/services/cbr_trade_services_monthly_parser.py` | 206 | 1 621 |
 | `backend/tests/test_og_context.py` | 175 | 1 603 |
-| `backend/tests/test_ticker_sources.py` | 196 | 1 592 |
 | `backend/app/services/upsert.py` | 163 | 1 587 |
 | `backend/app/services/cbr_dataservice_parser.py` | 181 | 1 585 |
-| `backend/app/services/sitemap_images.py` | 131 | 1 566 |
+| `backend/tests/test_ticker_sources.py` | 196 | 1 585 |
 | `frontend/src/lib/housingViewModeContent.jsx` | 152 | 1 566 |
 | `backend/app/services/analytics_period.py` | 178 | 1 561 |
 | `frontend/src/lib/useInflationCalc.js` | 195 | 1 555 |
@@ -502,12 +510,15 @@
 | `backend/tests/test_world_rank_values.py` | 158 | 1 461 |
 | `backend/app/data/region_indicator_polarity.py` | 131 | 1 460 |
 | `frontend/src/components/CountryComparePicker.component.test.jsx` | 184 | 1 460 |
+| `docs/design/README.md` | 104 | 1 453 |
+| `backend/app/services/fred_parser.py` | 164 | 1 448 |
 | `backend/tests/test_world_boe_iadb_adapter.py` | 205 | 1 445 |
+| `frontend/src/lib/sitePaths.js` | 210 | 1 444 |
 | `frontend/src/components/IndicatorForecastSection.jsx` | 165 | 1 442 |
 | `backend/tests/test_world_concept_national.py` | 150 | 1 440 |
 | `backend/tests/test_upsert.py` | 166 | 1 439 |
-| `docs/design/README.md` | 103 | 1 435 |
 | `backend/tests/test_forecaster.py` | 174 | 1 431 |
+| `frontend/src/pages/Register.jsx` | 130 | 1 431 |
 | `backend/app/data/world_concept_national.py` | 153 | 1 429 |
 | `scripts/build-rid-listing.py` | 172 | 1 428 |
 | `frontend/src/lib/cpiViewModeContent.test.js` | 161 | 1 426 |
@@ -518,6 +529,7 @@
 | `backend/tests/test_market_history_backfill.py` | 163 | 1 417 |
 | `backend/tests/test_auth_account.py` | 124 | 1 412 |
 | `docs/design/local-acceptance/performance-lab.json` | 214 | 1 410 |
+| `docs/adr/0014-subnational-regions-generic.md` | 99 | 1 405 |
 | `frontend/src/lib/russiaHomeCards.test.js` | 138 | 1 398 |
 | `backend/app/schemas.py` | 180 | 1 394 |
 | `backend/tests/test_calendar_truth.py` | 112 | 1 394 |
@@ -527,7 +539,6 @@
 | `scripts/pg-backup.sh` | 115 | 1 372 |
 | `backend/tests/test_world_fred_adapter.py` | 180 | 1 364 |
 | `backend/tests/test_webmaster_integrity.py` | 102 | 1 342 |
-| `frontend/src/lib/sitePaths.js` | 200 | 1 333 |
 | `Caddyfile` | 59 | 1 330 |
 | `frontend/src/pages/TodayHub.jsx` | 148 | 1 330 |
 | `backend/app/data/eurostat_substance.py` | 157 | 1 324 |
@@ -552,13 +563,13 @@
 | `frontend/src/components/CpiViewModePicker.jsx` | 172 | 1 247 |
 | `backend/tests/test_emiss_regional_parser.py` | 136 | 1 245 |
 | `frontend/src/lib/cpiViewModeResolve.js` | 151 | 1 245 |
+| `frontend/src/components/home/HomeDataScope.jsx` | 114 | 1 244 |
 | `frontend/src/components/LocaleSwitcher.jsx` | 148 | 1 240 |
 | `frontend/vite.config.js` | 134 | 1 235 |
 | `scripts/audit-compare-representations.py` | 142 | 1 226 |
 | `backend/app/services/bot_score.py` | 119 | 1 223 |
 | `scripts/e2e/liquid-glass-inventory.mjs` | 48 | 1 218 |
 | `backend/app/services/action_policy.py` | 146 | 1 217 |
-| `frontend/src/pages/Register.jsx` | 106 | 1 209 |
 | `frontend/src/pages/RegionRatingPage.component.test.jsx` | 140 | 1 196 |
 | `frontend/src/components/calendar/CalendarHero.jsx` | 128 | 1 188 |
 | `docs/research/_fpsr_raw/build_excel.py` | 173 | 1 186 |
@@ -595,14 +606,14 @@
 | `backend/tests/test_demand_router.py` | 110 | 1 123 |
 | `frontend/src/components/DownloadLimitModal.jsx` | 99 | 1 122 |
 | `backend/app/services/region_compare_data.py` | 122 | 1 120 |
+| `backend/scripts/load-world-national.py` | 143 | 1 120 |
+| `frontend/src/pages/Dashboard.component.test.jsx` | 100 | 1 120 |
 | `backend/tests/test_forecast_constraints.py` | 122 | 1 115 |
 | `frontend/src/embed/EmbedTable.jsx` | 101 | 1 115 |
-| `backend/scripts/load-world-national.py` | 143 | 1 112 |
 | `frontend/src/lib/publicProductClaims.test.js` | 120 | 1 107 |
 | `backend/alembic/versions/20260727_world_eurostat.py` | 102 | 1 103 |
 | `backend/app/data/eurostat_country_visibility.py` | 119 | 1 099 |
 | `backend/app/assets/fonts/GolosText-OFL.txt` | 93 | 1 098 |
-| `frontend/src/pages/Dashboard.component.test.jsx` | 97 | 1 097 |
 | `backend/app/assets/fonts/Manrope-OFL.txt` | 93 | 1 096 |
 | `frontend/public/fonts/Manrope-OFL.txt` | 93 | 1 096 |
 | `backend/tests/test_world_country_markets.py` | 125 | 1 095 |
@@ -614,9 +625,11 @@
 | `backend/app/services/rosstat_ppi_parser.py` | 128 | 1 080 |
 | `backend/tests/test_eurostat_listing_modes.py` | 109 | 1 075 |
 | `scripts/sync-local-from-prod.py` | 134 | 1 075 |
+| `backend/app/services/identity/resolve.py` | 119 | 1 069 |
 | `frontend/src/lib/viewModeEngine.js` | 119 | 1 068 |
-| `backend/app/services/fred_parser.py` | 132 | 1 064 |
 | `frontend/src/embed/EmbedTicker.jsx` | 96 | 1 056 |
+| `backend/app/data/world_forecast_policy.py` | 146 | 1 054 |
+| `backend/app/services/oauth/google.py` | 105 | 1 053 |
 | `docs/design/design-review-gallery.md` | 78 | 1 051 |
 | `backend/app/services/analytics_ingestion.py` | 135 | 1 047 |
 | `backend/tests/test_world_boj_adapter.py` | 138 | 1 047 |
@@ -626,7 +639,6 @@
 | `frontend/src/lib/hooks.js` | 151 | 1 041 |
 | `frontend/src/components/TelemetryCard.jsx` | 96 | 1 040 |
 | `docs/design/local-acceptance/README.md` | 31 | 1 033 |
-| `backend/app/data/world_forecast_policy.py` | 143 | 1 031 |
 | `frontend/src/lib/ppiViewModeGroups.test.js` | 81 | 1 031 |
 | `frontend/src/lib/regionsMapUrl.test.js` | 130 | 1 025 |
 | `frontend/src/lib/cbrTermSliceRateContent.jsx` | 136 | 1 023 |
@@ -637,12 +649,14 @@
 | `frontend/src/lib/apiErrorMessage.js` | 96 | 1 010 |
 | `frontend/src/lib/cpiViewModeContent.audit.test.js` | 115 | 1 010 |
 | `frontend/src/components/MapTimeline.jsx` | 108 | 1 009 |
-| `frontend/src/components/home/HomeDataScope.jsx` | 92 | 1 009 |
+| `backend/app/services/world_subnational_forecast.py` | 88 | 1 008 |
+| `backend/scripts/load-world-subnational.py` | 115 | 1 008 |
 | `backend/tests/test_world_ecos_adapter.py` | 137 | 1 008 |
-| `backend/scripts/load-world-subnational.py` | 115 | 1 001 |
+| `frontend/src/components/home/HomeDataScope.component.test.jsx` | 107 | 1 007 |
 | `frontend/src/lib/behavior.test.js` | 106 | 1 001 |
 | `backend/tests/test_observability.py` | 103 | 999 |
 | `backend/tests/test_region_polarity.py` | 95 | 998 |
+| `frontend/src/pages/Login.jsx` | 91 | 997 |
 | `backend/app/data/seo_static/llms.txt` | 65 | 995 |
 | `frontend/public/llms.txt` | 65 | 995 |
 | `backend/tests/test_credit_indicators.py` | 104 | 993 |
@@ -650,7 +664,6 @@
 | `backend/alembic/versions/20260619_add_identity_tables.py` | 90 | 990 |
 | `backend/tests/test_http_client.py` | 118 | 990 |
 | `frontend/src/lib/chartImage.js` | 108 | 987 |
-| `frontend/src/pages/Login.jsx` | 90 | 982 |
 | `frontend/src/lib/worldMapColors.test.js` | 89 | 981 |
 | `scripts/backfill_housing_historical.py` | 110 | 979 |
 | `frontend/src/lib/regionsApi.test.js` | 103 | 978 |
@@ -663,17 +676,18 @@
 | `backend/app/services/cbr_debt_parser.py` | 126 | 961 |
 | `frontend/src/lib/housingViewModeGroups.test.js` | 85 | 961 |
 | `frontend/src/lib/russiaHomeCards.js` | 103 | 961 |
-| `backend/app/services/identity/resolve.py` | 110 | 960 |
 | `frontend/src/components/HousingViewModePicker.jsx` | 137 | 955 |
 | `frontend/src/components/PpiViewModePicker.jsx` | 137 | 953 |
-| `frontend/src/components/home/HomeDataScope.component.test.jsx` | 102 | 945 |
+| `backend/app/services/identity/service.py` | 110 | 948 |
 | `frontend/src/pages/RegionIndicatorPage.component.test.jsx` | 113 | 945 |
 | `backend/app/security/auth.py` | 112 | 944 |
 | `backend/tests/test_cbr_keyrate.py` | 109 | 944 |
 | `docs/analytics_api_inventory/metrika_management.md` | 49 | 942 |
-| `backend/app/services/identity/service.py` | 109 | 934 |
+| `frontend/src/lib/usCatalogTopics.js` | 87 | 941 |
 | `frontend/src/components/RegionCrossLink.jsx` | 78 | 934 |
+| `backend/scripts/rebuild-world-forecasts.py` | 119 | 929 |
 | `frontend/src/lib/compareCompatibility.test.js` | 112 | 928 |
+| `docs/verification/world-forecast-v2-2026-09-24.md` | 64 | 927 |
 | `backend/app/services/cbr_fx_parser.py` | 109 | 920 |
 | `frontend/src/components/calendar/CalendarFilters.jsx` | 115 | 918 |
 | `docs/design/accessibility-review.md` | 58 | 916 |
@@ -681,6 +695,7 @@
 | `frontend/src/components/UnemploymentViewModePicker.jsx` | 129 | 913 |
 | `frontend/src/lib/regionsMapGif.test.js` | 124 | 911 |
 | `backend/app/services/moex_index_parser.py` | 104 | 909 |
+| `docs/adr/0015-us-bea-regional-catalog.md` | 67 | 906 |
 | `frontend/src/lib/sitePaths.test.js` | 82 | 906 |
 | `backend/alembic/versions/20260806_world_ingest_provenance.py` | 80 | 905 |
 | `backend/app/services/session.py` | 117 | 904 |
@@ -689,12 +704,13 @@
 | `backend/app/data/world_country_population.py` | 94 | 899 |
 | `backend/app/services/cbr_monetary_parser.py` | 104 | 898 |
 | `backend/app/database.py` | 118 | 897 |
-| `docs/adr/0014-subnational-regions-generic.md` | 67 | 893 |
+| `frontend/src/lib/chartForecastMerge.test.js` | 93 | 891 |
 | `backend/app/data/housing_historical.py` | 92 | 884 |
 | `backend/tests/test_attribution_query.py` | 116 | 883 |
 | `frontend/src/lib/footerNav.js` | 102 | 883 |
 | `backend/tests/forecast_strategies/test_monthly_auto.py` | 100 | 881 |
 | `backend/tests/test_cbr_bop.py` | 109 | 876 |
+| `backend/tests/test_oauth_google.py` | 86 | 873 |
 | `backend/scripts/load-world-deep-slices.py` | 108 | 871 |
 | `backend/tests/test_fd_leak.py` | 130 | 871 |
 | `backend/tests/test_dataset_inventory.py` | 75 | 869 |
@@ -702,18 +718,20 @@
 | `scripts/insert-gdp-q1-2026-estimate.py` | 84 | 869 |
 | `frontend/src/lib/frequencySwitcher.test.js` | 108 | 868 |
 | `backend/app/data/world_indicator_titles_ru.py` | 85 | 864 |
-| `backend/scripts/rebuild-world-forecasts.py` | 113 | 864 |
 | `frontend/src/lib/cpiViewModeGroups.js` | 99 | 861 |
 | `backend/app/services/rosstat_fixedassets_parser.py` | 114 | 860 |
+| `frontend/src/components/IndicatorMethodologyPanel.jsx` | 65 | 857 |
 | `frontend/src/pages/CategoriesHub.jsx` | 102 | 853 |
+| `backend/scripts/refresh-us-bea-metadata.py` | 90 | 851 |
+| `frontend/src/components/UsCatalogNav.jsx` | 80 | 850 |
 | `backend/app/services/seo_demographics.py` | 58 | 848 |
 | `frontend/src/components/RegionsMap.component.test.jsx` | 73 | 848 |
 | `backend/tests/test_rosstat_labor.py` | 90 | 845 |
 | `scripts/frontend-asset-archive.py` | 91 | 845 |
 | `backend/app/services/fetcher.py` | 90 | 843 |
 | `backend/tests/forecast_strategies/test_gdp_real_snapshot.py` | 87 | 834 |
+| `backend/tests/test_breadcrumbs.py` | 92 | 832 |
 | `backend/app/services/yandex_metrika_reporting.py` | 98 | 831 |
-| `backend/tests/test_breadcrumbs.py` | 92 | 831 |
 | `backend/tests/test_derived_specs_execution.py` | 98 | 831 |
 | `backend/tests/test_world_bank_pink_sheet_parser.py` | 115 | 830 |
 | `frontend/src/lib/housingViewModeResolve.js` | 82 | 830 |
@@ -735,18 +753,20 @@
 | `docs/design/art-prompts/2026-09-24-additions.json` | 17 | 801 |
 | `backend/tests/forecast_strategies/test_ppi_gdp_smoke.py` | 85 | 800 |
 | `scripts/rebuild-all-derived.py` | 82 | 798 |
+| `backend/tests/test_fred_parser.py` | 106 | 793 |
 | `frontend/src/lib/indicatorVariants.test.js` | 91 | 791 |
 | `backend/app/data/seo_static/llms.en.txt` | 58 | 784 |
 | `backend/tests/test_world_nbs_adapter.py` | 97 | 784 |
+| `backend/app/api/ticker.py` | 108 | 778 |
 | `frontend/src/lib/ppiViewModeResolve.js` | 87 | 778 |
 | `backend/app/data/regional/emiss_okato_31448.json` | 96 | 776 |
 | `scripts/regional/emiss_okato_31448.json` | 96 | 776 |
+| `backend/tests/test_world_bea_regional.py` | 71 | 775 |
 | `backend/tests/forecast_strategies/test_annual_auto.py` | 91 | 774 |
 | `frontend/src/lib/authReturn.test.js` | 49 | 774 |
 | `backend/app/services/world_source_adapter.py` | 100 | 771 |
 | `backend/app/services/demographics.py` | 81 | 768 |
 | `docs/design/requirements-coverage.md` | 16 | 767 |
-| `backend/app/api/ticker.py` | 107 | 766 |
 | `frontend/src/lib/pageImage.js` | 53 | 764 |
 | `scripts/e2e/liquid-glass-us-images.mjs` | 43 | 761 |
 | `frontend/src/components/IndicatorSearch.component.test.jsx` | 56 | 758 |
@@ -768,15 +788,17 @@
 | `frontend/src/lib/biLabels.test.js` | 63 | 704 |
 | `frontend/src/components/VariantGroupPicker.jsx` | 85 | 700 |
 | `frontend/src/pages/RegionRatingsHub.jsx` | 78 | 699 |
+| `frontend/src/lib/worldSubnationalApi.js` | 80 | 696 |
 | `deploy/fail2ban/jail.local` | 85 | 695 |
+| `frontend/src/lib/chartForecastMerge.js` | 82 | 692 |
 | `scripts/audit-indicators-history.py` | 75 | 691 |
 | `backend/tests/test_rosstat_housing.py` | 78 | 690 |
 | `scripts/test_deploy_asset_flow.py` | 70 | 686 |
+| `frontend/src/components/OAuthButtons.component.test.jsx` | 56 | 682 |
 | `frontend/src/styles/data-visuals.css` | 74 | 680 |
 | `docs/design/local-acceptance/first-pass-findings.json` | 61 | 675 |
 | `backend/tests/test_world_cfets_adapter.py` | 93 | 673 |
 | `backend/app/services/yandex_metrika_management.py` | 47 | 670 |
-| `frontend/src/components/IndicatorMethodologyPanel.jsx` | 59 | 669 |
 | `frontend/src/lib/pageImage.test.js` | 42 | 663 |
 | `docs/analytics_api_inventory/metrika_logs.md` | 51 | 662 |
 | `frontend/src/lib/categories.test.js` | 73 | 660 |
@@ -791,6 +813,7 @@
 | `frontend/src/lib/unemploymentViewModeResolve.js` | 94 | 633 |
 | `backend/tests/test_world_mospi_adapter.py` | 96 | 632 |
 | `frontend/src/lib/navItems.js` | 76 | 632 |
+| `backend/scripts/load-world-bea-regional.py` | 62 | 631 |
 | `deploy/fail2ban-install.sh` | 66 | 628 |
 | `backend/app/services/forecast_strategies/cpi_combined.py` | 71 | 623 |
 | `backend/app/services/imf_weo_parser.py` | 71 | 619 |
@@ -801,11 +824,11 @@
 | `backend/tests/forecast_strategies/test_cpi_snapshot.py` | 72 | 599 |
 | `frontend/src/components/Breadcrumbs.jsx` | 79 | 595 |
 | `frontend/src/lib/authReturn.js` | 42 | 588 |
-| `frontend/src/lib/chartForecastMerge.test.js` | 62 | 588 |
 | `frontend/src/pages/IndicatorDetail.component.test.jsx` | 62 | 585 |
 | `backend/scripts/retrain-all-monthly-auto.py` | 71 | 579 |
 | `frontend/src/lib/ppiViewModeGroups.js` | 73 | 578 |
 | `backend/app/services/forecast_strategies/base.py` | 70 | 576 |
+| `backend/tests/test_world_eurostat_ingest.py` | 59 | 574 |
 | `backend/alembic/versions/20260705_behavior_sessions.py` | 49 | 572 |
 | `frontend/src/components/LiveTicker.component.test.jsx` | 66 | 571 |
 | `backend/app/services/cbr_dataservice_sum_parser.py` | 68 | 568 |
@@ -817,14 +840,12 @@
 | `backend/app/services/ticker_sources/binance.py` | 65 | 548 |
 | `backend/app/security/lockout.py` | 67 | 546 |
 | `frontend/src/lib/regionsMapColors.js` | 58 | 543 |
-| `backend/tests/test_fred_parser.py` | 78 | 542 |
 | `backend/tests/test_seed_integrity.py` | 68 | 541 |
 | `backend/tests/test_household_finance_seo.py` | 59 | 536 |
 | `frontend/src/context/AuthProvider.jsx` | 57 | 533 |
 | `frontend/src/i18n/LocaleProvider.jsx` | 61 | 526 |
 | `frontend/src/pages/Account.test.jsx` | 32 | 524 |
 | `frontend/src/lib/worldMapPeriod.test.js` | 56 | 521 |
-| `frontend/src/lib/worldSubnationalApi.js` | 62 | 519 |
 | `backend/app/services/analytics_repair.py` | 42 | 518 |
 | `backend/app/services/export_render.py` | 60 | 516 |
 | `scripts/export-page-meta.py` | 66 | 512 |
@@ -832,7 +853,7 @@
 | `backend/tests/test_cbr_gold.py` | 50 | 509 |
 | `frontend/src/lib/worldMapPeriod.js` | 56 | 509 |
 | `frontend/src/components/IndicatorDataTableSection.jsx` | 69 | 507 |
-| `frontend/src/lib/chartForecastMerge.js` | 61 | 507 |
+| `frontend/src/lib/absoluteAuthNext.test.js` | 55 | 507 |
 | `backend/tests/test_monetary_mass_seo.py` | 58 | 503 |
 | `frontend/src/lib/worldTopology.js` | 57 | 501 |
 | `backend/scripts/check-migration-drift.py` | 69 | 500 |
@@ -848,10 +869,12 @@
 | `scripts/analytics-smoke.py` | 58 | 477 |
 | `frontend/src/lib/chartSeriesForViewMode.test.js` | 58 | 476 |
 | `backend/alembic/versions/20260703_behavior_events.py` | 43 | 474 |
+| `frontend/src/pages/Register.component.test.jsx` | 44 | 474 |
 | `frontend/src/lib/chunkRecovery.test.js` | 41 | 473 |
 | `backend/tests/test_gdp_forecast_api.py` | 53 | 468 |
 | `frontend/src/lib/consent.js` | 54 | 468 |
 | `frontend/src/components/DeathsViewModePicker.jsx` | 70 | 467 |
+| `backend/app/services/oauth/registry.py` | 46 | 464 |
 | `frontend/src/lib/housingViewModeGroups.js` | 66 | 463 |
 | `backend/app/services/forecast_strategies/approved.py` | 62 | 462 |
 | `frontend/src/pages/Dashboard.jsx` | 48 | 462 |
@@ -891,15 +914,15 @@
 | `backend/app/data/seo_static/robots.en.txt` | 72 | 399 |
 | `backend/app/services/oauth/fake.py` | 45 | 397 |
 | `backend/alembic/versions/20260704_telegram_outbox.py` | 40 | 393 |
-| `frontend/src/lib/absoluteAuthNext.test.js` | 45 | 393 |
+| `backend/app/services/world_subnational_queries.py` | 51 | 390 |
 | `frontend/src/components/DownloadLimitModal.test.jsx` | 24 | 390 |
 | `backend/app/services/calendar_sources/working_calendar.py` | 56 | 389 |
 | `backend/alembic/versions/20260505_indicator_seo_metadata.py` | 53 | 388 |
-| `backend/app/services/oauth/registry.py` | 41 | 388 |
 | `frontend/src/main.jsx` | 48 | 387 |
 | `backend/tests/test_newsletter_counts.py` | 39 | 386 |
 | `frontend/src/lib/cbrTermSliceRateResolve.js` | 65 | 383 |
 | `frontend/src/lib/apiErrorMessage.test.js` | 52 | 379 |
+| `backend/app/services/oauth/base.py` | 49 | 376 |
 | `backend/tests/test_parser_hooks.py` | 38 | 374 |
 | `frontend/src/components/EChart.jsx` | 39 | 374 |
 | `frontend/src/lib/unemploymentViewModeContent.test.js` | 39 | 374 |
@@ -910,6 +933,7 @@
 | `backend/tests/test_backup_readiness.py` | 41 | 370 |
 | `frontend/src/lib/siteOrigin.test.js` | 48 | 370 |
 | `backend/tests/test_cbr_ruonia.py` | 51 | 367 |
+| `frontend/src/lib/usCatalogTopics.test.js` | 27 | 366 |
 | `scripts/e2e/fuel-debug.mjs` | 31 | 365 |
 | `backend/app/services/forecast_strategies/generic_quarterly.py` | 41 | 362 |
 | `backend/tests/test_cbr_reserves.py` | 49 | 362 |
@@ -920,7 +944,6 @@
 | `backend/tests/test_page_meta_export.py` | 34 | 358 |
 | `frontend/src/lib/cpiProvenance.test.js` | 25 | 358 |
 | `frontend/src/components/home/HomeHero.jsx` | 38 | 357 |
-| `backend/app/services/oauth/base.py` | 48 | 356 |
 | `backend/tests/test_analytics_policy.py` | 38 | 355 |
 | `backend/tests/test_seed_hash.py` | 36 | 354 |
 | `backend/tests/fixtures/ibge_sidra_1209_br.json` | 21 | 351 |
@@ -1007,6 +1030,7 @@
 | `backend/app/services/forecast_strategies/gdp_nominal_quarterly.py` | 31 | 232 |
 | `backend/tests/test_cbr_monetary.py` | 32 | 231 |
 | `backend/tests/test_credit_rate_corp.py` | 27 | 229 |
+| `frontend/src/components/IndicatorMethodologyPanel.component.test.jsx` | 22 | 228 |
 | `backend/tests/fixtures/ibge_sidra_6579_br.json` | 18 | 223 |
 | `deploy/fail2ban/filter.d-nginx-volume.conf` | 12 | 222 |
 | `frontend/src/lib/demographicStructure.js` | 21 | 220 |
@@ -1038,7 +1062,6 @@
 | `deploy/fail2ban/filter.d-honeytrap.conf` | 11 | 178 |
 | `frontend/src/lib/chunkRecovery.js` | 23 | 178 |
 | `backend/app/data/cpi_provenance.py` | 12 | 177 |
-| `backend/tests/test_world_eurostat_ingest.py` | 20 | 177 |
 | `frontend/src/components/Brand.jsx` | 17 | 176 |
 | `frontend/src/components/LiveTicker.test.js` | 19 | 175 |
 | `frontend/src/lib/spaReveal.js` | 23 | 171 |
@@ -1057,6 +1080,7 @@
 | `backend/app/services/i18n_display.py` | 20 | 130 |
 | `frontend/src/i18n/localeContext.js` | 21 | 128 |
 | `scripts/etl-key-rate.sh` | 11 | 127 |
+| `backend/alembic/versions/20260924_oauth_locale.py` | 20 | 126 |
 | `backend/app/services/api_i18n.py` | 15 | 124 |
 | `backend/requirements.txt` | 27 | 123 |
 | `frontend/src/components/NoiseOverlay.jsx` | 21 | 121 |

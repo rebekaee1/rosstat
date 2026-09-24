@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
-  useWorldRegionIndicator, useWorldRegionsHub, formatSubnationalValue,
+  useWorldRegionIndicator, useWorldRegionForecast, useWorldRegionsHub, formatSubnationalValue,
 } from '../lib/worldSubnationalApi';
 import { yearDelta } from '../lib/regionsApi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
@@ -25,9 +25,11 @@ import { worldSubnationalIndicatorTrail } from '../lib/breadcrumbs';
 import {
   RUSSIA,
   countryRegionIndicatorPath,
+  countryRegionIndicatorYearPath,
   countryRegionPath,
   countryRegionsPath,
   indicatorPath,
+  indicatorYearPath,
   regionIndicatorPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
@@ -90,6 +92,10 @@ export default function WorldRegionIndicatorPage() {
     countrySlug === RUSSIA ? undefined : countrySlug,
     compareSlug || undefined,
     compareSlug ? code : undefined,
+  );
+  const forecastQ = useWorldRegionForecast(
+    countrySlug === RUSSIA ? undefined : countrySlug,
+    slug, code, Boolean(data.data?.series?.length),
   );
 
   const payload = data.data;
@@ -155,6 +161,10 @@ export default function WorldRegionIndicatorPage() {
     () => (series.length ? [...series].reverse() : []),
     [series],
   );
+  const quickYears = useMemo(() => {
+    const years = [...new Set(series.map((point) => point.year))].sort((a, b) => a - b);
+    return years;
+  }, [series]);
 
   const requireAuth = (blockedEvent) => {
     if (isAuthed) return true;
@@ -173,13 +183,18 @@ export default function WorldRegionIndicatorPage() {
         format,
         filename,
         valueLabel: `${indName} (${payload.indicator.unit})`,
-        points: series.map((p) => ({
-          date: isMonthly
+        points: [
+          ...series.map((p) => ({
+          date: p.date || (isMonthly
             ? `${p.year}-${String(p.month).padStart(2, '0')}-01`
-            : `${p.year}-01-01`,
+            : `${p.year}-01-01`),
           actual: p.value,
           forecast: null,
-        })),
+          })),
+          ...(forecastQ.data?.available ? forecastQ.data.points.map((p) => ({
+            date: p.date, actual: null, forecast: p.value,
+          })) : []),
+        ],
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -393,7 +408,16 @@ export default function WorldRegionIndicatorPage() {
               regionName={regionName}
               height={300}
               nationalLabel={t('world.regions.vsCountry', { country: countryName })}
+              forecastSeries={!showYoY && forecastQ.data?.available ? forecastQ.data.points : null}
             />
+            {forecastQ.data?.available && !showYoY && (
+              <div className="mt-2 rounded-lg border border-border-subtle bg-champagne/5 px-3 py-2 text-[11px] leading-relaxed text-text-secondary">
+                <strong className="text-champagne">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
+                {' — '}{forecastQ.data.model_name}
+                {' — '}MASE {Number(forecastQ.data.quality.mase).toFixed(2)}
+                <p className="mt-1">{forecastQ.data.methodology}</p>
+              </div>
+            )}
             {compareSlug && compare.data && (
               <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-[11px] text-text-tertiary" data-no-export="true">
                 <span className="inline-flex items-center gap-1.5">
@@ -418,7 +442,7 @@ export default function WorldRegionIndicatorPage() {
                   rank?.rank_as_achievement
                     ? 'world.regions.rankAchieve'
                     : 'world.regions.rankNeutral',
-                  { year: rank?.year || last?.year, kind: kindPlural },
+                  { year: rank?.year || last?.year, kind: countrySlug === 'united-states' && locale === 'ru' ? 'штатов' : kindPlural },
                 )
               }
               >
@@ -450,6 +474,22 @@ export default function WorldRegionIndicatorPage() {
               </StatCell>
             )}
           </div>
+
+          {quickYears.length > 0 && (
+            <section className="fe-panel mb-6 rounded-xl border border-border-subtle bg-surface p-4">
+              <h2 className="mb-2 text-sm font-semibold text-text-primary">{locale === 'en' ? 'By year' : 'По годам'}</h2>
+              <div className="flex flex-wrap gap-2">
+                {quickYears.map((year) => (
+                  <a key={year} href={countryRegionIndicatorYearPath(countrySlug, slug, code, year)} className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne">{year}</a>
+                ))}
+              </div>
+              {payload.indicator.national_code && last && nationalSeries.some((point) => point.year === last.year) && (
+                <a href={indicatorYearPath(countrySlug, payload.indicator.national_code, last.year)} className="mt-3 inline-block text-xs text-champagne hover:underline">
+                  {locale === 'en' ? `United States, ${last.year}` : `США в целом, ${last.year}`}
+                </a>
+              )}
+            </section>
+          )}
 
           {rank?.top?.length > 0 && (
             <div data-block="world-region-rating" className="fe-panel mb-6 rounded-xl border border-border-subtle bg-surface p-4">
@@ -546,6 +586,7 @@ export default function WorldRegionIndicatorPage() {
               <IndicatorMethodologyPanel
                 indicator={methodologyIndicator}
                 content={methodologyContent}
+                sourcePath={payload.indicator.source_url || countryRegionIndicatorPath(countrySlug, slug, code)}
               />
             </div>
           )}
@@ -600,7 +641,9 @@ export default function WorldRegionIndicatorPage() {
               {t('world.regions.backToProfile', { region: regionName })}
             </Link>
             <Link to={countryRegionsPath(countrySlug)} className="text-text-secondary hover:text-champagne">
-              {t('world.regions.backToHub', { kind: kindPlural })}
+              {countrySlug === 'united-states' && locale === 'ru'
+                ? 'Все штаты'
+                : t('world.regions.backToHub', { kind: kindPlural })}
             </Link>
           </p>
         </>

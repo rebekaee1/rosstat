@@ -320,7 +320,7 @@ async def run_imf_weo_ingest(
                     await err_db.commit()
             raise
 
-    await bump_namespaces("world")
+    await bump_namespaces("world", "world-catalog")
     return {
         "run_id": run_id,
         "countries": len(countries) + (1 if include_ru else 0),

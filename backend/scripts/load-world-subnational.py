@@ -94,7 +94,7 @@ async def run(args: argparse.Namespace) -> int:
     for row in errors[:20]:
         log.info("  FAIL %s/%s %s: %s", row.indicator, row.region, row.series_id, row.detail)
     try:
-        await bump_namespaces("world")
+        await bump_namespaces("world", "ssr-world", "world-catalog")
     except Exception as exc:  # noqa: BLE001
         log.warning("cache bump failed: %s", exc)
     if errors and not loaded:

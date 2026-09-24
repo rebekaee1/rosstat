@@ -39,6 +39,10 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--limit", type=int, default=None, help="Max series after priority sort.")
     parser.add_argument("--force", action="store_true", help="Ignore fingerprint and retrain.")
     parser.add_argument(
+        "--eligible-only", action="store_true",
+        help="Train only policy- and source-ready rows; exclude pending-source skips.",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Print plan (total / unchanged / to_train and first 20 rows), do not train.",
@@ -86,6 +90,7 @@ async def main() -> None:
             country_slugs=slugs or None,
             limit=args.limit,
             force=args.force,
+            eligible_only=args.eligible_only,
         )
         _print_plan(candidates, unchanged_ids)
         payload = {
@@ -104,6 +109,7 @@ async def main() -> None:
             country_slugs=slugs or None,
             limit=args.limit,
             force=args.force,
+            eligible_only=args.eligible_only,
         )
         payload = summary.__dict__
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True), flush=True)

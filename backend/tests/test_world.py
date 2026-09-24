@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 
 import pytest
 
@@ -233,6 +233,7 @@ def world_client(auth_env):
         Indicator,
         WorldCountry,
         WorldDataPoint,
+        WorldDatasetState,
         WorldForecast,
         WorldForecastValue,
         WorldIndicator,
@@ -403,7 +404,8 @@ def world_client(auth_env):
             forecast = WorldForecast(
                 world_indicator_id=ind.id,
                 strategy="seasonal_drift",
-                model_name="World-seasonal_drift-v1",
+                model_name="World-seasonal_drift-v2",
+                model_params={"method_version": 2},
                 gate_status="passed",
                 gate_reason="beats_seasonal_naive",
                 mase=0.7,
@@ -413,6 +415,10 @@ def world_client(auth_env):
                 is_current=True,
             )
             db.add(forecast)
+            db.add(WorldDatasetState(
+                provider="eurostat", dataset_id="prc_hicp_midx",
+                status="ok", last_success_at=datetime(2025, 1, 1),
+            ))
             await db.flush()
             db.add_all([
                 WorldForecastValue(
@@ -791,6 +797,25 @@ def test_world_indicator_modes_and_data(world_client):
     assert yoy["mode"] == "yoy-monthly"
     by_date = {p["date"]: p["value"] for p in yoy["points"]}
     assert by_date["2025-01-01"] == 12.0
+
+
+def test_pending_eurostat_source_hides_even_passed_v2_forecast(world_client, auth_env):
+    import asyncio
+    from app.models import WorldDatasetState
+
+    async def mark_pending():
+        async with auth_env["session_maker"]() as db:
+            state = await db.get(WorldDatasetState, ("eurostat", "prc_hicp_midx"))
+            state.status = "pending"
+            await db.commit()
+
+    asyncio.run(mark_pending())
+    response = world_client.get(
+        "/api/v1/world/indicators/germany/de-prc_hicp_midx-cp00-i15/data",
+        params={"mode": "level", "include_forecast": True},
+    )
+    assert response.status_code == 200
+    assert response.json()["forecast"] is None
 
 
 def test_world_compare_contract_and_snapshot(world_client):

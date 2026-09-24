@@ -130,6 +130,34 @@ describe('WorldCountry category navigation', () => {
     ],
   };
 
+  it('groups US source categories into two levels without changing the country indicator links', async () => {
+    renderCountry('united-states', {
+      ...US_COUNTRY,
+      categories: [
+        { name: 'Рынок труда', name_ru: 'Рынок труда', indicators: US_COUNTRY.categories[0].indicators },
+        { name: 'Состав ВВП', name_ru: 'Состав ВВП', indicators: [{
+          code: 'us-bea-sagdp1-4', name: 'Состав ВВП: Оплата труда',
+          name_ru: 'Состав ВВП: Оплата труда', frequency: 'annual', last_value: 10,
+        }] },
+        { name: 'ВВП по отраслям, текущие цены', name_ru: 'ВВП по отраслям, текущие цены', indicators: [{
+          code: 'us-bea-sagdp2-1', name: 'ВВП по отраслям, текущие цены: Все отрасли',
+          name_ru: 'ВВП по отраслям, текущие цены: Все отрасли', frequency: 'annual', last_value: 20,
+        }] },
+      ],
+    });
+
+    expect(await screen.findByRole('heading', { name: 'Состав ВВП' })).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: /ВВП и производство/ }).length).toBeGreaterThan(0);
+    expect(screen.getByRole('link', { name: /Оплата труда/ }).getAttribute('href'))
+      .toBe('/united-states/indicator/us-bea-sagdp1-4');
+    fireEvent.click(screen.getByRole('button', { name: /ВВП по отраслям, текущие цены/ }));
+    expect(screen.getByRole('link', { name: /Все отрасли/ }).getAttribute('href'))
+      .toBe('/united-states/indicator/us-bea-sagdp2-1');
+    fireEvent.click(screen.getByRole('button', { name: /Труд и зарплаты/ }));
+    expect(await screen.findByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /Уровень безработицы/ })).toBeTruthy();
+  });
+
   it('на десктопе показывает все категории подряд для непрерывной прокрутки', async () => {
     vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
       matches: media.includes('min-width'), media,

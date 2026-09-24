@@ -6,17 +6,21 @@ import {
   ChevronRight, Search, MapPin, TrendingUp, TrendingDown, Minus,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
-import { useWorldRegionProfile, formatSubnationalValue } from '../lib/worldSubnationalApi';
+import { useWorldRegionProfile, useWorldRegionIndicator, formatSubnationalValue } from '../lib/worldSubnationalApi';
 import { shortUnit, yearDelta, pluralRu } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
+import UsCatalogNav from '../components/UsCatalogNav';
+import { groupUsSections, shortUsIndicatorName } from '../lib/usCatalogTopics';
 import useSearchTracking from '../lib/useSearchTracking';
 import { worldSubnationalRegionTrail } from '../lib/breadcrumbs';
 import {
   RUSSIA,
   countryRegionIndicatorPath,
+  countryRegionIndicatorYearPath,
+  countryRegionVsPath,
   countryRegionsPath,
   regionPath,
 } from '../lib/sitePaths';
@@ -64,7 +68,7 @@ function HeadlineCard({ item, countrySlug, slug }) {
   );
 }
 
-function IndicatorRow({ item, countrySlug, slug }) {
+function IndicatorRow({ item, countrySlug, slug, sectionName }) {
   const { locale } = useLocale();
   const Card = item.value == null ? 'div' : Link;
   return (
@@ -74,7 +78,7 @@ function IndicatorRow({ item, countrySlug, slug }) {
     >
       <div className="min-w-0 flex-1">
         <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
-          {item.name}
+          {shortUsIndicatorName(item.name, sectionName, locale)}
         </div>
         <div className="mt-1 text-[10px] text-text-tertiary sm:mt-1.5">
           {shortUnit(item.unit) || item.unit}
@@ -110,6 +114,8 @@ export default function WorldRegionProfile() {
   const profile = useWorldRegionProfile(countrySlug === RUSSIA ? undefined : countrySlug, slug);
   const [query, setQuery] = useState('');
   const [activeSection, setActiveSection] = useState('');
+  const [searchLimit, setSearchLimit] = useState(120);
+  const [yearIndicatorCode, setYearIndicatorCode] = useState('');
   const deferredQuery = useDeferredValue(query);
   const searching = normalize(deferredQuery).length > 0;
 
@@ -123,7 +129,32 @@ export default function WorldRegionProfile() {
     description: t('world.regions.profileDescription', { region: regionName, country: countryName }),
   });
 
-  const sections = profile.data?.sections || [];
+  const isUsCatalog = countrySlug === 'united-states';
+  const sections = useMemo(() => {
+    const all = profile.data?.sections || [];
+    if (!isUsCatalog) return all;
+    // BEA publishes a few blank lines for some states. Do not show empty cards
+    // or count them as available indicators on the state profile.
+    return all.map((section) => ({
+      ...section,
+      indicators: section.indicators.filter((item) => item.value !== null),
+    })).filter((section) => section.indicators.length > 0);
+  }, [profile.data, isUsCatalog]);
+  const yearIndicatorOptions = useMemo(() => (
+    isUsCatalog ? sections.flatMap((section) => section.indicators) : []
+  ), [sections, isUsCatalog]);
+  const selectedYearCode = yearIndicatorOptions.some((item) => item.code === yearIndicatorCode)
+    ? yearIndicatorCode : (yearIndicatorOptions[0]?.code || '');
+  const yearSeries = useWorldRegionIndicator(
+    isUsCatalog ? countrySlug : undefined, slug, selectedYearCode,
+  );
+  const selectedYears = useMemo(() => [
+    ...new Set((yearSeries.data?.series || []).map((point) => Number(point.year))),
+  ].filter(Number.isInteger).sort((a, b) => a - b), [yearSeries.data]);
+  const usTopics = useMemo(
+    () => isUsCatalog ? groupUsSections(sections, locale) : [],
+    [sections, isUsCatalog, locale],
+  );
   const filteredSections = useMemo(() => {
     const q = normalize(deferredQuery);
     if (!q) return sections;
@@ -137,18 +168,41 @@ export default function WorldRegionProfile() {
 
   const headline = useMemo(() => {
     if (!profile.data) return [];
+    if (!isUsCatalog) {
+      const firstOfSection = sections.map((s) => s.indicators[0]).filter(Boolean);
+      const rest = (profile.data.indicators || []).filter(
+        (item) => !firstOfSection.some((h) => h.code === item.code),
+      );
+      return [...firstOfSection, ...rest].slice(0, 8);
+    }
+    const byCode = new Map((profile.data.indicators || []).map((item) => [item.code, item]));
+    const featured = (profile.data.featured_indicator_codes || []).map((code) => byCode.get(code)).filter(Boolean);
     const firstOfSection = sections.map((s) => s.indicators[0]).filter(Boolean);
-    const rest = (profile.data.indicators || []).filter(
-      (item) => !firstOfSection.some((h) => h.code === item.code),
-    );
-    return [...firstOfSection, ...rest].slice(0, 8);
-  }, [profile.data, sections]);
+    const seen = new Set();
+    return [...featured, ...firstOfSection, ...(profile.data.indicators || [])]
+      .filter((item) => {
+        if (seen.has(item.code)) return false;
+        seen.add(item.code);
+        return item.value !== null;
+      })
+      .slice(0, 8);
+  }, [profile.data, sections, isUsCatalog]);
 
   const resolvedActive = filteredSections.some((s) => String(s.num) === String(activeSection))
     ? filteredSections.find((s) => String(s.num) === String(activeSection))?.num
-    : (filteredSections[0]?.num || '');
+    : ((isUsCatalog ? usTopics[0]?.sections[0] : filteredSections[0])?.num || '');
+  const activeUsTopic = usTopics.find((topic) => topic.sections.some((section) => section.num === resolvedActive));
+  const selectUsTopic = (id) => {
+    const first = usTopics.find((topic) => topic.id === id)?.sections[0];
+    if (first) setActiveSection(first.num);
+  };
+  let remaining = searchLimit;
   const visibleSections = searching
-    ? filteredSections
+    ? (isUsCatalog ? filteredSections.map((s) => {
+      const indicators = s.indicators.slice(0, remaining);
+      remaining -= indicators.length;
+      return { ...s, indicators };
+    }).filter((s) => s.indicators.length > 0) : filteredSections)
     : filteredSections.filter((s) => s.num === resolvedActive);
 
   if (countrySlug === RUSSIA) {
@@ -183,13 +237,15 @@ export default function WorldRegionProfile() {
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-text-secondary">
               {(() => {
-                const catalog = profile.data.catalog_total ?? sections.reduce((acc, s) => acc + s.indicators.length, 0);
+                const catalog = isUsCatalog
+                  ? (profile.data.available_total ?? sections.reduce((acc, s) => acc + s.indicators.length, 0))
+                  : (profile.data.catalog_total ?? sections.reduce((acc, s) => acc + s.indicators.length, 0));
                 const catalogWord = indicatorWord(catalog, t, locale);
                 return t('world.regions.profileIntro', {
                   country: countryName,
                   catalog,
                   catalogWord,
-                  sections: sections.length,
+                  sections: isUsCatalog ? usTopics.length : sections.length,
                 });
               })()}
             </p>
@@ -203,12 +259,67 @@ export default function WorldRegionProfile() {
             </div>
           )}
 
+          {isUsCatalog && (
+            <section className="mb-6 rounded-xl border border-border-subtle bg-surface p-4" aria-label={locale === 'en' ? 'State data by year' : 'Штат по годам'}>
+              <h2 className="mb-2 text-sm font-semibold text-text-primary">{locale === 'en' ? 'Every indicator by year' : 'Все показатели по годам'}</h2>
+              <label className="mb-3 block text-xs text-text-secondary" htmlFor="us-state-year-indicator">
+                {locale === 'en' ? 'Choose an indicator to see every year with published data' : 'Выберите показатель — доступны все годы с опубликованными данными'}
+              </label>
+              <select
+                id="us-state-year-indicator"
+                value={selectedYearCode}
+                onChange={(event) => setYearIndicatorCode(event.target.value)}
+                className="mb-3 w-full min-w-0 rounded-xl border border-border-subtle bg-white px-3 py-2 text-sm text-text-primary"
+              >
+                {yearIndicatorOptions.map((item) => (
+                  <option key={item.code} value={item.code}>{item.name}</option>
+                ))}
+              </select>
+              {yearSeries.isLoading && <p className="text-xs text-text-secondary">{locale === 'en' ? 'Loading years…' : 'Загружаем годы…'}</p>}
+              {yearSeries.isError && (
+                <ApiRetryBanner onRetry={yearSeries.refetch} isFetching={yearSeries.isFetching}>
+                  {locale === 'en' ? 'Could not load years for this indicator.' : 'Не удалось загрузить годы для показателя.'}
+                </ApiRetryBanner>
+              )}
+              {selectedYears.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {selectedYears.map((year) => (
+                    <a key={year} href={countryRegionIndicatorYearPath(countrySlug, slug, selectedYearCode, year)} className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne">
+                      {year}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
+          {isUsCatalog && profile.data.comparison_regions?.length > 0 && (
+            <section className="mb-6 rounded-xl border border-border-subtle bg-surface p-4" aria-label={locale === 'en' ? 'Compare states' : 'Сравнить штаты'}>
+              <h2 className="mb-2 text-sm font-semibold text-text-primary">{locale === 'en' ? 'Compare with another state' : 'Сравнить с другим штатом'}</h2>
+              <div className="flex flex-wrap gap-2">
+                {profile.data.comparison_regions.slice(0, 8).map((other) => (
+                  <a key={other.slug} href={countryRegionVsPath(countrySlug, slug, other.slug)} className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne">{other.name}</a>
+                ))}
+              </div>
+              {profile.data.comparison_regions.length > 8 && (
+                <details className="mt-3 text-xs text-text-secondary">
+                  <summary className="cursor-pointer text-champagne">{locale === 'en' ? 'All states' : 'Все штаты'}</summary>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {profile.data.comparison_regions.slice(8).map((other) => (
+                      <a key={other.slug} href={countryRegionVsPath(countrySlug, slug, other.slug)} className="rounded-full border border-border-subtle px-3 py-1 hover:border-border-champagne hover:text-champagne">{other.name}</a>
+                    ))}
+                  </div>
+                </details>
+              )}
+            </section>
+          )}
+
           <div className="relative mb-6">
             <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
             <input
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => { setQuery(e.target.value); setSearchLimit(120); }}
               placeholder={t('regions.profileSearchPlaceholder')}
               className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
               aria-label={t('regions.profileSearchAria')}
@@ -219,13 +330,13 @@ export default function WorldRegionProfile() {
             <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
               {t('regions.profile.nothingFound', { query })}
               {' '}
-              <button type="button" onClick={() => setQuery('')} className="text-champagne hover:underline">
+              <button type="button" onClick={() => { setQuery(''); setSearchLimit(120); }} className="text-champagne hover:underline">
                 {t('regions.profile.resetSearch')}
               </button>
             </div>
           )}
 
-          {!searching && (
+          {!searching && !isUsCatalog && (
             <MobileNavSelect
               label={t('regions.themes')}
               value={String(resolvedActive)}
@@ -242,8 +353,21 @@ export default function WorldRegionProfile() {
             ? 'min-w-0 space-y-8'
             : 'grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]'}
           >
-            {!searching && (
-              <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
+            {!searching && isUsCatalog && (
+              <UsCatalogNav
+                topics={usTopics}
+                activeTopic={activeUsTopic?.id}
+                activeSection={resolvedActive}
+                onTopic={selectUsTopic}
+                onSection={(num) => setActiveSection(Number(num))}
+                sectionKey={(section) => section.num}
+                sectionLabel={(section) => section.name}
+                themesLabel={t('regions.profile.themes')}
+                detailLabel={locale === 'en' ? 'Detailed topics' : 'Подробные темы'}
+              />
+            )}
+            {!searching && !isUsCatalog && (
+              <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
                 <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
                   {t('regions.profile.themes')}
                 </div>
@@ -282,13 +406,25 @@ export default function WorldRegionProfile() {
                   </div>
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {sec.indicators.map((item) => (
-                      <IndicatorRow key={item.code} item={item} countrySlug={countrySlug} slug={slug} />
+                      <IndicatorRow key={item.code} item={item} countrySlug={countrySlug} slug={slug} sectionName={isUsCatalog && locale === 'ru' ? sec.name : undefined} />
                     ))}
                   </div>
                 </section>
               ))}
             </div>
           </div>
+
+          {isUsCatalog && searching && foundIndicators > searchLimit && (
+            <button
+              type="button"
+              onClick={() => setSearchLimit((current) => current + 120)}
+              className="mt-5 rounded-full border border-border-subtle bg-surface px-5 py-2.5 text-sm text-text-secondary hover:border-border-champagne hover:text-text-primary"
+            >
+              {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}
+              {locale === 'en' ? ' of ' : ' из '}
+              {Math.min(searchLimit, foundIndicators)} / {foundIndicators}
+            </button>
+          )}
 
           <p className="mt-8 text-sm">
             <Link to={countryRegionsPath(countrySlug)} className="inline-flex items-center gap-1 text-champagne hover:underline">

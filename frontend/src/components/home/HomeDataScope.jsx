@@ -19,7 +19,7 @@ const SCOPE_STATS_EN = [
 /**
  * Правая колонка hero главной: состав платформы в цифрах.
  * Страны — динамически с `/world/countries` (фоллбэк i18n); региональные
- * показатели РФ — число индикаторов (495), без произведения на субъекты.
+ * Counts come from the same public catalogue response as the country cards.
  */
 export default function HomeDataScope() {
   const t = useT();
@@ -31,9 +31,23 @@ export default function HomeDataScope() {
     return n != null ? String(n) : t('home.scope.stat.countries.value');
   }, [countriesQ.data, t]);
 
-  const valueFor = (key) => (
-    key === 'countries' ? countriesValue : t(`home.scope.stat.${key}.value`)
-  );
+  const countValue = (key, field) => {
+    const count = Number(countriesQ.data?.[field]);
+    if (!Number.isFinite(count) || count <= 0) return t(`home.scope.stat.${key}.value`);
+    return new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU').format(count);
+  };
+
+  const valueFor = (key) => {
+    if (key === 'countries') return countriesValue;
+    const fields = {
+      world: 'world_indicators_count',
+      macro: 'russia_macro_indicators_count',
+      regions: 'regional_indicators_count',
+    };
+    return countValue(key, fields[key]);
+  };
+  const usIndicators = Number(countriesQ.data?.us_state_indicators_count);
+  const usStates = Number(countriesQ.data?.us_states_count);
 
   return (
     <aside
@@ -75,6 +89,14 @@ export default function HomeDataScope() {
         </dl>
 
         <div className="mt-3.5 border-t border-border-subtle pt-3">
+          {usIndicators > 0 && usStates > 0 && (
+            <p className="mb-2 text-[11px] leading-snug text-text-secondary">
+              {t('home.scope.usStates', {
+                indicators: new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU').format(usIndicators),
+                states: usStates,
+              })}
+            </p>
+          )}
           <p className="text-[9px] font-medium uppercase tracking-[0.14em] text-text-tertiary">
             {t('home.scope.sources.label')}
           </p>

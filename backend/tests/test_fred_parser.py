@@ -7,8 +7,10 @@ from datetime import date
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
+import pandas as pd
+
 from app.services import fred_parser as fred_mod
-from app.services.fred_parser import FredCsvParser, _parse_fred_csv
+from app.services.fred_parser import FredCsvParser, _parse_eia_brent_table, _parse_fred_csv
 
 
 _SAMPLE_CSV = """observation_date,DTWEXBGS
@@ -39,6 +41,32 @@ def test_parse_fred_csv_accepts_legacy_date_header():
         (date(1962, 1, 2), 4.06),
         (date(1962, 1, 4), 4.01),
     ]
+
+
+def test_eia_brent_workbook_dates_and_missing_values():
+    table = pd.DataFrame([
+        ["Back to Contents", "Data 1: Europe Brent Spot Price FOB"],
+        ["Sourcekey", "RBRTE"],
+        ["Date", "Europe Brent Spot Price FOB"],
+        ["2026-09-21", 116.15],
+        ["2026-09-22", 114.89],
+        ["2026-09-23", None],
+    ])
+    assert _parse_eia_brent_table(table) == [
+        (date(2026, 9, 21), 116.15),
+        (date(2026, 9, 22), 114.89),
+    ]
+
+
+def test_brent_uses_direct_eia_workbook(monkeypatch):
+    monkeypatch.setattr(fred_mod, "_fetch_eia_brent", lambda: [(date(2026, 9, 22), 114.89)])
+    indicator = SimpleNamespace(id=1, code="brent")
+    fetch_log = SimpleNamespace(error_message=None)
+    points, url = asyncio.run(FredCsvParser()._fetch_and_parse(
+        AsyncMock(), indicator, {"fred_series_id": "DCOILBRENTEU"}, fetch_log,
+    ))
+    assert points == [(date(2026, 9, 22), 114.89)]
+    assert url == fred_mod._EIA_BRENT_XLS
 
 
 def test_fred_parser_fetches_configured_series(monkeypatch):

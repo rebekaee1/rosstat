@@ -3,7 +3,8 @@
 Это не обёртка над ежедневным российским ETL.  Eurostat публикует TOC с
 версиями наборов; сначала выбираем изменившиеся dataset'ы, затем запускаем
 существующий loader строго по одному набору и с обходом URL-only disk cache.
-До подтверждения двух shadow-прогонов scheduler остаётся выключенным.
+Первые два scheduler-прогона каждой БД — shadow; далее применяется bounded
+live batch с версионным курсором по последнему успешному TOC.
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ import io
 import logging
 import os
 import sys
+import time
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -38,6 +40,8 @@ DEFAULT_THEMES = (
     "ei_,sts_,prc_,namq_,nama_,une_,lfsi_,lfsq_,irt_,ert_,ext_,bop_,"
     "gov_,demo_,nrg_,road_,tour_,educ_,hlth_,ilc_,isoc_,sdg_,tec,tei,tin,tps"
 )
+MAX_DATASETS_PER_RUN = 200
+MAX_RUN_SECONDS = 3 * 3600
 
 
 @dataclass(frozen=True)
@@ -109,6 +113,28 @@ async def _catalog_dataset_ids() -> set[str]:
         return set((await db.execute(sql, params)).scalars().all())
 
 
+async def _listed_dataset_ids() -> set[str]:
+    """Prioritize public Eurostat cards when a refresh backlog exists."""
+    async with async_session() as db:
+        return set((await db.execute(
+            select(WorldIndicator.dataset_id).where(
+                WorldIndicator.provider == "eurostat",
+                WorldIndicator.is_listed.is_(True),
+            ).distinct()
+        )).scalars().all())
+
+
+async def _failed_dataset_ids() -> set[str]:
+    """Put retries behind never-attempted changes so failures cannot starve the queue."""
+    async with async_session() as db:
+        return set((await db.execute(
+            select(WorldDatasetState.dataset_id).where(
+                WorldDatasetState.provider == "eurostat",
+                WorldDatasetState.status.in_(("error", "quarantine")),
+            )
+        )).scalars().all())
+
+
 async def select_changed_datasets(toc: dict[str, TocEntry]) -> list[TocEntry]:
     """Выбрать first-seen и изменившиеся относительно последнего success набора."""
     candidates = await _catalog_dataset_ids()
@@ -175,12 +201,33 @@ async def _record_dataset(
                     dataset_id=entry.dataset_id,
                 )
                 db.add(state)
-            state.last_update_of_data = entry.updated_at
-            state.last_structure_change = entry.structure_changed_at
+            # A failed/quarantined attempt must not advance the applied TOC
+            # version: a later retry must still see the unreviewed DSD change.
+            if status == "ok":
+                state.last_update_of_data = entry.updated_at
+                state.last_structure_change = entry.structure_changed_at
             state.status = status
             state.last_success_at = now if status == "ok" else state.last_success_at
             state.last_error = error[:2000] if error else None
         await db.commit()
+
+
+async def _mark_changed_states_pending(entries: list[TocEntry]) -> None:
+    """Hide forecasts for changed datasets before the bounded loader starts."""
+    async with async_session() as db:
+        states = (
+            await db.execute(
+                select(WorldDatasetState).where(
+                    WorldDatasetState.provider == "eurostat",
+                    WorldDatasetState.dataset_id.in_([entry.dataset_id for entry in entries]),
+                    WorldDatasetState.status == "ok",
+                )
+            )
+        ).scalars().all()
+        for state in states:
+            state.status = "pending"
+        if states:
+            await db.commit()
 
 
 async def _structure_change_requires_quarantine(entry: TocEntry) -> bool:
@@ -245,18 +292,24 @@ async def _persisted_rows(dataset_id: str, provider: str = "eurostat") -> int:
         )
 
 
-async def world_eurostat_ingest_job(*, shadow: bool | None = None) -> dict[str, int]:
+async def world_eurostat_ingest_job(
+    *, shadow: bool | None = None, include_imf: bool = True,
+    only_dataset_ids: tuple[str, ...] | None = None,
+) -> dict[str, int]:
     """TOC-driven sequential ingest; shadow records delta but never writes data."""
-    shadow = settings.world_eurostat_ingest_shadow if shadow is None else shadow
-    # Национальные ряды — быстрые (десятки HTTP-вызовов против тысяч dataset'ов
-    # Eurostat): обновляем их в начале прогона, чтобы часы Eurostat-очереди
-    # не отодвигали свежие точки Канады/Японии/США.
-    try:
-        from app.services.world_national_ingest import run_national_core_ingest
-
-        await run_national_core_ingest()
-    except Exception:  # noqa: BLE001
-        logger.exception("national-core ingest before Eurostat pass failed")
+    if shadow is None:
+        async with async_session() as db:
+            shadow_runs = (await db.execute(
+                select(func.count()).select_from(WorldIngestRun).where(
+                    WorldIngestRun.source == "eurostat",
+                    WorldIngestRun.status == "shadow",
+                    WorldIngestRun.completed_at.is_not(None),
+                )
+            )).scalar_one()
+        shadow = settings.world_eurostat_ingest_shadow or shadow_runs < 2
+    # National-core has its own preceding scheduled job. Running it here
+    # doubles provider traffic and duplicates Telegram reports.
+    run_clock = time.monotonic()
     started_at = datetime.now(timezone.utc).replace(tzinfo=None)
     async with async_session() as db:
         run = WorldIngestRun(
@@ -279,7 +332,34 @@ async def world_eurostat_ingest_job(*, shadow: bool | None = None) -> dict[str, 
             run.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
             run.error_message = str(exc)[:2000]
             await db.commit()
+        from app.services.alerting import alert_world_ingest_summary
+
+        await alert_world_ingest_summary(
+            "Европа: Eurostat", status="failed", checked=0,
+            changed=0, failed=1, details=f"Каталог не получен: {exc}",
+            checked_label="Проверено наборов",
+            changed_label="Успешно обновлено наборов",
+        )
         raise
+
+    total_changed = len(changed)
+    if not shadow and changed:
+        await _mark_changed_states_pending(changed)
+    if only_dataset_ids:
+        wanted = set(only_dataset_ids)
+        changed = [entry for entry in changed if entry.dataset_id in wanted]
+    pending = total_changed - len(changed)
+    if not shadow:
+        listed = await _listed_dataset_ids()
+        retries = await _failed_dataset_ids()
+        changed.sort(key=lambda item: (
+            item.dataset_id in retries,
+            item.dataset_id not in listed,
+            -(item.updated_at.toordinal() if item.updated_at else 0),
+            item.dataset_id,
+        ))
+        pending += max(0, len(changed) - MAX_DATASETS_PER_RUN)
+        changed = changed[:MAX_DATASETS_PER_RUN]
 
     async with async_session() as db:
         run = await db.get(WorldIngestRun, run_id)
@@ -289,7 +369,12 @@ async def world_eurostat_ingest_job(*, shadow: bool | None = None) -> dict[str, 
 
     succeeded = 0
     failed = 0
+    processed = 0
     for entry in changed:
+        if not shadow and processed and time.monotonic() - run_clock >= MAX_RUN_SECONDS:
+            pending += len(changed) - processed
+            break
+        processed += 1
         if shadow:
             await _record_dataset(
                 run_id=run_id,
@@ -336,20 +421,22 @@ async def world_eurostat_ingest_job(*, shadow: bool | None = None) -> dict[str, 
     async with async_session() as db:
         run = await db.get(WorldIngestRun, run_id)
         assert run is not None
+        run.datasets_selected = processed
         run.datasets_succeeded = succeeded
         run.datasets_failed = failed
-        run.status = "shadow" if shadow else ("ok" if failed == 0 else "partial")
+        run.status = "shadow" if shadow else ("ok" if failed == 0 and pending == 0 else "partial")
         run.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
         await db.commit()
 
     result = {
         "run_id": run_id,
-        "selected": len(changed),
+        "selected": processed,
         "succeeded": succeeded,
         "failed": failed,
         "shadow": int(shadow),
+        "pending": pending,
     }
-    if not shadow:
+    if not shadow and include_imf:
         try:
             from app.services.world_imf_ingest import run_imf_weo_ingest
 
@@ -357,4 +444,18 @@ async def world_eurostat_ingest_job(*, shadow: bool | None = None) -> dict[str, 
         except Exception:  # noqa: BLE001
             logger.exception("IMF WEO ingest after Eurostat run failed")
             result["imf_error"] = 1
+    from app.services.alerting import alert_world_ingest_summary
+
+    await alert_world_ingest_summary(
+        "Европа: Eurostat",
+        status="shadow" if shadow else ("partial" if failed or pending or result.get("imf_error") else "ok"),
+        checked=processed, changed=succeeded, failed=failed,
+        checked_label="Проверено наборов",
+        changed_label="Успешно обновлено наборов",
+        details=(
+            f"Наборов обновлено: {succeeded}; очередь: {pending}. "
+            + ("Данные не записаны (shadow). " if shadow else "")
+            + ("Отдельный источник IMF WEO: ошибка обновления. " if result.get("imf_error") else "")
+        ).strip(),
+    )
     return result

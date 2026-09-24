@@ -132,8 +132,18 @@ export function countryRegionIndicatorPath(countrySlug, regionSlug, indicatorCod
   return `/${slug(countrySlug)}/region/${slug(regionSlug)}/${code(indicatorCode)}`;
 }
 
+export function countryRegionIndicatorYearPath(countrySlug, regionSlug, indicatorCode, year) {
+  return `${countryRegionIndicatorPath(countrySlug, regionSlug, indicatorCode)}/${Number(year)}`;
+}
+
 export function countryRegionMapPath(countrySlug, indicatorCode) {
   return `/${slug(countrySlug)}/region/map/${code(indicatorCode)}`;
+}
+
+export function countryRegionVsPath(countrySlug, slugA, slugB) {
+  const [a, b] = [slug(slugA), slug(slugB)].sort();
+  if (a === b) throw new Error('comparison needs two distinct regions');
+  return `/${slug(countrySlug)}/region-vs/${a}-vs-${b}`;
 }
 
 export function regionRatingHubPath() {

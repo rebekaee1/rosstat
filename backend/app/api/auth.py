@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 # Версия согласия = дата действующей редакции политики (152-ФЗ).
-AUTH_CONSENT_VERSION = "2026-06-19"
+AUTH_CONSENT_VERSION = "2026-09-24"
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 

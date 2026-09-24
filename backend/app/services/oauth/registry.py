@@ -7,19 +7,24 @@
 from app.config import settings
 from app.services.oauth.base import OAuthProvider
 from app.services.oauth.fake import FakeProvider
+from app.services.oauth.google import GoogleProvider
 from app.services.oauth.yandex import YandexProvider
 from app.services.oauth.vk import VkProvider
 
-SUPPORTED = ("fake", "yandex", "vk")
+SUPPORTED = ("fake", "google", "yandex", "vk")
 
 # Провайдеры, которые показываем пользователю в UI (fake — служебный, не для UI).
-PUBLIC_PROVIDERS = ("yandex", "vk")
+PUBLIC_PROVIDERS = ("google", "yandex", "vk")
 
 
 def get_provider(name: str) -> OAuthProvider | None:
     if name == "fake":
         if settings.auth_fake_provider_enabled and settings.debug:
             return FakeProvider()
+        return None
+    if name == "google":
+        if settings.oauth_google_client_id and settings.oauth_google_client_secret:
+            return GoogleProvider(settings.oauth_google_client_id, settings.oauth_google_client_secret)
         return None
     if name == "yandex":
         if settings.oauth_yandex_client_id and settings.oauth_yandex_client_secret:

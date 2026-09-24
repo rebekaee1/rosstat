@@ -192,9 +192,10 @@ export function absoluteAuthNext(next = '/account') {
 
 // OAuth — полностраничный редирект на backend start-эндпоинт.
 // newsletter=1 фиксирует согласие на рассылку (из всплывающего окна перед входом).
-export const oauthStartUrl = (provider, { intent = 'login', next = '/account', newsletter = false } = {}) => {
+export const oauthStartUrl = (provider, { intent = 'login', next = '/account', newsletter = false, consent = false } = {}) => {
   const qs = new URLSearchParams({ intent, next: absoluteAuthNext(next) });
   if (newsletter) qs.set('newsletter', '1');
+  if (consent) qs.set('consent', '1');
   return `/api/v1/auth/oauth/${provider}/start?${qs.toString()}`;
 };
 

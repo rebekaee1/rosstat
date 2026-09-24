@@ -1,7 +1,7 @@
 # United States national-core passport (official FRED CSV + optional BLS/BEA APIs).
 # Live-probed 2026-09-20 via FRED keyless graph CSV (fred.stlouisfed.org/graph/fredgraph.csv).
 # Loader: backend/scripts/load-world-national.py --country us
-# 59 curated series (9 original + 50 added). Passport rows use fred so ingest
+# 62 curated series. Passport rows use fred so ingest
 # works without API keys. Loader is idempotent and does not touch existing
 # eurostat/IMF rows for US. Case-Shiller, equity indexes, UMich sentiment and
 # ICE HY skipped (licence). Daily twins prefer monthly (GS10 not DGS10).
@@ -446,6 +446,74 @@ series:
       — месячная. Единица измерения на графике — тысячи человек. На графике —
       официальный сезонно скорректированный национальный ряд.
 
+  - code_suffix: civilian-labor-force
+    name_ru: Численность рабочей силы
+    name_en: Civilian Labor Force Level
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. человек
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "CLF16OV"
+    series_id: "CLF16OV"
+    source_url: "https://fred.stlouisfed.org/series/CLF16OV"
+    analog_ru: Рабочая сила
+    is_listed: true
+    description: >
+      Число занятых и безработных среди гражданского населения США от 16 лет,
+      с сезонной корректировкой. Обследование домохозяйств, не ведомость
+      занятости предприятий.
+    methodology: >
+      Бюро трудовой статистики США публикует месячный ряд обследования
+      домохозяйств; Федеральный резервный банк Сент-Луиса передаёт полную
+      историю. Значения показаны в тысячах человек без преобразований.
+
+  - code_suffix: civilian-employment
+    name_ru: Численность занятых по обследованию домохозяйств
+    name_en: Civilian Employment Level
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. человек
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "CE16OV"
+    series_id: "CE16OV"
+    source_url: "https://fred.stlouisfed.org/series/CE16OV"
+    analog_ru: Занятые
+    is_listed: true
+    description: >
+      Число работающих жителей США от 16 лет по обследованию домохозяйств,
+      с сезонной корректировкой. Охват отличается от ряда занятости
+      предприятий вне сельского хозяйства.
+    methodology: >
+      Бюро трудовой статистики США публикует месячный ряд обследования
+      домохозяйств; Федеральный резервный банк Сент-Луиса передаёт полную
+      историю. Значения показаны в тысячах человек без преобразований.
+
+  - code_suffix: government-employment
+    name_ru: Занятые в государственном секторе
+    name_en: All Employees, Government
+    category_ru: Рынок труда
+    unit: THOUSANDS
+    unit_ru: тыс. человек
+    frequency: monthly
+    aggregation: mean
+    provider: fred
+    dataset_id: "USGOVT"
+    series_id: "USGOVT"
+    source_url: "https://fred.stlouisfed.org/series/USGOVT"
+    analog_ru: Занятые в государственном секторе
+    is_listed: true
+    description: >
+      Число работников федерального, штатного и местного государственного
+      сектора США по ведомостям предприятий, с сезонной корректировкой.
+    methodology: >
+      Бюро трудовой статистики США публикует месячный ряд обследования
+      предприятий; Федеральный резервный банк Сент-Луиса передаёт полную
+      историю. Значения показаны в тысячах человек без преобразований.
+
   - code_suffix: u6-unemployment
     name_ru: Расширенный уровень безработицы
     name_en: Total Unemployed, Plus Marginally Attached and Part Time for Economic Reasons
@@ -474,8 +542,8 @@ series:
     name_ru: Первичные обращения за пособием по безработице
     name_en: Initial Claims
     category_ru: Рынок труда
-    unit: THOUSANDS
-    unit_ru: тыс. человек
+    unit: PERSONS
+    unit_ru: человек
     frequency: weekly
     aggregation: mean
     provider: fred
@@ -491,7 +559,7 @@ series:
     methodology: >
       Ряд публикует Федеральный резервный банк Сент-Луиса по данным
       Министерства труда США. Частота публикации — недельная. Единица
-      измерения на графике — тысячи человек. На графике — официальный сезонно
+      измерения на графике — человек. На графике — официальный сезонно
       скорректированный национальный ряд.
 
   - code_suffix: job-openings
@@ -957,7 +1025,7 @@ series:
     name_en: All-Transactions House Price Index
     category_ru: Цены
     unit: INDEX
-    unit_ru: индекс (1 кв. 1991 = 100)
+    unit_ru: индекс (1 кв. 1980 = 100)
     frequency: quarterly
     aggregation: mean
     provider: fred
@@ -968,12 +1036,12 @@ series:
     is_listed: true
     description: >
       Индекс цен на жильё в США по всем сделкам. Показывает изменение
-      стоимости жилой недвижимости относительно первого квартала 1991 года.
+      стоимости жилой недвижимости относительно первого квартала 1980 года.
     methodology: >
       Ряд публикует Федеральный резервный банк Сент-Луиса по данным
       Федерального агентства по жилищному финансированию США. Частота
       публикации — квартальная. Единица измерения на графике — индекс (1 кв.
-      1991 = 100). На графике — официальный национальный ряд без
+      1980 = 100). На графике — официальный национальный ряд без
       дополнительных преобразований.
 
   - code_suffix: mortgage-30y
@@ -1364,6 +1432,7 @@ series:
     category_ru: Внешняя торговля
     unit: USD_BN
     unit_ru: млрд долларов США
+    value_scale: 0.001
     frequency: quarterly
     aggregation: sum
     provider: fred
@@ -1380,7 +1449,7 @@ series:
       Ряд публикует Федеральный резервный банк Сент-Луиса по данным Бюро
       экономического анализа США. Частота публикации — квартальная. Единица
       измерения на графике — миллиарды долларов США. На графике — официальный
-      ряд; значения знакопеременные.
+      ряд; исходные миллионы долларов делятся на 1000, значения знакопеременные.
 
   - code_suffix: fx-cny-usd
     name_ru: Курс китайского юаня к доллару США

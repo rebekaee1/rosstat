@@ -43,6 +43,7 @@ export default function RegionsMap({
   colorDirection = null,    // 'asc'/'desc' — привязка шкалы к порядку сортировки рейтинга
   className = '',           // доп. классы SVG-обёртки (например aspect-square)
   mapData: mapDataProp = null, // чужая геометрия; compact viewBox России — только дефолт
+  ariaLabel = null,
 }) {
   const geometry = mapDataProp || mapData;
   const compact = variant === 'compact';
@@ -172,7 +173,7 @@ export default function RegionsMap({
           viewBox={viewBox}
           className={`w-full h-auto ${k > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
           role="group"
-          aria-label={t('regions.mapAria')}
+          aria-label={ariaLabel || t('regions.mapAria')}
           onPointerDown={compact ? undefined : onPointerDown}
           onPointerMove={compact ? undefined : onPointerMove}
           onPointerUp={compact ? undefined : onPointerUp}

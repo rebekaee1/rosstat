@@ -77,9 +77,10 @@ export function PrivacyBodyEn({ t, h1 }) {
         <li className={li}>
           <strong className="text-text-primary">Account data</strong> — when you create an
           account: email address, a protected (irreversibly hashed) password or a sign-in
-          identifier from a third-party service (Yandex ID, VK ID), display name; when
-          signing in via a third-party service — also phone number (if you provided it to
-          the service and allowed it to be transferred), and an internal log of sign-ins
+          identifier from a third-party service (Google, Yandex ID, VK ID), display name,
+          and profile photo if shared. When you sign in with Google, we store the language
+          of the Site version you used. Yandex ID or VK ID may also share your phone number
+          with your permission. We keep an internal log of sign-ins
           (date, IP address, browser) for security. Processed on the basis of your explicit
           consent given at registration.
         </li>
@@ -168,6 +169,12 @@ export function PrivacyBodyEn({ t, h1 }) {
         described below:
       </p>
       <ul className="list-disc pl-5 space-y-2 mb-4">
+        <li className={li}>
+          <strong className="text-text-primary">Google</strong> — if you choose Google sign-in,
+          your browser is redirected to Google to authenticate. The Site receives your account
+          ID, email, name, and profile photo URL when available. We do not request access to
+          Google mail, contacts, or files, and we do not store Google tokens.
+        </li>
         <li className={li}>
           <strong className="text-text-primary">Yandex</strong> (Yandex LLC, Russia) —
           processing of anonymised visit statistics via Yandex Metrica and display of ads
@@ -283,7 +290,7 @@ export function TermsBodyEn({ t, h1 }) {
         You may delete the account and related data at any time in account settings.
       </p>
       <p className={p}>
-        When you register, sign in via a third-party service (Yandex ID, VK ID), or submit
+        When you register, sign in via a third-party service (Google, Yandex ID, VK ID), or submit
         feedback, the Administration receives and processes the data you provide —
         including email and, if the service shared it with your permission, phone number.
         These data are used to operate the account, respond to your enquiries and, with

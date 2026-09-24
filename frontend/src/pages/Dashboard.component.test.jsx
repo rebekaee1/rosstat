@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import Dashboard from './Dashboard';
 import { renderPage, mockApiGet } from '../test/renderPage';
 import api from '../lib/api';
@@ -48,7 +48,10 @@ describe('Dashboard', () => {
       ['/dashboard/sparklines', {}],
       [/^\/indicators/, INDICATORS],
       ['/indicators', INDICATORS],
-      ['/world/countries', { countries: [], total: 0 }],
+      ['/world/countries', {
+        countries: [], total: 0,
+        regional_indicators_count: 2377,
+      }],
       [/^\/world\/rating\/concepts/, { concepts: [], total: 0 }],
       [/^\/world\/compare\/map-series\//, {
         years: [], values_by_year: {}, concept: {}, benchmark_by_year: {},
@@ -65,7 +68,7 @@ describe('Dashboard', () => {
     expect(screen.queryByLabelText('Россия')).toBeNull();
     // Блок состава платформы.
     expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
-    expect(screen.getByText('495')).toBeTruthy();
+    await waitFor(() => expect(screen.getByText(/2\s*377/)).toBeTruthy());
     expect(screen.getByText(/региональных показателей/)).toBeTruthy();
     expect(screen.queryByText(/42\s*075/)).toBeNull();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();

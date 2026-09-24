@@ -9,7 +9,7 @@
 export function mergeActualForecastChartSeries(
   points,
   forecastValues,
-  { showForecast = true, bridgeLine = true, replacePartialActual = false } = {},
+  { showForecast = true, replacePartialActual = false } = {},
 ) {
   const series = Array.isArray(points) ? points : [];
   const fcValues = Array.isArray(forecastValues) ? forecastValues : [];
@@ -36,26 +36,47 @@ export function mergeActualForecastChartSeries(
 
   for (const fv of fcValues) {
     if (!actualDates.has(fv.date)) {
-      merged.push({ date: fv.date, forecast: fv.value });
+      merged.push({
+        date: fv.date,
+        forecast: fv.value,
+        ...(fv.lower_bound != null && fv.upper_bound != null
+          ? {
+            forecastLower: fv.lower_bound,
+            forecastUpper: fv.upper_bound,
+            forecastRange: [fv.lower_bound, fv.upper_bound],
+          }
+          : {}),
+      });
     }
   }
 
   merged.sort((a, b) => String(a.date).localeCompare(String(b.date)));
 
-  if (bridgeLine) {
-    const lastActualIdx = merged.findLastIndex((row) => row.actual != null);
-    if (lastActualIdx >= 0) {
-      const hasForecastAfter = merged
-        .slice(lastActualIdx + 1)
-        .some((row) => row.forecast != null);
-      if (hasForecastAfter) {
-        merged[lastActualIdx] = {
-          ...merged[lastActualIdx],
-          forecast: merged[lastActualIdx].actual,
-        };
-      }
-    }
+  return merged;
+}
+
+/**
+ * Join the two strokes only for rendering. The published series stays intact:
+ * the last observation is still a fact in tooltips and data exports, while the
+ * predicted segment starts at that observation and is shaded from there.
+ */
+export function buildForecastVisualSeries(rows) {
+  const data = Array.isArray(rows) ? rows : [];
+  const firstForecastIndex = data.findIndex(
+    (row) => row.forecast != null && row.actual == null,
+  );
+  if (firstForecastIndex < 0) return { data, boundaryDate: null };
+
+  let anchorIndex = firstForecastIndex - 1;
+  while (anchorIndex >= 0 && data[anchorIndex].actual == null) anchorIndex -= 1;
+  if (anchorIndex < 0) {
+    return { data, boundaryDate: data[firstForecastIndex].date };
   }
 
-  return merged;
+  return {
+    data: data.map((row, index) => index === anchorIndex
+      ? { ...row, forecast: row.actual }
+      : row),
+    boundaryDate: data[anchorIndex].date,
+  };
 }

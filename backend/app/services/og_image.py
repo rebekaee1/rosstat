@@ -538,14 +538,43 @@ def _art_background(theme: str) -> Image.Image:
 
 
 def _pearl_base(theme: str = "finance") -> Image.Image:
-    return _art_background(theme).copy()
+    img = _art_background(theme).copy()
+    # A quiet masthead keeps years and other small labels legible independently
+    # of the highlight pattern in each thematic sculpture.
+    band = Image.new("RGBA", (WIDTH, 88), (*BG, 242))
+    img.alpha_composite(band, (0, 0))
+    return img
 
 
 def _glass_panel(draw: ImageDraw.ImageDraw, box, radius: int = 24) -> None:
-    draw.rounded_rectangle(box, radius=radius, fill=(255, 255, 255, 220),
+    x0, y0, x1, y1 = map(int, box)
+    image = getattr(draw, "_image", None)
+    if image is not None and image.mode in {"RGB", "RGBA"}:
+        # A soft, tight shadow separates the pearl glass from dark sculpture
+        # details without turning the card into a heavy floating tile.
+        blur = 11
+        pad = blur * 2
+        left, top = max(0, x0 - pad), max(0, y0 - pad)
+        right, bottom = min(image.width, x1 + pad), min(image.height, y1 + pad)
+        shadow = Image.new("RGBA", (right - left, bottom - top), (0, 0, 0, 0))
+        shadow_draw = ImageDraw.Draw(shadow)
+        shadow_draw.rounded_rectangle(
+            (x0 - left, y0 - top + 6, x1 - left, y1 - top + 9),
+            radius=radius, fill=(17, 24, 38, 54),
+        )
+        shadow = shadow.filter(ImageFilter.GaussianBlur(blur))
+        crop = image.crop((left, top, right, bottom)).convert("RGBA")
+        crop.alpha_composite(shadow)
+        image.paste(crop.convert(image.mode), (left, top))
+
+    draw.rounded_rectangle((x0, y0, x1, y1), radius=radius,
+                           fill=(255, 255, 255, 249),
                            outline=(255, 255, 255, 255), width=2)
-    x0, y0, x1, _y1 = box
-    draw.line((x0 + radius, y0 + 3, x1 - radius, y0 + 3), fill=(255, 255, 255, 255), width=1)
+    # Champagne hairline and pearl highlight add a restrained branded finish.
+    draw.rounded_rectangle((x0 + 3, y0 + 3, x1 - 3, y1 - 3), radius=max(2, radius - 3),
+                           outline=(210, 185, 137, 88), width=1)
+    draw.line((x0 + radius, y0 + 3, x1 - radius, y0 + 3),
+              fill=(255, 255, 255, 255), width=1)
 
 
 def _draw_wordmark(draw: ImageDraw.ImageDraw, x: int = 46, y: int = 30) -> None:
@@ -677,7 +706,7 @@ def render_indicator_og(
         # Long official titles span the poster; the number and real chart keep
         # separate lower columns instead of colliding in the narrow left rail.
         title_lines, title_size = _fit_text_block(name, 31, 600, 1104, 104, min_size=18)
-        draw.rectangle((30, 96, 1171, 225), fill=(238, 240, 244, 150))
+        _glass_panel(draw, (30, 96, 1171, 225), radius=20)
     else:
         draw.text((46, 119), "OFFICIAL STATISTICS" if loc == "en" else "ОФИЦИАЛЬНАЯ СТАТИСТИКА",
                   font=FG(12, 700), fill=CHAMPAGNE)
@@ -738,10 +767,11 @@ def _render_indicator_portrait(*, code, name, value_text, date_text, values,
     img.paste(art, (0,70))
     draw = _raster_draw(img, "RGBA")
     muted = (91,105,124,255)
-    draw.rectangle((0, 95, width, 637), fill=(238, 240, 244, 100))
+    draw.rectangle((0, 95, width, 637), fill=(245, 247, 250, 208))
     _draw_wordmark(draw, 54, 28)
     loc = _effective_locale(None)
     if period_text:
+        draw.rounded_rectangle((810, 24, 1044, 88), radius=22, fill=(250, 251, 253, 242))
         draw.text((1026, 45), period_text, anchor="ra", font=FG(29,600), fill=muted)
     number, unit = _split_value_lines(value_text or "—")
     if unit_suffix and unit_suffix not in value_text:
@@ -1236,7 +1266,7 @@ def _portrait_frame(title: str, *, eyebrow: str = "", subline: str = "", theme: 
     art = _pearl_base(theme).convert("RGB").resize((1080, 567), Image.Resampling.LANCZOS)
     img.paste(art, (0, 70))
     draw = _raster_draw(img, "RGBA")
-    draw.rectangle((0, 95, 1080, 630), fill=(238, 240, 244, 120))
+    draw.rectangle((0, 95, 1080, 630), fill=(245, 247, 250, 208))
     _draw_wordmark(draw, 54, 28)
     if eyebrow:
         draw.text((54, 108), _fit_text_width(eyebrow, 36, 600, 970), font=FG(36, 600), fill=CHAMPAGNE)
@@ -1640,6 +1670,12 @@ def render_region_vs_og(
 
     title_font = _font(L["title_size"], bold=True)
     y = 92
+    title_width = max(draw.textlength(line, font=title_font) for line in L["title_lines"])
+    _glass_panel(draw, (
+        margin - 18, y - 8,
+        min(WIDTH - margin + 18, margin + title_width + 24),
+        y + len(L["title_lines"]) * L["title_line_h"] + 4,
+    ), radius=18)
     for line in L["title_lines"]:
         draw.text((margin, y), line, font=title_font, fill=TEXT_PRIMARY)
         y += L["title_line_h"]
@@ -1650,6 +1686,15 @@ def render_region_vs_og(
     col_w = 260
     head_font = _font(L["head_size"], bold=True)
     y += 14
+    # The sculpture crosses both numeric columns. Give the entire comparison
+    # table one light surface, so thin glyphs never blend into its highlights
+    # or dark contours. The title has its own fitted panel above this table.
+    _glass_panel(draw, (
+        margin - 18,
+        y - 13,
+        WIDTH - margin + 18,
+        min(HEIGHT - 60, y + 44 + len(L["rows"]) * 54 + 12),
+    ), radius=22)
     draw.text((col_a_x, y), L["head_a"], font=head_font, fill=CHAMPAGNE)
     draw.text((col_b_x, y), L["head_b"], font=head_font, fill=CHAMPAGNE)
     y += 44

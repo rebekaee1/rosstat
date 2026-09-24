@@ -32,6 +32,7 @@ from app.services.world_subnational_ingest import (
     period_label,
     period_start,
 )
+from app.services.world_subnational_queries import latest_region_points
 
 router = APIRouter(prefix="/world/{country_slug}/regions", tags=["world-subnational"])
 
@@ -168,7 +169,7 @@ async def _rank_for_period(
 
 @router.get("")
 async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"subnat:hub:{country_slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"subnat:hub:v2:{country_slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -216,6 +217,7 @@ async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
         "kind_label": labels["kind"],
         "kind_label_plural": labels["kind_plural"],
         "default_indicator": labels["default_indicator"],
+        "featured_indicator_codes": list(load_subnational_passport(country.code.lower()).featured_indicators),
         "map_id": labels["map_id"],
         "regions": [
             {
@@ -341,7 +343,7 @@ async def map_values(
 
 @router.get("/region/{slug}")
 async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"subnat:profile:{country_slug}:{slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"subnat:profile:v2:{country_slug}:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -349,6 +351,11 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
     country = await _country(db, country_slug)
     region = await _region(db, country.code, slug)
     labels = _kind_labels(country.code)
+    comparison_regions = (await db.execute(select(SubnationalRegion).where(
+        SubnationalRegion.country_code == country.code,
+        SubnationalRegion.kind == "state",
+        SubnationalRegion.id != region.id,
+    ).order_by(SubnationalRegion.sort_order, SubnationalRegion.slug))).scalars().all()
     indicators = (
         await db.execute(
             select(SubnationalIndicator)
@@ -360,25 +367,20 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
         )
     ).scalars().all()
 
+    recent_by_indicator = await latest_region_points(
+        db, region.id, [ind.id for ind in indicators], limit=2,
+    )
     items = []
     loc = get_locale()
     for ind in indicators:
-        last_two = (
-            await db.execute(
-                select(SubnationalDataPoint.period, SubnationalDataPoint.value)
-                .where(
-                    SubnationalDataPoint.indicator_id == ind.id,
-                    SubnationalDataPoint.region_id == region.id,
-                )
-                .order_by(SubnationalDataPoint.period.desc())
-                .limit(2)
-            )
-        ).all()
+        last_two = recent_by_indicator.get(ind.id, [])
         last = last_two[0] if last_two else None
         prev = last_two[1] if len(last_two) > 1 else None
         rank = None
         of = None
-        if last is not None:
+        # Detailed BEA catalogs can contain thousands of rows; ranking every
+        # row would run one 51-state query per indicator on this hub.
+        if last is not None and ind.provider != "bea-regional":
             ranked = await _rank_for_period(db, ind, last[0])
             of = len(ranked)
             match = next((row for row in ranked if row["slug"] == region.slug), None)
@@ -421,6 +423,10 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
         },
         "kind_label": labels["kind"],
         "kind_label_plural": labels["kind_plural"],
+        "featured_indicator_codes": list(load_subnational_passport(country.code.lower()).featured_indicators),
+        "comparison_regions": [
+            {"slug": other.slug, "name": _rname(other)} for other in comparison_regions
+        ] if region.kind == "state" else [],
         "indicators": items,
         "sections": [
             {"num": idx, "name": name, "indicators": inds}
@@ -579,4 +585,37 @@ async def region_indicator(
         "last_period_label": period_label(last[0], indicator.frequency, loc) if last else None,
     }
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+    return payload
+
+
+@router.get("/region/{slug}/{code}/forecast")
+async def region_indicator_forecast(
+    country_slug: str, slug: str, code: str, db: AsyncSession = Depends(get_db),
+):
+    """Self-refreshing, quality-gated platform forecast for state series."""
+    from app.services.world_subnational_forecast import state_forecast
+
+    cache_key = await versioned_key(
+        "world", f"subnat:forecast:v3:{country_slug}:{slug}:{code}:{get_locale()}",
+    )
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        return cached
+    country = await _country(db, country_slug)
+    region = await _region(db, country.code, slug)
+    indicator = await _indicator(db, country.code, code)
+    rows = (await db.execute(select(
+        SubnationalDataPoint.period, SubnationalDataPoint.value,
+    ).where(
+        SubnationalDataPoint.indicator_id == indicator.id,
+        SubnationalDataPoint.region_id == region.id,
+    ).order_by(SubnationalDataPoint.period))).all()
+    payload = await state_forecast(
+        [day for day, _value in rows],
+        [float(value) for _day, value in rows],
+        frequency=indicator.frequency,
+        unit=_iunit(indicator),
+        locale=get_locale(),
+    )
+    await cache_set(cache_key, payload, ttl=24 * 3600)
     return payload

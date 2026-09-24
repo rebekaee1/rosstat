@@ -68,6 +68,16 @@ def test_normalize_national_frequency_aliases():
 def test_core_yaml_path_resolves_ca_and_au():
     assert core_yaml_path("ca") == CORE / "ca.yaml"
     assert core_yaml_path("CA") == CORE / "ca.yaml"
+
+
+def test_us_official_fred_units_match_passport():
+    by_suffix = {s.code_suffix: s for s in load_national_core_yaml("us").series}
+    assert by_suffix["initial-claims"].unit == "PERSONS"
+    assert by_suffix["initial-claims"].value_scale == 1.0
+    assert by_suffix["current-account"].unit == "USD_BN"
+    assert by_suffix["current-account"].value_scale == 0.001
+    assert "1980" in by_suffix["fhfa-house-price"].unit_ru
+    assert "1991" not in by_suffix["fhfa-house-price"].methodology
     assert core_yaml_path("au") == CORE / "au.yaml"
     assert core_yaml_path("AU") == CORE / "au.yaml"
     assert core_yaml_path("us") == CORE / "us.yaml"
@@ -75,6 +85,18 @@ def test_core_yaml_path_resolves_ca_and_au():
     assert core_yaml_path("au", base_dir=Path("/tmp/national")) == Path(
         "/tmp/national/au.yaml"
     )
+
+
+def test_us_household_and_government_series_match_state_units():
+    manifest = load_national_core_yaml("us")
+    by_suffix = {spec.code_suffix: spec for spec in manifest.series}
+    assert len(manifest.series) == 62
+    assert by_suffix["civilian-labor-force"].series_id == "CLF16OV"
+    assert by_suffix["civilian-employment"].series_id == "CE16OV"
+    assert by_suffix["government-employment"].series_id == "USGOVT"
+    for suffix in ("civilian-labor-force", "civilian-employment", "government-employment"):
+        assert by_suffix[suffix].unit == "THOUSANDS"
+        assert by_suffix[suffix].frequency == "monthly"
 
 
 def test_load_ca_yaml_stub_structure():
