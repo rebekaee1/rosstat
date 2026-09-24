@@ -318,12 +318,7 @@ export default function IndicatorChart({
   const forecastStartDate = useMemo(() => {
     if (!showForecast) return null;
     for (let i = 0; i < visibleData.length; i++) {
-      if (visibleData[i].actual != null && visibleData[i].forecast != null) {
-        return visibleData[i].date;
-      }
-    }
-    for (let i = 0; i < visibleData.length; i++) {
-      if (visibleData[i].forecast != null) {
+      if (visibleData[i].forecast != null && visibleData[i].actual == null) {
         return visibleData[i].date;
       }
     }
