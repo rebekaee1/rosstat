@@ -11,7 +11,7 @@ from app.schemas import (
     ForecastResponse, ForecastOut, ForecastValueOut,
     InflationResponse, InflationPoint, InflationForecastPoint,
 )
-from app.core.cache import cache_get, cache_set
+from app.core.cache import cache_get, cache_set, versioned_key
 from app.config import settings
 
 router = APIRouter(prefix="/indicators", tags=["forecasts"])
@@ -46,7 +46,7 @@ def _validate_code(code: str) -> None:
 @router.get("/{code}/forecast", response_model=ForecastResponse)
 async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
-    cache_key = f"fe:{code}:forecast:partial-v1"
+    cache_key = await versioned_key(code, "forecast:partial-v1")
     cached = await cache_get(cache_key)
     if cached:
         return cached
