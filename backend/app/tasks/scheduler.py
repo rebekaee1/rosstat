@@ -16,6 +16,7 @@ from sqlalchemy import func, select, update
 from app.database import async_session
 from app.models import Indicator, IndicatorData, FetchLog, EconomicEvent
 from app.services.rosstat_cpi_parser import get_parser
+from app.services.rosstat_weekly_inflation_parser import WEEKLY_SEGMENT_CODES
 from app.services.calculation_engine import calculation_engine
 from app.services.forecast_pipeline import catch_up_empty_forecasts, retrain_indicator_forecast
 from app.services.alerting import alert_etl_failure, alert_etl_summary, send_telegram
@@ -36,6 +37,16 @@ def etl_timeout_for(parser_type: str) -> int:
 
 _running_locks: set[str] = set()
 _lock = asyncio.Lock()
+
+
+def _updated_source_codes(codes: list[str]) -> list[str]:
+    """Include sibling rows written as a side effect of the primary ETL run."""
+    expanded = dict.fromkeys(codes)
+    if "inflation-weekly" in expanded:
+        # RosstatWeeklyCpiParser._post_upsert writes these three series while
+        # run_etl_for_indicator reports only the primary code to the scheduler.
+        expanded.update(dict.fromkeys(WEEKLY_SEGMENT_CODES.values()))
+    return list(expanded)
 
 
 async def run_etl_for_indicator(indicator_code: str) -> bool:
@@ -144,10 +155,11 @@ async def daily_update_job():
                 _running_locks.discard(code)
 
     if updated_codes:
-        ping_codes = list(updated_codes)
+        source_codes = _updated_source_codes(updated_codes)
+        ping_codes = list(source_codes)
         async with async_session() as db:
             try:
-                derived = await calculation_engine.run_for_updated_sources(db, updated_codes)
+                derived = await calculation_engine.run_for_updated_sources(db, source_codes)
                 await db.commit()
                 if derived:
                     logger.info("CalculationEngine updated derived indicators: %s", derived)
@@ -287,10 +299,11 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
                 _running_locks.discard(code)
 
     if updated_codes:
-        ping_codes = list(updated_codes)
+        source_codes = _updated_source_codes(updated_codes)
+        ping_codes = list(source_codes)
         async with async_session() as db:
             try:
-                derived = await calculation_engine.run_for_updated_sources(db, updated_codes)
+                derived = await calculation_engine.run_for_updated_sources(db, source_codes)
                 await db.commit()
                 if derived:
                     logger.info(
