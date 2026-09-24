@@ -280,7 +280,7 @@
     "portraitRenderers": 7,
     "portraitHandlers": 18
   },
-  "at": "2026-09-24T08:00:10.710Z",
+  "at": "2026-09-24T08:12:59.489Z",
   "status": "final_local_source_and_runtime_snapshot",
   "baseline": "docs/design/local-acceptance/source-audit.json",
   "runtimeHashes": {
@@ -309,7 +309,7 @@
   },
   "containerImages": {
     "backend": "sha256:d63698d119747a09ce7e8f84793da0e8c7a142ccb76106d5a87634ec84cd4107",
-    "frontend": "sha256:a05aea4fdd42b730d3575b10933b28b75500a003c9e8f2dc6f84fc640d106836"
+    "frontend": "sha256:5f8ea1a0755691e3144c51c13ad27a48c8e941eb060ce9d2deaf80a43a72c841"
   },
   "acceptanceArtifacts": [
     {

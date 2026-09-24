@@ -36,5 +36,11 @@
   "notes": [
     "Workspace contains pre-existing unstaged CPI/housing/view-mode changes, preserved outside the design commit.",
     "Browser/HTTP evidence is recorded separately; a test pass is not production acceptance."
-  ]
+  ],
+  "finalCountryLoadingFix": {
+    "commit": "5f43359",
+    "frontendTargetedPassed": 14,
+    "frontendComposeRebuilt": true,
+    "report": "performance-country-after.json"
+  }
 }
