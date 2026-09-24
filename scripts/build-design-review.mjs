@@ -368,7 +368,16 @@ el('approve').onclick=()=>saveReview('approved');el('rework').onclick=()=>saveRe
 el('reset').onclick=()=>{for(const id of filterIds)el(id).value='';render()};
 el('close').onclick=()=>modal.close();modal.addEventListener('close',()=>{const itemId=triggerItemId||openedItem?.id;render();const target=[...grid.querySelectorAll('.item')].find(e=>e.dataset.itemId===itemId)?.querySelector(trigger?.classList.contains('preview')?'.preview':'.links button');(target||el('reset')).focus();openedItem=null});el('prev').onclick=()=>openItem(current-1);el('next').onclick=()=>openItem(current+1);
 el('zoom').onclick=()=>{const zoom=el('image-stage').classList.toggle('zoom');el('zoom').textContent=zoom?'Вписать в окно':'Масштаб 100%'};
-modal.addEventListener('keydown',event=>{if(['INPUT','TEXTAREA'].includes(event.target.tagName))return;if(event.key==='ArrowLeft'){event.preventDefault();openItem(current-1)}if(event.key==='ArrowRight'){event.preventDefault();openItem(current+1)}});render();
+modal.addEventListener('keydown',event=>{if(['INPUT','TEXTAREA'].includes(event.target.tagName))return;if(event.key==='ArrowLeft'){event.preventDefault();openItem(current-1)}if(event.key==='ArrowRight'){event.preventDefault();openItem(current+1)}});
+const query=new URLSearchParams(location.search);
+const requestedLocale=query.get('locale');
+if(['ru','en'].includes(requestedLocale))el('locale').value=requestedLocale;
+const requestedKind=query.get('kind');
+if(['featured','cards','site','art'].includes(requestedKind)){
+  state.kind=requestedKind;
+  for(const button of document.querySelectorAll('.tabs button'))button.setAttribute('aria-pressed',String(button.dataset.kind===requestedKind));
+}
+render();
 </script></body></html>`;
 }
 

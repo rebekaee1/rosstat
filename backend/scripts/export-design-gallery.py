@@ -24,6 +24,7 @@ from app.models import Region, RegionIndicator, RegionDataPoint, WorldCountry, W
 from app.api.sitemap import router
 from app.services.locale import set_locale, reset_locale
 from app.services.og_image import quicklink_art_theme
+from app.services.seo_i18n import region_indicator_copy
 
 BASE = [
  ('inflation', 'Инфляция за год', 'finance', '/russia/indicator/cpi/2025', '/api/v1/og-image/indicator/cpi/2025.png'),
@@ -45,6 +46,29 @@ BASE = [
  ('us-state-profile', 'Профиль Калифорнии', 'industry', '/united-states/region/california', '/api/v1/og-image/world-region/united-states/california.png'),
  ('demographics', 'Возрастная структура населения', 'population', '/russia/demographics', '/api/v1/og-image/demographics.png'),
 ]
+
+# Review labels use the same language as the rendered PNG. These names only
+# describe the fixed editorial samples; data and image copy remain in OG handlers.
+TITLE_EN = {
+    'inflation': 'Consumer Price Index: 2025',
+    'policy': 'Bank of Russia key rate',
+    'housing': 'Primary housing prices',
+    'industry': 'Industrial production',
+    'commodity': 'Brent oil',
+    'population-history': 'Population history: 1897',
+    'germany-year': 'Germany: 2024',
+    'us-employment': 'U.S. employment',
+    'california': 'Unemployment in California',
+    'california-housing': 'Housing in California',
+    'rating': 'GDP ranking by country: 2024',
+    'comparison': 'France and Germany',
+    'region-comparison': 'Moscow and Tula Oblast',
+    'today': "Russia's economy today",
+    'us-country': 'U.S. economy',
+    'us-states': 'U.S. state comparison',
+    'us-state-profile': 'California profile',
+    'demographics': 'Age structure of the population',
+}
 
 async def invoke(path, db, portrait):
     for route in router.routes:
@@ -84,23 +108,34 @@ async def main(out):
                           quicklink_art_theme(longest.code + ' ' + longest.name),
                           f'/russia/region/moskva/{longest.code}',
                           f'/api/v1/og-image/region/moskva/{longest.code}.png'))
-        longest_world = (await db.execute(select(WorldCountry.slug, WorldIndicator.code, WorldIndicator.name_ru)
+            TITLE_EN['regional-long-title'] = (
+                region_indicator_copy(longest.code, name_ru=longest.name, unit_ru='', locale='en')['name']
+                + ' — Moscow'
+            )
+        longest_world = (await db.execute(select(WorldCountry.slug, WorldIndicator.code,
+                                                WorldIndicator.name_ru, WorldIndicator.name_en)
             .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
             .where(WorldCountry.is_active.is_(True), WorldIndicator.is_listed.is_(True),
                    select(WorldDataPoint.id).where(WorldDataPoint.indicator_id == WorldIndicator.id).exists())
             .order_by(func.length(WorldIndicator.name_ru).desc(), WorldIndicator.code).limit(1))).first()
         if longest_world:
-            slug, code, name = longest_world
+            slug, code, name, name_en = longest_world
             cases.append(('world-long-title', name, quicklink_art_theme(code + ' ' + name),
                           f'/{slug}/indicator/{code}', f'/api/v1/og-image/world/{slug}/{code}.png'))
+            TITLE_EN['world-long-title'] = name_en or name
         wanted = {'health','education','science','agriculture','tourism','environment','energy','transport','ict','trade','justice'}
         for code, name in sorted(regional, key=lambda r: (len(r.name), r.code)):
             theme = quicklink_art_theme(code + ' ' + name)
             if theme not in wanted:
                 continue
             wanted.remove(theme)
-            cases.append((f'regional-{theme}', name + ' — Москва', theme,
+            id_ = f'regional-{theme}'
+            cases.append((id_, name + ' — Москва', theme,
                           f'/russia/region/moskva/{code}', f'/api/v1/og-image/region/moskva/{code}.png'))
+            TITLE_EN[id_] = (
+                region_indicator_copy(code, name_ru=name, unit_ru='', locale='en')['name']
+                + ' — Moscow'
+            )
         for id_, title, theme, path, api in cases:
             for locale in ('ru','en'):
                 token = set_locale(locale)
@@ -111,7 +146,8 @@ async def main(out):
                         try:
                             png = await invoke(api, db, portrait)
                             (out/name).write_bytes(png)
-                            entries.append(dict(id=id_, title=title, theme=theme, locale=locale, format=fmt,
+                            entries.append(dict(id=id_, title=title if locale == 'ru' else TITLE_EN.get(id_, title),
+                                                theme=theme, locale=locale, format=fmt,
                                                 file=name, path=path, bytes=len(png), sha256=hashlib.sha256(png).hexdigest()))
                         except Exception as error:
                             errors.append({'id': id_, 'locale': locale, 'format': fmt, 'error': str(error)})

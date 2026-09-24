@@ -5,7 +5,10 @@ node scripts/build-design-review.mjs
 python3 -m http.server 3080 --directory output/design-review
 ```
 
-Открыть `http://localhost:3080`. Production app/router не меняются. Каталог
+Открыть `http://localhost:3080`. Прямая ссылка на английские карточки:
+`http://localhost:3080/?locale=en&kind=cards` (62 варианта: 31 сюжет ×
+горизонтальный/вертикальный формат). Названия карточек и сами PNG на английском;
+интерфейс галереи для согласования остаётся русским. Production app/router не меняются. Каталог
 `output/design-review/` игнорируется Git и целиком переносится/архивируется:
 HTML, изображения, Manrope с лицензией и промпты не требуют внешней сети.
 Кнопка «На сайте» ведёт на соответствующую страницу `localhost:3000`.
