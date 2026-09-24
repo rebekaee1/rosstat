@@ -3,6 +3,7 @@ import {
   VIEW_MODE_FAMILIES,
   DAILY_AGG_FREQUENCY,
   findViewModeFamily,
+  viewModeCanonicalTarget,
   viewModeCode,
   applyMoMTransform,
   applyAggregateTransform,
@@ -194,5 +195,18 @@ describe('applyAggregateTransform', () => {
       { date: '2026-01-31', value: 10 },
       { date: '2026-02-28', value: 30 },
     ]);
+  });
+});
+
+describe('viewModeCanonicalTarget — T9s abs siblings', () => {
+  it('trade-balance-yoy-abs / current-account-yoy-abs → parent?mode=yoy', () => {
+    expect(viewModeCanonicalTarget('trade-balance-yoy-abs')).toEqual({
+      parentCode: 'trade-balance',
+      mode: 'yoy',
+    });
+    expect(viewModeCanonicalTarget('current-account-yoy-abs')).toEqual({
+      parentCode: 'current-account',
+      mode: 'yoy',
+    });
   });
 });

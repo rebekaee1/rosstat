@@ -136,3 +136,16 @@ export function isActiveCpiUrlMode(viewMode) {
   const mode = normalizeCpiViewMode(viewMode);
   return CPI_ACTIVE_URL_MODES.includes(mode);
 }
+
+/** Старые derived-URL → каноническая карточка состава + ?mode=. */
+export function cpiCanonicalTarget(code) {
+  const map = {
+    'inflation-weekly': { parentCode: 'cpi', mode: 'step-weekly' },
+    'inflation-annual': { parentCode: 'cpi', mode: 'yoy' },
+    'inflation-quarterly': { parentCode: 'cpi', mode: 'index-quarterly' },
+    'inflation-weekly-food': { parentCode: 'cpi-food', mode: 'inflation' },
+    'inflation-weekly-nonfood': { parentCode: 'cpi-nonfood', mode: 'inflation' },
+    'inflation-weekly-services': { parentCode: 'cpi-services', mode: 'inflation' },
+  };
+  return map[code] ?? null;
+}

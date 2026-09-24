@@ -57,6 +57,27 @@ class TestResolvers:
                      "trade-balance-yoy-abs", "current-account-yoy-abs"):
             target = resolve_unlisted_indicator(code)
             assert target and target.startswith("/russia/indicator/"), code
+        assert resolve_unlisted_indicator("trade-balance-yoy-abs").endswith(
+            "/russia/indicator/trade-balance?mode=yoy"
+        )
+        assert resolve_unlisted_indicator("inflation-weekly").endswith(
+            "/russia/indicator/cpi?mode=step-weekly"
+        )
+        assert resolve_unlisted_indicator("inflation-annual").endswith(
+            "/russia/indicator/cpi?mode=yoy"
+        )
+        assert resolve_unlisted_indicator("inflation-quarterly").endswith(
+            "/russia/indicator/cpi?mode=index-quarterly"
+        )
+        assert resolve_unlisted_indicator("inflation-weekly-food").endswith(
+            "/russia/indicator/cpi-food"
+        )
+        assert resolve_unlisted_indicator("housing-annual-primary").endswith(
+            "/russia/indicator/housing-price-primary?mode=yoy-annual"
+        )
+        assert resolve_unlisted_indicator("housing-yoy-primary").endswith(
+            "/russia/indicator/housing-price-primary?mode=yoy"
+        )
 
     def test_listed_and_variant_codes_do_not_redirect(self):
         """Живые карточки (base-коды семей, variant-члены) не редиректятся."""

@@ -10,6 +10,7 @@ import {
 } from './cpiViewModeGroups';
 import {
   CPI_DISABLED_MODES,
+  cpiCanonicalTarget,
   dataModeForUrlMode,
   isCpiModeDisabled,
   normalizeCpiViewMode,
@@ -69,6 +70,27 @@ describe('cpiViewModeGroups', () => {
   it('legacy ?mode=cpi|weekly → step-*', () => {
     expect(normalizeCpiViewMode('cpi')).toBe('step-monthly');
     expect(normalizeCpiViewMode('weekly')).toBe('step-weekly');
+  });
+
+  it('canonical derived-URL ИПЦ → карточка состава + mode', () => {
+    expect(cpiCanonicalTarget('inflation-weekly')).toEqual({
+      parentCode: 'cpi', mode: 'step-weekly',
+    });
+    expect(cpiCanonicalTarget('inflation-annual')).toEqual({
+      parentCode: 'cpi', mode: 'yoy',
+    });
+    expect(cpiCanonicalTarget('inflation-quarterly')).toEqual({
+      parentCode: 'cpi', mode: 'index-quarterly',
+    });
+    expect(cpiCanonicalTarget('inflation-weekly-food')).toEqual({
+      parentCode: 'cpi-food', mode: 'inflation',
+    });
+    expect(cpiCanonicalTarget('inflation-weekly-nonfood')).toEqual({
+      parentCode: 'cpi-nonfood', mode: 'inflation',
+    });
+    expect(cpiCanonicalTarget('inflation-weekly-services')).toEqual({
+      parentCode: 'cpi-services', mode: 'inflation',
+    });
   });
 
   it('defaultSubModeForGroup index → по месяцам', () => {

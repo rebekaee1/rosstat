@@ -75,6 +75,8 @@ export function housingCanonicalTarget(code) {
     'housing-yoy-secondary': { parentCode: 'housing-price-secondary', mode: 'yoy' },
     'housing-qoq-primary': { parentCode: 'housing-price-primary', mode: 'qoq' },
     'housing-qoq-secondary': { parentCode: 'housing-price-secondary', mode: 'qoq' },
+    'housing-annual-primary': { parentCode: 'housing-price-primary', mode: 'yoy-annual' },
+    'housing-annual-secondary': { parentCode: 'housing-price-secondary', mode: 'yoy-annual' },
   };
   return map[code] ?? null;
 }

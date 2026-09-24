@@ -41,6 +41,7 @@ import GenericIndicatorView from '../components/GenericIndicatorView';
 import { useLocale, useT } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import { resolveViewModeContent } from '../i18n/resolveViewModeCopy';
+import { cpiCanonicalTarget } from '../lib/cpiViewModeResolve';
 import { HOUSING_CODES, housingCanonicalTarget } from '../lib/housingViewModeResolve';
 import { PPI_CODES, ppiCanonicalTarget } from '../lib/ppiViewModeResolve';
 import { CBR_TERM_SLICE_CODES } from '../lib/cbrTermSliceRateResolve';
@@ -139,6 +140,7 @@ export default function IndicatorDetail() {
     }
     const canon = viewModeCanonicalTarget(code)
       ?? unemploymentCanonicalTarget(code)
+      ?? cpiCanonicalTarget(code)
       ?? housingCanonicalTarget(code)
       ?? ppiCanonicalTarget(code);
     if (canon) {

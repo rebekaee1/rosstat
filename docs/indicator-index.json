@@ -1237,7 +1237,7 @@
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 33,
+          "line": 34,
           "kind": "other"
         },
         {
@@ -7976,7 +7976,7 @@
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 29,
+          "line": 30,
           "kind": "other"
         },
         {
@@ -8606,12 +8606,27 @@
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 63,
+          "line": 64,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 80,
+          "line": 67,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 70,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 84,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 101,
           "kind": "tests"
         },
         {
@@ -10246,12 +10261,7 @@
         },
         {
           "file": "frontend/src/lib/cpiViewModeGroups.test.js",
-          "line": 64,
-          "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
-          "line": 69,
+          "line": 65,
           "kind": "tests"
         },
         {
@@ -10261,7 +10271,27 @@
         },
         {
           "file": "frontend/src/lib/cpiViewModeGroups.test.js",
-          "line": 86,
+          "line": 71,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 77,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 80,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 83,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 108,
           "kind": "tests"
         },
         {
@@ -10282,6 +10312,21 @@
         {
           "file": "frontend/src/lib/cpiViewModeResolve.js",
           "line": 124,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 143,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 144,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 145,
           "kind": "family"
         },
         {
@@ -10706,7 +10751,7 @@
         },
         {
           "file": "frontend/src/lib/viewModeFamilies.test.js",
-          "line": 76,
+          "line": 77,
           "kind": "tests"
         },
         {
@@ -10806,12 +10851,12 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 215,
+          "line": 217,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 597,
+          "line": 599,
           "kind": "other"
         },
         {
@@ -11316,6 +11361,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 73,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_og_context.py",
           "line": 130,
           "kind": "tests"
@@ -11431,6 +11481,16 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 86,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 146,
+          "kind": "family"
+        },
+        {
           "file": "frontend/src/lib/cpiViewModes.test.js",
           "line": 6,
           "kind": "tests"
@@ -11537,7 +11597,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 597,
+          "line": 599,
           "kind": "other"
         },
         {
@@ -12275,6 +12335,16 @@
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
           "line": 254,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 89,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 147,
           "kind": "family"
         },
         {
@@ -13185,6 +13255,16 @@
         {
           "file": "frontend/src/lib/cpiViewModeContent.jsx",
           "line": 255,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 92,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 148,
           "kind": "family"
         },
         {
@@ -16748,7 +16828,7 @@
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 85,
+          "line": 106,
           "kind": "tests"
         },
         {
@@ -16885,6 +16965,11 @@
           "file": "frontend/src/lib/viewModeFamilies.js",
           "line": 85,
           "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/viewModeFamilies.test.js",
+          "line": 208,
+          "kind": "tests"
         },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
@@ -17036,7 +17121,7 @@
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 83,
+          "line": 104,
           "kind": "tests"
         },
         {
@@ -17209,6 +17294,16 @@
           "file": "frontend/src/lib/viewModeFamilies.js",
           "line": 86,
           "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/viewModeFamilies.test.js",
+          "line": 202,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/viewModeFamilies.test.js",
+          "line": 207,
+          "kind": "tests"
         },
         {
           "file": "scripts/build-indicator-index.py",
@@ -20611,6 +20706,11 @@
           "kind": "parser"
         },
         {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 60,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 3269,
           "kind": "seed"
@@ -23477,17 +23577,17 @@
         },
         {
           "file": "frontend/src/lib/viewModeFamilies.test.js",
-          "line": 70,
-          "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/viewModeFamilies.test.js",
-          "line": 81,
+          "line": 71,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/viewModeFamilies.test.js",
           "line": 82,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/viewModeFamilies.test.js",
+          "line": 83,
           "kind": "tests"
         },
         {
@@ -23507,7 +23607,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 265,
+          "line": 267,
           "kind": "other"
         },
         {
@@ -24246,7 +24346,7 @@
         },
         {
           "file": "frontend/src/lib/viewModeFamilies.test.js",
-          "line": 81,
+          "line": 82,
           "kind": "tests"
         },
         {
@@ -25047,7 +25147,7 @@
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 63,
+          "line": 84,
           "kind": "tests"
         },
         {
@@ -25584,12 +25684,12 @@
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 63,
+          "line": 84,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 90,
+          "line": 111,
           "kind": "tests"
         },
         {
@@ -28347,7 +28447,7 @@
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 63,
+          "line": 84,
           "kind": "tests"
         },
         {
@@ -30276,7 +30376,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 271,
+          "line": 273,
           "kind": "other"
         }
       ]
@@ -31855,6 +31955,21 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 75,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/housingViewModeGroups.test.js",
+          "line": 62,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/housingViewModeResolve.js",
+          "line": 78,
+          "kind": "family"
+        },
+        {
           "file": "frontend/src/lib/useIndicatorViewModeData.js",
           "line": 83,
           "kind": "family"
@@ -31929,6 +32044,16 @@
           "file": "backend/tests/test_forecast_policy.py",
           "line": 107,
           "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/housingViewModeGroups.test.js",
+          "line": 66,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/housingViewModeResolve.js",
+          "line": 79,
+          "kind": "family"
         },
         {
           "file": "frontend/src/lib/useIndicatorViewModeData.js",
@@ -32424,7 +32549,7 @@
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 31,
+          "line": 32,
           "kind": "other"
         },
         {
@@ -32470,6 +32595,16 @@
         {
           "file": "backend/tests/test_housing_historical_backfill.py",
           "line": 69,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 76,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 79,
           "kind": "tests"
         },
         {
@@ -32584,12 +32719,17 @@
         },
         {
           "file": "frontend/src/lib/housingViewModeGroups.test.js",
-          "line": 67,
+          "line": 63,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/housingViewModeGroups.test.js",
-          "line": 73,
+          "line": 75,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/housingViewModeGroups.test.js",
+          "line": 81,
           "kind": "tests"
         },
         {
@@ -32605,6 +32745,11 @@
         {
           "file": "frontend/src/lib/housingViewModeResolve.js",
           "line": 76,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/housingViewModeResolve.js",
+          "line": 78,
           "kind": "family"
         },
         {
@@ -32634,7 +32779,7 @@
         },
         {
           "file": "frontend/src/lib/viewModeFamilies.test.js",
-          "line": 72,
+          "line": 73,
           "kind": "tests"
         },
         {
@@ -32894,6 +33039,11 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/lib/housingViewModeGroups.test.js",
+          "line": 67,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/housingViewModeResolve.js",
           "line": 6,
           "kind": "family"
@@ -32906,6 +33056,11 @@
         {
           "file": "frontend/src/lib/housingViewModeResolve.js",
           "line": 77,
+          "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/housingViewModeResolve.js",
+          "line": 79,
           "kind": "family"
         },
         {
@@ -33189,6 +33344,11 @@
         {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 102,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 78,
           "kind": "tests"
         },
         {
@@ -35173,6 +35333,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 66,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
           "line": 13,
           "kind": "other"
@@ -35186,6 +35351,16 @@
           "file": "frontend/public/sitemap.xml",
           "line": 106,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 79,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 144,
+          "kind": "family"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
@@ -35299,6 +35474,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 69,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
           "line": 13,
           "kind": "other"
@@ -35312,6 +35492,16 @@
           "file": "frontend/public/sitemap.xml",
           "line": 100,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 82,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 145,
+          "kind": "family"
         },
         {
           "file": "frontend/src/lib/format.js",
@@ -35533,6 +35723,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 63,
+          "kind": "tests"
+        },
+        {
           "file": "docs/backlog.md",
           "line": 728,
           "kind": "other"
@@ -35556,6 +35751,16 @@
           "file": "docs/missed_data_audit.md",
           "line": 83,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 76,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 143,
+          "kind": "family"
         },
         {
           "file": "frontend/src/lib/format.js",
@@ -35697,9 +35902,24 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 72,
+          "kind": "tests"
+        },
+        {
           "file": "docs/data_sources.md",
           "line": 224,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 85,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 146,
+          "kind": "family"
         },
         {
           "file": "frontend/src/lib/format.js",
@@ -35821,6 +36041,16 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 88,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 147,
+          "kind": "family"
+        },
+        {
           "file": "frontend/src/lib/format.js",
           "line": 521,
           "kind": "other"
@@ -35933,6 +36163,16 @@
           "file": "docs/data_sources.md",
           "line": 226,
           "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeGroups.test.js",
+          "line": 91,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/cpiViewModeResolve.js",
+          "line": 148,
+          "kind": "family"
         },
         {
           "file": "frontend/src/lib/format.js",
@@ -36795,7 +37035,7 @@
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 32,
+          "line": 33,
           "kind": "other"
         },
         {
@@ -37080,7 +37320,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 66,
+          "line": 67,
           "kind": "other"
         },
         {
@@ -38967,12 +39207,12 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 66,
+          "line": 67,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 108,
+          "line": 109,
           "kind": "other"
         },
         {
@@ -39334,7 +39574,7 @@
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 30,
+          "line": 31,
           "kind": "other"
         },
         {
@@ -39879,7 +40119,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 270,
+          "line": 272,
           "kind": "other"
         },
         {
@@ -42336,7 +42576,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 131,
+          "line": 132,
           "kind": "other"
         }
       ]
@@ -46056,12 +46296,7 @@
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 34,
-          "kind": "other"
-        },
-        {
-          "file": "backend/scripts/export-design-gallery.py",
-          "line": 36,
+          "line": 35,
           "kind": "other"
         },
         {
@@ -46071,17 +46306,27 @@
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 41,
+          "line": 38,
           "kind": "other"
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 44,
+          "line": 42,
           "kind": "other"
         },
         {
           "file": "backend/scripts/export-design-gallery.py",
-          "line": 46,
+          "line": 45,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 47,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 70,
           "kind": "other"
         },
         {
@@ -50714,7 +50959,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 270,
+          "line": 272,
           "kind": "other"
         }
       ]
@@ -54304,6 +54549,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 61,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_world_national_ingest.py",
           "line": 297,
           "kind": "tests"
@@ -54462,6 +54712,11 @@
           "file": "frontend/src/lib/viewModeFamilies.js",
           "line": 78,
           "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/viewModeFamilies.test.js",
+          "line": 204,
+          "kind": "tests"
         },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
@@ -54984,6 +55239,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_legacy_redirects.py",
+          "line": 60,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_site_urls_recrawl_filter.py",
           "line": 22,
           "kind": "tests"
@@ -55002,6 +55262,16 @@
           "file": "frontend/src/lib/viewModeFamilies.js",
           "line": 79,
           "kind": "family"
+        },
+        {
+          "file": "frontend/src/lib/viewModeFamilies.test.js",
+          "line": 202,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/viewModeFamilies.test.js",
+          "line": 203,
+          "kind": "tests"
         },
         {
           "file": "scripts/build-indicator-index.py",
@@ -55459,7 +55729,7 @@
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
-          "line": 63,
+          "line": 84,
           "kind": "tests"
         },
         {
@@ -55914,7 +56184,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 265,
+          "line": 267,
           "kind": "other"
         },
         {
@@ -59881,7 +60151,7 @@
         },
         {
           "file": "frontend/src/lib/viewModeFamilies.test.js",
-          "line": 71,
+          "line": 72,
           "kind": "tests"
         },
         {
@@ -59901,7 +60171,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 265,
+          "line": 267,
           "kind": "other"
         },
         {
@@ -60185,7 +60455,7 @@
         },
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
-          "line": 384,
+          "line": 386,
           "kind": "other"
         }
       ]

@@ -59,6 +59,14 @@ describe('housingViewModeGroups', () => {
       parentCode: 'housing-price-primary',
       mode: 'qoq',
     });
+    expect(housingCanonicalTarget('housing-annual-primary')).toEqual({
+      parentCode: 'housing-price-primary',
+      mode: 'yoy-annual',
+    });
+    expect(housingCanonicalTarget('housing-annual-secondary')).toEqual({
+      parentCode: 'housing-price-secondary',
+      mode: 'yoy-annual',
+    });
   });
 
   it('контент к соотв. периоду — не про ИПЦ, годовой Г/г — отдельный', () => {

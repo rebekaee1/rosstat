@@ -76,14 +76,14 @@ export const VIEW_MODE_FAMILIES = {
     label: 'Торговый баланс',
     modes: [
       { mode: 'level',   label: 'Уровень',   code: 'trade-balance' },
-      { mode: 'yoy_abs', label: 'YoY, абс.', code: 'trade-balance-yoy-abs', frequency: 'quarterly' },
+      { mode: 'yoy', label: 'YoY, абс.', code: 'trade-balance-yoy-abs', frequency: 'quarterly' },
     ],
   },
   'current-account': {
     label: 'Сальдо текущего счёта',
     modes: [
       { mode: 'level',   label: 'Уровень',   code: 'current-account' },
-      { mode: 'yoy_abs', label: 'YoY, абс.', code: 'current-account-yoy-abs', frequency: 'quarterly' },
+      { mode: 'yoy', label: 'YoY, абс.', code: 'current-account-yoy-abs', frequency: 'quarterly' },
     ],
   },
 
