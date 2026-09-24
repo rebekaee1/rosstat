@@ -141,6 +141,21 @@ describe('WorldCountry category navigation', () => {
     expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
     expect(screen.getByRole('link', { name: /Индекс цен/ })).toBeTruthy();
   });
+
+  it('на телефоне сохраняет выбор одной категории через мобильное меню', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
+      matches: !media.includes('min-width'), media,
+      addEventListener() {}, removeEventListener() {},
+    }));
+    renderCountry('germany', TWO_CATEGORIES);
+
+    expect(await screen.findByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Цены' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Рынок труда \(1\)/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Цены \(1\)/ }));
+    expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Рынок труда' })).toBeNull();
+  });
 });
 
 describe('WorldCountry frequency badges', () => {
