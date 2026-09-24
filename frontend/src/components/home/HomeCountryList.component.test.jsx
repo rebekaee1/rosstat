@@ -26,6 +26,19 @@ function renderCatalog() {
 }
 
 describe('HomeCountryList — каталог стран', () => {
+  it('показывает кнопки регионов сразу, пока первый ответ стран загружается', () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      ['/world/countries', () => new Promise(() => {})],
+    ]);
+    renderPage(<HomeCountryList />, { path: '/', route: '/' });
+
+    expect(screen.getByRole('button', { name: /Европа/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Азия/ })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /Европа/ }));
+    expect(screen.getByRole('button', { name: /Европа/ }).getAttribute('aria-expanded')).toBe('true');
+  });
+
   it('по умолчанию все регионы свёрнуты', async () => {
     renderCatalog();
 

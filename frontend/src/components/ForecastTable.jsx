@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { formatDate, formatValueWithUnit, unitSuffix, chartValueDigits } from '../lib/format';
 import { useT } from '../i18n';
 
-export default function ForecastTable({ mode = 'inflation', inflation, forecastData, unit = '%', dateFormat = 'full' }) {
+export default function ForecastTable({ mode = 'inflation', inflation, forecastData, actualPoints, unit = '%', dateFormat = 'full' }) {
   const t = useT();
   const ref = useRef(null);
 
@@ -20,9 +20,21 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
   // Все режимы, кроме скользящей 12-месячной инфляции, получают прогноз
   // готовым рядом (forecastData); inflation — отдельный сводный endpoint.
   const usesForecastData = mode !== 'inflation';
-  const rows = usesForecastData
+  const forecastRows = usesForecastData
     ? (forecastData?.forecast?.values || [])
     : (inflation?.forecast || []);
+  const actualRows = usesForecastData ? actualPoints : inflation?.actuals;
+  const lastActualDate = Array.isArray(actualRows)
+    ? actualRows.reduce((latest, row) => row?.date > latest ? row.date : latest, '')
+    : '';
+  const lastActual = actualRows?.find((row) => row.date === lastActualDate);
+  const revisesPartialActual = usesForecastData
+    && forecastData?.forecast?.replaces_partial_actual === true;
+  const rows = lastActualDate
+    ? forecastRows.filter((row) => row.date > lastActualDate
+      || (revisesPartialActual && row.date === lastActualDate
+        && Math.abs(Number(row.value) - Number(lastActual?.value)) > 1e-4))
+    : forecastRows;
 
   if (!rows.length) return null;
 

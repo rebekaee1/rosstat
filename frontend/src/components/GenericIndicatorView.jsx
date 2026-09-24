@@ -197,6 +197,7 @@ export default function GenericIndicatorView({
           indicator={effectiveIndicator}
           chartMode="cpi"
           safeViewMode={safeMode}
+          dataPoints={dataPoints}
           displayForecastData={forecastResp}
           forecastEnabled={forecastEnabled}
           showForecast={showForecast}

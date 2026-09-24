@@ -196,6 +196,13 @@ class WorldIndicator(Base):
         Index("ix_world_indicators_country_category", "country_id", "category_ru"),
         Index("ix_world_indicators_provider_dataset", "provider", "dataset_id"),
         Index("ix_world_indicators_code", "code", unique=True),
+        # Холодная загрузка /world/countries: берём только публичные ряды из
+        # компактного covering index, затем EXISTS проверяет ненулевой факт.
+        Index(
+            "ix_world_indicators_listed_signal", "country_id",
+            postgresql_include=("id", "code", "name_ru"),
+            postgresql_where=text("is_listed"),
+        ),
         # Соседи карточки (world_card_siblings): country_id + provider +
         # (dataset_id = stem OR dataset_id LIKE 'stem\_%'). pattern_ops даёт
         # префиксный LIKE по btree; без него планировщик шёл по uq-индексу

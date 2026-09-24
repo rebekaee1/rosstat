@@ -26,6 +26,18 @@ DERIVED_CPI_FORECASTS = {
 }
 
 
+def _replaces_partial_actual(cfg: dict) -> bool:
+    """Only derived forecasts that complete a partial sum/period may revise fact."""
+    if cfg.get("forecast_strategy") != "derived_from_source":
+        return False
+    derived = cfg.get("derived_forecast") or {}
+    if derived.get("monthly_tail_extrapolate"):
+        return True
+    if derived.get("operation") != "pipeline":
+        return False
+    return any(step and step[0] == "period_sum" for step in derived.get("pipeline") or [])
+
+
 def _validate_code(code: str) -> None:
     if not _CODE_RE.match(code):
         raise HTTPException(status_code=400, detail="Invalid indicator code format")
@@ -34,7 +46,8 @@ def _validate_code(code: str) -> None:
 @router.get("/{code}/forecast", response_model=ForecastResponse)
 async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
-    cached = await cache_get(f"fe:{code}:forecast")
+    cache_key = f"fe:{code}:forecast:partial-v1"
+    cached = await cache_get(cache_key)
     if cached:
         return cached
 
@@ -47,7 +60,7 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     forecast_steps = int(cfg.get("forecast_steps", settings.forecast_steps) or 0)
     if forecast_steps <= 0 and code not in DERIVED_CPI_FORECASTS:
         response = ForecastResponse(indicator=code, forecast=None)
-        await cache_set(f"fe:{code}:forecast", response.model_dump(mode="json"), settings.cache_ttl_data)
+        await cache_set(cache_key, response.model_dump(mode="json"), settings.cache_ttl_data)
         return response
 
     fc = await db.execute(
@@ -64,7 +77,7 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
 
     if not forecast:
         response = ForecastResponse(indicator=code, forecast=None)
-        await cache_set(f"fe:{code}:forecast", response.model_dump(mode="json"), 300)
+        await cache_set(cache_key, response.model_dump(mode="json"), 300)
         return response
 
     vals = await db.execute(
@@ -79,6 +92,7 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
         aic=float(forecast.aic) if forecast.aic is not None else None,
         bic=float(forecast.bic) if forecast.bic is not None else None,
         created_at=forecast.created_at,
+        replaces_partial_actual=_replaces_partial_actual(cfg),
         values=[ForecastValueOut(
             date=v.date,
             value=float(v.value),
@@ -88,7 +102,7 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     )
 
     response = ForecastResponse(indicator=code, forecast=out)
-    await cache_set(f"fe:{code}:forecast", response.model_dump(mode="json"), settings.cache_ttl_data)
+    await cache_set(cache_key, response.model_dump(mode="json"), settings.cache_ttl_data)
     return response
 
 

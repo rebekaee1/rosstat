@@ -267,6 +267,7 @@ export default function IndicatorChart({
       base = mergeActualForecastChartSeries(points, fcValues, {
         showForecast,
         bridgeLine: chartType !== 'bar',
+        replacePartialActual: forecastData?.forecast?.replaces_partial_actual === true,
       });
     } else {
       if (!inflation) return [];

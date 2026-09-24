@@ -150,6 +150,11 @@ export default function WorldCountry() {
   const { data, isLoading, isError, refetch, isFetching, error } = useWorldCountry(slug);
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
+  const [isMobileSingle, setIsMobileSingle] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia
+      ? !window.matchMedia('(min-width: 1024px)').matches
+      : false,
+  );
   const deferredQuery = useDeferredValue(query);
   const searching = normalize(deferredQuery).length > 0;
 
@@ -207,6 +212,13 @@ export default function WorldCountry() {
     return () => script.remove();
   }, [countryName, slug]);
 
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const onChange = () => setIsMobileSingle(!mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   const filteredCategories = useMemo(() => {
     const cats = data?.categories || [];
     const collapsed = cats.map((cat) => ({
@@ -251,9 +263,35 @@ export default function WorldCountry() {
   const resolvedActiveCategory = filteredCategories.some((cat) => cat.name === activeCategory)
     ? activeCategory
     : (filteredCategories[0]?.name || '');
-  const visibleCategories = searching
+  const visibleCategories = searching || !isMobileSingle
     ? filteredCategories
     : filteredCategories.filter((cat) => cat.name === resolvedActiveCategory);
+
+  useEffect(() => {
+    if (searching || isMobileSingle || filteredCategories.length < 2) return undefined;
+    let frame = 0;
+    const syncActive = () => {
+      frame = 0;
+      const sections = document.querySelectorAll('[data-world-country-category]');
+      let current = sections[0]?.dataset.worldCountryCategory;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top > 150) break;
+        current = section.dataset.worldCountryCategory;
+      }
+      if (current) setActiveCategory((previous) => previous === current ? previous : current);
+    };
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(syncActive);
+    };
+    schedule();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [filteredCategories, searching, isMobileSingle]);
 
   return (
     <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
@@ -484,7 +522,16 @@ export default function WorldCountry() {
                     <button
                       key={cat.name}
                       type="button"
-                      onClick={() => setActiveCategory(cat.name)}
+                      onClick={() => {
+                        setActiveCategory(cat.name);
+                        document.querySelectorAll('[data-world-country-category]')
+                          .forEach((section) => {
+                            if (section.dataset.worldCountryCategory === cat.name) {
+                              section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                          });
+                      }}
+                      aria-current={resolvedActiveCategory === cat.name ? 'true' : undefined}
                       className={[
                         'flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
                         resolvedActiveCategory === cat.name
@@ -502,7 +549,7 @@ export default function WorldCountry() {
 
             <div className="min-w-0 space-y-8">
               {visibleCategories.map((cat) => (
-                <section key={cat.name}>
+                <section key={cat.name} className="scroll-mt-24" data-world-country-category={cat.name}>
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                     <div className="min-w-0">
                       <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">

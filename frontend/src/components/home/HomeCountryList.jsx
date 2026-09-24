@@ -62,7 +62,10 @@ function CountryCard({ country }) {
   );
 }
 
-function RegionSection({ group, open, onToggle }) {
+const PENDING_REGIONS = ['europe', 'americas', 'asia', 'africa', 'oceania']
+  .map((id) => ({ id, region: id, countries: [] }));
+
+function RegionSection({ group, open, onToggle, loading = false }) {
   const t = useT();
   const { locale } = useLocale();
   const panelId = `home-countries-${group.id}`;
@@ -87,14 +90,16 @@ function RegionSection({ group, open, onToggle }) {
           {t(`world.region.${group.id}`, group.region)}
         </span>
         <span className="shrink-0 font-mono text-[11px] text-text-tertiary">
-          {n} {countWord}
+          {loading ? '…' : `${n} ${countWord}`}
         </span>
       </button>
       {open && (
         <div id={panelId} className="grid gap-2 border-t border-border-subtle p-3 sm:grid-cols-2 sm:gap-2.5 sm:p-4">
-          {group.countries.map((country) => (
-            <CountryCard key={country.slug} country={country} />
-          ))}
+          {loading
+            ? [0, 1, 2, 3].map((i) => <SkeletonBox key={i} className="h-16 rounded-xl" />)
+            : group.countries.map((country) => (
+              <CountryCard key={country.slug} country={country} />
+            ))}
         </div>
       )}
     </div>
@@ -170,22 +175,17 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
         </ApiRetryBanner>
       )}
 
-      {isLoading ? (
-        <div className="space-y-2">
-          {[0, 1, 2, 3, 4].map((i) => <SkeletonBox key={i} className="h-14 rounded-2xl" />)}
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {groups.map((group) => (
-            <RegionSection
-              key={group.id}
-              group={group}
-              open={openRegions.has(group.id)}
-              onToggle={() => toggle(group.id)}
-            />
-          ))}
-        </div>
-      )}
+      <div className="space-y-2">
+        {(isLoading ? PENDING_REGIONS : groups).map((group) => (
+          <RegionSection
+            key={group.id}
+            group={group}
+            open={openRegions.has(group.id)}
+            onToggle={() => toggle(group.id)}
+            loading={isLoading}
+          />
+        ))}
+      </div>
     </section>
   );
 }

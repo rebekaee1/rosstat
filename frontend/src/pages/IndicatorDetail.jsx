@@ -723,6 +723,16 @@ export default function IndicatorDetail() {
           indicator={indicator}
           chartMode={chartMode}
           safeViewMode={safeViewMode}
+          isUnemploymentFamily={isUnemploymentFamily}
+          dataPoints={dataPoints}
+          momDataPoints={momDataPoints}
+          quarterlyDataPoints={quarterlyDataPoints}
+          annualDataPoints={annualDataPoints}
+          weeklyDataPoints={weeklyDataPoints}
+          yoyDataPoints={yoyDataPoints}
+          qoqDataPoints={qoqDataPoints}
+          periodMonthlyDataPoints={periodMonthlyDataPoints}
+          periodWeeklyDataPoints={periodWeeklyDataPoints}
           inflationResp={inflationResp}
           displayForecastData={chartForecastData}
           quarterlyForecastData={quarterlyForecastData}

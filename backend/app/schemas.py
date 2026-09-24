@@ -107,6 +107,7 @@ class ForecastOut(BaseModel):
     bic: float | None = None
     created_at: datetime
     values: list[ForecastValueOut]
+    replaces_partial_actual: bool = False
 
 
 class ForecastResponse(BaseModel):

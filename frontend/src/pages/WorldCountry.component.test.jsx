@@ -116,6 +116,33 @@ describe('WorldCountry market indicators', () => {
   });
 });
 
+describe('WorldCountry category navigation', () => {
+  const TWO_CATEGORIES = {
+    ...GERMANY,
+    categories: [
+      ...GERMANY.categories,
+      {
+        name: 'Цены', name_en: 'Prices', indicators: [{
+          code: 'de-cpi', name: 'Индекс цен', frequency: 'monthly',
+          last_value: 102, last_date: '2026-06-01',
+        }],
+      },
+    ],
+  };
+
+  it('на десктопе показывает все категории подряд для непрерывной прокрутки', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
+      matches: media.includes('min-width'), media,
+      addEventListener() {}, removeEventListener() {},
+    }));
+    renderCountry('germany', TWO_CATEGORIES);
+
+    expect(await screen.findByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /Индекс цен/ })).toBeTruthy();
+  });
+});
+
 describe('WorldCountry frequency badges', () => {
   it('показывает один бейдж самой детальной частоты, остальные — в подсказке', async () => {
     renderCountry('germany', {

@@ -3,6 +3,7 @@ import { Activity } from 'lucide-react';
 import ForecastTable from './ForecastTable';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
+import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 
 const EMPTY_BOX_CLS = 'h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8';
 
@@ -74,6 +75,16 @@ export default function IndicatorForecastSection({
   indicator,
   chartMode,
   safeViewMode,
+  isUnemploymentFamily = false,
+  dataPoints,
+  momDataPoints,
+  quarterlyDataPoints,
+  annualDataPoints,
+  weeklyDataPoints,
+  yoyDataPoints,
+  qoqDataPoints,
+  periodMonthlyDataPoints,
+  periodWeeklyDataPoints,
   inflationResp,
   displayForecastData,
   quarterlyForecastData,
@@ -88,6 +99,11 @@ export default function IndicatorForecastSection({
   hasForecastData,
 }) {
   const t = useT();
+  const actualPoints = chartSeriesForViewMode({
+    chartMode, isUnemploymentFamily, dataPoints, momDataPoints,
+    quarterlyDataPoints, annualDataPoints, weeklyDataPoints,
+    yoyDataPoints, qoqDataPoints, periodMonthlyDataPoints, periodWeeklyDataPoints,
+  });
   const viewRef = useForecastView({
     indicatorCode: indicator?.code,
     indicatorCategory: indicator?.category,
@@ -112,6 +128,7 @@ export default function IndicatorForecastSection({
           mode={chartMode}
           inflation={inflationResp}
           forecastData={forecastData}
+          actualPoints={actualPoints}
           unit={chartMode === 'index' ? 'индекс' : (indicator?.unit || '%')}
           dateFormat={dateFormatFor(chartMode, indicator, safeViewMode)}
         />
