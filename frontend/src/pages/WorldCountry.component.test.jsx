@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import WorldCountry from './WorldCountry';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
@@ -140,6 +140,29 @@ describe('WorldCountry category navigation', () => {
     expect(await screen.findByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
     expect(screen.getByRole('link', { name: /Индекс цен/ })).toBeTruthy();
+  });
+
+  it('на десктопе подсвечивает категорию, до которой пользователь прокрутил страницу', async () => {
+    const frames = [];
+    vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
+      matches: media.includes('min-width'), media,
+      addEventListener() {}, removeEventListener() {},
+    }));
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      frames.push(cb);
+      return frames.length;
+    });
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function rect() {
+      return { top: this.dataset.worldCountryCategory === 'Цены' ? 100 : -300 };
+    });
+    renderCountry('germany', TWO_CATEGORIES);
+    await screen.findByRole('heading', { name: 'Цены' });
+
+    act(() => { frames.splice(0).forEach((cb) => cb()); });
+    fireEvent.scroll(window);
+    act(() => { frames.splice(0).forEach((cb) => cb()); });
+    const sidebar = document.querySelector('aside');
+    expect(within(sidebar).getByRole('button', { name: /Цены/ }).getAttribute('aria-current')).toBe('true');
   });
 
   it('на телефоне сохраняет выбор одной категории через мобильное меню', async () => {
