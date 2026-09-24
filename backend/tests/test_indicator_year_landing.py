@@ -326,3 +326,33 @@ def test_derived_cpi_provenance_follows_rendered_series(year_landing_client, aut
             assert 'class="seo-data-provenance"' in html
         assert base[0] == 200
         assert 'class="seo-data-provenance"' not in base[1]
+
+
+def test_annual_og_hero_matches_annual_answer_and_phone_cache_is_separate(year_landing_client, monkeypatch):
+    from app.services import og_image
+    from app.services.display import annual_summary
+    captured, keys = [], []
+    monkeypatch.setattr(og_image, "cached_og", lambda key: None)
+    monkeypatch.setattr(og_image, "store_og", lambda key, image: keys.append(key))
+    monkeypatch.setattr(og_image, "render_indicator_og", lambda **kw: captured.append(kw) or b"png")
+    for query in ("", "?portrait=1"):
+        response = year_landing_client.get("/api/v1/og-image/indicator/cpi/2024.png" + query)
+        assert response.status_code == 200
+    assert captured[0]["value_text"] == annual_summary("cpi", [100 + m * .1 for m in range(1, 7)], "%")[1]
+    assert captured[0]["value_text"] != "+0,60"
+    assert captured[0]["portrait"] is False and captured[1]["portrait"] is True
+    assert keys[0] != keys[1]
+    assert len(captured[0]["values"]) == len(captured[0]["point_dates"]) == 6
+
+
+def test_historical_og_selects_requested_year_among_neighbors(year_landing_client, monkeypatch):
+    from app.services import og_image
+    captured = []
+    monkeypatch.setattr(og_image, "cached_og", lambda key: None)
+    monkeypatch.setattr(og_image, "store_og", lambda *args: None)
+    monkeypatch.setattr(og_image, "render_indicator_og", lambda **kw: captured.append(kw) or b"png")
+    response = year_landing_client.get("/api/v1/og-image/indicator/population/2023.png")
+    assert response.status_code == 200
+    data = captured[0]
+    assert data["point_dates"][data["selected_index"]].year == 2023
+    assert data["point_dates"][-1].year == 2025

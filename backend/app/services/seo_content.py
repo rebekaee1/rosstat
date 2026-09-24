@@ -11,7 +11,7 @@ from app.config import settings
 from app.services import site_paths as paths
 
 DOMAIN = settings.public_origin
-OG_IMAGE = f"{DOMAIN}/og-image-v2.png"
+OG_IMAGE = f"{DOMAIN}/og-image-v3.png"
 
 
 @dataclass(frozen=True)

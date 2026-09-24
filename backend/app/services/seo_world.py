@@ -871,6 +871,7 @@ async def render_world_rating_html(
     db: AsyncSession,
     *,
     year: int | None = None,
+    interactive: bool = False,
 ) -> tuple[int, str]:
     payload = await build_world_rating_payload(concept_slug, db, year=year)
     if payload is None:
@@ -1041,9 +1042,14 @@ async def render_world_rating_html(
             return ""
         return f"<td>{escape(item.get('unit') or unit or unit_fallback)}</td>"
 
+    def _country_link(item: dict) -> str:
+        if item["country_slug"] == "russia":
+            return paths.region_hub()
+        return paths.indicator(item["country_slug"], item["indicator_code"])
+
     rows_html = "".join(
         f"<tr><td>{item['rank']}</td>"
-        f'<td><a href="{escape(paths.indicator(item["country_slug"], item["indicator_code"]))}">'
+        f'<td><a href="{escape(_country_link(item))}">'
         f'{escape(item["country_name"])}</a></td>'
         f"<td>{escape(_value_text(item, with_unit=shared_unit is None))}</td>"
         f"{_unit_cell(item)}"
@@ -1069,7 +1075,7 @@ async def render_world_rating_html(
     missing_html = ""
     if missing:
         missing_items = "".join(
-            f'<li><a href="{escape(paths.country(country["slug"]))}">{escape(country["name"])}</a></li>'
+            f'<li><a href="{escape(paths.region_hub() if country["slug"] == "russia" else paths.country(country["slug"]))}">{escape(country["name"])}</a></li>'
             for country in missing
         )
         h2_missing = (
@@ -1122,7 +1128,7 @@ async def render_world_rating_html(
         )
     figure_html = (
         f'<figure class="seo-chart"><a class="seo-chart-link" '
-        f'href="{escape(canonical)}#chart">'
+        f'href="{escape(paths.world_rating(concept_slug))}?view=interactive&amp;year={active_year}#chart">'
         f'<img src="{escape(og_path)}" alt="{escape(figure_alt)}" '
         f'width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{escape(figcaption)}</figcaption></figure>"
@@ -1250,6 +1256,7 @@ async def render_world_rating_html(
         json_ld=json_ld,
         keywords=keywords,
         og_image=_absolute(og_path),
+        include_app=interactive or year is None,
     )
     return 200, html
 

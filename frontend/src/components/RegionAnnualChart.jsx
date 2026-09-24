@@ -6,7 +6,7 @@
 // одна общая ось прижимает линию региона к нулю и график перестаёт читаться.
 // В этом случае РФ автоматически уводится на правую ось (dual-axis), а под
 // графиком появляется подпись, какая линия к какой оси относится.
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useId } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
   Tooltip, CartesianGrid,
@@ -14,11 +14,13 @@ import {
 import { formatRegionValue, formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 import { pickChartAxisTicks, chartAxisTickBudget } from '../lib/format';
 import { useLocale } from '../i18n';
+import { CHART_THEME } from '../lib/chartTheme';
+import ChartBrandCaption from './ChartBrandCaption';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
 const DUAL_AXIS_RATIO = 3;
 
-const COMPARE_COLOR = '#5B7DA8';
+const COMPARE_COLOR = CHART_THEME.blue;
 
 // Подпись месяца для оси/тултипа: «май 2012» / «May 2012».
 function monthTickLabel(p, locale) {
@@ -59,7 +61,7 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
   );
 }
 
-const tickStyle = { fontSize: 11, fill: 'rgba(26,26,46,0.45)', fontFamily: 'JetBrains Mono, monospace' };
+const tickStyle = { fontSize: 11, fill: CHART_THEME.axis, fontFamily: CHART_THEME.font };
 
 export default function RegionAnnualChart({
   series,
@@ -74,6 +76,7 @@ export default function RegionAnnualChart({
 }) {
   const { t, locale } = useLocale();
   const wrapRef = useRef(null);
+  const gradientId = `region-${useId().replaceAll(':', '')}`;
   const [plotWidth, setPlotWidth] = useState(0);
 
   useEffect(() => {
@@ -189,15 +192,22 @@ export default function RegionAnnualChart({
         <ResponsiveContainer>
           <ComposedChart data={data} margin={chartMargin}>
             <defs>
-              <linearGradient id="regionArea" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#B8942F" stopOpacity={0.28} />
-                <stop offset="100%" stopColor="#B8942F" stopOpacity={0.02} />
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.28} />
+                <stop offset="100%" stopColor={CHART_THEME.ink} stopOpacity={0.02} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} vertical={false} />
             <XAxis
               dataKey="period"
-              tick={tickStyle}
+              tick={({ x, y, payload }) => {
+                const key = String(payload.value);
+                const label = data.find((point) => String(point.period) === key)?.label || key;
+                const anchor = xTicks.length < 2 ? 'middle'
+                  : key === String(xTicks[0]) ? 'start'
+                    : key === String(xTicks[xTicks.length - 1]) ? 'end' : 'middle';
+                return <text x={x} y={y} dy={12} textAnchor={anchor} {...tickStyle}>{label}</text>;
+              }}
               tickLine={false}
               axisLine={false}
               ticks={xTicks}
@@ -210,7 +220,7 @@ export default function RegionAnnualChart({
               tick={{
                 ...tickStyle,
                 fontSize: isNarrow ? 10 : 11,
-                fill: dualAxis ? 'rgba(184,148,47,0.75)' : tickStyle.fill,
+                fill: dualAxis ? CHART_THEME.ink : tickStyle.fill,
               }}
               tickFormatter={(v) => formatCompactTick(v, { narrow: isNarrow })}
               tickLine={false}
@@ -252,11 +262,11 @@ export default function RegionAnnualChart({
               yAxisId="region"
               type="monotone"
               dataKey="value"
-              stroke="#B8942F"
+              stroke={CHART_THEME.ink}
               strokeWidth={2.2}
-              fill="url(#regionArea)"
+              fill={`url(#${gradientId})`}
               dot={false}
-              activeDot={{ r: 4, fill: '#B8942F' }}
+              activeDot={{ r: 4, fill: CHART_THEME.ink }}
               isAnimationActive={false}
             />
             {compareSeries?.length > 0 && (
@@ -289,7 +299,7 @@ export default function RegionAnnualChart({
       {dualAxis && (
         <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary px-1">
           <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block w-4 h-0.5 rounded bg-champagne" />
+            <span className="inline-block w-4 h-0.5 rounded bg-text-primary" />
             {t('regions.ind.axisRegion', { region: regionName })}
           </span>
           <span className="inline-flex items-center gap-1.5">
@@ -298,6 +308,7 @@ export default function RegionAnnualChart({
           </span>
         </div>
       )}
+      <ChartBrandCaption />
     </div>
   );
 }

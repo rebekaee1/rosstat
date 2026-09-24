@@ -1,3 +1,4 @@
+import ScrollToAnchor from '../components/ScrollToAnchor';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import RegionIndicatorPage from './RegionIndicatorPage';
@@ -59,7 +60,7 @@ function renderCard(route, extraRoutes = []) {
     [/^\/regions\/?$/, { districts: [], russia: null, totals: { regions: 0, indicators: 0, points: 0 } }],
     ...extraRoutes,
   ]);
-  return renderPage(<RegionIndicatorPage />, {
+  return renderPage(<><ScrollToAnchor /><RegionIndicatorPage /></>, {
     path: '/russia/region/:slug/:code',
     route,
   });
@@ -77,7 +78,7 @@ describe('RegionIndicatorPage #chart anchor', () => {
     // когда график смонтирован (isLoading=false → блок с якорем в DOM).
     await waitFor(() => {
       expect(chartBlockMounted()).toBe(true);
-      expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+      expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'auto', block: 'start' });
     });
     expect(scrollIntoView).toHaveBeenCalledTimes(1);
     // Контейнер графика размечен якорем, куда ведёт ссылка из SSR-картинки.

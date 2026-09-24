@@ -194,3 +194,38 @@ def test_restrictive_umask_still_allows_nginx(publication):
     path = sm.section_file("core", "https://forecasteconomy.com")
     for directory in [publication, path.parent, path.parent.parent, path.parent.parent.parent]:
         assert stat.S_IMODE(directory.stat().st_mode) == 0o755
+
+
+def test_static_and_gzip_include_same_host_images_without_rendering(publication, monkeypatch):
+    import xml.etree.ElementTree as ET
+    from app.services import site_urls, og_image
+    from app.api.sitemap import _render_urlset
+
+    pages = [
+        SiteUrl("/russia/indicator/cpi/2025", "2025-12-01", "monthly", "0.8"),
+        SiteUrl("/russia/region/map/wages?year=2020", "2020-12-31", "yearly", "0.5"),
+        SiteUrl("/about?ref=1&label=<data>", "2026-01-01", "monthly", "0.5"),
+    ]
+    async def sections(db):
+        yield "images", pages
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Sitemap build must not render an image")
+    monkeypatch.setattr(site_urls,"iter_url_sections",sections)
+    monkeypatch.setattr(og_image,"render_indicator_og",forbidden)
+    monkeypatch.setattr(og_image,"render_rating_og",forbidden)
+    monkeypatch.setattr(og_image,"render_demographics_og",forbidden)
+    stats=asyncio.run(sm.build_static_sitemaps())
+    assert stats["urls_total"]==3 and stats["published_urls_total"]==6
+    assert stats["sections"]=={"images":3}
+    image_ns="{http://www.google.com/schemas/sitemap-image/1.1}"
+    for host in stats["hosts"]:
+        origin=f"https://{host}"
+        path=sm.section_file("images",origin)
+        xml=path.read_text()
+        assert xml==_render_urlset(pages,origin=origin)
+        assert gzip.decompress(Path(str(path)+".gz").read_bytes()).decode()==xml
+        images=ET.fromstring(xml).findall(f".//{image_ns}loc")
+        assert [element.text for element in images]==[
+            origin+"/og/russia/cpi/2025.png",
+            origin+"/og/russia/region-rating/wages.png?year=2020",
+        ]

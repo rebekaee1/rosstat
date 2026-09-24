@@ -797,3 +797,19 @@ Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставл�
 - **Deletion test** — imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
 
 When suggesting refactors, use this language. Use the **Indicator/DataPoint/Derived/Forecast/Parser/Strategy** vocabulary above for the domain.
+
+
+## Liquid-glass presentation contract (2026-09-24)
+
+Shared brand tokens and Manrope connect the SPA, pure SSR fast pages and PNG
+renderers. Economic values, labels and source provenance remain deterministic
+data, while the 17 generated thematic artworks are decoration. See
+`docs/design/README.md` for implementation, reproducible gallery and acceptance.
+Fast-page clickable sources stay inside ForecastEconomy; JSON-LD preserves
+official source URLs. Historical pages preserve the requested period. World
+ratings use `?view=interactive&year=YYYY#chart` to enter the SPA without cycling
+through the legacy `?year` redirect; canonical stays on the year path (or base
+for the default year). PNG font drawing normalizes Unicode space separators
+for both measurement and painting. Cached images/SSR use design version 6.
+Local preview is compose :3000. RU/EN preview does not change the live host
+cutover flag. No local test or sitemap submission proves index inclusion.

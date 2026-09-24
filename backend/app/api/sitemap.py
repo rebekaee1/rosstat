@@ -26,6 +26,7 @@ from app.services.display import (
 )
 from app.services.og_render import render_og_async
 from app.services.locale import get_locale
+from app.services.seo_i18n import translate_source
 from app.services.og_image import (
     fmt_yoy,
     og_hero_number,
@@ -42,6 +43,7 @@ from app.services.seo_content import (  # noqa: F401
     STATIC_PAGES,
 )
 from app.services.seo_renderer import render_category_html, render_home_html, render_indicator_html, render_page_html
+from app.services import site_paths as paths
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["seo"])
@@ -153,10 +155,13 @@ def _og_context(
             if (frequency or "").lower().startswith("week")
             else _og_monthly_subtitle(loc)
         )
-        growth = 1.0
-        for raw, _ in rows[-12:]:
-            growth *= float(raw) / 100.0
-        context_pill = _inflation_pill((growth - 1.0) * 100.0, locale=loc)
+        tail = rows[-13:]
+        months = [d.year * 12 + d.month for _raw, d in tail]
+        if (frequency or "").lower() == "monthly" and all(b-a == 1 for a,b in zip(months, months[1:])):
+            growth = 1.0
+            for raw, _ in tail[-12:]:
+                growth *= float(raw) / 100.0
+            context_pill = _inflation_pill((growth - 1.0) * 100.0, locale=loc)
     elif current_date:
         # Остальные ряды (в т.ч. короткие окна): период без базы сравнения.
         period_text, _ = ru_period_lines(current_date, locale=loc)
@@ -188,25 +193,35 @@ def _request_sitemap_origin(request: Request) -> str:
 
 def _sitemap_cache_key(kind: str, origin: str) -> str:
     host = urlparse(origin).hostname or "default"
-    return f"fe:sitemap:{kind}:{host}"
+    return f"fe:sitemap:images-v1:{kind}:{host}"
 
 
 def _render_urlset(urls, *, origin: str | None = None) -> str:
-    """Render urlset with absolute ``<loc>`` on the given origin (default DOMAIN)."""
+    """Shared dynamic/static XML; image discovery never renders any PNG files."""
+    from app.services.sitemap_images import image_path_for_page
+
     base = (origin or DOMAIN).rstrip("/")
-    entries = "\n".join(
-        f"  <url>\n"
-        f"    <loc>{base}{u.path}</loc>\n"
-        f"    <lastmod>{u.lastmod}</lastmod>\n"
-        f"    <changefreq>{u.changefreq}</changefreq>\n"
-        f"    <priority>{u.priority}</priority>\n"
-        f"  </url>"
-        for u in urls
-    )
+    entries = []
+    for url in urls:
+        image_path = image_path_for_page(url.path)
+        image = (
+            f"    <image:image><image:loc>{escape(base + image_path, quote=False)}</image:loc></image:image>\n"
+            if image_path else ""
+        )
+        entries.append(
+            "  <url>\n"
+            f"    <loc>{escape(base + url.path, quote=False)}</loc>\n"
+            f"    <lastmod>{escape(str(url.lastmod), quote=False)}</lastmod>\n"
+            f"    <changefreq>{escape(str(url.changefreq), quote=False)}</changefreq>\n"
+            f"    <priority>{escape(str(url.priority), quote=False)}</priority>\n"
+            f"{image}"
+            "  </url>"
+        )
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + entries
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+        'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n'
+        + "\n".join(entries)
         + "\n</urlset>"
     )
 
@@ -559,7 +574,7 @@ async def rss_feed(request: Request, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/api/v1/og-image/indicator/{code}.png", include_in_schema=False)
-async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
+async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db), portrait: bool = False):
     """PNG-превью индикатора для og:image (спарклайн + актуальное значение)."""
     from app.services.og_image import cached_og, render_indicator_og, store_og
     from app.services.i18n_display import public_name
@@ -567,6 +582,7 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
 
     loc = get_locale()
     cache_key = f"fe1:{loc}:{code}"
+    cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -585,13 +601,13 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
         unit = (indicator.unit or "").strip()
         value_text = display_value_text(code, current_value, unit, indicator.frequency, locale=loc)
         date_text = (
-            f"на {format_date_locale(current_date, locale=loc)}" if current_date else ""
+            ("As of " if loc == "en" else "на ") + format_date_locale(current_date, locale=loc) if current_date else ""
         )
         # Окно ленты — последние 24 точки (не вся история с 1991: иначе
         # недавняя динамика схлопывается в прямую).
         window = rows[-24:] if len(rows) > 24 else rows
         values = [
-            v if (v := display_value(code, raw)) is not None else 0.0
+            display_value(code, raw)
             for raw, _ in window
         ]
         x_labels = None
@@ -617,16 +633,20 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
         )
         png = await render_og_async(
             render_indicator_og,
+            portrait=portrait,
             code=code,
             name=name,
             value_text=core_number,
             date_text=date_text,
             values=values,
+            point_dates=[d for _v, d in window],
+            frequency=indicator.frequency,
+            source_label=translate_source(indicator.source, loc),
             x_labels=x_labels,
             period_text=ctx["period_text"],
             subtitle=ctx["subtitle"],
             context_pill=ctx["context_pill"],
-            unit_suffix=ctx["unit_suffix"],
+            unit_suffix=ctx["unit_suffix"] or localize_unit(unit),
         )
         store_og(cache_key, png)
     return Response(
@@ -640,7 +660,7 @@ async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db)):
     "/api/v1/og-image/indicator/{code}/{period}.png",
     include_in_schema=False,
 )
-async def og_image_indicator_month(code: str, period: str, db: AsyncSession = Depends(get_db)):
+async def og_image_indicator_month(code: str, period: str, db: AsyncSession = Depends(get_db), portrait: bool = False):
     """PNG месячного лендинга /russia/indicator/{code}/{year}-{mm}.
 
     При ≥2 точках месяца — спарклайн внутри месяца; при одной точке (monthly
@@ -648,8 +668,6 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
     Объявлен до годового эндпоинта: FastAPI матчит маршруты по порядку
     объявления, и «2026-07» не должен упасть в годовую ветку.
     """
-    import re
-
     from app.services.og_image import cached_og, render_indicator_og, store_og
     from app.services.i18n_display import public_name
     from app.services.seo_i18n import indicator_copy_en
@@ -658,16 +676,17 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
         _neighbor_month_window,
     )
 
-    if not re.fullmatch(r"(?:19|20)\d{2}-(?:0[1-9]|1[0-2])", period):
+    if not paths.is_public_month_period(period):
         # Годовой период («2025») летит в этот роут только потому, что FastAPI
         # матчит маршруты по порядку объявления, — делегируем годовому постеру.
-        if re.fullmatch(r"(?:19|20)\d{2}", period):
-            return await og_image_indicator_year(code, int(period), db)
+        if paths.is_public_year(period):
+            return await og_image_indicator_year(code, int(period), db, portrait=portrait)
         return Response(status_code=404)
     year, month = int(period[:4]), int(period[5:])
 
     loc = get_locale()
     cache_key = f"fe1:month:{loc}:{code}:{period}"
+    cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -695,9 +714,11 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
         period_text = format_month_year(last_date, locale=loc) or period
         is_cpi = is_cpi_index(code)
 
+        point_dates = [d for _v, d in rows]
+        selected_index = len(rows) - 1
         if len(rows) >= 2:
             values = [
-                v if (v := display_value(code, raw)) is not None else 0.0
+                display_value(code, raw)
                 for raw, _d in rows
             ]
             x_labels = (rows[0][1].strftime("%d.%m"), last_date.strftime("%d.%m"))
@@ -708,13 +729,15 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
             window = _neighbor_month_window(by_month, year, month)
             if len(window) < 2:
                 shown = display_value(code, float(last_value))
-                values = [shown if shown is not None else 0.0] * 2
+                values = [shown]
                 x_labels = (period, period)
             else:
                 values = [
-                    v if (v := display_value(code, by_month[key][0])) is not None else 0.0
+                    display_value(code, by_month[key][0])
                     for key in window
                 ]
+                point_dates = [by_month[key][1] for key in window]
+                selected_index = window.index((year, month)) if (year, month) in window else None
                 x_labels = window_x_labels(by_month[window[0]][1], by_month[window[-1]][1], locale=loc)
 
         shown_last = display_value(code, last_value)
@@ -727,15 +750,20 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
         )
         png = await render_og_async(
             render_indicator_og,
+            portrait=portrait,
             code=cache_key,
             name=name,
             value_text=core_number,
-            date_text=f"на {format_date_locale(last_date, locale=loc)}",
+            date_text=("As of " if loc == "en" else "на ") + format_date_locale(last_date, locale=loc),
             values=values,
+            point_dates=point_dates,
+            selected_index=selected_index,
+            frequency=indicator.frequency,
+            source_label=translate_source(indicator.source, loc),
             period_text=period_text,
             x_labels=x_labels,
             subtitle=_og_monthly_subtitle(loc) if is_cpi else None,
-            unit_suffix="%" if (unit == "%" or is_cpi) else None,
+            unit_suffix="%" if (unit == "%" or is_cpi) else localize_unit(unit),
         )
         store_og(cache_key, png)
     return Response(
@@ -746,13 +774,15 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
 
 
 @router.get("/api/v1/og-image/indicator/{code}/{year}.png", include_in_schema=False)
-async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depends(get_db)):
+async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depends(get_db), portrait: bool = False):
     """PNG-превью индикатора за конкретный год для годовой landing-страницы.
 
     При ≥2 точках за год — спарклайн внутри года. При одной точке (годовые ряды)
     рисуем окно соседних лет: одна точка на графике бессмысленна, а контекст
     истории остаётся содержательным для Алисы/Нейро.
     """
+    if not paths.is_public_year(year):
+        return Response(status_code=404)
     from app.services.og_image import cached_og, render_indicator_og, store_og
     from app.services.i18n_display import public_name
     from app.services.seo_i18n import indicator_copy_en
@@ -763,6 +793,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
 
     loc = get_locale()
     cache_key = f"fe1:{loc}:{code}:{year}"
+    cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
         q = await db.execute(
@@ -791,16 +822,18 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
         # (CPI — изменение цен), годовой итог — по природе ряда (сумма для
         # потоков, конец года для запасов, цепной рост для CPI), а не
         # «среднее за год» для всего подряд.
-        summary_label, summary_text = annual_summary(code, raw_values, unit)
+        summary_label, summary_text = annual_summary(code, raw_values, localize_unit(unit))
         value_text = display_value_text(code, last_value, unit, indicator.frequency, locale=loc)
         if loc == "en":
             date_text = f"{_annual_summary_label_en(summary_label)} \u2014 {summary_text}"
         else:
             date_text = f"{summary_label.lower()} \u2014 {summary_text}"
 
+        point_dates = [d for _v, d in rows]
+        selected_index = len(rows) - 1
         if len(rows) >= 2:
             values = [
-                v if (v := display_value(code, raw)) is not None else 0.0
+                display_value(code, raw)
                 for raw in raw_values
             ]
             x_labels = (first_date.strftime("%d.%m"), last_date.strftime("%d.%m"))
@@ -809,16 +842,17 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
             series = await yearly_last_points(db, indicator.id)
             window = neighbor_year_window(series, year, size=10)
             if len(window) < 2:
-                # Крайний случай — совсем короткая история: дублируем точку,
-                # чтобы превью не 404ило (страница при этом уже 200).
+                # Одна опубликованная точка остаётся одной точкой на графике.
                 shown = display_value(code, float(last_value))
-                values = [shown if shown is not None else 0.0] * 2
+                values = [shown]
                 x_labels = (str(year), str(year))
             else:
                 values = [
-                    v if (v := display_value(code, raw)) is not None else 0.0
+                    display_value(code, raw)
                     for _y, raw, _d in window
                 ]
+                point_dates = [d for _y, _v, d in window]
+                selected_index = next((i for i, (y, _v, _d) in enumerate(window) if y == year), None)
                 x_labels = (str(window[0][0]), str(window[-1][0]))
             # Подпись даты — изменение к прошлому году, если есть.
             prev = next((raw for y, raw, _d in series if y == year - 1), None)
@@ -840,18 +874,12 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
 
         shown_last = display_value(code, last_value)
         year_number = og_hero_number(code, shown_last, locale=loc) if shown_last is not None else value_text
-        year_unit = "%" if (unit == "%" or is_cpi) else None
+        year_unit = "%" if (unit == "%" or is_cpi) else localize_unit(unit)
+        if len(rows) >= 2:
+            year_number = summary_text
+            year_unit = None
+            date_text = _annual_summary_label_en(summary_label) if loc == "en" else summary_label.lower()
         year_pill = None
-        if is_cpi and len(raw_values) >= 2:
-            yoy = 1.0
-            for raw in raw_values:
-                yoy *= float(raw) / 100.0
-            pct = (yoy - 1.0) * 100.0
-            year_pill = (
-                f"Over {year} \u2014 {fmt_yoy(pct)}%"
-                if loc == "en"
-                else f"За {year} год \u2014 {fmt_yoy(pct)}%"
-            )
         overlay = indicator_copy_en(code) if loc == "en" else None
         name = public_name(
             indicator.name,
@@ -860,12 +888,17 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
         )
         png = await render_og_async(
             render_indicator_og,
+            portrait=portrait,
             code=code,
             name=name,
             value_text=year_number,
             date_text=date_text,
             values=values,
-            period_text=f"{year} год",
+            point_dates=point_dates,
+            selected_index=selected_index,
+            frequency=indicator.frequency if len(rows) >= 2 else "annual",
+            source_label=translate_source(indicator.source, loc),
+            period_text=str(year) if loc == "en" else f"{year} год",
             x_labels=x_labels,
             subtitle=_og_monthly_subtitle(loc) if is_cpi else None,
             context_pill=year_pill,
@@ -880,7 +913,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
 
 
 @router.get("/api/v1/og-image/region/{slug}/{code}.png", include_in_schema=False)
-async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Depends(get_db)):
+async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Depends(get_db), portrait: bool = False):
     """PNG-график регионального показателя: og:image + видимый <img> SSR-страницы."""
     from app.data.i18n.region_indicators_en import REGION_INDICATORS_EN
     from app.data.i18n.regions_en import REGIONS_EN
@@ -890,6 +923,7 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
 
     loc = get_locale()
     cache_key = f"fe1:region:{loc}:{slug}:{code}"
+    cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
         region = (await db.execute(
@@ -919,7 +953,7 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
                 if loc != "en" else f"{last_p % 100:02d}/{last_p // 100}"
             )
             x_labels = (f"{first_p // 100}", f"{last_p // 100}")
-            unit = (indicator.unit or "").strip()
+            unit = localize_unit((indicator.unit or "").strip())
             if loc == "en":
                 value_text = f"{format_number_ru(values[-1], locale='en')} {unit}".strip()
                 ind_name = (REGION_INDICATORS_EN.get(code) or {}).get("name") or indicator.name
@@ -929,11 +963,15 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
                 ind_name, region_name = indicator.name, region.name
             png = await render_og_async(
                 render_indicator_og,
+                portrait=portrait,
                 code=cache_key,
                 name=f"{ind_name} \u2014 {region_name}",
                 value_text=value_text,
                 date_text=date_text,
                 values=values,
+                point_dates=[date(m // 100, m % 100, 1) for m, _v in mrows],
+                frequency="monthly",
+                source_label=translate_source("Росстат", loc),
                 x_labels=x_labels,
                 period_text="помесячно" if loc != "en" else "monthly",
             )
@@ -949,10 +987,10 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
                    RegionDataPoint.region_id == region.id)
             .order_by(RegionDataPoint.year)
         )).all()
-        if len(rows) < 2:
+        if not rows:
             return Response(status_code=404)
         values = [float(v) for _y, v in rows]
-        unit = (indicator.unit or "").strip()
+        unit = localize_unit((indicator.unit or "").strip())
         if loc == "en":
             value_text = f"{format_number_ru(values[-1], locale='en')} {unit}".strip()
             ind_name = (REGION_INDICATORS_EN.get(code) or {}).get("name") or indicator.name
@@ -962,11 +1000,15 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
             ind_name, region_name = indicator.name, region.name
         png = await render_og_async(
             render_indicator_og,
+            portrait=portrait,
             code=cache_key,
             name=f"{ind_name} \u2014 {region_name}",
             value_text=value_text,
-            date_text=f"{rows[-1][0]} год",
+            date_text=str(rows[-1][0]) if loc == "en" else f"{rows[-1][0]} год",
             values=values,
+            point_dates=[date(y, 1, 1) for y, _v in rows],
+            frequency="annual",
+            source_label=translate_source("Росстат", loc),
             x_labels=(str(rows[0][0]), str(rows[-1][0])),
         )
         store_og(cache_key, png)
@@ -982,7 +1024,7 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
     include_in_schema=False,
 )
 async def og_image_region_indicator_year(
-    slug: str, code: str, year: int, db: AsyncSession = Depends(get_db)
+    slug: str, code: str, year: int, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG годового лендинга региона /russia/region/{slug}/{code}/{year}.
 
@@ -990,6 +1032,8 @@ async def og_image_region_indicator_year(
     лет вокруг выбранного года и изменение к прошлому году, иначе график из
     одной точки бессодержателен для Алисы/Нейро.
     """
+    if not paths.is_public_year(year):
+        return Response(status_code=404)
     from app.models import Region, RegionDataPoint, RegionIndicator
     from app.services.og_image import cached_og, render_indicator_og, store_og
     from app.services.seo_i18n import (
@@ -1000,6 +1044,7 @@ async def og_image_region_indicator_year(
 
     loc = get_locale()
     cache_key = f"fe1:ryear:{loc}:{slug}:{code}:{year}"
+    cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
         region = (
@@ -1009,7 +1054,6 @@ async def og_image_region_indicator_year(
             await db.execute(
                 select(RegionIndicator).where(
                     RegionIndicator.code == code,
-                    RegionIndicator.is_listed.is_(True),
                 )
             )
         ).scalar_one_or_none()
@@ -1031,7 +1075,7 @@ async def og_image_region_indicator_year(
                 )
             ).all()
         ]
-        if len(series_pairs) < 2 or not any(y == year for y, _v, _d in series_pairs):
+        if not any(y == year for y, _v, _d in series_pairs):
             return Response(status_code=404)
 
         window = neighbor_year_window(series_pairs, year, size=10)
@@ -1059,11 +1103,16 @@ async def og_image_region_indicator_year(
         region_name = region_display_name(slug, region.name)
         png = await render_og_async(
             render_indicator_og,
+            portrait=portrait,
             code=cache_key,
             name=f"{ind_name} \u2014 {region_name}",
             value_text=value_text,
             date_text=date_text,
             values=values,
+            point_dates=[d for _y, _v, d in window],
+            selected_index=next((i for i, (y, _v, _d) in enumerate(window) if y == year), None),
+            frequency="annual",
+            source_label=translate_source("Росстат", loc),
             x_labels=x_labels,
             period_text=str(year) if loc == "en" else f"{year} год",
         )
@@ -1076,8 +1125,11 @@ async def og_image_region_indicator_year(
 
 
 @router.get("/api/v1/og-image/region-rating/{code}.png", include_in_schema=False)
-async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
+async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db), year: int | None = None, portrait: bool = False
+):
     """PNG-барчарт рейтинга регионов: og:image + видимый <img> на /region-rating."""
+    if year is not None and not paths.is_public_year(year):
+        return Response(status_code=404)
     from app.data.region_indicator_polarity import (
         region_rating_is_achievement,
         region_rating_order_by,
@@ -1088,7 +1140,7 @@ async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
     from app.services.og_image import cached_og, render_rating_og, store_og
 
     loc = get_locale()
-    cache_key = f"rating:v2:{loc}:{code}"
+    cache_key = f"rating:v3:{loc}:{code}:{year if year is not None else 'latest'}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         indicator = (await db.execute(
@@ -1103,11 +1155,12 @@ async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
         )).scalar_one_or_none()
         if last_year is None:
             return Response(status_code=404)
+        selected_year = year if year is not None else last_year
         rows = (await db.execute(
-            select(Region.name, RegionDataPoint.value)
+            select(Region.slug, Region.name, RegionDataPoint.value)
             .join(Region, Region.id == RegionDataPoint.region_id)
             .where(RegionDataPoint.indicator_id == indicator.id,
-                   RegionDataPoint.year == last_year,
+                   RegionDataPoint.year == selected_year,
                    Region.kind == "region")
             .order_by(region_rating_order_by(
                 RegionDataPoint.value, indicator.code, indicator.table_code
@@ -1123,16 +1176,19 @@ async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
             if loc == "en"
             else ("лучшие значения" if achievement else "наибольшие значения")
         )
+        from app.data.i18n.regions_en import REGIONS_EN
+
         png = await render_og_async(
             render_rating_og,
-            name=(REGION_INDICATORS_EN.get(indicator.code) or {}).get("name")
-            or indicator.name,
-            year=int(last_year),
-            unit=(indicator.unit or "").strip(),
-            rows=[(n, float(v)) for n, v in rows],
+            portrait=portrait,
+            name=((REGION_INDICATORS_EN.get(indicator.code) or {}).get("name") or indicator.name) if loc == "en" else indicator.name,
+            year=int(selected_year),
+            unit=localize_unit((indicator.unit or "").strip()),
+            rows=[((REGIONS_EN.get(slug) or n) if loc == "en" else n, float(v)) for slug, n, v in rows],
             total=len(rows),
             order_label=order_label,
             locale=loc,
+            source_label="Rosstat" if loc == "en" else "Росстат",
         )
         store_og(cache_key, png)
     return Response(
@@ -1143,17 +1199,19 @@ async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/api/v1/og-image/today.png", include_in_schema=False)
-async def og_image_today_hub(db: AsyncSession = Depends(get_db)):
+async def og_image_today_hub(db: AsyncSession = Depends(get_db), portrait: bool = False
+):
     """PNG-сводка «Экономика России сегодня» для хаба /today."""
     from app.services.og_image import cached_og, render_today_hub_og, store_og
     from app.services.seo_i18n import today_spec_en
     from app.services.seo_today import (
         TODAY_CODES, TODAY_SPECS, _format_number, _indicator_with_rows, _locale_date,
     )
-    from datetime import date as _date
+    from app.services.display import today_msk
 
     loc = get_locale()
-    cache_key = f"today-hub:{loc}"
+    today = today_msk()
+    cache_key = f"today-hub:{loc}:{today.isoformat()}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         items: list[tuple[str, str]] = []
@@ -1164,13 +1222,15 @@ async def og_image_today_hub(db: AsyncSession = Depends(get_db)):
                 continue
             en_overlay = today_spec_en(code) if loc == "en" else None
             query = (en_overlay or {}).get("query") or spec.query
-            unit = (indicator.unit or "").strip()
-            items.append((query, f"{_format_number(rows[0].value)} {unit}".strip()))
+            unit = localize_unit((indicator.unit or "").strip())
+            when = format_date_locale(rows[0].date)
+            items.append((query, f"{_format_number(rows[0].value)} {unit} ({when})".strip()))
         if not items:
             return Response(status_code=404)
         png = await render_og_async(
             render_today_hub_og,
-            date_text=_locale_date(_date.today()), items=items, locale=loc,
+            portrait=portrait,
+            date_text=_locale_date(today), items=items, locale=loc,
         )
         store_og(cache_key, png)
     return Response(
@@ -1181,7 +1241,8 @@ async def og_image_today_hub(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/api/v1/og-image/region-vs/{slug_a}-vs-{slug_b}.png", include_in_schema=False)
-async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depends(get_db)):
+async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depends(get_db), portrait: bool = False
+):
     """PNG-таблица сравнения двух регионов для /region-vs."""
     from app.services.og_image import cached_og, render_region_vs_og, store_og
     from app.services.region_compare_data import build_region_compare_payload
@@ -1190,7 +1251,7 @@ async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depend
     loc = get_locale()
     # Payload строится по get_locale() (имена регионов: REGIONS_EN на EN),
     # поэтому локаль обязана быть в ключе — иначе залипает язык картинки.
-    cache_key = f"vs:{loc}:{slug_a}:{slug_b}"
+    cache_key = f"vs:{loc}:{slug_a}:{slug_b}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         payload = await build_region_compare_payload(slug_a, slug_b, db)
@@ -1202,6 +1263,11 @@ async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depend
             "в процентах": "%",
             "рублей": "руб.",
             "миллионов рублей": "млн руб.",
+            "thousand people": "thousand people",
+            "rubles": "RUB",
+            "roubles": "RUB",
+            "million rubles": "mln RUB",
+            "million roubles": "mln RUB",
         }
 
         def _vu(v, unit):
@@ -1209,21 +1275,24 @@ async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depend
             u = (unit or "").strip()
             # ВРП/инвестиции в «миллионах рублей» — конвертируем в трлн/млрд,
             # иначе «32 339 002 миллионов рублей» не влезает в колонку картинки.
-            if u == "миллионов рублей":
+            if u in ("миллионов рублей", "million rubles", "million roubles"):
                 if abs(v) >= 1_000_000:
-                    return f"{_fmt_ru(round(v / 1_000_000, 1))} трлн руб."
+                    suffix = "tn RUB" if loc == "en" else "трлн руб."
+                    return f"{_fmt_ru(round(v / 1_000_000, 1))} {suffix}"
                 if abs(v) >= 1_000:
-                    return f"{_fmt_ru(round(v / 1_000, 1))} млрд руб."
+                    suffix = "bn RUB" if loc == "en" else "млрд руб."
+                    return f"{_fmt_ru(round(v / 1_000, 1))} {suffix}"
             return f"{_fmt_ru(v)} {_UNIT_SHORT.get(u, u)}".strip()
 
         rows = [
-            (r["name"], _vu(r["a"]["value"], r["unit"]), _vu(r["b"]["value"], r["unit"]))
+            (f'{r["name"]} · {r["year"]}', _vu(r["a"]["value"], r["unit"]), _vu(r["b"]["value"], r["unit"]))
             for r in payload["rows"]
         ]
         if not rows:
             return Response(status_code=404)
         png = await render_og_async(
             render_region_vs_og,
+            portrait=portrait,
             name_a=payload["region_a"]["name"],
             name_b=payload["region_b"]["name"],
             rows=rows,
@@ -1246,7 +1315,7 @@ async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depend
     include_in_schema=False,
 )
 async def og_image_world_vs(
-    slug_a: str, slug_b: str, concept_slug: str, db: AsyncSession = Depends(get_db)
+    slug_a: str, slug_b: str, concept_slug: str, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG-таблица сравнения двух стран для /{a}-vs-{b}/{concept}.
 
@@ -1256,10 +1325,11 @@ async def og_image_world_vs(
     иначе FastAPI отдал бы путь страны «france-vs-germany» в карточку страны.
     """
     from app.data.world_concepts import CONCEPT_BY_SLUG, concept_public_name, concept_public_unit
+    from app.data.world_concept_national import national_codes_for_concept
     from app.database import async_session
     from app.models import WorldCountry
     from app.services.og_image import cached_og, render_region_vs_og, store_og
-    from app.services.seo_world import _country_label, _fmt
+    from app.services.seo_world import _country_label, _fmt, _period_label, _unit_of
     from app.services.seo_world_compare import (
         _fetch_compare_candidates,
         _load_pair_series,
@@ -1275,7 +1345,7 @@ async def og_image_world_vs(
     loc = get_locale()
     en = loc == "en"
     canon_a, canon_b = sorted((slug_a, slug_b))
-    cache_key = f"vs:{loc}:{canon_a}:{canon_b}:{concept_slug}"
+    cache_key = f"vs:{loc}:{canon_a}:{canon_b}:{concept_slug}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         concept = CONCEPT_BY_SLUG.get(concept_slug)
@@ -1285,12 +1355,12 @@ async def og_image_world_vs(
         async def _build(session: AsyncSession) -> Response:
             country_a = (await session.execute(
                 select(WorldCountry).where(
-                    WorldCountry.slug == slug_a, WorldCountry.is_active.is_(True)
+                    WorldCountry.slug == canon_a, WorldCountry.is_active.is_(True)
                 )
             )).scalar_one_or_none()
             country_b = (await session.execute(
                 select(WorldCountry).where(
-                    WorldCountry.slug == slug_b, WorldCountry.is_active.is_(True)
+                    WorldCountry.slug == canon_b, WorldCountry.is_active.is_(True)
                 )
             )).scalar_one_or_none()
             if country_a is None or country_b is None or slug_a == slug_b:
@@ -1319,19 +1389,36 @@ async def og_image_world_vs(
                 mode, concept.slug, concept_public_name(concept, locale=loc), locale=loc,
             )
 
-            def _val(series: list[tuple]) -> str:
+            nat_codes = national_codes_for_concept(concept.slug)
+
+            def _row_unit(ind) -> str:
+                if mode != "level" or ind.code not in nat_codes:
+                    return unit
+                raw = _unit_of(ind)
+                if raw == concept_public_unit(concept, locale="ru"):
+                    return unit
+                return localize_unit(raw) if en else raw
+
+            unit_a, unit_b = _row_unit(ind_a), _row_unit(ind_b)
+
+            def _val(series: list[tuple], row_unit: str) -> str:
                 value = series[-1][1]
-                return f"{_fmt(value)}%" if pct_like else f"{_fmt(value)} {unit}".strip()
+                return f"{_fmt(value)}%" if pct_like else f"{_fmt(value)} {row_unit}".strip()
 
             rows = [(
                 name,
-                _val(series_a),
-                _val(series_b),
+                _val(series_a, unit_a),
+                _val(series_b, unit_b),
             )]
+            rows.append((
+                "Период" if not en else "Period",
+                _period_label(series_a[-1][0], ind_a.frequency),
+                _period_label(series_b[-1][0], ind_b.frequency),
+            ))
             diff = series_a[-1][1] - series_b[-1][1]
-            if abs(diff) >= 5e-9:
+            if abs(diff) >= 5e-9 and unit_a == unit_b and series_a[-1][0] == series_b[-1][0]:
                 diff_sfx = (
-                    (" п.п." if not en else " pp") if pct_like else f" {unit}"
+                    (" п.п." if not en else " pp") if pct_like else f" {unit_a}"
                 )
                 leader = (
                     _country_label(country_a) if diff > 0 else _country_label(country_b)
@@ -1343,11 +1430,16 @@ async def og_image_world_vs(
                 ))
             png = await render_og_async(
                 render_region_vs_og,
+                portrait=portrait,
                 name_a=_country_label(country_a),
                 name_b=_country_label(country_b),
                 rows=rows,
                 eyebrow_label="сравнение стран" if not en else "country comparison",
-                footer_note="forecasteconomy.com",
+                title_separator=" and " if en else " и ",
+                footer_note="; ".join(dict.fromkeys(
+                    translate_source(ind.source, loc) or ind.source
+                    for ind in (ind_a, ind_b) if ind.source
+                )),
             )
             store_og(cache_key, png)
             return Response(
@@ -1366,15 +1458,17 @@ async def og_image_world_vs(
 
 
 @router.get("/api/v1/og-image/world/{slug}.png", include_in_schema=False)
-async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
+async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db), portrait: bool = False
+):
     """PNG-сводка страны для /world/{slug}: og:image + видимый <img> SSR."""
     from app.data.eurostat_units_ru import unit_suffix
     from app.models import WorldCountry, WorldDataPoint, WorldIndicator
     from app.services.display import format_number_ru, localize_unit
     from app.services.og_image import cached_og, render_world_country_og, store_og
+    from app.services.seo_world import _period_label
 
     loc = get_locale()
-    cache_key = f"world:{loc}:{slug}"
+    cache_key = f"world:{loc}:{slug}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         country = (
@@ -1411,20 +1505,22 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
             select(
                 WorldDataPoint.indicator_id,
                 WorldDataPoint.value,
+                WorldDataPoint.date,
                 rn,
             )
             .where(WorldDataPoint.indicator_id.in_(ids))
             .subquery()
         )
         latest = {
-            iid: float(value)
-            for iid, value in (
+            iid: (float(value), point_date)
+            for iid, value, point_date in (
                 await db.execute(
-                    select(sub.c.indicator_id, sub.c.value).where(sub.c.rn == 1)
+                    select(sub.c.indicator_id, sub.c.value, sub.c.date).where(sub.c.rn == 1)
                 )
             ).all()
         }
         items: list[tuple[str, str]] = []
+        sources: list[str] = []
         for ind in inds:
             if ind.id not in latest:
                 continue
@@ -1436,8 +1532,13 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
                 unit = unit_suffix((ind.unit_ru or ind.unit or "").strip())
                 label = ind.name_ru
             label = label if len(label) <= 42 else label[:41] + "…"
-            value_text = f"{format_number_ru(latest[ind.id], locale=loc)} {unit}".strip()
+            value, point_date = latest[ind.id]
+            when = _period_label(point_date, ind.frequency)
+            value_text = f"{format_number_ru(value, locale=loc)} {unit} ({when})".strip()
             items.append((label, value_text))
+            source = translate_source(ind.source, loc) or ind.source
+            if source and source not in sources:
+                sources.append(source)
             if len(items) >= 6:
                 break
         if not items:
@@ -1455,13 +1556,14 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
         if loc == "en":
             png = await render_og_async(
                 render_world_country_og,
+                portrait=portrait,
                 country_name=country.name_en,
                 indicators_count=int(n_listed),
                 items=items,
                 eyebrow_label="world economy",
                 title_template="Economy of {country}",
-                count_template=f"{int(n_listed)} indicators — Eurostat",
-                footer_note="official Eurostat data",
+                count_template="{count} indicators",
+                footer_note="Sources: " + "; ".join(sources),
             )
         else:
             from app.services.seo_world import _genitive
@@ -1469,9 +1571,11 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
             png = await render_og_async(
 
                 render_world_country_og,
+                portrait=portrait,
                 country_name=_genitive(country),
                 indicators_count=int(n_listed),
                 items=items,
+                footer_note="Источники: " + "; ".join(sources),
             )
         store_og(cache_key, png)
     return Response(
@@ -1482,14 +1586,15 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/api/v1/og-image/world-rating/{concept_slug}.png", include_in_schema=False)
-async def og_image_world_rating(concept_slug: str, db: AsyncSession = Depends(get_db)):
+async def og_image_world_rating(concept_slug: str, db: AsyncSession = Depends(get_db), portrait: bool = False
+):
     """PNG-барчарт рейтинга стран: og:image + видимый <img> на /world/rating."""
     from app.data.eurostat_units_ru import unit_suffix
     from app.services.og_image import cached_og, render_world_rating_og, store_og
     from app.services.seo_world import build_world_rating_payload
 
     loc = get_locale()
-    cache_key = f"world-rating:{loc}:{concept_slug}"
+    cache_key = f"world-rating:{loc}:{concept_slug}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         payload = await build_world_rating_payload(concept_slug, db)
@@ -1513,6 +1618,7 @@ async def og_image_world_rating(concept_slug: str, db: AsyncSession = Depends(ge
             unit = unit_suffix(unit) or unit
         png = await render_og_async(
             render_world_rating_og,
+            portrait=portrait,
             name=concept["name"],
             year=int(payload["active_year"]),
             unit=unit,
@@ -1523,6 +1629,7 @@ async def og_image_world_rating(concept_slug: str, db: AsyncSession = Depends(ge
             total=int(payload["coverage"]["with_data"]),
             order_label=order_label,
             locale=loc,
+            source_label=payload.get("sources"),
         )
         store_og(cache_key, png)
     return Response(
@@ -1536,21 +1643,21 @@ async def og_image_world_rating(concept_slug: str, db: AsyncSession = Depends(ge
     "/api/v1/og-image/world-rating/{concept_slug}/{year}.png", include_in_schema=False
 )
 async def og_image_world_rating_year(
-    concept_slug: str, year: str, db: AsyncSession = Depends(get_db)
+    concept_slug: str, year: str, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG-барчарт рейтинга за конкретный год: og:image годовой страницы рейтинга.
 
     Годовая OG-картинка обязана показывать свой год: Алиса/Нейро берут картинку
     из DOM страницы — несовпадение года на картинке и в таблице = обман среза.
     """
-    if not re.fullmatch(r"(?:19|20)\d{2}", year):
+    if not paths.is_public_year(year):
         return Response(status_code=404)
     from app.data.eurostat_units_ru import unit_suffix
     from app.services.og_image import cached_og, render_world_rating_og, store_og
     from app.services.seo_world import build_world_rating_payload
 
     loc = get_locale()
-    cache_key = f"world-rating:{loc}:{concept_slug}:{year}"
+    cache_key = f"world-rating:{loc}:{concept_slug}:{year}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         payload = await build_world_rating_payload(
@@ -1577,6 +1684,7 @@ async def og_image_world_rating_year(
             unit = unit_suffix(unit) or unit
         png = await render_og_async(
             render_world_rating_og,
+            portrait=portrait,
             name=concept["name"],
             year=int(year),
             unit=unit,
@@ -1587,6 +1695,7 @@ async def og_image_world_rating_year(
             total=int(payload["coverage"]["with_data"]),
             order_label=order_label,
             locale=loc,
+            source_label=payload.get("sources"),
         )
         store_og(cache_key, png)
     return Response(
@@ -1598,7 +1707,7 @@ async def og_image_world_rating_year(
 
 @router.get("/api/v1/og-image/world/{slug}/{code}.png", include_in_schema=False)
 async def og_image_world_indicator(
-    slug: str, code: str, db: AsyncSession = Depends(get_db)
+    slug: str, code: str, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG-график мирового показателя: og:image + видимый <img> SSR-страницы."""
     from app.data.eurostat_units_ru import unit_suffix
@@ -1607,6 +1716,7 @@ async def og_image_world_indicator(
 
     loc = get_locale()
     cache_key = f"fe1:world:{loc}:{slug}:{code}"
+    cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
         country = (
@@ -1638,7 +1748,7 @@ async def og_image_world_indicator(
                 .order_by(WorldDataPoint.date)
             )
         ).all()
-        if len(rows) < 2:
+        if not rows:
             return Response(status_code=404)
         values = [float(v) for _d, v in rows]
         unit = localize_unit(unit_suffix((indicator.unit_ru or indicator.unit or "").strip()))
@@ -1665,11 +1775,15 @@ async def og_image_world_indicator(
             name = f"{subject} в {prep}"
         png = await render_og_async(
             render_indicator_og,
+            portrait=portrait,
             code=cache_key,
             name=name,
             value_text=value_text,
             date_text=date_text,
             values=values,
+            point_dates=[d for d, _v in rows],
+            frequency=indicator.frequency,
+            source_label=translate_source(indicator.source, loc),
             x_labels=(str(first_date.year), str(last_date.year)),
         )
         store_og(cache_key, png)
@@ -1685,7 +1799,7 @@ async def og_image_world_indicator(
     include_in_schema=False,
 )
 async def og_image_world_indicator_year(
-    country_slug: str, code: str, year: int, db: AsyncSession = Depends(get_db)
+    country_slug: str, code: str, year: int, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG годового лендинга мира /{country}/indicator/{code}/{year}.
 
@@ -1693,6 +1807,8 @@ async def og_image_world_indicator_year(
     — окно соседних лет по последним точкам каждого года, иначе график пуст.
     Подписи страны/имени/единицы — те же, что у базового мирового постера.
     """
+    if not paths.is_public_year(year):
+        return Response(status_code=404)
     from app.data.eurostat_titles_ru import country_prepositional
     from app.data.eurostat_units_ru import unit_suffix
     from app.models import WorldCountry, WorldDataPoint, WorldIndicator
@@ -1702,6 +1818,7 @@ async def og_image_world_indicator_year(
 
     loc = get_locale()
     cache_key = f"fe1:wyear:{loc}:{country_slug}:{code}:{year}"
+    cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
         country = (
@@ -1741,8 +1858,12 @@ async def og_image_world_indicator_year(
             return Response(status_code=404)
 
         unit = localize_unit(unit_suffix((indicator.unit_ru or indicator.unit or "").strip()))
-        value_text = f"{format_number_ru(float(rows[-1][1]), locale=loc)} {unit}".strip()
+        from app.services.seo_world_year import _observation_summary
+        from app.data.eurostat_listing import normalize_frequency
+        summary_label, value_text = _observation_summary(rows, normalize_frequency(indicator.frequency) or "", unit, en=loc == "en")
 
+        point_dates = [d for d, _v in rows]
+        selected_index = len(rows) - 1
         if len(rows) >= 2:
             # Спарклайн внутри года: точки с подписями даты начала и конца.
             values = [float(v) for _d, v in rows]
@@ -1750,7 +1871,8 @@ async def og_image_world_indicator_year(
                 rows[0][0].strftime("%d.%m"),
                 rows[-1][0].strftime("%d.%m"),
             )
-            date_text = (
+            date_text = summary_label
+            observation_date = (
                 f"на {format_date_locale(rows[-1][0], locale=loc)}"
                 if loc != "en"
                 else format_date_locale(rows[-1][0], locale="en")
@@ -1774,10 +1896,12 @@ async def og_image_world_indicator_year(
             ]
             window = neighbor_year_window(series_lp, year, size=10)
             if len(window) < 2:
-                values = [float(rows[-1][1])] * 2
+                values = [float(rows[-1][1])]
                 x_labels = (str(year), str(year))
             else:
                 values = [v for _y, v, _d in window]
+                point_dates = [d for _y, _v, d in window]
+                selected_index = next((i for i, (y, _v, _d) in enumerate(window) if y == year), None)
                 x_labels = (str(window[0][0]), str(window[-1][0]))
             prev_value = next(
                 (v for y, v, _d in series_lp if y == year - 1), None
@@ -1803,11 +1927,16 @@ async def og_image_world_indicator_year(
         png = await render_og_async(
 
             render_indicator_og,
+            portrait=portrait,
             code=cache_key,
             name=name,
             value_text=value_text,
             date_text=date_text,
             values=values,
+            point_dates=point_dates,
+            selected_index=selected_index,
+            frequency=indicator.frequency if len(rows) >= 2 else "annual",
+            source_label=translate_source(indicator.source, loc),
             x_labels=x_labels,
             period_text=str(year) if loc == "en" else f"{year} год",
         )
@@ -1824,7 +1953,7 @@ async def og_image_world_indicator_year(
     include_in_schema=False,
 )
 async def og_image_world_region_indicator(
-    country: str, region: str, indicator: str, db: AsyncSession = Depends(get_db)
+    country: str, region: str, indicator: str, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG-график субнационального ряда: og:image + видимый <img> SSR."""
     from app.models import (
@@ -1837,7 +1966,8 @@ async def og_image_world_region_indicator(
     from app.services.world_subnational_ingest import period_label
 
     loc = get_locale()
-    cache_key = f"fe1:wr:{loc}:{country}:{region}:{indicator}"
+    cache_key = f"fe1:wr:source-v2:{loc}:{country}:{region}:{indicator}"
+    cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
         host = await _country(db, country)
@@ -1882,11 +2012,15 @@ async def og_image_world_region_indicator(
         date_text = period_label(last_period, series.frequency, loc)
         png = await render_og_async(
             render_indicator_og,
+            portrait=portrait,
             code=cache_key,
             name=_iname(series),
             value_text=value_text,
             date_text=date_text,
             values=values,
+            point_dates=[p for p, _v in rows],
+            frequency=series.frequency,
+            source_label=(series.source_en if loc == "en" else series.source_ru) or "",
             x_labels=(str(first_period.year), str(last_period.year)),
             subtitle=f"{_rname(territory)} \u2014 {_cname(host)}",
             period_text=date_text,
@@ -1904,7 +2038,7 @@ async def og_image_world_region_indicator(
     include_in_schema=False,
 )
 async def og_image_world_region_profile(
-    country: str, region: str, db: AsyncSession = Depends(get_db)
+    country: str, region: str, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG-сводка штата/региона: таблица ключевых показателей."""
     from app.models import (
@@ -1925,7 +2059,7 @@ async def og_image_world_region_profile(
 
     loc = get_locale()
     en = loc == "en"
-    cache_key = f"wr:v2:{loc}:{country}:{region}"
+    cache_key = f"wr:v2:{loc}:{country}:{region}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         host = await _country(db, country)
@@ -2004,6 +2138,7 @@ async def og_image_world_region_profile(
         place = f"{_rname(territory)} \u2014 {_cname(host)}"
         png = await render_og_async(
             render_world_country_og,
+            portrait=portrait,
             country_name=place,
             indicators_count=len(items),
             items=items,
@@ -2029,7 +2164,7 @@ async def og_image_world_region_profile(
     include_in_schema=False,
 )
 async def og_image_world_regions_hub(
-    country: str, db: AsyncSession = Depends(get_db)
+    country: str, db: AsyncSession = Depends(get_db), portrait: bool = False
 ):
     """PNG-барчарт хаба субнациональных регионов: топ-8 дефолтного показателя."""
     from app.models import (
@@ -2046,11 +2181,11 @@ async def og_image_world_regions_hub(
         _kind_plural,
         _rname,
     )
-    from app.services.world_subnational_ingest import load_subnational_passport
+    from app.services.world_subnational_ingest import load_subnational_passport, period_label
 
     loc = get_locale()
     en = loc == "en"
-    cache_key = f"wrs:v1:{loc}:{country}"
+    cache_key = f"wrs:v1:{loc}:{country}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         host = await _country(db, country)
@@ -2103,6 +2238,7 @@ async def og_image_world_regions_hub(
             order_label = "largest values" if en else "наибольшие значения"
         png = await render_og_async(
             render_rating_og,
+            portrait=portrait,
             name=f"{kind_plural} \u2014 {_cname(host)}",
             year=int(last_period.year),
             unit=(_iunit(series) or "").strip(),
@@ -2113,6 +2249,8 @@ async def og_image_world_regions_hub(
             scope_word=kind_plural.lower(),
             count_template="{n} of {total} {scope}" if en else "{n} из {total}",
             locale=loc,
+            period_text=period_label(last_period, series.frequency, loc),
+            source_label=(series.source_en if en else series.source_ru) or "",
         )
         store_og(cache_key, png)
     return Response(
@@ -2147,3 +2285,29 @@ async def og_page(page: str, db: AsyncSession = Depends(get_db)):
         return _html_response(200, await render_home_html(db))
     status, html = await render_page_html(page)
     return _html_response(status, html)
+
+
+@router.get("/api/v1/og-image/demographics.png", include_in_schema=False)
+async def og_image_demographics(db: AsyncSession = Depends(get_db), portrait: bool = False):
+    from app.services.demographics import AGE_GROUP_CODES, age_structure, complete_snapshot, snapshot_groups
+    from app.services.og_image import cached_og, render_demographics_og, store_og
+    import json
+
+    data = await age_structure(db)
+    row = complete_snapshot(data)
+    if row is None:
+        return Response(status_code=404)
+    loc = get_locale()
+    groups = snapshot_groups(row, loc)
+    meta = data["meta"][AGE_GROUP_CODES[0]]
+    unit = localize_unit(meta["unit"], locale=loc)
+    source = translate_source(meta.get("source"), loc) or ("Rosstat" if loc == "en" else "Росстат")
+    source_label = ("Source: " if loc == "en" else "Источник: ") + source
+    signature = hashlib.sha256(json.dumps([row, unit, source_label], sort_keys=True).encode()).hexdigest()[:20]
+    cache_key = f"demographics:{loc}:{signature}:{portrait}"
+    png = cached_og(cache_key)
+    if png is None:
+        png = await render_og_async(render_demographics_og, year=row["year"], groups=groups,
+                                    unit=unit, source_label=source_label, portrait=portrait, locale=loc)
+        store_og(cache_key, png)
+    return Response(content=png, media_type="image/png", headers={"Cache-Control": "public, max-age=3600"})

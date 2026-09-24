@@ -294,7 +294,7 @@ export default function WorldCountry() {
   }, [filteredCategories, searching, isMobileSingle]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={worldCountryTrail(countryName || '…', slug)} />
 
       {notFound && (
@@ -333,7 +333,7 @@ export default function WorldCountry() {
 
       {data && (
         <>
-          <div className="mb-8">
+          <div className="fe-data-header">
             <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne">
               <Globe2 size={13} />
               {localizedDisplay(locale, data.country.region, data.country.region_en)}
@@ -385,12 +385,12 @@ export default function WorldCountry() {
               </div>
             </div>
 
-            <div className="mt-7 grid gap-2 sm:grid-cols-3 sm:gap-4">
+            <div id="chart" className="mt-7 grid scroll-mt-28 gap-2 sm:grid-cols-3 sm:gap-4">
               {(data.overview || []).slice(0, 3).map((item) => (
                 <Link
                   key={item.concept_slug}
                   to={indicatorPath(slug, item.indicator_code)}
-                  className="group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
+                  className="fe-panel fe-summary-card group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
                 >
                   <div className="text-[11px] uppercase tracking-wide text-text-tertiary">
                     {localizedDisplay(locale, item.name, item.name_en)}
@@ -414,7 +414,7 @@ export default function WorldCountry() {
           {data.country?.has_regions && (
             <Link
               to={countryRegionsPath(slug)}
-              className="mb-8 flex items-center justify-between gap-4 rounded-xl border border-border-subtle bg-surface px-5 py-4 transition-colors hover:border-border-champagne"
+              className="fe-panel mb-8 flex items-center justify-between gap-4 rounded-xl border border-border-subtle bg-surface px-5 py-4 transition-colors hover:border-border-champagne"
             >
               <div>
                 <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">

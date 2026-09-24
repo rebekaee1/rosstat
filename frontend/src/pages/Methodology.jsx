@@ -8,7 +8,7 @@ import { getPageSeo } from '../lib/pageMeta';
 import { russiaCategoryPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 
-const CARD = 'rounded-2xl bg-surface border border-border-subtle p-5 md:p-6';
+const CARD = 'fe-panel rounded-2xl bg-surface border border-border-subtle p-5 md:p-6';
 const H2 = 'font-display text-2xl md:text-3xl font-bold text-text-primary mb-4 leading-tight';
 const P = 'text-text-secondary leading-relaxed';
 
@@ -41,7 +41,7 @@ export default function Methodology() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
+    <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
       <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
         {t('meth.eyebrow')}
       </p>
@@ -140,7 +140,7 @@ export default function Methodology() {
         <p className={`${P} mb-6`}>{t('meth.skipIntro')}</p>
         <ul className="space-y-3">
           {skipItems.map(([titleKey, bodyKey]) => (
-            <li key={titleKey} className="flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-4">
+            <li key={titleKey} className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-4">
               <Ban className="w-5 h-5 text-text-tertiary shrink-0 mt-0.5" />
               <span className="text-[14px] text-text-secondary leading-relaxed">
                 <strong className="text-text-primary">{t(titleKey)}.</strong> {t(bodyKey)}
@@ -153,7 +153,7 @@ export default function Methodology() {
 
       <section className="mb-16">
         <h2 className={H2}>{t('meth.readTitle')}</h2>
-        <div className="flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-5 mb-4">
+        <div className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-5 mb-4">
           <Eye className="w-5 h-5 text-champagne shrink-0 mt-0.5" />
           <div className="text-[14px] text-text-secondary leading-relaxed space-y-2">
             <p>{t('meth.read.p1')}</p>
@@ -164,7 +164,7 @@ export default function Methodology() {
 
       <section className="mb-12">
         <h2 className={H2}>{t('meth.disclaimerTitle')}</h2>
-        <div className="flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-5">
+        <div className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-5">
           <AlertTriangle className="w-5 h-5 text-champagne shrink-0 mt-0.5" />
           <div className="text-[15px] text-text-secondary leading-relaxed space-y-3">
             <p>{t('meth.disclaimer.p1')}</p>

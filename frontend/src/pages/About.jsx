@@ -16,8 +16,8 @@ export default function About() {
   });
 
   return (
-    <div className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
-      <article className="prose prose-sm max-w-none">
+    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
+      <article className="fe-panel fe-reading prose prose-sm max-w-none p-5 sm:p-8">
         <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
           {t('about.eyebrow')}
         </p>

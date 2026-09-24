@@ -1,0 +1,9 @@
+{
+  "at": "2026-09-24T07:40:54.003567+00:00",
+  "scope": "All listed world names RU/EN, units and sources; all active national names RU/EN, units and sources; regional names and units from local PostgreSQL.",
+  "uniqueCharacters": 147,
+  "font": "backend/app/assets/fonts/Manrope-Variable.ttf",
+  "sha256": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6",
+  "missingNonSpace": [],
+  "limitations": "Pillow TTF only; WOFF2 cmap was not inspected because the local audit environment lacks its decoder. Unicode whitespace is normalized during raster measurement and painting."
+}

@@ -44,7 +44,7 @@ describe('RegionsMap', () => {
     expect(outline.getAttribute('d')).toBe(fillPath.getAttribute('d'));
     expect(outline.getAttribute('d')).toBe(target.path);
     expect(outline.getAttribute('fill')).toBe('none');
-    expect(outline.getAttribute('stroke')).toBe('#B8942F');
+    expect(outline.getAttribute('stroke')).toBe('#AD8A48');
   });
 
   it('dark compact: шампань-заливка, тонкие обводки, светлый hover-stroke', () => {

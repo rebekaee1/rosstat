@@ -199,7 +199,7 @@ def test_build_document_og_and_jsonld_follow_request_origin():
         )
         assert 'href="https://forecasteconomy.com/russia/indicator/cpi"' in html
         assert 'href="https://ru.forecasteconomy.com/feed.xml"' in html
-        assert 'content="https://ru.forecasteconomy.com/og-image-v2.png"' in html
+        assert 'content="https://ru.forecasteconomy.com/og-image-v3.png"' in html
         assert "hreflang=" not in html
     finally:
         reset_request_origin(origin)
@@ -218,7 +218,7 @@ def test_build_document_og_and_jsonld_follow_request_origin():
             )
         )
         assert 'href="https://forecasteconomy.com/feed.xml"' in html
-        assert 'content="https://forecasteconomy.com/og-image-v2.png"' in html
+        assert 'content="https://forecasteconomy.com/og-image-v3.png"' in html
     finally:
         reset_request_origin(origin)
         reset_locale(loc)

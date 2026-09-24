@@ -60,6 +60,8 @@ export function useRegionIndicator(slug, code) {
 export function useRegionIndicatorMonthly(slug, code, enabled = true) {
   return useQuery({
     queryKey: ['region-indicator-monthly', slug, code, localeKey()],
+    // Annual-only series legitimately answer 404; retrying cannot add a mode.
+    retry: (failureCount, error) => error?.response?.status !== 404 && failureCount < 2,
     queryFn: ({ signal }) =>
       api.get(`/regions/${slug}/i/${code}/monthly`, { signal }).then(r => r.data),
     enabled: !!slug && !!code && enabled,
@@ -229,4 +231,3 @@ export {
   regionRatingPath,
   regionVsPath,
 } from './sitePaths';
-

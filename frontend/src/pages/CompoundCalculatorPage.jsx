@@ -113,7 +113,7 @@ export default function CompoundCalculatorPage() {
   }, [initial, monthly, rate, years, inflation]);
 
   return (
-    <div ref={containerRef} className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
+    <div ref={containerRef} className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
       <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
         <Link to="/" className="hover:text-champagne transition-colors inline-flex items-center gap-1.5 group">
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
@@ -142,7 +142,7 @@ export default function CompoundCalculatorPage() {
         </p>
       </header>
 
-      <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
+      <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
             <div className="text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary mb-2">{t('calc.compound.initial')}</div>
@@ -189,7 +189,7 @@ export default function CompoundCalculatorPage() {
 
       {result && (
         <>
-          <section data-animate className="rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6" aria-live="polite">
+          <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6" aria-live="polite">
             <p className="text-sm text-text-secondary mb-2">{t('calc.compound.growsIn', {
               years: locale === 'en' ? t('calc.years', { n: years }) : yearsPhrase(years),
             })}</p>
@@ -206,7 +206,7 @@ export default function CompoundCalculatorPage() {
             </div>
           </section>
 
-          <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+          <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
             <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-5">
               {t('calc.compound.chartTitle')}
             </h3>
@@ -214,8 +214,8 @@ export default function CompoundCalculatorPage() {
               <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
                 <defs>
                   <linearGradient id="cmpBal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#B8942F" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="#B8942F" stopOpacity={0.01} />
+                    <stop offset="0%" stopColor="#AD8A48" stopOpacity={0.2} />
+                    <stop offset="100%" stopColor="#AD8A48" stopOpacity={0.01} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
@@ -231,9 +231,9 @@ export default function CompoundCalculatorPage() {
                   ]}
                   labelFormatter={(v) => t('calc.yearN', { n: v })}
                 />
-                <Area dataKey="balance" name="balance" stroke="#B8942F" strokeWidth={2} fill="url(#cmpBal)" dot={false} isAnimationActive={false} />
-                <Area dataKey="invested" name="invested" stroke="#1A1A2E" strokeWidth={1.4} fill="none" strokeDasharray="6 4" dot={false} isAnimationActive={false} />
-                <Area dataKey="real" name="real" stroke="#2563EB" strokeWidth={1.4} fill="none" dot={false} isAnimationActive={false} />
+                <Area dataKey="balance" name="balance" stroke="#AD8A48" strokeWidth={2} fill="url(#cmpBal)" dot={false} isAnimationActive={false} />
+                <Area dataKey="invested" name="invested" stroke="#202A3C" strokeWidth={1.4} fill="none" strokeDasharray="6 4" dot={false} isAnimationActive={false} />
+                <Area dataKey="real" name="real" stroke="#6B8299" strokeWidth={1.4} fill="none" dot={false} isAnimationActive={false} />
                 <ReferenceLine y={result.invested} stroke="rgba(0,0,0,0.12)" strokeDasharray="4 4" />
               </AreaChart>
             </ResponsiveContainer>

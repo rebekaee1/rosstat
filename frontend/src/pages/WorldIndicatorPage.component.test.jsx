@@ -1,3 +1,4 @@
+import ScrollToAnchor from '../components/ScrollToAnchor';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { waitFor } from '@testing-library/react';
 import WorldIndicatorPage from './WorldIndicatorPage';
@@ -64,7 +65,7 @@ function renderCard(route, extraRoutes = []) {
     }],
     ...extraRoutes,
   ]);
-  return renderPage(<WorldIndicatorPage />, {
+  return renderPage(<><ScrollToAnchor /><WorldIndicatorPage /></>, {
     path: '/:countrySlug/indicator/:code',
     route,
   });
@@ -76,7 +77,7 @@ describe('WorldIndicatorPage #chart anchor', () => {
 
     await waitFor(() => {
       expect(document.querySelector('[data-testid="chart-stub"]')).toBeTruthy();
-      expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+      expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'auto', block: 'start' });
     });
   });
 
@@ -129,7 +130,7 @@ describe('WorldIndicatorPage about-series block', () => {
         overview: [],
       }],
     ]);
-    renderPage(<WorldIndicatorPage />, {
+    renderPage(<><ScrollToAnchor /><WorldIndicatorPage /></>, {
       path: '/:countrySlug/indicator/:code',
       route: '/germany/indicator/de-une',
     });
@@ -207,7 +208,7 @@ describe('WorldIndicatorPage EN overlay', () => {
         overview: [],
       }],
     ]);
-    renderPage(<WorldIndicatorPage />, {
+    renderPage(<><ScrollToAnchor /><WorldIndicatorPage /></>, {
       path: '/:countrySlug/indicator/:code',
       route: '/canada/indicator/ca-weo-ngdpd?mode=level-annual',
       locale: 'en',

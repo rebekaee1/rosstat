@@ -72,11 +72,11 @@ export default function CalendarGrid({
   ];
 
   return (
-    <div className="rounded-2xl border border-border-subtle bg-surface overflow-hidden mb-6">
+    <div className="fe-panel rounded-2xl border border-border-subtle bg-surface overflow-hidden mb-6">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
         <button
           type="button" onClick={() => { onPrev(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'prev' }); }}
-          className={cn(FOCUS_RING_SURFACE, 'p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
+          className={cn(FOCUS_RING_SURFACE, 'flex min-h-11 min-w-11 items-center justify-center p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
           aria-label={t('calendar.prevMonth')}
         >
           <ChevronLeft className="w-5 h-5 text-text-secondary" />
@@ -88,7 +88,7 @@ export default function CalendarGrid({
 
         <button
           type="button" onClick={() => { onNext(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'next' }); }}
-          className={cn(FOCUS_RING_SURFACE, 'p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
+          className={cn(FOCUS_RING_SURFACE, 'flex min-h-11 min-w-11 items-center justify-center p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
           aria-label={t('calendar.nextMonth')}
         >
           <ChevronRight className="w-5 h-5 text-text-secondary" />

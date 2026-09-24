@@ -279,10 +279,10 @@ export default function RussiaHome() {
   }, [crumbs]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={crumbs} />
 
-      <section className="relative mb-6 overflow-hidden rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:mb-8 sm:rounded-[2rem] sm:p-8">
+      <section className="fe-panel relative mb-6 overflow-hidden rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:mb-8 sm:rounded-[2rem] sm:p-8">
         <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-champagne/10 blur-3xl" />
         <div className="relative grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] lg:items-center lg:gap-7">
           <div className="min-w-0">

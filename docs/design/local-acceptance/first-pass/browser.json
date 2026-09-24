@@ -1,0 +1,6470 @@
+{
+  "at": "2026-09-24T06:51:09.841Z",
+  "base": "http://127.0.0.1:3000",
+  "mode": "browser",
+  "tier": "matrix",
+  "stage": "first-pass",
+  "head": "b0a3c4d5b2484c5a106625d6e57bbdf86d939f37",
+  "http": [],
+  "api": [],
+  "browser": [
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 320,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — макроэкономические индикаторы стран и России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Официальные макроэкономические индикаторы в одной рабочей среде",
+            "x": 16,
+            "y": 168,
+            "width": 288,
+            "height": 137.625,
+            "right": 304,
+            "bottom": 305.625
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 320,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 2723.46875,
+          "right": 320,
+          "bottom": 2723.46875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 28,
+            "y": 1402.890625,
+            "width": 264,
+            "height": 132,
+            "right": 292,
+            "bottom": 1534.890625
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 5,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "БЕСПЛАТНАЯ АНАЛИТИЧЕСКАЯ ПЛАТФОРМА ЭКОНОМИЧЕСКИХ ДАННЫХ\n\nОфициальные макроэкономические индикаторы в одной рабочей среде\n\nМакроэкономические индикаторы по данным национальных статистических ведомств и центральных банков: актуальные значения, сравнение стран и прогнозы.\n\nНайти показатель — инфляция, ВВП, ставка, безработица…\nЧТО ВНУТРИ ПЛАТФОРМЫ\nПОКАЗАТЕЛЕЙ ПО СТРАНАМ МИРА\n36 000+\nСТРАН МИРА\n55\nМАКРОИНДИКАТОРОВ РОССИИ\n100+\nРЕГИОНАЛЬНЫХ ПОКАЗАТЕЛЕЙ\n495\nПЕРИОД НАБЛЮДЕНИЙ\n1897–2026\n\nОФИЦИАЛЬНЫЕ ИСТОЧНИКИ ДАННЫХ\n\nЕвростат, МВФ, национальные статисти",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 320,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — official macroeconomic indicators by country",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Official macroeconomic indicators in one workspace",
+            "x": 16,
+            "y": 205,
+            "width": 288,
+            "height": 137.625,
+            "right": 304,
+            "bottom": 342.625
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 320,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 53,
+          "width": 320,
+          "height": 2559.640625,
+          "right": 320,
+          "bottom": 2612.640625
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 28,
+            "y": 1310.453125,
+            "width": 264,
+            "height": 132,
+            "right": 292,
+            "bottom": 1442.453125
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 6,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "FREE ECONOMIC DATA PLATFORM\n\nOfficial macroeconomic indicators in one workspace\n\nMacro indicators from national statistical offices and central banks: latest readings, cross-country comparison, and forecasts.\n\nFind an indicator — inflation, GDP, rates, unemployment…\nINSIDE THE PLATFORM\nINDICATORS ACROSS WORLD COUNTRIES\n36,000+\nCOUNTRIES WORLDWIDE\n55\nOBSERVATION PERIOD\n1897–2026\n\nOFFICIAL DATA SOURCES\n\nEurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks\n\nDat",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — макроэкономические индикаторы стран и России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Официальные макроэкономические индикаторы в одной рабочей среде",
+            "x": 16,
+            "y": 168,
+            "width": 358,
+            "height": 150.9375,
+            "right": 374,
+            "bottom": 318.9375
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 2652.140625,
+          "right": 390,
+          "bottom": 2652.140625
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 28,
+            "y": 1314.953125,
+            "width": 334,
+            "height": 167,
+            "right": 362,
+            "bottom": 1481.953125
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 5,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "БЕСПЛАТНАЯ АНАЛИТИЧЕСКАЯ ПЛАТФОРМА ЭКОНОМИЧЕСКИХ ДАННЫХ\n\nОфициальные макроэкономические индикаторы в одной рабочей среде\n\nМакроэкономические индикаторы по данным национальных статистических ведомств и центральных банков: актуальные значения, сравнение стран и прогнозы.\n\nНайти показатель — инфляция, ВВП, ставка, безработица…\nЧТО ВНУТРИ ПЛАТФОРМЫ\nПОКАЗАТЕЛЕЙ ПО СТРАНАМ МИРА\n36 000+\nСТРАН МИРА\n55\nМАКРОИНДИКАТОРОВ РОССИИ\n100+\nРЕГИОНАЛЬНЫХ ПОКАЗАТЕЛЕЙ\n495\nПЕРИОД НАБЛЮДЕНИЙ\n1897–2026\n\nОФИЦИАЛЬНЫЕ ИСТОЧНИКИ ДАННЫХ\n\nЕвростат, МВФ, национальные статисти",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "screenshot": "output/design-acceptance/2026-09-24/first-pass/chromium-home-390-ru.png"
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — official macroeconomic indicators by country",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Official macroeconomic indicators in one workspace",
+            "x": 16,
+            "y": 205,
+            "width": 358,
+            "height": 113.203125,
+            "right": 374,
+            "bottom": 318.203125
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 53,
+          "width": 390,
+          "height": 2491.21875,
+          "right": 390,
+          "bottom": 2544.21875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 28,
+            "y": 1223.03125,
+            "width": 334,
+            "height": 167,
+            "right": 362,
+            "bottom": 1390.03125
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 6,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "FREE ECONOMIC DATA PLATFORM\n\nOfficial macroeconomic indicators in one workspace\n\nMacro indicators from national statistical offices and central banks: latest readings, cross-country comparison, and forecasts.\n\nFind an indicator — inflation, GDP, rates, unemployment…\nINSIDE THE PLATFORM\nINDICATORS ACROSS WORLD COUNTRIES\n36,000+\nCOUNTRIES WORLDWIDE\n55\nOBSERVATION PERIOD\n1897–2026\n\nOFFICIAL DATA SOURCES\n\nEurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks\n\nDat",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "screenshot": "output/design-acceptance/2026-09-24/first-pass/chromium-home-390-en.png"
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 768,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — макроэкономические индикаторы стран и России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Официальные макроэкономические индикаторы в одной рабочей среде",
+            "x": 23.796875,
+            "y": 180,
+            "width": 720,
+            "height": 75.46875,
+            "right": 743.796875,
+            "bottom": 255.46875
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 768,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 768,
+          "height": 2619.78125,
+          "right": 768,
+          "bottom": 2619.78125
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 41.796875,
+            "y": 1156.59375,
+            "width": 684.40625,
+            "height": 342.203125,
+            "right": 726.203125,
+            "bottom": 1498.796875
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 5,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "БЕСПЛАТНАЯ АНАЛИТИЧЕСКАЯ ПЛАТФОРМА ЭКОНОМИЧЕСКИХ ДАННЫХ\n\nОфициальные макроэкономические индикаторы в одной рабочей среде\n\nМакроэкономические индикаторы по данным национальных статистических ведомств и центральных банков: актуальные значения, сравнение стран и прогнозы.\n\nНайти показатель — инфляция, ВВП, ставка, безработица…\n⌘K\nЧТО ВНУТРИ ПЛАТФОРМЫ\nПОКАЗАТЕЛЕЙ ПО СТРАНАМ МИРА\n36 000+\nСТРАН МИРА\n55\nМАКРОИНДИКАТОРОВ РОССИИ\n100+\nРЕГИОНАЛЬНЫХ ПОКАЗАТЕЛЕЙ\n495\nПЕРИОД НАБЛЮДЕНИЙ\n1897–2026\n\nОФИЦИАЛЬНЫЕ ИСТОЧНИКИ ДАННЫХ\n\nЕвростат, МВФ, национальные стати",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 768,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — official macroeconomic indicators by country",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Official macroeconomic indicators in one workspace",
+            "x": 23.796875,
+            "y": 217,
+            "width": 720,
+            "height": 75.46875,
+            "right": 743.796875,
+            "bottom": 292.46875
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 768,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 768,
+          "height": 2569.515625,
+          "right": 768,
+          "bottom": 2606.515625
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 41.796875,
+            "y": 1143.328125,
+            "width": 684.40625,
+            "height": 342.203125,
+            "right": 726.203125,
+            "bottom": 1485.53125
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 6,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "FREE ECONOMIC DATA PLATFORM\n\nOfficial macroeconomic indicators in one workspace\n\nMacro indicators from national statistical offices and central banks: latest readings, cross-country comparison, and forecasts.\n\nFind an indicator — inflation, GDP, rates, unemployment…\n⌘K\nINSIDE THE PLATFORM\nINDICATORS ACROSS WORLD COUNTRIES\n36,000+\nCOUNTRIES WORLDWIDE\n55\nOBSERVATION PERIOD\n1897–2026\n\nOFFICIAL DATA SOURCES\n\nEurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks\n\n",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 1024,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — макроэкономические индикаторы стран и России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Официальные макроэкономические индикаторы в одной рабочей среде",
+            "x": 31.734375,
+            "y": 180,
+            "width": 533.890625,
+            "height": 168.1875,
+            "right": 565.625,
+            "bottom": 348.1875
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1024,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 1964.125,
+          "right": 1024,
+          "bottom": 1964.125
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 357.734375,
+            "y": 902.875,
+            "width": 616.53125,
+            "height": 308.265625,
+            "right": 974.265625,
+            "bottom": 1211.140625
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 5,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "БЕСПЛАТНАЯ АНАЛИТИЧЕСКАЯ ПЛАТФОРМА ЭКОНОМИЧЕСКИХ ДАННЫХ\n\nОфициальные макроэкономические индикаторы в одной рабочей среде\n\nМакроэкономические индикаторы по данным национальных статистических ведомств и центральных банков: актуальные значения, сравнение стран и прогнозы.\n\nНайти показатель — инфляция, ВВП, ставка, безработица…\n⌘K\nЧТО ВНУТРИ ПЛАТФОРМЫ\nПОКАЗАТЕЛЕЙ ПО СТРАНАМ МИРА\n36 000+\nСТРАН МИРА\n55\nМАКРОИНДИКАТОРОВ РОССИИ\n100+\nРЕГИОНАЛЬНЫХ ПОКАЗАТЕЛЕЙ\n495\nПЕРИОД НАБЛЮДЕНИЙ\n1897–2026\n\nОФИЦИАЛЬНЫЕ ИСТОЧНИКИ ДАННЫХ\n\nЕвростат, МВФ, национальные стати",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 1024,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — official macroeconomic indicators by country",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Official macroeconomic indicators in one workspace",
+            "x": 31.734375,
+            "y": 217,
+            "width": 533.890625,
+            "height": 84.09375,
+            "right": 565.625,
+            "bottom": 301.09375
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1024,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 1024,
+          "height": 1901.484375,
+          "right": 1024,
+          "bottom": 1938.484375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 357.734375,
+            "y": 877.234375,
+            "width": 616.53125,
+            "height": 308.265625,
+            "right": 974.265625,
+            "bottom": 1185.5
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 6,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "FREE ECONOMIC DATA PLATFORM\n\nOfficial macroeconomic indicators in one workspace\n\nMacro indicators from national statistical offices and central banks: latest readings, cross-country comparison, and forecasts.\n\nFind an indicator — inflation, GDP, rates, unemployment…\n⌘K\nINSIDE THE PLATFORM\nINDICATORS ACROSS WORLD COUNTRIES\n36,000+\nCOUNTRIES WORLDWIDE\n55\nOBSERVATION PERIOD\n1897–2026\n\nOFFICIAL DATA SOURCES\n\nEurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks\n\n",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — макроэкономические индикаторы стран и России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Официальные макроэкономические индикаторы в одной рабочей среде",
+            "x": 44,
+            "y": 180,
+            "width": 720,
+            "height": 230.875,
+            "right": 764,
+            "bottom": 410.875
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 2166.546875,
+          "right": 1440,
+          "bottom": 2166.546875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 370,
+            "y": 929.5625,
+            "width": 1008,
+            "height": 504,
+            "right": 1378,
+            "bottom": 1433.5625
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 5,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "БЕСПЛАТНАЯ АНАЛИТИЧЕСКАЯ ПЛАТФОРМА ЭКОНОМИЧЕСКИХ ДАННЫХ\n\nОфициальные макроэкономические индикаторы в одной рабочей среде\n\nМакроэкономические индикаторы по данным национальных статистических ведомств и центральных банков: актуальные значения, сравнение стран и прогнозы.\n\nНайти показатель — инфляция, ВВП, ставка, безработица…\n⌘K\nЧТО ВНУТРИ ПЛАТФОРМЫ\nПОКАЗАТЕЛЕЙ ПО СТРАНАМ МИРА\n36 000+\nСТРАН МИРА\n55\nМАКРОИНДИКАТОРОВ РОССИИ\n100+\nРЕГИОНАЛЬНЫХ ПОКАЗАТЕЛЕЙ\n495\nПЕРИОД НАБЛЮДЕНИЙ\n1897–2026\n\nОФИЦИАЛЬНЫЕ ИСТОЧНИКИ ДАННЫХ\n\nЕвростат, МВФ, национальные стати",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "screenshot": "output/design-acceptance/2026-09-24/first-pass/chromium-home-1440-ru.png"
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — official macroeconomic indicators by country",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Official macroeconomic indicators in one workspace",
+            "x": 44,
+            "y": 217,
+            "width": 720,
+            "height": 115.4375,
+            "right": 764,
+            "bottom": 332.4375
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 1440,
+          "height": 2048.34375,
+          "right": 1440,
+          "bottom": 2085.34375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 370,
+            "y": 848.359375,
+            "width": 1008,
+            "height": 504,
+            "right": 1378,
+            "bottom": 1352.359375
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 6,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "FREE ECONOMIC DATA PLATFORM\n\nOfficial macroeconomic indicators in one workspace\n\nMacro indicators from national statistical offices and central banks: latest readings, cross-country comparison, and forecasts.\n\nFind an indicator — inflation, GDP, rates, unemployment…\n⌘K\nINSIDE THE PLATFORM\nINDICATORS ACROSS WORLD COUNTRIES\n36,000+\nCOUNTRIES WORLDWIDE\n55\nOBSERVATION PERIOD\n1897–2026\n\nOFFICIAL DATA SOURCES\n\nEurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks\n\n",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "screenshot": "output/design-acceptance/2026-09-24/first-pass/chromium-home-1440-en.png"
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 1920,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — макроэкономические индикаторы стран и России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Официальные макроэкономические индикаторы в одной рабочей среде",
+            "x": 284,
+            "y": 180,
+            "width": 720,
+            "height": 230.875,
+            "right": 1004,
+            "bottom": 410.875
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1920,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 2166.546875,
+          "right": 1920,
+          "bottom": 2166.546875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 610,
+            "y": 929.5625,
+            "width": 1008,
+            "height": 504,
+            "right": 1618,
+            "bottom": 1433.5625
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 5,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "БЕСПЛАТНАЯ АНАЛИТИЧЕСКАЯ ПЛАТФОРМА ЭКОНОМИЧЕСКИХ ДАННЫХ\n\nОфициальные макроэкономические индикаторы в одной рабочей среде\n\nМакроэкономические индикаторы по данным национальных статистических ведомств и центральных банков: актуальные значения, сравнение стран и прогнозы.\n\nНайти показатель — инфляция, ВВП, ставка, безработица…\n⌘K\nЧТО ВНУТРИ ПЛАТФОРМЫ\nПОКАЗАТЕЛЕЙ ПО СТРАНАМ МИРА\n36 000+\nСТРАН МИРА\n55\nМАКРОИНДИКАТОРОВ РОССИИ\n100+\nРЕГИОНАЛЬНЫХ ПОКАЗАТЕЛЕЙ\n495\nПЕРИОД НАБЛЮДЕНИЙ\n1897–2026\n\nОФИЦИАЛЬНЫЕ ИСТОЧНИКИ ДАННЫХ\n\nЕвростат, МВФ, национальные стати",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 1920,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — official macroeconomic indicators by country",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Official macroeconomic indicators in one workspace",
+            "x": 284,
+            "y": 217,
+            "width": 720,
+            "height": 115.4375,
+            "right": 1004,
+            "bottom": 332.4375
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1920,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 1920,
+          "height": 2048.34375,
+          "right": 1920,
+          "bottom": 2085.34375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 610,
+            "y": 848.359375,
+            "width": 1008,
+            "height": 504,
+            "right": 1618,
+            "bottom": 1352.359375
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 6,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "FREE ECONOMIC DATA PLATFORM\n\nOfficial macroeconomic indicators in one workspace\n\nMacro indicators from national statistical offices and central banks: latest readings, cross-country comparison, and forecasts.\n\nFind an indicator — inflation, GDP, rates, unemployment…\n⌘K\nINSIDE THE PLATFORM\nINDICATORS ACROSS WORLD COUNTRIES\n36,000+\nCOUNTRIES WORLDWIDE\n55\nOBSERVATION PERIOD\n1897–2026\n\nOFFICIAL DATA SOURCES\n\nEurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks\n\n",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 2560,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — макроэкономические индикаторы стран и России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Официальные макроэкономические индикаторы в одной рабочей среде",
+            "x": 604,
+            "y": 180,
+            "width": 720,
+            "height": 230.875,
+            "right": 1324,
+            "bottom": 410.875
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 2560,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 2560,
+          "height": 2166.546875,
+          "right": 2560,
+          "bottom": 2166.546875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 930,
+            "y": 929.5625,
+            "width": 1008,
+            "height": 504,
+            "right": 1938,
+            "bottom": 1433.5625
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 5,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "БЕСПЛАТНАЯ АНАЛИТИЧЕСКАЯ ПЛАТФОРМА ЭКОНОМИЧЕСКИХ ДАННЫХ\n\nОфициальные макроэкономические индикаторы в одной рабочей среде\n\nМакроэкономические индикаторы по данным национальных статистических ведомств и центральных банков: актуальные значения, сравнение стран и прогнозы.\n\nНайти показатель — инфляция, ВВП, ставка, безработица…\n⌘K\nЧТО ВНУТРИ ПЛАТФОРМЫ\nПОКАЗАТЕЛЕЙ ПО СТРАНАМ МИРА\n36 000+\nСТРАН МИРА\n55\nМАКРОИНДИКАТОРОВ РОССИИ\n100+\nРЕГИОНАЛЬНЫХ ПОКАЗАТЕЛЕЙ\n495\nПЕРИОД НАБЛЮДЕНИЙ\n1897–2026\n\nОФИЦИАЛЬНЫЕ ИСТОЧНИКИ ДАННЫХ\n\nЕвростат, МВФ, национальные стати",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "home",
+      "family": "spa-home",
+      "engine": "chromium",
+      "width": 2560,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Forecast Economy — official macroeconomic indicators by country",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Official macroeconomic indicators in one workspace",
+            "x": 604,
+            "y": 217,
+            "width": 720,
+            "height": 115.4375,
+            "right": 1324,
+            "bottom": 332.4375
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 2560,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 2560,
+          "height": 2048.34375,
+          "right": 2560,
+          "bottom": 2085.34375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 930,
+            "y": 848.359375,
+            "width": 1008,
+            "height": 504,
+            "right": 1938,
+            "bottom": 1352.359375
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 6,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "FREE ECONOMIC DATA PLATFORM\n\nOfficial macroeconomic indicators in one workspace\n\nMacro indicators from national statistical offices and central banks: latest readings, cross-country comparison, and forecasts.\n\nFind an indicator — inflation, GDP, rates, unemployment…\n⌘K\nINSIDE THE PLATFORM\nINDICATORS ACROSS WORLD COUNTRIES\n36,000+\nCOUNTRIES WORLDWIDE\n55\nOBSERVATION PERIOD\n1897–2026\n\nOFFICIAL DATA SOURCES\n\nEurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks\n\n",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "russia",
+      "family": "spa-country",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Россия — макроэкономика, регионы и календарь",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Россия",
+            "x": 33,
+            "y": 205,
+            "width": 324,
+            "height": 37.5,
+            "right": 357,
+            "bottom": 242.5
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 2672.421875,
+          "right": 390,
+          "bottom": 2672.421875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Карта регионов России",
+            "x": 34,
+            "y": 431.5,
+            "width": 322,
+            "height": 172.125,
+            "right": 356,
+            "bottom": 603.625
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Главная\nРоссия\n\nСТРАНА\n\nРоссия\n\nРаздел России объединяет макроэкономические индикаторы официальных источников, региональную статистику по субъектам РФ и календарь публикаций статистики.\n\nПРОФИЛЬ ТЕРРИТОРИИ\nТерритория и регионы\nRU\nРоссия\n85 субъектов — по каждому 495 региональных показателей\n-0,08%\nИндекс потребительских цен на товары и услуги\nавгуст 2026\n14%\nКлючевая ставка ЦБ РФ\n24 сентября 2026\n2,3%\nУровень безработицы\nиюль 2026\nРАЗДЕЛЫ\nРегионы\n\n495 показателей по 85 субъектам РФ\n\nКалендарь\n\nДаты публикаций официальной статистики\n\nДемография\n",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "russia",
+      "family": "spa-country",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/russia?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Russia — macroeconomics, regions, and calendar",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Russia",
+            "x": 33,
+            "y": 258,
+            "width": 324,
+            "height": 37.5,
+            "right": 357,
+            "bottom": 295.5
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 53,
+          "width": 390,
+          "height": 2629.171875,
+          "right": 390,
+          "bottom": 2682.171875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Map of Russian regions",
+            "x": 34,
+            "y": 460.5,
+            "width": 322,
+            "height": 172.125,
+            "right": 356,
+            "bottom": 632.625
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Home\nRussia\n\nCOUNTRY\n\nRussia\n\nThe Russia section brings together macroeconomic indicators from official sources, regional statistics by federal subject, and the official statistics release calendar.\n\nTERRITORY PROFILE\nTerritory and regions\nRU\nRussia\n85 subjects — 495 regional indicators each\n-0.08%\nConsumer Price Index\nAugust 2026\n14%\nKey Interest Rate\n24 September 2026\n2.3%\nUnemployment Rate\nJuly 2026\nSECTIONS\nRegions\n\n495 indicators across 85 subjects of the Russian Federation\n\nCalendar\n\nOfficial statistics release dates\n\nDemographics\n\nAge st",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "russia",
+      "family": "spa-country",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Россия — макроэкономика, регионы и календарь",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Россия",
+            "x": 137,
+            "y": 303.90625,
+            "width": 739.6875,
+            "height": 60,
+            "right": 876.6875,
+            "bottom": 363.90625
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 7620.484375,
+          "right": 1440,
+          "bottom": 7620.484375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Карта регионов России",
+            "x": 905.6875,
+            "y": 238,
+            "width": 396.296875,
+            "height": 211.828125,
+            "right": 1301.984375,
+            "bottom": 449.828125
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Главная\nРоссия\n\nСТРАНА\n\nРоссия\n\nРаздел России объединяет макроэкономические индикаторы официальных источников, региональную статистику по субъектам РФ и календарь публикаций статистики.\n\nПРОФИЛЬ ТЕРРИТОРИИ\nТерритория и регионы\nRU\nРоссия\n85 субъектов — по каждому 495 региональных показателей\n-0,08%\nИндекс потребительских цен на товары и услуги\nавгуст 2026\n14%\nКлючевая ставка ЦБ РФ\n24 сентября 2026\n2,3%\nУровень безработицы\nиюль 2026\nРАЗДЕЛЫ\nРегионы\n\n495 показателей по 85 субъектам РФ\n\nКалендарь\n\nДаты публикаций официальной статистики\n\nДемография\n",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "russia",
+      "family": "spa-country",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/russia?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Russia — macroeconomics, regions, and calendar",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Russia",
+            "x": 137,
+            "y": 340.90625,
+            "width": 739.6875,
+            "height": 60,
+            "right": 876.6875,
+            "bottom": 400.90625
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 1440,
+          "height": 7586.859375,
+          "right": 1440,
+          "bottom": 7623.859375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Map of Russian regions",
+            "x": 905.6875,
+            "y": 275,
+            "width": 396.296875,
+            "height": 211.828125,
+            "right": 1301.984375,
+            "bottom": 486.828125
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Home\nRussia\n\nCOUNTRY\n\nRussia\n\nThe Russia section brings together macroeconomic indicators from official sources, regional statistics by federal subject, and the official statistics release calendar.\n\nTERRITORY PROFILE\nTerritory and regions\nRU\nRussia\n85 subjects — 495 regional indicators each\n-0.08%\nConsumer Price Index\nAugust 2026\n14%\nKey Interest Rate\n24 September 2026\n2.3%\nUnemployment Rate\nJuly 2026\nSECTIONS\nRegions\n\n495 indicators across 85 subjects of the Russian Federation\n\nCalendar\n\nOfficial statistics release dates\n\nDemographics\n\nAge st",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "category",
+      "family": "spa-category",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia/category/prices",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Цены и инфляция в России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Цены и инфляция в России",
+            "x": 16,
+            "y": 164,
+            "width": 358,
+            "height": 72,
+            "right": 374,
+            "bottom": 236
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 3184,
+          "right": 390,
+          "bottom": 3184
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Главная\nРоссия\nЦены и инфляция\nЦены и инфляция в России\n\nРаздел собирает показатели потребительских цен, инфляции и цен на жильё. Здесь можно смотреть динамику ИПЦ, годовые и квартальные изменения, а также связанные индексы по основным группам товаров и услуг.\n\nИскать индикатор по всем категориям — например, инфляция или ВВП\nИНДИКАТОРЫ\nЦЕНЫ\nИндекс потребительских цен на товары и услуги\n\nConsumer Price Index\n\n6,34\n%\n\nАВГУСТ 2026\n\n1 мес. назад\n+0,34\nЦЕНЫ\nИндекс потребительских цен на продовольственные товары\n\nFood CPI\n\n5,09\n%\n\nАВГУСТ 2026\n\n1 мес.",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "category",
+      "family": "spa-category",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/russia/category/prices?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Prices and inflation in Russia",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Prices and inflation in Russia",
+            "x": 16,
+            "y": 217,
+            "width": 358,
+            "height": 72,
+            "right": 374,
+            "bottom": 289
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 53,
+          "width": 390,
+          "height": 3071,
+          "right": 390,
+          "bottom": 3124
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Home\nRussia\nPrices and inflation\nPrices and inflation in Russia\n\nThis section covers consumer prices, inflation, and housing prices. CPI dynamics, annual and quarterly changes, and related indices for major groups of goods and services.\n\nSearch indicators across categories — e.g. inflation or GDP\nINDICATORS\nPRICES AND INFLATION\nConsumer Price Index\n\nConsumer Price Index\n\n6.34\n%\n\nAUGUST 2026\n\n1 month ago\n+0.34\nPRICES AND INFLATION\nFood CPI\n\nFood CPI\n\n5.09\n%\n\nAUGUST 2026\n\n1 month ago\n+0.68\nPRICES AND INFLATION\nNon-food CPI\n\nNon-food CPI\n\n6.52\n%\n\n",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "category",
+      "family": "spa-category",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia/category/prices",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Цены и инфляция в России",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Цены и инфляция в России",
+            "x": 112,
+            "y": 168,
+            "width": 768,
+            "height": 41.28125,
+            "right": 880,
+            "bottom": 209.28125
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 1581.78125,
+          "right": 1440,
+          "bottom": 1581.78125
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Главная\nРоссия\nЦены и инфляция\nЦены и инфляция в России\n\nРаздел собирает показатели потребительских цен, инфляции и цен на жильё. Здесь можно смотреть динамику ИПЦ, годовые и квартальные изменения, а также связанные индексы по основным группам товаров и услуг.\n\nИскать индикатор по всем категориям — например, инфляция или ВВП\n⌘K\nИНДИКАТОРЫ\nЦЕНЫ\nИндекс потребительских цен на товары и услуги\n\nConsumer Price Index\n\n6,34\n%\n\nАВГУСТ 2026\n\n1 мес. назад\n+0,34\nЦЕНЫ\nИндекс потребительских цен на продовольственные товары\n\nFood CPI\n\n5,09\n%\n\nАВГУСТ 2026\n\n1 м",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "category",
+      "family": "spa-category",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/russia/category/prices?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Prices and inflation in Russia",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Prices and inflation in Russia",
+            "x": 112,
+            "y": 205,
+            "width": 768,
+            "height": 41.28125,
+            "right": 880,
+            "bottom": 246.28125
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 1440,
+          "height": 1535.28125,
+          "right": 1440,
+          "bottom": 1572.28125
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Home\nRussia\nPrices and inflation\nPrices and inflation in Russia\n\nThis section covers consumer prices, inflation, and housing prices. CPI dynamics, annual and quarterly changes, and related indices for major groups of goods and services.\n\nSearch indicators across categories — e.g. inflation or GDP\n⌘K\nINDICATORS\nPRICES AND INFLATION\nConsumer Price Index\n\nConsumer Price Index\n\n6.34\n%\n\nAUGUST 2026\n\n1 month ago\n+0.34\nPRICES AND INFLATION\nFood CPI\n\nFood CPI\n\n5.09\n%\n\nAUGUST 2026\n\n1 month ago\n+0.68\nPRICES AND INFLATION\nNon-food CPI\n\nNon-food CPI\n\n6.52\n",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 320,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Индекс потребительских цен (ИПЦ) — прогноз и данные",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Индекс потребительских ценна товары и услугиИндекс потребительских цен на товары и услуги",
+            "x": 33,
+            "y": 279.375,
+            "width": 254,
+            "height": 126,
+            "right": 287,
+            "bottom": 405.375
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 320,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 6467.375,
+          "right": 320,
+          "bottom": 6467.375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": null,
+            "x": 27,
+            "y": 1653.4627685546875,
+            "width": 266,
+            "height": 280,
+            "right": 293,
+            "bottom": 1933.4627685546875
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "ГЛАВНАЯ\nРОССИЯ\nЦЕНЫ И ИНФЛЯЦИЯ\nИНДЕКС ПОТРЕБИТЕЛЬСКИХ ЦЕН НА ТОВАРЫ И УСЛУГИ\nПОМЕСЯЧНО\nИндекс потребительских цен\nна товары и услуги\n\nCONSUMER PRICE INDEX\n\nРасчёт Forecast Economy по месячным индексам Росстата. Может отличаться от опубликованного Росстатом годового изменения из-за округления исходных индексов.\n\nТЕКУЩЕЕ ЗНАЧЕНИЕ\n\n6,34\n%\nΔ +0,34\nК ПРЕД. МЕСЯЦУ\nДАТА: АВГУСТ 2026\n\nПРЕДЫДУЩИЙ МЕСЯЦ\n\n6,00\n%\nДАТА: ИЮЛЬ 2026\n\nАБСОЛЮТНЫЙ МАКСИМУМ\n\n2 508,85\n%\nПИК: ДЕКАБРЬ 1992\n\nСРЕДНЕЕ ЗНАЧЕНИЕ\n\n96,33\n%\nНАБЛ.: 417 ПЕРИОД.\n\nСОСТАВ ИНДЕКСА ПОТРЕБИТЕЛЬСКИХ ",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 320,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Consumer Price Index — data and chart",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Consumer Price IndexConsumer Price Index",
+            "x": 33,
+            "y": 314.78125,
+            "width": 254,
+            "height": 62,
+            "right": 287,
+            "bottom": 376.78125
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 320,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 53,
+          "width": 320,
+          "height": 5293.109375,
+          "right": 320,
+          "bottom": 5346.109375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": null,
+            "x": 27,
+            "y": 1568.9912109375,
+            "width": 266,
+            "height": 280,
+            "right": 293,
+            "bottom": 1848.9912109375
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "HOME\nRUSSIA\nPRICES AND INFLATION\nCONSUMER PRICE INDEX\nMONTHLY\nConsumer Price Index\n\nCONSUMER PRICE INDEX\n\nCalculated by Forecast Economy from Rosstat monthly indices. May differ from the annual change published by Rosstat because the input indices are rounded.\n\nCURRENT VALUE\n\n6.34\n%\nΔ +0.34\nVS PREVIOUS MONTH\nDATE: AUGUST 2026\n\nPREVIOUS MONTH\n\n6.00\n%\nDATE: JULY 2026\n\nALL-TIME HIGH\n\n2 508.85\n%\nPEAK: DECEMBER 1992\n\nAVERAGE\n\n96.33\n%\nOBS: 417 PERIODS\n\nCPI BASKET COMPOSITION\n\nAll goods and services\nChange\n\nINFLATION MODE\n\nOver same period previous ye",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Индекс потребительских цен (ИПЦ) — прогноз и данные",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Индекс потребительских ценна товары и услугиИндекс потребительских цен на товары и услуги",
+            "x": 33,
+            "y": 257.78125,
+            "width": 324,
+            "height": 95,
+            "right": 357,
+            "bottom": 352.78125
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 5859.796875,
+          "right": 390,
+          "bottom": 5859.796875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": null,
+            "x": 27,
+            "y": 1462.24169921875,
+            "width": 336,
+            "height": 280,
+            "right": 363,
+            "bottom": 1742.24169921875
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "ГЛАВНАЯ\nРОССИЯ\nЦЕНЫ И ИНФЛЯЦИЯ\nИНДЕКС ПОТРЕБИТЕЛЬСКИХ ЦЕН НА ТОВАРЫ И УСЛУГИ\nПОМЕСЯЧНО\nИндекс потребительских цен\nна товары и услуги\n\nCONSUMER PRICE INDEX\n\nРасчёт Forecast Economy по месячным индексам Росстата. Может отличаться от опубликованного Росстатом годового изменения из-за округления исходных индексов.\n\nТЕКУЩЕЕ ЗНАЧЕНИЕ\n\n6,34\n%\nΔ +0,34\nК ПРЕД. МЕСЯЦУ\nДАТА: АВГУСТ 2026\n\nПРЕДЫДУЩИЙ МЕСЯЦ\n\n6,00\n%\nДАТА: ИЮЛЬ 2026\n\nАБСОЛЮТНЫЙ МАКСИМУМ\n\n2 508,85\n%\nПИК: ДЕКАБРЬ 1992\n\nСРЕДНЕЕ ЗНАЧЕНИЕ\n\n96,33\n%\nНАБЛ.: 417 ПЕРИОД.\n\nСОСТАВ ИНДЕКСА ПОТРЕБИТЕЛЬСКИХ ",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "screenshot": "output/design-acceptance/2026-09-24/first-pass/chromium-cpi-390-ru.png"
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators?category=Prices+and+inflation",
+          "status": 429
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Consumer Price Index — data and chart",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Consumer Price IndexConsumer Price Index",
+            "x": 33,
+            "y": 293.1875,
+            "width": 324,
+            "height": 31,
+            "right": 357,
+            "bottom": 324.1875
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 53,
+          "width": 390,
+          "height": 3752.765625,
+          "right": 390,
+          "bottom": 3805.765625
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "HOME\nRUSSIA\nPRICES AND INFLATION\nCONSUMER PRICE INDEX\nMONTHLY\nConsumer Price Index\n\nCONSUMER PRICE INDEX\n\nCalculated by Forecast Economy from Rosstat monthly indices. May differ from the annual change published by Rosstat because the input indices are rounded.\n\nCPI BASKET COMPOSITION\n\nAll goods and services\nChange\n\nINFLATION MODE\n\nOver same period previous year\nOver previous period\nIndex\nMonthly\nQuarterly\nAnnual\nCHART FOR SELECTED VIEW\nCSV\nData download — after free registration\nEXCEL\nData download — after free registration\nPNG\nChart download —",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "screenshot": "output/design-acceptance/2026-09-24/first-pass/chromium-cpi-390-en.png"
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 768,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/og/russia/cpi.png",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/ticker/live?lane=russia",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "error": "locator.waitFor: Timeout 15000ms exceeded."
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 768,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/og/russia/cpi.png",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/ticker/live?lane=world",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "error": "locator.waitFor: Timeout 15000ms exceeded."
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 1024,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/og/russia/cpi.png",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/ticker/live?lane=russia",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Индекс потребительских цен (ИПЦ) — прогноз и данные",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Индекс потребительских ценна товары и услугиИндекс потребительских цен на товары и услуги",
+            "x": 63.71875,
+            "y": 269.71875,
+            "width": 896.5625,
+            "height": 136.78125,
+            "right": 960.28125,
+            "bottom": 406.5
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1024,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 4930.546875,
+          "right": 1024,
+          "bottom": 4930.546875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": null,
+            "x": 56.546875,
+            "y": 1378.103271484375,
+            "width": 911,
+            "height": 390,
+            "right": 967.546875,
+            "bottom": 1768.103271484375
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "ГЛАВНАЯ\nРОССИЯ\nЦЕНЫ И ИНФЛЯЦИЯ\nИНДЕКС ПОТРЕБИТЕЛЬСКИХ ЦЕН НА ТОВАРЫ И УСЛУГИ\nПОМЕСЯЧНО\nЦены\nИндекс потребительских цен на товары и услуги\n\nConsumer Price Index\n\nРасчёт Forecast Economy по месячным индексам Росстата. Может отличаться от опубликованного Росстатом годового изменения из-за округления исходных индексов.\n\nТЕКУЩЕЕ ЗНАЧЕНИЕ\n\n6,34\n%\nΔ +0,34\nК ПРЕД. МЕСЯЦУ\nДАТА: АВГУСТ 2026\n\nПРЕДЫДУЩИЙ МЕСЯЦ\n\n6,00\n%\nДАТА: ИЮЛЬ 2026\n\nАБСОЛЮТНЫЙ МАКСИМУМ\n\n2 508,85\n%\nПИК: ДЕКАБРЬ 1992\n\nСРЕДНЕЕ ЗНАЧЕНИЕ\n\n96,33\n%\nНАБЛ.: 417 ПЕРИОД.\n\nСОСТАВ ИНДЕКСА ПОТРЕБИТЕЛЬ",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 1024,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Consumer Price Index — data and chart",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Consumer Price IndexConsumer Price Index",
+            "x": 63.71875,
+            "y": 306.71875,
+            "width": 896.5625,
+            "height": 68.390625,
+            "right": 960.28125,
+            "bottom": 375.109375
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1024,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 1024,
+          "height": 4407.484375,
+          "right": 1024,
+          "bottom": 4444.484375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": null,
+            "x": 56.546875,
+            "y": 1365.9642333984375,
+            "width": 911,
+            "height": 390,
+            "right": 967.546875,
+            "bottom": 1755.9642333984375
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "HOME\nRUSSIA\nPRICES AND INFLATION\nCONSUMER PRICE INDEX\nMONTHLY\nPrices and inflation\nConsumer Price Index\n\nConsumer Price Index\n\nCalculated by Forecast Economy from Rosstat monthly indices. May differ from the annual change published by Rosstat because the input indices are rounded.\n\nCURRENT VALUE\n\n6.34\n%\nΔ +0.34\nVS PREVIOUS MONTH\nDATE: AUGUST 2026\n\nPREVIOUS MONTH\n\n6.00\n%\nDATE: JULY 2026\n\nALL-TIME HIGH\n\n2 508.85\n%\nPEAK: DECEMBER 1992\n\nAVERAGE\n\n96.33\n%\nOBS: 417 PERIODS\n\nCPI BASKET COMPOSITION\n\nAll goods and services\nFood\nNon-food\nServices\n\nINFLATI",
+        "offscreen": []
+      },
+      "softNotFound": false
+    },
+    {
+      "id": "cpi",
+      "family": "spa-bespoke-cpi",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/russia/indicator/cpi",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Индекс потребительских цен (ИПЦ) — прогноз и данные",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Индекс потребительских ценна товары и услугиИндекс потребительских цен на товары и услуги",
+            "x": 153,
+            "y": 279,
+            "width": 1134,
+            "height": 136.78125,
+            "right": 1287,
+            "bottom": 415.78125
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 4746.015625,
+          "right": 1440,
+          "bottom": 4746.015625
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-DtqAwFpp.css",
+          "http://127.0.0.1:3000/assets/main-Dng-Dl0E.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": null,
+            "x": 143,
+            "y": 1393.0401611328125,
+            "width": 1154,
+            "height": 390,
+            "right": 1297,
+            "bottom": 1783.0401611328125
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "ГЛАВНАЯ\nРОССИЯ\nЦЕНЫ И ИНФЛЯЦИЯ\nИНДЕКС ПОТРЕБИТЕЛЬСКИХ ЦЕН НА ТОВАРЫ И УСЛУГИ\nПОМЕСЯЧНО\nЦены\nИндекс потребительских цен на товары и услуги\n\nConsumer Price Index\n\nРасчёт Forecast Economy по месячным индексам Росстата. Может отличаться от опубликованного Росстатом годового изменения из-за округления исходных индексов.\n\nТЕКУЩЕЕ ЗНАЧЕНИЕ\n\n6,34\n%\nΔ +0,34\nК ПРЕД. МЕСЯЦУ\nДАТА: АВГУСТ 2026\n\nПРЕДЫДУЩИЙ МЕСЯЦ\n\n6,00\n%\nДАТА: ИЮЛЬ 2026\n\nАБСОЛЮТНЫЙ МАКСИМУМ\n\n2 508,85\n%\nПИК: ДЕКАБРЬ 1992\n\nСРЕДНЕЕ ЗНАЧЕНИЕ\n\n96,33\n%\nНАБЛ.: 417 ПЕРИОД.\n\nСОСТАВ ИНДЕКСА ПОТРЕБИТЕЛЬ",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "screenshot": "output/design-acceptance/2026-09-24/first-pass/chromium-cpi-1440-ru.png"
+    }
+  ],
+  "inventory": null,
+  "issues": [
+    {
+      "kind": "browser-response",
+      "id": "chromium:cpi:390:en",
+      "detail": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators?category=Prices+and+inflation",
+          "status": 429
+        }
+      ]
+    },
+    {
+      "kind": "browser-error",
+      "id": "chromium:cpi:768:ru",
+      "detail": "locator.waitFor: Timeout 15000ms exceeded."
+    },
+    {
+      "kind": "browser-error",
+      "id": "chromium:cpi:768:en",
+      "detail": "locator.waitFor: Timeout 15000ms exceeded."
+    },
+    {
+      "kind": "browser-response",
+      "id": "chromium:cpi:1024:ru",
+      "detail": [
+        {
+          "url": "http://127.0.0.1:3000/og/russia/cpi.png",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/ticker/live?lane=russia",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/regions/catalog",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/stats",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/inflation",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/forecast",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/v1/export/quota",
+          "status": 429
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Family sampling, not a crawl of every public URL.",
+    "Desktop engines with emulated viewports, not physical devices.",
+    "EN preview intentionally noindex; production host cutover is not changed.",
+    "Git HEAD identifies the working checkout, not the deployed compose image; response hashes and asset paths identify observed content.",
+    "Parallel fresh-context browser and HTTP passes exceeded shared API120/min/IP cap.429-derived failures are inconclusive; superseded by sequential paced runs."
+  ],
+  "sitemap": {
+    "status": 200,
+    "builtAt": "2026-09-22T12:49:17+00:00",
+    "urlsTotal": 1846206,
+    "publishedUrlsTotal": 1846206,
+    "hosts": [
+      "forecasteconomy.com"
+    ],
+    "groups": {
+      "core": 163,
+      "today": 11,
+      "ratings": 492,
+      "maps": 493,
+      "regions": 95,
+      "region-vs": 3570,
+      "world-ratings": 591,
+      "world": 54,
+      "calendar": 16,
+      "world-vs": 12135,
+      "years": 3251,
+      "months": 11392,
+      "world-indicators": 35997,
+      "regional": 45553,
+      "regional-years": 944076,
+      "world-years": 788317
+    }
+  },
+  "acceptanceValidity": "interrupted_self_induced_rate_limit"
+}

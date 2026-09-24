@@ -43,7 +43,7 @@ export default function Account() {
   }, [location.hash, isLoading, isAuthed]);
 
   if (isLoading) {
-    return <div className="max-w-2xl mx-auto px-4 pt-28 pb-24 text-text-secondary">{t('common.loading')}</div>;
+    return <div className="fe-data-page max-w-2xl mx-auto px-4 pt-28 pb-24 text-text-secondary">{t('common.loading')}</div>;
   }
   if (!user) return null;
 
@@ -133,13 +133,13 @@ export default function Account() {
   );
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-28 pb-24">
+    <div className="fe-data-page max-w-2xl mx-auto px-4 pt-28 pb-24">
       <h1 className="text-2xl font-display font-bold text-text-primary mb-2">{t('account.title')}</h1>
       <p className="text-sm text-text-secondary mb-6">
         {t('account.intro')}
       </p>
 
-      <section className="rounded-2xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm">
+      <section className="fe-panel rounded-2xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm">
         <h2 className="text-sm font-semibold text-text-secondary mb-3">{t('account.profile')}</h2>
         <dl className="text-sm space-y-1.5">
           <div className="flex justify-between items-center gap-4 min-h-[28px]">
@@ -186,7 +186,7 @@ export default function Account() {
       <section
         ref={feedbackRef}
         id="feedback"
-        className="rounded-2xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm scroll-mt-28"
+        className="fe-panel rounded-2xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm scroll-mt-28"
       >
         <h2 className="flex items-center gap-2 text-sm font-semibold text-text-secondary mb-2">
           <MessageSquare className="w-4 h-4 text-champagne" />
@@ -221,7 +221,7 @@ export default function Account() {
               <button
                 onClick={sendFeedback}
                 disabled={fbBusy || fbText.trim().length < 5}
-                className="px-4 py-2 rounded-xl bg-champagne text-white text-sm font-medium hover:bg-champagne-muted disabled:opacity-50"
+                className="fe-button-primary px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50"
               >
                 {fbBusy ? t('account.feedbackSending') : t('account.feedbackSend')}
               </button>
@@ -242,14 +242,14 @@ export default function Account() {
       </section>
 
       {user.is_admin && (
-        <section className="rounded-2xl bg-surface border border-border-champagne p-5 mb-5 shadow-sm">
+        <section className="fe-panel rounded-2xl bg-surface border border-border-champagne p-5 mb-5 shadow-sm">
           <h2 className="text-sm font-semibold text-text-secondary mb-2">{t('account.admin')}</h2>
           <p className="text-sm text-text-secondary mb-3">
             {t('account.adminBody')}
           </p>
           <Link
             to="/admin/bi"
-            className="inline-block px-4 py-2 rounded-xl bg-champagne text-white text-sm font-medium"
+            className="fe-button-primary inline-block px-4 py-2 rounded-xl text-sm font-medium"
           >
             {t('account.adminCta')}
           </Link>

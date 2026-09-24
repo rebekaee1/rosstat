@@ -110,7 +110,9 @@ async def get_app_assets() -> AppAssets:
         head_links = []
         for link in soup.find_all("link"):
             rel = {r.lower() for r in (link.get("rel") or [])}
-            if rel & {"stylesheet", "modulepreload", "preconnect", "icon", "shortcut icon"}:
+            if rel & {"stylesheet", "modulepreload", "preconnect", "icon", "shortcut icon"} or (
+                "preload" in rel and link.get("as") == "font"
+            ):
                 head_links.append(str(link))
         head_links = _sort_head_links(head_links)
         body_scripts = []
@@ -197,17 +199,25 @@ def _seo_chart_figure(
         f'<img src="{escape(og_path)}" width="1200" height="630" '
         f'alt="{escape(alt)}" loading="{loading}">'
     )
+    from urllib.parse import urlsplit
+
+    route = urlsplit(og_path).path
+    # Every dynamic /og family has a native portrait composition. Static brand
+    # images (/og-image-v3.png) deliberately keep their original dimensions.
+    portrait = route.startswith("/og/") and route.endswith(".png")
+    if portrait:
+        portrait_url = og_path + ("&" if "?" in og_path else "?") + "portrait=1"
+        img = (f'<picture><source media="(max-width: 640px)" '
+               f'srcset="{escape(portrait_url)}" width="1080" height="1350">{img}</picture>')
     if href:
-        img = (
-            f'<a class="seo-chart-link" href="{escape(href)}#chart">{img}</a>'
-        )
+        img = f'<a class="seo-chart-link" href="{escape(href)}#chart">{img}</a>'
     cleaned = caption
     for suffix in (" forecasteconomy.com", ". forecasteconomy.com"):
         if cleaned.endswith(suffix):
             cleaned = cleaned[: -len(suffix)].rstrip(" .")
             break
     return (
-        f'<figure class="seo-chart">{img}'
+        f'<figure class="seo-chart" data-portrait="{"true" if portrait else "false"}">{img}'
         f'<figcaption><span class="seo-chart-cap">{escape(cleaned)}</span>'
         f'<span class="seo-chart-brand">forecasteconomy.com</span></figcaption></figure>'
     )
@@ -585,24 +595,39 @@ html.fe-js #root > .seo-section,
 html.fe-js #root > .seo-platform-nav{
 position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important
 }
-body.seo-fast{background:radial-gradient(ellipse at 90% 3%,rgba(233,223,205,.45),transparent 38%),#eef0f4;color:#202a3c}
-body.seo-fast .seo-page{max-width:72rem;padding-top:1.6rem}
-body.seo-fast .seo-topbar{background:rgba(238,240,244,.92);border-bottom:1px solid #d5dbe3}
-body.seo-fast .seo-brand{font-size:1.35rem;font-weight:650;letter-spacing:-.04em;color:#202a3c}
-body.seo-fast .seo-topnav a{color:rgba(32,42,60,.72)}
+@font-face{font-family:Manrope;src:url('/fonts/manrope-latin-cyrillic.woff2') format('woff2');font-weight:200 800;font-display:swap}
+body.seo-fast{background:radial-gradient(ellipse at 90% 3%,rgba(233,223,205,.5),transparent 38%),#eef0f4;color:#202a3c;font-family:Manrope,system-ui,sans-serif}
+body.seo-fast .seo-page{max-width:72rem;padding:2rem 1.5rem 3rem}
+body.seo-fast .seo-topbar{background:rgba(238,240,244,.86);border-bottom:1px solid rgba(255,255,255,.85);backdrop-filter:blur(22px)}
+body.seo-fast .seo-topbar-in{max-width:72rem;gap:1.4rem;padding:1rem 1.5rem}
+body.seo-fast .seo-brand{display:flex;align-items:center;gap:.65rem;font-size:1.55rem;font-weight:750;letter-spacing:-.065em;color:#202a3c;line-height:1;flex-shrink:0}
+body.seo-fast .seo-brand svg{width:31px;height:35px;flex-shrink:0}
+body.seo-fast .seo-brand-light{font-weight:400}
+body.seo-fast .seo-brand small{display:block;font-size:7px;font-weight:600;letter-spacing:.16em;color:#ad8a48;margin-top:6px}
+body.seo-fast .seo-topnav{gap:1.1rem;font-size:.78rem;max-width:100%;padding:.4rem 0}
+body.seo-fast .seo-topnav a{color:#526074}
 body.seo-fast .seo-topnav a:hover,body.seo-fast .seo-page a:hover{color:#ad8a48}
-body.seo-fast .seo-eyebrow{color:#ad8a48;letter-spacing:.14em}
-body.seo-fast .seo-page h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:540;letter-spacing:-.045em;line-height:1.12;color:#202a3c}
-body.seo-fast .seo-answer{padding:0 0 1.4rem}
-body.seo-fast .seo-hero-value{font-size:clamp(3rem,6vw,4.6rem);font-weight:500;letter-spacing:-.06em;line-height:1.05;margin:.35rem 0 .4rem;color:#202a3c}
-body.seo-fast .seo-answer-note{max-width:46rem;color:#526074;font-size:.95rem}
-body.seo-fast .seo-chart{border:1px solid #fff;border-radius:24px;background:linear-gradient(130deg,rgba(255,255,255,.85),rgba(255,255,255,.55));box-shadow:0 16px 45px -33px rgba(38,52,78,.35)}
-body.seo-fast .seo-page table{border:1px solid #fff;border-radius:18px;box-shadow:0 16px 45px -33px rgba(38,52,78,.28)}
-body.seo-fast .seo-cta-in{background:#202a3c;border:0;border-radius:22px;color:#f3f5f8}
+body.seo-fast .seo-eyebrow{color:#ad8a48;letter-spacing:.13em;font-size:.65rem}
+body.seo-fast .seo-page h1{font-size:clamp(1.9rem,4vw,3.25rem);font-weight:600;letter-spacing:-.055em;line-height:1.12;color:#202a3c;max-width:55rem}
+body.seo-fast .seo-answer{padding:1.5rem 1.8rem;border-radius:26px;background:linear-gradient(130deg,rgba(255,255,255,.7),rgba(255,255,255,.3));border:1px solid rgba(255,255,255,.9);box-shadow:0 16px 45px -33px rgba(38,52,78,.23);margin:1rem 0 1.2rem}
+body.seo-fast .seo-hero-value{font-size:clamp(2.8rem,6vw,5rem);font-weight:550;letter-spacing:-.06em;line-height:1.1;margin:.75rem 0 .65rem;color:#202a3c;overflow-wrap:anywhere}
+body.seo-fast .seo-answer-note{max-width:48rem;color:#526074;font-size:.95rem;margin-bottom:0}
+body.seo-fast .seo-chart{border:1px solid #fff;border-radius:26px;background:linear-gradient(130deg,rgba(255,255,255,.85),rgba(255,255,255,.55));box-shadow:0 16px 45px -33px rgba(38,52,78,.35)}
+body.seo-fast .seo-chart img{aspect-ratio:1200/630;object-fit:contain}
+body.seo-fast .seo-chart figcaption{padding:.85rem 1.25rem;color:#526074;border-top:1px solid rgba(255,255,255,.9)}
+body.seo-fast .seo-chart-brand{color:#8e713b;font-weight:600}
+body.seo-fast .seo-table-scroll{overflow-x:auto;max-width:100%;margin:1rem 0;border:1px solid white;border-radius:18px;background:rgba(255,255,255,.65);box-shadow:0 16px 45px -33px rgba(38,52,78,.25)}
+body.seo-fast .seo-page table{margin:0;width:100%;background:transparent}
+body.seo-fast .seo-page th,body.seo-fast .seo-page td{padding:.75rem 1rem}
+body.seo-fast .seo-page h2{color:#526074;letter-spacing:.1em}
+body.seo-fast .seo-page p{color:#526074}
+body.seo-fast .seo-page .seo-hero-value{color:#202a3c}
+body.seo-fast .seo-cta-in{max-width:69rem;background:#202a3c;border:0;border-radius:22px;color:#f3f5f8}
 body.seo-fast .seo-cta p,body.seo-fast .seo-cta strong{color:#f3f5f8}
 body.seo-fast .seo-cta a.seo-btn{background:#f6f3ec;color:#263044;border:1px solid #d3c4a3}
 body.seo-fast .seo-cta a.seo-btn:hover{background:#fff;color:#263044}
-@media(max-width:640px){body.seo-fast .seo-page{padding-left:.9rem;padding-right:.9rem}body.seo-fast .seo-hero-value{font-size:2.7rem}body.seo-fast .seo-chart img{border-radius:16px}}
+@media(max-width:640px){body.seo-fast .seo-page{padding:1rem .8rem 2rem}body.seo-fast .seo-topbar-in{padding:.85rem 1rem;gap:.75rem}body.seo-fast .seo-answer{padding:1.2rem;border-radius:20px}body.seo-fast .seo-hero-value{font-size:2.8rem}body.seo-fast .seo-chart{border-radius:18px}body.seo-fast .seo-chart figcaption{font-size:.75rem;padding:.75rem}body.seo-fast .seo-chart img{border-radius:0}body.seo-fast .seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}body.seo-fast .seo-foot{font-size:.75rem}}
+
 </style>"""
 
 # Не клипаем SEO при разборе HTML: на 4G bundle едет секунды, и слепой fe-js
@@ -632,12 +657,12 @@ _SPA_SSR_HIDE_SCRIPT = (
 # RU-константы ниже — эталон и для тестов структуры href. EN — через
 # `_ssr_chrome_*()` / `_ssr_platform_deep_links()` по get_locale().
 _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
-<a class="seo-brand" href="/">forecasteconomy</a>
-<nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
+<a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
+<nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.region_hub()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.russia_home()}">Показатели</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
 </div></header>"""
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
-<a class="seo-brand" href="/">forecasteconomy</a>
+<a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
 <nav class="seo-topnav"><a href="/">Home</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
 </div></header>"""
 
@@ -800,6 +825,112 @@ def _yandex_verification_meta() -> str:
     return "\n".join(tags)
 
 
+def _responsive_chart_images(body: str) -> str:
+    """Upgrade legacy inline figures as well as shared-helper figures once."""
+    from bs4 import BeautifulSoup
+    from urllib.parse import urlsplit
+
+    if 'class="seo-chart"' not in body:
+        return body
+    soup = BeautifulSoup(body, "html.parser")
+    for i, img in enumerate(soup.select(".seo-chart img")):
+        src = str(img.get("src", ""))
+        route = urlsplit(src).path
+        if route.startswith("/og/") and route.endswith(".png"):
+            if img.parent.name != "picture":
+                picture = soup.new_tag("picture")
+                source = soup.new_tag("source", attrs={
+                    "media": "(max-width: 640px)",
+                    "srcset": src + ("&" if "?" in src else "?") + "portrait=1",
+                    "width": "1080", "height": "1350",
+                })
+                img.wrap(picture)
+                picture.insert(0, source)
+            img.find_parent("figure")["data-portrait"] = "true"
+        img["decoding"] = "async"
+        if i == 0:
+            img["loading"] = "eager"
+            img["fetchpriority"] = "high"
+    return str(soup)
+
+
+def _prepare_quicklink_body(body: str, canonical_path: str) -> str:
+    from urllib.parse import urlsplit
+
+    soup = BeautifulSoup(body, "html.parser")
+    parent = re.sub(r"/\d{4}(?:-\d{2})?/?$", "", canonical_path.split("?", 1)[0]) or "/"
+    for anchor in soup.find_all("a", href=True):
+        if anchor.get_text(strip=True) in ("Россия", "Russia") and anchor["href"].rstrip("/") == paths.russia_home():
+            anchor["href"] = paths.region_hub()
+        target = urlsplit(anchor["href"])
+        if target.scheme in ("http", "https") or target.netloc:
+            if target.hostname in ("forecasteconomy.com", "ru.forecasteconomy.com"):
+                anchor["href"] = target.path or "/"
+                if target.query:
+                    anchor["href"] += "?" + target.query
+                if target.fragment:
+                    anchor["href"] += "#" + target.fragment
+            else:
+                anchor["href"] = parent
+                anchor.attrs.pop("target", None)
+    for table in soup.find_all("table"):
+        if "seo-table-scroll" not in table.parent.get("class", []):
+            wrapper = soup.new_tag("div", attrs={"class": "seo-table-scroll", "tabindex": "0"})
+            table.wrap(wrapper)
+    first = soup.select_one(".seo-chart img")
+    if first:
+        first["loading"] = "eager"
+        first["fetchpriority"] = "high"
+        first["decoding"] = "async"
+    return str(soup)
+
+
+def _preview_body_urls(body: str, locale: str) -> str:
+    """Keep explicit preview locale across navigation and browser image caches.
+
+    Only visible body URLs change. Canonicals, provenance JSON-LD and normal
+    production documents retain their original URLs. Same-site absolute links
+    become local paths so a localhost preview cannot navigate onto production.
+    """
+    from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+    from app.services.locale import PREVIEW_QUERY, apex_host
+
+    apex = apex_host()
+    internal_hosts = {apex, f"www.{apex}", f"ru.{apex}", f"en.{apex}"}
+
+    def preview_url(value: str) -> str:
+        # Fragment-only navigation already preserves the current query/year.
+        if not value or value.startswith("#"):
+            return value
+        parsed = urlsplit(value)
+        if parsed.scheme not in ("", "http", "https"):
+            return value
+        if parsed.netloc and parsed.hostname not in internal_hosts:
+            return value
+        query = [(k, v) for k, v in parse_qsl(parsed.query, keep_blank_values=True) if k != PREVIEW_QUERY]
+        query.append((PREVIEW_QUERY, locale))
+        path = parsed.path or ("/" if parsed.netloc else "")
+        return urlunsplit(("", "", path, urlencode(query), parsed.fragment))
+
+    soup = BeautifulSoup(body, "html.parser")
+    for anchor in soup.find_all("a", href=True):
+        anchor["href"] = preview_url(anchor["href"])
+    for img in soup.find_all("img", src=True):
+        img["src"] = preview_url(img["src"])
+    for tag in soup.select("img[srcset], source[srcset]"):
+        srcset = tag["srcset"]
+        # Embedded data URLs may themselves contain commas; leave those intact.
+        if "data:" in srcset:
+            continue
+        candidates = []
+        for candidate in srcset.split(","):
+            fields = candidate.strip().split(maxsplit=1)
+            if fields:
+                candidates.append(" ".join([preview_url(fields[0]), *fields[1:]]))
+        tag["srcset"] = ", ".join(candidates)
+    return str(soup)
+
+
 async def build_document(
     *,
     title: str,
@@ -832,11 +963,19 @@ async def build_document(
     safe_title = escape(title)
     safe_desc = escape(truncate_meta(clean_text(description), 300))
     safe_keywords = escape(clean_text(keywords or _default_keywords())[:400])
-    structured = "\n".join(_json_script(item) for item in (json_ld or []))
+    structured_items = list(json_ld or [])
+    if og_image:
+        structured_items.append({
+            "@context": "https://schema.org", "@type": "WebPage",
+            "@id": url + "#webpage", "url": url, "name": title,
+            "primaryImageOfPage": {"@type": "ImageObject", "contentUrl": og_image,
+                                   "width": 1200, "height": 630},
+        })
+    structured = "\n".join(_json_script(item) for item in structured_items)
     extras = extra_head or ""
     hreflang = _hreflang_head(canonical_path)
     css_preload = _css_preload(assets.head_links)
-    og_url = escape(og_image or _absolute("/og-image-v2.png"))
+    og_url = escape(og_image or _absolute("/og-image-v3.png"))
     body_scripts = assets.body_scripts if include_app else ""
     lang = html_lang()
     locale_og = og_locale()
@@ -850,6 +989,7 @@ async def build_document(
     body_class = ""
     if not include_app:
         body_class = "seo-fast"
+        body = _prepare_quicklink_body(body, canonical_path)
         # Чистые SSR-страницы получают брендовый хром: шапка-навигация + CTA на
         # платформу + футер об источниках. React-страницы — нет (гидратация
         # заменит #root своим layout'ом). Locale-aware: EN chrome на apex.
@@ -861,6 +1001,9 @@ async def build_document(
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
             # тупики с одними крошками. React при гидратации заменит #root.
             body = f"{body.rstrip()}\n{_ssr_platform_deep_links()}"
+    body = _responsive_chart_images(body)
+    if is_preview_locale():
+        body = _preview_body_urls(body, get_locale())
     return f"""<!DOCTYPE html>
 <html lang="{lang}">
 <head>
@@ -874,7 +1017,7 @@ async def build_document(
 <meta name="keywords" content="{safe_keywords}">
 <meta name="author" content="Forecast Economy">
 <meta name="robots" content="{robots_content}">
-<meta name="theme-color" content="#F8F9FC">
+<meta name="theme-color" content="#EEF0F4">
 {_yandex_verification_meta()}
 <link rel="canonical" href="{escape(url)}">
 <link rel="alternate" type="application/rss+xml" title="{rss_title}" href="{escape(_absolute("/feed.xml"))}">

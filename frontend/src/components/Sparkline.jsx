@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState, useId } from 'react';
+import { CHART_THEME } from '../lib/chartTheme';
 
 const COLOR_POSITIVE = '#16A34A';
 const COLOR_NEGATIVE = '#DC2626';
-const COLOR_CHAMPAGNE = '#B8942F';
+const COLOR_CHAMPAGNE = CHART_THEME.champagne;
 const COLOR_FLAT = '#9CA3AF';
 
 function resolveColor(trend, sentiment) {

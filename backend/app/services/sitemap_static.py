@@ -109,6 +109,8 @@ async def build_static_sitemaps() -> dict:
     flock is nonblocking so another scheduler/manual build cannot interleave
     publication or cleanup, without blocking the async worker's event loop.
     """
+    # Includes the same path -> image discovery as the dynamic response.
+    # Publishing XML must never invoke the expensive image renderer.
     from app.api.sitemap import _render_urlset
     from app.services.locale import en_public_origin, ru_public_origin, apex_locale_en_enabled
     from app.services.site_urls import iter_url_sections

@@ -720,8 +720,37 @@ def test_seo_world_rating_year_path_200(world_seo_client):
         'canonical" href="https://forecasteconomy.com/world/rating/unemployment-rate/2024"'
         in html
     )
-    # Ссылки «Другие годы» — без ?year=.
-    assert "?year=" not in html
+    # Year navigation remains canonical paths; the chart CTA selects the year
+    # in the base interactive route, which is the route React understands.
+    assert '/world/rating/unemployment-rate?view=interactive&amp;year=2024#chart' in html
+    assert 'class="seo-fast"' in html
+    assert '/src/main.jsx' not in html
+    assert 'window.__feRevealSpa=function' not in html
+
+
+@pytest.mark.parametrize("locale", ["ru", "en"])
+def test_year_chart_cta_opens_spa_without_redirect_and_keeps_canonical_year(world_seo_client,locale):
+    from bs4 import BeautifulSoup
+    headers={"X-FE-Locale":locale}
+    year_page=world_seo_client.get(f"/seo/world/rating/unemployment-rate/2024?preview_locale={locale}")
+    assert year_page.status_code==200
+    cta=BeautifulSoup(year_page.text,"html.parser").select_one(".seo-chart-link")["href"]
+    assert cta==f"/world/rating/unemployment-rate?view=interactive&year=2024&preview_locale={locale}#chart"
+    target=world_seo_client.get("/seo"+cta.split("#",1)[0],follow_redirects=False)
+    assert target.status_code==200 and "location" not in target.headers
+    assert 'window.__feRevealSpa=function' in target.text
+    assert 'class="seo-fast"' not in target.text
+    soup=BeautifulSoup(target.text,"html.parser")
+    assert soup.html["lang"] == locale
+    assert soup.find("link",rel="canonical")["href"].endswith("/world/rating/unemployment-rate/2024")
+    assert soup.find("meta",property="og:image")["content"].endswith("/og/world/rating/unemployment-rate/2024.png")
+    assert "2024" in soup.h1.get_text()
+    # Default-year interactive view still canonicalizes to the base route.
+    current=world_seo_client.get("/seo/world/rating/unemployment-rate?view=interactive&year=2025",headers=headers,follow_redirects=False)
+    assert current.status_code==200
+    assert BeautifulSoup(current.text,"html.parser").find("link",rel="canonical")["href"].endswith("/world/rating/unemployment-rate")
+    for invalid in ("2019","9999","2024-13"):
+        assert world_seo_client.get(f"/seo/world/rating/unemployment-rate?view=interactive&year={invalid}",headers=headers,follow_redirects=False).status_code==404
 
 
 def test_seo_world_rating_year_without_data_404(world_seo_client):
@@ -927,8 +956,8 @@ def test_world_og_rating_locale_cache_and_labels(world_seo_client):
     # Ключи кэша различаются по локали — картинка EN не перезаписывает RU.
     from app.services.og_image import _CACHE
 
-    assert "world-rating:ru:hicp-index" in _CACHE
-    assert "world-rating:en:hicp-index" in _CACHE
+    assert "world-rating:ru:hicp-index:landscape" in _CACHE
+    assert "world-rating:en:hicp-index:landscape" in _CACHE
 
 
 @pytest.fixture
@@ -1019,3 +1048,18 @@ def test_russia_gdp_ranking_uses_national_method(russia_gdp_method_client):
     assert ru_pc is not None
     assert ru_pc["value"] == pytest.approx(expected * 1e9 / 146.12e6, rel=1e-3)
     assert ru_pc["source"] == "Росстат, Банк России"
+
+
+@pytest.mark.parametrize("locale,label", [("ru", "Россия"), ("en", "Russia")])
+@pytest.mark.parametrize("suffix", ["", "/2024", "?view=interactive&year=2024"])
+def test_russia_name_in_ranking_links_to_regions(russia_gdp_method_client, locale, label, suffix):
+    from bs4 import BeautifulSoup
+
+    response = russia_gdp_method_client.get(
+        f"/seo/world/rating/gdp-usd{suffix}", headers={"X-FE-Locale": locale}
+    )
+    assert response.status_code == 200
+    soup = BeautifulSoup(response.text, "html.parser")
+    country_links = [a for a in soup.select("table a[href]") if a.get_text(strip=True) == label]
+    assert country_links
+    assert {a["href"] for a in country_links} == {f"/russia/region?preview_locale={locale}"}

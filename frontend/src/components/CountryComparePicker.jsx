@@ -39,7 +39,7 @@ export function CountryComparePicker({
         className="w-full rounded-xl border border-border-subtle bg-obsidian-light py-2.5 pl-9 pr-3 text-xs text-text-primary outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
       />
       {open && (
-        <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-border-subtle bg-white p-1.5 shadow-2xl">
+        <div className="fe-dialog-panel absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
           {filtered.length ? filtered.map((option) => {
             const checked = selected.has(option.code);
             const disabled = !checked && selectedIds.length >= MAX_COMPARISONS;
@@ -53,7 +53,7 @@ export function CountryComparePicker({
                   onToggle(option.code);
                   setQuery('');
                 }}
-                className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-xs text-text-secondary transition-colors hover:bg-obsidian-light hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-35"
+                className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-xs text-text-secondary transition-colors hover:bg-obsidian-light hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-35"
               >
                 <span className="truncate">{option.country_name}</span>
                 <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${checked ? 'border-champagne bg-champagne text-white' : 'border-border-subtle'}`}>

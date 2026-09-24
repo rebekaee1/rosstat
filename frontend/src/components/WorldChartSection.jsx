@@ -8,7 +8,6 @@ import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
-import ChartBrandCaption from './ChartBrandCaption';
 import { ChartSkeleton } from './Skeleton';
 import { worldChartTitle, worldRangePreset } from '../lib/worldViewModes';
 import { useLocale, useT } from '../i18n';
@@ -345,7 +344,6 @@ export default function WorldChartSection({
             actualSeriesLabel={country?.name}
             comparisonSeries={displayedComparisonSeries}
           />
-          <ChartBrandCaption />
         </div>
       )}
     </section>

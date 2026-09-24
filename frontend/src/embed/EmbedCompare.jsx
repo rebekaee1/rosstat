@@ -9,8 +9,8 @@ import { formatDate, formatAxisTick, formatValueWithUnit, unitDigits } from '../
 import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, PERIODS, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
 
-const COLOR_A = '#B8942F';
-const COLOR_B = '#7C3AED';
+const COLOR_A = '#AD8A48';
+const COLOR_B = '#6B8299';
 
 function CompareTooltip({ active, payload, label, unitA, unitB, nameA, nameB, colors }) {
   if (!active || !payload?.length) return null;
@@ -140,7 +140,7 @@ export default function EmbedCompare() {
           <div style={{ display: 'flex', gap: 2 }}>
             {PERIODS.map(p => (
               <button key={p.key} onClick={() => setPeriod(p.key)}
-                style={{ border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 500, fontFamily: 'system-ui', padding: '3px 8px', borderRadius: 6, background: period === p.key ? 'rgba(184,148,47,0.12)' : 'transparent', color: period === p.key ? '#B8942F' : colors.textTertiary }}>
+                style={{ border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 500, fontFamily: 'system-ui', padding: '3px 8px', borderRadius: 6, background: period === p.key ? 'rgba(173,138,72,0.12)' : 'transparent', color: period === p.key ? '#AD8A48' : colors.textTertiary }}>
                 {t(p.labelKey)}
               </button>
             ))}

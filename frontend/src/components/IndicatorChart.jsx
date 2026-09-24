@@ -1,5 +1,5 @@
 import { rememberAuthView, restoredAuthView } from '../lib/authReturn';
-import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
+import { useEffect, useRef, useMemo, useState, useCallback, useId } from 'react';
 import gsap from 'gsap';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, Bar, XAxis, YAxis,
@@ -13,6 +13,8 @@ import {
 import { track, events } from '../lib/track';
 import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 import { useT } from '../i18n';
+import { CHART_THEME } from '../lib/chartTheme';
+import ChartBrandCaption from './ChartBrandCaption';
 
 const RANGE_PRESETS = {
   default: [
@@ -106,13 +108,13 @@ function CustomTooltip({
         <div className={compactNumeric ? 'text-left' : 'flex items-center justify-between gap-4'}>
           {(!numericTooltipOnly || comparisons.length > 0) && (
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-champagne" />
+              <span className="w-2 h-2 rounded-full bg-text-primary" />
               <span className="max-w-[150px] truncate text-xs text-text-tertiary">
                 {actualSeriesLabel || actualLabel}
               </span>
             </div>
           )}
-          <span className="text-sm font-mono font-semibold text-champagne">
+          <span className="text-sm font-semibold tabular-nums text-text-primary">
             {numericTooltipOnly
               ? formatValue(actual.value, valueDigits)
               : `${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
@@ -123,10 +125,10 @@ function CustomTooltip({
       {forecast && !actual && (
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ background: '#7C3AED' }} />
+            <span className="w-2 h-2 rounded-full" style={{ background: CHART_THEME.champagne }} />
             <span className="text-xs text-text-tertiary">{forecastLabel}</span>
           </div>
-          <span className="text-sm font-mono font-semibold text-[#7C3AED]">
+          <span className="text-sm font-mono font-semibold text-champagne-muted">
             {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
           </span>
         </div>
@@ -182,6 +184,7 @@ export default function IndicatorChart({
 }) {
   const t = useT();
   const digits = chartValueDigits(unit, chartMode ?? mode);
+  const gradientId = `actual-${useId().replaceAll(':', '')}`;
   const ref = useRef(null);
   const chartAreaRef = useRef(null);
   const rangeOptions = (RANGE_PRESETS[rangePreset] || RANGE_PRESETS.default).map((opt) => ({
@@ -214,7 +217,7 @@ export default function IndicatorChart({
       return comparisonSeries.map((series, index) => ({
         ...series,
         dataKey: series.dataKey || `comparison_${index}`,
-        color: series.color || '#397C8C',
+        color: series.color || CHART_THEME.blue,
       }));
     }
     if (comparisonData?.length) {
@@ -222,7 +225,7 @@ export default function IndicatorChart({
         data: comparisonData,
         dataKey: 'comparison_0',
         label: comparisonLabel || t('chart.compareSeries'),
-        color: '#397C8C',
+        color: CHART_THEME.blue,
       }];
     }
     return [];
@@ -523,9 +526,9 @@ export default function IndicatorChart({
   }
 
   return (
-    <div ref={ref} className="p-5 md:p-6 rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03]">
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-        <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+    <div ref={ref} className="fe-panel fe-chart-card">
+      <div className="fe-chart-toolbar flex items-center justify-between mb-5 flex-wrap gap-3">
+        <h3 className="fe-chart-title">
           {title}
         </h3>
         {/* ml-auto: при длинном заголовке контролы переносятся на новую строку,
@@ -602,40 +605,30 @@ export default function IndicatorChart({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         className={cn(
-          'rounded-xl relative',
+          'fe-chart-plot rounded-xl relative',
           isDragging ? 'cursor-grabbing select-none' : 'cursor-crosshair'
         )}
         style={{ touchAction: 'pan-y' }}
       >
-        {/* На экране бренд остаётся; в PNG-экспорт не попадает (data-no-export).
-            Зарегистрированным watermark в файле не ставим — правило 2026-07-08. */}
-        <div
-          aria-hidden="true"
-          data-no-export="true"
-          className="pointer-events-none absolute left-1/2 top-[46%] z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
-        >
-          Forecast Economy
-        </div>
-
-        <ResponsiveContainer width="100%" height={420}>
+        <ResponsiveContainer width="100%" height={plotWidth > 0 && plotWidth < 600 ? 280 : 390}>
           <ComposedChart data={visibleData} margin={{ top: 12, right: 36, bottom: 16, left: 0 }}>
             <defs>
-              <linearGradient id="inflGradActual" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
-                <stop offset="100%" stopColor="#B8942F" stopOpacity={0} />
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.15} />
+                <stop offset="100%" stopColor={CHART_THEME.ink} stopOpacity={0} />
               </linearGradient>
             </defs>
 
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="rgba(0,0,0,0.06)"
+              stroke={CHART_THEME.grid}
               vertical={false}
             />
             <XAxis
               dataKey="date"
               tickFormatter={formatXAxisLabel}
               stroke="rgba(0,0,0,0.1)"
-              tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tick={{ fill: CHART_THEME.axis, fontSize: 11, fontFamily: CHART_THEME.font }}
               tickLine={false}
               ticks={xTicks}
               interval={0}
@@ -645,7 +638,7 @@ export default function IndicatorChart({
             />
             <YAxis
               stroke="rgba(0,0,0,0.1)"
-              tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tick={{ fill: CHART_THEME.axis, fontSize: 11, fontFamily: CHART_THEME.font }}
               tickLine={false}
               axisLine={false}
               domain={yDomain}
@@ -681,7 +674,7 @@ export default function IndicatorChart({
               <ReferenceArea
                 x1={forecastStartDate}
                 x2={forecastEndDate}
-                fill="#7C3AED"
+                fill={CHART_THEME.champagne}
                 fillOpacity={0.06}
                 stroke="none"
                 ifOverflow="visible"
@@ -691,7 +684,7 @@ export default function IndicatorChart({
             {forecastStartDate && showForecast && chartType !== 'bar' && (
               <ReferenceLine
                 x={forecastStartDate}
-                stroke="rgba(124,58,237,0.45)"
+                stroke="rgba(173,138,72,0.45)"
                 strokeDasharray="4 4"
                 strokeWidth={1}
                 style={{ pointerEvents: 'none' }}
@@ -701,30 +694,30 @@ export default function IndicatorChart({
             {chartType === 'bar' ? (
               <Bar
                 dataKey="actual"
-                fill="#B8942F"
+                fill={CHART_THEME.ink}
                 fillOpacity={0.7}
-                stroke="#B8942F"
+                stroke={CHART_THEME.ink}
                 isAnimationActive={false}
                 maxBarSize={28}
               />
             ) : chartType === 'line' ? (
               <Line
                 dataKey="actual"
-                stroke="#B8942F"
+                stroke={CHART_THEME.ink}
                 strokeWidth={2}
                 dot={false}
-                activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
+                activeDot={isDragging ? false : { r: 4, fill: CHART_THEME.ink, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
                 connectNulls
               />
             ) : (
               <Area
                 dataKey="actual"
-                stroke="#B8942F"
+                stroke={CHART_THEME.ink}
                 strokeWidth={2}
-                fill="url(#inflGradActual)"
+                fill={`url(#${gradientId})`}
                 dot={false}
-                activeDot={isDragging ? false : { r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
+                activeDot={isDragging ? false : { r: 4, fill: CHART_THEME.ink, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
                 connectNulls
               />
@@ -734,21 +727,21 @@ export default function IndicatorChart({
               chartType === 'bar' ? (
                 <Bar
                   dataKey="forecast"
-                  fill="#7C3AED"
+                  fill={CHART_THEME.champagne}
                   fillOpacity={0.55}
-                  stroke="#7C3AED"
+                  stroke={CHART_THEME.champagne}
                   isAnimationActive={false}
                   maxBarSize={28}
                 />
               ) : (
                 <Line
                   dataKey="forecast"
-                  stroke="#7C3AED"
+                  stroke={CHART_THEME.champagne}
                   strokeWidth={2.5}
                   connectNulls
                   strokeDasharray="8 4"
                   dot={false}
-                  activeDot={isDragging ? false : { r: 5, fill: '#7C3AED', stroke: '#FFFFFF', strokeWidth: 2 }}
+                  activeDot={isDragging ? false : { r: 5, fill: CHART_THEME.champagne, stroke: '#FFFFFF', strokeWidth: 2 }}
                   isAnimationActive={false}
                 />
               )
@@ -807,7 +800,7 @@ export default function IndicatorChart({
       {resolvedComparisonSeries.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border-subtle pt-3">
           <div className="flex items-center gap-2">
-            <span className="h-0.5 w-5 rounded-full bg-champagne" />
+            <span className="h-0.5 w-5 rounded-full bg-text-primary" />
             <span className="text-[11px] text-text-tertiary">{actualSeriesLabel || t('chart.primarySeries')}</span>
           </div>
           {resolvedComparisonSeries.map((series) => (
@@ -820,17 +813,18 @@ export default function IndicatorChart({
       )}
 
       {showForecast && hasForecast && (
-        <div className="flex items-center gap-5 mt-4 pt-3 border-t border-border-subtle">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-3 border-t border-border-subtle">
           <div className="flex items-center gap-2">
-            <span className="w-5 h-0.5 bg-champagne rounded-full" />
+            <span className="w-5 h-0.5 bg-text-primary rounded-full" />
             <span className="text-[11px] text-text-tertiary">{t('chart.legend.actual')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-5 h-0.5 rounded-full" style={{ background: '#7C3AED', opacity: 0.8 }} />
+            <span className="w-5 h-0.5 rounded-full" style={{ background: CHART_THEME.champagne, opacity: 0.8 }} />
             <span className="text-[11px] text-text-tertiary">{t('common.forecast')}</span>
           </div>
         </div>
       )}
+      <ChartBrandCaption />
     </div>
   );
 }

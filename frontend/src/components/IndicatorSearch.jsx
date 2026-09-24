@@ -349,8 +349,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             className="absolute inset-0 bg-text-primary/30 backdrop-blur-[2px]"
             onClick={close}
           />
-          <div className="relative w-full max-w-2xl rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08] overflow-hidden">
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-border-subtle">
+          <div className="fe-dialog-panel relative flex max-h-[calc(90dvh-1rem)] w-full max-w-2xl flex-col rounded-2xl border border-border-subtle bg-surface shadow-2xl overflow-hidden">
+            <div className="flex shrink-0 items-center gap-3 px-4 py-3 border-b border-border-subtle">
               <Search className="w-4 h-4 text-text-tertiary shrink-0" aria-hidden="true" />
               <input
                 ref={inputRef}
@@ -359,20 +359,20 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                 onChange={(e) => onQueryChange(e.target.value)}
                 onKeyDown={handleListKey}
                 placeholder={t('search.placeholder')}
-                className="flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
+                className="min-w-0 flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
                 aria-label={t('search.queryAria')}
               />
               <button
                 type="button"
                 onClick={close}
-                className={cn(FOCUS_RING, 'rounded-lg p-1 text-text-tertiary hover:text-text-primary')}
+                className={cn(FOCUS_RING, 'flex min-h-11 min-w-11 items-center justify-center rounded-lg p-1 text-text-tertiary hover:text-text-primary')}
                 aria-label={t('common.close')}
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div ref={listRef} className="max-h-[60vh] overflow-y-auto py-2" role="listbox">
+            <div ref={listRef} className="min-h-0 max-h-[60vh] overflow-y-auto py-2" role="listbox">
               {results.length === 0 ? (
                 <div className="px-4 py-6 text-sm text-text-tertiary">
                   {query.trim()
@@ -435,7 +435,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
               )}
             </div>
 
-            <div className="px-4 py-2 border-t border-border-subtle flex items-center gap-4 text-[11px] font-mono text-text-tertiary">
+            <div className="px-4 py-2 border-t border-border-subtle flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono text-text-tertiary">
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">↑</kbd> <kbd className="px-1 py-0.5 rounded border border-border-subtle">↓</kbd> {t('search.hint.nav')}</span>
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Enter</kbd> {t('search.hint.open')}</span>
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Esc</kbd> {t('search.hint.close')}</span>

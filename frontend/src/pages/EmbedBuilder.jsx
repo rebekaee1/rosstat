@@ -318,7 +318,7 @@ export default function EmbedBuilder() {
   const previewH = type === 'ticker' ? 40 : type === 'card' ? 200 : h;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-24 md:pt-28 pb-16">
+    <div className="fe-data-page max-w-7xl mx-auto px-4 pt-24 md:pt-28 pb-16">
       <div className="text-center mb-10">
         <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-3">
           {t('embed.constructor')}

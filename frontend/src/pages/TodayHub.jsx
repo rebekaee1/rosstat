@@ -101,7 +101,7 @@ export default function TodayHub() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
       <Breadcrumbs items={todayTrail()} />
 
       <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
@@ -114,7 +114,7 @@ export default function TodayHub() {
         {t('today.intro')}
       </p>
 
-      <section className="mb-10">
+      <section id="chart" className="mb-10 scroll-mt-28">
         <h2 className="font-display text-lg font-semibold text-text-primary mb-4">
           {t('today.sectionTitle')}
         </h2>

@@ -517,7 +517,7 @@ export default function IndicatorDetail() {
   const useGeneric = !!genericFamily;
   if (useGeneric) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
+      <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
         <GenericIndicatorView
           code={code}
           indicator={indicator}
@@ -535,7 +535,7 @@ export default function IndicatorDetail() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
+    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
       {(indError || dataError) && (
         <div className="mb-8">
           <ApiRetryBanner

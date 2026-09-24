@@ -1,0 +1,17 @@
+{
+  "purpose": "Decorative artwork only. All numbers, labels, charts and branding are rendered from data in code.",
+  "images": [
+    {
+      "theme": "ict",
+      "prompt": "Use case: stylized-concept. Asset type: decorative editorial brand sculpture for ForecastEconomy economic infographics. Primary request: one exquisite thick optical glass microchip sculpture with four short rows of rounded glass connection pins and a raised crystal square core, symbolizing digital infrastructure and ICT. Same visual language as the approved collection: optical clear thick glass, subtle champagne-gold caustics, fine ice-blue edge reflections, museum product photography, matte pearl #EEF0F4 backdrop, dark-ink reflections. Bright and restrained, no chrome, neon, cartoon. Landscape 3:2. One coherent sculptural object on RIGHT 55%, generous empty pearl space on LEFT 45% for programmatic data typography. Soft close shadow, simple recognizable silhouette, luxurious studio lighting. No text, logos, numbers, charts, watermark. Material and palette must match glass artwork; avoid futuristic dark electronics."
+    },
+    {
+      "theme": "trade",
+      "prompt": "Use case: stylized-concept. Asset type: decorative editorial brand sculpture for ForecastEconomy economic infographics. Primary request: a small architectural sculpture of two stacked ribbed shipping containers made entirely of clear thick optical glass, with one elegant continuous glass arc connecting their ends, symbolizing trade flows. Same established art direction: museum product photography, subtle champagne-gold caustics, fine ice-blue edge reflections, matte pearl #EEF0F4 backdrop, dark-ink reflections. Landscape 3:2. One coherent sculpture on RIGHT 55%, empty clean pearl LEFT 45% for data typography later. Sophisticated, quiet, physically convincing heavy transparent glass with rounded edges. Soft studio light and close shadow. No metal, neon, cartoon, text, logos, numbers, labels, arrows, charts or watermark."
+    },
+    {
+      "theme": "justice",
+      "prompt": "Create one elegant premium editorial still-life artwork for the ForecastEconomy economic data brand. Subject: a pair of sculptural balance scales made entirely from thick transparent optical glass, a simple architectural central column and two shallow glass trays, metaphor for institutions and public administration. No text, no letters, no numbers, no logo, no graph. The artwork itself contains NO data. Materials should be tangible, polished and refined, no kitsch, no rainbow hologram, no neon. Approved palette: pearl #EEF0F4 background, clear ice-blue #CAD8E5 glass, extremely subtle champagne #AD8A48 reflected edges, fine ink #202A3C shadows. Bright luminous studio daylight, smooth matte PEARL BACKGROUND ACROSS THE ENTIRE IMAGE, including empty left side; no black background, no black fade, no transparency. Sculptural subject occupies right 55 percent, left 45 percent is clean light pearl negative space for later typesetting. Editorial product photography, slight perspective and crisp glass caustics on surface, restrained liquid glass aesthetic, museum quality, graceful calm arrangement. Wide landscape 3:2, high visual detail."
+    }
+  ]
+}

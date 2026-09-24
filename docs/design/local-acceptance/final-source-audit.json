@@ -1,0 +1,1106 @@
+{
+  "fileHashes": {
+    "backend/app/services/og_image.py": "4ef6e49e07fe83dc61c72e18813851fc6973c727c6d829278cb67b4a64db28be",
+    "backend/app/api/sitemap.py": "e3b529022374bcdca0342ca0ae52f307bda0a67545b10b8a758176ac9918d84d",
+    "backend/app/services/seo_renderer.py": "fb21924748740c96c01c530ebcc0f9fb9d30a3dd2db1fe89ca16cc124e5d7bda",
+    "backend/app/services/seo_world.py": "9a6f4341c6d9ace8e4f5616e13f07c575d965bcf78aa4aac23e423741c6d376a",
+    "backend/app/services/seo_regional.py": "38b8fae79afb3da0f04b27bc541acccc60f4526dbef589e3e40ec4d398ee6d86",
+    "backend/app/services/seo_world_subnational.py": "591758a6c11bb4b416b8259c0afe4693f2e467950a351a2fb8207d8447b61205",
+    "backend/app/services/site_urls.py": "c255c80982a22fc78b4c507d633b48dd30cdcba8ad26c0f11a298e665ccd990d",
+    "backend/app/services/site_paths.py": "d990656252d439450a50dde568e784f47657206e8d73ea107c2da8c9a48fa0c4",
+    "backend/app/api/seo_pages.py": "03531cbf40894ed95cea5b4f1b8352142942e281a7e6babbc929f585aac0d933",
+    "frontend/nginx.conf": "ec4f93e5f97a4a169bfd4ee6ae866655a942ac95c78047c85b2ee3ff84c452e0"
+  },
+  "renderers": [
+    {
+      "function": "render_indicator_og",
+      "line": 648,
+      "portrait": true,
+      "sharedPearlBase": true,
+      "portraitHelpers": [
+        "_render_indicator_portrait"
+      ]
+    },
+    {
+      "function": "render_demographics_og",
+      "line": 804,
+      "portrait": true,
+      "sharedPearlBase": true,
+      "portraitHelpers": []
+    },
+    {
+      "function": "render_rating_og",
+      "line": 1355,
+      "portrait": true,
+      "sharedPearlBase": true,
+      "portraitHelpers": [
+        "_render_rating_portrait"
+      ]
+    },
+    {
+      "function": "render_world_rating_og",
+      "line": 1447,
+      "portrait": true,
+      "sharedPearlBase": true,
+      "portraitHelpers": [
+        "_render_rating_portrait"
+      ]
+    },
+    {
+      "function": "render_today_hub_og",
+      "line": 1537,
+      "portrait": true,
+      "sharedPearlBase": true,
+      "portraitHelpers": [
+        "_render_items_portrait"
+      ]
+    },
+    {
+      "function": "render_region_vs_og",
+      "line": 1610,
+      "portrait": true,
+      "sharedPearlBase": true,
+      "portraitHelpers": [
+        "_render_compare_portrait"
+      ]
+    },
+    {
+      "function": "render_world_country_og",
+      "line": 1672,
+      "portrait": true,
+      "sharedPearlBase": true,
+      "portraitHelpers": [
+        "_render_items_portrait"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "function": "og_image_indicator",
+      "line": 577,
+      "portrait": true,
+      "renderers": [
+        "render_indicator_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/indicator/{code}.png"
+      ]
+    },
+    {
+      "function": "og_image_indicator_month",
+      "line": 663,
+      "portrait": true,
+      "renderers": [
+        "render_indicator_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/indicator/{code}/{period}.png"
+      ]
+    },
+    {
+      "function": "og_image_indicator_year",
+      "line": 777,
+      "portrait": true,
+      "renderers": [
+        "render_indicator_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/indicator/{code}/{year}.png"
+      ]
+    },
+    {
+      "function": "og_image_region_indicator",
+      "line": 916,
+      "portrait": true,
+      "renderers": [
+        "render_indicator_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/region/{slug}/{code}.png"
+      ]
+    },
+    {
+      "function": "og_image_region_indicator_year",
+      "line": 1026,
+      "portrait": true,
+      "renderers": [
+        "render_indicator_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/region/{slug}/{code}/{year}.png"
+      ]
+    },
+    {
+      "function": "og_image_region_rating",
+      "line": 1128,
+      "portrait": true,
+      "renderers": [
+        "render_rating_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/region-rating/{code}.png"
+      ]
+    },
+    {
+      "function": "og_image_today_hub",
+      "line": 1202,
+      "portrait": true,
+      "renderers": [
+        "render_today_hub_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/today.png"
+      ]
+    },
+    {
+      "function": "og_image_region_vs",
+      "line": 1244,
+      "portrait": true,
+      "renderers": [
+        "render_region_vs_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/region-vs/{slug_a}-vs-{slug_b}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_vs",
+      "line": 1317,
+      "portrait": true,
+      "renderers": [
+        "render_region_vs_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world-vs/{slug_a}-vs-{slug_b}/{concept_slug}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_country",
+      "line": 1461,
+      "portrait": true,
+      "renderers": [
+        "render_world_country_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world/{slug}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_rating",
+      "line": 1589,
+      "portrait": true,
+      "renderers": [
+        "render_world_rating_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world-rating/{concept_slug}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_rating_year",
+      "line": 1645,
+      "portrait": true,
+      "renderers": [
+        "render_world_rating_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world-rating/{concept_slug}/{year}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_indicator",
+      "line": 1709,
+      "portrait": true,
+      "renderers": [
+        "render_indicator_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world/{slug}/{code}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_indicator_year",
+      "line": 1801,
+      "portrait": true,
+      "renderers": [
+        "render_indicator_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world/{country_slug}/{code}/{year}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_region_indicator",
+      "line": 1955,
+      "portrait": true,
+      "renderers": [
+        "render_indicator_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world-region/{country}/{region}/{indicator}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_region_profile",
+      "line": 2040,
+      "portrait": true,
+      "renderers": [
+        "render_world_country_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world-region/{country}/{region}.png"
+      ]
+    },
+    {
+      "function": "og_image_world_regions_hub",
+      "line": 2166,
+      "portrait": true,
+      "renderers": [
+        "render_rating_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/world-regions/{country}.png"
+      ]
+    },
+    {
+      "function": "og_image_demographics",
+      "line": 2291,
+      "portrait": true,
+      "renderers": [
+        "render_demographics_og"
+      ],
+      "paths": [
+        "/api/v1/og-image/demographics.png"
+      ]
+    }
+  ],
+  "counts": {
+    "rendererFunctions": 7,
+    "ogHandlers": 18,
+    "portraitRenderers": 7,
+    "portraitHandlers": 18
+  },
+  "at": "2026-09-24T08:00:10.710Z",
+  "status": "final_local_source_and_runtime_snapshot",
+  "baseline": "docs/design/local-acceptance/source-audit.json",
+  "runtimeHashes": {
+    "backend/app/services/og_image.py": "4ef6e49e07fe83dc61c72e18813851fc6973c727c6d829278cb67b4a64db28be",
+    "backend/app/api/sitemap.py": "e3b529022374bcdca0342ca0ae52f307bda0a67545b10b8a758176ac9918d84d",
+    "backend/app/services/seo_renderer.py": "fb21924748740c96c01c530ebcc0f9fb9d30a3dd2db1fe89ca16cc124e5d7bda",
+    "backend/app/services/seo_world.py": "9a6f4341c6d9ace8e4f5616e13f07c575d965bcf78aa4aac23e423741c6d376a",
+    "backend/app/services/seo_regional.py": "38b8fae79afb3da0f04b27bc541acccc60f4526dbef589e3e40ec4d398ee6d86",
+    "backend/app/services/seo_world_subnational.py": "591758a6c11bb4b416b8259c0afe4693f2e467950a351a2fb8207d8447b61205",
+    "backend/app/services/site_urls.py": "c255c80982a22fc78b4c507d633b48dd30cdcba8ad26c0f11a298e665ccd990d",
+    "backend/app/services/site_paths.py": "d990656252d439450a50dde568e784f47657206e8d73ea107c2da8c9a48fa0c4",
+    "backend/app/api/seo_pages.py": "03531cbf40894ed95cea5b4f1b8352142942e281a7e6babbc929f585aac0d933",
+    "frontend/nginx.conf": "ec4f93e5f97a4a169bfd4ee6ae866655a942ac95c78047c85b2ee3ff84c452e0"
+  },
+  "sourceMatchesRuntime": {
+    "backend/app/services/og_image.py": true,
+    "backend/app/api/sitemap.py": true,
+    "backend/app/services/seo_renderer.py": true,
+    "backend/app/services/seo_world.py": true,
+    "backend/app/services/seo_regional.py": true,
+    "backend/app/services/seo_world_subnational.py": true,
+    "backend/app/services/site_urls.py": true,
+    "backend/app/services/site_paths.py": true,
+    "backend/app/api/seo_pages.py": true,
+    "frontend/nginx.conf": true
+  },
+  "containerImages": {
+    "backend": "sha256:d63698d119747a09ce7e8f84793da0e8c7a142ccb76106d5a87634ec84cd4107",
+    "frontend": "sha256:a05aea4fdd42b730d3575b10933b28b75500a003c9e8f2dc6f84fc640d106836"
+  },
+  "acceptanceArtifacts": [
+    {
+      "file": "docs/design/local-acceptance/final/all.json",
+      "at": "2026-09-24T07:26:27.296Z",
+      "completedAt": "2026-09-24T07:54:56.379Z",
+      "http": 82,
+      "browser": 252,
+      "hashes": [
+        {
+          "id": "home",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/",
+          "sha256": "172c260928b598da327fd5d6b7fff4a6505b7e481f0a13fe1dd6db7be908bec0"
+        },
+        {
+          "id": "home",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/?preview_locale=en",
+          "sha256": "17e7988d4acf6e3147eb1477aecc04a064b6309fbc6daabac4771d0a9e9609a9"
+        },
+        {
+          "id": "russia",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia",
+          "sha256": "c891c13fddfaf5b15fc2eacc3ad87591ef73cca21665af1375d1a37888130d11"
+        },
+        {
+          "id": "russia",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia?preview_locale=en",
+          "sha256": "5f84d3f05897441cf4f511e59d6348063f5f9211671d9de24d4fbe66d244f0ba"
+        },
+        {
+          "id": "category",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/category/prices",
+          "sha256": "3e08504a03f39f5e9e2169f2cdc93f25b0da26ca3ed9ebcd6ab69aa68c14bf24"
+        },
+        {
+          "id": "category",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/category/prices?preview_locale=en",
+          "sha256": "f94806e781f209ac7d6d4090d4a2710c828840c314bd7e9f1c5493699962ee14"
+        },
+        {
+          "id": "cpi",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi",
+          "sha256": "f1201391ea15ee873dd6521b3e0623fd36934d92269c812313097c42c59cc851"
+        },
+        {
+          "id": "cpi",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi?preview_locale=en",
+          "sha256": "043769dc392c5d24d9f2039401df9595618f66a0da9a883385c95dc06cf0a2b8"
+        },
+        {
+          "id": "housing",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/housing-price-primary",
+          "sha256": "9cc8a934f5af0505fe44e7ec1447ac3d0cc0ad8fba949cf8b45a62367f98d647"
+        },
+        {
+          "id": "housing",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/housing-price-primary?preview_locale=en",
+          "sha256": "28e69fb582e17abf75b7699fcf73dc7cabae6f5f6c24381663aee56a619998b7"
+        },
+        {
+          "id": "ppi",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/ppi",
+          "sha256": "e931ff53411d7668575a38ca1a5038747da46bbd271f539b72eebde3bb0ed2bc"
+        },
+        {
+          "id": "ppi",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/ppi?preview_locale=en",
+          "sha256": "75517df863034025c4bfe6e6fa73f2071e76ddf4a1ebd5486ef0a4d33a47f3c7"
+        },
+        {
+          "id": "key-rate",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/key-rate",
+          "sha256": "bf0637992c8bae585a93a0b62bf63e9923fefb1576e5b4e2e08b18ac1c6f52f3"
+        },
+        {
+          "id": "key-rate",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/key-rate?preview_locale=en",
+          "sha256": "09d6de3fb549325ebeeb8f540af3bb69bc1caa5f835253df9c749baa30c8c46b"
+        },
+        {
+          "id": "national-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/2025",
+          "sha256": "96ddf6d3c4fbada0e610fb447c69dd320a266fed16290b3e92ab11c5c0d48186"
+        },
+        {
+          "id": "national-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/2025?preview_locale=en",
+          "sha256": "2dd9974d1d7763a168fd035dc59033bf7c7542ee050b8ee0bfda1f302d68b8b9"
+        },
+        {
+          "id": "national-historic-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/population/1897",
+          "sha256": "1441d332103c2952f550a8aa63afecbaf36d40ce7dac926ba14cc999af86f6b1"
+        },
+        {
+          "id": "national-historic-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/population/1897?preview_locale=en",
+          "sha256": "80f2e33dc18727b1dfa4687c55f46eb553e14356e144b60c8f89c005e0868a67"
+        },
+        {
+          "id": "national-month",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/2025-08",
+          "sha256": "f612f0867041fa69dbe1fdb6ff6279fdb34446d7ef2c1ab67c2b5706e4570cff"
+        },
+        {
+          "id": "national-month",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/2025-08?preview_locale=en",
+          "sha256": "73ba8a7e53bdc319649f84b50140771184a267bc48bbe901040353a5eaba4e5d"
+        },
+        {
+          "id": "regions",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/region",
+          "sha256": "890a6a7029fbb44812f30f987815321718599abeb227b3ce0d86573a61283b2d"
+        },
+        {
+          "id": "regions",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/region?preview_locale=en",
+          "sha256": "7ec84b12808319724ac818b388eb82e61ce41f61b44c0302c3972ccdd84de907"
+        },
+        {
+          "id": "region",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/region/tulskaya-oblast",
+          "sha256": "896dedbdf2ef9f6c204a6227c932d4a8f7a4ac6bc8dec07daa3666c50908e582"
+        },
+        {
+          "id": "region",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/region/tulskaya-oblast?preview_locale=en",
+          "sha256": "c7aa9f6d68d21d07195de415f2c180f519349749bdb7dab410f83e907c00fa42"
+        },
+        {
+          "id": "region-indicator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/region/tulskaya-oblast/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
+          "sha256": "04b7074530e34d7873cf58d1b04405ea1dce8264a22ab591c5ae8735e3d5e9d4"
+        },
+        {
+          "id": "region-indicator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/region/tulskaya-oblast/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy?preview_locale=en",
+          "sha256": "3c7b24026844f950eff47e4bf0cce3a9a14753316dd87c2d5b3832461fdf985f"
+        },
+        {
+          "id": "region-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/region/tulskaya-oblast/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy/2024",
+          "sha256": "d4f3f3e3372d30be57eddaa9832445cdc913ce58a73da29d694c71b883676cbc"
+        },
+        {
+          "id": "region-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/region/tulskaya-oblast/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy/2024?preview_locale=en",
+          "sha256": "2a31bf55e21abb1c11d85d2b275c08e6e5b1c9f322356b777fe613a09c7135db"
+        },
+        {
+          "id": "region-map",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/region/map/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
+          "sha256": "e5bbec13c7cd96d72138c44a70762e8c93b30b188c4ea79e51d0517a81bec586"
+        },
+        {
+          "id": "region-map",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/region/map/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy?preview_locale=en",
+          "sha256": "d52ef41e12d611793ad9df1577655c531a615d3526431ba0eefcf183afaa8a3b"
+        },
+        {
+          "id": "region-rating",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/region-rating/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
+          "sha256": "05cc7fd4fa0a7b246dd3131da0ecf5ddbaac8f8e616f90f991de513a6e70597e"
+        },
+        {
+          "id": "region-rating",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/region-rating/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy?preview_locale=en",
+          "sha256": "bbd1d92dcc970bc0af34cdbd4f9bf0d1530a092f611627c441d700f84a3695c8"
+        },
+        {
+          "id": "region-compare",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/region-vs/moskva-vs-tulskaya-oblast",
+          "sha256": "fdc9e7c01095ca6770f7a72a25045dc60dc090f2d33eedb049ecbf00a0287e41"
+        },
+        {
+          "id": "region-compare",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/region-vs/moskva-vs-tulskaya-oblast?preview_locale=en",
+          "sha256": "7a956ce1741942b3ac6da8d2ab28939835fd33610516a0dba667940aa33d8c68"
+        },
+        {
+          "id": "germany",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/germany",
+          "sha256": "772c6382b52b4b9c311667a3efc29d8e28a76579cd5f60cc9cc08b565febad0e"
+        },
+        {
+          "id": "germany",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/germany?preview_locale=en",
+          "sha256": "fca9e6cf4420963b1a5c66a9f49f264cecd6eb33a3711cb963900c09536bcba3"
+        },
+        {
+          "id": "world-indicator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/germany/indicator/de-weo-ngdpd",
+          "sha256": "fd621b1da7851d14be9382c0c0a4fe5bdb0213d9703a1933401242ac9ab47bfa"
+        },
+        {
+          "id": "world-indicator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/germany/indicator/de-weo-ngdpd?preview_locale=en",
+          "sha256": "99f0f16276881f3c6ac6227de4f1d44c22013ca9fbb4adcc3e2da21a53b70969"
+        },
+        {
+          "id": "world-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/germany/indicator/de-weo-ngdpd/2024",
+          "sha256": "428757811bf3ad32f6189d3aef2fa16732e7189525f60eae2f5cd1e7e10a75d7"
+        },
+        {
+          "id": "world-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/germany/indicator/de-weo-ngdpd/2024?preview_locale=en",
+          "sha256": "f4300bf985aaad43f1dfb432e7a12d548831bc022fe86e2549b3c5945d423703"
+        },
+        {
+          "id": "world-rating",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/world/rating/gdp-usd",
+          "sha256": "4b4c818bd6ab7d4f389896a9c5cd6d511c18be66b3402b67030acc0bdd781135"
+        },
+        {
+          "id": "world-rating",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/world/rating/gdp-usd?preview_locale=en",
+          "sha256": "f445022c9d2a5aad54caa0bd7a73183a13feebe9eee0ea9f22879e9ec62a10e9"
+        },
+        {
+          "id": "world-rating-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024",
+          "sha256": "9dbd9f9ee01a007738437de17554f0cb49b78110a3b86a7bf185b6e90fcfe85a"
+        },
+        {
+          "id": "world-rating-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024?preview_locale=en",
+          "sha256": "d030f2d19bceaf6fb1d2649c7714c1fa50eb59debd95577ac4db4cdf881ce348"
+        },
+        {
+          "id": "world-compare",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/france-vs-germany/gdp-usd",
+          "sha256": "2c4f454f9091e86325c42328247c8d9797b21016c88e00a4b60eefedf97b2db4"
+        },
+        {
+          "id": "world-compare",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/france-vs-germany/gdp-usd?preview_locale=en",
+          "sha256": "af3eab5865eb0e33d4799ed70e67e13879f2e9b817e5287d55a0c8d542ee5812"
+        },
+        {
+          "id": "us-national",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/indicator/us-gdp-real",
+          "sha256": "472eece852c2cc1c4db9c4ea91d85dcd4ddcec8a85c3956f0e4bb266222bab22"
+        },
+        {
+          "id": "us-national",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/indicator/us-gdp-real?preview_locale=en",
+          "sha256": "2d1e7b937f104c8bd6eb51ba124d833a594430adb5278d32473538e82852d1c6"
+        },
+        {
+          "id": "us-regions",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/regions",
+          "sha256": "f5e544e67f07f23c3eb8d3a9592e3fd21c914c5f378048cf633c137ffab18299"
+        },
+        {
+          "id": "us-regions",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/regions?preview_locale=en",
+          "sha256": "df43027547984084dcef4447597efa5dc4e7bcd08cc39136c256457a2ecbea94"
+        },
+        {
+          "id": "us-region-map",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/map/unemployment-rate",
+          "sha256": "f5e544e67f07f23c3eb8d3a9592e3fd21c914c5f378048cf633c137ffab18299"
+        },
+        {
+          "id": "us-region-map",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/map/unemployment-rate?preview_locale=en",
+          "sha256": "df43027547984084dcef4447597efa5dc4e7bcd08cc39136c256457a2ecbea94"
+        },
+        {
+          "id": "us-region",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/california",
+          "sha256": "01c665504da0d13dcfd2076713cf582eedd2b2462ada16a36814ddbd8227adc8"
+        },
+        {
+          "id": "us-region",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/california?preview_locale=en",
+          "sha256": "abf86ba01448d312892dfa5773e4d51f3f73ecdd26710fa0af508ae4fae85154"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/california/unemployment-rate",
+          "sha256": "253771d26ae4974088e296d1c318e9749de945733da3e99e11c1b76c1448d388"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/california/unemployment-rate?preview_locale=en",
+          "sha256": "2d94d0505e3796d23908a74f6ea60edbda698844b0d4d7ff1cb698cc9b7e4130"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/california/real-gdp",
+          "sha256": "b370e16f2206b315928eb6d4bf68ee9928e1cff8b24d6497b6a8872f0092bcf7"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/california/real-gdp?preview_locale=en",
+          "sha256": "1f93b0292a2dee194aaab3489f6fe0dc7a824d26e3ed2f0a929ab1dfe8208ee5"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/california/house-price-index",
+          "sha256": "365f4a06d21e8a280fc2df9a4d3fb56b3d6fa0492ed5f3a71ef6335d820d2519"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/california/house-price-index?preview_locale=en",
+          "sha256": "a2cfd44d765587fbeb8c6ea26b4a8d6e65de51a4f02cf9a0faab7db7c0041ad5"
+        },
+        {
+          "id": "compare",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/compare",
+          "sha256": "feefaac5649191bb50417ebbdd98eea60b0a72e76e032d981d338327c78a0b5f"
+        },
+        {
+          "id": "compare",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/compare?preview_locale=en",
+          "sha256": "d34f1944ce6eca6ed8c2a05d148f28d1b2176580635af08de8e5a6255bae971b"
+        },
+        {
+          "id": "calculator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/calculator",
+          "sha256": "a904573fa40ef8dec29841ff7befb0b0d48e31e429abfb8861bb688d33c35965"
+        },
+        {
+          "id": "calculator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/calculator?preview_locale=en",
+          "sha256": "8207997537d773dce0f1a4af2fd673f6a7b54be2ad7cfbb4cb8ba42152784ab9"
+        },
+        {
+          "id": "today",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/today",
+          "sha256": "c5ff2949a3aa8ba747846a2b5db3bb627244aca1a0e3923e97c48942a59f1a6e"
+        },
+        {
+          "id": "today",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/today?preview_locale=en",
+          "sha256": "fe4f989c47a6a17a7c47e7a7007ebb63619c60935f40813d04575c416ab3fa0b"
+        },
+        {
+          "id": "calendar",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/calendar",
+          "sha256": "d60885d76d7c6d565dd7a876bf653c548a57e4dee158150874105c8a7a5ae8e7"
+        },
+        {
+          "id": "calendar",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/calendar?preview_locale=en",
+          "sha256": "0e8454679687569812bf412e878b0e8f91e21aa7b58452be2c93c1c1bbab5086"
+        },
+        {
+          "id": "calendar-month",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/calendar/2027/07",
+          "sha256": "a0cb9fcf8e98e64a6b615a1eeed6e9846c8ef7fcd2c833174bfcdcc34c4e25fa"
+        },
+        {
+          "id": "calendar-month",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/calendar/2027/07?preview_locale=en",
+          "sha256": "8970bc66ee696da29fe67474458efe2f2af411348c0fdab554d3287285fa5c95"
+        },
+        {
+          "id": "demographics",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/demographics",
+          "sha256": "34e047c1cd80504d752d849a4d2f1ae2f5f3d05bf453e45190af43462a674dc1"
+        },
+        {
+          "id": "demographics",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/demographics?preview_locale=en",
+          "sha256": "ec4e8c9a8e7b9fee668823e81ce4d769127a47f4dc90ac4794a32c4a10210768"
+        },
+        {
+          "id": "invalid-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/1899",
+          "sha256": "ab4b7cddb1a5af1c544481adb99ce3ae6ced743adcd7ba47662ba6ba50510340"
+        },
+        {
+          "id": "invalid-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/1899?preview_locale=en",
+          "sha256": "34727311524e733f7ae5a47801fb3907cc89fbb0e2d9863ec3555678ccd4bc4c"
+        },
+        {
+          "id": "out-of-range-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/9999",
+          "sha256": "ab4b7cddb1a5af1c544481adb99ce3ae6ced743adcd7ba47662ba6ba50510340"
+        },
+        {
+          "id": "out-of-range-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/9999?preview_locale=en",
+          "sha256": "ab4b7cddb1a5af1c544481adb99ce3ae6ced743adcd7ba47662ba6ba50510340"
+        },
+        {
+          "id": "five-digit-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/germany/indicator/de-weo-ngdpd/10000",
+          "sha256": "ab4b7cddb1a5af1c544481adb99ce3ae6ced743adcd7ba47662ba6ba50510340"
+        },
+        {
+          "id": "five-digit-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/germany/indicator/de-weo-ngdpd/10000?preview_locale=en",
+          "sha256": "ab4b7cddb1a5af1c544481adb99ce3ae6ced743adcd7ba47662ba6ba50510340"
+        },
+        {
+          "id": "invalid-code",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/qa-nonexistent-series-20260924/2025",
+          "sha256": "ab4b7cddb1a5af1c544481adb99ce3ae6ced743adcd7ba47662ba6ba50510340"
+        },
+        {
+          "id": "invalid-code",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/qa-nonexistent-series-20260924/2025?preview_locale=en",
+          "sha256": "34727311524e733f7ae5a47801fb3907cc89fbb0e2d9863ec3555678ccd4bc4c"
+        },
+        {
+          "id": "missing-us-series",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/alabama/minimum-wage",
+          "sha256": "ab4b7cddb1a5af1c544481adb99ce3ae6ced743adcd7ba47662ba6ba50510340"
+        },
+        {
+          "id": "missing-us-series",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/alabama/minimum-wage?preview_locale=en",
+          "sha256": "34727311524e733f7ae5a47801fb3907cc89fbb0e2d9863ec3555678ccd4bc4c"
+        }
+      ]
+    },
+    {
+      "file": "docs/design/local-acceptance/final-narrow/http.json",
+      "at": "2026-09-24T07:57:22.182Z",
+      "completedAt": "2026-09-24T07:58:07.527Z",
+      "http": 18,
+      "browser": 0,
+      "hashes": [
+        {
+          "id": "national-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/2025",
+          "sha256": "96ddf6d3c4fbada0e610fb447c69dd320a266fed16290b3e92ab11c5c0d48186"
+        },
+        {
+          "id": "national-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/indicator/cpi/2025?preview_locale=en",
+          "sha256": "a7912446555ae40b9676ca01a96a9265ca2c79c448996f4be29ee009a1769f39"
+        },
+        {
+          "id": "region-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/russia/region/tulskaya-oblast/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy/2024",
+          "sha256": "d4f3f3e3372d30be57eddaa9832445cdc913ce58a73da29d694c71b883676cbc"
+        },
+        {
+          "id": "region-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/russia/region/tulskaya-oblast/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy/2024?preview_locale=en",
+          "sha256": "127d44e1fc34e0eb5b0496cc0624b1e223cecbb1afb17e43559ca0620f0dfab4"
+        },
+        {
+          "id": "world-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/germany/indicator/de-weo-ngdpd/2024",
+          "sha256": "428757811bf3ad32f6189d3aef2fa16732e7189525f60eae2f5cd1e7e10a75d7"
+        },
+        {
+          "id": "world-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/germany/indicator/de-weo-ngdpd/2024?preview_locale=en",
+          "sha256": "f06f01bf304caebf639e8a553845ea0fd3cc6e8fc7be9c22db8906d489ec2e63"
+        },
+        {
+          "id": "world-rating",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/world/rating/gdp-usd",
+          "sha256": "8aca6e8a94fe55e04975444f289caaf839c83c2fe9725c7a5cf5e6b388c998e2"
+        },
+        {
+          "id": "world-rating",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/world/rating/gdp-usd?preview_locale=en",
+          "sha256": "1244b305caf9701c472600f5426a641c34de0aa31b9adfdccd708a6673ec68b0"
+        },
+        {
+          "id": "world-rating-year",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024",
+          "sha256": "29b95cb0f9a4a077e75ee4f5237e7d73fa712f65e3726e33a339741f0e574f8f"
+        },
+        {
+          "id": "world-rating-year",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024?preview_locale=en",
+          "sha256": "7fbaf86126d8ee102fa64be7a6b5412588f76a757b6f0115a11f58713a90cc7c"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/california/unemployment-rate",
+          "sha256": "253771d26ae4974088e296d1c318e9749de945733da3e99e11c1b76c1448d388"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/california/unemployment-rate?preview_locale=en",
+          "sha256": "fb58417d933bbd4400d81b2b90b8747b31ebeb05f2ca21a40b8072636ebc1900"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/california/real-gdp",
+          "sha256": "b370e16f2206b315928eb6d4bf68ee9928e1cff8b24d6497b6a8872f0092bcf7"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/california/real-gdp?preview_locale=en",
+          "sha256": "d30a2e024b2374b687d7446c185ab54b72c1b3202cf1d445a0847f0befff8fd8"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/california/house-price-index",
+          "sha256": "365f4a06d21e8a280fc2df9a4d3fb56b3d6fa0492ed5f3a71ef6335d820d2519"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/california/house-price-index?preview_locale=en",
+          "sha256": "cd7459bb986cd0c0e9f6ce2fc387f1f0b264f0ea926750baa4d3826678324cc9"
+        },
+        {
+          "id": "missing-us-series",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/united-states/region/alabama/minimum-wage",
+          "sha256": "ab4b7cddb1a5af1c544481adb99ce3ae6ced743adcd7ba47662ba6ba50510340"
+        },
+        {
+          "id": "missing-us-series",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/united-states/region/alabama/minimum-wage?preview_locale=en",
+          "sha256": "34727311524e733f7ae5a47801fb3907cc89fbb0e2d9863ec3555678ccd4bc4c"
+        }
+      ]
+    },
+    {
+      "file": "docs/design/local-acceptance/final-narrow/browser.json",
+      "at": "2026-09-24T07:58:21.039Z",
+      "completedAt": "2026-09-24T07:59:20.221Z",
+      "http": 0,
+      "browser": 8,
+      "hashes": []
+    },
+    {
+      "file": "docs/design/local-acceptance/final-us-images-before.json",
+      "at": "2026-09-24T07:55:31.633Z",
+      "images": 12,
+      "hashes": [
+        {
+          "id": "us-region-indicator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png",
+          "sha256": "d055c6ec7ac360857ad6daf36646b9d2ab4e44a977078ed4eaca3d39c5ed1ca5"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?portrait=1",
+          "sha256": "fc9eb70bcc4bdfb15ecaf146727829377ff0acdfa21a984ace94fb94f429a083"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?preview_locale=en",
+          "sha256": "f7d03c8d7bbb020f9655f503a8d4db525d6b20b75385635cab366778fbcc375b"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?portrait=1&preview_locale=en",
+          "sha256": "ee1f75e6ab74447398e363284012a7c318595dcbfa3bceecd84dc637e7b034e0"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png",
+          "sha256": "f264e9d809dcc1db5018ab38092e5456ef92655d19a94dc0f5e5f1f344ed1ede"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?portrait=1",
+          "sha256": "a8fc5cfc5449c3d166d309e08ed7a69b2b036d3b5158ac0e4b1d5b832ca55b37"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?preview_locale=en",
+          "sha256": "d19bae8017adc1a7e4ec3673ae3bc556ff93bbcfe6b8024221f0597363e5a10f"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?portrait=1&preview_locale=en",
+          "sha256": "ac342a56553acc0e960e4a58349ded359a07c58beec42928beea84b5f602b5a0"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png",
+          "sha256": "abb318d14072e6c82b9466ff9038594b6320951586dca3fe7ea90de96b57937d"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?portrait=1",
+          "sha256": "80cda296a758ed21174bcc7656c8be1a1e3f894979aa9e14c1c7344a75008ea3"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?preview_locale=en",
+          "sha256": "6ef01e2f827eb9fe4f1aa7e6882487f7684bd5675458bd3dd0fdaef3bf6c1de5"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?portrait=1&preview_locale=en",
+          "sha256": "4b1f17f779ce57fbddf8c2b746b69520df2b996f982cb73e3e71cc1b72471f2f"
+        }
+      ]
+    },
+    {
+      "file": "docs/design/local-acceptance/final-us-images-after.json",
+      "at": "2026-09-24T07:59:30.731Z",
+      "images": 12,
+      "hashes": [
+        {
+          "id": "us-region-indicator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png",
+          "sha256": "9e903436dc6bb82ca95579ced6e2f03646546ea3a23934b707b1e12b3dba1195"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?portrait=1",
+          "sha256": "d1204f76e6a0fe23ee3dec654da00a2c8dfcdbf917aee6c00fdf9396410aee29"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?preview_locale=en",
+          "sha256": "d68d40c2cc521bc7f0a70652fd096a04ca3f11b0560bf406b93dffee11fa46b2"
+        },
+        {
+          "id": "us-region-indicator",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?portrait=1&preview_locale=en",
+          "sha256": "e580f5659489d0336bf12bfec9e1bce9aa70526133a7b74d04d2a975c0b6254e"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png",
+          "sha256": "ae74fefe1bea0d03f5aa5c176f201623bac1a1489b0a10ae378894cb789bd878"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?portrait=1",
+          "sha256": "de1ce7a98324fb21fa4f477346ed8f16f5af7d90a5cb562cf037f2a0f5e04e31"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?preview_locale=en",
+          "sha256": "c00abd7ebfc448e88024e2246284d4230681ff260e6486813e9b836f7a55faae"
+        },
+        {
+          "id": "us-region-annual",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?portrait=1&preview_locale=en",
+          "sha256": "5fcc069015fa50136c6f8634dc68efc5cc736e974a271f7f62caba8f56ee5829"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png",
+          "sha256": "dc60f0e5a7525aac80318de68c6add5a501659c892f33ede565477c304396f22"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "ru",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?portrait=1",
+          "sha256": "5572c279e748137eee077a042409e8571d387a71cf4dec282723969b91d19c89"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?preview_locale=en",
+          "sha256": "0fca84f527c49520e3b66c62e3d8e588553edf7b21ee4d2670304a0186657fcd"
+        },
+        {
+          "id": "us-region-quarterly",
+          "locale": "en",
+          "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?portrait=1&preview_locale=en",
+          "sha256": "a6bf650873997c7757ae9a11377333d3dec17aea5b4c8124fd217277c09a13e0"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Local compose snapshot, no production deployment or verification.",
+    "AST counts describe actual renderer entry points, not an inferred count of all possible chart modes.",
+    "Family sampling and source inspection do not establish that every published URL was crawled.",
+    "Non-data fallback OG and map-as-ranking use are documented coverage choices, not geographical renderers."
+  ]
+}

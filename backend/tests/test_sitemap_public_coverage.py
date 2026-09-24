@@ -3,10 +3,38 @@ import asyncio
 from datetime import date
 
 from app.models import (
+    Indicator, IndicatorData,
     Region, RegionIndicator, RegionDataPoint, RegionMonthlyPoint,
     WorldCountry, WorldIndicator, WorldDataPoint,
 )
 from app.services import site_urls as urls
+
+
+def test_national_source_history_is_not_cut_off_at_1990(auth_env, auth_client):
+    async def seed_and_collect():
+        async with auth_env["session_maker"]() as db:
+            indicator = Indicator(code="population", name="Численность населения",
+                                  unit="млн человек", frequency="annual",
+                                  is_active=True, is_listed=True)
+            db.add(indicator)
+            await db.flush()
+            db.add_all([
+                IndicatorData(indicator_id=indicator.id, date=date(1897, 1, 1), value=67.5),
+                IndicatorData(indicator_id=indicator.id, date=date(1989, 1, 1), value=147.4),
+            ])
+            await db.commit()
+            return {u.path for u in await urls._year_urls(db, date(2026, 9, 24))}
+
+    pages = asyncio.run(seed_and_collect())
+    for year in (1897, 1989):
+        path = f"/russia/indicator/population/{year}"
+        assert path in pages
+        response = auth_client.get(f"/seo/indicator-year/population/{year}")
+        assert response.status_code == 200
+        assert f'href="https://forecasteconomy.com{path}"' in response.text
+        assert 'content="index, follow' in response.text
+    assert auth_client.get("/seo/indicator-year/population/1898").status_code == 404
+    assert auth_client.get("/seo/indicator-year/population/99999").status_code == 404
 
 
 def test_regional_public_kinds_hidden_rows_and_monthly_pairs(auth_env):
@@ -49,12 +77,21 @@ def test_regional_public_kinds_hidden_rows_and_monthly_pairs(auth_env):
             assert {u.path for u in paged} == expected_pairs
             assert len(paged) == len(expected_pairs)
             years = {u.path for u in await urls._regional_year_urls(db, today)}
-            assert len(years) == 5
+            assert len(years) == 7
             assert "/russia/region/district/wages/2018" in years
             assert "/russia/region/russia/wages/2018" in years
-            assert not any(p.endswith(("/1899", "/2100")) for p in years)
+            assert "/russia/region/alpha/wages/1899" in years
+            assert "/russia/region/alpha/wages/2100" in years
             assert (await db.execute(urls._REG_YEARS_COUNT)).scalar_one() == len(years)
             assert len((await db.execute(urls._regional_years_bounds_stmt())).all()) == len(years)
+            source = urls._CHUNKED_SOURCES["regional-years-"]
+            bounds = await urls._chunk_bounds(db, "regional-year-contract", source.bounds, source.sort, 2)
+            paged_years = []
+            for after in bounds[:-1]:
+                page, _ = await source.fetch(db, today, after, 2)
+                paged_years.extend(page)
+            assert {u.path for u in paged_years} == years
+            assert len(paged_years) == len(years)
             assert {u.path for u in await urls._region_vs_urls(db, today)} == {
                 "/russia/region-vs/alpha-vs-gamma"}
             hubs = {u.path for u in await urls._region_hub_urls(db, today)}

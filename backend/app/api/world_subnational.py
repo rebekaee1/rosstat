@@ -453,7 +453,7 @@ async def region_indicator(
     db: AsyncSession = Depends(get_db),
 ):
     cache_key = await versioned_key(
-        "world", f"subnat:series:{country_slug}:{slug}:{code}:{get_locale()}",
+        "world", f"subnat:series:v2:{country_slug}:{slug}:{code}:{get_locale()}",
     )
     cached = await cache_get(cache_key)
     if cached:
@@ -476,6 +476,8 @@ async def region_indicator(
         )
     ).all()
     series = [_point_payload(p, v, indicator.frequency) for p, v in points]
+    if not series:
+        raise HTTPException(404, api_detail("Нет данных по этому показателю", "No data for this indicator"))
 
     last = points[-1] if points else None
     ranked = await _rank_for_period(db, indicator, last[0]) if last is not None else []

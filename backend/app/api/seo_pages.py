@@ -109,7 +109,7 @@ async def _ssr_key(namespace: str, variant: str, sig: str) -> str:
 
     loc = get_locale()
     host = urlparse(get_request_origin()).hostname or "default"
-    folded = f"{variant}|{loc}|{host}"
+    folded = f"glass-manrope-6|{variant}|{loc}|{host}"
     return await versioned_key(
         namespace, f"ssr:{hashlib.md5(folded.encode()).hexdigest()[:16]}:{sig}"
     )
@@ -216,7 +216,11 @@ async def seo_home(request: Request, db: AsyncSession = Depends(get_db)):
 
 
 @router.api_route("/seo/page/{page}", methods=["GET", "HEAD"], include_in_schema=False)
-async def seo_page(page: str, request: Request):
+async def seo_page(page: str, request: Request, db: AsyncSession = Depends(get_db)):
+    if page == "demographics":
+        from app.services.seo_demographics import render_demographics_html
+        status, html = await render_demographics_html(db)
+        return _html_response(status, html, request)
     status, html = await render_page_html(page)
     return _html_response(status, html, request)
 
@@ -266,7 +270,7 @@ async def seo_regions(request: Request, db: AsyncSession = Depends(get_db)):
         code = raw if re.fullmatch(r"[a-z0-9-]+", raw, re.I) else DEFAULT_MAP_CODE
         target = paths.region_map(code)
         year = request.query_params.get("year")
-        if year and re.fullmatch(r"\d{4}", year):
+        if year and paths.is_public_year(year):
             target = f"{target}?year={year}"
         return _permanent_redirect(target, request)
     status, html = await render_regions_home_html(db)
@@ -276,7 +280,7 @@ async def seo_regions(request: Request, db: AsyncSession = Depends(get_db)):
 @router.api_route("/seo/regions/map/{code}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_regions_map(code: str, request: Request, db: AsyncSession = Depends(get_db)):
     year_raw = request.query_params.get("year")
-    year = int(year_raw) if year_raw and re.fullmatch(r"\d{4}", year_raw) else None
+    year = int(year_raw) if year_raw and paths.is_public_year(year_raw) else None
     status, html = await _cached_html(
         "ssr-region", f"regions-map:{code}:{year or ''}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_regions_map_html(code, db, year=year),
@@ -388,7 +392,9 @@ async def seo_indicator_year(
     request: Request,
     db: AsyncSession = Depends(get_db),
 ):
-    if year < 1990 or year > 2100:
+    # History belongs to the source, not to an arbitrary modern-year cutoff.
+    # Keep valid four-digit years; the renderer checks actual observations.
+    if not paths.is_public_year(year):
         return _html_response(404, "Not found")
     # Годовые landing легаси/sibling-кодов — 301 на годовую страницу канона.
     target = resolve_legacy_indicator(code) or resolve_unlisted_indicator(code)
@@ -414,7 +420,7 @@ async def seo_indicator_year(
 async def seo_indicator_month(
     code: str, period: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    if not re.fullmatch(r"(?:19|20)\d{2}-(?:0[1-9]|1[0-2])", period):
+    if not paths.is_public_month_period(period):
         return _html_response(404, "Not found")
     status, html = await _cached_html(
         code, f"indicator-month:{code}:{period}:{get_locale()}", _SSR_TTL_INDICATOR,
@@ -458,9 +464,24 @@ async def seo_world_rating(
     concept_slug: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
     year_raw = request.query_params.get("year")
+    if request.query_params.get("view") == "interactive" and year_raw is not None:
+        # The year page is pure SSR. Its chart CTA needs an explicit SPA view,
+        # otherwise the legacy ?year= redirect sends it back to the same page.
+        if not paths.is_public_year(year_raw):
+            return _html_response(404, "Not found")
+        default_year, years = await _rating_year_info(concept_slug, db)
+        requested = int(year_raw)
+        if requested not in years:
+            return _html_response(404, "Not found")
+        canonical_year = None if requested == default_year else requested
+        status, html = await _cached_html(
+            "ssr-world", f"world-rating:country-links-v2:{concept_slug}:interactive:{requested}:{get_locale()}", _SSR_TTL_WORLD,
+            lambda: render_world_rating_html(concept_slug, db, year=canonical_year, interactive=True),
+        )
+        return _html_response(status, html, request)
     # Легаси ?year= — 301 сразу в конечную точку (Фаза 10): дефолтный год — на
     # базу (она и есть его self-canonical), не-дефолтный — на path-канон.
-    if year_raw and re.fullmatch(r"\d{4}", year_raw):
+    if year_raw and paths.is_public_year(year_raw):
         default_year, years = await _rating_year_info(concept_slug, db)
         requested = int(year_raw)
         if requested in years:
@@ -468,7 +489,7 @@ async def seo_world_rating(
                 return _permanent_redirect(paths.world_rating(concept_slug), request)
             return _permanent_redirect(paths.world_rating_year(concept_slug, requested), request)
     status, html = await _cached_html(
-        "ssr-world", f"world-rating:{concept_slug}::{get_locale()}", _SSR_TTL_WORLD,
+        "ssr-world", f"world-rating:country-links-v2:{concept_slug}::{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_rating_html(concept_slug, db),
     )
     return _html_response(status, html, request)
@@ -481,7 +502,7 @@ async def seo_world_rating(
 async def seo_world_rating_year(
     concept_slug: str, year: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    if not re.fullmatch(r"(?:19|20)\d{2}", year):
+    if not paths.is_public_year(year):
         return _html_response(404, "Not found")
     # Один контент — один URL (Фаза 10): path-канон дефолтного года уходит 301
     # на базу (она и есть его self-canonical), год без данных — честная 404,
@@ -493,7 +514,7 @@ async def seo_world_rating_year(
     if default_year is not None and requested == default_year:
         return _permanent_redirect(paths.world_rating(concept_slug), request)
     status, html = await _cached_html(
-        "ssr-world", f"world-rating:{concept_slug}:{year}:{get_locale()}", _SSR_TTL_WORLD,
+        "ssr-world", f"world-rating:country-links-v2:{concept_slug}:{year}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_rating_html(concept_slug, db, year=requested),
     )
     return _html_response(status, html, request)
@@ -582,7 +603,7 @@ async def seo_world_indicator(
 async def seo_world_indicator_year(
     slug: str, code: str, year: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    if not re.fullmatch(r"(?:19|20)\d{2}", year):
+    if not paths.is_public_year(year):
         return _html_response(404, "Not found")
     # Вторичные частоты → финальный /{slug}/indicator/{primary} (query отрезаем,
     # годовой лендинг живёт только на primary-ряде).
@@ -633,7 +654,7 @@ async def seo_world_vs(
 async def seo_region_indicator_year(
     slug: str, code: str, year: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    if not re.fullmatch(r"(?:19|20)\d{2}", year):
+    if not paths.is_public_year(year):
         return _html_response(404, "Not found")
     status, html = await _cached_html(
         "ssr-region", f"region-year:{slug}:{code}:{year}:{get_locale()}", _SSR_TTL_REGIONAL,

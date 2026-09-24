@@ -11,6 +11,9 @@ import { getPageSeo } from '../lib/pageMeta';
 import { cn } from '../lib/format';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import ChartBrandCaption from '../components/ChartBrandCaption';
+import { CHART_THEME } from '../lib/chartTheme';
+import { demographicTotal, latestCompleteStructure, demographicChartRows } from '../lib/demographicStructure';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { track, trackFile, events } from '../lib/track';
 import { demographicsTrail } from '../lib/breadcrumbs';
@@ -27,22 +30,22 @@ const GROUPS = [
   // Росстата на каждый год.
   {
     key: 'pop-under-working-age',
-    color: '#D4A574',
-    colorMuted: '#D4A574',
+    color: CHART_THEME.champagne,
+    colorMuted: CHART_THEME.champagne,
     labelKey: 'demo.group.underWorking',
     shortKey: 'demo.group.underWorkingShort',
   },
   {
     key: 'working-age-population',
-    color: '#B8942F',
-    colorMuted: '#B8942F',
+    color: CHART_THEME.blue,
+    colorMuted: CHART_THEME.blue,
     labelKey: 'demo.group.working',
     shortKey: 'demo.group.workingShort',
   },
   {
     key: 'pop-over-working-age',
-    color: '#8B7A6B',
-    colorMuted: '#8B7A6B',
+    color: CHART_THEME.ink,
+    colorMuted: CHART_THEME.ink,
     labelKey: 'demo.group.overWorking',
     shortKey: 'demo.group.overWorkingShort',
   },
@@ -53,25 +56,25 @@ function StructureTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const total = payload.reduce((s, p) => s + (p.value || 0), 0);
   return (
-    <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[220px]">
+    <div className="glass-surface w-[min(280px,calc(100vw-72px))] rounded-xl border border-border-subtle px-3 py-3 shadow-2xl">
       <p className="text-xs font-mono text-text-tertiary mb-2">{t('demo.tooltip.year', { year: label })}</p>
       {payload.map((p) => {
         const g = GROUPS.find(g => g.key === p.dataKey);
         return (
-          <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ background: g?.color }} />
-              <span className="text-xs text-text-secondary">{g ? t(g.labelKey) : p.dataKey}</span>
+          <div key={p.dataKey} className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="w-2 h-2 shrink-0 rounded-full" style={{ background: g?.color }} />
+              <span className="min-w-0 whitespace-normal text-xs leading-snug text-text-secondary">{g ? t(g.labelKey) : p.dataKey}</span>
             </div>
-            <span className="text-sm font-mono font-semibold text-text-primary">
+            <span className="shrink-0 whitespace-nowrap text-sm font-mono font-semibold text-text-primary">
               {p.value?.toFixed(1).replace('.', ',')}
             </span>
           </div>
         );
       })}
-      <div className="mt-2 pt-2 border-t border-border-subtle flex justify-between">
+      <div className="mt-2 pt-2 border-t border-border-subtle flex justify-between gap-3">
         <span className="text-xs text-text-tertiary">{t('demo.tooltip.total')}</span>
-        <span className="text-sm font-mono font-semibold text-text-primary">
+        <span className="shrink-0 whitespace-nowrap text-sm font-mono font-semibold text-text-primary">
           {total.toFixed(1).replace('.', ',')} {t('demo.tooltip.mln')}
         </span>
       </div>
@@ -83,17 +86,17 @@ function PercentTooltip({ active, payload, label }) {
   const t = useT();
   if (!active || !payload?.length) return null;
   return (
-    <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[200px]">
+    <div className="glass-surface w-[min(280px,calc(100vw-72px))] rounded-xl border border-border-subtle px-3 py-3 shadow-2xl">
       <p className="text-xs font-mono text-text-tertiary mb-2">{t('demo.tooltip.year', { year: label })}</p>
       {payload.map((p) => {
         const g = GROUPS.find(g => g.key === p.dataKey);
         return (
-          <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ background: g?.color }} />
-              <span className="text-xs text-text-secondary">{g ? t(g.labelKey) : p.dataKey}</span>
+          <div key={p.dataKey} className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="w-2 h-2 shrink-0 rounded-full" style={{ background: g?.color }} />
+              <span className="min-w-0 whitespace-normal text-xs leading-snug text-text-secondary">{g ? t(g.labelKey) : p.dataKey}</span>
             </div>
-            <span className="text-sm font-mono font-semibold text-text-primary">
+            <span className="shrink-0 whitespace-nowrap text-sm font-mono font-semibold text-text-primary">
               {p.value?.toFixed(1).replace('.', ',')}%
             </span>
           </div>
@@ -125,15 +128,14 @@ function StructureBar({ latest }) {
               style={{
                 width: `${pct}%`,
                 background: g.color,
-                color: g.key === 'pop-over-working-age' ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.95)',
               }}
             >
-              {pct > 10 ? `${pct.toFixed(0)}%` : ''}
+              {pct > 10 && <span className="rounded bg-white/95 px-1.5 py-0.5 text-text-primary">{pct.toFixed(0)}%</span>}
             </div>
           );
         })}
       </div>
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-6">
         {GROUPS.map((g) => {
           const val = latest[g.key] || 0;
           const pct = ((val / total) * 100).toFixed(1).replace('.', ',');
@@ -141,7 +143,7 @@ function StructureBar({ latest }) {
             <Link
               key={g.key}
               to={russiaIndicatorPath(g.key)}
-              className="group text-center rounded-2xl p-4 -m-1 hover:bg-obsidian-lighter/60 transition-colors"
+              className="group text-center rounded-2xl px-1 py-4 sm:px-4 -m-1 hover:bg-obsidian-lighter/60 transition-colors"
             >
               <div className="flex items-center justify-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full" style={{ background: g.color }} />
@@ -164,11 +166,11 @@ function downloadStructureCSV(series, t) {
   const header = [t('demo.csv.year'), ...GROUPS.map(g => t(g.labelKey)), t('demo.csv.total')];
   const rows = [header.join(';')];
   for (const row of series) {
-    const total = GROUPS.reduce((s, g) => s + (row[g.key] || 0), 0);
+    const total = demographicTotal(row);
     rows.push([
       row.year,
       ...GROUPS.map(g => (row[g.key] ?? '').toString()),
-      total.toFixed(2),
+      total === null ? '' : total.toFixed(2),
     ].join(';'));
   }
   const bom = '\uFEFF';
@@ -188,9 +190,10 @@ export default function DemographicsPage() {
   const { locale } = useLocale();
   const { data, isLoading, isError, refetch, isFetching } = useDemographicsStructure();
   const [chartType, setChartType] = useState('stacked');
+  const [chartWidth, setChartWidth] = useState(0);
 
   const series = data?.series || [];
-  const latest = series.length > 0 ? series[series.length - 1] : null;
+  const latest = latestCompleteStructure(series);
   const firstYear = series.length > 0 ? series[0].year : null;
 
   const demoSeo = getPageSeo('demographics', locale);
@@ -205,7 +208,7 @@ export default function DemographicsPage() {
     : null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
+    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
       <Breadcrumbs items={demographicsTrail()} className="mb-8" />
 
       <header className="mb-10 max-w-3xl">
@@ -239,7 +242,7 @@ export default function DemographicsPage() {
             <SkeletonBox className="h-3 w-24 rounded-md" />
           </div>
           <SkeletonBox className="h-10 w-full rounded-xl mb-6" />
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-2 sm:gap-6">
             {[0, 1, 2].map(i => (
               <div key={i} className="space-y-3 text-center">
                 <SkeletonBox className="h-3 w-2/3 mx-auto rounded-md" />
@@ -252,8 +255,8 @@ export default function DemographicsPage() {
       )}
 
       {!isLoading && latest && (
-        <section className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
+        <section className="fe-panel p-4 md:p-8 mb-8">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-6">
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
               {t('demo.structureYear', { year: latest.year })}
             </h2>
@@ -262,10 +265,11 @@ export default function DemographicsPage() {
             </span>
           </div>
           <StructureBar latest={latest} />
+          <ChartBrandCaption />
         </section>
       )}
 
-      <section className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8 mb-8">
+      <section id="chart" className="fe-panel scroll-mt-28 p-4 md:p-8 mb-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
             {firstYear ? t('demo.dynamicsFrom', { year: firstYear }) : t('demo.dynamics')}
@@ -301,16 +305,10 @@ export default function DemographicsPage() {
         ) : series.length === 0 ? (
           <p className="text-text-secondary py-12 text-center">{t('demo.noData')}</p>
         ) : (
-          <div className="h-[360px] w-full overflow-hidden">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-[360px] w-full">
+            <ResponsiveContainer width="100%" height="100%" onResize={(width) => setChartWidth(width)}>
               <AreaChart
-                data={chartType === 'percent' ? series.map(r => {
-                  const total = GROUPS.reduce((s, g) => s + (r[g.key] || 0), 0);
-                  if (!total) return r;
-                  const out = { year: r.year };
-                  GROUPS.forEach(g => { out[g.key] = ((r[g.key] || 0) / total) * 100; });
-                  return out;
-                }) : series}
+                data={demographicChartRows(series, chartType === 'percent')}
                 margin={{ top: 8, right: 8, left: 4, bottom: 0 }}
               >
                 <defs>
@@ -321,22 +319,29 @@ export default function DemographicsPage() {
                     </linearGradient>
                   ))}
                 </defs>
-                <CartesianGrid stroke="rgba(0,0,0,0.04)" strokeDasharray="3 3" />
+                <CartesianGrid stroke={CHART_THEME.grid} strokeDasharray="3 3" />
                 <XAxis
                   dataKey="year"
-                  tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.4)', fontFamily: 'JetBrains Mono, monospace' }}
+                  tick={{ fontSize: 11, fill: CHART_THEME.axis, fontFamily: CHART_THEME.font }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.4)', fontFamily: 'JetBrains Mono, monospace' }}
+                  tick={{ fontSize: 11, fill: CHART_THEME.axis, fontFamily: CHART_THEME.font }}
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={v => chartType === 'percent' ? `${v.toFixed(0)}%` : `${v.toFixed(0)}`}
                   width={44}
-                  label={chartType !== 'percent' ? { value: t('demo.axis.mln'), position: 'top', offset: -4, style: { fontSize: 10, fill: 'rgba(26,26,46,0.35)', fontFamily: 'JetBrains Mono, monospace' } } : undefined}
+                  label={chartType !== 'percent' ? { value: t('demo.axis.mln'), position: 'top', offset: -4, style: { fontSize: 10, fill: CHART_THEME.axis, fontFamily: CHART_THEME.font } } : undefined}
                 />
-                <Tooltip content={chartType === 'percent' ? <PercentTooltip /> : <StructureTooltip />} />
+                {/* Narrow tooltips also need the Y-axis space: Recharts' own
+                    horizontal clamp only knows the smaller data area. */}
+                <Tooltip
+                  content={chartType === 'percent' ? <PercentTooltip /> : <StructureTooltip />}
+                  allowEscapeViewBox={{ x: false, y: true }}
+                  position={chartWidth < 280 + 44 + 4 + 8 ? { x: 0 } : undefined}
+                  wrapperStyle={{ zIndex: 20 }}
+                />
                 {GROUPS.map((g) => (
                   <Area
                     key={g.key}
@@ -364,6 +369,7 @@ export default function DemographicsPage() {
             ))}
           </div>
         )}
+        <ChartBrandCaption />
       </section>
 
       <div className="flex justify-center">

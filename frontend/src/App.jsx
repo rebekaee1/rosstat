@@ -12,8 +12,8 @@ import Navbar from './components/Navbar';
 import LiveTicker from './components/LiveTicker';
 import YandexRSY from './components/YandexRSY';
 import CookieConsent from './components/CookieConsent';
-import NoiseOverlay from './components/NoiseOverlay';
 import Footer from './components/Footer';
+import ScrollToAnchor from './components/ScrollToAnchor';
 import ErrorBoundary from './components/ErrorBoundary';
 import RegisterNudge from './components/RegisterNudge';
 import DownloadLimitModal from './components/DownloadLimitModal';
@@ -250,11 +250,11 @@ function AppRoutes() {
       <LocalePreviewSync />
       <LocalePreviewBanner />
       <ScrollToTop />
+      <ScrollToAnchor />
       <YandexMetrikaHit />
       <YandexRSY />
       {/* Cookie-баннер не монтируется на /embed/* — iframe на чужих сайтах */}
       <CookieConsent />
-      <NoiseOverlay />
       <LiveTicker />
       <Navbar />
       <main className="relative z-0 flex-1 pt-9">

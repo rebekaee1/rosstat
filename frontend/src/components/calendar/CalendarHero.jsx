@@ -71,7 +71,7 @@ export default function CalendarHero({ nextEvent }) {
   return (
     <div
       ref={ref}
-      className="relative overflow-hidden rounded-[2rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6 md:p-8 mb-8"
+      className="fe-panel relative overflow-hidden rounded-[2rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6 md:p-8 mb-8"
     >
       <div className="absolute top-0 right-0 w-48 h-48 bg-champagne/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
 

@@ -164,7 +164,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
     <div
       ref={ref}
       className={cn(
-        'group relative rounded-2xl border bg-surface transition-all duration-200',
+        'fe-calendar-event group relative rounded-2xl border bg-surface transition-all duration-200',
         'border-l-[3px]',
         src.border,
         isHigh ? 'border-border-subtle shadow-sm hover:shadow-md' : 'border-border-subtle',

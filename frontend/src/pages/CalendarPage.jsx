@@ -189,7 +189,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   }, [visibleEvents, todayStr, t]);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-24">
+    <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-24">
       <Breadcrumbs items={calendarTrail()} className="mb-6" />
 
       <header className="mb-6">
@@ -319,7 +319,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
         </h2>
         <dl className="space-y-4">
           {FAQ_KEYS.map((item) => (
-            <div key={item.q} className="rounded-2xl border border-border-subtle bg-surface p-5">
+            <div key={item.q} className="fe-panel rounded-2xl border border-border-subtle bg-surface p-5">
               <dt className="font-semibold text-text-primary text-sm mb-2">{t(item.q)}</dt>
               <dd className="text-sm text-text-secondary leading-relaxed">{t(item.a)}</dd>
             </div>

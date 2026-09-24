@@ -1,3 +1,12 @@
+/* Approved brand font: self-hosted, variable, including Cyrillic. */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-cyrillic.woff2') format('woff2');
+}
+
 /* Self-hosted Google Fonts (152-ФЗ: без запросов к внешним серверам).
    Источник CSS: fonts.googleapis.com/css2 (DM Sans, Playfair Display, JetBrains Mono),
    состав и веса идентичны прежнему внешнему подключению. */

@@ -16,6 +16,7 @@ import {
   regionPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
+import { CHART_THEME } from '../lib/chartTheme';
 
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.6;
@@ -26,7 +27,7 @@ const DARK_NO_DATA = '#3A3B44';
 const DARK_STROKE = 'rgba(255,243,197,0.38)';
 const DARK_HOVER_STROKE = '#F3E6B0';
 const LIGHT_STROKE = 'rgba(26,26,46,0.18)';
-const LIGHT_HOVER_STROKE = '#B8942F';
+const LIGHT_HOVER_STROKE = CHART_THEME.champagne;
 /** Плотный кадр без полей — геометрия почти вписана в исходный viewBox. */
 const COMPACT_VIEWBOX = '8 6 984 526';
 

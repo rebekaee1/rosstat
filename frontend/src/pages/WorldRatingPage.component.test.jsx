@@ -644,3 +644,24 @@ describe('WorldRatingPage', () => {
     expect(dataRows()[0].textContent).toMatch(/5[\u00A0 ]?048\.1/);
   });
 });
+
+it('сохраняет год из быстрой ссылки и переключает фактический год рейтинга', async () => {
+  const point = (value, year) => ({ country_code: 'DE', country_slug: 'germany', country_name: 'Германия',
+    indicator_code: 'de-weo-ngdpd', date: `${year}-01-01`, value, unit: 'USD' });
+  mockApiGet([
+    ['/auth/me', { user: null }], [/^\/indicators/, []],
+    [/^\/world\/countries/, { countries: [{ code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany' }], total: 1 }],
+    [/^\/world\/rating\/concepts/, { concepts: [{ slug: 'gdp-usd', name: 'ВВП', unit: 'USD' }], total: 1 }],
+    [/^\/world\/compare\/map-series\/gdp-usd/, { concept: { slug: 'gdp-usd', name: 'ВВП', unit: 'USD' },
+      years: [2024, 2025], values_by_year: { 2024: { DE: point(4100, 2024) }, 2025: { DE: point(4900, 2025) } }, benchmark_by_year: {} }],
+  ]);
+  renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/gdp-usd?view=interactive&year=2024#chart' });
+  await waitFor(() => expect(screen.getByTestId('map-timeline-stub').textContent).toContain(':2024:'));
+  const select = within(document.querySelector('#rating-table')).getByRole('combobox');
+  expect(select.value).toBe('2024');
+  expect(document.querySelector('link[rel=canonical]').href).toMatch(/\/world\/rating\/gdp-usd\/2024$/);
+  expect(document.querySelector('meta[property="og:image"]').content).toMatch(/\/2024\.png$/);
+  fireEvent.change(select, { target: { value: '2025' } });
+  await waitFor(() => expect(screen.getByTestId('map-timeline-stub').textContent).toContain(':2025:'));
+  expect(document.querySelector('link[rel=canonical]').href).toMatch(/\/world\/rating\/gdp-usd$/);
+});

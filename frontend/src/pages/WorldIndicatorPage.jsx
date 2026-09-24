@@ -1,7 +1,7 @@
 // Карточка мирового индикатора: /world/{slug}/{code}?mode=
 // UI-эталон — российские макрокарточки (TelemetryCard + champagne/15 picker).
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft, ArrowUpRight, Activity,
 } from 'lucide-react';
@@ -165,15 +165,6 @@ export default function WorldIndicatorPage() {
     includeForecast: forecastAvailable && showForecast,
   });
 
-  // #chart из SSR-ссылок (og:image → карточка): скролл к графику, когда
-  // данные загружены и секция смонтирована. Эталон — IndicatorChartSection.
-  const { hash } = useLocation();
-  useEffect(() => {
-    if (hash !== '#chart') return;
-    const node = document.getElementById('chart');
-    if (!node) return;
-    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [hash, dataQ.isLoading, dataQ.data]);
 
   const [fullChartData, setFullChartData] = useState([]);
 
@@ -417,7 +408,7 @@ export default function WorldIndicatorPage() {
   }, [indicator, displayName, activeFreq]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
       <Breadcrumbs
         items={worldIndicatorTrail(
           countryName || country?.name || '…',
@@ -468,7 +459,7 @@ export default function WorldIndicatorPage() {
 
       {metaQ.data && indicator && (
         <>
-          <header className="mb-5 max-w-4xl md:mb-12">
+          <header className="fe-data-header">
             <div className="mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-4">
               <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-text-secondary sm:px-3">
                 <Activity className="h-3 w-3 text-champagne" />

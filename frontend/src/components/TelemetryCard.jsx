@@ -13,8 +13,8 @@ import { useT } from '../i18n';
  * Если задан `change` — показывает дельту с иконкой, цветом, единицей измерения.
  * Если задан `pctChange` — показывает процентное изменение вместо абсолютного.
  *
- * Анимация: при появлении карточка плывёт снизу вверх, число счётчиком
- * увеличивается до целевого значения. Уважает `prefers-reduced-motion`.
+ * Число всегда сразу точное; только рамка мягко появляется.
+ * Уважает `prefers-reduced-motion`.
  */
 export default function TelemetryCard({
   label, value, unit, change, pctChange, meta, delay = 0,
@@ -24,7 +24,6 @@ export default function TelemetryCard({
   const t = useT();
   const resolvedDelta = deltaSuffix ?? t('indicator.telemetry.delta.prevMonth');
   const ref = useRef(null);
-  const valRef = useRef(null);
   const animated = useRef(false);
 
   useEffect(() => {
@@ -44,36 +43,12 @@ export default function TelemetryCard({
   }, [delay]);
 
   const digits = valueDigits ?? unitDigits(unit);
-  useEffect(() => {
-    if (value == null || !valRef.current) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      valRef.current.textContent = formatValue(value, digits);
-      return;
-    }
-    const raw = valRef.current.textContent.replace(/\s/g, '') || '0';
-    const from = parseFloat(raw) || 0;
-    const target = Number(value);
-    const counter = { v: from };
-    const tween = gsap.to(counter, {
-      v: target,
-      duration: from === 0 ? 1.5 : 0.6,
-      ease: 'power2.out',
-      delay: from === 0 ? 0.2 : 0,
-      onUpdate() {
-        if (valRef.current) {
-          valRef.current.textContent = formatValue(counter.v, digits);
-        }
-      },
-    });
-    return () => tween.kill();
-  }, [value, digits]);
-
   const changeNum = change != null ? Number(change) : null;
   const isUp = changeNum != null && changeNum > 0;
   const isDown = changeNum != null && changeNum < 0;
 
   return (
-    <div ref={ref} className="group relative p-3 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-surface border border-border-subtle hover:border-champagne/30 transition-colors duration-500 overflow-hidden lift-hover">
+    <div ref={ref} className="fe-panel fe-stat-cell group relative p-3 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-surface border border-border-subtle hover:border-champagne/30 transition-colors duration-500 overflow-hidden lift-hover">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-champagne/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
       <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-text-tertiary font-medium mb-2 sm:mb-4 line-clamp-2 leading-tight">
@@ -81,13 +56,13 @@ export default function TelemetryCard({
       </p>
 
       <div className="flex items-baseline gap-1 sm:gap-2 mb-1 sm:mb-2 flex-wrap">
-        <span ref={valRef} className={cn(
-          'font-mono font-bold tracking-tight text-text-primary whitespace-nowrap',
-          String(formatValue(value, unitDigits(unit))).length > 12
+        <span className={cn(
+          'font-sans font-semibold tabular-nums tracking-tight text-text-primary break-words',
+          String(formatValue(value, digits)).length > 12
             ? 'text-lg sm:text-xl md:text-2xl'
             : 'text-xl sm:text-2xl md:text-3xl'
         )}>
-          {formatValue(value, unitDigits(unit))}
+          {formatValue(value, digits)}
         </span>
         <span className="min-w-0 text-[11px] font-medium leading-snug text-text-tertiary break-words line-clamp-1 sm:shrink-0 sm:text-xs sm:line-clamp-2">
           {unitSuffix(unit)}

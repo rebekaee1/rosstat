@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Terminal, Download, Lock, Image as ImageIcon, HelpCircle } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
-import ChartBrandCaption from './ChartBrandCaption';
 import { ChartSkeleton } from './Skeleton';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 import { useLocale, useT } from '../i18n';
@@ -184,13 +183,6 @@ export default function IndicatorChartSection({
     ? t('download.guestHistory', { years: guestYearsLabel })
     : null;
   const chartRef = useRef(null);
-  const { hash } = useLocation();
-  useEffect(() => {
-    if (hash !== '#chart') return;
-    const node = document.getElementById('chart');
-    if (!node) return;
-    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [hash, chartLoading]);
   const cpiChartTitle = resolveChartTitle(locale, {
     chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
     isCbrTermSliceFamily, isUnemploymentFamily,
@@ -321,7 +313,7 @@ export default function IndicatorChartSection({
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2 sm:gap-3">
           <DownloadButton label="CSV" onDownload={onDownloadCsv} blocked={downloadBlocked} hint={guestHistoryHint} />
           <DownloadButton label="Excel" onDownload={onDownloadExcel} blocked={downloadBlocked} hint={guestHistoryHint} />
           <ImageButton onDownload={handleDownloadImage} authed={downloadAuthed} />
@@ -436,7 +428,6 @@ export default function IndicatorChartSection({
             actualSeriesLabel={chartComparisonSeries.length ? t('nav.russia') : ''}
             comparisonSeries={chartComparisonSeries.length ? chartComparisonSeries : null}
           />
-          <ChartBrandCaption />
         </div>
       )}
     </section>

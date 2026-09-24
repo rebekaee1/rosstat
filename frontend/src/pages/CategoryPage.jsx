@@ -108,7 +108,7 @@ export default function CategoryPage() {
 
   if (!cat) {
     return (
-      <div className="max-w-2xl mx-auto px-4 pt-32 pb-24 text-center">
+      <div className="fe-data-page max-w-2xl mx-auto px-4 pt-32 pb-24 text-center">
         <h1 className="text-6xl font-display font-bold text-text-primary mb-4">404</h1>
         <p className="text-lg text-text-secondary mb-8">{t('category.notFound')}</p>
         <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors">
@@ -120,7 +120,7 @@ export default function CategoryPage() {
 
   if (!cat.apiCategory) {
     return (
-      <div className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 text-center">
+      <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 text-center">
         <p className="text-text-secondary mb-6">{categoryDescription(cat, locale)}</p>
         <Link to="/" className="text-champagne hover:underline">
           {t('common.backHome')}
@@ -135,7 +135,7 @@ export default function CategoryPage() {
   const filtered = allIndicators.filter(isIndicatorListed);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
+    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
       <Breadcrumbs items={crumbs} className="mb-8" />
 
       <header className="mb-12 max-w-3xl">

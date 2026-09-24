@@ -189,7 +189,14 @@ export default function WorldRatingPage() {
   const navigate = useNavigate();
   const { hash, search } = useLocation();
   const activeConcept = conceptSlug || WORLD_RATING_DEFAULT_CONCEPT;
-  const [selectedYear, setSelectedYear] = useState(null);
+  const rawYear = searchParams.get('year');
+  const selectedYear = /^[1-9]\d{3}$/.test(rawYear || '') ? Number(rawYear) : null;
+  const setSelectedYear = (year) => {
+    const next = new URLSearchParams(searchParams);
+    if (year == null) next.delete('year');
+    else next.set('year', String(year));
+    navigate({ search: next.toString(), hash }, { replace: true });
+  };
   // Активная колонка сортировки: { slug, dir } | null. null = пользователь ещё
   // не трогал переключатель → применяется смысловой порядок (лучшие сверху).
   // Любой refetch каталога не должен откатывать клик, поэтому запись идёт
@@ -386,17 +393,11 @@ export default function WorldRatingPage() {
   useDocumentMeta({
     title: pageTitle,
     description: t('world.rating.metaDesc', { title: pageTitle }),
-    path: worldRatingPath(activeConcept),
+    path: activeYear && activeYear !== resolveActiveMapYear(years, null, mapSeriesQ.data?.values_by_year)
+      ? `${worldRatingPath(activeConcept)}/${activeYear}`
+      : worldRatingPath(activeConcept),
   });
 
-  // Доскролл к карте/графику из OG/SEO-ссылок вида …#chart — как на карточке
-  // индикатора; ждём появления блока после загрузки данных.
-  useEffect(() => {
-    if (hash !== '#chart') return;
-    const node = document.getElementById('chart');
-    if (!node) return;
-    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [hash, loading]);
 
   const openCountry = (country, detail) => {
     const href = mapSelectHref(country, detail, {
@@ -503,7 +504,7 @@ export default function WorldRatingPage() {
     : undefined;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs
         items={worldRatingTrail(shortName || concept.name || t('crumb.rating'), activeConcept)}
       />

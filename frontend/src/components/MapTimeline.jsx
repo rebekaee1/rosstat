@@ -90,7 +90,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
           aria-label={t('map.timeline.yearOnMap')}
           className="map-timeline w-full"
           style={{
-            background: `linear-gradient(to right, #B8942F 0%, #B8942F ${pct}%, rgba(26,26,46,0.10) ${pct}%, rgba(26,26,46,0.10) 100%)`,
+            background: `linear-gradient(to right, var(--color-champagne) 0%, var(--color-champagne) ${pct}%, var(--color-border-subtle) ${pct}%, var(--color-border-subtle) 100%)`,
           }}
         />
         <div className="mt-1 flex justify-between font-mono text-[10px] tabular-nums text-text-tertiary">

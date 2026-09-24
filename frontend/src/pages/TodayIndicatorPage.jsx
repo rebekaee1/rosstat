@@ -95,7 +95,7 @@ export default function TodayIndicatorPage() {
   const isFetching = fetchingMeta || fetchingData;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
       <Breadcrumbs items={todayIndicatorTrail(spec.query, code)} />
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}

@@ -446,7 +446,7 @@ export default function RegionsHome() {
   const gifAvailable = !!(activeMapCode && paint.hasHistory && series.data);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <div className="mb-8">
         <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-3">
           <MapPin size={14} />
@@ -695,7 +695,7 @@ export default function RegionsHome() {
             />
           </div>
 
-          <div data-block="regions-map" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5 relative" ref={mapCardRef}>
+          <div id="chart" data-block="regions-map" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5 relative" ref={mapCardRef}>
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
               <div className="text-xs text-text-tertiary min-w-0">
                 {activeMapCode && paint.indicator ? (

@@ -45,10 +45,11 @@ function DeltaBadge({ value, prevValue }) {
 
 function HeadlineCard({ item, countrySlug, slug }) {
   const { locale } = useLocale();
+  const Card = item.value == null ? 'div' : Link;
   return (
-    <Link
-      to={countryRegionIndicatorPath(countrySlug, slug, item.code)}
-      className="group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
+    <Card
+      {...(item.value == null ? { 'aria-disabled': true } : { to: countryRegionIndicatorPath(countrySlug, slug, item.code) })}
+      className="fe-panel fe-summary-card group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
     >
       <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{item.label || item.name}</div>
       <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
@@ -59,15 +60,16 @@ function HeadlineCard({ item, countrySlug, slug }) {
         <span className="font-mono text-[11px] text-text-tertiary">{item.period_label || item.year}</span>
         <DeltaBadge value={item.value} prevValue={item.prev_value} />
       </div>
-    </Link>
+    </Card>
   );
 }
 
 function IndicatorRow({ item, countrySlug, slug }) {
   const { locale } = useLocale();
+  const Card = item.value == null ? 'div' : Link;
   return (
-    <Link
-      to={countryRegionIndicatorPath(countrySlug, slug, item.code)}
+    <Card
+      {...(item.value == null ? { 'aria-disabled': true } : { to: countryRegionIndicatorPath(countrySlug, slug, item.code) })}
       className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
@@ -87,7 +89,7 @@ function IndicatorRow({ item, countrySlug, slug }) {
           <span className="font-mono text-[10px] text-text-tertiary">{item.period_label || item.year}</span>
         </div>
       </div>
-    </Link>
+    </Card>
   );
 }
 
@@ -154,7 +156,7 @@ export default function WorldRegionProfile() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={worldSubnationalRegionTrail(countryName, countrySlug, kindPlural, regionName, slug)} />
       {profile.isError && (
         <ApiRetryBanner onRetry={profile.refetch} isFetching={profile.isFetching} className="mb-6">
@@ -171,7 +173,7 @@ export default function WorldRegionProfile() {
       )}
       {profile.data && (
         <>
-          <div className="mb-8">
+          <div className="fe-data-header">
             <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne">
               <MapPin size={13} />
               {kind}
@@ -266,7 +268,7 @@ export default function WorldRegionProfile() {
               </aside>
             )}
 
-            <div className="min-w-0 space-y-8">
+            <div id="chart" className="min-w-0 space-y-8 scroll-mt-28">
               {visibleSections.map((sec) => (
                 <section key={sec.num} data-block={`world-region-section-${sec.num}`}>
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">

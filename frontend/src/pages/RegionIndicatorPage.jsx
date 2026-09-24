@@ -3,7 +3,7 @@
 // выгрузка CSV/Excel/PNG (только для зарегистрированных, PNG — без watermark,
 // см. правило 2026-07-08 в IndicatorChartSection.jsx).
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   Trophy, Table2, ChevronDown, ArrowUpRight,
   Download, Image as ImageIcon, GitCompare,
@@ -15,7 +15,6 @@ import {
   formatRegionValue, shortUnit, yearDelta,
 } from '../lib/regionsApi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
-import ChartBrandCaption from '../components/ChartBrandCaption';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
@@ -85,7 +84,7 @@ export default function RegionIndicatorPage() {
   // запрос отдаёт 404 «Нет месячных данных» — по нему и выключаем повторные попытки.
   const monthly = useRegionIndicatorMonthly(slug, code);
   const isMonthly = monthly.data?.frequency === 'monthly' && monthly.data?.series?.length > 0;
-  const { data, isLoading, isError, refetch, isFetching } = useRegionIndicator(slug, code);
+  const { data, isError, refetch, isFetching } = useRegionIndicator(slug, code);
   const [showTable, setShowTable] = useState(false);
   const [showRussia, setShowRussia] = useState(true);
   const [showYoYRaw, setShowYoY] = useState(false);
@@ -94,13 +93,6 @@ export default function RegionIndicatorPage() {
   const [exporting, setExporting] = useState(false);
   const { isAuthed } = useAuth();
   const chartRef = useRef(null);
-  // SSR-карточка-график ведёт на /russia/region/{slug}/{code}#chart: плавный
-  // скролл после загрузки данных, по эталону IndicatorChartSection.
-  const { hash } = useLocation();
-  useEffect(() => {
-    if (hash !== '#chart' || isLoading) return;
-    document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [hash, isLoading]);
 
   // Сравнение с другим регионом: вторая линия на графике.
   const [compareSlug, setCompareSlug] = useState('');
@@ -277,7 +269,7 @@ export default function RegionIndicatorPage() {
   const abortion = ABORTION_SIBLING[code];
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs
         items={regionIndicatorTrail(
           regionName || '…',
@@ -297,7 +289,7 @@ export default function RegionIndicatorPage() {
 
       {cardReady && active && (
         <>
-          <div className="mb-5">
+          <div className="fe-data-header">
             <div className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
               {active.indicator.section_name}
             </div>
@@ -337,7 +329,7 @@ export default function RegionIndicatorPage() {
             </div>
           </div>
 
-          <div id="chart" data-block="region-chart" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 mb-4 scroll-mt-24 w-full min-w-0 max-w-full" ref={chartRef}>
+          <div id="chart" data-block="region-chart" className="fe-panel bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 mb-4 scroll-mt-24 w-full min-w-0 max-w-full" ref={chartRef}>
             <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="text-xs text-text-tertiary font-mono">
                 {isMonthly
@@ -470,8 +462,7 @@ export default function RegionIndicatorPage() {
                 </button>
               </div>
             )}
-            <ChartBrandCaption />
-          </div>
+            </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
             {active.rank?.position && (

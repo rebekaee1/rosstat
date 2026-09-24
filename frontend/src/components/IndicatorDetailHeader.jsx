@@ -90,7 +90,7 @@ export default function IndicatorDetailHeader({
   );
 
   return (
-    <div ref={headerRef} className="mb-5 md:mb-16 max-w-4xl">
+    <div ref={headerRef} className="fe-data-header fe-indicator-header">
       <div data-animate>
         <Breadcrumbs items={crumbs} variant="mono" />
       </div>
@@ -124,7 +124,7 @@ export default function IndicatorDetailHeader({
 
           <h1
             data-animate
-            className="text-[1.3rem] leading-[1.28] text-pretty sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 md:leading-tight"
+            className="text-[1.7rem] leading-[1.2] text-pretty sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 md:leading-tight"
           >
             <MobileTitle title={title} />
             <span className="hidden md:inline">{title}</span>

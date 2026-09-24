@@ -431,7 +431,7 @@ def test_live_population_values_and_old_year_navigation(region_year_client, auth
         )
         assert response.status_code == 200
         links = set(map(int, re.findall(
-            rf'href="/russia/region/moskva/{CODE}/(\d{{4}})"', response.text
+            rf'href="/russia/region/moskva/{CODE}/(\d{{4}})\?preview_locale={locale}"', response.text
         ))) - {year}
         for adjacent in (year - 1, year + 1):
             if 1950 <= adjacent <= 2023:

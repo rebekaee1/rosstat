@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Activity, TrendingUp } from 'lucide-react';
+import { Activity } from 'lucide-react';
+import Brand from './Brand';
 import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -28,14 +29,13 @@ export default function Footer() {
   const catalog = footerCatalogColumn(locale);
 
   return (
-    <footer className="mt-auto bg-obsidian-light rounded-t-[3rem] border-t border-border-subtle">
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+    <footer className="fe-footer mt-auto border-t border-border-subtle">
+      <div className="fe-page-shell py-12 md:py-16">
+        <div className="fe-footer-grid grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <TrendingUp className="w-5 h-5 text-champagne" />
-              <span className="text-base font-bold">Forecast Economy</span>
-            </div>
+            <Link to="/" className={cn(FOCUS_RING, 'mb-5 inline-flex rounded-lg')} aria-label={t('nav.homeAria')}>
+              <Brand />
+            </Link>
             <p className="text-sm text-text-secondary leading-relaxed">
               {t('footer.tagline')}
             </p>

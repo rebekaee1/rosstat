@@ -432,7 +432,7 @@ def test_partial_historical_year_and_sparse_history(world_year_client, auth_env,
             f"/seo/world-indicator-year/germany/{CODE_MONTHLY}/{year}", headers=headers
         ).text
         links = set(map(int, re.findall(
-            rf'href="/germany/indicator/{CODE_MONTHLY}/(\d{{4}})"', html
+            rf'href="/germany/indicator/{CODE_MONTHLY}/(\d{{4}})\?preview_locale={locale}"', html
         ))) - {year}
         assert {previous, following, 1950, 2025} - {year} <= links
         assert len(links) <= 15
@@ -458,3 +458,20 @@ def test_world_mean_preserves_unit_without_inventing_annual_total(locale, unit):
         assert _coverage_note(annual_rows, "annual", en=locale == "en") == ""
     finally:
         reset_locale(token)
+
+
+def test_world_annual_og_selects_exact_year_and_matches_observation_summary(world_year_client, monkeypatch):
+    from app.services import og_image
+    captured = []
+    monkeypatch.setattr(og_image, "cached_og", lambda key: None)
+    monkeypatch.setattr(og_image, "store_og", lambda *args: None)
+    monkeypatch.setattr(og_image, "render_indicator_og", lambda **kw: captured.append(kw) or b"png")
+    response = world_year_client.get(f"/api/v1/og-image/world/germany/{CODE_ANNUAL}/2023.png?portrait=1")
+    assert response.status_code == 200
+    data = captured[0]
+    assert data["point_dates"][data["selected_index"]].year == 2023
+    assert "83 300 000" in data["value_text"].replace("\u202f", " ")
+    assert data["portrait"] is True
+    response = world_year_client.get(f"/api/v1/og-image/world/germany/{CODE_MONTHLY}/2024.png")
+    assert response.status_code == 200
+    assert "117,5" in captured[1]["value_text"]  # mean of the 12 observations, not December 123

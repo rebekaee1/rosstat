@@ -256,8 +256,9 @@ async def render_subnational_region_html(
         when = period_label(last[0], ind.frequency, loc) if last else ""
         href = escape(paths.country_region_indicator(country.slug, region.slug, ind.code))
         unit = escape(_iunit(ind))
+        label = f'<a href="{href}">{escape(_iname(ind))}</a>' if last else escape(_iname(ind))
         rows_html.append(
-            f"<tr><td><a href=\"{href}\">{escape(_iname(ind))}</a></td>"
+            f"<tr><td>{label}</td>"
             f"<td>{escape(value_txt)} {unit}</td><td>{escape(when)}</td></tr>"
         )
     th_ind = "Indicator" if _en() else "Показатель"
@@ -358,6 +359,8 @@ async def render_subnational_indicator_html(
             .limit(24)
         )
     ).all()
+    if not points:
+        return _NOT_FOUND
     th_date = "Period" if _en() else "Период"
     th_val = "Value" if _en() else "Значение"
     unit = _iunit(indicator)

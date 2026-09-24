@@ -45,7 +45,7 @@ _SOURCE_NAMES = {
 async def render_calendar_month_html(
     year: int, month: int, db: AsyncSession
 ) -> tuple[int, str]:
-    if not (2000 <= year <= 2100 and 1 <= month <= 12):
+    if not (paths.is_public_year(year) and 1 <= month <= 12):
         return 404, "Not found"
 
     from app.api.calendar import _public_calendar_conditions
@@ -148,6 +148,15 @@ async def render_calendar_month_html(
     month_trail = crumbs.calendar_month_trail(month_label, paths.calendar(year, month))
     prev_label = calendar_month_name(prev_m) or _MONTHS_NOM[prev_m - 1]
     next_label = calendar_month_name(next_m) or _MONTHS_NOM[next_m - 1]
+    neighbor_links = []
+    if paths.is_public_year(prev_y):
+        neighbor_links.append(
+            f'<li><a href="{paths.calendar(prev_y, prev_m)}">← {escape(prev_label.capitalize())} {prev_y}</a></li>'
+        )
+    if paths.is_public_year(next_y):
+        neighbor_links.append(
+            f'<li><a href="{paths.calendar(next_y, next_m)}">{escape(next_label.capitalize())} {next_y} →</a></li>'
+        )
 
     eyebrow = calendar_template("eyebrow") or "Календарь публикаций"
     tile_pub = calendar_template("tile_publications") or "Публикаций"
@@ -186,8 +195,7 @@ async def render_calendar_month_html(
 <div class="seo-scroll"><table><thead><tr><th>{escape(th_date)}</th><th>{escape(th_pub)}</th><th>{escape(th_agency)}</th><th>{escape(th_status)}</th></tr></thead>
 <tbody>{''.join(rows_html)}</tbody></table></div></section>
 <section><h2>{escape(h2_neighbors)}</h2>
-<ul class="seo-pills"><li><a href="{paths.calendar(prev_y, prev_m)}">← {escape(prev_label.capitalize())} {prev_y}</a></li>
-<li><a href="{paths.calendar(next_y, next_m)}">{escape(next_label.capitalize())} {next_y} →</a></li>
+<ul class="seo-pills">{''.join(neighbor_links)}
 <li><a href="{paths.calendar()}">{escape(interactive)}</a></li></ul></section>
 </main>"""
 

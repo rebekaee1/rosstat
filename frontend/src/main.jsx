@@ -5,6 +5,7 @@ import SpaRoot from './SpaRoot.jsx';
 import { seedQueryClientFromHomeBootstrap } from './lib/homeBootstrap';
 import { createChunkRecovery } from './lib/chunkRecovery';
 import './index.css';
+import './styles/data-visuals.css';
 
 // The entry URL contains Vite's content hash, including local builds without
 // a release ID. Never reset the guard on successful startup or by a timer.

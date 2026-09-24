@@ -631,7 +631,7 @@ export default function CalculatorPage() {
   /* ─── Render ─── */
 
   return (
-    <div ref={containerRef} className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
+    <div ref={containerRef} className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
 
       {/* Breadcrumb */}
       <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
@@ -666,7 +666,7 @@ export default function CalculatorPage() {
       </header>
 
       {/* Calculator Card */}
-      <section data-animate data-block="calc-form" className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+      <section data-animate data-block="calc-form" className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
 
         <CalcCountryPicker
           countries={countries}
@@ -759,7 +759,7 @@ export default function CalculatorPage() {
 
       {/* Loading */}
       {isLoading && (
-        <div data-animate className="rounded-[2rem] bg-surface border border-border-subtle p-8 mb-6">
+        <div data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle p-8 mb-6">
           <SkeletonBox className="h-6 w-48 mb-4" />
           <SkeletonBox className="h-14 w-72 mb-4" />
           <SkeletonBox className="h-4 w-56" />
@@ -896,7 +896,7 @@ export default function CalculatorPage() {
 
           {/* ── Chart ── */}
           {chartData.length > 2 && (
-            <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+            <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
               <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
                 <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
                   {chartMode === 'purchasing' ? t('calc.inflation.chartPurchasing') : t('calc.inflation.chartEquivalent')}
@@ -921,8 +921,8 @@ export default function CalculatorPage() {
                 <AreaChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
                   <defs>
                     <linearGradient id="calcGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#B8942F" stopOpacity={0.18} />
-                      <stop offset="100%" stopColor="#B8942F" stopOpacity={0.01} />
+                      <stop offset="0%" stopColor="#AD8A48" stopOpacity={0.18} />
+                      <stop offset="100%" stopColor="#AD8A48" stopOpacity={0.01} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
@@ -943,7 +943,7 @@ export default function CalculatorPage() {
                     strokeDasharray="6 4"
                     label={{
                       value: formatCalcAmount(amount, { withRuble }),
-                      position: 'right',
+                      position: 'insideTopRight',
                       fill: 'rgba(0,0,0,0.3)',
                       fontSize: 10,
                       fontFamily: 'JetBrains Mono',
@@ -957,9 +957,9 @@ export default function CalculatorPage() {
                     />
                   ))}
 
-                  <Area dataKey="value" stroke="#B8942F" strokeWidth={2}
+                  <Area dataKey="value" stroke="#AD8A48" strokeWidth={2}
                     fill="url(#calcGrad)" dot={false}
-                    activeDot={{ r: 4, fill: '#B8942F', stroke: '#FFFFFF', strokeWidth: 2 }}
+                    activeDot={{ r: 4, fill: '#AD8A48', stroke: '#FFFFFF', strokeWidth: 2 }}
                     isAnimationActive={false}
                   />
                 </AreaChart>
@@ -969,7 +969,7 @@ export default function CalculatorPage() {
 
           {/* ── Category Breakdown ── */}
           {isRussia && (
-            <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+            <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
               <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
                 {t('calc.inflation.catsTitle')}
               </h3>
@@ -979,7 +979,7 @@ export default function CalculatorPage() {
 
           {/* ── Yearly Breakdown ── */}
           {result.yearlyBreakdown?.length > 1 && (
-            <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+            <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
               <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
                 {t('calc.inflation.yearsTitle')}
               </h3>
@@ -1020,11 +1020,11 @@ export default function CalculatorPage() {
       <section data-animate className="mb-8">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.otherHeading')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Link to="/calculator/mortgage" className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
+          <Link to="/calculator/mortgage" className="fe-panel group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
             <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">{t('calc.inflation.otherMortgageTitle')}</p>
             <p className="text-[13px] text-text-secondary">{t('calc.inflation.otherMortgageDesc')}</p>
           </Link>
-          <Link to="/calculator/compound" className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
+          <Link to="/calculator/compound" className="fe-panel group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors">
             <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors mb-1">{t('calc.inflation.otherCompoundTitle')}</p>
             <p className="text-[13px] text-text-secondary">{t('calc.inflation.otherCompoundDesc')}</p>
           </Link>
@@ -1041,7 +1041,7 @@ export default function CalculatorPage() {
             <Link
               key={item.key}
               to={item.to}
-              className="group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors"
+              className="fe-panel group rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors"
             >
               <p className="text-sm font-semibold text-text-primary group-hover:text-champagne transition-colors">
                 {t(item.key, locale === 'en' ? item.fallbackEn : item.fallbackRu)}

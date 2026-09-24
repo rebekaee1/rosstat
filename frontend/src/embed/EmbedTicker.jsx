@@ -74,7 +74,7 @@ export default function EmbedTicker() {
     <div style={{
       background: colors.bg, borderTop: `1px solid ${colors.border}`, borderBottom: `1px solid ${colors.border}`,
       height: 40, overflow: 'hidden', position: 'relative',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
+      fontFamily: 'Manrope, system-ui, sans-serif',
     }}>
       <div className="ticker-track" style={{ display: 'flex', alignItems: 'center', height: '100%', whiteSpace: 'nowrap' }}>
         {items.map(ind => <TickerItem key={ind.code} ind={ind} colors={colors} />)}

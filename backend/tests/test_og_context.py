@@ -62,7 +62,7 @@ def test_cpi_full_window_weekly_subtitle():
     )
     assert ctx["subtitle"] == _og_weekly_subtitle("ru")
     assert "за неделю" in ctx["subtitle"]
-    assert ctx["context_pill"] is not None
+    assert ctx["context_pill"] is None  # 12 weekly points are not a year
     assert ctx["unit_suffix"] == "%"
 
 
@@ -166,3 +166,10 @@ def test_inflation_pill_sign_and_precision():
     # Дефляция — с типографским минусом U+2212 в обеих локалях (fmt_yoy).
     assert _inflation_pill(-2.34, locale="ru") == "Годовая инфляция \u2014 \u22122,3%"
     assert _inflation_pill(-2.34, locale="en") == "Annual inflation \u2014 \u22122.3%"
+
+
+def test_missing_month_does_not_claim_annual_inflation():
+    rows = _monthly_rows(25)
+    del rows[-3]
+    ctx = _og_context("cpi", rows, unit="%", frequency="monthly", current_date=rows[-1][1], locale="en")
+    assert ctx["context_pill"] is None

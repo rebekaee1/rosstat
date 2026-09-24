@@ -178,12 +178,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 664,
+          "line": 689,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 729,
+          "line": 754,
           "kind": "other"
         },
         {
@@ -655,7 +655,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 823,
+          "line": 848,
           "kind": "other"
         },
         {
@@ -945,12 +945,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 668,
+          "line": 693,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 823,
+          "line": 848,
           "kind": "other"
         },
         {
@@ -1186,6 +1186,11 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/og_image.py",
+          "line": 511,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/seo_content.py",
           "line": 143,
           "kind": "seo"
@@ -1228,6 +1233,11 @@
         {
           "file": "backend/app/tasks/ticker_worker.py",
           "line": 145,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 33,
           "kind": "other"
         },
         {
@@ -1347,22 +1357,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 190,
+          "line": 215,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 206,
+          "line": 231,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1294,
+          "line": 1319,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1435,
+          "line": 1460,
           "kind": "other"
         },
         {
@@ -2080,12 +2090,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 192,
+          "line": 217,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1435,
+          "line": 1460,
           "kind": "other"
         },
         {
@@ -2681,6 +2691,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/seo_renderer.py",
+          "line": 2816,
+          "kind": "seo"
+        },
+        {
           "file": "backend/scripts/audit-groups-submodes.py",
           "line": 167,
           "kind": "other"
@@ -2777,22 +2792,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 676,
+          "line": 701,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 749,
+          "line": 774,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 788,
+          "line": 813,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1166,
+          "line": 1191,
           "kind": "other"
         },
         {
@@ -2813,6 +2828,16 @@
         {
           "file": "frontend/public/sitemap.xml",
           "line": 202,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/IndicatorMethodologyPanel.jsx",
+          "line": 23,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/footerNav.js",
+          "line": 25,
           "kind": "other"
         },
         {
@@ -3690,17 +3715,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 664,
+          "line": 689,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 701,
+          "line": 726,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 731,
+          "line": 756,
           "kind": "other"
         },
         {
@@ -3946,7 +3971,7 @@
       "files": [
         {
           "file": "docs/backlog.md",
-          "line": 707,
+          "line": 732,
           "kind": "other"
         },
         {
@@ -3987,7 +4012,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 701,
+          "line": 726,
           "kind": "other"
         },
         {
@@ -4103,17 +4128,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 663,
+          "line": 688,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 729,
+          "line": 754,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1097,
+          "line": 1122,
           "kind": "other"
         },
         {
@@ -4512,6 +4537,11 @@
           "kind": "seed"
         },
         {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 22,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 68,
           "kind": "tests"
@@ -4523,12 +4553,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
+          "line": 52,
           "kind": "other"
         },
         {
@@ -4895,32 +4925,32 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
+          "line": 52,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 721,
+          "line": 746,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 776,
+          "line": 801,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1094,
+          "line": 1119,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1435,
+          "line": 1460,
           "kind": "other"
         },
         {
@@ -5878,12 +5908,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1313,
+          "line": 1338,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1315,
+          "line": 1340,
           "kind": "other"
         },
         {
@@ -6251,17 +6281,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 663,
+          "line": 688,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 729,
+          "line": 754,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1097,
+          "line": 1122,
           "kind": "other"
         },
         {
@@ -6686,6 +6716,11 @@
           "file": "backend/app/services/brent_fred_parser.py",
           "line": 8,
           "kind": "parser"
+        },
+        {
+          "file": "backend/app/services/og_image.py",
+          "line": 511,
+          "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
@@ -7626,12 +7661,12 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 108,
+          "line": 122,
           "kind": "other"
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 112,
+          "line": 126,
           "kind": "other"
         },
         {
@@ -7845,6 +7880,16 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/og_image.py",
+          "line": 710,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/og_image.py",
+          "line": 786,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/seo_content.py",
           "line": 61,
           "kind": "seo"
@@ -7881,7 +7926,7 @@
         },
         {
           "file": "backend/app/services/seo_indicator_month.py",
-          "line": 66,
+          "line": 67,
           "kind": "other"
         },
         {
@@ -7891,12 +7936,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 951,
+          "line": 1134,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 952,
+          "line": 1135,
           "kind": "seo"
         },
         {
@@ -7927,6 +7972,11 @@
         {
           "file": "backend/scripts/audit-groups-submodes.py",
           "line": 119,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 29,
           "kind": "other"
         },
         {
@@ -8006,7 +8056,7 @@
         },
         {
           "file": "backend/tests/test_admin_bi.py",
-          "line": 354,
+          "line": 359,
           "kind": "tests"
         },
         {
@@ -8371,47 +8421,42 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 183,
+          "line": 195,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 188,
+          "line": 200,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 203,
+          "line": 215,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 232,
+          "line": 244,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 237,
+          "line": 249,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 256,
+          "line": 268,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 473,
+          "line": 485,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 625,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_i18n_parity.py",
-          "line": 804,
+          "line": 637,
           "kind": "tests"
         },
         {
@@ -8421,52 +8466,57 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 860,
+          "line": 828,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 959,
+          "line": 872,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 961,
+          "line": 971,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1260,
+          "line": 973,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1307,
+          "line": 1272,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1314,
+          "line": 1319,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1365,
+          "line": 1326,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1372,
+          "line": 1377,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1394,
+          "line": 1384,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1410,
+          "line": 1406,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1422,
           "kind": "tests"
         },
         {
@@ -8535,6 +8585,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 339,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 341,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_legacy_redirects.py",
           "line": 19,
           "kind": "tests"
@@ -8580,8 +8640,68 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_og_context.py",
+          "line": 174,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_og_fit.py",
           "line": 295,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 43,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 48,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 63,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 65,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 127,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 132,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 134,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 142,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 143,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 146,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 148,
           "kind": "tests"
         },
         {
@@ -8617,6 +8737,21 @@
         {
           "file": "backend/tests/test_path_cut_redirects.py",
           "line": 86,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_public_year_contract.py",
+          "line": 50,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_public_year_contract.py",
+          "line": 54,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_public_year_contract.py",
+          "line": 55,
           "kind": "tests"
         },
         {
@@ -9085,6 +9220,71 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 17,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 18,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 19,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 38,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 49,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 50,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 51,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 52,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 53,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 61,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 67,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_static.py",
+          "line": 205,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_static.py",
+          "line": 229,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_ssr_cache.py",
           "line": 55,
           "kind": "tests"
@@ -9321,57 +9521,57 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 21,
+          "line": 46,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 56,
+          "line": 81,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 376,
+          "line": 401,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 438,
+          "line": 463,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 565,
+          "line": 590,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 569,
+          "line": 594,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 570,
+          "line": 595,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 998,
+          "line": 1023,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1248,
+          "line": 1273,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1314,
+          "line": 1339,
           "kind": "other"
         },
         {
@@ -9450,6 +9650,16 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/components/ForecastTable.component.test.jsx",
+          "line": 10,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/ForecastTable.component.test.jsx",
+          "line": 28,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/components/GenericIndicatorView.jsx",
           "line": 33,
           "kind": "family"
@@ -9471,27 +9681,27 @@
         },
         {
           "file": "frontend/src/components/GenericIndicatorView.jsx",
-          "line": 209,
+          "line": 210,
           "kind": "family"
         },
         {
           "file": "frontend/src/components/IndicatorChart.jsx",
-          "line": 91,
+          "line": 93,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChart.jsx",
-          "line": 95,
+          "line": 97,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChart.jsx",
-          "line": 264,
+          "line": 267,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChart.jsx",
-          "line": 498,
+          "line": 497,
           "kind": "other"
         },
         {
@@ -9501,22 +9711,22 @@
         },
         {
           "file": "frontend/src/components/IndicatorChartSection.jsx",
-          "line": 200,
+          "line": 193,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChartSection.jsx",
-          "line": 285,
+          "line": 278,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorChartSection.jsx",
-          "line": 409,
+          "line": 402,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/IndicatorTelemetryGrid.jsx",
-          "line": 79,
+          "line": 80,
           "kind": "other"
         },
         {
@@ -9781,7 +9991,7 @@
         },
         {
           "file": "frontend/src/lib/breadcrumbs.test.js",
-          "line": 48,
+          "line": 49,
           "kind": "tests"
         },
         {
@@ -10270,6 +10480,31 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/lib/pageImage.test.js",
+          "line": 6,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/pageImage.test.js",
+          "line": 7,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/pageImage.test.js",
+          "line": 8,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/pageImage.test.js",
+          "line": 36,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/pageImage.test.js",
+          "line": 38,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/russiaHomeCards.js",
           "line": 85,
           "kind": "other"
@@ -10430,8 +10665,28 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/lib/useMeta.component.test.jsx",
+          "line": 52,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/useMeta.component.test.jsx",
+          "line": 53,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/useMeta.component.test.jsx",
+          "line": 68,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/useMeta.component.test.jsx",
+          "line": 70,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/useMeta.js",
-          "line": 50,
+          "line": 54,
           "kind": "other"
         },
         {
@@ -10471,12 +10726,12 @@
         },
         {
           "file": "frontend/src/pages/CalculatorPage.component.test.jsx",
-          "line": 336,
+          "line": 335,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/CalculatorPage.jsx",
-          "line": 843,
+          "line": 840,
           "kind": "other"
         },
         {
@@ -10581,7 +10836,7 @@
         },
         {
           "file": "frontend/src/pages/WorldIndicatorPage.jsx",
-          "line": 411,
+          "line": 402,
           "kind": "other"
         },
         {
@@ -10635,6 +10890,11 @@
           "kind": "other"
         },
         {
+          "file": "scripts/build-design-review.mjs",
+          "line": 93,
+          "kind": "other"
+        },
+        {
           "file": "scripts/build-indicator-index.py",
           "line": 14,
           "kind": "other"
@@ -10651,32 +10911,32 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 246,
+          "line": 248,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 280,
+          "line": 282,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 332,
+          "line": 334,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 343,
+          "line": 345,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 367,
+          "line": 369,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 488,
+          "line": 490,
           "kind": "other"
         },
         {
@@ -10800,6 +11060,41 @@
           "kind": "other"
         },
         {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 11,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 15,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 17,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 51,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 52,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 61,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-performance.mjs",
+          "line": 12,
+          "kind": "other"
+        },
+        {
           "file": "scripts/e2e/navbar-overlap.mjs",
           "line": 27,
           "kind": "other"
@@ -10892,12 +11187,12 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 108,
+          "line": 122,
           "kind": "other"
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 112,
+          "line": 126,
           "kind": "other"
         },
         {
@@ -11057,12 +11352,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 818,
+          "line": 843,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1314,
+          "line": 1339,
           "kind": "other"
         },
         {
@@ -11272,12 +11567,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 246,
+          "line": 248,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 280,
+          "line": 282,
           "kind": "other"
         },
         {
@@ -11338,7 +11633,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1285,
+          "line": 1468,
           "kind": "seo"
         },
         {
@@ -11481,6 +11776,11 @@
         {
           "file": "backend/tests/test_calculation_engine.py",
           "line": 19,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 15,
           "kind": "tests"
         },
         {
@@ -11789,12 +12089,12 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 108,
+          "line": 122,
           "kind": "other"
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 112,
+          "line": 126,
           "kind": "other"
         },
         {
@@ -11924,12 +12224,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 818,
+          "line": 843,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1314,
+          "line": 1339,
           "kind": "other"
         },
         {
@@ -12059,7 +12359,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 280,
+          "line": 282,
           "kind": "other"
         },
         {
@@ -12253,6 +12553,11 @@
         {
           "file": "backend/tests/test_calculation_engine.py",
           "line": 20,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 16,
           "kind": "tests"
         },
         {
@@ -12694,12 +12999,12 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 108,
+          "line": 122,
           "kind": "other"
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 112,
+          "line": 126,
           "kind": "other"
         },
         {
@@ -12829,12 +13134,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 818,
+          "line": 843,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1314,
+          "line": 1339,
           "kind": "other"
         },
         {
@@ -12964,7 +13269,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 280,
+          "line": 282,
           "kind": "other"
         },
         {
@@ -13045,7 +13350,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 818,
+          "line": 843,
           "kind": "other"
         },
         {
@@ -13163,6 +13468,11 @@
         {
           "file": "backend/tests/test_calculation_engine.py",
           "line": 20,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 17,
           "kind": "tests"
         },
         {
@@ -13309,7 +13619,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 818,
+          "line": 843,
           "kind": "other"
         },
         {
@@ -13526,7 +13836,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 23,
+          "line": 48,
           "kind": "other"
         },
         {
@@ -14557,12 +14867,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 819,
+          "line": 844,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1436,
+          "line": 1461,
           "kind": "other"
         },
         {
@@ -15902,12 +16212,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 820,
+          "line": 845,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1436,
+          "line": 1461,
           "kind": "other"
         },
         {
@@ -16478,27 +16788,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 724,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 736,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 741,
+          "line": 52,
           "kind": "other"
         },
         {
@@ -16508,22 +16803,37 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 788,
+          "line": 761,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 814,
+          "line": 766,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 774,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1439,
+          "line": 813,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 839,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 867,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1464,
           "kind": "other"
         },
         {
@@ -16786,7 +17096,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 814,
+          "line": 839,
           "kind": "other"
         },
         {
@@ -16887,12 +17197,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 726,
+          "line": 751,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 867,
           "kind": "other"
         },
         {
@@ -16902,12 +17212,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 566,
+          "line": 568,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 634,
+          "line": 636,
           "kind": "other"
         }
       ]
@@ -17046,7 +17356,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 823,
+          "line": 848,
           "kind": "other"
         },
         {
@@ -17316,22 +17626,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 668,
+          "line": 693,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 823,
+          "line": 848,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1399,
+          "line": 1424,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1406,
+          "line": 1431,
           "kind": "other"
         },
         {
@@ -17599,27 +17909,27 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 680,
+          "line": 705,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 729,
+          "line": 754,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 821,
+          "line": 846,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 938,
+          "line": 963,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1436,
+          "line": 1461,
           "kind": "other"
         },
         {
@@ -18959,7 +19269,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1097,
+          "line": 1122,
           "kind": "other"
         },
         {
@@ -19414,7 +19724,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1097,
+          "line": 1122,
           "kind": "other"
         },
         {
@@ -19811,7 +20121,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 667,
+          "line": 692,
           "kind": "other"
         },
         {
@@ -19946,7 +20256,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 669,
+          "line": 694,
           "kind": "other"
         },
         {
@@ -20342,7 +20652,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 734,
+          "line": 759,
           "kind": "other"
         },
         {
@@ -21292,7 +21602,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 955,
+          "line": 1138,
           "kind": "seo"
         },
         {
@@ -21352,22 +21662,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 720,
+          "line": 745,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 776,
+          "line": 801,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1094,
+          "line": 1119,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1435,
+          "line": 1460,
           "kind": "other"
         },
         {
@@ -22707,7 +23017,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2379,
+          "line": 2561,
           "kind": "seo"
         },
         {
@@ -22718,6 +23028,11 @@
         {
           "file": "backend/app/services/world_adapters/boe_iadb.py",
           "line": 321,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 8,
           "kind": "other"
         },
         {
@@ -22886,68 +23201,88 @@
           "kind": "other"
         },
         {
-          "file": "docs/analytics_api_inventory/google_search_console.md",
-          "line": 49,
+          "file": "docs/analytics_api_inventory/README.md",
+          "line": 26,
           "kind": "other"
         },
         {
           "file": "docs/analytics_api_inventory/google_search_console.md",
-          "line": 102,
+          "line": 29,
+          "kind": "other"
+        },
+        {
+          "file": "docs/analytics_api_inventory/google_search_console.md",
+          "line": 30,
+          "kind": "other"
+        },
+        {
+          "file": "docs/analytics_api_inventory/google_search_console.md",
+          "line": 66,
+          "kind": "other"
+        },
+        {
+          "file": "docs/analytics_api_inventory/google_search_console.md",
+          "line": 119,
+          "kind": "other"
+        },
+        {
+          "file": "docs/analytics_api_inventory/google_search_console.md",
+          "line": 147,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 23,
+          "line": 48,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
+          "line": 52,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 707,
+          "line": 732,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 733,
+          "line": 758,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 740,
+          "line": 765,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 809,
+          "line": 834,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 825,
+          "line": 850,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 867,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1283,
+          "line": 1308,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1439,
+          "line": 1464,
           "kind": "other"
         },
         {
@@ -23261,7 +23596,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2379,
+          "line": 2561,
           "kind": "seo"
         },
         {
@@ -23321,7 +23656,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 809,
+          "line": 834,
           "kind": "other"
         },
         {
@@ -23699,12 +24034,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 809,
+          "line": 834,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 826,
+          "line": 851,
           "kind": "other"
         },
         {
@@ -23876,22 +24211,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 760,
+          "line": 785,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 809,
+          "line": 834,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 825,
+          "line": 850,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 826,
+          "line": 851,
           "kind": "other"
         },
         {
@@ -24069,32 +24404,32 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
+          "line": 52,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 664,
+          "line": 689,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 707,
+          "line": 732,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 730,
+          "line": 755,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1097,
+          "line": 1122,
           "kind": "other"
         },
         {
@@ -24430,12 +24765,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 733,
+          "line": 758,
           "kind": "other"
         },
         {
@@ -24727,7 +25062,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 21,
+          "line": 46,
           "kind": "other"
         },
         {
@@ -27482,22 +27817,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
+          "line": 52,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1399,
+          "line": 1424,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1406,
+          "line": 1431,
           "kind": "other"
         },
         {
@@ -27882,7 +28217,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 957,
+          "line": 1140,
           "kind": "seo"
         },
         {
@@ -28357,18 +28692,28 @@
           "kind": "tests"
         },
         {
-          "file": "backend/tests/test_seo_world.py",
-          "line": 935,
+          "file": "backend/tests/test_og_glass.py",
+          "line": 74,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 78,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_world.py",
-          "line": 947,
+          "line": 967,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_world.py",
-          "line": 1003,
+          "line": 979,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_world.py",
+          "line": 1035,
           "kind": "tests"
         },
         {
@@ -28449,7 +28794,7 @@
       "files": [
         {
           "file": "docs/backlog.md",
-          "line": 707,
+          "line": 732,
           "kind": "other"
         },
         {
@@ -28936,12 +29281,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 21,
+          "line": 46,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1252,
+          "line": 1277,
           "kind": "other"
         },
         {
@@ -29806,32 +30151,32 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 191,
+          "line": 216,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 722,
+          "line": 747,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 776,
+          "line": 801,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1095,
+          "line": 1120,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1435,
+          "line": 1460,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1514,
+          "line": 1539,
           "kind": "other"
         },
         {
@@ -30418,7 +30763,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 669,
+          "line": 694,
           "kind": "other"
         },
         {
@@ -30656,52 +31001,52 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 680,
+          "line": 705,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 697,
+          "line": 722,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 889,
+          "line": 914,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 892,
+          "line": 917,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 904,
+          "line": 929,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1302,
+          "line": 1327,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1364,
+          "line": 1389,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1460,
+          "line": 1485,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1464,
+          "line": 1489,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1473,
+          "line": 1498,
           "kind": "other"
         },
         {
@@ -30860,7 +31205,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1460,
+          "line": 1485,
           "kind": "other"
         },
         {
@@ -30992,7 +31337,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1464,
+          "line": 1489,
           "kind": "other"
         },
         {
@@ -32078,6 +32423,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 31,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 2105,
           "kind": "seed"
@@ -32134,7 +32484,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1050,
+          "line": 1075,
           "kind": "other"
         },
         {
@@ -32311,6 +32661,11 @@
           "file": "scripts/completeness.py",
           "line": 212,
           "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 12,
+          "kind": "other"
         }
       ]
     },
@@ -32480,17 +32835,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 892,
+          "line": 917,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 910,
+          "line": 935,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1473,
+          "line": 1498,
           "kind": "other"
         },
         {
@@ -32661,7 +33016,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1403,
+          "line": 1428,
           "kind": "other"
         },
         {
@@ -32747,7 +33102,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1403,
+          "line": 1428,
           "kind": "other"
         },
         {
@@ -33953,42 +34308,42 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
+          "line": 52,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 707,
+          "line": 732,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 733,
+          "line": 758,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 740,
+          "line": 765,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 810,
+          "line": 835,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 867,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1439,
+          "line": 1464,
           "kind": "other"
         },
         {
@@ -34115,6 +34470,11 @@
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 6894,
           "kind": "other"
+        },
+        {
+          "file": "scripts/build-design-review.mjs",
+          "line": 2,
+          "kind": "other"
         }
       ]
     },
@@ -34212,7 +34572,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 810,
+          "line": 835,
           "kind": "other"
         },
         {
@@ -34535,12 +34895,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 810,
+          "line": 835,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1283,
+          "line": 1308,
           "kind": "other"
         },
         {
@@ -34657,7 +35017,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 810,
+          "line": 835,
           "kind": "other"
         },
         {
@@ -34920,7 +35280,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1284,
+          "line": 1467,
           "kind": "seo"
         },
         {
@@ -35118,6 +35478,11 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/tasks/scheduler.py",
+          "line": 45,
+          "kind": "other"
+        },
+        {
           "file": "backend/scripts/gen-forecast-snapshots.py",
           "line": 36,
           "kind": "other"
@@ -35153,18 +35518,28 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 6,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 8,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 143,
           "kind": "tests"
         },
         {
           "file": "docs/backlog.md",
-          "line": 703,
+          "line": 728,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1452,
+          "line": 1477,
           "kind": "other"
         },
         {
@@ -35214,7 +35589,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 366,
+          "line": 368,
           "kind": "other"
         },
         {
@@ -35310,6 +35685,11 @@
           "file": "backend/seed_data.py",
           "line": 2036,
           "kind": "seed"
+        },
+        {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 9,
+          "kind": "tests"
         },
         {
           "file": "backend/tests/test_forecast_policy.py",
@@ -35426,6 +35806,11 @@
           "kind": "seed"
         },
         {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 10,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 145,
           "kind": "tests"
@@ -35535,6 +35920,11 @@
           "kind": "seed"
         },
         {
+          "file": "backend/tests/test_etl_side_effect_sources.py",
+          "line": 11,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 146,
           "kind": "tests"
@@ -35629,12 +36019,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 669,
+          "line": 694,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1293,
+          "line": 1318,
           "kind": "other"
         },
         {
@@ -35873,12 +36263,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 696,
+          "line": 721,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1096,
+          "line": 1121,
           "kind": "other"
         },
         {
@@ -36140,7 +36530,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 701,
+          "line": 726,
           "kind": "other"
         },
         {
@@ -36404,6 +36794,11 @@
           "kind": "seo"
         },
         {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 32,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 2193,
           "kind": "seed"
@@ -36500,37 +36895,37 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 696,
+          "line": 721,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 703,
+          "line": 728,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 734,
+          "line": 759,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 780,
+          "line": 805,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 817,
+          "line": 842,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1313,
+          "line": 1338,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1465,
+          "line": 1490,
           "kind": "other"
         },
         {
@@ -38542,22 +38937,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 817,
+          "line": 842,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1313,
+          "line": 1338,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1315,
+          "line": 1340,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1465,
+          "line": 1490,
           "kind": "other"
         },
         {
@@ -38888,6 +39283,16 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/og_image.py",
+          "line": 710,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/og_image.py",
+          "line": 786,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/seo_content.py",
           "line": 81,
           "kind": "seo"
@@ -38914,12 +39319,22 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 949,
+          "line": 1132,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/services/seo_renderer.py",
+          "line": 2818,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_today.py",
           "line": 132,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 30,
           "kind": "other"
         },
         {
@@ -39194,77 +39609,77 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 21,
+          "line": 46,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 677,
+          "line": 702,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 679,
+          "line": 704,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 776,
+          "line": 801,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 850,
+          "line": 875,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 860,
+          "line": 885,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 865,
+          "line": 890,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 881,
+          "line": 906,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1252,
+          "line": 1277,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1297,
+          "line": 1322,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1299,
+          "line": 1324,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1305,
+          "line": 1330,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1435,
+          "line": 1460,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1469,
+          "line": 1494,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1474,
+          "line": 1499,
           "kind": "other"
         },
         {
@@ -39323,6 +39738,11 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/components/IndicatorMethodologyPanel.jsx",
+          "line": 24,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/embed/EmbedTicker.jsx",
           "line": 45,
           "kind": "other"
@@ -39348,8 +39768,23 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/lib/footerNav.js",
+          "line": 24,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/indicatorVariants.test.js",
           "line": 52,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/pageImage.test.js",
+          "line": 16,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/pageImage.test.js",
+          "line": 36,
           "kind": "tests"
         },
         {
@@ -39515,6 +39950,16 @@
         {
           "file": "scripts/backfill-keyrate-history.py",
           "line": 208,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/build-design-review.mjs",
+          "line": 95,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 14,
           "kind": "other"
         },
         {
@@ -40056,7 +40501,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 734,
+          "line": 759,
           "kind": "other"
         },
         {
@@ -40429,7 +40874,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 732,
+          "line": 757,
           "kind": "other"
         },
         {
@@ -40894,7 +41339,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 732,
+          "line": 757,
           "kind": "other"
         },
         {
@@ -41404,7 +41849,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 953,
+          "line": 1136,
           "kind": "seo"
         },
         {
@@ -41469,37 +41914,37 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
+          "line": 52,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 723,
+          "line": 748,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 726,
+          "line": 751,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1096,
+          "line": 1121,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1399,
+          "line": 1424,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1406,
+          "line": 1431,
           "kind": "other"
         },
         {
@@ -41696,7 +42141,7 @@
       "files": [
         {
           "file": "docs/backlog.md",
-          "line": 726,
+          "line": 751,
           "kind": "other"
         },
         {
@@ -41927,12 +42372,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 701,
+          "line": 726,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 707,
+          "line": 732,
           "kind": "other"
         },
         {
@@ -42612,7 +43057,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 729,
+          "line": 754,
           "kind": "other"
         },
         {
@@ -43663,7 +44108,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 668,
+          "line": 693,
           "kind": "other"
         },
         {
@@ -43848,11 +44293,6 @@
       },
       "files": [
         {
-          "file": "backend/app/api/demographics.py",
-          "line": 15,
-          "kind": "other"
-        },
-        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 398,
           "kind": "other"
@@ -43876,6 +44316,11 @@
           "file": "backend/app/data/view_model_families.py",
           "line": 863,
           "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/demographics.py",
+          "line": 12,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/rosstat_demo_parser.py",
@@ -43918,6 +44363,11 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/lib/demographicStructure.js",
+          "line": 1,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 9278,
           "kind": "other"
@@ -43934,12 +44384,7 @@
         },
         {
           "file": "frontend/src/pages/DemographicsPage.jsx",
-          "line": 43,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/pages/DemographicsPage.jsx",
-          "line": 128,
+          "line": 46,
           "kind": "other"
         }
       ]
@@ -44034,11 +44479,6 @@
       },
       "files": [
         {
-          "file": "backend/app/api/demographics.py",
-          "line": 13,
-          "kind": "other"
-        },
-        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 392,
           "kind": "other"
@@ -44062,6 +44502,11 @@
           "file": "backend/app/data/view_model_families.py",
           "line": 864,
           "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/demographics.py",
+          "line": 10,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/rosstat_demo_parser.py",
@@ -44104,6 +44549,11 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/lib/demographicStructure.js",
+          "line": 1,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 9335,
           "kind": "other"
@@ -44120,7 +44570,7 @@
         },
         {
           "file": "frontend/src/pages/DemographicsPage.jsx",
-          "line": 29,
+          "line": 32,
           "kind": "other"
         }
       ]
@@ -45390,6 +45840,31 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/og_image.py",
+          "line": 495,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/og_image.py",
+          "line": 513,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/og_image.py",
+          "line": 820,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/og_image.py",
+          "line": 826,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/og_image.py",
+          "line": 852,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/rosstat_population_parser.py",
           "line": 1,
           "kind": "parser"
@@ -45473,6 +45948,11 @@
           "file": "backend/app/services/seo_content.py",
           "line": 536,
           "kind": "seo"
+        },
+        {
+          "file": "backend/app/services/seo_demographics.py",
+          "line": 40,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/seo_i18n.py",
@@ -45572,6 +46052,36 @@
         {
           "file": "backend/app/services/world_russia_rank.py",
           "line": 44,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 34,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 36,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 37,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 41,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 44,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/export-design-gallery.py",
+          "line": 46,
           "kind": "other"
         },
         {
@@ -45730,6 +46240,61 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 354,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_glass.py",
+          "line": 34,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_hub_portrait.py",
+          "line": 35,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_hub_portrait.py",
+          "line": 37,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_hub_portrait.py",
+          "line": 38,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_hub_portrait.py",
+          "line": 55,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_hub_portrait.py",
+          "line": 59,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_hub_portrait.py",
+          "line": 60,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_og_hub_portrait.py",
+          "line": 146,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_public_year_contract.py",
+          "line": 51,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_public_year_contract.py",
+          "line": 56,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_rosstat_population.py",
           "line": 160,
           "kind": "tests"
@@ -45766,32 +46331,62 @@
         },
         {
           "file": "backend/tests/test_seo_world.py",
-          "line": 789,
+          "line": 821,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_world.py",
-          "line": 849,
+          "line": 881,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_world.py",
-          "line": 936,
+          "line": 968,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_world.py",
-          "line": 955,
+          "line": 987,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_images.py",
+          "line": 20,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_sitemap_public_coverage.py",
-          "line": 90,
+          "line": 16,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_sitemap_public_coverage.py",
-          "line": 102,
+          "line": 30,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_public_coverage.py",
+          "line": 32,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_public_coverage.py",
+          "line": 36,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_public_coverage.py",
+          "line": 37,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_public_coverage.py",
+          "line": 127,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_public_coverage.py",
+          "line": 139,
           "kind": "tests"
         },
         {
@@ -45971,27 +46566,27 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 19,
+          "line": 44,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 21,
+          "line": 46,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 118,
+          "line": 143,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 153,
+          "line": 178,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 668,
+          "line": 693,
           "kind": "other"
         },
         {
@@ -46015,13 +46610,23 @@
           "kind": "other"
         },
         {
+          "file": "docs/design/art-prompts/approved-collection.json",
+          "line": 10,
+          "kind": "other"
+        },
+        {
+          "file": "docs/design/art-prompts/approved-collection.json",
+          "line": 11,
+          "kind": "other"
+        },
+        {
           "file": "docs/traffic-platform-2026-09-10.md",
           "line": 19,
           "kind": "other"
         },
         {
           "file": "frontend/index.html",
-          "line": 112,
+          "line": 111,
           "kind": "other"
         },
         {
@@ -46037,6 +46642,16 @@
         {
           "file": "frontend/public/sitemap.xml",
           "line": 310,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/CategoryBlock.jsx",
+          "line": 52,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/CategoryBlock.jsx",
+          "line": 53,
           "kind": "other"
         },
         {
@@ -46076,17 +46691,12 @@
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 581,
+          "line": 582,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 613,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/components/WorldMap.jsx",
-          "line": 622,
+          "line": 614,
           "kind": "other"
         },
         {
@@ -46096,7 +46706,7 @@
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 625,
+          "line": 624,
           "kind": "other"
         },
         {
@@ -46106,17 +46716,12 @@
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 635,
+          "line": 627,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
           "line": 637,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/components/WorldMap.jsx",
-          "line": 638,
           "kind": "other"
         },
         {
@@ -46136,17 +46741,17 @@
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 644,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/components/WorldMap.jsx",
           "line": 645,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 690,
+          "line": 647,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/WorldMap.jsx",
+          "line": 692,
           "kind": "other"
         },
         {
@@ -46426,12 +47031,12 @@
         },
         {
           "file": "frontend/src/pages/DemographicsPage.jsx",
-          "line": 371,
+          "line": 377,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/RegionIndicatorPage.component.test.jsx",
-          "line": 30,
+          "line": 31,
           "kind": "other"
         },
         {
@@ -46451,7 +47056,7 @@
         },
         {
           "file": "frontend/src/pages/WorldCountry.jsx",
-          "line": 334,
+          "line": 373,
           "kind": "other"
         },
         {
@@ -46475,6 +47080,16 @@
           "kind": "other"
         },
         {
+          "file": "scripts/build-design-review.mjs",
+          "line": 26,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/build-design-review.mjs",
+          "line": 91,
+          "kind": "other"
+        },
+        {
           "file": "scripts/dual-host-release-gate.py",
           "line": 19,
           "kind": "other"
@@ -46482,6 +47097,11 @@
         {
           "file": "scripts/dual-host-release-gate.py",
           "line": 29,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 16,
           "kind": "other"
         }
       ]
@@ -46600,12 +47220,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 749,
+          "line": 774,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 823,
+          "line": 848,
           "kind": "other"
         },
         {
@@ -46739,12 +47359,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 749,
+          "line": 774,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 823,
+          "line": 848,
           "kind": "other"
         },
         {
@@ -46878,7 +47498,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 823,
+          "line": 848,
           "kind": "other"
         },
         {
@@ -47231,12 +47851,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 709,
+          "line": 50,
           "kind": "other"
         },
         {
@@ -47246,22 +47861,27 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 780,
+          "line": 759,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 818,
+          "line": 805,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1314,
+          "line": 843,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1479,
+          "line": 1339,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1504,
           "kind": "other"
         },
         {
@@ -47505,6 +48125,11 @@
           "kind": "other"
         },
         {
+          "file": "scripts/build-design-review.mjs",
+          "line": 94,
+          "kind": "other"
+        },
+        {
           "file": "scripts/build-indicator-index.py",
           "line": 14,
           "kind": "other"
@@ -47521,17 +48146,17 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 332,
+          "line": 334,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 347,
+          "line": 349,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 490,
+          "line": 492,
           "kind": "other"
         },
         {
@@ -47557,6 +48182,11 @@
         {
           "file": "scripts/completeness.py",
           "line": 270,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/liquid-glass-cases.mjs",
+          "line": 13,
           "kind": "other"
         }
       ]
@@ -48074,7 +48704,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 669,
+          "line": 694,
           "kind": "other"
         },
         {
@@ -48255,7 +48885,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 669,
+          "line": 694,
           "kind": "other"
         },
         {
@@ -48466,12 +49096,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 780,
+          "line": 805,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1313,
+          "line": 1338,
           "kind": "other"
         },
         {
@@ -49874,7 +50504,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 950,
+          "line": 1133,
           "kind": "seo"
         },
         {
@@ -50009,12 +50639,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 776,
+          "line": 801,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1435,
+          "line": 1460,
           "kind": "other"
         },
         {
@@ -50613,12 +51243,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 812,
+          "line": 837,
           "kind": "other"
         },
         {
@@ -50757,7 +51387,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 812,
+          "line": 837,
           "kind": "other"
         },
         {
@@ -51259,17 +51889,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 23,
+          "line": 48,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 813,
+          "line": 838,
           "kind": "other"
         },
         {
@@ -51403,7 +52033,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 813,
+          "line": 838,
           "kind": "other"
         },
         {
@@ -52243,12 +52873,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 669,
+          "line": 694,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1293,
+          "line": 1318,
           "kind": "other"
         },
         {
@@ -53377,12 +54007,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 669,
+          "line": 694,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1293,
+          "line": 1318,
           "kind": "other"
         },
         {
@@ -53715,57 +54345,57 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 27,
+          "line": 52,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 733,
+          "line": 758,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 736,
+          "line": 761,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 740,
+          "line": 765,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 743,
+          "line": 768,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 749,
+          "line": 774,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 788,
+          "line": 813,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 811,
+          "line": 836,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 867,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1439,
+          "line": 1464,
           "kind": "other"
         },
         {
@@ -53944,7 +54574,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 811,
+          "line": 836,
           "kind": "other"
         },
         {
@@ -54365,7 +54995,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 867,
           "kind": "other"
         },
         {
@@ -54375,12 +55005,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 566,
+          "line": 568,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 634,
+          "line": 636,
           "kind": "other"
         }
       ]
@@ -54774,12 +55404,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 468,
+          "line": 496,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 956,
+          "line": 1139,
           "kind": "seo"
         },
         {
@@ -54899,37 +55529,37 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 21,
+          "line": 46,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 56,
+          "line": 81,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 734,
+          "line": 759,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 840,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 867,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1424,
+          "line": 1449,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1438,
+          "line": 1463,
           "kind": "other"
         },
         {
@@ -55254,7 +55884,7 @@
         },
         {
           "file": "frontend/src/lib/useMeta.js",
-          "line": 14,
+          "line": 16,
           "kind": "other"
         },
         {
@@ -55343,6 +55973,11 @@
           "kind": "other"
         },
         {
+          "file": "scripts/build-design-review.mjs",
+          "line": 96,
+          "kind": "other"
+        },
+        {
           "file": "scripts/build-indicator-index.py",
           "line": 15,
           "kind": "other"
@@ -55354,17 +55989,17 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 351,
+          "line": 353,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 492,
+          "line": 494,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 614,
+          "line": 616,
           "kind": "other"
         }
       ]
@@ -55460,12 +56095,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 840,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 867,
           "kind": "other"
         },
         {
@@ -55490,12 +56125,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 567,
+          "line": 569,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 635,
+          "line": 637,
           "kind": "other"
         }
       ]
@@ -55792,12 +56427,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 840,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 867,
           "kind": "other"
         },
         {
@@ -55832,17 +56467,17 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 567,
+          "line": 569,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 619,
+          "line": 621,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 635,
+          "line": 637,
           "kind": "other"
         }
       ]
@@ -56613,7 +57248,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 204,
+          "line": 229,
           "kind": "other"
         },
         {
@@ -57261,7 +57896,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 954,
+          "line": 1137,
           "kind": "seo"
         },
         {
@@ -57386,32 +58021,32 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 137,
+          "line": 162,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 719,
+          "line": 744,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 726,
+          "line": 751,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 776,
+          "line": 801,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1094,
+          "line": 1119,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1435,
+          "line": 1460,
           "kind": "other"
         },
         {
@@ -57655,12 +58290,12 @@
         },
         {
           "file": "backend/tests/test_seo_world.py",
-          "line": 935,
+          "line": 967,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_world.py",
-          "line": 951,
+          "line": 983,
           "kind": "tests"
         },
         {
@@ -57670,7 +58305,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 726,
+          "line": 751,
           "kind": "other"
         },
         {
@@ -58044,7 +58679,7 @@
         },
         {
           "file": "backend/tests/test_breadcrumbs.py",
-          "line": 37,
+          "line": 38,
           "kind": "tests"
         },
         {
@@ -58079,7 +58714,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 205,
+          "line": 230,
           "kind": "other"
         },
         {
@@ -58114,12 +58749,12 @@
         },
         {
           "file": "frontend/src/lib/breadcrumbs.test.js",
-          "line": 46,
+          "line": 47,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/breadcrumbs.test.js",
-          "line": 53,
+          "line": 54,
           "kind": "tests"
         },
         {
@@ -58200,7 +58835,7 @@
         },
         {
           "file": "frontend/src/lib/breadcrumbs.test.js",
-          "line": 47,
+          "line": 48,
           "kind": "tests"
         },
         {
@@ -58706,47 +59341,47 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 679,
+          "line": 704,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 680,
+          "line": 705,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 881,
+          "line": 906,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 898,
+          "line": 923,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 913,
+          "line": 938,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 925,
+          "line": 950,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1464,
+          "line": 1489,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1472,
+          "line": 1497,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1473,
+          "line": 1498,
           "kind": "other"
         },
         {
@@ -59106,67 +59741,67 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 21,
+          "line": 46,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 734,
+          "line": 759,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 816,
+          "line": 841,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 892,
+          "line": 917,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 910,
+          "line": 935,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 921,
+          "line": 946,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1303,
+          "line": 1328,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1410,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 1413,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 1424,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 1430,
+          "line": 1435,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
           "line": 1438,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1449,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1455,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1463,
           "kind": "other"
         },
         {
@@ -59470,12 +60105,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 25,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 653,
+          "line": 50,
           "kind": "other"
         },
         {
@@ -59485,32 +60115,37 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 697,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
           "line": 703,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 875,
+          "line": 722,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1252,
+          "line": 728,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1413,
+          "line": 900,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1430,
+          "line": 1277,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1438,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1455,
           "kind": "other"
         },
         {
@@ -59626,7 +60261,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 21,
+          "line": 46,
           "kind": "other"
         },
         {
@@ -60252,12 +60887,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 816,
+          "line": 841,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1303,
+          "line": 1328,
           "kind": "other"
         },
         {
@@ -61225,6 +61860,11 @@
           "kind": "other"
         },
         {
+          "file": "docs/design/art-prompts/approved-collection.json",
+          "line": 18,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/categories.js",
           "line": 112,
           "kind": "other"
@@ -61516,11 +62156,6 @@
       },
       "files": [
         {
-          "file": "backend/app/api/demographics.py",
-          "line": 14,
-          "kind": "other"
-        },
-        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 386,
           "kind": "other"
@@ -61544,6 +62179,11 @@
           "file": "backend/app/data/view_model_families.py",
           "line": 862,
           "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/demographics.py",
+          "line": 11,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/rosstat_demo_parser.py",
@@ -61587,7 +62227,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 668,
+          "line": 693,
           "kind": "other"
         },
         {
@@ -61598,6 +62238,11 @@
         {
           "file": "frontend/public/sitemap.xml",
           "line": 496,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/demographicStructure.js",
+          "line": 1,
           "kind": "other"
         },
         {
@@ -61617,7 +62262,7 @@
         },
         {
           "file": "frontend/src/pages/DemographicsPage.jsx",
-          "line": 36,
+          "line": 39,
           "kind": "other"
         }
       ]

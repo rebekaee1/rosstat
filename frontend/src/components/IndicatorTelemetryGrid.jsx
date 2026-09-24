@@ -68,7 +68,8 @@ export default function IndicatorTelemetryGrid({
 
   const currentLabel = heroOverride
     ? (indicator.hero_label || t('indicator.telemetry.heroYoy'))
-    : safeViewMode === 'yoy' || safeViewMode === 'annual' ? t('indicator.telemetry.yoy')
+    : ['inflation', 'yoy', 'annual'].includes(dataMode) ? t('indicator.telemetry.yoy')
+      : safeViewMode === 'yoy' || safeViewMode === 'annual' ? t('indicator.telemetry.yoy')
       : safeViewMode === 'mom' ? t('indicator.telemetry.mom')
         : safeViewMode === 'qoq' ? t('indicator.telemetry.qoq')
           : safeViewMode === 'period-monthly' ? t('indicator.telemetry.periodMonth')
@@ -126,7 +127,7 @@ export default function IndicatorTelemetryGrid({
     : t('indicator.telemetry.date', { date: formatDate(currentDate, dateFmt) });
 
   return (
-    <section className="mb-6 md:mb-12">
+    <section className="mb-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <TelemetryCard
           label={currentLabel}

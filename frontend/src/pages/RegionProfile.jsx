@@ -46,7 +46,7 @@ function HeadlineCard({ item, slug }) {
   return (
     <Link
       to={regionIndicatorPath(slug, item.code)}
-      className="group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
+      className="fe-panel fe-summary-card group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
     >
       <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{item.label}</div>
       <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
@@ -151,7 +151,7 @@ export default function RegionProfile() {
     : filteredSections.filter((s) => s.num === resolvedActive);
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={regionTrail(regionName || '…', slug)} />
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
@@ -166,7 +166,7 @@ export default function RegionProfile() {
 
       {data && (
         <>
-          <div className="mb-8">
+          <div className="fe-data-header">
             {data.region.district_name && (
               <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne">
                 <MapPin size={13} />
@@ -271,7 +271,7 @@ export default function RegionProfile() {
               </aside>
             )}
 
-            <div className="min-w-0 space-y-8">
+            <div id="chart" className="min-w-0 space-y-8 scroll-mt-28">
               {visibleSections.map((sec) => (
                 <section key={sec.num} data-block={`region-section-${sec.num}`}>
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">

@@ -60,8 +60,8 @@ const RANGE_OPTIONS = [
 
 // До 10 рядов — палитра различимых цветов (тёмный фон карточки графика).
 const PALETTE = [
-  '#d4a574', '#7dd3fc', '#86efac', '#f0abfc', '#fca5a5',
-  '#fcd34d', '#a5b4fc', '#5eead4', '#fdba74', '#cbd5e1',
+  '#202A3C', '#AD8A48', '#6B8299', '#5D857F', '#957D9C',
+  '#A86F65', '#818754', '#59677D', '#987B68', '#708B9E',
 ];
 
 // «Общая база» вместо «Индекс», чтобы не путать со ЗНАЧЕНИЕМ представления
@@ -444,7 +444,7 @@ function AddRegionSeries({
   };
 
   return (
-    <div className="rounded-xl border border-border-subtle bg-surface p-3">
+    <div className="fe-panel rounded-xl border border-border-subtle bg-surface p-3">
       <AddCardHeader
         icon={MapPin}
         title={t('compare.addRegionTitle')}
@@ -552,7 +552,7 @@ function AddSubnationalSeries({
   };
 
   return (
-    <div className="rounded-xl border border-border-subtle bg-surface p-3">
+    <div className="fe-panel rounded-xl border border-border-subtle bg-surface p-3">
       <AddCardHeader
         icon={MapPin}
         title={t('compare.addSubnationalTitle', { kind: kindPlural })}
@@ -880,7 +880,7 @@ function CompareSeriesPicker({
   };
 
   return (
-    <div className="overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
+    <div className="fe-panel overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
       <div className="mb-5 border-b border-border-subtle pb-4">
         <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">{t('compare.addSeries')}</div>
         <div className="mt-1 text-sm text-text-secondary">
@@ -1126,11 +1126,11 @@ function UpsellModal({ open, onClose }) {
   if (!open) return null;
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-text-primary/35 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl border border-border-subtle bg-surface shadow-2xl p-6"
+        className="fe-panel fe-dialog-panel w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface shadow-2xl p-6"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -1142,7 +1142,7 @@ function UpsellModal({ open, onClose }) {
             </div>
             <h2 className="text-lg font-display font-bold text-text-primary">{t('compare.upsellTitle')}</h2>
           </div>
-          <button type="button" onClick={onClose} className="rounded-md p-1 text-text-tertiary hover:text-text-primary" aria-label={t('common.close')}>
+          <button type="button" onClick={onClose} className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-1 text-text-tertiary hover:text-text-primary" aria-label={t('common.close')}>
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -1150,7 +1150,7 @@ function UpsellModal({ open, onClose }) {
           {t('compare.upsellBody')}
         </p>
         <div className="flex items-center gap-3">
-          <Link to="/register" onClick={onClose} className="flex-1 text-center rounded-xl bg-champagne text-white text-sm font-semibold py-2.5 hover:bg-champagne-muted transition-colors">
+          <Link to="/register" onClick={onClose} className="fe-button-primary flex-1 text-center rounded-xl text-sm font-semibold py-2.5">
             {t('compare.upsellRegister')}
           </Link>
           <Link to="/login" onClick={onClose} className="flex-1 text-center rounded-xl border border-border-subtle text-text-primary text-sm font-medium py-2.5 hover:border-champagne/40 transition-colors">
@@ -1671,7 +1671,7 @@ export default function ComparePage() {
     : t('compare.title');
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
+    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
       <UpsellModal open={upsellOpen} onClose={() => setUpsellOpen(false)} />
 
       <div className="mb-10 md:mb-12 max-w-4xl">
@@ -1889,7 +1889,7 @@ export default function ComparePage() {
             </p>
           </div>
         ) : (
-          <div ref={exportRef} className="rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
+          <div ref={exportRef} className="fe-panel rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
             <h2 className="text-center text-lg md:text-xl font-display font-bold text-text-primary mb-1">
               {title}
             </h2>
@@ -1952,18 +1952,18 @@ export default function ComparePage() {
                   <XAxis
                     dataKey="date"
                     tickFormatter={(d) => formatChartAxisDate(d, compareDateFmt, { multiYear: true })}
-                    tick={{ fill: 'rgba(0,0,0,0.45)', fontSize: 10, fontFamily: 'monospace' }}
+                    tick={{ fill: 'rgba(0,0,0,0.45)', fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif' }}
                     axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
                     tickLine={false}
                     ticks={xTicks}
                     interval={0}
                     tickMargin={8}
                     height={36}
-                    label={{ value: t('compare.periodLabel'), position: 'insideBottom', offset: -2, fill: 'rgba(0,0,0,0.5)', fontSize: 11, fontFamily: 'monospace' }}
+                    label={{ value: t('compare.periodLabel'), position: 'insideBottom', offset: -2, fill: 'rgba(0,0,0,0.5)', fontSize: 11, fontFamily: 'Manrope, system-ui, sans-serif' }}
                   />
                   <YAxis
                     yAxisId="left"
-                    tick={{ fill: indexed ? 'rgba(0,0,0,0.45)' : leftColor, fontSize: 10, fontFamily: 'monospace' }}
+                    tick={{ fill: indexed ? 'rgba(0,0,0,0.45)' : leftColor, fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif' }}
                     axisLine={false}
                     tickLine={false}
                     width={60}
@@ -1973,7 +1973,7 @@ export default function ComparePage() {
                     <YAxis
                       yAxisId="right"
                       orientation="right"
-                      tick={{ fill: rightColor, fontSize: 10, fontFamily: 'monospace' }}
+                      tick={{ fill: rightColor, fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif' }}
                       axisLine={false}
                       tickLine={false}
                       width={60}
@@ -2032,7 +2032,7 @@ export default function ComparePage() {
       </section>
 
       {hasData && analysisSummary.metrics.some((metric) => metric.last) && (
-        <section data-block="compare-analysis" className="rounded-[2rem] border border-border-subtle bg-surface p-5 shadow-[0_16px_45px_rgba(35,30,16,0.05)] md:p-7">
+        <section data-block="compare-analysis" className="fe-panel rounded-[2rem] border border-border-subtle bg-surface p-5 shadow-[0_16px_45px_rgba(35,30,16,0.05)] md:p-7">
           <div className="mb-5 flex flex-col gap-2 border-b border-border-subtle pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">

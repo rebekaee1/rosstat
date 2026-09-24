@@ -25,6 +25,33 @@ import re
 # Канонический слаг России (не в world_countries — отдельный data plane).
 RUSSIA = "russia"
 
+# Four-digit public dates, with room for the exclusive year + 1 SQL boundary.
+# Existence is determined by data; this is a date/URL safety contract, not age policy.
+PUBLIC_YEAR_MIN = 1000
+PUBLIC_YEAR_MAX = 9998
+PUBLIC_YEAR_PATTERN = r"(?!9999)[1-9][0-9]{3}"
+PUBLIC_MONTH_PATTERN = rf"{PUBLIC_YEAR_PATTERN}-(?:0[1-9]|1[0-2])"
+
+
+def is_public_year(year: int | str) -> bool:
+    return re.fullmatch(PUBLIC_YEAR_PATTERN, str(year)) is not None
+
+
+def is_public_month_period(period: str) -> bool:
+    return re.fullmatch(PUBLIC_MONTH_PATTERN, str(period)) is not None
+
+
+def _year(year: int | str) -> int:
+    if not is_public_year(year):
+        raise ValueError(f"bad public year: {year!r}")
+    return int(year)
+
+
+def _month(month: int | str) -> int:
+    if not re.fullmatch(r"(?:0?[1-9]|1[0-2])", str(month)):
+        raise ValueError(f"bad public month: {month!r}")
+    return int(month)
+
 # Первые сегменты, которые НЕ могут быть слагом страны (и для страховки —
 # слагом региона). Расширять при добавлении корневых роутов платформы.
 RESERVED_FIRST_SEGMENTS: frozenset[str] = frozenset({
@@ -103,12 +130,12 @@ def indicator(country_slug: str, code: str) -> str:
 
 def indicator_year(country_slug: str, code: str, year: int | str) -> str:
     """Годовой лендинг: /{country}/indicator/{code}/{year}."""
-    return f"{indicator(country_slug, code)}/{int(year)}"
+    return f"{indicator(country_slug, code)}/{_year(year)}"
 
 
 def indicator_month(country_slug: str, code: str, year: int, month: int) -> str:
     """Месячный лендинг: /{country}/indicator/{code}/{year}-{mm}."""
-    return f"{indicator(country_slug, code)}/{int(year)}-{int(month):02d}"
+    return f"{indicator(country_slug, code)}/{_year(year)}-{_month(month):02d}"
 
 
 def category(country_slug: str, slug: str) -> str:
@@ -194,10 +221,10 @@ def calendar(year: int | str | None = None, month: int | str | None = None) -> s
     base = f"/{RUSSIA}/calendar"
     if year is None:
         return base
-    y = int(year)
+    y = _year(year)
     if month is None:
         return f"{base}/{y}"
-    return f"{base}/{y}/{int(month):02d}"
+    return f"{base}/{y}/{_month(month):02d}"
 
 
 def demographics() -> str:
@@ -216,7 +243,7 @@ def world_rating(concept: str | None = None) -> str:
 
 def world_rating_year(concept: str, year: int | str) -> str:
     """Канон года рейтинга: path-URL /world/rating/{concept}/{year}."""
-    return f"{world_rating(concept)}/{int(year)}"
+    return f"{world_rating(concept)}/{_year(year)}"
 
 
 def og_indicator(country_slug: str, code: str, year: int | str | None = None) -> str:
@@ -232,12 +259,8 @@ def og_indicator(country_slug: str, code: str, year: int | str | None = None) ->
 
 
 def _period(year: int | str) -> str:
-    if isinstance(year, int):
-        return str(year)
-    text = str(year).strip()
-    if re.fullmatch(r"(?:19|20)\d{2}", text) or re.fullmatch(
-        r"(?:19|20)\d{2}-\d{2}", text
-    ):
+    text = str(year)
+    if is_public_year(text) or is_public_month_period(text):
         return text
     raise ValueError(f"bad og period: {year!r}")
 
@@ -248,13 +271,13 @@ def og_region(slug: str, code: str) -> str:
 
 def region_indicator_year(slug: str, code: str, year: int | str) -> str:
     """Годовой лендинг региона: /russia/region/{slug}/{code}/{year}."""
-    return f"{region_indicator(slug, code)}/{int(year)}"
+    return f"{region_indicator(slug, code)}/{_year(year)}"
 
 
 def og_region_year(slug: str, code: str, year: int | str) -> str:
     """OG-картинка годового лендинга региона."""
     return (
-        f"/og/{RUSSIA}/region/{_slug(slug)}/{_code(code)}/{int(year)}.png"
+        f"/og/{RUSSIA}/region/{_slug(slug)}/{_code(code)}/{_year(year)}.png"
     )
 
 
@@ -283,7 +306,7 @@ def og_world_rating(concept: str) -> str:
 
 
 def og_world_rating_year(concept: str, year: int | str) -> str:
-    return f"/og/world/rating/{_slug(concept)}/{int(year)}.png"
+    return f"/og/world/rating/{_slug(concept)}/{_year(year)}.png"
 
 
 def _slug(value: str) -> str:

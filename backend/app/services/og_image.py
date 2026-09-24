@@ -5,11 +5,10 @@
 `build_document(og_image=...)` — у каждой карточки своё превью в соцсетях,
 мессенджерах и выдаче вместо одной общей картинки.
 
-Карточка быстрой ссылки (2026-09-22): жемчужный фон, чернильный текст,
-шампань, крупный ответ и плоский график. Картинка самодостаточна:
+Карточка быстрой ссылки: утверждённая liquid glass композиция, Manrope,
+тематическая скульптура, крупный ответ и точный график. Картинка самодостаточна:
 название, число, период, подпись ряда и домен forecasteconomy.com
-справа внизу. Гарнитура — Golos Text (OFL), кириллический дисплей;
-Inter остаётся фолбэком. Тёмный постер J6 этим рендером заменён.
+справа внизу. Гарнитура — Manrope (OFL), кириллица и латиница. Тёмный постер J6 этим рендером заменён.
 
 Форматы чисел/дат двуязычны: локаль берётся из контекста запроса
 (`get_locale()` из `app.services.locale`, ставится middleware) либо задаётся
@@ -26,6 +25,8 @@ from __future__ import annotations
 import hashlib
 import io
 import logging
+import math
+from functools import lru_cache
 import os
 import random
 import tempfile
@@ -39,6 +40,31 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 logger = logging.getLogger(__name__)
 
 WIDTH, HEIGHT = 1200, 630
+
+# Manrope's bundled subset lacks some Unicode spacing glyphs. Formatting stays
+# unchanged for HTML/data; raster typography uses a normal space for every Zs
+# separator, in both measurement and painting, so line fitting stays identical.
+_RASTER_SPACES = str.maketrans({ord(char): " " for char in
+    "\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000"})
+
+
+def _raster_text(value):
+    return value.translate(_RASTER_SPACES) if isinstance(value, str) else value
+
+
+class _RasterDraw(ImageDraw.ImageDraw):
+    def text(self, xy, text, *args, **kwargs):
+        return super().text(xy, _raster_text(text), *args, **kwargs)
+
+    def textbbox(self, xy, text, *args, **kwargs):
+        return super().textbbox(xy, _raster_text(text), *args, **kwargs)
+
+    def textlength(self, text, *args, **kwargs):
+        return super().textlength(_raster_text(text), *args, **kwargs)
+
+
+def _raster_draw(image, mode=None):
+    return _RasterDraw(image, mode)
 
 # --- палитра J6 (контраст выверен аудит-скриптом) ---
 DARK0 = (15, 16, 32)
@@ -153,7 +179,7 @@ def ru_period_lines(last_date, prev_date=None,
     return period, compare
 
 _FONT_DIR = Path(__file__).parent.parent / "assets" / "fonts"
-_GOLOS_PATH = _FONT_DIR / "GolosText-Variable.ttf"
+_GOLOS_PATH = _FONT_DIR / "Manrope-Variable.ttf"
 _FONT_PATH = _FONT_DIR / "Inter-Variable.ttf"
 
 _CACHE: dict[str, tuple[float, bytes]] = {}
@@ -188,12 +214,12 @@ def _cached_truetype(path: Path, size: int, *axes: float) -> ImageFont.FreeTypeF
 
 
 def _font(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont:
-    return _cached_truetype(_FONT_PATH, size, 14.0, 700.0 if bold else 400.0)
+    return FG(size, 700 if bold else 400)
 
 
 def FG(size: int, wght: int = 400) -> ImageFont.FreeTypeFont:
-    """Golos Text variable: вес 400–900."""
-    return _cached_truetype(_GOLOS_PATH, size, float(wght))
+    """Manrope variable, shared with the approved RU/EN browser typography."""
+    return _cached_truetype(_GOLOS_PATH, size, float(min(800, max(200, wght))))
 
 
 def _wrap_text(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
@@ -210,7 +236,7 @@ def _wrap_text(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFon
             current = word
     if current:
         lines.append(current)
-    return lines[:2]
+    return lines
 
 
 def _wrap_fit_lines(
@@ -219,6 +245,7 @@ def _wrap_fit_lines(
     wght: int,
     max_width: int,
     min_size: int,
+    max_lines: int = 2,
 ) -> tuple[list[str], int]:
     """Перенос заголовка на 2 строки с автоподбором кегля под ширину полосы.
 
@@ -227,15 +254,34 @@ def _wrap_fit_lines(
     станут короче max_width (floor — min_size). Гарантирует, что и перенос,
     и каждая строка переноса умещаются в полосу.
     """
-    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    probe = _raster_draw(Image.new("RGB", (8, 8)))
     size = max(int(size), min_size)
     while True:
         font = FG(size, wght)
         lines = _wrap_text(probe, text, font, max_width)
-        if all(probe.textlength(line, font=font) <= max_width for line in lines) \
-                or size <= min_size:
+        if (len(lines) <= max_lines and all(
+            probe.textlength(line, font=font) <= max_width for line in lines
+        )) or size <= min_size:
             return lines, size
         size -= 2
+
+
+def _fit_text_block(text: str, size: int, weight: int, width: int, height: int,
+                    *, min_size: int = 18) -> tuple[list[str], int]:
+    """Fit the complete label into a height budget; never discard title words.
+
+    max_lines alone is not a hard bound once its minimum font size is reached.
+    This geometry check is used where a chart or a fact needs reserved space.
+    """
+    probe = _raster_draw(Image.new("RGB", (8, 8)))
+    while True:
+        lines = _wrap_text(probe, text, FG(size, weight), width)
+        fits = len(lines) * round(size * 1.2) <= height and all(
+            probe.textlength(line, font=FG(size, weight)) <= width for line in lines
+        )
+        if fits or size <= min_size:
+            return lines, size
+        size -= 1
 
 
 def _split_value_lines(value_text: str) -> tuple[str, str | None]:
@@ -246,6 +292,9 @@ def _split_value_lines(value_text: str) -> tuple[str, str | None]:
     if "%" in value_text or not value_text:
         return value_text, None
     stripped = value_text.strip()
+    number_only = stripped.replace("\u202f", "").replace("\u00a0", "").replace(" ", "")
+    if number_only and all(c.isdigit() or c in ",.+-−" for c in number_only):
+        return stripped, None
     for i in range(len(stripped) - 1, 0, -1):
         if stripped[i] != " ":
             continue
@@ -265,7 +314,7 @@ def _fit_font_size(
 ) -> int:
     """Максимальный кегль (Golos, вес wght), при котором text ≤ max_width."""
     size = max(int(size), min_size)
-    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    probe = _raster_draw(Image.new("RGB", (8, 8)))
     while probe.textlength(text, font=FG(size, wght)) > max_width and size > min_size:
         size -= 2
     return size
@@ -273,7 +322,7 @@ def _fit_font_size(
 
 def _fit_text_width(text: str, size: int, wght: int, max_width: int) -> str:
     """Пиксельная обрезка с многоточием на подобранном кегле (последний рубеж)."""
-    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    probe = _raster_draw(Image.new("RGB", (8, 8)))
     font = FG(size, wght)
     if probe.textlength(text, font=font) <= max_width:
         return text
@@ -357,7 +406,7 @@ def _draw_poster_chart(
     sm = _spline(pts)
 
     poly_mask = Image.new("L", (WIDTH, HEIGHT), 0)
-    ImageDraw.Draw(poly_mask).polygon(sm + [(sm[-1][0], y1 + 2), (sm[0][0], y1 + 2)], fill=85)
+    _raster_draw(poly_mask).polygon(sm + [(sm[-1][0], y1 + 2), (sm[0][0], y1 + 2)], fill=85)
     gh = y1 - y0 + 1
     ga = np.zeros((gh, WIDTH, 4), dtype=np.uint8)
     fade = np.tile(np.linspace(1, 0, gh)[:, None], (1, WIDTH))
@@ -368,7 +417,7 @@ def _draw_poster_chart(
     grad_full.paste(Image.fromarray(ga, "RGBA"), (0, y0))
     img.paste(grad_full, (0, 0), poly_mask)
 
-    d = ImageDraw.Draw(img, "RGBA")
+    d = _raster_draw(img, "RGBA")
     if lo < 0 < hi:
         zy = y1 - (y1 - y0) * (0 - lo) / rngv
         for i in range(int(x0), int(x1), 14):
@@ -419,7 +468,7 @@ def _draw_big_number(img: Image.Image, xy: tuple[int, int], text: str, size: int
     """Гигантское число с вертикальным градиентом и тенью-подложкой."""
     f = FG(size, 800)
     tmp = Image.new("L", (WIDTH, HEIGHT), 0)
-    ImageDraw.Draw(tmp).text(xy, text, font=f, fill=255)
+    _raster_draw(tmp).text(xy, text, font=f, fill=255)
     bb = tmp.getbbox()
     sh_a = np.zeros((HEIGHT, WIDTH, 4), dtype=np.uint8)
     sh_a[:, :, 0], sh_a[:, :, 1], sh_a[:, :, 2] = 6, 7, 16
@@ -435,162 +484,418 @@ def _draw_big_number(img: Image.Image, xy: tuple[int, int], text: str, size: int
     return bb
 
 
-def _pearl_base() -> Image.Image:
-    img = Image.new("RGBA", (WIDTH, HEIGHT), (238, 240, 244, 255))
-    wash = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    ImageDraw.Draw(wash).ellipse((680, -240, 1420, 460), fill=(233, 223, 205, 120))
-    img.alpha_composite(wash)
+_ART_DIR = Path(__file__).parent.parent / "assets" / "quicklinks"
+OG_DESIGN_VERSION = "glass-manrope-6"
+
+
+def quicklink_art_theme(text: str) -> str:
+    """Visual family only: never derives, substitutes, or labels numerical data."""
+    key = text.lower().replace("_", "-")
+    if "nonfarm" in key:
+        return "population"
+    if any(word in key for word in ("doctoral", "аспирант", "докторант")):
+        return "education"
+    groups = (
+        ("ict", ("internet", "broadband", "telecom", "digital", "electronic", "интернет", "цифров", "связи", "электронн")),
+        ("trade", ("export", "import", "trade", "экспорт", "импорт", "торгов")),
+        ("justice", ("crime", "justice", "court", "преступ", "правосуд", "судеб")),
+        ("housing", ("housing", "house-price", "mortgage", "жиль", "жилищ", "ипотек", "строитель")),
+        ("health", ("health", "hospital", "doctor", "life-expect", "здоров", "врач", "смерт")),
+        ("education", ("education", "school", "student", "образован", "учащ")),
+        ("science", ("research", "science", "patent", "r-and-d", "наук", "исследован")),
+        ("agriculture", ("agri", "harvest", "crop", "farm", "сельск", "урож")),
+        ("tourism", ("touris", "hotel", "travel", "туризм", "турист", "гостиниц")),
+        ("environment", ("emission", "environment", "pollut", "эколог", "выброс")),
+        ("energy", ("electric", "energy", "gas-prod", "энерг", "электр")),
+        ("transport", ("transport", "freight", "passenger", "транспорт", "грузо")),
+        ("commodity", ("brent", "crude", "commodity", "metal", "gold", "copper", "нефт", "топлив", "золот")),
+        ("industry", ("industrial", "manufactur", "production", "gdp", "ввп", "промышлен", "производ")),
+        ("population", ("population", "demograph", "migration", "labor", "labour", "wage", "employ", "насел", "зарплат", "безработ", "занятост")),
+    )
+    return next((theme for theme, words in groups if any(word in key for word in words)), "finance")
+
+
+@lru_cache(maxsize=17)
+def _art_background(theme: str) -> Image.Image:
+    """Bounded decoded art cache; Pillow never retains an open file descriptor."""
+    img = Image.new("RGBA", (WIDTH, HEIGHT), (*BG, 255))
+    path = _ART_DIR / f"{theme}.webp"
+    if path.is_file():
+        with Image.open(path) as original:
+            art = original.convert("RGBA")
+            height = round(art.height * WIDTH / art.width)
+            art = art.resize((WIDTH, height), Image.Resampling.LANCZOS)
+        img.alpha_composite(art, (0, (HEIGHT - height) // 2))
+    # Keep the sculpture visible behind the glass, while the answer has a calm,
+    # high-contrast surface. This is a compositional veil, not a data overlay.
+    veil = Image.new("RGBA", (WIDTH, HEIGHT))
+    vd = _raster_draw(veil)
+    for x in range(WIDTH):
+        alpha = int(245 * max(0, min(1, (720 - x) / 290)))
+        vd.line((x, 0, x, HEIGHT), fill=(*BG, alpha))
+    img.alpha_composite(veil)
     return img
 
 
-def _draw_editorial_chart(
-    draw: ImageDraw.ImageDraw,
-    values: list[float],
-    box: tuple[int, int, int, int],
-) -> None:
-    """Плоский график на светлой поверхности: сетка, линия, последняя точка."""
+def _pearl_base(theme: str = "finance") -> Image.Image:
+    return _art_background(theme).copy()
+
+
+def _glass_panel(draw: ImageDraw.ImageDraw, box, radius: int = 24) -> None:
+    draw.rounded_rectangle(box, radius=radius, fill=(255, 255, 255, 220),
+                           outline=(255, 255, 255, 255), width=2)
+    x0, y0, x1, _y1 = box
+    draw.line((x0 + radius, y0 + 3, x1 - radius, y0 + 3), fill=(255, 255, 255, 255), width=1)
+
+
+def _draw_wordmark(draw: ImageDraw.ImageDraw, x: int = 46, y: int = 30) -> None:
+    # The same f + champagne square as the approved browser wordmark.
+    draw.rounded_rectangle((x, y + 4, x + 28, y + 15), radius=7, fill=TEXT_PRIMARY)
+    draw.rectangle((x, y + 12, x + 9, y + 37), fill=TEXT_PRIMARY)
+    draw.rectangle((x + 7, y + 19, x + 25, y + 27), fill=TEXT_PRIMARY)
+    draw.rectangle((x + 23, y + 30, x + 30, y + 37), fill=CHAMPAGNE)
+    start = x + 44
+    draw.text((start, y - 3), "forecast", font=FG(29, 750), fill=TEXT_PRIMARY)
+    width = draw.textlength("forecast", font=FG(29, 750))
+    draw.text((start + width, y - 3), "economy", font=FG(29, 400), fill=TEXT_PRIMARY)
+    draw.text((start + 1, y + 31), "ECONOMIC INTELLIGENCE", font=FG(9, 600), fill=CHAMPAGNE)
+
+
+def _chart_coordinates(values, box, point_dates=None, *, zero_baseline=False):
+    """No invented endpoints, no implicit tail slicing; x is elapsed time."""
+    finite = [(i, float(v)) for i, v in enumerate(values) if v is not None and math.isfinite(float(v))]
+    if not finite:
+        return [], (0.0, 1.0)
     x0, y0, x1, y1 = box
-    vals = list(values[-48:])
-    if len(vals) < 2:
-        vals = (vals + [vals[-1] if vals else 0.0])[:2] or [0.0, 0.0]
-    vmin, vmax = min(vals), max(vals)
-    pad = ((vmax - vmin) or abs(vmax) or 1.0) * 0.16
-    lo, hi = vmin - pad, vmax + pad
-    if lo == hi:
-        hi = lo + 1.0
-    span = hi - lo
-    n = len(vals)
+    low, high = min(v for _, v in finite), max(v for _, v in finite)
+    if zero_baseline:
+        low, high = min(0, low), max(0, high)
+    pad = ((high - low) or abs(high) or 1) * .14
+    lo, hi = low - pad, high + pad
+    if zero_baseline:
+        rough = (high-low or abs(high) or 1)/4
+        magnitude = 10 ** math.floor(math.log10(rough))
+        step = next(m for m in (1,2,2.5,5,10) if m*magnitude >= rough) * magnitude
+        lo, hi = math.floor(low/step)*step, math.ceil(high/step)*step
+        if lo == hi:
+            hi = lo + step
+    dates = None
+    if point_dates and len(point_dates) == len(values):
+        from datetime import date
+        try:
+            dates = [d.toordinal() if hasattr(d, "toordinal") else date.fromisoformat(str(d)[:10]).toordinal() for d in point_dates]
+        except (ValueError, TypeError):
+            dates = None
+    xx = dates or list(range(len(values)))
+    start, end = min(xx), max(xx)
+    points = [(i, x0 + (x1-x0) * ((xx[i]-start)/(end-start) if end != start else .5),
+               y1 - (y1-y0)*(v-lo)/(hi-lo)) for i, v in finite]
+    return points, (lo, hi)
 
-    def xy(i: int, v: float) -> tuple[float, float]:
-        x = x0 + (x1 - x0) * i / (n - 1)
-        y = y1 - (y1 - y0) * ((v - lo) / span)
-        return x, y
 
-    ink = (32, 42, 60, 36)
-    for k in range(4):
-        gy = y0 + (y1 - y0) * k / 3
-        draw.line([(x0, gy), (x1, gy)], fill=ink, width=1)
-    pts = [xy(i, v) for i, v in enumerate(vals)]
-    color = (162, 75, 52, 255) if vmax < 0 else (50, 111, 88, 255)
-    draw.line(pts, fill=color, width=4, joint="curve")
-    lx, ly = pts[-1]
-    draw.ellipse((lx - 6, ly - 6, lx + 6, ly + 6), fill=color)
-    rf = FG(15, 600)
-    muted = (103, 115, 134, 255)
-    draw.text((x0, y0 - 22), _fmt_axis(hi), font=rf, fill=muted)
-    draw.text((x0, y1 + 8), _fmt_axis(lo), font=rf, fill=muted)
+def _draw_editorial_chart(draw, values, box, *, point_dates=None, frequency=None,
+                          chart_kind="line", selected_index=None, text_scale=1.0, selection_label=None) -> None:
+    x0, y0, x1, y1 = box
+    coordinate_box = (x0+18, y0, x1-18, y1) if chart_kind == "bar" else box
+    points, (lo, hi) = _chart_coordinates(values, coordinate_box, point_dates, zero_baseline=chart_kind == "bar")
+    muted = (91, 105, 124, 255)
+    if not points:
+        label = "No published observations" if _effective_locale(None) == "en" else "Нет опубликованных наблюдений"
+        draw.text((x0, (y0+y1)//2), label, font=FG(18, 500), fill=muted)
+        return
+    intervals = 4 if chart_kind == "bar" else 3
+    for k in range(intervals+1):
+        gy = y0 + (y1-y0) * k/intervals
+        draw.line((x0, gy, x1, gy), fill=(32, 42, 60, 28), width=1)
+        value = hi - (hi-lo)*k/intervals
+        draw.text((x0-10, gy-10), _fmt_axis(value), anchor="ra", font=FG(round(15*text_scale), 500), fill=muted)
+    zero_y = y1-(y1-y0)*(0-lo)/(hi-lo)
+    if lo < 0 < hi:
+        draw.line((x0, zero_y, x1, zero_y), fill=(32, 42, 60, 100), width=1)
+    if chart_kind == "bar":
+        bw = max(2, min(30, (x1-x0)/max(1, len(values))*.52))
+        for index, x, y in points:
+            color = (*CHAMPAGNE, 235) if values[index] >= 0 else (82, 119, 143, 255)
+            if abs(y-zero_y) >= 1:
+                draw.rounded_rectangle((x-bw/2, min(y, zero_y), x+bw/2, max(y, zero_y)), radius=2, fill=color)
+            else:
+                draw.line((x-bw/2, zero_y, x+bw/2, zero_y), fill=color, width=2)
+    else:
+        for (prev_i, px, py), (i, x, y) in zip(points, points[1:]):
+            # A missing value or a missing monthly/annual interval stays a gap.
+            adjacent = i == prev_i + 1
+            if point_dates and frequency in ("monthly", "quarterly", "annual", "yearly"):
+                a, b = str(point_dates[prev_i])[:10], str(point_dates[i])[:10]
+                delta = (int(b[:4])-int(a[:4]))*12 + int(b[5:7])-int(a[5:7])
+                adjacent &= delta <= {"monthly": 1, "quarterly": 3, "annual": 12, "yearly": 12}[frequency]
+            if adjacent:
+                segment = [(px, py), (x, py), (x, y)] if chart_kind == "step" else [(px, py), (x, y)]
+                draw.line(segment, fill=(55, 76, 96, 255), width=4, joint="curve")
+        if len(points) <= 24:
+            for _, x, y in points:
+                draw.ellipse((x-3, y-3, x+3, y+3), fill=(55, 76, 96, 255))
+    selected = next((p for p in points if p[0] == selected_index), points[-1])
+    _, sx, sy = selected
+    if selection_label:
+        for y in range(int(y0), int(y1), 10):
+            draw.line((sx, y, sx, min(y+4,y1)), fill=(*CHAMPAGNE,140), width=2)
+        font = FG(round(15*text_scale), 700)
+        tx = max(x0, min(sx + 12, x1-draw.textlength(selection_label,font=font)))
+        draw.text((tx, y0-32*text_scale), selection_label, font=font, fill=CHAMPAGNE)
+    draw.ellipse((sx-7, sy-7, sx+7, sy+7), fill=(*CHAMPAGNE, 255), outline=(255,255,255,255), width=2)
 
 
 def render_indicator_og(
-    *,
-    code: str,
-    name: str,
-    value_text: str,
-    date_text: str,
-    values: list[float],
-    period_text: str | None = None,
-    x_labels: tuple[str, str] | None = None,
-    context_pill: str | None = None,
-    subtitle: str | None = None,
-    unit_suffix: str | None = None,
+    *, code: str, name: str, value_text: str, date_text: str, values: list[float],
+    period_text: str | None = None, x_labels: tuple[str, str] | None = None,
+    context_pill: str | None = None, subtitle: str | None = None,
+    unit_suffix: str | None = None, point_dates=None, frequency: str | None = None,
+    source_label: str | None = None, selected_index: int | None = None,
+    portrait: bool = False,
 ) -> bytes:
-    """Редакционная карточка: ответ, график, период и домен на самом изображении.
+    """One data-driven glass template for national, world and regional pages.
 
-    Чистая функция от данных — кэш на вызывающей стороне. `period_text` —
-    метка периода в шапке («2025 год»). `subtitle` и `context_pill` остаются
-    пояснением ряда слева внизу. `x_labels` — крайние подписи под графиком.
-    `code` участвует в смысле числа на вызывающей стороне (знак «+»), здесь
-    нужен только как часть контракта рендера.
+    Labels/values are supplied by the public-data adapters. Art is thematic only;
+    no artwork, fixture or interpolation provides numerical observations.
     """
-    del code  # знак числа уже собран в value_text
-    margin = 56
-    ink = (32, 42, 60, 255)
-    muted = (103, 115, 134, 255)
-    champ = (173, 138, 72, 255)
-    img = _pearl_base()
-    draw = ImageDraw.Draw(img, "RGBA")
-    draw.rounded_rectangle(
-        (28, 22, WIDTH - 28, HEIGHT - 22), radius=28, fill=(255, 255, 255, 236),
-    )
-
-    draw.text((margin, 42), "forecasteconomy", font=FG(26, 700), fill=ink)
-    right_txt = period_text or ""
-    if right_txt:
-        sf = FG(18, 600)
-        rw = draw.textlength(right_txt, font=sf)
-        draw.text((WIDTH - margin - rw, 48), right_txt, font=sf, fill=muted)
-
-    title_w = WIDTH - margin * 2
-    title_lines, title_size = _wrap_fit_lines(name or " ", 36, 700, title_w, 20)
-    title_lines = title_lines[:3]
-    ty = 88
-    tf = FG(title_size, 700)
+    if portrait:
+        return _render_indicator_portrait(code=code, name=name, value_text=value_text,
+            date_text=date_text, values=values, period_text=period_text, x_labels=x_labels,
+            context_pill=context_pill, subtitle=subtitle, unit_suffix=unit_suffix,
+            point_dates=point_dates, frequency=frequency, source_label=source_label,
+            selected_index=selected_index)
+    img = _pearl_base(quicklink_art_theme(code + " " + name)).convert("RGB")
+    draw = _raster_draw(img, "RGBA")
+    ink, muted = (*TEXT_PRIMARY, 255), (91, 105, 124, 255)
+    _draw_wordmark(draw)
+    if period_text:
+        draw.text((1152, 43), period_text, anchor="ra", font=FG(18, 600), fill=muted)
+    loc = _effective_locale(None)
+    title_lines, title_size = _wrap_fit_lines(name or " ", 43, 600, 410, 23, max_lines=3)
+    extended_title = len(title_lines) * round(title_size * 1.2) > 145
+    if extended_title:
+        # Long official titles span the poster; the number and real chart keep
+        # separate lower columns instead of colliding in the narrow left rail.
+        title_lines, title_size = _fit_text_block(name, 31, 600, 1104, 104, min_size=18)
+        draw.rectangle((30, 96, 1171, 225), fill=(238, 240, 244, 150))
+    else:
+        draw.text((46, 119), "OFFICIAL STATISTICS" if loc == "en" else "ОФИЦИАЛЬНАЯ СТАТИСТИКА",
+                  font=FG(12, 700), fill=CHAMPAGNE)
+    ty = 145 if not extended_title else 110
     for line in title_lines:
-        draw.text((margin, ty), line, font=tf, fill=ink)
-        ty += int(title_size * 1.22)
-
-    num_line, unit_line = _split_value_lines(value_text or "—")
+        draw.text((46, ty), line, font=FG(title_size, 600), fill=ink)
+        ty += int(title_size * 1.2)
+    num, unit = _split_value_lines(value_text or "—")
     if unit_suffix and unit_suffix not in (value_text or ""):
-        unit_line = f"{unit_line} {unit_suffix}".strip() if unit_line else unit_suffix
-    left_limit = 500
-    num_size = _fit_font_size(num_line, 92, 700, left_limit, 36)
-    nf = FG(num_size, 700)
-    num_y = max(ty + 28, 210)
-    draw.text((margin, num_y), num_line, font=nf, fill=ink)
-    meta_y = num_y + int(num_size * 1.15)
-    if unit_line:
-        uf = FG(_fit_font_size(unit_line, 28, 600, left_limit, 16), 600)
-        draw.text((margin, meta_y), unit_line, font=uf, fill=muted)
-        meta_y += 40
-    if date_text:
-        draw.text((margin, meta_y), date_text, font=FG(20, 600), fill=muted)
-        meta_y += 32
-    if context_pill:
-        pill_size = _fit_font_size(context_pill, 20, 600, left_limit, 14)
-        draw.text((margin, meta_y), context_pill, font=FG(pill_size, 600), fill=champ)
-
-    chart = (600, max(ty + 36, 188), WIDTH - 72, 500)
-    _draw_editorial_chart(draw, values, chart)
-    xf = FG(16, 600)
+        unit = f"{unit or ''} {unit_suffix}".strip()
+    size = _fit_font_size(num, 88 if not extended_title else 70, 550, 414, 33)
+    ny = max(ty+22, 301)
+    draw.text((43, ny), num, font=FG(size, 550), fill=ink)
+    my = ny+int(size*1.19)
+    if unit:
+        draw.text((47, my), unit, font=FG(_fit_font_size(unit, 21, 500, 412, 13), 500), fill=muted)
+        my += 32
+    for label, color in ((date_text, muted), (context_pill, CHAMPAGNE)):
+        if label:
+            lines, fs = _wrap_fit_lines(label, 17, 500, 415, 13)
+            for line in lines:
+                draw.text((47, my), line, font=FG(fs, 500), fill=color)
+                my += fs+6
+    panel_top = max(142, ty + 14) if extended_title else 142
+    _glass_panel(draw, (490, panel_top, 1155, 529))
+    axis_unit = unit_suffix or unit or ("%" if "%" in value_text else "")
+    heading = subtitle or (("Observed values" if loc == "en" else "Опубликованные значения") + (f", {axis_unit}" if axis_unit else ""))
+    draw.text((513, panel_top + 20), heading, font=FG(_fit_font_size(heading, 20, 650, 613, 14),650), fill=ink)
+    chart = (569, panel_top + (64 if extended_title else 80), 1122, 462 if extended_title else 442)
+    kind = "step" if "key-rate" in code or "keyrate" in code else "bar" if ("cpi" in code and len(values) <= 15) else "line"
+    _draw_editorial_chart(draw, values, chart, point_dates=point_dates, frequency=frequency,
+                          chart_kind=kind, selected_index=selected_index,
+                          selection_label=str(period_text) if selected_index is not None and selected_index < len(values)-1 else None)
     if x_labels:
-        left_l, right_l = x_labels
-        draw.text((chart[0], 528), left_l, font=xf, fill=muted)
-        rw = draw.textlength(right_l, font=xf)
-        draw.text((chart[2] - rw, 528), right_l, font=xf, fill=muted)
-
-    note = subtitle or ""
-    if note:
-        note_size = _fit_font_size(note, 18, 500, 760, 13)
-        draw.text((margin, HEIGHT - 78), note, font=FG(note_size, 500), fill=muted)
-    dom = "forecasteconomy.com"
-    df = FG(18, 700)
-    dw = draw.textlength(dom, font=df)
-    draw.text((WIDTH - margin - dw, HEIGHT - 78), dom, font=df, fill=champ)
-
+        if x_labels[0] == x_labels[1]:
+            draw.text(((chart[0]+chart[2])/2,chart[3]+16),x_labels[0],anchor="ma",font=FG(15,600),fill=muted)
+        else:
+            draw.text((chart[0], chart[3]+16), x_labels[0], font=FG(15, 600), fill=muted)
+            draw.text((chart[2], chart[3]+16), x_labels[1], anchor="ra", font=FG(15, 600), fill=muted)
+    draw.text((1128, 497), "forecasteconomy.com", anchor="ra", font=FG(15, 650), fill=CHAMPAGNE)
+    draw.line((46, 556, 1154, 556), fill=(32,42,60,35), width=1)
+    note = source_label or ("Source and methodology on the indicator page" if loc == "en" else "Источник и методология — в карточке показателя")
+    draw.text((46, 577), note, font=FG(_fit_font_size(note, 16, 500, 735, 12),500), fill=muted)
+    draw.text((1154, 574), "forecasteconomy.com", anchor="ra", font=FG(21, 600), fill=ink)
     buf = io.BytesIO()
-    img.convert("RGB").save(buf, format="PNG", optimize=False, compress_level=6)
+    img.convert("RGB").save(buf, format="PNG", compress_level=6)
+    return buf.getvalue()
+
+
+def _render_indicator_portrait(*, code, name, value_text, date_text, values,
+        period_text, x_labels, context_pill, subtitle, unit_suffix,
+        point_dates, frequency, source_label, selected_index):
+    """1080×1350 companion: axis text stays >=11 px on a 288 px content width."""
+    width, height = 1080, 1350
+    img = Image.new("RGB", (width,height), BG)
+    art = _pearl_base(quicklink_art_theme(code + " " + name)).convert("RGB")
+    art = art.resize((1080, 567), Image.Resampling.LANCZOS)
+    img.paste(art, (0,70))
+    draw = _raster_draw(img, "RGBA")
+    muted = (91,105,124,255)
+    draw.rectangle((0, 95, width, 637), fill=(238, 240, 244, 100))
+    _draw_wordmark(draw, 54, 28)
+    loc = _effective_locale(None)
+    if period_text:
+        draw.text((1026, 45), period_text, anchor="ra", font=FG(29,600), fill=muted)
+    number, unit = _split_value_lines(value_text or "—")
+    if unit_suffix and unit_suffix not in value_text:
+        unit = f"{unit or ''} {unit_suffix}".strip()
+    unit_lines, unit_size = _wrap_fit_lines(unit or "", 39, 500, 955, 32, max_lines=2)
+    metadata_height = len(unit_lines) * (unit_size + 7) + sum(43 for label in (date_text,context_pill) if label)
+    # Keep at least a 100px main fact and a >=200px plotting area. A long
+    # official title uses more lines and less art/number whitespace.
+    title_budget = 655 - 137 - 14 - 120 - metadata_height
+    lines, size = _fit_text_block(name,60,600,960,title_budget,min_size=24)
+    ty = 137
+    for line in lines:
+        draw.text((53,ty),line,font=FG(size,600),fill=TEXT_PRIMARY)
+        ty += round(size*1.2)
+    ny = max(ty+14, 285)
+    available_size = max(72, int((655 - ny - metadata_height) / 1.2))
+    number_size = _fit_font_size(number,min(145,available_size),550,970,72)
+    draw.text((47,ny), number, font=FG(number_size,550), fill=TEXT_PRIMARY)
+    my = ny + round(number_size*1.2)
+    for line in unit_lines:
+        draw.text((56,my), line, font=FG(unit_size,500),fill=muted)
+        my+=unit_size+7
+    for label,color in ((date_text,muted),(context_pill,CHAMPAGNE)):
+        if label:
+            fs=_fit_font_size(label,34,500,960,27)
+            fitted=_fit_text_width(label,fs,500,960)
+            draw.text((55,my),fitted,font=FG(fs,500),fill=color)
+            my+=fs+9
+    panel_top = max(630, my+25)
+    # Long metadata has a bounded allowance before the real data chart; no
+    # observation or label is dropped to make room for artwork.
+    _glass_panel(draw,(38,panel_top,1042,1215),radius=32)
+    # The complete unit is already printed above the plot. Repeating a long
+    # unit in this heading must not consume the reserved plotting height.
+    heading=subtitle or ("Observed values" if loc=="en" else "Опубликованные значения")
+    ls,fs=_fit_text_block(heading,39,650,930,60,min_size=29)
+    hy=panel_top+25
+    for line in ls:
+        draw.text((66,hy),line,font=FG(fs,650),fill=TEXT_PRIMARY)
+        hy+=fs+10
+    chart=(201,hy+74,978,1058)
+    kind="step" if "key-rate" in code or "keyrate" in code else "bar" if "cpi" in code and len(values)<=15 else "line"
+    _draw_editorial_chart(draw,values,chart,point_dates=point_dates,frequency=frequency,
+        chart_kind=kind,selected_index=selected_index,text_scale=2.8,
+        selection_label=str(period_text) if selected_index is not None and selected_index<len(values)-1 else None)
+    if x_labels:
+        if x_labels[0] == x_labels[1]:
+            draw.text(((chart[0]+chart[2])/2,1081),x_labels[0],anchor="ma",font=FG(42,600),fill=muted)
+        else:
+            draw.text((chart[0],1081),x_labels[0],font=FG(42,600),fill=muted)
+            draw.text((chart[2],1081),x_labels[1],anchor="ra",font=FG(42,600),fill=muted)
+    draw.text((996,1162),"forecasteconomy.com",anchor="ra",font=FG(34,650),fill=CHAMPAGNE)
+    note=source_label or ("Source and methodology on the page" if loc=="en" else "Источник и методология — на странице")
+    draw.text((54,1251),note,font=FG(_fit_font_size(note,32,500,965,25),500),fill=muted)
+    draw.text((54,1303),"forecasteconomy.com",font=FG(25,650),fill=TEXT_PRIMARY)
+    buf=io.BytesIO(); img.save(buf,format="PNG",compress_level=6)
+    return buf.getvalue()
+
+
+def render_demographics_og(*, year: int, groups: list[tuple[str, float]], unit: str,
+        source_label: str, name: str | None = None, portrait: bool = False,
+        locale: str | None = None) -> bytes:
+    """Three additive age groups of one year/base; never an invented pyramid.
+
+    Callers must provide all three comparable counts. Invalid/absent components
+    are rejected so the endpoint can show an honest unavailable image state.
+    """
+    from app.services.display import format_number_ru
+
+    if len(groups) != 3 or any(value is None or not math.isfinite(float(value)) or float(value)<0 for _,value in groups):
+        raise ValueError("Three finite non-negative age-group counts are required")
+    total = sum(float(value) for _,value in groups)
+    if total <= 0:
+        raise ValueError("Age-group total must be positive")
+    loc = _effective_locale(locale)
+    name = name or ("Age structure of Russia's population" if loc == "en" else "Возрастная структура населения России")
+    colors = ((173,138,72),(82,119,143),(107,119,145))
+    fmt = lambda value: format_number_ru(value, locale=loc)
+    shares = [float(value)/total*100 for _,value in groups]
+    if portrait:
+        img = Image.new("RGB",(1080,1350),BG)
+        img.paste(_pearl_base("population").convert("RGB").resize((1080,567),Image.Resampling.LANCZOS),(0,70))
+        draw=_raster_draw(img,"RGBA")
+        _draw_wordmark(draw,54,28)
+        draw.text((1026,44),str(year),anchor="ra",font=FG(32,600),fill=TEXT_SECONDARY)
+        lines,fs=_wrap_fit_lines(name,60,600,960,38,max_lines=2)
+        y=135
+        for line in lines:
+            draw.text((54,y),line,font=FG(fs,600),fill=TEXT_PRIMARY)
+            y+=round(fs*1.2)
+        draw.text((50,max(290,y+20)),fmt(total),font=FG(_fit_font_size(fmt(total),128,550,965,62),550),fill=TEXT_PRIMARY)
+        draw.text((57,466),unit,font=FG(_fit_font_size(unit,42,500,955,32),500),fill=TEXT_SECONDARY)
+        total_label="Sum of the three age groups" if loc=="en" else "Сумма трёх возрастных групп"
+        draw.text((57,526),total_label,font=FG(34,500),fill=TEXT_SECONDARY)
+        for i,((label,value),share,color) in enumerate(zip(groups,shares,colors)):
+            top=618+i*185
+            _glass_panel(draw,(38,top,1042,top+168),radius=26)
+            draw.text((67,top+19),label,font=FG(_fit_font_size(label,42,600,940,29),600),fill=TEXT_PRIMARY)
+            draw.text((67,top+79),fmt(value),font=FG(47,600),fill=TEXT_PRIMARY)
+            draw.text((1007,top+79),f"{fmt(round(share,1))} %",anchor="ra",font=FG(44,600),fill=color)
+            draw.rounded_rectangle((68,top+143,1008,top+153),radius=5,fill=(32,42,60,22))
+            if share>0:
+                draw.rounded_rectangle((68,top+143,68+940*share/100,top+153),radius=5,fill=color)
+        draw.text((1009,1203),"forecasteconomy.com",anchor="ra",font=FG(34,650),fill=CHAMPAGNE)
+        draw.text((54,1260),source_label,font=FG(_fit_font_size(source_label,36,500,950,25),500),fill=TEXT_SECONDARY)
+        draw.text((54,1311),"forecasteconomy.com",font=FG(25,650),fill=TEXT_PRIMARY)
+    else:
+        img=_pearl_base("population").convert("RGB")
+        draw=_raster_draw(img,"RGBA")
+        _draw_wordmark(draw)
+        draw.text((1154,43),str(year),anchor="ra",font=FG(20,600),fill=TEXT_SECONDARY)
+        lines,fs=_wrap_fit_lines(name,40,600,1104,28)
+        y=107
+        for line in lines:
+            draw.text((46,y),line,font=FG(fs,600),fill=TEXT_PRIMARY)
+            y+=round(fs*1.2)
+        total_label="Three age groups" if loc=="en" else "Три возрастные группы"
+        draw.text((48,227),total_label,font=FG(18,600),fill=TEXT_SECONDARY)
+        draw.text((44,269),fmt(total),font=FG(_fit_font_size(fmt(total),74,550,365,35),550),fill=TEXT_PRIMARY)
+        draw.text((48,369),unit,font=FG(_fit_font_size(unit,23,500,361,15),500),fill=TEXT_SECONDARY)
+        _glass_panel(draw,(428,193,1154,530))
+        draw.text((451,213),"Share of the total" if loc=="en" else "Доли возрастных групп",font=FG(21,650),fill=TEXT_PRIMARY)
+        x=451
+        for share,color in zip(shares,colors):
+            next_x=x+679*share/100
+            draw.rectangle((x,263,next_x,300),fill=color)
+            if next_x-x>72:
+                draw.text(((x+next_x)/2,269),f"{fmt(round(share,1))}%",anchor="ma",font=FG(19,650),fill=(255,255,255))
+            x=next_x
+        for i,((label,value),share,color) in enumerate(zip(groups,shares,colors)):
+            y=323+i*62
+            draw.rounded_rectangle((451,y+7,462,y+18),radius=3,fill=color)
+            draw.text((473,y),label,font=FG(_fit_font_size(label,20,500,410,14),500),fill=TEXT_PRIMARY)
+            draw.text((1129,y),fmt(value),anchor="ra",font=FG(23,650),fill=TEXT_PRIMARY)
+            draw.text((1129,y+29),f"{fmt(round(share,1))} %",anchor="ra",font=FG(16,500),fill=color)
+        draw.text((1130,504),"forecasteconomy.com",anchor="ra",font=FG(15,650),fill=CHAMPAGNE)
+        _brand_footer(draw,source_label,size=18)
+    buf=io.BytesIO();img.save(buf,format="PNG",compress_level=6)
     return buf.getvalue()
 
 
 def _brand_header(draw: ImageDraw.ImageDraw, eyebrow_extra: str | None = None) -> None:
-    """Словесный знак — общая шапка рейтингов, стран и сравнений."""
-    margin = 64
-    eyebrow_font = _font(28, bold=True)
-    eyebrow = "forecasteconomy"
-    draw.text((margin, 36), eyebrow, font=eyebrow_font, fill=TEXT_PRIMARY)
+    _draw_wordmark(draw, 64, 24)
     if eyebrow_extra:
-        ew = draw.textlength(eyebrow, font=eyebrow_font)
-        extra_font = _font(20)
-        draw.text((margin + ew + 18, 42), eyebrow_extra, font=extra_font, fill=TEXT_SECONDARY)
+        size = _fit_font_size(eyebrow_extra, 20, 500, 660, 13)
+        draw.text((1136, 38), eyebrow_extra, anchor="ra", font=FG(size,500), fill=TEXT_SECONDARY)
 
 
 def _brand_footer(draw: ImageDraw.ImageDraw, note: str = "", *, size: int = 26) -> None:
-    footer_font = _font(size)
-    label = "forecasteconomy.com"
-    lw = draw.textlength(label, font=footer_font)
+    draw.line((64, HEIGHT-66, WIDTH-64, HEIGHT-66), fill=(32,42,60,38), width=1)
     if note:
-        draw.text((64, HEIGHT - 42), note, font=footer_font, fill=TEXT_TERTIARY)
-    draw.text((WIDTH - 64 - lw, HEIGHT - 42), label, font=footer_font, fill=TEXT_TERTIARY)
+        size = _fit_font_size(note, min(size,18), 400, 745, 12)
+        draw.text((64, HEIGHT-44), note, font=FG(size,400), fill=TEXT_SECONDARY)
+    draw.text((WIDTH-64, HEIGHT-46), "forecasteconomy.com", anchor="ra", font=FG(20,650), fill=CHAMPAGNE)
 
 
 def _layout(
@@ -664,7 +969,7 @@ def _layout_badge(last_label: str, limit: int) -> tuple[int, int, int, int, int,
     pad = 14
     size = _fit_font_size(last_label, 23, 800, max(limit - 2 * pad, 60), 14)
     f = FG(size, 800)
-    bw = f.getlength(last_label)
+    bw = f.getlength(_raster_text(last_label))
     line_h = int(size * 1.4)
     peak_size = _fit_font_size(_fmt_axis(0.0), 18, 700, max(limit, 80), 12)
     return (0.0, 0.0, bw + 2 * pad, line_h + 8, size, line_h + 8, peak_size)
@@ -696,7 +1001,7 @@ def _layout_indicator(
         num_size = _fit_font_size(value_text, 200, 800, limit, 110)
         unit_size = 62
     nf = FG(num_size, 800)
-    num_w = nf.getlength(value_num if has_unit_line else value_text)
+    num_w = nf.getlength(_raster_text(value_num if has_unit_line else value_text))
 
     title_size = 46
     title_lines, title_size = _wrap_fit_lines(name, title_size, 800, limit, 28)
@@ -712,11 +1017,11 @@ def _layout_indicator(
     if context_pill:
         pill_size = _fit_font_size(context_pill, 26, 800, limit - 52, 16)
         pf = FG(pill_size, 800)
-        pill_w = pf.getlength(context_pill) + 52
+        pill_w = pf.getlength(_raster_text(context_pill)) + 52
         pill_h = 56
         # Якорь — правый край числа (или единицы, если она шире). Не влезает
         # справа — пилюля уходит вниз под число, оставаясь в пределах полосы.
-        anchor = margin - 4 + max(num_w, pf.getlength(value_unit or "") if value_unit else 0)
+        anchor = margin - 4 + max(num_w, pf.getlength(_raster_text(value_unit or "")) if value_unit else 0)
         px = anchor + 80
         if px + pill_w > WIDTH - margin:
             px = margin
@@ -757,7 +1062,7 @@ def _layout_rating(
     ct = count_template or labels["count_template"]
     sw = scope_word or labels["scope_word"]
     limit = WIDTH - 128
-    title_lines, title_size = _wrap_fit_lines(f"{name}: {tl}", 44, 700, limit, 24)
+    title_lines, title_size = _fit_text_block(f"{name}: {tl}", 44, 700, limit, 145)
 
     top = rows[:8]
     label_size = 24
@@ -766,8 +1071,9 @@ def _layout_rating(
             (_fit_font_size(rn, 24, 400, 330 - 16, 14) for rn, _v in top),
             default=24,
         )
-    val_texts = [_fmt_axis(v, locale=locale) for _n, v in top]
-    val_size = min((_fit_font_size(t, 24, 700, 380, 14) for t in val_texts), default=24)
+    from app.services.display import format_number_ru
+    val_texts = [format_number_ru(v, locale=locale) for _n, v in top]
+    val_size = min((_fit_font_size(t, 24, 700, 156, 12) for t in val_texts), default=24)
     note = f"{order_label} — {ct.format(n=len(top), total=total, scope=sw)}"
     if unit:
         note += f" — {unit}"
@@ -775,7 +1081,7 @@ def _layout_rating(
     return {
         "title_lines": title_lines,
         "title_size": title_size,
-        "title_line_h": 52,
+        "title_line_h": round(title_size * 1.2),
         "row_labels": [_fit_text_width(rn, label_size, 400, 330 - 16) for rn, _v in top],
         "label_size": label_size,
         "value_size": val_size,
@@ -815,9 +1121,10 @@ def _layout_region_vs(
     rows: list[tuple[str, str, str]],
     eyebrow: str,
     footer: str,
+    separator: str = " и ",
 ) -> dict:
     limit = WIDTH - 128
-    title_lines, title_size = _wrap_fit_lines(f"{name_a} и {name_b}", 46, 700, limit, 24)
+    title_lines, title_size = _fit_text_block(f"{name_a}{separator}{name_b}", 46, 700, limit, 86)
     col_w = 260
     metric_limit = 600 - 64 - 24
     head_size = min(_fit_font_size(name_a, 26, 700, col_w, 12),
@@ -830,7 +1137,7 @@ def _layout_region_vs(
     return {
         "title_lines": title_lines,
         "title_size": title_size,
-        "title_line_h": 54,
+        "title_line_h": round(title_size * 1.2),
         "head_a": _fit_text_width(name_a, head_size, 700, col_w),
         "head_b": _fit_text_width(name_b, head_size, 700, col_w),
         "head_size": head_size,
@@ -857,15 +1164,15 @@ def _layout_world_country(
     title_template: str = "Экономика {country}",
 ) -> dict:
     limit = WIDTH - 128
-    title_lines, title_size = _wrap_fit_lines(
-        title_template.format(country=country), 48, 700, limit, 24)
+    title_lines, title_size = _fit_text_block(
+        title_template.format(country=country), 48, 700, limit, 108)
     cell_w = (WIDTH - 64 * 2 - 24) // 2
     label_size = min((_fit_font_size(lbl, 24, 400, cell_w - 40, 12) for lbl, _v in items), default=24)
     val_size = min((_fit_font_size(v, 34, 700, cell_w - 40, 14) for _l, v in items), default=34)
     return {
         "title_lines": title_lines,
         "title_size": title_size,
-        "title_line_h": 54,
+        "title_line_h": round(title_size * 1.2),
         "items": items[:6],
         "label_size": label_size,
         "value_size": val_size,
@@ -923,6 +1230,128 @@ def _og_year_label(year: int, year_label: str) -> str:
     return f"{year} {year_label}" if year_label else str(year)
 
 
+def _portrait_frame(title: str, *, eyebrow: str = "", subline: str = "", theme: str = "finance"):
+    """Shared phone composition; artwork is decorative, all text is drawn natively."""
+    img = Image.new("RGB", (1080, 1350), BG)
+    art = _pearl_base(theme).convert("RGB").resize((1080, 567), Image.Resampling.LANCZOS)
+    img.paste(art, (0, 70))
+    draw = _raster_draw(img, "RGBA")
+    draw.rectangle((0, 95, 1080, 630), fill=(238, 240, 244, 120))
+    _draw_wordmark(draw, 54, 28)
+    if eyebrow:
+        draw.text((54, 108), _fit_text_width(eyebrow, 36, 600, 970), font=FG(36, 600), fill=CHAMPAGNE)
+    lines, size = _fit_text_block(title, 56, 650, 970, 184, min_size=28)
+    y = 155
+    for line in lines:
+        draw.text((52, y), line, font=FG(size, 650), fill=TEXT_PRIMARY)
+        y += round(size * 1.2)
+    if subline:
+        lines, size = _wrap_fit_lines(subline, 36, 500, 965, 32, max_lines=2)
+        y += 8
+        for line in lines:
+            draw.text((55, y), line, font=FG(size, 500), fill=TEXT_SECONDARY)
+            y += round(size * 1.2)
+    return img, draw, max(355, y + 14)
+
+
+def _portrait_finish(img, draw, note: str = "") -> bytes:
+    # A second domain sits next to the data, independently of the bottom footer.
+    draw.text((1024, 1192), "forecasteconomy.com", anchor="ra", font=FG(33, 650), fill=CHAMPAGNE)
+    draw.line((54, 1230, 1026, 1230), fill=(32, 42, 60, 38), width=2)
+    if note:
+        # Preserve full provenance where space allows; the page carries the full
+        # source metadata when a multi-provider list exceeds this two-line area.
+        lines, size = _wrap_fit_lines(note, 33, 500, 970, 32, max_lines=2)
+        for i, line in enumerate(lines[:2]):
+            draw.text((54, 1237 + i * 37), _fit_text_width(line, size, 500, 970), font=FG(size, 500), fill=TEXT_SECONDARY)
+    draw.text((54, 1314), "forecasteconomy.com", font=FG(25, 650), fill=TEXT_PRIMARY)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG", compress_level=6)
+    return buf.getvalue()
+
+
+def _render_rating_portrait(*, name, title_label, period_text, unit, rows, total,
+                           order_label, count_template, scope_word, locale, source_label):
+    from app.services.display import format_number_ru
+    top = rows[:8]
+    count = count_template.format(n=len(top), total=total, scope=scope_word)
+    subline = " · ".join(part for part in (count, unit) if part)
+    img, draw, y = _portrait_frame(f"{name}: {title_label}", eyebrow=period_text, subline=subline)
+    _glass_panel(draw, (38, y - 12, 1042, 1180), radius=24)
+    row_h = min(108, (1173 - y) / max(len(top), 1))
+    low = min([0.0] + [float(v) for _, v in top])
+    high = max([0.0] + [float(v) for _, v in top])
+    span = high - low or 1.0
+    left, right = 68, 1010
+    zero = left + (right - left) * -low / span
+    for rank, (label, value) in enumerate(top, 1):
+        text = f"{rank}. {label}"
+        value_text = format_number_ru(value, locale=locale)
+        value_size = _fit_font_size(value_text, 44, 650, 290, 36)
+        value_width = draw.textlength(value_text, font=FG(value_size, 650))
+        label_width = 936 - value_width - 28
+        label_size = _fit_font_size(text, 40, 550, label_width, 36)
+        draw.text((left, y), _fit_text_width(text, label_size, 550, label_width), font=FG(label_size, 550), fill=TEXT_PRIMARY)
+        draw.text((right, y), value_text, anchor="ra", font=FG(value_size, 650), fill=TEXT_PRIMARY)
+        by = y + row_h - 30
+        draw.rounded_rectangle((left, by, right, by + 14), radius=7, fill=(32, 42, 60, 20))
+        end = left + (right - left) * (float(value) - low) / span
+        if abs(end - zero) >= 1:
+            draw.rounded_rectangle((min(zero, end), by, max(zero, end), by + 14), radius=5,
+                                   fill=CHAMPAGNE if value >= 0 else (82, 119, 143))
+        draw.line((zero, by - 3, zero, by + 18), fill=(32, 42, 60, 125), width=2)
+        y += row_h
+    note = " · ".join(part for part in (order_label, source_label) if part)
+    return _portrait_finish(img, draw, note)
+
+
+def _render_items_portrait(*, title, eyebrow, subline, items, footer_note):
+    img, draw, y = _portrait_frame(title, eyebrow=eyebrow, subline=subline)
+    grid = items[:6]
+    row_h = min(144, (1173 - y) / max(len(grid), 1))
+    for label, value in grid:
+        _glass_panel(draw, (38, y, 1042, y + row_h - 12), radius=22)
+        size = _fit_font_size(label, 40, 550, 940, 36)
+        draw.text((66, y + 12), _fit_text_width(label, size, 550, 940), font=FG(size, 550), fill=TEXT_SECONDARY)
+        # Dates follow values and remain readable; allow two lines rather than
+        # shrinking all six cards to fit the single longest observation string.
+        size = _fit_font_size(value, 51, 650, 940, 36)
+        lines = _wrap_text(draw, value, FG(size, 650), 940)
+        if len(lines) > 1:
+            # The full value is more important than decorative top whitespace.
+            lines, size = _wrap_fit_lines(value, 36, 650, 940, 32, max_lines=2)
+        vy = y + 54
+        for line in lines:
+            draw.text((65, vy), _fit_text_width(line, size, 650, 940), font=FG(size, 650), fill=TEXT_PRIMARY)
+            vy += round(size * 1.12)
+        y += row_h
+    return _portrait_finish(img, draw, footer_note)
+
+
+def _render_compare_portrait(*, name_a, name_b, rows, eyebrow, separator, footer_note):
+    img, draw, y = _portrait_frame(f"{name_a}{separator}{name_b}", eyebrow=eyebrow)
+    _glass_panel(draw, (38, y - 13, 1042, 1180), radius=24)
+    # Column identities are repeated above values, even when the title wraps.
+    for x, name in ((65, name_a), (554, name_b)):
+        lines, size = _wrap_fit_lines(name, 36, 650, 455, 32, max_lines=2)
+        for i, line in enumerate(lines):
+            draw.text((x, y + i * 42), _fit_text_width(line, size, 650, 455), font=FG(size, 650), fill=CHAMPAGNE)
+    y += 97
+    grid = rows[:6]
+    row_h = min(245, (1173 - y) / max(len(grid), 1))
+    for label, value_a, value_b in grid:
+        draw.line((54, y, 1026, y), fill=(32, 42, 60, 40), width=2)
+        size = _fit_font_size(label, 38, 550, 960, 34)
+        draw.text((65, y + 10), _fit_text_width(label, size, 550, 960), font=FG(size, 550), fill=TEXT_SECONDARY)
+        for x, value in ((65, value_a), (554, value_b)):
+            size = _fit_font_size(value, 47 if len(grid) > 3 else 60, 650, 455, 34)
+            lines = _wrap_text(draw, value, FG(size, 650), 455)
+            for i, line in enumerate(lines):
+                draw.text((x, y + 53 + i * round(size * 1.06)), _fit_text_width(line, size, 650, 455), font=FG(size, 650), fill=TEXT_PRIMARY)
+        y += row_h
+    return _portrait_finish(img, draw, footer_note)
+
+
 def render_rating_og(
     *,
     name: str,
@@ -936,6 +1365,9 @@ def render_rating_og(
     scope_word: str | None = None,
     count_template: str | None = None,
     locale: str | None = None,
+    portrait: bool = False,
+    period_text: str | None = None,
+    source_label: str | None = None,
 ) -> bytes:
     """Рейтинг регионов: горизонтальный барчарт топ-8 + бренд (для /region-rating).
 
@@ -955,16 +1387,22 @@ def render_rating_og(
     if count_template is None:
         count_template = labels["count_template"]
 
+    if portrait:
+        return _render_rating_portrait(name=name, title_label=title_label,
+            period_text=period_text or _og_year_label(year, year_label), unit=unit,
+            rows=rows, total=total, order_label=order_label, count_template=count_template,
+            scope_word=scope_word, locale=locale, source_label=source_label)
+
     L = _layout_rating(
         name=name, rows=rows, total=total, unit=unit,
         order_label=order_label, title_label=title_label,
         count_template=count_template, scope_word=scope_word, locale=locale,
     )
 
-    img = Image.new("RGB", (WIDTH, HEIGHT), BG)
-    draw = ImageDraw.Draw(img, "RGBA")
+    img = _pearl_base().convert("RGB")
+    draw = _raster_draw(img, "RGBA")
     margin = 64
-    _brand_header(draw, _og_year_label(year, year_label))
+    _brand_header(draw, period_text or _og_year_label(year, year_label))
 
     name_font = _font(L["title_size"], bold=True)
     y = 88
@@ -974,28 +1412,32 @@ def render_rating_og(
 
     top = rows[:8]
     if top:
-        vmax = max(abs(v) for _n, v in top) or 1.0
+        vmin = min(0.0, min(v for _n, v in top))
+        vmax = max(0.0, max(v for _n, v in top))
+        span = (vmax - vmin) or 1.0
         bar_font = _font(L["label_size"])
         val_font = _font(L["value_size"], bold=True)
         bar_area_x0 = margin + 330
         bar_area_x1 = WIDTH - margin - 170
+        zero_x = bar_area_x0 + (bar_area_x1-bar_area_x0) * (-vmin) / span
         row_y = y + 20
         row_h = (HEIGHT - 70 - row_y) // len(top)
         bar_h = min(30, row_h - 12)
         for i, (region_name, value) in enumerate(top):
             draw.text((margin, row_y + (row_h - 26) // 2),
                       L["row_labels"][i], font=bar_font, fill=TEXT_PRIMARY)
-            w = int((bar_area_x1 - bar_area_x0) * abs(value) / vmax)
+            end_x = bar_area_x0 + (bar_area_x1-bar_area_x0) * (value-vmin) / span
             by = row_y + (row_h - bar_h) // 2
             draw.rounded_rectangle(
-                [bar_area_x0, by, bar_area_x0 + max(w, 6), by + bar_h],
-                radius=6, fill=(184, 148, 47, 200),
+                [min(zero_x, end_x), by, max(zero_x, end_x), by + bar_h],
+                radius=4, fill=(*CHAMPAGNE, 220) if value >= 0 else (82,119,143,230),
             )
-            draw.text((bar_area_x0 + max(w, 6) + 14, row_y + (row_h - 26) // 2),
+            draw.line((zero_x, row_y, zero_x, row_y+row_h), fill=(32,42,60,45), width=1)
+            draw.text((bar_area_x1 + 14, row_y + (row_h - 26) // 2),
                       L["row_values"][i], font=val_font, fill=TEXT_PRIMARY)
             row_y += row_h
 
-    _brand_footer(draw, L["footer_note"], size=L["footer_size"])
+    _brand_footer(draw, L["footer_note"] + (f" · {source_label}" if source_label else ""), size=L["footer_size"])
 
     buf = io.BytesIO()
     img.save(buf, format="PNG", optimize=True)
@@ -1015,6 +1457,9 @@ def render_world_rating_og(
     scope_word: str | None = None,
     count_template: str | None = None,
     locale: str | None = None,
+    portrait: bool = False,
+    period_text: str | None = None,
+    source_label: str | None = None,
 ) -> bytes:
     """Рейтинг стран: горизонтальный барчарт первых строк текущего порядка.
 
@@ -1032,16 +1477,22 @@ def render_world_rating_og(
     if count_template is None:
         count_template = labels["count_template"]
 
+    if portrait:
+        return _render_rating_portrait(name=name, title_label=title_label,
+            period_text=period_text or _og_year_label(year, year_label), unit=unit,
+            rows=rows, total=total, order_label=order_label, count_template=count_template,
+            scope_word=scope_word, locale=locale, source_label=source_label)
+
     L = _layout_rating(
         name=name, rows=rows, total=total, unit=unit,
         order_label=order_label, title_label=title_label,
         count_template=count_template, scope_word=scope_word, locale=locale,
     )
 
-    img = Image.new("RGB", (WIDTH, HEIGHT), BG)
-    draw = ImageDraw.Draw(img, "RGBA")
+    img = _pearl_base().convert("RGB")
+    draw = _raster_draw(img, "RGBA")
     margin = 64
-    _brand_header(draw, _og_year_label(year, year_label))
+    _brand_header(draw, period_text or _og_year_label(year, year_label))
 
     name_font = _font(L["title_size"], bold=True)
     y = 88
@@ -1051,28 +1502,32 @@ def render_world_rating_og(
 
     top = rows[:8]
     if top:
-        vmax = max(abs(v) for _n, v in top) or 1.0
+        vmin = min(0.0, min(v for _n, v in top))
+        vmax = max(0.0, max(v for _n, v in top))
+        span = (vmax - vmin) or 1.0
         bar_font = _font(L["label_size"])
         val_font = _font(L["value_size"], bold=True)
         bar_area_x0 = margin + 330
         bar_area_x1 = WIDTH - margin - 170
+        zero_x = bar_area_x0 + (bar_area_x1-bar_area_x0) * (-vmin) / span
         row_y = y + 20
         row_h = (HEIGHT - 70 - row_y) // len(top)
         bar_h = min(30, row_h - 12)
         for i, (country_name, value) in enumerate(top):
             draw.text((margin, row_y + (row_h - 26) // 2),
                       L["row_labels"][i], font=bar_font, fill=TEXT_PRIMARY)
-            w = int((bar_area_x1 - bar_area_x0) * abs(value) / vmax)
+            end_x = bar_area_x0 + (bar_area_x1-bar_area_x0) * (value-vmin) / span
             by = row_y + (row_h - bar_h) // 2
             draw.rounded_rectangle(
-                [bar_area_x0, by, bar_area_x0 + max(w, 6), by + bar_h],
-                radius=6, fill=(184, 148, 47, 200),
+                [min(zero_x, end_x), by, max(zero_x, end_x), by + bar_h],
+                radius=4, fill=(*CHAMPAGNE, 220) if value >= 0 else (82,119,143,230),
             )
-            draw.text((bar_area_x0 + max(w, 6) + 14, row_y + (row_h - 26) // 2),
+            draw.line((zero_x, row_y, zero_x, row_y+row_h), fill=(32,42,60,45), width=1)
+            draw.text((bar_area_x1 + 14, row_y + (row_h - 26) // 2),
                       L["row_values"][i], font=val_font, fill=TEXT_PRIMARY)
             row_y += row_h
 
-    _brand_footer(draw, L["footer_note"], size=L["footer_size"])
+    _brand_footer(draw, L["footer_note"] + (f" · {source_label}" if source_label else ""), size=L["footer_size"])
 
     buf = io.BytesIO()
     img.save(buf, format="PNG", optimize=True)
@@ -1086,6 +1541,7 @@ def render_today_hub_og(
     title_label: str | None = None,
     footer_note: str | None = None,
     locale: str | None = None,
+    portrait: bool = False,
 ) -> bytes:
     """Сводка «Экономика России сегодня»: сетка «показатель → значение» (для /today).
 
@@ -1107,8 +1563,12 @@ def render_today_hub_og(
             else "официальные данные — обновление по мере публикации"
         )
 
-    img = Image.new("RGB", (WIDTH, HEIGHT), BG)
-    draw = ImageDraw.Draw(img, "RGBA")
+    if portrait:
+        return _render_items_portrait(title=title_label, eyebrow=date_text, subline="",
+                                     items=items, footer_note=footer_note)
+
+    img = _pearl_base().convert("RGB")
+    draw = _raster_draw(img, "RGBA")
     margin = 64
     _brand_header(draw, date_text)
 
@@ -1128,7 +1588,7 @@ def render_today_hub_og(
         cx = margin + (i % cols) * (cell_w + 24)
         cy = top_y + (i // cols) * (cell_h + 10)
         draw.rounded_rectangle([cx, cy, cx + cell_w, cy + cell_h], radius=14,
-                               fill=(255, 255, 255), outline=(0, 0, 0, 28), width=1)
+                               fill=(255, 255, 255, 220), outline=(255, 255, 255, 255), width=2)
         draw.text((cx + 22, cy + 14), label, font=label_font, fill=TEXT_SECONDARY)
         draw.text((cx + 22, cy + 46), value_text, font=value_font, fill=TEXT_PRIMARY)
 
@@ -1155,6 +1615,7 @@ def render_region_vs_og(
     eyebrow_label: str = "сравнение регионов",
     title_separator: str = " и ",
     footer_note: str = "данные Росстата",
+    portrait: bool = False,
 ) -> bytes:
     """Сравнение двух регионов: таблица «показатель — A — B» (для /region-vs).
 
@@ -1163,13 +1624,17 @@ def render_region_vs_og(
     (Единицы измерения компактизирует вызывающая сторона:
     «тысяч человек» → «тыс. чел.».)
     """
+    if portrait:
+        return _render_compare_portrait(name_a=name_a, name_b=name_b, rows=rows,
+            eyebrow=eyebrow_label, separator=title_separator, footer_note=footer_note)
+
     L = _layout_region_vs(
         name_a=name_a, name_b=name_b, rows=rows, footer=footer_note,
-        eyebrow=eyebrow_label,
+        eyebrow=eyebrow_label, separator=title_separator,
     )
 
-    img = Image.new("RGB", (WIDTH, HEIGHT), BG)
-    draw = ImageDraw.Draw(img, "RGBA")
+    img = _pearl_base().convert("RGB")
+    draw = _raster_draw(img, "RGBA")
     margin = 64
     _brand_header(draw, eyebrow_label)
 
@@ -1211,15 +1676,21 @@ def render_world_country_og(
     items: list[tuple[str, str]],
     eyebrow_label: str = "мировая экономика",
     title_template: str = "Экономика {country}",
-    count_template: str = "{count} показателей — Евростат",
-    footer_note: str = "официальные данные Евростата",
+    count_template: str = "{count} показателей",
+    footer_note: str = "источники и методология на странице",
     locale: str | None = None,
+    portrait: bool = False,
 ) -> bytes:
     """Сводка страны для /og/world/{slug}.png: сетка ключевых значений.
 
     Текстовые параметры по умолчанию — русские; EN-вызов передаёт EN-строки
     (sitemap.py) целиком, чтобы не получить смесь языков на постере.
     """
+    if portrait:
+        return _render_items_portrait(title=title_template.format(country=country_name),
+            eyebrow=eyebrow_label, subline=count_template.format(count=indicators_count),
+            items=items, footer_note=footer_note)
+
     L = _layout_world_country(
         country=country_name,
         items=items,
@@ -1228,8 +1699,8 @@ def render_world_country_og(
         title_template=title_template,
     )
 
-    img = Image.new("RGB", (WIDTH, HEIGHT), BG)
-    draw = ImageDraw.Draw(img, "RGBA")
+    img = _pearl_base().convert("RGB")
+    draw = _raster_draw(img, "RGBA")
     margin = 64
     _brand_header(draw, eyebrow_label)
 
@@ -1260,8 +1731,8 @@ def render_world_country_og(
         draw.rounded_rectangle(
             [cx, cy, cx + cell_w, cy + cell_h],
             radius=14,
-            fill=(255, 255, 255),
-            outline=(0, 0, 0, 28),
+            fill=(255, 255, 255, 220),
+            outline=(255, 255, 255, 255),
             width=1,
         )
         draw.text(
@@ -1293,7 +1764,7 @@ _DISK_DIR = Path(os.environ.get("OG_CACHE_DIR", "")) if os.environ.get("OG_CACHE
 
 
 def _disk_path(code: str) -> Path:
-    return _DISK_DIR / (hashlib.md5(code.encode()).hexdigest() + ".png")
+    return _DISK_DIR / (hashlib.md5(f"{OG_DESIGN_VERSION}:{code}".encode()).hexdigest() + ".png")
 
 
 def _remember_og(code: str, png: bytes) -> None:

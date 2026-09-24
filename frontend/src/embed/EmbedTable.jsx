@@ -30,7 +30,7 @@ export default function EmbedTable() {
 
   const unit = meta?.unit || '%';
   const isCpi = isCpiIndex(code);
-  const font = 'system-ui, -apple-system, sans-serif';
+  const font = 'Manrope, system-ui, sans-serif';
   const mono = 'ui-monospace, monospace';
 
   return (

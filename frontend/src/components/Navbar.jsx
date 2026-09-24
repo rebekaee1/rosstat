@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { TrendingUp, Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import IndicatorSearch from './IndicatorSearch';
 import LocaleSwitcher from './LocaleSwitcher';
+import Brand from './Brand';
 import { useAuth } from '../context/authContext';
 import { PRIMARY_NAV, primaryNav, resolveActiveNavId } from '../lib/navItems';
 import { useLocale, useT } from '../i18n';
@@ -31,7 +32,7 @@ function AuthCluster({ mobile = false, onNavigate }) {
         onClick={onNavigate}
         className={cn(
           FOCUS_RING,
-          'rounded-full px-4 py-1.5 text-sm font-semibold bg-champagne text-white hover:bg-champagne-muted transition-colors',
+          'fe-button-primary rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
           mobile && 'w-full text-center',
         )}
       >
@@ -57,7 +58,7 @@ function AuthCluster({ mobile = false, onNavigate }) {
         onClick={() => { track(events.HEADER_REGISTER_CLICK); onNavigate?.(); }}
         className={cn(
           FOCUS_RING,
-          'rounded-full px-4 py-1.5 text-sm font-semibold bg-champagne text-white hover:bg-champagne-muted transition-colors',
+          'fe-button-primary rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
           mobile ? 'flex-1 text-center' : 'whitespace-nowrap',
         )}
       >
@@ -180,12 +181,12 @@ export default function Navbar() {
       <nav
         ref={navRef}
         className={cn(
-          'fixed top-11 md:top-12 inset-x-0 mx-auto z-[100]',
+          'fe-navbar fixed top-11 md:top-12 inset-x-0 mx-auto z-[100]',
           // Не transition-all: иначе transition тянет backdrop-filter и в
           // части движков blur на время/после смены soft↔surface пропадает.
           'transition-[transform,opacity,background-color,box-shadow,border-color] duration-500 ease-out',
-          'rounded-[2rem] px-5 lg:px-6 py-3 flex items-center gap-3',
-          'max-w-7xl w-[calc(100%-2rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))]',
+          'rounded-[1.5rem] px-3 sm:px-5 lg:px-6 py-3 flex items-center gap-2 sm:gap-3',
+          'max-w-[1440px] w-[calc(100%-2rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))]',
           scrolled
             ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
             : 'glass-surface-soft border border-black/[0.04]',
@@ -201,10 +202,7 @@ export default function Navbar() {
         aria-label={t('nav.homeAria')}
         title={t('nav.homeTitle')}
       >
-        <TrendingUp className="w-5 h-5 text-champagne" aria-hidden="true" />
-        <span className="text-base font-bold tracking-tight text-text-primary">
-          Forecast Economy
-        </span>
+        <Brand compact />
       </Link>
 
       {/* justify-end: при переполнении лишнее выезжает ВЛЕВО, поверх логотипа
@@ -213,7 +211,7 @@ export default function Navbar() {
           сравнением боксов, см. scripts/e2e/navbar-overlap.mjs. Поэтому до xl
           длинные подписи заменяются короткими (`shortLabelKey`), а «О проекте»
           на десктопе живёт в футере и мобильном меню. */}
-      <div className="hidden lg:flex items-center gap-3 xl:gap-5 flex-1 justify-end min-w-0">
+      <div className="fe-navbar-links hidden lg:flex items-center gap-3 xl:gap-5 flex-1 justify-end min-w-0">
         {primaryItems.map((item) => renderPrimaryLink(item, { desktop: true }))}
         <div className="relative" ref={calcWrapRef}>
           <button
@@ -280,7 +278,7 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
+        <div className="fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="flex flex-col gap-1">
             {primaryItems.map((item) => renderPrimaryLink(item))}
             <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">

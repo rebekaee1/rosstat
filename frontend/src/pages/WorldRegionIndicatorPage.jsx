@@ -2,7 +2,7 @@
 // Эталон — RegionIndicatorPage: RegionAnnualChart + сравнение + страна + YoY +
 // CSV/Excel/PNG (только для зарегистрированных), сетка StatCell, таблица.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import {
   Trophy, Table2, ChevronDown, ArrowUpRight,
   Download, Image as ImageIcon, GitCompare,
@@ -52,7 +52,7 @@ function isNegativeCapable(series) {
 
 function StatCell({ label, children }) {
   return (
-    <div className="min-w-0 rounded-xl border border-border-subtle bg-surface p-3 sm:p-3.5">
+    <div className="fe-stat-cell min-w-0 rounded-xl border border-border-subtle bg-surface p-3 sm:p-3.5">
       <div className="truncate text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">{label}</div>
       <div className="mt-1 break-words font-mono text-sm font-semibold leading-tight text-text-primary sm:text-[15px]">
         {children}
@@ -75,7 +75,6 @@ function pointLabel(p, isMonthly, locale) {
 
 export default function WorldRegionIndicatorPage() {
   const { countrySlug, slug, code } = useParams();
-  const { hash } = useLocation();
   const { t, locale } = useLocale();
   const { isAuthed } = useAuth();
   const chartRef = useRef(null);
@@ -223,10 +222,6 @@ export default function WorldRegionIndicatorPage() {
     });
   }, [payload?.indicator, countrySlug, slug, code]);
 
-  useEffect(() => {
-    if (hash !== '#chart' || !payload) return;
-    document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [hash, payload]);
 
   if (countrySlug === RUSSIA) {
     return <Navigate to={regionIndicatorPath(slug, code)} replace />;
@@ -242,7 +237,7 @@ export default function WorldRegionIndicatorPage() {
   } : null;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs
         items={worldSubnationalIndicatorTrail(
           countryName, countrySlug, kindPlural, regionName, slug, indName, code,
@@ -263,7 +258,7 @@ export default function WorldRegionIndicatorPage() {
 
       {payload && (
         <>
-          <div className="mb-5">
+          <div className="fe-data-header">
             <div className="mb-2 font-mono text-xs uppercase tracking-widest text-champagne">
               {payload.indicator.section}
             </div>
@@ -290,7 +285,7 @@ export default function WorldRegionIndicatorPage() {
             </div>
           </div>
 
-          <div id="chart" data-block="world-region-chart" className="mb-4 scroll-mt-24 rounded-xl border border-border-subtle bg-surface p-3 sm:p-4" ref={chartRef}>
+          <div id="chart" data-block="world-region-chart" className="fe-panel mb-4 scroll-mt-24 rounded-xl border border-border-subtle bg-surface p-3 sm:p-4" ref={chartRef}>
             <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="font-mono text-xs text-text-tertiary">
                 {first && last
@@ -457,7 +452,7 @@ export default function WorldRegionIndicatorPage() {
           </div>
 
           {rank?.top?.length > 0 && (
-            <div data-block="world-region-rating" className="mb-6 rounded-xl border border-border-subtle bg-surface p-4">
+            <div data-block="world-region-rating" className="fe-panel mb-6 rounded-xl border border-border-subtle bg-surface p-4">
               <h2 className="mb-3 text-sm font-semibold text-text-primary">
                 {t(
                   rank.rank_as_achievement ? 'world.regions.topAchieve' : 'world.regions.topNeutral',
@@ -492,7 +487,7 @@ export default function WorldRegionIndicatorPage() {
             </div>
           )}
 
-          <div className="mb-6 overflow-hidden rounded-xl border border-border-subtle bg-surface">
+          <div className="fe-panel mb-6 overflow-hidden rounded-xl border border-border-subtle bg-surface">
             <button
               type="button"
               onClick={() => setShowTable((v) => !v)}
@@ -556,7 +551,7 @@ export default function WorldRegionIndicatorPage() {
           )}
 
           {payload.indicator.national_code && (
-            <div className="mb-6 rounded-xl border border-border-champagne/40 bg-surface p-4">
+            <div className="fe-panel mb-6 rounded-xl border border-border-champagne/40 bg-surface p-4">
               <h2 className="mb-2 text-sm font-semibold text-text-primary">
                 {t('world.regions.nationalTitle')}
               </h2>

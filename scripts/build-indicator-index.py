@@ -215,7 +215,9 @@ def _text_files() -> list[Path]:
             continue
         if p.suffix.lower() in SKIP_SUFFIXES or p.name in SKIP_NAMES:
             continue
-        if rel in SKIP_RELPATHS:
+        # Browser/HTTP evidence repeats page content; it is not a code reference.
+        # Exclude the generated reports so a QA run cannot invalidate this map.
+        if rel in SKIP_RELPATHS or rel.startswith("docs/design/local-acceptance/"):
             continue
         out.append(p)
     return out

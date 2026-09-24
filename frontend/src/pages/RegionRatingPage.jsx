@@ -78,7 +78,7 @@ export default function RegionRatingPage() {
   } : null);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
       <Breadcrumbs
         items={regionRatingTrail(
           achievement ? `Рейтинг: ${data?.indicator?.name || '…'}` : (data?.indicator?.name || '…'),
@@ -182,7 +182,7 @@ export default function RegionRatingPage() {
             />
           </div>
 
-          <section className="mb-8">
+          <section id="chart" className="mb-8 scroll-mt-28">
             <h2 className="font-display text-lg font-semibold text-text-primary mb-3">
               {listTitle}
             </h2>

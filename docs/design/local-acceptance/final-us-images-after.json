@@ -1,0 +1,205 @@
+{
+  "at": "2026-09-24T07:59:30.731Z",
+  "phase": "after",
+  "initialSuiteAt": "2026-09-24T07:26:27.296Z",
+  "images": [
+    {
+      "id": "us-region-indicator",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 321899,
+      "sha256": "9e903436dc6bb82ca95579ced6e2f03646546ea3a23934b707b1e12b3dba1195",
+      "width": 1200,
+      "height": 630,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-indicator-ru-landscape.png"
+    },
+    {
+      "id": "us-region-indicator",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?portrait=1",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 370987,
+      "sha256": "d1204f76e6a0fe23ee3dec654da00a2c8dfcdbf917aee6c00fdf9396410aee29",
+      "width": 1080,
+      "height": 1350,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-indicator-ru-portrait.png"
+    },
+    {
+      "id": "us-region-indicator",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?preview_locale=en",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 317784,
+      "sha256": "d68d40c2cc521bc7f0a70652fd096a04ca3f11b0560bf406b93dffee11fa46b2",
+      "width": 1200,
+      "height": 630,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-indicator-en-landscape.png"
+    },
+    {
+      "id": "us-region-indicator",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?portrait=1&preview_locale=en",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 369642,
+      "sha256": "e580f5659489d0336bf12bfec9e1bce9aa70526133a7b74d04d2a975c0b6254e",
+      "width": 1080,
+      "height": 1350,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-indicator-en-portrait.png"
+    },
+    {
+      "id": "us-region-annual",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 371010,
+      "sha256": "ae74fefe1bea0d03f5aa5c176f201623bac1a1489b0a10ae378894cb789bd878",
+      "width": 1200,
+      "height": 630,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-annual-ru-landscape.png"
+    },
+    {
+      "id": "us-region-annual",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?portrait=1",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 446054,
+      "sha256": "de1ce7a98324fb21fa4f477346ed8f16f5af7d90a5cb562cf037f2a0f5e04e31",
+      "width": 1080,
+      "height": 1350,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-annual-ru-portrait.png"
+    },
+    {
+      "id": "us-region-annual",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?preview_locale=en",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 386203,
+      "sha256": "c00abd7ebfc448e88024e2246284d4230681ff260e6486813e9b836f7a55faae",
+      "width": 1200,
+      "height": 630,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-annual-en-landscape.png"
+    },
+    {
+      "id": "us-region-annual",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?portrait=1&preview_locale=en",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 440037,
+      "sha256": "5fcc069015fa50136c6f8634dc68efc5cc736e974a271f7f62caba8f56ee5829",
+      "width": 1080,
+      "height": 1350,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-annual-en-portrait.png"
+    },
+    {
+      "id": "us-region-quarterly",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 340010,
+      "sha256": "dc60f0e5a7525aac80318de68c6add5a501659c892f33ede565477c304396f22",
+      "width": 1200,
+      "height": 630,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-quarterly-ru-landscape.png"
+    },
+    {
+      "id": "us-region-quarterly",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?portrait=1",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 398662,
+      "sha256": "5572c279e748137eee077a042409e8571d387a71cf4dec282723969b91d19c89",
+      "width": 1080,
+      "height": 1350,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-quarterly-ru-portrait.png"
+    },
+    {
+      "id": "us-region-quarterly",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?preview_locale=en",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 337708,
+      "sha256": "0fca84f527c49520e3b66c62e3d8e588553edf7b21ee4d2670304a0186657fcd",
+      "width": 1200,
+      "height": 630,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-quarterly-en-landscape.png"
+    },
+    {
+      "id": "us-region-quarterly",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?portrait=1&preview_locale=en",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 397936,
+      "sha256": "a6bf650873997c7757ae9a11377333d3dec17aea5b4c8124fd217277c09a13e0",
+      "width": 1080,
+      "height": 1350,
+      "path": "output/design-acceptance/2026-09-24/final-us-images-after/us-region-quarterly-en-portrait.png"
+    }
+  ],
+  "issues": [],
+  "limitations": [
+    "Paced local requests, not performance measurements."
+  ],
+  "comparison": [
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?portrait=1",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?preview_locale=en",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/unemployment-rate.png?portrait=1&preview_locale=en",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?portrait=1",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?preview_locale=en",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/real-gdp.png?portrait=1&preview_locale=en",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?portrait=1",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?preview_locale=en",
+      "changed": true
+    },
+    {
+      "url": "http://127.0.0.1:3000/og/world/united-states/region/california/house-price-index.png?portrait=1&preview_locale=en",
+      "changed": true
+    }
+  ]
+}

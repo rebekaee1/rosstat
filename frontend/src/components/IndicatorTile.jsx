@@ -86,7 +86,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
       className={cn(
         FOCUS_RING_SURFACE,
         'group relative p-4 sm:p-6 rounded-[2rem] border transition-all duration-500 overflow-hidden',
-        'bg-surface border-border-subtle',
+        'fe-panel bg-surface border-border-subtle',
         isActive
           ? 'hover:border-champagne/40 cursor-pointer lift-hover'
           : 'opacity-40 cursor-default pointer-events-none grayscale'
@@ -136,7 +136,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
             <div className="min-w-0">
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className={cn(
-                  'font-bold tracking-tight text-text-primary font-mono whitespace-nowrap',
+                  'font-semibold tracking-tight text-text-primary font-sans tabular-nums whitespace-nowrap',
                   String(formatValue(displayVal)).length > 12 ? 'text-lg' : 'text-2xl'
                 )}>
                   {formatValue(displayVal)}

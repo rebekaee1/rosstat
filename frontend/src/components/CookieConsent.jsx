@@ -143,7 +143,7 @@ export default function CookieConsent() {
                     onChange={(e) =>
                       setChoices((prev) => ({ ...prev, [cat.id]: e.target.checked }))
                     }
-                    className="mt-0.5 accent-[#B8942F] w-4 h-4 shrink-0"
+                    className="mt-0.5 accent-champagne w-4 h-4 shrink-0"
                   />
                   <span className="flex-1">
                     <span className="block text-xs font-semibold text-text-primary">

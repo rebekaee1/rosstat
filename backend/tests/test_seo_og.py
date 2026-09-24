@@ -1002,3 +1002,24 @@ def test_subnational_og_nginx_rewrites_before_generic_world():
     assert block.index(rating) < block.index(indicator)
     assert block.index(hub) < block.index(generic)
 
+
+
+def test_ssr_preserves_brand_font_preload_from_built_shell(monkeypatch):
+    import asyncio
+    from unittest.mock import AsyncMock
+    import httpx
+    from app.services import seo_renderer
+    monkeypatch.setattr(seo_renderer, '_APP_ASSETS', None)
+    monkeypatch.setattr(seo_renderer, '_APP_ASSETS_EXPIRES', 0.0)
+    response = httpx.Response(200, text='''<html><head>
+      <link rel="preload" href="/fonts/manrope-latin-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+      <link rel="stylesheet" href="/assets/main.css">
+      <link rel="modulepreload" href="/assets/vendor.js">
+      </head><body><script type="module" src="/assets/main.js"></script></body></html>''',
+      request=httpx.Request('GET', 'http://frontend/__spa-index.html'))
+    monkeypatch.setattr(httpx.AsyncClient, 'get', AsyncMock(return_value=response))
+    assets = asyncio.run(seo_renderer.get_app_assets())
+    assert '/fonts/manrope-latin-cyrillic.woff2' in assets.head_links
+    pure_ssr = seo_renderer._strip_preloads(assets.head_links)
+    assert 'as="font"' in pure_ssr
+    assert 'modulepreload' not in pure_ssr

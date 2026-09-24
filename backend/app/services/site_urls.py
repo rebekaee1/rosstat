@@ -82,8 +82,8 @@ def _world_year_filters():
     return [
         WorldCountry.is_active.is_(True),
         WorldIndicator.is_listed.is_(True),
-        WorldDataPoint.date >= date(1900, 1, 1),
-        WorldDataPoint.date < date(2100, 1, 1),
+        WorldDataPoint.date >= date(paths.PUBLIC_YEAR_MIN, 1, 1),
+        WorldDataPoint.date < date(paths.PUBLIC_YEAR_MAX + 1, 1, 1),
     ]
 
 
@@ -173,8 +173,8 @@ async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         select(Indicator.code, year_expr.label("y"), func.max(IndicatorData.date))
         .join(IndicatorData, IndicatorData.indicator_id == Indicator.id)
         .where(Indicator.is_active.is_(True),
-               IndicatorData.date >= date(1990, 1, 1),
-               IndicatorData.date < date(2101, 1, 1))
+               IndicatorData.date >= date(paths.PUBLIC_YEAR_MIN, 1, 1),
+               IndicatorData.date < date(paths.PUBLIC_YEAR_MAX + 1, 1, 1))
         .group_by(Indicator.code, year_expr)
         .order_by(year_expr.desc(), Indicator.code)
     )
@@ -318,7 +318,11 @@ async def _calendar_month_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
             func.extract("month", EconomicEvent.scheduled_date).label("m"),
             func.count(),
         )
-        .where(*_public_calendar_conditions())
+        .where(
+            *_public_calendar_conditions(),
+            EconomicEvent.scheduled_date >= date(paths.PUBLIC_YEAR_MIN, 1, 1),
+            EconomicEvent.scheduled_date < date(paths.PUBLIC_YEAR_MAX + 1, 1, 1),
+        )
         .group_by("y", "m")
         .having(func.count() >= 3)
         .order_by(func.extract("year", EconomicEvent.scheduled_date).desc(),
@@ -373,7 +377,7 @@ async def _regional_year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
         .where(
             Region.kind.in_(_PUBLIC_REGION_KINDS),
-            RegionDataPoint.year.between(1900, 2099),
+            RegionDataPoint.year.between(paths.PUBLIC_YEAR_MIN, paths.PUBLIC_YEAR_MAX),
         )
         .group_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
         .order_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
@@ -418,7 +422,7 @@ async def _world_rating_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
                 y = int(year_key)
             except (TypeError, ValueError):
                 continue
-            if y == default_year or not 1900 <= y <= 2099:
+            if y == default_year or not paths.is_public_year(y):
                 continue
             dates = [item.get("date") for item in bucket.values() if item.get("date")]
             if dates:
@@ -776,8 +780,8 @@ def _months_stmt():
             Indicator.is_active.is_(True),
             Indicator.is_listed.is_(True),
             func.lower(Indicator.frequency).like("month%"),
-            IndicatorData.date >= date(1900, 1, 1),
-            IndicatorData.date < date(2100, 1, 1),
+            IndicatorData.date >= date(paths.PUBLIC_YEAR_MIN, 1, 1),
+            IndicatorData.date < date(paths.PUBLIC_YEAR_MAX + 1, 1, 1),
         )
         .group_by(Indicator.code, year_expr, month_expr)
     )
@@ -1104,7 +1108,7 @@ async def _regional_years_page(
         .join(Region, Region.id == RegionDataPoint.region_id)
         .where(
             Region.kind.in_(_PUBLIC_REGION_KINDS),
-            RegionDataPoint.year.between(1900, 2099),
+            RegionDataPoint.year.between(paths.PUBLIC_YEAR_MIN, paths.PUBLIC_YEAR_MAX),
         )
         .group_by(RegionIndicator.id, Region.slug, RegionDataPoint.year)
     )
@@ -1227,7 +1231,7 @@ _REG_YEARS_COUNT = select(func.count()).select_from(
     .join(RegionIndicator, RegionIndicator.id == RegionDataPoint.indicator_id)
     .where(
         Region.kind.in_(_PUBLIC_REGION_KINDS),
-        RegionDataPoint.year.between(1900, 2099),
+        RegionDataPoint.year.between(paths.PUBLIC_YEAR_MIN, paths.PUBLIC_YEAR_MAX),
     )
     .group_by(Region.slug, RegionIndicator.code, RegionDataPoint.year)
     .subquery()
@@ -1312,7 +1316,7 @@ def _regional_years_bounds_stmt() -> object:
         .join(Region, Region.id == RegionDataPoint.region_id)
         .where(
             Region.kind.in_(_PUBLIC_REGION_KINDS),
-            RegionDataPoint.year.between(1900, 2099),
+            RegionDataPoint.year.between(paths.PUBLIC_YEAR_MIN, paths.PUBLIC_YEAR_MAX),
         )
         .group_by(RegionIndicator.id, Region.slug, RegionDataPoint.year)
     )
@@ -1582,4 +1586,3 @@ def filter_recrawl_paths(paths_list: list[str]) -> tuple[list[str], list[str]]:
         else:
             skipped.append(path)
     return eligible, skipped
-

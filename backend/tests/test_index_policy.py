@@ -147,7 +147,7 @@ def test_world_sitemap_includes_all_public_datasets_and_preserves_validity(auth_
             for code, dataset, frequency, listed, years in (
                 ("de-une-primary", "une_rt_m", "monthly", True, (2010, 2024)),
                 ("de-une-secondary", "une_rt_m", "quarterly", True, (2010,)),
-                ("de-uncurated", "unknown_dataset", "annual", True, (1880, 2010, 2100)),
+                ("de-uncurated", "unknown_dataset", "annual", True, (999, 1880, 2010, 2100, 9999)),
                 ("us-gdp-real", "FRED_GDPC1", "quarterly", True, (1947, 2025)),
                 ("de-hidden", "demo_pjan", "annual", False, (2010,)),
                 ("de-empty", "prc_hicp_midx", "monthly", True, ()),
@@ -170,7 +170,9 @@ def test_world_sitemap_includes_all_public_datasets_and_preserves_validity(auth_
             await db.commit()
             today = date(2026, 9, 20)
             expected = {f"/germany/indicator/de-une-primary/{y}" for y in (2010, 2024)} | {
+                "/germany/indicator/de-uncurated/1880",
                 "/germany/indicator/de-uncurated/2010",
+                "/germany/indicator/de-uncurated/2100",
                 "/united-states/indicator/us-gdp-real/1947", "/united-states/indicator/us-gdp-real/2025",
             }
             assert {u.path for u in await urls._world_year_urls(db, today)} == expected
@@ -186,8 +188,9 @@ def test_world_sitemap_includes_all_public_datasets_and_preserves_validity(auth_
             assert {u.path for u in bounded_cards} == cards
             assert len(bounded_cards) == len(cards)
             # Bounds/count retain the secondary frequency; page filtering still excludes its 301.
-            assert (await db.execute(urls._WORLD_YEARS_COUNT)).scalar_one() == 6
-            assert {int(r[1]) for r in (await db.execute(urls._world_years_bounds_stmt())).all()} == {1947, 2010, 2024, 2025}
+            # Historical/future source years are valid; unsafe 999/9999 are not.
+            assert (await db.execute(urls._WORLD_YEARS_COUNT)).scalar_one() == 8
+            assert {int(r[1]) for r in (await db.execute(urls._world_years_bounds_stmt())).all()} == {1880, 1947, 2010, 2024, 2025, 2100}
             paths = set()
             cursor = None
             for _ in range(10):

@@ -11,7 +11,7 @@ export default function Attribution({ code, dark = false }) {
       rel="noopener"
       className="flex items-center justify-end gap-1 px-3 py-1.5 no-underline transition-opacity hover:opacity-80"
       style={{
-        fontFamily: 'system-ui, -apple-system, sans-serif',
+        fontFamily: 'Manrope, system-ui, sans-serif',
         fontSize: 10,
         color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.3)',
         lineHeight: 1,

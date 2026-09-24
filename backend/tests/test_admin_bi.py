@@ -137,13 +137,18 @@ def test_bi_dashboard_stale_snapshot_served_while_revalidating(auth_client):
     snap = auth_client.portal.call(cache_get, key)
     assert snap is not None
     snap["built_at"] = time.time() - 10 * 3600
+    # Age the data timestamp too: both real builds can finish within one second,
+    # and generated_at intentionally has second precision. Wall-clock coincidence
+    # must not decide whether stale-while-revalidate worked.
+    old_generated_at = "2000-01-01T00:00:00"
+    snap["data"]["generated_at"] = old_generated_at
     auth_client.portal.call(cache_set, key, snap, 3600)
 
     stale = auth_client.get("/api/v1/admin/bi/dashboard?days=7")
     assert stale.status_code == 200
     assert stale.json()["cache_meta"]["stale"] is True
     assert stale.json()["cache_meta"]["refreshing"] is True
-    assert stale.json()["generated_at"] == first.json()["generated_at"]
+    assert stale.json()["generated_at"] == old_generated_at
 
     deadline = time.monotonic() + 60
     while time.monotonic() < deadline:
@@ -152,7 +157,7 @@ def test_bi_dashboard_stale_snapshot_served_while_revalidating(auth_client):
             break
         time.sleep(0.2)
     assert r.json()["cache_meta"]["stale"] is False
-    assert r.json()["generated_at"] != first.json()["generated_at"]
+    assert r.json()["generated_at"] != old_generated_at
 
 
 # --- Истинность цифр (инцидент 2026-07-05: конверсия 91-100%) ----------------

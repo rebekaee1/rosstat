@@ -7,7 +7,7 @@ import { formatValueWithUnit, formatChange, formatDate, isCpiIndex } from '../li
 import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
 
-function MiniSparkline({ data, width = 140, height = 36, color = '#B8942F' }) {
+function MiniSparkline({ data, width = 140, height = 36, color = '#AD8A48' }) {
   const points = useMemo(() => {
     if (!data?.length || data.length < 2) return '';
     const vals = data.map(d => d.value);
@@ -85,7 +85,7 @@ export default function EmbedCard() {
     <div style={{
       background: colors.bg, borderRadius: 16, border: `1px solid ${colors.border}`,
       padding: 16, display: 'flex', flexDirection: 'column', gap: 8,
-      fontFamily: 'system-ui, -apple-system, sans-serif', overflow: 'hidden',
+      fontFamily: 'Manrope, system-ui, sans-serif', overflow: 'hidden',
     }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 6, flexWrap: 'wrap' }}>
         <div style={{ fontSize: 11, fontWeight: 500, color: colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '65%' }}>

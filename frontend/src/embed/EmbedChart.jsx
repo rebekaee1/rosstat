@@ -23,19 +23,19 @@ function EmbedTooltip({ active, payload, label, unit, colors }) {
     <div style={{
       background: colors.bg, border: `1px solid ${colors.border}`,
       borderRadius: 8, padding: '8px 12px', fontSize: 12,
-      fontFamily: 'system-ui, sans-serif', boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+      fontFamily: 'Manrope, system-ui, sans-serif', boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
     }}>
       <div style={{ color: colors.textTertiary, fontSize: 10, marginBottom: 4, fontFamily: 'ui-monospace, monospace' }}>
         {formatDate(label)}
       </div>
       {/* В-18: на чужом сайте без легенды цвет ничего не говорит — подписываем словами. */}
       {actual && (
-        <div style={{ color: '#B8942F', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
+        <div style={{ color: '#AD8A48', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
           {t('embed.actual', { value: formatValueWithUnit(actual.value, unit) })}
         </div>
       )}
       {forecast && !actual && (
-        <div style={{ color: '#7C3AED', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
+        <div style={{ color: '#6B8299', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
           {t('embed.forecast', { value: formatValueWithUnit(forecast.value, unit) })}
         </div>
       )}
@@ -119,7 +119,7 @@ export default function EmbedChart() {
       {showTitle && meta && (
         <div style={{ padding: '12px 16px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: colors.textSecondary, fontFamily: 'system-ui, sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: colors.textSecondary, fontFamily: 'Manrope, system-ui, sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {meta.name}
             </div>
             {/* В-18: hero-значение без даты вводит в заблуждение на чужом сайте. */}
@@ -165,8 +165,8 @@ export default function EmbedChart() {
             <ComposedChart data={chartData} margin={{ top: 8, right: 8, bottom: 4, left: -4 }}>
               <defs>
                 <linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#B8942F" stopOpacity={0.15} />
-                  <stop offset="100%" stopColor="#B8942F" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#AD8A48" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="#AD8A48" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} vertical={false} />
@@ -183,11 +183,11 @@ export default function EmbedChart() {
               <Tooltip content={<EmbedTooltip unit={unit} colors={colors} />} cursor={{ stroke: colors.tick, strokeWidth: 1, strokeOpacity: 0.3 }} />
               <ReferenceLine y={0} stroke={colors.grid} strokeDasharray="6 3" />
               {forecastStartDate && <ReferenceLine x={forecastStartDate} stroke="rgba(124,58,237,0.35)" strokeDasharray="4 4" />}
-              <Area dataKey="actual" stroke="#B8942F" strokeWidth={2} fill="url(#eg)" dot={false}
-                activeDot={{ r: 3, fill: '#B8942F', stroke: colors.bg, strokeWidth: 2 }} isAnimationActive={false} />
+              <Area dataKey="actual" stroke="#AD8A48" strokeWidth={2} fill="url(#eg)" dot={false}
+                activeDot={{ r: 3, fill: '#AD8A48', stroke: colors.bg, strokeWidth: 2 }} isAnimationActive={false} />
               {showForecast && (
-                <Line dataKey="forecast" stroke="#7C3AED" strokeWidth={2} strokeDasharray="8 4"
-                  dot={false} activeDot={{ r: 4, fill: '#7C3AED', stroke: colors.bg, strokeWidth: 2 }} isAnimationActive={false} />
+                <Line dataKey="forecast" stroke="#6B8299" strokeWidth={2} strokeDasharray="8 4"
+                  dot={false} activeDot={{ r: 4, fill: '#6B8299', stroke: colors.bg, strokeWidth: 2 }} isAnimationActive={false} />
               )}
             </ComposedChart>
           </ResponsiveContainer>
@@ -202,8 +202,8 @@ export default function EmbedChart() {
                 style={{
                   border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 500,
                   fontFamily: 'system-ui', padding: '3px 8px', borderRadius: 6, transition: 'all 0.15s',
-                  background: period === p.key ? 'rgba(184,148,47,0.12)' : 'transparent',
-                  color: period === p.key ? '#B8942F' : colors.textTertiary,
+                  background: period === p.key ? 'rgba(173,138,72,0.12)' : 'transparent',
+                  color: period === p.key ? '#AD8A48' : colors.textTertiary,
                 }}>
                 {t(p.labelKey)}
               </button>

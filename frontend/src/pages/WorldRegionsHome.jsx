@@ -289,7 +289,7 @@ export default function WorldRegionsHome() {
   }`;
 
   return (
-    <div className="mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={worldSubnationalHubTrail(countryName, countrySlug, kindPlural)} />
       {hub.isError && (
         <ApiRetryBanner onRetry={hub.refetch} isFetching={hub.isFetching} className="mb-6">
@@ -434,7 +434,7 @@ export default function WorldRegionsHome() {
             />
           </div>
 
-          <div data-block="world-regions-map" className="relative rounded-xl border border-border-subtle bg-surface p-3 sm:p-5" ref={mapCardRef}>
+          <div id="chart" data-block="world-regions-map" className="relative rounded-xl border border-border-subtle bg-surface p-3 sm:p-5" ref={mapCardRef}>
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
               <div className="min-w-0 text-xs text-text-tertiary">
                 {activeCode && map.data?.indicator ? (

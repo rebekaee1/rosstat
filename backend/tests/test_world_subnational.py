@@ -323,6 +323,51 @@ def test_subnational_og_locale_labels(subnational_client):
     assert "/og/world/united-states/region/california/unemployment-rate.png" in ru_ssr.text
 
 
+@pytest.mark.parametrize("locale", ["ru", "en"])
+@pytest.mark.parametrize("portrait", [False, True])
+def test_subnational_indicator_og_uses_localized_source(
+    auth_env, subnational_client, monkeypatch, locale, portrait
+):
+    import asyncio
+    from sqlalchemy import select
+    from app.models import SubnationalIndicator
+    from app.services import og_image
+
+    sources = {"ru": "Бюро статистики труда США", "en": "U.S. Bureau of Labor Statistics"}
+
+    async def update_sources():
+        async with auth_env["session_maker"]() as db:
+            series = await db.scalar(
+                select(SubnationalIndicator).where(
+                    SubnationalIndicator.code == "unemployment-rate"
+                )
+            )
+            series.source_ru = sources["ru"]
+            series.source_en = sources["en"]
+            await db.commit()
+
+    asyncio.run(update_sources())
+    captured = []
+    cache_keys = []
+    monkeypatch.setattr(og_image, "cached_og", lambda key: cache_keys.append(key))
+    monkeypatch.setattr(og_image, "store_og", lambda *args: None)
+    monkeypatch.setattr(
+        og_image, "render_indicator_og", lambda **kwargs: captured.append(kwargs) or b"png"
+    )
+    response = subnational_client.get(
+        "/api/v1/og-image/world-region/united-states/california/unemployment-rate.png",
+        params={"portrait": "1" if portrait else "0"},
+        headers={"X-FE-Locale": locale},
+    )
+    assert response.status_code == 200
+    assert captured[0]["source_label"] == sources[locale]
+    assert captured[0]["portrait"] is portrait
+    variant = "portrait" if portrait else "landscape"
+    assert cache_keys == [
+        f"fe1:wr:source-v2:{locale}:united-states:california:unemployment-rate:{variant}"
+    ]
+
+
 def test_subnational_og_nginx_rewrites():
     from pathlib import Path
 
@@ -346,3 +391,49 @@ def test_subnational_og_nginx_rewrites():
     assert block.index(profile) < block.index(hub)
     assert block.index(hub) < block.index(generic)
 
+
+def test_subnational_portrait_uses_real_month_and_visible_picture(subnational_client, monkeypatch):
+    from bs4 import BeautifulSoup
+    from app.services import og_image
+
+    captured=[]
+    monkeypatch.setattr(og_image, "cached_og", lambda key: None)
+    monkeypatch.setattr(og_image, "store_og", lambda *args: None)
+    monkeypatch.setattr(og_image, "render_rating_og", lambda **kw: captured.append(kw) or b"png")
+    response=subnational_client.get("/api/v1/og-image/world-regions/united-states.png?portrait=1",headers={"X-FE-Locale":"en"})
+    assert response.status_code==200
+    assert captured[0]["portrait"] is True
+    assert captured[0]["period_text"]=="February 2024"
+    assert captured[0]["source_label"]=="BLS"
+    page=subnational_client.get("/seo/world/united-states/regions")
+    soup=BeautifulSoup(page.text,"html.parser")
+    source=soup.select_one(".seo-chart picture source")
+    assert source is not None
+    assert source["srcset"].endswith("/og/world/united-states/regions.png?portrait=1")
+
+
+
+def test_missing_region_series_has_no_indexable_page_or_profile_link(auth_env, subnational_client):
+    import asyncio
+    from bs4 import BeautifulSoup
+    from datetime import date
+    from sqlalchemy import select
+    from app.models import SubnationalRegion, SubnationalIndicator, SubnationalDataPoint
+    async def seed():
+        async with auth_env['session_maker']() as db:
+            region = SubnationalRegion(country_code='US', slug='alabama', name_en='Alabama',
+                                       name_ru='Алабама', kind='state', geo_code='AL', fips='01')
+            db.add(region)
+            await db.flush()
+            gdp = await db.scalar(select(SubnationalIndicator).where(SubnationalIndicator.code == 'real-gdp'))
+            db.add(SubnationalDataPoint(region_id=region.id, indicator_id=gdp.id, period=date(2023, 1, 1), value=200000))
+            await db.commit()
+    asyncio.run(seed())
+    for locale in ('ru', 'en'):
+        headers = {'X-FE-Locale': locale}
+        assert subnational_client.get('/api/v1/world/united-states/regions/region/alabama/unemployment-rate', headers=headers).status_code == 404
+        assert subnational_client.get('/seo/world/united-states/region/alabama/unemployment-rate', headers=headers).status_code == 404
+        profile = subnational_client.get('/seo/world/united-states/region/alabama', headers=headers)
+        assert profile.status_code == 200
+        soup = BeautifulSoup(profile.text, 'html.parser')
+        assert not soup.select('a[href="/united-states/region/alabama/unemployment-rate"]')

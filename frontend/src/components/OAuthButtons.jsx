@@ -138,7 +138,7 @@ export default function OAuthButtons({ intent = 'login', next = '/account', divi
                 type="checkbox"
                 checked={policy}
                 onChange={(e) => setPolicy(e.target.checked)}
-                className="mt-0.5 accent-[#B8942F]"
+                className="mt-0.5 accent-champagne"
               />
               <span>
                 {t('auth.oauth.policyBefore')}{' '}
@@ -154,7 +154,7 @@ export default function OAuthButtons({ intent = 'login', next = '/account', divi
                 type="checkbox"
                 checked={newsletter}
                 onChange={(e) => setNewsletter(e.target.checked)}
-                className="mt-0.5 accent-[#B8942F]"
+                className="mt-0.5 accent-champagne"
               />
               <span>{t('auth.oauth.newsletter')}</span>
             </label>

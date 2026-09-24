@@ -45,8 +45,8 @@ export default function Register() {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 pt-28 pb-24">
-      <div className="rounded-2xl border border-border-subtle bg-surface p-6 sm:p-8 shadow-md ring-1 ring-black/[0.04]">
+    <div className="fe-data-page max-w-md mx-auto px-4 pt-28 pb-24">
+      <div className="fe-panel fe-auth-card p-5 sm:p-8">
       <h1 className="text-2xl font-display font-bold text-text-primary mb-1 text-center">{t('auth.register.title')}</h1>
       <p className="text-sm text-text-secondary mb-6 text-center">
         {t('auth.register.subtitle')}
@@ -60,7 +60,7 @@ export default function Register() {
           <input
             id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
+            className="fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
           />
         </div>
         <div>
@@ -68,22 +68,22 @@ export default function Register() {
           <input
             id="password" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
+            className="fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
           />
           <p className="text-xs text-text-tertiary mt-1">{t('auth.register.passwordHint')}</p>
         </div>
         <label className="flex items-start gap-2.5 text-sm text-text-secondary cursor-pointer">
-          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 accent-[#B8942F]" />
+          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 accent-champagne" />
           <span>
             {t('auth.oauth.policyBefore')}{' '}
-            <Link to="/terms" className="text-champagne hover:underline">{t('auth.oauth.terms')}</Link>{' '}
+            <Link to="/terms" className="fe-link">{t('auth.oauth.terms')}</Link>{' '}
             {t('auth.oauth.policyMid')}{' '}
-            <Link to="/privacy" className="text-champagne hover:underline">{t('auth.oauth.privacy')}</Link>
+            <Link to="/privacy" className="fe-link">{t('auth.oauth.privacy')}</Link>
             {t('auth.oauth.policyAfter')}
           </span>
         </label>
         <label className="flex items-start gap-2.5 text-sm text-text-secondary cursor-pointer">
-          <input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-0.5 accent-[#B8942F]" />
+          <input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-0.5 accent-champagne" />
           <span>{t('auth.oauth.newsletter')}</span>
         </label>
 
@@ -91,14 +91,14 @@ export default function Register() {
 
         <button
           type="submit" disabled={busy}
-          className="w-full py-2.5 rounded-xl bg-champagne/15 text-champagne font-medium hover:bg-champagne/25 transition-colors disabled:opacity-50"
+          className="fe-button-primary w-full py-2.5 rounded-xl font-semibold disabled:opacity-50"
         >
           {busy ? t('auth.register.busy') : t('auth.register.submitAlt')}
         </button>
       </form>
 
       <p className="text-sm text-text-secondary mt-6 text-center">
-        {t('auth.register.haveAccount')} <Link to={authLink('/login', next)} className="text-champagne hover:underline">{t('common.login')}</Link>
+        {t('auth.register.haveAccount')} <Link to={authLink('/login', next)} className="fe-link">{t('common.login')}</Link>
       </p>
       </div>
     </div>

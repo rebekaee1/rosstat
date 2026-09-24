@@ -137,7 +137,7 @@ export default function MortgageCalculatorPage() {
   const yearBreakdown = result?.yearly?.[clampedYear - 1] || null;
 
   return (
-    <div ref={containerRef} className="max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
+    <div ref={containerRef} className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
       <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
         <Link to="/" className="hover:text-champagne transition-colors inline-flex items-center gap-1.5 group">
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
@@ -166,7 +166,7 @@ export default function MortgageCalculatorPage() {
         </p>
       </header>
 
-      <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
+      <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
         <div>
           <label htmlFor="mortgage-price" className="block text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary mb-2">
             {t('calc.mortgage.price')}
@@ -201,7 +201,7 @@ export default function MortgageCalculatorPage() {
 
       {result && (
         <>
-          <section data-animate className="rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6" aria-live="polite">
+          <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6" aria-live="polite">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <p className="text-sm text-text-secondary mb-2">{t('calc.mortgage.payment')}</p>
@@ -230,8 +230,8 @@ export default function MortgageCalculatorPage() {
                         paddingAngle={2} startAngle={90} endAngle={-270}
                         stroke="none" isAnimationActive={false}
                       >
-                        <Cell fill="#B8942F" />
-                        <Cell fill="#1A1A2E" fillOpacity={0.85} />
+                        <Cell fill="#AD8A48" />
+                        <Cell fill="#202A3C" fillOpacity={0.85} />
                       </Pie>
                       <Tooltip
                         formatter={(v, name) => [formatRubles(v), name]}
@@ -248,17 +248,17 @@ export default function MortgageCalculatorPage() {
                 </div>
                 <div className="flex gap-4 mt-3 text-[11px]">
                   <span className="flex items-center gap-1.5 text-text-secondary">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#B8942F' }} />{t('calc.mortgage.credit')}
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#AD8A48' }} />{t('calc.mortgage.credit')}
                   </span>
                   <span className="flex items-center gap-1.5 text-text-secondary">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#1A1A2E', opacity: 0.85 }} />{t('calc.mortgage.overpay')}
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#202A3C', opacity: 0.85 }} />{t('calc.mortgage.overpay')}
                   </span>
                 </div>
               </div>
             </div>
           </section>
 
-          <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+          <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
             <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-5">
               {t('calc.mortgage.chartTitle')}
             </h3>
@@ -266,12 +266,12 @@ export default function MortgageCalculatorPage() {
               <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
                 <defs>
                   <linearGradient id="mortBal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#B8942F" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="#B8942F" stopOpacity={0.01} />
+                    <stop offset="0%" stopColor="#AD8A48" stopOpacity={0.2} />
+                    <stop offset="100%" stopColor="#AD8A48" stopOpacity={0.01} />
                   </linearGradient>
                   <linearGradient id="mortInt" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#1A1A2E" stopOpacity={0.12} />
-                    <stop offset="100%" stopColor="#1A1A2E" stopOpacity={0.01} />
+                    <stop offset="0%" stopColor="#202A3C" stopOpacity={0.12} />
+                    <stop offset="100%" stopColor="#202A3C" stopOpacity={0.01} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
@@ -284,8 +284,8 @@ export default function MortgageCalculatorPage() {
                   formatter={(v, name) => [formatRubles(v), name === 'balance' ? t('calc.mortgage.balance') : t('calc.mortgage.interestAccum')]}
                   labelFormatter={(v) => t('calc.yearN', { n: v })}
                 />
-                <Area dataKey="balance" name="balance" stroke="#B8942F" strokeWidth={2} fill="url(#mortBal)" dot={false} isAnimationActive={false} />
-                <Area dataKey="interest" name="interest" stroke="#1A1A2E" strokeWidth={1.4} fill="url(#mortInt)" dot={false} isAnimationActive={false} />
+                <Area dataKey="balance" name="balance" stroke="#AD8A48" strokeWidth={2} fill="url(#mortBal)" dot={false} isAnimationActive={false} />
+                <Area dataKey="interest" name="interest" stroke="#202A3C" strokeWidth={1.4} fill="url(#mortInt)" dot={false} isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
             <p className="mt-3 text-[12px] text-text-tertiary">
@@ -294,7 +294,7 @@ export default function MortgageCalculatorPage() {
           </section>
 
           {yearBreakdown && (
-            <section data-animate className="rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+            <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
               <div className="flex items-center gap-2 mb-1">
                 <PieIcon className="w-4 h-4 text-champagne" />
                 <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
@@ -322,13 +322,13 @@ export default function MortgageCalculatorPage() {
                   className="h-full transition-all duration-300"
                   style={{
                     width: `${(yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100}%`,
-                    backgroundColor: '#1A1A2E', opacity: 0.85,
+                    backgroundColor: '#202A3C', opacity: 0.85,
                   }}
                   title={t('calc.mortgage.interest')}
                 />
                 <div
                   className="h-full flex-1 transition-all duration-300"
-                  style={{ backgroundColor: '#B8942F' }}
+                  style={{ backgroundColor: '#AD8A48' }}
                   title={t('calc.mortgage.principalBody')}
                 />
               </div>

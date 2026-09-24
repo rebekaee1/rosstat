@@ -1,0 +1,230 @@
+{
+  "at": "2026-09-24T06:27:34.099Z",
+  "base": "http://127.0.0.1:3000",
+  "mode": "http",
+  "tier": "smoke",
+  "stage": "baseline-api",
+  "head": "b76bad33e24517608b154220d1a2e32be37a27c5",
+  "http": [],
+  "api": [
+    {
+      "id": "national",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data",
+      "status": 200,
+      "count": 428,
+      "first": {
+        "date": "1991-01-01",
+        "value": 106.2
+      },
+      "last": {
+        "date": "2026-08-01",
+        "value": 99.92
+      }
+    },
+    {
+      "id": "national",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/api/v1/indicators/cpi/data?preview_locale=en",
+      "status": 200,
+      "count": 428,
+      "first": {
+        "date": "1991-01-01",
+        "value": 106.2
+      },
+      "last": {
+        "date": "2026-08-01",
+        "value": 99.92
+      }
+    },
+    {
+      "id": "regional",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/api/v1/regions/tulskaya-oblast/i/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
+      "status": 200,
+      "count": 27,
+      "first": {
+        "year": 1998,
+        "value": 755.3
+      },
+      "last": {
+        "year": 2024,
+        "value": 73868
+      },
+      "unit": "рублей"
+    },
+    {
+      "id": "regional",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/api/v1/regions/tulskaya-oblast/i/srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy?preview_locale=en",
+      "status": 200,
+      "count": 27,
+      "first": {
+        "year": 1998,
+        "value": 755.3
+      },
+      "last": {
+        "year": 2024,
+        "value": 73868
+      },
+      "unit": "rubles"
+    },
+    {
+      "id": "world",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/api/v1/world/indicators/germany/de-weo-ngdpd/data",
+      "status": 200,
+      "count": 46,
+      "first": {
+        "date": "1980-01-01",
+        "value": 856.83275
+      },
+      "last": {
+        "date": "2025-01-01",
+        "value": 5048.059311
+      },
+      "unit": "млрд $"
+    },
+    {
+      "id": "world",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/api/v1/world/indicators/germany/de-weo-ngdpd/data?preview_locale=en",
+      "status": 200,
+      "count": 46,
+      "first": {
+        "date": "1980-01-01",
+        "value": 856.83275
+      },
+      "last": {
+        "date": "2025-01-01",
+        "value": 5048.059311
+      },
+      "unit": "billion $"
+    },
+    {
+      "id": "us-national",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/api/v1/world/indicators/united-states/us-gdp-real/data",
+      "status": 200,
+      "count": 318,
+      "first": {
+        "date": "1947-01-01",
+        "value": 2182.681
+      },
+      "last": {
+        "date": "2026-04-01",
+        "value": 24269.613
+      },
+      "unit": "млрд долларов США (цены 2017)"
+    },
+    {
+      "id": "us-national",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/api/v1/world/indicators/united-states/us-gdp-real/data?preview_locale=en",
+      "status": 200,
+      "count": 318,
+      "first": {
+        "date": "1947-01-01",
+        "value": 2182.681
+      },
+      "last": {
+        "date": "2026-04-01",
+        "value": 24269.613
+      },
+      "unit": "billion USD (2017 prices)"
+    },
+    {
+      "id": "us-subnational",
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/api/v1/world/united-states/regions/region/california/unemployment-rate",
+      "status": 200,
+      "count": 607,
+      "first": {
+        "date": "1976-01-01",
+        "value": 9.2,
+        "year": 1976,
+        "month": 1,
+        "quarter": 1,
+        "label": "1976-01"
+      },
+      "last": {
+        "date": "2026-08-01",
+        "value": 5.1,
+        "year": 2026,
+        "month": 8,
+        "quarter": 3,
+        "label": "2026-08"
+      },
+      "unit": "%"
+    },
+    {
+      "id": "us-subnational",
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/api/v1/world/united-states/regions/region/california/unemployment-rate?preview_locale=en",
+      "status": 200,
+      "count": 607,
+      "first": {
+        "date": "1976-01-01",
+        "value": 9.2,
+        "year": 1976,
+        "month": 1,
+        "quarter": 1,
+        "label": "1976-01"
+      },
+      "last": {
+        "date": "2026-08-01",
+        "value": 5.1,
+        "year": 2026,
+        "month": 8,
+        "quarter": 3,
+        "label": "2026-08"
+      },
+      "unit": "%"
+    }
+  ],
+  "browser": [],
+  "inventory": null,
+  "issues": [],
+  "limitations": [
+    "Family sampling, not a crawl of every public URL.",
+    "Desktop engines with emulated viewports, not physical devices.",
+    "EN preview intentionally noindex; production host cutover is not changed.",
+    "Git HEAD identifies the working checkout, not the deployed compose image; response hashes and asset paths identify observed content."
+  ],
+  "sitemap": {
+    "status": 200,
+    "builtAt": "2026-09-22T12:49:17+00:00",
+    "urlsTotal": 1846206,
+    "publishedUrlsTotal": 1846206,
+    "hosts": [
+      "forecasteconomy.com"
+    ],
+    "groups": {
+      "core": 163,
+      "today": 11,
+      "ratings": 492,
+      "maps": 493,
+      "regions": 95,
+      "region-vs": 3570,
+      "world-ratings": 591,
+      "world": 54,
+      "calendar": 16,
+      "world-vs": 12135,
+      "years": 3251,
+      "months": 11392,
+      "world-indicators": 35997,
+      "regional": 45553,
+      "regional-years": 944076,
+      "world-years": 788317
+    }
+  },
+  "continuations": [],
+  "completedAt": "2026-09-24T06:27:39.779Z",
+  "summary": {
+    "httpCases": 0,
+    "apiCases": 10,
+    "browserCases": 0,
+    "issues": 0,
+    "issueKinds": {}
+  }
+}

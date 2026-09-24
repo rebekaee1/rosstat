@@ -56,7 +56,7 @@ export default function RegionComparePage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
       <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label={t('crumb.aria')}>
         <Link to="/" className="hover:text-champagne transition-colors shrink-0">{t('common.home')}</Link>
         <ChevronRight size={12} className="shrink-0" />

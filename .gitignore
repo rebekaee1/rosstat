@@ -97,6 +97,9 @@ scripts/audit-world-out/
 
 # Дизайн-снимки быстрых страниц (локальные артефакты, не код)
 tmp-design/
+output/design-acceptance/
+output/design-review/
+output/imagegen/
 
 # Локальный кэш deep-ingest / listing-батчей Eurostat (не в git)
 backend/.cache/

@@ -79,13 +79,13 @@ export const PERIODS = [
 
 export const THEME_COLORS = {
   light: {
-    bg: '#FFFFFF', text: '#1a1a1a', textSecondary: '#666',
-    textTertiary: '#999', border: '#e5e5e5', surface: '#f8f8f8',
+    bg: '#F8FAFC', text: '#202A3C', textSecondary: '#526074',
+    textTertiary: '#697587', border: '#D5DEE8', surface: '#EEF0F4',
     grid: 'rgba(0,0,0,0.06)', tick: 'rgba(0,0,0,0.4)',
   },
   dark: {
-    bg: '#1a1a1e', text: '#e5e5e5', textSecondary: '#aaa',
-    textTertiary: '#666', border: '#333', surface: '#252528',
+    bg: '#202A3C', text: '#EEF0F4', textSecondary: '#CAD8E5',
+    textTertiary: '#A4B1C2', border: '#415064', surface: '#29374A',
     grid: 'rgba(255,255,255,0.08)', tick: 'rgba(255,255,255,0.4)',
   },
 };

@@ -1119,7 +1119,7 @@ async def render_regions_map_html(
     if year is not None and year in years_list:
         canonical = f"{canonical}?year={year}"
 
-    og_path = paths.og_region_rating(code)
+    og_path = f"{paths.og_region_rating(code)}?year={map_year}"
     map_alt = _rt(
         "region_map.alt",
         indicator=ind_name,
@@ -1139,7 +1139,7 @@ async def render_regions_map_html(
     )
     figure_html = (
         f'<figure class="seo-chart"><a class="seo-chart-link" '
-        f'href="{escape(paths.region_map(code))}#chart">'
+        f'href="{escape(paths.region_map(code))}?year={map_year}#chart">'
         f'<img src="{escape(og_path)}" alt="{escape(map_alt)}" '
         f'width="1200" height="630" loading="eager"></a>'
         f"<figcaption>{escape(caption)}</figcaption></figure>"

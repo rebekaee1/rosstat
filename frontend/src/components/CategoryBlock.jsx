@@ -46,6 +46,14 @@ const CATEGORY_ICONS = {
   Boxes,
 };
 
+// Shared approved illustrations. They describe a topic, never a data value.
+const CATEGORY_ART = {
+  prices: 'commodity', rates: 'finance', currencies: 'finance', finance: 'finance',
+  indices: 'forecast-glass', commodities: 'commodity', labor: 'population',
+  gdp: 'industry', population: 'population', trade: 'trade',
+  business: 'industry', science: 'science',
+};
+
 export default function CategoryBlock({
   category,
   indicatorCount = 0,
@@ -80,25 +88,36 @@ export default function CategoryBlock({
       style={{ animationDelay: `${delay * 50}ms` }}
       className={cn(
         FOCUS_RING_SURFACE,
-        'group relative flex flex-col p-6 rounded-[2rem] border transition-all duration-500 overflow-hidden',
-        'bg-surface border-border-subtle',
+        'fe-panel fe-category-card group relative flex flex-col p-6 rounded-[1.5rem] border overflow-hidden',
         category.apiCategory && 'hover:border-champagne/30 lift-hover cursor-pointer',
         !category.apiCategory && 'opacity-50 cursor-not-allowed',
         soon && 'opacity-70'
       )}
     >
-      <div className="flex items-start justify-between gap-4 mb-4">
+      {CATEGORY_ART[category.slug] && (
+        <img
+          className="fe-category-art"
+          src={`/art/quicklinks/${CATEGORY_ART[category.slug]}-320.webp`}
+          alt=""
+          width="320"
+          height="213"
+          loading="lazy"
+          decoding="async"
+          aria-hidden="true"
+        />
+      )}
+      <div className="flex items-start justify-between gap-4 mb-8">
         <div
           className={cn(
-            'p-3 rounded-2xl',
-            hasData ? 'bg-champagne/10 text-champagne' : 'bg-obsidian-lighter text-text-tertiary'
+            'fe-category-icon p-3 rounded-2xl',
+            hasData ? 'text-champagne' : 'text-text-tertiary'
           )}
         >
           <IconComponent className="w-6 h-6" strokeWidth={1.5} />
         </div>
         {category.apiCategory && (
           <span
-            className="text-xs font-mono text-text-tertiary"
+            className="rounded-full border border-border-subtle bg-surface/90 px-2.5 py-1 text-[10px] font-medium text-text-secondary"
             title={!countsKnown ? t('category.countsUnavailable') : undefined}
           >
             {!countsKnown
@@ -115,10 +134,10 @@ export default function CategoryBlock({
         )}
       </div>
 
-      <h3 className="text-lg font-semibold text-text-primary mb-2 pr-6">{title}</h3>
+      <h3 className="text-xl font-semibold tracking-tight text-text-primary mb-2 pr-4">{title}</h3>
       <p className="text-sm text-text-secondary leading-relaxed line-clamp-3 flex-1">{description}</p>
 
-      <div className="mt-4 flex items-center gap-2 text-sm font-medium text-champagne opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-text-secondary group-hover:text-champagne transition-colors">
         {category.apiCategory ? (
           <>
             <span>{t('common.open')}</span>
