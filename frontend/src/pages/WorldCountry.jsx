@@ -324,7 +324,7 @@ export default function WorldCountry() {
       )}
 
       {isLoading && (
-        <div className="space-y-4">
+        <div className="min-h-screen space-y-4">
           <SkeletonBox className="h-9 w-64 max-w-full" />
           <SkeletonBox className="h-10 w-full rounded-xl" />
           <SkeletonBox className="h-40 rounded-xl" />
