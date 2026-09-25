@@ -95,3 +95,5 @@ e936751140ae5ee5d45198c81bc77f699d463874  # explicit owner SHA approval 2026-09-
 cee7ef53d59dd8ee02c5b1e02d5c8415745a6a9c  # explicit owner GO 2026-09-25; SEO trio #10+#7+#11 1:1:1
 
 e5a2b98a606143f6051b01a5c78db7d3e7825720  # explicit owner GO 2026-09-25; sitemap #12 world-regions split cutover
+
+9bb910a54476c90fb3095c772c9a0ab6a52c2b1a  # explicit owner GO 2026-09-25; EN BEA units #14 cutover; IndexNow not forced; #13 later
