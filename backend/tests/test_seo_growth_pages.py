@@ -1164,31 +1164,67 @@ def test_seo_static_templates_match_frontend_public():
         assert backend == frontend, f"{name} drifted between backend and frontend"
 
 
-def test_robots_noindex_pages_stay_crawlable():
-    """Google: Disallow не снимает URL с индекса. noindex-страницы должны обходиться.
+def _robots_group(text: str, agent: str) -> str:
+    """Тело одной секции User-agent до следующей секции или Clean-param."""
+    start = text.index(f"User-agent: {agent}\n")
+    rest = text[start:]
+    end = len(rest)
+    for marker in ("\nUser-agent:", "\nClean-param:", "\nSitemap:"):
+        idx = rest.find(marker, 1)
+        if idx != -1:
+            end = min(end, idx)
+    return rest[:end]
 
-    /assets/ не закрываем — иначе рендер без CSS/JS выглядит как soft-404.
+
+def test_robots_noindex_pages_stay_crawlable():
+    """Каталог ~5 млн URL на хост обходится. noindex не экономит этот обход.
+
+    Конечный набор /login /register /account остаётся открытым, чтобы робот
+    прочитал noindex. /assets/ и /index.html не закрываем. /embed/ закрыт:
+    виджеты масштабируются каталогом. Неканонические query закрыты у * и
+    Googlebot (своя секция не наследует *). У Яндекса тех же query нет:
+    склейка через Clean-param. ?year= — канон карты, открыт.
     """
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[2] / "backend/app/data/seo_static"
-    blocked = (
+    open_needles = (
         "Disallow: /login\n",
         "Disallow: /register\n",
         "Disallow: /account\n",
-        "Disallow: /embed/\n",
         "Disallow: /assets/\n",
         "Disallow: /index.html\n",
+        "Disallow: /*?year=",
+        "Disallow: /*?preview_locale",
+    )
+    query_firewall = (
+        "Disallow: /compare?\n",
+        "Disallow: /*?mode=\n",
+        "Disallow: /*&mode=\n",
+        "Disallow: /*?view=\n",
+        "Disallow: /*&view=\n",
     )
     for name in ("robots.txt", "robots.en.txt"):
         text = (root / name).read_text(encoding="utf-8")
-        for needle in blocked:
+        star = _robots_group(text, "*")
+        yandex = _robots_group(text, "Yandex")
+        google = _robots_group(text, "Googlebot")
+        for needle in open_needles:
             assert needle not in text, f"{name} still has {needle!r}"
+        assert "Disallow: /embed/\n" in star
+        assert "Disallow: /embed/\n" in yandex
+        assert "Disallow: /embed/\n" in google
+        for needle in query_firewall:
+            assert needle in star, f"{name} * missing {needle!r}"
+            assert needle in google, f"{name} Googlebot missing {needle!r}"
+            assert needle not in yandex, f"{name} Yandex must not {needle!r}"
         assert "Disallow: /api/\n" in text
         assert "Disallow: /__honeypot__/\n" in text
         assert "Disallow: /russia/util/\n" in text
-        assert "preview_locale" in text
         assert "Allow: /\n" in text
+        assert "Clean-param: codes /compare\n" in text
+        assert "Clean-param: view\n" in text
+        assert "mode&preview_locale" in text
 
 
 def test_robots_mj12_disallow_on_ru_and_en_templates():

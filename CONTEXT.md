@@ -368,6 +368,19 @@ axios-таймаута 15 с. Клиент рвал (nginx 499) и ретраи�
 `if_modified_since off`. Живые счётчики — `/sitemap-stats.json`, не хроника
 AGENTS.md.
 
+### Crawl-budget trap: noindex не бережёт 5 млн URL (2026-09-25)
+
+На хост ~5,04 млн loc в sitemap (509 шардов; EN и RU — отдельные хосты).
+Google скачивает страницу, чтобы увидеть noindex, поэтому каталог остаётся
+`index,follow` (`index_policy.py`). Неканонические дубли (`/compare?`,
+`?mode=`, `?view=`, метки рекламы) и `/embed/` закрыты в robots у `*` и
+`Googlebot`: своя секция Googlebot не наследует `*`. У Яндекса тех же query
+нет в Disallow — склейка через Clean-param (`codes` только на `/compare`,
+`view` по сайту); при конфликте побеждает Disallow и сигналы теряются.
+`?year=` на карте регионов — канон, открыт. `?preview_locale=` открыт, чтобы
+был виден 301. `/login` `/register` `/account` открыты: конечный набор,
+noindex должен быть прочитан. `/assets/` не закрываем.
+
 ### Canonical-rating-year trap: один контент — один URL (2026-08-28)
 
 Годовые рейтинги стран живут в канонической модели «база = дефолтный год»:
