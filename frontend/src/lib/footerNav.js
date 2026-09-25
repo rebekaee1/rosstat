@@ -5,12 +5,17 @@
 
 import {
   calendarPath,
+  comparePath,
   countryPath,
   countryRegionsPath,
   demographicsPath,
   indicatorPath,
   regionHubPath,
+  regionRatingHubPath,
   russiaHomePath,
+  todayPath,
+  WORLD_RATING_DEFAULT_CONCEPT,
+  worldRatingPath,
 } from './sitePaths';
 
 export const US_SLUG = 'united-states';
@@ -94,9 +99,33 @@ export function footerHomeCountryColumn(locale) {
     sectionKey: 'footer.section.russia',
     links: [
       { to: russiaHomePath(), key: 'footer.russia' },
+      { to: todayPath(), key: 'footer.economyToday' },
       { to: regionHubPath(), key: 'footer.regions' },
+      { to: regionRatingHubPath(), key: 'footer.regionRatings' },
       { to: calendarPath(), key: 'footer.calendar' },
       { to: demographicsPath(), key: 'footer.demographics' },
     ],
   };
+}
+
+/**
+ * Колонка «Мир». На EN сюда же вынесены российские хабы: в колонке страны
+ * там США, а «Сегодня» и рейтинги регионов иначе пропадают из графа после
+ * гидрации (в серверной шапке они есть, в клиентском меню — нет).
+ */
+export function footerWorldLinks(locale) {
+  const links = [
+    { to: '/#countries', key: 'footer.countries' },
+    { to: worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT), key: 'footer.worldRating' },
+    { to: comparePath(), key: 'footer.compare' },
+  ];
+  if (locale === 'en') {
+    links.push(
+      { to: todayPath(), key: 'footer.economyToday' },
+      { to: regionRatingHubPath(), key: 'footer.regionRatings' },
+      { to: calendarPath(), key: 'footer.calendar' },
+      { to: demographicsPath(), key: 'footer.demographics' },
+    );
+  }
+  return links;
 }

@@ -7,6 +7,8 @@ import { openConsentSettings } from '../lib/consent';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useLocale } from '../i18n';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { toolTrail } from '../lib/breadcrumbs';
 import { PrivacyBodyEn } from '../i18n/legalPages.en';
 
 /**
@@ -47,6 +49,7 @@ export default function Privacy() {
 
   return (
     <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
+      <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
       <article className="fe-panel fe-reading prose prose-sm max-w-none p-5 sm:p-8">
         {locale === 'en' ? (
           <PrivacyBodyEn t={t} h1={seo.h1 || 'Privacy and personal data processing policy'} />

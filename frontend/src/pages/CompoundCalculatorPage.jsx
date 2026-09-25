@@ -5,7 +5,7 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
   Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
-import { ArrowLeft, TrendingUp, Flame, PiggyBank } from 'lucide-react';
+import { TrendingUp, Flame, PiggyBank } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
@@ -17,6 +17,9 @@ import { formatRubles, parseAmount, formatInput, fmtPct, years as yearsPhrase } 
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
+import Breadcrumbs from '../components/Breadcrumbs';
+import CalculatorSiblings from '../components/CalculatorSiblings';
+import { toolTrail } from '../lib/breadcrumbs';
 import CalcSlider from '../components/CalcSlider';
 import { useT, useLocale } from '../i18n';
 import {
@@ -114,16 +117,9 @@ export default function CompoundCalculatorPage() {
 
   return (
     <div ref={containerRef} className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
-      <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
-        <Link to="/" className="hover:text-champagne transition-colors inline-flex items-center gap-1.5 group">
-          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          {t('common.home')}
-        </Link>
-        <span className="text-text-tertiary/40">/</span>
-        <Link to="/calculator" className="hover:text-champagne transition-colors">{t('calc.breadcrumb')}</Link>
-        <span className="text-text-tertiary/40">/</span>
-        <span className="text-text-secondary">{t('calc.compound.title')}</span>
-      </nav>
+      <div data-animate className="mb-8">
+        <Breadcrumbs items={toolTrail(t('calc.compound.title'), '/calculator/compound')} />
+      </div>
 
       <header data-animate className="mb-10">
         <div className="flex items-center gap-3 mb-4">
@@ -291,6 +287,10 @@ export default function CompoundCalculatorPage() {
           onToggle={({ title, open }) => { if (open) track(events.FAQ_TOGGLE, { question: title }); }}
         />
       </section>
+
+      <div data-animate>
+        <CalculatorSiblings current="compound" />
+      </div>
     </div>
   );
 }

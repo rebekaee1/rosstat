@@ -25,6 +25,7 @@ import { track, events } from '../lib/track';
 import { regionIndicatorTrail } from '../lib/breadcrumbs';
 import {
   regionIndicatorPath,
+  regionRatingPath,
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
@@ -528,6 +529,12 @@ export default function RegionIndicatorPage() {
                   </li>
                 ))}
               </ol>
+              <Link
+                to={regionRatingPath(code)}
+                className="mt-3 inline-block text-xs font-medium text-champagne hover:underline"
+              >
+                {t('regions.ind.fullRanking')}
+              </Link>
               {active.rank.position > 5 && (
                 <div className="mt-2 pt-2 border-t border-border-subtle flex items-center justify-between text-[13px] px-2">
                   <span className="flex items-center gap-2">

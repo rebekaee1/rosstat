@@ -168,26 +168,31 @@ describe('RussiaHome навигация по категориям', () => {
 });
 
 describe('RussiaHome быстрые входы (SEO-требование)', () => {
-  it('Регионы, Календарь и Демография доступны ряд ссылок-карточек', async () => {
+  it('Сегодня, регионы, рейтинги, календарь и демография — карточки входа', async () => {
     renderRussia(LISTING);
 
     await screen.findByRole('heading', { level: 1, name: 'Россия' });
 
-    expect(screen.queryByRole('link', { name: /Сегодня/ })).toBeNull();
-
     const grid = screen.getByTestId('russia-sections-grid');
     expect(grid.className).toMatch(/grid-cols-1/);
+    // Пять карточек: отдельного lg:grid-cols-5 нет, остаётся три колонки.
     expect(grid.className).toMatch(/lg:grid-cols-3/);
     expect(grid.className).not.toMatch(/lg:grid-cols-4/);
-    expect(grid.querySelectorAll('a')).toHaveLength(3);
+    expect(grid.querySelectorAll('a')).toHaveLength(5);
 
-    const regions = screen.getByRole('link', { name: /Регионы/ });
+    const today = within(grid).getByRole('link', { name: /Сегодня/ });
+    expect(today.getAttribute('href')).toBe('/russia/today');
+
+    const regions = within(grid).getByRole('link', { name: /^Регионы/ });
     expect(regions.getAttribute('href')).toBe('/russia/region');
 
-    const calendar = screen.getByRole('link', { name: /Календарь/ });
+    const ratings = within(grid).getByRole('link', { name: /Рейтинги регионов/ });
+    expect(ratings.getAttribute('href')).toBe('/russia/region-rating');
+
+    const calendar = within(grid).getByRole('link', { name: /Календарь/ });
     expect(calendar.getAttribute('href')).toBe('/russia/calendar');
 
-    const demographics = screen.getByRole('link', { name: /Демография/ });
+    const demographics = within(grid).getByRole('link', { name: /Демография/ });
     expect(demographics.getAttribute('href')).toBe('/russia/demographics');
   });
 });

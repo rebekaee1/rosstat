@@ -19,6 +19,8 @@ import {
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { regionsTrail } from '../lib/breadcrumbs';
 import { exportNodeToPng } from '../lib/chartImage';
 import { buildRegionsMapGif, downloadBlob } from '../lib/regionsMapGif';
 import {
@@ -32,6 +34,8 @@ import {
   regionHubPath,
   regionIndicatorPath,
   regionPath,
+  regionRatingHubPath,
+  regionRatingPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 
@@ -447,6 +451,7 @@ export default function RegionsHome() {
 
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+      <Breadcrumbs items={regionsTrail()} className="mb-6" />
       <div className="mb-8">
         <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-3">
           <MapPin size={14} />
@@ -458,6 +463,27 @@ export default function RegionsHome() {
         <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-text-secondary sm:text-[15px]">
           {t('regions.intro')}
         </p>
+        <section className="mt-5" aria-labelledby="regions-rankings-title">
+          <h2 id="regions-rankings-title" className="text-sm font-semibold text-text-primary">
+            <Link to={regionRatingHubPath()} className="hover:text-champagne">
+              {t('russia.link.ratings.title')}
+            </Link>
+          </h2>
+          <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-text-secondary">
+            {t('regions.hub.ratingsLead')}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {MAP_METRICS.map((metric) => (
+              <Link
+                key={metric.code}
+                to={regionRatingPath(metric.code)}
+                className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne"
+              >
+                {t('regions.ratingLink', { name: t(metric.labelKey) })}
+              </Link>
+            ))}
+          </div>
+        </section>
         {data && (
           <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs font-mono text-text-tertiary">
             <span className="inline-flex items-center gap-1.5">
