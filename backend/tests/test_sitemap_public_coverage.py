@@ -139,3 +139,91 @@ def test_world_comparisons_include_nonadjacent_pairs_but_not_404s(auth_env):
                 status, _ = await render_world_vs_html("alpha", b, "population", db)
                 assert status == 404
     asyncio.run(check())
+
+
+def test_world_regions_sitemap_stays_under_protocol_limit(auth_env, monkeypatch):
+    from app.models import SubnationalDataPoint, SubnationalIndicator, SubnationalRegion
+
+    async def check():
+        async with auth_env["session_maker"]() as db:
+            db.add(WorldCountry(
+                code="US", slug="united-states", name_ru="США",
+                name_en="United States", sort_order=1,
+            ))
+            await db.flush()
+            regions = [
+                SubnationalRegion(
+                    country_code="US", slug=slug, name_en=name, name_ru=name,
+                    sort_order=order,
+                )
+                for order, slug, name in (
+                    (1, "new-york", "New York"),
+                    (2, "california", "California"),
+                    (3, "wyoming", "Wyoming"),
+                )
+            ]
+            indicators = [
+                SubnationalIndicator(
+                    country_code="US", code=code, name_en=code, name_ru=code,
+                    series_template=code, is_listed=listed,
+                )
+                for code, listed in (("a", True), ("b", True), ("hidden", False))
+            ]
+            db.add_all(regions + indicators)
+            await db.flush()
+            by_slug = {region.slug: region for region in regions}
+            by_code = {indicator.code: indicator for indicator in indicators}
+            db.add_all([
+                SubnationalDataPoint(
+                    indicator_id=by_code["a"].id, region_id=by_slug["new-york"].id,
+                    period=date(2024, 1, 1), value=1,
+                ),
+                SubnationalDataPoint(
+                    indicator_id=by_code["a"].id, region_id=by_slug["california"].id,
+                    period=date(2025, 1, 1), value=1,
+                ),
+                SubnationalDataPoint(
+                    indicator_id=by_code["b"].id, region_id=by_slug["california"].id,
+                    period=date(2023, 1, 1), value=1,
+                ),
+                SubnationalDataPoint(
+                    indicator_id=by_code["hidden"].id, region_id=by_slug["new-york"].id,
+                    period=date(2026, 1, 1), value=1,
+                ),
+            ])
+            await db.commit()
+            built = await urls._world_regions_urls(db, date(2026, 9, 25))
+            paths = [item.path for item in built]
+            assert await urls._world_regions_url_count(db) == len(built)
+            assert paths == [
+                "/united-states/regions",
+                "/united-states/region/new-york",
+                "/united-states/region/new-york/a",
+                "/united-states/region/california",
+                "/united-states/region/california/a",
+                "/united-states/region/california/b",
+                "/united-states/region/wyoming",
+            ]
+            assert built[0].lastmod == "2025-01-01"
+            paged = await urls._world_regions_page(db, 0, len(built))
+            assert [(item.path, item.lastmod, item.priority) for item in paged] == [
+                (item.path, item.lastmod, item.priority) for item in built
+            ]
+            monkeypatch.setattr(urls, "SITEMAP_MAX_URLS", 3)
+            monkeypatch.setattr(urls, "WORLD_CHUNK", 3)
+            names = [name for name, _chunk in urls.bounded_section_items("world-regions", built)]
+            assert names == ["world-regions-1", "world-regions-2", "world-regions-3"]
+            assert urls.section_names_for_count("world-regions", len(built)) == names
+
+            async def must_not_materialise(*args, **kwargs):
+                raise AssertionError("shard resolve must not load every world-region URL")
+
+            monkeypatch.setattr(urls, "_world_regions_urls", must_not_materialise)
+            second = await urls.resolve_section(db, "world-regions-2")
+            assert [item.path for item in second] == paths[3:6]
+            assert await urls.resolve_section(db, "world-regions") is None
+            streamed = [item async for item in urls._iter_world_region_sections(db)]
+            assert [name for name, _chunk in streamed] == names
+            assert [item.path for item in streamed[1][1]] == paths[3:6]
+
+    asyncio.run(check())

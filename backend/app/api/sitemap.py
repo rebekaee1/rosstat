@@ -196,9 +196,15 @@ def _sitemap_cache_key(kind: str, origin: str) -> str:
     return f"fe:sitemap:images-v1:{kind}:{host}"
 
 
+# Плейсхолдер ночной сборки: XML urlset рендерится один раз, хост подставляется
+# заменой. В путях страниц этой строки нет.
+SITEMAP_ORIGIN_TOKEN = "https://sitemap-origin.invalid"
+
+
 def _render_urlset(urls, *, origin: str | None = None) -> str:
     """Shared dynamic/static XML; image discovery never renders any PNG files."""
     from app.services.sitemap_images import image_path_for_page
+    from app.services.site_urls import normalize_sitemap_lastmod
 
     base = (origin or DOMAIN).rstrip("/")
     entries = []
@@ -208,10 +214,12 @@ def _render_urlset(urls, *, origin: str | None = None) -> str:
             f"    <image:image><image:loc>{escape(base + image_path, quote=False)}</image:loc></image:image>\n"
             if image_path else ""
         )
+        lastmod = normalize_sitemap_lastmod(url.lastmod)
+        lastmod_xml = f"    <lastmod>{escape(lastmod, quote=False)}</lastmod>\n" if lastmod else ""
         entries.append(
             "  <url>\n"
             f"    <loc>{escape(base + url.path, quote=False)}</loc>\n"
-            f"    <lastmod>{escape(str(url.lastmod), quote=False)}</lastmod>\n"
+            f"{lastmod_xml}"
             f"    <changefreq>{escape(str(url.changefreq), quote=False)}</changefreq>\n"
             f"    <priority>{escape(str(url.priority), quote=False)}</priority>\n"
             f"{image}"
@@ -226,11 +234,21 @@ def _render_urlset(urls, *, origin: str | None = None) -> str:
     )
 
 
-def _empty_sitemap_index() -> str:
+def _render_sitemap_index(names: list[str], origin: str, lastmods: dict[str, str]) -> str:
+    """Индекс с lastmod файла = max(lastmod) его URL, не дата генерации."""
+    blocks = []
+    for name in names:
+        loc = escape(f"{origin}/sitemap-{name}.xml", quote=False)
+        lastmod = lastmods.get(name)
+        lastmod_xml = f"\n    <lastmod>{escape(lastmod, quote=False)}</lastmod>" if lastmod else ""
+        blocks.append(f"  <sitemap>\n    <loc>{loc}</loc>{lastmod_xml}\n  </sitemap>")
+    body = "\n".join(blocks)
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        "</sitemapindex>"
+        + body
+        + ("\n" if body else "")
+        + "</sitemapindex>"
     )
 
 
@@ -248,17 +266,18 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
 
     origin = _request_sitemap_origin(request)
     if _is_ru_origin(origin) and not apex_locale_en_enabled():
-        return _index_304_or_full(_empty_sitemap_index(), request)
+        return _index_304_or_full(_render_sitemap_index([], origin, {}), request)
 
-    from app.services.sitemap_static import read_stats
+    from app.services.sitemap_static import read_stats, section_lastmods
     generation = read_stats().get("generation", "dynamic")
-    cache_key = _sitemap_cache_key(f"index:us-region-fast-v3:{generation}", origin)
+    cache_key = _sitemap_cache_key(f"index:lastmod-v1:{generation}", origin)
     cached = await cache_get(cache_key)
     if cached:
         return _index_304_or_full(cached, request)
 
     from app.services.sitemap_static import published_sections
     names = published_sections(origin)
+    lastmods: dict[str, str] = section_lastmods(origin) if names is not None else {}
     if names is None:
         names = await section_names(db)
     else:
@@ -272,16 +291,7 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
             names.extend(f"world-region-years-{index}" for index in range(1, count + 1))
         if "world-region-vs" not in names and any(name.startswith("world-region-years-") for name in names):
             names.append("world-region-vs")
-    entries = "\n".join(
-        f"  <sitemap>\n    <loc>{origin}/sitemap-{name}.xml</loc>\n  </sitemap>"
-        for name in names
-    )
-    xml = (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + entries
-        + "\n</sitemapindex>"
-    )
+    xml = _render_sitemap_index(names, origin, lastmods)
     await cache_set(cache_key, xml, _SITEMAP_TTL)
     return _index_304_or_full(xml, request)
 
@@ -298,10 +308,11 @@ def _index_304_or_full(xml: str, request: Request) -> Response:
 async def sitemap_section(
     section: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    """URL-набор ОДНОЙ секции: сборка только запрошенной группы.
+    """URL-набор ОДНОГО шарда: не реестр ~5,04 млн URL.
 
     Мусорное имя отсекается без БД (реестр секций / префикс чанковой группы).
-    Холодный miss стоит одну группу (не монолит — фикс П-13: 40+ с и 504).
+    Холодный miss стоит одну страницу (не монолит — фикс П-13: 40+ с и 504).
+    ``world-regions-N`` читается OFFSET/LIMIT, без сборки всех ~96 тыс. URL.
     Конкурентные запросы одной секции собирают её под Redis-локом один раз —
     остальные ждут готовый XML из кэша.
     """
@@ -317,6 +328,7 @@ async def sitemap_section(
     origin = _request_sitemap_origin(request)
     from app.services.sitemap_static import section_file
     from app.services.locale import apex_locale_en_enabled
+    from app.services.site_urls import SITEMAP_MAX_BYTES, SITEMAP_MAX_URLS, is_world_regions_section
     if _is_ru_origin(origin) and not apex_locale_en_enabled():
         return Response(status_code=404)
     disk = section_file(section, origin)
@@ -324,8 +336,8 @@ async def sitemap_section(
         xml = await asyncio.to_thread(disk.read_text, encoding="utf-8")
         return _xml_304_or_full(xml, _xml_etag(xml), request)
 
-    cache_key = _sitemap_cache_key(f"section:{section}", origin)
-    etag_key = _sitemap_cache_key(f"section-etag:{section}", origin)
+    cache_key = _sitemap_cache_key(f"section-v2:{section}", origin)
+    etag_key = _sitemap_cache_key(f"section-etag-v2:{section}", origin)
     cached = await cache_get(cache_key)
     if cached:
         etag = await cache_get(etag_key) or _xml_etag(cached)
@@ -335,7 +347,7 @@ async def sitemap_section(
     # (статический реестр билдеров), чанковая валидируется по префиксу —
     # out-of-range чанк отсеет build_chunk пустой страницей → 404.
     chunk_name = _chunked_prefix_for(section)
-    if chunk_name is None and section not in _known_static:
+    if chunk_name is None and section not in _known_static and not is_world_regions_section(section):
         return Response(status_code=404)
 
     # Лок на сборку: боты бьют по одной секции пачкой — собирать должен один
@@ -360,7 +372,13 @@ async def sitemap_section(
             urls = await resolve_section(db, section)
             if urls is None or not urls:
                 return Response(status_code=404)
+            if len(urls) > SITEMAP_MAX_URLS:
+                logger.error("Refusing sitemap %s with %d URLs", section, len(urls))
+                return Response(status_code=500)
             xml = _render_urlset(urls, origin=origin)
+            if len(xml.encode("utf-8")) > SITEMAP_MAX_BYTES:
+                logger.error("Refusing sitemap %s over the byte ceiling", section)
+                return Response(status_code=500)
             await cache_set(cache_key, xml, _SITEMAP_TTL)
             await cache_set(etag_key, _xml_etag(xml), _SITEMAP_TTL)
         else:

@@ -20,6 +20,13 @@ from urllib.parse import urlparse
 
 from app.config import settings
 from app.database import analytics_session
+from app.services.index_policy import is_noindex_path
+from app.services.site_urls import (
+    SITEMAP_MAX_BYTES,
+    SITEMAP_MAX_URLS,
+    section_fingerprint,
+    section_lastmod,
+)
 
 logger = logging.getLogger(__name__)
 STATS_NAME = "sitemap-stats.json"
@@ -75,6 +82,15 @@ def published_sections(origin: str) -> list[str] | None:
     return list(entry["sections"]) if entry is not None else None
 
 
+def section_lastmods(origin: str) -> dict[str, str]:
+    """lastmod дочерних файлов из последней публикации. Пусто, пока билд старый."""
+    host = urlparse(origin).hostname
+    raw = read_stats().get("hosts", {}).get(host, {}).get("section_lastmod") or {}
+    if not isinstance(raw, dict):
+        return {}
+    return {str(name): str(stamp) for name, stamp in raw.items() if stamp}
+
+
 def url_count_from_stats() -> int | None:
     total = read_stats().get("urls_total")
     return int(total) if total is not None else None
@@ -96,8 +112,41 @@ def _atomic_write(path: Path, data: bytes) -> None:
         raise
 
 
+def _link_or_copy(src: Path, dest: Path) -> None:
+    """Жёсткая ссылка на неизменный шард. Копия — если файловая система не даёт link."""
+    dest.parent.mkdir(parents=True, exist_ok=True, mode=0o755)
+    os.chmod(dest.parent, 0o755)
+    try:
+        os.link(src, dest)
+    except OSError:
+        shutil.copyfile(src, dest)
+        os.chmod(dest, 0o644)
+
+
+def _reuse_shard(previous: Path, generation: Path, name: str, origins: list[str]) -> bool:
+    """Перенести оба хоста шарда из прошлой генерации, если файлы на месте."""
+    sources: list[tuple[Path, Path]] = []
+    for origin in origins:
+        host = urlparse(origin).hostname or ""
+        src = previous / host / f"sitemap-{name}.xml"
+        src_gz = Path(str(src) + ".gz")
+        if not src.is_file() or not src_gz.is_file():
+            return False
+        sources.append((src, src_gz))
+    for origin, (src, src_gz) in zip(origins, sources, strict=True):
+        host = urlparse(origin).hostname or ""
+        dest_dir = generation / host
+        _link_or_copy(src, dest_dir / src.name)
+        _link_or_copy(src_gz, dest_dir / src_gz.name)
+    return True
+
+
 def _write_xml(directory: Path, name: str, xml: str) -> None:
     raw = xml.encode("utf-8")
+    if len(raw) > SITEMAP_MAX_BYTES:
+        raise ValueError(
+            f"Sitemap {name} is {len(raw)} bytes; protocol limit is {SITEMAP_MAX_BYTES}"
+        )
     dest = directory / f"sitemap-{name}.xml"
     _atomic_write(dest, raw)
     _atomic_write(Path(str(dest) + ".gz"), gzip.compress(raw, compresslevel=6, mtime=0))
@@ -111,7 +160,7 @@ async def build_static_sitemaps() -> dict:
     """
     # Includes the same path -> image discovery as the dynamic response.
     # Publishing XML must never invoke the expensive image renderer.
-    from app.api.sitemap import _render_urlset
+    from app.api.sitemap import SITEMAP_ORIGIN_TOKEN, _render_urlset
     from app.services.locale import en_public_origin, ru_public_origin, apex_locale_en_enabled
     from app.services.site_urls import iter_url_sections
 
@@ -134,7 +183,16 @@ async def build_static_sitemaps() -> dict:
         if apex_locale_en_enabled():
             origins.append(ru_public_origin().rstrip("/"))
         sections: dict[str, int] = {}
+        section_stamps: dict[str, str] = {}
+        section_digests: dict[str, str] = {}
+        reused = 0
+        rewritten = 0
         started = datetime.now(timezone.utc)
+        previous_digests = {}
+        if previous is not None:
+            raw_digests = _read_json(previous / STATS_NAME).get("section_digest") or {}
+            if isinstance(raw_digests, dict):
+                previous_digests = {str(key): str(value) for key, value in raw_digests.items()}
         try:
             async with analytics_session() as db:
                 async for name, urls in iter_url_sections(db):
@@ -142,14 +200,43 @@ async def build_static_sitemaps() -> dict:
                         raise ValueError(f"Invalid sitemap section: {name}")
                     if not urls:
                         continue  # Empty chunks must not be advertised.
-                    for origin in origins:
-                        _write_xml(generation / urlparse(origin).hostname, name,
-                                   _render_urlset(urls, origin=origin))
+                    if len(urls) > SITEMAP_MAX_URLS:
+                        raise ValueError(
+                            f"Sitemap section {name} has {len(urls)} URLs; "
+                            f"protocol limit is {SITEMAP_MAX_URLS}"
+                        )
+                    blocked = [url.path for url in urls if is_noindex_path(url.path)]
+                    if blocked:
+                        raise ValueError(
+                            f"Sitemap section {name} includes noindex URLs: {blocked[:5]}"
+                        )
+                    stamp = section_lastmod(urls)
+                    if stamp:
+                        section_stamps[name] = stamp
+                    digest = section_fingerprint(urls)
+                    section_digests[name] = digest
+                    # ~5,04 млн URL на хост. Неизменный шард не рендерим и не
+                    # gzip'аем заново: жёсткая ссылка на прошлую генерацию.
+                    # Отпечаток не включает хост — EN и RU остаются парой.
+                    if (
+                        previous is not None
+                        and previous_digests.get(name) == digest
+                        and _reuse_shard(previous, generation, name, origins)
+                    ):
+                        reused += 1
+                    else:
+                        template = _render_urlset(urls, origin=SITEMAP_ORIGIN_TOKEN)
+                        for origin in origins:
+                            xml = template.replace(SITEMAP_ORIGIN_TOKEN, origin.rstrip("/"))
+                            _write_xml(generation / urlparse(origin).hostname, name, xml)
+                        rewritten += 1
                     sections[name] = len(urls)
             if not sections:
                 raise ValueError("Refusing to publish an empty sitemap generation")
             hosts = {urlparse(origin).hostname: {
                 "origin": origin, "sections": sections,
+                "section_lastmod": section_stamps,
+                "section_digest": section_digests,
                 "urls_total": sum(sections.values()), "section_count": len(sections),
             } for origin in origins}
             stats = {
@@ -157,6 +244,10 @@ async def build_static_sitemaps() -> dict:
                 "completed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "generation": generation.name,
                 "origin": origins[0], "sections": sections,
+                "section_lastmod": section_stamps,
+                "section_digest": section_digests,
+                "sections_reused": reused,
+                "sections_rewritten": rewritten,
                 "urls_total": sum(sections.values()), "section_count": len(sections),
                 "hosts": hosts, "published_urls_total": sum(h["urls_total"] for h in hosts.values()),
                 "errors": [],
@@ -177,7 +268,10 @@ async def build_static_sitemaps() -> dict:
                     shutil.rmtree(candidate)
                 except OSError:
                     logger.warning("Cannot remove old sitemap generation %s", candidate, exc_info=True)
-        logger.info("Published sitemap generation %s: %d URLs across %d hosts", generation.name, stats["published_urls_total"], len(hosts))
+        logger.info(
+            "Published sitemap generation %s: %d URLs across %d hosts (%d reused, %d rewritten)",
+            generation.name, stats["published_urls_total"], len(hosts), reused, rewritten,
+        )
         return stats
 
 
