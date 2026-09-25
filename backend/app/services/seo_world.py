@@ -1972,7 +1972,6 @@ async def render_world_indicator_html(
             "temporalCoverage": f"{first_date.isoformat()}/{last_date.isoformat()}",
             "spatialCoverage": country_label,
             "creator": {"@type": "Organization", "name": source},
-            "license": "https://creativecommons.org/licenses/by/4.0/",
             "image": _absolute(og_path),
         },
         {

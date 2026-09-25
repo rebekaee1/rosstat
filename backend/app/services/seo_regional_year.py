@@ -489,7 +489,6 @@ async def render_region_indicator_year_html(
             "temporalCoverage": f"{year}-01-01/{year}-12-31",
             "spatialCoverage": region_name,
             "variableMeasured": f"{ind_name}, {unit}" if unit else ind_name,
-            "license": "https://creativecommons.org/licenses/by/4.0/",
             "image": _absolute(og_path),
         },
         {

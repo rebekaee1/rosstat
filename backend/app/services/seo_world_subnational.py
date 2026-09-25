@@ -463,6 +463,7 @@ async def render_subnational_indicator_html(
             "url": _absolute(path),
             "spatialCoverage": region_name,
             "inLanguage": "en" if loc == "en" else "ru",
+            "creator": {"@type": "Organization", "name": src or "Forecast Economy"},
             "image": _absolute(og_path),
         },
         _breadcrumbs(trail),

@@ -178,11 +178,13 @@ async def render_subnational_indicator_year_html(
         (paths.country_region(country.slug, region.slug), region_name),
         (card, name), (path, str(year)),
     ]
+    source = (indicator.source_en if en else indicator.source_ru) or "Forecast Economy"
     json_ld = [
         {"@context": "https://schema.org", "@type": "Dataset", "name": title,
          "description": description, "url": _absolute(path), "temporalCoverage": str(year),
          "spatialCoverage": region_name, "image": _absolute(og_path),
-         "inLanguage": "en" if en else "ru"},
+         "inLanguage": "en" if en else "ru",
+         "creator": {"@type": "Organization", "name": source}},
         _breadcrumbs(trail),
         {"@context": "https://schema.org", "@type": "ImageObject", "contentUrl": _absolute(og_path),
          "name": title, "representativeOfPage": True, "width": 1200, "height": 630},

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getSiteOrigin } from '../lib/siteOrigin';
+import { completeDataset } from '../lib/datasetJsonLd';
 import {
   useWorldIndicator, useWorldIndicatorData, useWorldCountry, formatWorldValue,
   localizeWorldUnit,
@@ -321,14 +322,14 @@ export default function WorldIndicatorPage() {
   useEffect(() => {
     if (!indicator || !country) return undefined;
     const source = indicator.source || t('world.indicator.sourceFallback');
-    const jsonLd = {
+    const jsonLd = completeDataset({
       '@context': 'https://schema.org',
       '@type': 'Dataset',
       name: `${displayName} — ${countryName}`,
       description: indicator.description || `${displayName}, ${countryName}. ${source}.`,
       creator: { '@type': 'Organization', name: source },
       publisher: { '@type': 'Organization', name: 'Forecast Economy', url: getSiteOrigin() },
-    };
+    }, locale);
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'world-dataset-jsonld';
@@ -336,7 +337,7 @@ export default function WorldIndicatorPage() {
     document.getElementById('world-dataset-jsonld')?.remove();
     document.head.appendChild(script);
     return () => script.remove();
-  }, [indicator, country, countryName, displayName, t]);
+  }, [indicator, country, countryName, displayName, locale, t]);
 
   useEffect(() => {
     if (!indicator) return;

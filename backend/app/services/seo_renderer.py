@@ -929,6 +929,96 @@ def _preview_body_urls(body: str, locale: str) -> str:
     return str(soup)
 
 
+_DATASET_DESCRIPTION_MIN = 50
+_DATASET_DESCRIPTION_MAX = 5000
+
+
+def _collapse_ws(value: str) -> str:
+    return " ".join(value.split()).strip()
+
+
+def _creator_name(creator) -> str | None:
+    if isinstance(creator, str):
+        text = _collapse_ws(creator)
+        return text or None
+    if isinstance(creator, dict):
+        name = creator.get("name")
+        if isinstance(name, str):
+            text = _collapse_ws(name)
+            return text or None
+    if isinstance(creator, list):
+        for item in creator:
+            name = _creator_name(item)
+            if name:
+                return name
+    return None
+
+
+def _dataset_description(name: str, description: str, creator: str) -> str:
+    """Google Dataset description: 50–5000 characters, both hosts."""
+    from app.services.locale import get_locale
+
+    text = _collapse_ws(description)
+    if len(text) > _DATASET_DESCRIPTION_MAX:
+        return text[: _DATASET_DESCRIPTION_MAX - 1].rstrip() + "…"
+    if len(text) >= _DATASET_DESCRIPTION_MIN:
+        return text
+    if get_locale() == "en":
+        filler = (
+            f"{name} — data series on Forecast Economy. Source: {creator}."
+        )
+        extra = " The series is published as a chart and a table."
+    else:
+        filler = (
+            f"{name} — ряд данных на Forecast Economy. Источник: {creator}."
+        )
+        extra = " Ряд опубликован в виде графика и таблицы."
+    combined = _collapse_ws(f"{text} {filler}" if text else filler)
+    if len(combined) < _DATASET_DESCRIPTION_MIN:
+        combined = _collapse_ws(combined + extra)
+    if len(combined) > _DATASET_DESCRIPTION_MAX:
+        return combined[: _DATASET_DESCRIPTION_MAX - 1].rstrip() + "…"
+    return combined
+
+
+def _finalize_dataset(node: dict) -> dict:
+    """Fill description, creator and the site terms URL on one Dataset node.
+
+    License is always the current host's /terms page: that is the published
+    terms for site materials. Creative Commons URLs are not the site's license.
+    """
+    out = dict(node)
+    name = out.get("name")
+    name = _collapse_ws(name) if isinstance(name, str) and name.strip() else "Forecast Economy"
+    creator_name = _creator_name(out.get("creator")) or "Forecast Economy"
+    raw_description = out.get("description")
+    description = raw_description if isinstance(raw_description, str) else ""
+    out["name"] = name
+    out["description"] = _dataset_description(name, description, creator_name)
+    creator = out.get("creator")
+    if isinstance(creator, dict) and _creator_name(creator):
+        if not creator.get("@type"):
+            out["creator"] = {**creator, "@type": "Organization"}
+    elif isinstance(creator, list) and _creator_name(creator):
+        pass
+    else:
+        out["creator"] = {"@type": "Organization", "name": creator_name}
+    out["license"] = _absolute("/terms")
+    return out
+
+
+def _complete_structured(node):
+    """Walk JSON-LD and complete every schema.org Dataset, including nested ones."""
+    if isinstance(node, list):
+        return [_complete_structured(item) for item in node]
+    if not isinstance(node, dict):
+        return node
+    completed = {key: _complete_structured(value) for key, value in node.items()}
+    if completed.get("@type") == "Dataset":
+        return _finalize_dataset(completed)
+    return completed
+
+
 async def build_document(
     *,
     title: str,
@@ -961,7 +1051,7 @@ async def build_document(
     safe_title = escape(title)
     safe_desc = escape(truncate_meta(clean_text(description), 300))
     safe_keywords = escape(clean_text(keywords or _default_keywords())[:400])
-    structured_items = list(json_ld or [])
+    structured_items = [_complete_structured(item) for item in (json_ld or [])]
     if og_image:
         structured_items.append({
             "@context": "https://schema.org", "@type": "WebPage",
@@ -1573,12 +1663,13 @@ async def render_categories_hub_html(db: AsyncSession) -> tuple[int, str]:
 
 async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
     from app.services.i18n_display import public_name
-    from app.services.locale import in_language
-    from app.services.seo_i18n import get_category_seo, page_template
+    from app.services.locale import get_locale, in_language
+    from app.services.seo_i18n import get_category_seo, page_template, translate_source
 
     category = get_category_seo(slug)
     if not category:
         return 404, "Not found"
+    loc = get_locale()
     indicators = await _active_indicators(
         db, category=category.api_category, listed_only=True
     )
@@ -1613,6 +1704,10 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
                     "@type": "Dataset",
                     "name": public_name(ind.name, ind.name_en),
                     "url": _absolute(paths.russia_indicator(ind.code)),
+                    "creator": {
+                        "@type": "Organization",
+                        "name": translate_source(ind.source, loc) or "Forecast Economy",
+                    },
                 }
                 for ind in indicators[:12]
             ],
@@ -1857,7 +1952,6 @@ async def render_indicator_html(
                 display_name,
             ),
             "isAccessibleForFree": True,
-            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
             "distribution": [
                 {
                     "@type": "DataDownload",
