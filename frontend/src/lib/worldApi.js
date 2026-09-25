@@ -31,6 +31,19 @@ function localeKey() {
   return currentUiLocale();
 }
 
+/** Stable query keys — homeBootstrap seeds the same shapes on cold SSR. */
+export function worldCountriesQueryKey(locale = localeKey()) {
+  return ['world-countries', locale];
+}
+
+export function worldCompareSnapshotQueryKey(conceptSlug, locale = localeKey()) {
+  return ['world-compare-snapshot', conceptSlug, locale];
+}
+
+export function worldMapSeriesQueryKey(conceptSlug, locale = localeKey()) {
+  return ['world-map-series', conceptSlug, locale];
+}
+
 /**
  * Фолбэк на фикстуры — ТОЛЬКО в dev, пока backend /world не подключён.
  * В проде выдуманные значения показывать нельзя ни при каких ошибках: это
@@ -57,12 +70,16 @@ async function withMockFallback(request, mockFactory) {
   }
 }
 
+/** Cold SQL build can exceed the default 15s Axios timeout; bootstrap +
+ * durable Redis usually avoid the hit, but keep headroom when both miss. */
+const WORLD_COUNTRIES_TIMEOUT_MS = 45000;
+
 export function useWorldCountries() {
   return useQuery({
-    queryKey: ['world-countries', localeKey()],
+    queryKey: worldCountriesQueryKey(),
     queryFn: ({ signal }) =>
       withMockFallback(
-        () => api.get('/world/countries', { signal }),
+        () => api.get('/world/countries', { signal, timeout: WORLD_COUNTRIES_TIMEOUT_MS }),
         () => WORLD_MOCK_COUNTRIES,
       ),
     staleTime: STALE,
@@ -301,7 +318,7 @@ export async function fetchWorldIndicatorMode(countrySlug, indicatorCode, mode, 
 
 export function useWorldCompareSnapshot(conceptSlug) {
   return useQuery({
-    queryKey: ['world-compare-snapshot', conceptSlug, localeKey()],
+    queryKey: worldCompareSnapshotQueryKey(conceptSlug),
     queryFn: async ({ signal }) => (
       await api.get(`/world/compare/snapshot/${conceptSlug}`, { signal })
     ).data,
@@ -313,7 +330,7 @@ export function useWorldCompareSnapshot(conceptSlug) {
 
 export function useWorldMapSeries(conceptSlug) {
   return useQuery({
-    queryKey: ['world-map-series', conceptSlug, localeKey()],
+    queryKey: worldMapSeriesQueryKey(conceptSlug),
     queryFn: async ({ signal }) => (
       await api.get(`/world/compare/map-series/${conceptSlug}`, { signal })
     ).data,

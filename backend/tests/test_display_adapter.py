@@ -243,4 +243,3 @@ def test_bea_catalog_unit_ru_all_map_to_latin_en():
         assert en, row["code"]
         assert not contains_cyrillic(en), (row["code"], row["unit_ru"], en)
         assert not contains_cyrillic(public_unit_en(row["unit_ru"])), row["code"]
-

@@ -86,4 +86,3 @@ def test_bea_catalog_units_are_bilingual_without_cyrillic_en_storage():
         assert row.unit_ru, row.code
         if row.unit_ru not in shared_neutral and row.unit_ru != "%":
             assert cyr.search(row.unit_ru), row.code
-
