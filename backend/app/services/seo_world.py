@@ -344,25 +344,31 @@ async def _frequency_links_html(
 
 
 def _unit_of(ind: WorldIndicator) -> str:
-    """Locale-facing полная единица ряда: на EN — через localize_unit."""
-    from app.services.display import localize_unit
+    """Locale-facing полная единица ряда: на EN — без кириллицы (BEA prose / map)."""
+    from app.services.display import public_unit_en
+    from app.services.locale import get_locale
 
-    ru = (ind.unit_ru or ind.unit or "").strip()
-    return localize_unit(ru) or ru
+    if get_locale() == "en":
+        return public_unit_en(ind.unit_ru, unit_storage=ind.unit)
+    return (ind.unit_ru or ind.unit or "").strip()
 
 
 def _unit_sfx(unit: str) -> str:
     """Единица справа от числа: у безразмерных величин — ничего (не «12,4 индекс»).
 
     Возвращает plain text — экранировать на месте вставки в разметку.
-    На EN — через ``localize_unit`` (п.п. → pp, пунктов → points).
+    На EN — через ``localize_unit``; кириллический хвост не отдаём.
     """
-    from app.services.display import localize_unit
+    from app.services.display import contains_cyrillic, localize_unit
+    from app.services.locale import get_locale
 
     sfx = unit_suffix(unit)
     if not sfx:
         return ""
-    sfx = localize_unit(sfx) or sfx
+    if get_locale() == "en":
+        sfx = localize_unit(sfx, locale="en") or sfx
+        if contains_cyrillic(sfx):
+            return ""
     return f" {sfx}"
 
 
