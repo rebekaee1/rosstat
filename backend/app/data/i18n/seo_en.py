@@ -300,8 +300,8 @@ PAGE_META_EN: dict[str, PageSeo] = {
         blocks=(
             SeoBlock(
                 "About the platform",
-                "The platform provides more than 36,000 country indicators from "
-                "official national and international sources. "
+                "The platform provides country indicators from official "
+                "national and international sources. "
                 "Cards show history, view modes, tables, and comparable series; "
                 "forecasts appear only where the model has passed a quality check.",
             ),

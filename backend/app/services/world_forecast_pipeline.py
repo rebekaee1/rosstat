@@ -69,6 +69,7 @@ class WorldForecastCandidate:
     history_digest: str | None = None
     eligible_for_training: bool = False
     source_ready: bool = True
+    source_last_success_at: datetime | None = None
 
 
 @dataclass(frozen=True)
@@ -554,6 +555,7 @@ async def _load_candidates(
             history_digest=row.history_digest,
             eligible_for_training=eligible is not None and source_ready,
             source_ready=source_ready,
+            source_last_success_at=row.source_last_success_at,
         ))
     return candidates
 
@@ -599,8 +601,17 @@ def classify_unchanged(
 ) -> set[int]:
     unchanged: set[int] = set()
     for row in candidates:
+        latest = latest_by_id.get(row.id)
+        if (
+            row.provider.lower() == "eurostat"
+            and row.source_last_success_at is not None
+            and latest is not None
+            and isinstance(getattr(latest, "created_at", None), datetime)
+            and _as_naive(row.source_last_success_at) > _as_naive(latest.created_at)
+        ):
+            continue
         if forecast_is_unchanged(
-            latest_by_id.get(row.id),
+            latest,
             history_end=row.history_end,
             points_count=row.points_count,
             history_digest=row.history_digest,

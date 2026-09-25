@@ -1648,7 +1648,7 @@ export default {
   'about.eyebrow': 'About',
   'about.intro.p1': 'Forecast Economy is a web platform for official economic statistics by country: charts, tables, rankings, comparisons and forecasts. Sources are national statistical offices, central banks, Eurostat and the IMF. Coverage includes the United States, Europe, and other available countries.',
   'about.intro.p2before': 'We collect data from primary sources —',
-  'about.intro.p2after': '— show long historical series: more than 36,000 country indicators, and build a',
+  'about.intro.p2after': '— show long historical series across countries and all U.S. states, and build a',
   'about.intro.forecast': 'forecast',
   'about.intro.p2end': 'where the nature of the series justifies it.',
   'about.audienceTitle': 'Who this service is for',

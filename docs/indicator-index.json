@@ -2697,7 +2697,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2834,
+          "line": 2850,
           "kind": "seo"
         },
         {
@@ -11828,7 +11828,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1486,
+          "line": 1502,
           "kind": "seo"
         },
         {
@@ -23347,7 +23347,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2579,
+          "line": 2595,
           "kind": "seo"
         },
         {
@@ -23931,7 +23931,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2579,
+          "line": 2595,
           "kind": "seo"
         },
         {
@@ -35720,7 +35720,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1485,
+          "line": 1501,
           "kind": "seo"
         },
         {
@@ -39829,7 +39829,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2836,
+          "line": 2852,
           "kind": "seo"
         },
         {

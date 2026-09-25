@@ -9,7 +9,7 @@
 
 ## What is on the site
 
-- **36,000+ indicators** — available country statistics (about 55 countries) from official national and international sources: __PUBLIC_ORIGIN__/
+- **Country indicators** — hundreds of thousands of series from official national and international sources: __PUBLIC_ORIGIN__/
 - **Country rankings** — comparable slices (GDP, population, unemployment, and others): __PUBLIC_ORIGIN__/world/rating
 - **Indicator comparison** — several series on one chart: __PUBLIC_ORIGIN__/compare
 - **Country card** — profile and indicator set: __PUBLIC_ORIGIN__/united-states, __PUBLIC_ORIGIN__/canada, __PUBLIC_ORIGIN__/germany, __PUBLIC_ORIGIN__/russia

@@ -1363,23 +1363,39 @@ async def render_home_html(db: AsyncSession) -> str:
     if page is None:
         page = PAGE_META["home"]
     page_blocks = page.blocks
-    if get_locale() != "en" and page_blocks:
+    if page_blocks:
         from app.core.cache import cache_get, versioned_key
-        scope = await cache_get(await versioned_key("world-catalog", f"countries:v8:{get_locale()}"))
-        if scope:
+        locale = get_locale()
+        scope = await cache_get(await versioned_key("world-catalog", f"countries:v8:{locale}"))
+        if scope and scope.get("world_indicators_count"):
             world_count = int(scope.get("world_indicators_count") or 0)
             ru_count = int(scope.get("russia_macro_indicators_count") or 0)
             regional_count = int(scope.get("regional_indicators_count") or 0)
-            fmt = lambda value: f"{value:,}".replace(",", " ")
-            page_blocks = (
-                SeoBlock(
-                    "О платформе",
-                    f"На платформе доступны {fmt(world_count)} показателей по странам, "
-                    f"{fmt(ru_count)} макроэкономических показателей России и "
-                    f"{fmt(regional_count)} региональных показателей России и США. "
+            us_count = int(scope.get("us_state_indicators_count") or 0)
+            fmt = (
+                (lambda value: f"{value:,}") if locale == "en"
+                else (lambda value: f"{value:,}".replace(",", " "))
+            )
+            if locale == "en":
+                about = (
+                    f"The platform currently offers {fmt(world_count)} country indicators, "
+                    f"{fmt(ru_count)} Russian macroeconomic indicators, and "
+                    f"{fmt(regional_count)} regional indicators for Russia and the United States "
+                    f"(including {fmt(us_count)} for U.S. states and the District of Columbia). "
+                    "Cards show history, view modes, tables, and comparable series; "
+                    "forecasts appear only where the model has passed a quality check."
+                )
+            else:
+                about = (
+                    f"На платформе доступны ряды по странам: {fmt(world_count)}; "
+                    f"макроэкономические ряды России: {fmt(ru_count)}; "
+                    f"региональные ряды России и США: {fmt(regional_count)} "
+                    f"(из них по штатам США и округу Колумбия: {fmt(us_count)}). "
                     "Карточки показывают историю, режимы представления, таблицы и сопоставимые ряды; "
-                    "прогноз публикуется только там, где модель прошла проверку качества.",
-                ),
+                    "прогноз публикуется только там, где модель прошла проверку качества."
+                )
+            page_blocks = (
+                SeoBlock(page_blocks[0].title, about),
                 *page_blocks[1:],
             )
     eyebrow = home_template("eyebrow") or "Официальные данные России, регионов и стран"

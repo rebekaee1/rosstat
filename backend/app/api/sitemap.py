@@ -2223,7 +2223,7 @@ async def og_image_world_region_profile(
 
     loc = get_locale()
     en = loc == "en"
-    cache_key = f"wr:v2:{loc}:{country}:{region}" + (":portrait" if portrait else ":landscape")
+    cache_key = f"wr:v3:{loc}:{country}:{region}" + (":portrait" if portrait else ":landscape")
     png = cached_og(cache_key)
     if png is None:
         host = await _country(db, country)
@@ -2251,8 +2251,13 @@ async def og_image_world_region_profile(
         ).scalars().all()
         if not inds:
             return Response(status_code=404)
-        default_code = load_subnational_passport(host.code.lower()).default_indicator
-        inds = sorted(inds, key=lambda ind: (0 if ind.code == default_code else 1, ind.code))
+        passport = load_subnational_passport(host.code.lower())
+        priority = {
+            code: rank for rank, code in enumerate(
+                dict.fromkeys((passport.default_indicator, *passport.featured_indicators))
+            )
+        }
+        inds = sorted(inds, key=lambda ind: (priority.get(ind.code, len(priority)), ind.code))
         ids = [i.id for i in inds]
         rn = func.row_number().over(
             partition_by=SubnationalDataPoint.indicator_id,
@@ -2299,18 +2304,22 @@ async def og_image_world_region_profile(
                 break
         if not items:
             return Response(status_code=404)
+        total = len(latest)
+        ru_noun = (
+            "показатель" if total % 10 == 1 and total % 100 != 11
+            else "показателя" if 2 <= total % 10 <= 4 and not 12 <= total % 100 <= 14
+            else "показателей"
+        )
         place = f"{_rname(territory)} \u2014 {_cname(host)}"
         png = await render_og_async(
             render_world_country_og,
             portrait=portrait,
             country_name=place,
-            indicators_count=len(items),
+            indicators_count=total,
             items=items,
             eyebrow_label=_kind(host.code),
             title_template="{country}",
-            count_template=(
-                f"{len(items)} indicators" if en else f"{len(items)} показателей"
-            ),
+            count_template="{count} indicators" if en else f"{{count}} {ru_noun}",
             footer_note=(
                 "official statistics" if en else "официальная статистика"
             ),

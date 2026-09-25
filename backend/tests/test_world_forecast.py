@@ -472,6 +472,38 @@ def test_world_forecast_unchanged_skip_by_fingerprint_and_force():
     )
 
 
+def test_eurostat_success_after_forecast_retrains_even_if_points_unchanged():
+    from dataclasses import replace
+    from datetime import datetime
+
+    from app.services.world_forecast_pipeline import (
+        WorldForecastCandidate,
+        classify_unchanged,
+        forecast_fingerprint,
+    )
+
+    history_end = date(2026, 8, 1)
+    forecast = SimpleNamespace(
+        created_at=datetime(2026, 9, 19, 8),
+        model_params=forecast_fingerprint(
+            history_end=history_end, points_count=120, history_digest="same-history",
+        ),
+        gate_status="passed",
+    )
+    candidate = WorldForecastCandidate(
+        id=7, country_slug="germany", provider="eurostat",
+        dataset_id="demo_test", code="de-demo-test", frequency="monthly",
+        history_end=history_end, points_count=120, history_digest="same-history",
+        source_last_success_at=datetime(2026, 9, 20, 8),
+    )
+    now = datetime(2026, 9, 21, 8)
+    assert classify_unchanged([candidate], {7: forecast}, now=now, max_age_days=30, force=False) == set()
+    earlier_source = replace(candidate, source_last_success_at=datetime(2026, 9, 18, 8))
+    assert classify_unchanged(
+        [earlier_source], {7: forecast}, now=now, max_age_days=30, force=False,
+    ) == {7}
+
+
 def test_world_forecast_legacy_row_without_fingerprint_retrains():
     from datetime import datetime
 

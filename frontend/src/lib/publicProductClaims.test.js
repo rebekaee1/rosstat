@@ -100,7 +100,7 @@ describe('public product claims', () => {
     expect(footerCopy).toMatch(/России/);
 
     const llms = read('frontend/public/llms.txt');
-    expect(llms).toMatch(/доступная статистика (отдельных )?стран/i);
+    expect(llms).toMatch(/Показатели стран.*сотни тысяч рядов/i);
     expect(llms).toMatch(/скачивание.*после бесплатной регистрации/i);
     expect(llms).toMatch(/Просмотр аналитики бесплатный/i);
     expect(llms).not.toMatch(/регистрация для просмотра не требуется$/m);
@@ -109,7 +109,7 @@ describe('public product claims', () => {
   it('index.html позиционирует страны и не тащит 80+/9', () => {
     const html = read('frontend/index.html');
     expect(html).toMatch(/Макроэкономические индикаторы стран/);
-    expect(html).toMatch(/более 36 000/);
+    expect(html).toMatch(/сотни тысяч показателей/);
     expect(html).toMatch(/глубокое покрытие/);
     expect(html).toMatch(/\/russia\/category\/prices/);
     expect(html).not.toMatch(/\b80\s*\+/);
