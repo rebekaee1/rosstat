@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { getPageSeo } from './pageMeta';
-import { getSiteOrigin } from './siteOrigin';
+import { getSiteOrigin, publicPageUrl } from './siteOrigin';
 import { pageImagePath } from './pageImage';
 
 // Title без бренд-суффикса: backend SSR (seo_renderer.py::build_document) кладёт
@@ -75,7 +75,7 @@ export default function useDocumentMeta(options) {
     const home = getPageSeo('home', locale);
     const fullTitle = title || home?.title || 'Forecast Economy';
     const desc = description || home?.description || '';
-    const url = `${getSiteOrigin()}${path}`;
+    const url = publicPageUrl(getSiteOrigin(), path);
 
     document.title = fullTitle;
     setMeta('description', desc);

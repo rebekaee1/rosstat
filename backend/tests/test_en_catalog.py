@@ -107,6 +107,69 @@ def test_hreflang_does_not_claim_random_path():
     assert has_en_path("/this-path-does-not-exist-xyz/indicator/x/2023") is False
 
 
+# Один синтетический путь на семейство sitemap (site_urls chunk/simple).
+# Контракт масштаба: ~5.04M URL на хост спариваются формой пути, не списком.
+_BULK_MIRROR_PATHS = (
+    "/russia/region/moskva/chislennost-naseleniya",
+    "/russia/region/moskva/chislennost-naseleniya/2020",
+    "/russia/indicator/cpi/1999-01",
+    "/russia/region-vs/moskva-vs-sankt-peterburg",
+    "/germany/indicator/cpi/2020",
+    "/united-states/region/california/building-permits",
+    "/united-states/region/california/building-permits/2020",
+    "/united-states/regions",
+    "/united-states/region/california",
+    "/united-states/region/map/unemployment",
+    "/united-states/region-vs/california-vs-texas",
+    "/france-vs-germany/population",
+    "/world/rating/gdp-usd/2024",
+)
+
+_BULK_MIRROR_REJECTS = (
+    "/germany/category/prices",
+    "/not-a-country/region-vs/a-vs-b",
+    "/united-states/region-vs/california",
+    "/united-states/region-vs/california-vs-texas/extra",
+    "/this-path-does-not-exist-xyz",
+)
+
+
+def test_catalog_bulk_families_match_by_shape_not_by_url_list():
+    """Каждое массовое семейство — один пример формы, не перечисление URL."""
+    from app.data.i18n.en_catalog import has_en_path
+
+    for path in _BULK_MIRROR_PATHS:
+        assert has_en_path(path) is True, path
+    for path in _BULK_MIRROR_REJECTS:
+        assert has_en_path(path) is False, path
+
+
+def test_locale_cluster_is_host_swap_of_the_same_path(monkeypatch):
+    """Кластер hreflang — тот же путь на apex и ru., без query и без списка пар."""
+    from app.config import settings
+    from app.services.seo_renderer import _locale_cluster
+
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+    monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
+
+    for path in _BULK_MIRROR_PATHS:
+        cluster = _locale_cluster(path)
+        assert cluster == {
+            "ru": f"https://ru.forecasteconomy.com{path}",
+            "en": f"https://forecasteconomy.com{path}",
+            "x-default": f"https://forecasteconomy.com{path}",
+        }, path
+
+    home = _locale_cluster("/")
+    assert home == {
+        "ru": "https://ru.forecasteconomy.com",
+        "en": "https://forecasteconomy.com",
+        "x-default": "https://forecasteconomy.com",
+    }
+    for path in _BULK_MIRROR_REJECTS:
+        assert _locale_cluster(path) is None, path
+
+
 def test_country_slugs_static_and_cached():
     """Каталог слагов — статический frozenset (без БД), кэшируется."""
     from app.data.i18n.en_catalog import _country_slugs
@@ -318,6 +381,14 @@ def test_hreflang_world_indicator_year_page(world_year_hreflang_client, monkeypa
         "https://forecasteconomy.com/germany/indicator/de-demo_pjan-total-t-nr/2023"
     )
     assert pairs.get("x-default") == pairs.get("en")
+    from bs4 import BeautifulSoup
+    anchor = BeautifulSoup(r.text, "html.parser").select_one("a.seo-lang")
+    assert anchor is not None
+    assert anchor.get("hreflang") == "en"
+    assert anchor.get("href") == (
+        "https://forecasteconomy.com/germany/indicator/"
+        "de-demo_pjan-total-t-nr/2023"
+    )
 
     monkeypatch.setattr(
         __import__("app.config", fromlist=["settings"]).settings,
@@ -329,6 +400,7 @@ def test_hreflang_world_indicator_year_page(world_year_hreflang_client, monkeypa
     )
     assert r2.status_code == 200
     assert 'hreflang="en"' not in r2.text
+    assert 'class="seo-lang"' not in r2.text
 
 
 def test_hreflang_world_vs_page(world_year_hreflang_client):

@@ -7,6 +7,7 @@ import {
   localeCookieDomain,
   languageAlternateOrigin,
   buildLanguageSwitchUrl,
+  canonicalLanguageUrl,
   isProductionLocaleHost,
   stickyPreviewFromPreference,
 } from './locale.js';
@@ -23,6 +24,33 @@ describe('resolveLocale', () => {
     expect(resolveLocale({ host: 'localhost', header: 'en' })).toBe('en');
     expect(resolveLocale({ host: 'localhost', preview: 'en' })).toBe('en');
     expect(resolveLocale({ host: 'forecasteconomy.com', header: 'ru' })).toBe('ru');
+  });
+
+  it('production host wins over header, preview and would-be Accept-Language', () => {
+    expect(resolveLocale({
+      host: 'forecasteconomy.com',
+      header: 'ru',
+      preview: 'ru',
+      apexLocaleEn: true,
+    })).toBe('en');
+    expect(resolveLocale({
+      host: 'www.forecasteconomy.com',
+      header: 'ru',
+      preview: 'ru',
+      apexLocaleEn: true,
+    })).toBe('en');
+    expect(resolveLocale({
+      host: 'ru.forecasteconomy.com',
+      header: 'en',
+      preview: 'en',
+      apexLocaleEn: true,
+    })).toBe('ru');
+    expect(resolveLocale({
+      host: 'localhost',
+      header: 'en',
+      preview: 'ru',
+      apexLocaleEn: true,
+    })).toBe('en');
   });
 
   it('keeps production apex on ru until cutover flag', () => {
@@ -149,6 +177,24 @@ describe('language switcher until cutover', () => {
     }));
     expect(localhostCutover.origin).toBe('http://localhost:3000');
     expect(localhostCutover.searchParams.get('preview_locale')).toBe('en');
+  });
+
+  it('crawlable language URL matches the hreflang canonical, without locale_pref', () => {
+    expect(canonicalLanguageUrl('en', {
+      href: 'https://ru.forecasteconomy.com/?utm_source=yandex',
+      hostname: 'ru.forecasteconomy.com',
+      apexLocaleEn: true,
+    })).toBe('https://forecasteconomy.com');
+    expect(canonicalLanguageUrl('ru', {
+      href: 'https://forecasteconomy.com/russia/indicator/cpi?mode=step-monthly',
+      hostname: 'forecasteconomy.com',
+      apexLocaleEn: true,
+    })).toBe('https://ru.forecasteconomy.com/russia/indicator/cpi');
+    expect(canonicalLanguageUrl('en', {
+      href: 'http://localhost:5173/',
+      hostname: 'localhost',
+      apexLocaleEn: true,
+    })).toBe('');
   });
 });
 

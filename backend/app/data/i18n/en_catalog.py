@@ -4,6 +4,15 @@ Until a path is listed here, SSR must NOT emit ``hreflang="en"`` for it.
 Content agents expand prefixes/exact paths as EN pages ship.
 Do NOT treat arbitrary first segments as countries — that would advertise
 hreflang to 404s.
+
+Scale contract (~5.04M URLs on each of apex and ``ru.``): a mirror pair is
+the same canonical path with the host swapped. This module is an O(1)
+allowlist of exact paths, prefixes, and path shapes. It does not query the
+database, does not store a pair list, and must not grow a per-URL exception
+for a family that already has a template in ``site_paths``. A false negative
+silently unpairs every URL of that shape. Sitemap ``xhtml:link`` alternates
+are out of scope: Yandex does not read them, Google treats one HTML cluster
+as enough, and expanding 5M URLs × 3 links does not ship.
 """
 
 from __future__ import annotations
@@ -67,7 +76,13 @@ def _country_slugs() -> frozenset[str]:
 
 
 def has_en_path(path: str) -> bool:
-    """True if this path may advertise an English alternate."""
+    """True if this path may advertise an English alternate.
+
+    Decision is a pure function of the path shape. Bulk families (Russia
+    region × indicator × year, world indicator years, subnational region
+    years, country and region comparisons) match a prefix or a segment
+    pattern — never a stored list of URLs.
+    """
     if not path:
         return False
     if not path.startswith("/"):
@@ -105,4 +120,15 @@ def has_en_path(path: str) -> bool:
     if len(segments) >= 3 and segments[2] in ("regions", "region"):
         if segments[1] in _country_slugs() and segments[1] != "russia":
             return True
+    # /{country}/region-vs/{a}-vs-{b} — site_paths.country_region_vs.
+    # Россия уже покрыта префиксом /russia/region-vs/. Слаги регионов
+    # не ищем в БД: пара зеркал — подмена хоста у пути этой формы.
+    if (
+        len(segments) == 4
+        and segments[2] == "region-vs"
+        and "-vs-" in segments[3]
+        and segments[1] in _country_slugs()
+        and segments[1] != "russia"
+    ):
+        return True
     return False

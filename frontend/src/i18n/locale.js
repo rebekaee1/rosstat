@@ -3,10 +3,14 @@
  *
  * Language = host, not ?lang=. After cutover (VITE_APEX_LOCALE_EN=true):
  * apex = en, ru.forecasteconomy.com = ru. Localhost and non-apex hosts
- * stay ru. Explicit EN: X-FE-Locale / en.* / preview_locale.
+ * stay ru. On localhost, X-FE-Locale / preview_locale still opt in.
+ * On production hosts the host wins: apex is English after cutover,
+ * ru. is Russian. Accept-Language never selects the language.
  * On production hosts the Russian flag goes to ru.forecasteconomy.com
  * (path-identical). Localhost never navigates onto production apex.
  */
+
+import { publicPageUrl } from '../lib/siteOrigin';
 
 export const LOCALE_HEADER = 'X-FE-Locale';
 export const PREVIEW_QUERY = 'preview_locale';
@@ -31,18 +35,19 @@ export function apexLocaleEnEnabled(explicit) {
  * @returns {'ru'|'en'}
  */
 export function resolveLocale({ host, header, preview, apexLocaleEn } = {}) {
+  const h = normalizeHost(host);
+  // Production host is the language. Header, preview and Accept-Language
+  // must not render the other language on that host.
+  if (h.startsWith('ru.')) return 'ru';
+  if (h.startsWith('en.')) return 'en';
+  if (PRODUCTION_APEX_HOSTS.has(h) && apexLocaleEnEnabled(apexLocaleEn)) return 'en';
+
   const raw = (header || '').trim().toLowerCase();
   if (raw === 'en' || raw === 'ru') return raw;
 
   const prev = (preview || '').trim().toLowerCase();
   if (prev === 'en' || prev === 'ru') return prev;
 
-  const h = normalizeHost(host);
-  if (h.startsWith('ru.')) return 'ru';
-  if (h.startsWith('en.')) return 'en';
-  if (PRODUCTION_APEX_HOSTS.has(h)) {
-    return apexLocaleEnEnabled(apexLocaleEn) ? 'en' : 'ru';
-  }
   return 'ru';
 }
 
@@ -219,6 +224,35 @@ export function buildLanguageSwitchUrl(locale, {
     url.searchParams.delete(PREVIEW_QUERY);
   }
   return url.toString();
+}
+
+/**
+ * Clean alternate URL for hreflang / crawlable language links.
+ * No `locale_pref` and no `preview_locale`: those are navigation hints, not
+ * canonicals. Empty string until production hosts actually swap EN=apex / RU=ru.
+ * Root is serialized without a trailing slash, same as the SSR canonical.
+ */
+export function canonicalLanguageUrl(locale, {
+  href,
+  hostname,
+  apexLocaleEn,
+  ruOrigin,
+  enOrigin,
+} = {}) {
+  if (!['ru', 'en'].includes(locale)) return '';
+  const currentHref = href || (typeof window !== 'undefined' ? window.location.href : '');
+  if (!currentHref) return '';
+  const current = new URL(currentHref);
+  const host = hostname || current.hostname;
+  if (!usesHostSwapLanguageSwitch({ hostname: host, apexLocaleEn })) return '';
+  const origin = languageAlternateOrigin(locale, {
+    hostname: host,
+    currentOrigin: current.origin,
+    apexLocaleEn,
+    ruOrigin,
+    enOrigin,
+  });
+  return publicPageUrl(origin, current.pathname);
 }
 
 /** Persist explicit choice, then navigate (preview until cutover, host-swap after). */

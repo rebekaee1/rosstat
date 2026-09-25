@@ -152,7 +152,11 @@ def test_document_preview_urls_are_body_only(locale, preview, include_app, monke
     assert "preview_locale" not in str(soup.head)
     assert json.loads(soup.select_one('script[type="application/ld+json"]').string) == provenance
     assert soup.select_one('link[rel="canonical"]')["href"].endswith("/russia/indicator/cpi/2025")
-    assert soup.select('link[hreflang]')
+    # Preview is noindex and must not advertise an alternate cluster.
+    if preview:
+        assert not soup.select('link[hreflang]')
+    else:
+        assert soup.select('link[hreflang]')
     assert soup.select_one('meta[property="og:image"]')["content"] == "https://forecasteconomy.com/og/russia/cpi/2025.png"
     if not preview:
         assert "preview_locale" not in html

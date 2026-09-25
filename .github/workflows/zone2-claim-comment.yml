@@ -1,0 +1,57 @@
+name: zone2-claim
+
+on:
+  push:
+    branches: [cursor/hreflang-en-ru-mirrors-b56b]
+    paths: ['.github/workflows/zone2-claim-comment.yml']
+
+permissions:
+  issues: write
+
+jobs:
+  claim:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post CLAIM zone-2
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAIM_BODY: |
+            CLAIM zone-2: International / hreflang / EN↔RU mirrors
+
+            Agent: https://cursor.com/agents/bc-3fc1e3a9-2e33-5f25-acd9-90976dd1b56b
+            PR: https://github.com/rebekaee1/rosstat/pull/10
+            Branch: `cursor/hreflang-en-ru-mirrors-b56b`
+
+            Scale: ~5.04M URLs on each host. Pairing is a host swap of one path (template / prefix / shape). No stored pair list, no per-URL exceptions, no sitemap xhtml:link.
+
+            Owner priority (P0, this zone): EN host must be English-only. No Russian UI or content on forecasteconomy.com, especially USA pages. Russian only on ru.forecasteconomy.com.
+
+            Files:
+            - backend/app/data/i18n/en_catalog.py
+            - backend/app/services/locale.py
+            - backend/app/services/seo_renderer.py
+            - backend/tests/test_en_catalog.py
+            - backend/tests/test_i18n_parity.py
+            - backend/tests/test_world_subnational.py
+            - frontend/src/components/LocaleSwitcher.jsx
+            - frontend/src/i18n/locale.js
+            - frontend/src/i18n/messages.parity.test.js
+            - frontend/src/lib/siteOrigin.js
+            - frontend/src/lib/siteOrigin.test.js
+            - frontend/src/lib/useMeta.component.test.jsx
+            - frontend/src/lib/useMeta.js
+            - scripts/dual-host-release-gate.py
+            - .github/workflows/zone2-claim-comment.yml
+
+            Shared files, do not overwrite other zones' hunks:
+            - seo_renderer.py also used by zone 3 (CWV), zone 4 (schema), zone 6 (internal links), zone 7 (Yandex)
+            - test_i18n_parity.py also used by zone 7
+
+            No deploy.
+        run: |
+          existing=$(gh api --paginate repos/rebekaee1/rosstat/issues/2/comments --jq '.[] | select(.body | contains("CLAIM zone-2: International")) | .id' || true)
+          if [ -n "$existing" ]; then
+            echo "claim already present: $existing"
+            exit 0
+          fi
+          gh api --method POST repos/rebekaee1/rosstat/issues/2/comments -f body="$CLAIM_BODY"

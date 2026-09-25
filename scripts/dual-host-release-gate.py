@@ -84,10 +84,19 @@ def main() -> int:
                     errors.append(f"{locale} {path}: canonical {canonical and canonical.get('href')!r}")
                 alts = {a.get("hreflang"): a.get("href") for a in soup.select('link[rel="alternate"][hreflang]')}
                 if apex_is_en:
-                    if not {"ru", "en", "x-default"}.issubset(alts):
-                        errors.append(f"{locale} {path}: incomplete hreflang")
+                    ru_url = "https://ru.forecasteconomy.com" if path == "/" else "https://ru.forecasteconomy.com" + path
+                    en_url = "https://forecasteconomy.com" if path == "/" else "https://forecasteconomy.com" + path
+                    if alts.get("ru") != ru_url or alts.get("en") != en_url or alts.get("x-default") != en_url:
+                        errors.append(f"{locale} {path}: hreflang {alts!r} != canonical cluster")
+                    other = ru_url if (locale == "en" and apex_is_en) else en_url
+                    other_code = "ru" if other == ru_url else "en"
+                    anchor = soup.select_one("a.seo-lang")
+                    if anchor is None or anchor.get("href") != other or anchor.get("hreflang") != other_code:
+                        errors.append(f"{locale} {path}: language return link {anchor and anchor.get('href')!r}")
                 elif alts:
                     errors.append(f"{locale} {path}: hreflang before EN cutover")
+                for node in soup.select(".seo-lang"):
+                    node.decompose()
                 if (
                     expected_lang == "en"
                     and CYRILLIC.search(soup.get_text(" ", strip=True))

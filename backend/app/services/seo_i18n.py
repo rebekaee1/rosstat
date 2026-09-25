@@ -9,6 +9,10 @@ Missing EN → fall back to Russian registries.
 
 from __future__ import annotations
 
+import json
+from functools import lru_cache
+from pathlib import Path
+
 from app.data.i18n.glossary_en import GLOSSARY_EN
 from app.data.i18n.indicator_copy_en import INDICATOR_COPY_EN
 from app.data.i18n.region_indicators_en import REGION_INDICATORS_EN
@@ -99,6 +103,25 @@ def _category_ru_to_en_map() -> dict[str, str]:
     return out
 
 
+@lru_cache(maxsize=1)
+def bea_section_en_by_ru() -> dict[str, str]:
+    """US BEA section headings: Russian storage key → official English title.
+
+    National USA pages store ``section_ru`` as ``category_ru``. The English
+    twin already lives on each series in the BEA catalog; one cached map
+    covers every such heading without a per-URL list.
+    """
+    path = Path(__file__).resolve().parent.parent / "data" / "world_bea_regional" / "us.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    out: dict[str, str] = {}
+    for row in payload.get("series") or []:
+        ru = str(row.get("section_ru") or "").strip()
+        en = str(row.get("section_en") or "").strip()
+        if ru and en:
+            out.setdefault(ru, en)
+    return out
+
+
 def localize_category_name(
     category_ru: str | None,
     *,
@@ -114,7 +137,10 @@ def localize_category_name(
         return fallback or "Прочее"
     if loc != "en":
         return raw
-    return _category_ru_to_en_map().get(raw, raw)
+    mapped = _category_ru_to_en_map().get(raw)
+    if mapped:
+        return mapped
+    return bea_section_en_by_ru().get(raw, raw)
 
 
 def event_public_title(

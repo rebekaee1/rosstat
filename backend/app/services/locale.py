@@ -6,7 +6,9 @@ Target scheme (ADR-0013 §F), live after 2026-09-03:
 
 ``settings.apex_locale_en`` is the production cutover switch. Localhost and
 non-apex hosts stay **ru**; explicit ``en.``, ``X-FE-Locale``, and
-``?preview_locale=`` still opt into EN.
+``?preview_locale=`` still opt into EN there. After cutover a production
+host is the language: apex stays English and ``ru.`` stays Russian.
+Accept-Language never selects the locale.
 
 Request origin (canonical / sitemap ``<loc>`` / RSS / robots / llms /
 OG absolute URLs) is host-aware:
@@ -65,6 +67,27 @@ def en_public_origin() -> str:
     from app.config import settings
 
     return settings.public_origin
+
+
+def public_page_url(origin: str, path: str) -> str:
+    """Absolute page URL using the same serialization as ``<link rel=canonical>``.
+
+    The site root is the origin without a trailing slash
+    (``https://forecasteconomy.com``, not ``…com/``). Other paths have no
+    trailing slash. hreflang hrefs must be byte-identical to these canonicals:
+    Google drops a cluster when the alternate URL is not the canonical URL.
+    """
+    base = (origin or "").rstrip("/")
+    raw = path or "/"
+    page, sep, query = raw.partition("?")
+    if not page.startswith("/"):
+        page = f"/{page}"
+    if page != "/" and page.endswith("/"):
+        page = page.rstrip("/") or "/"
+    url = base if page == "/" else f"{base}{page}"
+    if sep and query:
+        return f"{url}?{query}"
+    return url
 
 
 def resolve_request_origin(host: str | None = None) -> str:
@@ -154,6 +177,28 @@ def preview_locale_from_referer(referer: str | None) -> Locale | None:
     return None
 
 
+def production_host_locale(
+    host: str | None,
+    *,
+    apex_locale_en: bool | None = None,
+) -> Locale | None:
+    """Language locked to this host, or None when header/preview may still choose.
+
+    ``ru.*`` is Russian and ``en.*`` is English. After cutover, apex is English.
+    Accept-Language, ``X-FE-Locale``, ``?preview_locale=`` and the preference
+    cookie must not paint the other language onto that host. Before cutover,
+    apex stays unlocked so a localhost-style EN preview can still opt in.
+    """
+    h = normalize_host(host)
+    if h.startswith("ru."):
+        return "ru"
+    if h.startswith("en."):
+        return "en"
+    if h in PRODUCTION_APEX_HOSTS and apex_locale_en_enabled(apex_locale_en):
+        return "en"
+    return None
+
+
 def resolve_locale(
     *,
     host: str | None = None,
@@ -161,19 +206,20 @@ def resolve_locale(
     preview: str | None = None,
     apex_locale_en: bool | None = None,
 ) -> Locale:
-    """Resolve public UI/SEO locale from header, preview override, then host."""
+    """Resolve UI/SEO locale. A production host wins over header and preview.
+
+    Accept-Language is not an input. On localhost and on apex before cutover,
+    ``X-FE-Locale`` then ``?preview_locale=`` still override the host.
+    """
+    locked = production_host_locale(host, apex_locale_en=apex_locale_en)
+    if locked is not None:
+        return locked
+
     for candidate in (header, preview):
         loc = _normalize_locale_token(candidate)
         if loc is not None:
             return loc
 
-    h = normalize_host(host)
-    if h.startswith("ru."):
-        return "ru"
-    if h.startswith("en."):
-        return "en"
-    if h in PRODUCTION_APEX_HOSTS:
-        return "en" if apex_locale_en_enabled(apex_locale_en) else "ru"
     return "ru"
 
 
@@ -191,11 +237,24 @@ def locale_from_absolute_url(url: str | None) -> Locale | None:
     return resolve_locale(host=host)
 
 
+def explicit_preview_active(host: str | None, explicit: str | None, locale: str) -> bool:
+    """True only when a preview token actually selected the locale.
+
+    On a locked production host the token is ignored, so the page stays
+    indexable. Matching ``preview_locale=en`` on the English apex is not a preview.
+    """
+    if production_host_locale(host) is not None:
+        return False
+    token = _normalize_locale_token(explicit)
+    return token is not None and token == locale
+
+
 def resolve_locale_from_request(request: Request) -> Locale:
-    """Header → ``?preview_locale=`` → Referer preview → host.
+    """Production host, else header → ``?preview_locale=`` → Referer preview → host.
 
     Localhost / non-apex without an explicit override stays ``ru``.
     Production apex stays ``ru`` until ``RUSTATS_APEX_LOCALE_EN=true``.
+    Accept-Language is never read.
     """
     host = request.headers.get("x-forwarded-host") or request.headers.get("host")
     header = request.headers.get(LOCALE_HEADER)

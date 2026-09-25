@@ -28,7 +28,11 @@ FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /var/log/nginx /run
+# security/ is bind-mounted in prod for fail2ban; create it in-image so
+# nginx -t / local runs without the host mount still succeed. CI prepares the
+# host bind with uid 101 before compose up (see .github/workflows/ci.yml).
+RUN mkdir -p /var/log/nginx/security \
+    && chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /var/log/nginx /run
 
 USER nginx
 
