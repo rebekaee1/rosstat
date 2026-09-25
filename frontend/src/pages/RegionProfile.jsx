@@ -15,6 +15,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
 import useSearchTracking from '../lib/useSearchTracking';
 import { regionTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
+import { mountJsonLd } from '../lib/jsonLd';
 import {
   regionIndicatorPath,
   regionPath,
@@ -117,13 +118,9 @@ export default function RegionProfile() {
 
   useEffect(() => {
     if (!regionName) return undefined;
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'region-breadcrumb-jsonld';
-    script.textContent = JSON.stringify(breadcrumbJsonLd(regionTrail(regionName, slug)));
-    document.getElementById('region-breadcrumb-jsonld')?.remove();
-    document.head.appendChild(script);
-    return () => script.remove();
+    const data = breadcrumbJsonLd(regionTrail(regionName, slug));
+    if (!data) return undefined;
+    return mountJsonLd(data);
   }, [regionName, slug]);
 
   const filteredSections = useMemo(() => {

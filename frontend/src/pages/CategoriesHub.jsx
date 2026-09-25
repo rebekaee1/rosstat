@@ -13,6 +13,7 @@ import IndicatorSearch from '../components/IndicatorSearch';
 import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
 import { russiaCategoriesTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
+import { mountJsonLd } from '../lib/jsonLd';
 import { russiaCategoriesPath } from '../lib/sitePaths';
 
 export default function CategoriesHub() {
@@ -37,14 +38,9 @@ export default function CategoriesHub() {
   } : null);
 
   useEffect(() => {
-    const jsonLd = breadcrumbJsonLd(crumbs);
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'breadcrumb-jsonld';
-    script.textContent = JSON.stringify(jsonLd);
-    document.getElementById('breadcrumb-jsonld')?.remove();
-    document.head.appendChild(script);
-    return () => script.remove();
+    const data = breadcrumbJsonLd(crumbs);
+    if (!data) return undefined;
+    return mountJsonLd(data);
   }, [crumbs]);
 
   return (

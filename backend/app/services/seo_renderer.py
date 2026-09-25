@@ -423,55 +423,113 @@ def _home_bootstrap_head(flagships: list) -> str:
     )
 
 
-def _breadcrumbs(items: list[tuple[str, str]]) -> dict:
+# Публичный адрес поддержки. Тот же ящик, что на странице «О проекте».
+_ORG_EMAIL = "rebeka.ee@yandex.ru"
+_ORG_NAME = "Forecast Economy"
+# Квадратная марка 512×512: порог Google для logo — 112×112, файл отдаётся как статика.
+_ORG_LOGO_PATH = "/yandex-app-icon-512.png"
+
+
+def _breadcrumbs(items: list[tuple[str, str]]) -> dict | None:
+    """BreadcrumbList для Google (`item`) и Яндекса (`url` на том же абсолютном адресе).
+
+    Google требует минимум два ListItem. Один пункт «Главная» на корне сайта
+    не тропа: его не отдаём. Последний пункт тоже несёт URL — Яндекс сверяет
+    домен, если адрес указан, а видимый текст крошки при этом совпадает.
+    """
+    if len(items) < 2:
+        return None
+    elements = []
+    for index, (path, name) in enumerate(items):
+        href = _absolute(path)
+        elements.append({
+            "@type": "ListItem",
+            "position": index + 1,
+            "name": name,
+            "item": href,
+            "url": href,
+        })
     return {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": index + 1,
-                "name": name,
-                "item": _absolute(path),
-            }
-            for index, (path, name) in enumerate(items)
-        ],
+        "itemListElement": elements,
     }
 
 
 def _site_json_ld() -> dict:
-    from app.services.locale import get_locale, get_request_origin
+    """WebSite + Organization для имени сайта и карточки организации.
+
+    SearchAction не ставим: с 21 ноября 2024 Google не показывает sitelinks
+    search box и снял документацию, а отдельной страницы поиска с подстановкой
+    запроса на сайте нет. Speakable не ставим: бета Google Assistant только
+    для англоязычных новостей в США, это не новостной сайт. Article/NewsArticle
+    не ставим: страницы показателей — наборы данных, не редакционные статьи.
+    """
+    from urllib.parse import urlsplit
+
+    from app.services.locale import (
+        en_public_origin,
+        get_locale,
+        get_request_origin,
+        in_language,
+        ru_public_origin,
+    )
+    from app.services.seo_i18n import get_page_seo
 
     en = get_locale() == "en"
-    origin = get_request_origin()
+    origin = get_request_origin().rstrip("/")
+    home = get_page_seo("home")
+    description = (home.description if home and home.description else "") or (
+        "Analytical platform for official macroeconomic statistics by country: "
+        "charts, tables, comparisons and forecasts."
+        if en
+        else (
+            "Официальные макроэкономические индикаторы по странам: "
+            "графики, таблицы, сравнения и прогнозы."
+        )
+    )
+    host = urlsplit(origin).hostname or ""
+    sibling = en_public_origin().rstrip("/") if not en else ru_public_origin().rstrip("/")
+    logo_url = f"{origin}{_ORG_LOGO_PATH}"
+    contact_type = "customer support" if en else "поддержка пользователей"
+    website = {
+        "@type": "WebSite",
+        "@id": f"{origin}/#website",
+        "url": origin,
+        "name": _ORG_NAME,
+        "description": description,
+        "inLanguage": in_language(),
+        "publisher": {"@id": f"{origin}/#organization"},
+    }
+    if "." in host:
+        # Имя сайта в Google: основное имя плюс домен, которым сайт представляют.
+        website["alternateName"] = [host]
+    organization = {
+        "@type": "Organization",
+        "@id": f"{origin}/#organization",
+        "name": _ORG_NAME,
+        "url": origin,
+        "logo": {
+            "@type": "ImageObject",
+            "url": logo_url,
+            "contentUrl": logo_url,
+            "width": 512,
+            "height": 512,
+        },
+        "email": _ORG_EMAIL,
+        "description": description,
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": contact_type,
+            "email": _ORG_EMAIL,
+            "availableLanguage": ["ru", "en"],
+        },
+    }
+    if sibling and sibling != origin:
+        organization["sameAs"] = [sibling]
     return {
         "@context": "https://schema.org",
-        "@graph": [
-            {
-                "@type": "WebSite",
-                "@id": f"{origin}/#website",
-                "url": origin,
-                "name": "Forecast Economy",
-                "description": (
-                    "Analytical platform for official macroeconomic statistics by country: "
-                    "charts, tables, comparisons and forecasts."
-                    if en
-                    else (
-                        "Аналитическая платформа официальных экономических данных России, "
-                        "85 регионов и доступных стран: графики, таблицы, сравнения и прогнозы."
-                    )
-                ),
-                "inLanguage": "en" if en else "ru-RU",
-                "publisher": {"@id": f"{origin}/#organization"},
-            },
-            {
-                "@type": "Organization",
-                "@id": f"{origin}/#organization",
-                "name": "Forecast Economy",
-                "url": origin,
-                "email": "rebeka.ee@yandex.ru",
-            },
-        ],
+        "@graph": [website, organization],
     }
 
 
@@ -961,7 +1019,7 @@ async def build_document(
     safe_title = escape(title)
     safe_desc = escape(truncate_meta(clean_text(description), 300))
     safe_keywords = escape(clean_text(keywords or _default_keywords())[:400])
-    structured_items = list(json_ld or [])
+    structured_items = [item for item in (json_ld or []) if item]
     if og_image:
         structured_items.append({
             "@context": "https://schema.org", "@type": "WebPage",
@@ -1165,11 +1223,12 @@ def _blocks_html(blocks: Iterable[SeoBlock], *, current_code: str | None = None)
 
 
 def _faq_json_ld(blocks: Iterable[SeoBlock]) -> dict | None:
-    """FAQPage structured data из seo-блоков индикатора.
+    """FAQPage из видимых блоков «О показателе» (аккордеон, ответы в DOM).
 
-    Заголовок блока трактуется как вопрос, тело — как ответ. Позволяет
-    поисковикам распознать Q&A-секцию «О показателе» как структурированные
-    вопросы-ответы (rich result), а не просто текст.
+    Google с 2023 показывает FAQ rich result только у авторитетных
+    правительственных и медицинских сайтов; разметка остаётся, потому что
+    вопросы видны на странице и их читает Яндекс. Меньше двух пар не отдаём.
+    Article и speakable сюда не добавляются: это не новостная статья.
     """
     entities = [
         {
@@ -1430,7 +1489,6 @@ async def render_home_html(db: AsyncSession) -> str:
     ]
     json_ld = [
         _site_json_ld(),
-        _breadcrumbs([crumbs.home()]),
         {
             "@context": "https://schema.org",
             "@type": "WebPage",

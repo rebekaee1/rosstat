@@ -21,6 +21,7 @@ import {
   breadcrumbJsonLd,
   russiaCategoryTrail,
 } from '../lib/breadcrumbs';
+import { mountJsonLd } from '../lib/jsonLd';
 import { getCategorySeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
 import {
@@ -71,14 +72,9 @@ export default function CategoryPage() {
   );
 
   useEffect(() => {
-    if (!crumbs) return undefined;
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.textContent = JSON.stringify(breadcrumbJsonLd(crumbs));
-    script.id = 'breadcrumb-jsonld';
-    document.getElementById('breadcrumb-jsonld')?.remove();
-    document.head.appendChild(script);
-    return () => script.remove();
+    const data = crumbs ? breadcrumbJsonLd(crumbs) : null;
+    if (!data) return undefined;
+    return mountJsonLd(data);
   }, [crumbs]);
 
   const isPricesCategory = cat?.apiCategory === 'Цены';

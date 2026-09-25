@@ -253,16 +253,30 @@ export function toolTrail(name, path) {
   return [homeCrumb(), crumb(path, name)];
 }
 
-/** JSON-LD BreadcrumbList из trail (для CSR-страниц без SSR). */
+function absoluteCrumb(origin, path) {
+  const base = String(origin || '').replace(/\/$/, '');
+  if (!path || path === '/') return base;
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+/** JSON-LD BreadcrumbList из trail (для CSR-страниц без SSR).
+ *  `item` читает Google, `url` — Яндекс; оба указывают на один абсолютный адрес.
+ *  Меньше двух пунктов не отдаём: одиночная «Главная» не является тропой.
+ */
 export function breadcrumbJsonLd(items, origin = getSiteOrigin()) {
+  if (!items || items.length < 2) return null;
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: `${origin.replace(/\/$/, '')}${item.path}`,
-    })),
+    itemListElement: items.map((item, index) => {
+      const href = absoluteCrumb(origin, item.path);
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        item: href,
+        url: href,
+      };
+    }),
   };
 }
