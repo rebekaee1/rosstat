@@ -506,6 +506,8 @@ def test_en_catalog_subnational_paths():
     assert has_en_path("/united-states/regions")
     assert has_en_path("/united-states/region/california")
     assert has_en_path("/united-states/region/california/unemployment-rate")
+    assert has_en_path("/united-states/region-vs/california-vs-texas")
+    assert has_en_path("/not-a-country/region-vs/a-vs-b") is False
     assert has_en_path("/russia/region/moskva")
 
 

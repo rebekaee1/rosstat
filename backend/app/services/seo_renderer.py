@@ -782,6 +782,11 @@ def _locale_cluster(canonical_path: str) -> dict[str, str] | None:
     a hreflang target must be an indexable translation, not a 404 or a
     noindex preview. Yandex no longer reads language alternates from sitemaps;
     this HTML cluster is the only annotation.
+
+    At ~5.04M URLs per host the pair is a host swap of this one path
+    (``has_en_path`` is an O(1) shape check, no I/O). Do not copy the cluster
+    into sitemap ``xhtml:link`` generation and do not build a stored pair list:
+    three extra links on every URL does not ship, and one HTML method is enough.
     """
     from app.config import settings
     from app.data.i18n.en_catalog import has_en_path
