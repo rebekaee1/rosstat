@@ -179,7 +179,56 @@ async def bump_namespaces(*namespaces: str) -> None:
         _note_cache_failure("cache_invalidate", ",".join(namespaces))
     for ns in namespaces:
         _ver_local.pop(ns, None)
+    if "world-catalog" in namespaces:
+        await clear_durable_world_countries()
 
+
+
+
+# --- Durable world-countries catalogue (survives deploy FLUSHDB of DB 0) ---
+# Cold build of /world/countries can take tens of seconds; Axios aborts at 15s,
+# so browser traffic never warms DB 0 after deploy. State-Redis (DB 1) keeps a
+# locale-keyed mirror so home SSR #fe-bootstrap and the API stay fast.
+_DURABLE_WORLD_COUNTRIES_PREFIX = "fe:durable:world-countries:"
+_DURABLE_WORLD_COUNTRIES_TTL = 30 * 24 * 3600  # 30 days; ingest bump clears
+
+
+def durable_world_countries_key(locale: str) -> str:
+    return f"{_DURABLE_WORLD_COUNTRIES_PREFIX}{locale}"
+
+
+async def get_durable_world_countries(locale: str) -> Optional[Any]:
+    try:
+        r = await get_state_redis()
+        val = await r.get(durable_world_countries_key(locale))
+        if val is not None:
+            return json.loads(val)
+    except Exception:
+        _note_cache_failure("cache_get", f"durable-countries:{locale}")
+    return None
+
+
+async def set_durable_world_countries(locale: str, payload: Any) -> None:
+    try:
+        r = await get_state_redis()
+        await r.set(
+            durable_world_countries_key(locale),
+            json.dumps(payload, default=str),
+            ex=_DURABLE_WORLD_COUNTRIES_TTL,
+        )
+    except Exception:
+        _note_cache_failure("cache_set", f"durable-countries:{locale}")
+
+
+async def clear_durable_world_countries() -> None:
+    """Drop durable EN/RU mirrors when world-catalog namespace is bumped."""
+    try:
+        r = await get_state_redis()
+        keys = [durable_world_countries_key(loc) for loc in ("ru", "en")]
+        if keys:
+            await r.delete(*keys)
+    except Exception:
+        _note_cache_failure("cache_invalidate", "durable-countries")
 
 async def cache_invalidate_indicator(code: str):
     """После ETL/derived-апдейта: сам код (detail/data/SSR/embed живут в

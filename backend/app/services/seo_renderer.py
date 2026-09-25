@@ -393,12 +393,19 @@ def _json_application_script(*, element_id: str, data: dict) -> str:
     )
 
 
-def _home_bootstrap_head(flagships: list) -> str:
-    """SSR-bootstrap главной: flagships, которые render_home_html уже считает.
+def _home_bootstrap_head(
+    flagships: list,
+    *,
+    world_countries: dict | None = None,
+    map_snapshot: dict | None = None,
+    map_concept: str = "gdp-usd",
+) -> str:
+    """SSR-bootstrap главной for cold first paint.
 
-    QueryClient читает это как стартовый каталог listed-индикаторов (сразу
-    invalidate — полный /indicators доедет, staleTime 5 мин не заморозит срез).
-    Map-series сюда не кладём: слишком тяжёлый.
+    - flagships → listed indicators (invalidate on client; full /indicators follows)
+    - worldCountries → /world/countries catalogue + inventory counters (no invalidate)
+    - mapSnapshot → last-year compare snapshot for default concept (no map-series;
+      full history is ~385KB and still loads on the client for the year slider)
     """
     from app.services.i18n_display import public_name
     from app.services.locale import get_locale
@@ -419,9 +426,19 @@ def _home_bootstrap_head(flagships: list) -> str:
             "is_active": bool(getattr(ind, "is_active", True)),
             "is_listed": bool(getattr(ind, "is_listed", True)),
         })
+    data: dict = {"locale": locale, "indicators": indicators}
+    if isinstance(world_countries, dict) and (
+        world_countries.get("countries")
+        or world_countries.get("world_indicators_count")
+        or world_countries.get("total")
+    ):
+        data["worldCountries"] = world_countries
+    if isinstance(map_snapshot, dict) and map_snapshot.get("items") is not None:
+        data["mapConcept"] = map_concept
+        data["mapSnapshot"] = map_snapshot
     return _json_application_script(
         element_id="fe-bootstrap",
-        data={"locale": locale, "indicators": indicators},
+        data=data,
     )
 
 
@@ -1414,10 +1431,27 @@ async def render_home_html(db: AsyncSession) -> str:
     if page is None:
         page = PAGE_META["home"]
     page_blocks = page.blocks
+    # Same Redis payloads the SPA would fetch: seed #fe-bootstrap so cold
+    # first paint has real scope counters + default map snapshot (not «—» /
+    # empty map). Misses are fine — client hooks still load.
+    from app.core.cache import (
+        cache_get,
+        get_durable_world_countries,
+        versioned_key,
+    )
+    locale = get_locale()
+    world_countries = await cache_get(
+        await versioned_key("world-catalog", f"countries:v8:{locale}")
+    )
+    if not isinstance(world_countries, dict):
+        # Deploy FLUSHDB empties DB 0; durable state-Redis keeps last catalogue
+        # so #fe-bootstrap still has counters (client Axios would time out at 15s).
+        world_countries = await get_durable_world_countries(locale)
+    map_snapshot = await cache_get(
+        await versioned_key("world", f"compare:snapshot:v8:gdp-usd:{locale}")
+    )
     if page_blocks:
-        from app.core.cache import cache_get, versioned_key
-        locale = get_locale()
-        scope = await cache_get(await versioned_key("world-catalog", f"countries:v8:{locale}"))
+        scope = world_countries if isinstance(world_countries, dict) else None
         if scope and scope.get("world_indicators_count"):
             world_count = int(scope.get("world_indicators_count") or 0)
             ru_count = int(scope.get("russia_macro_indicators_count") or 0)
@@ -1519,7 +1553,12 @@ async def render_home_html(db: AsyncSession) -> str:
         body=body,
         json_ld=json_ld,
         keywords=page.keywords or None,
-        extra_head=_home_bootstrap_head(flagships),
+        extra_head=_home_bootstrap_head(
+            flagships,
+            world_countries=world_countries if isinstance(world_countries, dict) else None,
+            map_snapshot=map_snapshot if isinstance(map_snapshot, dict) else None,
+            map_concept="gdp-usd",
+        ),
     )
     return html
 

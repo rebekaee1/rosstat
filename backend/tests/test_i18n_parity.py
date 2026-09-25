@@ -1687,3 +1687,91 @@ def test_persist_locale_pref_keeps_preview_until_cutover(monkeypatch):
     ru_qs = parse_qs(urlsplit(back_ru.headers["location"]).query)
     assert "preview_locale" not in ru_qs
     assert "fe_locale_pref=ru" in back_ru.headers.get("set-cookie", "")
+
+
+def test_home_bootstrap_seeds_world_countries(monkeypatch):
+    """#fe-bootstrap carries worldCountries so cold home never waits on 15s Axios."""
+    import asyncio
+    import json
+    import re
+    from types import SimpleNamespace
+
+    from app.services.locale import reset_locale, set_locale
+    from app.services import seo_renderer
+
+    async def fake_inds(db, codes):
+        return [
+            SimpleNamespace(
+                code="cpi",
+                name="Индекс потребительских цен",
+                name_en="Consumer Price Index",
+                unit="%",
+                category="Цены",
+                frequency="monthly",
+                is_active=True,
+                is_listed=True,
+            )
+        ]
+
+    async def fake_assets():
+        return seo_renderer._fallback_assets()
+
+    async def fake_country_links(db):
+        return (("/sweden", "Sweden"),)
+
+    async def fake_us_links(db):
+        return (("/united-states/indicator/us-cpi", "Consumer Price Index"),)
+
+    world_payload = {
+        "countries": [{"code": "US", "slug": "united-states", "name": "United States", "name_en": "United States", "indicators_count": 10}],
+        "total": 55,
+        "world_indicators_count": 38146,
+        "russia_macro_indicators_count": 145,
+        "regional_indicators_count": 2377,
+        "us_state_indicators_count": 1882,
+        "us_states_count": 50,
+    }
+    snap_payload = {
+        "concept": {"slug": "gdp-usd", "name": "GDP", "unit": "billion $"},
+        "items": [{"country_code": "US", "country_slug": "united-states", "country_name": "United States", "date": "2024-01-01", "value": 1.0}],
+    }
+
+    async def fake_cache_get(key):
+        if "countries:v8:" in key:
+            return world_payload
+        if "compare:snapshot:v8:gdp-usd:" in key:
+            return snap_payload
+        return None
+
+    async def fake_versioned_key(ns, rest):
+        return f"fe:{ns}:v0:{rest}"
+
+    async def fake_durable(locale):
+        return None
+
+    monkeypatch.setattr(seo_renderer, "_indicators_by_codes", fake_inds)
+    monkeypatch.setattr(seo_renderer, "get_app_assets", fake_assets)
+    monkeypatch.setattr(seo_renderer, "_home_country_links", fake_country_links)
+    monkeypatch.setattr(seo_renderer, "_home_flagship_links_en", fake_us_links)
+
+    import app.core.cache as cache_mod
+    monkeypatch.setattr(cache_mod, "cache_get", fake_cache_get)
+    monkeypatch.setattr(cache_mod, "versioned_key", fake_versioned_key)
+    monkeypatch.setattr(cache_mod, "get_durable_world_countries", fake_durable)
+
+    token = set_locale("en")
+    try:
+        html = asyncio.run(seo_renderer.render_home_html(None))
+    finally:
+        reset_locale(token)
+
+    m = re.search(r'id="fe-bootstrap">(.*?)</script>', html)
+    assert m, "fe-bootstrap missing"
+    data = json.loads(m.group(1))
+    assert data["locale"] == "en"
+    assert data["worldCountries"]["world_indicators_count"] == 38146
+    assert data["worldCountries"]["total"] == 55
+    assert data["mapConcept"] == "gdp-usd"
+    assert data["mapSnapshot"]["items"][0]["country_code"] == "US"
+    # EN host: no Russian country name leak in bootstrap catalogue
+    assert data["worldCountries"]["countries"][0]["name"] == "United States"

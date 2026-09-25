@@ -237,10 +237,13 @@ async def render_regions_home_html(db: AsyncSession) -> tuple[int, str]:
             f'{escape(_icopy(ind)["name"] or ind.name)}</a></li>'
             for ind in rating_inds
         )
+        ratings_p = _rt('regions_hub.ratings_p') or (
+            'Все субъекты РФ по значению показателя: полная таблица мест '
+            'или интерактивная карта с выбором года.'
+        )
         ratings_html = (
             f"<section class=\"seo-section\"><h2>{escape(_rt('regions_hub.ratings_h2') or 'Рейтинги и карта регионов')}</h2>"
-            f"<p>{escape(_rt('regions_hub.ratings_p') or ('Все субъекты РФ по значению показателя: полная таблица мест '
-            'или интерактивная карта с выбором года.'))}</p>"
+            f"<p>{escape(ratings_p)}</p>"
             f"<h3>{escape(_rt('regions_hub.ratings_h3') or 'Рейтинги')}</h3><ul>{rating_items}</ul>"
             f"<h3>{escape(_rt('regions_hub.map_h3') or 'Карта')}</h3><ul>{map_items}</ul></section>"
         )
