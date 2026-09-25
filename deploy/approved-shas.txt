@@ -101,3 +101,5 @@ e5a2b98a606143f6051b01a5c78db7d3e7825720  # explicit owner GO 2026-09-25; sitema
 284dfd6545ac461a6aa2ff929f945d86db5a00bc  # explicit owner GO 2026-09-25; cold home SSR #13 cutover; IndexNow not forced
 
 7157061904ac8c42182ff0e6c47828fc42d40f98  # explicit owner GO 2026-09-25; parent tip for frontend cutover harden (cold-home #13 runtime still 284dfd6 via prior wrapper)
+
+d5a02c10ebe425e200c004f7ba060a54829d293c  # explicit owner GO 2026-09-25; parent tip for :3000-refuse frontend recovery on cold-home #13 cutover; IndexNow not forced

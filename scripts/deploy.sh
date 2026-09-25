@@ -179,7 +179,7 @@ docker compose up -d
 # уже проксировал → публичный 502. Не ждём 180s «healthy» в пустоту —
 # сразу start, и cutover успешен только при Running+healthy+local :3000.
 ensure_frontend_running() {
-  local cid state
+  local cid state port_ok=0
   cid=$(docker compose ps -q frontend 2>/dev/null || true)
   if [ -z "$cid" ]; then
     echo "    frontend missing — compose up -d --no-deps frontend"
@@ -187,14 +187,20 @@ ensure_frontend_running() {
     return
   fi
   state=$(docker inspect --format '{{.State.Status}}' "$cid" 2>/dev/null || echo unknown)
+  # :3000 refuse while Status=running still means public 502 via Caddy.
+  if [ "$state" = "running" ] && curl -sf -o /dev/null --max-time 2 http://127.0.0.1:3000/; then
+    port_ok=1
+  fi
+  if [ "$state" = "running" ] && [ "$port_ok" = "1" ]; then
+    return
+  fi
   case "$state" in
-    running) ;;
-    created|exited|dead|paused)
-      echo "    frontend state=${state} — compose up -d --no-deps frontend"
+    created|exited|dead|paused|running)
+      echo "    frontend state=${state} :3000_ok=${port_ok} — compose up -d --no-deps frontend"
       docker compose up -d --no-deps frontend
       ;;
     *)
-      echo "    frontend unexpected state=${state} — compose up -d --no-deps frontend"
+      echo "    frontend unexpected state=${state} :3000_ok=${port_ok} — compose up -d --no-deps frontend"
       docker compose up -d --no-deps frontend
       ;;
   esac
