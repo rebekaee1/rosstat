@@ -1377,6 +1377,80 @@ def _geo_locale_redirect(request: Request) -> Response | None:
     return _locale_host_redirect(request)
 
 
+def _strip_preview_locale_query(query: str) -> str:
+    kept: list[str] = []
+    for part in (query or "").split("&"):
+        if not part:
+            continue
+        key = part.split("=", 1)[0]
+        if key.lower() == "preview_locale":
+            continue
+        kept.append(part)
+    return "&".join(kept)
+
+
+def _preview_query_redirect(request: Request) -> Response | None:
+    """Живые хосты: ``?preview_locale=`` не должен отдавать 200 noindex.
+
+    На проде параметр либо повторяет язык хоста, либо показывает чужой язык
+    на не том зеркале. Ответ 200 с noindex и canonical на чистый URL — конфликт
+    сигналов: Google может приклеить noindex к канонической странице.
+    301 ведёт на хост, который уже отдаёт этот язык, без параметра.
+    Localhost и test-хосты не трогаем: там preview — рабочий переключатель.
+    """
+    if not settings.apex_locale_en:
+        return None
+    if request.method not in {"GET", "HEAD"}:
+        return None
+    from app.services.locale import (
+        PREVIEW_QUERY,
+        _normalize_locale_token,
+        apex_host,
+        en_public_origin,
+        normalize_host,
+        ru_public_origin,
+    )
+
+    preview = _normalize_locale_token(request.query_params.get(PREVIEW_QUERY))
+    if preview is None:
+        return None
+    # Не смотрим Accept: часть краулеров шлёт */*, и тогда 200 noindex
+    # с canonical на чистый URL всё равно уезжает в индексный кластер.
+    gate = (request.headers.get("x-original-uri") or request.url.path).partition("?")[0]
+    if gate in _GEO_EXCLUDED_EXACT or any(gate.startswith(p) for p in _GEO_EXCLUDED_PREFIXES):
+        return None
+    host = normalize_host(
+        request.headers.get("x-forwarded-host") or request.headers.get("host")
+    )
+    apex = apex_host()
+    if host not in {apex, f"www.{apex}"} and not host.startswith("ru."):
+        return None
+
+    original = request.headers.get("x-original-uri")
+    if original:
+        public_path, _, public_query = original.partition("?")
+    else:
+        public_path = request.url.path
+        public_query = request.url.query
+        # Внутренний /seo/… без публичного URI не светим наружу.
+        if public_path.startswith("/seo/"):
+            return None
+    if not public_path.startswith("/"):
+        public_path = f"/{public_path}"
+    query = _strip_preview_locale_query(public_query)
+    origin = en_public_origin() if preview == "en" else ru_public_origin()
+    target = f"{origin}{public_path or '/'}"
+    if query:
+        target += f"?{query}"
+    return Response(
+        status_code=301,
+        headers={
+            "Location": target,
+            "Cache-Control": "public, max-age=86400",
+        },
+    )
+
+
 class LocaleMiddleware(BaseHTTPMiddleware):
     """Bind request locale. A production host wins over header and preview."""
 
@@ -1397,6 +1471,9 @@ class LocaleMiddleware(BaseHTTPMiddleware):
             set_request_origin,
         )
 
+        preview_redirect = _preview_query_redirect(request)
+        if preview_redirect is not None:
+            return preview_redirect
         persist = _persist_locale_pref_redirect(request)
         if persist is not None:
             return persist

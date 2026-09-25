@@ -1,38 +1,68 @@
 # robots.txt — __PUBLIC_HOST__
-# Не запрещаем /assets/ — роботам нужны JS/CSS для рендеринга.
+# Каталог ~5,04 млн канонических URL на хост (sitemap). Бюджет обхода
+# тратится на них. noindex не экономит обход: робот должен скачать страницу,
+# чтобы его увидеть. noindex оставляем конечному набору кабинета и оболочки.
+#
+# /assets/ открыт: без JS/CSS рендер выглядит как пустая страница.
+# /login /register /account открыты: noindex должен быть прочитан.
+# /index.html и ?preview_locale= открыты: робот должен увидеть 301.
+# ?year= на карте регионов — канон, не закрываем.
+#
+# /embed/ закрыт: виджеты масштабируются каталогом, в индекс не нужны.
+# Неканонические query (?mode=, ?view=, /compare?, метки рекламы) закрыты
+# у * и Googlebot: своя секция Googlebot не наследует правила *.
+# У Yandex тех же query нет в Disallow: склейка через Clean-param,
+# иначе Disallow побеждает и сигналы не склеиваются.
 
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
+Disallow: /embed/
+Disallow: /compare?
+Disallow: /*?mode=
+Disallow: /*&mode=
+Disallow: /*?view=
+Disallow: /*&view=
+Disallow: /*?utm_
+Disallow: /*&utm_
+Disallow: /*?gclid=
+Disallow: /*&gclid=
+Disallow: /*?fbclid=
+Disallow: /*&fbclid=
+Disallow: /*?yclid=
+Disallow: /*&yclid=
 
 User-agent: Yandex
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
+Disallow: /embed/
 
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
+Disallow: /embed/
+Disallow: /compare?
+Disallow: /*?mode=
+Disallow: /*&mode=
+Disallow: /*?view=
+Disallow: /*&view=
+Disallow: /*?utm_
+Disallow: /*&utm_
+Disallow: /*?gclid=
+Disallow: /*&gclid=
+Disallow: /*?fbclid=
+Disallow: /*&fbclid=
+Disallow: /*?yclid=
+Disallow: /*&yclid=
 
 # Агрессивные скрейперы без SEO-ценности: срезаем весь контент.
 # Решают только каталог/страницы, которые им и так не нужны.
@@ -61,12 +91,16 @@ Disallow: /
 User-agent: MJ12bot
 Disallow: /
 
-# Clean-param — межсекционная директива Яндекса (Yandex.Webmaster → «Найдены страницы-дубли с GET-параметрами»).
-# Сообщает роботу, какие GET-параметры считать незначащими, чтобы не индексировать дубли и склеить сигналы на канонической странице.
-# mode= с 2026-09-03 каноничен только на базовый URL карточки — параметр склеиваем.
-# Лимит длины правила — 500 символов; разбиваем на несколько строк.
+# Clean-param — межсекционная директива Яндекса.
+# Незначащие GET склеиваются с чистым URL. Disallow на те же параметры
+# в секции Yandex не ставим: при конфликте побеждает Disallow.
+# codes только на /compare. view — интерактивный срез, не канон.
+# year не склеиваем: на карте регионов ?year= входит в канонический URL.
+# Лимит длины правила — 500 символов.
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
 Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode&preview_locale
+Clean-param: codes /compare
+Clean-param: view
 
 Sitemap: __PUBLIC_ORIGIN__/sitemap.xml

@@ -1,0 +1,58 @@
+name: zone1-claim
+
+on:
+  push:
+    branches: [cursor/crawlability-robots-noindex-b9a8]
+    paths: ['.github/workflows/zone1-claim-comment.yml']
+
+permissions:
+  issues: write
+
+jobs:
+  claim:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post CLAIM zone-1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAIM_BODY: |
+            CLAIM zone-1: crawlability — robots / noindex / soft-404 / honeypot, protect the 5.04M URL crawl budget per host.
+
+            Agent: https://cursor.com/agents/bc-b06e6951-3010-52f5-957d-2d2d06e1b9a8
+            Branch: `cursor/crawlability-robots-noindex-b9a8`
+            PR: https://github.com/rebekaee1/rosstat/pull/7
+
+            Scale: ~5.04M canonical loc per host, 509 sitemap shards. EN and RU are separate crawl budgets. noindex is not a budget tool. Catalog stays index,follow.
+
+            Files:
+            - backend/app/data/seo_static/robots.txt
+            - backend/app/data/seo_static/robots.en.txt
+            - frontend/public/robots.txt
+            - backend/app/services/index_policy.py
+            - backend/app/main.py (preview_locale 301 only)
+            - frontend/nginx.conf (index.html 301, 404.html real 404, embed/honeypot X-Robots-Tag)
+            - frontend/index.html (shell noindex only)
+            - backend/app/services/seo_renderer.py (hidden honeypot anchors removed only)
+            - backend/app/api/seo_pages.py (404 X-Robots-Tag)
+            - backend/tests/test_seo_growth_pages.py
+            - backend/tests/test_seo_not_found.py
+            - backend/tests/test_i18n_parity.py
+            - frontend/public/yandex_02b4966d46881470.html
+            - frontend/public/yandex_5e35c47bf83e75a9.html
+            - CONTEXT.md
+            - .github/workflows/zone1-claim-comment.yml
+
+            Shared files, do not overwrite other zones' hunks:
+            - robots.txt / robots.en.txt / frontend/public/robots.txt also claimed by zone 7. Zone 1 owns crawl-budget Disallow: /embed/, /compare?, mode, view, utm/gclid/fbclid/yclid for User-agent * and Googlebot. Yandex must not Disallow those queries. Clean-param glue (codes on /compare, view, mode, preview_locale) stays. Do not drop the Googlebot query firewall or the /embed/ Disallow. year= and preview_locale stay crawlable.
+            - seo_renderer.py also used by zone 2 (hreflang), zone 3 (CWV), zone 4 (schema), zone 6 (internal links), zone 7 (Yandex).
+            - frontend/index.html also claimed by zone 3 and zone 4.
+            - test_i18n_parity.py also used by zone 2 and zone 7.
+
+            No deploy. Direct issue comment from the cloud agent token is 403; this workflow posts the claim.
+        run: |
+          existing=$(gh api --paginate repos/rebekaee1/rosstat/issues/2/comments --jq '.[] | select(.body | contains("CLAIM zone-1: crawlability")) | .id' || true)
+          if [ -n "$existing" ]; then
+            echo "claim already present: $existing"
+            exit 0
+          fi
+          gh api --method POST repos/rebekaee1/rosstat/issues/2/comments -f body="$CLAIM_BODY"

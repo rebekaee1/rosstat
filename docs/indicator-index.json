@@ -58,12 +58,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 491,
+          "line": 504,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 493,
+          "line": 506,
           "kind": "other"
         },
         {
@@ -2697,7 +2697,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2909,
+          "line": 2901,
           "kind": "seo"
         },
         {
@@ -4068,7 +4068,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 504,
+          "line": 517,
           "kind": "other"
         },
         {
@@ -4650,7 +4650,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 709,
+          "line": 722,
           "kind": "other"
         },
         {
@@ -5462,7 +5462,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 470,
+          "line": 483,
           "kind": "other"
         },
         {
@@ -6336,7 +6336,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 504,
+          "line": 517,
           "kind": "other"
         },
         {
@@ -6794,7 +6794,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 470,
+          "line": 483,
           "kind": "other"
         },
         {
@@ -7756,7 +7756,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 599,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -8066,12 +8066,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1191,
+          "line": 1183,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1192,
+          "line": 1184,
           "kind": "seo"
         },
         {
@@ -8616,47 +8616,67 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1133,
+          "line": 1050,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1135,
+          "line": 1056,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1434,
+          "line": 1068,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1481,
+          "line": 1073,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1488,
+          "line": 1188,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1539,
+          "line": 1190,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1546,
+          "line": 1489,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1568,
+          "line": 1536,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1584,
+          "line": 1543,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1594,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1601,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1623,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1639,
           "kind": "tests"
         },
         {
@@ -9761,7 +9781,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 306,
+          "line": 320,
           "kind": "other"
         },
         {
@@ -11858,7 +11878,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1561,
+          "line": 1553,
           "kind": "seo"
         },
         {
@@ -17417,7 +17437,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 764,
+          "line": 777,
           "kind": "other"
         },
         {
@@ -18464,7 +18484,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 679,
+          "line": 692,
           "kind": "other"
         },
         {
@@ -18884,7 +18904,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 679,
+          "line": 692,
           "kind": "other"
         },
         {
@@ -19464,7 +19484,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 502,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -19904,7 +19924,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 502,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -20667,12 +20687,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 721,
+          "line": 734,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 723,
+          "line": 736,
           "kind": "other"
         },
         {
@@ -21982,7 +22002,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1195,
+          "line": 1187,
           "kind": "seo"
         },
         {
@@ -23177,7 +23197,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 592,
+          "line": 605,
           "kind": "other"
         },
         {
@@ -23397,7 +23417,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2654,
+          "line": 2646,
           "kind": "seo"
         },
         {
@@ -23936,7 +23956,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 592,
+          "line": 605,
           "kind": "other"
         },
         {
@@ -23981,7 +24001,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2654,
+          "line": 2646,
           "kind": "seo"
         },
         {
@@ -27532,7 +27552,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 648,
+          "line": 661,
           "kind": "other"
         },
         {
@@ -27832,7 +27852,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 648,
+          "line": 661,
           "kind": "other"
         },
         {
@@ -28127,7 +28147,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 648,
+          "line": 661,
           "kind": "other"
         },
         {
@@ -28447,22 +28467,22 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 642,
+          "line": 655,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 644,
+          "line": 657,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 646,
+          "line": 659,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 648,
+          "line": 661,
           "kind": "other"
         },
         {
@@ -28602,7 +28622,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1197,
+          "line": 1189,
           "kind": "seo"
         },
         {
@@ -30161,7 +30181,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 646,
+          "line": 659,
           "kind": "other"
         },
         {
@@ -30391,7 +30411,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 481,
+          "line": 494,
           "kind": "other"
         },
         {
@@ -31286,7 +31306,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 721,
+          "line": 734,
           "kind": "other"
         },
         {
@@ -32734,7 +32754,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 701,
+          "line": 714,
           "kind": "other"
         },
         {
@@ -35770,7 +35790,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1560,
+          "line": 1552,
           "kind": "seo"
         },
         {
@@ -35894,32 +35914,32 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 508,
+          "line": 521,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 520,
+          "line": 533,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 522,
+          "line": 535,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 599,
+          "line": 612,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 627,
+          "line": 640,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 663,
+          "line": 676,
           "kind": "other"
         },
         {
@@ -36693,7 +36713,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 713,
+          "line": 726,
           "kind": "other"
         },
         {
@@ -39669,12 +39689,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 481,
+          "line": 494,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 660,
+          "line": 673,
           "kind": "other"
         },
         {
@@ -39879,12 +39899,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1189,
+          "line": 1181,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2911,
+          "line": 2903,
           "kind": "seo"
         },
         {
@@ -40976,12 +40996,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 721,
+          "line": 734,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 723,
+          "line": 736,
           "kind": "other"
         },
         {
@@ -41374,7 +41394,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 502,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -41824,7 +41844,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 502,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -42294,7 +42314,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 502,
+          "line": 515,
           "kind": "other"
         },
         {
@@ -42409,7 +42429,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1193,
+          "line": 1185,
           "kind": "seo"
         },
         {
@@ -47206,7 +47226,7 @@
         },
         {
           "file": "frontend/index.html",
-          "line": 111,
+          "line": 114,
           "kind": "other"
         },
         {
@@ -51109,7 +51129,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1190,
+          "line": 1182,
           "kind": "seo"
         },
         {
@@ -53063,7 +53083,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 470,
+          "line": 483,
           "kind": "other"
         },
         {
@@ -54106,7 +54126,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 470,
+          "line": 483,
           "kind": "other"
         },
         {
@@ -55560,7 +55580,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 764,
+          "line": 777,
           "kind": "other"
         },
         {
@@ -55749,12 +55769,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 742,
+          "line": 755,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 762,
+          "line": 775,
           "kind": "other"
         },
         {
@@ -56119,7 +56139,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1196,
+          "line": 1188,
           "kind": "seo"
         },
         {
@@ -56775,7 +56795,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 764,
+          "line": 777,
           "kind": "other"
         },
         {
@@ -57097,7 +57117,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 764,
+          "line": 777,
           "kind": "other"
         },
         {
@@ -58646,7 +58666,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1194,
+          "line": 1186,
           "kind": "seo"
         },
         {
@@ -58721,7 +58741,7 @@
         },
         {
           "file": "backend/tests/test_seo_growth_pages.py",
-          "line": 1227,
+          "line": 1290,
           "kind": "tests"
         },
         {
@@ -60196,27 +60216,27 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 659,
+          "line": 672,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 689,
+          "line": 702,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 691,
+          "line": 704,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 731,
+          "line": 744,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 742,
+          "line": 755,
           "kind": "other"
         },
         {
@@ -60710,17 +60730,17 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 689,
+          "line": 702,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 691,
+          "line": 704,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 731,
+          "line": 744,
           "kind": "other"
         },
         {
@@ -62806,7 +62826,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 470,
+          "line": 483,
           "kind": "other"
         },
         {

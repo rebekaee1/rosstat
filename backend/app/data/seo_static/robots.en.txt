@@ -1,41 +1,70 @@
 # robots.txt — __PUBLIC_HOST__
-# /assets/ is allowed — crawlers need JS/CSS to render pages.
+# About 5.04M canonical URLs per host live in the sitemap. Crawl budget
+# belongs to them. noindex does not save a crawl: the bot must fetch the
+# URL to see the tag. noindex stays on the finite account and shell set.
+#
+# /assets/ stays open: a render without JS/CSS looks like an empty page.
+# /login /register /account stay open so noindex can be read.
+# /index.html and ?preview_locale= stay open so the 301 is visible.
+# ?year= on the regional map is canonical and stays open.
+#
+# /embed/ is blocked: widgets scale with the catalog and are not index targets.
+# Non-canonical queries (?mode=, ?view=, /compare?, ad tags) are blocked for
+# * and Googlebot. A Googlebot group does not inherit User-agent: *.
+# Yandex does not Disallow those queries: Clean-param glues the signals.
+# A Disallow would win and drop the page instead of merging it.
 
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
+Disallow: /embed/
+Disallow: /compare?
+Disallow: /*?mode=
+Disallow: /*&mode=
+Disallow: /*?view=
+Disallow: /*&view=
+Disallow: /*?utm_
+Disallow: /*&utm_
+Disallow: /*?gclid=
+Disallow: /*&gclid=
+Disallow: /*?fbclid=
+Disallow: /*&fbclid=
+Disallow: /*?yclid=
+Disallow: /*&yclid=
 
 User-agent: Yandex
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
+Disallow: /embed/
 
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
+Disallow: /embed/
+Disallow: /compare?
+Disallow: /*?mode=
+Disallow: /*&mode=
+Disallow: /*?view=
+Disallow: /*&view=
+Disallow: /*?utm_
+Disallow: /*&utm_
+Disallow: /*?gclid=
+Disallow: /*&gclid=
+Disallow: /*?fbclid=
+Disallow: /*&fbclid=
+Disallow: /*?yclid=
+Disallow: /*&yclid=
 
 # Aggressive scrapers with no SEO value: cut the whole site.
-# 
 # Training/archive collection is disabled; search and user fetchers remain allowed.
 User-agent: ClaudeBot
 Disallow: /
@@ -62,11 +91,15 @@ User-agent: MJ12bot
 Disallow: /
 
 # Clean-param — Yandex inter-section directive.
-# Tells the crawler which GET params are insignificant.
-# mode= is canonicalized to the base card URL; glue the parameter.
-# Rule length limit is 500 characters; split across lines.
+# Insignificant GET params glue to the clean URL. The Yandex group does
+# not Disallow the same params: on conflict Disallow wins.
+# codes applies only to /compare. view is an interactive slice, not canonical.
+# year is not glued: on the regional map ?year= is part of the canonical URL.
+# Rule length limit is 500 characters.
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
 Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode&preview_locale
+Clean-param: codes /compare
+Clean-param: view
 
 Sitemap: __PUBLIC_ORIGIN__/sitemap.xml
