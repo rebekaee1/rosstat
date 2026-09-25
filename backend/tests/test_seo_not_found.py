@@ -11,3 +11,6 @@ def test_seo_not_found_branded(client):
     assert 'href="/russia/today"' in html
     assert "seo-topbar" in html or "Forecast" in html
     assert "noindex" in html
+    assert "links-exchange" not in html
+    assert "seo-honeylink" not in html
+    assert r.headers.get("x-robots-tag") == "noindex, follow"

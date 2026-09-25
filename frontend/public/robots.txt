@@ -1,36 +1,27 @@
 # robots.txt — __PUBLIC_HOST__
 # Не запрещаем /assets/ — роботам нужны JS/CSS для рендеринга.
+# /login /register /account /embed не закрываем: у них noindex, а Disallow
+# не даёт его прочитать (Google может оставить голый URL в выдаче).
+# /index.html и /404.html робот должен увидеть (301 и честный 404), не Disallow.
 
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
 
 User-agent: Yandex
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
 
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
 
@@ -64,9 +55,10 @@ Disallow: /
 # Clean-param — межсекционная директива Яндекса (Yandex.Webmaster → «Найдены страницы-дубли с GET-параметрами»).
 # Сообщает роботу, какие GET-параметры считать незначащими, чтобы не индексировать дубли и склеить сигналы на канонической странице.
 # mode= с 2026-09-03 каноничен только на базовый URL карточки — параметр склеиваем.
+# preview_locale= на живых хостах склеиваем: это не отдельная страница.
 # Лимит длины правила — 500 символов; разбиваем на несколько строк.
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
 Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode&preview_locale
 
 Sitemap: __PUBLIC_ORIGIN__/sitemap.xml

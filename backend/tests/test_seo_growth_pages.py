@@ -1164,6 +1164,33 @@ def test_seo_static_templates_match_frontend_public():
         assert backend == frontend, f"{name} drifted between backend and frontend"
 
 
+def test_robots_noindex_pages_stay_crawlable():
+    """Google: Disallow не снимает URL с индекса. noindex-страницы должны обходиться.
+
+    /assets/ не закрываем — иначе рендер без CSS/JS выглядит как soft-404.
+    """
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2] / "backend/app/data/seo_static"
+    blocked = (
+        "Disallow: /login\n",
+        "Disallow: /register\n",
+        "Disallow: /account\n",
+        "Disallow: /embed/\n",
+        "Disallow: /assets/\n",
+        "Disallow: /index.html\n",
+    )
+    for name in ("robots.txt", "robots.en.txt"):
+        text = (root / name).read_text(encoding="utf-8")
+        for needle in blocked:
+            assert needle not in text, f"{name} still has {needle!r}"
+        assert "Disallow: /api/\n" in text
+        assert "Disallow: /__honeypot__/\n" in text
+        assert "Disallow: /russia/util/\n" in text
+        assert "preview_locale" in text
+        assert "Allow: /\n" in text
+
+
 def test_robots_mj12_disallow_on_ru_and_en_templates():
     """Apex EN cutover отдаёт robots.en.txt — MJ12 должен быть в обоих шаблонах."""
     from pathlib import Path

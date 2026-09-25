@@ -13,7 +13,10 @@
     <title>Forecast Economy | Макроэкономические индикаторы стран</title>
     <meta name="description" content="Forecast Economy — официальная макроэкономическая статистика по странам: сотни тысяч показателей, рейтинги, сравнения и проверенные прогнозы. По России — глубокое покрытие макроиндикаторов и регионов; доступны все штаты США. Данные Евростата, МВФ, национальных ведомств, Росстата и Банка России." />
     <meta name="author" content="Forecast Economy" />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <!-- Оболочка только для /login, /embed, /admin и /__spa-index.html.
+         Публичные URL рендерит backend. index,follow здесь индексировал
+         сырой shell (/index.html) и виджеты. -->
+    <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#EEF0F4" />
     <link rel="preload" href="/fonts/manrope-latin-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
 

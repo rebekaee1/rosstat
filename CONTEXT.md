@@ -436,7 +436,7 @@ embed отвечают на запрошенном хосте — иначе clo
 в CN/FR/BR (гидра). HTML с FR, API с SG — одна сессия с разных IP.
 
 1. **nginx UA-фильтр** (`$bad_bot` → 403): `research`, `scrapy`, `aiohttp`, `okhttp`, `headlesschrome`, пустой UA. **Не** матчить `Chrome/N.0.0.0 Safari/537.36$`: с Chrome 101 это reduced UA **живого** Chrome ([UA Reduction](https://www.chromium.org/updates/ua-reduction/)); ферма копирует ту же строку. Полный build (`145.0.7632.xx`) живёт только в Client Hints. Инцидент 2026-09-04: правило 403-ило всех людей в Chrome, включая владельца в инкогнито.
-2. **Ханипот** `/russia/util/links-exchange` (скрытая ссылка в футере SSR). `/__honeypot__/trap` — 403-location в nginx, **не** в sitemap: Яндекс ходит по карте вопреки robots Disallow, jail с `maxretry=1` иначе банит краулер. Hit футера = 403 + jail `honeytrap` 48ч; поисковики в `ignoreregex` (тот же список, что `$ssr_limit_key`). Recrawl skip обоих путей.
+2. **Ханипот** `/russia/util/links-exchange` и `/__honeypot__/trap` — 403 в nginx, **не** в sitemap и без ссылки в HTML (2026-09-25: скрытый анкор «обмен ссылками» убран — Google считает спрятанные ссылки спамом). Прямой запрос = 403 + `X-Robots-Tag: noindex` + jail `honeytrap`; поисковики в `ignoreregex`. Recrawl skip обоих путей.
 3. **Rate-limit** `ssrstrict` 2 r/s на региональное семейство; `ssr` 5 r/s; `limit_conn 8`.
    На `/og/` дополнительно **глобальный** бакет `ogall` 8 r/s + `ogconn` 4 соединения
    на хост: ИИ-краулеры (Claude/Perplexity/Amazon) в `$ssr_limit_key` с пустым

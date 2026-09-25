@@ -1040,6 +1040,61 @@ def test_preview_locale_noindex(monkeypatch):
         reset_locale(token)
 
 
+def test_live_host_preview_query_redirects_off_noindex_canonical(client, monkeypatch):
+    """Прод: ?preview_locale= — 301 на зеркало языка, не 200 noindex+canonical."""
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+
+    same = client.get(
+        "/russia/indicator/cpi?preview_locale=en&utm_source=newsletter",
+        headers={"host": "forecasteconomy.com"},
+        follow_redirects=False,
+    )
+    assert same.status_code == 301
+    assert same.headers["location"] == (
+        "https://forecasteconomy.com/russia/indicator/cpi?utm_source=newsletter"
+    )
+
+    cross = client.get(
+        "/?preview_locale=ru",
+        headers={"host": "www.forecasteconomy.com"},
+        follow_redirects=False,
+    )
+    assert cross.status_code == 301
+    assert cross.headers["location"] == "https://ru.forecasteconomy.com/"
+
+    back = client.get(
+        "/russia/indicator/cpi?preview_locale=EN",
+        headers={"host": "ru.forecasteconomy.com"},
+        follow_redirects=False,
+    )
+    assert back.status_code == 301
+    assert back.headers["location"] == "https://forecasteconomy.com/russia/indicator/cpi"
+
+    dev = client.get(
+        "/?preview_locale=en",
+        headers={"host": "localhost:5173"},
+        follow_redirects=False,
+    )
+    assert dev.status_code != 301
+
+    api = client.get(
+        "/api/v1/health?preview_locale=en",
+        headers={"host": "forecasteconomy.com"},
+        follow_redirects=False,
+    )
+    assert api.status_code != 301
+
+    internal = client.get(
+        "/seo/not-found?preview_locale=en",
+        headers={"host": "forecasteconomy.com"},
+        follow_redirects=False,
+    )
+    assert internal.status_code == 404
+    assert "noindex" in internal.text
+
+
 def test_locale_middleware_sets_preview_flag():
     """Preview-флаг ставится middleware только при явном override=локали."""
     from starlette.requests import Request

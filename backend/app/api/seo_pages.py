@@ -195,6 +195,10 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
         html = render_not_found_html(
             text if text and text not in ("Not found", "Страница не найдена") else None
         )
+    if status_code == 404:
+        # nginx error_page ставит этот заголовок сам; ответ парсера 404
+        # проходит proxy без intercept и раньше уходил только с meta.
+        headers["X-Robots-Tag"] = "noindex, follow"
     if status_code == 200:
         etag = f'W/"{hashlib.md5(html.encode()).hexdigest()}"'
         headers["ETag"] = etag

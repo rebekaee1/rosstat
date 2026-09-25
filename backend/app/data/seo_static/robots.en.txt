@@ -1,36 +1,27 @@
 # robots.txt — __PUBLIC_HOST__
 # /assets/ is allowed — crawlers need JS/CSS to render pages.
+# /login /register /account /embed stay crawlable: they send noindex.
+# A Disallow would hide that tag, and Google can list the bare URL.
+# /index.html and /404.html must be fetched (301 and a real 404), not blocked.
 
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
 
 User-agent: Yandex
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
 
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
-Disallow: /embed/
 Disallow: /__spa-index.html
-Disallow: /login
-Disallow: /register
-Disallow: /account
 Disallow: /russia/util/
 Disallow: /__honeypot__/
 
@@ -64,9 +55,10 @@ Disallow: /
 # Clean-param — Yandex inter-section directive.
 # Tells the crawler which GET params are insignificant.
 # mode= is canonicalized to the base card URL; glue the parameter.
+# preview_locale= is not a separate page on the live hosts; glue it too.
 # Rule length limit is 500 characters; split across lines.
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
 Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
+Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode&preview_locale
 
 Sitemap: __PUBLIC_ORIGIN__/sitemap.xml
