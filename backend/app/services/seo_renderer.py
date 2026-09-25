@@ -475,6 +475,35 @@ def _site_json_ld() -> dict:
     }
 
 
+def _chart_image_rights() -> dict:
+    """Поля лицензии графика для Google Images (Image metadata).
+
+    ``creditText`` уже относит картинку к отчёту «Метаданные изображений».
+    После любого из ``creator`` / ``creditText`` / ``copyrightNotice`` /
+    ``license`` остальные три поля и ``acquireLicensePage`` становятся
+    рекомендуемыми. Здесь они заполнены по пользовательскому соглашению:
+    графики можно использовать в личных, научных, образовательных и
+    редакционных целях с указанием источника «Forecast Economy». Это не
+    лицензия Creative Commons: она шире, чем текст на ``/terms``.
+    """
+    from app.services.locale import get_request_origin
+
+    origin = get_request_origin()
+    terms = _absolute("/terms")
+    return {
+        "creator": {
+            "@type": "Organization",
+            "@id": f"{origin}/#organization",
+            "name": "Forecast Economy",
+            "url": origin,
+        },
+        "creditText": "Forecast Economy",
+        "copyrightNotice": "Forecast Economy",
+        "license": terms,
+        "acquireLicensePage": terms,
+    }
+
+
 def _consent_bootstrap() -> str:
     """Consent-bootstrap (152-ФЗ, opt-in) — единая точка загрузки трекеров.
 
@@ -1878,7 +1907,7 @@ async def render_indicator_html(
             "width": 1200,
             "height": 630,
             "representativeOfPage": True,
-            "creditText": "Forecast Economy",
+            **_chart_image_rights(),
             "author": {"@type": "Organization", "name": "Forecast Economy"},
         },
     ]
