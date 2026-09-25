@@ -207,7 +207,7 @@ Endpoint защищён origin-валидацией `app/api/analytics.py::event
 
 ### Sync с robots.txt
 
-Список `TRACKING_PARAMS` синхронизирован с директивой `Clean-param` в `frontend/public/robots.txt`. Если добавляете новый tracking-параметр — обновите оба места.
+Индексный список Яндекса — `Clean-param` в `frontend/public/robots.txt` и `backend/app/services/yandex_clean_param.py` (туда же `mode`: канон карточки без параметра). Очистка URL для Метрики — подмножество: `from`/`to` на калькуляторе и `mode` в адресе посетителя не вырезаются. Новый клик-id, который не меняет документ, добавляйте в Clean-param и в `STRIP_*` / `cleanUrl.js`.
 
 ## UTM Taxonomy (для исходящих и share-ссылок)
 

@@ -61,12 +61,15 @@ Disallow: /
 User-agent: MJ12bot
 Disallow: /
 
-# Clean-param — Yandex inter-section directive.
-# Tells the crawler which GET params are insignificant.
-# mode= is canonicalized to the base card URL; glue the parameter.
-# Rule length limit is 500 characters; split across lines.
-Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
-Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
+# Clean-param — Yandex inter-section directive. Parameter names are case-sensitive.
+# One rule is at most 500 characters.
+# mode is glued: the card canonical has no mode parameter.
+# preview_locale is omitted: it changes language and those URLs are noindex.
+# No Host directive: Yandex has ignored it since 2018. The main address is
+# https without www. The ru. host is a language version, not an apex mirror.
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer&utm_media&utm_group&utm_expid&utm_id
+Clean-param: ysclid&yrclid&yclid&yadclid&yadordid&gclid&gbraid&wbraid&fbclid&msclkid&ttclid&twclid&srsltid
+Clean-param: etext&ybaip&_openstat&openstat&clid&yandex_referrer&erid&from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
 
+# Sitemap is inter-section: absolute https on the same host as this file.
 Sitemap: __PUBLIC_ORIGIN__/sitemap.xml
