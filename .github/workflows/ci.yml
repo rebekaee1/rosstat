@@ -122,6 +122,12 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Start stack
         run: |
+          # Bind-mount target for frontend honeypot/security logs. Docker creates
+          # a missing host path as root; nginx in the image runs as uid 101 and
+          # then cannot open honeypot.log (emerg → e2e smoke fails).
+          sudo mkdir -p /var/log/rosstat-nginx
+          sudo touch /var/log/rosstat-nginx/honeypot.log /var/log/rosstat-nginx/security.log
+          sudo chown -R 101:101 /var/log/rosstat-nginx
           docker compose up -d --build postgres redis backend frontend
       - name: Wait for backend readiness
         run: |

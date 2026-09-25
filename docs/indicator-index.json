@@ -2697,7 +2697,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2850,
+          "line": 2909,
           "kind": "seo"
         },
         {
@@ -7676,17 +7676,17 @@
       "files": [
         {
           "file": ".github/workflows/ci.yml",
-          "line": 135,
+          "line": 141,
           "kind": "other"
         },
         {
           "file": ".github/workflows/ci.yml",
-          "line": 137,
+          "line": 143,
           "kind": "other"
         },
         {
           "file": ".github/workflows/ci.yml",
-          "line": 144,
+          "line": 150,
           "kind": "other"
         },
         {
@@ -8066,12 +8066,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1132,
+          "line": 1191,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1133,
+          "line": 1192,
           "kind": "seo"
         },
         {
@@ -8515,6 +8515,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_en_catalog.py",
+          "line": 115,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_en_catalog.py",
+          "line": 117,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_forecast_catch_up.py",
           "line": 61,
           "kind": "tests"
@@ -8551,102 +8561,102 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 195,
+          "line": 264,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 200,
+          "line": 269,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 215,
+          "line": 284,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 244,
+          "line": 313,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 249,
+          "line": 318,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 268,
+          "line": 337,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 485,
+          "line": 617,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 637,
+          "line": 769,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 816,
+          "line": 948,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 828,
+          "line": 960,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 872,
+          "line": 1004,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 971,
+          "line": 1133,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 973,
+          "line": 1135,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1272,
+          "line": 1434,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1319,
+          "line": 1481,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1326,
+          "line": 1488,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1377,
+          "line": 1539,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1384,
+          "line": 1546,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1406,
+          "line": 1568,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1422,
+          "line": 1584,
           "kind": "tests"
         },
         {
@@ -8846,7 +8856,7 @@
         },
         {
           "file": "backend/tests/test_og_glass.py",
-          "line": 156,
+          "line": 160,
           "kind": "tests"
         },
         {
@@ -9966,12 +9976,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.parity.test.js",
-          "line": 126,
+          "line": 154,
           "kind": "tests"
         },
         {
           "file": "frontend/src/i18n/messages.parity.test.js",
-          "line": 131,
+          "line": 159,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/i18n/messages.parity.test.js",
+          "line": 189,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/i18n/messages.parity.test.js",
+          "line": 192,
           "kind": "tests"
         },
         {
@@ -10790,6 +10810,16 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/lib/siteOrigin.test.js",
+          "line": 77,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/siteOrigin.test.js",
+          "line": 78,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/sitePaths.test.js",
           "line": 36,
           "kind": "tests"
@@ -10846,22 +10876,22 @@
         },
         {
           "file": "frontend/src/lib/useMeta.component.test.jsx",
-          "line": 52,
+          "line": 62,
           "kind": "other"
         },
         {
           "file": "frontend/src/lib/useMeta.component.test.jsx",
-          "line": 53,
+          "line": 63,
           "kind": "other"
         },
         {
           "file": "frontend/src/lib/useMeta.component.test.jsx",
-          "line": 68,
+          "line": 78,
           "kind": "other"
         },
         {
           "file": "frontend/src/lib/useMeta.component.test.jsx",
-          "line": 70,
+          "line": 80,
           "kind": "other"
         },
         {
@@ -11828,7 +11858,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1502,
+          "line": 1561,
           "kind": "seo"
         },
         {
@@ -21932,7 +21962,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1136,
+          "line": 1195,
           "kind": "seo"
         },
         {
@@ -23347,7 +23377,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2595,
+          "line": 2654,
           "kind": "seo"
         },
         {
@@ -23931,7 +23961,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2595,
+          "line": 2654,
           "kind": "seo"
         },
         {
@@ -28552,7 +28582,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1138,
+          "line": 1197,
           "kind": "seo"
         },
         {
@@ -35720,7 +35750,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1501,
+          "line": 1560,
           "kind": "seo"
         },
         {
@@ -39824,12 +39854,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1130,
+          "line": 1189,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2852,
+          "line": 2911,
           "kind": "seo"
         },
         {
@@ -42354,7 +42384,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1134,
+          "line": 1193,
           "kind": "seo"
         },
         {
@@ -46471,7 +46501,7 @@
         },
         {
           "file": "backend/app/services/seo_i18n.py",
-          "line": 406,
+          "line": 432,
           "kind": "other"
         },
         {
@@ -46631,27 +46661,32 @@
         },
         {
           "file": "backend/tests/test_en_catalog.py",
-          "line": 339,
+          "line": 124,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_en_catalog.py",
-          "line": 342,
+          "line": 411,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_en_catalog.py",
-          "line": 343,
+          "line": 414,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_en_catalog.py",
-          "line": 347,
+          "line": 415,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_en_catalog.py",
-          "line": 350,
+          "line": 419,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_en_catalog.py",
+          "line": 422,
           "kind": "tests"
         },
         {
@@ -51049,7 +51084,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1131,
+          "line": 1190,
           "kind": "seo"
         },
         {
@@ -56054,12 +56089,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 496,
+          "line": 498,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1137,
+          "line": 1196,
           "kind": "seo"
         },
         {
@@ -56106,6 +56141,11 @@
           "file": "backend/seed_data.py",
           "line": 5132,
           "kind": "seed"
+        },
+        {
+          "file": "backend/tests/test_en_catalog.py",
+          "line": 122,
+          "kind": "tests"
         },
         {
           "file": "backend/tests/test_legacy_redirects.py",
@@ -58576,7 +58616,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1135,
+          "line": 1194,
           "kind": "seo"
         },
         {
