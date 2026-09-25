@@ -1,0 +1,48 @@
+name: zone3-claim
+
+on:
+  push:
+    branches: [cursor/cwv-search-performance-b4fe]
+    paths: ['.github/workflows/zone3-claim-comment.yml']
+
+permissions:
+  issues: write
+
+jobs:
+  claim:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post CLAIM zone-3
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAIM_BODY: |
+            CLAIM zone-3: Core Web Vitals (LCP, INP, CLS)
+
+            Agent: https://cursor.com/agents/bc-ae85f947-2830-594a-a138-e6417895b4fe
+            PR: https://github.com/rebekaee1/rosstat/pull/9
+            Branch: `cursor/cwv-search-performance-b4fe`
+
+            Scale: template-level only. ~5.04M URLs/host, 509 sitemap shards. No per-URL regen, no O(n) work in the request path beyond the existing SSR document.
+
+            Files:
+            - frontend/index.html
+            - frontend/public/consent.js
+            - frontend/public/fonts/fonts.css
+            - frontend/src/main.jsx
+            - frontend/src/App.jsx (LiveTicker lazy chunk only)
+            - frontend/src/behavior-standalone.js
+            - backend/app/services/seo_renderer.py (CWV only: critical CSS, LCP image preload, non-blocking stylesheets, behavior loader)
+            - backend/tests/test_seo_og.py
+
+            Shared files, do not overwrite other zones' hunks:
+            - seo_renderer.py and test_seo_og.py also used by zone 4 (schema) and zone 6 (internal links) and zone 7 (Yandex clean-param / inLanguage)
+            - frontend/index.html also claimed by zone 4
+
+            Not touching PR #1 (frontend/nginx.conf, Caddyfile, deploy). Cache headers there already fit CWV. No deploy.
+        run: |
+          existing=$(gh api --paginate repos/rebekaee1/rosstat/issues/2/comments --jq '.[] | select(.body | contains("CLAIM zone-3: Core Web Vitals")) | .id' || true)
+          if [ -n "$existing" ]; then
+            echo "claim already present: $existing"
+            exit 0
+          fi
+          gh api --method POST repos/rebekaee1/rosstat/issues/2/comments -f body="$CLAIM_BODY"
