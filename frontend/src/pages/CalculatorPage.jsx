@@ -6,7 +6,7 @@ import {
   Tooltip, CartesianGrid, ReferenceLine,
 } from 'recharts';
 import {
-  ArrowLeft, Share2, Copy, Check, Calculator,
+  Share2, Copy, Check, Calculator,
   TrendingDown, ShoppingCart, Package, Wrench,
   ArrowUpDown, Flame, Target, Clock, BarChart3, ChevronRight,
 } from 'lucide-react';
@@ -22,6 +22,8 @@ import { track, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { toolTrail } from '../lib/breadcrumbs';
 import CalcCountryPicker from '../components/CalcCountryPicker';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { useLocale, useT } from '../i18n';
@@ -633,15 +635,9 @@ export default function CalculatorPage() {
   return (
     <div ref={containerRef} className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
 
-      {/* Breadcrumb */}
-      <nav data-animate className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary mb-8">
-        <Link to="/" className="hover:text-champagne transition-colors lift-hover inline-flex items-center gap-1.5 group">
-          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          {t('common.home')}
-        </Link>
-        <span className="text-text-tertiary/40">/</span>
-        <span className="text-text-secondary">{t('calc.inflation.crumb')}</span>
-      </nav>
+      <div data-animate className="mb-8">
+        <Breadcrumbs items={toolTrail(t('calc.inflation.title'), '/calculator')} />
+      </div>
 
       {/* Hero */}
       <header data-animate className="mb-10">

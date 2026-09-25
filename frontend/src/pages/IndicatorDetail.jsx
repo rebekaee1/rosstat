@@ -58,7 +58,21 @@ import useScrollDepth from '../lib/useScrollDepth';
 import { isIndicatorListed } from '../lib/categories';
 import {
   russiaIndicatorPath,
+  russiaIndicatorYearPath,
 } from '../lib/sitePaths';
+
+/** Последние 12 лет ряда — те же годовые страницы, что в серверном HTML. */
+const YEAR_LINK_CAP = 12;
+
+function indicatorYearLinks(points) {
+  const years = new Set();
+  for (const point of points || []) {
+    const raw = point?.date || point?.period || '';
+    const year = Number(String(raw).slice(0, 4));
+    if (year >= 1900 && year <= 2100) years.add(year);
+  }
+  return [...years].sort((a, b) => b - a).slice(0, YEAR_LINK_CAP);
+}
 
 // Правка №16 (звонок 2026-05-21): на карточке ИПП по умолчанию показываем
 // г/г %, не уровень индекса 2018=100 (raw 105.2 без контекста бессмыслен).
@@ -259,6 +273,11 @@ export default function IndicatorDetail() {
     dataError, fetchingData, hasForecastData, forecastEnabled: baseForecastEnabled,
     refetchData, refetchInflation, refetchForecast,
   } = view;
+
+  const yearLinks = useMemo(
+    () => indicatorYearLinks(baseDataPoints),
+    [baseDataPoints],
+  );
 
   // ============================================================
   // View-mode families (Phase 1+2+3): in-page переключение
@@ -770,6 +789,25 @@ export default function IndicatorDetail() {
         periodMonthlyDataPoints={periodMonthlyDataPoints}
         periodWeeklyDataPoints={periodWeeklyDataPoints}
       />
+
+      {yearLinks.length > 0 && (
+        <section data-block="indicator-years" className="mt-10">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-text-secondary">
+            {t('indicator.byYear')}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {yearLinks.map((year) => (
+              <Link
+                key={year}
+                to={russiaIndicatorYearPath(code, year)}
+                className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne"
+              >
+                {year}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <IndicatorSeoBlocks blocks={indicator?.seo_blocks} indicatorCode={code} />
 

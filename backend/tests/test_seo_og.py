@@ -765,7 +765,18 @@ def test_spa_ssr_gets_platform_deep_links(monkeypatch):
         )
     )
     assert 'class="seo-section seo-platform-nav"' in spa
-    for href in ("/russia/region", "/russia/today", "/#countries", "/russia/calendar", "/compare", "/"):
+    for href in (
+        "/russia/region",
+        "/russia/today",
+        "/russia/category",
+        "/russia/region-rating",
+        "/russia/demographics",
+        "/calculator",
+        "/#countries",
+        "/russia/calendar",
+        "/compare",
+        "/",
+    ):
         assert f'href="{href}"' in spa
     assert "Разделы платформы" in spa
     # fe-js клипает SEO только после React commit (__feRevealSpa), не при разборе HTML.

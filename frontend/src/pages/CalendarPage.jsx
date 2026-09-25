@@ -14,7 +14,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { track, events } from '../lib/track';
 import { groupSimilarEvents } from '../lib/calendarGrouping';
-import { calendarTrail } from '../lib/breadcrumbs';
+import { calendarMonthTrail, calendarTrail } from '../lib/breadcrumbs';
 import {
   calendarPath,
 } from '../lib/sitePaths';
@@ -190,7 +190,12 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
 
   return (
     <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-24">
-      <Breadcrumbs items={calendarTrail()} className="mb-6" />
+      <Breadcrumbs
+        items={seoPath
+          ? calendarMonthTrail(`${monthLabel} ${year}`, year, month + 1)
+          : calendarTrail()}
+        className="mb-6"
+      />
 
       <header className="mb-6">
         <h1 className="font-display text-3xl md:text-[2.4rem] font-bold text-text-primary tracking-tight mb-3">

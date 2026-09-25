@@ -11,8 +11,12 @@ import {
   russiaCategoriesPath,
   russiaCategoryPath,
 } from '../lib/sitePaths';
-import { WORLD_RATING_TO } from '../lib/navItems';
-import { footerCatalogColumn, footerHomeCountryColumn, footerSourceLinks } from '../lib/footerNav';
+import {
+  footerCatalogColumn,
+  footerHomeCountryColumn,
+  footerSourceLinks,
+  footerWorldLinks,
+} from '../lib/footerNav';
 import { useT, useLocale } from '../i18n';
 
 const footLink = cn(
@@ -27,6 +31,7 @@ export default function Footer() {
   const sourceLinks = footerSourceLinks(locale);
   const homeCountry = footerHomeCountryColumn(locale);
   const catalog = footerCatalogColumn(locale);
+  const worldLinks = footerWorldLinks(locale);
 
   return (
     <footer className="fe-footer mt-auto border-t border-border-subtle">
@@ -99,21 +104,13 @@ export default function Footer() {
               {t('footer.section.world')}
             </h4>
             <ul className="space-y-2 text-sm text-text-secondary">
-              <li>
-                <Link to="/#countries" className={footLink}>
-                  {t('footer.countries')}
-                </Link>
-              </li>
-              <li>
-                <Link to={WORLD_RATING_TO} className={footLink}>
-                  {t('footer.worldRating')}
-                </Link>
-              </li>
-              <li>
-                <Link to={comparePath()} className={footLink}>
-                  {t('footer.compare')}
-                </Link>
-              </li>
+              {worldLinks.map((item) => (
+                <li key={item.key}>
+                  <Link to={item.to} className={footLink}>
+                    {t(item.key)}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

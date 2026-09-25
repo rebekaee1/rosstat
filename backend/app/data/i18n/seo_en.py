@@ -643,7 +643,9 @@ PAGE_META_EN: dict[str, PageSeo] = {
         links=(
             (paths.russia_categories(), "Indicator categories"),
             (paths.russia_category("prices"), "Prices and inflation"),
+            (paths.today(), "Today"),
             (paths.region_hub(), "Regions"),
+            (paths.region_rating_hub(), "Regional rankings"),
             (paths.calendar(), "Calendar"),
             (paths.demographics(), "Demographics"),
             ("/world/rating/gdp-usd", "Country rankings"),
@@ -670,6 +672,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
             (paths.russia_home(), "Russia"),
             (paths.today(), "Today"),
             (paths.region_hub(), "Regions"),
+            (paths.region_rating_hub(), "Regional rankings"),
             ("/compare", "Compare"),
         ),
     ),
