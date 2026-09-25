@@ -82,6 +82,17 @@ def published_sections(origin: str) -> list[str] | None:
     return list(entry["sections"]) if entry is not None else None
 
 
+def published_section_size(name: str, origin: str) -> int | None:
+    """URL count for one published section, or None when absent/unknown."""
+    host = urlparse(origin).hostname
+    entry = read_stats().get("hosts", {}).get(host)
+    if entry is None:
+        return None
+    sections = entry.get("sections") or {}
+    raw = sections.get(name)
+    return int(raw) if raw is not None else None
+
+
 def section_lastmods(origin: str) -> dict[str, str]:
     """lastmod дочерних файлов из последней публикации. Пусто, пока билд старый."""
     host = urlparse(origin).hostname

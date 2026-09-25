@@ -257,6 +257,12 @@ def is_world_regions_section(name: str) -> bool:
     return suffix.isdigit() and int(suffix) > 0
 
 
+
+async def world_regions_section_names(db: AsyncSession) -> list[str]:
+    """Имена шардов world-regions для индекса (без материализации URL)."""
+    return section_names_for_count("world-regions", await _world_regions_url_count(db))
+
+
 def _sitemap_priority(*, listed: bool) -> str:
     return "0.8" if listed else "0.5"
 
