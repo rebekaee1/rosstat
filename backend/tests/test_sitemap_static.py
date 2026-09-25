@@ -4,6 +4,7 @@ import gzip
 import json
 import stat
 from contextlib import asynccontextmanager
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -187,6 +188,7 @@ def test_static_http_host_etag_and_manifest(publication, client):
         index = client.get("/sitemap.xml", headers={"Host": host})
         assert index.status_code == 200
         assert f"https://{host}/sitemap-core.xml" in index.text
+        assert "<lastmod>2026-09-10</lastmod>" in index.text
         assert "sitemap-empty.xml" not in index.text
 
 
@@ -235,3 +237,75 @@ def test_static_and_gzip_include_same_host_images_without_rendering(publication,
             origin+"/og/russia/cpi/2025.png",
             origin+"/og/russia/region-rating/wages.png?year=2020",
         ]
+
+
+def test_publication_refuses_noindex_and_oversize_bytes(publication, monkeypatch):
+    import app.services.site_urls as urls
+
+    async def honeypot(db):
+        yield "core", [SiteUrl("/__honeypot__/trap", "2026-01-01", "daily", "0.1")]
+
+    monkeypatch.setattr(urls, "iter_url_sections", honeypot)
+    with pytest.raises(ValueError, match="noindex"):
+        asyncio.run(sm.build_static_sitemaps())
+
+    async def oversized(db):
+        yield "core", [SiteUrl("/russia", "2026-09-10", "daily", "0.8")]
+
+    monkeypatch.setattr(urls, "iter_url_sections", oversized)
+    monkeypatch.setattr(sm, "SITEMAP_MAX_BYTES", 20)
+    with pytest.raises(ValueError, match="bytes"):
+        asyncio.run(sm.build_static_sitemaps())
+
+
+def test_index_lastmod_and_urlset_omit_unverifiable_dates():
+    from app.api.sitemap import _render_sitemap_index, _render_urlset
+    import app.services.site_urls as urls
+
+    index = _render_sitemap_index(
+        ["core", "world-regions-1"],
+        "https://forecasteconomy.com",
+        {"core": "2026-09-10"},
+    )
+    assert "<loc>https://forecasteconomy.com/sitemap-core.xml</loc>\n    <lastmod>2026-09-10</lastmod>" in index
+    assert "sitemap-world-regions-1.xml" in index
+    assert index.count("<lastmod>") == 1
+
+    xml = _render_urlset([
+        SiteUrl("/about", None, "monthly", "0.5"),
+        SiteUrl("/future", "2099-01-01", "monthly", "0.5"),
+        SiteUrl("/ok", "2026-01-15", "monthly", "0.5"),
+    ], origin="https://forecasteconomy.com")
+    assert xml.count("<lastmod>") == 1
+    assert "<lastmod>2026-01-15</lastmod>" in xml
+    assert "2099" not in xml
+    assert urls.normalize_sitemap_lastmod("not-a-date") is None
+    assert urls._static_lastmod("/about", date(2026, 9, 1)) is None
+    assert urls._static_lastmod("/", date(2026, 9, 1)) == "2026-09-01"
+    months = urls._month_rows_urls([("cpi", 2026, 9, date(2026, 9, 10))], date(2026, 9, 25))
+    assert months[0].lastmod == "2026-09-10"
+
+
+def test_oversized_simple_section_is_split_under_the_protocol_limit(monkeypatch):
+    import app.services.site_urls as urls
+
+    async def fake_world(db, today):
+        return [SiteUrl(f"/p{i}", "2020-01-01", "weekly", "0.5") for i in range(5)]
+
+    monkeypatch.setitem(urls._SIMPLE_SECTION_BUILDERS, "world-regions", fake_world)
+    monkeypatch.setattr(urls, "_SIMPLE_SECTION_ORDER", ["world-regions"])
+    monkeypatch.setattr(urls, "SITEMAP_MAX_URLS", 2)
+    monkeypatch.setattr(urls, "WORLD_CHUNK", 2)
+
+    sections = asyncio.run(_collect(urls.iter_url_sections(None)))
+    assert [name for name, _chunk in sections] == [
+        "world-regions-1", "world-regions-2", "world-regions-3",
+    ]
+    assert [len(chunk) for _name, chunk in sections] == [2, 2, 1]
+    assert urls.section_names_for_count("world-regions", 5) == [
+        "world-regions-1", "world-regions-2", "world-regions-3",
+    ]
+
+
+async def _collect(agen):
+    return [item async for item in agen]

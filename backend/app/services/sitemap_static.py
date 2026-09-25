@@ -20,6 +20,8 @@ from urllib.parse import urlparse
 
 from app.config import settings
 from app.database import analytics_session
+from app.services.index_policy import is_noindex_path
+from app.services.site_urls import SITEMAP_MAX_BYTES, SITEMAP_MAX_URLS, section_lastmod
 
 logger = logging.getLogger(__name__)
 STATS_NAME = "sitemap-stats.json"
@@ -75,6 +77,15 @@ def published_sections(origin: str) -> list[str] | None:
     return list(entry["sections"]) if entry is not None else None
 
 
+def section_lastmods(origin: str) -> dict[str, str]:
+    """lastmod дочерних файлов из последней публикации. Пусто, пока билд старый."""
+    host = urlparse(origin).hostname
+    raw = read_stats().get("hosts", {}).get(host, {}).get("section_lastmod") or {}
+    if not isinstance(raw, dict):
+        return {}
+    return {str(name): str(stamp) for name, stamp in raw.items() if stamp}
+
+
 def url_count_from_stats() -> int | None:
     total = read_stats().get("urls_total")
     return int(total) if total is not None else None
@@ -98,6 +109,10 @@ def _atomic_write(path: Path, data: bytes) -> None:
 
 def _write_xml(directory: Path, name: str, xml: str) -> None:
     raw = xml.encode("utf-8")
+    if len(raw) > SITEMAP_MAX_BYTES:
+        raise ValueError(
+            f"Sitemap {name} is {len(raw)} bytes; protocol limit is {SITEMAP_MAX_BYTES}"
+        )
     dest = directory / f"sitemap-{name}.xml"
     _atomic_write(dest, raw)
     _atomic_write(Path(str(dest) + ".gz"), gzip.compress(raw, compresslevel=6, mtime=0))
@@ -134,6 +149,7 @@ async def build_static_sitemaps() -> dict:
         if apex_locale_en_enabled():
             origins.append(ru_public_origin().rstrip("/"))
         sections: dict[str, int] = {}
+        section_stamps: dict[str, str] = {}
         started = datetime.now(timezone.utc)
         try:
             async with analytics_session() as db:
@@ -142,6 +158,19 @@ async def build_static_sitemaps() -> dict:
                         raise ValueError(f"Invalid sitemap section: {name}")
                     if not urls:
                         continue  # Empty chunks must not be advertised.
+                    if len(urls) > SITEMAP_MAX_URLS:
+                        raise ValueError(
+                            f"Sitemap section {name} has {len(urls)} URLs; "
+                            f"protocol limit is {SITEMAP_MAX_URLS}"
+                        )
+                    blocked = [url.path for url in urls if is_noindex_path(url.path)]
+                    if blocked:
+                        raise ValueError(
+                            f"Sitemap section {name} includes noindex URLs: {blocked[:5]}"
+                        )
+                    stamp = section_lastmod(urls)
+                    if stamp:
+                        section_stamps[name] = stamp
                     for origin in origins:
                         _write_xml(generation / urlparse(origin).hostname, name,
                                    _render_urlset(urls, origin=origin))
@@ -150,6 +179,7 @@ async def build_static_sitemaps() -> dict:
                 raise ValueError("Refusing to publish an empty sitemap generation")
             hosts = {urlparse(origin).hostname: {
                 "origin": origin, "sections": sections,
+                "section_lastmod": section_stamps,
                 "urls_total": sum(sections.values()), "section_count": len(sections),
             } for origin in origins}
             stats = {
@@ -157,6 +187,7 @@ async def build_static_sitemaps() -> dict:
                 "completed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "generation": generation.name,
                 "origin": origins[0], "sections": sections,
+                "section_lastmod": section_stamps,
                 "urls_total": sum(sections.values()), "section_count": len(sections),
                 "hosts": hosts, "published_urls_total": sum(h["urls_total"] for h in hosts.values()),
                 "errors": [],
