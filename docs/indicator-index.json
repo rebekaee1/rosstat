@@ -9741,7 +9741,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 320,
+          "line": 333,
           "kind": "other"
         },
         {
@@ -44991,7 +44991,7 @@
         },
         {
           "file": "backend/app/api/sitemap.py",
-          "line": 2011,
+          "line": 2026,
           "kind": "other"
         },
         {
