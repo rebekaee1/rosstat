@@ -300,21 +300,15 @@ def _css_preload(head_links: str) -> str:
     return f'<link rel="preload" href="{href}" as="style" fetchpriority="low">'
 
 
-def _lcp_image_preloads(body: str) -> str:
-    """Ранний старт загрузки первой картинки графика — типичный LCP на карточке.
+def _lcp_preload_from_chart_img(img) -> str:
+    """Preload первой картинки графика из уже разобранного soup.
 
-    Портретный файл для узкого экрана и альбомный для широкого грузятся
-    взаимоисключающе (media), иначе мобильный клиент скачает оба.
+    Отдельный проход по телу на каждый SSR-ответ при ~5 млн URL на хост
+    не нужен: picture/srcset появляются в том же разборе, что и responsive.
+    Портрет и альбом взаимоисключающие (media), иначе узкий экран скачает оба.
     """
-    from bs4 import BeautifulSoup
     from urllib.parse import urlsplit
 
-    if 'class="seo-chart"' not in body and "seo-chart" not in body:
-        return ""
-    soup = BeautifulSoup(body, "html.parser")
-    img = soup.select_one(".seo-chart img")
-    if img is None:
-        return ""
     src = str(img.get("src") or "")
     if not src or urlsplit(src).scheme in ("http", "https"):
         return ""
@@ -937,13 +931,19 @@ def _yandex_verification_meta() -> str:
 
 def _responsive_chart_images(body: str) -> str:
     """Upgrade legacy inline figures as well as shared-helper figures once."""
-    from bs4 import BeautifulSoup
+    html, _preload = _responsive_charts(body)
+    return html
+
+
+def _responsive_charts(body: str) -> tuple[str, str]:
+    """Один разбор тела: responsive picture и preload LCP-картинки вместе."""
     from urllib.parse import urlsplit
 
     if 'class="seo-chart"' not in body:
-        return body
+        return body, ""
     soup = BeautifulSoup(body, "html.parser")
-    for i, img in enumerate(soup.select(".seo-chart img")):
+    images = soup.select(".seo-chart img")
+    for i, img in enumerate(images):
         src = str(img.get("src", ""))
         route = urlsplit(src).path
         if route.startswith("/og/") and route.endswith(".png"):
@@ -961,7 +961,8 @@ def _responsive_chart_images(body: str) -> str:
         if i == 0:
             img["loading"] = "eager"
             img["fetchpriority"] = "high"
-    return str(soup)
+    preload = _lcp_preload_from_chart_img(images[0]) if images else ""
+    return str(soup), preload
 
 
 def _prepare_quicklink_body(body: str, canonical_path: str) -> str:
@@ -1108,10 +1109,9 @@ async def build_document(
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
             # тупики с одними крошками. React при гидратации заменит #root.
             body = f"{body.rstrip()}\n{_ssr_platform_deep_links()}"
-    body = _responsive_chart_images(body)
-    # Preload до preview-rewrite: в head остаётся канонический URL картинки.
-    # preview_locale живёт только в видимом body (noindex-превью).
-    lcp_preload = _lcp_image_preloads(body)
+    # Один разбор: picture и preload. Preload до preview-rewrite, чтобы
+    # preview_locale не попал в head (noindex-превью живёт только в body).
+    body, lcp_preload = _responsive_charts(body)
     if is_preview_locale():
         body = _preview_body_urls(body, get_locale())
     if lcp_preload:

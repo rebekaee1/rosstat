@@ -302,6 +302,29 @@ def test_seo_critical_css_in_build_document():
     assert 'fetchpriority="low"' in html
 
 
+def test_chart_rewrite_and_lcp_preload_share_one_parse(monkeypatch):
+    """~5 млн URL на хост: второй BeautifulSoup по телу на каждый документ запрещён."""
+    import app.services.seo_renderer as renderer
+
+    calls = {"n": 0}
+    real = renderer.BeautifulSoup
+
+    def counting(markup, *args, **kwargs):
+        calls["n"] += 1
+        return real(markup, *args, **kwargs)
+
+    monkeypatch.setattr(renderer, "BeautifulSoup", counting)
+    html, preload = renderer._responsive_charts(
+        '<figure class="seo-chart"><img src="/og/russia/cpi.png" '
+        'width="1200" height="630" alt="ИПЦ"></figure>'
+    )
+    assert calls["n"] == 1
+    assert 'rel="preload" as="image"' in preload
+    assert "portrait=1" in preload
+    assert 'fetchpriority="high"' in html
+    assert "<picture>" in html
+
+
 def test_lcp_chart_preloaded_ahead_of_late_modules():
     """Первая картинка графика — preload в начале head, modulepreload не обгоняет её."""
     import asyncio
