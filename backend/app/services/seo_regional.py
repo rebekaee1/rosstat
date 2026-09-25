@@ -1561,7 +1561,6 @@ async def _render_region_indicator_monthly(
             "temporalCoverage": f"{first_year}/{last_year}",
             "spatialCoverage": region_name,
             "creator": {"@type": "Organization", "name": "Росстат"},
-            "license": "https://creativecommons.org/licenses/by/4.0/",
             "image": _absolute(og_path),
         },
         {
@@ -2036,7 +2035,6 @@ async def render_region_indicator_html(
                 "@type": "Organization",
                 "name": "Rosstat" if _rt("region_indicator.faq_source_a") else "Росстат",
             },
-            "license": "https://creativecommons.org/licenses/by/4.0/",
             "image": _absolute(og_path),
         },
         {
