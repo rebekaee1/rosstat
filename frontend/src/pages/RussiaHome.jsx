@@ -36,6 +36,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
 import { breadcrumbJsonLd, russiaHomeTrail } from '../lib/breadcrumbs';
+import { mountJsonLd } from '../lib/jsonLd';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 
@@ -269,13 +270,9 @@ export default function RussiaHome() {
     return () => window.clearTimeout(timer);
   }, [hash, indicators]);
   useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'russia-home-jsonld';
-    script.textContent = JSON.stringify(breadcrumbJsonLd(crumbs));
-    document.getElementById('russia-home-jsonld')?.remove();
-    document.head.appendChild(script);
-    return () => script.remove();
+    const data = breadcrumbJsonLd(crumbs);
+    if (!data) return undefined;
+    return mountJsonLd(data);
   }, [crumbs]);
 
   return (

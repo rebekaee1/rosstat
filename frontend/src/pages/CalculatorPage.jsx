@@ -16,6 +16,7 @@ import useInflationCalc from '../lib/useInflationCalc';
 import { formatDate, formatAxisTick, cn } from '../lib/format';
 import { parseAmount, formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
 import { getSiteOrigin } from '../lib/siteOrigin';
+import { mountJsonLd } from '../lib/jsonLd';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { SkeletonBox } from '../components/Skeleton';
 import { track, events } from '../lib/track';
@@ -619,14 +620,20 @@ export default function CalculatorPage() {
   }, [t, isRussia, countryName, resolvedCountrySlug]);
 
   useEffect(() => {
-    let faqScript = document.getElementById('calc-faq-ld');
-    if (!faqScript) { faqScript = document.createElement('script'); faqScript.id = 'calc-faq-ld'; faqScript.type = 'application/ld+json'; document.head.appendChild(faqScript); }
-    faqScript.textContent = JSON.stringify(faqJsonLd);
+    const removeFaq = faqItems.length >= 2 ? mountJsonLd(faqJsonLd) : () => {};
     let appScript = document.getElementById('calc-app-ld');
-    if (!appScript) { appScript = document.createElement('script'); appScript.id = 'calc-app-ld'; appScript.type = 'application/ld+json'; document.head.appendChild(appScript); }
+    if (!appScript) {
+      appScript = document.createElement('script');
+      appScript.id = 'calc-app-ld';
+      appScript.type = 'application/ld+json';
+      document.head.appendChild(appScript);
+    }
     appScript.textContent = JSON.stringify(webAppJsonLd);
-    return () => { document.getElementById('calc-faq-ld')?.remove(); document.getElementById('calc-app-ld')?.remove(); };
-  }, [faqJsonLd, webAppJsonLd]);
+    return () => {
+      removeFaq();
+      document.getElementById('calc-app-ld')?.remove();
+    };
+  }, [faqJsonLd, webAppJsonLd, faqItems.length]);
 
   /* ─── Render ─── */
 

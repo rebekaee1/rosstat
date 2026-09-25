@@ -277,6 +277,60 @@ def test_faq_json_ld_from_seo_blocks():
     assert _faq_json_ld(()) is None
 
 
+def test_site_json_ld_organization_website_without_search_or_speakable():
+    """Organization несёт логотип и контакт; WebSite — имя сайта.
+
+    SearchAction не добавляем: Google снял sitelinks search box 21.11.2024,
+    а страницы поиска с подстановкой запроса нет. Speakable — только новости.
+    """
+    from app.services.locale import reset_locale, reset_request_origin, set_locale, set_request_origin
+    from app.services.seo_renderer import _breadcrumbs, _site_json_ld
+
+    loc = set_locale("ru")
+    origin = set_request_origin("https://ru.forecasteconomy.com")
+    try:
+        site = _site_json_ld()
+        website, org = site["@graph"]
+        assert website["@type"] == "WebSite"
+        assert website["inLanguage"] == "ru"
+        assert website["alternateName"] == ["ru.forecasteconomy.com"]
+        assert "potentialAction" not in website
+        assert "speakable" not in website
+        assert org["@type"] == "Organization"
+        assert org["email"] == "rebeka.ee@yandex.ru"
+        assert org["logo"]["width"] == 512
+        assert org["logo"]["height"] == 512
+        assert org["logo"]["url"].endswith("/yandex-app-icon-512.png")
+        assert org["contactPoint"]["email"] == org["email"]
+        assert org["sameAs"] == ["https://forecasteconomy.com"]
+        assert "Article" not in {website["@type"], org["@type"]}
+    finally:
+        reset_request_origin(origin)
+        reset_locale(loc)
+
+    loc = set_locale("en")
+    origin = set_request_origin("https://forecasteconomy.com")
+    try:
+        site = _site_json_ld()
+        website, org = site["@graph"]
+        assert website["inLanguage"] == "en"
+        assert website["alternateName"] == ["forecasteconomy.com"]
+        assert org["sameAs"] == ["https://ru.forecasteconomy.com"]
+        assert org["contactPoint"]["contactType"] == "customer support"
+        assert not any("\u0400" <= ch <= "\u04FF" for ch in website["description"])
+    finally:
+        reset_request_origin(origin)
+        reset_locale(loc)
+
+    trail = _breadcrumbs([("/", "Главная"), ("/russia", "Россия")])
+    assert trail is not None
+    first, second = trail["itemListElement"]
+    assert first["item"] == first["url"]
+    assert second["item"].endswith("/russia")
+    assert second["url"] == second["item"]
+    assert _breadcrumbs([("/", "Главная")]) is None
+
+
 def test_seo_critical_css_in_build_document():
     import asyncio
 

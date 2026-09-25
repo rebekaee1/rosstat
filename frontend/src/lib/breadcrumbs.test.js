@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { bindUiLocale } from '../i18n/locale';
 import {
+  breadcrumbJsonLd,
   globalMarketIndicatorTrail,
   regionRatingTrail,
   russiaCategoryTrail,
@@ -84,6 +85,23 @@ describe('breadcrumbs', () => {
     } finally {
       bindUiLocale(undefined);
     }
+  });
+
+  it('JSON-LD: item и url совпадают, одиночная главная не отдаётся', () => {
+    const ld = breadcrumbJsonLd(
+      [
+        { name: 'Главная', path: '/' },
+        { name: 'Россия', path: '/russia' },
+      ],
+      'https://ru.forecasteconomy.com/',
+    );
+    expect(ld['@type']).toBe('BreadcrumbList');
+    expect(ld.itemListElement[0].item).toBe('https://ru.forecasteconomy.com');
+    expect(ld.itemListElement[0].url).toBe(ld.itemListElement[0].item);
+    expect(ld.itemListElement[1].item).toBe('https://ru.forecasteconomy.com/russia');
+    expect(ld.itemListElement[1].url).toBe(ld.itemListElement[1].item);
+    expect(ld.itemListElement[1].position).toBe(2);
+    expect(breadcrumbJsonLd([{ name: 'Главная', path: '/' }])).toBeNull();
   });
 
   it('рейтинг регионов включает узел Рейтинг', () => {

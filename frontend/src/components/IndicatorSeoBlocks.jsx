@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import FaqAccordion from './FaqAccordion';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
+import { mountJsonLd } from '../lib/jsonLd';
 
 /**
  * SEO-блоки на странице индикатора (правка D2 из звонка 2026-05-21).
@@ -14,7 +15,9 @@ import { useT } from '../i18n';
  * и сухой `methodology`.
  *
  * UI — аккордеон как на странице калькулятора; ответы остаются в DOM при
- * свёрнутом состоянии (см. FaqAccordion). Для rich results — FAQPage JSON-LD.
+ * свёрнутом состоянии (см. FaqAccordion). FAQPage JSON-LD совпадает с этим
+ * текстом. Google показывает FAQ rich result только у сайтов госорганов и
+ * медицины; разметка нужна Яндексу и не дублирует SSR-скрипт того же типа.
  */
 export default function IndicatorSeoBlocks({ blocks, indicatorCode }) {
   const t = useT();
@@ -37,20 +40,9 @@ export default function IndicatorSeoBlocks({ blocks, indicatorCode }) {
   );
 
   useEffect(() => {
-    if (items.length === 0) return undefined;
-    const id = `indicator-faq-ld-${indicatorCode || 'default'}`;
-    let script = document.getElementById(id);
-    if (!script) {
-      script = document.createElement('script');
-      script.id = id;
-      script.type = 'application/ld+json';
-      document.head.appendChild(script);
-    }
-    script.textContent = JSON.stringify(faqJsonLd);
-    return () => {
-      document.getElementById(id)?.remove();
-    };
-  }, [faqJsonLd, indicatorCode, items.length]);
+    if (items.length < 2) return undefined;
+    return mountJsonLd(faqJsonLd);
+  }, [faqJsonLd, items.length]);
 
   if (items.length === 0) return null;
 
