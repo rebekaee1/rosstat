@@ -272,9 +272,11 @@ def test_hreflang_silent_until_apex_en_cutover(monkeypatch):
     head = _hreflang_head("/")
     assert 'hreflang="ru"' in head
     assert 'hreflang="en"' in head
-    assert "https://ru.forecasteconomy.com/" in head
-    assert 'hreflang="x-default"' in head
-    assert "https://forecasteconomy.com/" in head
+    assert 'hreflang="ru" href="https://ru.forecasteconomy.com"' in head
+    assert 'hreflang="en" href="https://forecasteconomy.com"' in head
+    assert 'hreflang="x-default" href="https://forecasteconomy.com"' in head
+    assert "https://forecasteconomy.com/" not in head
+    assert "https://ru.forecasteconomy.com/" not in head
 
 
 def test_en_subdomain_is_en():

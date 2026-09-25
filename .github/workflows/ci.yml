@@ -122,6 +122,12 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Start stack
         run: |
+          # Ханипот-логи монтируются с хоста: на проде каталог и владельца
+          # создаёт deploy/fail2ban-install.sh (uid 101 = nginx). На раннере
+          # каталога нет, Docker создаёт его от root, nginx не открывает
+          # honeypot.log и не слушает :3000.
+          sudo mkdir -p /var/log/rosstat-nginx
+          sudo chown 101:101 /var/log/rosstat-nginx
           docker compose up -d --build postgres redis backend frontend
       - name: Wait for backend readiness
         run: |
@@ -143,6 +149,15 @@ jobs:
                  generate_series('2020-01-01'::date, now()::date, interval '1 month') d
             WHERE i.code = 'cpi'
             ON CONFLICT DO NOTHING;"
+      - name: Wait for frontend
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:3000/health > /dev/null; then
+              echo "frontend ready"; exit 0
+            fi
+            sleep 2
+          done
+          echo "frontend not ready in 60s"; docker compose logs frontend --tail=80; exit 1
       - name: Run smoke
         run: node scripts/e2e/smoke.mjs http://localhost:3000
       - name: Logs on failure

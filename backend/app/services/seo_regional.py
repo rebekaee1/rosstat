@@ -29,6 +29,7 @@ from app.data.region_indicator_polarity import (
 from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint, WebmasterSearchQuery
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
+from app.services.locale import in_language
 from app.services.seo_i18n import (
     region_display_name,
     region_indicator_copy,
@@ -1173,7 +1174,7 @@ async def render_regions_map_html(
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Any",
             "isAccessibleForFree": True,
-            "inLanguage": "en" if _rt("region_map.lead") else "ru-RU",
+            "inLanguage": in_language(),
         },
         {
             "@context": "https://schema.org",

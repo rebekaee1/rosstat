@@ -61,12 +61,15 @@ Disallow: /
 User-agent: MJ12bot
 Disallow: /
 
-# Clean-param — межсекционная директива Яндекса (Yandex.Webmaster → «Найдены страницы-дубли с GET-параметрами»).
-# Сообщает роботу, какие GET-параметры считать незначащими, чтобы не индексировать дубли и склеить сигналы на канонической странице.
-# mode= с 2026-09-03 каноничен только на базовый URL карточки — параметр склеиваем.
-# Лимит длины правила — 500 символов; разбиваем на несколько строк.
-Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
-Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
+# Clean-param — межсекционная директива Яндекса. Регистр имени значим.
+# Лимит одного правила — 500 символов.
+# mode склеиваем: канон карточки без этого параметра.
+# preview_locale не включаем: параметр меняет язык, страницы закрыты noindex.
+# Директивы Host нет: Яндекс не учитывает её с 2018 года. Главный адрес —
+# https без www. Хост ru. — языковая версия, не зеркало apex.
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer&utm_media&utm_group&utm_expid&utm_id
+Clean-param: ysclid&yrclid&yclid&yadclid&yadordid&gclid&gbraid&wbraid&fbclid&msclkid&ttclid&twclid&srsltid
+Clean-param: etext&ybaip&_openstat&openstat&clid&yandex_referrer&erid&from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
 
+# Sitemap межсекционная: абсолютный https того же хоста, что и файл.
 Sitemap: __PUBLIC_ORIGIN__/sitemap.xml

@@ -2697,7 +2697,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2850,
+          "line": 2852,
           "kind": "seo"
         },
         {
@@ -4533,7 +4533,7 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 54,
+          "line": 55,
           "kind": "other"
         },
         {
@@ -8061,17 +8061,17 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 52,
+          "line": 53,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1132,
+          "line": 1134,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1133,
+          "line": 1135,
           "kind": "seo"
         },
         {
@@ -8581,32 +8581,27 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 485,
+          "line": 487,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 637,
+          "line": 639,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 816,
+          "line": 818,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 828,
+          "line": 830,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 872,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_i18n_parity.py",
-          "line": 971,
+          "line": 874,
           "kind": "tests"
         },
         {
@@ -8616,37 +8611,42 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1272,
+          "line": 975,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1319,
+          "line": 1274,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1326,
+          "line": 1321,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1377,
+          "line": 1328,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1384,
+          "line": 1379,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1406,
+          "line": 1386,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1422,
+          "line": 1408,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1424,
           "kind": "tests"
         },
         {
@@ -11828,7 +11828,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1502,
+          "line": 1504,
           "kind": "seo"
         },
         {
@@ -21932,7 +21932,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1136,
+          "line": 1138,
           "kind": "seo"
         },
         {
@@ -23347,7 +23347,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2595,
+          "line": 2597,
           "kind": "seo"
         },
         {
@@ -23931,7 +23931,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2595,
+          "line": 2597,
           "kind": "seo"
         },
         {
@@ -25347,12 +25347,12 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 56,
+          "line": 57,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 58,
+          "line": 59,
           "kind": "other"
         },
         {
@@ -25904,7 +25904,7 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 59,
+          "line": 60,
           "kind": "other"
         },
         {
@@ -26431,7 +26431,7 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 60,
+          "line": 61,
           "kind": "other"
         },
         {
@@ -28547,12 +28547,12 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 53,
+          "line": 54,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1138,
+          "line": 1140,
           "kind": "seo"
         },
         {
@@ -35720,7 +35720,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1501,
+          "line": 1503,
           "kind": "seo"
         },
         {
@@ -39824,12 +39824,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1130,
+          "line": 1132,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2852,
+          "line": 2854,
           "kind": "seo"
         },
         {
@@ -42354,7 +42354,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1134,
+          "line": 1136,
           "kind": "seo"
         },
         {
@@ -46476,7 +46476,7 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 49,
+          "line": 50,
           "kind": "other"
         },
         {
@@ -51049,7 +51049,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1131,
+          "line": 1133,
           "kind": "seo"
         },
         {
@@ -56049,7 +56049,7 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 51,
+          "line": 52,
           "kind": "other"
         },
         {
@@ -56059,7 +56059,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1137,
+          "line": 1139,
           "kind": "seo"
         },
         {
@@ -58576,7 +58576,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1135,
+          "line": 1137,
           "kind": "seo"
         },
         {
@@ -60281,7 +60281,7 @@
         },
         {
           "file": "backend/app/services/seo_regional.py",
-          "line": 50,
+          "line": 51,
           "kind": "other"
         },
         {

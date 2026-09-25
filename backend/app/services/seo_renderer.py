@@ -440,7 +440,7 @@ def _breadcrumbs(items: list[tuple[str, str]]) -> dict:
 
 
 def _site_json_ld() -> dict:
-    from app.services.locale import get_locale, get_request_origin
+    from app.services.locale import get_locale, get_request_origin, in_language
 
     en = get_locale() == "en"
     origin = get_request_origin()
@@ -461,7 +461,7 @@ def _site_json_ld() -> dict:
                         "85 регионов и доступных стран: графики, таблицы, сравнения и прогнозы."
                     )
                 ),
-                "inLanguage": "en" if en else "ru-RU",
+                "inLanguage": in_language(),
                 "publisher": {"@id": f"{origin}/#organization"},
             },
             {
@@ -784,7 +784,9 @@ def _hreflang_head(canonical_path: str) -> str:
     if not has_en_path(path):
         return ""
 
-    path_href = "/" if path == "/" else path
+    # Канон главной — origin без завершающего слэша (_absolute). Яндекс и Google
+    # склеивают hreflang только с этим URL, не с вариантом со слэшем.
+    path_href = "" if path == "/" else path
     ru_href = escape(f"{ru_public_origin()}{path_href}")
     en_href = escape(f"{en_public_origin()}{path_href}")
     # x-default → apex (EN) when EN exists.
