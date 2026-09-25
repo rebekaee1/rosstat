@@ -196,6 +196,11 @@ def _sitemap_cache_key(kind: str, origin: str) -> str:
     return f"fe:sitemap:images-v1:{kind}:{host}"
 
 
+# Плейсхолдер ночной сборки: XML urlset рендерится один раз, хост подставляется
+# заменой. В путях страниц этой строки нет.
+SITEMAP_ORIGIN_TOKEN = "https://sitemap-origin.invalid"
+
+
 def _render_urlset(urls, *, origin: str | None = None) -> str:
     """Shared dynamic/static XML; image discovery never renders any PNG files."""
     from app.services.sitemap_images import image_path_for_page
@@ -303,10 +308,11 @@ def _index_304_or_full(xml: str, request: Request) -> Response:
 async def sitemap_section(
     section: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
-    """URL-набор ОДНОЙ секции: сборка только запрошенной группы.
+    """URL-набор ОДНОГО шарда: не реестр ~5,04 млн URL.
 
     Мусорное имя отсекается без БД (реестр секций / префикс чанковой группы).
-    Холодный miss стоит одну группу (не монолит — фикс П-13: 40+ с и 504).
+    Холодный miss стоит одну страницу (не монолит — фикс П-13: 40+ с и 504).
+    ``world-regions-N`` читается OFFSET/LIMIT, без сборки всех ~96 тыс. URL.
     Конкурентные запросы одной секции собирают её под Redis-локом один раз —
     остальные ждут готовый XML из кэша.
     """

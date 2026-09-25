@@ -205,13 +205,25 @@ def test_world_regions_sitemap_stays_under_protocol_limit(auth_env, monkeypatch)
                 "/united-states/region/wyoming",
             ]
             assert built[0].lastmod == "2025-01-01"
+            paged = await urls._world_regions_page(db, 0, len(built))
+            assert [(item.path, item.lastmod, item.priority) for item in paged] == [
+                (item.path, item.lastmod, item.priority) for item in built
+            ]
             monkeypatch.setattr(urls, "SITEMAP_MAX_URLS", 3)
             monkeypatch.setattr(urls, "WORLD_CHUNK", 3)
             names = [name for name, _chunk in urls.bounded_section_items("world-regions", built)]
             assert names == ["world-regions-1", "world-regions-2", "world-regions-3"]
             assert urls.section_names_for_count("world-regions", len(built)) == names
+
+            async def must_not_materialise(*args, **kwargs):
+                raise AssertionError("shard resolve must not load every world-region URL")
+
+            monkeypatch.setattr(urls, "_world_regions_urls", must_not_materialise)
             second = await urls.resolve_section(db, "world-regions-2")
             assert [item.path for item in second] == paths[3:6]
             assert await urls.resolve_section(db, "world-regions") is None
+            streamed = [item async for item in urls._iter_world_region_sections(db)]
+            assert [name for name, _chunk in streamed] == names
+            assert [item.path for item in streamed[1][1]] == paths[3:6]
 
     asyncio.run(check())

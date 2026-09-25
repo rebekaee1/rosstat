@@ -59,6 +59,43 @@ def test_complete_host_generation_permissions_and_gzip(publication):
     assert sm.section_file("../../core", "https://forecasteconomy.com") is None
 
 
+def test_unchanged_shard_is_linked_not_rebuilt(publication, monkeypatch):
+    import app.services.site_urls as urls
+    first = asyncio.run(sm.build_static_sitemaps())
+    assert first["sections_rewritten"] == 1
+    assert first["sections_reused"] == 0
+    digest = first["section_digest"]["core"]
+    original_write = sm._write_xml
+
+    def boom(*args, **kwargs):
+        raise AssertionError("unchanged shard must not be rendered again")
+
+    monkeypatch.setattr(sm, "_write_xml", boom)
+    second = asyncio.run(sm.build_static_sitemaps())
+    assert second["sections_reused"] == 1
+    assert second["sections_rewritten"] == 0
+    assert second["section_digest"]["core"] == digest
+    current = sm.section_file("core", "https://forecasteconomy.com")
+    previous = publication / "generations" / first["generation"] / "forecasteconomy.com" / "sitemap-core.xml"
+    assert current.stat().st_ino == previous.stat().st_ino
+    assert current.read_bytes() == previous.read_bytes()
+
+    async def changed(db):
+        yield "core", [SiteUrl("/russia", "2026-09-11", "daily", "0.8")]
+
+    monkeypatch.setattr(sm, "_write_xml", original_write)
+    monkeypatch.setattr(urls, "iter_url_sections", changed)
+    third = asyncio.run(sm.build_static_sitemaps())
+    assert third["sections_rewritten"] == 1
+    assert third["sections_reused"] == 0
+    assert third["section_digest"]["core"] != digest
+    refreshed = sm.section_file("core", "https://forecasteconomy.com")
+    assert b"<lastmod>2026-09-11</lastmod>" in refreshed.read_bytes()
+    ru = sm.section_file("core", "https://ru.forecasteconomy.com").read_text()
+    assert "https://ru.forecasteconomy.com/russia" in ru
+    assert "sitemap-origin.invalid" not in ru
+
+
 def test_failed_generation_preserves_current(publication, monkeypatch):
     import app.services.site_urls as urls
     original = asyncio.run(sm.build_static_sitemaps())
@@ -87,6 +124,7 @@ def test_rebuild_keeps_previous_and_ignores_legacy(publication):
 
 
 def test_late_host_write_failure_preserves_current(publication, monkeypatch):
+    import app.services.site_urls as urls
     original = asyncio.run(sm.build_static_sitemaps())
     real_write = sm._write_xml
     writes = []
@@ -98,6 +136,11 @@ def test_late_host_write_failure_preserves_current(publication, monkeypatch):
             raise OSError("disk full")
         real_write(directory, name, xml)
 
+    async def changed(db):
+        # Тот же шард не пишется заново. Сбой проверяем на изменившемся файле.
+        yield "core", [SiteUrl("/new", "2026-09-20", "daily", "0.8")]
+
+    monkeypatch.setattr(urls, "iter_url_sections", changed)
     monkeypatch.setattr(sm, "_write_xml", write)
     with pytest.raises(OSError, match="disk full"):
         asyncio.run(sm.build_static_sitemaps())
@@ -289,10 +332,16 @@ def test_index_lastmod_and_urlset_omit_unverifiable_dates():
 def test_oversized_simple_section_is_split_under_the_protocol_limit(monkeypatch):
     import app.services.site_urls as urls
 
-    async def fake_world(db, today):
-        return [SiteUrl(f"/p{i}", "2020-01-01", "weekly", "0.5") for i in range(5)]
+    rows = [SiteUrl(f"/p{i}", "2020-01-01", "weekly", "0.5") for i in range(5)]
 
-    monkeypatch.setitem(urls._SIMPLE_SECTION_BUILDERS, "world-regions", fake_world)
+    async def count(db):
+        return len(rows)
+
+    async def page(db, offset, limit):
+        return rows[offset:offset + limit]
+
+    monkeypatch.setattr(urls, "_world_regions_url_count", count)
+    monkeypatch.setattr(urls, "_world_regions_page", page)
     monkeypatch.setattr(urls, "_SIMPLE_SECTION_ORDER", ["world-regions"])
     monkeypatch.setattr(urls, "SITEMAP_MAX_URLS", 2)
     monkeypatch.setattr(urls, "WORLD_CHUNK", 2)

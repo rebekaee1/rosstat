@@ -12,8 +12,8 @@
 Реестр описан словарём `GROUP_BUILDERS` (имя группы → async builder, полный
 список группы) + `_CHUNKED_GROUPS` (чанкируемые группы). `collect_url_sections`
 сохраняет прежнюю сигнатуру и собирается из билдеров. `/sitemap-{section}.xml`
-строит ТОЛЬКО группу запрошенной секции (не монолит из ~2 млн URL) — холодный
-miss группы стоит одну группу, а не весь реестр (П-13: 40+ секунд и 504).
+строит ТОЛЬКО запрошенный шард (не реестр ~5,04 млн URL на хост) — холодный
+miss стоит одну страницу, а не весь реестр (П-13: 40+ секунд и 504).
 Тяжёлые группы (regional-years, world-years) режутся на страницы на стороне
 БД: границы чанков считаются одним оконным запросом (`_chunk_bounds`) и
 кэшируются, страница чанка — один keyset-запрос от границы (сотни мс на любой
@@ -29,6 +29,7 @@ miss группы стоит одну группу, а не весь реест�
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import re
 from dataclasses import dataclass
@@ -43,7 +44,7 @@ from app.services.index_policy import (
 )
 from app.services.display import today_msk
 
-from sqlalchemy import Integer, func, select, tuple_, union_all
+from sqlalchemy import Integer, String, func, literal, select, tuple_, union_all
 from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
@@ -72,6 +73,8 @@ SITEMAP_MAX_URLS = 50_000
 SITEMAP_MAX_BYTES = 50 * 1024 * 1024
 REGIONAL_CHUNK = 10_000
 WORLD_CHUNK = 10_000
+# Менять при смене XML urlset: иначе ночная сборка переиспользует старые байты.
+SITEMAP_RENDER_REV = "urlset-v2"
 
 # Страницы без привязки к выпуску данных. Дата сборки sitemap здесь
 # недостоверна: Google сверяет lastmod с изменением страницы и перестаёт
@@ -159,9 +162,10 @@ def normalize_sitemap_lastmod(value: str | None, *, today: date | None = None) -
 def section_lastmod(urls: list[SiteUrl], *, today: date | None = None) -> str | None:
     """Самая поздняя достоверная дата URL секции — lastmod файла в индексе.
 
-    Это не время ночной сборки: иначе все ~500 файлов выглядят изменёнными
-    каждую ночь, и инкрементальный обход индекса (sitemaps.org / Яндекс)
-    перестаёт отличать стабильные исторические чанки от живых.
+    Это не время ночной сборки: иначе все 509 файлов (~5,04 млн URL на хост)
+    выглядят изменёнными каждую ночь, и инкрементальный обход индекса
+    (sitemaps.org / Яндекс) перестаёт отличать стабильные исторические чанки
+    от живых. Бюджет обхода держится на этой дате, а не на выкидывании канонов.
     """
     current = today if today is not None else today_msk()
     stamps = [
@@ -169,6 +173,33 @@ def section_lastmod(urls: list[SiteUrl], *, today: date | None = None) -> str | 
         if (text := normalize_sitemap_lastmod(url.lastmod, today=current))
     ]
     return max(stamps) if stamps else None
+
+
+def section_fingerprint(urls: list[SiteUrl]) -> str:
+    """Отпечаток шарда без хоста: path, lastmod, changefreq, priority.
+
+    EN и RU отличаются только origin в ``<loc>``. Совпадение отпечатка с
+    прошлой генерацией значит, что XML шарда байт-в-байт тот же, и ночная
+    сборка не переписывает файл. Смена разметки urlset требует нового
+    ``SITEMAP_RENDER_REV``.
+    """
+    lines = [
+        f"{url.path}\t{url.lastmod or ''}\t{url.changefreq}\t{url.priority}"
+        for url in urls
+    ]
+    payload = SITEMAP_RENDER_REV + "\n" + "\n".join(lines)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _world_regions_step(count: int) -> int:
+    """Шаг нарезки world-regions. Читает лимиты в момент вызова (тесты патчат их)."""
+    if count <= 0:
+        return 0
+    limit = SITEMAP_MAX_URLS
+    size = WORLD_CHUNK
+    if count <= limit:
+        return count
+    return min(size, limit)
 
 
 def bounded_section_items(
@@ -772,6 +803,149 @@ async def _world_regions_url_count(db: AsyncSession) -> int:
     )
     pairs = (await db.execute(select(func.count()).select_from(pair_groups))).scalar_one()
     return int(hubs) + int(regions) + int(pairs)
+
+
+def _world_regions_ordered_stmt():
+    """Тот же порядок, что у ``_world_regions_urls``: страна, хаб, регион, карточки.
+
+    Страница читается OFFSET/LIMIT, без сборки всех ~96 тыс. строк в память.
+    """
+    countries = _world_region_country_codes().subquery()
+    country_last = (
+        select(
+            SubnationalIndicator.country_code.label("cc"),
+            func.max(SubnationalDataPoint.period).label("last_data"),
+        )
+        .join(SubnationalDataPoint, SubnationalDataPoint.indicator_id == SubnationalIndicator.id)
+        .where(
+            SubnationalIndicator.is_listed.is_(True),
+            SubnationalIndicator.country_code.in_(select(countries.c.code)),
+        )
+        .group_by(SubnationalIndicator.country_code)
+        .subquery()
+    )
+    hubs = (
+        select(
+            WorldCountry.sort_order.label("country_sort"),
+            WorldCountry.slug.label("country_slug"),
+            literal(0, type_=Integer).label("is_hub"),
+            literal(0, type_=Integer).label("region_sort"),
+            literal("", type_=String).label("region_slug"),
+            literal(0, type_=Integer).label("kind"),
+            literal("", type_=String).label("indicator_code"),
+            country_last.c.last_data.label("last_data"),
+        )
+        .join(country_last, country_last.c.cc == WorldCountry.code)
+        .where(WorldCountry.is_active.is_(True))
+    )
+    profiles = (
+        select(
+            WorldCountry.sort_order.label("country_sort"),
+            WorldCountry.slug.label("country_slug"),
+            literal(1, type_=Integer).label("is_hub"),
+            SubnationalRegion.sort_order.label("region_sort"),
+            SubnationalRegion.slug.label("region_slug"),
+            literal(1, type_=Integer).label("kind"),
+            literal("", type_=String).label("indicator_code"),
+            country_last.c.last_data.label("last_data"),
+        )
+        .select_from(SubnationalRegion)
+        .join(WorldCountry, WorldCountry.code == SubnationalRegion.country_code)
+        .join(country_last, country_last.c.cc == WorldCountry.code)
+        .where(WorldCountry.is_active.is_(True))
+    )
+    cards = (
+        select(
+            WorldCountry.sort_order.label("country_sort"),
+            WorldCountry.slug.label("country_slug"),
+            literal(1, type_=Integer).label("is_hub"),
+            SubnationalRegion.sort_order.label("region_sort"),
+            SubnationalRegion.slug.label("region_slug"),
+            literal(2, type_=Integer).label("kind"),
+            SubnationalIndicator.code.label("indicator_code"),
+            func.max(SubnationalDataPoint.period).label("last_data"),
+        )
+        .select_from(SubnationalDataPoint)
+        .join(SubnationalRegion, SubnationalRegion.id == SubnationalDataPoint.region_id)
+        .join(SubnationalIndicator, SubnationalIndicator.id == SubnationalDataPoint.indicator_id)
+        .join(WorldCountry, WorldCountry.code == SubnationalRegion.country_code)
+        .where(
+            WorldCountry.is_active.is_(True),
+            SubnationalIndicator.is_listed.is_(True),
+            SubnationalRegion.country_code == SubnationalIndicator.country_code,
+            SubnationalRegion.country_code.in_(select(countries.c.code)),
+        )
+        .group_by(
+            WorldCountry.sort_order,
+            WorldCountry.slug,
+            SubnationalRegion.sort_order,
+            SubnationalRegion.slug,
+            SubnationalIndicator.code,
+        )
+    )
+    combined = union_all(hubs, profiles, cards).subquery("world_region_sitemap")
+    return select(
+        combined.c.country_slug,
+        combined.c.region_slug,
+        combined.c.kind,
+        combined.c.indicator_code,
+        combined.c.last_data,
+    ).order_by(
+        combined.c.country_sort,
+        combined.c.country_slug,
+        combined.c.is_hub,
+        combined.c.region_sort,
+        combined.c.region_slug,
+        combined.c.kind,
+        combined.c.indicator_code,
+    )
+
+
+def _world_region_row_url(row) -> SiteUrl:
+    country_slug, region_slug, kind, indicator_code, last_data = row
+    lastmod = _iso(last_data)
+    kind = int(kind)
+    if kind == 0:
+        return _u(paths.country_regions(country_slug), lastmod, "weekly", "0.7")
+    if kind == 1:
+        return _u(paths.country_region(country_slug, region_slug), lastmod, "weekly", "0.6")
+    return _u(
+        paths.country_region_indicator(country_slug, region_slug, indicator_code),
+        lastmod,
+        "weekly",
+        "0.5",
+    )
+
+
+async def _world_regions_page(db: AsyncSession, offset: int, limit: int) -> list[SiteUrl]:
+    """Одна страница world-regions в каноническом порядке. Не больше ``limit`` URL."""
+    if limit <= 0:
+        return []
+    stmt = _world_regions_ordered_stmt().offset(offset).limit(limit)
+    rows = (await db.execute(stmt)).all()
+    return [_world_region_row_url(row) for row in rows]
+
+
+async def _world_regions_section(db: AsyncSession, section: str) -> list[SiteUrl] | None:
+    """Один шард world-regions. Монолит сверх потолка не собирается."""
+    count = await _world_regions_url_count(db)
+    names = section_names_for_count("world-regions", count)
+    if section not in names:
+        return [] if section != "world-regions" else None
+    step = _world_regions_step(count)
+    index = names.index(section)
+    return await _world_regions_page(db, offset=index * step, limit=step)
+
+
+async def _iter_world_region_sections(db: AsyncSession):
+    """Ночная нарезка world-regions страницами, без списка на ~96 тыс. URL."""
+    count = await _world_regions_url_count(db)
+    names = section_names_for_count("world-regions", count)
+    step = _world_regions_step(count)
+    for index, name in enumerate(names):
+        page = await _world_regions_page(db, offset=index * step, limit=step)
+        if page:
+            yield name, page
 
 
 async def _world_region_vs_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
@@ -1899,12 +2073,8 @@ async def resolve_section(db: AsyncSession, section: str) -> list[dict | list] |
         # актуальный индекс перечисляет все months-N.
         return await build_chunk(db, "months-", 1)
     if is_world_regions_section(section):
-        urls = await _world_regions_urls(db, today_msk())
-        parts = dict(bounded_section_items("world-regions", urls))
-        if section in parts:
-            return parts[section]
-        # Монолит больше не отдаём, когда он не влезает в протокол.
-        return [] if section != "world-regions" else None
+        # Одна страница OFFSET/LIMIT, не список всех субнациональных URL.
+        return await _world_regions_section(db, section)
     if section in _SIMPLE_SECTION_BUILDERS:
         return await _SIMPLE_SECTION_BUILDERS[section](db, today_msk())
     parsed = _chunked_prefix_for(section)
@@ -1922,6 +2092,10 @@ async def iter_url_sections(db: AsyncSession):
     """
     today = today_msk()
     for name in _SIMPLE_SECTION_ORDER:
+        if name == "world-regions":
+            async for chunk_name, chunk_urls in _iter_world_region_sections(db):
+                yield chunk_name, chunk_urls
+            continue
         if name in _SIMPLE_SECTION_BUILDERS:
             built = await _SIMPLE_SECTION_BUILDERS[name](db, today)
             for chunk_name, chunk_urls in bounded_section_items(name, built):
