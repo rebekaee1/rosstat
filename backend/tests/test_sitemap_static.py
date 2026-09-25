@@ -358,3 +358,56 @@ def test_oversized_simple_section_is_split_under_the_protocol_limit(monkeypatch)
 
 async def _collect(agen):
     return [item async for item in agen]
+
+
+def test_published_section_size_reads_host_stats(publication):
+    asyncio.run(sm.build_static_sitemaps())
+    assert sm.published_section_size("core", "https://forecasteconomy.com") == 1
+    assert sm.published_section_size("missing", "https://forecasteconomy.com") is None
+    assert sm.published_section_size("core", "https://attacker.example") is None
+
+
+def test_legacy_world_regions_monolith_is_rewritten_in_index(monkeypatch):
+    """Old static stats still listing bare world-regions must advertise shards."""
+    import app.services.site_urls as urls
+    from app.api import sitemap as sitemap_api
+
+    async def fake_count(db):
+        return 5
+
+    monkeypatch.setattr(urls, "_world_regions_url_count", fake_count)
+    monkeypatch.setattr(urls, "SITEMAP_MAX_URLS", 2)
+    monkeypatch.setattr(urls, "WORLD_CHUNK", 2)
+
+    names = ["core", "world-regions", "world-region-vs"]
+    names = [name for name in names if name != "world-regions"]
+    if not any(name.startswith("world-regions-") for name in names):
+        names.extend(asyncio.run(urls.world_regions_section_names(None)))
+    assert names == [
+        "core", "world-region-vs",
+        "world-regions-1", "world-regions-2", "world-regions-3",
+    ]
+    index = sitemap_api._render_sitemap_index(
+        names, "https://forecasteconomy.com", {}
+    )
+    assert "<loc>https://forecasteconomy.com/sitemap-world-regions.xml</loc>" not in index
+    assert "sitemap-world-regions-1.xml" in index
+    assert "sitemap-world-regions-3.xml" in index
+
+
+def test_oversized_disk_section_is_not_served(publication, monkeypatch):
+    """Published monolith over 50k must not be returned from disk as-is."""
+    import app.services.sitemap_static as sms
+
+    asyncio.run(sm.build_static_sitemaps())
+    # Pretend core grew past the protocol ceiling in stats only.
+    generation = sms._current_generation()
+    stats_path = generation / sms.STATS_NAME
+    payload = json.loads(stats_path.read_text(encoding="utf-8"))
+    for host_entry in payload["hosts"].values():
+        host_entry["sections"]["core"] = 50_001
+    payload["sections"]["core"] = 50_001
+    stats_path.write_text(json.dumps(payload), encoding="utf-8")
+    assert sms.published_section_size("core", "https://forecasteconomy.com") == 50_001
+    # section_file still points at the bytes; callers must check the size.
+    assert sms.section_file("core", "https://forecasteconomy.com").is_file()

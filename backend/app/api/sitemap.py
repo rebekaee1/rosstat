@@ -281,16 +281,23 @@ async def sitemap_index(request: Request, db: AsyncSession = Depends(get_db)):
     if names is None:
         names = await section_names(db)
     else:
-        # An older atomic generation can still contain the former single
-        # world-region-years.xml.  Replace it in the index with bounded live
-        # chunks until the next static publication builds the full generation.
-        from app.services.site_urls import chunk_counts
+        # An older atomic generation can still contain a former single
+        # world-region-years.xml or world-regions.xml over the 50k protocol
+        # limit. Replace those names with bounded live shards until the next
+        # static publication builds the full generation.
+        from app.services.site_urls import chunk_counts, world_regions_section_names
         names = [name for name in names if name != "world-region-years"]
         if not any(name.startswith("world-region-years-") for name in names):
             count = (await chunk_counts(db)).get("world-region-years-", 0)
             names.extend(f"world-region-years-{index}" for index in range(1, count + 1))
         if "world-region-vs" not in names and any(name.startswith("world-region-years-") for name in names):
             names.append("world-region-vs")
+        # Only rewrite when the legacy bare file is still advertised; do not
+        # inject world-regions into generations that never published them.
+        if "world-regions" in names:
+            names = [name for name in names if name != "world-regions"]
+            if not any(name.startswith("world-regions-") for name in names):
+                names.extend(await world_regions_section_names(db))
     xml = _render_sitemap_index(names, origin, lastmods)
     await cache_set(cache_key, xml, _SITEMAP_TTL)
     return _index_304_or_full(xml, request)
@@ -326,13 +333,21 @@ async def sitemap_section(
     )
 
     origin = _request_sitemap_origin(request)
-    from app.services.sitemap_static import section_file
+    from app.services.sitemap_static import section_file, published_section_size
     from app.services.locale import apex_locale_en_enabled
     from app.services.site_urls import SITEMAP_MAX_BYTES, SITEMAP_MAX_URLS, is_world_regions_section
     if _is_ru_origin(origin) and not apex_locale_en_enabled():
         return Response(status_code=404)
     disk = section_file(section, origin)
-    if disk is not None and disk.is_file():
+    # Legacy generations may still have a monolith over the protocol limit on
+    # disk (nginx try_files). Refuse it here when the request reaches the app;
+    # the index rewrite + next publication remove the advertisement/file.
+    published_size = published_section_size(section, origin)
+    if (
+        disk is not None
+        and disk.is_file()
+        and (published_size is None or published_size <= SITEMAP_MAX_URLS)
+    ):
         xml = await asyncio.to_thread(disk.read_text, encoding="utf-8")
         return _xml_304_or_full(xml, _xml_etag(xml), request)
 

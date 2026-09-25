@@ -419,12 +419,25 @@ async def _startup_data_catch_up() -> None:
 
 
 async def _catch_up_static_sitemaps() -> None:
-    """Первый старт после деплоя не ждёт ночной cron 03:40."""
+    """Первый старт / поколение сверх 50k URL — не ждать ночной cron 03:40."""
     try:
         from app.services.sitemap_static import build_static_sitemaps, read_stats
+        from app.services.site_urls import SITEMAP_MAX_URLS
 
-        if read_stats():
+        stats = read_stats()
+        sections = stats.get("sections") or {}
+        oversized = [
+            f"{name}={count}"
+            for name, count in sections.items()
+            if int(count) > SITEMAP_MAX_URLS
+        ]
+        if stats and not oversized:
             return
+        if oversized:
+            logger.warning(
+                "Startup sitemap catch-up: rebuilding oversized sections %s",
+                ", ".join(oversized),
+            )
         stats = await build_static_sitemaps()
         logger.info(
             "Startup sitemap catch-up: %s urls",
