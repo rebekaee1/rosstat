@@ -96,7 +96,8 @@ describe('HomeWorkbench', () => {
     await waitFor(() => {
       expect(screen.getByTestId('world-map-stub')).toBeTruthy();
     });
-    const timeline = screen.getByTestId('map-timeline-stub');
+    // MapTimeline is lazy and mounts only after years resolve — wait for it.
+    const timeline = await screen.findByTestId('map-timeline-stub');
     expect(timeline.textContent).toContain('timeline:2024,2025:2025:function');
 
     const scope = document.querySelector('[data-block="home-data-scope"]');
