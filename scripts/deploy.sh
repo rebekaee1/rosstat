@@ -147,13 +147,54 @@ print(next((name for name in previous if name not in current), previous[0]))
 PY
 )
 
+# Единственный публичный слушатель — frontend на 127.0.0.1:3000. Один
+# `compose up -d` снимает его на всё время entrypoint backend, и Caddy
+# отвечает 502. Длинные миграции и seed гоняем во временном контейнере,
+# который не занимает DNS-имя `backend`, — старый сервер продолжает отдавать
+# трафик. Затем короткий recreate: повторный entrypoint уже на применённой
+# схеме. Frontend меняем только после /health/ready. Оставшееся окно 502 —
+# пока новый процесс backend не слушает порт (повторный старт, не первый
+# seed). Слушатель :3000 в это время на месте.
+recreate_backend_keep_frontend() {
+  docker compose up -d --no-deps postgres redis redis-state clickhouse
+  docker rm -f rosstat-backend-preboot >/dev/null 2>&1 || true
+  echo "==> preboot backend: миграции и seed рядом с живым сервером"
+  local preboot_status=0
+  docker compose run -T --rm --no-deps --name rosstat-backend-preboot backend true || preboot_status=$?
+  docker rm -f rosstat-backend-preboot >/dev/null 2>&1 || true
+  if [ "$preboot_status" != 0 ]; then
+    echo "FAIL: preboot backend завершился с кодом ${preboot_status}"
+    return 1
+  fi
+  echo "==> replace backend (схема уже применена)"
+  docker compose up -d --no-deps backend
+}
+
+wait_backend_ready() {
+  local ready=""
+  for _ in $(seq 1 60); do
+    if curl -sf http://127.0.0.1:8000/api/v1/health/ready >/dev/null 2>&1; then
+      ready=1
+      break
+    fi
+    sleep 5
+  done
+  [ -n "$ready" ]
+}
+
+swap_frontend() {
+  docker compose up -d --no-deps frontend
+}
+
 rollback() {
   trap - ERR
   echo "==> ROLLBACK to ${PREV_SHA}"
   git reset --hard "${PREV_SHA}"
   docker tag "${PREV_BACKEND_IMAGE}" rosstat-backend
   docker tag "${PREV_FRONTEND_IMAGE}" rosstat-frontend
-  docker compose up -d frontend backend
+  recreate_backend_keep_frontend || true
+  wait_backend_ready || echo "    WARN: backend не ready после отката"
+  swap_frontend || true
   # Mark the restored release as newest before pruning, including when rolling
   # back after repeated unsuccessful deploy attempts.
   publish_frontend_assets "${PREV_FRONTEND_IMAGE}"
@@ -169,25 +210,22 @@ echo "==> anti-scrape: каталог логов nginx для fail2ban (uid 101 
 install -d -m 0755 /var/log/rosstat-nginx
 chown 101:101 /var/log/rosstat-nginx
 
-echo "==> docker compose up -d (все сервисы; тома postgres/redis-state не трогаем)"
+echo "==> docker compose up: backend при живом frontend (тома postgres/redis-state не трогаем)"
 # Не `down -v` и не `--renew-anon-volumes`: postgres_data и redis_state_data
 # держат БД пользователей и сессии. Пересоздаются только сервисы, чей
 # compose-конфиг изменился (лимиты backend/ClickHouse, том sitemap).
-docker compose up -d
+# Frontend здесь не трогаем — см. recreate_backend_keep_frontend.
+recreate_backend_keep_frontend
 
 echo "==> waiting for readiness (до 300s: миграции + seed)"
-ready=""
-for _ in $(seq 1 60); do
-  if curl -sf http://localhost:8000/api/v1/health/ready >/dev/null 2>&1; then
-    ready=1; break
-  fi
-  sleep 5
-done
-[ -n "$ready" ] || { echo "FAIL: backend не стал ready за 300s"; docker compose logs backend --tail=50; rollback; }
+wait_backend_ready || { echo "FAIL: backend не стал ready за 300s"; docker compose logs backend --tail=50; rollback; }
 
-# Frontend healthy до smoke: readiness-цикл выше ждёт только backend, а
-# frontend пересоздаётся секундами позже — первый HTTPS-пробег гонки
-# «health: starting» ловил 502/000 и ложно откатывал годный релиз.
+echo "==> cutover frontend (backend уже ready; stop_grace дослушивает старый nginx)"
+swap_frontend
+
+# Frontend healthy до smoke: первый HTTPS-пробег гонки «health: starting»
+# ловил 502/000 и ложно откатывал годный релиз. start_period в compose
+# не даёт первому промаху wget пометить контейнер unhealthy.
 echo "==> waiting for frontend healthy (до 180s)"
 fe_ok=""
 for _ in $(seq 1 36); do
@@ -197,36 +235,31 @@ for _ in $(seq 1 36); do
 done
 [ -n "$fe_ok" ] || { echo "FAIL: frontend не стал healthy за 180s"; docker compose logs frontend --tail=50; rollback; }
 
-echo "==> cache Redis DB 0 FLUSHDB (SSR/asset-hash); redis-state и DB 1 не трогаем"
-REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env | cut -d= -f2- | tr -d '\"' | tr -d "'")"
-docker compose exec -T redis redis-cli -a "${REDIS_PASSWORD:-changeme}" -n 0 FLUSHDB >/dev/null \
-  || { echo "FAIL: не удалось сбросить кэш Redis DB 0"; rollback; }
-
 docker compose ps --format 'table {{.Name}}\t{{.Status}}'
 
 # ── 5. Расширенный smoke (О-6) ─────────────────────────────────────────
 echo "==> smoke: data endpoint"
-curl -sf http://localhost:8000/api/v1/indicators/cpi/data | head -c 200 | grep -q '"data"' \
+curl -sf http://127.0.0.1:8000/api/v1/indicators/cpi/data | head -c 200 | grep -q '"data"' \
   || { echo "FAIL: data endpoint пуст/сломан"; rollback; }
 echo " ok"
 
 echo "==> smoke: SSR asset-hash consistency"
 # Asset-hash trap: SSR HTML обязан ссылаться на ассеты, реально лежащие в frontend-образе.
-ASSET=$(curl -sf -A 'Mozilla/5.0 (compatible; YandexBot/3.0)' http://localhost:3000/ \
+ASSET=$(curl -sf -A 'Mozilla/5.0 (compatible; YandexBot/3.0)' http://127.0.0.1:3000/ \
   | grep -o '/assets/[a-zA-Z0-9._-]*\.js' | head -1)
 if [ -z "$ASSET" ]; then echo "FAIL: SSR HTML без ассетов"; rollback; fi
-curl -sf -o /dev/null "http://localhost:3000${ASSET}" \
+curl -sf -o /dev/null "http://127.0.0.1:3000${ASSET}" \
   || { echo "FAIL: SSR ссылается на несуществующий ассет ${ASSET} (asset-hash trap)"; rollback; }
 echo "    ok (${ASSET})"
 
 echo "==> smoke: previous release asset"
-curl -sf -o "${ASSET_WORK}/retained-probe" "http://localhost:3000/assets/${RETAINED_PROBE}" \
+curl -sf -o "${ASSET_WORK}/retained-probe" "http://127.0.0.1:3000/assets/${RETAINED_PROBE}" \
   && cmp -s "${ASSET_WORK}/retained-probe" "${ASSET_ARCHIVE}/assets/${RETAINED_PROBE}" \
   || { echo "FAIL: старый ассет недоступен или заменён HTML: ${RETAINED_PROBE}"; rollback; }
 echo "    ok (${RETAINED_PROBE})"
 
 echo "==> smoke: OG image"
-curl -sf -o /dev/null http://localhost:3000/og/cpi.png || { echo "FAIL: OG image"; rollback; }
+curl -sf -o /dev/null http://127.0.0.1:3000/og/cpi.png || { echo "FAIL: OG image"; rollback; }
 echo "    ok"
 
 # ── 6. Caddy reload — только после успешного smoke (О-7) ──────────────
@@ -332,6 +365,16 @@ PY
   sleep 60
 done
 echo "    watch ok"
+
+echo "==> cache Redis DB 0 FLUSHDB после watch (redis-state и DB 1 не трогаем)"
+# Не сразу после cutover: холодный SSR-кэш на свежем backend даёт stampede
+# и ложный откат по TTFB в watch. Пока flush не сделан, старый HTML в Redis
+# ссылается на hashed-ассеты, которые архив ещё отдаёт. Свежесть контента
+# отстаёт на окно watch (~15 мин). Провал flush не откатывает принятый релиз.
+REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env | cut -d= -f2- | tr -d '\"' | tr -d "'" || true)"
+if ! docker compose exec -T redis redis-cli -a "${REDIS_PASSWORD:-changeme}" -n 0 FLUSHDB >/dev/null; then
+  echo "WARN: не удалось сбросить кэш Redis DB 0; релиз оставлен, flush вручную"
+fi
 
 echo "==> assets: retain three accepted/recent frontend builds"
 python3 "${ASSET_WORK}/archive.py" prune --archive "$ASSET_ARCHIVE" --keep 3

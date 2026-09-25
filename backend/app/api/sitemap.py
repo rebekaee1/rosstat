@@ -585,9 +585,22 @@ async def rss_feed(request: Request, db: AsyncSession = Depends(get_db)):
     )
 
 
+# Публичных кодов inflation и gdp нет. Легаси «инфляция» — ИПЦ,
+# «ВВП» без уточнения — номинальный (флагман полки «ВВП и рост»).
+OG_INDICATOR_ALIASES = {
+    "inflation": "cpi",
+    "gdp": "gdp-nominal",
+}
+
+
+def resolve_og_indicator_code(code: str) -> str:
+    return OG_INDICATOR_ALIASES.get(code, code)
+
+
 @router.get("/api/v1/og-image/indicator/{code}.png", include_in_schema=False)
 async def og_image_indicator(code: str, db: AsyncSession = Depends(get_db), portrait: bool = False):
     """PNG-превью индикатора для og:image (спарклайн + актуальное значение)."""
+    code = resolve_og_indicator_code(code)
     from app.services.og_image import cached_og, render_indicator_og, store_og
     from app.services.i18n_display import public_name
     from app.services.seo_i18n import indicator_copy_en
@@ -680,6 +693,7 @@ async def og_image_indicator_month(code: str, period: str, db: AsyncSession = De
     Объявлен до годового эндпоинта: FastAPI матчит маршруты по порядку
     объявления, и «2026-07» не должен упасть в годовую ветку.
     """
+    code = resolve_og_indicator_code(code)
     from app.services.og_image import cached_og, render_indicator_og, store_og
     from app.services.i18n_display import public_name
     from app.services.seo_i18n import indicator_copy_en
@@ -793,6 +807,7 @@ async def og_image_indicator_year(code: str, year: int, db: AsyncSession = Depen
     рисуем окно соседних лет: одна точка на графике бессмысленна, а контекст
     истории остаётся содержательным для Алисы/Нейро.
     """
+    code = resolve_og_indicator_code(code)
     if not paths.is_public_year(year):
         return Response(status_code=404)
     from app.services.og_image import cached_og, render_indicator_og, store_og

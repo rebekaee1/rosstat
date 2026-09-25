@@ -60,10 +60,21 @@ def set_session_cookies(response: Response, session_id: str, csrf_token: str) ->
 
 
 def clear_session_cookies(response: Response) -> None:
+    """Снять сессию и CSRF теми же Secure/HttpOnly/Domain, что при установке.
+
+    Браузер сопоставляет cookie по name+domain+path и игнорирует Set-Cookie
+    на удаление, если Secure/HttpOnly не совпали с исходными флагами.
+    """
     path = "/"
     domain = effective_auth_cookie_domain() or None
-    response.delete_cookie(session_svc.SESSION_COOKIE, path=path, domain=domain)
-    response.delete_cookie(session_svc.CSRF_COOKIE, path=path, domain=domain)
+    common = {
+        "path": path,
+        "domain": domain,
+        "secure": settings.auth_cookie_secure,
+        "samesite": "lax",
+    }
+    response.delete_cookie(session_svc.SESSION_COOKIE, httponly=True, **common)
+    response.delete_cookie(session_svc.CSRF_COOKIE, httponly=False, **common)
 
 
 async def current_session(request: Request) -> Optional[dict]:
