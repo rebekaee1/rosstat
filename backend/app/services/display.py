@@ -14,6 +14,8 @@ embed-виджеты). Закрывает класс инцидентов «Ин
 """
 from __future__ import annotations
 
+import re
+
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
@@ -218,6 +220,20 @@ _UNIT_EN = {
     "бразильских реалов за 1 доллар США": "BRL per USD",
     "крор рупий": "crore INR",
     "рупий за 1 доллар США": "INR per USD",
+    # US BEA regional/national (unit_ru → EN). Prefer official Latin ``unit``
+    # prose when present; these cover unit_ru-only paths (OG / suffix).
+    "тыс. долл.": "thousand USD",
+    "тыс. долл": "thousand USD",
+    "млн долл.": "million USD",
+    "млн долл": "million USD",
+    "млн долл., текущие цены": "million USD, current prices",
+    "млн долл. 2017 г.": "million 2017 USD",
+    "долл.": "USD",
+    "долл": "USD",
+    "долл. 2017 г.": "2017 USD",
+    "текущие цены": "current prices",
+    "рабочих мест": "jobs",
+    "отношение": "ratio",
 }
 
 _RU_MONTHS_GEN = (
@@ -297,6 +313,49 @@ def localize_unit(unit: str | None, *, locale: str | None = None) -> str:
         translated = [localize_unit(s, locale="en") for s in segments]
         return ", ".join(translated)
     return text
+
+_CYRILLIC_RE = re.compile(r"[А-Яа-яЁё]")
+
+
+def contains_cyrillic(text: str | None) -> bool:
+    """True when any Cyrillic letter is present (EN-host leak detector)."""
+    return bool(text and _CYRILLIC_RE.search(text))
+
+
+def is_english_unit_prose(unit: str | None) -> bool:
+    """Human EN unit labels (BEA) vs Eurostat measure codes like ``I15`` / ``PC_ACT``."""
+    value = (unit or "").strip()
+    if not value or contains_cyrillic(value):
+        return False
+    if " " in value or value in {"%", "$", "pp", "‰"}:
+        return True
+    if re.fullmatch(r"[A-Za-z]{2,4}", value):
+        return True
+    if re.fullmatch(r"[A-Z0-9_./%-]{1,32}", value):
+        return False
+    return True
+
+
+def public_unit_en(
+    unit_ru: str | None,
+    *,
+    unit_storage: str | None = None,
+) -> str:
+    """EN-facing unit without Cyrillic when a Latin source exists.
+
+    Prefer official English storage prose (BEA ``Millions of chained 2017 dollars``)
+    over a shared Russian abbreviation that collapses chained/constant. Fall back
+    to ``localize_unit(unit_ru)`` for Eurostat/national-core rows whose ``unit``
+    field is a measure code.
+    """
+    raw = (unit_storage or "").strip()
+    if is_english_unit_prose(raw):
+        return raw
+    ru = (unit_ru or raw or "").strip()
+    localized = localize_unit(ru, locale="en") if ru else ""
+    if localized and not contains_cyrillic(localized):
+        return localized
+    return localized or raw or ru
 
 
 def format_number_ru(

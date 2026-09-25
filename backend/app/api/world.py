@@ -187,7 +187,7 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
             # (% за год) не подписываем как индекс 2015=100.
             return concept_public_unit(concept) or ru
     from app.data.eurostat_units_ru import unit_label_en_for_code
-    from app.services.display import localize_unit
+    from app.services.display import public_unit_en
 
     en_label = (unit_label_en_for_code(indicator.unit) or "").strip()
     vague = {
@@ -196,7 +196,9 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
     }
     if en_label and en_label.lower() not in vague:
         return en_label
-    return localize_unit(ru, locale="en") or ru
+    # BEA stores official English in ``unit`` and Russian in ``unit_ru``.
+    # Prefer Latin prose so chained vs constant 2017 dollars stay distinct.
+    return public_unit_en(indicator.unit_ru, unit_storage=indicator.unit)
 
 
 def _country_payload(c: WorldCountry, indicators_count: int | None = None) -> dict:

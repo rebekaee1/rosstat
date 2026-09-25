@@ -1570,8 +1570,10 @@ async def og_image_world_country(slug: str, db: AsyncSession = Depends(get_db), 
             if ind.id not in latest:
                 continue
             if loc == "en":
-                unit_raw = (ind.unit_ru or ind.unit or "").strip()
-                unit = localize_unit(unit_suffix(unit_raw)) or unit_raw
+                from app.services.display import public_unit_en
+
+                unit = public_unit_en(ind.unit_ru, unit_storage=ind.unit)
+                unit = unit_suffix(unit) or unit
                 label = (ind.name_en or "").strip() or ind.name_ru
             else:
                 unit = unit_suffix((ind.unit_ru or ind.unit or "").strip())
@@ -1797,7 +1799,10 @@ async def og_image_world_indicator(
         if not rows:
             return Response(status_code=404)
         values = [float(v) for _d, v in rows]
-        unit = localize_unit(unit_suffix((indicator.unit_ru or indicator.unit or "").strip()))
+        from app.services.display import public_unit_en
+
+        unit = public_unit_en(indicator.unit_ru, unit_storage=indicator.unit)
+        unit = unit_suffix(unit) or unit
         value_text = f"{format_number_ru(values[-1], locale=loc)} {unit}".strip()
         last_date = rows[-1][0]
         first_date = rows[0][0]
@@ -1904,7 +1909,10 @@ async def og_image_world_indicator_year(
         if len(rows) < WORLD_YEAR_LANDING_MIN_POINTS:
             return Response(status_code=404)
 
-        unit = localize_unit(unit_suffix((indicator.unit_ru or indicator.unit or "").strip()))
+        from app.services.display import public_unit_en
+
+        unit = public_unit_en(indicator.unit_ru, unit_storage=indicator.unit)
+        unit = unit_suffix(unit) or unit
         from app.services.seo_world_year import _observation_summary
         from app.data.eurostat_listing import normalize_frequency
         summary_label, value_text = _observation_summary(rows, normalize_frequency(indicator.frequency) or "", unit, en=loc == "en")
