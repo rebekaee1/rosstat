@@ -162,3 +162,84 @@ def test_cpi_codes_in_sync_with_frontend():
     assert m, "CPI_INDEX_CODES не найден в format.js"
     frontend_codes = set(re.findall(r"'([a-z0-9-]+)'", m.group(1)))
     assert frontend_codes == set(CPI_INDEX_CODES)
+
+
+def test_bea_units_en_no_cyrillic_via_map_and_prose():
+    """P0 SEO: US BEA unit_ru must not leak Cyrillic on the EN host.
+
+    Prefer official Latin ``unit`` prose (chained vs constant 2017 dollars);
+    ``unit_ru``-only paths still resolve through ``_UNIT_EN``.
+    """
+    from app.services.display import contains_cyrillic, localize_unit, public_unit_en
+
+    cases = [
+        ("тыс. долл.", "Thousands of dollars", "Thousands of dollars", "thousand USD"),
+        (
+            "млн долл., текущие цены",
+            "Millions of current dollars",
+            "Millions of current dollars",
+            "million USD, current prices",
+        ),
+        (
+            "млн долл. 2017 г.",
+            "Millions of chained 2017 dollars",
+            "Millions of chained 2017 dollars",
+            "million 2017 USD",
+        ),
+        (
+            "млн долл. 2017 г.",
+            "Millions of constant 2017 dollars",
+            "Millions of constant 2017 dollars",
+            "million 2017 USD",
+        ),
+        ("млн долл.", "Millions of dollars", "Millions of dollars", "million USD"),
+        ("долл. 2017 г.", "Constant 2017 dollars", "Constant 2017 dollars", "2017 USD"),
+        ("долл.", "Dollars", "Dollars", "USD"),
+        ("рабочих мест", "Number of jobs", "Number of jobs", "jobs"),
+        ("отношение", "Ratio", "Ratio", "ratio"),
+        ("человек", "Number of persons", "Number of persons", "people"),
+        ("индекс", "Quantity index", "Quantity index", "index"),
+        ("п. п.", "Percentage points", "Percentage points", "pp"),
+        ("%", "Percent change", "Percent change", "%"),
+    ]
+    for unit_ru, unit_en, expect_prose, expect_map in cases:
+        prose = public_unit_en(unit_ru, unit_storage=unit_en)
+        mapped = public_unit_en(unit_ru)
+        assert prose == expect_prose, (unit_ru, prose)
+        assert mapped == expect_map, (unit_ru, mapped)
+        assert not contains_cyrillic(prose)
+        assert not contains_cyrillic(mapped)
+        assert not contains_cyrillic(localize_unit(unit_ru, locale="en"))
+
+
+def test_public_unit_en_ignores_eurostat_measure_codes():
+    """Eurostat ``unit`` codes stay codes — EN comes from unit_ru map / codelist."""
+    from app.services.display import is_english_unit_prose, public_unit_en
+
+    assert not is_english_unit_prose("I15")
+    assert not is_english_unit_prose("PC_ACT")
+    assert not is_english_unit_prose("CLV15_MEUR")
+    # Measure code must not override a mapped Russian unit.
+    assert public_unit_en("индекс (2015 = 100)", unit_storage="I15") == (
+        "index (2015 = 100)"
+    )
+
+
+def test_bea_catalog_unit_ru_all_map_to_latin_en():
+    """Every published US BEA catalog unit_ru localizes without Cyrillic."""
+    import json
+    from pathlib import Path
+
+    from app.services.display import contains_cyrillic, public_unit_en
+
+    catalog = json.loads(
+        (Path(__file__).resolve().parents[1] / "app/data/world_bea_regional/us.json")
+        .read_text(encoding="utf-8")
+    )
+    series = catalog["series"]
+    assert len(series) >= 1500
+    for row in series:
+        en = public_unit_en(row["unit_ru"], unit_storage=row["unit"])
+        assert en, row["code"]
+        assert not contains_cyrillic(en), (row["code"], row["unit_ru"], en)
+        assert not contains_cyrillic(public_unit_en(row["unit_ru"])), row["code"]

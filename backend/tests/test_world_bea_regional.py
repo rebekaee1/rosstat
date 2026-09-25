@@ -69,3 +69,20 @@ def test_bea_extract_keeps_us_and_all_51_states():
     found = extract_catalog_points("SASUMMARY", payload, (row,), states)
     assert len(found[row.code]) == 52
     assert found[row.code]["06000"][0] == (parse_period("1998"), 1.0)
+
+
+def test_bea_catalog_units_are_bilingual_without_cyrillic_en_storage():
+    """Catalog stores official BEA English in ``unit`` and Russian in ``unit_ru``."""
+    import re
+
+    from app.services.world_bea_regional import load_catalog
+
+    cyr = re.compile(r"[А-Яа-яЁё]")
+    rows = load_catalog()
+    assert len(rows) >= 1500
+    shared_neutral = {"%", "п. п."}  # identical or already-latin on both locales
+    for row in rows:
+        assert row.unit and not cyr.search(row.unit), row.code
+        assert row.unit_ru, row.code
+        if row.unit_ru not in shared_neutral and row.unit_ru != "%":
+            assert cyr.search(row.unit_ru), row.code
