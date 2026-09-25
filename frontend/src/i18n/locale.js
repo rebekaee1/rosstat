@@ -3,7 +3,9 @@
  *
  * Language = host, not ?lang=. After cutover (VITE_APEX_LOCALE_EN=true):
  * apex = en, ru.forecasteconomy.com = ru. Localhost and non-apex hosts
- * stay ru. Explicit EN: X-FE-Locale / en.* / preview_locale.
+ * stay ru. On localhost, X-FE-Locale / preview_locale still opt in.
+ * On production hosts the host wins: apex is English after cutover,
+ * ru. is Russian. Accept-Language never selects the language.
  * On production hosts the Russian flag goes to ru.forecasteconomy.com
  * (path-identical). Localhost never navigates onto production apex.
  */
@@ -33,18 +35,19 @@ export function apexLocaleEnEnabled(explicit) {
  * @returns {'ru'|'en'}
  */
 export function resolveLocale({ host, header, preview, apexLocaleEn } = {}) {
+  const h = normalizeHost(host);
+  // Production host is the language. Header, preview and Accept-Language
+  // must not render the other language on that host.
+  if (h.startsWith('ru.')) return 'ru';
+  if (h.startsWith('en.')) return 'en';
+  if (PRODUCTION_APEX_HOSTS.has(h) && apexLocaleEnEnabled(apexLocaleEn)) return 'en';
+
   const raw = (header || '').trim().toLowerCase();
   if (raw === 'en' || raw === 'ru') return raw;
 
   const prev = (preview || '').trim().toLowerCase();
   if (prev === 'en' || prev === 'ru') return prev;
 
-  const h = normalizeHost(host);
-  if (h.startsWith('ru.')) return 'ru';
-  if (h.startsWith('en.')) return 'en';
-  if (PRODUCTION_APEX_HOSTS.has(h)) {
-    return apexLocaleEnEnabled(apexLocaleEn) ? 'en' : 'ru';
-  }
   return 'ru';
 }
 

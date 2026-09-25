@@ -26,6 +26,33 @@ describe('resolveLocale', () => {
     expect(resolveLocale({ host: 'forecasteconomy.com', header: 'ru' })).toBe('ru');
   });
 
+  it('production host wins over header, preview and would-be Accept-Language', () => {
+    expect(resolveLocale({
+      host: 'forecasteconomy.com',
+      header: 'ru',
+      preview: 'ru',
+      apexLocaleEn: true,
+    })).toBe('en');
+    expect(resolveLocale({
+      host: 'www.forecasteconomy.com',
+      header: 'ru',
+      preview: 'ru',
+      apexLocaleEn: true,
+    })).toBe('en');
+    expect(resolveLocale({
+      host: 'ru.forecasteconomy.com',
+      header: 'en',
+      preview: 'en',
+      apexLocaleEn: true,
+    })).toBe('ru');
+    expect(resolveLocale({
+      host: 'localhost',
+      header: 'en',
+      preview: 'ru',
+      apexLocaleEn: true,
+    })).toBe('en');
+  });
+
   it('keeps production apex on ru until cutover flag', () => {
     for (const host of PRODUCTION_APEX_HOSTS) {
       expect(resolveLocale({ host, apexLocaleEn: false })).toBe('ru');

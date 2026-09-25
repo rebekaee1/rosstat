@@ -68,7 +68,76 @@ def test_localhost_defaults_to_ru():
 
 def test_header_overrides_host():
     assert resolve_locale(host="localhost", header="en") == "en"
+    # До cutover apex не заперт: заголовок всё ещё может выбрать язык.
     assert resolve_locale(host="forecasteconomy.com", header="ru") == "ru"
+
+
+def test_production_host_wins_over_header_preview_and_accept_language(monkeypatch):
+    """После cutover хост — язык страницы. Accept-Language не читается."""
+    from starlette.requests import Request
+
+    from app.config import settings
+    from app.services.locale import explicit_preview_active, resolve_locale_from_request
+
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+
+    assert resolve_locale(
+        host="forecasteconomy.com",
+        header="ru",
+        preview="ru",
+        apex_locale_en=True,
+    ) == "en"
+    assert resolve_locale(
+        host="www.forecasteconomy.com",
+        header="ru",
+        preview="ru",
+        apex_locale_en=True,
+    ) == "en"
+    assert resolve_locale(
+        host="ru.forecasteconomy.com",
+        header="en",
+        preview="en",
+        apex_locale_en=True,
+    ) == "ru"
+    assert resolve_locale(host="localhost", header="en", apex_locale_en=True) == "en"
+
+    def _request(host: str, *, header: str, query: bytes, accept: str) -> Request:
+        return Request({
+            "type": "http",
+            "asgi": {"version": "3.0"},
+            "http_version": "1.1",
+            "method": "GET",
+            "scheme": "https",
+            "path": "/united-states",
+            "raw_path": b"/united-states",
+            "query_string": query,
+            "headers": [
+                (b"x-forwarded-host", host.encode()),
+                (b"host", b"backend"),
+                (b"x-fe-locale", header.encode()),
+                (b"accept-language", accept.encode()),
+            ],
+            "client": ("8.8.8.8", 1),
+            "server": (host, 443),
+        })
+
+    en_page = _request(
+        "forecasteconomy.com",
+        header="ru",
+        query=b"preview_locale=ru",
+        accept="ru-RU,ru;q=0.9,en;q=0.8",
+    )
+    assert resolve_locale_from_request(en_page) == "en"
+    ru_page = _request(
+        "ru.forecasteconomy.com",
+        header="en",
+        query=b"preview_locale=en",
+        accept="en-US,en;q=0.9",
+    )
+    assert resolve_locale_from_request(ru_page) == "ru"
+
+    assert explicit_preview_active("forecasteconomy.com", "ru", "en") is False
+    assert explicit_preview_active("localhost", "en", "en") is True
 
 
 def test_preview_locale_overrides_localhost():
@@ -1027,6 +1096,36 @@ def test_localize_category_and_freq_en():
     assert localize_category_name("Цены", locale="en") == "Prices and inflation"
     assert localize_category_name("Цены", locale="ru") == "Цены"
     assert frequency_label_en("monthly") == "monthly"
+
+
+def test_us_bea_section_headings_are_english():
+    """Разделы США на EN-хосте берут section_en каталога, не русский ключ."""
+    import json
+    import re
+    from pathlib import Path
+
+    from app.services.seo_i18n import bea_section_en_by_ru, localize_category_name
+
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "app" / "data" / "world_bea_regional" / "us.json"
+    )
+    series = json.loads(path.read_text(encoding="utf-8"))["series"]
+    pairs = {
+        row["section_ru"].strip(): row["section_en"].strip()
+        for row in series
+        if row.get("section_ru") and row.get("section_en")
+    }
+    assert pairs["ВВП по отраслям, текущие цены"] == "GDP by industry, current dollars"
+    assert bea_section_en_by_ru()["ВВП по отраслям, текущие цены"] == (
+        "GDP by industry, current dollars"
+    )
+    cyr = re.compile(r"[А-Яа-яЁё]")
+    for ru, en in pairs.items():
+        label = localize_category_name(ru, locale="en")
+        assert label == en
+        assert cyr.search(label) is None
+        assert localize_category_name(ru, locale="ru") == ru
 
 
 def test_hreflang_fast_page_prefixes():

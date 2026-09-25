@@ -1378,7 +1378,7 @@ def _geo_locale_redirect(request: Request) -> Response | None:
 
 
 class LocaleMiddleware(BaseHTTPMiddleware):
-    """Bind request locale + origin (host / X-FE-Locale / ?preview_locale)."""
+    """Bind request locale. A production host wins over header and preview."""
 
     async def dispatch(self, request: Request, call_next):
         from app.services.locale import (
@@ -1389,6 +1389,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
             reset_locale,
             reset_preview_locale,
             reset_request_origin,
+            explicit_preview_active,
             resolve_locale_from_request,
             resolve_request_origin,
             set_locale,
@@ -1405,8 +1406,9 @@ class LocaleMiddleware(BaseHTTPMiddleware):
         host = request.headers.get("x-forwarded-host") or request.headers.get("host")
         header = request.headers.get(LOCALE_HEADER)
         locale = resolve_locale_from_request(request)
-        # Preview только когда явный override запроса совпал с активной локалью:
-        # иначе обычный трафик на gated-apex был бы помечен как preview.
+        # Preview только на незапертом хосте (localhost, apex до cutover).
+        # На apex после cutover и на ru. токен не перекрашивает страницу и
+        # не ставит noindex.
         explicit = (
             _normalize_locale_token(request.query_params.get(PREVIEW_QUERY))
             or _normalize_locale_token(preview_locale_from_referer(request.headers.get("referer")))
@@ -1414,7 +1416,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
         )
         token = set_locale(locale)
         origin_token = set_request_origin(resolve_request_origin(host))
-        preview_token = set_preview_locale(bool(explicit) and explicit == locale)
+        preview_token = set_preview_locale(explicit_preview_active(host, explicit, locale))
         try:
             response = await call_next(request)
             response.headers.setdefault("Content-Language", locale)
