@@ -9,7 +9,6 @@ import {
   Link,
 } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import LiveTicker from './components/LiveTicker';
 import YandexRSY from './components/YandexRSY';
 import CookieConsent from './components/CookieConsent';
 import Footer from './components/Footer';
@@ -45,6 +44,7 @@ import {
 } from './lib/sitePaths';
 import { WORLD_RATING_TO } from './lib/navItems';
 
+const LiveTicker = lazy(() => import('./components/LiveTicker'));
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
 const About = lazy(() => import('./pages/About'));
 const Methodology = lazy(() => import('./pages/Methodology'));
@@ -255,7 +255,9 @@ function AppRoutes() {
       <YandexRSY />
       {/* Cookie-баннер не монтируется на /embed/* — iframe на чужих сайтах */}
       <CookieConsent />
-      <LiveTicker />
+      <Suspense fallback={<div className="fixed top-0 inset-x-0 z-[110] h-9 border-b border-champagne/15 bg-[#faf7f0]" style={{ height: 36 }} aria-hidden="true" />}>
+        <LiveTicker />
+      </Suspense>
       <Navbar />
       <main className="relative z-0 flex-1 pt-9">
         <ErrorBoundary>

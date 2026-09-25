@@ -288,11 +288,102 @@ def _sort_head_links(links: list[str]) -> list[str]:
 
 
 def _css_preload(head_links: str) -> str:
+    """Полный Tailwind не является LCP-ресурсом: critical CSS уже в head.
+
+    Preload остаётся, но с низким приоритетом, чтобы не обгонять картинку
+    графика и шрифт заголовка (web.dev/articles/optimize-lcp).
+    """
     match = re.search(r'href="(/assets/[^"]+\.css)"', head_links)
     if not match:
         return ""
     href = escape(match.group(1))
-    return f'<link rel="preload" href="{href}" as="style">'
+    return f'<link rel="preload" href="{href}" as="style" fetchpriority="low">'
+
+
+def _lcp_preload_from_chart_img(img) -> str:
+    """Preload первой картинки графика из уже разобранного soup.
+
+    Отдельный проход по телу на каждый SSR-ответ при ~5 млн URL на хост
+    не нужен: picture/srcset появляются в том же разборе, что и responsive.
+    Портрет и альбом взаимоисключающие (media), иначе узкий экран скачает оба.
+    """
+    from urllib.parse import urlsplit
+
+    src = str(img.get("src") or "")
+    if not src or urlsplit(src).scheme in ("http", "https"):
+        return ""
+    href = escape(src)
+    picture = img.find_parent("picture")
+    source = picture.find("source") if picture is not None else None
+    srcset = str(source.get("srcset") or "") if source is not None else ""
+    if srcset:
+        portrait = escape(srcset)
+        return "\n".join((
+            f'<link rel="preload" as="image" href="{portrait}" media="(max-width: 640px)" fetchpriority="high">',
+            f'<link rel="preload" as="image" href="{href}" media="(min-width: 641px)" fetchpriority="high">',
+        ))
+    return f'<link rel="preload" as="image" href="{href}" fetchpriority="high">'
+
+
+def _deprioritize_modulepreload(head_links: str) -> str:
+    """modulepreload не должен обгонять LCP-картинку."""
+    lines = []
+    for line in head_links.splitlines():
+        if "modulepreload" in line.lower() and "fetchpriority" not in line.lower():
+            line = re.sub(r"\s*/?>$", ' fetchpriority="low">', line, count=1)
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def _low_priority_module_scripts(scripts: str) -> str:
+    lines = []
+    for line in scripts.splitlines():
+        if "<script" in line.lower() and "fetchpriority" not in line.lower():
+            line = re.sub(r"<script\b", '<script fetchpriority="low"', line, count=1, flags=re.I)
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def _nonblocking_stylesheets(head_links: str) -> str:
+    """SSR-документ уже стилизован inline critical CSS.
+
+    Render-blocking Tailwind/fonts.css задерживает первую отрисовку текста
+    и картинки. media=print не блокирует рендер; onload переключает на all.
+    Скрипты разрешены CSP (`unsafe-inline`). noscript оставляет CSS без JS.
+    """
+    lines = []
+    for line in head_links.splitlines():
+        if "stylesheet" not in line.lower() or "data-fe-css" in line:
+            lines.append(line)
+            continue
+        href_m = re.search(r'href="([^"]+)"', line)
+        if not href_m:
+            lines.append(line)
+            continue
+        href = href_m.group(1)
+        lines.append(
+            f'<link rel="stylesheet" href="{href}" media="print" data-fe-css="1" '
+            f"fetchpriority=\"low\" onload=\"this.media='all'\">"
+        )
+        lines.append(f'<noscript><link rel="stylesheet" href="{href}"></noscript>')
+    return "\n".join(lines)
+
+
+def _split_early_head_links(head_links: str, *, prioritize_modules: bool) -> tuple[str, str]:
+    """Шрифт и CSS — сразу после critical CSS. modulepreload раньше только
+    когда LCP — текст, а не картинка."""
+    early: list[str] = []
+    late: list[str] = []
+    for line in head_links.splitlines():
+        low = line.lower()
+        is_font = 'as="font"' in low or "as='font'" in low
+        is_css = "stylesheet" in low or "data-fe-css" in low or "<noscript>" in low
+        is_mod = "modulepreload" in low
+        if is_css or is_font or (prioritize_modules and is_mod):
+            early.append(line)
+        else:
+            late.append(line)
+    return "\n".join(early), "\n".join(late)
 
 
 def _format_frequency(value: str | None) -> str:
@@ -505,7 +596,7 @@ def _default_keywords() -> str:
 # Inline critical CSS для SSR-контента (.seo-page): без него при hard refresh
 # виден «голый» HTML до гидратации React — Tailwind bundle не стилизует .seo-page.
 SEO_CRITICAL_CSS = """<style id="seo-critical">
-body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 .seo-page{max-width:56rem;margin:0 auto;padding:2rem 1rem 3rem}
 .seo-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.3em;color:#B8942F;font-weight:600;margin:0 0 .75rem}
 .seo-note{font-size:13px;color:#8a6d1f;background:#fdf6e3;border:1px solid #ecd9a0;border-radius:8px;padding:.5rem .75rem;margin:.5rem 0}
@@ -529,7 +620,7 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-page tbody tr:hover{background:rgba(184,148,47,.05)}
 .seo-page td:last-child,.seo-page th:last-child{text-align:right;font-variant-numeric:tabular-nums}
 .seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04);max-width:100%}
-.seo-chart img{display:block;width:100%;max-width:100%;height:auto}
+.seo-chart img{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:1200/630}
 .seo-chart-link{display:block;text-decoration:none!important;color:inherit}
 .seo-chart-link:hover{opacity:.97}
 .seo-chart figcaption{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:flex-end;gap:.35rem .75rem;font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06);text-align:right}
@@ -627,6 +718,7 @@ body.seo-fast .seo-cta p,body.seo-fast .seo-cta strong{color:#f3f5f8}
 body.seo-fast .seo-cta a.seo-btn{background:#f6f3ec;color:#263044;border:1px solid #d3c4a3}
 body.seo-fast .seo-cta a.seo-btn:hover{background:#fff;color:#263044}
 @media(max-width:640px){body.seo-fast .seo-page{padding:1rem .8rem 2rem}body.seo-fast .seo-topbar-in{padding:.85rem 1rem;gap:.75rem}body.seo-fast .seo-answer{padding:1.2rem;border-radius:20px}body.seo-fast .seo-hero-value{font-size:2.8rem}body.seo-fast .seo-chart{border-radius:18px}body.seo-fast .seo-chart figcaption{font-size:.75rem;padding:.75rem}body.seo-fast .seo-chart img{border-radius:0}body.seo-fast .seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}body.seo-fast .seo-foot{font-size:.75rem}}
+@media(max-width:640px){.seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}}
 
 </style>"""
 
@@ -656,6 +748,18 @@ _SPA_SSR_HIDE_SCRIPT = (
 #
 # RU-константы ниже — эталон и для тестов структуры href. EN — через
 # `_ssr_chrome_*()` / `_ssr_platform_deep_links()` по get_locale().
+# Сборщик поведения не в parser-critical path: модуль вставляется после load,
+# чтобы не конкурировать с LCP-картинкой. type=module обязателен (ESM).
+_BEHAVIOR_COLLECTOR = (
+    "<script>(function(){function loadBehavior(){"
+    "if(document.querySelector('script[src=\"/assets/behavior-standalone.js\"]'))return;"
+    "var s=document.createElement('script');"
+    "s.src='/assets/behavior-standalone.js';s.async=true;s.type='module';"
+    "document.body.appendChild(s);}"
+    "if(document.readyState==='complete')loadBehavior();"
+    "else window.addEventListener('load',loadBehavior,{once:true});"
+    "})();</script>"
+)
 _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
 <nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
@@ -672,7 +776,7 @@ _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
 </div></div>
 <footer class="seo-foot">Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy — <a href="/">forecasteconomy.com</a></footer>
 <a class="seo-honeylink" href="/russia/util/links-exchange" rel="nofollow" aria-hidden="true" tabindex="-1">Обмен ссылками</a>
-<script type="module" src="/assets/behavior-standalone.js" defer></script>"""
+{_BEHAVIOR_COLLECTOR}"""
 
 _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
 <p><strong>Interactive charts, comparisons, and validated forecasts</strong> — official statistics for national economies, their regions, and available countries. Browsing is open to everyone; downloads require a free account.</p>
@@ -680,7 +784,7 @@ _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
 </div></div>
 <footer class="seo-foot">Data come only from official primary sources: national statistical offices, central banks, and official exchanges. Updated as publishers release. © Forecast Economy — <a href="/">forecasteconomy.com</a></footer>
 <a class="seo-honeylink" href="/russia/util/links-exchange" rel="nofollow" aria-hidden="true" tabindex="-1">Link exchange</a>
-<script type="module" src="/assets/behavior-standalone.js" defer></script>"""
+{_BEHAVIOR_COLLECTOR}"""
 
 # Единый выход вглубь платформы для SPA-SSR (include_app=True): без chrome
 # тонкие страницы (/today/*, /calendar/*) оставляли боту только крошки.
@@ -827,13 +931,19 @@ def _yandex_verification_meta() -> str:
 
 def _responsive_chart_images(body: str) -> str:
     """Upgrade legacy inline figures as well as shared-helper figures once."""
-    from bs4 import BeautifulSoup
+    html, _preload = _responsive_charts(body)
+    return html
+
+
+def _responsive_charts(body: str) -> tuple[str, str]:
+    """Один разбор тела: responsive picture и preload LCP-картинки вместе."""
     from urllib.parse import urlsplit
 
     if 'class="seo-chart"' not in body:
-        return body
+        return body, ""
     soup = BeautifulSoup(body, "html.parser")
-    for i, img in enumerate(soup.select(".seo-chart img")):
+    images = soup.select(".seo-chart img")
+    for i, img in enumerate(images):
         src = str(img.get("src", ""))
         route = urlsplit(src).path
         if route.startswith("/og/") and route.endswith(".png"):
@@ -851,7 +961,8 @@ def _responsive_chart_images(body: str) -> str:
         if i == 0:
             img["loading"] = "eager"
             img["fetchpriority"] = "high"
-    return str(soup)
+    preload = _lcp_preload_from_chart_img(images[0]) if images else ""
+    return str(soup), preload
 
 
 def _prepare_quicklink_body(body: str, canonical_path: str) -> str:
@@ -972,7 +1083,6 @@ async def build_document(
     structured = "\n".join(_json_script(item) for item in structured_items)
     extras = extra_head or ""
     hreflang = _hreflang_head(canonical_path)
-    css_preload = _css_preload(assets.head_links)
     og_url = escape(og_image or _absolute("/og-image-v3.png"))
     body_scripts = assets.body_scripts if include_app else ""
     lang = html_lang()
@@ -999,16 +1109,28 @@ async def build_document(
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
             # тупики с одними крошками. React при гидратации заменит #root.
             body = f"{body.rstrip()}\n{_ssr_platform_deep_links()}"
-    body = _responsive_chart_images(body)
+    # Один разбор: picture и preload. Preload до preview-rewrite, чтобы
+    # preview_locale не попал в head (noindex-превью живёт только в body).
+    body, lcp_preload = _responsive_charts(body)
     if is_preview_locale():
         body = _preview_body_urls(body, get_locale())
+    if lcp_preload:
+        head_links = _deprioritize_modulepreload(head_links)
+        body_scripts = _low_priority_module_scripts(body_scripts)
+    css_preload = _css_preload(assets.head_links)
+    head_early, head_late = _split_early_head_links(
+        _nonblocking_stylesheets(head_links),
+        prioritize_modules=not lcp_preload,
+    )
     return f"""<!DOCTYPE html>
 <html lang="{lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{lcp_preload}
 {SEO_CRITICAL_CSS}
 {css_preload}
+{head_early}
 {_consent_bootstrap()}
 <title>{safe_title}</title>
 <meta name="description" content="{safe_desc}">
@@ -1034,7 +1156,7 @@ async def build_document(
 <meta name="twitter:title" content="{safe_title}">
 <meta name="twitter:description" content="{safe_desc}">
 <meta name="twitter:image" content="{og_url}">
-{head_links}
+{head_late}
 {structured}
 </head>
 <body class="{body_class}">

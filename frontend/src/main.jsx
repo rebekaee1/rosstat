@@ -43,6 +43,36 @@ const queryClient = new QueryClient({
 });
 seedQueryClientFromHomeBootstrap(queryClient);
 
-createRoot(document.getElementById('root')).render(
-  <SpaRoot queryClient={queryClient} />,
-);
+function mountApp() {
+  if (window.__feAppMounted) return;
+  const root = document.getElementById('root');
+  if (!root) return;
+  window.__feAppMounted = true;
+  createRoot(root).render(
+    <SpaRoot queryClient={queryClient} />,
+  );
+}
+
+// SSR-документ помечает Tailwind как data-fe-css (media=print → all).
+// Пока таблица стилей не применена, на экране остаётся SSR с critical CSS:
+// первая отрисовка не ждёт бандл. SPA-шелл без этой метки монтируется сразу.
+function mountWhenCssReady() {
+  const links = Array.from(document.querySelectorAll('link[data-fe-css]'));
+  const pending = links.filter((link) => !(link.sheet || link.media === 'all'));
+  if (!pending.length) {
+    mountApp();
+    return;
+  }
+  let left = pending.length;
+  const done = () => {
+    left -= 1;
+    if (left <= 0) mountApp();
+  };
+  pending.forEach((link) => {
+    link.addEventListener('load', done, { once: true });
+    link.addEventListener('error', done, { once: true });
+  });
+  setTimeout(mountApp, 2500);
+}
+
+mountWhenCssReady();

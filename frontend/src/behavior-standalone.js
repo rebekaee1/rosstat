@@ -6,8 +6,9 @@
  *
  * Один исходник — два бандла: SPA импортирует behavior.js как модуль, а этот
  * entry собирается отдельным чанком с фиксированным именем
- * /assets/behavior-standalone.js и подключается строкой в SSR-хроме
- * (seo_renderer.py). Полный паритет сбора: session_start с портретом,
+ * /assets/behavior-standalone.js и вставляется из SSR-хрома после load
+ * (seo_renderer.py), чтобы не делить канал с LCP-картинкой. Если скрипт
+ * приехал после DOMContentLoaded, init идёт сразу. Полный паритет сбора: session_start с портретом,
  * pageview, клики, dwell, scroll, vitals, ошибки. Consent уважается так же.
  */
 import { behaviorInit } from './lib/behavior';
