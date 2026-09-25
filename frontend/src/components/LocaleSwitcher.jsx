@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useLocale, useT } from '../i18n';
+import { canonicalLanguageUrl } from '../i18n/locale';
 
 const LOCALES = [
   { code: 'ru', labelKey: 'nav.locale.ru' },
@@ -122,6 +123,36 @@ export default function LocaleSwitcher() {
         >
           {LOCALES.map((item) => {
             const active = item.code === locale;
+            const href = canonicalLanguageUrl(item.code);
+            const className = cn(
+              FOCUS_RING,
+              'flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors',
+              'hover:bg-obsidian-lighter/80',
+              active ? 'text-champagne bg-champagne/5' : 'text-text-primary',
+            );
+            // Production hosts: real alternate URL, identical to hreflang.
+            // Click still sets the preference cookie so a geo-redirect does not
+            // bounce the visitor back. Localhost keeps the preview button.
+            if (href) {
+              return (
+                <a
+                  key={item.code}
+                  href={href}
+                  hrefLang={item.code}
+                  rel="alternate"
+                  role="menuitem"
+                  aria-current={active ? 'true' : undefined}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    pick(item.code);
+                  }}
+                  className={className}
+                >
+                  <LocaleFlag locale={item.code} />
+                  <span>{t(item.labelKey)}</span>
+                </a>
+              );
+            }
             return (
               <button
                 key={item.code}
@@ -129,12 +160,7 @@ export default function LocaleSwitcher() {
                 role="menuitem"
                 aria-current={active ? 'true' : undefined}
                 onClick={() => pick(item.code)}
-                className={cn(
-                  FOCUS_RING,
-                  'flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors',
-                  'hover:bg-obsidian-lighter/80',
-                  active ? 'text-champagne bg-champagne/5' : 'text-text-primary',
-                )}
+                className={className}
               >
                 <LocaleFlag locale={item.code} />
                 <span>{t(item.labelKey)}</span>

@@ -173,12 +173,14 @@ def _format_number(value) -> str:
 
 def _absolute(path: str, *, canonical: bool = False) -> str:
     """Absolute URL. Canonical links use apex until language cutover."""
-    from app.services.locale import canonical_public_origin, get_request_origin
+    from app.services.locale import (
+        canonical_public_origin,
+        get_request_origin,
+        public_page_url,
+    )
 
     origin = canonical_public_origin() if canonical else get_request_origin()
-    if path == "/":
-        return origin
-    return f"{origin}{path}"
+    return public_page_url(origin, path)
 
 
 def _link(path: str, label: str) -> str:
@@ -543,6 +545,8 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-topnav{display:flex;gap:1rem;font-size:.875rem;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
 .seo-topnav a{text-decoration:none!important;color:rgba(26,26,46,.7)}
 .seo-topnav a:hover{color:#B8942F}
+.seo-lang{margin-left:auto;font-size:.8125rem;font-weight:600;color:#1a1a2e;text-decoration:none;white-space:nowrap}
+.seo-lang:hover{color:#B8942F}
 .seo-hero{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:1rem;padding:1.25rem 1.5rem;margin:0 0 1.25rem;box-shadow:0 1px 3px rgba(26,26,46,.04)}
 .seo-hero-value{font-size:2.4rem;font-weight:700;letter-spacing:-.02em;line-height:1.1;color:#1A1A2E;font-variant-numeric:tabular-nums}
 @media(min-width:768px){.seo-hero-value{font-size:3rem}}
@@ -716,10 +720,14 @@ _SSR_PLATFORM_DEEP_LINKS_EN = f"""
 """
 
 
-def _ssr_chrome_header() -> str:
+def _ssr_chrome_header(canonical_path: str | None = None) -> str:
     from app.services.locale import get_locale
 
-    return _SSR_CHROME_HEADER_EN if get_locale() == "en" else _SSR_CHROME_HEADER
+    header = _SSR_CHROME_HEADER_EN if get_locale() == "en" else _SSR_CHROME_HEADER
+    link = _locale_return_anchor(canonical_path)
+    if not link:
+        return header
+    return header.replace("</div></header>", f"{link}</div></header>", 1)
 
 
 def _ssr_chrome_footer() -> str:
@@ -728,14 +736,18 @@ def _ssr_chrome_footer() -> str:
     return _SSR_CHROME_FOOTER_EN if get_locale() == "en" else _SSR_CHROME_FOOTER
 
 
-def _ssr_platform_deep_links() -> str:
+def _ssr_platform_deep_links(canonical_path: str | None = None) -> str:
     from app.services.locale import get_locale
 
-    return (
+    block = (
         _SSR_PLATFORM_DEEP_LINKS_EN
         if get_locale() == "en"
         else _SSR_PLATFORM_DEEP_LINKS
     )
+    link = _locale_return_anchor(canonical_path)
+    if not link:
+        return block
+    return block.replace("</section>", f"{link}\n</section>", 1)
 
 
 FREQUENCY_LABELS_RU = {
@@ -760,39 +772,81 @@ FLAGSHIP_CODES = tuple(meta.flagship_code for meta in CATEGORY_META.values())
 SSR_LATEST_ROWS = 12
 
 
-def _hreflang_head(canonical_path: str) -> str:
-    """Emit hreflang only after apex EN cutover and when an EN twin is catalogued.
+def _locale_cluster(canonical_path: str) -> dict[str, str] | None:
+    """Reciprocal locale URLs, or None when this document must not join a cluster.
 
-    Until ``settings.apex_locale_en`` is True, apex is still Russian — do not
-    advertise ``hreflang="en"`` → apex (would lie to crawlers).
+    Google and Yandex both require every language version to list itself and
+    the others, with hrefs equal to those pages' canonical URLs. ``x-default``
+    is the English apex: unmatched languages, and the host that negotiates
+    people by IP. Preview and paths without a real English twin stay out —
+    a hreflang target must be an indexable translation, not a 404 or a
+    noindex preview. Yandex no longer reads language alternates from sitemaps;
+    this HTML cluster is the only annotation.
     """
     from app.config import settings
     from app.data.i18n.en_catalog import has_en_path
     from app.services.locale import (
         en_public_origin,
-        og_locale_alternate,
+        is_preview_locale,
+        public_page_url,
         ru_public_origin,
     )
 
-    if not settings.apex_locale_en:
-        return ""
+    if not settings.apex_locale_en or is_preview_locale():
+        return None
 
     path = canonical_path if canonical_path.startswith("/") else f"/{canonical_path}"
     path = path.split("?", 1)[0]
     if path != "/" and path.endswith("/"):
         path = path.rstrip("/")
     if not has_en_path(path):
-        return ""
+        return None
 
-    path_href = "/" if path == "/" else path
-    ru_href = escape(f"{ru_public_origin()}{path_href}")
-    en_href = escape(f"{en_public_origin()}{path_href}")
-    # x-default → apex (EN) when EN exists.
+    en_href = public_page_url(en_public_origin(), path)
+    ru_href = public_page_url(ru_public_origin(), path)
+    return {"ru": ru_href, "en": en_href, "x-default": en_href}
+
+
+def _locale_return_anchor(canonical_path: str | None) -> str:
+    """Crawlable link to the other language. href matches the hreflang cluster.
+
+    The navbar switcher is client-rendered and closed by default, so raw HTML
+    (what Yandex indexes) needs an anchor of its own. The label is the other
+    language's own name.
+    """
+    if not canonical_path:
+        return ""
+    urls = _locale_cluster(canonical_path)
+    if not urls:
+        return ""
+    from app.services.locale import get_locale
+
+    if get_locale() == "en":
+        code, label, href = "ru", "Русский", urls["ru"]
+    else:
+        code, label, href = "en", "English", urls["en"]
+    return (
+        f'<a class="seo-lang" rel="alternate" hreflang="{code}" '
+        f'href="{escape(href)}">{label}</a>'
+    )
+
+
+def _hreflang_head(canonical_path: str) -> str:
+    """Emit hreflang only after apex EN cutover and when an EN twin is catalogued.
+
+    Until ``settings.apex_locale_en`` is True, apex is still Russian — do not
+    advertise ``hreflang="en"`` → apex (would lie to crawlers).
+    """
+    from app.services.locale import og_locale_alternate
+
+    urls = _locale_cluster(canonical_path)
+    if not urls:
+        return ""
     return "\n".join(
         [
-            f'<link rel="alternate" hreflang="ru" href="{ru_href}">',
-            f'<link rel="alternate" hreflang="en" href="{en_href}">',
-            f'<link rel="alternate" hreflang="x-default" href="{en_href}">',
+            f'<link rel="alternate" hreflang="ru" href="{escape(urls["ru"])}">',
+            f'<link rel="alternate" hreflang="en" href="{escape(urls["en"])}">',
+            f'<link rel="alternate" hreflang="x-default" href="{escape(urls["x-default"])}">',
             f'<meta property="og:locale:alternate" content="{og_locale_alternate()}">',
         ]
     )
@@ -991,14 +1045,14 @@ async def build_document(
         # Чистые SSR-страницы получают брендовый хром: шапка-навигация + CTA на
         # платформу + футер об источниках. React-страницы — нет (гидратация
         # заменит #root своим layout'ом). Locale-aware: EN chrome на apex.
-        body = f"{_ssr_chrome_header()}\n{body}\n{_ssr_chrome_footer()}"
+        body = f"{_ssr_chrome_header(canonical_path)}\n{body}\n{_ssr_chrome_footer()}"
     else:
         spa_hide = _SPA_SSR_HIDE_SCRIPT
         if "seo-platform-nav" not in body:
             # SPA-SSR без chrome: бот видит только prerender в #root. Единый блок
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
             # тупики с одними крошками. React при гидратации заменит #root.
-            body = f"{body.rstrip()}\n{_ssr_platform_deep_links()}"
+            body = f"{body.rstrip()}\n{_ssr_platform_deep_links(canonical_path)}"
     body = _responsive_chart_images(body)
     if is_preview_locale():
         body = _preview_body_urls(body, get_locale())

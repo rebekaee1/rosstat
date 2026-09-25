@@ -67,6 +67,27 @@ def en_public_origin() -> str:
     return settings.public_origin
 
 
+def public_page_url(origin: str, path: str) -> str:
+    """Absolute page URL using the same serialization as ``<link rel=canonical>``.
+
+    The site root is the origin without a trailing slash
+    (``https://forecasteconomy.com``, not ``…com/``). Other paths have no
+    trailing slash. hreflang hrefs must be byte-identical to these canonicals:
+    Google drops a cluster when the alternate URL is not the canonical URL.
+    """
+    base = (origin or "").rstrip("/")
+    raw = path or "/"
+    page, sep, query = raw.partition("?")
+    if not page.startswith("/"):
+        page = f"/{page}"
+    if page != "/" and page.endswith("/"):
+        page = page.rstrip("/") or "/"
+    url = base if page == "/" else f"{base}{page}"
+    if sep and query:
+        return f"{url}?{query}"
+    return url
+
+
 def resolve_request_origin(host: str | None = None) -> str:
     """Absolute origin for canonical / sitemap loc from request Host.
 

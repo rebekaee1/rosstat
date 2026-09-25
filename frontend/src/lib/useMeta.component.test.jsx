@@ -3,7 +3,10 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { Link, MemoryRouter, useLocation } from 'react-router-dom';
 import useDocumentMeta from './useMeta';
 
-vi.mock('./siteOrigin', () => ({ getSiteOrigin: () => 'https://ru.forecasteconomy.com' }));
+vi.mock('./siteOrigin', async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, getSiteOrigin: () => 'https://ru.forecasteconomy.com' };
+});
 vi.mock('../i18n/locale', () => ({ resolveBrowserLocale: () => 'ru' }));
 
 const origin = 'https://ru.forecasteconomy.com';
@@ -25,6 +28,13 @@ beforeEach(() => {
 });
 
 describe('useDocumentMeta navigation contracts', () => {
+  it('serializes the home canonical without a trailing slash', () => {
+    render(app({ '/': { title: 'Home', description: 'Macro' } }, '/'));
+    const el = document.querySelector('link[rel="canonical"]');
+    expect(el.getAttribute('href')).toBe(`${origin}`);
+    expect(property('og:url')).toBe(`${origin}`);
+  });
+
   it('uses Router pathname for US canonical and OG without a manually supplied path', () => {
     const path = '/united-states/region/california/building-permits';
     render(app({ [path]: { title: 'Permits', description: 'California data' } }, `${path}?utm_source=test#chart`));

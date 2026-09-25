@@ -7,6 +7,7 @@ import {
   localeCookieDomain,
   languageAlternateOrigin,
   buildLanguageSwitchUrl,
+  canonicalLanguageUrl,
   isProductionLocaleHost,
   stickyPreviewFromPreference,
 } from './locale.js';
@@ -149,6 +150,24 @@ describe('language switcher until cutover', () => {
     }));
     expect(localhostCutover.origin).toBe('http://localhost:3000');
     expect(localhostCutover.searchParams.get('preview_locale')).toBe('en');
+  });
+
+  it('crawlable language URL matches the hreflang canonical, without locale_pref', () => {
+    expect(canonicalLanguageUrl('en', {
+      href: 'https://ru.forecasteconomy.com/?utm_source=yandex',
+      hostname: 'ru.forecasteconomy.com',
+      apexLocaleEn: true,
+    })).toBe('https://forecasteconomy.com');
+    expect(canonicalLanguageUrl('ru', {
+      href: 'https://forecasteconomy.com/russia/indicator/cpi?mode=step-monthly',
+      hostname: 'forecasteconomy.com',
+      apexLocaleEn: true,
+    })).toBe('https://ru.forecasteconomy.com/russia/indicator/cpi');
+    expect(canonicalLanguageUrl('en', {
+      href: 'http://localhost:5173/',
+      hostname: 'localhost',
+      apexLocaleEn: true,
+    })).toBe('');
   });
 });
 

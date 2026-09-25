@@ -318,6 +318,14 @@ def test_hreflang_world_indicator_year_page(world_year_hreflang_client, monkeypa
         "https://forecasteconomy.com/germany/indicator/de-demo_pjan-total-t-nr/2023"
     )
     assert pairs.get("x-default") == pairs.get("en")
+    from bs4 import BeautifulSoup
+    anchor = BeautifulSoup(r.text, "html.parser").select_one("a.seo-lang")
+    assert anchor is not None
+    assert anchor.get("hreflang") == "en"
+    assert anchor.get("href") == (
+        "https://forecasteconomy.com/germany/indicator/"
+        "de-demo_pjan-total-t-nr/2023"
+    )
 
     monkeypatch.setattr(
         __import__("app.config", fromlist=["settings"]).settings,
@@ -329,6 +337,7 @@ def test_hreflang_world_indicator_year_page(world_year_hreflang_client, monkeypa
     )
     assert r2.status_code == 200
     assert 'hreflang="en"' not in r2.text
+    assert 'class="seo-lang"' not in r2.text
 
 
 def test_hreflang_world_vs_page(world_year_hreflang_client):

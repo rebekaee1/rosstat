@@ -272,9 +272,72 @@ def test_hreflang_silent_until_apex_en_cutover(monkeypatch):
     head = _hreflang_head("/")
     assert 'hreflang="ru"' in head
     assert 'hreflang="en"' in head
-    assert "https://ru.forecasteconomy.com/" in head
     assert 'hreflang="x-default"' in head
-    assert "https://forecasteconomy.com/" in head
+    # Root canonical has no trailing slash; hreflang must cite that exact URL.
+    assert 'href="https://ru.forecasteconomy.com"' in head
+    assert 'href="https://forecasteconomy.com"' in head
+    assert 'href="https://forecasteconomy.com/"' not in head
+    assert 'href="https://ru.forecasteconomy.com/"' not in head
+
+
+def test_hreflang_self_url_matches_canonical_and_return_link(monkeypatch):
+    """Each locale canonical is its own host; hreflang and the body link cite it."""
+    from app.config import settings
+    from app.services.locale import (
+        en_public_origin,
+        reset_locale,
+        reset_preview_locale,
+        reset_request_origin,
+        ru_public_origin,
+        set_locale,
+        set_preview_locale,
+        set_request_origin,
+    )
+    from app.services.seo_renderer import (
+        _absolute,
+        _hreflang_head,
+        _locale_return_anchor,
+    )
+
+    monkeypatch.setattr(settings, "apex_locale_en", True)
+    en = en_public_origin().rstrip("/")
+    ru = ru_public_origin().rstrip("/")
+
+    loc = set_locale("en")
+    origin = set_request_origin(en)
+    try:
+        assert _absolute("/", canonical=True) == en
+        assert _absolute("/about", canonical=True) == f"{en}/about"
+        head = _hreflang_head("/about")
+        assert f'hreflang="en" href="{en}/about"' in head
+        assert f'hreflang="ru" href="{ru}/about"' in head
+        assert f'hreflang="x-default" href="{en}/about"' in head
+        anchor = _locale_return_anchor("/about")
+        assert f'hreflang="ru" href="{ru}/about"' in anchor
+        assert ">Русский<" in anchor
+    finally:
+        reset_request_origin(origin)
+        reset_locale(loc)
+
+    loc = set_locale("ru")
+    origin = set_request_origin(ru)
+    try:
+        assert _absolute("/about", canonical=True) == f"{ru}/about"
+        anchor = _locale_return_anchor("/about")
+        assert f'hreflang="en" href="{en}/about"' in anchor
+        assert ">English<" in anchor
+        assert _hreflang_head("/not-a-real-page") == ""
+        assert _locale_return_anchor("/not-a-real-page") == ""
+    finally:
+        reset_request_origin(origin)
+        reset_locale(loc)
+
+    preview = set_preview_locale(True)
+    try:
+        assert _hreflang_head("/") == ""
+        assert _locale_return_anchor("/") == ""
+    finally:
+        reset_preview_locale(preview)
 
 
 def test_en_subdomain_is_en():

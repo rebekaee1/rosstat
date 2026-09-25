@@ -8,6 +8,8 @@
  * (path-identical). Localhost never navigates onto production apex.
  */
 
+import { publicPageUrl } from '../lib/siteOrigin';
+
 export const LOCALE_HEADER = 'X-FE-Locale';
 export const PREVIEW_QUERY = 'preview_locale';
 export const PRODUCTION_APEX_HOSTS = new Set(['forecasteconomy.com', 'www.forecasteconomy.com']);
@@ -219,6 +221,35 @@ export function buildLanguageSwitchUrl(locale, {
     url.searchParams.delete(PREVIEW_QUERY);
   }
   return url.toString();
+}
+
+/**
+ * Clean alternate URL for hreflang / crawlable language links.
+ * No `locale_pref` and no `preview_locale`: those are navigation hints, not
+ * canonicals. Empty string until production hosts actually swap EN=apex / RU=ru.
+ * Root is serialized without a trailing slash, same as the SSR canonical.
+ */
+export function canonicalLanguageUrl(locale, {
+  href,
+  hostname,
+  apexLocaleEn,
+  ruOrigin,
+  enOrigin,
+} = {}) {
+  if (!['ru', 'en'].includes(locale)) return '';
+  const currentHref = href || (typeof window !== 'undefined' ? window.location.href : '');
+  if (!currentHref) return '';
+  const current = new URL(currentHref);
+  const host = hostname || current.hostname;
+  if (!usesHostSwapLanguageSwitch({ hostname: host, apexLocaleEn })) return '';
+  const origin = languageAlternateOrigin(locale, {
+    hostname: host,
+    currentOrigin: current.origin,
+    apexLocaleEn,
+    ruOrigin,
+    enOrigin,
+  });
+  return publicPageUrl(origin, current.pathname);
 }
 
 /** Persist explicit choice, then navigate (preview until cutover, host-swap after). */
