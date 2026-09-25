@@ -99,3 +99,5 @@ e5a2b98a606143f6051b01a5c78db7d3e7825720  # explicit owner GO 2026-09-25; sitema
 9bb910a54476c90fb3095c772c9a0ab6a52c2b1a  # explicit owner GO 2026-09-25; EN BEA units #14 cutover; IndexNow not forced; #13 later
 
 284dfd6545ac461a6aa2ff929f945d86db5a00bc  # explicit owner GO 2026-09-25; cold home SSR #13 cutover; IndexNow not forced
+
+7157061904ac8c42182ff0e6c47828fc42d40f98  # explicit owner GO 2026-09-25; parent tip for frontend cutover harden (cold-home #13 runtime still 284dfd6 via prior wrapper)

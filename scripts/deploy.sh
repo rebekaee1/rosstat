@@ -175,6 +175,32 @@ echo "==> docker compose up -d (все сервисы; тома postgres/redis-s
 # compose-конфиг изменился (лимиты backend/ClickHouse, том sitemap).
 docker compose up -d
 
+# #13 cutover: frontend иногда оставался Created (не слушает :3000), а Caddy
+# уже проксировал → публичный 502. Не ждём 180s «healthy» в пустоту —
+# сразу start, и cutover успешен только при Running+healthy+local :3000.
+ensure_frontend_running() {
+  local cid state
+  cid=$(docker compose ps -q frontend 2>/dev/null || true)
+  if [ -z "$cid" ]; then
+    echo "    frontend missing — compose up -d --no-deps frontend"
+    docker compose up -d --no-deps frontend
+    return
+  fi
+  state=$(docker inspect --format '{{.State.Status}}' "$cid" 2>/dev/null || echo unknown)
+  case "$state" in
+    running) ;;
+    created|exited|dead|paused)
+      echo "    frontend state=${state} — compose up -d --no-deps frontend"
+      docker compose up -d --no-deps frontend
+      ;;
+    *)
+      echo "    frontend unexpected state=${state} — compose up -d --no-deps frontend"
+      docker compose up -d --no-deps frontend
+      ;;
+  esac
+}
+ensure_frontend_running
+
 echo "==> waiting for readiness (до 300s: миграции + seed)"
 ready=""
 for _ in $(seq 1 60); do
@@ -188,14 +214,26 @@ done
 # Frontend healthy до smoke: readiness-цикл выше ждёт только backend, а
 # frontend пересоздаётся секундами позже — первый HTTPS-пробег гонки
 # «health: starting» ловил 502/000 и ложно откатывал годный релиз.
-echo "==> waiting for frontend healthy (до 180s)"
+echo "==> waiting for frontend Started+healthy+listening :3000 (до 180s)"
 fe_ok=""
 for _ in $(seq 1 36); do
-  fe=$(docker inspect --format '{{.State.Health.Status}}' rosstat-frontend-1 2>/dev/null || echo unknown)
-  [ "$fe" = "healthy" ] && { fe_ok=1; break; }
+  ensure_frontend_running
+  fe_st=$(docker inspect --format '{{.State.Status}}' rosstat-frontend-1 2>/dev/null || echo unknown)
+  fe=$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' rosstat-frontend-1 2>/dev/null || echo unknown)
+  if [ "$fe_st" = "running" ] && [ "$fe" = "healthy" ] \
+     && curl -sf -o /dev/null --max-time 3 http://127.0.0.1:3000/; then
+    fe_ok=1; break
+  fi
+  echo "    frontend status=${fe_st} health=${fe} (ожидаем running+healthy+:3000)"
   sleep 5
 done
-[ -n "$fe_ok" ] || { echo "FAIL: frontend не стал healthy за 180s"; docker compose logs frontend --tail=50; rollback; }
+if [ -z "$fe_ok" ]; then
+  echo "FAIL: frontend не Started+healthy+listening за 180s"
+  docker inspect --format 'status={{.State.Status}} health={{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' rosstat-frontend-1 2>/dev/null || true
+  docker compose ps frontend || true
+  docker compose logs frontend --tail=50
+  rollback
+fi
 
 echo "==> cache Redis DB 0 FLUSHDB (SSR/asset-hash); redis-state и DB 1 не трогаем"
 REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env | cut -d= -f2- | tr -d '\"' | tr -d "'")"
