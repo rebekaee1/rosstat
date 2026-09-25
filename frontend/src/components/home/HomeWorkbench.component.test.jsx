@@ -93,11 +93,12 @@ describe('HomeWorkbench', () => {
     expect(screen.queryByRole('searchbox')).toBeNull();
     expect(screen.getByRole('link', { name: /больше показателей/i })).toBeTruthy();
 
+    // Карта монтируется сразу (lazy-stub), шкала лет — только после map-series.
     await waitFor(() => {
       expect(screen.getByTestId('world-map-stub')).toBeTruthy();
+      const timeline = screen.getByTestId('map-timeline-stub');
+      expect(timeline.textContent).toContain('timeline:2024,2025:2025:function');
     });
-    const timeline = screen.getByTestId('map-timeline-stub');
-    expect(timeline.textContent).toContain('timeline:2024,2025:2025:function');
 
     const scope = document.querySelector('[data-block="home-data-scope"]');
     const controls = document.querySelector('[data-block="home-map-controls"]');
