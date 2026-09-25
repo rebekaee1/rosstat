@@ -13,10 +13,17 @@ from datetime import date
 from statistics import median
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import JSONResponse
 from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.cache import cache_get, cache_set, versioned_key
+from app.core.cache import (
+    cache_get,
+    cache_set,
+    get_durable_world_countries,
+    set_durable_world_countries,
+    versioned_key,
+)
 from app.services.api_i18n import api_detail
 from app.services.locale import get_locale
 from app.data.eurostat_listing import (
@@ -118,6 +125,24 @@ from app.services.world_cards import (
     pick_primary,
     resolve_series_for_mode,
 )
+
+
+# Browser/CDN cache for cold-home catalogue + map payloads. Locale is Host-
+# keyed (ru. vs apex), so Vary: Host keeps EN/RU responses from mixing.
+_WORLD_SURFACE_CACHE_CONTROL = (
+    "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
+)
+
+
+def _world_public_json(payload: dict) -> JSONResponse:
+    return JSONResponse(
+        content=payload,
+        headers={
+            "Cache-Control": _WORLD_SURFACE_CACHE_CONTROL,
+            "Vary": "Host",
+        },
+    )
+
 
 router = APIRouter(prefix="/world", tags=["world"])
 
@@ -704,10 +729,19 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
     # (на полном датасете ~8M точек DISTINCT убивал воркеры → 504/500).
     # Forecast publication invalidates "world" repeatedly; country inventory
     # changes only when source ingest changes the catalog or observed signal.
-    cache_key = await versioned_key("world-catalog", f"countries:v8:{get_locale()}")
+    locale = get_locale()
+    cache_key = await versioned_key("world-catalog", f"countries:v8:{locale}")
     cached = await cache_get(cache_key)
     if cached:
-        return cached
+        # Refresh durable mirror so deploy FLUSHDB of DB 0 does not blank home.
+        await set_durable_world_countries(locale, cached)
+        return _world_public_json(cached)
+
+    durable = await get_durable_world_countries(locale)
+    if durable:
+        # Warm DB 0 from state-Redis — next hit skips durable + cold SQL.
+        await cache_set(cache_key, durable, ttl=_CACHE_TTL)
+        return _world_public_json(durable)
 
     # Коррелированный EXISTS: индекс (indicator_id, date) → O(listed), не O(все точки).
     has_signal = (
@@ -822,7 +856,8 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
         "us_states_count": us_states,
     }
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
-    return payload
+    await set_durable_world_countries(locale, payload)
+    return _world_public_json(payload)
 
 
 @router.get("/rating/concepts")
@@ -1084,7 +1119,7 @@ async def world_compare_snapshot(
     )
     cached = await cache_get(cache_key)
     if cached:
-        return cached
+        return _world_public_json(cached)
 
     members = await _concept_members(db, concept)
     mode = ranking_value_mode(concept.slug, members)
@@ -1148,7 +1183,7 @@ async def world_compare_snapshot(
         ),
     }
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
-    return payload
+    return _world_public_json(payload)
 
 
 @router.get("/compare/map-series/{concept_slug}")
@@ -1168,7 +1203,7 @@ async def world_compare_map_series(
     )
     cached = await cache_get(cache_key)
     if cached:
-        return cached
+        return _world_public_json(cached)
 
     members = await _concept_members(db, concept)
     mode = ranking_value_mode(concept.slug, members)
@@ -1240,7 +1275,7 @@ async def world_compare_map_series(
         "benchmark_by_year": benchmark_by_year,
     }
     await cache_set(cache_key, payload, ttl=_CACHE_TTL)
-    return payload
+    return _world_public_json(payload)
 
 
 @router.get("/compare/average/{concept_slug}")

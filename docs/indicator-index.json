@@ -2682,7 +2682,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2901,
+          "line": 2940,
           "kind": "seo"
         },
         {
@@ -8021,12 +8021,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1183,
+          "line": 1200,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1184,
+          "line": 1201,
           "kind": "seo"
         },
         {
@@ -8632,6 +8632,11 @@
         {
           "file": "backend/tests/test_i18n_parity.py",
           "line": 1639,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_i18n_parity.py",
+          "line": 1705,
           "kind": "tests"
         },
         {
@@ -10566,17 +10571,27 @@
         },
         {
           "file": "frontend/src/lib/homeBootstrap.test.js",
-          "line": 29,
-          "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/homeBootstrap.test.js",
-          "line": 31,
+          "line": 33,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/homeBootstrap.test.js",
           "line": 35,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/homeBootstrap.test.js",
+          "line": 39,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/homeBootstrap.test.js",
+          "line": 59,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/homeBootstrap.test.js",
+          "line": 83,
           "kind": "tests"
         },
         {
@@ -11828,7 +11843,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1553,
+          "line": 1592,
           "kind": "seo"
         },
         {
@@ -21892,7 +21907,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1187,
+          "line": 1204,
           "kind": "seo"
         },
         {
@@ -23302,7 +23317,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2646,
+          "line": 2685,
           "kind": "seo"
         },
         {
@@ -23881,7 +23896,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2646,
+          "line": 2685,
           "kind": "seo"
         },
         {
@@ -28472,7 +28487,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1189,
+          "line": 1206,
           "kind": "seo"
         },
         {
@@ -35575,7 +35590,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1552,
+          "line": 1591,
           "kind": "seo"
         },
         {
@@ -39659,12 +39674,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1181,
+          "line": 1198,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2903,
+          "line": 2942,
           "kind": "seo"
         },
         {
@@ -42169,7 +42184,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1185,
+          "line": 1202,
           "kind": "seo"
         },
         {
@@ -44996,27 +45011,27 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 225,
+          "line": 250,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 249,
+          "line": 274,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1694,
+          "line": 1729,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1721,
+          "line": 1756,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1722,
+          "line": 1757,
           "kind": "other"
         },
         {
@@ -46751,37 +46766,37 @@
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 494,
+          "line": 500,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 495,
+          "line": 501,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 496,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_world.py",
-          "line": 497,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_world.py",
-          "line": 498,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_world.py",
-          "line": 499,
+          "line": 502,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world.py",
           "line": 503,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_world.py",
+          "line": 504,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_world.py",
+          "line": 505,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_world.py",
+          "line": 509,
           "kind": "tests"
         },
         {
@@ -47351,7 +47366,7 @@
         },
         {
           "file": "frontend/src/lib/worldApi.js",
-          "line": 359,
+          "line": 376,
           "kind": "other"
         },
         {
@@ -50804,7 +50819,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1182,
+          "line": 1199,
           "kind": "seo"
         },
         {
@@ -55429,7 +55444,7 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 2227,
+          "line": 2262,
           "kind": "other"
         },
         {
@@ -55779,12 +55794,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 498,
+          "line": 515,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1188,
+          "line": 1205,
           "kind": "seo"
         },
         {
@@ -58296,7 +58311,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1186,
+          "line": 1203,
           "kind": "seo"
         },
         {

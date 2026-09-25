@@ -57,6 +57,10 @@ export default function HomeWorkbench({ ratingConcepts }) {
   const snapshot = useWorldCompareSnapshot(concept);
   const mapSeries = useWorldMapSeries(concept);
   const seriesPayload = resolveHomeMapSeries(mapSeries.data, snapshot.data);
+  // Cold home: prefer skeleton over i18n «No data for this year» while APIs load.
+  const mapDataPending = !seriesPayload
+    && (mapSeries.isLoading || snapshot.isLoading)
+    && !(mapSeries.isError && snapshot.isError);
   const fullRatingHref = ratingHref(concept, ratingConcepts?.data?.concepts);
 
   const years = seriesPayload?.years || [];
@@ -262,7 +266,14 @@ export default function HomeWorkbench({ ratingConcepts }) {
               </div>
             )}
             <ol className="mt-2 min-h-0 flex-1 space-y-0.5 overflow-y-auto overscroll-contain">
-              {ranking.length === 0 && (
+              {ranking.length === 0 && mapDataPending && (
+                <li className="space-y-1.5 py-1" aria-hidden="true">
+                  <SkeletonBox className="h-4 w-full rounded" />
+                  <SkeletonBox className="h-4 w-full rounded" />
+                  <SkeletonBox className="h-4 w-3/4 rounded" />
+                </li>
+              )}
+              {ranking.length === 0 && !mapDataPending && (
                 <li className="text-[11px] text-text-tertiary">{t('home.map.noDataYear')}</li>
               )}
               {ranking.map((item, idx) => (

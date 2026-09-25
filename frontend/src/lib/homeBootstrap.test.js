@@ -8,6 +8,10 @@ import {
   seedQueryClientFromHomeBootstrap,
 } from './homeBootstrap';
 import { indicatorsListQueryKey } from './hooks';
+import {
+  worldCompareSnapshotQueryKey,
+  worldCountriesQueryKey,
+} from './worldApi';
 
 function mountBootstrap(payload) {
   const el = document.createElement('script');
@@ -40,5 +44,51 @@ describe('homeBootstrap', () => {
     expect(qc.getQueryData(key)).toEqual(list);
     const cached = qc.getQueryCache().find({ queryKey: key });
     expect(cached?.state.isInvalidated).toBe(true);
+  });
+
+  it('сидит world-countries без invalidate (cold home counters)', () => {
+    const world = {
+      countries: [{ code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany' }],
+      total: 55,
+      world_indicators_count: 38146,
+      russia_macro_indicators_count: 145,
+      regional_indicators_count: 2377,
+    };
+    mountBootstrap({
+      locale: 'en',
+      indicators: [{ code: 'cpi', name: 'CPI', is_listed: true }],
+      worldCountries: world,
+    });
+    const qc = new QueryClient();
+    expect(seedQueryClientFromHomeBootstrap(qc)).toBe(true);
+    const key = worldCountriesQueryKey('en');
+    expect(qc.getQueryData(key)).toEqual(world);
+    const cached = qc.getQueryCache().find({ queryKey: key });
+    expect(cached?.state.isInvalidated).toBe(false);
+  });
+
+  it('сидит map snapshot для дефолтного концепта без invalidate', () => {
+    const snap = {
+      concept: { slug: 'gdp-usd', name: 'GDP', unit: 'billion $' },
+      items: [{
+        country_code: 'US',
+        country_slug: 'united-states',
+        country_name: 'United States',
+        date: '2024-01-01',
+        value: 28000,
+      }],
+    };
+    mountBootstrap({
+      locale: 'en',
+      indicators: [{ code: 'cpi', name: 'CPI', is_listed: true }],
+      mapConcept: 'gdp-usd',
+      mapSnapshot: snap,
+    });
+    const qc = new QueryClient();
+    expect(seedQueryClientFromHomeBootstrap(qc)).toBe(true);
+    const key = worldCompareSnapshotQueryKey('gdp-usd', 'en');
+    expect(qc.getQueryData(key)).toEqual(snap);
+    const cached = qc.getQueryCache().find({ queryKey: key });
+    expect(cached?.state.isInvalidated).toBe(false);
   });
 });
