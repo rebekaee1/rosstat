@@ -95,6 +95,7 @@ async function browserSuite() {
 // ── SSR-suite под YandexBot ──────────────────────────────────────────
 
 const BOT_UA = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
+// /today → /russia/today; hub is 404 when TODAY series have no rows (intentional, not soft-404). CI seeds usd-rub/cpi-yoy/… before smoke.
 const SSR_PAGES = ['/', '/indicator/cpi', '/category/prices', '/regions', '/today'];
 
 async function ssrSuite() {

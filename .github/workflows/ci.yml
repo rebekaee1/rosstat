@@ -138,16 +138,17 @@ jobs:
             sleep 5
           done
           echo "backend not ready in 300s"; docker compose logs backend --tail=100; exit 1
-      # Детерминированные данные для smoke: синтетический ряд cpi вместо
-      # зависимости от внешнего ETL (rosstat может не отвечать раннерам CI).
-      - name: Seed synthetic cpi series
+      # Детерминированные ряды для smoke: без внешнего ETL.
+      # cpi — карточка /indicator/cpi; cpi-yoy + FX/ставка — хаб /today
+      # (пустой хаб намеренно 404, иначе soft-404 в индексе).
+      - name: Seed synthetic series for smoke
         run: |
           docker compose exec -T postgres psql -U rustats -d rustats -c "
             INSERT INTO indicator_data (indicator_id, date, value, created_at)
             SELECT i.id, d::date, 100 + random(), now()
             FROM indicators i,
                  generate_series('2020-01-01'::date, now()::date, interval '1 month') d
-            WHERE i.code = 'cpi'
+            WHERE i.code IN ('cpi', 'cpi-yoy', 'usd-rub', 'eur-rub', 'cny-rub', 'key-rate')
             ON CONFLICT DO NOTHING;"
       - name: Run smoke
         run: node scripts/e2e/smoke.mjs http://localhost:3000

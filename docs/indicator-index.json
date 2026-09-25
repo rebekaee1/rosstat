@@ -4819,6 +4819,11 @@
       },
       "files": [
         {
+          "file": ".github/workflows/ci.yml",
+          "line": 151,
+          "kind": "other"
+        },
+        {
           "file": "CONTEXT.md",
           "line": 5,
           "kind": "other"
@@ -7676,17 +7681,12 @@
       "files": [
         {
           "file": ".github/workflows/ci.yml",
-          "line": 141,
+          "line": 142,
           "kind": "other"
         },
         {
           "file": ".github/workflows/ci.yml",
-          "line": 143,
-          "kind": "other"
-        },
-        {
-          "file": ".github/workflows/ci.yml",
-          "line": 150,
+          "line": 151,
           "kind": "other"
         },
         {
@@ -11346,7 +11346,7 @@
         },
         {
           "file": "scripts/e2e/smoke.mjs",
-          "line": 98,
+          "line": 99,
           "kind": "other"
         },
         {
@@ -13965,6 +13965,16 @@
       },
       "files": [
         {
+          "file": ".github/workflows/ci.yml",
+          "line": 142,
+          "kind": "other"
+        },
+        {
+          "file": ".github/workflows/ci.yml",
+          "line": 151,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 807,
           "kind": "other"
@@ -14122,6 +14132,11 @@
         {
           "file": "scripts/audit-indicator-unification.py",
           "line": 270,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/smoke.mjs",
+          "line": 98,
           "kind": "other"
         }
       ]
@@ -21895,6 +21910,11 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": ".github/workflows/ci.yml",
+          "line": 151,
+          "kind": "other"
+        },
         {
           "file": "CONTEXT.md",
           "line": 5,
@@ -39632,6 +39652,11 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": ".github/workflows/ci.yml",
+          "line": 151,
+          "kind": "other"
+        },
         {
           "file": "CONTEXT.md",
           "line": 5,
@@ -58515,6 +58540,11 @@
       },
       "files": [
         {
+          "file": ".github/workflows/ci.yml",
+          "line": 151,
+          "kind": "other"
+        },
+        {
           "file": "CONTEXT.md",
           "line": 5,
           "kind": "other"
@@ -58867,6 +58897,11 @@
         {
           "file": "frontend/src/pages/EmbedBuilder.jsx",
           "line": 165,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/e2e/smoke.mjs",
+          "line": 98,
           "kind": "other"
         }
       ]
