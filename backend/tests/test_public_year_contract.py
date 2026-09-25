@@ -42,6 +42,33 @@ def test_invalid_month_periods(period):
         paths.og_indicator("russia", "x", period)
 
 
+def test_nginx_og_aliases_and_behavior_standalone_cache():
+    config = (Path(__file__).parents[2] / "frontend/nginx.conf").read_text()
+    rewrites = [(re.compile(p), target) for p, target in re.findall(r'rewrite "([^"]+)" (\S+) break;', config)]
+
+    def first(path: str) -> str:
+        for pattern, target in rewrites:
+            match = pattern.fullmatch(path)
+            if match:
+                return re.sub(r"\$(\d+)", lambda m: match.group(int(m[1])), target)
+        raise AssertionError(path)
+
+    assert first("/og/russia/inflation.png") == "/api/v1/og-image/indicator/cpi.png"
+    assert first("/og/inflation.png") == "/api/v1/og-image/indicator/cpi.png"
+    assert first("/og/russia/inflation/2024.png") == "/api/v1/og-image/indicator/cpi/2024.png"
+    assert first("/og/russia/gdp.png") == "/api/v1/og-image/indicator/gdp-nominal.png"
+    assert first("/og/gdp.png") == "/api/v1/og-image/indicator/gdp-nominal.png"
+    assert first("/og/russia/gdp/2020.png") == "/api/v1/og-image/indicator/gdp-nominal/2020.png"
+    assert first("/og/russia/cpi.png") == "/api/v1/og-image/indicator/cpi.png"
+
+    block = re.search(
+        r"location = /assets/behavior-standalone\.js \{([^}]+)\}",
+        config,
+    )
+    assert block, "behavior-standalone must not inherit immutable /assets/ cache"
+    assert "no-cache" in block.group(1)
+
+
 def test_nginx_routes_and_rewrite_captures_share_contract():
     config = (Path(__file__).parents[2] / "frontend/nginx.conf").read_text()
     locations = [(re.compile(re.sub(r"\(\?<([a-z_]+)>", r"(?P<\1>", p)), body)

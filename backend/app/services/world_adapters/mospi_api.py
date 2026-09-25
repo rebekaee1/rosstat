@@ -38,7 +38,10 @@ logger = logging.getLogger(__name__)
 MOSPI_BASE = "https://api.mospi.gov.in"
 DEFAULT_TIMEOUT_SEC = 90
 DEFAULT_COUNTRY_CODE = "IN"
-_PAGE_LIMIT = 500
+# Open API отвечает HTTP 400 на limit > 200 — с 500 все ряды Индии пустые.
+# 100 страниц × 200 сохраняют прежний потолок ~20 тыс. строк (было 40 × 500).
+_PAGE_LIMIT = 200
+_MAX_PAGES = 100
 _USER_AGENT = "Mozilla/5.0 (compatible; ForecastEconomy/1.0; +https://forecasteconomy.com)"
 
 _MONTH_NAME_TO_NUM: dict[str, int] = {
@@ -630,7 +633,7 @@ class MospiApiAdapter:
             if not chunk:
                 break
             page += 1
-            if page > 40:
+            if page > _MAX_PAGES:
                 break
         if not rows:
             msg = payload.get("msg") if isinstance(payload, dict) else None

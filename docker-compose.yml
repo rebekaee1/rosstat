@@ -48,7 +48,11 @@ services:
     # allkeys-lru безопасен, сессии больше не в этом инстансе.
     # 2026-07-08: 100mb было впритык (региональный SSR-кэш fe:ssr-region:*
     # ~1940 ключей ≈ 95 МБ забивал лимит целиком) — поднято до 256mb.
-    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme} --maxmemory 256mb --maxmemory-policy ${REDIS_CACHE_POLICY:-noeviction}
+    # 2026-09-25: 256mb снова упирается в потолок (allkeys-lru на проде).
+    # maxmemory и cgroup поднимаются вместе: maxmemory ниже cgroup, иначе
+    # Redis ловит OOM-kill раньше собственной политики вытеснения.
+    # Ужать хост: REDIS_MAXMEMORY=256mb REDIS_MEM_LIMIT=320M.
+    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme} --maxmemory ${REDIS_MAXMEMORY:-384mb} --maxmemory-policy ${REDIS_CACHE_POLICY:-noeviction}
     ports:
       - "127.0.0.1:6380:6379"
     volumes:
@@ -57,7 +61,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 320M
+          # Выше maxmemory (384mb): иначе cgroup убьёт Redis раньше LRU.
+          memory: ${REDIS_MEM_LIMIT:-512M}
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
       interval: 10s
@@ -107,10 +112,13 @@ services:
       resources:
         limits:
           # Хост 8 ГБ (после апгрейда 2026-09-03; на 4 ГБ 1536M + postgres
-          # уводили витрину в своп). Защита сайта — analytics_engine и
-          # timeout'ы; cgroup всё ещё потолок, не безлимит.
-          memory: 1536M
-          cpus: '1.0'
+          # уводили витрину в своп). 1536M на проде стабильно ~99% cgroup —
+          # дефолт 2G, CPU выше 1.0, чтобы один воркер не упирался в квоту.
+          # Ужать хост: BACKEND_MEM_LIMIT=1536M BACKEND_CPU_LIMIT=1.0.
+          # Вместе с postgres 2.5G, redis 512M, clickhouse 448M, frontend 256M
+          # запас на 8 ГБ остаётся. cgroup всё ещё потолок, не безлимит.
+          memory: ${BACKEND_MEM_LIMIT:-2G}
+          cpus: ${BACKEND_CPU_LIMIT:-1.5}
     environment:
       RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:${POSTGRES_PASSWORD:-rustats_dev}@postgres:5432/rustats
       RUSTATS_REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379/0
@@ -282,11 +290,17 @@ services:
       backend:
         condition: service_healthy
     restart: unless-stopped
+    # Старый nginx дослушивает запросы, пока compose не поднимет новый.
+    # Порт отпускается только после выхода процесса, не на все 20s.
+    stop_grace_period: 20s
     healthcheck:
       test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+      # Иначе первый промах wget в окне старта помечает контейнер unhealthy
+      # и deploy.sh откатывает уже живой nginx.
+      start_period: 20s
 
   clickhouse:
     image: clickhouse/clickhouse-server:24.8-alpine

@@ -94,3 +94,11 @@ def test_parse_rejects_empty_match():
 def test_create_adapter_default():
     adapter = create_adapter()
     assert adapter.provider == "mospi"
+
+
+def test_page_limit_within_api_max():
+    from app.services.world_adapters.mospi_api import _MAX_PAGES, _PAGE_LIMIT
+
+    assert 1 <= _PAGE_LIMIT <= 200
+    # Прежний потолок истории: 40 страниц × 500 строк.
+    assert _PAGE_LIMIT * _MAX_PAGES >= 500 * 40

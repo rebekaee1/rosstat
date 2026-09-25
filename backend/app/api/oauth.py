@@ -195,9 +195,14 @@ def _oauth_cookie_kwargs() -> dict:
     return kw
 
 
+def _clear_oauth_cookie(resp) -> None:
+    """Те же Secure/HttpOnly/Domain, что у set_cookie, иначе браузер не сотрёт fe_oauth."""
+    resp.delete_cookie(OAUTH_COOKIE, **_oauth_cookie_kwargs())
+
+
 def _fail(error: str, *, to: str = "/login") -> RedirectResponse:
     resp = RedirectResponse(_redirect_with_error(to, error), status_code=302)
-    resp.delete_cookie(OAUTH_COOKIE, path="/", domain=effective_auth_cookie_domain() or None)
+    _clear_oauth_cookie(resp)
     return resp
 
 
@@ -460,7 +465,7 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
     if intent == "login":
         sid, csrf = await session_svc.create_session(str(user.id))
         set_session_cookies(resp, sid, csrf)
-    resp.delete_cookie(OAUTH_COOKIE, path="/", domain=effective_auth_cookie_domain() or None)
+    _clear_oauth_cookie(resp)
     return resp
 
 
