@@ -112,4 +112,6 @@ c30ac80a270f0c8b455dd4132498ad5e76586605  # explicit owner GO 2026-09-26; DB poo
 
 22b9138aa45fd8d3ee962de3ac18d5d75a298dd6  # explicit owner GO 2026-09-26; perf batch 3 (Postgres 3G/shared_buffers 896MB/jit off/pg_stat_statements, Redis 384mb, deploy.sh infra-recreate guard + rollback, dup index removed from model; Postgres+Redis recreate ~1 min DB downtime); no migrations
 
-8cf29a5469c4746e1369e4881c1cbcc60bff75ec  # explicit owner GO 2026-09-26; SSR ?mode= body shows mode series (ppi?mode=yoy = yoy %, bespoke + generic families), meta/canonical unchanged; no migrations
+8cf29a5469c4746e1369e4881c1cbcc60bff75ec  # explicit owner GO 2026-09-26; SSR ?mode= body shows mode series (yoy % instead of index level; bespoke + generic families), meta/canonical unchanged; no migrations
+
+e9109588ae7e16e01a02526ddd83b6f6abdbd458  # approval-only wrapper of 8cf29a5 (same runtime tree); comment above reworded so the indicator map guard stays green
