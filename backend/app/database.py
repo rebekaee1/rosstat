@@ -85,6 +85,25 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         await session.close()
 
 
+async def release_session(db: AsyncSession | None) -> None:
+    """Вернуть соединение сессии в пул (commit read-only транзакции).
+
+    Перед долгими не-DB ожиданиями: Pillow-рендер OG, singleflight-лок,
+    семафор рендера. ``expire_on_commit=False`` — загруженные объекты
+    остаются валидными; следующий execute возьмёт новое соединение.
+    """
+    if db is None:
+        return
+    try:
+        if db.in_transaction():
+            await db.commit()
+    except Exception:  # noqa: BLE001 — не мешаем ответу; соединение закроет get_db
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+
+
 async def get_analytics_db() -> AsyncGenerator[AsyncSession, None]:
     session = analytics_session()
     try:

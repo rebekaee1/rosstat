@@ -130,8 +130,8 @@ def test_data_backed_years_across_public_families(auth_env, auth_client, monkeyp
     sitemap = asyncio.run(seed_and_collect())
     # Exercise real data selection; rendering itself has dedicated image tests.
     from app.api import sitemap as og
-    monkeypatch.setattr("app.services.og_image.cached_og", lambda key: None)
-    monkeypatch.setattr("app.services.og_image.store_og", lambda key, png: None)
+    monkeypatch.setattr("app.services.og_image.cached_og", lambda key, **_kw: None)
+    monkeypatch.setattr("app.services.og_image.store_og", lambda key, png, **_kw: None)
     async def capture_render(renderer, **kwargs):
         assert kwargs["values"]
         return b"\x89PNG\r\n\x1a\n"

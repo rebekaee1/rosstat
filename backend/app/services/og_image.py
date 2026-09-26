@@ -1808,8 +1808,25 @@ _DISK_DIR = Path(os.environ.get("OG_CACHE_DIR", "")) if os.environ.get("OG_CACHE
     else Path(tempfile.gettempdir()) / "fe-og-cache"
 
 
-def _disk_path(code: str) -> Path:
-    return _DISK_DIR / (hashlib.md5(f"{OG_DESIGN_VERSION}:{code}".encode()).hexdigest() + ".png")
+# Perf batch 2: TTL диска раздельный. Картинки «текущих» страниц (последнее
+# значение ряда) живут как раньше — час, иначе после ETL og:image отставал бы.
+# Картинки закрытых лет (год < текущего) по истории не меняются — 3 суток
+# (env OG_DISK_TTL_HISTORICAL_SECONDS); файлы с префиксом «h-».
+# Объём ограничен: уборка раз в _CLEANUP_MIN_INTERVAL на процесс, в потоке,
+# удаляет протухшее и, если каталог больше OG_DISK_MAX_BYTES (3 ГБ), —
+# самые старые файлы до 90% лимита (прод: ~7,9k файлов ≈ 1,9 ГБ при TTL 1 ч).
+_DISK_TTL = float(os.environ.get("OG_DISK_TTL_SECONDS", _CACHE_TTL))
+_DISK_TTL_HISTORICAL = float(os.environ.get("OG_DISK_TTL_HISTORICAL_SECONDS", 3 * 24 * 3600))
+_DISK_MAX_BYTES = int(os.environ.get("OG_DISK_MAX_BYTES", 3 * 1024 ** 3))
+_CLEANUP_MIN_INTERVAL = 600.0
+_HIST_PREFIX = "h-"
+_last_cleanup = 0.0
+_cleanup_lock = threading.Lock()
+
+
+def _disk_path(code: str, historical: bool = False) -> Path:
+    name = hashlib.md5(f"{OG_DESIGN_VERSION}:{code}".encode()).hexdigest() + ".png"
+    return _DISK_DIR / ((_HIST_PREFIX + name) if historical else name)
 
 
 def _remember_og(code: str, png: bytes) -> None:
@@ -1827,15 +1844,16 @@ def _remember_og(code: str, png: bytes) -> None:
         _CACHE[code] = (time.monotonic(), png)
 
 
-def cached_og(code: str) -> bytes | None:
+def cached_og(code: str, *, historical: bool = False) -> bytes | None:
     with _CACHE_LOCK:
         entry = _CACHE.get(code)
         if entry and time.monotonic() - entry[0] < _CACHE_TTL:
             return entry[1]
         _CACHE.pop(code, None)
+    ttl = _DISK_TTL_HISTORICAL if historical else _DISK_TTL
     try:
-        p = _disk_path(code)
-        if p.exists() and time.time() - p.stat().st_mtime < _CACHE_TTL:
+        p = _disk_path(code, historical)
+        if p.exists() and time.time() - p.stat().st_mtime < ttl:
             png = p.read_bytes()
             _remember_og(code, png)
             return png
@@ -1844,12 +1862,74 @@ def cached_og(code: str) -> bytes | None:
     return None
 
 
-def store_og(code: str, png: bytes) -> None:
+def cleanup_og_disk(now: float | None = None) -> dict[str, int]:
+    """Удалить протухшие OG-файлы и ужать каталог до лимита объёма.
+
+    Один проход os.scandir (без glob+stat на каждый файл дважды). Синхронная:
+    из event loop звать только через поток (store_og_async это делает).
+    """
+    now = time.time() if now is None else now
+    removed = 0
+    kept: list[tuple[float, int, str]] = []
+    total = 0
+    try:
+        entries = list(os.scandir(_DISK_DIR))
+    except OSError:
+        return {"removed": 0, "kept": 0, "bytes": 0}
+    for e in entries:
+        if not e.name.endswith(".png"):
+            continue
+        try:
+            st = e.stat()
+        except OSError:
+            continue
+        ttl = _DISK_TTL_HISTORICAL if e.name.startswith(_HIST_PREFIX) else _DISK_TTL
+        if st.st_mtime < now - 2 * ttl:
+            try:
+                os.unlink(e.path)
+                removed += 1
+            except OSError:
+                pass
+            continue
+        kept.append((st.st_mtime, st.st_size, e.path))
+        total += st.st_size
+    if total > _DISK_MAX_BYTES:
+        target = int(_DISK_MAX_BYTES * 0.9)
+        for _mtime, size, path in sorted(kept):
+            if total <= target:
+                break
+            try:
+                os.unlink(path)
+                total -= size
+                removed += 1
+            except OSError:
+                pass
+    return {"removed": removed, "kept": len(kept), "bytes": total}
+
+
+def _maybe_cleanup() -> None:
+    """Не чаще раза в _CLEANUP_MIN_INTERVAL на процесс и не параллельно."""
+    global _last_cleanup
+    now = time.monotonic()
+    if now - _last_cleanup < _CLEANUP_MIN_INTERVAL:
+        return
+    if not _cleanup_lock.acquire(blocking=False):
+        return
+    try:
+        if now - _last_cleanup < _CLEANUP_MIN_INTERVAL:
+            return
+        _last_cleanup = now
+        cleanup_og_disk()
+    finally:
+        _cleanup_lock.release()
+
+
+def store_og(code: str, png: bytes, *, historical: bool = False) -> None:
     _remember_og(code, png)
     tmp: Path | None = None
     try:
         _DISK_DIR.mkdir(parents=True, exist_ok=True)
-        destination = _disk_path(code)
+        destination = _disk_path(code, historical)
         # Separate workers may render the same key concurrently. A shared
         # hash.tmp can be replaced while another writer still owns its inode.
         # Each writer closes its unique sibling before atomic publication.
@@ -1860,15 +1940,9 @@ def store_og(code: str, png: bytes) -> None:
             handle.write(png)
         tmp.replace(destination)
         tmp = None
-        # Редкая (≈1/200 записей) уборка протухших файлов, чтобы каталог не рос вечно.
+        # Редкая уборка (≈1/200 записей, не чаще раза в 10 мин на процесс).
         if random.random() < 0.005:
-            cutoff = time.time() - 2 * _CACHE_TTL
-            for f in _DISK_DIR.glob("*.png"):
-                try:
-                    if f.stat().st_mtime < cutoff:
-                        f.unlink()
-                except OSError:
-                    continue
+            _maybe_cleanup()
     except OSError:
         logger.debug("OG disk cache write failed for %s", code, exc_info=True)
     finally:
@@ -1877,3 +1951,14 @@ def store_og(code: str, png: bytes) -> None:
                 tmp.unlink(missing_ok=True)
             except OSError:
                 pass
+
+
+async def store_og_async(code: str, png: bytes, *, historical: bool = False) -> None:
+    """store_og вне event loop: запись файла и редкая уборка каталога
+    (scandir тысяч файлов) раньше блокировали loop всех запросов воркера."""
+    import asyncio
+
+    if historical:
+        await asyncio.to_thread(store_og, code, png, historical=True)
+    else:
+        await asyncio.to_thread(store_og, code, png)

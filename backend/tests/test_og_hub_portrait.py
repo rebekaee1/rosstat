@@ -72,7 +72,7 @@ def test_long_comparison_title_has_clear_surface():
 def test_endpoint_cache_keys_separate_portrait_from_landscape(auth_env,monkeypatch,path):
     from fastapi.testclient import TestClient
     keys=[]
-    monkeypatch.setattr(og_image,"cached_og",lambda key: keys.append(key) or b"png")
+    monkeypatch.setattr(og_image,"cached_og",lambda key, **_kw: keys.append(key) or b"png")
     with TestClient(auth_env["app"]) as client:
         assert client.get(path).status_code==200
         assert client.get(path+("&" if "?" in path else "?")+"portrait=1").status_code==200
@@ -108,8 +108,8 @@ def test_country_endpoint_keeps_observation_date_and_actual_source(auth_env,monk
             await db.commit()
     asyncio.run(seed())
     captured=[]
-    monkeypatch.setattr(og_image,"cached_og",lambda key:None)
-    monkeypatch.setattr(og_image,"store_og",lambda *args:None)
+    monkeypatch.setattr(og_image,"cached_og",lambda key, **_kw:None)
+    monkeypatch.setattr(og_image,"store_og",lambda *args, **_kw:None)
     monkeypatch.setattr(og_image,"render_world_country_og",lambda **kw:captured.append(kw) or b"png")
     with TestClient(auth_env["app"]) as client:
         response=client.get("/api/v1/og-image/world/united-states.png?portrait=1",headers={"X-FE-Locale":"en"})
@@ -169,8 +169,8 @@ def test_world_comparison_preserves_dates_and_canonical_column_order(auth_env,mo
     asyncio.run(seed())
     captured=[]
     monkeypatch.setattr(database,"async_session",auth_env["session_maker"])
-    monkeypatch.setattr(og_image,"cached_og",lambda key:None)
-    monkeypatch.setattr(og_image,"store_og",lambda *args:None)
+    monkeypatch.setattr(og_image,"cached_og",lambda key, **_kw:None)
+    monkeypatch.setattr(og_image,"store_og",lambda *args, **_kw:None)
     monkeypatch.setattr(og_image,"render_region_vs_og",lambda **kw:captured.append(kw) or b"png")
     with TestClient(auth_env["app"]) as client:
         r=client.get("/api/v1/og-image/world-vs/germany-vs-france/population.png?portrait=1",headers={"X-FE-Locale":"en"})

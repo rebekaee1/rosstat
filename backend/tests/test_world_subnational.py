@@ -595,8 +595,8 @@ def test_subnational_indicator_og_uses_localized_source(
     asyncio.run(update_sources())
     captured = []
     cache_keys = []
-    monkeypatch.setattr(og_image, "cached_og", lambda key: cache_keys.append(key))
-    monkeypatch.setattr(og_image, "store_og", lambda *args: None)
+    monkeypatch.setattr(og_image, "cached_og", lambda key, **_kw: cache_keys.append(key))
+    monkeypatch.setattr(og_image, "store_og", lambda *args, **_kw: None)
     monkeypatch.setattr(
         og_image, "render_indicator_og", lambda **kwargs: captured.append(kwargs) or b"png"
     )
@@ -643,8 +643,8 @@ def test_subnational_portrait_uses_real_month_and_visible_picture(subnational_cl
     from app.services import og_image
 
     captured=[]
-    monkeypatch.setattr(og_image, "cached_og", lambda key: None)
-    monkeypatch.setattr(og_image, "store_og", lambda *args: None)
+    monkeypatch.setattr(og_image, "cached_og", lambda key, **_kw: None)
+    monkeypatch.setattr(og_image, "store_og", lambda *args, **_kw: None)
     monkeypatch.setattr(og_image, "render_rating_og", lambda **kw: captured.append(kw) or b"png")
     response=subnational_client.get("/api/v1/og-image/world-regions/united-states.png?portrait=1",headers={"X-FE-Locale":"en"})
     assert response.status_code==200

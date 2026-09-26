@@ -463,8 +463,8 @@ def test_world_mean_preserves_unit_without_inventing_annual_total(locale, unit):
 def test_world_annual_og_selects_exact_year_and_matches_observation_summary(world_year_client, monkeypatch):
     from app.services import og_image
     captured = []
-    monkeypatch.setattr(og_image, "cached_og", lambda key: None)
-    monkeypatch.setattr(og_image, "store_og", lambda *args: None)
+    monkeypatch.setattr(og_image, "cached_og", lambda key, **_kw: None)
+    monkeypatch.setattr(og_image, "store_og", lambda *args, **_kw: None)
     monkeypatch.setattr(og_image, "render_indicator_og", lambda **kw: captured.append(kw) or b"png")
     response = world_year_client.get(f"/api/v1/og-image/world/germany/{CODE_ANNUAL}/2023.png?portrait=1")
     assert response.status_code == 200

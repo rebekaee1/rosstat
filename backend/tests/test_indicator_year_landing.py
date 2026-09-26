@@ -332,8 +332,8 @@ def test_annual_og_hero_matches_annual_answer_and_phone_cache_is_separate(year_l
     from app.services import og_image
     from app.services.display import annual_summary
     captured, keys = [], []
-    monkeypatch.setattr(og_image, "cached_og", lambda key: None)
-    monkeypatch.setattr(og_image, "store_og", lambda key, image: keys.append(key))
+    monkeypatch.setattr(og_image, "cached_og", lambda key, **_kw: None)
+    monkeypatch.setattr(og_image, "store_og", lambda key, image, **_kw: keys.append(key))
     monkeypatch.setattr(og_image, "render_indicator_og", lambda **kw: captured.append(kw) or b"png")
     for query in ("", "?portrait=1"):
         response = year_landing_client.get("/api/v1/og-image/indicator/cpi/2024.png" + query)
@@ -348,8 +348,8 @@ def test_annual_og_hero_matches_annual_answer_and_phone_cache_is_separate(year_l
 def test_historical_og_selects_requested_year_among_neighbors(year_landing_client, monkeypatch):
     from app.services import og_image
     captured = []
-    monkeypatch.setattr(og_image, "cached_og", lambda key: None)
-    monkeypatch.setattr(og_image, "store_og", lambda *args: None)
+    monkeypatch.setattr(og_image, "cached_og", lambda key, **_kw: None)
+    monkeypatch.setattr(og_image, "store_og", lambda *args, **_kw: None)
     monkeypatch.setattr(og_image, "render_indicator_og", lambda **kw: captured.append(kw) or b"png")
     response = year_landing_client.get("/api/v1/og-image/indicator/population/2023.png")
     assert response.status_code == 200

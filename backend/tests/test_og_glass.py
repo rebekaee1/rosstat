@@ -187,8 +187,8 @@ def test_region_map_og_uses_requested_year_not_latest(auth_env, monkeypatch):
             await db.commit()
     asyncio.run(seed())
     captured, keys = [], []
-    monkeypatch.setattr(og_image,"cached_og",lambda key:None)
-    monkeypatch.setattr(og_image,"store_og",lambda key, png:keys.append(key))
+    monkeypatch.setattr(og_image,"cached_og", lambda key, **_kw:None)
+    monkeypatch.setattr(og_image,"store_og", lambda key, png, **_kw:keys.append(key))
     monkeypatch.setattr(og_image,"render_rating_og",lambda **kw:captured.append(kw) or b"png")
     with TestClient(auth_env["app"]) as client:
         page = client.get("/seo/regions/map/chislennost-naseleniya?year=2020")
