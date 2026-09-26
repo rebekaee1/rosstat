@@ -102,6 +102,46 @@ def section_lastmods(origin: str) -> dict[str, str]:
     return {str(name): str(stamp) for name, stamp in raw.items() if stamp}
 
 
+_LOC = re.compile(rb"<loc>([^<]+)</loc>")
+
+
+def iter_published_paths(origin: str):
+    """Пути (path[?query]) опубликованной генерации хоста в порядке секций.
+
+    Порядок секций в stats = порядок сборки = приоритет обхода
+    (`site_urls._SIMPLE_SECTION_ORDER`). Читает готовые файлы без БД —
+    переобход Вебмастера не пересобирает ~5 млн URL запросами (keyset +
+    оконные границы чанков по 16 млн world_data_points), которые не
+    укладываются в statement_timeout. ``<image:loc>`` не совпадает с
+    шаблоном ``<loc>``. Синхронный генератор: вызывать из потока.
+    Пусто, если генерации для хоста нет.
+    """
+    from html import unescape
+
+    generation = _current_generation()
+    if generation is None:
+        return
+    host = urlparse(origin).hostname
+    host_stats = _read_json(generation / STATS_NAME).get("hosts", {}).get(host) or {}
+    for name in host_stats.get("sections") or {}:
+        if not _SECTION.fullmatch(str(name)):
+            continue
+        path = generation / str(host) / f"sitemap-{name}.xml"
+        try:
+            raw = path.read_bytes()
+        except OSError:
+            logger.warning("Published sitemap shard missing: %s", path)
+            continue
+        for match in _LOC.finditer(raw):
+            parsed = urlparse(unescape(match.group(1).decode("utf-8", "replace")).strip())
+            yield parsed.path + (f"?{parsed.query}" if parsed.query else "")
+
+
+def has_published_generation(origin: str) -> bool:
+    host = urlparse(origin).hostname
+    return bool(read_stats().get("hosts", {}).get(host, {}).get("sections"))
+
+
 def url_count_from_stats() -> int | None:
     total = read_stats().get("urls_total")
     return int(total) if total is not None else None

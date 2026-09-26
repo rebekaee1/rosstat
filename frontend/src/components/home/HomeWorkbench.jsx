@@ -1,4 +1,6 @@
-import { lazy, Suspense, useMemo, useState } from 'react';
+import {
+  lazy, startTransition, Suspense, useEffect, useMemo, useState,
+} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import {
@@ -33,8 +35,34 @@ import HomeDataScope from './HomeDataScope';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
 
-const WorldMap = lazy(() => import('../WorldMap'));
+const loadWorldMap = () => import('../WorldMap');
+const WorldMap = lazy(loadWorldMap);
 const MapTimeline = lazy(() => import('../MapTimeline'));
+
+/**
+ * true после первого кадра: карта (SVG ~250 стран + d3-geo) монтируется
+ * низкоприоритетным transition уже после первой отрисовки hero/поиска,
+ * чтобы не удлинять первую длинную задачу. Чанк карты при этом начинает
+ * качаться сразу. Плейсхолдер того же размера — без CLS.
+ */
+function useAfterFirstPaint() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    loadWorldMap().catch(() => {});
+    let timer = null;
+    const raf = typeof window.requestAnimationFrame === 'function'
+      ? window.requestAnimationFrame(() => {
+        timer = window.setTimeout(() => startTransition(() => setReady(true)), 0);
+      })
+      : null;
+    if (raf == null) timer = window.setTimeout(() => startTransition(() => setReady(true)), 0);
+    return () => {
+      if (raf != null && typeof window.cancelAnimationFrame === 'function') window.cancelAnimationFrame(raf);
+      if (timer != null) window.clearTimeout(timer);
+    };
+  }, []);
+  return ready;
+}
 
 /**
  * Главная: intro и scope сверху; ниже единый блок «показатели + карта».
@@ -47,6 +75,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
   const navigate = useNavigate();
   const [picked, setPicked] = useState(null);
   const [mapYear, setMapYear] = useState(null);
+  const mapMounted = useAfterFirstPaint();
 
   const countriesQ = useWorldCountries();
   const mapConcepts = useMemo(
@@ -215,30 +244,34 @@ export default function HomeWorkbench({ ratingConcepts }) {
         */}
         <div className="relative">
           <div className="min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:ml-[calc(18rem+1.25rem)]">
-            <Suspense fallback={<SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />}>
-              <WorldMap
-                countries={mapCountries}
-                valuesByCode={valuesByCode}
-                detailsByCode={detailsByCode}
-                unit={conceptUnit}
-                metricName={conceptName}
-                periodLabel={activeYear ? String(activeYear) : ''}
-                colorMode={conceptColorMode(concept)}
-                colorDirection={sortDirection}
-                defaultScope="world"
-                onSelect={onSelectCountry}
-              />
-              {years.length > 1 && activeYear != null && (
-                <div className="mt-3 px-0.5 sm:mt-4 sm:px-1">
-                  <MapTimeline
-                    years={years}
-                    year={activeYear}
-                    onYearChange={setMapYear}
-                    metric={`home-world:${concept}`}
-                  />
-                </div>
-              )}
-            </Suspense>
+            {!mapMounted ? (
+              <SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />
+            ) : (
+              <Suspense fallback={<SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />}>
+                <WorldMap
+                  countries={mapCountries}
+                  valuesByCode={valuesByCode}
+                  detailsByCode={detailsByCode}
+                  unit={conceptUnit}
+                  metricName={conceptName}
+                  periodLabel={activeYear ? String(activeYear) : ''}
+                  colorMode={conceptColorMode(concept)}
+                  colorDirection={sortDirection}
+                  defaultScope="world"
+                  onSelect={onSelectCountry}
+                />
+                {years.length > 1 && activeYear != null && (
+                  <div className="mt-3 px-0.5 sm:mt-4 sm:px-1">
+                    <MapTimeline
+                      years={years}
+                      year={activeYear}
+                      onYearChange={setMapYear}
+                      metric={`home-world:${concept}`}
+                    />
+                  </div>
+                )}
+              </Suspense>
+            )}
           </div>
 
           <div className="relative z-10 mt-4 flex max-h-[22rem] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:max-h-none lg:w-[18rem]">

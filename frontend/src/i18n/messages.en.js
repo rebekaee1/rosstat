@@ -1133,7 +1133,6 @@ export default {
   'chart.range.1y': '1Y',
   'chart.range.25y': '25Y',
   'chart.legend.actual': 'Actual',
-  'chart.forecastRange': 'Forecast range',
   'chart.forecastUnavailable': 'Forecast is not available for this view',
   'chart.forecastAria': 'Show forecast',
   'chart.methodologyHint': 'Want to learn how the forecast is calculated?',

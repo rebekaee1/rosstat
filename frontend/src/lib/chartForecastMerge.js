@@ -36,17 +36,7 @@ export function mergeActualForecastChartSeries(
 
   for (const fv of fcValues) {
     if (!actualDates.has(fv.date)) {
-      merged.push({
-        date: fv.date,
-        forecast: fv.value,
-        ...(fv.lower_bound != null && fv.upper_bound != null
-          ? {
-            forecastLower: fv.lower_bound,
-            forecastUpper: fv.upper_bound,
-            forecastRange: [fv.lower_bound, fv.upper_bound],
-          }
-          : {}),
-      });
+      merged.push({ date: fv.date, forecast: fv.value });
     }
   }
 

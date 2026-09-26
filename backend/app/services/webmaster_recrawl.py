@@ -16,6 +16,7 @@ FLUSHDB кэша). Когда весь реестр пройден, множес
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from app.config import settings
@@ -91,9 +92,9 @@ async def recrawl_daily_job(
         return {"submitted": 0, "quota": 0}
 
     from app.services.site_urls import collect_all_paths, filter_recrawl_paths
+    from app.services.sitemap_static import has_published_generation
 
     async with async_session() as db:
-        paths = await collect_all_paths(db)
         # Приоритет спроса (2026-08-23): страницы, на которые больше всего
         # «потерянных показов» из поиска Яндекса, идут первыми — переобход
         # по спросу, а не только по порядку реестра.
@@ -106,17 +107,37 @@ async def recrawl_daily_job(
         except Exception:
             logger.exception("Recrawl job: demand priority failed, fallback to registry")
             demand = []
-
-    # Защитный слой: даже если junk снова попадёт в реестр (или останется в
-    # старом курсоре), помечаем skip без POST — квота не горит, курсор идёт дальше.
-    eligible, skipped = filter_recrawl_paths(paths)
-    eligible_set = set(eligible)
-    # Спрос-страницы, которых нет в реестре (например, битый матчинг), не подаём.
-    demand_first = [p for p, _lost in demand if p in eligible_set]
-
-    from app.services.yandex_client import YandexApiError
+        # Commit/release before the long registry pass: no pool slot held idle.
+        await db.commit()
 
     redis = await get_state_redis()
+
+    if has_published_generation(base):
+        # Реестр = опубликованная ночная генерация sitemap этого хоста (те же
+        # URL и порядок секций, что видит робот). Разбор файлов в потоке:
+        # ~5 млн <loc> не блокируют event loop, БД не трогается. Прежний путь
+        # (collect_all_paths) падал 2026-09-26 по statement_timeout на
+        # count(*) мировых лет по 16 млн world_data_points.
+        already = set(await redis.smembers(cursor_key))
+        scan = await asyncio.to_thread(
+            _scan_published_registry, base, {p for p, _lost in demand}, already, remaining,
+        )
+        eligible = scan["regular"]
+        eligible_total = scan["eligible_total"]
+        skipped = scan["skipped"]
+        demand_first = [p for p, _lost in demand if p in scan["demand_found"]]
+    else:
+        async with async_session() as db:
+            paths = await collect_all_paths(db)
+        # Защитный слой: даже если junk снова попадёт в реестр (или останется в
+        # старом курсоре), помечаем skip без POST — квота не горит, курсор идёт дальше.
+        eligible, skipped = filter_recrawl_paths(paths)
+        eligible_total = len(eligible)
+        eligible_set = set(eligible)
+        # Спрос-страницы, которых нет в реестре (например, битый матчинг), не подаём.
+        demand_first = [p for p, _lost in demand if p in eligible_set]
+
+    from app.services.yandex_client import YandexApiError
     if skipped:
         # Batch SADD — junk из прошлых циклов / query-варианты не блокируют прогресс.
         await redis.sadd(cursor_key, *skipped)
@@ -178,7 +199,7 @@ async def recrawl_daily_job(
         demand_submitted,
         len(skipped),
         total_submitted,
-        len(eligible),
+        eligible_total,
         wm_host_id,
     )
     return {
@@ -187,6 +208,42 @@ async def recrawl_daily_job(
         "quota": remaining,
         "cursor": total_submitted,
         "skipped_noncanonical": len(skipped),
-        "eligible": len(eligible),
+        "eligible": eligible_total,
         "origin": base,
+    }
+
+
+def _scan_published_registry(
+    origin: str, demand: set[str], already: set[str], need: int,
+) -> dict:
+    """Один проход по опубликованным файлам хоста (синхронно, для to_thread).
+
+    regular — первые ``need`` подаваемых путей реестра, ещё не бывших в
+    курсоре и не из спроса (спрос подаётся первым отдельно); demand_found —
+    спрос-пути, реально присутствующие в реестре; eligible_total — размер
+    подаваемого реестра (для лога курсора); skipped — неканонические пути.
+    """
+    from app.services.site_urls import is_recrawl_eligible
+    from app.services.sitemap_static import iter_published_paths
+
+    regular: list[str] = []
+    skipped: list[str] = []
+    demand_found: set[str] = set()
+    eligible_total = 0
+    for path in iter_published_paths(origin):
+        if not is_recrawl_eligible(path):
+            if path not in already:
+                skipped.append(path)
+            continue
+        eligible_total += 1
+        if path in demand:
+            demand_found.add(path)
+            continue
+        if len(regular) < need and path not in already:
+            regular.append(path)
+    return {
+        "regular": regular,
+        "skipped": skipped,
+        "demand_found": demand_found,
+        "eligible_total": eligible_total,
     }

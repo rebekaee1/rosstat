@@ -61,14 +61,12 @@ async def state_forecast(
     methodology = (
         "Our forecast uses a separate Python model for the series frequency. "
         "We test its full horizon on rolling historical windows against a seasonal-naive benchmark; "
-        "only a model with MASE below 1 and at least 2% lower error is shown. "
-        "The band is an indicative range derived from historical forecast errors, not a guarantee."
+        "only a model with MASE below 1 and at least 2% lower error is shown."
         if en else
         "Наш прогноз строит отдельная Python-модель для частоты ряда. "
         "Мы проверяем весь её горизонт на последовательных исторических отрезках и сравниваем "
         "с сезонной наивной моделью. Публикуем результат только при MASE ниже 1 "
-        "и ошибке минимум на 2% меньше ориентира. Диапазон рассчитан по ошибкам "
-        "исторической проверки и не гарантирует будущий результат."
+        "и ошибке минимум на 2% меньше ориентира."
     )
     return {
         "available": True,

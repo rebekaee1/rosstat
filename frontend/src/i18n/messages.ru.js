@@ -1134,7 +1134,6 @@ export default {
   'chart.range.1y': '1 год',
   'chart.range.25y': '25 лет',
   'chart.legend.actual': 'Факт',
-  'chart.forecastRange': 'Диапазон прогноза',
   'chart.forecastUnavailable': 'Прогноз для этого режима недоступен',
   'chart.forecastAria': 'Показать прогноз',
   'chart.methodologyHint': 'Хотите узнать, как рассчитывается прогноз?',

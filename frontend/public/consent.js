@@ -2,8 +2,9 @@
  * Consent-bootstrap — единственная точка загрузки Яндекс.Метрики и РСЯ.
  *
  * Модель согласия (152-ФЗ, подразумеваемое согласие): продолжая пользоваться
- * сайтом, посетитель соглашается на cookie. По умолчанию трекеры (Метрика +
- * РСЯ) грузятся сразу — баннер CookieConsent.jsx лишь информирует. Явный
+ * сайтом, посетитель соглашается на cookie. По умолчанию трекеры разрешены:
+ * Метрика ставит хит на window.load и подключает tag.js на idle, РСЯ — после
+ * доверенного ввода. Баннер CookieConsent.jsx лишь информирует. Явный
  * отказ текущей редакции политики (analytics/ads=false при v==CURRENT_V)
  * уважаем: трекеры не грузим. Запись хранится в localStorage (`fe:consent:v1`).
  * CURRENT_V обязан совпадать с CONSENT_VERSION в frontend/src/lib/consent.js.
@@ -202,15 +203,52 @@
     return fire;
   }
 
-  function loadMetrika() {
+  var METRIKA_SRC = 'https://mc.yandex.ru/metrika/tag.js?id=' + COUNTER;
+
+  // Очередь ym() — официальный сниппет Метрики: все вызовы (init, hit, цели
+  // reachGoal из приложения) копятся в ym.a и разбираются tag.js при загрузке,
+  // поэтому отложенный скрипт не теряет ни одного события.
+  function installMetrikaStub() {
+    window.ym = window.ym || function () { (window.ym.a = window.ym.a || []).push(arguments); };
+    window.ym.l = window.ym.l || (1 * new Date());
+  }
+
+  function injectMetrikaScript() {
+    for (var j = 0; j < document.scripts.length; j++) {
+      if (document.scripts[j].src === METRIKA_SRC) return;
+    }
+    var k = document.createElement('script');
+    var a = document.getElementsByTagName('script')[0];
+    k.async = true;
+    k.src = METRIKA_SRC;
+    // Низкий приоритет: разбор tag.js + Вебвизор не должен делить канал и
+    // main thread с первым кадром приложения.
+    try { k.fetchPriority = 'low'; } catch { /* старые браузеры */ }
+    if (a && a.parentNode) a.parentNode.insertBefore(k, a);
+    else document.head.appendChild(k);
+  }
+
+  // tag.js (~250 КБ + Вебвизор) — самая тяжёлая задача на main thread после
+  // гидратации. Хит уже стоит в очереди ym(), сам скрипт подключаем, когда
+  // браузер простаивает (timeout — чтобы визит не потерялся, если страница так
+  // и не стала idle). Явный клик по баннеру и проверка счётчика в интерфейсе
+  // Метрики (UA YandexMetrika) — сразу.
+  function scheduleMetrikaScript(immediate) {
+    var checker = false;
+    try { checker = /YandexMetrika/i.test(navigator.userAgent || ''); } catch { checker = false; }
+    if (immediate || checker) {
+      injectMetrikaScript();
+      return;
+    }
+    var run = function () { injectMetrikaScript(); };
+    if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(run, { timeout: 2000 });
+    else setTimeout(run, 1200);
+  }
+
+  function loadMetrika(immediate) {
     if (loaded.analytics) return;
     loaded.analytics = true;
-    (function (m, e, t, r, i, k, a) {
-      m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
-      m[i].l = 1 * new Date();
-      for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
-      k = e.createElement(t); a = e.getElementsByTagName(t)[0]; k.async = 1; k.src = r; a.parentNode.insertBefore(k, a);
-    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + COUNTER, 'ym');
+    installMetrikaStub();
     // Webvisor 2 + form analytics: triggerEvent — JS-события в Webvisor;
     // childIframe — записи внутри embed-виджета; trackHash — deeplink-якоря.
     window.ym(COUNTER, 'init', {
@@ -227,6 +265,7 @@
     if (displaySearch !== search && typeof history !== 'undefined' && typeof history.replaceState === 'function') {
       try { history.replaceState(history.state, '', cleanPath); } catch { /* ignore */ }
     }
+    scheduleMetrikaScript(immediate);
   }
 
   function loadAds() {
@@ -241,7 +280,8 @@
     document.head.appendChild(s);
   }
 
-  // Метрика грузится сразу (ей нужен весь трафик, роботов она фильтрует сама),
+  // Метрика: хит в очереди на window.load (весь трафик; роботов фильтрует сама),
+  // tag.js — на idle (scheduleMetrikaScript).
   // РСЯ — только по сигналу человека. Флаг для тестов и отладки.
   window.__feAdsGate = { requested: false, armed: false, robot: false, signal: null };
 
@@ -269,7 +309,7 @@
 
   window.__feApplyConsent = function (consent, opts) {
     if (!consent) return;
-    if (consent.analytics) loadMetrika();
+    if (consent.analytics) loadMetrika(Boolean(opts && opts.explicit));
     if (consent.ads) armAdsGate(Boolean(opts && opts.explicit));
   };
 

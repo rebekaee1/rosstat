@@ -284,12 +284,25 @@ def locked_job(fn, job_id: str, ttl_seconds: int):
     return wrapper
 
 
+# Выставляется в начале shutdown lifespan. После него engine.dispose()
+# закрывает соединения под ещё идущими job'ами (scheduler.shutdown(wait=False)),
+# и они падают с «underlying connection is closed» — это прерывание деплоем,
+# а не сбой job (2026-09-25: sitemap_build посреди рестарта). Публикация
+# sitemap атомарна, прерванная сборка current не трогает.
+_shutting_down = False
+
+
 def _scheduler_event_listener(event) -> None:
     """Н-2: упавшая/пропущенная job планировщика — алерт, а не только строка в логах."""
     try:
         from html import escape
 
         from app.services.alerting import send_telegram
+
+        if _shutting_down and getattr(event, "exception", None):
+            logger.warning("Scheduler job interrupted by shutdown: job=%s exc=%s",
+                           event.job_id, event.exception)
+            return
 
         if getattr(event, "exception", None):
             kind = "🔴 <b>Scheduler job failed</b>"
@@ -1115,6 +1128,8 @@ async def lifespan(app: FastAPI):
     yield
 
     # Shutdown
+    global _shutting_down
+    _shutting_down = True
     if scheduler.running:
         scheduler.shutdown(wait=False)
     await engine.dispose()

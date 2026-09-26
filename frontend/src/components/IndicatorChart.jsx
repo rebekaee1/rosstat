@@ -124,8 +124,7 @@ function CustomTooltip({
       )}
 
       {forecast && !actual && (
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full" style={{ background: CHART_THEME.champagne }} />
             <span className="text-xs text-text-tertiary">{forecastLabel}</span>
@@ -133,12 +132,6 @@ function CustomTooltip({
           <span className="text-sm font-mono font-semibold text-champagne-muted">
             {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
           </span>
-          </div>
-          {forecast.payload?.forecastLower != null && forecast.payload?.forecastUpper != null && (
-            <div className="text-[11px] text-text-tertiary tabular-nums">
-              {t('chart.forecastRange')}: {formatValue(forecast.payload.forecastLower, valueDigits)}–{formatValue(forecast.payload.forecastUpper, valueDigits)}{unitSuffix(unit)}
-            </div>
-          )}
         </div>
       )}
       {comparisons.map((series, index) => (
@@ -444,8 +437,6 @@ export default function IndicatorChart({
     for (const row of visibleData) {
       if (row.actual != null) { min = Math.min(min, row.actual); max = Math.max(max, row.actual); }
       if (row.forecast != null) { min = Math.min(min, row.forecast); max = Math.max(max, row.forecast); }
-      if (row.forecastLower != null) min = Math.min(min, row.forecastLower);
-      if (row.forecastUpper != null) max = Math.max(max, row.forecastUpper);
       for (const series of resolvedComparisonSeries) {
         const value = row[series.dataKey];
         if (value != null) { min = Math.min(min, value); max = Math.max(max, value); }
@@ -604,16 +595,6 @@ export default function IndicatorChart({
         </div>
       </div>
 
-      {showForecast && forecastLast && (
-        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-champagne/25 bg-champagne/[0.07] px-4 py-2.5 text-xs text-text-secondary">
-          <span className="h-2 w-2 shrink-0 rounded-full bg-champagne" aria-hidden="true" />
-          <span className="font-semibold text-text-primary">{t('common.forecast')}</span>
-          <span>{formatDate(forecastLast.date, dateFormat)}</span>
-          <span className="font-semibold tabular-nums text-champagne">
-            {formatValue(forecastLast.forecast, digits)}{unitSuffix(unit)}
-          </span>
-        </div>
-      )}
       <div
         ref={chartAreaRef}
         onPointerDown={handlePointerDown}
@@ -741,19 +722,6 @@ export default function IndicatorChart({
               />
             )}
 
-            {showForecast && chartType !== 'bar' && (
-              <Area
-                dataKey="forecastRange"
-                fill={CHART_THEME.champagne}
-                fillOpacity={0.16}
-                stroke="none"
-                dot={false}
-                isAnimationActive={false}
-                connectNulls
-                tooltipType="none"
-                legendType="none"
-              />
-            )}
             {showForecast && (
               chartType === 'bar' ? (
                 <Bar

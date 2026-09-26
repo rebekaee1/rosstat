@@ -1,5 +1,5 @@
 import {
-  createElement, useCallback, useEffect, useId, useMemo, useRef, useState,
+  createElement, startTransition, useCallback, useEffect, useId, useMemo, useRef, useState,
 } from 'react';
 import {
   geoGraticule10, geoMercator, geoNaturalEarth1, geoPath,
@@ -70,6 +70,77 @@ const NUMERIC_ID_BY_ALPHA2 = (() => {
   return byCode;
 })();
 
+function displayFeatureFor(geometry) {
+  return displayWorldGeometry(geometry, ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)]);
+}
+
+function shapeFor(geometry, index, path) {
+  return {
+    key: `${geometry.id ?? 'x'}-${index}`,
+    code: ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)],
+    d: path(geometry) || '',
+  };
+}
+
+// 110m-контуры для первого кадра: считаются один раз на модуль.
+let baseDisplayFeatures = null;
+function getBaseDisplayFeatures() {
+  if (!baseDisplayFeatures) baseDisplayFeatures = WORLD_FEATURES.map(displayFeatureFor);
+  return baseDisplayFeatures;
+}
+
+/**
+ * Колбэк после события load и простоя главного потока: 50m-атлас (~240 КБ
+ * gzip и ~150 мс геометрии на телефоне) не должен конкурировать с первым
+ * экраном. Возвращает функцию отмены.
+ */
+function whenIdleAfterLoad(callback) {
+  if (typeof window === 'undefined') return () => {};
+  let cancelled = false;
+  let idleHandle = null;
+  let timer = null;
+  const run = () => {
+    if (cancelled) return;
+    if (typeof window.requestIdleCallback === 'function') {
+      idleHandle = window.requestIdleCallback(() => { if (!cancelled) callback(); }, { timeout: 3000 });
+    } else {
+      timer = window.setTimeout(() => { if (!cancelled) callback(); }, 300);
+    }
+  };
+  if (document.readyState === 'complete') run();
+  else window.addEventListener('load', run, { once: true });
+  return () => {
+    cancelled = true;
+    window.removeEventListener('load', run);
+    if (idleHandle != null && typeof window.cancelIdleCallback === 'function') {
+      window.cancelIdleCallback(idleHandle);
+    }
+    if (timer != null) window.clearTimeout(timer);
+  };
+}
+
+const SLICE_BUDGET_MS = 8;
+const yieldToMain = () => new Promise((resolve) => { setTimeout(resolve, 0); });
+const nowMs = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+
+/**
+ * map() порциями по ~8 мс с уступкой главному потоку между порциями, чтобы
+ * пересчёт 50m-геометрии не давал длинных задач (TBT/INP). null — отменено.
+ */
+async function mapInSlices(items, fn, isActive) {
+  const out = new Array(items.length);
+  let sliceStart = nowMs();
+  for (let index = 0; index < items.length; index += 1) {
+    out[index] = fn(items[index], index);
+    if (nowMs() - sliceStart > SLICE_BUDGET_MS) {
+      await yieldToMain();
+      if (!isActive()) return null;
+      sliceStart = nowMs();
+    }
+  }
+  return isActive() ? out : null;
+}
+
 function collectionValue(values, key) {
   if (!values) return null;
   return values instanceof Map ? values.get(key) : values[key];
@@ -122,7 +193,8 @@ export default function WorldMap({
   const [scope, setScope] = useState(defaultScope === 'europe' ? 'europe' : 'world');
   const [hover, setHover] = useState(null);
   const [view, setView] = useState({ k: 1, tx: 0, ty: 0 });
-  const [detailById, setDetailById] = useState(null);
+  const [detailFeatures, setDetailFeatures] = useState(null);
+  const [detailShapes, setDetailShapes] = useState(null);
   const panRef = useRef(null);
   const svgRef = useRef(null);
   const noDataPatternId = `world-no-data-${useId().replaceAll(':', '')}`;
@@ -132,28 +204,22 @@ export default function WorldMap({
   );
 
   // Сразу 110m (лёгкий), затем 50m лениво — береговая линия читается достойно,
-  // без утяжеления первого бандла на 740 КБ.
+  // без утяжеления первого бандла на 740 КБ. Детальный атлас грузится только
+  // после load + простоя, а его геометрия считается порциями (без длинных задач).
   useEffect(() => {
     let active = true;
-    loadWorldFeatures('detailed').then((byId) => {
-      if (!active || !byId) return;
-      setDetailById(byId);
+    const isActive = () => active;
+    const cancel = whenIdleAfterLoad(() => {
+      loadWorldFeatures('detailed').then(async (byId) => {
+        if (!active || !byId) return;
+        const next = await mapInSlices([...byId.values()], displayFeatureFor, isActive);
+        if (next) startTransition(() => setDetailFeatures(next));
+      });
     });
-    return () => { active = false; };
+    return () => { active = false; cancel(); };
   }, []);
 
-  const features = useMemo(
-    () => {
-      const source = detailById
-        ? [...detailById.values()]
-        : WORLD_FEATURES;
-      return source.map((geometry) => {
-        const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
-        return displayWorldGeometry(geometry, code);
-      });
-    },
-    [detailById],
-  );
+  const baseFeatures = getBaseDisplayFeatures();
   const projection = useMemo(() => {
     if (scope === 'europe') {
       return geoMercator()
@@ -161,25 +227,40 @@ export default function WorldMap({
         .scale(340)
         .translate([WIDTH / 2, HEIGHT / 2]);
     }
+    // Вписываем по 110m: рамка совпадает с 50m (разница масштаба ~0.02%),
+    // зато проекция не пересчитывается и карта не «дёргается» при апгрейде.
     return geoNaturalEarth1().fitExtent(
       [[24, 24], [WIDTH - 24, HEIGHT - 24]],
       {
         type: 'FeatureCollection',
-        features,
+        features: baseFeatures,
       },
     );
-  }, [features, scope]);
-  const path = useMemo(() => geoPath(projection), [projection]);
+  }, [baseFeatures, scope]);
+  // digits(2): короче строки d (меньше DOM/парсинга), визуально без разницы
+  // даже при зуме ×7.
+  const path = useMemo(() => geoPath(projection).digits(2), [projection]);
+
+  // Контуры 50m для текущей проекции — порциями, затем подмена в transition.
+  useEffect(() => {
+    if (!detailFeatures) return undefined;
+    let active = true;
+    mapInSlices(detailFeatures, (geometry, index) => shapeFor(geometry, index, path), () => active)
+      .then((next) => {
+        if (next) startTransition(() => setDetailShapes({ path, features: detailFeatures, shapes: next }));
+      });
+    return () => { active = false; };
+  }, [detailFeatures, path]);
+
+  const detailReady = Boolean(detailShapes && detailShapes.path === path);
+  const features = detailReady ? detailShapes.features : baseFeatures;
   // Строки контуров не зависят от данных и ховера: без этого каждый ховер
   // пересчитывал бы path для всех стран сразу.
-  const shapes = useMemo(
-    () => features.map((geometry, index) => ({
-      key: `${geometry.id ?? 'x'}-${index}`,
-      code: ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)],
-      d: path(geometry) || '',
-    })),
-    [features, path],
+  const baseShapes = useMemo(
+    () => (detailReady ? null : baseFeatures.map((geometry, index) => shapeFor(geometry, index, path))),
+    [baseFeatures, detailReady, path],
   );
+  const shapes = detailReady ? detailShapes.shapes : baseShapes;
   const colorModel = useMemo(
     () => buildWorldColorModel(valuesByCode, { mode: colorMode, direction: colorDirection }),
     [valuesByCode, colorMode, colorDirection],

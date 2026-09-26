@@ -629,8 +629,8 @@ export default function WorldIndicatorPage() {
               {' — '}MASE {Number(dataQ.data.forecast.quality.mase).toFixed(2)}
               <p className="mt-1">
                 {locale === 'en'
-                  ? 'We test the full forecast horizon on rolling historical windows against a seasonal-naive benchmark. Our forecast is published only when MASE is below 1 and the error is at least 2% lower. The range is indicative, based on historical errors.'
-                  : 'Мы проверяем весь горизонт прогноза на последовательных исторических отрезках и сравниваем с сезонной наивной моделью. Наш прогноз публикуется только при MASE ниже 1 и ошибке минимум на 2% меньше ориентира. Диапазон ориентировочный, он рассчитан по историческим ошибкам.'}
+                  ? 'We test the full forecast horizon on rolling historical windows against a seasonal-naive benchmark. Our forecast is published only when MASE is below 1 and the error is at least 2% lower.'
+                  : 'Мы проверяем весь горизонт прогноза на последовательных исторических отрезках и сравниваем с сезонной наивной моделью. Наш прогноз публикуется только при MASE ниже 1 и ошибке минимум на 2% меньше ориентира.'}
               </p>
             </section>
           )}

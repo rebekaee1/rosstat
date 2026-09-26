@@ -60,15 +60,12 @@ describe('mergeActualForecastChartSeries', () => {
     expect(merged[1]).toEqual({ date: '2026-03-01', forecast: 300 });
   });
 
-  it('сохраняет опубликованный интервал прогноза для графика', () => {
+  it('не выводит интервал прогноза на график (доверительные интервалы не показываем)', () => {
     const merged = mergeActualForecastChartSeries(
       [{ date: '2025-12-01', value: 100 }],
       [{ date: '2026-03-01', value: 105, lower_bound: 98, upper_bound: 112 }],
     );
-    expect(merged[1]).toEqual({
-      date: '2026-03-01', forecast: 105,
-      forecastLower: 98, forecastUpper: 112, forecastRange: [98, 112],
-    });
+    expect(merged[1]).toEqual({ date: '2026-03-01', forecast: 105 });
   });
 });
 

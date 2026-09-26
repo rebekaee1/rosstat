@@ -92,6 +92,9 @@ _STATIC_WITHOUT_DATA_LASTMOD = frozenset({
     "/russia/demographics",
 })
 
+# Нижняя граница <lastmod>: Яндекс.Вебмастер отклоняет даты до Unix-эпохи.
+SITEMAP_LASTMOD_MIN = date(1970, 1, 1)
+
 _W3C_LASTMOD = re.compile(
     r"^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})?)?$"
 )
@@ -139,10 +142,15 @@ def _iso(value: date | datetime | str | None) -> str | None:
 
 
 def normalize_sitemap_lastmod(value: str | None, *, today: date | None = None) -> str | None:
-    """W3C Datetime, не длиннее 100 байт (лимит Яндекса) и не из будущего.
+    """W3C Datetime, не длиннее 100 байт (лимит Яндекса), не из будущего
+    и не раньше 1970-01-01.
 
     Неверное или будущее значение опускается: так требует и Google
     (lastmod только если он проверяемо точен), и справочник ошибок Яндекса.
+    Дату раньше Unix-эпохи Вебмастер считает ошибкой sitemap: каждая такая
+    ``<lastmod>`` — одна ошибка файла (инцидент 2026-09-25: 90 836 ошибок
+    на ru. — ровно число годовых страниц 1897…1969 в world-years /
+    world-region-years / months / years / world-ratings).
     """
     if value is None:
         return None
@@ -152,6 +160,8 @@ def normalize_sitemap_lastmod(value: str | None, *, today: date | None = None) -
     try:
         stamp = date.fromisoformat(text[:10])
     except ValueError:
+        return None
+    if stamp < SITEMAP_LASTMOD_MIN:
         return None
     current = today if today is not None else today_msk()
     if stamp > current:
@@ -182,9 +192,15 @@ def section_fingerprint(urls: list[SiteUrl]) -> str:
     прошлой генерацией значит, что XML шарда байт-в-байт тот же, и ночная
     сборка не переписывает файл. Смена разметки urlset требует нового
     ``SITEMAP_RENDER_REV``.
+
+    lastmod берётся в том виде, в каком он попадёт в XML (после
+    ``normalize_sitemap_lastmod``): иначе смена правила нормализации не
+    меняет отпечаток, и ночная сборка переиспользует старый файл.
     """
+    current = today_msk()
     lines = [
-        f"{url.path}\t{url.lastmod or ''}\t{url.changefreq}\t{url.priority}"
+        f"{url.path}\t{normalize_sitemap_lastmod(url.lastmod, today=current) or ''}"
+        f"\t{url.changefreq}\t{url.priority}"
         for url in urls
     ]
     payload = SITEMAP_RENDER_REV + "\n" + "\n".join(lines)
@@ -1984,12 +2000,88 @@ async def chunk_counts(db: AsyncSession) -> dict[str, int]:
     if isinstance(cached, dict) and cached:
         return {k: int(v) for k, v in cached.items()}
 
-    counts: dict[str, int] = {}
-    for prefix, source in _CHUNKED_SOURCES.items():
-        n = (await db.execute(source.count)).scalar_one()
-        counts[prefix] = max(1, -(-max(int(n), 0) // source.size))
+    published = _published_chunk_stats()
+    if published is not None:
+        counts = {prefix: max(1, shards) for prefix, (shards, _items) in published.items()}
+    else:
+        raw = await _count_chunk_groups(db)
+        counts = {
+            prefix: max(1, -(-max(int(n), 0) // _CHUNKED_SOURCES[prefix].size))
+            for prefix, n in raw.items()
+        }
     await cache_set(_CHUNK_COUNTS_KEY, counts, _CHUNK_COUNTS_TTL)
     return counts
+
+
+def _published_chunk_stats() -> dict[str, tuple[int, int]] | None:
+    """(число шардов, число URL) каждой чанковой группы из опубликованной генерации.
+
+    Ночная сборка (`sitemap_static`) уже прошла все группы keyset-страницами
+    и записала размер каждого шарда в ``sitemap-stats.json``. Повторять это
+    count(*)-запросом незачем: на ~16 млн world_data_points count мировых
+    лет (GROUP BY ряд×год, ~12 млн групп) не укладывается в statement_timeout
+    30 с — так падали webmaster_recrawl / webmaster_recrawl_ru 2026-09-26.
+    Чанки публикуются тем же размером ``source.size``, что и динамические,
+    поэтому число шардов = число чанков. None — генерации нет (dev/тесты,
+    первый старт): тогда считает БД.
+    """
+    from app.services.sitemap_static import read_stats
+
+    stats = read_stats()
+    hosts = stats.get("hosts") if isinstance(stats, dict) else None
+    sections = None
+    if isinstance(hosts, dict) and hosts:
+        first = next(iter(hosts.values()))
+        if isinstance(first, dict):
+            sections = first.get("sections")
+    if not isinstance(sections, dict):
+        sections = stats.get("sections") if isinstance(stats, dict) else None
+    if not isinstance(sections, dict) or not sections:
+        return None
+    result: dict[str, tuple[int, int]] = {}
+    for prefix in _CHUNKED_SOURCES:
+        shards = 0
+        items = 0
+        for name, size in sections.items():
+            if name.startswith(prefix) and name[len(prefix):].isdigit():
+                shards += 1
+                try:
+                    items += int(size)
+                except (TypeError, ValueError):
+                    pass
+        result[prefix] = (shards, items)
+    return result
+
+
+# Фолбэк без опубликованной генерации: count мировых лет — тяжёлый GROUP BY
+# по всей world_data_points. Даём ему свой потолок вместо общего
+# statement_timeout пула (30 с), только на время этих запросов.
+_CHUNK_COUNT_STATEMENT_TIMEOUT_MS = 180_000
+
+
+async def _count_chunk_groups(db: AsyncSession) -> dict[str, int]:
+    from sqlalchemy import text
+
+    previous = None
+    try:
+        previous = (await db.execute(text("SELECT current_setting('statement_timeout')"))).scalar_one()
+        await db.execute(
+            text("SELECT set_config('statement_timeout', :v, true)"),
+            {"v": str(_CHUNK_COUNT_STATEMENT_TIMEOUT_MS)},
+        )
+    except Exception:  # noqa: BLE001 — не-Postgres/тестовая сессия: считаем как есть
+        previous = None
+    try:
+        counts: dict[str, int] = {}
+        for prefix, source in _CHUNKED_SOURCES.items():
+            n = (await db.execute(source.count)).scalar_one()
+            counts[prefix] = max(int(n), 0)
+        return counts
+    finally:
+        if previous is not None:
+            await db.execute(
+                text("SELECT set_config('statement_timeout', :v, true)"), {"v": str(previous)},
+            )
 
 
 async def chunk_item_counts(db: AsyncSession) -> dict[str, int]:
@@ -2005,10 +2097,11 @@ async def chunk_item_counts(db: AsyncSession) -> dict[str, int]:
     if isinstance(cached, dict) and cached:
         return {key: int(value) for key, value in cached.items()}
 
-    counts: dict[str, int] = {}
-    for prefix, source in _CHUNKED_SOURCES.items():
-        n = (await db.execute(source.count)).scalar_one()
-        counts[prefix] = max(int(n), 0)
+    published = _published_chunk_stats()
+    if published is not None:
+        counts = {prefix: max(items, 0) for prefix, (_shards, items) in published.items()}
+    else:
+        counts = await _count_chunk_groups(db)
     await cache_set(_CHUNK_ITEM_COUNTS_KEY, counts, _CHUNK_COUNTS_TTL)
     return counts
 

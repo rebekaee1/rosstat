@@ -43,6 +43,15 @@ function metrikaRequested() {
   return [...document.scripts].some((s) => s.src.includes('mc.yandex.ru/metrika'));
 }
 
+// tag.js подключается на requestIdleCallback: в тесте копим колбэки и
+// «простаиваем» явно, чтобы проверить и отложенность, и сам факт загрузки.
+let idleQueue = [];
+function flushIdle() {
+  const pending = idleQueue;
+  idleQueue = [];
+  pending.forEach((cb) => cb({ didTimeout: false, timeRemaining: () => 50 }));
+}
+
 /** Запускает bootstrap в текущем окне с подменённым userAgent. */
 function boot({ ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/145', webdriver = false } = {}) {
   // Метрика вставляется через insertBefore относительно первого <script>
@@ -58,6 +67,7 @@ function boot({ ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/145', web
     value: webdriver,
     configurable: true,
   });
+  window.requestIdleCallback = (cb) => { idleQueue.push(cb); return idleQueue.length; };
   new Function(SRC).call(window);
   // Bootstrap ждёт window.load, если документ ещё не complete.
   window.dispatchEvent(new Event('load'));
@@ -75,6 +85,8 @@ beforeEach(() => {
   delete window.__feAttr;
   delete window.ym;
   delete window.yaContextCb;
+  delete window.requestIdleCallback;
+  idleQueue = [];
 });
 
 afterEach(() => {
@@ -87,6 +99,26 @@ describe('гейт рекламы: человек', () => {
     expect(window.__feAdsGate.armed).toBe(true);
     expect(window.__feAdsGate.requested).toBe(false);
     expect(adsRequested()).toBe(false);
+    flushIdle();
+    expect(metrikaRequested()).toBe(true);
+  });
+
+  it('tag.js ждёт idle, но init и hit уже в очереди ym()', () => {
+    boot();
+    expect(metrikaRequested()).toBe(false);
+    const queued = (window.ym.a || []).map((args) => args[1]);
+    expect(queued).toContain('init');
+    expect(queued).toContain('hit');
+    flushIdle();
+    expect(metrikaRequested()).toBe(true);
+    // Повторный idle не вставляет второй tag.js.
+    window.__feApplyConsent({ analytics: true, ads: false });
+    flushIdle();
+    expect([...document.scripts].filter((s) => s.src.includes('mc.yandex.ru/metrika'))).toHaveLength(1);
+  });
+
+  it('проверка счётчика в интерфейсе Метрики получает tag.js сразу', () => {
+    boot({ ua: 'Mozilla/5.0 (compatible; YandexMetrika/4.0; +http://yandex.com/bots)' });
     expect(metrikaRequested()).toBe(true);
   });
 
