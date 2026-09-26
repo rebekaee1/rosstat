@@ -748,12 +748,13 @@ class RosstatWeeklyCpiParser(BaseParser):
                 fetch_log.records_updated = records_updated
             elif not any(segment_snapshot.get(s) for s in WEEKLY_SEGMENT_CODES):
                 logger.warning("No data points parsed for %s", code)
-                fetch_log.status = "no_new_data"
+                fetch_log.status = await self._resolve_zero_parse_status(
+                    db, indicator, fetch_log,
+                )
                 if not fetch_log.error_message:
                     fetch_log.error_message = "Parser returned 0 data points"
                 fetch_log.completed_at = _utcnow_naive()
                 await db.commit()
-                await self._alert_zero_parse_if_regression(db, indicator)
                 return
 
             if segment_snapshot:

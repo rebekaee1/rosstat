@@ -268,21 +268,38 @@ async def alert_zero_parse(indicator_code: str, existing_points: int) -> None:
     )
 
 
+_DEGRADED_LABELS = {
+    "parsed_zero": "Parsed zero (layout?)",
+    "fallback_used": "Fallback source",
+}
+
+
 async def alert_etl_summary(
     total: int,
     updated: int,
     failed: list[str],
     duration_sec: Optional[float] = None,
+    *,
+    degraded: Optional[dict[str, list[str]]] = None,
 ) -> None:
-    status = "🔴" if failed else "🟢"
+    """Итог daily ETL. `degraded` — {status: [codes]} для parsed_zero /
+    fallback_used: прогон «прошёл», но данные могут не обновляться — это
+    проблема (🟡), а не зелёный no_new_data."""
+    degraded = {k: v for k, v in (degraded or {}).items() if v}
+    n_problems = sum(len(v) for v in degraded.values())
+    status = "🔴" if failed else ("🟡" if n_problems else "🟢")
     parts = [
         f"{status} <b>Daily ETL Complete</b>",
-        f"Total: {total} | Updated: {updated} | Failed: {len(failed)}",
+        f"Total: {total} | Updated: {updated} | Failed: {len(failed)}"
+        f" | Problems: {n_problems}",
     ]
     if duration_sec is not None:
         parts.append(f"Duration: {duration_sec:.0f}s")
     if failed:
         parts.append(f"Failed: {escape(', '.join(failed))}")
+    for key, codes in degraded.items():
+        label = _DEGRADED_LABELS.get(key, key)
+        parts.append(f"{escape(label)} ({len(codes)}): {escape(', '.join(codes))}")
     await send_telegram("\n".join(parts), kind="etl_summary")
 
 

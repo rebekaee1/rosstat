@@ -50,22 +50,29 @@ async def prune_indicator_dates_not_in(
     db: AsyncSession,
     indicator_id: int,
     points: list,
+    *,
+    keep_after: _date | None = None,
 ) -> int:
     """Удалить точки индикатора, которых нет в свежем parse-output.
 
     Для источников с полным снимком ряда (Минфин OpenData CSV) — убирает
     устаревшие preliminary-точки из пресс-релизов, если парсер их больше
     не отдаёт.
+
+    `keep_after`: точки с датой > keep_after не трогаются (снимок из резервного
+    источника покрывает ряд только до этой даты — более свежие точки из
+    основного источника удалять нельзя).
     """
     parsed_dates = {_split_point(p)[0] for p in points}
     if not parsed_dates:
         return 0
-    result = await db.execute(
-        delete(IndicatorData).where(
-            IndicatorData.indicator_id == indicator_id,
-            IndicatorData.date.not_in(parsed_dates),
-        )
-    )
+    conditions = [
+        IndicatorData.indicator_id == indicator_id,
+        IndicatorData.date.not_in(parsed_dates),
+    ]
+    if keep_after is not None:
+        conditions.append(IndicatorData.date <= keep_after)
+    result = await db.execute(delete(IndicatorData).where(*conditions))
     deleted = result.rowcount or 0
     if deleted:
         await db.flush()

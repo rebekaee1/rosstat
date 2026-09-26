@@ -20,6 +20,11 @@ from app.services.rosstat_weekly_inflation_parser import WEEKLY_SEGMENT_CODES
 from app.services.calculation_engine import calculation_engine
 from app.services.forecast_pipeline import catch_up_empty_forecasts, retrain_indicator_forecast
 from app.services.alerting import alert_etl_failure, alert_etl_summary, send_telegram
+from app.services.base_parser import (
+    DEGRADED_STATUSES,
+    STATUS_FALLBACK_USED,
+    STATUS_SUCCESS,
+)
 
 ETL_TIMEOUT_SECONDS = 300
 # Тяжёлые парсеры: cold-start может идти минуты; steady-state weekly — секунды.
@@ -51,17 +56,40 @@ def _updated_source_codes(codes: list[str]) -> list[str]:
 
 async def run_etl_for_indicator(indicator_code: str) -> bool:
     """Полный ETL для одного индикатора через PARSER_REGISTRY. Возвращает True если данные обновились."""
+    changed, _status = await run_etl_for_indicator_status(indicator_code)
+    return changed
+
+
+def _fetch_changed(fetch_log: FetchLog) -> bool:
+    """Ряд изменился в этом прогоне (для каскада derived / IndexNow).
+
+    success — всегда изменение; fallback_used — если резервный снимок
+    всё-таки добавил/обновил точки (статус про источник, не про дельту).
+    """
+    if fetch_log.status == STATUS_SUCCESS:
+        return True
+    if fetch_log.status == STATUS_FALLBACK_USED:
+        return bool((fetch_log.records_added or 0) or (fetch_log.records_updated or 0))
+    return False
+
+
+async def run_etl_for_indicator_status(indicator_code: str) -> tuple[bool, str | None]:
+    """Как `run_etl_for_indicator`, но возвращает ещё и итоговый fetch_log.status.
+
+    Статус нужен ETL-summary: parsed_zero / fallback_used — проблемы, которые
+    раньше прятались под no_new_data.
+    """
     async with async_session() as db:
         ind_q = await db.execute(select(Indicator).where(Indicator.code == indicator_code))
         indicator = ind_q.scalar_one_or_none()
         if not indicator:
             logger.error("Indicator '%s' not found", indicator_code)
-            return False
+            return False, None
 
         parser = get_parser(indicator.parser_type)
         if not parser:
             logger.error("Unknown parser_type '%s' for '%s'", indicator.parser_type, indicator_code)
-            return False
+            return False, None
 
         indicator_id = indicator.id
 
@@ -79,7 +107,7 @@ async def run_etl_for_indicator(indicator_code: str) -> bool:
             # in-place ревизия (records_updated>0, added=0) не попадала в
             # updated_codes — при инкрементальном derived-пересчёте (П-2)
             # её зависимые остались бы stale.
-            return fetch_log.status == "success"
+            return _fetch_changed(fetch_log), fetch_log.status
         except asyncio.CancelledError:
             if fetch_log.status not in ("failed", "timeout"):
                 await db.rollback()
@@ -123,6 +151,7 @@ async def daily_update_job():
     t0 = time.monotonic()
     updated_codes: list[str] = []
     failed_codes: list[str] = []
+    degraded: dict[str, list[str]] = {s: [] for s in DEGRADED_STATUSES}
     for task in indicator_tasks:
         code = task["code"]
         if task["parser_type"] == "derived":
@@ -136,12 +165,14 @@ async def daily_update_job():
         parser_type = task["parser_type"]
         timeout = etl_timeout_for(parser_type)
         try:
-            had_new = await asyncio.wait_for(
-                run_etl_for_indicator(code),
+            had_new, status = await asyncio.wait_for(
+                run_etl_for_indicator_status(code),
                 timeout=timeout,
             )
             if had_new:
                 updated_codes.append(code)
+            if status in degraded:
+                degraded[status].append(code)
         except asyncio.TimeoutError:
             msg = f"ETL timed out after {timeout}s"
             logger.error("Timeout for indicator '%s': %s", code, msg)
@@ -187,7 +218,14 @@ async def daily_update_job():
 
     duration = time.monotonic() - t0
     total_non_derived = sum(1 for t in indicator_tasks if t["parser_type"] != "derived")
-    await alert_etl_summary(total_non_derived, len(updated_codes), failed_codes, duration)
+    if any(degraded.values()):
+        logger.warning(
+            "Daily ETL degraded runs: %s",
+            "; ".join(f"{s}={', '.join(c)}" for s, c in degraded.items() if c),
+        )
+    await alert_etl_summary(
+        total_non_derived, len(updated_codes), failed_codes, duration, degraded=degraded,
+    )
     logger.info("Daily ETL update complete in %.0fs.", duration)
 
 
@@ -269,6 +307,7 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
     logger.info("Late ETL pass for parser_type=%s: %d indicators", parser_type, len(codes))
     updated_codes: list[str] = []
     failed_codes: list[str] = []
+    degraded_codes: list[str] = []
     async with async_session() as db:
         type_q = await db.execute(
             select(Indicator.code, Indicator.parser_type).where(Indicator.code.in_(codes))
@@ -283,12 +322,14 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
             _running_locks.add(code)
         timeout = etl_timeout_for(parser_by_code.get(code, ""))
         try:
-            had_new = await asyncio.wait_for(
-                run_etl_for_indicator(code),
+            had_new, status = await asyncio.wait_for(
+                run_etl_for_indicator_status(code),
                 timeout=timeout,
             )
             if had_new:
                 updated_codes.append(code)
+            if status in DEGRADED_STATUSES:
+                degraded_codes.append(f"{code}:{status}")
         except Exception as e:
             # Н-15: late-pass подключён к тому же алертингу, что и daily.
             logger.exception("Late ETL failed for %s", code)
@@ -325,10 +366,16 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
     await _catch_up_empty_forecasts_safe(f"late_etl:{parser_type}")
 
     logger.info(
-        "Late ETL pass for parser_type=%s done: %d updated, %d failed",
-        parser_type, len(updated_codes), len(failed_codes),
+        "Late ETL pass for parser_type=%s done: %d updated, %d failed, %d degraded%s",
+        parser_type, len(updated_codes), len(failed_codes), len(degraded_codes),
+        f" ({', '.join(degraded_codes)})" if degraded_codes else "",
     )
-    return {"total": len(codes), "updated": len(updated_codes), "failed": len(failed_codes)}
+    return {
+        "total": len(codes),
+        "updated": len(updated_codes),
+        "failed": len(failed_codes),
+        "degraded": len(degraded_codes),
+    }
 
 
 async def late_minfin_etl_job():

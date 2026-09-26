@@ -55,13 +55,72 @@ from app.services.forecast_pipeline import (
     retrain_indicator_forecast,
     values_changed_for_retrain,
 )
-from app.services.upsert import bulk_upsert, prune_indicator_dates_not_in
+from app.services.upsert import (
+    _split_point,
+    bulk_upsert,
+    prune_indicator_dates_not_in,
+)
 
 logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# fetch_log.status vocabulary (String(20), без DB enum/constraint).
+#
+# success       — ряд изменился (added/updated/pruned > 0) из основного источника.
+# no_new_data   — источник прочитан, нового нет (или пустой ответ ожидаем:
+#                 ряд без истории / парсер явно пометил expected-empty).
+# parsed_zero   — ранее живой ряд распарсился в 0 точек без объяснения
+#                 (смена layout/URL). ПРОБЛЕМА: раньше маскировалась под no_new_data.
+# fallback_used — основной источник недоступен, данные взяты из резервного
+#                 снимка (packaged artifact и т.п.). ПРОБЛЕМА: ряд может отставать.
+# failed/timeout/interrupted/running — как раньше.
+# ---------------------------------------------------------------------------
+STATUS_SUCCESS = "success"
+STATUS_NO_NEW_DATA = "no_new_data"
+STATUS_PARSED_ZERO = "parsed_zero"
+STATUS_FALLBACK_USED = "fallback_used"
+STATUS_FAILED = "failed"
+
+# Статусы, которые ETL-summary считает проблемой (не только failed/timeout).
+DEGRADED_STATUSES: tuple[str, ...] = (STATUS_PARSED_ZERO, STATUS_FALLBACK_USED)
+
+_EXPECTED_EMPTY_ATTR = "_etl_expected_empty_reason"
+_FALLBACK_ATTR = "_etl_fallback_reason"
+
+
+def mark_expected_empty(fetch_log: FetchLog, reason: str) -> None:
+    """Парсер сообщает: пустой результат этого прогона легитимен.
+
+    Пример — квартальный раздел «Рынок жилья» есть только в докладах № 3/6/9/12;
+    в остальные месяцы пустой parse — не регрессия, статус останется no_new_data.
+    Атрибут транзиентный (не колонка), живёт только в текущем прогоне.
+    """
+    setattr(fetch_log, _EXPECTED_EMPTY_ATTR, reason)
+
+
+def mark_fallback_used(fetch_log: FetchLog, reason: str) -> None:
+    """Парсер сообщает: точки взяты из резервного источника, а не из основного.
+
+    `BaseParser.run()` запишет status=fallback_used и не будет удалять точки
+    новее покрытия резервного снимка (`replace_series`).
+    """
+    setattr(fetch_log, _FALLBACK_ATTR, reason)
+
+
+def expected_empty_reason(fetch_log: FetchLog) -> str | None:
+    return getattr(fetch_log, _EXPECTED_EMPTY_ATTR, None)
+
+
+def fallback_reason(fetch_log: FetchLog) -> str | None:
+    return getattr(fetch_log, _FALLBACK_ATTR, None)
 
 
 def _utcnow_naive() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+def _point_date(p):
+    return _split_point(p)[0]
 
 
 class BaseParser(ABC):
@@ -89,20 +148,31 @@ class BaseParser(ABC):
 
             if not points:
                 logger.warning("No data points parsed for %s", code)
-                fetch_log.status = "no_new_data"
+                # Н-4: различаем «источник официально пуст» (новый индикатор,
+                # истории нет / парсер пометил expected-empty) и «ранее живой
+                # источник распарсился в ноль» (смена layout) — второе раньше
+                # маскировалось под no_new_data, теперь это parsed_zero.
+                fetch_log.status = await self._resolve_zero_parse_status(
+                    db, indicator, fetch_log,
+                )
                 if not fetch_log.error_message:
                     fetch_log.error_message = "Parser returned 0 data points"
                 fetch_log.completed_at = _utcnow_naive()
                 await db.commit()
-                # Н-4: различаем «источник официально пуст» (новый индикатор,
-                # истории нет) и «ранее живой источник распарсился в ноль»
-                # (смена layout) — второе маскировалось под успешный no_new_data.
-                await self._alert_zero_parse_if_regression(db, indicator)
                 return
 
+            fb_reason = fallback_reason(fetch_log)
             pruned = 0
             if self.replace_series:
-                pruned = await prune_indicator_dates_not_in(db, indicator.id, points)
+                # Резервный снимок может отставать от уже загруженного ряда:
+                # удалять точки новее его покрытия нельзя (инцидент 2026-08-17:
+                # artifact-прогон удалил июльскую точку Минфина из live CSV).
+                keep_after = (
+                    max(_point_date(p) for p in points) if fb_reason else None
+                )
+                pruned = await prune_indicator_dates_not_in(
+                    db, indicator.id, points, keep_after=keep_after,
+                )
                 if pruned:
                     logger.info(
                         "Pruned %d stale date(s) for '%s' (replace_series)",
@@ -139,11 +209,15 @@ class BaseParser(ABC):
             if records_added > 0 or records_updated > 0 or pruned > 0:
                 await cache_invalidate_indicator(code)
 
-            fetch_log.status = (
-                "success"
-                if (records_added > 0 or records_updated > 0 or pruned > 0)
-                else "no_new_data"
-            )
+            if fb_reason:
+                fetch_log.status = STATUS_FALLBACK_USED
+                fetch_log.error_message = fb_reason[:500]
+            else:
+                fetch_log.status = (
+                    STATUS_SUCCESS
+                    if (records_added > 0 or records_updated > 0 or pruned > 0)
+                    else STATUS_NO_NEW_DATA
+                )
             fetch_log.completed_at = _utcnow_naive()
             await db.commit()
 
@@ -164,17 +238,35 @@ class BaseParser(ABC):
         """
         return False
 
+    async def _resolve_zero_parse_status(
+        self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog,
+    ) -> str:
+        """Статус пустого прогона: parsed_zero (регрессия) или no_new_data.
+
+        parsed_zero — если ряд имеет историю, а пустой результат не объяснён
+        (`mark_expected_empty` / `_zero_parse_expected`). Заодно шлёт алерт.
+        """
+        reason = expected_empty_reason(fetch_log)
+        if reason:
+            if not fetch_log.error_message:
+                fetch_log.error_message = reason[:500]
+            return STATUS_NO_NEW_DATA
+        if await self._alert_zero_parse_if_regression(db, indicator):
+            return STATUS_PARSED_ZERO
+        return STATUS_NO_NEW_DATA
+
     async def _alert_zero_parse_if_regression(
         self, db: AsyncSession, indicator: Indicator,
-    ) -> None:
+    ) -> bool:
         """Алерт, если парсер с непустой историей ряда вернул 0 точек (Н-4).
 
-        Вероятная причина — источник сменил layout/URL; статус останется
-        no_new_data (данные в БД целы), но оператор должен узнать сразу,
-        а не через staleness-SLA недели спустя.
+        Вероятная причина — источник сменил layout/URL; данные в БД целы, но
+        оператор должен узнать сразу, а не через staleness-SLA недели спустя.
+        Возвращает True, если это регрессия (история есть) — вызывающий
+        ставит status=parsed_zero.
         """
         if self._zero_parse_expected(indicator, indicator.model_config_json or {}):
-            return
+            return False
         try:
             from sqlalchemy import func, select
 
@@ -186,9 +278,16 @@ class BaseParser(ABC):
                 .where(IndicatorData.indicator_id == indicator.id)
             )
             if existing and existing > 0:
-                await alert_zero_parse(indicator.code, int(existing))
+                try:
+                    await alert_zero_parse(indicator.code, int(existing))
+                except Exception:
+                    logger.warning(
+                        "Zero-parse alert failed for %s", indicator.code, exc_info=True,
+                    )
+                return True
         except Exception:
-            logger.warning("Zero-parse alert failed for %s", indicator.code, exc_info=True)
+            logger.warning("Zero-parse check failed for %s", indicator.code, exc_info=True)
+        return False
 
     @abstractmethod
     async def _fetch_and_parse(
