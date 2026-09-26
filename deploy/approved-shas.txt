@@ -109,3 +109,5 @@ d5a02c10ebe425e200c004f7ba060a54829d293c  # explicit owner GO 2026-09-25; parent
 c30ac80a270f0c8b455dd4132498ad5e76586605  # explicit owner GO 2026-09-26; DB pool fix (SSR _release_db, pool 10+15) + targeted SSR cache clear + SourceLink fix + docs; no migrations
 
 689a903cce1c5e2f3fdf4c8a657643a5a52136cb  # explicit owner GO 2026-09-26; perf batch 2 (partial indexes, LATERAL latest points, SSR cache zlib, OG, nginx gzip/upstream timings, sitemap threads, web 3 workers + scheduler service) + ETL fixes (PPI/housing parsers, Minfin fallback, fetch_log statuses) + PPI/housing repair script; no migrations
+
+22b9138aa45fd8d3ee962de3ac18d5d75a298dd6  # explicit owner GO 2026-09-26; perf batch 3 (Postgres 3G/shared_buffers 896MB/jit off/pg_stat_statements, Redis 384mb, deploy.sh infra-recreate guard + rollback, dup index removed from model; Postgres+Redis recreate ~1 min DB downtime); no migrations
