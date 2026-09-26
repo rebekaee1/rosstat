@@ -226,3 +226,49 @@ def test_artifact_fallback_when_network_fails(monkeypatch):
     assert src.startswith("artifact://")
     assert len(points) >= 180
     assert points[-1].date.year >= 2026
+
+
+def test_artifact_fallback_reports_network_error(monkeypatch):
+    """fallback → третий элемент (network_error) непустой: парсер ставит fallback_used."""
+    from app.services import minfin_budget_parser as m
+
+    def boom(*a, **k):
+        raise RuntimeError("503 simulated")
+
+    monkeypatch.setattr(m, "_find_csv_url", boom)
+    points, src, err = m.fetch_and_parse_budget_ex("deficit")
+    assert src.startswith(m.ARTIFACT_URL_PREFIX)
+    assert err and "503 simulated" in err
+
+
+def test_parser_marks_fallback_used(monkeypatch):
+    import asyncio
+    from datetime import date
+    from types import SimpleNamespace
+
+    from app.models import FetchLog
+    from app.services import minfin_budget_parser as m
+    from app.services.base_parser import fallback_reason
+    from app.services.minfin_budget_parser import BudgetPoint
+
+    monkeypatch.setattr(
+        m, "fetch_and_parse_budget_ex",
+        lambda target: ([BudgetPoint(date(2026, 6, 1), 195.7)], "artifact://fedbud_month.csv", "RuntimeError: 503"),
+    )
+
+    class _Res:
+        def scalar(self):
+            return date(2026, 7, 1)
+
+    class _DB:
+        async def execute(self, stmt):
+            return _Res()
+
+    fl = FetchLog(indicator_id=1, status="running")
+    ind = SimpleNamespace(id=1, code="budget-deficit")
+    points, url = asyncio.run(
+        MinfinBudgetParser()._fetch_and_parse(_DB(), ind, {"budget_target": "deficit"}, fl)
+    )
+    assert url.startswith("artifact://")
+    reason = fallback_reason(fl)
+    assert reason and "2026-06-01" in reason and "503" in reason

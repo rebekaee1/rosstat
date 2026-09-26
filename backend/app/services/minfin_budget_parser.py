@@ -33,7 +33,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from urllib3.util.retry import Retry
 
 from app.models import FetchLog, Indicator, IndicatorData
-from app.services.base_parser import BaseParser
+from app.services.base_parser import BaseParser, mark_fallback_used
 from app.services.calculation_engine import calculation_engine
 from app.services.http_client import create_session
 
@@ -501,8 +501,23 @@ def _augment_with_press_preliminary(
     return augmented, press_url
 
 
+ARTIFACT_URL_PREFIX = "artifact://"
+
+
 def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], str]:
+    """Download and parse the Minfin budget CSV; see `fetch_and_parse_budget_ex`."""
+    points, url, _err = fetch_and_parse_budget_ex(target)
+    return points, url
+
+
+def fetch_and_parse_budget_ex(
+    target: str = "deficit",
+) -> tuple[list[BudgetPoint], str, str | None]:
     """Download and parse the Minfin OpenData budget CSV (CSV-only).
+
+    Returns `(points, source_url, network_error)`; `network_error` is not None
+    only when the packaged artifact was used instead of the live source
+    (caller records fetch_log.status=fallback_used).
 
     Только официальный OpenData CSV (финальные накопленные значения).
     Пресс-релиз «Предварительная оценка исполнения федерального бюджета»
@@ -545,7 +560,7 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
 
         if points:
             _persist_csv_url(csv_url)
-        return points, csv_url
+        return points, csv_url, None
     except Exception as exc:
         artifact = _ARTIFACT_CSV
         if not artifact.is_file():
@@ -562,7 +577,7 @@ def fetch_and_parse_budget(target: str = "deficit") -> tuple[list[BudgetPoint], 
             raise RuntimeError(
                 f"Minfin artifact {artifact.name} parsed 0 points after network failure"
             ) from exc
-        return points, f"artifact://{artifact.name}"
+        return points, f"{ARTIFACT_URL_PREFIX}{artifact.name}", f"{type(exc).__name__}: {exc}"
 
 
 class MinfinBudgetParser(BaseParser):
@@ -613,7 +628,9 @@ class MinfinBudgetParser(BaseParser):
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
         budget_target = cfg.get("budget_target", "deficit")
-        points, csv_url = await asyncio.to_thread(fetch_and_parse_budget, budget_target)
+        points, csv_url, network_error = await asyncio.to_thread(
+            fetch_and_parse_budget_ex, budget_target,
+        )
 
         last_db = (
             await db.execute(
@@ -632,6 +649,14 @@ class MinfinBudgetParser(BaseParser):
             last_db,
             csv_url.rsplit("/", 1)[-1] if csv_url else "?",
         )
+        if network_error is not None:
+            # Резервный снимок: статус fallback_used (проблема в ETL-summary),
+            # BaseParser не удалит точки новее покрытия снимка (last_parsed).
+            mark_fallback_used(
+                fetch_log,
+                f"Minfin live source unavailable ({network_error[:200]}); "
+                f"packaged artifact used, covers to {last_parsed} (DB last {last_db})",
+            )
         if last_parsed and last_db and last_parsed > last_db:
             logger.warning(
                 "Minfin budget '%s': source has newer data (%s) than DB (%s) — "
