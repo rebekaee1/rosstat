@@ -235,7 +235,9 @@ def test_cleanup_removes_expired_and_bounds_size(og_dir, monkeypatch):
 def test_maybe_cleanup_rate_limited(og_dir, monkeypatch):
     calls = {"n": 0}
     monkeypatch.setattr(og_image, "cleanup_og_disk", lambda: calls.__setitem__("n", calls["n"] + 1))
-    monkeypatch.setattr(og_image, "_last_cleanup", 0.0)
+    # time.monotonic() отсчитывается от загрузки хоста: на свежем CI-раннере
+    # uptime < _CLEANUP_MIN_INTERVAL, и _last_cleanup=0.0 «ещё не истёк».
+    monkeypatch.setattr(og_image, "_last_cleanup", time.monotonic() - og_image._CLEANUP_MIN_INTERVAL - 1)
     og_image._maybe_cleanup()
     og_image._maybe_cleanup()
     assert calls["n"] == 1
