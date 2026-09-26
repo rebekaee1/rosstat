@@ -119,7 +119,7 @@ volumes = json.load(sys.stdin)["services"]["frontend"]["volumes"]
 print(next(v["source"] for v in volumes if v["target"] == "/var/cache/frontend-assets"))')
 ASSET_WORK=$(mktemp -d)
 cp scripts/frontend-asset-archive.py "${ASSET_WORK}/archive.py"
-cleanup_assets() { rm -rf "${ASSET_WORK}"; }
+cleanup_assets() { stop_backend_log; rm -rf "${ASSET_WORK}"; }
 trap cleanup_assets EXIT
 publish_frontend_assets() {
   local image="$1" container result=0
@@ -147,13 +147,69 @@ print(next((name for name in previous if name not in current), previous[0]))
 PY
 )
 
+# ── Кэш релиза (2026-09-26): вместо FLUSHDB всего DB 0 — только SSR HTML ──
+# FLUSHDB обнулял и дорогие data-кэши (каталог стран, world/regions API),
+# ticker и rate-limit: холодный backend под краулерами (~10k req/h) исчерпывал
+# QueuePool и watch откатывал релиз. Инвалидировать на релизе нужно только
+# SSR HTML: ключ `fe:{ns}:v{N}:ssr:{hash}:{asset_sig}` (seo_pages._ssr_key).
+# Смена фронта и так меняет asset_sig, но смена рендер-кода backend при том же
+# фронте — нет, поэтому SSR удаляем явно. SCAN + UNLINK батчами (не KEYS, не
+# блокирующий DEL). `fe:ver:*` НЕ трогаем: сброс версии воскресил бы ключи v0.
+# Доп. паттерны / бамп namespace'ов data-кэша — через env при запуске:
+#   DEPLOY_CACHE_EXTRA_PATTERNS="fe:world:*"  DEPLOY_CACHE_BUMP_NAMESPACES="world"
+REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env 2>/dev/null | cut -d= -f2- | tr -d '\"' | tr -d "'" || true)"
+invalidate_release_cache() {
+  docker compose exec -T \
+    -e REDISCLI_AUTH="${REDIS_PASSWORD:-changeme}" \
+    -e PATTERNS="fe:*:ssr:* ${DEPLOY_CACHE_EXTRA_PATTERNS:-}" \
+    -e BUMP_NS="${DEPLOY_CACHE_BUMP_NAMESPACES:-}" \
+    redis sh -ec '
+      set -f  # паттерны не глобить по файлам /data контейнера
+      for pat in $PATTERNS; do
+        case "$pat" in fe:ver:*|"*"|fe:\*) echo "    skip unsafe pattern $pat"; continue;; esac
+        f=/tmp/release-cache-keys.$$
+        redis-cli -n 0 --scan --pattern "$pat" --count 1000 > "$f"
+        n=$(wc -l < "$f" | tr -d " ")
+        xargs -r -n 500 redis-cli -n 0 UNLINK < "$f" > /dev/null
+        rm -f "$f"
+        echo "    unlinked ${n} keys matching ${pat}"
+      done
+      for ns in $BUMP_NS; do
+        v=$(redis-cli -n 0 INCR "fe:ver:${ns}")
+        echo "    bumped fe:ver:${ns} -> ${v}"
+      done
+    '
+}
+
+# Логи backend на время cutover+watch: `compose up`/rollback пересоздают
+# контейнер, и json-file лог нового backend пропадает вместе с ним.
+BACKEND_LOG_PID=""
+start_backend_log() {
+  local log="${DEPLOY_LOG_DIR:-/tmp}/backend-${NEW_SHA}.log"
+  nohup docker compose logs -f --no-color --timestamps backend >> "$log" 2>&1 &
+  BACKEND_LOG_PID=$!
+  echo "    backend logs -> ${log} (pid ${BACKEND_LOG_PID})"
+}
+stop_backend_log() {
+  if [ -n "${BACKEND_LOG_PID}" ]; then
+    kill "${BACKEND_LOG_PID}" 2>/dev/null || true
+    BACKEND_LOG_PID=""
+  fi
+}
+
 rollback() {
   trap - ERR
   echo "==> ROLLBACK to ${PREV_SHA}"
   git reset --hard "${PREV_SHA}"
   docker tag "${PREV_BACKEND_IMAGE}" rosstat-backend
   docker tag "${PREV_FRONTEND_IMAGE}" rosstat-frontend
+  # Снимок логов упавшего backend до пересоздания контейнера.
+  docker compose logs --no-color --timestamps backend > "${DEPLOY_LOG_DIR:-/tmp}/backend-${NEW_SHA:-unknown}-rollback.log" 2>&1 || true
+  stop_backend_log || true
   docker compose up -d frontend backend
+  # HTML, отрендеренный новым кодом при том же asset_sig, не должен остаться
+  # у старого backend. Best effort: провал не блокирует откат.
+  invalidate_release_cache || echo "    WARN: не удалось инвалидировать SSR-кэш после отката"
   # Mark the restored release as newest before pruning, including when rolling
   # back after repeated unsuccessful deploy attempts.
   publish_frontend_assets "${PREV_FRONTEND_IMAGE}"
@@ -174,6 +230,7 @@ echo "==> docker compose up -d (все сервисы; тома postgres/redis-s
 # держат БД пользователей и сессии. Пересоздаются только сервисы, чей
 # compose-конфиг изменился (лимиты backend/ClickHouse, том sitemap).
 docker compose up -d
+start_backend_log
 
 # #13 cutover: frontend иногда оставался Created (не слушает :3000), а Caddy
 # уже проксировал → публичный 502. Не ждём 180s «healthy» в пустоту —
@@ -241,10 +298,9 @@ if [ -z "$fe_ok" ]; then
   rollback
 fi
 
-echo "==> cache Redis DB 0 FLUSHDB (SSR/asset-hash); redis-state и DB 1 не трогаем"
-REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env | cut -d= -f2- | tr -d '\"' | tr -d "'")"
-docker compose exec -T redis redis-cli -a "${REDIS_PASSWORD:-changeme}" -n 0 FLUSHDB >/dev/null \
-  || { echo "FAIL: не удалось сбросить кэш Redis DB 0"; rollback; }
+echo "==> cache Redis DB 0: SCAN+UNLINK только SSR HTML (fe:*:ssr:*); data-кэши, redis-state и DB 1 не трогаем"
+invalidate_release_cache \
+  || { echo "FAIL: не удалось инвалидировать SSR-кэш Redis DB 0"; rollback; }
 
 docker compose ps --format 'table {{.Name}}\t{{.Status}}'
 
@@ -337,8 +393,15 @@ echo "==> post-deploy watch 15 min"
 WATCH_FAIL=0
 for i in $(seq 1 15); do
   TTFB=99
+  HOME_DIAG=""
   for _try in 1 2 3; do
-    t=$(curl -o /dev/null -s -w '%{time_starttransfer}' -m 8 -A 'YandexBot/3.0' https://forecasteconomy.com/ || echo 99)
+    # rc 28 = таймаут -m 8 (висит), 7 = connection refused, 52/56 = обрыв.
+    rc=0
+    out=$(curl -o /dev/null -s -w '%{http_code} %{time_starttransfer}' -m 8 -A 'YandexBot/3.0' https://forecasteconomy.com/) || rc=$?
+    code=${out%% *}
+    t=${out##* }
+    [ "$rc" = 0 ] || t=99
+    HOME_DIAG="${HOME_DIAG}${HOME_DIAG:+,}rc=${rc}/http=${code:-000}/t=${t}"
     TTFB=$t
     python3 - "$t" <<'PY' && break
 import sys
@@ -350,16 +413,23 @@ PY
     sleep 2
   done
   READY=0
+  READY_DIAG=""
   for _try in 1 2 3; do
-    if curl -sf -m 8 http://127.0.0.1:8000/api/v1/health/ready | grep -qE '"status": ?"ok"'; then
+    rc=0
+    body=$(curl -s -m 8 -w '\n%{http_code} %{time_total}' http://127.0.0.1:8000/api/v1/health/ready) || rc=$?
+    meta=${body##*$'\n'}
+    READY_DIAG="${READY_DIAG}${READY_DIAG:+,}rc=${rc}/http=${meta%% *}/t=${meta##* }"
+    if [ "$rc" = 0 ] && printf '%s' "$body" | grep -qE '"status": ?"ok"'; then
       READY=1
       break
     fi
+    # Какая проверка не прошла (db/redis/scheduler) — в лог, не только ready=0.
+    printf '%s' "$body" | grep -o '"checks":{[^}]*}' | head -c 300 | sed 's/^/      ready checks: /' || true
     sleep 2
   done
   OOM=$(docker inspect rosstat-backend-1 --format '{{.State.OOMKilled}}' 2>/dev/null || echo unknown)
   MEM=$(docker stats --no-stream --format '{{.MemUsage}}' rosstat-backend-1 2>/dev/null || echo n/a)
-  echo "    min ${i}: ttfb=${TTFB}s ready=${READY} oom=${OOM} mem=${MEM}"
+  echo "    min ${i}: ttfb=${TTFB}s ready=${READY} oom=${OOM} mem=${MEM} home[${HOME_DIAG}] ready[${READY_DIAG}]"
   python3 - "${TTFB}" <<'PY' || WATCH_FAIL=1
 import sys
 try:
@@ -376,6 +446,7 @@ PY
   sleep 60
 done
 echo "    watch ok"
+stop_backend_log
 
 echo "==> assets: retain three accepted/recent frontend builds"
 python3 "${ASSET_WORK}/archive.py" prune --archive "$ASSET_ARCHIVE" --keep 3

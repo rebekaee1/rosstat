@@ -129,8 +129,38 @@ _RENDER_LOCKS_MAX = 2000
 _RENDER_SEM = asyncio.Semaphore(6)
 
 
-async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_factory):
+async def _release_db(db: AsyncSession | None) -> None:
+    """Вернуть соединение запроса в пул до ожидания кэша/лока/семафора.
+
+    Инцидент 2026-09-26: резолверы (`resolve_world_hicp_successor` и т.п.)
+    делают SELECT до `_cached_html`; сессия держала соединение «idle in
+    transaction», пока запрос ждал singleflight-лок или `_RENDER_SEM`. На
+    холодном кэше под краулерами ожидающие забирали весь QueuePool, и сами
+    рендеры (внутри семафора) не могли получить соединение → 10s timeout,
+    /health/ready висел, watch деплоя откатил релиз. Коммит read-only
+    транзакции отдаёт соединение; следующий execute возьмёт новое.
+    ``expire_on_commit=False`` — загруженные объекты остаются валидными.
+    """
+    if db is None:
+        return
+    try:
+        if db.in_transaction():
+            await db.commit()
+    except Exception:  # noqa: BLE001 — не мешаем ответу; соединение закроет get_db
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+
+
+async def _cached_html(
+    namespace: str, variant: str, ttl: int, render_coro_factory,
+    *, db: AsyncSession | None = None,
+):
     """Вернуть (status, html) из кэша или отрендерить и закэшировать.
+
+    ``db`` — сессия запроса: её соединение отдаётся в пул до чтения кэша и
+    ожидания лока/семафора, и повторно после рендера (см. `_release_db`).
 
     Кэшируются только 200-е ответы: 404 не должен «прилипать» на TTL
     (индикатор мог появиться после деплоя/seed).
@@ -145,6 +175,7 @@ async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_facto
     if is_preview_locale():
         return await render_coro_factory()
 
+    await _release_db(db)
     sig = await _asset_sig()
     key = await _ssr_key(namespace, variant, sig)
     cached = await cache_get(key)
@@ -159,7 +190,11 @@ async def _cached_html(namespace: str, variant: str, ttl: int, render_coro_facto
         if isinstance(cached, str) and cached:
             return 200, cached
         async with _RENDER_SEM:
-            status, html = await render_coro_factory()
+            try:
+                status, html = await render_coro_factory()
+            finally:
+                # Не держать соединение во время cache_set / ответа.
+                await _release_db(db)
         if status == 200:
             await cache_set(key, html, ttl)
         return status, html
@@ -267,6 +302,7 @@ async def seo_indicator(
     status, html = await _cached_html(
         code, f"indicator:{code}:{mode or ''}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_html(code, db, mode=mode),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -294,6 +330,7 @@ async def seo_regions_map(code: str, request: Request, db: AsyncSession = Depend
     status, html = await _cached_html(
         "ssr-region", f"regions-map:{code}:{year or ''}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_regions_map_html(code, db, year=year),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -318,6 +355,7 @@ async def seo_region(slug: str, request: Request, db: AsyncSession = Depends(get
     status, html = await _cached_html(
         "ssr-region", f"region:{slug}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_html(slug, db),
+        db=db,
     )
     if status == 404:
         canonical = await _canonical_region_slug(slug, db)
@@ -333,6 +371,7 @@ async def seo_region_indicator(
     status, html = await _cached_html(
         "ssr-region", f"region:{slug}:{code}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_indicator_html(slug, code, db),
+        db=db,
     )
     if status == 404:
         canonical = await _canonical_region_slug(slug, db)
@@ -346,6 +385,7 @@ async def seo_region_ratings_hub(request: Request, db: AsyncSession = Depends(ge
     status, html = await _cached_html(
         "ssr-region", f"region-rating-hub:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_ratings_hub_html(db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -355,6 +395,7 @@ async def seo_region_rating(code: str, request: Request, db: AsyncSession = Depe
     status, html = await _cached_html(
         "ssr-region", f"region-rating:{code}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_rating_html(code, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -366,6 +407,7 @@ async def seo_region_vs(
     status, html = await _cached_html(
         "ssr-region", f"region-vs:{slug_a}:{slug_b}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_vs_html(slug_a, slug_b, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -383,6 +425,7 @@ async def seo_today_indicator(code: str, request: Request, db: AsyncSession = De
     status, html = await _cached_html(
         code, f"today:{code}:{_date.today().isoformat()}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_today_indicator_html(code, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -419,6 +462,7 @@ async def seo_indicator_year(
     status, html = await _cached_html(
         code, f"indicator-year:{code}:{year}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_year_html(code, year, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -435,6 +479,7 @@ async def seo_indicator_month(
     status, html = await _cached_html(
         code, f"indicator-month:{code}:{period}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_month_html(code, int(period[:4]), int(period[5:]), db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -487,6 +532,7 @@ async def seo_world_rating(
         status, html = await _cached_html(
             "ssr-world", f"world-rating:country-links-v2:{concept_slug}:interactive:{requested}:{get_locale()}", _SSR_TTL_WORLD,
             lambda: render_world_rating_html(concept_slug, db, year=canonical_year, interactive=True),
+            db=db,
         )
         return _html_response(status, html, request)
     # Легаси ?year= — 301 сразу в конечную точку (Фаза 10): дефолтный год — на
@@ -501,6 +547,7 @@ async def seo_world_rating(
     status, html = await _cached_html(
         "ssr-world", f"world-rating:country-links-v2:{concept_slug}::{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_rating_html(concept_slug, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -526,6 +573,7 @@ async def seo_world_rating_year(
     status, html = await _cached_html(
         "ssr-world", f"world-rating:country-links-v2:{concept_slug}:{year}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_rating_html(concept_slug, db, year=requested),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -537,6 +585,7 @@ async def seo_world_subnational_hub(
     status, html = await _cached_html(
         "ssr-world", f"world-regions:{slug}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_subnational_hub_html(slug, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -558,6 +607,7 @@ async def seo_world_subnational_compare(
         f"world-region-vs:v2:{slug}:{slug_a}:{slug_b}:{get_locale()}",
         _SSR_TTL_WORLD,
         lambda: render_subnational_compare_html(slug, slug_a, slug_b, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -577,6 +627,7 @@ async def seo_world_subnational_indicator_year(
         f"world-region-ind-year:v1:{slug}:{region_slug}:{code}:{year}:{get_locale()}",
         _SSR_TTL_WORLD,
         lambda: render_subnational_indicator_year_html(slug, region_slug, code, int(year), db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -594,6 +645,7 @@ async def seo_world_subnational_indicator(
         f"world-region-ind:{slug}:{region_slug}:{code}:{get_locale()}",
         _SSR_TTL_WORLD,
         lambda: render_subnational_indicator_html(slug, region_slug, code, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -608,6 +660,7 @@ async def seo_world_subnational_region(
     status, html = await _cached_html(
         "ssr-world", f"world-region:{slug}:{region_slug}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_subnational_region_html(slug, region_slug, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -621,6 +674,7 @@ async def seo_world_country(
     status, html = await _cached_html(
         "ssr-world", f"world:{slug}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_country_html(slug, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -645,6 +699,7 @@ async def seo_world_indicator(
     status, html = await _cached_html(
         "ssr-world", f"world:{slug}:{code}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_indicator_html(slug, code, db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -671,6 +726,7 @@ async def seo_world_indicator_year(
     status, html = await _cached_html(
         "ssr-world", f"world-year:{slug}:{code}:{year}:{get_locale()}", _SSR_TTL_WORLD,
         lambda: render_world_indicator_year_html(slug, code, int(year), db),
+        db=db,
     )
     return _html_response(status, html, request)
 
@@ -715,6 +771,7 @@ async def seo_region_indicator_year(
     status, html = await _cached_html(
         "ssr-region", f"region-year:{slug}:{code}:{year}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_indicator_year_html(slug, code, int(year), db),
+        db=db,
     )
     # А-2: короткий слаг региона → канонический с префиксом («tatarstan» →
     # «respublika-tatarstan»), тот же guard, что у двухсегментной карточки.

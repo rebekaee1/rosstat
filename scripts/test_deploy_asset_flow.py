@@ -65,6 +65,47 @@ python3() { printf 'python %s\\n' "$*"; }
         self.assertIn('flock -n 9', SCRIPT)
         self.assertIn('cmp -s "${ASSET_WORK}/retained-probe"', SCRIPT)
 
+    def test_rollback_snapshots_logs_then_invalidates_ssr_after_old_images_up(self):
+        result = self.run_shell('''
+PREV_SHA=prev
+NEW_SHA=new
+DEPLOY_LOG_DIR="$PWD"
+PREV_BACKEND_IMAGE=sha256:old-backend
+PREV_FRONTEND_IMAGE=sha256:old-frontend
+ASSET_WORK="$PWD"
+ASSET_ARCHIVE="$PWD/archive"
+git() { printf 'git %s\\n' "$*"; }
+docker() { printf 'docker %s\\n' "$*"; }
+publish_frontend_assets() { printf 'publish %s\\n' "$*"; }
+python3() { printf 'python %s\\n' "$*"; }
+stop_backend_log() { printf 'stop-log\\n'; }
+invalidate_release_cache() { printf 'invalidate\\n'; return 1; }
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        out = result.stdout
+        up = out.index('docker compose up -d frontend backend')
+        self.assertLess(out.index('stop-log'), up)
+        self.assertLess(up, out.index('invalidate'))
+        # Провал инвалидации не прерывает откат.
+        self.assertIn('WARN: не удалось инвалидировать', out)
+        self.assertIn('publish sha256:old-frontend', out)
+
+    def test_release_cache_is_targeted_scan_unlink_not_flushdb(self):
+        self.assertNotIn('FLUSHDB', SCRIPT.replace('вместо FLUSHDB', '').replace('FLUSHDB обнулял', ''))
+        fn = SCRIPT.split('invalidate_release_cache() {', 1)[1].split('\n}\n', 1)[0]
+        self.assertIn('--scan --pattern', fn)
+        self.assertIn('UNLINK', fn)
+        self.assertNotIn(' KEYS ', fn)
+        self.assertIn('fe:*:ssr:*', fn)
+        self.assertIn('set -f', fn)
+        self.assertIn('fe:ver:*', fn)  # guarded as unsafe
+
+    def test_backend_log_follower_starts_after_up_and_stops_after_watch(self):
+        up = SCRIPT.index('docker compose up -d\n', SCRIPT.index('# ── 4. Up'))
+        self.assertLess(up, SCRIPT.index('start_backend_log\n', up))
+        self.assertLess(SCRIPT.index('echo "    watch ok"'), SCRIPT.index('stop_backend_log\n', SCRIPT.index('echo "    watch ok"')))
+        self.assertIn('home[${HOME_DIAG}] ready[${READY_DIAG}]', SCRIPT)
+
 
 if __name__ == '__main__':
     unittest.main()

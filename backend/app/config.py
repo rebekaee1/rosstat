@@ -27,9 +27,14 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://rustats:rustats@localhost:5432/rustats"
     database_echo: bool = False
     # О-15: пул соединений per-process; бюджет см. комментарий в database.py.
-    db_pool_size: int = 5
-    db_max_overflow: int = 10
-    db_pool_timeout: int = 10
+    # 2026-09-26: 5+10 / 10s исчерпывался на холодном SSR-кэше под краулерами
+    # (~10k req/h), /health/ready висел >8s, watch деплоя откатывал релиз.
+    # 10+15 = 25 на процесс; при 2 воркерах 50 + аналитика 8 + транзиенты
+    # (alembic/seed/pg_dump/psql) ≈ 70 < max_connections 100 − 3 reserved.
+    # pool_timeout 3s < 8s curl watch/healthcheck: перегрузка = быстрый 503.
+    db_pool_size: int = 10
+    db_max_overflow: int = 15
+    db_pool_timeout: int = 3
     db_statement_timeout_ms: int = 30_000
     db_idle_in_transaction_timeout_ms: int = 120_000
     # Отдельный пул аналитики (rollups / Pulse / BI / ClickHouse sync) —
