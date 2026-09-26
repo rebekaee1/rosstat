@@ -12,29 +12,56 @@ services:
     # Инцидент 2026-09-04: база 2,9 ГБ (мир ~1,7 ГБ, behavior_events 0,5 ГБ) при
     # дефолтных shared_buffers=128MB в cgroup 1G — рабочий набор не помещался,
     # world_indicators читалась с диска терабайтами (hit 41%), любой BI-скан
-    # ставил диск. Хост 8 ГБ: postgres получает 2,5 ГБ, четверть — shared_buffers,
-    # остальное — page cache внутри cgroup. random_page_cost под SSD.
+    # ставил диск. random_page_cost под SSD.
+    # perf batch 3 (2026-09-26): база уже 8 ГБ, хост 7,9 ГБ. Лимит 2.5G → 3G:
+    # пик остальных (backend ~1.5G, scheduler ~0.8G, CH/Redis/frontend ~0.8G,
+    # хост dockerd/tor/caddy ~0.75G) ≈ 3.9 ГБ + 3 ГБ Postgres → ~1 ГБ запаса.
+    # shared_buffers ≈ 29% лимита; effective_cache_size = shared_buffers +
+    # page cache внутри cgroup (файловый кэш чтений Postgres тарифицируется в
+    # его же cgroup). work_mem прежний: max_connections 100, пулы ~73.
+    # pg_stat_statements: расширение создаёт deploy.sh (идемпотентно).
     command:
       - postgres
       - -c
-      - shared_buffers=${POSTGRES_SHARED_BUFFERS:-640MB}
+      - shared_buffers=${POSTGRES_SHARED_BUFFERS:-896MB}
       - -c
-      - effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-1800MB}
+      - effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-2304MB}
       - -c
       - work_mem=${POSTGRES_WORK_MEM:-16MB}
       - -c
-      - maintenance_work_mem=${POSTGRES_MAINTENANCE_WORK_MEM:-128MB}
+      - maintenance_work_mem=${POSTGRES_MAINTENANCE_WORK_MEM:-256MB}
+      - -c
+      # 3 autovacuum-воркера × maintenance_work_mem было бы 768MB — ограничиваем.
+      - autovacuum_work_mem=128MB
       - -c
       - random_page_cost=1.1
       - -c
       - track_io_timing=on
+      - -c
+      # JIT на коротких OLTP/SSR-запросах — только лишние миллисекунды компиляции.
+      - jit=off
+      - -c
+      - log_min_duration_statement=${POSTGRES_LOG_MIN_DURATION_MS:-1000}
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+    # Parallel hash/sort живут в /dev/shm; докерные 64MB дают «could not
+    # resize shared memory segment». Тарифицируется в cgroup только при использовании.
+    shm_size: 256m
+    # Официальный образ гасит Postgres SIGINT (fast shutdown); дефолтных 10 с
+    # мало на checkpoint 900MB буферов → SIGKILL и crash recovery при старте.
+    stop_grace_period: 120s
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
     restart: unless-stopped
     deploy:
       resources:
         limits:
           # О-10: 512M было впритык при региональной перезаливке; 1G хватало
-          # до мирового слоя. Сейчас лимит задаётся env (прод 8 ГБ — 2.5G).
-          memory: ${POSTGRES_MEM_LIMIT:-2.5G}
+          # до мирового слоя; 2.5G — до perf batch 3. Override — env.
+          memory: ${POSTGRES_MEM_LIMIT:-3G}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U rustats"]
       interval: 10s
@@ -48,7 +75,9 @@ services:
     # allkeys-lru безопасен, сессии больше не в этом инстансе.
     # 2026-07-08: 100mb было впритык (региональный SSR-кэш fe:ssr-region:*
     # ~1940 ключей ≈ 95 МБ забивал лимит целиком) — поднято до 256mb.
-    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme} --maxmemory 256mb --maxmemory-policy ${REDIS_CACHE_POLICY:-noeviction}
+    # 2026-09-26 (perf batch 3): 256mb снова полон — 1,17 млн вытеснений
+    # allkeys-lru, hit 28% → 384mb (cgroup 448M, запас ~64M как прежде).
+    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme} --maxmemory 384mb --maxmemory-policy ${REDIS_CACHE_POLICY:-noeviction}
     ports:
       - "127.0.0.1:6380:6379"
     volumes:
@@ -57,7 +86,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 320M
+          memory: 448M
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
       interval: 10s

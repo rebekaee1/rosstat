@@ -277,8 +277,11 @@ class WorldIndicator(Base):
 class WorldDataPoint(Base):
     __tablename__ = "world_data_points"
     __table_args__ = (
+        # Уникальный индекс uq_world_data_point (indicator_id, date) покрывает
+        # и поиск по индикатору/диапазону дат; отдельный неуникальный индекс на
+        # те же колонки (ix_world_data_points_indicator_date, ~471 МБ на проде)
+        # был дубликатом — убран в perf batch 3.
         UniqueConstraint("indicator_id", "date", name="uq_world_data_point"),
-        Index("ix_world_data_points_indicator_date", "indicator_id", "date"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)

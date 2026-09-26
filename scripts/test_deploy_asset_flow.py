@@ -9,6 +9,8 @@ PUBLISH = SCRIPT.split("publish_frontend_assets() {", 1)[1].split("\n# Complete 
 PUBLISH = "publish_frontend_assets() {" + PUBLISH
 ROLLBACK = SCRIPT.split("rollback() {", 1)[1].split("\n# ERR catches", 1)[0]
 ROLLBACK = "rollback() {" + ROLLBACK
+PG_BLOCKER = SCRIPT.split("pg_restart_blocker() {", 1)[1].split("\n}\n", 1)[0]
+PG_BLOCKER = "pg_restart_blocker() {" + PG_BLOCKER + "\n}\n"
 
 
 class DeployAssetFlowTests(unittest.TestCase):
@@ -164,6 +166,66 @@ has_scheduler_service() { return 0; }
         self.assertNotIn('--services | grep', SCRIPT)
         self.assertNotIn('--services 2>/dev/null | grep', SCRIPT)
 
+
+    def test_rollback_restores_recreated_infra_before_old_app(self):
+        # perf batch 3: postgres/redis, пересозданные деплоем, возвращаются к
+        # прежнему compose-конфигу после git reset и до старта старого backend.
+        result = self.run_shell(self.ROLLBACK_FAKES + '''
+has_scheduler_service() { return 0; }
+INFRA_RECREATE="postgres redis"
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        out = result.stdout
+        infra = out.index('docker compose up -d --wait postgres redis')
+        self.assertLess(out.index('git reset --hard prev'), infra)
+        self.assertLess(infra, out.index('docker compose up -d frontend backend scheduler'))
+
+    def test_rollback_without_infra_change_does_not_touch_postgres(self):
+        result = self.run_shell(self.ROLLBACK_FAKES + '''
+has_scheduler_service() { return 0; }
+INFRA_RECREATE=""
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertNotIn('--wait', result.stdout)
+        self.assertNotIn('postgres', result.stdout)
+
+    def _blocker(self, now, locks='', allow='0'):
+        fakes = (
+            'DEPLOY_ALLOW_PG_RESTART=%s\n'
+            'date() { if [ "$1" = "+%%H%%M" ]; then echo %s; else echo %s:%s; fi; }\n'
+            'grep() { return 1; }\n'
+            'docker() { case "$*" in *redis-state*) printf "%%s" "%s";; esac; }\n'
+        ) % (allow, now, now[:2], now[2:], locks)
+        return self.run_shell(fakes + PG_BLOCKER + '''
+if reason=$(pg_restart_blocker); then echo "BLOCKED: $reason"; else echo FREE; fi
+''')
+
+    def test_pg_restart_blocked_during_etl_windows_and_live_job_locks(self):
+        for now in ('0545', '0700', '1930', '2005', '2229'):
+            r = self._blocker(now)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn('BLOCKED: окно ETL', r.stdout, now)
+        for now in ('0100', '0730', '1500', '1929', '2230'):
+            r = self._blocker(now)
+            self.assertIn('FREE', r.stdout, now)
+        r = self._blocker('1500', locks='sched:lock:daily_etl')
+        self.assertIn('BLOCKED: идут фоновые джобы', r.stdout)
+        self.assertIn('sched:lock:daily_etl', r.stdout)
+        r = self._blocker('2005', locks='sched:lock:daily_etl', allow='1')
+        self.assertIn('FREE', r.stdout)
+
+    def test_pg_recreate_guard_before_build_checkpoint_before_up(self):
+        guard = SCRIPT.index('if reason=$(pg_restart_blocker); then')
+        build = SCRIPT.index('# ── 3. Build')
+        self.assertLess(SCRIPT.index('INFRA_RECREATE=""'), guard)
+        self.assertLess(guard, build)
+        # Блок деплоя до сборки откатывает merge, как scope guard.
+        self.assertIn('git reset --hard "${PREV_SHA}"', SCRIPT[guard:build])
+        up = SCRIPT.index('docker compose up -d\n', SCRIPT.index('# ── 4. Up'))
+        self.assertLess(SCRIPT.index("-qc 'CHECKPOINT'"), up)
+        ext = SCRIPT.index('CREATE EXTENSION IF NOT EXISTS pg_stat_statements')
+        self.assertLess(up, ext)
+        self.assertLess(ext, SCRIPT.index('==> smoke: data endpoint'))
 
 if __name__ == '__main__':
     unittest.main()

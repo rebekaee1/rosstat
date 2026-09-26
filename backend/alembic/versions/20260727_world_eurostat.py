@@ -89,11 +89,11 @@ def upgrade() -> None:
         sa.Column("value", sa.Numeric(20, 6), nullable=False),
         sa.UniqueConstraint("indicator_id", "date", name="uq_world_data_point"),
     )
-    op.create_index(
-        "ix_world_data_points_indicator_date",
-        "world_data_points",
-        ["indicator_id", "date"],
-    )
+    # perf batch 3 (2026-09-26): здесь создавался ix_world_data_points_indicator_date
+    # на те же (indicator_id, date), что и uq_world_data_point, — чистый дубликат.
+    # Убран из истории, а не новой ревизией: новая голова alembic ломает автооткат
+    # deploy.sh (старый код: «Can't locate revision», CONTEXT.md::Deploy-scope trap).
+    # На существующих БД индекс снимает scripts/db-cleanup-perf-batch3.sh.
 
 
 def downgrade() -> None:

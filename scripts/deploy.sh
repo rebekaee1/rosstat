@@ -88,6 +88,59 @@ for f in $(git diff --name-status "${PREV_SHA}" "${NEW_SHA}" -- backend/alembic/
   exit 1
 done
 
+# ── 2d. Инфра-сервисы с изменённым конфигом (perf batch 3) ────────────────
+# `compose up -d` пересоздаёт postgres/redis, если их compose-конфиг (лимиты,
+# `command`) изменился: Postgres недоступен ~0,5-1 мин, контейнеры backend
+# теряют соединения. Список фиксируем ДО up — откат вернёт им прежний конфиг.
+INFRA_RECREATE=""
+for svc in postgres redis redis-state clickhouse; do
+  cid=$(docker compose ps -q "$svc" 2>/dev/null || true)
+  [ -n "$cid" ] || continue
+  run_hash=$(docker inspect -f '{{index .Config.Labels "com.docker.compose.config-hash"}}' "$cid" 2>/dev/null || true)
+  new_hash=$(docker compose config --hash "$svc" 2>/dev/null | awk '{print $2}' || true)
+  if [ -n "$new_hash" ] && [ "$run_hash" != "$new_hash" ]; then
+    INFRA_RECREATE="${INFRA_RECREATE:+${INFRA_RECREATE} }${svc}"
+  fi
+done
+echo "==> infra recreate: ${INFRA_RECREATE:-нет}"
+
+# Рестарт Postgres не должен попасть на ETL (06:00/20:00 МСК, европейские
+# прогнозы 21:00): джобы оборвутся посреди записи. Окно берём с запасом на
+# сборку образов (несколько минут между этой проверкой и `up`). Живые
+# распределённые локи джоб (sched:lock:*, О-13) — тоже стоп.
+# Осознанный обход: DEPLOY_ALLOW_PG_RESTART=1.
+pg_restart_blocker() {
+  local hm locks=""
+  [ "${DEPLOY_ALLOW_PG_RESTART:-0}" = "1" ] && return 1
+  hm=$(TZ=Europe/Moscow date +%H%M)
+  hm=$((10#${hm}))
+  if { [ "$hm" -ge 530 ] && [ "$hm" -lt 730 ]; } || { [ "$hm" -ge 1930 ] && [ "$hm" -lt 2230 ]; }; then
+    echo "окно ETL/прогнозов (05:30-07:30, 19:30-22:30 МСК), сейчас $(TZ=Europe/Moscow date +%H:%M) МСК"
+    return 0
+  fi
+  local pass
+  pass="$(grep '^REDIS_PASSWORD=' .env 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" || true)"
+  # State-Redis: выделенный redis-state (DB 0) или DB 1 кэш-инстанса — смотрим оба.
+  locks="$(docker compose exec -T -e REDISCLI_AUTH="${pass:-changeme}" redis-state \
+             redis-cli -n 0 --scan --pattern 'sched:lock:*' 2>/dev/null || true)
+$(docker compose exec -T -e REDISCLI_AUTH="${pass:-changeme}" redis \
+             redis-cli -n 1 --scan --pattern 'sched:lock:*' 2>/dev/null || true)"
+  locks="$(printf '%s\n' "$locks" | sed '/^[[:space:]]*$/d' | tr '\n' ' ')"
+  if [ -n "$locks" ]; then
+    echo "идут фоновые джобы (локи: ${locks})"
+    return 0
+  fi
+  return 1
+}
+if [[ " ${INFRA_RECREATE} " == *" postgres "* ]]; then
+  if reason=$(pg_restart_blocker); then
+    echo "FAIL: деплой пересоздаёт Postgres, но сейчас нельзя: ${reason}."
+    echo "      Повтори позже или DEPLOY_ALLOW_PG_RESTART=1. Откатываю merge."
+    git reset --hard "${PREV_SHA}" >/dev/null 2>&1
+    exit 1
+  fi
+fi
+
 # ── 3. Build: версионированные образы для отката (О-4) ────────────────
 echo "==> docker compose build (tag=${NEW_SHA})"
 # Retain the actual running images, not whatever 'latest' a previous build left.
@@ -227,6 +280,15 @@ rollback() {
   docker tag "${PREV_BACKEND_IMAGE}" rosstat-backend
   docker tag "${PREV_FRONTEND_IMAGE}" rosstat-frontend
   stop_backend_log || true
+  # perf batch 3: инфра-сервисы, пересозданные этим деплоем (postgres/redis),
+  # возвращаются к конфигу прежнего compose (git уже откачен) — до старта
+  # старых backend/scheduler. Для Postgres это ещё ~0,5-1 мин простоя БД.
+  if [ -n "${INFRA_RECREATE:-}" ]; then
+    echo "    restore infra config: ${INFRA_RECREATE}"
+    # shellcheck disable=SC2086
+    docker compose up -d --wait ${INFRA_RECREATE} \
+      || echo "    WARN: инфра-сервисы не подтвердили healthy, продолжаю откат"
+  fi
   if has_scheduler_service; then
     # Старый релиз тоже со split: scheduler пересоздаётся на откатном образе.
     docker compose up -d frontend backend scheduler
@@ -261,6 +323,13 @@ echo "==> docker compose up -d (все сервисы; тома postgres/redis-s
 # Не `down -v` и не `--renew-anon-volumes`: postgres_data и redis_state_data
 # держат БД пользователей и сессии. Пересоздаются только сервисы, чей
 # compose-конфиг изменился (лимиты backend/ClickHouse, том sitemap).
+if [[ " ${INFRA_RECREATE} " == *" postgres "* ]]; then
+  # Checkpoint заранее: fast shutdown при пересоздании пишет меньше грязных
+  # буферов и укладывается в stop_grace_period. Best effort.
+  echo "==> postgres будет пересоздан (новый конфиг): CHECKPOINT, простой БД ~0,5-1 мин"
+  docker compose exec -T postgres psql -U rustats -d rustats -qc 'CHECKPOINT' \
+    || echo "    WARN: CHECKPOINT не выполнен, продолжаю"
+fi
 docker compose up -d
 start_backend_log
 
@@ -320,6 +389,18 @@ if has_scheduler_service; then
   done
   [ -n "$sched_ok" ] || { echo "FAIL: scheduler не стал healthy за 180s"; docker compose logs scheduler --tail=50; rollback; }
 fi
+
+# perf batch 3: pg_stat_statements (shared_preload_libraries в compose).
+# Расширение — только представление/функции, идемпотентно; сбой не валит релиз.
+PG_PRELOAD=$(docker compose exec -T postgres psql -U rustats -d rustats -Atc 'SHOW shared_preload_libraries' 2>/dev/null || true)
+if [[ "${PG_PRELOAD}" == *pg_stat_statements* ]]; then
+  docker compose exec -T postgres psql -U rustats -d rustats -qc \
+    'CREATE EXTENSION IF NOT EXISTS pg_stat_statements' \
+    || echo "    WARN: CREATE EXTENSION pg_stat_statements не выполнен"
+fi
+docker compose exec -T postgres psql -U rustats -d rustats -Atc \
+  "SELECT 'postgres: ' || string_agg(name || '=' || setting || coalesce(unit, ''), ' ' ORDER BY name) FROM pg_settings WHERE name IN ('shared_buffers','effective_cache_size','work_mem','maintenance_work_mem','jit','shared_preload_libraries','log_min_duration_statement')" \
+  || true
 
 # Frontend healthy до smoke: readiness-цикл выше ждёт только backend, а
 # frontend пересоздаётся секундами позже — первый HTTPS-пробег гонки
