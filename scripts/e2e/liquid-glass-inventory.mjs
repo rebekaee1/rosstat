@@ -42,7 +42,7 @@ async def main():
 asyncio.run(main())
 `;
 const result = JSON.parse(execFileSync('docker', ['compose', 'exec', '-T', 'backend', 'python', '-'], { cwd: root, input: code, encoding: 'utf8', timeout: 90000 }));
-const out = path.join(root, 'docs/design/local-acceptance'); fs.mkdirSync(out, { recursive: true });
+const out = path.join(root, 'output/design-acceptance/results'); fs.mkdirSync(out, { recursive: true });
 const report = { at: new Date().toISOString(), source: 'local compose postgres via backend; transaction read only, statement_timeout 12s/query', ...result, limitations: ['Subnational ingest may be active: this is a point-in-time snapshot.', 'Raw chunk boundary counts can exceed emitted canonical URL counts.', 'No inference about production inventory or search-engine indexing.'] };
 fs.writeFileSync(path.join(out, 'inventory.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({ ...report, national_before_1990: { ...result.national_before_1990, years: undefined } }));

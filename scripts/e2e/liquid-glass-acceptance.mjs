@@ -21,7 +21,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(s => s.replace(/^--/, 
 const base = args.base || 'http://127.0.0.1:3000';
 if (!['127.0.0.1', 'localhost', '[::1]'].includes(new URL(base).hostname)) throw Error('Local loopback entrypoint required');
 const mode = args.mode || 'all', tier = args.tier || 'smoke', stage = (args.stage || 'local').replace(/[^\w-]/g, '_');
-const out = path.join(root, 'docs/design/local-acceptance', stage);
+const out = path.join(root, 'output/design-acceptance/results', stage);
 fs.mkdirSync(out, { recursive: true });
 const shots = path.join(root, 'output/design-acceptance/2026-09-24', stage);
 fs.mkdirSync(shots, { recursive: true });

@@ -10,7 +10,17 @@ import { setTimeout as delay } from 'node:timers/promises';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const phase = process.argv.find(a => a.startsWith('--phase='))?.split('=')[1] || 'before';
 if (!['before', 'after'].includes(phase)) throw Error('Expected before or after');
-const initial = JSON.parse(fs.readFileSync(path.join(root, 'docs/design/local-acceptance/final/all.json')));
+// Inputs are produced by liquid-glass-acceptance.mjs (stage "final") into the
+// gitignored output/design-acceptance/results/; run that first (and --phase=before
+// before --phase=after). Results are local evidence, not committed.
+const resultsDir = path.join(root, 'output/design-acceptance/results');
+const requireInput = (rel, hint) => {
+  const file = path.join(resultsDir, rel);
+  if (!fs.existsSync(file)) throw Error(`Missing ${path.relative(root, file)}: ${hint}`);
+  return JSON.parse(fs.readFileSync(file));
+};
+fs.mkdirSync(resultsDir, { recursive: true });
+const initial = requireInput('final/all.json', 'run scripts/e2e/liquid-glass-acceptance.mjs with stage "final" first');
 const chosen = new Set(['us-region-indicator', 'us-region-annual', 'us-region-quarterly']);
 const report = { at: new Date().toISOString(), phase, initialSuiteAt: initial.at, images: [], issues: [], limitations: ['Paced local requests, not performance measurements.'] };
 const out = path.join(root, 'output/design-acceptance/2026-09-24', `final-us-images-${phase}`);
@@ -35,9 +45,9 @@ for (const row of initial.http.filter(r => chosen.has(r.id))) for (const item of
 }
 if (report.images.length !== 12) report.issues.push({ expectedImages: 12, actualImages: report.images.length });
 if (phase === 'after') {
-  const before = JSON.parse(fs.readFileSync(path.join(root, 'docs/design/local-acceptance/final-us-images-before.json')));
+  const before = requireInput('final-us-images-before.json', 'run this script with --phase=before first');
   report.comparison = report.images.map(i => ({ url: i.url, changed: before.images.find(b => b.url === i.url)?.sha256 !== i.sha256 }));
 }
-fs.writeFileSync(path.join(root, `docs/design/local-acceptance/final-us-images-${phase}.json`), JSON.stringify(report, null, 2) + '\n');
+fs.writeFileSync(path.join(root, `output/design-acceptance/results/final-us-images-${phase}.json`), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({ phase, images: report.images.length, issues: report.issues, changed: report.comparison?.filter(i => i.changed).length }));
 process.exitCode = report.issues.length ? 1 : 0;
