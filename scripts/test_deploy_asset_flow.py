@@ -106,6 +106,64 @@ invalidate_release_cache() { printf 'invalidate\\n'; return 1; }
         self.assertLess(SCRIPT.index('echo "    watch ok"'), SCRIPT.index('stop_backend_log\n', SCRIPT.index('echo "    watch ok"')))
         self.assertIn('home[${HOME_DIAG}] ready[${READY_DIAG}]', SCRIPT)
 
+    ROLLBACK_FAKES = '''
+PREV_SHA=prev
+NEW_SHA=new
+DEPLOY_LOG_DIR="$PWD"
+PREV_BACKEND_IMAGE=sha256:old-backend
+PREV_FRONTEND_IMAGE=sha256:old-frontend
+ASSET_WORK="$PWD"
+ASSET_ARCHIVE="$PWD/archive"
+git() { printf 'git %s\\n' "$*"; }
+docker() {
+  if [ "$*" = "compose ps -aq scheduler" ]; then printf 'sched-cid\\n'; return; fi
+  printf 'docker %s\\n' "$*"
+}
+publish_frontend_assets() { printf 'publish %s\\n' "$*"; }
+python3() { printf 'python %s\\n' "$*"; }
+stop_backend_log() { printf 'stop-log\\n'; }
+invalidate_release_cache() { printf 'invalidate\\n'; }
+backend_services() { printf 'backend scheduler'; }
+'''
+
+    def test_rollback_to_pre_split_release_removes_orphan_scheduler_first(self):
+        # Старый compose без сервиса scheduler: backend старого образа сам
+        # запускает планировщик — осиротевший scheduler убрать до `up`.
+        result = self.run_shell(self.ROLLBACK_FAKES + '''
+has_scheduler_service() { return 1; }
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        out = result.stdout
+        up = out.index('docker compose up -d frontend backend\n')
+        self.assertLess(out.index('docker rm -f sched-cid'), up)
+        self.assertNotIn('up -d frontend backend scheduler', out)
+        # Логи (включая scheduler) снимаются до git reset на старый compose.
+        self.assertLess(ROLLBACK.index('docker compose logs --no-color --timestamps $(backend_services)'),
+                        ROLLBACK.index('git reset --hard'))
+
+    def test_rollback_to_split_release_recreates_scheduler(self):
+        result = self.run_shell(self.ROLLBACK_FAKES + '''
+has_scheduler_service() { return 0; }
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        out = result.stdout
+        self.assertIn('docker compose up -d frontend backend scheduler', out)
+        self.assertNotIn('docker rm -f', out)
+        self.assertLess(out.index('docker tag sha256:old-backend rosstat-backend'),
+                        out.index('docker compose up -d frontend backend scheduler'))
+
+    def test_scheduler_is_waited_logged_and_watched(self):
+        start = SCRIPT.split('start_backend_log() {', 1)[1].split('\n}\n', 1)[0]
+        self.assertIn('$(backend_services)', start)
+        up = SCRIPT.index('docker compose up -d\n', SCRIPT.index('# ── 4. Up'))
+        wait = SCRIPT.index('waiting for scheduler healthy', up)
+        self.assertLess(SCRIPT.index('FAIL: backend не стал ready'), wait)
+        self.assertLess(wait, SCRIPT.index('==> smoke: data endpoint'))
+        self.assertIn('if [ "${SOOM}" = "true" ]; then WATCH_FAIL=1; fi', SCRIPT)
+        # pipefail-safe detection (no `| grep -q` on compose output).
+        self.assertNotIn('--services | grep', SCRIPT)
+        self.assertNotIn('--services 2>/dev/null | grep', SCRIPT)
+
 
 if __name__ == '__main__':
     unittest.main()

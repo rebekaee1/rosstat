@@ -183,10 +183,27 @@ invalidate_release_cache() {
 
 # Логи backend на время cutover+watch: `compose up`/rollback пересоздают
 # контейнер, и json-file лог нового backend пропадает вместе с ним.
+# perf batch 2: фоновые джобы живут в сервисе `scheduler` (тот же образ) —
+# его лог пишем в тот же файл (строки с префиксом сервиса).
 BACKEND_LOG_PID=""
+has_scheduler_service() {
+  # Без пайпа в grep -q: при pipefail SIGPIPE compose дал бы ложный «нет».
+  local svcs
+  svcs=$(docker compose config --services 2>/dev/null) || return 1
+  grep -qx scheduler <<<"$svcs"
+}
+backend_services() {
+  # Сервисы образа rosstat-backend в ТЕКУЩЕМ compose-файле (до split — только backend).
+  if has_scheduler_service; then
+    echo "backend scheduler"
+  else
+    echo "backend"
+  fi
+}
 start_backend_log() {
   local log="${DEPLOY_LOG_DIR:-/tmp}/backend-${NEW_SHA}.log"
-  nohup docker compose logs -f --no-color --timestamps backend >> "$log" 2>&1 &
+  # shellcheck disable=SC2046
+  nohup docker compose logs -f --no-color --timestamps $(backend_services) >> "$log" 2>&1 &
   BACKEND_LOG_PID=$!
   echo "    backend logs -> ${log} (pid ${BACKEND_LOG_PID})"
 }
@@ -200,13 +217,28 @@ stop_backend_log() {
 rollback() {
   trap - ERR
   echo "==> ROLLBACK to ${PREV_SHA}"
+  # Снимок логов упавшего backend (+scheduler) до пересоздания контейнеров и
+  # до git reset: старый compose может не знать сервиса scheduler.
+  # shellcheck disable=SC2046
+  docker compose logs --no-color --timestamps $(backend_services) > "${DEPLOY_LOG_DIR:-/tmp}/backend-${NEW_SHA:-unknown}-rollback.log" 2>&1 || true
+  local sched_cid=""
+  sched_cid=$(docker compose ps -aq scheduler 2>/dev/null || true)
   git reset --hard "${PREV_SHA}"
   docker tag "${PREV_BACKEND_IMAGE}" rosstat-backend
   docker tag "${PREV_FRONTEND_IMAGE}" rosstat-frontend
-  # Снимок логов упавшего backend до пересоздания контейнера.
-  docker compose logs --no-color --timestamps backend > "${DEPLOY_LOG_DIR:-/tmp}/backend-${NEW_SHA:-unknown}-rollback.log" 2>&1 || true
   stop_backend_log || true
-  docker compose up -d frontend backend
+  if has_scheduler_service; then
+    # Старый релиз тоже со split: scheduler пересоздаётся на откатном образе.
+    docker compose up -d frontend backend scheduler
+  else
+    # Откат на релиз до split: backend снова сам запускает планировщик —
+    # осиротевший scheduler нового образа убрать ДО старта, иначе джобы ×2.
+    if [ -n "${sched_cid}" ]; then
+      echo "    remove orphan scheduler ${sched_cid} (pre-split release)"
+      docker rm -f ${sched_cid} || true
+    fi
+    docker compose up -d frontend backend
+  fi
   # HTML, отрендеренный новым кодом при том же asset_sig, не должен остаться
   # у старого backend. Best effort: провал не блокирует откат.
   invalidate_release_cache || echo "    WARN: не удалось инвалидировать SSR-кэш после отката"
@@ -273,6 +305,21 @@ for _ in $(seq 1 60); do
   sleep 5
 done
 [ -n "$ready" ] || { echo "FAIL: backend не стал ready за 300s"; docker compose logs backend --tail=50; rollback; }
+
+# perf batch 2: scheduler (фоновые джобы) стартует после healthy backend;
+# его readiness включает проверку живого APScheduler.
+if has_scheduler_service; then
+  echo "==> waiting for scheduler healthy (до 180s)"
+  sched_ok=""
+  for _ in $(seq 1 36); do
+    sched_cid=$(docker compose ps -q scheduler 2>/dev/null || true)
+    sched_h=$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "${sched_cid:-none}" 2>/dev/null || echo missing)
+    if [ "$sched_h" = "healthy" ]; then sched_ok=1; break; fi
+    echo "    scheduler health=${sched_h}"
+    sleep 5
+  done
+  [ -n "$sched_ok" ] || { echo "FAIL: scheduler не стал healthy за 180s"; docker compose logs scheduler --tail=50; rollback; }
+fi
 
 # Frontend healthy до smoke: readiness-цикл выше ждёт только backend, а
 # frontend пересоздаётся секундами позже — первый HTTPS-пробег гонки
@@ -429,7 +476,10 @@ PY
   done
   OOM=$(docker inspect rosstat-backend-1 --format '{{.State.OOMKilled}}' 2>/dev/null || echo unknown)
   MEM=$(docker stats --no-stream --format '{{.MemUsage}}' rosstat-backend-1 2>/dev/null || echo n/a)
-  echo "    min ${i}: ttfb=${TTFB}s ready=${READY} oom=${OOM} mem=${MEM} home[${HOME_DIAG}] ready[${READY_DIAG}]"
+  # Scheduler (perf batch 2): OOM джобы — тоже откат (как у backend).
+  SOOM=$(docker inspect rosstat-scheduler-1 --format '{{.State.OOMKilled}}' 2>/dev/null || echo none)
+  SMEM=$(docker stats --no-stream --format '{{.MemUsage}}' rosstat-scheduler-1 2>/dev/null || echo n/a)
+  echo "    min ${i}: ttfb=${TTFB}s ready=${READY} oom=${OOM} mem=${MEM} sched_oom=${SOOM} sched_mem=${SMEM} home[${HOME_DIAG}] ready[${READY_DIAG}]"
   python3 - "${TTFB}" <<'PY' || WATCH_FAIL=1
 import sys
 try:
@@ -440,6 +490,7 @@ sys.exit(0 if t < 5 else 1)
 PY
   if [ "${READY}" != "1" ]; then WATCH_FAIL=1; fi
   if [ "${OOM}" = "true" ]; then WATCH_FAIL=1; fi
+  if [ "${SOOM}" = "true" ]; then WATCH_FAIL=1; fi
   if [ "${WATCH_FAIL}" = "1" ]; then
     echo "FAIL: post-deploy watch"; rollback; exit 1
   fi

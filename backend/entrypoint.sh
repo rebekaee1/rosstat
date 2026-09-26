@@ -1,7 +1,15 @@
 #!/bin/bash
 set -e
 
-echo "=== Forecast Economy Backend Entrypoint ==="
+echo "=== Forecast Economy Backend Entrypoint (role=${RUSTATS_PROCESS_ROLE:-web}) ==="
+
+# perf batch 2: сервис `scheduler` (тот же образ) стартует после healthy
+# backend — миграции и сиды уже выполнены web-процессом; повторный прогон
+# лишь конкурировал бы за блокировки alembic/seed.
+if [ "${RUSTATS_PROCESS_ROLE:-web}" = "scheduler" ]; then
+  echo "[scheduler] skip migrations/seeds; starting uvicorn (1 worker, scheduler on)..."
+  exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1
+fi
 
 echo "[1/3] Running database migrations..."
 python -m alembic upgrade head

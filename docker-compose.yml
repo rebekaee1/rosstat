@@ -85,6 +85,11 @@ services:
       retries: 5
 
   backend:
+    # Web-процесс витрины (perf batch 2, 2026-09-26): N uvicorn-воркеров без
+    # планировщика. Фоновые джобы (APScheduler, catch-up, telegram poller,
+    # ticker, geoip) — только в сервисе `scheduler` ниже, из того же образа.
+    # Имя образа явное: `scheduler` и deploy.sh (теги отката) ссылаются на него.
+    image: rosstat-backend
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -94,11 +99,11 @@ services:
     # Telegram у хостера мёртвый (ConnectTimeout) → уведомления и дайджест тихо
     # падали. Прибиваем имя к рабочему IPv4 Telegram API DC (стабильный годами).
     # Override через TELEGRAM_API_IP, если Telegram сменит IP. См. CONTEXT.md trap.
-    extra_hosts:
+    extra_hosts: &backend_extra_hosts
       - "api.telegram.org:${TELEGRAM_API_IP:-149.154.167.220}"
     ports:
       - "127.0.0.1:8000:8000"
-    logging:
+    logging: &backend_logging
       driver: json-file
       options:
         max-size: "50m"
@@ -106,18 +111,27 @@ services:
     deploy:
       resources:
         limits:
-          # Хост 8 ГБ (после апгрейда 2026-09-03; на 4 ГБ 1536M + postgres
-          # уводили витрину в своп). Защита сайта — analytics_engine и
-          # timeout'ы; cgroup всё ещё потолок, не безлимит.
-          memory: 1536M
-          cpus: '1.0'
-    environment:
+          # Хост 8 ГБ / 4 vCPU (после апгрейда 2026-09-03). 2026-09-26: один
+          # воркер с потолком 1 CPU давал ~15 req/s и схлопывался на
+          # всплесках ботов (800-1100 req/min) при ~77% простоя хоста.
+          # 3 воркера × ~350-450 MiB RSS; планировщик вынесен в `scheduler`
+          # (1 CPU / 1G). Итого backend 2.25G + scheduler 1G против прежних
+          # 1.5G — запас хоста ~5 ГБ, Postgres потом получит больше RAM.
+          memory: 2304M
+          cpus: '3.0'
+    environment: &backend_env
       RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:${POSTGRES_PASSWORD:-rustats_dev}@postgres:5432/rustats
       RUSTATS_REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379/0
       # П-16: дисковый кэш OG-картинок (переживает рестарт контейнера)
       OG_CACHE_DIR: /app/og-cache
       RUSTATS_ROSSTAT_CA_CERT: /app/certs/russiantrustedca2024.pem
-      RUSTATS_SCHEDULER_ENABLED: "true"
+      # Web-воркеры планировщик не запускают (иначе джобы ×N воркеров).
+      RUSTATS_SCHEDULER_ENABLED: "false"
+      UVICORN_WORKERS: ${UVICORN_WORKERS:-3}
+      # Пул на процесс (О-15): 3 воркера × (8+7) = 45 + аналитика 3 × (2+2)
+      # + scheduler (6+6)+(2+2) = 73 + транзиенты < max_connections 100.
+      RUSTATS_DB_POOL_SIZE: ${RUSTATS_DB_POOL_SIZE:-8}
+      RUSTATS_DB_MAX_OVERFLOW: ${RUSTATS_DB_MAX_OVERFLOW:-7}
       RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED: ${RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED:-true}
       # Первая пара прогонов автоматически shadow (проверяется по БД), затем
       # bounded-публикация Eurostat. Env может принудительно вернуть shadow.
@@ -218,7 +232,7 @@ services:
       RUSTATS_YANDEX_PARTNER_CLIENT_SECRET: ${RUSTATS_YANDEX_PARTNER_CLIENT_SECRET:-}
       RUSTATS_YANDEX_PARTNER_TOKEN: ${RUSTATS_YANDEX_PARTNER_TOKEN:-}
       TZ: Europe/Moscow
-    volumes:
+    volumes: &backend_volumes
       - ./output:/app/data:ro
       # Гео-база DB-IP Lite: скачивается backend'ом при старте, обновляется
       # ежемесячным job'ом. Том — чтобы не тянуть ~100 МБ при каждом rebuild.
@@ -234,12 +248,12 @@ services:
       redis-state:
         condition: service_healthy
     restart: unless-stopped
-    ulimits:
+    ulimits: &backend_ulimits
       nofile:
         soft: 65536
         hard: 65536
     healthcheck:
-      # readiness (Н-1): БД + оба Redis + планировщик; 503 = unhealthy
+      # readiness (Н-1): БД + оба Redis (+ планировщик, где он включён); 503 = unhealthy
       test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health/ready"]
       interval: 30s
       timeout: 10s
@@ -248,6 +262,47 @@ services:
       # при seed-hash-скипе — секунды. 240s покрывает худший случай без
       # флаппинга «unhealthy → frontend не стартует».
       start_period: 240s
+
+  scheduler:
+    # Фоновый процесс (perf batch 2): тот же образ, 1 uvicorn-воркер,
+    # RUSTATS_SCHEDULER_ENABLED=true — APScheduler, startup catch-up, geoip,
+    # telegram poller, ticker. Без публичного порта: nginx ходит только в
+    # `backend:8000`. Миграции/сиды не гоняет (RUSTATS_PROCESS_ROLE) — их
+    # делает backend, поэтому стартуем после его healthy.
+    image: rosstat-backend
+    # Локальный образ из `backend.build`; никогда не тянуть из registry.
+    pull_policy: never
+    extra_hosts: *backend_extra_hosts
+    logging: *backend_logging
+    deploy:
+      resources:
+        limits:
+          # ETL/прогнозы/sitemap (стрим 5M URL) — раньше жили внутри 1.5G
+          # вместе с витриной; пиковая RSS джоб ~600-800 MiB.
+          memory: 1024M
+          cpus: '1.0'
+    environment:
+      <<: *backend_env
+      RUSTATS_SCHEDULER_ENABLED: "true"
+      RUSTATS_PROCESS_ROLE: scheduler
+      UVICORN_WORKERS: "1"
+      RUSTATS_DB_POOL_SIZE: ${RUSTATS_SCHEDULER_DB_POOL_SIZE:-6}
+      RUSTATS_DB_MAX_OVERFLOW: ${RUSTATS_SCHEDULER_DB_MAX_OVERFLOW:-6}
+      # Джобам не нужен быстрый 503 витрины: ждать соединение дольше.
+      RUSTATS_DB_POOL_TIMEOUT: "15"
+    volumes: *backend_volumes
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    ulimits: *backend_ulimits
+    healthcheck:
+      # readiness включает проверку живого планировщика (scheduler_enabled).
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
 
   frontend:
     build:

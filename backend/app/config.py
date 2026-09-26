@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     # 10+15 = 25 на процесс; при 2 воркерах 50 + аналитика 8 + транзиенты
     # (alembic/seed/pg_dump/psql) ≈ 70 < max_connections 100 − 3 reserved.
     # pool_timeout 3s < 8s curl watch/healthcheck: перегрузка = быстрый 503.
+    # perf batch 2 (2026-09-26): docker-compose переопределяет через env —
+    # web 3 воркера × (8+7) + scheduler (6+6) + аналитика 4×(2+2) ≈ 73.
+    # Дефолты ниже — для одиночного процесса (dev/тесты).
     db_pool_size: int = 10
     db_max_overflow: int = 15
     db_pool_timeout: int = 3
