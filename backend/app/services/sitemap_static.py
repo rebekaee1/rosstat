@@ -5,6 +5,7 @@ current; legacy shared-origin files are deliberately not consumed.
 """
 from __future__ import annotations
 
+import asyncio
 import fcntl
 import gzip
 import json
@@ -203,6 +204,64 @@ def _write_xml(directory: Path, name: str, xml: str) -> None:
     _atomic_write(Path(str(dest) + ".gz"), gzip.compress(raw, compresslevel=6, mtime=0))
 
 
+def _publish_section(
+    name: str,
+    urls: list,
+    previous: Path | None,
+    previous_digests: dict[str, str],
+    generation: Path,
+    origins: list[str],
+    render_urlset,
+    origin_token: str,
+) -> tuple[str | None, str, bool]:
+    """Синхронная часть одного шарда (вызывается из потока).
+
+    Возвращает (lastmod секции, отпечаток, переиспользован ли прошлый файл).
+    """
+    if len(urls) > SITEMAP_MAX_URLS:
+        raise ValueError(
+            f"Sitemap section {name} has {len(urls)} URLs; "
+            f"protocol limit is {SITEMAP_MAX_URLS}"
+        )
+    blocked = [url.path for url in urls if is_noindex_path(url.path)]
+    if blocked:
+        raise ValueError(
+            f"Sitemap section {name} includes noindex URLs: {blocked[:5]}"
+        )
+    stamp = section_lastmod(urls)
+    digest = section_fingerprint(urls)
+    # ~5,04 млн URL на хост. Неизменный шард не рендерим и не
+    # gzip'аем заново: жёсткая ссылка на прошлую генерацию.
+    # Отпечаток не включает хост — EN и RU остаются парой.
+    if (
+        previous is not None
+        and previous_digests.get(name) == digest
+        and _reuse_shard(previous, generation, name, origins)
+    ):
+        return stamp, digest, True
+    template = render_urlset(urls, origin=origin_token)
+    for origin in origins:
+        xml = template.replace(origin_token, origin.rstrip("/"))
+        _write_xml(generation / urlparse(origin).hostname, name, xml)
+    return stamp, digest, False
+
+
+def _publish_generation(root: Path, generation: Path, stats: dict) -> None:
+    _atomic_write(generation / STATS_NAME, json.dumps(stats, ensure_ascii=False, indent=2).encode())
+    link = root / f".current-{generation.name}"
+    link.symlink_to(Path("generations") / generation.name)
+    os.replace(link, root / "current")
+
+
+def _remove_old_generations(parent: Path, keep: set) -> None:
+    for candidate in parent.iterdir():
+        if candidate not in keep and _GENERATION.fullmatch(candidate.name) and candidate.is_dir() and not candidate.is_symlink():
+            try:
+                shutil.rmtree(candidate)
+            except OSError:
+                logger.warning("Cannot remove old sitemap generation %s", candidate, exc_info=True)
+
+
 async def build_static_sitemaps() -> dict:
     """Resolve each section once; publish both hosts as one atomic generation.
 
@@ -251,35 +310,21 @@ async def build_static_sitemaps() -> dict:
                         raise ValueError(f"Invalid sitemap section: {name}")
                     if not urls:
                         continue  # Empty chunks must not be advertised.
-                    if len(urls) > SITEMAP_MAX_URLS:
-                        raise ValueError(
-                            f"Sitemap section {name} has {len(urls)} URLs; "
-                            f"protocol limit is {SITEMAP_MAX_URLS}"
-                        )
-                    blocked = [url.path for url in urls if is_noindex_path(url.path)]
-                    if blocked:
-                        raise ValueError(
-                            f"Sitemap section {name} includes noindex URLs: {blocked[:5]}"
-                        )
-                    stamp = section_lastmod(urls)
+                    # Perf batch 2: валидация, отпечаток, рендер XML, gzip и
+                    # fsync шарда (до 50k URL × 2 хоста) — чистый CPU/IO; в
+                    # потоке, чтобы ~5 млн URL ночного билда не держали event
+                    # loop процесса (раньше — вместе с веб-запросами).
+                    stamp, digest, was_reused = await asyncio.to_thread(
+                        _publish_section,
+                        name, urls, previous, previous_digests, generation, origins,
+                        _render_urlset, SITEMAP_ORIGIN_TOKEN,
+                    )
                     if stamp:
                         section_stamps[name] = stamp
-                    digest = section_fingerprint(urls)
                     section_digests[name] = digest
-                    # ~5,04 млн URL на хост. Неизменный шард не рендерим и не
-                    # gzip'аем заново: жёсткая ссылка на прошлую генерацию.
-                    # Отпечаток не включает хост — EN и RU остаются парой.
-                    if (
-                        previous is not None
-                        and previous_digests.get(name) == digest
-                        and _reuse_shard(previous, generation, name, origins)
-                    ):
+                    if was_reused:
                         reused += 1
                     else:
-                        template = _render_urlset(urls, origin=SITEMAP_ORIGIN_TOKEN)
-                        for origin in origins:
-                            xml = template.replace(SITEMAP_ORIGIN_TOKEN, origin.rstrip("/"))
-                            _write_xml(generation / urlparse(origin).hostname, name, xml)
                         rewritten += 1
                     sections[name] = len(urls)
             if not sections:
@@ -303,22 +348,13 @@ async def build_static_sitemaps() -> dict:
                 "hosts": hosts, "published_urls_total": sum(h["urls_total"] for h in hosts.values()),
                 "errors": [],
             }
-            _atomic_write(generation / STATS_NAME, json.dumps(stats, ensure_ascii=False, indent=2).encode())
-            link = root / f".current-{generation.name}"
-            link.symlink_to(Path("generations") / generation.name)
-            os.replace(link, root / "current")
+            await asyncio.to_thread(_publish_generation, root, generation, stats)
         except Exception:
-            shutil.rmtree(generation)
+            await asyncio.to_thread(shutil.rmtree, generation)
             raise
         # Only this module's UUID directories; keep the previous generation
         # for in-flight reads and rollback. Never touch legacy files/other dirs.
-        keep = {generation, previous}
-        for candidate in parent.iterdir():
-            if candidate not in keep and _GENERATION.fullmatch(candidate.name) and candidate.is_dir() and not candidate.is_symlink():
-                try:
-                    shutil.rmtree(candidate)
-                except OSError:
-                    logger.warning("Cannot remove old sitemap generation %s", candidate, exc_info=True)
+        await asyncio.to_thread(_remove_old_generations, parent, {generation, previous})
         logger.info(
             "Published sitemap generation %s: %d URLs across %d hosts (%d reused, %d rewritten)",
             generation.name, stats["published_urls_total"], len(hosts), reused, rewritten,

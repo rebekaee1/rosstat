@@ -431,7 +431,7 @@ async def _startup_data_catch_up() -> None:
 
 
 async def _catch_up_static_sitemaps() -> None:
-    """Первый старт / поколение сверх 50k URL — не ждать ночной cron 03:40."""
+    """Первый старт / поколение сверх 50k URL — не ждать ночной cron 03:10."""
     try:
         from app.services.sitemap_static import build_static_sitemaps, read_stats
         from app.services.site_urls import SITEMAP_MAX_URLS
@@ -1019,7 +1019,9 @@ async def lifespan(app: FastAPI):
             from app.tasks.analytics_scheduler import behavior_retention_job
             scheduler.add_job(
                 behavior_retention_job,
-                trigger=CronTrigger(hour=4, minute=30, timezone="Europe/Moscow"),
+                # 04:10 MSK: разведено с indexnow_history (04:30) и
+                # analytics_rollups_daily (04:50).
+                trigger=CronTrigger(hour=4, minute=10, timezone="Europe/Moscow"),
                 id="behavior_retention",
                 name="Behavior raw stream retention cleanup",
                 replace_existing=True,
@@ -1092,7 +1094,9 @@ async def lifespan(app: FastAPI):
         from app.services.sitemap_static import sitemap_build_job
         scheduler.add_job(
             locked_job(sitemap_build_job, "sitemap_build", ttl_seconds=3 * 3600),
-            trigger=CronTrigger(hour=3, minute=40, timezone="Europe/Moscow"),
+            # 03:10 MSK: после eurostat (02:20, до ~40 мин) и до world
+            # subnational ingest (03:40) — тяжёлые джобы не пересекаются.
+            trigger=CronTrigger(hour=3, minute=10, timezone="Europe/Moscow"),
             id="sitemap_build",
             name="Nightly static gzip sitemap build → /var/www/sitemaps",
             replace_existing=True,
