@@ -9,7 +9,6 @@ from datetime import datetime, timedelta, timezone as dt_timezone
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.middleware.gzip import GZipMiddleware
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -1588,7 +1587,10 @@ class ScrapeGuardMiddleware(BaseHTTPMiddleware):
         return response
 
 
-app.add_middleware(GZipMiddleware, minimum_size=1000)
+# GZipMiddleware снят (perf batch 2, 2026-09-26): весь публичный трафик идёт
+# Caddy → nginx (frontend/nginx.conf: gzip on, gzip_proxied any, html/json/
+# xml/js/css/csv/calendar). Middleware жал в Python и PNG OG-картинок (уже
+# сжатый формат) — пустая трата CPU единственного ядра backend.
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(HttpStatusCounterMiddleware)
 app.add_middleware(ScrapeGuardMiddleware)
