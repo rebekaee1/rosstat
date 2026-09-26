@@ -38,6 +38,7 @@ from app.data.world_concepts import (
     concept_public_unit,
 )
 from app.models import WorldCountry, WorldDataPoint, WorldIndicator
+from app.services.world_subnational_queries import latest_world_points
 from app.services.display import (
     format_date_locale,
     format_month_year,
@@ -64,6 +65,27 @@ from app.services.world_russia_rank import (
 )
 
 _SOURCE_PUBLIC = "Евростат"
+
+
+# Тяжёлые текстовые колонки world_indicators, не нужные спискам/каталогам.
+# raiseload=True: если рендер начнёт их читать, тест упадёт, а не молча
+# сделает N+1 lazy-load (в async это MissingGreenlet).
+_WORLD_HEAVY_TEXT_COLUMNS = (
+    "description",
+    "methodology",
+    "seo_title",
+    "seo_description",
+    "seo_keywords",
+)
+
+
+def world_listing_light_options() -> list:
+    from sqlalchemy.orm import defer
+
+    return [
+        defer(getattr(WorldIndicator, name), raiseload=True)
+        for name in _WORLD_HEAVY_TEXT_COLUMNS
+    ]
 WORLD_RATING_DEFAULT_CONCEPT = "gdp-usd"
 _WORLD_RATING_LOW_FIRST = frozenset({"unemployment-rate", "long-term-interest-rate"})
 _WORLD_RATING_MONEY_CONCEPTS = frozenset({
@@ -1272,11 +1294,19 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     if country is None:
         return 404, "<h1>Страна не найдена</h1>"
 
+    # Perf batch 2: страна с Евростатом — ~8k листинговых рядов; тяжёлые
+    # SEO/описательные тексты для каталога не нужны (raiseload ловит регрессию).
     inds = (
         await db.execute(
             select(WorldIndicator)
+            .options(*world_listing_light_options())
             .where(
                 WorldIndicator.country_id == country.id,
+                # Намеренно IS TRUE (не partial ix_world_indicators_listed_signal):
+                # план index scan (country_id, category_ru) + incremental sort
+                # быстрее bitmap по partial index (38 vs 73 ms у Дании) и
+                # сохраняет порядок равных имён → выбор primary-карточек и HTML
+                # байт-в-байт как до perf batch 2.
                 WorldIndicator.is_listed.is_(True),
             )
             .order_by(WorldIndicator.category_ru, WorldIndicator.name_ru)
@@ -1296,29 +1326,12 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
         _display_name(i),
     ))
 
-    ids = [i.id for i in inds]
-    rn = func.row_number().over(
-        partition_by=WorldDataPoint.indicator_id,
-        order_by=WorldDataPoint.date.desc(),
-    ).label("rn")
-    sub = (
-        select(
-            WorldDataPoint.indicator_id,
-            WorldDataPoint.date,
-            WorldDataPoint.value,
-            rn,
-        )
-        .where(WorldDataPoint.indicator_id.in_(ids))
-        .subquery()
-    )
-    latest = {
-        iid: (dt, float(value))
-        for iid, dt, value in (
-            await db.execute(
-                select(sub.c.indicator_id, sub.c.date, sub.c.value).where(sub.c.rn == 1)
-            )
-        ).all()
-    }
+    # Perf batch 2: раньше window row_number() по ВСЕМ точкам всех рядов
+    # страны (~425k строк у Дании) ради последней точки. Теперь «есть данные»
+    # и дата последнего среза — из world_indicators.history_end (ingest держит
+    # её = max(date), сверено по всей БД), а значения читаются LATERAL-пробой
+    # только для ≤12 ключевых рядов.
+    has_data = {i.id for i in inds if i.history_end is not None}
 
     # Ключевые: сначала приоритетные категории, внутри — больше точек.
     cat_rank = {name: i for i, name in enumerate(_KEY_CATEGORY_ORDER)}
@@ -1341,10 +1354,21 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
 
     curated_key = [
         i for i in inds
-        if i.id in latest and _is_curated_card(i)
+        if i.id in has_data and _is_curated_card(i)
     ]
-    pool = curated_key or [i for i in inds if i.id in latest]
-    key_inds = sorted(pool, key=_key_sort)[:12]
+    pool = curated_key or [i for i in inds if i.id in has_data]
+    ranked_pool = sorted(pool, key=_key_sort)
+    latest: dict[int, tuple[date, float]] = {}
+    key_inds: list[WorldIndicator] = []
+    pos = 0
+    # Обычно хватает одного запроса на 12 рядов; добор — если у кандидата
+    # (history_end рассинхронизирован) реально нет точек, как было раньше.
+    while len(key_inds) < 12 and pos < len(ranked_pool):
+        chunk = ranked_pool[pos:pos + (12 - len(key_inds))]
+        pos += len(chunk)
+        got = await latest_world_points(db, [i.id for i in chunk])
+        latest.update(got)
+        key_inds.extend(i for i in chunk if i.id in got)
 
     key_rows = "".join(
         (
@@ -1560,7 +1584,9 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     # Единый паттерн с рейтингом/индикатором: дата последнего среза (та же,
     # что в плитке «Дата» ключевой таблицы) + кликабельные официальные сайты
     # ведомств, публикующих ряды страны.
-    country_last_date = max((dt for dt, _ in latest.values()), default=None)
+    country_last_date = max(
+        (i.history_end for i in inds if i.history_end is not None), default=None,
+    )
     country_links_html, _country_linked_names = _source_links_html(
         list(inds), country_slug=slug,
     )
