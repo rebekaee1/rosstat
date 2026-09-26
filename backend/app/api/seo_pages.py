@@ -29,7 +29,13 @@ from datetime import date as _date
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.cache import cache_get, cache_set, versioned_key
+# SSR HTML хранится zlib-сжатым (perf batch 2); имена cache_get/cache_set
+# сохранены — тесты подменяют их на модуле.
+from app.core.cache import (
+    ssr_cache_get as cache_get,
+    ssr_cache_set as cache_set,
+    versioned_key,
+)
 from app.services import site_paths as paths
 from app.services.attribution_query import merge_attribution_query
 from app.services.locale import get_locale
@@ -88,6 +94,24 @@ _SSR_TTL_INDICATOR = 900       # 15 мин; + инвалидация fe:{code}:*
 _SSR_TTL_REGIONAL = 6 * 3600   # регион × показатель × год — обновляется раз в год
 _SSR_TTL_WORLD = 6 * 3600      # мировой блок — внешний источник, обновляется пачками
 _SSR_TTL_MISC = 1800
+# Годовые лендинги прошедших лет: данные за закрытый год меняются только
+# ревизиями, а они инвалидируются namespace-бампом (ETL — код индикатора,
+# мировой ingest — ssr-world) или SSR-purge деплоя. Текущий год — как было.
+_SSR_TTL_HISTORICAL_YEAR = 24 * 3600
+# Главная: сводные данные + #fe-bootstrap из Redis; короткий TTL, namespace
+# `dashboard` бампается ETL любого индикатора.
+_SSR_TTL_HOME = 300
+
+
+def _year_ttl(year: int | str, base_ttl: int) -> int:
+    """Длинный TTL только для лет строго раньше текущего."""
+    try:
+        y = int(year)
+    except (TypeError, ValueError):
+        return base_ttl
+    if y < _date.today().year:
+        return max(base_ttl, _SSR_TTL_HISTORICAL_YEAR)
+    return base_ttl
 
 
 async def _asset_sig() -> str:
@@ -151,6 +175,26 @@ async def _release_db(db: AsyncSession | None) -> None:
             await db.rollback()
         except Exception:  # noqa: BLE001
             pass
+
+
+async def _peek_cached_html(namespace: str, variant: str) -> str | None:
+    """Только чтение SSR-кэша (без рендера/лока).
+
+    Для маршрутов, где до рендера идут DB-резолверы редиректов (мировые
+    карточки): на cache-hit резолверы не нужны — в кэш попадает лишь 200,
+    отрендеренный после того, как резолверы для этого URL вернули None.
+    Preview-локаль кэш не читает (см. `_cached_html`).
+    """
+    from app.services.locale import is_preview_locale
+
+    if is_preview_locale():
+        return None
+    sig = await _asset_sig()
+    key = await _ssr_key(namespace, variant, sig)
+    cached = await cache_get(key)
+    if isinstance(cached, str) and cached:
+        return cached
+    return None
 
 
 async def _cached_html(
@@ -257,7 +301,14 @@ async def seo_not_found():
 
 @router.api_route("/seo/page/home", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_home(request: Request, db: AsyncSession = Depends(get_db)):
-    return _html_response(200, await render_home_html(db), request)
+    # Perf batch 2: главная рендерилась на каждый хит (~0,3 с на проде).
+    async def _render():
+        return 200, await render_home_html(db)
+
+    status, html = await _cached_html(
+        "dashboard", f"home:{get_locale()}", _SSR_TTL_HOME, _render, db=db,
+    )
+    return _html_response(status, html, request)
 
 
 @router.api_route("/seo/page/{page}", methods=["GET", "HEAD"], include_in_schema=False)
@@ -460,7 +511,8 @@ async def seo_indicator_year(
     if request.headers.get("x-path-cut-legacy") == "1":
         return _permanent_redirect(paths.russia_indicator_year(code, year), request)
     status, html = await _cached_html(
-        code, f"indicator-year:{code}:{year}:{get_locale()}", _SSR_TTL_INDICATOR,
+        code, f"indicator-year:{code}:{year}:{get_locale()}",
+        _year_ttl(year, _SSR_TTL_INDICATOR),
         lambda: render_indicator_year_html(code, year, db),
         db=db,
     )
@@ -625,7 +677,7 @@ async def seo_world_subnational_indicator_year(
     status, html = await _cached_html(
         "ssr-world",
         f"world-region-ind-year:v1:{slug}:{region_slug}:{code}:{year}:{get_locale()}",
-        _SSR_TTL_WORLD,
+        _year_ttl(year, _SSR_TTL_WORLD),
         lambda: render_subnational_indicator_year_html(slug, region_slug, code, int(year), db),
         db=db,
     )
@@ -683,6 +735,15 @@ async def seo_world_country(
 async def seo_world_indicator(
     slug: str, code: str, request: Request, db: AsyncSession = Depends(get_db)
 ):
+    variant = f"world:{slug}:{code}:{get_locale()}"
+    legacy = request.headers.get("x-path-cut-legacy") == "1"
+    # Perf batch 2: cache-hit до DB-резолверов (HICP / частоты). В кэше
+    # только 200 этого же URL, отрендеренный, когда резолверы вернули None;
+    # смена статуса (новый primary после ingest) приходит с бампом ssr-world.
+    if not legacy:
+        cached = await _peek_cached_html("ssr-world", variant)
+        if cached is not None:
+            return _html_response(200, cached, request)
     hicp_target = await resolve_world_hicp_successor(db, slug, code)
     if hicp_target:
         return _permanent_redirect(hicp_target, request)
@@ -690,14 +751,14 @@ async def seo_world_indicator(
     target = await resolve_world_frequency_sibling(db, slug, code)
     if target:
         return _permanent_redirect(target, request)
-    if request.headers.get("x-path-cut-legacy") == "1":
+    if legacy:
         mode = request.query_params.get("mode")
         dest = paths.indicator(slug, code)
         if mode:
             dest = f"{dest}?mode={mode}"
         return _permanent_redirect(dest, request)
     status, html = await _cached_html(
-        "ssr-world", f"world:{slug}:{code}:{get_locale()}", _SSR_TTL_WORLD,
+        "ssr-world", variant, _SSR_TTL_WORLD,
         lambda: render_world_indicator_html(slug, code, db),
         db=db,
     )
@@ -713,6 +774,12 @@ async def seo_world_indicator_year(
 ):
     if not paths.is_public_year(year):
         return _html_response(404, "Not found")
+    variant = f"world-year:{slug}:{code}:{year}:{get_locale()}"
+    legacy = request.headers.get("x-path-cut-legacy") == "1"
+    if not legacy:  # см. seo_world_indicator: hit до резолверов
+        cached = await _peek_cached_html("ssr-world", variant)
+        if cached is not None:
+            return _html_response(200, cached, request)
     hicp_target = await resolve_world_hicp_successor(db, slug, code, int(year))
     if hicp_target:
         return _permanent_redirect(hicp_target, request)
@@ -721,10 +788,10 @@ async def seo_world_indicator_year(
     target = await resolve_world_frequency_sibling(db, slug, code)
     if target:
         return _permanent_redirect(f"{target.split('?')[0]}/{year}", request)
-    if request.headers.get("x-path-cut-legacy") == "1":
+    if legacy:
         return _permanent_redirect(paths.indicator_year(slug, code, year), request)
     status, html = await _cached_html(
-        "ssr-world", f"world-year:{slug}:{code}:{year}:{get_locale()}", _SSR_TTL_WORLD,
+        "ssr-world", variant, _year_ttl(year, _SSR_TTL_WORLD),
         lambda: render_world_indicator_year_html(slug, code, int(year), db),
         db=db,
     )
@@ -742,6 +809,13 @@ async def seo_world_vs(
     slug_a, slug_b = pair.rsplit("-vs-", 1)
     if not slug_a or not slug_b:
         return _html_response(404, "Not found")
+    variant = f"world-vs:{slug_a}:{slug_b}:{concept}:{get_locale()}"
+    # Раньше ключ только писался и никогда не читался. Под этим ключом лежит
+    # лишь 200 канонической пары (301 до кэша не доходит), так что hit по
+    # паре из URL безопасен.
+    cached = await _peek_cached_html("ssr-world", variant)
+    if cached is not None:
+        return _html_response(200, cached, request)
     status, payload = await render_world_vs_html(slug_a, slug_b, concept, db)
     if status == 301:
         # Редирект до кэша: каноническая пара переезжает, не-канонический
@@ -751,10 +825,8 @@ async def seo_world_vs(
         # Кэшируется только 200 (как в singleflight _cached_html): ключ —
         # каноническая упорядоченная пара, рендер уже выполнен один раз.
         sig = await _asset_sig()
-        key = await _ssr_key(
-            "ssr-world",
-            f"world-vs:{slug_a}:{slug_b}:{concept}:{get_locale()}", sig,
-        )
+        key = await _ssr_key("ssr-world", variant, sig)
+        await _release_db(db)
         await cache_set(key, payload, _SSR_TTL_WORLD)
     return _html_response(status, payload, request)
 
@@ -769,7 +841,8 @@ async def seo_region_indicator_year(
     if not paths.is_public_year(year):
         return _html_response(404, "Not found")
     status, html = await _cached_html(
-        "ssr-region", f"region-year:{slug}:{code}:{year}:{get_locale()}", _SSR_TTL_REGIONAL,
+        "ssr-region", f"region-year:{slug}:{code}:{year}:{get_locale()}",
+        _year_ttl(year, _SSR_TTL_REGIONAL),
         lambda: render_region_indicator_year_html(slug, code, int(year), db),
         db=db,
     )

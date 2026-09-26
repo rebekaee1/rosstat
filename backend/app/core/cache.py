@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import time
+import zlib
 from typing import Any, Optional
 from urllib.parse import urlparse, urlunparse
 
@@ -11,6 +12,9 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 _redis: Optional[Redis] = None
 _state_redis: Optional[Redis] = None
+# Бинарный клиент к тому же cache-Redis: SSR HTML хранится zlib-сжатым
+# (decode_responses=True не пропустил бы байты).
+_redis_bin: Optional[Redis] = None
 _redis_lock = asyncio.Lock()
 
 
@@ -22,6 +26,16 @@ async def get_redis() -> Redis:
         if _redis is None:
             _redis = Redis.from_url(settings.redis_url, decode_responses=True)
         return _redis
+
+
+async def get_redis_bin() -> Redis:
+    global _redis_bin
+    if _redis_bin is not None:
+        return _redis_bin
+    async with _redis_lock:
+        if _redis_bin is None:
+            _redis_bin = Redis.from_url(settings.redis_url, decode_responses=False)
+        return _redis_bin
 
 
 def _state_redis_url() -> str:
@@ -78,10 +92,13 @@ def get_state_redis_sync():
 
 
 async def close_redis():
-    global _redis, _state_redis, _sync_state_redis
+    global _redis, _state_redis, _sync_state_redis, _redis_bin
     if _redis:
         await _redis.aclose()
         _redis = None
+    if _redis_bin:
+        await _redis_bin.aclose()
+        _redis_bin = None
     if _state_redis:
         await _state_redis.aclose()
         _state_redis = None
@@ -126,6 +143,56 @@ async def cache_set(key: str, value: Any, ttl: int | None = None):
         r = await get_redis()
         ttl = ttl or settings.cache_ttl_data
         await r.set(key, json.dumps(value, default=str), ex=ttl)
+    except Exception:
+        _note_cache_failure("cache_set", key)
+
+
+# --- SSR HTML: zlib-сжатие значений (perf batch 2) --------------------------
+#
+# Готовый SSR HTML — 60–300 КБ текста; zlib level 6 сжимает его в ~6,3 раза за
+# ~0,7 мс на страницу. При maxmemory 256mb это ~6x больше страниц в кэше,
+# т.е. выше hit-rate под бот-прожигом уникальных URL.
+# Формат: b"\x00z1" + zlib(html utf-8). Префикс с NUL не может начинать
+# JSON-текст, поэтому старые (до релиза) несжатые значения `json.dumps(html)`
+# читаются как раньше — обратная совместимость без миграции/флаша.
+_SSR_ZLIB_PREFIX = b"\x00z1"
+_SSR_ZLIB_LEVEL = 6
+
+
+def encode_ssr_html(html: str) -> bytes:
+    return _SSR_ZLIB_PREFIX + zlib.compress(html.encode("utf-8"), _SSR_ZLIB_LEVEL)
+
+
+def decode_ssr_value(raw: bytes | str | None) -> Optional[Any]:
+    if raw is None:
+        return None
+    if isinstance(raw, bytes) and raw.startswith(_SSR_ZLIB_PREFIX):
+        return zlib.decompress(raw[len(_SSR_ZLIB_PREFIX):]).decode("utf-8")
+    if isinstance(raw, bytes):
+        raw = raw.decode("utf-8")
+    return json.loads(raw)  # legacy: несжатый json.dumps(html)
+
+
+async def ssr_cache_get(key: str) -> Optional[Any]:
+    """Чтение SSR HTML: сжатое (новое) или legacy-JSON значение."""
+    try:
+        r = await get_redis_bin()
+        return decode_ssr_value(await r.get(key))
+    except Exception:
+        _note_cache_failure("cache_get", key)
+    return None
+
+
+async def ssr_cache_set(key: str, value: Any, ttl: int | None = None):
+    """Запись SSR HTML (str) zlib-сжатым; не-строки — legacy JSON."""
+    try:
+        r = await get_redis_bin()
+        ttl = ttl or settings.cache_ttl_data
+        if isinstance(value, str):
+            payload: bytes = encode_ssr_html(value)
+        else:
+            payload = json.dumps(value, default=str).encode("utf-8")
+        await r.set(key, payload, ex=ttl)
     except Exception:
         _note_cache_failure("cache_set", key)
 
