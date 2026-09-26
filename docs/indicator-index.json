@@ -32703,6 +32703,16 @@
           "kind": "other"
         },
         {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 7,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 87,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 2105,
           "kind": "seed"
@@ -33072,6 +33082,11 @@
           "file": "backend/app/services/rosstat_housing_parser.py",
           "line": 140,
           "kind": "parser"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 87,
+          "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
@@ -48135,6 +48150,41 @@
           "kind": "other"
         },
         {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 4,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 80,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 143,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 144,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 145,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 146,
+          "kind": "other"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 157,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 2562,
           "kind": "seed"
@@ -48720,6 +48770,11 @@
           "file": "backend/app/services/calculation_engine.py",
           "line": 189,
           "kind": "derived"
+        },
+        {
+          "file": "backend/scripts/repair_ppi_housing_2026.py",
+          "line": 9,
+          "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
