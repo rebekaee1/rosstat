@@ -179,6 +179,62 @@ def _like_escape(value: str) -> str:
     return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
+def _request_memo(db) -> dict | None:
+    """Per-request memo на сессии (perf batch 2).
+
+    SSR мировой карточки раньше грузил страну, ряд и соседей по карточке до
+    трёх раз за запрос (резолвер частот, блок частот, рендер). Сессия живёт
+    ровно один запрос (get_db), поэтому ``session.info`` — естественная
+    область кэша; у тестовых заглушек без ``info`` memo просто выключен.
+    """
+    info = getattr(db, "info", None)
+    if not isinstance(info, dict):
+        return None
+    return info.setdefault("fe_world_memo", {})
+
+
+async def world_country_by_slug(db: AsyncSession, slug: str):
+    """Активная страна по слагу (memo на запрос)."""
+    from app.models import WorldCountry
+
+    memo = _request_memo(db)
+    key = ("country", slug)
+    if memo is not None and key in memo:
+        return memo[key]
+    country = (
+        await db.execute(
+            select(WorldCountry).where(
+                WorldCountry.slug == slug,
+                WorldCountry.is_active.is_(True),
+            )
+        )
+    ).scalar_one_or_none()
+    if memo is not None:
+        memo[key] = country
+    return country
+
+
+async def world_indicator_by_code(db: AsyncSession, country_id: int, code: str):
+    """Ряд страны по коду (memo на запрос; полная строка — рендеру нужны тексты)."""
+    from app.models import WorldIndicator
+
+    memo = _request_memo(db)
+    key = ("indicator", country_id, code)
+    if memo is not None and key in memo:
+        return memo[key]
+    indicator = (
+        await db.execute(
+            select(WorldIndicator).where(
+                WorldIndicator.country_id == country_id,
+                WorldIndicator.code == code,
+            )
+        )
+    ).scalar_one_or_none()
+    if memo is not None:
+        memo[key] = indicator
+    return indicator
+
+
 async def world_card_siblings(db: AsyncSession, indicator) -> list:
     """Все ряды той же карточки (card_key без frequency)."""
     from app.data.eurostat_listing import card_key, dataset_stem
@@ -187,6 +243,10 @@ async def world_card_siblings(db: AsyncSession, indicator) -> list:
     stem = dataset_stem(indicator.dataset_id)
     if not stem:
         return [indicator]
+    memo = _request_memo(db)
+    memo_key = ("siblings", getattr(indicator, "id", None))
+    if memo is not None and memo_key[1] is not None and memo_key in memo:
+        return list(memo[memo_key])
     key = card_key(
         country_id=indicator.country_id,
         dataset_id=indicator.dataset_id,
@@ -200,7 +260,9 @@ async def world_card_siblings(db: AsyncSession, indicator) -> list:
     like_prefix = _like_escape(stem) + "\\_%"
     rows = (
         await db.execute(
-            select(WorldIndicator).where(
+            select(WorldIndicator)
+            .options(*_light_world_indicator_options())
+            .where(
                 WorldIndicator.country_id == indicator.country_id,
                 WorldIndicator.provider == indicator.provider,
                 or_(
@@ -220,7 +282,28 @@ async def world_card_siblings(db: AsyncSession, indicator) -> list:
             slice_json=r.slice_json,
         ) == key
     ]
-    return siblings or [indicator]
+    result = siblings or [indicator]
+    if memo is not None and memo_key[1] is not None:
+        memo[memo_key] = list(result)
+    return result
+
+
+def _light_world_indicator_options() -> list:
+    """Соседям карточки нужны ключ/частота/код — не SEO-тексты (defer).
+
+    Объекты, уже загруженные целиком в этой сессии (сам ряд), identity map
+    отдаёт как есть; отложенные колонки дочитываются только явным запросом.
+    """
+    from sqlalchemy.orm import defer
+
+    from app.models import WorldIndicator
+
+    return [
+        defer(getattr(WorldIndicator, name), raiseload=True)
+        for name in (
+            "description", "methodology", "seo_title", "seo_description", "seo_keywords",
+        )
+    ]
 
 
 async def resolve_world_frequency_sibling(
@@ -231,28 +314,11 @@ async def resolve_world_frequency_sibling(
     Тот же механизм, что `resolve_unlisted_indicator` для России: один
     канонический URL на показатель, частота в query.
     """
-    from app.data.eurostat_listing import normalize_frequency
-    from app.models import WorldCountry, WorldIndicator
-
-    country = (
-        await db.execute(
-            select(WorldCountry).where(
-                WorldCountry.slug == slug,
-                WorldCountry.is_active.is_(True),
-            )
-        )
-    ).scalar_one_or_none()
+    country = await world_country_by_slug(db, slug)
     if country is None:
         return None
 
-    indicator = (
-        await db.execute(
-            select(WorldIndicator).where(
-                WorldIndicator.country_id == country.id,
-                WorldIndicator.code == code,
-            )
-        )
-    ).scalar_one_or_none()
+    indicator = await world_indicator_by_code(db, country.id, code)
     if indicator is None:
         return None
 

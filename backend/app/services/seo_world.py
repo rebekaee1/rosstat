@@ -852,14 +852,10 @@ def _date_range_ru(start: date | None, end: date | None) -> str:
 
 
 async def _country(db: AsyncSession, slug: str) -> WorldCountry | None:
-    return (
-        await db.execute(
-            select(WorldCountry).where(
-                WorldCountry.slug == slug,
-                WorldCountry.is_active.is_(True),
-            )
-        )
-    ).scalar_one_or_none()
+    # Memo на запрос: резолвер частот и рендер карточки ищут ту же страну.
+    from app.data.legacy_redirects import world_country_by_slug
+
+    return await world_country_by_slug(db, slug)
 
 
 async def listed_country_links(db: AsyncSession) -> tuple[tuple[str, str], ...]:
@@ -1667,16 +1663,10 @@ async def render_world_indicator_html(
     if country is None:
         return 404, "<h1>Страна не найдена</h1>"
 
-    from app.data.legacy_redirects import is_retired_world_hicp
+    from app.data.legacy_redirects import is_retired_world_hicp, world_indicator_by_code
 
-    indicator = (
-        await db.execute(
-            select(WorldIndicator).where(
-                WorldIndicator.country_id == country.id,
-                WorldIndicator.code == code,
-            )
-        )
-    ).scalar_one_or_none()
+    # Тот же объект, что уже загрузил resolve_world_frequency_sibling (memo).
+    indicator = await world_indicator_by_code(db, country.id, code)
     if indicator is None or not (indicator.is_listed or is_retired_world_hicp(slug, code)):
         return 404, "<h1>Показатель не найден</h1>"
 
@@ -1891,9 +1881,12 @@ async def render_world_indicator_html(
             f"<ul>{items}</ul></section>"
         )
 
+    # Все листинговые ряды раздела нужны целиком по составу (выбор primary
+    # по card/merge-ключу), но без тяжёлых SEO-текстов.
     cat_siblings = (
         await db.execute(
             select(WorldIndicator)
+            .options(*world_listing_light_options())
             .where(
                 WorldIndicator.country_id == country.id,
                 WorldIndicator.category_ru == indicator.category_ru,
