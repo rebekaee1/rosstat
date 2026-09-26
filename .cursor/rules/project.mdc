@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Forecast Economy — правила проекта
 
-Длинные файлы (`AGENTS.md`, `CONTEXT.md`, `docs/backlog.md`, ADR, `docs/data_sources.md`) **не читать целиком в каждом ходе**. Это справочники на диске. Открывать только нужный слой под текущую задачу.
+Сначала `docs/STATE.md` (где остановились). Длинные файлы (`CONTEXT.md`, `docs/backlog.md`, ADR, `docs/data_sources.md`) **не читать целиком в каждом ходе**. Это справочники на диске. Открывать только нужный слой под текущую задачу.
 
 ## Куда смотреть (не вшивать)
 
@@ -14,26 +14,27 @@ alwaysApply: true
 | Любой индикатор X | `python scripts/locate-indicator.py X` + `docs/indicator-index.md` |
 | Архитектура / traps | `CONTEXT.md` — точечно, не целиком |
 | Источник ряда | `docs/data_sources.md` + docstring парсера |
-| Новый индикатор / категория | `AGENTS.md` FAST-PATH + чеклист Шаг 4 |
+| Новый индикатор / категория | `docs/indicators.md` |
+| Где остановились / прод-SHA | `docs/STATE.md` |
 | Процесс / деплой | `docs/workflow.md` |
-| Живой бэклог | `docs/backlog.md` — только если задача про приоритет/историю |
+| Открытые задачи | `docs/backlog.md` — только если задача про приоритет |
 | ADR | `docs/adr/` — нужный номер, не папка целиком |
 
-После архитектурной правки: обновить соответствующий .md, `Last updated`, cross-links в `CONTEXT.md` и `AGENTS.md`. Новый ADR — только на новое решение.
+После архитектурной правки: обновить соответствующий .md (без хроники «Last updated/Previous» — история в git). В конце работы — обновить `docs/STATE.md`. Новый ADR — только на новое решение.
 
 ## Жёсткие запреты
 
-- **Не пушить на прод** (`5.129.204.194`, `/opt/rosstat`) без явной команды. Деплой — `docs/workflow.md`.
+- **Не пушить на прод** (`ssh fe-prod`, `/opt/rosstat`) без явной команды. Деплой — `docs/workflow.md`.
 - **Не деплоить накопившийся `main`.** Только SHA из `deploy/approved-shas.txt` после явного «деплой до `<sha>`, включая всё, что он тянет». Перед деплоем — миграции в диапазоне прод→цель; есть alembic — отдельной строкой спросить.
 - **Не пушить на `main`** без зелёного `./scripts/check-all.sh`.
 - **Не** править `git config`, **не** `--force` на `main`, **не** амлендить уже на remote.
 - **Коммитить сразу** после завершённой правки (диктовка 2026-09-04). Не ждать «закоммить». Секреты, `.env`, ключи — не в коммит. Push на `main` и деплой — по-прежнему только по явной команде.
-- **Не создавать новые .md**, если можно обновить существующий. Roadmap — только `docs/backlog.md`.
+- **Не создавать новые .md**, если можно обновить существующий. Открытые задачи — только `docs/backlog.md`, текущее состояние — `docs/STATE.md`.
 - **Не выдавать внутренности** в публичных текстах. Правило: `.cursor/rules/methodology-language.mdc`.
 
 ### БД пользователей (потеря = инцидент)
 
-Том `postgres_data`. Запрещено: `docker compose down -v`; заливка локальной БД на прод; смена `POSTGRES_USER` / `POSTGRES_DB` / имени тома. Синк только прод → локаль. Перед прод-деплоем — `./scripts/pg-backup.sh`. Миграции аддитивные.
+Том `postgres_data`. Запрещено: `docker compose down -v`; заливка локальной БД на прод; смена `POSTGRES_USER` / `POSTGRES_DB` / имени тома. Синк только прод → локаль. Перед прод-деплоем `deploy.sh` сам делает `pg-backup.sh`. Миграции аддитивные.
 
 ## Архитектурные инварианты
 
@@ -42,10 +43,10 @@ alwaysApply: true
 - **ADR-0003**: SEO single source `seo_content.py`; `categories.js` синхронен.
 - **ADR-0004**: Rosstat-русский canonical; SDDS fetcher не в `PARSER_REGISTRY`.
 - **ADR-0005**: календарь — только official dates с provenance.
-- **ADR-0006**: карточка ≠ derived ≠ variant ≠ frequency. Новый indicator — чеклист в `AGENTS.md::Шаг 4`.
+- **ADR-0006**: карточка ≠ derived ≠ variant ≠ frequency. Новый indicator — чеклист в `docs/indicators.md`.
 - **Asset-hash**: backend+frontend вместе; frontend-only rebuild — `--no-cache`.
 - **Browser-cache**: SSR HTML `no-store`; `/assets/` immutable.
-- **Forecast retrain**: новый derived → `retrain_indicator_forecast` + Redis DB 0 `FLUSHDB` (DB 1 не трогать).
+- **Forecast retrain**: новый derived → `retrain_indicator_forecast` + `cache_invalidate_indicator(code)`. FLUSHDB на проде запрещён (холодный кэш под ботами = 503).
 - **Annual-in-monthly**: перед upsert сверить `frequency` с точками.
 
 ## Стиль

@@ -1,10 +1,7 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-09-25 (sitemap: потолок 50 000 URL, lastmod по содержанию, шард без полной пересборки — `CONTEXT.md::Sitemap protocol trap`). Ранее 2026-09-20 (локальный пакет `fix/history-access-reliability`; статус и приёмка — [backlog](docs/backlog.md#history-access-reliability-2026-09-20), регламент выкладки — [workflow](docs/workflow.md#прод-деплой)).
-
-**Previous:** 2026-09-19 (**люди не 403 по fe_bind** — HTML и API данных ставят/перевыпускают куку, ферму режем UA и лимитами nginx, не страной и не чужим /24. Ранее 2026-09-06 (**вход без fe_bind** — `/api/v1/auth/*` не режем: SPA `/register` куку не ставит, callback VK меняет /24. Ранее тем же днём (**HTML без заглушки, VPN/хостинг не 403** — человек всегда получает страницу, `fe_bind` на этом ответе; API данных без куки режем. Ранее 2026-09-04, день (**backend cgroup 1536M** на хосте 8 ГБ. Ранее тем же днём (**инцидент: Chrome UA reduction ≠ Playwright** — `Chrome/N.0.0.0` это заголовок живого Chrome с 101, правило 403-ило людей; снято. Ранее тем же днём (**антискрейп: bind на HTML + хостинговые ASN** — чужая `fe_bind` больше не перевыпускается на страницах; режем Hetzner/OVH/Alibaba/AWS по ASN, не по стране. Гео пуст. Ранее тем же днём (**bind-cookie вместо гео-блока** — ферма крутит страны; `fe_bind` = HMAC(/24|/48, день). Гео `SCRAPE_BLOCK_COUNTRIES` пуст, аварийный рычаг). Ранее той же ночью (**BI-in-request trap: дашборд в фоне (202/SWR), индекс соседей мировой карточки, postgres 2,5G** — открытие BI ставило диск и весь сайт; `CONTEXT.md::BI-in-request trap`). Ранее тем же днём (**fail2ban: `backend=polling` + volume только HTML-каталог, ханипот убран из sitemap** — иначе jail банит Яндекс; `CONTEXT.md::Anti-scrape`). Ранее тем же днём (**РСЯ: гейт «реклама только человеку» + обновление блока на SPA-навигации** — робот просил объявление и не показывал, `fillrate` 97%→11,5% при неизменной выручке; `CONTEXT.md::Yandex.RSY`). Ранее 2026-09-03 (**индексация: analytics_engine, статические sitemap, INDEX_POLICY, гео-блок SG,PL**; живые счётчики URL — `/sitemap-stats.json` и `docs/site-inventory.json`). Ранее 2026-08-27, поздний вечер (**восстановление прода завершено по recovery-рецепту** — сайт жив на `774e615`: контейнеры из образов `:774e615`, БД откачена до `20260713_partner_rev`, git выровнен; живой прогон дал 3 поправки в рецепт: мигратор только через `docker run` с URL из `.env`, после downgrade перетегировать движущие теги образов в старые SHA + force-recreate (иначе entrypoint нового образа повторно накатит схему), после восстановления сверять счётчики per-indicator против бэкапа — окно работы нового кода успело усечь историю 5 товарных YoY-рядов (−9 643 точки, восстановлены upsert'ом ADR-0002); детали — `CONTEXT.md::Deploy-scope trap`). Ранее вечером (**Deploy-scope trap: «main» ≠ «одобрено к выкладке»** — инцидент: деплой «анти-скрейпинг» вытянул ff-only весь накопившийся `main` с незаказанной мировой экономикой; автооткат против разогнанной схемы БД = backend crash-loop, сайт 502 ~40 мин; правила: `deploy/approved-shas.txt` (пустой = запрет), предупреждение о миграциях в пачке, migration-direction guard в `scripts/deploy.sh`; рецепт recovery — `CONTEXT.md::Deploy-scope trap`). Ранее 2026-08-27 (LLM-egress trap: внешний OpenRouter-релей молча умер 2026-08-22 после ручного kill — Пульс шесть дней ходил в фолбэк; tinyproxy восстановлен + `Restart=always`, горячий резерв `tor-http-bridge` на проде; details в `CONTEXT.md::traps`). Ранее 2026-08-16 (ADR-0013 Proposed: страна = первый сегмент URL, регионы внутри `/russia`, path-cut на `.com` затем path-identical переезд на `.ru`; карта и счётчики — `docs/backlog.md::Карта миграции URL`). Ранее тем же днём (мировой оперативный срез на официальных первоисточниках: новый парсер-тип `fred_csv` — спотовый Brent Управления энергетической информации США, индекс доллара и доходность десятилетних госбумаг Федрезерва; площадь и население в профиле территории страны — курируемый справочник `app/data/world_country_area.py` плюс concept `population`; страница рейтинга стран только по сопоставимым показателям. Ранее 2026-08-06 — ADR-0011: Eurostat-мир — отдельный TOC-driven data plane с shadow/provenance; до доказанной `sum|avg|last` synthetic частоты карточек fail-closed). Ранее 2026-07-06, вечер (CTO-аудит, дозакрытие хвостов: trap «nginx map с capture-группой» добавлен в traps; adjacency-guard `period_over_period{,_abs}`; батч-hero каталога; COPY-сидер регионов; полная матрица покрытия — `docs/backlog.md::2026-07-06`. Ранее Волна 5: сверены счётчики рядов, source, derived, парсер-типов, ops и generic-семей — актуальные цифры живут в разделах «Indicator» и «Parser» ниже (2026-07-08: минус один авто-сиблинг `wages-nominal-avg-year` после `overrides={"avg-year": "wages-nominal-annual"}` — созвон «На правки 13»); derived-пересчёт стал инкрементальным по dependency-графу в topo-порядке (П-2), «пересчитывает все 31» — история. Ранее 2026-06-24: Фаза 3 — углублена история source-рядов до пола источника: `usd-rub`/`cny-rub`/`gold-price`→1998, `eur-rub`→1999, `m2`→1992, `current-account`→1998 (через `backfill_from`/`backfill_from_year`, деноминация-aware floor; каскад протянул на все уровни матрицы); знаковые квартальные прогнозы закрыты — `trade-balance` тождеством `exports−imports` (`derived_from_source` op=`subtract`, 2-source), `current-account` стратегией `signed_quarterly` (level-diff); skip-лист рядов на полу источника — `docs/backlog.md::A0.3`. Ранее — новая стратегия `generic_quarterly` для положительных квартальных рядов — `exports`/`imports`/`external-debt` получили квартальный прогноз; каскад заполнил прогноз новых yoy-кв/год sibling'ов A0.1. Ранее 2026-06-23 (прогноз во всех режимах: `_mode_forecastable` в `view_model_families` — флаг режима выводится из частоты базы (`yoy/mom/qoq` показывают derived-прогноз, не хардкод False); `monthly_auto` = 36 (+`housing-affordability`/`-primary` собственной моделью на ряде отношения, ретрейн через `scheduler._retrain_self_modeled_derived`); `hero_change` (ускорение Г/г в п.п.) на индекс-карточках; фикс key-rate `_handle_forecasts`). Ранее 2026-06-22 (forecast registry: `monthly_auto` обновлённый алгоритм, 34 ряда).
-**Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
-**See also:** [`README.md`](README.md), [`docs/workflow.md`](docs/workflow.md), [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md), [`docs/data_sources.md`](docs/data_sources.md), [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/), [`docs/adr/`](docs/adr/). Parser internals (CBR/Минфин/Rosstat) живут в docstrings `backend/app/services/*_parser.py`.
+**Part of:**  [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
+**Текущее состояние / где остановились:** [`docs/STATE.md`](docs/STATE.md). Процедуры деплоя и runbook-и — [`docs/workflow.md`](docs/workflow.md).
 
 > Domain glossary for the project. Every architectural discussion, ADR, and refactoring proposal should use the terms defined here. If a discussion needs a new term, add it to this file before finishing.
 
@@ -15,10 +12,10 @@
 | [`AGENTS.md`](AGENTS.md) | Точка входа для AI-агента: с чего начать, как читать документацию, как её актуализировать |
 | [`README.md`](README.md) | Высокоуровневая карта стека, API, indicators, deploy |
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
-| [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
+| [`docs/STATE.md`](docs/STATE.md) | Где остановились: прод-SHA, ветки в работе, открытые вопросы (handoff) |
 | [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 118 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
 | `backend/app/services/*_parser.py` docstrings | Parser internals (CBR / Минфин / Rosstat): source URL, лист, row/col mapping, `model_config_json` schema, traps. Канонично живёт рядом с кодом |
-| [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) | Инвентарь Yandex API (Metrika, Webmaster) + статус реализации |
+| [`docs/analytics.md`](docs/analytics.md) | Интеграции Метрики, Вебмастера, GSC, фронтовые события + статус реализации |
 | [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 829 derived через `DERIVED_SPECS` (44 ручных + 785 generic) + 28 чистых ops |
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
@@ -33,18 +30,18 @@
 | [`docs/adr/0013`](docs/adr/0013-country-first-url-architecture.md) | Страна = первый сегмент URL; регионы внутри `/russia`; path-миграция на `.com`, затем path-identical переезд на `.ru` |
 | [`docs/adr/0014`](docs/adr/0014-subnational-regions-generic.md) | Субнациональные регионы (штаты США и далее) — generic bounded context страна × регион × показатель × период; Россия остаётся в ADR-0008 |
 | [`docs/adr/0015`](docs/adr/0015-us-bea-regional-catalog.md) | Массовый каталог официальных BEA-рядов по США и штатам: полная история, проверка охвата, еженедельные пересмотры |
-| [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md) | Семейство до продакшена: продуктовая модель, уровни UI A/B/C; эталоны **ИПЦ** (4×10) и **жильё** (2×3); фазы A–G |
+| [`docs/indicators.md`](docs/indicators.md) | Новый индикатор / семейство до продакшена: рецепт, чеклист, уровни UI A/B/C, эталоны **ИПЦ** и **жильё** |
 
 ---
 
 ## History-access-reliability (2026-09-20)
 
-Локальная реализация в `fix/history-access-reliability`, не утверждение о состоянии прода. Статус и оставшаяся приёмка — [backlog](docs/backlog.md#history-access-reliability-2026-09-20).
+Выложено на прод (sitemap ~5 млн URL на хост). Инварианты:
 
 - **История и индекс (решение владельца 2026-09-20):** все действующие публичные canonical-страницы отражаются в sitemap; отдельного отбора по curated dataset, возрасту, популярности или числу наблюдений сверх условий самого SSR нет. Мировые годы включают национальные источники; год РФ достаточно одной существующей точки. Региональные хабы/карточки/годы включают доступные SSR виды `region/district/country` и unlisted-ряды; помесячные региональные карточки учитываются наряду с годовыми. Сравнения содержат все пары, удовлетворяющие общим с SSR условиям данных, а не топ регионов/соседние страны; все непустые недефолтные годы мировых рейтингов включены. Listing сохраняется только там, где SSR сам возвращает 404 для unlisted. Редиректы, дубли, пустые/несуществующие периоды, неактивные страны, служебные поверхности и query-перестановки не создают дополнительных страниц. Диапазоны формата года совпадают с текущими SSR-роутами. `months-N`, `regional-N`, `world-years-N` и потоковая сборка сохраняют всё покрытие; после смены политики ключи chunk bounds/count имеют версию `public-v3`. Sitemap-счётчик отражает опубликованную генерацию, а не поисковый индекс; актуальные числа — `/sitemap-stats.json`. IndexNow отправляет длинный хвост ограниченными порциями и останавливается на 429.
 
 - **Доступ:** `fe_bind` — совместимая необязательная cookie, не доказательство человека; отсутствие/несовпадение, страна и хостинговый ASN не дают 403. nginx SSR/OG per-IP лимиты действуют для всех UA, включая заявленных поисковиков. Общий SSR-бакет убран; отдельный общий OG-потолок сохранён. Малоскоростной скрейпер с браузерным UA этим не отличим от человека. Исторические правила ниже не описывают новую реализацию.
-- **Ассеты:** старые и новые hashed-ассеты публикуются до нового HTML; на успешном пути очистка до трёх релизов — после watch, при откате — после повторной публикации восстановленного релиза. Совместная сборка backend/frontend и `no-store` HTML остаются обязательными. Детали — [workflow](docs/workflow.md#прод-деплой) и [enterprise_resilience](docs/enterprise_resilience.md#frontend-и-кэш).
+- **Ассеты:** старые и новые hashed-ассеты публикуются до нового HTML; на успешном пути очистка до трёх релизов — после watch, при откате — после повторной публикации восстановленного релиза. Совместная сборка backend/frontend и `no-store` HTML остаются обязательными. Детали — [workflow](docs/workflow.md#прод-деплой).
 - **Пульс:** UTM-строки не означают число активных рекламных кампаний; `traffic_sources.id=ad` — платное привлечение, не обязательно Директ; органический поиск и доход площадки РСЯ — отдельные показатели. `missing/failed/stale/invalid` не превращаются в ноль. Период, основной счётчик, время снимка и семплирование сохраняются в metadata; доход РСЯ за день берётся только из совпадающей даты, не из суммы окна.
 
 ## What this is
@@ -87,6 +84,8 @@
 Одна точка временного ряда для индикатора. `(date, value)`. Хранится в `IndicatorData` с `UniqueConstraint(indicator_id, date)`.
 
 ### Source
+
+**Ссылки на источник:** в SPA ссылка «Источник»/методология открывает официальный `source_url` во внешней вкладке через единый `SourceLink` (`frontend/src/lib/sourceLink.js`); `e87ae37` (2026-09-22) по ошибке замкнул их на сайт — исправлено `4bb32ae`. Быстрые SSR-страницы намеренно ведут на основной сайт; официальный URL — в JSON-LD.
 
 Официальный поставщик данных:
 
@@ -166,6 +165,8 @@ Phase 4 (ставки) НЕ использует viewModeFamilies: `credit-rate-
 **Заполнение матрицы (2026-06-24).** Доминирующий пробел закрыт: группа «Г/г» стала **многоуровневой** (по месяцам/кварталам/годам) во всех generic-билдерах через единый helper `view_model_families.py::_yoy_modes(base, freq, ov, method=, abs_delta=)`. Метод свода суб-периодов к кварталу/году — по природе ряда: `last` (ставки/запасы/индекс), `avg` (зарплата/занятость, индекс-отношение T8/T12), `sum` (потоки/ВВП/сальдо; для знаковых — `abs_delta=True` → `yoy_abs`). Пайплайн `(period_<method> gran → yoy[_abs])` исполняется в `calculation_engine`; неполный текущий квартал/год отбрасывается (`derived_ops._aggregate`), прогноз протягивается `_mode_forecast_meta` (guard полноты bucket'а). +105 sibling-рядов (104 yoy-кв/год + `international-reserves-mom`), все авто-seed + авто-скрыты из листинга, тексты — period-aware в `seed_data._sibling_texts`. Правдивость сверена независимо (`budget-revenue-yoy-year`, `m2-yoy-quarter`). Аудит после заполнения: 78/91 корней complete; остаток 13 — bespoke-канон CPI/ПЦП/жильё (свои тексты/реестры, не трогаем без отдельного решения) + by-design (`wages-nominal-annual` — историч. режим карточки, не каталог; `ipi`/housing `pop:year` ≈ `yoy:year`).
 
 ### Forecast
+
+**Показ (решение владельца, `6222135`):** прогноз — простая линия продолжения ряда, без доверительной полосы и без текста о прогнозе над графиком (SPA, SSR, OG). Не возвращать полосу; `/methodology` ещё содержит устаревший абзац про полосу — см. `docs/STATE.md`.
 
 Прогноз индикатора на N шагов. Хранится в `Forecast` (метаданные + `is_current`) + `ForecastValue` (точки `(date, value, lower_bound, upper_bound)`).
 
@@ -259,8 +260,8 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 - **API:** `app/api/analytics.py` (10 endpoints под `Authorization: Bearer ${RUSTATS_ANALYTICS_API_TOKEN}`).
 - **Warehouse models:** `AnalyticsSyncRun`, `AnalyticsWatermark`, `MetrikaCounterSnapshot`, `MetrikaGoalSnapshot`, `MetrikaReportSnapshot`, `MetrikaDailyPageMetric`, `MetrikaSearchPhrase`, `RawMetrikaVisit`, `RawMetrikaHit`, `WebmasterDiagnostic`, `WebmasterSearchQuery`, `SeoPageSnapshot`, `AgentFinding`, `AgentActionAudit`, `FrontendEvent`, `Experiment`.
 - **MCP:** `mcp/forecast-analytics-mcp/` (Node.js, 7 tools), интегрирован в Cursor через `~/.cursor/mcp.json`. Нужен для агента-аналитика; ходит в backend `/api/v1/analytics`.
-- **Scope:** read-only Metrika tools работают; live writes выключены флагом `RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED=false`. Webmaster и data-import API — endpoint-ы перечислены в `docs/analytics_api_inventory/`, но требуют дополнительных OAuth scopes (см. inventory README header).
-- **Frontend instrumentation:** init-параметры Метрики, таксономия goals (`reachGoal`), UTM-разметка share-ссылок и URL cleanup описаны в [`docs/analytics_api_inventory/frontend_instrumentation.md`](docs/analytics_api_inventory/frontend_instrumentation.md). Webvisor 2 + form analytics включены через `webvisor:true, triggerEvent:true, childIframe:true` (2026-05-10). Каждый клик в `lib/track.js::events` дублируется в `frontend_events` через `POST /api/v1/analytics/events`.
+- **Scope:** read-only Metrika tools работают; live writes выключены флагом `RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED=false`. Webmaster и data-import API — endpoint-ы перечислены в [`docs/analytics.md`](docs/analytics.md), но требуют дополнительных OAuth scopes.
+- **Frontend instrumentation:** init-параметры Метрики, таксономия goals (`reachGoal`), UTM-разметка share-ссылок и URL cleanup описаны в [`docs/analytics.md`](docs/analytics.md#frontend_instrumentation). Webvisor 2 + form analytics включены через `webvisor:true, triggerEvent:true, childIframe:true` (2026-05-10). Каждый клик в `lib/track.js::events` дублируется в `frontend_events` через `POST /api/v1/analytics/events`.
 
 ### User / Identity (ADR-0007, Phase 1+2 реализованы локально 2026-06-19)
 
@@ -319,6 +320,66 @@ Eurostat — первый адаптер, а не универсальный и�
 
 Вещи, которые ломаются неочевидно. Каждый пункт — проверенный пост-мортем.
 
+### Cold-cache pool exhaustion: FLUSHDB под ботами = 503 и откат (2026-09-26)
+
+Деплой `cd55001` делал FLUSHDB кэша → все SSR-страницы холодные. ~85% трафика —
+боты (Googlebot, PerplexityBot ~1/3, Яндекс, Bing), всплески 800–1100 запросов/мин.
+SEO-роуты брали соединение БД и держали его idle-in-transaction, пока ждали
+кэш/лок/очередь рендера → пул 5+10 исчерпан → 503 → auto-rollback на 12-й
+минуте watch. Фикс `7c076d4`: `_release_db` в общем SSR-хелпере
+`api/seo_pages.py` перед ожиданием кэша/лока/семафора (тест `test_ssr_pool_release.py`), пул 10+15, `pool_timeout`
+3 с (быстрый 503 вместо висения), деплой чистит только `fe:*:ssr:*` (SCAN +
+UNLINK), `fe:ver:*` и DB 1 не трогает. **Правило:** никогда не FLUSHDB на проде;
+точечно — `cache_invalidate_indicator(code)` / `bump_namespaces(...)` или
+`DEPLOY_CACHE_EXTRA_PATTERNS` / `DEPLOY_CACHE_BUMP_NAMESPACES` в deploy.sh; любой
+новый SSR-роут, который ждёт кэш/рендер, сначала отпускает сессию БД. Runbook —
+`docs/workflow.md`, «Пул БД исчерпан».
+
+### Crawler and measurement traps (2026-09-10)
+
+- Training/archive-боты ClaudeBot / GPTBot / meta-externalagent / CCBot: robots
+  `Disallow` + 403 на edge (кроме `robots.txt`); поисковые и user-fetcher боты
+  доступ сохраняют (nginx + `scrape_guard`). UA-политика — не аутентификация по IP.
+- Sitemap-файлы: XML/gzip 0644, каталоги 0755 (0600 → nginx 403); генерации
+  атомарные (current-pointer), пустая/упавшая сборка не заменяет хорошую.
+- OG-рендер ограничен: кэш 600 записей И 64 MiB, один off-loop поток и 4 задачи
+  на процесс, при насыщении 503 + Retry-After.
+- Смена классификации ботов/внимания — это изменение измерения, не рост
+  пользователей; до/после на всём сайте — не доказательство SEO-эффекта
+  (сравнивать фиксированные когорты запросов/страниц за 28 полных дней).
+- Webmaster API: интервал с одинаковыми датами пуст — конец интервала
+  исключающий (следующий день).
+- Отсутствие токена GSC ≠ ноль трафика Google; fallback-артефакт Минфина ≠
+  «у источника нет новых данных».
+
+### Operational invariants (API, ETL, frontend, мониторинг)
+
+- `RateLimitMiddleware` (`main.py`): 120/мин на IP для `/api/*`, 600/мин для
+  `/api/v1/embed/*`; 429 + `Retry-After: 60`; Redis недоступен → пропуск (fail-open).
+  nginx поверх: SSR 5 r/s на IP, регионы и OG — строгая зона 2 r/s, OG-потолок
+  8 r/s / 4 соединения; поисковый UA от лимита не освобождает.
+- CORS: `settings.public_origin`, `www.`, `ru.` и localhost 5173/5174/3000; только
+  GET/OPTIONS. Новый внешний потребитель — явно в `main.py`.
+- GZip для ответов > 1000 байт. Ошибки — `{"detail": ...}`; пустой ряд — 200 с
+  `points: []`. Swagger только при `RUSTATS_DEBUG=true` (на проде выключен).
+- Backend Sentry не подключён (JSON-логи в stdout + Telegram-алерты
+  `alerting.py`); frontend Sentry — `@sentry/react`, `VITE_SENTRY_DSN`.
+- Парсеры: `bulk_upsert` идемпотентен (ADR-0002); ошибка парсинга пишет
+  `fetch_logs(status="error")` и не трогает точки; ретраев с backoff нет, кроме
+  Минфина (Retry 8, TTL-кэш и last-good URL). `is_active=false` — парсер выключен
+  без удаления данных; `is_listed=false` — скрыт из списков, карточка доступна.
+- HTML SSR: `Cache-Control: no-cache, no-store, must-revalidate` **always**
+  (`proxy_hide_header` upstream); `/assets/` — `immutable` на год. Архив
+  hashed-ассетов: старый и новый релиз публикуются до нового HTML, prune до трёх
+  релизов после watch. Новый внешний скрипт — в CSP `Caddyfile`.
+- Health: `/api/v1/health/live`; `/api/v1/health/ready` (SELECT 1 + оба Redis +
+  планировщик; устаревший ETL и fd > 80% — `degraded`, не 503) — его смотрят
+  docker-healthcheck и deploy-smoke. `/api/v1/metrics`: 5xx-счётчики,
+  `fe_process_open_fds(_limit)`; `ulimits.nofile` 65536.
+- Dual-host: RU (`ru.`) и EN (apex) — два канонических хоста с одинаковыми
+  путями; sitemap/RSS/canonical/hreflang/OG/JSON-LD от исходного Host, кэш по
+  host/locale; ботов не редиректим. Гейт — `scripts/dual-host-release-gate.py`.
+
 ### Too-many-open-files trap: плановые job'ы копят fd до Errno 24 (2026-09-20)
 
 Контейнер backend с Docker-дефолтом `ulimit -n = 1024` на тестовом VPS три
@@ -342,7 +403,8 @@ Rollups / Pulse / BI / ClickHouse-синк держали `idle in transaction` 
 на том же engine, что SSR. Пул 5+10 и лимит backend 1 ГиБ → хост в свопе,
 главная 5–30 с. Канон: отдельный `analytics_engine` (pool 2+2, statement 60 с,
 idle-in-tx 120 с); публичный engine — timeout 30 с. Короткие сессии по фазам.
-Лимит backend на хосте 8 ГБ — 1536M (2026-09-04); ClickHouse 448M.
+Лимит backend на хосте 8 ГБ — 1536M (2026-09-04); ClickHouse 448M. Публичный
+пул с `7c076d4` — 10+15, `pool_timeout` 3 с (см. Cold-cache pool exhaustion).
 
 ### BI-in-request trap: сборка дольше клиентского таймаута = сайт встал (2026-09-04)
 
@@ -404,6 +466,12 @@ changefreq, priority, ревизия разметки) совпал с прош�
 обоих хостов становятся жёсткими ссылками. Сканирование БД по шардам остаётся
 — иначе не отличить тихую правку ряда. Первая сборка после смены разметки
 переписывает всё (`SITEMAP_RENDER_REV`).
+
+`<lastmod>` раньше 1970-01-01 не пишется (`site_urls.SITEMAP_LASTMOD_MIN`,
+`normalize_sitemap_lastmod` → None): Яндекс считает такие даты ошибкой
+формата — 424 746 плохих lastmod в 262 файлах дали 90 836 ошибок в Вебмастере
+(фикс `6222135`, 2026-09-26). Исторические ряды (население с 1897) всё равно
+остаются в sitemap, просто без lastmod.
 
 ### Canonical-rating-year trap: один контент — один URL (2026-08-28)
 
@@ -505,13 +573,13 @@ embed отвечают на запрошенном хосте — иначе clo
 1. **Запуск мигратора**: `ssh fe-prod 'cd /opt/rosstat && DBURL=$(grep "^RUSTATS_DATABASE_URL=" .env | cut -d= -f2-) && INNET=$(printf "%s" "$DBURL" | sed "s/@localhost:5434/@postgres:5432/") && docker run --rm --network rosstat_default -e RUSTATS_DATABASE_URL="$INNET" --entrypoint python rosstat-backend:<NEW_SHA> -m alembic downgrade <head>'`. `compose run --no-deps backend …` без этого env падает на подключении (env.py берёт URL из settings, а `.env` хоста внутрь не попадает); пароль БД из `.env` прода не равен дефолту — всегда тащить URL из файла.
 2. **Движущий тег образа может указывать куда угодно** после прерванного деплоя/восстановления. После downgrade ОБЯЗАТЕЛЬНО перетегировать оба образа в старые SHA-теги (`docker tag rosstat-backend:<OLD_SHA> rosstat-backend`, то же для frontend) и поднимать через `docker compose up -d --force-recreate frontend backend`. Только `up -d` поднимет контейнер из образа, которым последний раз был затёрт движущий тег (на инциденте это был НОВЫЙ код) — и его entrypoint немедленно повторно накатит схему вперёд (alembic upgrade head), сведя даунгрейд на нет. Это случилось дважды за один вечер. Верификация — код ВНУТРИ контейнера, не healthcheck: `docker exec rosstat-backend-1 sh -c 'ls /app/alembic/versions | grep -c world'` (ожидаем 0) + `select * from alembic_version`.
 3. **После восстановления сверять счётчики по каждому индикатору против бэкапа**, а не только общий total: короткое окно работы нового кода успело усечь историю пяти товарных YoY-derived (`coal/copper/silver/soybean/wheat-yoy`, −9 643 точки) пересчётом по свежему окну. Ремонт: `pg_restore` дампа во временную базу → `\copy` точек этих рядов в TSV → temp-таблица в живой базе → upsert ADR-0002 (`INSERT … ON CONFLICT (indicator_id,date) DO UPDATE SET value=… WHERE indicator_data.value <> EXCLUDED.value`, `created_at = now() at time zone 'utc'` — колонка NOT NULL без серверного дефолта). Общий diff по всем 984 рядам после ремонта = только новые точки ETL сверх дампа.
-Финал восстановления: git прода `git reset --hard <OLD_SHA>` (иначе дерево опережает работающий код — ловушка для следующих откатов), `FLUSHDB DB 0` кэш-Redis (с паролем `-a "$(grep '^REDIS_PASSWORD=' .env | cut -d= -f2-)"`; DB 1 state — не трогать), smoke: front 200, `/api/v1/health/ready` 200, SSR региона 200, sitemap 200.
+Финал восстановления: git прода `git reset --hard <OLD_SHA>` (иначе дерево опережает работающий код — ловушка для следующих откатов), очистка только SSR-ключей DB 0 (`SCAN fe:*:ssr:*` + `UNLINK`, как делает `deploy.sh`; не FLUSHDB — см. Cold-cache pool exhaustion; DB 1 state — не трогать), smoke: front 200, `/api/v1/health/ready` 200, SSR региона 200, sitemap 200.
 
 ### Asset-hash mismatch trap
 
 После `docker compose build frontend` без перезапуска backend — backend SEO renderer возвращает HTML со ссылками на удалённые `/assets/*-OLD-HASH.js`. Причина: `seo_renderer._APP_ASSETS` кэширует discover'ные имена файлов в памяти процесса.
 
-**Правило:** при rebuild фронта всегда делать `docker compose up -d backend frontend` одновременно (backend перезапустится, кэш сбросится). Альтернатива: `docker compose restart backend && redis-cli -n 0 FLUSHDB` (только DB 0 — кэш; в DB 1 живут сессии/квоты, их не трогать).
+**Правило:** при rebuild фронта всегда делать `docker compose up -d backend frontend` одновременно (backend перезапустится, кэш сбросится). Кэш SSR после этого чистить точечно (`fe:*:ssr:*`), не FLUSHDB; DB 1 (сессии/квоты) не трогать никогда.
 
 ### Pure-revision day
 
@@ -598,9 +666,18 @@ Goal в Метрике: `rsy_floor_render` — успешный непустой
 
 Маркировку «Реклама» (+ домен/erid рекламодателя) несёт сам креатив РСЯ — отдельный оверлей-ярлык мы не рисуем (убран 2026-06-24: floorAd переменной высоты, фиксированный ярлык попадал в середину объявления).
 
-### Scheduler dual jobs + analytics-scheduler флаг
+### Scheduler: все job'ы в процессе backend
 
-В `backend/app/main.py` lifespan регистрируются **два обязательных** APScheduler job'а: `daily_etl` (06:00 МСК) и `calendar_refresh` (1-го числа 03:00 МСК). Дополнительно — два опциональных под `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`: `analytics_hourly` (:15) и `analytics_daily` (07:20). С 2026-05-22 добавлен `ticker_live_pull` (interval 5s, `coalesce=True`, `max_instances=1`) — fetch MOEX/Binance/CBR-fallback в Redis для LiveTicker. Если scheduler-флаг выключен — работает только `daily_etl` + `calendar_refresh` + `ticker_live_pull`, analytics cron-ы не регистрируются.
+Все APScheduler job'ы регистрируются в lifespan `backend/app/main.py` (~40
+уникальных `id=`; список — `grep -o 'id="[a-z_]*"' backend/app/main.py`) и
+живут в том же процессе, что и веб (до пачки 2 это делило 1 CPU — см.
+`docs/backlog.md` 2026-09-26). Время МСК: `daily_etl` 06:00, `evening_etl`
+20:00, `late_minfin_etl` 15:00, `late_fred_etl`, `calendar_refresh` ежедневно
+03:00, `sitemap_build` 03:40 (тяжёлый — деплой в 03:40–04:00 не запускать),
+`staleness_check` 10:00, `ticker_live_pull` каждые 5 с, плюс `world_*` /
+`*_world_forecast`, IndexNow, Webmaster, Метрика. Мутационные job'ы под
+`locked_job` (state-Redis SET NX). Аналитические cron-ы — только при
+`RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`.
 
 ### Live ticker: MOEX-приоритет с CBR-fallback для FX
 
@@ -657,7 +734,7 @@ docker compose exec backend python -c \
    asyncio.run(retrain_indicator_forecast('<source_code>'))"
 ```
 
-Каскадный retrain `derived_from_source` стратегии подхватит зависимые индикаторы. После — `redis-cli -n 0 FLUSHDB` для сброса `fe:*:forecast` ключей (только DB 0: DB 1 хранит сессии пользователей — с 2026-07-02 они изолированы от кэша, FLUSHDB кэша больше никого не разлогинивает).
+Каскадный retrain `derived_from_source` стратегии подхватит зависимые индикаторы. После — сбросить кэш точечно: `cache_invalidate_indicator(code)` или `bump_namespaces(...)` из `app/core/cache.py` (не FLUSHDB: холодный кэш под ботами = 503, см. Cold-cache pool exhaustion).
 
 ### Inflation-weekly: семантика и источник
 
@@ -699,7 +776,7 @@ docker compose exec backend python -c \
 - `housing-price-{primary,secondary}` — backfill 1998-2014 через `housing_historical.py`.
 - `inflation-weekly` начинается с 2022-01-10 → Росстат публикует с 2003, но **архив до 2022 утерян** (gks.ru не работает, Wayback не имеет нужных URL); это технический предел, не наша недоработка.
 
-**Правило:** при добавлении любого нового парсера / индикатора — **обязательная проверка по чеклисту в `AGENTS.md::Шаг 4`** (`Source-depth invariant`). Если источник даёт глубже чем в seed — заводим `<name>_historical.py` immutable seed.
+**Правило:** при добавлении любого нового парсера / индикатора — **обязательная проверка по чеклисту в `docs/indicators.md`** (`Source-depth invariant`). Если источник даёт глубже чем в seed — заводим `<name>_historical.py` immutable seed.
 
 ### Browser-cache trap при rebuild frontend
 
@@ -729,7 +806,7 @@ docker compose exec backend python -c \
 
 **Правило:** **никогда** не лить точки чужой частоты в существующий indicator. Если source даёт annual до 1998 и monthly с 2015 — это **два разных indicator'а** с одним visual entry (через view-mode family). Аналогично quarterly история + monthly свежак, weekly прошлое + daily настоящее, и т.п.
 
-**Проверка при backfill:** перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. Если расхождение — заводим sibling indicator + добавляем режим в `viewModeFamilies`. См. чеклист в `AGENTS.md::Шаг 4` (новый пункт «Frequency consistency»).
+**Проверка при backfill:** перед `bulk_upsert` сверить `target.frequency` с фактической частотой добавляемых точек. Если расхождение — заводим sibling indicator + добавляем режим в `viewModeFamilies`. См. чеклист в `docs/indicators.md` (пункт «Frequency consistency»).
 
 ### Annual-in-quarterly trap (кросс-каденс QoQ/MoM даёт годовой прирост под видом квартального)
 
@@ -841,10 +918,26 @@ When suggesting refactors, use this language. Use the **Indicator/DataPoint/Deri
 
 Shared brand tokens and Manrope connect the SPA, pure SSR fast pages and PNG
 renderers. Economic values, labels and source provenance remain deterministic
-data, while the 17 generated thematic artworks are decoration. See
-`docs/design/README.md` for implementation, reproducible gallery and acceptance.
-Fast-page clickable sources stay inside ForecastEconomy; JSON-LD preserves
-official source URLs. Historical pages preserve the requested period. World
+data, while the 17 generated thematic artworks are decoration only (never
+AI-generated numbers). Palette: pearl `#EEF0F4`, ink `#202A3C`, champagne
+`#AD8A48`, ice `#CAD8E5`, blue `#6B8299`; Manrope (local OFL file, Cyrillic);
+F logo + forecasteconomy domain on shell, cards and PNG; glass layers keep an
+opaque base for readability, blur only on surfaces; numbers never animate from
+zero. Mechanisms: `frontend/src/styles/`, `chartTheme.js`, `Brand.jsx`,
+`pageImage.js`; server `og_image.py`, `seo_renderer.py`. A new indicator gets
+its design through them — no per-URL hand-made images; PNG 1200×630 wide and
+1080×1350 portrait (`<picture>` picks portrait on mobile), rendered on demand
+and cached, never pre-generated. Real data adapters: time series, step rate,
+change bars, rating, comparison, KPI overview, three-group age structure (not a
+pyramid). Review gallery: `docker compose exec -T backend python
+/app/scripts/export-design-gallery.py --out /tmp/design-review-cards` →
+`docker compose cp` into `output/design-review/cards/` → `node
+scripts/build-design-review.mjs` → `python3 -m http.server 3080 --directory
+output/design-review`; prompts live in `scripts/design-review/art-prompts/`,
+acceptance scripts `scripts/e2e/liquid-glass-*.mjs` write to gitignored
+`output/design-acceptance/`. Fast-page clickable sources stay inside
+ForecastEconomy (intentional); the SPA opens the official source externally via
+`SourceLink` (see Source links below); JSON-LD preserves official source URLs. Historical pages preserve the requested period. World
 ratings use `?view=interactive&year=YYYY#chart` to enter the SPA without cycling
 through the legacy `?year` redirect; canonical stays on the year path (or base
 for the default year). PNG font drawing normalizes Unicode space separators

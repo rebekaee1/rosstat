@@ -2026,7 +2026,7 @@ INDICATORS = [
             # ни на rosstat.gov.ru (404 на старые номера), ни через search API,
             # ни в Wayback memento (CDX empty). До этой даты у нас был
             # XLSX-approximation по food basket → расхождения с monthly CPI
-            # до 3 pp (март 2022). docs/missed_data_audit.md::Nedel_ipc.
+            # до 3 pp (март 2022). docs/data_sources.md (inflation-weekly, cutoff).
             "weekly_cutoff_date": "2023-01-09",
         },
         "is_active": True,

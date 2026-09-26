@@ -828,7 +828,7 @@ _FAMILY_DEFS: list[FamilyDef] = [
     # (месячный)/yoy-quarter НЕ переопределены и остаются 2015/2016+ — источник
     # 1991-2014 (wages_historical.py) даёт только ОДНО среднегодовое значение в
     # год, без месячной/квартальной раскладки, поэтому глубже физически нечем
-    # заполнить (Source-depth invariant, AGENTS.md::Шаг 4, п.1 — не огрызок, а
+    # заполнить (Source-depth invariant, docs/indicators.md, чеклист п.1 — не огрызок, а
     # честный пол данных).
     FamilyDef("wages-nominal", "Средняя заработная плата", "T8", "руб.", "Рынок труда", "monthly",
               overrides={

@@ -14,7 +14,7 @@ Bot API: expandable blockquote для сырых цифр + inline-кнопки,
 Сеть (2026-07-08): прод-сервер российский, OpenRouter/Anthropic/OpenAI/Groq
 блокируют его на границе Cloudflare (гео/санкционный комплаенс). Обход —
 `settings.openrouter_proxy_url` (HTTP-forward-proxy на внешнем не-РФ хосте,
-только для этого запроса); детали и security-модель прокси — `docs/backlog.md`.
+только для этого запроса); детали — CONTEXT.md::LLM-egress trap.
 """
 from __future__ import annotations
 

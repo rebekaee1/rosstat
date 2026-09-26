@@ -251,7 +251,7 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
 
     Used by `late_minfin_etl_job` to catch in-place CSV content updates that
     утренний `daily_update_job` пропустил (Minfin обновляет content того же
-    URL в течение дня — см. enterprise_resilience.md::Minfin in-place CSV).
+    URL в течение дня — см. docs/data_sources.md::Минфин, Trap in-place).
     """
     async with async_session() as db:
         ind_q = await db.execute(
@@ -334,7 +334,7 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
 async def late_minfin_etl_job():
     """Polluc 15:00 MSK pass — ловит in-place content updates Минфин-каталога.
 
-    См. enterprise_resilience.md::Minfin in-place CSV update — URL CSV-файла
+    См. docs/data_sources.md::Минфин, Trap (in-place content update) — URL CSV-файла
     остаётся стабильным после первой публикации (`data-YYYYMMDDTHHMM-…csv`),
     но Минфин дополняет content того же URL новыми месяцами в течение дня.
     Утренний `daily_update_job` (03:00 MSK по умолчанию) может пропустить
