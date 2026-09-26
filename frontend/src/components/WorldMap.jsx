@@ -26,6 +26,7 @@ import { useLocale, useT } from '../i18n';
 import { t as translateStandalone } from '../i18n/messages';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { localizeSource } from '../i18n/viewModeLabels';
+import SourceLink from './SourceLink';
 
 const WIDTH = 960;
 const HEIGHT = 480;
@@ -706,25 +707,26 @@ export function CountrySilhouette({
     : '';
   const populationYear = population?.year
     || (population?.date ? String(population.date).slice(0, 4) : '');
-  const sourceHref = slug ? `/${slug}` : '/#countries';
+  // Реальный source_url ряда (новая вкладка); страница страны — только фолбэк.
+  const fallbackHref = slug ? `/${slug}` : '/#countries';
   const sources = [];
   if (area?.source) {
     sources.push({
       label: localizeSource(area.source, locale),
-      url: sourceHref,
+      url: area.source_url || '',
       kind: 'area',
     });
   }
   if (population?.source && population.source !== area?.source) {
     sources.push({
       label: localizeSource(population.source, locale),
-      url: sourceHref,
+      url: population.source_url || '',
       kind: 'population',
     });
   } else if (!area?.source && population?.source) {
     sources.push({
       label: localizeSource(population.source, locale),
-      url: sourceHref,
+      url: population.source_url || '',
       kind: 'population',
     });
   }
@@ -787,16 +789,13 @@ export function CountrySilhouette({
                 {sources.map((item) => (
                   <div key={`${item.kind}-${item.label}`}>
                     {t('common.source')}:{' '}
-                    {item.url ? (
-                      <a
-                        href={item.url}
-                        className="text-[#d8c58b] underline-offset-2 hover:underline"
-                      >
-                        {item.label}
-                      </a>
-                    ) : (
-                      <span className="text-white/60">{item.label}</span>
-                    )}
+                    <SourceLink
+                      href={item.url}
+                      fallbackTo={fallbackHref}
+                      className="text-[#d8c58b] underline-offset-2 hover:underline"
+                    >
+                      {item.label}
+                    </SourceLink>
                   </div>
                 ))}
               </div>

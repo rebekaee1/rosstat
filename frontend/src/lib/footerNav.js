@@ -15,22 +15,26 @@ import {
 
 export const US_SLUG = 'united-states';
 
-/** Подпись ведомства остаётся, клик ведёт на соответствующий раздел сайта. */
+/**
+ * Источники данных в футере и на «О проекте» основного SPA: официальные сайты
+ * ведомств (внешние, в новой вкладке). SEO-страницы ведут на разделы сайта
+ * отдельно, в backend seo_renderer/seo_world.
+ */
 export const FOOTER_SOURCE_LINKS_BY_LOCALE = {
   ru: [
-    { to: '/#countries', key: 'footer.eurostat' },
-    { to: '/#countries', key: 'footer.imf' },
-    { to: '/russia', key: 'footer.rosstat' },
-    { to: '/russia/indicator/key-rate', key: 'footer.cbr' },
-    { to: '/russia/indicator/budget-deficit', key: 'footer.minfin' },
+    { href: 'https://ec.europa.eu/eurostat', key: 'footer.eurostat' },
+    { href: 'https://www.imf.org', key: 'footer.imf' },
+    { href: 'https://rosstat.gov.ru', key: 'footer.rosstat' },
+    { href: 'https://cbr.ru', key: 'footer.cbr' },
+    { href: 'https://minfin.gov.ru', key: 'footer.minfin' },
   ],
   en: [
-    { to: '/#countries', key: 'footer.eurostat' },
-    { to: '/#countries', key: 'footer.imf' },
-    { to: '/united-states/indicator/us-unemployment-rate', key: 'footer.bls' },
-    { to: '/united-states/indicator/us-gdp-real', key: 'footer.bea' },
-    { to: '/united-states', key: 'footer.fred' },
-    { to: '/united-states/regions', key: 'footer.census' },
+    { href: 'https://ec.europa.eu/eurostat', key: 'footer.eurostat' },
+    { href: 'https://www.imf.org', key: 'footer.imf' },
+    { href: 'https://www.bls.gov', key: 'footer.bls' },
+    { href: 'https://www.bea.gov', key: 'footer.bea' },
+    { href: 'https://fred.stlouisfed.org', key: 'footer.fred' },
+    { href: 'https://www.census.gov', key: 'footer.census' },
   ],
 };
 

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import SourceLink from '../components/SourceLink';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
@@ -32,13 +32,13 @@ export default function About() {
           {' '}
           {footerSourceLinks(locale).map((item, i, items) => {
             const link = (
-              <Link
+              <SourceLink
                 key={item.key}
-                to={item.to}
+                href={item.href}
                 className="text-champagne hover:underline"
               >
                 {t(item.key)}
-              </Link>
+              </SourceLink>
             );
             const andWord = locale === 'en' ? 'and' : 'и';
             if (i === 0) return link;

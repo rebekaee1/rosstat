@@ -10,6 +10,7 @@ import {
   inflationCountriesFromCatalog,
   isRussiaCountry,
   RUSSIA_SOURCE,
+  RUSSIA_SOURCE_URL,
   RUSSIA_SLUG,
   HICP_CONCEPT,
   yearOf,
@@ -115,8 +116,11 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
     ? RUSSIA_SOURCE
     : (metaQ.data?.indicator?.source || '');
 
-  /** Мировая ветка: имя ведомства ведёт на страницу страны. Россия — на карточку ИПЦ. */
-  const sourceUrl = isRussia || !resolvedSlug ? null : `/${resolvedSlug}`;
+  /**
+   * Реальный адрес источника: Россия — страница цен Росстата, мир — source_url
+   * ряда из meta. null — страница покажет внутренний фолбэк.
+   */
+  const sourceUrl = isRussia ? RUSSIA_SOURCE_URL : (metaQ.data?.indicator?.source_url || null);
 
   const countryName = isRussia
     ? null

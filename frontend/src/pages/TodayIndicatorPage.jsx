@@ -20,6 +20,7 @@ import {
   todayPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
+import SourceLink from '../components/SourceLink';
 
 function ruDateShort(iso) {
   if (!iso) return '';
@@ -168,7 +169,14 @@ export default function TodayIndicatorPage() {
               })}
             />
             <p className="mt-2 text-[11px] text-text-tertiary font-mono">
-              {t('today.page.source', { source: indicator.source })}
+              {t('today.page.source', { source: '' }).replace(/\s*$/, '')}{' '}
+              <SourceLink
+                href={indicator.source_url}
+                className="text-champagne underline-offset-2 hover:underline"
+                textClassName=""
+              >
+                {indicator.source}
+              </SourceLink>
             </p>
           </div>
 

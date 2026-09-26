@@ -22,6 +22,7 @@ import { track, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
+import SourceLink from '../components/SourceLink';
 import CalcCountryPicker from '../components/CalcCountryPicker';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { useLocale, useT } from '../i18n';
@@ -351,9 +352,12 @@ export default function CalculatorPage() {
 
   const withRuble = isRussia;
   const sourceLabel = source ? localizeSource(source, locale) : '';
-  // K4b: у мировой ветки — прямая ссылка на источник ряда (metaQ), у России —
-  // внутренняя карточка ИПЦ; без URL показывается просто подпись.
+  // K4b: имя источника ведёт на его сайт (source_url, новая вкладка); без URL —
+  // внутренний фолбэк: страница страны или карточка ИПЦ России.
   const sourceHref = sourceUrl || null;
+  const sourceFallbackTo = !isRussia && resolvedCountrySlug
+    ? `/${resolvedCountrySlug}`
+    : russiaIndicatorPath('cpi');
 
   // K4a: URL-период шире данных — канонизация видна пользователю оговоркой,
   // пока он сам не начал двигать слайдеры (тогда границы уже его выбор).
@@ -828,21 +832,13 @@ export default function CalculatorPage() {
             {sourceLabel && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
                 {t('calc.inflation.source', { source: '' }).replace(/\s*$/, '')}{' '}
-                {sourceHref ? (
-                  <Link
-                    to={sourceHref}
-                    className="text-champagne hover:text-champagne-muted underline decoration-champagne/30 underline-offset-2 transition-colors"
-                  >
-                    {sourceLabel}
-                  </Link>
-                ) : (
-                  <Link
-                    to={russiaIndicatorPath('cpi')}
-                    className="text-champagne hover:text-champagne-muted underline decoration-champagne/30 underline-offset-2 transition-colors"
-                  >
-                    {sourceLabel}
-                  </Link>
-                )}
+                <SourceLink
+                  href={sourceHref}
+                  fallbackTo={sourceFallbackTo}
+                  className="text-champagne hover:text-champagne-muted underline decoration-champagne/30 underline-offset-2 transition-colors"
+                >
+                  {sourceLabel}
+                </SourceLink>
               </p>
             )}
 

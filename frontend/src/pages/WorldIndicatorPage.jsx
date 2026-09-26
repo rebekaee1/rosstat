@@ -32,6 +32,7 @@ import WorldViewModePicker from '../components/WorldViewModePicker';
 import WorldChartSection from '../components/WorldChartSection';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
+import SourceLink from '../components/SourceLink';
 import DataTable from '../components/DataTable';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import TelemetryCard from '../components/TelemetryCard';
@@ -673,7 +674,13 @@ export default function WorldIndicatorPage() {
                 <div className="sm:col-span-2">
                   <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('common.source')}</dt>
                   <dd className="text-[13px] leading-5 text-text-secondary">
-                    {sourceLabel}
+                    <SourceLink
+                      href={indicator.source_url}
+                      className="text-champagne underline-offset-2 hover:underline"
+                      textClassName=""
+                    >
+                      {sourceLabel}
+                    </SourceLink>
                   </dd>
                 </div>
                 {showOriginalTitle && (

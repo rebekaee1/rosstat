@@ -99,7 +99,9 @@ describe('CountrySilhouette', () => {
     expect(normalized).toContain('2026');
     expect(normalized).toContain('2025');
     const source = screen.getByRole('link', { name: 'Евростат' });
-    expect(source.getAttribute('href')).toBe('/#countries');
+    expect(source.getAttribute('href')).toBe('https://ec.europa.eu/eurostat/databrowser/view/reg_area3');
+    expect(source.getAttribute('target')).toBe('_blank');
+    expect(source.getAttribute('rel')).toMatch(/noopener/);
   });
 
   it('на EN показывает Eurostat и km²', () => {

@@ -8,6 +8,8 @@ export const RUSSIA_SLUG = 'russia';
 export const US_SLUG = 'united-states';
 export const HICP_CONCEPT = 'hicp-index';
 export const RUSSIA_SOURCE = 'Росстат';
+/** Страница цен Росстата — тот же source_url, что у ряда ИПЦ (/indicators/cpi). */
+export const RUSSIA_SOURCE_URL = 'https://rosstat.gov.ru/statistics/price';
 
 export function isRussiaCountry(slug) {
   return !slug || slug === RUSSIA_SLUG;

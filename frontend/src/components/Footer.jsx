@@ -12,6 +12,7 @@ import {
   russiaCategoryPath,
 } from '../lib/sitePaths';
 import { WORLD_RATING_TO } from '../lib/navItems';
+import SourceLink from './SourceLink';
 import { footerCatalogColumn, footerHomeCountryColumn, footerSourceLinks } from '../lib/footerNav';
 import { useT, useLocale } from '../i18n';
 
@@ -45,9 +46,9 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-text-secondary">
               {sourceLinks.map((item) => (
                 <li key={item.key}>
-                  <Link to={item.to} className={footLink}>
+                  <SourceLink href={item.href} className={footLink}>
                     {t(item.key)}
-                  </Link>
+                  </SourceLink>
                 </li>
               ))}
             </ul>

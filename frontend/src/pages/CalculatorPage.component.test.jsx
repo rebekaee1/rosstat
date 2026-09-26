@@ -320,11 +320,12 @@ describe('calculator source link (K4b)', () => {
     });
 
     const link = await screen.findByRole('link', { name: 'Евростат' });
-    expect(link.getAttribute('href')).toBe('/germany');
-    expect(link.getAttribute('target')).toBeNull();
+    expect(link.getAttribute('href')).toBe('https://www.example.com/source');
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toMatch(/noopener/);
   });
 
-  it('русская ветка ведёт на карточку ИПЦ', async () => {
+  it('русская ветка ведёт на страницу цен Росстата в новой вкладке', async () => {
     mockCalcApis();
     renderPage(<CalculatorPage />, {
       path: '/calculator',
@@ -332,7 +333,8 @@ describe('calculator source link (K4b)', () => {
     });
 
     const link = await screen.findByRole('link', { name: 'Росстат' });
-    expect(link.getAttribute('href')).toBe('/russia/indicator/cpi');
+    expect(link.getAttribute('href')).toBe('https://rosstat.gov.ru/statistics/price');
+    expect(link.getAttribute('target')).toBe('_blank');
   });
 });
 
