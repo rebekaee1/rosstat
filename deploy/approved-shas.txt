@@ -105,3 +105,5 @@ e5a2b98a606143f6051b01a5c78db7d3e7825720  # explicit owner GO 2026-09-25; sitema
 d5a02c10ebe425e200c004f7ba060a54829d293c  # explicit owner GO 2026-09-25; parent tip for :3000-refuse frontend recovery on cold-home #13 cutover; IndexNow not forced
 
 6222135b0a3800afb522b2a3ce06222591d7df62  # explicit owner GO 2026-09-26; speed + band removal + sitemap lastmod/recrawl fix; no migrations
+
+c30ac80a270f0c8b455dd4132498ad5e76586605  # explicit owner GO 2026-09-26; DB pool fix (SSR _release_db, pool 10+15) + targeted SSR cache clear + SourceLink fix + docs; no migrations
