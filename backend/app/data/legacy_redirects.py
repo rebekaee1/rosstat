@@ -125,6 +125,30 @@ def resolve_legacy_indicator(code: str) -> str | None:
     return LEGACY_INDICATOR_REDIRECTS.get(code)
 
 
+def bespoke_mode_data_code(parent: str, mode: str | None) -> str | None:
+    """Ряд, который показывает bespoke-режим карточки (?mode=…).
+
+    Обратная сторона _BESPOKE_UNLISTED_CANONICAL: /ppi-yoy → 301 ppi?mode=yoy,
+    значит видимое тело ppi?mode=yoy — данные ppi-yoy (г/г %), а не уровень
+    индекса. Только точные пары (parent, mode) из таблицы редиректов.
+    """
+    if not mode:
+        return None
+    return _bespoke_mode_index().get((parent, mode))
+
+
+@lru_cache(maxsize=1)
+def _bespoke_mode_index() -> dict[tuple[str, str], str]:
+    out: dict[tuple[str, str], str] = {}
+    for sibling, target in _BESPOKE_UNLISTED_CANONICAL.items():
+        path, _, query = target.partition("?mode=")
+        if not query:
+            continue
+        parent = path.rstrip("/").rsplit("/", 1)[-1]
+        out.setdefault((parent, query), sibling)
+    return out
+
+
 def resolve_unlisted_indicator(code: str) -> str | None:
     """Канонический путь для unlisted sibling-ряда (generic или bespoke)."""
     return (

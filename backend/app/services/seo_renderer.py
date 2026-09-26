@@ -1778,39 +1778,76 @@ async def render_indicator_html(
 
     family = FAMILY_BY_BASE.get(code)
     # ?mode= не каноничен (INDEX_POLICY.MODE_CANONICAL=False) и не в sitemap.
-    # SSR title/description/OG/JSON-LD и видимые значения обязаны совпадать
-    # с канонической карточкой: иначе Google отдаёт дельту режима
-    # («−4,62 п.п. за год») как «актуальное значение» показателя.
-    # Режим остаётся в SPA после гидратации query-string.
-    if not MODE_CANONICAL:
-        mode = None
-    resolved_mode = resolve_view_mode(code, mode) if family else None
-    data_code = data_indicator_code(code, mode) if family else code
-    data_indicator = indicator
-    if data_code != code:
-        dq = await db.execute(
-            select(Indicator).where(Indicator.code == data_code, Indicator.is_active.is_(True))
-        )
-        data_indicator = dq.scalar_one_or_none() or indicator
+    # SSR title/description/OG/JSON-LD обязаны совпадать с канонической
+    # карточкой: иначе Google отдаёт дельту режима («−4,62 п.п. за год») как
+    # «актуальное значение» показателя. Видимое тело (h1, текущее значение,
+    # таблица последних данных) — ряд режима: sibling-URL (/ppi-yoy → 301
+    # ?mode=yoy) обязан показывать г/г %, а не уровень индекса (инцидент
+    # 2026-09-26: ИЦП г/г показывал 329,77 вместо 6,76 %).
+    view_mode = mode
+    meta_mode = mode if MODE_CANONICAL else None
 
-    display_name = base_name
-    display_unit = overlay.get("unit") or indicator.unit
-    display_frequency = indicator.frequency
-    if family and resolved_mode:
-        suffix = localize_mode_display_suffix(family, resolved_mode, locale=loc)
-        if suffix:
-            display_name = f"{base_name} — {suffix}"
-        # Mode unit is storage RU; overlay unit wins when mode keeps the base unit.
-        display_unit = localize_unit(
-            resolved_mode.unit or display_unit, locale=loc
-        )
-        display_frequency = resolved_mode.frequency or display_frequency
-    else:
-        display_unit = localize_unit(display_unit, locale=loc)
+    async def _mode_view(m: str | None):
+        resolved = resolve_view_mode(code, m) if family else None
+        d_code = data_indicator_code(code, m) if family else code
+        d_ind = indicator
+        if d_code != code:
+            dq = await db.execute(
+                select(Indicator).where(Indicator.code == d_code, Indicator.is_active.is_(True))
+            )
+            d_ind = dq.scalar_one_or_none() or indicator
+        name = base_name
+        unit = overlay.get("unit") or indicator.unit
+        freq = indicator.frequency
+        if family and resolved:
+            suffix = localize_mode_display_suffix(family, resolved, locale=loc)
+            if suffix:
+                name = f"{base_name} — {suffix}"
+            # Mode unit is storage RU; overlay unit wins when mode keeps the base unit.
+            unit = localize_unit(resolved.unit or unit, locale=loc)
+            freq = resolved.frequency or freq
+        else:
+            unit = localize_unit(unit, locale=loc)
+        return d_ind, name, unit, freq
 
-    category = _category_for_api(indicator.category)
+    data_indicator, display_name, display_unit, display_frequency = await _mode_view(meta_mode)
     latest_rows = await _latest_rows(db, data_indicator.id, limit=SSR_LATEST_ROWS)
     count, first_dt, last_dt = await _indicator_stats(db, data_indicator.id)
+    body_indicator, body_name, body_unit, body_frequency = (
+        data_indicator, display_name, display_unit, display_frequency
+    )
+    body_rows, body_count, body_first, body_last = latest_rows, count, first_dt, last_dt
+    if family and view_mode and view_mode != meta_mode:
+        body_indicator, body_name, body_unit, body_frequency = await _mode_view(view_mode)
+        if body_indicator.id != data_indicator.id:
+            body_rows = await _latest_rows(db, body_indicator.id, limit=SSR_LATEST_ROWS)
+            body_count, body_first, body_last = await _indicator_stats(db, body_indicator.id)
+    if view_mode and body_indicator.id == data_indicator.id:
+        # Bespoke-режимы (ИПЦ, ИЦП, жильё, безработица, баланс) вне generic-семьи
+        # или не известные ей: режим = готовый sibling-ряд из таблицы 301
+        # (/ppi-yoy → ppi?mode=yoy, /unemployment-quarterly → ?mode=quarterly).
+        from app.data.legacy_redirects import bespoke_mode_data_code
+        from app.services.i18n_display import public_name
+
+        sibling_code = bespoke_mode_data_code(code, view_mode)
+        if sibling_code:
+            sq = await db.execute(
+                select(Indicator).where(
+                    Indicator.code == sibling_code, Indicator.is_active.is_(True)
+                )
+            )
+            sibling = sq.scalar_one_or_none()
+            if sibling is not None:
+                sibling_rows = await _latest_rows(db, sibling.id, limit=SSR_LATEST_ROWS)
+                if sibling_rows:
+                    body_indicator = sibling
+                    body_name = public_name(sibling.name, sibling.name_en, locale=loc) or base_name
+                    body_unit = localize_unit(sibling.unit, locale=loc)
+                    body_frequency = sibling.frequency or body_frequency
+                    body_rows = sibling_rows
+                    body_count, body_first, body_last = await _indicator_stats(db, sibling.id)
+
+    category = _category_for_api(indicator.category)
     related = await _related_indicators(db, indicator)
     # А-4: внутренняя перелинковка «по годам» — год-запросы («X в 2019»)
     # должны ранжировать годовые landing'и, а не карточку со сниппетом «сегодня».
@@ -1866,15 +1903,15 @@ async def render_indicator_html(
     body = _indicator_body(
         indicator,
         category,
-        latest_rows,
+        body_rows,
         related,
-        count,
-        first_dt,
-        last_dt,
-        display_name=display_name,
-        display_unit=display_unit,
-        display_frequency=display_frequency,
-        data_code=data_indicator.code,
+        body_count,
+        body_first,
+        body_last,
+        display_name=body_name,
+        display_unit=body_unit,
+        display_frequency=body_frequency,
+        data_code=body_indicator.code,
         data_years=data_years,
         data_month_pairs=data_month_pairs,
         forecast_ssr=forecast_ssr,

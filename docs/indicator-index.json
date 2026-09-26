@@ -2682,7 +2682,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2940,
+          "line": 2977,
           "kind": "seo"
         },
         {
@@ -23347,7 +23347,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2685,
+          "line": 2722,
           "kind": "seo"
         },
         {
@@ -23926,7 +23926,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2685,
+          "line": 2722,
           "kind": "seo"
         },
         {
@@ -33537,6 +33537,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1130,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/housingViewModeResolve.js",
           "line": 74,
           "kind": "family"
@@ -35530,6 +35535,11 @@
         {
           "file": "backend/tests/test_legacy_redirects.py",
           "line": 66,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1131,
           "kind": "tests"
         },
         {
@@ -39734,7 +39744,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2942,
+          "line": 2979,
           "kind": "seo"
         },
         {
@@ -48120,6 +48130,16 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 131,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 132,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/calculation_engine.py",
           "line": 129,
           "kind": "derived"
@@ -48163,6 +48183,11 @@
           "file": "backend/app/services/forecast_strategies/ppi_monthly.py",
           "line": 4,
           "kind": "other"
+        },
+        {
+          "file": "backend/app/services/seo_renderer.py",
+          "line": 1828,
+          "kind": "seo"
         },
         {
           "file": "backend/scripts/audit-groups-submodes.py",
@@ -48272,6 +48297,51 @@
         {
           "file": "backend/tests/test_rosstat_plan.py",
           "line": 288,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1035,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1037,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1049,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1063,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1064,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1065,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1080,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1135,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1136,
           "kind": "tests"
         },
         {
@@ -48822,6 +48892,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1130,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/ppiViewModeGroups.test.js",
           "line": 68,
           "kind": "tests"
@@ -48984,9 +49059,29 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 131,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/legacy_redirects.py",
+          "line": 132,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/calculation_engine.py",
           "line": 179,
           "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/seo_renderer.py",
+          "line": 1784,
+          "kind": "seo"
+        },
+        {
+          "file": "backend/app/services/seo_renderer.py",
+          "line": 1828,
+          "kind": "seo"
         },
         {
           "file": "backend/scripts/audit-groups-submodes.py",
@@ -49006,6 +49101,21 @@
         {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 108,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1035,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1054,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1130,
           "kind": "tests"
         },
         {
@@ -51043,6 +51153,21 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1098,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1112,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1113,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
           "line": 105,
           "kind": "other"
@@ -51538,6 +51663,11 @@
         {
           "file": "backend/tests/test_seo_og.py",
           "line": 925,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1102,
           "kind": "tests"
         },
         {
@@ -55394,6 +55524,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1131,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_site_urls_recrawl_filter.py",
           "line": 22,
           "kind": "tests"
@@ -56911,6 +57046,11 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/seo_renderer.py",
+          "line": 1828,
+          "kind": "seo"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 2461,
           "kind": "seed"
@@ -56928,6 +57068,11 @@
         {
           "file": "backend/tests/test_path_cut_redirects.py",
           "line": 44,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1130,
           "kind": "tests"
         },
         {

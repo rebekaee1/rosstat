@@ -1024,3 +1024,113 @@ def test_quicklink_russia_breadcrumb_keeps_country_destination():
     prepared = _prepare_quicklink_body(body, "/russia/indicator/cpi/2025")
     link = BeautifulSoup(prepared, "html.parser").select_one("nav a")
     assert link["href"] == "/russia"
+
+
+def _visible_body(html: str) -> str:
+    """HTML без <head>: мета проверяются отдельно от видимого тела."""
+    return html.split("</head>", 1)[-1]
+
+
+def test_bespoke_mode_body_shows_sibling_series_meta_stays_canonical(auth_env):
+    """/ppi-yoy → 301 ppi?mode=yoy: тело — г/г %, не уровень индекса (2026-09-26).
+
+    Инцидент: SSR ppi?mode=yoy показывал «329,77 индекс» вместо 6,76 %.
+    Мета/канон остаются как у базовой карточки (MODE_CANONICAL=False).
+    """
+    import asyncio
+    from datetime import date
+
+    from app.models import Indicator, IndicatorData
+    from app.services.seo_renderer import render_indicator_html
+
+    async def _seed_and_render():
+        async with auth_env["session_maker"]() as db:
+            base = Indicator(
+                code="ppi", name="Индекс цен производителей", unit="индекс",
+                frequency="monthly", category="Цены", source="Росстат",
+                is_active=True, is_listed=True,
+            )
+            yoy = Indicator(
+                code="ppi-yoy", name="ИЦП (изм. г/г)", unit="%",
+                frequency="monthly", category="Цены", source="Росстат",
+                is_active=True, is_listed=False,
+            )
+            db.add_all([base, yoy])
+            await db.flush()
+            db.add(IndicatorData(indicator_id=base.id, date=date(2026, 7, 1), value=329.77))
+            db.add(IndicatorData(indicator_id=yoy.id, date=date(2026, 7, 1), value=6.76))
+            await db.commit()
+            st_mode, html_mode = await render_indicator_html("ppi", db, mode="yoy")
+            st_base, html_base = await render_indicator_html("ppi", db)
+            st_idx, html_idx = await render_indicator_html("ppi", db, mode="index")
+            return st_mode, html_mode, st_base, html_base, st_idx, html_idx
+
+    st_mode, html_mode, st_base, html_base, st_idx, html_idx = asyncio.run(_seed_and_render())
+    assert st_mode == st_base == st_idx == 200
+
+    body_mode = _visible_body(html_mode)
+    assert "<h1>ИЦП (изм. г/г)" in body_mode
+    assert "6,76" in body_mode
+    assert "329,77" not in body_mode
+    # Мета — как у канона (уровень), canonical без ?mode=.
+    assert _extract_title(html_mode) == _extract_title(html_base)
+    assert _extract_meta_attr(html_mode, "name", "description") == (
+        _extract_meta_attr(html_base, "name", "description")
+    )
+    assert 'rel="canonical" href="https://forecasteconomy.com/russia/indicator/ppi"' in html_mode
+    # База и режим без sibling-ряда — уровень, как раньше.
+    assert "329,77" in _visible_body(html_base)
+    assert "6,76" not in _visible_body(html_base)
+    assert _visible_body(html_idx) == _visible_body(html_base)
+
+
+def test_generic_family_mode_body_shows_mode_series(auth_env):
+    """Generic-семья: ?mode=pop-gg — тело показывает ряд режима, мета — канон."""
+    import asyncio
+    from datetime import date
+
+    from app.models import Indicator, IndicatorData
+    from app.services.seo_renderer import render_indicator_html
+
+    async def _seed_and_render():
+        async with auth_env["session_maker"]() as db:
+            base = Indicator(
+                code="ruonia", name="Ставка RUONIA", unit="%", frequency="daily",
+                category="Ставки", source="Банк России", is_active=True, is_listed=True,
+            )
+            yoy_year = Indicator(
+                code="ruonia-yoy-year", name="Ставка RUONIA (г/г)", unit="п.п.",
+                frequency="annual", category="Ставки", source="Банк России",
+                is_active=True, is_listed=False,
+            )
+            db.add_all([base, yoy_year])
+            await db.flush()
+            db.add(IndicatorData(indicator_id=base.id, date=date(2026, 9, 4), value=14.06))
+            db.add(IndicatorData(indicator_id=yoy_year.id, date=date(2025, 1, 1), value=-4.62))
+            await db.commit()
+            return (
+                await render_indicator_html("ruonia", db, mode="pop-gg"),
+                await render_indicator_html("ruonia", db),
+            )
+
+    (st_mode, html_mode), (st_base, html_base) = asyncio.run(_seed_and_render())
+    assert st_mode == st_base == 200
+    body_mode = _visible_body(html_mode)
+    assert "4,62" in body_mode
+    assert "14,06" not in body_mode
+    assert "14,06" in _visible_body(html_base)
+    assert _extract_meta_attr(html_mode, "name", "description") == (
+        _extract_meta_attr(html_base, "name", "description")
+    )
+
+
+def test_bespoke_mode_data_code_inverts_redirect_table():
+    from app.data.legacy_redirects import bespoke_mode_data_code, resolve_unlisted_indicator
+
+    for sibling in ("ppi-yoy", "ppi-mom", "housing-yoy-primary", "unemployment-quarterly",
+                    "trade-balance-yoy-abs", "inflation-annual"):
+        target = resolve_unlisted_indicator(sibling)
+        path, _, mode = target.partition("?mode=")
+        assert bespoke_mode_data_code(path.rsplit("/", 1)[-1], mode) == sibling
+    assert bespoke_mode_data_code("ppi", None) is None
+    assert bespoke_mode_data_code("ppi", "index") is None
