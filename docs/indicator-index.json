@@ -7751,7 +7751,7 @@
         },
         {
           "file": "backend/app/api/seo_pages.py",
-          "line": 206,
+          "line": 250,
           "kind": "other"
         },
         {
@@ -8870,6 +8870,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_perf_batch2.py",
+          "line": 195,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_perf_batch2.py",
+          "line": 202,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_public_year_contract.py",
           "line": 50,
           "kind": "tests"
@@ -9741,7 +9751,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 337,
+          "line": 350,
           "kind": "other"
         },
         {
@@ -11181,37 +11191,37 @@
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 309,
+          "line": 356,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 329,
+          "line": 376,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 363,
+          "line": 410,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 364,
+          "line": 411,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 366,
+          "line": 413,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 368,
+          "line": 415,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 370,
+          "line": 417,
           "kind": "other"
         },
         {
@@ -45011,7 +45021,7 @@
         },
         {
           "file": "backend/app/api/sitemap.py",
-          "line": 2034,
+          "line": 2060,
           "kind": "other"
         },
         {
@@ -45026,17 +45036,17 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1729,
+          "line": 1732,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1756,
+          "line": 1759,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1757,
+          "line": 1760,
           "kind": "other"
         },
         {
@@ -55459,7 +55469,7 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 2262,
+          "line": 2265,
           "kind": "other"
         },
         {
