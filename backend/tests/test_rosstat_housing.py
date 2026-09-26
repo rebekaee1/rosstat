@@ -1,10 +1,14 @@
 """Tests for Rosstat housing parser (canonical русский Rosstat PDF)."""
 
 from datetime import date
+from pathlib import Path
 
 from app.services.rosstat_housing_parser import (
+    has_housing_section,
     parse_housing_qoq_pair,
     parse_housing_reference_quarter,
+    parse_housing_report_text,
+    previous_quarter_end,
 )
 
 
@@ -76,3 +80,50 @@ class TestParseHousingReferenceQuarter:
 
     def test_no_section(self):
         assert parse_housing_reference_quarter("nothing here") is None
+
+
+# --- регрессия 2026-09: pypdf «соотве тственно» → Q2 2026 потерян ------------
+
+_OSN06 = (
+    Path(__file__).parent / "fixtures" / "rosstat_osn" / "osn-06-2026_housing.txt"
+).read_text(encoding="utf-8")
+
+
+class TestRealOsn06Report:
+    def test_qoq_pair_from_real_text(self):
+        assert "соотве тственно" in _OSN06  # фикстура действительно «рваная»
+        assert parse_housing_qoq_pair(_OSN06) == (101.1, 101.7)
+
+    def test_reference_quarter_from_real_text(self):
+        assert parse_housing_reference_quarter(_OSN06) == date(2026, 6, 1)
+
+    def test_report_bundle(self):
+        report = parse_housing_report_text(_OSN06)
+        assert report.has_section
+        assert report.reference_quarter == date(2026, 6, 1)
+        assert report.qoq_pair == (101.1, 101.7)
+
+
+class TestHousingSectionDetection:
+    def test_monthly_report_without_section(self):
+        text = "5.2. ЦЕНЫ ПРОИЗВОДИТЕЛЕЙ\nИндексы цен на первичном и вторичном рынках жилья (публикуется в докладах № 3, 6, 9, 12)"
+        assert not has_housing_section(text)
+
+    def test_toc_is_not_section(self):
+        assert not has_housing_section("Рынок жилья ………………… 133")
+
+    def test_section_number_may_vary(self):
+        assert has_housing_section("5.3. РЫНОК  ЖИ ЛЬЯ\nВо II квартале")
+
+    def test_split_word_in_pair(self):
+        text = (
+            "4.2. РЫНОК ЖИЛЬЯ\nВо II квартале 2026 г. индексы цен на перви чном и "
+            "вторичном рынках жилья, по предварительным д анным, составили соотве "
+            "тственно 101,1%   \nи 101,7%."
+        )
+        assert parse_housing_qoq_pair(text) == (101.1, 101.7)
+
+
+def test_previous_quarter_end():
+    assert previous_quarter_end(date(2026, 6, 1)) == date(2026, 3, 1)
+    assert previous_quarter_end(date(2026, 3, 1)) == date(2025, 12, 1)

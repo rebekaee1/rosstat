@@ -13,6 +13,14 @@ ADR-0004 path P (compat — DB хранит quarterly cumulative chained 2010=10
 frontend не меняется): парсер читает последнюю quarterly-точку индикатора в DB,
 умножает её на свежий QoQ% / 100 → новая cumulative-точка.
 
+Раздел есть только в докладах № 3, 6, 9, 12 (квартальные): в остальные месяцы
+парсер помечает прогон expected-empty (status=no_new_data). Если раздел есть, а
+пара не нашлась — пустой результат → status=parsed_zero (смена layout).
+Матчинг пары идёт по тексту без пробелов: pypdf рвёт слова («соотве тственно»),
+из-за чего Q2 2026 (osn-06-2026) был пропущен; данные чинит
+`backend/scripts/repair_ppi_housing_2026.py`. Цепочка требует точку за
+предыдущий квартал — иначе прогон падает (failed), а не перемножает через дыру.
+
 Trade-off: один новый datapoint per ETL run per indicator (housing-price-primary,
 housing-price-secondary). Полный исторический ряд 2014+ остаётся в DB от прошлой
 SDDS-этапы. Когда rosstat опубликует quarterly housing XLSX — расширим парсер.
@@ -33,7 +41,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
-from app.services.base_parser import BaseParser
+from app.services.base_parser import BaseParser, mark_expected_empty
 from app.services.data_validator import validate_points
 from app.services.rosstat_sdds_fetcher import fetch_latest_socioeconomic_report_pdf
 
@@ -49,11 +57,17 @@ class DataPoint:
 _ROMAN_TO_QUARTER = {"I": 1, "II": 2, "III": 3, "IV": 4}
 _QUARTER_END_MONTH = {1: 3, 2: 6, 3: 9, 4: 12}
 
-_QOQ_PAIR_RE = re.compile(
-    r"составили\s+соответственно[^\d]{0,40}"
-    r"(\d{2,3}[,.]\d)\s*[%][^\d]{1,40}?(\d{2,3}[,.]\d)\s*[%]",
-    re.IGNORECASE | re.DOTALL,
+# Матчится по `_compact(text)`: pypdf рвёт слова пробелами («соотве тственно»,
+# «перви чном») — на osn-06-2026 старый пробельный regex не нашёл пару и Q2 2026
+# потерялся (zero-parse каждый день с 2026-07-29).
+_QOQ_PAIR_COMPACT_RE = re.compile(
+    r"составилисоответственно[^\d]{0,40}?"
+    r"(\d{2,3}[,.]\d)%[^\d]{1,40}?(\d{2,3}[,.]\d)%",
+    re.IGNORECASE,
 )
+# Заголовок подраздела в теле доклада (номер плавает: 4.2 / 5.2 …). Регистр
+# важен: оглавление пишет «Рынок жилья ……… 133», тело — «4.2. РЫНОК ЖИЛЬЯ».
+_HOUSING_SECTION_COMPACT_RE = re.compile(r"\d\.\d\.РЫНОКЖИЛЬЯ")
 _QUARTER_HEADER_RE = re.compile(
     r"(I{1,3}|IV)\s*квартал[а-я]?\s+(\d{4})\s*г",
     re.IGNORECASE,
@@ -70,24 +84,37 @@ def _normalize_year_text(text: str) -> str:
     return re.sub(r"\b20\s*\d\s*\d\b", lambda m: m.group(0).replace(" ", ""), text)
 
 
-_HOUSING_SECTION_RE = re.compile(r"4\.2\.\s*РЫНОК\s+ЖИЛЬЯ")
+def _compact(text: str) -> str:
+    """Склейка переносов «типо-\nвые» + удаление всех пробельных символов."""
+    text = re.sub(r"-\s*\n\s*", "", text)
+    return re.sub(r"\s+", "", text)
+
+
+def has_housing_section(text: str) -> bool:
+    """Есть ли в докладе квартальный подраздел «РЫНОК ЖИЛЬЯ».
+
+    Росстат публикует его только в докладах № 3, 6, 9, 12 (см. методологию
+    в самом PDF) — в остальные месяцы пустой parse легитимен.
+    """
+    return bool(_HOUSING_SECTION_COMPACT_RE.search(_compact(text)))
 
 
 def parse_housing_qoq_pair(text: str) -> tuple[float, float] | None:
     """Извлекает (primary_QoQ%, secondary_QoQ%) из summary-строки PDF report.
 
-    Шаблон: «На первичном и вторичном рынках жилья ... составили соответственно
-    <P>% и <S>%». Возвращает (P, S) или None.
+    Шаблон: «… индексы цен на первичном и вторичном рынках жилья … составили
+    соответственно <P>% и <S>%». Возвращает (P, S) или None.
 
     Поиск ограничен подсекцией "РЫНОК ЖИЛЬЯ" (4.2 в socioeconomic report),
     чтобы не схватить случайное "составили соответственно" из других секций.
+    Матчинг по тексту без пробелов (устойчив к разрывам слов pypdf).
     """
-    text_norm = _normalize_year_text(text)
-    section = _HOUSING_SECTION_RE.search(text_norm)
+    compact = _compact(text)
+    section = _HOUSING_SECTION_COMPACT_RE.search(compact)
     if not section:
         return None
-    snippet = text_norm[section.end():section.end() + 1500]
-    m = _QOQ_PAIR_RE.search(snippet)
+    snippet = compact[section.end():section.end() + 1200]
+    m = _QOQ_PAIR_COMPACT_RE.search(snippet)
     if not m:
         return None
     try:
@@ -129,10 +156,34 @@ def parse_housing_reference_quarter(text: str) -> date | None:
         return None
 
 
+@dataclass(frozen=True)
+class HousingReport:
+    has_section: bool
+    reference_quarter: date | None
+    qoq_pair: tuple[float, float] | None
+
+
+def parse_housing_report_text(text: str) -> HousingReport:
+    return HousingReport(
+        has_section=has_housing_section(text),
+        reference_quarter=parse_housing_reference_quarter(text),
+        qoq_pair=parse_housing_qoq_pair(text),
+    )
+
+
 def parse_housing_report_pdf(content: bytes) -> tuple[date | None, tuple[float, float] | None]:
+    report = parse_housing_report_text(extract_pdf_text(content))
+    return (report.reference_quarter, report.qoq_pair)
+
+
+def extract_pdf_text(content: bytes) -> str:
     reader = PdfReader(io.BytesIO(content))
-    text = "\n".join(page.extract_text() or "" for page in reader.pages)
-    return (parse_housing_reference_quarter(text), parse_housing_qoq_pair(text))
+    return "\n".join(page.extract_text() or "" for page in reader.pages)
+
+
+def previous_quarter_end(d: date) -> date:
+    """2026-06-01 → 2026-03-01; 2026-03-01 → 2025-12-01 (конвенция конец квартала)."""
+    return date(d.year - 1, 12, 1) if d.month <= 3 else date(d.year, d.month - 3, 1)
 
 
 _INDICATOR_TO_PAIR_INDEX = {
@@ -152,9 +203,19 @@ class RosstatHousingParser(BaseParser):
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
         report_content, report_url = await asyncio.to_thread(fetch_latest_socioeconomic_report_pdf)
-        ref_quarter, qoq_pair = await asyncio.to_thread(parse_housing_report_pdf, report_content)
+        text = await asyncio.to_thread(extract_pdf_text, report_content)
+        report = parse_housing_report_text(text)
+        ref_quarter, qoq_pair = report.reference_quarter, report.qoq_pair
 
+        if not report.has_section:
+            mark_expected_empty(
+                fetch_log,
+                f"No housing section in {report_url.rsplit('/', 1)[-1]} "
+                "(published only in reports No. 3/6/9/12)",
+            )
+            return [], report_url
         if qoq_pair is None:
+            # Раздел есть, а пара не распарсилась → parsed_zero (layout).
             logger.warning("Housing: QoQ pair not found in PDF socioeconomic report")
             return [], report_url
         if ref_quarter is None:
@@ -180,6 +241,12 @@ class RosstatHousingParser(BaseParser):
                 indicator.code,
             )
             return [], report_url
+        if last.date != previous_quarter_end(ref_quarter):
+            raise RuntimeError(
+                f"Housing {indicator.code} chain gap: report {report_url} gives QoQ "
+                f"for {ref_quarter}, but last DB point before it is {last.date} "
+                f"(need {previous_quarter_end(ref_quarter)})"
+            )
 
         new_cumulative = float(last.value) * qoq / 100.0
         new_point = DataPoint(date=ref_quarter, value=round(new_cumulative, 2))
