@@ -1,0 +1,220 @@
+{
+  "at": "2026-09-24T07:56:38.542049+00:00",
+  "status": "complete_local_family_acceptance_with_narrow_rechecks",
+  "rawEvidence": "docs/design/local-acceptance/final/all.json",
+  "rawExitCode": 1,
+  "counts": {
+    "http": 82,
+    "api": 10,
+    "browser": 252,
+    "engines": {
+      "chromium": 204,
+      "webkit": 24,
+      "firefox": 24
+    },
+    "widths": {
+      "320": 12,
+      "390": 96,
+      "768": 12,
+      "1024": 12,
+      "1440": 96,
+      "1920": 12,
+      "2560": 12
+    },
+    "locales": {
+      "ru": 126,
+      "en": 126
+    },
+    "viewportScreenshots": 252,
+    "chartScreenshots": 60,
+    "separateFailureScreenshots": 4,
+    "combinedViewportScreenshots": 260,
+    "separateContinuationScreenshots": 8,
+    "usPngBeforeAndAfter": 24
+  },
+  "findings": [
+    {
+      "raw": {
+        "kind": "fast-russia-target",
+        "id": "world-rating-year:ru",
+        "detail": [
+          {
+            "href": "/russia/indicator/gdp-nominal-annual",
+            "text": "Россия",
+            "inMain": false
+          }
+        ]
+      },
+      "classification": "confirmed_product_bug_pending_recheck",
+      "resolution": {
+        "status": "resolved",
+        "evidence": "docs/design/local-acceptance/final-narrow/http.json",
+        "detail": "The Russia country-name link resolves to /russia/region."
+      }
+    },
+    {
+      "raw": {
+        "kind": "browser-error",
+        "id": "chromium:world-rating:390:ru",
+        "detail": "locator.getAttribute: Timeout 30000ms exceeded."
+      },
+      "classification": "test_selector_error_after_expected_spa_hydration",
+      "resolution": {
+        "status": "resolved",
+        "evidence": "docs/design/local-acceptance/final-narrow/browser.json",
+        "detail": "Base rating is already hydrated; expected interactive state, chart anchor, real document locale checked at both widths and languages."
+      }
+    },
+    {
+      "raw": {
+        "kind": "browser-error",
+        "id": "chromium:world-rating:390:en",
+        "detail": "locator.getAttribute: Timeout 30000ms exceeded."
+      },
+      "classification": "test_selector_error_after_expected_spa_hydration",
+      "resolution": {
+        "status": "resolved",
+        "evidence": "docs/design/local-acceptance/final-narrow/browser.json",
+        "detail": "Base rating is already hydrated; expected interactive state, chart anchor, real document locale checked at both widths and languages."
+      }
+    },
+    {
+      "raw": {
+        "kind": "browser-error",
+        "id": "chromium:world-rating:1440:ru",
+        "detail": "locator.getAttribute: Timeout 30000ms exceeded."
+      },
+      "classification": "test_selector_error_after_expected_spa_hydration",
+      "resolution": {
+        "status": "resolved",
+        "evidence": "docs/design/local-acceptance/final-narrow/browser.json",
+        "detail": "Base rating is already hydrated; expected interactive state, chart anchor, real document locale checked at both widths and languages."
+      }
+    },
+    {
+      "raw": {
+        "kind": "browser-error",
+        "id": "chromium:world-rating:1440:en",
+        "detail": "locator.getAttribute: Timeout 30000ms exceeded."
+      },
+      "classification": "test_selector_error_after_expected_spa_hydration",
+      "resolution": {
+        "status": "resolved",
+        "evidence": "docs/design/local-acceptance/final-narrow/browser.json",
+        "detail": "Base rating is already hydrated; expected interactive state, chart anchor, real document locale checked at both widths and languages."
+      }
+    }
+  ],
+  "initialSuiteLimitations": [
+    "Family sampling, not a crawl of every public URL.",
+    "Desktop engines with emulated viewports, not physical devices.",
+    "API/image requests are intentionally paced: run durations and request latency are not performance evidence.",
+    "EN preview intentionally noindex; production host cutover is not changed.",
+    "Git HEAD identifies the working checkout, not the deployed compose image; response hashes and asset paths identify observed content.",
+    "Initial suite did not assert document language after the rating CTA click. Same-origin click query was native, but external same-site navigation fallback could add preview_locale; the targeted runner now preserves native navigation query and asserts actual document language.",
+    "Initial image fetching could add preview_locale during local mapping. Targeted HTTP checks additionally inspect native visible body href/src/srcset before mapping.",
+    "The base world-rating page hydrates into SPA and removes its server-only chart link. Four raw selector timeouts are retained as test errors; targeted recheck tests the hydrated state instead."
+  ],
+  "observations": {
+    "documentOverflowFailures": 0,
+    "unexpectedImageFailures": 0,
+    "javascriptFailures": 0,
+    "missingScreenshotFiles": []
+  },
+  "beforeImages": "docs/design/local-acceptance/final-us-images-before.json",
+  "inventory": "docs/design/local-acceptance/inventory.json",
+  "completedAt": "2026-09-24T08:00:43.975608+00:00",
+  "targeted": {
+    "http": 18,
+    "api": 0,
+    "browser": 8,
+    "issues": [],
+    "nativePreviewBodyUrlAssertions": 200,
+    "nativeAnnualClicks": [
+      {
+        "locale": "ru",
+        "width": 390,
+        "continuation": {
+          "mode": "native-click",
+          "href": "/world/rating/gdp-usd?view=interactive&year=2024#chart",
+          "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?view=interactive&year=2024#chart",
+          "spaChildren": 7,
+          "selectedYears": [
+            "2024"
+          ],
+          "chartAnchor": 1,
+          "lang": "ru",
+          "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-390-ru-continuation.png"
+        }
+      },
+      {
+        "locale": "en",
+        "width": 390,
+        "continuation": {
+          "mode": "native-click",
+          "href": "/world/rating/gdp-usd?view=interactive&year=2024&preview_locale=en#chart",
+          "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?view=interactive&year=2024&preview_locale=en#chart",
+          "spaChildren": 8,
+          "selectedYears": [
+            "2024"
+          ],
+          "chartAnchor": 1,
+          "lang": "en",
+          "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-390-en-continuation.png"
+        }
+      },
+      {
+        "locale": "ru",
+        "width": 1440,
+        "continuation": {
+          "mode": "native-click",
+          "href": "/world/rating/gdp-usd?view=interactive&year=2024#chart",
+          "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?view=interactive&year=2024#chart",
+          "spaChildren": 7,
+          "selectedYears": [
+            "2024"
+          ],
+          "chartAnchor": 1,
+          "lang": "ru",
+          "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-1440-ru-continuation.png"
+        }
+      },
+      {
+        "locale": "en",
+        "width": 1440,
+        "continuation": {
+          "mode": "native-click",
+          "href": "/world/rating/gdp-usd?view=interactive&year=2024&preview_locale=en#chart",
+          "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?view=interactive&year=2024&preview_locale=en#chart",
+          "spaChildren": 8,
+          "selectedYears": [
+            "2024"
+          ],
+          "chartAnchor": 1,
+          "lang": "en",
+          "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-1440-en-continuation.png"
+        }
+      }
+    ],
+    "usImageCount": 12,
+    "usImageHashesChanged": 12,
+    "viewportScreenshots": 8,
+    "continuationScreenshots": 8
+  },
+  "sourceAudit": {
+    "file": "docs/design/local-acceptance/final-source-audit.json",
+    "counts": {
+      "rendererFunctions": 7,
+      "ogHandlers": 18,
+      "portraitRenderers": 7,
+      "portraitHandlers": 18
+    },
+    "allTenSourceRuntimeHashesMatch": true
+  },
+  "additionalVerifiedFixes": [
+    "Actual EN document language and selected year survive native annual-rating navigation.",
+    "All twelve landscape/portrait RU/EN US indicator PNG hashes changed; each PNG response is successful.",
+    "Representative landscape RU BLS and portrait EN FHFA labels visually checked without clipping."
+  ],
+  "networkWindowReleasedAt": "2026-09-24T08:00:43.976057+00:00"
+}

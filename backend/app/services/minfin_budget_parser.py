@@ -571,7 +571,7 @@ class MinfinBudgetParser(BaseParser):
     `replace_series=True`: БД = точный снимок CSV; preliminary-точки из старого
     пресс-fallback (артефакты ~10 трлн) удаляются при следующем ETL.
 
-    Operational traps (см. docs/data_sources.md::Минфин):
+    Operational traps (см. enterprise_resilience.md / data_sources.md):
     1. In-place CSV content: Минфин обновляет content файла
        `data-YYYYMMDDTHHMM-structure-…csv` *in-place*, не меняя URL.
        Timestamp в имени = дата создания паспорта, не snapshot content.

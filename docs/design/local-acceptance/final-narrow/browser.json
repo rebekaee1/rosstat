@@ -1,0 +1,2181 @@
+{
+  "at": "2026-09-24T07:58:21.039Z",
+  "base": "http://127.0.0.1:3000",
+  "mode": "browser",
+  "tier": "matrix",
+  "stage": "final-narrow",
+  "head": "1f072e73fd3841967a20070ecb7a1732e35da08f",
+  "http": [],
+  "api": [],
+  "browser": [
+    {
+      "id": "world-rating",
+      "family": "ssr-world-rating",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Рейтинг стран по ВВП в текущих долларах США за 2025 год",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Рейтинг стран по ВВП в текущих долларах США за 2025 год",
+            "x": 16,
+            "y": 188,
+            "width": 358,
+            "height": 60,
+            "right": 374,
+            "bottom": 248
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 4546.484375,
+          "right": 390,
+          "bottom": 4546.484375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-CSZjT3f4.css",
+          "http://127.0.0.1:3000/assets/main-DQI1Sy6m.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 30,
+            "y": 691.59375,
+            "width": 330,
+            "height": 165,
+            "right": 360,
+            "bottom": 856.59375
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Главная\nРейтинг стран\nВВП\nРЕЙТИНГ СТРАН\nРейтинг стран по ВВП в текущих долларах США за 2025 год\n\nВыберите показатель и год. Для цен на карте и в таблице — изменение за год в процентах, а не уровень индекса. Карта показывает пространственный срез, таблица ниже — все страны с опубликованным значением за выбранный год.\n\nПОКАЗАТЕЛЬ РЕЙТИНГА\n\nИнфляция\nБезработица\nБаланс бюджета\nГосдолг к ВВП\nНаселение\nДоходность гособлигаций\nЭкономическая активность населения\nВВП на душу к ЕС\nВВП\nВВП на душу населения\nВЫБЕРИТЕ СТРАНУ НА КАРТЕ\nЕвропа\nМир\nВВП — 2025\nП",
+        "offscreen": [
+          {
+            "tag": "TABLE",
+            "cls": "w-full min-w-[52rem] text-sm",
+            "text": "МестоСтранаМлрд $Период1США30 76720252Китай19 62620253Германия5 048,120254Япония4 435,2202",
+            "x": 17,
+            "y": 1764.78125,
+            "width": 832,
+            "height": 2514.703125,
+            "right": 849,
+            "bottom": 4279.484375
+          }
+        ]
+      },
+      "softNotFound": false,
+      "expectedResponses": [],
+      "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-390-ru.png",
+      "continuation": {
+        "mode": "already-hydrated-spa",
+        "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd",
+        "spaChildren": 7,
+        "selectedYears": [
+          "2025"
+        ],
+        "chartAnchor": 1,
+        "lang": "ru",
+        "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-390-ru-continuation.png"
+      }
+    },
+    {
+      "id": "world-rating",
+      "family": "ssr-world-rating",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Country ranking by GDP in current US dollars for 2025",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Country ranking by GDP in current US dollars for 2025",
+            "x": 16,
+            "y": 241,
+            "width": 358,
+            "height": 60,
+            "right": 374,
+            "bottom": 301
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 53,
+          "width": 390,
+          "height": 4372.484375,
+          "right": 390,
+          "bottom": 4425.484375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-CSZjT3f4.css",
+          "http://127.0.0.1:3000/assets/main-DQI1Sy6m.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 30,
+            "y": 675.59375,
+            "width": 330,
+            "height": 165,
+            "right": 360,
+            "bottom": 840.59375
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Home\nCountry rankings\nGDP\nCOUNTRY RANKINGS\nCountry ranking by GDP in current US dollars for 2025\n\nChoose an indicator and year. For prices on the map and in the table — year-over-year change in percent, not the index level. The map shows the spatial slice; the table below lists every country with a published value for the selected year.\n\nRANKING INDICATOR\n\nInflation\nUnemployment\nBudget balance\nGovernment debt to GDP\nPopulation\nGovernment bond yield\nEconomic activity rate\nGDP per capita vs EU\nGDP\nGDP per capita\nSELECT A COUNTRY ON THE MAP\nEurope",
+        "offscreen": [
+          {
+            "tag": "TABLE",
+            "cls": "w-full min-w-[52rem] text-sm",
+            "text": "RankCountryBillion $Period1United States30 76720252China19 62620253Germany5 048.120254Japa",
+            "x": 17,
+            "y": 1643.78125,
+            "width": 832,
+            "height": 2514.703125,
+            "right": 849,
+            "bottom": 4158.484375
+          }
+        ]
+      },
+      "softNotFound": false,
+      "expectedResponses": [],
+      "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-390-en.png",
+      "continuation": {
+        "mode": "already-hydrated-spa",
+        "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?preview_locale=en",
+        "spaChildren": 8,
+        "selectedYears": [
+          "2025"
+        ],
+        "chartAnchor": 1,
+        "lang": "en",
+        "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-390-en-continuation.png"
+      }
+    },
+    {
+      "id": "world-rating",
+      "family": "ssr-world-rating",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Рейтинг стран по ВВП в текущих долларах США за 2025 год",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Рейтинг стран по ВВП в текущих долларах США за 2025 год",
+            "x": 104,
+            "y": 192,
+            "width": 896,
+            "height": 90,
+            "right": 1000,
+            "bottom": 282
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 3999.9375,
+          "right": 1440,
+          "bottom": 3999.9375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-CSZjT3f4.css",
+          "http://127.0.0.1:3000/assets/main-DQI1Sy6m.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Интерактивная карта стран",
+            "x": 126,
+            "y": 587.59375,
+            "width": 741.328125,
+            "height": 370.65625,
+            "right": 867.328125,
+            "bottom": 958.25
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 7,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Главная\nРейтинг стран\nВВП\nРЕЙТИНГ СТРАН\nРейтинг стран по ВВП в текущих долларах США за 2025 год\n\nВыберите показатель и год. Для цен на карте и в таблице — изменение за год в процентах, а не уровень индекса. Карта показывает пространственный срез, таблица ниже — все страны с опубликованным значением за выбранный год.\n\nПОКАЗАТЕЛЬ РЕЙТИНГА\n\nИнфляция\nБезработица\nБаланс бюджета\nГосдолг к ВВП\nНаселение\nДоходность гособлигаций\nЭкономическая активность населения\nВВП на душу к ЕС\nВВП\nВВП на душу населения\nВЫБЕРИТЕ СТРАНУ НА КАРТЕ\nЕвропа\nМир\nВВП — 2025\nП",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "expectedResponses": [],
+      "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-1440-ru.png",
+      "continuation": {
+        "mode": "already-hydrated-spa",
+        "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd",
+        "spaChildren": 7,
+        "selectedYears": [
+          "2025"
+        ],
+        "chartAnchor": 1,
+        "lang": "ru",
+        "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-1440-ru-continuation.png"
+      }
+    },
+    {
+      "id": "world-rating",
+      "family": "ssr-world-rating",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Country ranking by GDP in current US dollars for 2025",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Country ranking by GDP in current US dollars for 2025",
+            "x": 104,
+            "y": 229,
+            "width": 896,
+            "height": 45,
+            "right": 1000,
+            "bottom": 274
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 37,
+          "width": 1440,
+          "height": 3896.4375,
+          "right": 1440,
+          "bottom": 3933.4375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-CSZjT3f4.css",
+          "http://127.0.0.1:3000/assets/main-DQI1Sy6m.js"
+        ],
+        "charts": [
+          {
+            "kind": "svg",
+            "aria": "Interactive world map",
+            "x": 126,
+            "y": 521.09375,
+            "width": 741.328125,
+            "height": 370.65625,
+            "right": 867.328125,
+            "bottom": 891.75
+          }
+        ],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "Home\nCountry rankings\nGDP\nCOUNTRY RANKINGS\nCountry ranking by GDP in current US dollars for 2025\n\nChoose an indicator and year. For prices on the map and in the table — year-over-year change in percent, not the index level. The map shows the spatial slice; the table below lists every country with a published value for the selected year.\n\nRANKING INDICATOR\n\nInflation\nUnemployment\nBudget balance\nGovernment debt to GDP\nPopulation\nGovernment bond yield\nEconomic activity rate\nGDP per capita vs EU\nGDP\nGDP per capita\nSELECT A COUNTRY ON THE MAP\nEurope",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "expectedResponses": [],
+      "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-1440-en.png",
+      "continuation": {
+        "mode": "already-hydrated-spa",
+        "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?preview_locale=en",
+        "spaChildren": 8,
+        "selectedYears": [
+          "2025"
+        ],
+        "chartAnchor": 1,
+        "lang": "en",
+        "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-1440-en-continuation.png"
+      }
+    },
+    {
+      "id": "world-rating-year",
+      "family": "ssr-world-rating-year",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js",
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Рейтинг стран по ВВП в текущих долларах США за 2024 год",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Рейтинг стран по ВВП в текущих долларах США за 2024 год",
+            "x": 12.796875,
+            "y": 220.96875,
+            "width": 418,
+            "height": 102.140625,
+            "right": 430.796875,
+            "bottom": 323.109375
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 7075.28125,
+          "right": 390,
+          "bottom": 7075.28125
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-CSZjT3f4.css",
+          "http://127.0.0.1:3000/assets/behavior-standalone.js"
+        ],
+        "charts": [],
+        "seoFast": true,
+        "spaChildren": 6,
+        "images": [
+          {
+            "src": "http://127.0.0.1:3000/og/world/rating/gdp-usd/2024.png?portrait=1",
+            "alt": "Валовой внутренний продукт в текущих ценах по странам — рейтинг 2024 года, первое значение в текущем порядке: США (29 298,03 млрд $)",
+            "complete": true,
+            "naturalWidth": 1080,
+            "x": 13.796875,
+            "y": 842.390625,
+            "width": 416,
+            "height": 520,
+            "right": 429.796875,
+            "bottom": 1362.390625
+          }
+        ],
+        "empty": false,
+        "mainTextStart": "forecasteconomy\nECONOMIC INTELLIGENCE\nГлавная\nРоссия\nСегодня\nПоказатели\nСтраны\nРейтинг стран\nКалендарь\nСравнение\nКалькуляторы\nО проекте\nГлавная / Рейтинг стран / Валовой внутренний продукт в текущих ценах\n\nСОПОСТАВИМЫЕ ПОКАЗАТЕЛИ СТРАН\n\nРейтинг стран по ВВП в текущих долларах США за 2024 год\n\nРейтинг стран по показателю «Валовой внутренний продукт в текущих ценах» за 2024 год. В таблице 55 стран с опубликованным значением; ещё 0 стран мирового каталога не имеют значения за этот год. Порядок таблицы нейтральный: пользователь может переключить со",
+        "offscreen": [
+          {
+            "tag": "NAV",
+            "cls": "",
+            "text": "Главная / Рейтинг стран / Валовой внутренний продукт в текущих ценах",
+            "x": 12.796875,
+            "y": 126.734375,
+            "width": 418,
+            "height": 41.59375,
+            "right": 430.796875,
+            "bottom": 168.328125
+          },
+          {
+            "tag": "P",
+            "cls": "seo-eyebrow",
+            "text": "Сопоставимые показатели стран",
+            "x": 12.796875,
+            "y": 188.328125,
+            "width": 418,
+            "height": 16.640625,
+            "right": 430.796875,
+            "bottom": 204.96875
+          },
+          {
+            "tag": "H1",
+            "cls": "",
+            "text": "Рейтинг стран по ВВП в текущих долларах США за 2024 год",
+            "x": 12.796875,
+            "y": 220.96875,
+            "width": 418,
+            "height": 102.140625,
+            "right": 430.796875,
+            "bottom": 323.109375
+          },
+          {
+            "tag": "P",
+            "cls": "",
+            "text": "Рейтинг стран по показателю «Валовой внутренний продукт в текущих ценах» за 2024 год. В та",
+            "x": 12.796875,
+            "y": 335.109375,
+            "width": 418,
+            "height": 486.28125,
+            "right": 430.796875,
+            "bottom": 821.390625
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "seo-chart",
+            "text": "Валовой внутренний продукт в текущих ценах по странам, 2024 год. Источник: Международный в",
+            "x": 12.796875,
+            "y": 841.390625,
+            "width": 418,
+            "height": 604.5625,
+            "right": 430.796875,
+            "bottom": 1445.953125
+          },
+          {
+            "tag": "SECTION",
+            "cls": "seo-section",
+            "text": "Полный рейтинг странМестоСтранаМлрд $Период1США29 298,032024 год2Китай18 945,112024 год3Ге",
+            "x": 12.796875,
+            "y": 1681.734375,
+            "width": 418,
+            "height": 3948.34375,
+            "right": 430.796875,
+            "bottom": 5630.078125
+          },
+          {
+            "tag": "H2",
+            "cls": "",
+            "text": "Полный рейтинг стран",
+            "x": 12.796875,
+            "y": 1681.734375,
+            "width": 418,
+            "height": 19.1875,
+            "right": 430.796875,
+            "bottom": 1700.921875
+          },
+          {
+            "tag": "TABLE",
+            "cls": "",
+            "text": "МестоСтранаМлрд $Период1США29 298,032024 год2Китай18 945,112024 год3Германия4 684,182024 г",
+            "x": 13.796875,
+            "y": 1729.921875,
+            "width": 416,
+            "height": 3883.15625,
+            "right": 429.796875,
+            "bottom": 5613.078125
+          },
+          {
+            "tag": "SECTION",
+            "cls": "seo-section",
+            "text": "Другие показатели рейтингаГармонизированный индекс потребительских ценУровень безработицыС",
+            "x": 12.796875,
+            "y": 5662.078125,
+            "width": 418,
+            "height": 484.625,
+            "right": 430.796875,
+            "bottom": 6146.703125
+          },
+          {
+            "tag": "H2",
+            "cls": "",
+            "text": "Другие показатели рейтинга",
+            "x": 12.796875,
+            "y": 5662.078125,
+            "width": 418,
+            "height": 19.1875,
+            "right": 430.796875,
+            "bottom": 5681.265625
+          },
+          {
+            "tag": "SECTION",
+            "cls": "seo-section",
+            "text": "Другие годы201420152016201720182019202020212022202320242025",
+            "x": 12.796875,
+            "y": 6178.703125,
+            "width": 418,
+            "height": 149.140625,
+            "right": 430.796875,
+            "bottom": 6327.84375
+          },
+          {
+            "tag": "H2",
+            "cls": "",
+            "text": "Другие годы",
+            "x": 12.796875,
+            "y": 6178.703125,
+            "width": 418,
+            "height": 19.1875,
+            "right": 430.796875,
+            "bottom": 6197.890625
+          },
+          {
+            "tag": "SECTION",
+            "cls": "seo-section",
+            "text": "Источник данных\nМеждународный валютный фонд и Росстат, Банк России. Единицы измерения: млр",
+            "x": 12.796875,
+            "y": 6359.84375,
+            "width": 418,
+            "height": 216.75,
+            "right": 430.796875,
+            "bottom": 6576.59375
+          },
+          {
+            "tag": "H2",
+            "cls": "",
+            "text": "Источник данных",
+            "x": 12.796875,
+            "y": 6359.84375,
+            "width": 418,
+            "height": 19.1875,
+            "right": 430.796875,
+            "bottom": 6379.03125
+          },
+          {
+            "tag": "P",
+            "cls": "",
+            "text": "Международный валютный фонд и Росстат, Банк России. Единицы измерения: млрд $. Для каждого",
+            "x": 12.796875,
+            "y": 6391.03125,
+            "width": 418,
+            "height": 102.375,
+            "right": 430.796875,
+            "bottom": 6493.40625
+          }
+        ]
+      },
+      "softNotFound": false,
+      "expectedResponses": [],
+      "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-390-ru.png",
+      "continuation": {
+        "mode": "native-click",
+        "href": "/world/rating/gdp-usd?view=interactive&year=2024#chart",
+        "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?view=interactive&year=2024#chart",
+        "spaChildren": 7,
+        "selectedYears": [
+          "2024"
+        ],
+        "chartAnchor": 1,
+        "lang": "ru",
+        "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-390-ru-continuation.png"
+      }
+    },
+    {
+      "id": "world-rating-year",
+      "family": "ssr-world-rating-year",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js",
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Country ranking by GDP in current US dollars for 2024",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Country ranking by GDP in current US dollars for 2024",
+            "x": 12.796875,
+            "y": 200.171875,
+            "width": 418,
+            "height": 68.09375,
+            "right": 430.796875,
+            "bottom": 268.265625
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 5487.1875,
+          "right": 390,
+          "bottom": 5487.1875
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-CSZjT3f4.css",
+          "http://127.0.0.1:3000/assets/behavior-standalone.js"
+        ],
+        "charts": [],
+        "seoFast": true,
+        "spaChildren": 6,
+        "images": [
+          {
+            "src": "http://127.0.0.1:3000/og/world/rating/gdp-usd/2024.png?portrait=1&preview_locale=en",
+            "alt": "Gross domestic product at current prices by country — ranking 2024, first value in current order: United States (29,298.03 billion $)",
+            "complete": true,
+            "naturalWidth": 1080,
+            "x": 13.796875,
+            "y": 608.390625,
+            "width": 416,
+            "height": 520,
+            "right": 429.796875,
+            "bottom": 1128.390625
+          }
+        ],
+        "empty": false,
+        "mainTextStart": "forecasteconomy\nECONOMIC INTELLIGENCE\nHome\nToday\nRegions\nCountries\nCountry rankings\nCalendar\nCompare\nCalculators\nAbout\nHome / Country rankings / Gross domestic product at current prices\n\nCOMPARABLE COUNTRY INDICATORS\n\nCountry ranking by GDP in current US dollars for 2024\n\nCountry ranking by “Gross domestic product at current prices” for 2024. The table covers 55 countries with a published value; another 0 in the world catalogue have no value for this year. Monetary indicators are not converted to another currency: only series already published ",
+        "offscreen": [
+          {
+            "tag": "NAV",
+            "cls": "",
+            "text": "Home / Country rankings / Gross domestic product at current prices",
+            "x": 12.796875,
+            "y": 126.734375,
+            "width": 418,
+            "height": 20.796875,
+            "right": 430.796875,
+            "bottom": 147.53125
+          },
+          {
+            "tag": "P",
+            "cls": "seo-eyebrow",
+            "text": "Comparable country indicators",
+            "x": 12.796875,
+            "y": 167.53125,
+            "width": 418,
+            "height": 16.640625,
+            "right": 430.796875,
+            "bottom": 184.171875
+          },
+          {
+            "tag": "H1",
+            "cls": "",
+            "text": "Country ranking by GDP in current US dollars for 2024",
+            "x": 12.796875,
+            "y": 200.171875,
+            "width": 418,
+            "height": 68.09375,
+            "right": 430.796875,
+            "bottom": 268.265625
+          },
+          {
+            "tag": "P",
+            "cls": "",
+            "text": "Country ranking by “Gross domestic product at current prices” for 2024. The table covers 5",
+            "x": 12.796875,
+            "y": 280.265625,
+            "width": 418,
+            "height": 307.125,
+            "right": 430.796875,
+            "bottom": 587.390625
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "seo-chart",
+            "text": "Gross domestic product at current prices by country, 2024. Source: International Monetary ",
+            "x": 12.796875,
+            "y": 607.390625,
+            "width": 418,
+            "height": 604.5625,
+            "right": 430.796875,
+            "bottom": 1211.953125
+          },
+          {
+            "tag": "SECTION",
+            "cls": "seo-section",
+            "text": "Full country rankingRankCountryBillion $Period1United States29,298.0320242China18,945.1120",
+            "x": 12.796875,
+            "y": 1431.09375,
+            "width": 418,
+            "height": 2739.25,
+            "right": 430.796875,
+            "bottom": 4170.34375
+          },
+          {
+            "tag": "H2",
+            "cls": "",
+            "text": "Full country ranking",
+            "x": 12.796875,
+            "y": 1431.09375,
+            "width": 418,
+            "height": 19.1875,
+            "right": 430.796875,
+            "bottom": 1450.28125
+          },
+          {
+            "tag": "TABLE",
+            "cls": "",
+            "text": "RankCountryBillion $Period1United States29,298.0320242China18,945.1120243Germany4,684.1820",
+            "x": 13.796875,
+            "y": 1479.28125,
+            "width": 416,
+            "height": 2674.0625,
+            "right": 429.796875,
+            "bottom": 4153.34375
+          },
+          {
+            "tag": "SECTION",
+            "cls": "seo-section",
+            "text": "Other ranking indicatorsHarmonised index of consumer pricesUnemployment rateGeneral govern",
+            "x": 12.796875,
+            "y": 4202.34375,
+            "width": 418,
+            "height": 401.046875,
+            "right": 430.796875,
+            "bottom": 4603.390625
+          },
+          {
+            "tag": "H2",
+            "cls": "",
+            "text": "Other ranking indicators",
+            "x": 12.796875,
+            "y": 4202.34375,
+            "width": 418,
+            "height": 19.1875,
+            "right": 430.796875,
+            "bottom": 4221.53125
+          },
+          {
+            "tag": "SECTION",
+            "cls": "seo-section",
+            "text": "Other years201420152016201720182019202020212022202320242025",
+            "x": 12.796875,
+            "y": 4635.390625,
+            "width": 418,
+            "height": 149.140625,
+            "right": 430.796875,
+            "bottom": 4784.53125
+          },
+          {
+            "tag": "H2",
+            "cls": "",
+            "text": "Other years",
+            "x": 12.796875,
+            "y": 4635.390625,
+            "width": 418,
+            "height": 19.1875,
+            "right": 430.796875,
+            "bottom": 4654.578125
+          },
+          {
+            "tag": "SECTION",
+            "cls": "seo-section",
+            "text": "Data source\nInternational Monetary Fund and Rosstat, Bank of Russia. Units: billion $. For",
+            "x": 12.796875,
+            "y": 4816.53125,
+            "width": 418,
+            "height": 191.15625,
+            "right": 430.796875,
+            "bottom": 5007.6875
+          },
+          {
+            "tag": "H2",
+            "cls": "",
+            "text": "Data source",
+            "x": 12.796875,
+            "y": 4816.53125,
+            "width": 418,
+            "height": 19.1875,
+            "right": 430.796875,
+            "bottom": 4835.71875
+          },
+          {
+            "tag": "P",
+            "cls": "",
+            "text": "International Monetary Fund and Rosstat, Bank of Russia. Units: billion $. For each calend",
+            "x": 12.796875,
+            "y": 4847.71875,
+            "width": 418,
+            "height": 76.78125,
+            "right": 430.796875,
+            "bottom": 4924.5
+          }
+        ]
+      },
+      "softNotFound": false,
+      "expectedResponses": [],
+      "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-390-en.png",
+      "continuation": {
+        "mode": "native-click",
+        "href": "/world/rating/gdp-usd?view=interactive&year=2024&preview_locale=en#chart",
+        "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?view=interactive&year=2024&preview_locale=en#chart",
+        "spaChildren": 8,
+        "selectedYears": [
+          "2024"
+        ],
+        "chartAnchor": 1,
+        "lang": "en",
+        "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-390-en-continuation.png"
+      }
+    },
+    {
+      "id": "world-rating-year",
+      "family": "ssr-world-rating-year",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js",
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Рейтинг стран по ВВП в текущих долларах США за 2024 год",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Рейтинг стран по ВВП в текущих долларах США за 2024 год",
+            "x": 168,
+            "y": 176.234375,
+            "width": 880,
+            "height": 116.46875,
+            "right": 1048,
+            "bottom": 292.703125
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 4844.375,
+          "right": 1440,
+          "bottom": 4844.375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-CSZjT3f4.css",
+          "http://127.0.0.1:3000/assets/behavior-standalone.js"
+        ],
+        "charts": [],
+        "seoFast": true,
+        "spaChildren": 6,
+        "images": [
+          {
+            "src": "http://127.0.0.1:3000/og/world/rating/gdp-usd/2024.png",
+            "alt": "Валовой внутренний продукт в текущих ценах по странам — рейтинг 2024 года, первое значение в текущем порядке: США (29 298,03 млрд $)",
+            "complete": true,
+            "naturalWidth": 1200,
+            "x": 169,
+            "y": 504.859375,
+            "width": 1102,
+            "height": 578.546875,
+            "right": 1271,
+            "bottom": 1083.40625
+          }
+        ],
+        "empty": false,
+        "mainTextStart": "forecasteconomy\nECONOMIC INTELLIGENCE\nГлавная\nРоссия\nСегодня\nПоказатели\nСтраны\nРейтинг стран\nКалендарь\nСравнение\nКалькуляторы\nО проекте\nГлавная / Рейтинг стран / Валовой внутренний продукт в текущих ценах\n\nСОПОСТАВИМЫЕ ПОКАЗАТЕЛИ СТРАН\n\nРейтинг стран по ВВП в текущих долларах США за 2024 год\n\nРейтинг стран по показателю «Валовой внутренний продукт в текущих ценах» за 2024 год. В таблице 55 стран с опубликованным значением; ещё 0 стран мирового каталога не имеют значения за этот год. Порядок таблицы нейтральный: пользователь может переключить со",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "expectedResponses": [],
+      "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-1440-ru.png",
+      "continuation": {
+        "mode": "native-click",
+        "href": "/world/rating/gdp-usd?view=interactive&year=2024#chart",
+        "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?view=interactive&year=2024#chart",
+        "spaChildren": 7,
+        "selectedYears": [
+          "2024"
+        ],
+        "chartAnchor": 1,
+        "lang": "ru",
+        "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-1440-ru-continuation.png"
+      }
+    },
+    {
+      "id": "world-rating-year",
+      "family": "ssr-world-rating-year",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "en",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024?preview_locale=en",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js",
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Country ranking by GDP in current US dollars for 2024",
+        "lang": "en",
+        "h1": [
+          {
+            "text": "Country ranking by GDP in current US dollars for 2024",
+            "x": 168,
+            "y": 176.234375,
+            "width": 880,
+            "height": 116.46875,
+            "right": 1048,
+            "bottom": 292.703125
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 4725.609375,
+          "right": 1440,
+          "bottom": 4725.609375
+        },
+        "font": "Manrope, system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-CSZjT3f4.css",
+          "http://127.0.0.1:3000/assets/behavior-standalone.js"
+        ],
+        "charts": [],
+        "seoFast": true,
+        "spaChildren": 6,
+        "images": [
+          {
+            "src": "http://127.0.0.1:3000/og/world/rating/gdp-usd/2024.png?preview_locale=en",
+            "alt": "Gross domestic product at current prices by country — ranking 2024, first value in current order: United States (29,298.03 billion $)",
+            "complete": true,
+            "naturalWidth": 1200,
+            "x": 169,
+            "y": 453.671875,
+            "width": 1102,
+            "height": 578.546875,
+            "right": 1271,
+            "bottom": 1032.21875
+          }
+        ],
+        "empty": false,
+        "mainTextStart": "forecasteconomy\nECONOMIC INTELLIGENCE\nHome\nToday\nRegions\nCountries\nCountry rankings\nCalendar\nCompare\nCalculators\nAbout\nHome / Country rankings / Gross domestic product at current prices\n\nCOMPARABLE COUNTRY INDICATORS\n\nCountry ranking by GDP in current US dollars for 2024\n\nCountry ranking by “Gross domestic product at current prices” for 2024. The table covers 55 countries with a published value; another 0 in the world catalogue have no value for this year. Monetary indicators are not converted to another currency: only series already published ",
+        "offscreen": []
+      },
+      "softNotFound": false,
+      "expectedResponses": [],
+      "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-1440-en.png",
+      "continuation": {
+        "mode": "native-click",
+        "href": "/world/rating/gdp-usd?view=interactive&year=2024&preview_locale=en#chart",
+        "finalUrl": "http://127.0.0.1:3000/world/rating/gdp-usd?view=interactive&year=2024&preview_locale=en#chart",
+        "spaChildren": 8,
+        "selectedYears": [
+          "2024"
+        ],
+        "chartAnchor": 1,
+        "lang": "en",
+        "screenshot": "output/design-acceptance/2026-09-24/final-narrow/chromium-world-rating-year-1440-en-continuation.png"
+      }
+    }
+  ],
+  "inventory": null,
+  "issues": [],
+  "limitations": [
+    "Family sampling, not a crawl of every public URL.",
+    "Desktop engines with emulated viewports, not physical devices.",
+    "API/image requests are intentionally paced: run durations and request latency are not performance evidence.",
+    "EN preview intentionally noindex; production host cutover is not changed.",
+    "Git HEAD identifies the working checkout, not the deployed compose image; response hashes and asset paths identify observed content."
+  ],
+  "sitemap": {
+    "status": 200,
+    "builtAt": "2026-09-24T06:52:07+00:00",
+    "urlsTotal": 1847073,
+    "publishedUrlsTotal": 1847073,
+    "hosts": [
+      "forecasteconomy.com"
+    ],
+    "groups": {
+      "core": 163,
+      "today": 11,
+      "ratings": 492,
+      "maps": 493,
+      "regions": 95,
+      "region-vs": 3570,
+      "world-ratings": 592,
+      "world": 54,
+      "world-regions": 659,
+      "calendar": 16,
+      "world-vs": 12135,
+      "years": 3448,
+      "months": 11402,
+      "world-indicators": 35997,
+      "regional": 45553,
+      "regional-years": 944076,
+      "world-years": 788317
+    }
+  },
+  "completedAt": "2026-09-24T07:59:20.221Z",
+  "summary": {
+    "httpCases": 0,
+    "apiCases": 0,
+    "browserCases": 8,
+    "issues": 0,
+    "issueKinds": {}
+  }
+}

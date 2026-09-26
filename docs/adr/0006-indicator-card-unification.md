@@ -81,7 +81,7 @@ Variant ≠ режим:
 
 ## Чеклист «новый индикатор»
 
-См. чеклист «новый индикатор» в `docs/indicators.md`. 6 проверок:
+См. `AGENTS.md::Шаг 4::Чеклист «новый индикатор»`. 6 проверок:
 
 1. Source-depth invariant.
 2. View-mode family оценка (если ряд > 100 точек).
@@ -124,11 +124,11 @@ Variant ≠ режим:
 
 1. **GDP family** — `gdp-nominal`, `gdp-real`, `gdp-real-yoy`, `gdp-real-qoq`, `gdp-real-annual`, `gdp-nominal-annual`, `gdp-consumption`, `gdp-government`, `gdp-investment`. Сейчас все 8 в листинге. Кандидаты на унификацию: `gdp-real` → семья с режимами [Уровень, YoY%, QoQ%, Annual], `gdp-nominal` → семья с режимами [Уровень, Annual]. Use-компоненты (`gdp-consumption`, `-government`, `-investment`) — это **варианты** по компоненту, нужен `VariantGroupPicker`.
 2. **PPI family** — **закрыто (2026-05-30):** `ppi` + `ppiViewMode*` (инфляция за год / к прошлому м/м+г/г / индекс); `ppi-yoy`, `ppi-annual` скрыты, canonical `?mode=`.
-3. **CPI family** — **завершённый эталон** (2026-06): variant × двухуровневый `cpiViewMode*` (10 URL-режимов, отдельные derived на режим). Не мигрировать слепо на `viewModeFamilies` — см. [`indicators.md`](../indicators.md).
+3. **CPI family** — **завершённый эталон** (2026-06): variant × двухуровневый `cpiViewMode*` (10 URL-режимов, отдельные derived на режим). Не мигрировать слепо на `viewModeFamilies` — см. [`indicator-family-playbook.md`](../indicator-family-playbook.md).
 4. **Retail trade / consumption** — `retail-trade`, `retail-trade-yoy`, `retail-trade-monthly` — кандидаты на семью.
 5. **Banking volumes** — `consumer-credit`, `business-credit`, `deposits-individual`, `deposits-business`, `external-debt`, `mortgage-volume` — может потребоваться рефакторинг категорий + view-modes.
 
-Следующий agent, когда возьмётся за расширение — должен использовать чеклист и playbook семейств в [`docs/indicators.md`](../indicators.md) и регистрировать новые семьи в `viewModeFamilies.js` (или CPI-подобный стек, если две оси UI).
+Следующий agent, когда возьмётся за расширение — должен использовать чеклист из `AGENTS.md::Шаг 4`, playbook [`indicator-family-playbook.md`](../indicator-family-playbook.md) (фазы A–G) и регистрировать новые семьи в `viewModeFamilies.js` (или CPI-подобный стек, если две оси UI).
 
 ---
 
@@ -197,7 +197,7 @@ Pilot Phase 1-5 ввёл `viewModeFamilies.js` как реестр семей р
 
 Семейство ИПЦ (`cpi`, `cpi-food`, `cpi-nonfood`, `cpi-services`) доведено до эталона: variant по составу + 10 режимов с **отдельными рядами** (в т.ч. разведение `period-weekly` MTD vs `step-weekly` WoW), контент 40 комбинаций, прогнозы по режимам, SEO без дублирования URL.
 
-Операционный и продуктовый чеклист вынесен в **[`docs/indicators.md`](../indicators.md)** — использовать при работе над любыми семьями с variant + view-mode и для одного нового кода.
+Операционный и продуктовый чеклист вынесен в **[`docs/indicator-family-playbook.md`](../indicator-family-playbook.md)** — использовать при работе над GDP/PPI и любыми семьями с variant + view-mode. Для одного нового кода по-прежнему достаточно `AGENTS.md::Шаг 4` (7 пунктов).
 
 ### 2026-06-06 — view-mode families на весь каталог (config-driven, mode-gaps=0)
 

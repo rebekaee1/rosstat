@@ -7,9 +7,9 @@ import { fileURLToPath } from 'node:url';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const output = join(repo, 'output/design-review');
-const acceptance = join(repo, 'output/design-acceptance/results');
+const acceptance = join(repo, 'docs/design/local-acceptance');
 const artwork = join(repo, 'frontend/public/art/quicklinks');
-const promptSource = join(repo, 'scripts/design-review/art-prompts');
+const promptSource = join(repo, 'docs/design/art-prompts');
 const args = process.argv.slice(2);
 let explicitStage;
 let watch = false;

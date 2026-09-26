@@ -1,0 +1,489 @@
+{
+  "agent": "02",
+  "subjects": [
+    {
+      "code": "minjust",
+      "full_name": "Министерство юстиции Российской Федерации",
+      "official_site": "https://minjust.gov.ru/",
+      "stats_portal": "https://minjust.gov.ru/ru/pages/opendata/",
+      "role": "Минюст: реестры НКО/иноагентов/экстремистских материалов, адвокатура, нотариат, политические партии; открытые данные и ведомственная статистика",
+      "open_access": "да",
+      "api": "нет публичного API (выгрузки CSV/DOCX/PDF + наборы на data.gov.ru)",
+      "formats": [
+        "CSV",
+        "DOCX",
+        "PDF",
+        "XLS (реестр иноагентов через UI)"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "десятки наборов на data.gov.ru + крупные реестры (экстремистские материалы ~1.7 МБ CSV); обновление реестров нерегулярное/по событиям",
+      "notes": "Раздел «Открытые данные» живой (HTTP 200). Каталог наборов: https://minjust.gov.ru/uploaded/files/otkryityie-dannyie_4aTDYqf.csv и страница организации https://data.gov.ru/organizations/f9ee77f7-9960-4e19-aa94-38eb1acfe7f7. Портал НКО unro.minjust.ru в момент проверки недоступен (таймаут). data.gov.ru с этой среды не открылся (таймаут), но URL наборов подтверждены со страницы Минюста.",
+      "datasets": [
+        {
+          "family": "Федеральный список экстремистских материалов",
+          "frequency": "irregular",
+          "history_from": "2000-е (список ведущийся; файл выгрузки актуален на дату скачивания)",
+          "history_to": "current",
+          "unit": "записи списка",
+          "decomposition": "позиции списка экстремистских материалов",
+          "format": "CSV/DOCX/PDF",
+          "url": "https://minjust.gov.ru/ru/extremist-materials/",
+          "notes": "Прямые выгрузки подтверждены: https://minjust.gov.ru/uploaded/files/exportfsm.csv (.docx/.pdf рядом). CSV скачан (~1.7 МБ)."
+        },
+        {
+          "family": "Реестр иностранных агентов",
+          "frequency": "irregular",
+          "history_from": "не подтверждено из файла",
+          "history_to": "current",
+          "unit": "лица/организации в реестре",
+          "decomposition": "реестр физлиц и организаций",
+          "format": "XLS (кнопка «Загрузить реестр» на странице)",
+          "url": "https://minjust.gov.ru/ru/pages/reestr-inostryannykh-agentov/",
+          "notes": "Страница реестра подтверждена (HTTP 200). Выгрузка через UI (id=registry_download_xls). Раздел деятельности: https://minjust.gov.ru/ru/activity/directions/998/"
+        },
+        {
+          "family": "Сведения о совершенных нотариальных действиях",
+          "frequency": "Y",
+          "history_from": "не подтверждено",
+          "history_to": "не подтверждено",
+          "unit": "кол-во действий / показатели нотариата",
+          "decomposition": "нотариат РФ",
+          "format": "открытые данные (data.gov.ru)",
+          "url": "https://data.gov.ru/datasets/0b9499fd-5c0b-4177-8ed5-63e4303a1e04",
+          "notes": "Ссылка с официальной страницы Минюста /ru/pages/opendata/. Частота в meta data.gov.ru в этой среде не прочитана (таймаут портала)."
+        },
+        {
+          "family": "Сведения о кадровом составе нотариата / доходах нотариусов / округах",
+          "frequency": "Y",
+          "history_from": "не подтверждено",
+          "history_to": "не подтверждено",
+          "unit": "чел. / руб. / ед.",
+          "decomposition": "нотариат по субъектам РФ",
+          "format": "открытые данные (data.gov.ru)",
+          "url": "https://data.gov.ru/datasets/49c9c7cd-0b5e-4c68-967e-90f982247979",
+          "notes": "Sibling-наборы с той же страницы opendata: доходы https://data.gov.ru/datasets/7eec5b0c-dee9-4fef-bca2-a81c69965199 ; округа http://data.gov.ru/datasets/54a723ac-fb0b-4a09-8a42-7ad3d1c90069"
+        },
+        {
+          "family": "Реестры адвокатов / обращения на адвокатов / прекращение статуса",
+          "frequency": "irregular/Y",
+          "history_from": "не подтверждено",
+          "history_to": "не подтверждено",
+          "unit": "записи реестра / обращения",
+          "decomposition": "адвокатура субъектов РФ",
+          "format": "открытые данные (data.gov.ru)",
+          "url": "https://data.gov.ru/datasets/0afea075-17c6-4d7f-9eb8-fb7844e79b28",
+          "notes": "Также: реестр адвокатов http://data.gov.ru/datasets/2e747efc-f6df-4244-b841-cbd4b1dce5d3 ; обращения http://data.gov.ru/datasets/51279c80-594e-4ba9-9bf6-94098a4ebf09"
+        },
+        {
+          "family": "Результаты проверок общественных объединений и религиозных организаций",
+          "frequency": "Y",
+          "history_from": "не подтверждено",
+          "history_to": "не подтверждено",
+          "unit": "результаты проверок",
+          "decomposition": "ОО / религиозные организации",
+          "format": "открытые данные (data.gov.ru)",
+          "url": "https://data.gov.ru/datasets/5d2f068e-e8e7-4d2d-a9ce-9b092b80b5b3",
+          "notes": "Религиозные: https://data.gov.ru/datasets/b0b5159c-f428-4f8a-9ebf-0cd6e4dc04b8"
+        },
+        {
+          "family": "Реестры НКО / филиалов иностранных НКО / исполнителей общественно полезных услуг / нежелательных организаций",
+          "frequency": "irregular",
+          "history_from": "не подтверждено",
+          "history_to": "current",
+          "unit": "организации",
+          "decomposition": "типы НКО / иностранные / нежелательные",
+          "format": "открытые данные (data.gov.ru)",
+          "url": "https://data.gov.ru/datasets/5b8f83c2-8eac-403e-bba1-dd7a9db3e6c9",
+          "notes": "Филиалы иностранных НКО: http://data.gov.ru/datasets/f97bac75-fb5f-41eb-b261-6a78d8acd172 ; нежелательные: http://data.gov.ru/datasets/f163b132-d08e-46eb-9c26-5e6c20db7d9b. Список партий: http://data.gov.ru/datasets/dc56f314-7b63-4dcd-93e5-3cc01bcf55f5"
+        },
+        {
+          "family": "Каталог наборов открытых данных Минюста (list CSV)",
+          "frequency": "irregular",
+          "history_from": "n/a",
+          "history_to": "current",
+          "unit": "наборы",
+          "decomposition": "индекс ссылок data.gov.ru",
+          "format": "CSV",
+          "url": "https://minjust.gov.ru/uploaded/files/otkryityie-dannyie_4aTDYqf.csv",
+          "notes": "Файл-индекс со страницы opendata; скачан (HTTP 200)."
+        }
+      ]
+    },
+    {
+      "code": "rosreestr",
+      "full_name": "Федеральная служба государственной регистрации, кадастра и картографии (Росреестр)",
+      "official_site": "https://rosreestr.gov.ru/",
+      "stats_portal": "https://rosreestr.gov.ru/open-service/statistika-i-analitika/",
+      "role": "Регистрация прав на недвижимость, кадастр, ЕГРН, ДДУ, кадастровая оценка; статистика и аналитика, открытые данные",
+      "open_access": "частично",
+      "api": "публичные геосервисы/НСПД (nspd.gov.ru) — отдельно от табличной статистики; в момент проверки nspd.gov.ru и rosreestr.gov.ru недоступны (таймаут)",
+      "formats": [
+        "XLS",
+        "PDF",
+        "DOCX",
+        "CSV/XML/JSON (заявленные open data на data.gov.ru)"
+      ],
+      "etl_difficulty_1_5": 4,
+      "volume_estimate": "регулярные квартальные XLS по ДДУ + PDF аналитики; на data.gov.ru исторически ~12+ наборов (org INN 7706560536); живой сайт 2026-07-19 с этой среды не отвечал",
+      "notes": "Официальный раздел подтверждён через Wayback (снимок 2022-02-11): http://web.archive.org/web/20220211064326/https://rosreestr.gov.ru/open-service/statistika-i-analitika/ . Подразделы: статистическая отчетность, аналитическая информация, рейтинг кадастровых инженеров. Организация на портале ОД: https://data.gov.ru/organizations/7706560536 (портал с этой среды недоступен). Публичная кадастровая карта / НСПД — геоданные, не макро-ряды.",
+      "datasets": [
+        {
+          "family": "Статистика зарегистрированных ДДУ (договоры участия в долевом строительстве)",
+          "frequency": "Q",
+          "history_from": "2020",
+          "history_to": "2021 (на снимке Wayback; позднее публикуется и на живом сайте — 2024–2025 упоминаются в отраслевых обзорах, живой файл не скачан)",
+          "unit": "количество ДДУ",
+          "decomposition": "РФ / субъекты; накопительные периоды янв–март/июнь/сент/дек",
+          "format": "XLS",
+          "url": "https://rosreestr.gov.ru/open-service/statistika-i-analitika/statisticheskaya-otchetnost/",
+          "notes": "Пример файла со страницы отчетности (Wayback): https://rosreestr.gov.ru/upload/Doc/06-upr/ДДУ_январь-сентябрь_2021.xls и аналоги ДДУ_январь-июнь_2021.xls, ДДУ_январь_март_2021.xls, годовые 2020."
+        },
+        {
+          "family": "Аналитические отчёты о работе с обращениями граждан",
+          "frequency": "Q",
+          "history_from": "2020",
+          "history_to": "2021 (на снимке)",
+          "unit": "обращения",
+          "decomposition": "центральный аппарат + ТО",
+          "format": "PDF/DOCX",
+          "url": "https://rosreestr.gov.ru/open-service/statistika-i-analitika/statisticheskaya-otchetnost/",
+          "notes": "Примеры: /upload/Doc/05-upr/Аналитический%20отчет_3кв2021.pdf и квартальные отчёты 2020–2021."
+        },
+        {
+          "family": "Административная практика Росреестра (форма № 4)",
+          "frequency": "Y",
+          "history_from": "2020",
+          "history_to": "2020 (на снимке)",
+          "unit": "показатели адм. практики",
+          "decomposition": "РФ / субъекты РФ",
+          "format": "XLS",
+          "url": "https://rosreestr.gov.ru/open-service/statistika-i-analitika/statisticheskaya-otchetnost/",
+          "notes": "Файлы: /upload/Doc/07-upr/…форме № 4 РФ.xls и …по субъектам РФ.xls (январь–декабрь 2020)."
+        },
+        {
+          "family": "Раздел «Статистика и аналитика» (хаб)",
+          "frequency": "Q/Y",
+          "history_from": "не подтверждено полностью",
+          "history_to": "current (на живом сайте при доступности)",
+          "unit": "смешанный",
+          "decomposition": "ДДУ, обращения, адм. практика, финансы, целевые показатели",
+          "format": "XLS/PDF/DOCX",
+          "url": "https://rosreestr.gov.ru/open-service/statistika-i-analitika/",
+          "notes": "Хаб подтверждён Wayback. Связанные: plan-raboty-i-pokazateli-deyatelnosti; analiticheskaya-i-statisticheskaya-informatsiya; reyting-kadastrovykh-inzhenerov."
+        },
+        {
+          "family": "Открытые данные Росреестра на data.gov.ru",
+          "frequency": "irregular",
+          "history_from": "2018+",
+          "history_to": "не подтверждено live",
+          "unit": "наборы (лицензии, проверки, метаданные карт и др.)",
+          "decomposition": "по наборам организации",
+          "format": "CSV/XML/JSON/ODS",
+          "url": "https://data.gov.ru/organizations/7706560536",
+          "notes": "URL организации подтверждён вторичными официальными сообщениями Росреестра/Кадастровой палаты; содержимое в этой сессии не скачано (таймаут data.gov.ru)."
+        }
+      ]
+    },
+    {
+      "code": "fssp",
+      "full_name": "Федеральная служба судебных приставов (ФССП России)",
+      "official_site": "https://fssp.gov.ru/",
+      "stats_portal": "https://opendata.fssp.gov.ru/",
+      "role": "Исполнительное производство, взыскания в бюджет, реестр коллекторских организаций, ведомственная статистика",
+      "open_access": "да",
+      "api": "API банка ИП (api-ip.fssp.gov.ru) — доступ закрыт (HTTP 410 «Доступ запрещен»); открытые данные — файлы CSV по meta",
+      "formats": [
+        "CSV"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "33 набора в list.csv; банк ИП юрлиц — ежедневные крупные CSV; ведомственная статистика — сотни КБ–МБ на срез",
+      "notes": "UI портала — SPA; машиночитаемый реестр: https://opendata.fssp.gov.ru/list.csv (подтверждён). Meta/data лежат по шаблону https://opendata.fssp.gov.ru/opendata/{id}/meta.csv и https://opendata.fssp.gov.ru/{id}/data-….csv. Сайт fssp.gov.ru тоже SPA.",
+      "datasets": [
+        {
+          "family": "Статистическая информация ФССП России (федеральный план статработ + проверки)",
+          "frequency": "Y/H",
+          "history_from": "2013",
+          "history_to": "2022+ (файлы data до 2022-02 в meta; modified meta 2026-02-15)",
+          "unit": "показатели форм (кол-во ИП, суммы и т.д.)",
+          "decomposition": "формы/разделы/строки/столбцы ведомственной статистики",
+          "format": "CSV",
+          "url": "https://opendata.fssp.gov.ru/opendata/7709576929-statlist/meta.csv",
+          "notes": "Идентификатор 7709576929-statlist. Пример данных скачан: …/7709576929-statlist/data-20220204T0927-structure-20130624T1154.csv (~1.3 МБ, long format Form/Section/Row/Column/Value; в срезе ~120 млн ИП на исполнении)."
+        },
+        {
+          "family": "Значение показателей исполнения целевых показателей (ГП «Юстиция» и др.)",
+          "frequency": "Q",
+          "history_from": "2016",
+          "history_to": "2022+ (квартальные файлы в meta; modified 2026-04-24)",
+          "unit": "доля/процент/натуральные KPI",
+          "decomposition": "целевые показатели деятельности ФССП",
+          "format": "CSV",
+          "url": "https://opendata.fssp.gov.ru/opendata/7709576929-execindicators/meta.csv",
+          "notes": "Идентификатор 7709576929-execindicators. Имена файлов data-YYYYMMDD указывают на квартальные срезы."
+        },
+        {
+          "family": "Сумма денежных средств, перечисленных в бюджеты (глава 322 ФССП)",
+          "frequency": "Y",
+          "history_from": "2017",
+          "history_to": "2021+ (modified meta 2026-05-04)",
+          "unit": "руб.",
+          "decomposition": "бюджеты бюджетной системы",
+          "format": "CSV",
+          "url": "https://opendata.fssp.gov.ru/opendata/7709576929-cashamount/meta.csv",
+          "notes": "Идентификатор 7709576929-cashamount. Часть data-URL отдаёт 503 в момент проверки; meta доступна."
+        },
+        {
+          "family": "Банк данных исполнительных производств в отношении юридических лиц",
+          "frequency": "D",
+          "history_from": "2014",
+          "history_to": "current (data-файлы с датами 2026-07-17…19)",
+          "unit": "записи ИП",
+          "decomposition": "юрлица-должники",
+          "format": "CSV",
+          "url": "https://opendata.fssp.gov.ru/opendata/7709576929-iplegallist/meta.csv",
+          "notes": "Ежедневные выгрузки. Sibling оконченных: 7709576929-iplegallistcomplete. Публичный API ИП закрыт."
+        },
+        {
+          "family": "Государственный реестр профессиональных коллекторских организаций",
+          "frequency": "M",
+          "history_from": "2018",
+          "history_to": "current (modified 2026-04-30; частые data-снимки 2025–2026)",
+          "unit": "организации",
+          "decomposition": "реестр ПКО",
+          "format": "CSV",
+          "url": "https://opendata.fssp.gov.ru/opendata/7709576929-gosreestrul/meta.csv",
+          "notes": "Идентификатор 7709576929-gosreestrul."
+        },
+        {
+          "family": "Результаты дел по ст. 14.57 КоАП РФ (коллекторы)",
+          "frequency": "Q",
+          "history_from": "2022",
+          "history_to": "current (modified 2026-07-08)",
+          "unit": "дела / результаты",
+          "decomposition": "адм. практика по коллекторам",
+          "format": "CSV",
+          "url": "https://opendata.fssp.gov.ru/opendata/7709576929-rescasesadmoffenses/meta.csv",
+          "notes": "Идентификатор 7709576929-rescasesadmoffenses."
+        },
+        {
+          "family": "Реестр наборов открытых данных ФССП (list.csv)",
+          "frequency": "irregular",
+          "history_from": "n/a",
+          "history_to": "current",
+          "unit": "33 набора",
+          "decomposition": "индекс",
+          "format": "CSV",
+          "url": "https://opendata.fssp.gov.ru/list.csv",
+          "notes": "Полный перечень идентификаторов 7709576929-* (статистика закупок, проверки, вакансии, целевые и экономические показатели подведомственных и др.)."
+        }
+      ]
+    },
+    {
+      "code": "fas",
+      "full_name": "Федеральная антимонопольная служба (ФАС России)",
+      "official_site": "https://fas.gov.ru/",
+      "stats_portal": "https://fas.gov.ru/opendata/",
+      "role": "Антимонопольный контроль, тарифное регулирование, мониторинг цен (ГСМ/ЖКХ), реестры естественных монополий и недобросовестных поставщиков, доклады о конкуренции",
+      "open_access": "да",
+      "api": "частично: в meta указаны эндпоинты вида http://fas.gov.ru/opendata//api/{name}/ (например petrolmonitoring, naturalmonopolies, indexku) — наличие/стабильность live API отдельно не верифицировались HTTP-smoke сверх meta",
+      "formats": [
+        "CSV",
+        "XML",
+        "PDF (раздел Статистика/документы)"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "~98 записей в list.csv; отдельные data CSV >1 МБ (мониторинг бензина); десятки тарифных/конкурентных наборов",
+      "notes": "Каталог: https://fas.gov.ru/opendata/list.csv (скачан). Документы «Статистика»: http://new.fas.gov.ru/documents/type_of_documents/statistika (в основном обзоры обращений в PDF, не макро-ряды). Зеркала наборов также на data.gov.ru (ссылки со страницы opendata).",
+      "datasets": [
+        {
+          "family": "Мониторинг розничных и закупочных цен на бензин и моторное топливо",
+          "frequency": "D",
+          "history_from": "2018-02",
+          "history_to": "не подтверждено полностью (meta modified 2023-01-12; data-файл 2018 скачан)",
+          "unit": "руб/т (и иные меры в поле measure)",
+          "decomposition": "ФО × регион × вид топлива × ВИНК × оптовый/розничный рынок",
+          "format": "CSV",
+          "url": "https://fas.gov.ru/opendata/7703516539-petrolmonitoring/meta.csv",
+          "notes": "Данные: http://fas.gov.ru/opendata/7703516539-petrolmonitoring/data-20180220T0000-structure-20180220T0000.csv (~1.0 МБ, скачан). API hint: …/api/petrolmonitoring. Также набор petrolpricesmap в list.csv."
+        },
+        {
+          "family": "Мониторинг индексов платы граждан за коммунальные услуги",
+          "frequency": "irregular/Y",
+          "history_from": "2019",
+          "history_to": "2021+ (meta modified 2021-12-31)",
+          "unit": "индексы / отклонения",
+          "decomposition": "регионы/КУ",
+          "format": "XML (+ XSD)",
+          "url": "https://fas.gov.ru/opendata/7703516539-indexku/meta.csv",
+          "notes": "API hint: http://fas.gov.ru/opendata//api/indexku/"
+        },
+        {
+          "family": "Стоимость отпущенной тепловой энергии с коллекторов электростанций (котельных)",
+          "frequency": "Y",
+          "history_from": "2016",
+          "history_to": "2022 (meta modified 2022-12-13)",
+          "unit": "стоимость тепловой энергии",
+          "decomposition": "по объектам/регионам (см. structure CSV)",
+          "format": "CSV",
+          "url": "https://fas.gov.ru/opendata/7703516539-costthermalenergycollectors/meta.csv",
+          "notes": "Тарифное семейство; related: sale/transmission electricity, tariffelectrical (meta 404 на момент проверки), postalrates, telegramtariffs, vitalessentialdrugs."
+        },
+        {
+          "family": "Реестр субъектов естественных монополий",
+          "frequency": "irregular",
+          "history_from": "2015",
+          "history_to": "2022+ (meta modified 2022-09-01)",
+          "unit": "субъекты ЕМ",
+          "decomposition": "сферы естественных монополий",
+          "format": "XML/CSV",
+          "url": "https://fas.gov.ru/opendata/7703516539-naturalmonopolies/meta.csv",
+          "notes": "API hint: …/api/naturalmonopolies/"
+        },
+        {
+          "family": "Доклад о состоянии конкуренции (структура/материалы набора)",
+          "frequency": "Y",
+          "history_from": "2018",
+          "history_to": "2025 (data-20250430… в meta)",
+          "unit": "документы/показатели доклада",
+          "decomposition": "ежегодный доклад",
+          "format": "CSV (ссылки/метаданные)",
+          "url": "https://fas.gov.ru/opendata/7703516539-reportcompetition/meta.csv",
+          "notes": "Актуализация meta до 2025-04-30."
+        },
+        {
+          "family": "Итоги контроля законодательства о рекламе",
+          "frequency": "Y",
+          "history_from": "2020",
+          "history_to": "2022 (meta modified 2022-06-28)",
+          "unit": "нарушения / статистика",
+          "decomposition": "сферы деятельности",
+          "format": "CSV",
+          "url": "https://fas.gov.ru/opendata/7703516539-advertisingviolationstatistics/meta.csv",
+          "notes": "Несколько data-срезов 2020–2022 в meta."
+        },
+        {
+          "family": "Динамика жалоб в сфере госзаказа (44-ФЗ/223-ФЗ)",
+          "frequency": "Y",
+          "history_from": "2018",
+          "history_to": "2019",
+          "unit": "жалобы/обращения",
+          "decomposition": "44-ФЗ / 223-ФЗ",
+          "format": "CSV",
+          "url": "https://fas.gov.ru/opendata/7703516539-complaintsdynamics/meta.csv",
+          "notes": "Узкий исторический срез 2018–2019."
+        },
+        {
+          "family": "Показатели для налоговых расчётов (акциз/НДПИ) — документный раздел",
+          "frequency": "irregular",
+          "history_from": "не подтверждено",
+          "history_to": "current",
+          "unit": "коэффициенты/показатели в приказах PDF",
+          "decomposition": "по видам акцизов/НДПИ",
+          "format": "PDF",
+          "url": "https://fas.gov.ru/pages/pokazateli-dla-vycheta-akciza",
+          "notes": "Страница подтверждена (HTTP 200). Sibling: /pages/pokazateli-dla-vycheta-akciza_steel , /pages/pokazateli-dla-rascheta-akciza_gaz . Это нормативные показатели, не непрерывный time-series CSV."
+        },
+        {
+          "family": "Каталог открытых данных ФАС (list.csv)",
+          "frequency": "irregular",
+          "history_from": "n/a",
+          "history_to": "current",
+          "unit": "~98 наборов",
+          "decomposition": "индекс",
+          "format": "CSV",
+          "url": "https://fas.gov.ru/opendata/list.csv",
+          "notes": "Включает тарифы связи/электроэнергии/почты, ЖНВЛП надбавки, показатели концентрации банковских рынков, RNP/реестры и др."
+        }
+      ]
+    },
+    {
+      "code": "gfs",
+      "full_name": "Государственная фельдъегерская служба Российской Федерации (ГФС России)",
+      "official_site": "https://gfs.gov.ru/",
+      "stats_portal": "https://gfs.gov.ru/opendata/",
+      "role": "Фельдъегерская связь органов власти; размещает минимальный набор открытых данных (вакансии, подведомственные, ТО); операционная статистика доставки — в закрытых/докладных форматах",
+      "open_access": "частично",
+      "api": "нет",
+      "formats": [
+        "CSV"
+      ],
+      "etl_difficulty_1_5": 5,
+      "volume_estimate": "3 набора в opendatalist.csv; экономически значимых рядов почти нет",
+      "notes": "Живой gfs.gov.ru с этой среды недоступен (таймаут/обрыв). Подтверждено через Wayback 2025-07-12: http://web.archive.org/web/20250712021449/https://gfs.gov.ru/opendata/ и list http://web.archive.org/web/20250712021449/https://gfs.gov.ru/opendata/opendatalist.csv . Указ Президента №1073 предусматривает размещение статистической информации о закупках/бюджете — отдельного машиночитаемого статнабора на странице opendata в снимке нет (только HR/оргструктура).",
+      "datasets": [
+        {
+          "family": "Реестр открытых данных ГФС (opendatalist.csv)",
+          "frequency": "irregular",
+          "history_from": "n/a",
+          "history_to": "2025 (снимок Wayback)",
+          "unit": "3 набора",
+          "decomposition": "индекс",
+          "format": "CSV",
+          "url": "https://gfs.gov.ru/opendata/opendatalist.csv",
+          "notes": "Содержимое list (из Wayback): 7709133821-od-fggs (вакансии ГГС), 7709133821-od-to (территориальные органы), 7709133821-od-po (подведомственные организации)."
+        },
+        {
+          "family": "Сведения о вакантных должностях федеральной госслужбы в ГФС",
+          "frequency": "irregular",
+          "history_from": "2014",
+          "history_to": "2016+ (архив data-файлов на снимках)",
+          "unit": "вакансии",
+          "decomposition": "кадры",
+          "format": "CSV",
+          "url": "https://gfs.gov.ru/opendata/7709133821-od-fggs",
+          "notes": "Паспорт/данные подтверждены Wayback; пример data: …/7709133821-od-fggs/data-2016-08-10-structure-2014-12-16.csv"
+        },
+        {
+          "family": "Наименования подведомственных организаций ГФС",
+          "frequency": "irregular",
+          "history_from": "2014",
+          "history_to": "2016+",
+          "unit": "организации",
+          "decomposition": "оргструктура",
+          "format": "CSV",
+          "url": "https://gfs.gov.ru/opendata/7709133821-od-po",
+          "notes": "Подтверждено Wayback. Аналогично TO: https://gfs.gov.ru/opendata/7709133821-od-to"
+        }
+      ]
+    },
+    {
+      "code": "fsb",
+      "full_name": "Федеральная служба безопасности Российской Федерации (ФСБ России)",
+      "official_site": "http://www.fsb.ru/",
+      "stats_portal": "http://www.fsb.ru/fsb/supplement/obzor.htm",
+      "role": "Спецслужба; публикует точечные пресс-статистики (обращения, телефон доверия), не открытые машиночитаемые ряды макропоказателей",
+      "open_access": "нет",
+      "api": "нет",
+      "formats": [
+        "HTML (пресс-сообщения)"
+      ],
+      "etl_difficulty_1_5": 5,
+      "volume_estimate": "единичные годовые цифры в HTML; форм 1-Е (ФСБ) и т.п. — служебные, не на сайте",
+      "notes": "Открытых Excel/CSV/API наборов не обнаружено. Ведомственные формы статнаблюдения (напр. 1-Е ФСБ) существуют нормативно, но своды на fsb.ru не публикуются.",
+      "datasets": [
+        {
+          "family": "Обзор обращений граждан и организаций в ФСБ России",
+          "frequency": "Y",
+          "history_from": "2016",
+          "history_to": "2016 (на странице — текст за 2016 год)",
+          "unit": "обращения (шт.)",
+          "decomposition": "нет (агрегат)",
+          "format": "HTML",
+          "url": "http://www.fsb.ru/fsb/supplement/obzor.htm",
+          "notes": "Подтверждено: в 2016 г. рассмотрено 202 603 обращения. Страница живая (HTTP 200)."
+        },
+        {
+          "family": "Статистика «телефона доверия» ФСБ России",
+          "frequency": "Y",
+          "history_from": "2023",
+          "history_to": "2023 (пресс-релиз на сайте)",
+          "unit": "сообщения (шт.)",
+          "decomposition": "ЦА / ТО; оперативно значимые",
+          "format": "HTML",
+          "url": "http://www.fsb.ru/fsb/press/message/single.htm!id=10439890@fsbMessage.html",
+          "notes": "Подтверждено: 65 594 сообщения на ТД ФСБ в 2023; 34 889 на ТД ТО. Не time-series API."
+        }
+      ]
+    }
+  ]
+}

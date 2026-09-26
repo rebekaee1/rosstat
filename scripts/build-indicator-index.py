@@ -217,7 +217,7 @@ def _text_files() -> list[Path]:
             continue
         # Browser/HTTP evidence repeats page content; it is not a code reference.
         # Exclude the generated reports so a QA run cannot invalidate this map.
-        if rel in SKIP_RELPATHS or rel.startswith("output/design-acceptance/"):
+        if rel in SKIP_RELPATHS or rel.startswith("docs/design/local-acceptance/"):
             continue
         out.append(p)
     return out

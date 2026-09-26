@@ -1,0 +1,458 @@
+{
+  "agent": "08",
+  "researched_at": "2026-07-19",
+  "method": "WebSearch + HTTP fetch of official .gov.ru / cdep.ru / crimestat.ru / trudvsem.ru pages and open-data meta/list.csv; only confirmed facts",
+  "subjects": [
+    {
+      "code": "minprirody",
+      "full_name": "Министерство природных ресурсов и экологии Российской Федерации (Минприроды России)",
+      "official_site": "https://www.mnr.gov.ru/",
+      "stats_portal": "https://gosdoklad.mnr.gov.ru/",
+      "role": "Субъект официального статистического учёта / отраслевой регулятор; ежегодный госдоклад об окружающей среде; открытые данные; координация подведов (Росгидромет, Рослесхоз, Роснедра, Росводресурсы, Росприроднадзор и др.)",
+      "open_access": true,
+      "api": false,
+      "formats": [
+        "HTML",
+        "PDF",
+        "CSV"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "1 ежегодный интерактивный/PDF госдоклад (десятки тематических разделов) + ~36 наборов открытых данных (часть — справочники/реестры, часть — отраслевая статистика)",
+      "notes": "Главный аналитический продукт — Государственный доклад о состоянии и об охране окружающей среды (портал gosdoklad.mnr.gov.ru, на момент проверки активен год 2024). Каталог открытых данных: https://www.mnr.gov.ru/opendata/ (list.csv). Многие CSV — административные реестры; из статистически ценных подтверждены охотничьи ресурсы (обновление data-файла до 2025-12-16), лесные площади, Красная книга, ООПТ. Раздел «Государственные доклады» на mnr.gov.ru/docs/gosudarstvennye_doklady/ — архив PDF. Набор atm (загрязнение воздуха) в list.csv есть, meta.csv на проверке оказался пустым.",
+      "datasets": [
+        {
+          "family": "Государственный доклад о состоянии и об охране окружающей среды РФ (выбросы, вода, отходы ТКО, леса, ООПТ, биоразнообразие, отрасли, Арктика и др.)",
+          "frequency": "Y",
+          "history_from": "1990s_estimate_unconfirmed",
+          "history_to": "2024",
+          "unit": "mixed (тыс. т, %, га, шт. и др. по разделам)",
+          "decomposition": "РФ; тематические разделы; часть показателей — региональный/отраслевой разрез внутри доклада",
+          "format": "HTML+PDF",
+          "url": "https://gosdoklad.mnr.gov.ru/",
+          "notes": "На портале в UI активна кнопка года 2024; 2023/2025 в разметке disabled. Архив PDF также через https://www.mnr.gov.ru/docs/gosudarstvennye_doklady/. Точную нижнюю границу архива как непрерывный ряд не фиксировали — history_from помечен estimate_unconfirmed."
+        },
+        {
+          "family": "Численность основных видов охотничьих ресурсов по РФ",
+          "frequency": "Y",
+          "history_from": "2015",
+          "history_to": "2025",
+          "unit": "тыс. особей вида",
+          "decomposition": "виды охотничьих ресурсов; РФ",
+          "format": "CSV",
+          "url": "https://www.mnr.gov.ru/opendata/7710256289-hunting-resources/",
+          "notes": "meta.csv: created 2015-02-05; версии data-2015…data-20251216; subjects: копытные, пушные, медведи, птицы."
+        },
+        {
+          "family": "Добыча основных видов охотничьих ресурсов в сезон охоты по РФ",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "особей вида",
+          "decomposition": "виды; РФ",
+          "format": "CSV",
+          "url": "https://www.mnr.gov.ru/opendata/",
+          "notes": "Набор присутствует в list.csv (hunting-caught-species). Глубина истории в meta в этой сессии не скачана — history_* = null."
+        },
+        {
+          "family": "Распределение площади покрытых лесной растительностью земель лесного фонда по группам пород и возраста",
+          "frequency": "irregular",
+          "history_from": "2017",
+          "history_to": "2017",
+          "unit": "площадь (по структуре набора)",
+          "decomposition": "группы пород × группы возраста",
+          "format": "CSV",
+          "url": "https://www.mnr.gov.ru/opendata/7710256289-rusforest/",
+          "notes": "meta: created/valid 2018-02-01; связанный набор «Информация о лесах России по состоянию на 01.01.2017» (7710256289-rusforest-01)."
+        },
+        {
+          "family": "Объекты животного мира, занесённые в Красную книгу РФ / особо ценные виды",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "перечень объектов",
+          "decomposition": "виды",
+          "format": "CSV",
+          "url": "https://www.mnr.gov.ru/opendata/7710256289-red-book/",
+          "notes": "Также 7710256289-particularly-valuable-species. Скорее справочник, чем временной ряд."
+        },
+        {
+          "family": "Подведомственные ООПТ Минприроды России",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "перечень ООПТ",
+          "decomposition": "ООПТ",
+          "format": "CSV",
+          "url": "https://www.mnr.gov.ru/opendata/7710256289-protected-areas/",
+          "notes": "Реестр из каталога list.csv."
+        },
+        {
+          "family": "Каталог открытых данных Минприроды (полный перечень наборов)",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "n/a",
+          "decomposition": "n/a",
+          "format": "CSV",
+          "url": "https://www.mnr.gov.ru/opendata/list.csv",
+          "notes": "~37 строк catalog; смесь статистики и административных наборов (закупки, вакансии, НПА, имущество)."
+        }
+      ]
+    },
+    {
+      "code": "minec",
+      "full_name": "Министерство экономического развития Российской Федерации (Минэкономразвития России)",
+      "official_site": "https://www.economy.gov.ru/",
+      "stats_portal": "https://www.economy.gov.ru/material/directions/makroec/ekonomicheskie_obzory/",
+      "role": "Макроэкономический мониторинг и прогнозирование; публикация оценок текущей ситуации/цен/промпроизводства; открытые данные макропоказателей; официальные прогнозы СЭР",
+      "open_access": true,
+      "api": false,
+      "formats": [
+        "PDF",
+        "CSV",
+        "ZIP",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "Ежемесячный CSV макропанели (~30 индикаторов, скользящее окно месяцев) + еженедельные ценовые обзоры PDF + ежемесячные обзоры экономики/промпроизводства PDF + ежегодные/среднесрочные прогнозы PDF+ZIP",
+      "notes": "Открытый набор «Основные показатели социально-экономического развития России» (id 7710349494-mecdata): первая публикация 07.08.2013, актуализация ежемесячно; на 2026-04-10 CSV содержит столбцы янв.2025–фев.2026 (не полную историю с 2013 в одном файле). Обзоры «О текущей ситуации…» / «О текущей ценовой ситуации» / «О динамике промышленного производства» — раздел Экономические обзоры. Прогнозы СЭР: https://www.economy.gov.ru/material/directions/makroec/prognozy_socialno_ekonomicheskogo_razvitiya/ (PDF + приложения ZIP).",
+      "datasets": [
+        {
+          "family": "Основные макропоказатели СЭР (промпроизводство и разделы, ИПЦ/PPI, с/х, транспорт, строительство, жильё, розница, услуги, бюджет, М2, ключевая ставка, зарплата, безработица)",
+          "frequency": "M",
+          "history_from": "2013",
+          "history_to": "2026-02",
+          "unit": "% м/м; % г/г; уровни (по показателю)",
+          "decomposition": "РФ; отраслевые разрезы промпроизводства",
+          "format": "CSV",
+          "url": "https://www.economy.gov.ru/opendata/osnovnye_pokazateli_socialno_ekonomicheskogo_razvitiya_rossii.html",
+          "notes": "Паспорт: периодичность «Ежемесячно»; дата актуальности набора 13.05.2026; data CSV download path /material/file/download/.../data-2026-04-10T00-00-structure-2026-04-10T00-00.csv. Текущий файл — rolling window; полный архив с 2013 на странице паспорта как единый long history не подтверждён."
+        },
+        {
+          "family": "О текущей ситуации в российской экономике (аналитический обзор)",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2026-05",
+          "unit": "mixed (оценки ВВП, отраслей и др. в тексте/таблицах PDF)",
+          "decomposition": "РФ",
+          "format": "PDF",
+          "url": "https://www.economy.gov.ru/material/directions/makroec/ekonomicheskie_obzory/",
+          "notes": "На листинге обзоров подтверждены выпуски, в т.ч. «Май 2026 года». Нижняя граница архива на странице не извлечена целиком — history_from=null."
+        },
+        {
+          "family": "О текущей ценовой ситуации",
+          "frequency": "W",
+          "history_from": null,
+          "history_to": "2026-07-15",
+          "unit": "инфляция % и др.",
+          "decomposition": "РФ",
+          "format": "PDF",
+          "url": "https://www.economy.gov.ru/material/directions/makroec/ekonomicheskie_obzory/",
+          "notes": "На листинге — выпуски с датами (подтверждены 1/8/10/15 июля 2026 и ранее). Частота по факту публикаций — примерно еженедельная."
+        },
+        {
+          "family": "О динамике промышленного производства",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2026-05",
+          "unit": "% г/г и др.",
+          "decomposition": "РФ; отрасли",
+          "format": "PDF",
+          "url": "https://www.economy.gov.ru/material/directions/makroec/ekonomicheskie_obzory/",
+          "notes": "Подтверждены выпуски «Май 2026», «Апрель 2026», «Март 2026» на листинге обзоров."
+        },
+        {
+          "family": "Прогноз социально-экономического развития РФ (на год и плановый период) + сценарные условия",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": "2026-2028",
+          "unit": "mixed (% ВВП, цены/тарифы и др.)",
+          "decomposition": "РФ; сценарии (базовый/консервативный — в документах сценарных условий)",
+          "format": "PDF+ZIP",
+          "url": "https://www.economy.gov.ru/material/directions/makroec/prognozy_socialno_ekonomicheskogo_razvitiya/prognoz_socialno_ekonomicheskogo_razvitiya_rf_na_2026_god_i_na_planovyy_period_2027_i_2028_godov.html",
+          "notes": "Страница прогноза на 2026 и плановый период 2027–2028: PDF + приложения ZIP (дата публикации на странице 26.09.2025). Индекс материалов: .../prognozy_socialno_ekonomicheskogo_razvitiya/materials.html."
+        }
+      ]
+    },
+    {
+      "code": "genproc",
+      "full_name": "Генеральная прокуратура Российской Федерации",
+      "official_site": "https://epp.genproc.gov.ru/",
+      "stats_portal": "http://crimestat.ru/",
+      "role": "Правовая статистика (преступность); статистика деятельности органов прокуратуры; координация форм федерального статистического наблюдения в своей сфере",
+      "open_access": true,
+      "api": false,
+      "formats": [
+        "HTML",
+        "PDF",
+        "XLS"
+      ],
+      "etl_difficulty_1_5": 4,
+      "volume_estimate": "Интерактивные ряды преступности (история до 2022) + ежемесячные PDF сборники на crimestat (архив до 2022) + ежемесячные отчёты о деятельности прокуратуры (на федеральном сайте листинг обрывается на янв.2023); после 2023 федеральная публикация преступности приостановлена, регионы публикуют сами",
+      "notes": "Портал crimestat.ru с 01.01.2023: «размещение статистических данных приостановлено», режим опытной эксплуатации. Зеркало показателей: https://epp.genproc.gov.ru/ru/gprf/activity/crimestat/ — периоды в селекторе до «Январь - Декабрь 2022». Результаты деятельности прокуратуры: https://epp.genproc.gov.ru/ru/gprf/activity/statistics/result/ (подтверждены месячные выпуски до января 2023). Актуальная преступность после 2022 на федеральном портале GenProc в этой сессии не найдена; региональные прокуратуры продолжают публиковать «Состояние преступности» (пример Мособл/Липецк — не федеральный ряд).",
+      "datasets": [
+        {
+          "family": "Показатели преступности России (зарегистрировано/расследовано/нераскрыто; тяжести; экономические; наркотики; оружие; коррупционные статьи УК и др.)",
+          "frequency": "M",
+          "history_from": "2008",
+          "history_to": "2022-12",
+          "unit": "число преступлений / лиц",
+          "decomposition": "РФ; субъекты РФ (региональный селектор на странице)",
+          "format": "HTML",
+          "url": "https://epp.genproc.gov.ru/ru/gprf/activity/crimestat/",
+          "notes": "Также http://crimestat.ru/ (обновление с 2023 приостановлено). В селекторе периодов: с «Январь - Июнь 2008» по «Январь - Декабрь 2022»; с 2010 — помесячные нарастающие итоги."
+        },
+        {
+          "family": "Ежемесячный сборник о состоянии преступности в России (архив аналитики)",
+          "frequency": "M",
+          "history_from": "2013",
+          "history_to": "2022",
+          "unit": "mixed",
+          "decomposition": "РФ",
+          "format": "PDF",
+          "url": "http://crimestat.ru/analytics",
+          "notes": "На странице analytics перечислены годы сборников 2013–2022 и формы ФСН за 2020–2022. После 01.01.2023 новые данные на портале не размещаются (заявление на главной)."
+        },
+        {
+          "family": "Статистические данные об основных показателях деятельности органов прокуратуры РФ",
+          "frequency": "M",
+          "history_from": "2021",
+          "history_to": "2023-01",
+          "unit": "показатели деятельности (число актов реагирования и др.)",
+          "decomposition": "РФ",
+          "format": "HTML/PDF",
+          "url": "https://epp.genproc.gov.ru/ru/gprf/activity/statistics/result/",
+          "notes": "На листинге подтверждены месячные выпуски 2021–2022 и «за январь 2023 г.»; более поздних федеральных выпусков на этой странице в выборке не видно (страница заявляет 152 результата — полный архив глубже 2021 возможен, но не разобран постранично)."
+        },
+        {
+          "family": "Преступность в регионах / социальный портрет (портал правовой статистики)",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": "2021",
+          "unit": "mixed",
+          "decomposition": "регионы; возрастные группы и др.",
+          "format": "HTML",
+          "url": "http://crimestat.ru/",
+          "notes": "На главной портала примеры: прирост преступлений 2015/2014; возрастная структура за 2021. Обновление с 2023 приостановлено."
+        }
+      ]
+    },
+    {
+      "code": "cdep",
+      "full_name": "Судебный департамент при Верховном Суде Российской Федерации",
+      "official_site": "https://cdep.ru/",
+      "stats_portal": "https://cdep.ru/index.php?id=79",
+      "role": "Субъект официального статистического учёта: количественные показатели рассмотрения дел судами общей юрисдикции, арбитражными судами и мировыми судьями; судимость",
+      "open_access": true,
+      "api": false,
+      "formats": [
+        "XLS",
+        "PDF",
+        "HTML"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "Сводные пакеты XLS по формам отчётности: СОЮ+мировые судьи, арбитраж, судимость — годовые с ~2005/2006 и полугодовые; десятки форм на год",
+      "notes": "Правовая основа указана на https://cdep.ru/index.php?id=23 (ФЗ №7-ФЗ, ФЗ №282-ФЗ). Раздел данных: id=79. Подтверждена история сводок СОЮ/мировые с 2005, судимость с 2005, арбитраж с ~2014–2015 (по листингу страницы). Актуальные пакеты: 2024 год и 1 полугодие 2025. Файлы вида /userimages/Statistika_2024/F1-svod_vse_sudy-2024.xls и др.",
+      "datasets": [
+        {
+          "family": "Сводные статистические сведения о деятельности федеральных судов общей юрисдикции и мировых судей (формы №1,2,1-АП,4,6–11 и др.)",
+          "frequency": "H",
+          "history_from": "2005",
+          "history_to": "2025-H1",
+          "unit": "число дел/материалов, суммы ущерба и др.",
+          "decomposition": "уголовные/гражданские/административные; инстанции; РФ (свод)",
+          "format": "XLS",
+          "url": "https://cdep.ru/index.php?id=79",
+          "notes": "На листинге: годовые пакеты 2005–2024 и полугодия (в т.ч. 1п 2025). Пример форм 2024: F1…F11 в /userimages/Statistika_2024/. Частота H = half-year (годовые + полугодовые выпуски)."
+        },
+        {
+          "family": "Сводные статистические сведения о деятельности федеральных арбитражных судов",
+          "frequency": "H",
+          "history_from": "2014",
+          "history_to": "2025-H1",
+          "unit": "число дел и др.",
+          "decomposition": "арбитраж; РФ",
+          "format": "XLS",
+          "url": "https://cdep.ru/index.php?id=79",
+          "notes": "На листинге id=79 арбитражные сводки видны с 2014/2015 по 2024 и 1п 2025."
+        },
+        {
+          "family": "Сводные статистические сведения о состоянии судимости в России",
+          "frequency": "H",
+          "history_from": "2005",
+          "history_to": "2025-H1",
+          "unit": "число осуждённых и др.",
+          "decomposition": "РФ",
+          "format": "XLS",
+          "url": "https://cdep.ru/index.php?id=79",
+          "notes": "Листинг содержит судимость ежегодно с 2005 и полугодия (в т.ч. 1п 2025)."
+        },
+        {
+          "family": "Данные судебной статистики по делам коррупционной направленности",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "число дел и др.",
+          "decomposition": "коррупционные составы",
+          "format": "XLS/HTML",
+          "url": "https://cdep.ru/index.php?id=23",
+          "notes": "Раздел упомянут в навигации судебной статистики (id=23). Глубина/частота в этой сессии не просмотрены детально — history_* = null."
+        },
+        {
+          "family": "Годовой отчёт Судебного департамента",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": "2024",
+          "unit": "n/a (текстовый отчёт)",
+          "decomposition": "n/a",
+          "format": "PDF",
+          "url": "https://cdep.ru/userimages/OTCHET_SUDEBNOGO_DEPARTAMENTA_-_2024_Opublikovanie_na_sayte.pdf",
+          "notes": "Подтверждён PDF отчёта за 2024 (раздел статистической отчётности внутри)."
+        }
+      ]
+    },
+    {
+      "code": "mintrud",
+      "full_name": "Министерство труда и социальной защиты Российской Федерации (Минтруд России)",
+      "official_site": "https://mintrud.gov.ru/",
+      "stats_portal": "https://www.fedstat.ru/organizations/",
+      "role": "Отраслевой регулятор труда/соцзащиты; субъект официальной статистики (публикация на ЕМИСС/fedstat, пункт 66.13 по заявлению на сайте); открытые данные; стандарты информирования о рынке труда; операционные данные занятости — также через Роструд/«Работа в России»",
+      "open_access": true,
+      "api": true,
+      "formats": [
+        "CSV",
+        "XML",
+        "XLSX",
+        "JSON",
+        "HTML",
+        "PDF"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "Каталог open data Минтруда (~50 уникальных наборов, многие — АРХИВ 2010-х) + актуальная операционная статистика рынка труда на trudvsem (XLSX + API вакансий ~500k+) + официальные ряды на fedstat",
+      "notes": "На https://mintrud.gov.ru/opendata явно указано: официальная статистическая информация — на https://www.fedstat.ru/organizations/ (раздел Минтруда, п. 66.13). Большинство CSV на mintrud.gov.ru/opendata помечены «АРХИВ» (безработица 2013, уровень жизни 2007–2014, пенсии — архив до обновления 2021-02-12). Актуальные показатели регистрируемого рынка труда публикуются на портале «Работа в России» (оператор — Роструд): https://trudvsem.ru/opendata — XLSX «Основные показатели рынка труда по состоянию на 1 мая 2026 г.» и API http://opendata.trudvsem.ru/api/v1/vacancies (проба 2026-07-19: HTTP 200, meta.total≈527099).",
+      "datasets": [
+        {
+          "family": "Официальная статистика Минтруда на ЕМИСС (fedstat)",
+          "frequency": "mixed",
+          "history_from": null,
+          "history_to": null,
+          "unit": "mixed",
+          "decomposition": "по показателям ЕМИСС",
+          "format": "HTML/API ЕМИСС",
+          "url": "https://www.fedstat.ru/organizations/",
+          "notes": "Каноническая точка официальной статинформации по заявлению Минтруда на странице открытых данных. Конкретные series codes/годы в этой сессии не выгружались — history_* = null."
+        },
+        {
+          "family": "Основные показатели рынка труда в субъектах РФ (регистрируемая безработица, потребность в кадрах, пособие)",
+          "frequency": "M",
+          "history_from": null,
+          "history_to": "2026-05-01",
+          "unit": "чел.; %; вакансии",
+          "decomposition": "субъекты РФ",
+          "format": "XLSX",
+          "url": "https://trudvsem.ru/opendata",
+          "notes": "Публикуется в рамках приказа Минтруда от 07.02.2025 №52н. Файл на момент проверки: «Основные показатели рынка труда по состоянию на 1 мая 2026 г.» (путь /information/resources/upload/opendata/labor-market-indicators/...). Портал Роструда, методология/стандарт — Минтруд."
+        },
+        {
+          "family": "Вакансии портала «Работа в России» (открытые данные API)",
+          "frequency": "D",
+          "history_from": null,
+          "history_to": "2026-07",
+          "unit": "записи вакансий",
+          "decomposition": "регион; работодатель; профессия",
+          "format": "JSON",
+          "url": "http://opendata.trudvsem.ru/api/v1/vacancies",
+          "notes": "Документация: https://trudvsem.ru/opendata/api . GET, JSON, пагинация limit≤100. Проба: status 200, total≈527099. Это операционные данные Роструда, не классический макроряд безработицы Росстата."
+        },
+        {
+          "family": "Статистическая информация о ситуации на регистрируемом рынке труда (архив open data Минтруда)",
+          "frequency": "M",
+          "history_from": "2013-06",
+          "history_to": "2013-06",
+          "unit": "показатели регистрируемого рынка труда",
+          "decomposition": "РФ/регионы (по файлу)",
+          "format": "CSV",
+          "url": "https://mintrud.gov.ru/opendata/7710914971-unemployment/",
+          "notes": "meta: описание «АРХИВ… в июне 2013 года»; modified 2015-09-16. Не актуальный поток."
+        },
+        {
+          "family": "Основные социально-экономические индикаторы уровня жизни населения (архив)",
+          "frequency": "Y",
+          "history_from": "2007",
+          "history_to": "2014",
+          "unit": "mixed",
+          "decomposition": "РФ",
+          "format": "CSV",
+          "url": "https://mintrud.gov.ru/opendata/7710914971-indicators_of_living_standards/",
+          "notes": "meta: АРХИВ 2007–2014; modified 2016-02-04."
+        },
+        {
+          "family": "Общий объём социальных выплат (архив)",
+          "frequency": "Y",
+          "history_from": "2006",
+          "history_to": "2013",
+          "unit": "денежные единицы (по балансу доходов/расходов населения)",
+          "decomposition": "РФ",
+          "format": "CSV",
+          "url": "https://mintrud.gov.ru/opendata/7710914971-social_payments/",
+          "notes": "meta: АРХИВ 2006–2013."
+        },
+        {
+          "family": "Сведения о численности пенсионеров и среднем размере пенсий по РФ (архив open data)",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": "2021",
+          "unit": "чел.; руб.; соотношение с ПМ пенсионера",
+          "decomposition": "РФ",
+          "format": "CSV",
+          "url": "https://mintrud.gov.ru/opendata/7710914971-Number_of_pensioners/",
+          "notes": "meta: АРХИВ; data-20210212; created 2016-03-25. Актуальные пенсионные ряды сейчас у СФР (другой субъект ФПСР), не проверялись здесь."
+        },
+        {
+          "family": "Величина прожиточного минимума / распределение доходов / размер пособия по безработице (open data)",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "руб.; %",
+          "decomposition": "РФ",
+          "format": "CSV/XML",
+          "url": "https://mintrud.gov.ru/opendata",
+          "notes": "Наборы в list.csv: subsistence_minimum, per_capita_incomes, distribution_total_money_income, unemployment benefit size и др. Многие помечены архивными на страницах паспортов — перед ETL читать meta."
+        },
+        {
+          "family": "Перечень территорий с напряжённой ситуацией на рынке труда",
+          "frequency": "Y",
+          "history_from": null,
+          "history_to": null,
+          "unit": "перечень территорий",
+          "decomposition": "субъекты/территории",
+          "format": "CSV/XML",
+          "url": "https://mintrud.gov.ru/opendata/7710914971-Regions_of_the_tense_situation_on_the_labor_market/",
+          "notes": "Также разовый набор «Напряженность на рынке труда в 2017 году» (7710914971-tlm)."
+        },
+        {
+          "family": "Статистика по инвалидности / ТСР / СОУТ (реестры и распределения)",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": "2024",
+          "unit": "чел.; перечень организаций",
+          "decomposition": "формы болезней; категории ТСР",
+          "format": "CSV/XML",
+          "url": "https://mintrud.gov.ru/opendata",
+          "notes": "На странице opendata подтверждены наборы: распределение впервые признанных инвалидами (взр./дети, дата карточек 23.04.2024), ТСР, реестр организаций СОУТ (29.03.2024). Часть требует авторизации Госуслуг."
+        },
+        {
+          "family": "Каталог открытых данных Минтруда",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": "2026",
+          "unit": "n/a",
+          "decomposition": "n/a",
+          "format": "CSV/XML",
+          "url": "https://mintrud.gov.ru/opendata/list.csv",
+          "notes": "Также list.xml. ~96 строк (csv+xml дубли идентификаторов)."
+        }
+      ]
+    }
+  ]
+}

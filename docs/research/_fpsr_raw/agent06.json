@@ -1,0 +1,425 @@
+{
+  "agent": "06",
+  "researched_at": "2026-07-19",
+  "method": "WebSearch + WebFetch/curl официальных сайтов и OpenDataAPI; только подтверждённые URL/паспорта/файлы",
+  "subjects": [
+    {
+      "code": "Минфин России",
+      "full_name": "Министерство финансов Российской Федерации",
+      "role": "ФОИВ: бюджетная политика, исполнение федерального/консолидированных бюджетов, госдолг, госбумаги, нефтегазовые доходы; публикация статистики и открытых данных",
+      "official_site": "https://minfin.gov.ru/",
+      "stats_portal": "https://minfin.gov.ru/ru/statistics/",
+      "open_access": "да (реестр OD + раздел «Статистика» XLSX/HTML)",
+      "api": "да: https://minfin.gov.ru/OpenDataAPI/help — REST JSON/XML (список наборов, версии, passport, content, structure); каталог GET /OpenDataAPI/api/json/dataset (подтверждено 75 наборов)",
+      "formats": ["CSV", "JSON (API)", "XML (API)", "XLSX (статистика/ФНБ/нефтегаз)"],
+      "volume_estimate": "75 наборов OpenDataAPI; ключевые бюджетные ряды M/Q/Y + долг M + ОФЗ W; плюс live-страницы статистики (нефтегаз, ФНБ)",
+      "etl_difficulty_1_5": 2,
+      "notes": "Лучший ETL-контур: OpenDataAPI → CSV content по identifier 7710168360-*. Паспорт fedbud_month явно: данные с января 2011, млрд руб., накоплено с начала года, обновление ежемесячно (последнее ContentLastPubl: предварительные данные по июнь 2026, DateLastPubOD 2026-07-09). DomesticDebt/ExternalDebt: ежемесячно, паспорт с 2014-04-02, актуально на 2026-07-01. volume_issues: еженедельно, первая публикация OD 2018-08-14. Раздел статистики: нефтегаз 2018–2026 (XLSX), ФНБ движение средств (XLSX). Сайт API иногда отдаёт 503 — нужен retry.",
+      "datasets": [
+        {
+          "family": "Краткая информация об исполнении федерального бюджета (ежемесячно)",
+          "frequency": "M",
+          "history_from": "2011-01",
+          "history_to": "2026-06",
+          "unit": "млрд руб. (накоплено с начала года)",
+          "decomposition": "доходы/расходы/дефицит и связанные показатели исполнения ФБ",
+          "format": "CSV + JSON API",
+          "url": "https://minfin.gov.ru/OpenDataAPI/api/json/dataset/7710168360-fedbud_month",
+          "notes": "Паспорт: DescOD «с января 2011 года»; LinkOD https://minfin.gov.ru/OpenData/7710168360-fedbud_month/data-20260709T0100-structure-20210312T0100.csv; siblings: fedbud_quarter / fedbud_year."
+        },
+        {
+          "family": "Краткая информация об исполнении консолидированных бюджетов субъектов РФ (M/Q/Y)",
+          "frequency": "M",
+          "history_from": "",
+          "history_to": "2026",
+          "unit": "млрд руб.",
+          "decomposition": "субъекты РФ; доходы/расходы/дефицит",
+          "format": "CSV + JSON API",
+          "url": "https://minfin.gov.ru/OpenDataAPI/api/json/dataset/7710168360-subbud_month",
+          "notes": "Наборы subbud_month/quarter/year в каталоге API (75). Точный history_from в паспорте не выгружался в этой сессии — смотреть DescOD версии."
+        },
+        {
+          "family": "Краткая информация об исполнении консолидированного бюджета РФ и ГВБФ (M/Q/Y)",
+          "frequency": "M",
+          "history_from": "",
+          "history_to": "2026",
+          "unit": "млрд руб.",
+          "decomposition": "КБ РФ + государственные внебюджетные фонды",
+          "format": "CSV + JSON API",
+          "url": "https://minfin.gov.ru/OpenDataAPI/api/json/dataset/7710168360-conbud_month",
+          "notes": "Наборы conbud_*; outbud_* — отдельно исполнение ГВБФ."
+        },
+        {
+          "family": "Государственный внутренний долг Российской Федерации",
+          "frequency": "M",
+          "history_from": "2014-04",
+          "history_to": "2026-07",
+          "unit": "руб. / структура по видам обязательств",
+          "decomposition": "ГЦБ, кредиты, бюджетные кредиты, гарантии и др. (по БК РФ ст. 98)",
+          "format": "CSV + JSON API",
+          "url": "https://minfin.gov.ru/OpenDataAPI/api/json/dataset/7710168360-DomesticDebt",
+          "notes": "Паспорт: периодичность ежемесячная; DateFirstPubOD 2014-04-02; ContentLastPubl на 2026-07-01; 136 версий в API."
+        },
+        {
+          "family": "Государственный внешний долг Российской Федерации",
+          "frequency": "M",
+          "history_from": "2014-04",
+          "history_to": "2026-07",
+          "unit": "инвалюта / структура по видам обязательств",
+          "decomposition": "ГЦБ в инвалюте, кредиты, гарантии (Государственная долговая книга)",
+          "format": "CSV + JSON API",
+          "url": "https://minfin.gov.ru/OpenDataAPI/api/json/dataset/7710168360-ExternalDebt",
+          "notes": "Паспорт: ежемесячно; DateFirstPubOD 2014-04-02; ContentLastPubl на 2026-07-01."
+        },
+        {
+          "family": "Объёмы размещённых государственных ценных бумаг (ОФЗ и др.)",
+          "frequency": "W",
+          "history_from": "2018-08",
+          "history_to": "2026",
+          "unit": "объём эмиссии / в обращении / остаток к размещению",
+          "decomposition": "по выпускам ГЦБ",
+          "format": "CSV + JSON API",
+          "url": "https://minfin.gov.ru/ru/opendata/7710168360-volume_issues/",
+          "notes": "Паспорт HTML: обновление еженедельно (по мере операций); первая публикация OD 2018-08-14; 391 версия в API. Related: auction_results, papers_summary, OFZ-n_*."
+        },
+        {
+          "family": "Дополнительные нефтегазовые доходы федерального бюджета",
+          "frequency": "M",
+          "history_from": "2018",
+          "history_to": "2026",
+          "unit": "руб.",
+          "decomposition": "формирование и использование доп. нефтегазовых доходов",
+          "format": "XLSX",
+          "url": "https://minfin.gov.ru/ru/statistics/fedbud/oil/",
+          "notes": "Подтверждён файл Svedeniya_o_formirovanii.xlsx (опубликовано 03.07.2026) — сведения за 2018–2026 гг. Не набор OpenDataAPI, а раздел статистики."
+        },
+        {
+          "family": "Фонд национального благосостояния — движение средств / результаты управления",
+          "frequency": "M",
+          "history_from": "",
+          "history_to": "2026-07",
+          "unit": "руб. / валютная структура",
+          "decomposition": "остатки, операции, результаты управления",
+          "format": "XLSX",
+          "url": "https://minfin.gov.ru/ru/statistics/",
+          "notes": "На странице статистики подтверждён файл Dannye_20260701.xlsx (данные на 01.07.2026). history_from в карточке файла не зафиксирован — смотреть лист."
+        }
+      ]
+    },
+    {
+      "code": "ФНС России",
+      "full_name": "Федеральная налоговая служба",
+      "role": "ФОИВ: налоговая статистика (формы 1-НМ, 1-НОМ, 5-*, 1-НДС и др.), открытые данные о начислении/поступлении налогов, реестры НК ст. 102",
+      "official_site": "https://www.nalog.gov.ru/",
+      "stats_portal": "https://www.nalog.gov.ru/rn77/related_activities/statistics_and_analytics/forms/",
+      "open_access": "да (https://www.nalog.gov.ru/opendata/ + data.nalog.ru CSV/XML/JSON; HTML/XLS формы статистики)",
+      "api": "нет официального публичного REST API налоговой статистики; bulk = CSV/XML файлы. (Сторонние api-fns.ru — не ФНС.) ЕГРЮЛ/ЕГРИП — FTP XML-выгрузки для интеграции.",
+      "formats": ["CSV", "XML", "JSON (отдельные наборы)", "XLS/XLSX (формы статистики)"],
+      "volume_estimate": "десятки наборов OD (статистика + справочники + реестры ст. 102) + архив форм статистики с ~2006",
+      "etl_difficulty_1_5": 2,
+      "notes": "Канон для поступлений: OD 7707329152-nmpn (форма 1-НМ, CSV). Живой файл data-20260101-structure-20260101.csv (HTTP 200, ~244 KB, регионы×показатели). Версии OD с 2017-03-05; HTML-формы 1-НМ на портале статистики уходят глубже (ссылки XLS с 2006+). Сервис «Прозрачный бизнес» pb.nalog.ru использует те же OD.",
+      "datasets": [
+        {
+          "family": "1-НМ — начисление и поступление налогов и сборов в бюджетную систему РФ",
+          "frequency": "Y",
+          "history_from": "2017",
+          "history_to": "2025",
+          "unit": "тыс. руб. (по структуре CSV; коды G*)",
+          "decomposition": "субъект РФ × виды налогов/сборов (широкая матрица колонок)",
+          "format": "CSV",
+          "url": "https://www.nalog.gov.ru/opendata/7707329152-nmpn/",
+          "notes": "Паспорт/страница: идентификатор 7707329152-nmpn; актуальный data URL https://data.nalog.ru/opendata/7707329152-nmpn/data-20260101-structure-20260101.csv; архив версий data-20170305…data-20250101. HTML-формы на /statistics_and_analytics/forms/ — отдельные XLS с более ранними годами (подтверждены ссылки 2006+)."
+        },
+        {
+          "family": "1-НОМ — поступление налогов/страховых взносов по ОКВЭД",
+          "frequency": "Y",
+          "history_from": "",
+          "history_to": "",
+          "unit": "руб.",
+          "decomposition": "ОКВЭД × налоги/взносы",
+          "format": "CSV",
+          "url": "https://www.nalog.gov.ru/opendata/",
+          "notes": "В реестре OD на /opendata/ присутствуют наборы формы №1-НОМ (начисление и поступление по видам деятельности). Точные identifier/history — по паспорту каждого набора."
+        },
+        {
+          "family": "1-НДС / 5-П / 5-УСН / 5-* — налоговая база и структура начислений",
+          "frequency": "Y",
+          "history_from": "2008",
+          "history_to": "2024",
+          "unit": "руб. / структура базы",
+          "decomposition": "по налогу (НДС, прибыль, УСН, акцизы, имущество, транспорт, земля и др.)",
+          "format": "CSV (OD) + XLS/XLSX (формы)",
+          "url": "https://www.nalog.gov.ru/rn77/related_activities/statistics_and_analytics/forms/",
+          "notes": "На странице форм подтверждены годовые XLS/XLSX (пример 5-НДФЛ: ссылки 2008–2024). Многие формы дублируются в OD CSV."
+        },
+        {
+          "family": "Поступления налогов в консолидированные бюджеты субъектов РФ",
+          "frequency": "Y",
+          "history_from": "",
+          "history_to": "",
+          "unit": "руб.",
+          "decomposition": "субъект РФ",
+          "format": "CSV",
+          "url": "https://www.nalog.gov.ru/opendata/",
+          "notes": "Набор в таблице OD «Поступления налогов… в консолидированные бюджеты субъектов РФ» (CSV). Паспорт — по карточке набора."
+        },
+        {
+          "family": "Открытые сведения НК ст. 102 (уплаченные налоги организаций, задолженность, ССЧ, спецрежимы и др.)",
+          "frequency": "Y",
+          "history_from": "",
+          "history_to": "",
+          "unit": "руб. / чел. / признак",
+          "decomposition": "по организации (ИНН) / признакам",
+          "format": "XML",
+          "url": "https://pb.nalog.ru/od.html",
+          "notes": "Массовые XML-наборы на nalog.gov.ru/opendata/; описание использования — pb.nalog.ru/od.html. Это микроданные, не макро-агрегаты."
+        }
+      ]
+    },
+    {
+      "code": "Казначейство России",
+      "full_name": "Федеральное казначейство",
+      "role": "ФОИВ: кассовое обслуживание и отчётность об исполнении бюджетов бюджетной системы; витрины данных ИАС; оператор ГИИС «Электронный бюджет» (budget.gov.ru)",
+      "official_site": "https://roskazna.gov.ru/",
+      "stats_portal": "http://datamarts.roskazna.ru/",
+      "open_access": "да (витрины datamarts + портал Электронный бюджет; часть реестров через EPBS API)",
+      "api": "частично: budget.gov.ru/epbs/registry/*/data (JSON) — подтверждён живой ответ rgz/data (recordCount≫0). Витрины datamarts — HTML/конструктор, не единый публичный stats-API. Сайт roskazna.gov.ru с этой среды недоступен (TCP fail); datamarts и budget.gov.ru — HTTP 200.",
+      "formats": ["HTML (витрины)", "JSON (EPBS registry API)", "XLSX/экспорт через конструктор (UI)"],
+      "volume_estimate": "полная БД исполнения бюджетов + инфографика ФБ/КБ 2020–2023; помесячные ряды 2005–2022 на витринах; EPBS реестры десятки тысяч записей",
+      "etl_difficulty_1_5": 3,
+      "notes": "Практический контур: (1) datamarts.roskazna.ru — доходы (в т.ч. нефтегаз/ненефтегаз), расходы, КБ+ГВБФ, макро; раздел «Помесячная динамика исполнения КБ РФ и бюджетов ГВБФ (2005–2022 гг)»; конструктор нерегламентированной отчётности; (2) агрегаты также перепубликует Минфин (fedbud_*); (3) budget.gov.ru — реестры участников/заданий и др. Не путать с сырым API статистики исполнения — его как единого REST-каталога нет.",
+      "datasets": [
+        {
+          "family": "Помесячная динамика исполнения консолидированного бюджета РФ и бюджетов ГВБФ",
+          "frequency": "M",
+          "history_from": "2005",
+          "history_to": "2022",
+          "unit": "руб. / показатели исполнения",
+          "decomposition": "КБ РФ; ГВБФ; помесячно",
+          "format": "HTML витрина (+ экспорт через конструктор)",
+          "url": "http://datamarts.roskazna.ru/razdely/konsolidirovanny-budget-rf-i-gvbf/pomesyachnaya-dinamika-ispolneniya-kb-rf-i-budgetov-gvfb/",
+          "notes": "Заголовок страницы явно: 2005–2022 гг. Соседний раздел: «Основные характеристики ФБ 2005–2022 гг (помесячная динамика)»."
+        },
+        {
+          "family": "Доходы федерального бюджета — нефтегазовые и ненефтегазовые",
+          "frequency": "M",
+          "history_from": "",
+          "history_to": "",
+          "unit": "руб.",
+          "decomposition": "нефтегазовые / ненефтегазовые; классификация доходов",
+          "format": "HTML витрина",
+          "url": "http://datamarts.roskazna.ru/razdely/dohody/neftegazovye-i-neneftegazovye-dohody/",
+          "notes": "Пункт меню витрин подтверждён. Для machine-readable рядом — Минфин oil XLSX и fedbud_* CSV."
+        },
+        {
+          "family": "Исполнение федерального / консолидированного бюджета — инфографика и отчёты",
+          "frequency": "Y",
+          "history_from": "2020",
+          "history_to": "2023",
+          "unit": "руб. / структура доходов и расходов",
+          "decomposition": "доходы, расходы, дефицит, долг, резервы/ФНБ",
+          "format": "HTML / PNG инфографика",
+          "url": "http://datamarts.roskazna.ru/infografika/",
+          "notes": "На главной datamarts подтверждены страницы исполнения ФБ и КБ за 2020–2023."
+        },
+        {
+          "family": "Электронный бюджет — реестры (пример: реестр госзаданий) через EPBS API",
+          "frequency": "",
+          "history_from": "2015",
+          "history_to": "",
+          "unit": "записи реестра",
+          "decomposition": "по учреждению / заданию / году",
+          "format": "JSON",
+          "url": "https://budget.gov.ru/epbs/registry/rgz/data",
+          "notes": "Проба 2026-07-19: HTTP 200, JSON с pageSize/recordCount (десятки тысяч). Это реестры бюджетного процесса, не макро-статистика исполнения."
+        }
+      ]
+    },
+    {
+      "code": "Росрыболовство",
+      "full_name": "Федеральное агентство по рыболовству",
+      "role": "ФОИВ: отраслевая статистика добычи (вылова) водных биоресурсов, оперативный мониторинг вылова (ЦСМС), экспорт/импорт рыбопродукции (исторические таблицы)",
+      "official_site": "https://fish.gov.ru/",
+      "stats_portal": "https://fish.gov.ru/otraslevaya-deyatelnost/ekonomika-otrasli/statistika-i-analitika/",
+      "open_access": "да (PDF/XLS файлы на сайте; машиночитаемого OD-каталога/API нет)",
+      "api": "нет публичного API статистики",
+      "formats": ["PDF", "XLS"],
+      "volume_estimate": "квартальные PDF вылова с 2012 по 2025+; оперативные новости вылова; архив экспорт/импорт рыбы (XLS/PDF, в основном до 2021)",
+      "etl_difficulty_1_5": 4,
+      "notes": "Канон: «Сведения об улове рыбы и добыче других водных биоресурсов» — PDF нарастающим итогом за Q1/H1/9м/год. На странице статистики подтверждён непрерывный ряд квартальных файлов минимум с янв–март 2012 по янв–дек 2025. Оперативка — новости по данным ЦСМС (пример: вылов на 29.06.2026). Экспорт/импорт рыбы на той же странице — таблицы XLS/PDF, свежие выпуски обрываются ~2021.",
+      "datasets": [
+        {
+          "family": "Сведения об улове рыбы и добыче других водных биоресурсов (нарастающим итогом)",
+          "frequency": "Q",
+          "history_from": "2012",
+          "history_to": "2025",
+          "unit": "тонн",
+          "decomposition": "районы/бассейны добычи × виды водных биоресурсов (прил. к форме)",
+          "format": "PDF",
+          "url": "https://fish.gov.ru/otraslevaya-deyatelnost/ekonomika-otrasli/statistika-i-analitika/",
+          "notes": "Листинг: файлы «За январь – …» с 2012 по 2025 (год/квартал). Пример PDF 1кв2025: https://fish.gov.ru/wp-content/uploads/2025/06/1p_01-03_2025.pdf."
+        },
+        {
+          "family": "Оперативный вылов водных биоресурсов (отраслевая система мониторинга ЦСМС)",
+          "frequency": "W",
+          "history_from": "",
+          "history_to": "2026-06",
+          "unit": "тыс. тонн",
+          "decomposition": "бассейны (ДВ, Северный, Западный, АзЧер, Волго-Каспий, ИЭЗ/открытый океан); ключевые виды",
+          "format": "HTML (новости)",
+          "url": "https://fish.gov.ru/news/",
+          "notes": "Не табличный API: оперативные пресс-релизы. Пример 01.07.2026: вылов 2331,7 тыс. т на 29.06.2026. Частота нерегулярная (примерно еженедельно/по мере обновления)."
+        },
+        {
+          "family": "Экспорт и импорт РФ рыбы, рыбопродуктов и морепродуктов",
+          "frequency": "M",
+          "history_from": "2013",
+          "history_to": "2021-05",
+          "unit": "тонн / USD",
+          "decomposition": "экспорт/импорт; товарные группы",
+          "format": "XLS / PDF",
+          "url": "https://fish.gov.ru/otraslevaya-deyatelnost/ekonomika-otrasli/statistika-i-analitika/",
+          "notes": "На странице — архив помесячных XLS 2013–2019 и PDF 2019–май 2021. После 2021 свежих файлов в листинге нет."
+        }
+      ]
+    },
+    {
+      "code": "Росгидромет",
+      "full_name": "Федеральная служба по гидрометеорологии и мониторингу окружающей среды",
+      "role": "ФОИВ: гидрометеорологические наблюдения и климатические массивы; открытая выдача через подведомственный ВНИИГМИ-МЦД (meteo.ru) и АИСОРИ",
+      "official_site": "https://www.meteorf.gov.ru/",
+      "stats_portal": "http://meteo.ru/data/",
+      "open_access": "да (специализированные массивы ВНИИГМИ-МЦД; выборки через АИСОРИ / Web Аисори-М, часто нужна регистрация)",
+      "api": "нет публичного REST API; доступ — веб-выборка АИСОРИ (http://aisori-m.meteo.ru/waisori/) и файлы массивов (ASCII)",
+      "formats": ["ASCII (.dat)", "текстовые выборки АИСОРИ", "HTML справочники"],
+      "volume_estimate": "десятки специализированных массивов (температура, осадки, давление, ветер, снег, аэрология и др.); сотни станций; многодесятилетняя история",
+      "etl_difficulty_1_5": 3,
+      "notes": "Официальный сайт службы — meteorf.gov.ru; канон открытых климатических массивов — ФГБУ «ВНИИГМИ-МЦД» http://meteo.ru/data/ (статус электронных справочных изданий, Роспатент). Для ETL макропоказателей погоды/климата — не «один CSV», а станционные архивы + агрегация. Регистрация на aisori-m для полного доступа.",
+      "datasets": [
+        {
+          "family": "Основные метеорологические параметры (срочные данные, 8 сроков/сутки)",
+          "frequency": "D",
+          "history_from": "1966",
+          "history_to": "present",
+          "unit": "°C, гПа, м/с, мм, баллы облачности и др.",
+          "decomposition": "станция (индекс ВМО) × срок (3 ч) × элементы",
+          "format": "ASCII / АИСОРИ",
+          "url": "http://meteo.ru/data/basic-parameters/",
+          "notes": "Описание массива: «с 1966 года», 8 сроков. Выборка: http://aisori-m.meteo.ru/waisori/index.xhtml?idata=2. Свидетельство БД № 2014620549."
+        },
+        {
+          "family": "Температура воздуха и количество осадков (ежедневные данные, TTTR)",
+          "frequency": "D",
+          "history_from": "station-dependent",
+          "history_to": "present",
+          "unit": "°C; мм",
+          "decomposition": "станция × сутки; ~600 файлов IIIII.dat",
+          "format": "ASCII (.dat) / АИСОРИ",
+          "url": "http://meteo.ru/data/temperature-precipitation/",
+          "notes": "Массив TTTR; доступ Web Аисори-М idata=5. Начало ряда зависит от станции (часть станций — длинные ряды бывшего СССР; точный единый year-floor на странице не задан одним числом). Каталог станций на той же странице."
+        },
+        {
+          "family": "Месячные суммы осадков / температура / давление / снег / ветер (климатические массивы)",
+          "frequency": "M",
+          "history_from": "",
+          "history_to": "present",
+          "unit": "мм; °C; гПа; см; м/с",
+          "decomposition": "станция × месяц",
+          "format": "ASCII / АИСОРИ",
+          "url": "http://meteo.ru/data/",
+          "notes": "Подтверждены отдельные страницы массивов: precipitation-sum-monthly, temperature, atmospheric-pressure, snow-cover, wind-speed-surface и др. (листинг /data/ и /data/page/2/). history_from — в описании каждого массива."
+        },
+        {
+          "family": "Научно-прикладной справочник «Климат России»",
+          "frequency": "",
+          "history_from": "",
+          "history_to": "",
+          "unit": "климатические нормы / характеристики",
+          "decomposition": "станция / регион × параметр",
+          "format": "веб-справочник (регистрация)",
+          "url": "http://aisori-m.meteo.ru/climsprn/faces/index0a.xhtml",
+          "notes": "Бесплатно при регистрации; не time-series API, а справочные климатические характеристики."
+        }
+      ]
+    },
+    {
+      "code": "ФТС России",
+      "full_name": "Федеральная таможенная служба",
+      "role": "ФОИВ: таможенная статистика внешней торговли; открытые данные (реестры/служебные наборы); публикация итогов торговли",
+      "official_site": "https://customs.gov.ru/",
+      "stats_portal": "https://customs.gov.ru/statistic",
+      "open_access": "да (раздел статистики XLSX + OD CSV; ~34 набора в list.csv)",
+      "api": "нет публичного REST API таможенной статистики; файлы XLSX/CSV + ЛК участника ВЭД (edata.customs.ru) — не открытый bulk-API",
+      "formats": ["XLSX", "XLS", "CSV (OD)", "DOC/DOCX (методички)"],
+      "volume_estimate": "~34 набора OD (в основном реестры/вакансии/ТЛТ, не commodity trade); статистика внешней торговли — помесячные XLSX по странам/структуре (подтверждены файлы за 01–05.2026); детальные архивы до 2022 на том же разделе",
+      "etl_difficulty_1_5": 3,
+      "notes": "Важно: OD-каталог ФТС почти не содержит commodity-торговли по ТН ВЭД (list.csv — реестры складов, вакансии, проверки и т.п.). Макро/товарная статистика живёт в https://customs.gov.ru/statistic и подразделах vneshn-torg. На 2026-07-19 подтверждены свежие файлы страны052026.xlsx / структура052026.xlsx (май 2026). Детальные WEB_UTSA_* за янв 2022 и ранее всё ещё на сайте; полнота детализации после 2022 ограничена политикой публикации — фиксировать по фактическим файлам на странице.",
+      "datasets": [
+        {
+          "family": "Итоги внешней торговли со всеми странами (помесячно)",
+          "frequency": "M",
+          "history_from": "",
+          "history_to": "2026-05",
+          "unit": "млн USD / структура",
+          "decomposition": "страна-партнёр; экспорт/импорт",
+          "format": "XLSX",
+          "url": "https://customs.gov.ru/statistic/vneshn-torg/vneshn-torg-countries",
+          "notes": "Подтверждены файлы /storage/.../страны012026.xlsx … страны052026.xlsx и структура*052026.xlsx (опубликованы в 2026). history_from полного архива на странице не сведён одним числом."
+        },
+        {
+          "family": "Внешняя торговля — товарная структура / индексы / субъекты РФ (архив детальных таблиц)",
+          "frequency": "M",
+          "history_from": "",
+          "history_to": "2022-01",
+          "unit": "млн USD; индексы",
+          "decomposition": "ТН ВЭД / страны / субъекты РФ / индексы базисные и цепные",
+          "format": "XLSX / XLS",
+          "url": "https://customs.gov.ru/statistic",
+          "notes": "На хабе статистики подтверждены файлы WEB_UTSA_*.xlsx, индексы за 4кв2021/янв2022, ИМ_ДЗ_01_2022.xls. Для рядов после 2022 — проверять наличие файлов на актуальной странице (агрегаты по странам публикуются)."
+        },
+        {
+          "family": "Бюллетень «Таможенная статистика внешней торговли Российской Федерации»",
+          "frequency": "Q",
+          "history_from": "",
+          "history_to": "",
+          "unit": "таблицы внешней торговли",
+          "decomposition": "по методологии бюллетеня",
+          "format": "публикация (раздел statistic)",
+          "url": "https://customs.gov.ru/folder/765",
+          "notes": "Ссылка на бюллетень подтверждена со страницы vneshn-torg. Частота/глубина — по фактическим выпускам в папке."
+        },
+        {
+          "family": "Реестр наборов открытых данных ФТС (служебные/реестровые CSV)",
+          "frequency": "",
+          "history_from": "",
+          "history_to": "",
+          "unit": "реестровые записи",
+          "decomposition": "по типу реестра (склады, МБТ, ТЛТ, вакансии, проверки…)",
+          "format": "CSV",
+          "url": "https://customs.gov.ru/opendata/list.csv",
+          "notes": "Подтверждено ~34 набора (строки 7730…). Не замена таможенной статистике внешней торговли."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "priority_for_platform": [
+      "Минфин OpenDataAPI: fedbud_month (с 2011), DomesticDebt/ExternalDebt (M), volume_issues (W), нефтегаз XLSX 2018–2026",
+      "ФНС: 1-НМ CSV 7707329152-nmpn (+ HTML/XLS архив форм)",
+      "Казначейство: datamarts (2005–2022 помесячно) + перекрёст с Минфин CSV; EPBS JSON — реестры, не макро",
+      "ФТС: XLSX на customs.gov.ru/statistic (агрегаты 2026 живые); OD CSV — не trade",
+      "Росгидромет/ВНИИГМИ: meteo.ru массивы (1966+ срочные; TTTR daily) через АИСОРИ — высокий объём, нужен станционный ETL",
+      "Росрыболовство: PDF вылова Q с 2012 — низкий приоритет для макроплатформы, парсинг тяжёлый"
+    ],
+    "confirmed_apis": [
+      "https://minfin.gov.ru/OpenDataAPI/api/json/dataset (75 datasets)",
+      "https://budget.gov.ru/epbs/registry/rgz/data (JSON, Казначейство/Эл.бюджет)"
+    ],
+    "no_public_stats_api": [
+      "ФНС (только файлы OD/форм)",
+      "ФТС (только файлы)",
+      "Росрыболовство (PDF/XLS)",
+      "Росгидромет (АИСОРИ, не REST)"
+    ]
+  }
+}

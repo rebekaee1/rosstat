@@ -1,82 +1,124 @@
 # Forecast Economy — аналитическая платформа официальной макроэкономической статистики по странам
 
-Сбор, анализ и публикация официальных экономических данных: национальные
-статведомства, центральные банки, Евростат, BEA/FRED; по России — особенно глубоко
-(Росстат, Банк России, Минфин, 85 субъектов). Прогнозы, ежедневный ETL, SSR + SEO
-(~5 млн URL на хост), embed-виджеты, календарь публикаций, live ticker.
-EN: [forecasteconomy.com](https://forecasteconomy.com); RU: [ru.forecasteconomy.com](https://ru.forecasteconomy.com).
+Платформа для сбора, анализа и публикации официальных экономических данных по странам. Источники — национальные статистические ведомства, центральные банки, Евростат и МВФ; по России покрытие особенно глубокое (Росстат, Банк России, Минфин, 85 субъектов). Прогнозы, ежедневный ETL, SSR + SEO, embed-виджеты, календарь публикаций, live ticker (USD/EUR/CNY/BTC/Brent), аналитический MCP. Английский канон: [forecasteconomy.com](https://forecasteconomy.com); русский: [ru.forecasteconomy.com](https://ru.forecasteconomy.com).
 
-**AI-агентам:** начать с [`AGENTS.md`](AGENTS.md) и [`docs/STATE.md`](docs/STATE.md) (где остановились).
-Глоссарий и ловушки — [`CONTEXT.md`](CONTEXT.md); процесс и деплой — [`docs/workflow.md`](docs/workflow.md);
-источники — [`docs/data_sources.md`](docs/data_sources.md); решения — [`docs/adr/`](docs/adr/) (ADR-0001..0015);
-открытые задачи — [`docs/backlog.md`](docs/backlog.md).
-
-## Коротко для владельца
-
-- **Что это.** Сайт с официальной статистикой по странам: графики, таблицы,
-  прогнозы, быстрые страницы для поисковиков и ИИ-ассистентов.
-- **Как текут данные.**
-
-  ```
-  Росстат / ЦБ / Минфин / Евростат / ФРС …  →  сервер (ежедневная загрузка)
-    →  база данных  →  сайт и быстрые страницы  →  посетители и поисковики
-  ```
-
-- **Где что лежит.** Код — на Mac (`/Users/iprofi/tradingeconomics/rosstat`) и на
-  GitHub (`rebekaee1/rosstat`). Сайт работает на сервере (`ssh fe-prod`, папка
-  `/opt/rosstat`).
-- **Выкладка.** Только по вашей команде «деплой до …»: сервер сам делает бэкап,
-  собирает, проверяет 34 страницы и 15 минут следит; при сбое сам откатывается.
-- **Бэкапы.** Каждый день в 07:00 МСК на сервере (хранятся 14 дней), в 08:15
-  копия проверяется и скачивается на Mac в `~/Backups/forecasteconomy/`.
+**Точка входа в документацию (для AI-агентов и людей):** [`AGENTS.md`](AGENTS.md) — карта документации, режим работы, протокол актуализации.
+**Domain glossary и инварианты:** [`CONTEXT.md`](CONTEXT.md).
+**Рабочий процесс, локальный dev, прод-деплой:** [`docs/workflow.md`](docs/workflow.md).
+**Источники данных:** [`docs/data_sources.md`](docs/data_sources.md) (per-indicator карта `URL/endpoint/sheet/row`); parser internals — в docstrings `backend/app/services/*_parser.py`.
+**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0013).
+**Backlog работ:** [`docs/backlog.md`](docs/backlog.md).
 
 ## Архитектура
 
 ```
- Интернет ─► Caddy на хосте (HTTPS, CSP; forecasteconomy.com + ru.)
-               │
-               ▼
-     frontend: nginx :3000→80 (SPA-статика, rate-limit, SSR-прокси, OG-rewrite)
-               │
-               ▼
-     backend: FastAPI + Uvicorn + APScheduler (~40 job'ов; 1 воркер до perf batch 2)
-        │            │               │                 │
-        ▼            ▼               ▼                 ▼
-  PostgreSQL 16   Redis 7 кэш    redis-state         ClickHouse
-  (лимит 2,5 ГБ)  (256 МБ)       (сессии, квоты,     (OLAP-копия
-                                 локи; AOF)           аналитики)
-        ▲
-        └── ETL: Росстат, ЦБ РФ, Минфин, ЕМИСС, Eurostat, FRED/BEA/BLS, нац. ведомства
-```
+                     ┌──────────────────┐
+                     │     Caddy        │  HTTPS, CSP, reverse-proxy
+                     │  (forecasteconomy│
+                     │      .com)       │
+                     └─────┬────────┬───┘
+                           │        │
+              ┌────────────▼─┐    ┌─▼─────────────────────┐
+              │   Frontend   │    │      Backend          │
+              │  Nginx + SPA │    │  FastAPI + Uvicorn    │
+              │  React 19    │    │  APScheduler          │
+              │  Vite 7      │    │  SQLAlchemy 2 (async) │
+              └──────────────┘    └──┬──────────┬─────────┘
+                                     │          │
+                       ┌─────────────▼──┐    ┌──▼────────┐
+                       │  PostgreSQL 16 │    │  Redis 7  │
+                       └────────────────┘    └───────────┘
+                                     │
+                ┌────────────────────┼────────────────────┐
+                │                    │                    │
+        ┌───────▼─────┐      ┌───────▼─────┐      ┌───────▼─────┐
+        │   Росстат   │      │    ЦБ РФ    │      │   Минфин    │
+        │  (CPI, GDP, │      │  (key-rate, │      │  (бюджет:   │
+        │   labor,    │      │   FX, M0/   │      │   доходы,   │
+        │   industry, │      │   M1/M2,    │      │   расходы,  │
+        │   demo, …)  │      │   BoP, …)   │      │   баланс)   │
+        └─────────────┘      └─────────────┘      └─────────────┘
 
-Live ticker: MOEX ISS + Binance + CBR fallback → Redis → `/api/v1/ticker/live`.
-Forecast Analytics: Метрика / Вебмастер / GSC → warehouse → BI и MCP
-(`mcp/forecast-analytics-mcp/`, [`docs/analytics.md`](docs/analytics.md)).
+                       ┌─────────────────────────┐
+                       │  Forecast Analytics MCP │  Yandex.Metrika /
+                       │  (Yandex.* + warehouse) │  Webmaster → DB
+                       └─────────────────────────┘
+
+                       ┌─────────────────────────┐
+                       │     Live Ticker         │  USD/EUR/CNY/BTC/Brent
+                       │  MOEX ISS + Binance +   │  → Redis (TTL 30s)
+                       │  CBR XML fallback       │  → /api/v1/ticker/live
+                       └─────────────────────────┘
+```
 
 ## Стек
 
-- **Backend:** Python 3.12, FastAPI, SQLAlchemy 2 (asyncpg), Alembic, APScheduler,
-  statsmodels, pandas/openpyxl/httpx; Pillow для OG-картинок.
-- **Frontend:** React 19, Vite 7, Tailwind 4, TanStack Query 5, Recharts, React Router 7,
-  `@sentry/react`; nginx в контейнере `frontend`.
-- **Инфраструктура:** Docker Compose — 6 сервисов: `postgres`, `redis`,
-  `redis-state`, `backend`, `frontend`, `clickhouse`; Caddy на хосте; бэкапы
-  `scripts/pg-backup.sh`.
+### Backend
+
+- **FastAPI** + **Uvicorn** — async REST API.
+- **PostgreSQL 16** + **SQLAlchemy 2** (asyncpg) + **Alembic**.
+- **Redis 7** — кэш форкаст-результатов и rate limit.
+- **APScheduler** — ежедневный ETL (06:00 MSK), daily refresh official-source календаря (03:00 MSK), опциональный analytics scheduler (hourly :15 + daily).
+- **statsmodels** — 8 forecast strategies (`forecast_v2`, `arima`, `sarima`, `derived_forecast`, `derived_transform`, `weekly_yoy`, `approved`, `none`).
+- **pandas / openpyxl / xlrd / beautifulsoup4 / requests / httpx** — парсинг XLSX, HTML и API.
+- **Alerting** — JSON-логи в stdout + Telegram-канал для критических сбоев.
+
+### Frontend
+
+- **React 19** + **Vite 7** + **Tailwind 4** (dark editorial design).
+- **TanStack React Query 5** — data fetching и кэш.
+- **Recharts** — графики; **GSAP 3** — анимации.
+- **React Router 7** + **Axios** + **Lucide** + **xlsx** + **@sentry/react**.
+- **Nginx** внутри `frontend` контейнера — раздаёт статику Vite-сборки и проксирует SSR-запросы (Yandex/Google bot UA → backend `/seo/*`).
+
+### Инфраструктура
+
+- **Docker Compose** — 4 сервиса: `db` (Postgres), `redis`, `backend`, `frontend`.
+- **Caddy** — внешний reverse-proxy, HTTPS-сертификат, CSP-политики (Yandex.Metrika, Sentry, Webmaster, шрифты).
+- **Yandex.Metrika** + **Yandex.Webmaster** — публичная аналитика и контроль индексирования.
+- **Forecast Analytics OS / MCP** — отдельный модуль для агрегации Yandex.* данных и сценариев в backend (см. `docs/analytics_api_inventory/`).
 
 ## Быстрый старт
 
+### Локально через Docker Compose
+
 ```bash
 cp .env.example .env
-docker compose up -d --build        # сайт: http://localhost:3000
-cd frontend && npm ci && npm run dev  # Vite: http://localhost:5173
+docker compose up -d --build
 ```
 
-`backend/entrypoint.sh`: `alembic upgrade head` → идемпотентный `seed_data.py` →
-календарь → Uvicorn. Swagger — `http://localhost:8000/api/docs` только при
-`RUSTATS_DEBUG=true`. Vite по умолчанию проксирует `/api` на прод; локальный
-backend — `VITE_DEV_API_PROXY=http://127.0.0.1:8000` в `frontend/.env.local`.
+Backend `entrypoint.sh` сам:
 
-Проверки: `./scripts/check-all.sh` (эквивалент CI). Регламент — [`docs/workflow.md`](docs/workflow.md).
+1. Применяет Alembic-миграции (`alembic upgrade head`).
+2. Идемпотентно заливает `seed_data.py` (104 индикатора, источники, категории).
+3. Сидит календарь публикаций на 12 месяцев вперёд.
+4. Поднимает Uvicorn.
+
+После этого:
+
+- API: `http://localhost:8000/api/v1/...`
+- Swagger: `http://localhost:8000/api/docs` (только при `DEBUG=true`).
+- Frontend: `http://localhost:3000` (через nginx из контейнера `frontend`).
+
+### Только фронтенд против прода (без локального backend)
+
+```bash
+cd frontend && npm install && npm run dev
+```
+
+Vite-прокси по умолчанию направляет `/api` на `https://forecasteconomy.com` — графики и форкасты работают на реальных данных, без поднятия Postgres/Redis локально.
+
+Чтобы переключиться на локальный backend, добавьте в `frontend/.env.local`:
+
+```
+VITE_DEV_API_PROXY=http://127.0.0.1:8000
+```
+
+## Проверки и регламент
+
+- **CI-эквивалент локально:** `./scripts/check-all.sh` — pytest + frontend lint/test/build.
+- **Полный регламент:** см. [`docs/workflow.md`](docs/workflow.md).
+- **Чеклист устойчивости (rate limit, CORS, asset-hash, бэкап):** [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md).
 
 ## API
 
@@ -99,8 +141,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 
 ## Индикаторы
 
-Счётчики не фиксируем вручную — актуальное число в `seed_data.py`,
-`docs/indicator-index.md` и `/api/v1/system/status`.
+100+ активных индикаторов, разнесённые по 10 категориям (счётчики не фиксируем — растут постоянно; актуальное число в `seed_data.py` и в `/api/v1/system/status`).
 
 | Категория (slug) | DB category | Покрытие |
 |------------------|-------------|----------|
@@ -133,34 +174,73 @@ Source-индикаторы (118) извлекаются через 34 парс�
 
 ```
 rosstat/
-├── backend/app/{api,core,services,tasks,data}  # роуты, кэш, парсеры/сервисы, планировщик, реестры
-├── backend/alembic/versions/                   # миграции
-├── backend/seed_data.py, entrypoint.sh          # идемпотентный seed, старт
-├── frontend/src/{components,pages,lib}, nginx.conf
-├── scripts/  check-all.sh · deploy.sh (прод-деплой с автооткатом) · pg-backup.sh (ежедневный дамп)
-├── deploy/   approved-shas.txt (одобренные SHA) · fail2ban/ · optional/ · mac/ (копия бэкапа на Mac)
-├── docs/     STATE.md · workflow.md · data_sources.md · indicators.md · analytics.md · backlog.md · adr/ (ADR-0001..0015)
-├── mcp/forecast-analytics-mcp/
-├── Caddyfile, docker-compose.yml
-└── AGENTS.md, CONTEXT.md, README.md
+├── backend/
+│   ├── app/
+│   │   ├── api/            # FastAPI routes (indicators, forecasts, calendar, embed,
+│   │   │                   #   dashboard, demographics, analytics, system, seo, sitemap)
+│   │   ├── core/           # cache (Redis), deps, helpers
+│   │   ├── services/       # parsers (24 файла), forecaster, calculation_engine,
+│   │   │                   #   derived_ops, calendar_seed, alerting, seo_renderer
+│   │   ├── tasks/          # scheduler, analytics_scheduler
+│   │   ├── analytics/      # Forecast Analytics OS — Yandex clients, warehouse, MCP
+│   │   ├── config.py       # pydantic-settings
+│   │   ├── database.py     # async engine, sessionmaker
+│   │   ├── models.py       # ORM (Indicator, IndicatorData, Forecast, FetchLog, …)
+│   │   └── main.py         # FastAPI app + lifespan + middleware
+│   ├── alembic/            # миграции
+│   ├── certs/              # Russian Trusted CA (нужен для https-походов на Росстат)
+│   ├── seed_data.py        # идемпотентный seeder (104 индикатора)
+│   └── entrypoint.sh
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # Navbar, Footer, Chart, MetricCard, EmbedHelpers, …
+│   │   ├── pages/          # Home, Category, IndicatorDetail, Calendar, Embed, …
+│   │   └── lib/            # api client, categories.js, formatters, hooks
+│   ├── nginx.conf          # SPA + SSR-bot-proxy + asset hashing
+│   └── Dockerfile
+├── scripts/
+│   ├── check-all.sh        # CI-эквивалент локально
+│   ├── pg-backup.sh        # pg_dump перед прод-деплоем
+│   ├── deploy.sh           # обвязка sshscript для прод-деплоя
+│   ├── sync-local-from-prod.py
+│   ├── rebuild-all-derived.py
+│   ├── seo-audit.py
+│   └── analytics-smoke.py
+├── docs/
+│   ├── adr/                # архитектурные решения (нумерованные ADR-0001..0006)
+│   ├── analytics_api_inventory/  # инвентарь Yandex API (Metrika, Webmaster, …)
+│   ├── data_sources.md     # карта «индикатор → файл/endpoint» (118 source)
+│   ├── missed_data_audit.md  # reference: ещё не извлечённые поля в source-файлах
+│   ├── workflow.md         # dev процесс, smoke C, прод-деплой
+│   ├── enterprise_resilience.md  # rate limit / CSP / asset-hash trap / канарейка
+│   └── backlog.md          # живой бэклог (приоритеты + история)
+├── mcp/                    # Forecast Analytics MCP server (отдельный контейнер)
+├── Caddyfile
+├── docker-compose.yml
+├── CONTEXT.md              # глоссарий и архитектурный язык — главная точка входа
+└── README.md
 ```
 
 ## Деплой
 
-Только по явной команде владельца и SHA из `deploy/approved-shas.txt`;
-запуск `scripts/deploy.sh` на сервере через `nohup` (~25 мин): бэкап → сборка →
-очистка SSR-кэша → smoke + 34 страницы RU/EN → 15-минутный watch с автооткатом.
-Пошагово — [`docs/workflow.md`](docs/workflow.md#прод-деплой).
+См. полную процедуру в [`docs/workflow.md::Прод-деплой`](docs/workflow.md). Ключевые моменты:
+
+1. `pg_dump | gzip > /opt/rosstat/backups/pre-deploy-<timestamp>.sql.gz` — обязательно перед каждым релизом.
+2. `git pull && docker compose build backend frontend && docker compose up -d backend frontend` — backend и frontend пересобирать и поднимать **вместе** (asset-hash mismatch trap, см. `enterprise_resilience.md`). Backend на старте сам прогонит `_catch_up_empty_indicators` для новых indicators с 0 точек.
+3. Alembic-миграции применяются автоматически из `entrypoint.sh`.
+4. Smoke C — health-чеки (`/api/v1/health`, `/api/v1/analytics/health`), SSR-сверка через `User-Agent: YandexBot/3.0`, `scripts/seo-audit.py`. Детали — в `docs/workflow.md::Smoke C`.
 
 ## Что автоматизировано
 
 | Процесс | Как |
 |---------|-----|
-| Миграции и seed | `entrypoint.sh` при каждом старте |
-| Startup catch-up | `_catch_up_empty_indicators()` догоняет ETL для индикаторов без точек |
-| ETL | 06:00 и 20:00 МСК + late-Minfin 15:00, late-FRED, мировые job'ы |
-| Календарь | ежедневно 03:00 МСК, только official-source даты |
-| Sitemap | ночная сборка 03:40 МСК, шарды по 10 000 URL |
-| Прогнозы и derived | после ETL, если источник принёс новые точки |
-| Бэкапы | 07:00 МСК на сервере (14 дней) + 08:15 копия на Mac |
-| Auto-restart | `restart: unless-stopped` |
+| Миграции БД | `entrypoint.sh` → `alembic upgrade head` при каждом старте |
+| Первичный seed | `entrypoint.sh` → идемпотентный `seed_data.py` |
+| Startup catch-up | `app/main.py::_catch_up_empty_indicators()` — после lifespan startup догоняет ETL для всех `is_active=true` индикаторов с 0 точками (новые индикаторы дотягиваются без ручного `run_etl_for_indicator`) |
+| Ежедневный ETL | APScheduler cron 06:00 и 20:00 MSK (все `is_active=true` source-индикаторы; 117 source через `PARSER_REGISTRY`) + late-Minfin 15:00 |
+| Calendar refresh | APScheduler daily 03:00 MSK: official-source ingest, rolling 12 мес, public official-only |
+| Forecast retrain | После каждого изменения данных (если `records_added>0`) |
+| Derived recompute | Каскадно после ETL (если хотя бы один source-индикатор обновился) |
+| Cache invalidation | После forecast retrain — Redis-ключи протухают |
+| Auto-restart | `restart: unless-stopped` для всех сервисов |
+| Russian Trusted CA | Сертификат в `backend/certs/` для походов на Росстат |

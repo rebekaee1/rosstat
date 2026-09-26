@@ -1792,7 +1792,7 @@ _WORLD_YEARS_COUNT = select(func.count()).select_from(
     .subquery()
 )
 
-# Порядок секций = приоритет очереди переобхода.
+# Порядок секций = приоритет очереди переобхода (AGENTS.md::site_urls).
 _SIMPLE_SECTION_ORDER = [
     "core",
     "today",

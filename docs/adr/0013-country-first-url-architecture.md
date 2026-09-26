@@ -1,10 +1,10 @@
 # ADR-0013 — Страна как первый сегмент URL (path-cut, затем языковой сплит `ru.` + apex)
 
-- **Status:** Accepted (реализовано: страна — первый сегмент URL, `ru.` = RU, apex = EN; на проде)
+- **Status:** Proposed (проектирование 2026-08-16; реализация отдельным заходом)
 - **Date:** 2026-08-16
 - **Last verified:** 2026-09-03 (apex = EN, `ru.` = RU; geo людям из РФ, ботов не редиректим)
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md), [`ADR-0008`](0008-regional-bounded-context.md), [`ADR-0011`](0011-world-eurostat-data-plane.md)
-- **Backlog:** карта миграции URL и решения звонка 14 (Р-1…Р-3, §F) реализованы и удалены из `docs/backlog.md` 2026-09-26; полный текст — `git show 41539a9:docs/backlog.md`. Ссылки «backlog §F» ниже относятся к этой версии.
+- **Backlog:** [`docs/backlog.md`](../backlog.md) — раздел «Карта миграции URL (ADR-0013)» + решения звонка 14 (Р-1…Р-3)
 
 ---
 

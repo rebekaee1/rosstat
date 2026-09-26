@@ -4,7 +4,7 @@
 **Date:** 2026-05-07.
 **Last verified:** 2026-09-03 (статические sitemap + INDEX_POLICY).
 **Part of:** [`../../CONTEXT.md`](../../CONTEXT.md) (раздел `SEO meta bundle` + «Asset-hash mismatch trap»).
-**Related:** [ADR-0002](0002-derived-always-reflects-source.md) (паттерн single-source-of-truth), [`CONTEXT.md`](../../CONTEXT.md) (asset-hash trap, CSP).
+**Related:** [ADR-0002](0002-derived-always-reflects-source.md) (паттерн single-source-of-truth), [`../enterprise_resilience.md`](../enterprise_resilience.md) (asset-hash trap, CSP).
 **Code anchors:** `backend/app/services/seo_renderer.py`, `backend/app/services/seo_content.py`, `backend/app/api/seo_pages.py`, `frontend/nginx.conf` (location-блоки `/seo/*` и `/__spa-index.html`).
 
 ## Context
@@ -99,7 +99,7 @@ Backend в `seo_renderer.get_app_assets()` ходит на
   ещё ходит к закэшированному `__spa-index.html` (TTL до 5 минут), HTML будет
   ссылаться на устаревшие hash'и — браузер получит 404 на ассеты. Mitigation:
   всегда `docker compose build backend frontend && docker compose up -d backend frontend`
-  одновременно. См. операционные инварианты в `CONTEXT.md`.
+  одновременно. См. `docs/enterprise_resilience.md` и операционные инварианты в `CONTEXT.md`.
 - Тексты `seo_content.py` и `frontend/src/lib/categories.js` дублируются и могут
   разойтись. Каждый PR, меняющий тексты категорий, должен затрагивать оба места —
   это отслеживается ревью и комментарием в `categories.js`.

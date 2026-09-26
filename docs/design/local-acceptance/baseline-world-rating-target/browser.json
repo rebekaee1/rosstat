@@ -1,0 +1,460 @@
+{
+  "at": "2026-09-24T06:21:51.154Z",
+  "base": "http://127.0.0.1:3000",
+  "mode": "browser",
+  "tier": "matrix",
+  "stage": "baseline-world-rating-target",
+  "head": "b76bad33e24517608b154220d1a2e32be37a27c5",
+  "http": [],
+  "api": [],
+  "browser": [
+    {
+      "id": "world-rating-year",
+      "family": "ssr-world-rating-year",
+      "engine": "chromium",
+      "width": 390,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Страница не найдена — Forecast Economy",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Страница не найдена",
+            "x": 16,
+            "y": 180,
+            "width": 358,
+            "height": 37.5,
+            "right": 374,
+            "bottom": 217.5
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 697.0625,
+          "right": 390,
+          "bottom": 697.0625
+        },
+        "font": "\"DM Sans\", system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-aZzbpXae.css",
+          "http://127.0.0.1:3000/assets/main-CUs58uJB.js"
+        ],
+        "charts": [],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "ОШИБКА 404\n\nСтраница не найдена\n\nТакой страницы нет или она переехала. Вот с чего можно продолжить — или откройте поиск в шапке.\n\nВсе экономические индикаторы России\nСтатистика по регионам России\nРейтинг стран\nСравнение показателей\nКалендарь публикаций статистики\nНа главную",
+        "offscreen": []
+      }
+    },
+    {
+      "id": "world-rating-year",
+      "family": "ssr-world-rating-year",
+      "engine": "chromium",
+      "width": 1440,
+      "locale": "ru",
+      "url": "http://127.0.0.1:3000/world/rating/gdp-usd/2024",
+      "errors": [],
+      "failedRequests": [],
+      "blockedExternal": [
+        "https://mc.yandex.ru/metrika/tag.js"
+      ],
+      "badResponses": [
+        {
+          "url": "http://127.0.0.1:3000/api/v1/auth/me",
+          "status": 401
+        }
+      ],
+      "cookiesBefore": 0,
+      "status": 200,
+      "document": {
+        "title": "Страница не найдена — Forecast Economy",
+        "lang": "ru",
+        "h1": [
+          {
+            "text": "Страница не найдена",
+            "x": 352,
+            "y": 180,
+            "width": 736,
+            "height": 45,
+            "right": 1088,
+            "bottom": 225
+          }
+        ],
+        "overflow": 0,
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "main": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 678.5625,
+          "right": 1440,
+          "bottom": 678.5625
+        },
+        "font": "\"DM Sans\", system-ui, sans-serif",
+        "fontFaces": [
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "DM Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "loaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "JetBrains Mono",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          },
+          {
+            "family": "Playfair Display",
+            "status": "unloaded"
+          }
+        ],
+        "assets": [
+          "https://mc.yandex.ru/metrika/tag.js?id=107136069",
+          "http://127.0.0.1:3000/consent.js",
+          "http://127.0.0.1:3000/fonts/fonts.css",
+          "http://127.0.0.1:3000/assets/main-aZzbpXae.css",
+          "http://127.0.0.1:3000/assets/main-CUs58uJB.js"
+        ],
+        "charts": [],
+        "seoFast": false,
+        "spaChildren": 8,
+        "images": [],
+        "empty": false,
+        "mainTextStart": "ОШИБКА 404\n\nСтраница не найдена\n\nТакой страницы нет или она переехала. Вот с чего можно продолжить — или откройте поиск в шапке.\n\nВсе экономические индикаторы России\nСтатистика по регионам России\nРейтинг стран\nСравнение показателей\nКалендарь публикаций статистики\nНа главную",
+        "offscreen": []
+      }
+    }
+  ],
+  "inventory": null,
+  "issues": [
+    {
+      "kind": "soft-not-found",
+      "id": "chromium:world-rating-year:390:ru",
+      "detail": [
+        {
+          "text": "Страница не найдена",
+          "x": 16,
+          "y": 180,
+          "width": 358,
+          "height": 37.5,
+          "right": 374,
+          "bottom": 217.5
+        }
+      ]
+    },
+    {
+      "kind": "soft-not-found",
+      "id": "chromium:world-rating-year:1440:ru",
+      "detail": [
+        {
+          "text": "Страница не найдена",
+          "x": 352,
+          "y": 180,
+          "width": 736,
+          "height": 45,
+          "right": 1088,
+          "bottom": 225
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Family sampling, not a crawl of every public URL.",
+    "Desktop engines with emulated viewports, not physical devices.",
+    "EN preview intentionally noindex; production host cutover is not changed.",
+    "Git HEAD identifies the working checkout, not the deployed compose image; response hashes and asset paths identify observed content."
+  ],
+  "sitemap": {
+    "status": 200,
+    "builtAt": "2026-09-22T12:49:17+00:00",
+    "urlsTotal": 1846206,
+    "publishedUrlsTotal": 1846206,
+    "hosts": [
+      "forecasteconomy.com"
+    ],
+    "groups": {
+      "core": 163,
+      "today": 11,
+      "ratings": 492,
+      "maps": 493,
+      "regions": 95,
+      "region-vs": 3570,
+      "world-ratings": 591,
+      "world": 54,
+      "calendar": 16,
+      "world-vs": 12135,
+      "years": 3251,
+      "months": 11392,
+      "world-indicators": 35997,
+      "regional": 45553,
+      "regional-years": 944076,
+      "world-years": 788317
+    }
+  },
+  "completedAt": "2026-09-24T06:21:56.809Z",
+  "summary": {
+    "httpCases": 0,
+    "apiCases": 0,
+    "browserCases": 2,
+    "issues": 2,
+    "issueKinds": {
+      "soft-not-found": 2
+    }
+  }
+}

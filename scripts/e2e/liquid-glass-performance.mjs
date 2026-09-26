@@ -46,5 +46,5 @@ try {
     await context.close();
   }
 } finally { await browser.close(); }
-fs.mkdirSync('output/design-acceptance/results', { recursive: true });
-fs.writeFileSync(`output/design-acceptance/results/${args.output || 'performance-lab'}.json`, JSON.stringify(report, null, 2)+'\n');
+fs.mkdirSync('docs/design/local-acceptance', { recursive: true });
+fs.writeFileSync(`docs/design/local-acceptance/${args.output || 'performance-lab'}.json`, JSON.stringify(report, null, 2)+'\n');

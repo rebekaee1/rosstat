@@ -1,0 +1,503 @@
+{
+  "agent": "03",
+  "subjects": [
+    {
+      "code": "minzdrav",
+      "full_name": "Министерство здравоохранения Российской Федерации",
+      "official_site": "https://minzdrav.gov.ru/",
+      "stats_portal": "https://minzdrav.gov.ru/ministry/61/22/stranitsa-979/statisticheskie-i-informatsionnye-materialy/statisticheskie-materialy",
+      "role": "ФОИВ: отраслевая медицинская статистика, реестры ЛС/ЖНВЛП, методология федерального статистического наблюдения в здравоохранении (сбор через ЦНИИОИЗ / МЕДСТАТ)",
+      "open_access": "partial",
+      "api": false,
+      "formats": [
+        "DOC",
+        "DOCX",
+        "CSV",
+        "JSON",
+        "XML"
+      ],
+      "etl_difficulty_1_5": 4,
+      "volume_estimate": "десятки DOC/DOCX-сборников (2014–2018 на сайте Минздрава) + десятки наборов opendata (реестры); актуальные своды ЦНИИОИЗ — преимущественно закрытый контур МИАЦ",
+      "notes": "На minzdrav.gov.ru в разделе статистических материалов публично лежат сборники 2014–2018 (DOC/DOCX). Более свежие сводные сборники на этой странице не найдены (проверено 2026-07-19). ЦНИИОИЗ (mednet.ru) ведёт медицинскую статистику; раздел «Сборники статистических материалов» помечен как закрытый доступ. Открытые данные Минздрава — в основном справочники/реестры, не длинные временные ряды заболеваемости.",
+      "datasets": [
+        {
+          "family": "Статистические сборники Минздрава (заболеваемость, кадры, коечный фонд, охрана материнства и детства, основные показатели)",
+          "frequency": "annual",
+          "history_from": "2014",
+          "history_to": "2018",
+          "unit": "разные (абсолютные числа, обеспеченность на 10 тыс., дни и др.)",
+          "decomposition": "РФ / субъекты РФ (по содержанию файлов сборника)",
+          "format": "DOC/DOCX",
+          "url": "https://minzdrav.gov.ru/ministry/61/22/stranitsa-979/statisticheskie-i-informatsionnye-materialy/statisticheskie-materialy",
+          "notes": "Подтверждены подразделы сборников 2014–2018. Пример файлов 2018: социально-значимые заболевания; кадры; коечный фонд; основные показатели здравоохранения (static-0.minzdrav.gov.ru/system/attachments/...)."
+        },
+        {
+          "family": "Средняя длительность пребывания пациента на койке",
+          "frequency": "annual",
+          "history_from": "2014",
+          "history_to": "2015",
+          "unit": "дни",
+          "decomposition": "субъекты РФ",
+          "format": "CSV/JSON/XML",
+          "url": "https://minzdrav.gov.ru/opendata/7707778246-srednyayadlitelnostprebyvaniyapacientanakojke",
+          "notes": "Паспорт: данные за 2014 и 2015; первая публикация 01.04.2016; набор выглядит не обновляемым."
+        },
+        {
+          "family": "Государственный реестр лекарственных средств (ГРЛС)",
+          "frequency": "irregular/as_updated",
+          "history_from": null,
+          "history_to": null,
+          "unit": "реестровые записи",
+          "decomposition": "препараты / регистрационные записи",
+          "format": "CSV/JSON/XML",
+          "url": "https://minzdrav.gov.ru/opendata/7707778246-grls",
+          "notes": "Открытый набор + канонический реестр grls.rosminzdrav.ru. Не макроэкономический ряд; справочник."
+        },
+        {
+          "family": "Государственный реестр предельных отпускных цен ЖНВЛП",
+          "frequency": "irregular/as_updated",
+          "history_from": null,
+          "history_to": null,
+          "unit": "руб. (предельные цены)",
+          "decomposition": "препараты ЖНВЛП",
+          "format": "CSV/JSON/XML",
+          "url": "https://minzdrav.gov.ru/opendata/7707778246-gosreestrpredelnyhotpusknyhcen",
+          "notes": "Открытый набор цен производителей на ЖНВЛП."
+        },
+        {
+          "family": "ЦНИИОИЗ: федеральная медицинская статистика (сбор/свод)",
+          "frequency": "annual",
+          "history_from": null,
+          "history_to": null,
+          "unit": "разные",
+          "decomposition": "субъекты РФ (через МИАЦ)",
+          "format": "closed portal / internal systems",
+          "url": "https://mednet.ru/napravleniya/mediczinskaya-statistika/",
+          "notes": "Подтверждено: ЦНИИОИЗ собирает формы федерального наблюдения от МИАЦ субъектов. Публичные сборники на сайте — закрытый доступ. ETL без спецдоступа затруднён."
+        }
+      ]
+    },
+    {
+      "code": "rospotrebnadzor",
+      "full_name": "Федеральная служба по надзору в сфере защиты прав потребителей и благополучия человека",
+      "official_site": "https://www.rospotrebnadzor.ru/",
+      "stats_portal": "https://opendata.rospotrebnadzor.ru/",
+      "role": "ФОИВ: санитарно-эпидемиологический надзор, защита прав потребителей, социально-гигиенический мониторинг, госдоклады",
+      "open_access": true,
+      "api": false,
+      "formats": [
+        "PDF",
+        "XLSX",
+        "XML",
+        "CSV"
+      ],
+      "etl_difficulty_1_5": 3,
+      "volume_estimate": "ежегодные госдоклады (PDF, сотни стр.) + формы 1-КЧ (XLSX) + несколько opendata-наборов (часть устарела)",
+      "notes": "Лучший машиночитаемый слой — zpp.rospotrebnadzor.ru (формы статистического наблюдения, XLSX). Opendata-портал содержит реестры/планы и отдельные статнаборы (вода, вакцинация), но ряд паспортов с датой изменений 2018. Госдоклад СЭБ 2024 подтверждён PDF.",
+      "datasets": [
+        {
+          "family": "Государственный доклад «О состоянии санитарно-эпидемиологического благополучия населения РФ»",
+          "frequency": "annual",
+          "history_from": null,
+          "history_to": "2024",
+          "unit": "разные (эпидпоказатели, гигиена, мониторинг)",
+          "decomposition": "РФ / регионы (в тексте доклада)",
+          "format": "PDF",
+          "url": "https://www.rospotrebnadzor.ru/documents/details.php?ELEMENT_ID=30171",
+          "notes": "Подтверждён доклад за 2024 год; файл GD_SEB.pdf (публикация 2025). Глубину архива по годам на этой странице не фиксируем без отдельного листинга."
+        },
+        {
+          "family": "Форма № 1-КЧ: качество проверенных потребительских товаров и нарушения норм торговли",
+          "frequency": "annual",
+          "history_from": null,
+          "history_to": "2024",
+          "unit": "число проверок / нарушений (по форме)",
+          "decomposition": "РФ / субъекты (раздел позволяет выбирать субъект)",
+          "format": "XLSX",
+          "url": "https://zpp.rospotrebnadzor.ru/info/stat/532292",
+          "notes": "Подтверждён файл «форма № 1-КЧ за 2024 год» (XLSX). Раздел: https://zpp.rospotrebnadzor.ru/info/stat"
+        },
+        {
+          "family": "Статистика: доля населения, обеспеченного качественной питьевой водой из систем централизованного водоснабжения",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "%",
+          "decomposition": null,
+          "format": "XML/CSV (passport)",
+          "url": "http://opendata.rospotrebnadzor.ru/7707515984-statwater/",
+          "notes": "Паспорт набора на opendata.rospotrebnadzor.ru; первая публикация 2015; последнее изменение структуры 2018. Актуальность ряда после 2018 не подтверждена."
+        },
+        {
+          "family": "Статистика: число привитых лиц против инфекционных заболеваний",
+          "frequency": "irregular",
+          "history_from": null,
+          "history_to": null,
+          "unit": "число лиц",
+          "decomposition": null,
+          "format": "XML",
+          "url": "http://opendata.rospotrebnadzor.ru/7707515984-statvaccine/",
+          "notes": "Паспорт: первая публикация 30.04.2015; последнее изменение 03.12.2018. Свежие годы в паспорте не указаны."
+        },
+        {
+          "family": "План плановых проверок ЮЛ/ИП (Роспотребнадзор)",
+          "frequency": "annual",
+          "history_from": null,
+          "history_to": null,
+          "unit": "реестр проверок",
+          "decomposition": "территории / объекты контроля",
+          "format": "XML/CSV",
+          "url": "https://opendata.rospotrebnadzor.ru/",
+          "notes": "Набор 7707515984-planinspect в реестре открытых данных. Административный, не макроряд."
+        }
+      ]
+    },
+    {
+      "code": "rostrud",
+      "full_name": "Федеральная служба по труду и занятости",
+      "official_site": "https://rostrud.gov.ru/",
+      "stats_portal": "https://trudvsem.ru/opendata",
+      "role": "ФОИВ: надзор за трудовым законодательством, занятость, портал «Работа в России», регистрируемый рынок труда",
+      "open_access": true,
+      "api": true,
+      "formats": [
+        "JSON",
+        "CSV",
+        "XML",
+        "XLSX",
+        "PDF"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "крупные срезы вакансий/резюме (миллионы записей на trudvsem) + каталог наборов на rostrud.gov.ru/opendata (list.xml) + ежемесячные XLSX показателей рынка труда",
+      "notes": "Самый сильный ETL-контур среди шести субъектов: API вакансий + выгрузки CSV/XML/JSON + XLSX «Основные показатели рынка труда». Открытые данные по рынку труда явно перенаправлены на trudvsem.ru/opendata. На rostrud.gov.ru/opendata — API фильтрации и list.xml.",
+      "datasets": [
+        {
+          "family": "Статистическая информация о ситуации на регистрируемом рынке труда",
+          "frequency": "unspecified_in_passport",
+          "history_from": null,
+          "history_to": null,
+          "unit": "показатели регистрируемого рынка труда",
+          "decomposition": "субъекты РФ (типично для набора; точная схема — в structure файла)",
+          "format": "CSV/JSON/XML",
+          "url": "https://rostrud.gov.ru/opendata/",
+          "notes": "Идентификатор в list.xml: 7712345678-dataset5-{csv|json|xml}. Заголовок подтверждён в каталоге открытых данных Роструда."
+        },
+        {
+          "family": "Основные показатели рынка труда в субъектах РФ (информирование о положении на рынке труда)",
+          "frequency": "monthly",
+          "history_from": null,
+          "history_to": "2026-05",
+          "unit": "безработные, потребность в кадрах, уровень регистрируемой безработицы и др.",
+          "decomposition": "субъекты РФ",
+          "format": "XLSX",
+          "url": "https://trudvsem.ru/opendata",
+          "notes": "На странице opendata подтверждён файл «Основные показатели рынка труда по состоянию на 1 мая 2026 г.xlsx» (путь /information/resources/upload/opendata/labor-market-indicators/...). Полный архив дат не выгружался."
+        },
+        {
+          "family": "Прогноз баланса трудовых ресурсов",
+          "frequency": "annual_or_periodic",
+          "history_from": null,
+          "history_to": null,
+          "unit": "баланс трудовых ресурсов / потребность в кадрах",
+          "decomposition": null,
+          "format": "XLSX (раздел на портале)",
+          "url": "https://trudvsem.ru/opendata",
+          "notes": "Раздел подтверждён на trudvsem.ru/opendata. Конкретные годы файла в этом проходе не скачивались — history_* не заполняем."
+        },
+        {
+          "family": "Вакансии ЕЦП «Работа в России» (открытые данные + API)",
+          "frequency": "continuous/near_realtime",
+          "history_from": null,
+          "history_to": null,
+          "unit": "вакансии (штуки/записи)",
+          "decomposition": "регион / работодатель / отрасль",
+          "format": "JSON API; также XML/JSON/CSV выгрузки",
+          "url": "https://trudvsem.ru/opendata/api",
+          "notes": "API: http://opendata.trudvsem.ru/api/v1/vacancies (JSON, GET, до 10k записей на ответ). Каталог наборов: https://trudvsem.ru/opendata/datasets"
+        },
+        {
+          "family": "Резюме (деперсонализированные) и аналитика портала «Работа в России»",
+          "frequency": "updated",
+          "history_from": null,
+          "history_to": null,
+          "unit": "записи резюме / аналитические агрегаты",
+          "decomposition": "по полям наборов",
+          "format": "XML/JSON/CSV",
+          "url": "https://trudvsem.ru/opendata/datasets",
+          "notes": "На странице наборов указаны резюме и аналитика по гражданам/работодателям; даты обновления наборов на портале включают 2026-07."
+        },
+        {
+          "family": "Реестр аккредитованных частных агентств занятости",
+          "frequency": "as_updated",
+          "history_from": null,
+          "history_to": null,
+          "unit": "организации",
+          "decomposition": null,
+          "format": "CSV/JSON/XML",
+          "url": "https://rostrud.gov.ru/opendata/7712345678-chaz/table.html",
+          "notes": "Набор 7712345678-chaz в каталоге Роструда."
+        }
+      ]
+    },
+    {
+      "code": "mintsifry",
+      "full_name": "Министерство цифрового развития, связи и массовых коммуникаций Российской Федерации",
+      "official_site": "https://digital.gov.ru/",
+      "stats_portal": "https://reestr.digital.gov.ru/",
+      "role": "ФОИВ: цифровая трансформация, связь, массовые коммуникации; оператор/координатор контура открытых данных и реестра российского ПО; аккредитация ИТ-компаний",
+      "open_access": "partial",
+      "api": false,
+      "formats": [
+        "HTML registry",
+        "XLS/XML export (реестр ПО)",
+        "portal data.gov.ru"
+      ],
+      "etl_difficulty_1_5": 4,
+      "volume_estimate": "реестр ПО: порядка десятков тысяч записей (счётчик на сайте); отдельного публичного каталога длинных макрорядов ICT на digital.gov.ru в этом проходе не подтверждено",
+      "notes": "digital.gov.ru и data.gov.ru отвечают. Отдельной витрины «статистика цифровой экономики» с Excel-рядами на digital.gov.ru в доступных страницах не найдено. Подтверждены: Единый реестр российского ПО (reestr.digital.gov.ru) и сервис реестра аккредитованных ИТ-компаний на Госуслугах (gosuslugi.ru/itorgs). Макропоказатели ICT чаще публикует Росстат/ИСИЭЗ — вне прямой публикации Минцифры.",
+      "datasets": [
+        {
+          "family": "Единый реестр российских программ для ЭВМ и БД",
+          "frequency": "continuous",
+          "history_from": null,
+          "history_to": null,
+          "unit": "записи ПО / правообладатели",
+          "decomposition": "классы ПО / правообладатели",
+          "format": "web + export XLS/XML (заявлено на портале)",
+          "url": "https://reestr.digital.gov.ru/",
+          "notes": "На главной отображаются счётчики включённого ПО и правообладателей; доступен поиск и экспорт. Это реестр, не временной макроряд."
+        },
+        {
+          "family": "Реестр аккредитованных ИТ-компаний",
+          "frequency": "continuous",
+          "history_from": null,
+          "history_to": null,
+          "unit": "организации",
+          "decomposition": null,
+          "format": "web (Госуслуги)",
+          "url": "https://www.gosuslugi.ru/itorgs",
+          "notes": "Публичный поиск по ИНН/названию. Машиночитаемый bulk-дамп в этом проходе не подтверждён."
+        },
+        {
+          "family": "Единый портал открытых данных РФ (операторский контур)",
+          "frequency": "continuous",
+          "history_from": null,
+          "history_to": null,
+          "unit": "наборы данных от органов власти",
+          "decomposition": "по поставщикам/категориям",
+          "format": "CSV/XML/JSON/XLSX/API (типовые форматы портала)",
+          "url": "https://data.gov.ru/",
+          "notes": "Портал доступен. Это агрегатор открытых данных, не собственная отраслевая статистика Минцифры. Конкретные наборы Минцифры как поставщика в этом проходе не инвентаризировались."
+        }
+      ]
+    },
+    {
+      "code": "minkultury",
+      "full_name": "Министерство культуры Российской Федерации",
+      "official_site": "https://culture.gov.ru/",
+      "stats_portal": "https://stat.mkrf.ru/",
+      "role": "ФОИВ: отраслевая статистика культуры (АИС «Статистика» / ГИВЦ), открытые данные учреждений культуры",
+      "open_access": true,
+      "api": true,
+      "formats": [
+        "JSON",
+        "XML",
+        "XLSX",
+        "ZIP/RAR/7z",
+        "PDF",
+        "DOC/DOCX"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "сводные отраслевые отчёты по годам 2012–2025(+формы 2026) на stat.mkrf.ru; множество opendata-наборов на opendata.mkrf.ru с годовыми версиями",
+      "notes": "Лучший контур: stat.mkrf.ru (архив показателей/форм с якорями #stat2012…#stat2026) + opendata.mkrf.ru (JSON/XML + API https://opendata.mkrf.ru/v2). culture.gov.ru — скорее документы/отчёты об открытости, не основной data lake.",
+      "datasets": [
+        {
+          "family": "Основные показатели работы отрасли культуры (архив по годам, АИС «Статистика»)",
+          "frequency": "annual",
+          "history_from": "2012",
+          "history_to": "2025",
+          "unit": "разные отраслевые показатели",
+          "decomposition": "РФ / субъекты / типы учреждений (по формам НК)",
+          "format": "ZIP/XLSX/PDF (по годам)",
+          "url": "https://stat.mkrf.ru/indicators/",
+          "notes": "На странице подтверждены якоря #stat2012…#stat2026 и файлы выгрузок (zip/xlsx/pdf). 2026 — в основном формы/регламенты; сводные данные по содержанию страницы до 2025."
+        },
+        {
+          "family": "Формы федерального/отраслевого наблюдения культуры (7-НК, 8-НК, 9-НК, 11–14-НК, 1-ДШИ и др.)",
+          "frequency": "annual",
+          "history_from": null,
+          "history_to": null,
+          "unit": "по формам",
+          "decomposition": "типы учреждений культуры",
+          "format": "DOC/DOCX/XLSX/PDF",
+          "url": "https://stat.mkrf.ru/forms/",
+          "notes": "Подтверждены бланки/инструкции форм №6–14-НК и др."
+        },
+        {
+          "family": "Музеи — сводные статистические данные (opendata)",
+          "frequency": "annual",
+          "history_from": null,
+          "history_to": null,
+          "unit": "показатели деятельности музеев",
+          "decomposition": "учреждения / свод",
+          "format": "JSON/XML",
+          "url": "https://opendata.mkrf.ru/opendata/7705851331-stat_museum_svod",
+          "notes": "Набор подтверждён (HTTP 200). Годовые версии в паспорте в этом проходе явно не распарсены."
+        },
+        {
+          "family": "Театры — сводные статистические данные",
+          "frequency": "annual",
+          "history_from": null,
+          "history_to": null,
+          "unit": "показатели деятельности театров",
+          "decomposition": "учреждения / свод",
+          "format": "JSON/XML",
+          "url": "https://opendata.mkrf.ru/opendata/7705851331-stat_theaters_svod",
+          "notes": "Паспорт: первая публикация 09.04.2021; обновление 07.07.2025; актуальность набора 19.07.2026."
+        },
+        {
+          "family": "Парки культуры и отдыха — сводные данные",
+          "frequency": "annual",
+          "history_from": "2017",
+          "history_to": null,
+          "unit": "показатели деятельности парков",
+          "decomposition": "учреждения / свод",
+          "format": "JSON/XML",
+          "url": "https://opendata.mkrf.ru/opendata/7705851331-stat_parks_svod",
+          "notes": "Паспорт: первая публикация 08.04.2021; в гиперссылках версий указаны годы начиная с 2017. Верхняя граница архива отдельно не зафиксирована."
+        },
+        {
+          "family": "Цирки — сводные данные",
+          "frequency": "annual",
+          "history_from": "2016",
+          "history_to": null,
+          "unit": "показатели деятельности цирков",
+          "decomposition": "учреждения / свод",
+          "format": "JSON/XML",
+          "url": "https://opendata.mkrf.ru/opendata/7705851331-stat_circus_svod",
+          "notes": "Паспорт: первая публикация 12.04.2021; версии с 2016."
+        },
+        {
+          "family": "Концертные организации — сводные данные",
+          "frequency": "annual",
+          "history_from": "2019",
+          "history_to": null,
+          "unit": "показатели концертных организаций",
+          "decomposition": "учреждения / свод",
+          "format": "JSON/XML",
+          "url": "https://opendata.mkrf.ru/opendata/7705851331-stat_concert_org_svod",
+          "notes": "Паспорт: первая публикация 16.04.2021; версии с 2019."
+        },
+        {
+          "family": "Публичный API открытых данных Минкультуры",
+          "frequency": "n/a",
+          "history_from": null,
+          "history_to": null,
+          "unit": "n/a",
+          "decomposition": null,
+          "format": "JSON API",
+          "url": "https://opendata.mkrf.ru/item/api",
+          "notes": "Префикс https://opendata.mkrf.ru/v2 ; HTTP GET, ответы JSON."
+        }
+      ]
+    },
+    {
+      "code": "rospatent",
+      "full_name": "Федеральная служба по интеллектуальной собственности (Роспатент)",
+      "official_site": "https://rospatent.gov.ru/",
+      "stats_portal": "https://rospatent.gov.ru/ru/about/stat",
+      "role": "ФОИВ: патенты, товарные знаки, средства индивидуализации; статистика ИС и открытые реестры (совместно с ФИПС)",
+      "open_access": true,
+      "api": true,
+      "formats": [
+        "PDF",
+        "CSV",
+        "XLSX",
+        "XML",
+        "web/API"
+      ],
+      "etl_difficulty_1_5": 2,
+      "volume_estimate": "ежемесячные CSV открытых реестров (изобретения/ПМ/ТЗ) + годовые отчёты PDF + ежегодная форма 4-НТ",
+      "notes": "Сильный открытый контур: https://rospatent.gov.ru/opendata (наборы 7730176088-*), ежемесячные CSV реестров, годовые отчёты до 2025, online.rospatent.gov.ru с Open API.",
+      "datasets": [
+        {
+          "family": "Годовые отчёты Роспатента (показатели патентования и деятельности)",
+          "frequency": "annual",
+          "history_from": "2021",
+          "history_to": "2025",
+          "unit": "заявки/выдачи/регистрации и др. (в отчёте)",
+          "decomposition": "виды ОИС; иногда динамика по годам внутри PDF",
+          "format": "PDF",
+          "url": "https://rospatent.gov.ru/ru/about/reports",
+          "notes": "Подтверждены PDF годовых отчётов 2021–2025 (RP-AR-2025.pdf, RP-AR-2024.pdf, otchet-2023-ru.pdf и др.)."
+        },
+        {
+          "family": "Основные показатели деятельности Роспатента (квартальные/годовые справки)",
+          "frequency": "quarterly/annual",
+          "history_from": "2021",
+          "history_to": "2023",
+          "unit": "показатели услуг/делопроизводства",
+          "decomposition": null,
+          "format": "PDF",
+          "url": "https://rospatent.gov.ru/ru/about/stat",
+          "notes": "Подтверждены материалы «Основные показатели…» за 2021–2023 (в т.ч. I кв. 2023)."
+        },
+        {
+          "family": "Открытый реестр изобретений РФ (машиночитаемый)",
+          "frequency": "monthly",
+          "history_from": null,
+          "history_to": null,
+          "unit": "патентные записи",
+          "decomposition": "по записям реестра",
+          "format": "CSV (+ XLSX визуализация)",
+          "url": "https://rospatent.gov.ru/opendata/7730176088-iz",
+          "notes": "Паспорт: первая публикация набора 2017; ежемесячные версии data-YYYYMMDD-structure-20180828.csv (подтверждены срезы 2025–2026). Визуализация: https://rospatent.gov.ru/opendata/iz"
+        },
+        {
+          "family": "Открытый реестр товарных знаков и знаков обслуживания РФ",
+          "frequency": "monthly",
+          "history_from": null,
+          "history_to": null,
+          "unit": "записи ТЗ",
+          "decomposition": "по записям реестра",
+          "format": "CSV",
+          "url": "https://rospatent.gov.ru/opendata/7730176088-tz",
+          "notes": "Паспорт: первая публикация 19.10.2017; ежемесячное обновление; актуальные CSV 2026-07."
+        },
+        {
+          "family": "Открытый реестр полезных моделей РФ",
+          "frequency": "monthly",
+          "history_from": null,
+          "history_to": null,
+          "unit": "записи ПМ",
+          "decomposition": "по записям реестра",
+          "format": "CSV",
+          "url": "https://rospatent.gov.ru/opendata/7730176088-pm",
+          "notes": "Аналогично iz/tz: ежемесячные CSV, первая публикация набора 2017."
+        },
+        {
+          "family": "Использование результатов интеллектуальной деятельности (форма № 4-НТ), по федеральным округам",
+          "frequency": "annual",
+          "history_from": "2019",
+          "history_to": "2025",
+          "unit": "по форме 4-НТ (перечень)",
+          "decomposition": "федеральные округа РФ",
+          "format": "CSV",
+          "url": "https://rospatent.gov.ru/opendata/7730176088-usingipfedreg",
+          "notes": "Паспорт: первая публикация 27.11.2014; ежегодно; последнее изменение 01.04.2026 — данные за 2025 год. В версиях набора фигурируют годы 2019–2025."
+        },
+        {
+          "family": "Открытые API / открытые реестры (цифровая платформа)",
+          "frequency": "n/a",
+          "history_from": null,
+          "history_to": null,
+          "unit": "n/a",
+          "decomposition": null,
+          "format": "API/web",
+          "url": "https://online.rospatent.gov.ru/open-data/open-registers/search",
+          "notes": "Подтверждён UI открытых реестров и пункт «Открытые API»."
+        }
+      ]
+    }
+  ]
+}
