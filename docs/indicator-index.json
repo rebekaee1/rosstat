@@ -2817,12 +2817,7 @@
         },
         {
           "file": "frontend/src/components/IndicatorMethodologyPanel.jsx",
-          "line": 23,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/lib/footerNav.js",
-          "line": 25,
+          "line": 29,
           "kind": "other"
         },
         {
@@ -7756,7 +7751,7 @@
         },
         {
           "file": "backend/app/api/seo_pages.py",
-          "line": 171,
+          "line": 206,
           "kind": "other"
         },
         {
@@ -9865,6 +9860,11 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/components/IndicatorMethodologyPanel.component.test.jsx",
+          "line": 37,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/components/IndicatorTelemetryGrid.jsx",
           "line": 80,
           "kind": "other"
@@ -10670,6 +10670,11 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/lib/inflationCalc.js",
+          "line": 11,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/pageImage.test.js",
           "line": 6,
           "kind": "tests"
@@ -10861,7 +10866,7 @@
         },
         {
           "file": "frontend/src/lib/useInflationCalc.js",
-          "line": 48,
+          "line": 49,
           "kind": "other"
         },
         {
@@ -10925,13 +10930,8 @@
           "kind": "other"
         },
         {
-          "file": "frontend/src/pages/CalculatorPage.component.test.jsx",
-          "line": 335,
-          "kind": "other"
-        },
-        {
           "file": "frontend/src/pages/CalculatorPage.jsx",
-          "line": 840,
+          "line": 360,
           "kind": "other"
         },
         {
@@ -11031,12 +11031,12 @@
         },
         {
           "file": "frontend/src/pages/TodayIndicatorPage.jsx",
-          "line": 157,
+          "line": 158,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/WorldIndicatorPage.jsx",
-          "line": 413,
+          "line": 414,
           "kind": "other"
         },
         {
@@ -11181,37 +11181,37 @@
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 253,
+          "line": 309,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 273,
+          "line": 329,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 307,
+          "line": 363,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 308,
+          "line": 364,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 310,
+          "line": 366,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 312,
+          "line": 368,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 314,
+          "line": 370,
           "kind": "other"
         },
         {
@@ -11727,7 +11727,7 @@
         },
         {
           "file": "frontend/src/lib/useInflationCalc.js",
-          "line": 49,
+          "line": 50,
           "kind": "other"
         },
         {
@@ -12529,7 +12529,7 @@
         },
         {
           "file": "frontend/src/lib/useInflationCalc.js",
-          "line": 50,
+          "line": 51,
           "kind": "other"
         },
         {
@@ -13444,7 +13444,7 @@
         },
         {
           "file": "frontend/src/lib/useInflationCalc.js",
-          "line": 51,
+          "line": 52,
           "kind": "other"
         },
         {
@@ -40088,8 +40088,18 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/components/IndicatorMethodologyPanel.component.test.jsx",
+          "line": 50,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/IndicatorMethodologyPanel.component.test.jsx",
+          "line": 52,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/components/IndicatorMethodologyPanel.jsx",
-          "line": 24,
+          "line": 30,
           "kind": "other"
         },
         {
@@ -40116,11 +40126,6 @@
           "file": "frontend/src/lib/compareCompatibility.test.js",
           "line": 59,
           "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/footerNav.js",
-          "line": 24,
-          "kind": "other"
         },
         {
           "file": "frontend/src/lib/indicatorVariants.test.js",
@@ -47011,27 +47016,22 @@
         },
         {
           "file": "frontend/src/components/WorldMap.component.test.jsx",
-          "line": 121,
+          "line": 123,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 657,
+          "line": 658,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 663,
+          "line": 664,
           "kind": "other"
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 695,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/components/WorldMap.jsx",
-          "line": 704,
+          "line": 696,
           "kind": "other"
         },
         {
@@ -47041,7 +47041,7 @@
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 707,
+          "line": 706,
           "kind": "other"
         },
         {
@@ -47051,7 +47051,7 @@
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 718,
+          "line": 709,
           "kind": "other"
         },
         {
@@ -47062,6 +47062,11 @@
         {
           "file": "frontend/src/components/WorldMap.jsx",
           "line": 722,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/WorldMap.jsx",
+          "line": 723,
           "kind": "other"
         },
         {
@@ -47081,7 +47086,17 @@
         },
         {
           "file": "frontend/src/components/WorldMap.jsx",
-          "line": 773,
+          "line": 729,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/WorldMap.jsx",
+          "line": 730,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/WorldMap.jsx",
+          "line": 775,
           "kind": "other"
         },
         {
