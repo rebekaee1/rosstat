@@ -2726,6 +2726,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_etl_statuses.py",
+          "line": 155,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 91,
           "kind": "tests"
@@ -2743,6 +2748,11 @@
         {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 378,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_minfin_budget.py",
+          "line": 268,
           "kind": "tests"
         },
         {
@@ -3641,6 +3651,16 @@
         {
           "file": "backend/tests/test_display_adapter.py",
           "line": 146,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_etl_statuses.py",
+          "line": 155,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_etl_statuses.py",
+          "line": 160,
           "kind": "tests"
         },
         {
@@ -32679,12 +32699,12 @@
         },
         {
           "file": "backend/app/services/rosstat_housing_parser.py",
-          "line": 16,
+          "line": 24,
           "kind": "parser"
         },
         {
           "file": "backend/app/services/rosstat_housing_parser.py",
-          "line": 139,
+          "line": 190,
           "kind": "parser"
         },
         {
@@ -32735,6 +32755,16 @@
         {
           "file": "backend/tests/forecast_strategies/snapshots/housing_primary_2026_q1.json",
           "line": 2,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_etl_statuses.py",
+          "line": 155,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_etl_statuses.py",
+          "line": 160,
           "kind": "tests"
         },
         {
@@ -33075,12 +33105,12 @@
         },
         {
           "file": "backend/app/services/rosstat_housing_parser.py",
-          "line": 17,
+          "line": 25,
           "kind": "parser"
         },
         {
           "file": "backend/app/services/rosstat_housing_parser.py",
-          "line": 140,
+          "line": 191,
           "kind": "parser"
         },
         {
@@ -35789,7 +35819,7 @@
         },
         {
           "file": "backend/app/services/base_parser.py",
-          "line": 163,
+          "line": 237,
           "kind": "parser"
         },
         {
@@ -35814,17 +35844,17 @@
         },
         {
           "file": "backend/app/services/rosstat_weekly_inflation_parser.py",
-          "line": 805,
+          "line": 806,
           "kind": "parser"
         },
         {
           "file": "backend/app/services/rosstat_weekly_inflation_parser.py",
-          "line": 872,
+          "line": 873,
           "kind": "parser"
         },
         {
           "file": "backend/app/tasks/scheduler.py",
-          "line": 45,
+          "line": 50,
           "kind": "other"
         },
         {
@@ -50839,7 +50869,7 @@
         },
         {
           "file": "backend/app/services/base_parser.py",
-          "line": 222,
+          "line": 321,
           "kind": "parser"
         },
         {
