@@ -315,7 +315,7 @@ async def _deactivate_current(
         await db.execute(
             select(WorldForecast).where(
                 WorldForecast.world_indicator_id == indicator_id,
-                WorldForecast.is_current.is_(True),
+                WorldForecast.is_current,
             )
         )
     ).scalars().all()

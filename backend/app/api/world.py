@@ -476,7 +476,7 @@ async def _load_current_world_forecast(
             select(WorldForecast)
             .where(
                 WorldForecast.world_indicator_id == indicator_id,
-                WorldForecast.is_current.is_(True),
+                WorldForecast.is_current,
                 WorldForecast.gate_status.in_(PUBLISHED_GATE_STATUSES),
             )
             .order_by(WorldForecast.created_at.desc())
@@ -762,7 +762,10 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
                 WorldIndicator.name_ru,
             )
             .where(
-                WorldIndicator.is_listed.is_(True),
+                # Голая колонка (не IS TRUE): только так Postgres доказывает
+                # предикат partial ix_world_indicators_listed_signal (WHERE
+                # is_listed) — `is_listed IS true` индекс не использует.
+                WorldIndicator.is_listed,
                 has_signal,
             )
         )
@@ -1931,7 +1934,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
                 select(WorldForecast)
                 .where(
                     WorldForecast.world_indicator_id.in_(member_ids),
-                    WorldForecast.is_current.is_(True),
+                    WorldForecast.is_current,
                     WorldForecast.gate_status.in_(PUBLISHED_GATE_STATUSES),
                 )
                 .order_by(WorldForecast.created_at.desc())

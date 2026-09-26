@@ -54,7 +54,8 @@ async def dashboard_coverage(db: AsyncSession = Depends(get_db)):
                 select(func.count(distinct(WorldIndicator.country_id)))
                 .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
                 .where(
-                    WorldIndicator.is_listed.is_(True),
+                    # partial ix_world_indicators_listed_signal: голая колонка
+                    WorldIndicator.is_listed,
                     WorldCountry.is_active.is_(True),
                 )
             )
@@ -65,7 +66,7 @@ async def dashboard_coverage(db: AsyncSession = Depends(get_db)):
         (
             await db.execute(
                 select(func.count()).select_from(WorldIndicator)
-                .where(WorldIndicator.is_listed.is_(True))
+                .where(WorldIndicator.is_listed)
             )
         ).scalar()
         or 0

@@ -306,7 +306,7 @@ async def system_status(db: AsyncSession = Depends(get_db), _=Depends(_check_met
     last_fetch = last_fetch_q.scalar_one_or_none()
 
     last_forecast_q = await db.execute(
-        select(Forecast).where(Forecast.is_current.is_(True)).order_by(desc(Forecast.created_at)).limit(1)
+        select(Forecast).where(Forecast.is_current).order_by(desc(Forecast.created_at)).limit(1)
     )
     last_forecast = last_forecast_q.scalar_one_or_none()
 

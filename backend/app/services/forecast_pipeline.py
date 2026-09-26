@@ -44,7 +44,7 @@ async def clear_current_forecasts(db: AsyncSession, indicator: Indicator) -> int
     old_q = await db.execute(
         select(Forecast).where(
             Forecast.indicator_id == indicator.id,
-            Forecast.is_current.is_(True),
+            Forecast.is_current,
         )
     )
     old = old_q.scalars().all()
@@ -100,7 +100,7 @@ async def _save_forecast(
 
     old_q = select(Forecast).where(
         Forecast.indicator_id == indicator.id,
-        Forecast.is_current.is_(True),
+        Forecast.is_current,
     )
     if prefix:
         old_q = old_q.where(Forecast.model_name.like(f"{prefix}%"))
@@ -206,7 +206,7 @@ async def _load_indicator_full_series(
         .join(Forecast, Forecast.id == ForecastValue.forecast_id)
         .where(
             Forecast.indicator_id == src.id,
-            Forecast.is_current.is_(True),
+            Forecast.is_current,
             ~Forecast.model_name.like("Inflation-12M%"),
         )
         .order_by(ForecastValue.date)
@@ -445,7 +445,7 @@ async def _current_forecast_value_count(db: AsyncSession, indicator_id: int) -> 
             .join(Forecast, Forecast.id == ForecastValue.forecast_id)
             .where(
                 Forecast.indicator_id == indicator_id,
-                Forecast.is_current.is_(True),
+                Forecast.is_current,
             )
         )
         or 0

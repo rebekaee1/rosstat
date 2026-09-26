@@ -67,7 +67,7 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
         select(Forecast)
         .where(
             Forecast.indicator_id == indicator.id,
-            Forecast.is_current.is_(True),
+            Forecast.is_current,
             ~Forecast.model_name.like("Inflation-12M%"),
         )
         .order_by(desc(Forecast.created_at))
@@ -149,7 +149,7 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
         select(Forecast)
         .where(
             Forecast.indicator_id == indicator.id,
-            Forecast.is_current.is_(True),
+            Forecast.is_current,
             Forecast.model_name.like("Inflation-12M%"),
         )
         .order_by(desc(Forecast.created_at))
@@ -180,7 +180,7 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
             select(Forecast)
             .where(
                 Forecast.indicator_id == indicator.id,
-                Forecast.is_current.is_(True),
+                Forecast.is_current,
                 ~Forecast.model_name.like("Inflation-12M%"),
             )
             .order_by(desc(Forecast.created_at))
