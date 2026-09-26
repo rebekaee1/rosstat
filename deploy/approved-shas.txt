@@ -107,3 +107,5 @@ d5a02c10ebe425e200c004f7ba060a54829d293c  # explicit owner GO 2026-09-25; parent
 6222135b0a3800afb522b2a3ce06222591d7df62  # explicit owner GO 2026-09-26; speed + band removal + sitemap lastmod/recrawl fix; no migrations
 
 c30ac80a270f0c8b455dd4132498ad5e76586605  # explicit owner GO 2026-09-26; DB pool fix (SSR _release_db, pool 10+15) + targeted SSR cache clear + SourceLink fix + docs; no migrations
+
+689a903cce1c5e2f3fdf4c8a657643a5a52136cb  # explicit owner GO 2026-09-26; perf batch 2 (partial indexes, LATERAL latest points, SSR cache zlib, OG, nginx gzip/upstream timings, sitemap threads, web 3 workers + scheduler service) + ETL fixes (PPI/housing parsers, Minfin fallback, fetch_log statuses) + PPI/housing repair script; no migrations
