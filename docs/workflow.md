@@ -1,10 +1,7 @@
 # Рабочий процесс — Forecast Economy
 
-**Last updated:** 2026-09-20 (уточнены approved-SHA gate, проверка миграций диапазона и порядок публикации архива ассетов; локальная реализация, не разрешение на прод).
-
-**Previous:** 2026-09-03 (post-deploy watch 15 мин + runbook «хост в свопе»). Ранее 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md).
-**See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки 6/6), [`../AGENTS.md::Шаг 4`](../AGENTS.md) (чеклист «новый индикатор» 7/7 — другая ось), [`adr/`](adr/) (архитектурные решения).
+**See also:** [`STATE.md`](STATE.md) (где остановились), [`indicators.md`](indicators.md) (чеклист «новый индикатор»), [`adr/`](adr/) (архитектурные решения).
 
 ## Модель работы
 
@@ -18,12 +15,10 @@
 ## Git и окружения
 
 - **GitHub (`git push origin main`)** — основной способ фиксировать прогресс; коммиты должны быть **согласованы** с тем, что реально сделано.
-- **Прод-сервер** (`201.51.11.170`, `/opt/rosstat`; DNS `forecasteconomy.com`) — **не деплоить автоматически** и **не без явного запроса**. Разработка и проверка — локально (Docker Compose) и через CI; выкладка на сервер — отдельным шагом по команде.
+- **Прод-сервер** (`ssh fe-prod`, `/opt/rosstat`; DNS `forecasteconomy.com`, `ru.forecasteconomy.com`) — **не деплоить автоматически** и **не без явного запроса**. Разработка и проверка — локально (Docker Compose) и через CI; выкладка на сервер — отдельным шагом по команде.
 - **SSH на прод — только по ключу** (с 2026-08-27): `ssh fe-prod` (алиас в `~/.ssh/config`) или явно `ssh -i ~/.ssh/id_ed25519_fe_prod root@201.51.11.170`. Парольный вход отключён (`/etc/ssh/sshd_config.d/00-hardening.conf`: `PermitRootLogin prohibit-password`, `PasswordAuthentication no`; бэкап старого конфига — `/etc/ssh/sshd_config.bak-keyauth`). Ключ только у владельца; потеря ключа = восстановление через панель провайдера (VNC/rescue).
-- **Перед каждым прод-деплоем** — обязательный `pg_dump | gzip > /opt/rosstat/backups/pre-deploy-$(date +%Y%m%d-%H%M%S).sql.gz`. См. `scripts/pg-backup.sh` и стандарт ниже.
-- **Персистентность данных пользователей (ADR-0007).** БД хранится в docker volume `postgres_data` — переживает `docker compose up -d --build`. Дополнительно `scripts/pg-backup.sh` (cron `0 4 * * *` на проде) делает (1) полный `pg_dump -Fc` и (2) отдельный data-only SQL identity-таблиц (`users/email_credentials/oauth_identities/consents/auth_audit`) — гарантия, что зарегистрированные пользователи не теряются. Восстановление:
-  - полностью: `docker compose exec -T postgres pg_restore -U rustats -d rustats --clean --if-exists < backups/<file>.dump`;
-  - только пользователи: `gunzip -c backups/<file>.identity.sql.gz | docker compose exec -T postgres psql -U rustats -d rustats`.
+- **Перед каждым прод-деплоем** `scripts/deploy.sh` сам запускает `scripts/pg-backup.sh` (сбой = деплой остановлен). Бэкапы и восстановление — runbook ниже.
+- **Персистентность данных пользователей (ADR-0007).** БД — docker volume `postgres_data` (переживает `up -d --build`); плюс ежедневные бэкапы (runbook ниже), identity-таблицы отдельным SQL.
 
 ## Локальная разработка
 
@@ -116,13 +111,48 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 
 ## Прод-деплой
 
-**Регламент 2026-09-20: `main` не означает разрешение на выкладку.** Нужна явная команда владельца «деплой до `<sha>`, включая всё, что он тянет» и полный целевой SHA в `deploy/approved-shas.txt`. Пустой/отсутствующий список = запрет. Эта документация не одобряет ни один SHA.
+**`main` не означает разрешение на выкладку.** Нужна явная команда владельца
+«деплой до `<sha>`» и полный SHA в `deploy/approved-shas.txt`. Пустой список =
+запрет. Владелец предпочитает 2–3 больших пачки, а не деплой на каждую правку.
 
-1. До запуска показать весь диапазон прод → цель: `git log --oneline <PROD_SHA>..<TARGET_SHA>` и изменения `backend/alembic/versions/` в том же диапазоне. При наличии миграций отдельно запросить подтверждение с описанием влияния на данные и возможности отката; guard удаления миграций не заменяет эту проверку. Push — только по отдельной явной команде и после зелёного `./scripts/check-all.sh`.
-2. Только после выполнения этих условий — `ssh fe-prod 'bash /opt/rosstat/scripts/deploy.sh'`. Скрипт fetch/ff-only ориентируется на `origin/main`, поэтому заранее сверить его с одобренной целью, не выкатывать накопившийся `main` и не обходить scope guard. Скрипт выполняет preflight `pg-backup.sh` (hard fail), dirty/scope/migration guards, совместную сборку backend+frontend, `up -d`, readiness, smoke данных/SSR-ассетов/OG, Caddy reload и post-deploy watch. Откат образов не откатывает схему БД; при несовместимости действовать по [CONTEXT, раздел Deploy-scope trap](../CONTEXT.md), а не перезапускать старый код по кругу.
-3. Backend на старте автоматически прогоняет `_catch_up_empty_indicators()` — ETL для всех `is_active=true` индикаторов с 0 точками; провалы алертятся в Telegram.
-4. `redis-cli -n 0 FLUSHDB` — если правки касались форматирования/SSR, добавлены derived (forecast retrain trap), или изменился `seo_renderer.py`. Только DB 0 — кэш; DB 1 = state (сессии), не трогать.
-5. Если деплой добавляет новые derived (`DERIVED_SPECS` пополнен): `docker compose exec backend python -c "import asyncio; from app.services.forecaster import retrain_indicator_forecast; asyncio.run(retrain_indicator_forecast('<source_code>'))"` для каждого изменённого источника. Daily ETL не подхватит автоматически (см. `enterprise_resilience.md::forecast retrain trap`).
+1. Показать владельцу диапазон `git log --oneline <PROD_SHA>..<TARGET_SHA>` и
+   изменения `backend/alembic/versions/` в нём; миграции — отдельное
+   предупреждение (откат кода не откатывает схему). CI на целевом SHA зелёный.
+2. Approval-only коммит: единственный ребёнок целевого SHA, меняющий только
+   `deploy/approved-shas.txt` (допустимо + `scripts/deploy.sh`); push по команде.
+3. Запуск (не в 03:40–04:00 МСК — ночная сборка sitemap; всего ~25 мин):
+
+   ```bash
+   ssh fe-prod 'cd /opt/rosstat && git fetch origin main && \
+     git show origin/main:scripts/deploy.sh > /tmp/rosstat-deploy-<sha>.sh && \
+     nohup bash /tmp/rosstat-deploy-<sha>.sh > /tmp/rosstat-deploy-<sha>.log 2>&1 &'
+   ```
+
+   Копия в `/tmp` + `nohup`: скрипт переживает обрыв SSH и собственный
+   `git reset` при откате. Следить: `tail -f /tmp/rosstat-deploy-<sha>.log`;
+   логи backend — `/tmp/backend-<sha>.log` (`-rollback.log` при откате).
+4. Что делает скрипт: `pg-backup.sh` → ff-only + approved/scope/migration
+   guards → сборка backend+frontend на проде → архив ассетов → `compose up` →
+   readiness → очистка **только** SSR-кэша (`fe:*:ssr:*`, SCAN+UNLINK; доп.
+   `DEPLOY_CACHE_EXTRA_PATTERNS` / `DEPLOY_CACHE_BUMP_NAMESPACES`) → smoke
+   данных/ассетов/OG → HTTPS обоих хостов + `scripts/dual-host-release-gate.py`
+   (34 RU/EN страницы) → 15-минутный watch (TTFB, `/health/ready`, память, OOM)
+   → при срыве автооткат на предыдущий SHA. Успех — строка
+   `deploy <sha> complete`.
+5. FLUSHDB не делать никогда (холодный кэш под ботами = 503, CONTEXT, Cold-cache
+   pool exhaustion). Если деплой добавил derived — ручной retrain источников:
+   `docker compose exec backend python -c "import asyncio; from app.services.forecast_pipeline import retrain_indicator_forecast; asyncio.run(retrain_indicator_forecast('<source_code>'))"`,
+   затем `cache_invalidate_indicator(code)`.
+6. При старте backend `_catch_up_empty_indicators()` сам догоняет ETL для
+   активных индикаторов без точек; провалы — в Telegram.
+
+Откат образов не откатывает схему: при несовместимости — CONTEXT, Deploy-scope
+trap, а не перезапуск старого кода по кругу.
+
+**Канарейка перед мерджем в `main`:** `./scripts/check-all.sh` зелёный; парсер —
+двойной прогон без изменений на втором; forecast-стратегия —
+`rebuild-all-derived.py` второй прогон нулевой; SEO/SSR — `YandexBot/3.0` на 3+
+страницах (`title`, `meta`).
 
 ### Smoke C — проверки после деплоя
 
@@ -138,7 +168,7 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 `deploy.sh` после smoke держит **15-минутный watch**: TTFB главной, `/health/ready`,
 память контейнера backend, признак `OOMKilled`. Срыв — автооткат на предыдущий SHA.
 
-**Архив ассетов (локальная реализация 2026-09-20).** `scripts/deploy.sh` под общей блокировкой публикует hashed-ассеты фактически работающего frontend и новой сборки через `scripts/frontend-asset-archive.py` **до** замены контейнеров и выдачи нового HTML. nginx читает архив как fallback; HTML, source maps и файлы без хэша туда не попадают. На успешном пути `prune --keep 3` выполняется только после smoke и 15-минутного watch. На пути отката сначала повторно публикуется восстановленный frontend, затем выполняется очистка. Проверять старый ассет, отсутствующий в новой сборке, и навигацию старой вкладки; retention ограничен тремя релизами, это не бессрочная гарантия Вебвизора. Приёмка пакета — [backlog](backlog.md#history-access-reliability-2026-09-20).
+**Архив ассетов.** `scripts/deploy.sh` под общей блокировкой публикует hashed-ассеты фактически работающего frontend и новой сборки через `scripts/frontend-asset-archive.py` **до** замены контейнеров и выдачи нового HTML. nginx читает архив как fallback; HTML, source maps и файлы без хэша туда не попадают. На успешном пути `prune --keep 3` выполняется только после smoke и 15-минутного watch. На пути отката сначала повторно публикуется восстановленный frontend, затем выполняется очистка. Проверять старый ассет, отсутствующий в новой сборке, и навигацию старой вкладки; retention ограничен тремя релизами, это не бессрочная гарантия Вебвизора.
 
 ### Runbook: хост в свопе (2026-09-03)
 
@@ -159,13 +189,52 @@ ClickHouse вторичен: можно `stop clickhouse` без влияния 
 
 Зелёный smoke сам по себе не завершает приёмку: нужны успешный watch и проверка исходных пользовательских сценариев. Красный результат — разбор совместимости кода и схемы по [CONTEXT](../CONTEXT.md), не автоматическое восстановление БД поверх новых пользовательских данных.
 
-## История
+### Runbook: пул БД исчерпан / 503 под ботами
 
-`history_of_project.md` упразднён (мaй 2026). Архитектурные решения теперь живут в `docs/adr/`, оперативное состояние — в `CONTEXT.md`, runtime-наблюдения — в commit messages и коде Pull Request.
+Симптомы: 503 на SSR, `QueuePool limit ... timed out` в логах backend, в
+`pg_stat_activity` много `idle in transaction`, watch деплоя откатывает релиз.
 
-## Устойчивость
+- Проверить, не было ли FLUSHDB / массовой инвалидации (холодный кэш).
+- `pg_stat_activity` (запрос выше) и `fe_db_pool` в `/api/v1/metrics`; nginx
+  access-лог — доля ботов и темп запросов.
+- Не рестартовать по кругу: рестарт тоже холодный. Дать кэшу прогреться; если
+  новый SSR-роут держит сессию во время ожидания — фикс в коде (`_release_db`).
+- Временный щит — включить `deploy/optional/perplexitybot-ratelimit.nginx.conf`
+  (только с согласия владельца).
 
-Чеклист по тому, что закладывать при доработках API, парсеров и UI: **[enterprise_resilience.md](enterprise_resilience.md)**.
+### Runbook: бэкапы и восстановление
+
+**Сервер.** Cron `0 4 * * *` UTC (07:00 МСК) → `scripts/pg-backup.sh` →
+`/opt/rosstat/backups/rustats_YYYYMMDD_HHMMSS.dump` (`pg_dump -Fc`, штамп UTC) +
+`.identity.sql.gz` (data-only: `users`, `email_credentials`, `oauth_identities`,
+`consents`, `auth_audit`); хранение 14 дней; heartbeat/алерт в Telegram. Плюс
+бэкап в начале каждого деплоя.
+
+**Копия на Mac владельца.** `~/bin/fe-backup-pull.sh` + launchd
+`~/Library/LaunchAgents/com.forecasteconomy.backup-pull.plist` (08:15 и при входе)
+→ `~/Backups/forecasteconomy/`. Берёт самый свежий дневной дамп, у которого уже
+есть identity-файл и оба старше 10 мин; rsync, сверка размера и sha256 с
+сервером, `pg_restore --list` (локально или `docker postgres:16-alpine`),
+`gzip -t`, маркер `.verified`; держит 14; лог `pull.log`; при сбое —
+уведомление macOS. Эталонные копии — `deploy/mac/` (после правки скопировать
+обратно в `~/bin` и `~/Library/LaunchAgents`, `launchctl` перезагрузить).
+
+**Восстановление — НЕ ОТРАБОТАНО на практике, сначала репетиция:**
+
+1. Проверить файл: `pg_restore --list <file>.dump | head`.
+2. Репетиция во временную БД:
+   `docker compose exec postgres createdb -U rustats rustats_restore_test` →
+   `docker compose exec -T postgres pg_restore -U rustats -d rustats_restore_test --no-owner < <file>.dump` →
+   сверить счётчики → `dropdb`.
+3. Реальное восстановление (только по решению владельца): свежий
+   `pg-backup.sh` → `docker compose stop backend` →
+   `docker compose exec -T postgres pg_restore -U rustats -d rustats --clean --if-exists < <file>.dump`
+   → `docker compose up -d backend` → `/api/v1/health/ready`.
+4. Только пользователи:
+   `gunzip -c <file>.identity.sql.gz | docker compose exec -T postgres psql -U rustats -d rustats`.
+
+Дамп должен соответствовать alembic-голове кода: старый дамп + новый код →
+entrypoint докатит миграции; новый дамп + старый код — Deploy-scope trap.
 
 ## Двуххостовый языковой cutover
 
