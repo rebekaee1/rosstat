@@ -214,6 +214,15 @@ def test_annual_single_point_year_page(world_year_client):
     assert datasets[0]["temporalCoverage"] == "2023-01-01/2023-01-01"
 
 
+def test_world_main_card_has_no_annual_landing_links(world_year_client):
+    card = world_year_client.get(f"/seo/world/germany/{CODE_ANNUAL}")
+    assert card.status_code == 200
+    assert not re.search(
+        rf'href="/germany/indicator/{CODE_ANNUAL}/\d{{4}}"', card.text,
+    )
+    assert '<h2>По годам</h2>' not in card.text
+
+
 def test_monthly_multi_point_year_page(world_year_client):
     """Monthly-год: итоги года и таблица всех точек года."""
     r = world_year_client.get(f"/seo/world-indicator-year/germany/{CODE_MONTHLY}/2024")

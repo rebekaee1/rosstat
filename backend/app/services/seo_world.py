@@ -1683,7 +1683,6 @@ async def render_world_indicator_html(
     series = [(d, float(v)) for d, v in rows]
     first_date, first_value = series[0]
     last_date, last_value = series[-1]
-    years = sorted({d.year for d, _value in series if paths.is_public_year(d.year)})
     unit = _unit_of(indicator)
     unit_sfx = _unit_sfx(unit)
     source = _source_label(indicator.source, indicator.provider)
@@ -1794,12 +1793,6 @@ async def render_world_indicator_html(
             paragraphs.append(escape(method))
 
     paragraphs_html = "".join(f"<p>{p}</p>" for p in paragraphs)
-
-    years_html = "".join(
-        f'<li><a href="{escape(paths.indicator_year(slug, code, year))}">{year}</a></li>'
-        for year in years
-    )
-    years_heading = "By year" if loc == "en" else "По годам"
 
     recent = list(reversed(series[-24:]))
     table_rows = "".join(
@@ -2055,7 +2048,6 @@ async def render_world_indicator_html(
 {paragraphs_html}
 {freq_links_html}
 {table_html}
-<section class="seo-section"><h2>{escape(years_heading)}</h2><ul class="seo-pills">{years_html}</ul></section>
 {peers_html}
 {siblings_html}
 <section class="seo-section"><h2>{escape(h2_source)}</h2>

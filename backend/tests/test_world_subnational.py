@@ -372,6 +372,11 @@ def test_subnational_ssr_hub_and_card(subnational_client):
     assert "ImageObject" in card.text
     assert 'class="seo-chart"' in card.text
     assert 'name="twitter:image"' in card.text
+    assert 'href="/united-states/region/california/unemployment-rate/2024"' not in card.text
+
+    profile = subnational_client.get("/seo/world/united-states/region/california")
+    assert profile.status_code == 200
+    assert 'href="/united-states/region/california/unemployment-rate/2024"' not in profile.text
 
     ru = subnational_client.get("/seo/regions")
     assert ru.status_code in (200, 404)
@@ -385,7 +390,7 @@ def test_world_regions_in_static_sitemap_sections():
     assert names.index("world-regions") > names.index("world")
 
 
-def test_every_observed_year_of_nonfeatured_state_series_has_a_quicklink(
+def test_every_observed_year_of_nonfeatured_state_series_is_search_discoverable(
     subnational_client, auth_env,
 ):
     from sqlalchemy import select
@@ -446,8 +451,8 @@ def test_every_observed_year_of_nonfeatured_state_series_has_a_quicklink(
         "/seo/world/united-states/region/california/custom-ratio"
     )
     assert card.status_code == 200
-    assert "/custom-ratio/1900" in card.text
-    assert "/custom-ratio/2025" in card.text
+    assert 'href="/united-states/region/california/custom-ratio/1900"' not in card.text
+    assert 'href="/united-states/region/california/custom-ratio/2025"' not in card.text
 
 
 def test_partial_state_year_compares_the_same_month(subnational_client, auth_env):
