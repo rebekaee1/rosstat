@@ -1,12 +1,12 @@
 # Playbook — семейство индикаторов (продуктовая модель + фазы A–G)
 
-**Last updated:** 2026-06-24 (добавлен §«Generic-семья: природа ряда → билдер-шаблон» — как завести новый индикатор под config-driven матрицу с авто-Г/г; матрица yoy:quarter/year заполнена `_yoy_modes`)  
+**Last updated:** 2026-09-27 (сверен действующий generic-стек; исторические чеклисты сохранены ниже).
 **Part of:** [`AGENTS.md`](../AGENTS.md), [`docs/adr/0006-indicator-card-unification.md`](adr/0006-indicator-card-unification.md), [`.cursor/rules/methodology-language.mdc`](../.cursor/rules/methodology-language.mdc).  
 **Эталоны (закрыты):** **ИПЦ** — максимальная сложность (4 среза × 10 режимов). **Жильё** (`housing-price-primary` / `housing-price-secondary`) — эталон «variant + кастомный view-mode» на квартальных данных.
 
 > **Для агента — порядок чтения:** (1) этот файл §«Продуктовая модель» и §0; (2) ADR-0006; (3) `AGENTS.md::Шаг 4` для отдельных кодов. Задача «довести семейство» ≠ «добавить два режима в `viewModeFamilies`». Сначала **источник и оси смысла**, потом код.
 
-**См. также:** `indicators-inventory.temp.txt` (корень репо, при необходимости).
+**Текущая точка входа:** `python scripts/locate-indicator.py <code>` → `docs/indicator-index.json` (`ui_stack`, `completeness`) → нужный слой. `docs/architecture.md` показывает сквозной путь от URL до данных. Строки §9–10 фиксируют состояние работ на момент их написания и не являются списком файлов для нового семейства.
 
 ---
 
@@ -20,11 +20,11 @@
 |---|-----------|--------|
 | 1 | **Одна витрина — много смыслов** | В каталоге листинговые карточки; derived-режимы скрыты (`INDICATOR_HIDDEN_FROM_LISTING`), доступ через `?mode=` на каноническом URL. |
 | 2 | **Две оси не смешивать** | **Variant (срез)** = другой ряд, другой `code`, другой URL. **Режим (`?mode=`)** = другое представление **того же** среза. |
-| 3 | **Один режим = один ряд в БД** | График, таблица, прогноз, «О показателе» — **другие точки**, не другая подпись к тем же точкам. |
+| 3 | **Режим определяет точки** | Для generic ненативный режим указывает на свой source/derived `code`; у legacy бывают явно заданные виртуальные transforms. Нельзя менять только подпись, оставляя прежние точки без преобразования. |
 | 4 | **Группы режимов по экономическому смыслу** | Как у ИПЦ: «инфляция за год», «рост за период», «к прошлому периоду», «индекс». **Г/г живёт внутри «к прошлому»**, не отдельной верхней кнопкой. |
 | 5 | **Матрица контента** | Тексты = **срез × режим** (ИПЦ 4×10; жильё 2×3). Guard в `*ViewModeContent` — чужие семьи не получают CPI-тексты. |
 | 6 | **SEO на каждую листинговую карточку** | Уникальные `seo_blocks` по срезам; режимы не плодят отдельные URL в каталоге. |
-| 7 | **Прогноз = активный режим** | `useIndicatorViewModeData` / аналог грузит forecast по `chartMode`, не по родительскому source. |
+| 7 | **Прогноз = активный режим** | `useGenericViewModeData` или bespoke-hook обращается к forecast выбранного кода только если режим forecastable; не подставляет родительский прогноз в другой шкале. |
 | 8 | **Variant UX** | Смена среза сохраняет `?mode=`; без прыжка скролла (`isVariantSiblingNavigation`). |
 
 ### Оси ИПЦ (зачем эталон)
@@ -53,15 +53,15 @@
 
 **Файлы эталона:** `housingViewModeGroups.js`, `housingViewModeResolve.js`, `housingViewModeContent.jsx`, `HousingIndicatorControls.jsx`; backend: `housing-yoy-*`, `housing-qoq-*`, `housing-price-*`; SEO: `indicator_seo.py` (`INDICATOR_SEO_BLOCKS`).
 
-### Три уровня реализации UI
+### Действующие стеки UI
 
-| Уровень | Когда | Стек |
+| Стек | Когда | Канонический механизм |
 |---------|--------|------|
-| **A. Только variant** | Разные срезы, один смысл на карточке | `indicatorVariants.js` + `VariantGroupPicker` |
-| **B. Generic view-mode** | 2–4 простых режима одного ряда, без двухуровневых групп | `viewModeFamilies.js` + `ViewModePicker` |
-| **C. Семейный view-mode** (ИПЦ, жильё) | Две оси **или** много режимов с разной семантикой / группами | `*ViewModeGroups`, `*ViewModeResolve`, `*ViewModeContent`, `*IndicatorControls` |
+| **Variant** | Другой экономический срез и другой `code` | `indicatorVariants.js` + `VariantGroupPicker`; ортогонален режимам |
+| **Generic view-mode** | Представления одного ряда, включая многоуровневые группы и variant + режимы | `view_model_families.py::FamilyDef` → `scripts/export-view-models.py` → `viewModelFamilies.generated.json` → `viewModeEngine.js` → `GenericIndicatorView` |
+| **Bespoke** | Только ИПЦ, жильё и ИЦП (`cpi`/`housing`/`ppi`) | Их `*ViewMode*` и `*IndicatorControls` с отдельными правилами семантики |
 
-**Правило:** если сомневаешься между B и C — открой ИПЦ и жильё; если оси как у них — уровень **C**, не «быстрый» B.
+Наличие двух осей или многих режимов **само по себе не требует нового bespoke-стека**: generic-движок строит группы из общего конфига. Уровни A/B/C в исторических записях §9–10 описывают этап внедрения, а не сегодняшний выбор реализации. Основание: `backend/app/data/view_model_families.py::_FAMILY_DEFS`, `frontend/src/lib/viewModeEngine.js`, ранний generic-return в `frontend/src/pages/IndicatorDetail.jsx`.
 
 ### Продуктовый Definition of Done (перед «готово»)
 
@@ -85,11 +85,10 @@
    → Нет: только фаза A + variant/SEO при необходимости.
    → Да: нужен VIEW-MODE.
 
-3. Сколько режимов и насколько разная семантика?
-   → 2–4 плоских, без групп «к прошлому / индекс»
-        → Уровень B: viewModeFamilies.js
-   → Группы как у ИПЦ ИЛИ variant + режимы ИЛИ >4 режимов
-        → Уровень C: свой *ViewMode* стек (скопировать структуру cpi/housing, не текст)
+3. Есть ли уже bespoke-семья cpi/housing/ppi?
+   → Да: править её существующий *ViewMode* стек.
+   → Нет: добавить/изменить FamilyDef в view_model_families.py;
+     двухуровневые группы, variant + режимы и число режимов не меняют этот выбор.
 
 4. Значения могут быть отрицательными?
    → yoy_abs, не yoy_pct (trade-balance, migration, …)
@@ -101,7 +100,7 @@
 |--------|-----------|---------|--------|
 | Разные ряды по срезу? | Да | **Variant** | ИПЦ ×4; жильё ×2; ставки ×3 |
 | Несколько представлений одного ряда? | Да | **View-mode** (`?mode=`) | `exports` + `exports-yoy` |
-| Срез × богатые режимы? | Да | **Variant + уровень C** | ИПЦ, жильё |
+| Срез × богатые режимы? | Да | **Variant + generic**, кроме трёх существующих bespoke-семей | Зарплата; bespoke: ИПЦ, жильё |
 | Отрицательные значения? | Да | **`yoy_abs`** | `trade-balance` |
 
 ### Generic-семья: природа ряда → билдер-шаблон (авто-матрица)
@@ -151,7 +150,7 @@
 |--------|--------------|-----------|
 | Два переключателя: variant «Индекс/YoY» **и** `ViewModePicker` | Дублирование осей | YoY только в `?mode=`, variant только по **срезу** |
 | **Г/г** отдельной верхней кнопкой | Не как у ИПЦ | Г/г внутри «К прошлому периоду» |
-| `viewModeFamilies` для жилья/ИПЦ | Не тянет группы и resolve | `housingViewMode*` / `cpiViewMode*` |
+| Новый per-family `*ViewMode*` стек для обычной семьи | Дублирует generated-конфиг и resolver | `FamilyDef` + `GenericIndicatorView`; существующие `cpi`/`housing`/`ppi` остаются bespoke |
 | Один `?mode=` на целую группу кнопок | Баг навигации 2026-05 | У каждой листовой кнопки свой mode |
 | Одинаковый график, разные подписи | Ломает инвариант «режим = ряд» | Отдельный derived / source code |
 | Копировать 10 режимов ИПЦ на квартальный ряд | Нет данных в источнике | Только группы с реальным рядом |
@@ -161,7 +160,7 @@
 ### Алгоритм работы агента (кратко)
 
 1. **Источник** — `docs/data_sources.md` + docstring парсера: что публикует Росстат, частота, что считаем derived.
-2. **Паттерн** — decision tree выше → уровень A / B / C.
+2. **Паттерн** — decision tree выше → variant / generic / существующий bespoke.
 3. **Матрица режимов** — фаза A; согласовать с продуктом при неясности.
 4. **Backend** — фаза B (source + derived, frequency).
 5. **UI** — фаза C (нужные файлы по уровню).
@@ -175,7 +174,7 @@
 **Цель:** таблица режимов; gaps зафиксированы.
 
 - [ ] **Стартуй с готового аудита:** блок `completeness` в `docs/indicator-index.json` (+ срез в `docs/indicator-index.md`) — для корня уже посчитана матрица `present`/`expected`/`missing` {тип × частота} и 4 измерения паспорта (тексты/прогноз/группировка/seo). Это детерминированная замена ручной таблице ниже. Модель — `CONTEXT.md::Матрица представлений`, генератор — `scripts/completeness.py`.
-- [ ] `frontend/src/pages/IndicatorDetail.jsx` — `VariantGroupPicker`, `ViewModePicker`, `CpiIndicatorControls`, `HousingIndicatorControls`.
+- [ ] `docs/indicator-index.json::ui_stack` и `frontend/src/pages/IndicatorDetail.jsx` — определить реальный render-path; не считать `shadowed_legacy` разрешением на удаление старых redirect/content-модулей.
 - [ ] Таблица: **режим UI → code БД → частота → derived? → прогноз?**
 - [ ] `INDICATOR_HIDDEN_FROM_LISTING` в `indicator_seo.py` — витрина vs режимы.
 - [ ] Gaps в `docs/backlog.md`.
@@ -197,15 +196,15 @@
 
 ### 2.2 Derived
 
-- [ ] `derived_ops.py` + `DerivedSpec` в `calculation_engine.py`.
+- [ ] Для generic сначала `FamilyDef`: sibling-спеки добавляются в `DERIVED_SPECS` через `iter_derived_specs`; собственные вычисления — в `derived_ops.py` + ручной `DerivedSpec` только при необходимости.
 - [ ] `seed_data.py`, derived скрыты из каталога.
 - [ ] `pytest` derived_ops / calculation_engine.
 
 ### 2.3 Инварианты
 
 - [ ] Frequency consistency (`CONTEXT.md`).
-- [ ] Разные UI-режимы = разные codes (ИПЦ: `step-weekly` vs `period-weekly`).
-- [ ] `rebuild-all-derived.py` после правок.
+- [ ] Для разных кривых задан разный source/derived `code` либо явный виртуальный transform; ИПЦ: `step-weekly` и `period-weekly` нельзя спутать.
+- [ ] После изменения формулы/шаблона определить необходимость пересчёта и миграции осиротевших sibling-кодов; выполнение write-операций — по `docs/workflow.md`, с сохранением данных и контролем актуального SHA.
 
 **DoD:** API `/data` — разные кривые для спорных пар; `check-all` зелёный.
 
@@ -229,11 +228,12 @@
 - [ ] `housingViewModeResolve.js`, `housingViewModeContent.jsx`, `HousingIndicatorControls.jsx`.
 - [ ] Подключение в `IndicatorDetail.jsx` (как CPI).
 
-### Уровень A / B
+### Generic (основной путь вне трёх bespoke-семей)
 
-- [ ] A: только `indicatorVariants.js` + `VariantGroupPicker`.
-- [ ] B: `viewModeFamilies.js` + `ViewModePicker`.
-- [ ] Тесты: `cpiViewModeGroups.test.js`, `viewModeFamilies.test.js`, семейные `housing*`.
+- [ ] Срезы: `indicatorVariants.js` + `VariantGroupPicker`, если есть независимые ряды.
+- [ ] Режимы: `view_model_families.py::_FAMILY_DEFS`; запустить `python scripts/export-view-models.py` и проверить сгенерированный `viewModelFamilies.generated.json`.
+- [ ] `viewModeEngine.js::resolveViewMode` задаёт `code`/частоту/единицу, `GenericIndicatorView` берёт точки и прогноз выбранного кода.
+- [ ] Проверить `backend/tests/test_view_model_families.py`, `frontend/src/lib/viewModeEngine.test.js` и соответствующие UI-тесты; проверить старые canonical-редиректы перед удалением legacy-модулей.
 
 ### UX (любой variant)
 
@@ -246,8 +246,7 @@
 
 ## 4. Фаза D — Контент
 
-- [ ] `*ViewModeContent.jsx` + titles для графика/таблицы.
-- [ ] Guard `isXxxFamily(code)`.
+- [ ] Для generic — тексты sibling в `seed_data.py::_sibling_texts`, `methodology`/`description` выбранного ряда и его `unit`/`frequency`; для bespoke — соответствующий `*ViewModeContent` и семейный guard.
 - [ ] [methodology-language.mdc](../.cursor/rules/methodology-language.mdc).
 - [ ] Ревью всех **срез × режим** (ИПЦ 40; жильё 6).
 - [ ] Тесты контента семейства.
@@ -269,10 +268,10 @@
 ## 6. Фаза F — Прогнозы
 
 - [ ] `forecast_strategy` + `derived_from_source` в sync с `derived_ops`.
-- [ ] Retrain: source → dependents; после деплоя `--forecast-only` + **`redis FLUSHDB`**.
+- [ ] Стратегию назначать по типу и частоте ряда; source → dependent forecast пересчитывается после обновления данных. Ручной retrain/инвалидацию выполнять только по текущему deploy-регламенту, не через общий `FLUSHDB`.
 - [ ] Фронт: forecast только на `chartMode`.
 
-**DoD:** `/forecast` не null для derived режима; кривая на графике в той же шкале.
+**DoD:** для forecastable режима `/forecast` содержит прогноз выбранного ряда и кривая на графике в той же шкале; для запрещённого/отключённого прогноза отсутствие forecast ожидаемо.
 
 ---
 
@@ -287,31 +286,21 @@
 
 ## 8. Операционный рецепт (после фаз C–G)
 
-Выполнять **самостоятельно**:
+Раздел описывает **порядок проверки**, а не команду на публикацию. Старый рецепт с ручным `seed_data.py`, `rebuild-all-derived.py` и `redis FLUSHDB` заменён: общий `FLUSHDB` затрагивает чужие кэши и не выражает актуальную версионированную инвалидацию (`backend/app/core/cache.py`). Деплой и data-write идут по [`workflow.md`](workflow.md), только до одобренного SHA.
 
 ```bash
-docker compose build backend frontend
-docker compose up -d backend frontend
-
-docker compose exec backend python seed_data.py
-docker compose cp scripts/rebuild-all-derived.py backend:/app/rebuild-all-derived.py
-docker compose exec backend python /app/rebuild-all-derived.py
-docker compose exec backend python seed_data.py --forecast-only
-
-docker compose exec redis redis-cli -a changeme FLUSHDB
-```
-
-```bash
+python scripts/locate-indicator.py wages-nominal
+python scripts/build-indicator-index.py --check
 ./scripts/check-all.sh
-curl -s "http://127.0.0.1:8000/api/v1/indicators/<code>/data?limit=3"
-curl -s "http://127.0.0.1:8000/api/v1/indicators/<code>/forecast"
 ```
 
-См. `CONTEXT.md` (Asset-hash, Browser-cache, Forecast retrain).
+После изменения поведения проверить через локальный Compose SSR-маршрут `http://127.0.0.1:3000/russia/indicator/<code>` (RU/EN, широкий и узкий экран), JSON `/api/v1/indicators/<code>/data` и `/forecast` у тех кодов, для которых прогноз допустим. Это локальная проверка, не свидетельство деплоя или индексации. См. `CONTEXT.md` (Asset-hash, Browser-cache, Forecast retrain) и `docs/design/README.md`.
 
 ---
 
 ## 9. Чеклист закрытия по эталонам
+
+> **Исторический снимок внедрения (2026-05/06).** Статус «Да» ниже означает закрытие задачи на тот момент, а названия `*ViewMode*` не доказывают, что модуль остаётся render-path сегодня. Для работы сейчас сверяйте `ui_stack` в `docs/indicator-index.json`, generic early-return в `IndicatorDetail.jsx` и [`dead-code-report.md`](dead-code-report.md); legacy-файлы могут удерживать контент и редиректы.
 
 ### ИПЦ (максимум)
 
@@ -589,13 +578,15 @@ curl -s "http://127.0.0.1:8000/api/v1/indicators/<code>/forecast"
 
 ## 10. Следующие семейства — с чего начать
 
+> Исторический backlog 2026-05/06. Актуальный выбор стека описан в §0; приоритеты — в `docs/backlog.md`.
+
 | Семейство | Уровень | Не копировать слепо |
 |-----------|---------|---------------------|
 | **ВВП** | A + возможно B | 10 режимов ИПЦ |
 | **PPI** (`ppi`) | **C** — `ppiViewMode*` (закрыто 2026-05-30) | `viewModeFamilies`; variant-pills |
 | **Торговля** | B (уже есть) | Отдельные URL на YoY; довести тексты + SEO |
 | **Зарплаты / безработица** | B | CPI content без guard |
-| **Новое семейство с 2 осями** | **C по образцу жилья** | `viewModeFamilies` вместо `*ViewMode*` |
+| **Новое семейство с 2 осями** | Исторически: C по образцу жилья | Сегодня сначала `FamilyDef`; bespoke только для существующих `cpi`/`housing`/`ppi` |
 
 Перед стартом: §0 decision tree → открыть **только** файлы эталона того же уровня (ИПЦ или жильё) → фазы A→G.
 
@@ -610,6 +601,7 @@ curl -s "http://127.0.0.1:8000/api/v1/indicators/<code>/forecast"
 | `docs/adr/0001-*` | Derived engine |
 | `docs/backlog.md` | Приоритеты (P1: GDP/PPI/…) |
 | `docs/workflow.md` | Деплой, браузер |
+| `docs/architecture.md` | Текущие компоненты и сквозные потоки |
 
 ---
 
@@ -617,5 +609,6 @@ curl -s "http://127.0.0.1:8000/api/v1/indicators/<code>/forecast"
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-09-27 | Сверка с текущим кодом: generic `FamilyDef` стал основным механизмом; три bespoke-семьи сохранены, исторические чеклисты помечены; операционный рецепт заменён безопасным порядком проверки. |
 | 2026-05-30 | Продуктовая модель, decision tree, антипаттерны, жильё как второй эталон; ИЦП (`ppiViewMode*`); ипотека (`mortgageRateViewMode*`, SEO ×8); RUONIA (`ruoniaViewMode*`, SEO ×8); USD/EUR/CNY (`*RubViewMode*`, SEO ×8); Brent/BTC (`brentViewMode*`, `btcUsdViewMode*`, SEO ×8); цена золота (`goldPriceViewMode*`, SEO ×8); ключевая ставка (`keyRateViewMode*`, SEO ×8); федеральный бюджет (`budgetViewMode*` + variant ×3, SEO ×8); кредиты бизнесу (`bankCreditViewMode*`, SEO ×8); кредиты и вклады населения (`householdFinanceViewMode*` + variant ×2, SEO ×8); денежные агрегаты (`monetaryMassViewMode*` + variant ×3, SEO ×8); международные резервы (`internationalReservesViewMode*`, SEO ×8); внешний долг (`externalDebtViewMode*`, SEO ×8); рынок труда (`laborMarketViewMode*` + variant ×2, SEO ×8); безработица (`unemploymentViewMode*`, SEO ×8); порог SEO-body для M0–M2 доведён до ≥420, склейки строк исправлены. |
 | 2026-06-01 | Первая версия: фазы A–G на примере ИПЦ. |

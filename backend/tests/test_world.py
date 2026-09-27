@@ -222,6 +222,18 @@ def test_public_texts_name_country_not_template():
     assert "Источник — Евростат" in desc
 
 
+def test_nonzero_world_signal_uses_literal_index_predicate():
+    from sqlalchemy import select
+    from sqlalchemy.dialects import postgresql
+    from app.api.world import _nonzero_world_value
+    from app.models import WorldDataPoint
+
+    stmt = select(WorldDataPoint.indicator_id).where(_nonzero_world_value())
+    compiled = stmt.compile(dialect=postgresql.dialect())
+    assert "world_data_points.value != 0" in str(compiled)
+    assert compiled.params == {}
+
+
 # --- API smoke (auth_env hermetic) ------------------------------------------
 
 
@@ -253,7 +265,11 @@ def world_client(auth_env):
                 code="XX", slug="testland", name_ru="Тестланд",
                 name_en="Testland", region_ru="Тест", sort_order=99,
             )
-            db.add_all([de, fr, xx])
+            zz = WorldCountry(
+                code="ZZ", slug="zeroland", name_ru="Нулеландия",
+                name_en="Zeroland", region_ru="Тест", sort_order=100,
+            )
+            db.add_all([de, fr, xx, zz])
             await db.flush()
             ind = WorldIndicator(
                 country_id=de.id,
@@ -357,7 +373,25 @@ def world_client(auth_env):
                 points_count=2,
                 is_listed=True,
             )
-            db.add_all([ind, raw, fr_ind, population, xx_ind])
+            zz_ind = WorldIndicator(
+                country_id=zz.id,
+                code="zz-zero",
+                dataset_id="zero",
+                slice_json={},
+                slice_hash="zz-zero",
+                name_ru="Нулевой показатель",
+                name_quality="curated",
+                unit="",
+                unit_ru="",
+                frequency="annual",
+                category_ru="Прочее",
+                source="Евростат",
+                history_start=date(2024, 1, 1),
+                history_end=date(2024, 1, 1),
+                points_count=1,
+                is_listed=True,
+            )
+            db.add_all([ind, raw, fr_ind, population, xx_ind, zz_ind])
             db.add_all([
                 Indicator(
                     code="cpi",
@@ -400,6 +434,7 @@ def world_client(auth_env):
                 WorldDataPoint(indicator_id=population.id, date=date(2025, 1, 1), value=83_200_000.0),
                 WorldDataPoint(indicator_id=xx_ind.id, date=date(2024, 1, 1), value=100.0),
                 WorldDataPoint(indicator_id=xx_ind.id, date=date(2024, 6, 1), value=101.0),
+                WorldDataPoint(indicator_id=zz_ind.id, date=date(2024, 1, 1), value=0.0),
             ])
             forecast = WorldForecast(
                 world_indicator_id=ind.id,
@@ -451,6 +486,7 @@ def test_world_countries(world_client):
     assert body["countries"][0]["slug"] == "germany"
     assert "indicators_count" in body["countries"][0]
     by_slug = {c["slug"]: c for c in body["countries"]}
+    assert "zeroland" not in by_slug
     assert by_slug["russia"]["code"] == "RU"
     assert by_slug["russia"]["indicators_count"] == 1
     assert by_slug["russia"]["name"] == "Россия"

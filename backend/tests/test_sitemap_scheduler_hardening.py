@@ -301,7 +301,23 @@ def test_recrawl_job_uses_published_registry_not_db_registry(published, monkeypa
     assert "/about?x=1&y=2" in redis.members  # неканон помечен без POST
 
 
-# --- 3. Прерывание job рестартом не алертится ----------------------------------
+# --- 3. Ошибки job видны планировщику; прерывание рестартом не алертится -------
+
+def test_calendar_refresh_failure_propagates_to_scheduler(monkeypatch, caplog):
+    import app.main as main
+    import app.services.calendar_seed as calendar_seed
+
+    async def failing_seed(*, months_ahead):
+        assert months_ahead == 12
+        raise RuntimeError("calendar database unavailable")
+
+    monkeypatch.setattr(calendar_seed, "seed_calendar", failing_seed)
+
+    with pytest.raises(RuntimeError, match="calendar database unavailable"):
+        asyncio.run(main._calendar_refresh_job())
+
+    assert "Calendar refresh job failed" in caplog.text
+
 
 def test_scheduler_listener_silent_during_shutdown(monkeypatch):
     import app.main as main

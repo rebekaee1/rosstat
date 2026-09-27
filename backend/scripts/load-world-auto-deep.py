@@ -202,10 +202,9 @@ async def main() -> int:
                 time.time() - t0,
             )
 
-    try:
-        await bump_namespaces("world", "ssr-world")
-    except Exception as exc:  # noqa: BLE001
-        log.warning("cache bump failed: %s", exc)
+    # persist_result can create listed rows or turn an all-zero series into a
+    # visible country card. A failed catalogue bump must fail this command.
+    await bump_namespaces("world", "ssr-world", "world-catalog")
 
     log.info(
         "DONE in %.1fs | ok=%d fail=%d indicators upserted=%d points touched=%d | fail_log=%s",

@@ -282,6 +282,14 @@ class WorldDataPoint(Base):
         # те же колонки (ix_world_data_points_indicator_date, ~471 МБ на проде)
         # был дубликатом — убран в perf batch 3.
         UniqueConstraint("indicator_id", "date", name="uq_world_data_point"),
+        # Холодный каталог стран проверяет ненулевой факт для каждого listed
+        # ряда. Обычный (indicator_id, date) индекс вынуждает читать heap для
+        # проверки value; partial index позволяет проверять EXISTS по индексу
+        # (heap всё ещё нужен для страниц без visibility bit).
+        Index(
+            "ix_world_data_points_nonzero_indicator", "indicator_id",
+            postgresql_where=text("value <> 0"),
+        ),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)

@@ -6,6 +6,13 @@
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0003`](0003-seo-single-source-server-rendered.md), [`ADR-0008`](0008-regional-bounded-context.md), [`ADR-0011`](0011-world-eurostat-data-plane.md)
 - **Backlog:** [`docs/backlog.md`](../backlog.md) — раздел «Карта миграции URL (ADR-0013)» + решения звонка 14 (Р-1…Р-3)
 
+> **Сверка 2026-09-27:** `Proposed` выше — сохранённый статус исходного проектирования.
+> Country-first пути, `/indicator/` для мира и языковой split уже представлены в коде
+> `site_paths.py`, `legacy_redirects.py`, `seo_pages.py` и frontend router.
+> Исходные решения далее уточнялись в Subsequent additions: для нынешнего контракта
+> читать поздние дополнения и [индекс истории](../architecture-history.md).
+> Эта сверка кода не обновляет дату production-приёмки и не подтверждает текущие env-флаги.
+
 ---
 
 ## Контекст

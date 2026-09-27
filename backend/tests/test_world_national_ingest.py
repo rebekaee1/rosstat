@@ -538,3 +538,52 @@ def test_ingest_series_applies_value_scale(auth_env, monkeypatch):
                 assert values[0] == 27_529_800.0
 
     asyncio.run(_run())
+
+
+def test_national_indicator_metadata_change_without_point_changes(auth_env):
+    """A YAML card edit is a real public change even when source data is identical."""
+    import asyncio
+    from dataclasses import replace
+
+    from app.services.world_national_ingest import (
+        NationalSeriesSpec,
+        ensure_country,
+        upsert_national_indicator,
+    )
+
+    spec = NationalSeriesSpec(
+        code_suffix="test-rate", name_ru="Старая ставка", name_en="Old rate",
+        category_ru="Деньги", unit="PCT", unit_ru="%", frequency="monthly",
+        provider="rba", dataset_id="TEST", series_id="TEST_RATE",
+    )
+
+    async def _run():
+        async with auth_env["session_maker"]() as db:
+            async with db.begin():
+                country = await ensure_country(
+                    db, code="AU", slug="australia", name_ru="Австралия",
+                )
+                ref = series_ref_from_spec(spec, country_code="AU")
+                state = {}
+                _, created = await upsert_national_indicator(
+                    db, country=country, spec=spec, ref=ref, points=[],
+                    source_ru="Резервный банк Австралии", change_state=state,
+                )
+                assert created and state["metadata_changed"]
+
+                changed_spec = replace(spec, name_ru="Новая ставка")
+                state = {}
+                _, created = await upsert_national_indicator(
+                    db, country=country, spec=changed_spec, ref=ref, points=[],
+                    source_ru="Резервный банк Австралии", change_state=state,
+                )
+                assert not created and state["metadata_changed"]
+
+                state = {}
+                _, created = await upsert_national_indicator(
+                    db, country=country, spec=changed_spec, ref=ref, points=[],
+                    source_ru="Резервный банк Австралии", change_state=state,
+                )
+                assert not created and not state["metadata_changed"]
+
+    asyncio.run(_run())

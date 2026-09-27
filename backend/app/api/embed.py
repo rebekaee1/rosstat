@@ -432,6 +432,7 @@ PIXEL_GIF = (
     b"\x00\x00\x00!\xf9\x04\x00\x00\x00\x00\x00,\x00"
     b"\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"
 )
+_IMPRESSION_TTL = 90 * 86400
 
 
 def _extract_domain(referrer: str) -> str:
@@ -439,7 +440,7 @@ def _extract_domain(referrer: str) -> str:
         return "direct"
     try:
         from urllib.parse import urlparse
-        return urlparse(referrer).netloc or "direct"
+        return (urlparse(referrer).netloc or "direct")[:255]
     except Exception:
         return "direct"
 
@@ -456,7 +457,7 @@ async def track_impression(request: Request):
         r = await get_redis()
         key = f"fe:embed:imp:{today}"
         await r.hincrby(key, f"{code}:{wtype}:{domain}", 1)
-        await r.expire(key, 90 * 86400)
+        await r.expire(key, _IMPRESSION_TTL)
     except Exception:
         _note_tracking_failure("impression")
     return {"ok": True}
@@ -473,7 +474,9 @@ async def tracking_pixel(
         domain = _extract_domain(ref)
         today = date.today().isoformat()
         r = await get_redis()
-        await r.hincrby(f"fe:embed:imp:{today}", f"{code}:{t}:{domain}", 1)
+        key = f"fe:embed:imp:{today}"
+        await r.hincrby(key, f"{code[:64]}:{t[:32]}:{domain}", 1)
+        await r.expire(key, _IMPRESSION_TTL)
     except Exception:
         _note_tracking_failure("pixel")
     return Response(

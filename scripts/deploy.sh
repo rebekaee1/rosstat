@@ -14,6 +14,15 @@ cd /opt/rosstat
 exec 9>/var/lock/rosstat-deploy.lock
 flock -n 9 || { echo "FAIL: другой деплой уже выполняется"; exit 1; }
 
+# world-catalog uses state Redis (possibly a separate redis-state container),
+# whereas the optional bump below runs against cache Redis DB 0. Refuse a
+# misleading success before doing any release work; application ingests use
+# core/cache.py::bump_namespaces for this namespace and its stale mirror.
+if [[ "${DEPLOY_CACHE_BUMP_NAMESPACES:-}" == *world-catalog* ]]; then
+  echo "FAIL: DEPLOY_CACHE_BUMP_NAMESPACES=world-catalog запрещён: версия находится в state Redis, не в cache Redis DB 0."
+  exit 1
+fi
+
 # ── 1. Preflight: бэкап БД перед миграциями (О-2) ─────────────────────
 echo "==> preflight: pg backup"
 ./scripts/pg-backup.sh || { echo "FAIL: backup failed — деплой остановлен"; exit 1; }
@@ -164,6 +173,42 @@ docker compose build --build-arg "VITE_BUILD_ID=${APPROVED_TARGET}" frontend bac
 docker tag rosstat-backend "rosstat-backend:${NEW_SHA}"
 docker tag rosstat-frontend "rosstat-frontend:${NEW_SHA}"
 
+# Build the 16M-row partial index while the OLD backend still serves traffic.
+# Do only this additive DDL, not `alembic upgrade`: stamping a new revision
+# before cutover would prevent the old image from restarting after a failed
+# preparation. The new backend's entrypoint later sees the valid index and
+# stamps this migration quickly. A failed concurrent build can leave an
+# INVALID same-name index; drop and retry that index before cutover.
+WORLD_NONZERO_MIGRATION=backend/alembic/versions/20260927_world_nonzero_signal_idx.py
+world_nonzero_index_status() {
+  docker compose exec -T postgres psql -X -v ON_ERROR_STOP=1 -U rustats -d rustats -Atqc \
+    "SELECT CASE WHEN to_regclass('ix_world_data_points_nonzero_indicator') IS NULL THEN 'missing' WHEN EXISTS (SELECT 1 FROM pg_catalog.pg_index WHERE indexrelid = to_regclass('ix_world_data_points_nonzero_indicator') AND indisvalid AND indisready) THEN 'valid' ELSE 'invalid' END"
+}
+if [ -f "${WORLD_NONZERO_MIGRATION}" ]; then
+  echo "==> prebuild: world nonzero index (old backend remains live)"
+  world_index_status=$(world_nonzero_index_status)
+  case "${world_index_status}" in
+    valid) echo "    index already valid" ;;
+    invalid)
+      echo "    drop interrupted/invalid index"
+      docker compose exec -T postgres psql -X -v ON_ERROR_STOP=1 -U rustats -d rustats -c \
+        'DROP INDEX CONCURRENTLY IF EXISTS ix_world_data_points_nonzero_indicator'
+      ;;
+    missing) ;;
+    *) echo "FAIL: unexpected index status: ${world_index_status}"; preparation_failed ;;
+  esac
+  if [ "${world_index_status}" != valid ]; then
+    docker compose exec -T postgres psql -X -v ON_ERROR_STOP=1 -U rustats -d rustats -c \
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_world_data_points_nonzero_indicator ON world_data_points (indicator_id) WHERE value <> 0'
+    world_index_status=$(world_nonzero_index_status)
+    if [ "${world_index_status}" != valid ]; then
+      echo "FAIL: world nonzero index remains ${world_index_status} after concurrent build"
+      preparation_failed
+    fi
+    echo "    index valid; Alembic revision will be stamped at backend startup"
+  fi
+fi
+
 # Compose resolves .env too: use its effective mount rather than a different
 # shell default. Keep a helper copy because rollback restores the previous git.
 ASSET_ARCHIVE=$(docker compose config --format json | python3 -c '
@@ -208,7 +253,8 @@ PY
 # Смена фронта и так меняет asset_sig, но смена рендер-кода backend при том же
 # фронте — нет, поэтому SSR удаляем явно. SCAN + UNLINK батчами (не KEYS, не
 # блокирующий DEL). `fe:ver:*` НЕ трогаем: сброс версии воскресил бы ключи v0.
-# Доп. паттерны / бамп namespace'ов data-кэша — через env при запуске:
+# Доп. паттерны / бамп namespace'ов cache Redis — через env при запуске;
+# world-catalog (state Redis) здесь запрещён явным guard в начале скрипта:
 #   DEPLOY_CACHE_EXTRA_PATTERNS="fe:world:*"  DEPLOY_CACHE_BUMP_NAMESPACES="world"
 REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env 2>/dev/null | cut -d= -f2- | tr -d '\"' | tr -d "'" || true)"
 invalidate_release_cache() {
@@ -437,6 +483,26 @@ echo "==> smoke: data endpoint"
 curl -sf http://localhost:8000/api/v1/indicators/cpi/data | head -c 200 | grep -q '"data"' \
   || { echo "FAIL: data endpoint пуст/сломан"; rollback; }
 echo " ok"
+
+# The first g2 catalogue release has no durable mirror yet. Warm both locales
+# under the new backend and require real countries before declaring success.
+# A second short probe checks that the warmed path remains responsive.
+for locale in ru en; do
+  echo "==> smoke: world countries ${locale} cold + warm"
+  catalog_host="${locale}.forecasteconomy.com"
+  if ! curl -fsS --max-time 60 -A 'YandexBot/3.0' -H "Host: ${catalog_host}" \
+      http://localhost:8000/api/v1/world/countries \
+      | python3 -c 'import json,sys; p=json.load(sys.stdin); assert p["total"] == len(p["countries"]) and p["total"] > 0 and p["world_indicators_count"] > 0'; then
+    echo "FAIL: world countries ${locale} cold build"
+    rollback
+  fi
+  if ! curl -fsS --max-time 8 -A 'YandexBot/3.0' -H "Host: ${catalog_host}" \
+      http://localhost:8000/api/v1/world/countries \
+      | python3 -c 'import json,sys; p=json.load(sys.stdin); assert p["total"] > 0'; then
+    echo "FAIL: world countries ${locale} warm read"
+    rollback
+  fi
+done
 
 echo "==> smoke: SSR asset-hash consistency"
 # Asset-hash trap: SSR HTML обязан ссылаться на ассеты, реально лежащие в frontend-образе.

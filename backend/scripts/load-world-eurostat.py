@@ -563,10 +563,7 @@ async def run(args: argparse.Namespace) -> int:
                 geos, n_ind_total, n_pts_total, elapsed,
             )
 
-    try:
-        await bump_namespaces("world", "world-catalog", "ssr-world")
-    except Exception as exc:  # noqa: BLE001
-        log.warning("cache bump failed: %s", exc)
+    await bump_namespaces("world", "world-catalog", "ssr-world")
 
     # summary counts from DB
     async with async_session() as db:

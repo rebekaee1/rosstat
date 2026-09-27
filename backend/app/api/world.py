@@ -7,22 +7,27 @@
 
 from __future__ import annotations
 
+import logging
 import math
+import time
 from collections import defaultdict
 from datetime import date
 from statistics import median
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
-from sqlalchemy import case, func, or_, select
+from sqlalchemy import case, func, literal_column, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import (
     cache_get,
     cache_set,
-    get_durable_world_countries,
-    set_durable_world_countries,
+    fresh_world_catalog_key,
+    get_versioned_durable_world_countries,
+    is_current_world_countries_key,
+    set_versioned_durable_world_countries,
     versioned_key,
+    world_countries_build_lock,
 )
 from app.services.api_i18n import api_detail
 from app.services.locale import get_locale
@@ -134,17 +139,34 @@ _WORLD_SURFACE_CACHE_CONTROL = (
 )
 
 
-def _world_public_json(payload: dict) -> JSONResponse:
+def _world_public_json(payload: dict, *, stale: bool = False) -> JSONResponse:
     return JSONResponse(
         content=payload,
         headers={
-            "Cache-Control": _WORLD_SURFACE_CACHE_CONTROL,
+            "Cache-Control": "no-store" if stale else _WORLD_SURFACE_CACHE_CONTROL,
             "Vary": "Host",
         },
     )
 
 
+async def _current_world_countries_response(locale: str, rest: str) -> JSONResponse | None:
+    """Recheck generation and stale deadline after a wait or failed build."""
+    cache_key = await fresh_world_catalog_key(rest)
+    cached = await cache_get(cache_key)
+    if isinstance(cached, dict) and await is_current_world_countries_key(locale, cache_key):
+        return _world_public_json(cached)
+    durable, stale = await get_versioned_durable_world_countries(
+        locale, cache_key, allow_stale=True,
+    )
+    if isinstance(durable, dict) and (
+        stale or await is_current_world_countries_key(locale, cache_key)
+    ):
+        return _world_public_json(durable, stale=stale)
+    return None
+
+
 router = APIRouter(prefix="/world", tags=["world"])
+logger = logging.getLogger(__name__)
 
 WORLD_GLOBAL_SEARCH_LIMIT = 200
 _CACHE_TTL = 600
@@ -459,12 +481,17 @@ async def _ids_with_nonzero_signal(
             select(WorldDataPoint.indicator_id)
             .where(
                 WorldDataPoint.indicator_id.in_(indicator_ids),
-                WorldDataPoint.value != 0,
+                _nonzero_world_value(),
             )
             .distinct()
         )
     ).all()
     return {int(r[0]) for r in rows}
+
+
+def _nonzero_world_value():
+    """Literal zero lets Postgres prove the partial nonzero index predicate."""
+    return WorldDataPoint.value != literal_column("0")
 
 
 async def _load_current_world_forecast(
@@ -716,39 +743,15 @@ def _primary_of_card(
     return pick_primary(members, listing_substance_score)
 
 
-@router.get("/countries")
-async def list_countries(db: AsyncSession = Depends(get_db)):
-    """Каталог стран: счётчик = то, что увидит посетитель на карточке страны.
-
-    Считаем только ``is_listed`` с ненулевым сигналом и публичным русским
-    именем. Страны с нулём после отсева скрываем — каталог не обещает пустые
-    страницы.
-    """
-    # v7: country catalogue also carries live homepage inventory counters.
-    # EXISTS по listed-рядам вместо DISTINCT по всей world_data_points
-    # (на полном датасете ~8M точек DISTINCT убивал воркеры → 504/500).
-    # Forecast publication invalidates "world" repeatedly; country inventory
-    # changes only when source ingest changes the catalog or observed signal.
-    locale = get_locale()
-    cache_key = await versioned_key("world-catalog", f"countries:v8:{locale}")
-    cached = await cache_get(cache_key)
-    if cached:
-        # Refresh durable mirror so deploy FLUSHDB of DB 0 does not blank home.
-        await set_durable_world_countries(locale, cached)
-        return _world_public_json(cached)
-
-    durable = await get_durable_world_countries(locale)
-    if durable:
-        # Warm DB 0 from state-Redis — next hit skips durable + cold SQL.
-        await cache_set(cache_key, durable, ttl=_CACHE_TTL)
-        return _world_public_json(durable)
-
-    # Коррелированный EXISTS: индекс (indicator_id, date) → O(listed), не O(все точки).
+async def _build_world_countries_payload(db: AsyncSession) -> dict:
+    """Build the exact public catalogue from listed rows with nonzero signal."""
+    # EXISTS по listed-рядам вместо DISTINCT по всей world_data_points.
+    # Partial index on nonzero indicator_id avoids heap probes on a cold build.
     has_signal = (
         select(WorldDataPoint.indicator_id)
         .where(
             WorldDataPoint.indicator_id == WorldIndicator.id,
-            WorldDataPoint.value != 0,
+            _nonzero_world_value(),
         )
         .correlate(WorldIndicator)
         .exists()
@@ -858,9 +861,108 @@ async def list_countries(db: AsyncSession = Depends(get_db)):
         "us_state_indicators_count": us_state_indicators,
         "us_states_count": us_states,
     }
-    await cache_set(cache_key, payload, ttl=_CACHE_TTL)
-    await set_durable_world_countries(locale, payload)
-    return _world_public_json(payload)
+    return payload
+
+
+@router.get("/countries")
+async def list_countries(db: AsyncSession = Depends(get_db)):
+    """Country catalogue with one cold SQL builder per locale and bounded stale."""
+    locale = get_locale()
+    rest = f"countries:v8:{locale}"
+    try:
+        cache_key = await fresh_world_catalog_key(rest)
+    except Exception:
+        logger.exception("world countries generation unavailable locale=%s", locale)
+        raise HTTPException(
+            status_code=503, detail="Country catalogue temporarily unavailable",
+            headers={"Cache-Control": "no-store", "Retry-After": "5"},
+        )
+
+    cached = await cache_get(cache_key)
+    if isinstance(cached, dict) and await is_current_world_countries_key(locale, cache_key):
+        return _world_public_json(cached)
+
+    durable, stale = await get_versioned_durable_world_countries(
+        locale, cache_key, allow_stale=True,
+    )
+    if isinstance(durable, dict) and not stale:
+        if await is_current_world_countries_key(locale, cache_key):
+            await cache_set(cache_key, durable, ttl=_CACHE_TTL)
+            return _world_public_json(durable)
+
+    try:
+        async with world_countries_build_lock(
+            locale, wait_seconds=0.0 if stale else 8.0,
+        ) as acquired:
+            if not acquired:
+                # The builder may have completed just as our lock wait ended.
+                current = await _current_world_countries_response(locale, rest)
+                if current is not None:
+                    return current
+                raise HTTPException(
+                    status_code=503, detail="Country catalogue is rebuilding",
+                    headers={"Cache-Control": "no-store", "Retry-After": "5"},
+                )
+
+            # A waiting worker must read the generation and both caches again.
+            cache_key = await fresh_world_catalog_key(rest)
+            ready = await cache_get(cache_key)
+            if isinstance(ready, dict) and await is_current_world_countries_key(locale, cache_key):
+                return _world_public_json(ready)
+            ready, ready_stale = await get_versioned_durable_world_countries(
+                locale, cache_key, allow_stale=True,
+            )
+            if (
+                isinstance(ready, dict) and not ready_stale
+                and await is_current_world_countries_key(locale, cache_key)
+            ):
+                await cache_set(cache_key, ready, ttl=_CACHE_TTL)
+                return _world_public_json(ready)
+
+            started = time.monotonic()
+            logger.warning("world countries cold build start locale=%s key=%s", locale, cache_key)
+            try:
+                payload = await _build_world_countries_payload(db)
+            except Exception:
+                logger.exception("world countries cold build failed locale=%s", locale)
+                current = await _current_world_countries_response(locale, rest)
+                if current is not None:
+                    return current
+                raise HTTPException(
+                    status_code=503, detail="Country catalogue temporarily unavailable",
+                    headers={"Cache-Control": "no-store", "Retry-After": "5"},
+                )
+            logger.info(
+                "world countries cold build done locale=%s seconds=%.3f",
+                locale, time.monotonic() - started,
+            )
+            if not await set_versioned_durable_world_countries(locale, cache_key, payload):
+                # Ingest changed the catalogue while SQL was running, or the
+                # durable mirror could not be published. Never expose this
+                # unverified generation as a successful catalogue response.
+                current = await _current_world_countries_response(locale, rest)
+                if current is not None:
+                    return current
+                raise HTTPException(
+                    status_code=503, detail="Country catalogue is rebuilding",
+                    headers={"Cache-Control": "no-store", "Retry-After": "5"},
+                )
+            await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+            return _world_public_json(payload)
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("world countries request failed locale=%s", locale)
+        try:
+            current = await _current_world_countries_response(locale, rest)
+            if current is not None:
+                return current
+        except Exception:
+            pass
+        raise HTTPException(
+            status_code=503, detail="Country catalogue temporarily unavailable",
+            headers={"Cache-Control": "no-store", "Retry-After": "5"},
+        )
 
 
 @router.get("/rating/concepts")
