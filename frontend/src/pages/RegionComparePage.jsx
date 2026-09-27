@@ -1,5 +1,5 @@
 import { Link, useParams, Navigate } from 'react-router-dom';
-import { ChevronRight, GitCompare } from 'lucide-react';
+import { GitCompare } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import useDocumentMeta from '../lib/useMeta';
 import api from '../lib/api';
@@ -11,7 +11,10 @@ import {
   regionIndicatorPath,
   regionPath,
   regionRatingPath,
+  regionVsPath,
 } from '../lib/sitePaths';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { regionVsTrail } from '../lib/breadcrumbs';
 import { useLocale } from '../i18n';
 import { resolveBrowserLocale } from '../i18n/locale';
 
@@ -57,15 +60,13 @@ export default function RegionComparePage() {
 
   return (
     <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
-      <nav className="flex items-center gap-1.5 text-xs text-text-tertiary mb-4 overflow-hidden" aria-label={t('crumb.aria')}>
-        <Link to="/" className="hover:text-champagne transition-colors shrink-0">{t('common.home')}</Link>
-        <ChevronRight size={12} className="shrink-0" />
-        <Link to={regionHubPath()} className="hover:text-champagne transition-colors shrink-0">{t('regions.regionsLabel')}</Link>
-        <ChevronRight size={12} className="shrink-0" />
-        <span className="text-text-secondary truncate">
-          {data ? `${data.region_a.name} vs ${data.region_b.name}` : t('regions.compareCrumb')}
-        </span>
-      </nav>
+      <Breadcrumbs
+        items={regionVsTrail(
+          data ? `${data.region_a.name} — ${data.region_b.name}` : t('regions.compareCrumb'),
+          regionVsPath(slugA, slugB),
+        )}
+        className="mb-4"
+      />
 
       {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
 

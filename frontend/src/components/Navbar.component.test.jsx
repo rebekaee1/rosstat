@@ -8,7 +8,9 @@ import { renderPage, mockApiGet } from '../test/renderPage';
 import {
   demographicsPath,
   regionHubPath,
+  regionRatingHubPath,
   russiaHomePath,
+  todayPath,
 } from '../lib/sitePaths';
 
 vi.mock('gsap', () => ({
@@ -96,13 +98,18 @@ describe('Navbar H-4 menu', () => {
     expect(regions.getAttribute('href')).toBe(regionHubPath());
   });
 
-  it('карточка России доступна из футера, «Сегодня» скрыт', () => {
+  it('карточка России и хаб «Экономика сегодня» доступны из футера', () => {
     renderShell();
 
     const footer = screen.getByRole('contentinfo');
     expect(within(footer).getByRole('link', { name: 'Россия' }).getAttribute('href'))
       .toBe(russiaHomePath());
-    expect(within(footer).queryByRole('link', { name: 'Сегодня' })).toBeNull();
+    // Одно слово «Сегодня» слишком общее для анкора. Хаб — отдельная ссылка.
+    expect(within(footer).queryByRole('link', { name: 'Сегодня', exact: true })).toBeNull();
+    expect(within(footer).getByRole('link', { name: 'Экономика сегодня' }).getAttribute('href'))
+      .toBe(todayPath());
+    expect(within(footer).getByRole('link', { name: 'Рейтинги регионов' }).getAttribute('href'))
+      .toBe(regionRatingHubPath());
   });
 
   it('демография не осиротела: ссылка есть в футере', () => {

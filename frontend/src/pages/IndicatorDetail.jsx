@@ -22,6 +22,7 @@ import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import IndicatorForecastSection from '../components/IndicatorForecastSection';
 import IndicatorDataTableSection from '../components/IndicatorDataTableSection';
 import IndicatorSeoBlocks from '../components/IndicatorSeoBlocks';
+import IndicatorYearLinks from '../components/IndicatorYearLinks';
 import RegionCrossLink from '../components/RegionCrossLink';
 import { findVariantGroup, relatedIndicatorCardCopy } from '../lib/indicatorVariants';
 import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
@@ -59,6 +60,19 @@ import { isIndicatorListed } from '../lib/categories';
 import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
+
+/** Последние 12 лет ряда — те же годовые страницы, что в серверном HTML. */
+const YEAR_LINK_CAP = 12;
+
+function indicatorYearLinks(points) {
+  const years = new Set();
+  for (const point of points || []) {
+    const raw = point?.date || point?.period || '';
+    const year = Number(String(raw).slice(0, 4));
+    if (year >= 1900 && year <= 2100) years.add(year);
+  }
+  return [...years].sort((a, b) => b - a).slice(0, YEAR_LINK_CAP);
+}
 
 // Правка №16 (звонок 2026-05-21): на карточке ИПП по умолчанию показываем
 // г/г %, не уровень индекса 2018=100 (raw 105.2 без контекста бессмыслен).
@@ -259,6 +273,11 @@ export default function IndicatorDetail() {
     dataError, fetchingData, hasForecastData, forecastEnabled: baseForecastEnabled,
     refetchData, refetchInflation, refetchForecast,
   } = view;
+
+  const yearLinks = useMemo(
+    () => indicatorYearLinks(baseDataPoints),
+    [baseDataPoints],
+  );
 
   // ============================================================
   // View-mode families (Phase 1+2+3): in-page переключение
@@ -531,6 +550,7 @@ export default function IndicatorDetail() {
           relatedIndicators={relatedIndicators}
           loadingInd={loadingInd}
           headerRef={headerRef}
+          yearLinks={yearLinks}
         />
       </div>
     );
@@ -770,6 +790,8 @@ export default function IndicatorDetail() {
         periodMonthlyDataPoints={periodMonthlyDataPoints}
         periodWeeklyDataPoints={periodWeeklyDataPoints}
       />
+
+      <IndicatorYearLinks code={code} years={yearLinks} />
 
       <IndicatorSeoBlocks blocks={indicator?.seo_blocks} indicatorCode={code} />
 

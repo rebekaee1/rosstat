@@ -1224,7 +1224,10 @@ def test_robots_noindex_pages_stay_crawlable():
         assert "Allow: /\n" in text
         assert "Clean-param: codes /compare\n" in text
         assert "Clean-param: view\n" in text
-        assert "mode&preview_locale" in text
+        assert "&mode\n" in text
+        assert "preview_locale" not in "\n".join(
+            line for line in text.splitlines() if line.startswith("Clean-param:")
+        )
 
 
 def test_robots_mj12_disallow_on_ru_and_en_templates():

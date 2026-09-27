@@ -7,6 +7,8 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { russiaCategoryPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { toolTrail } from '../lib/breadcrumbs';
 
 const CARD = 'fe-panel rounded-2xl bg-surface border border-border-subtle p-5 md:p-6';
 const H2 = 'font-display text-2xl md:text-3xl font-bold text-text-primary mb-4 leading-tight';
@@ -42,6 +44,7 @@ export default function Methodology() {
 
   return (
     <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
+      <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
       <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
         {t('meth.eyebrow')}
       </p>

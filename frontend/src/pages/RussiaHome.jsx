@@ -8,7 +8,7 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  ArrowUpRight, CalendarDays, MapPinned, TrendingUp, Users,
+  ArrowUpRight, CalendarDays, MapPinned, Newspaper, TrendingUp, Trophy, Users,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { useRegionsLanding } from '../lib/regionsApi';
@@ -27,9 +27,11 @@ import {
   calendarPath,
   demographicsPath,
   regionHubPath,
+  regionRatingHubPath,
   russiaCategoriesPath,
   russiaHomePath,
   russiaIndicatorPath,
+  todayPath,
 } from '../lib/sitePaths';
 import Breadcrumbs from '../components/Breadcrumbs';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -118,7 +120,9 @@ function RussiaTerritoryCard() {
 }
 
 const QUICK_LINK_DEFS = [
+  { to: todayPath(), titleKey: 'russia.link.today.title', descKey: 'russia.link.today.desc', icon: Newspaper },
   { to: regionHubPath(), titleKey: 'russia.link.regions.title', descKey: 'russia.link.regions.desc', icon: MapPinned },
+  { to: regionRatingHubPath(), titleKey: 'russia.link.ratings.title', descKey: 'russia.link.ratings.desc', icon: Trophy },
   { to: calendarPath(), titleKey: 'russia.link.calendar.title', descKey: 'russia.link.calendar.desc', icon: CalendarDays },
   { to: demographicsPath(), titleKey: 'russia.link.demographics.title', descKey: 'russia.link.demographics.desc', icon: Users },
 ];

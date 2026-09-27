@@ -95,10 +95,12 @@ Disallow: /
 # not Disallow the same params: on conflict Disallow wins.
 # codes applies only to /compare. view is an interactive slice, not canonical.
 # year is not glued: on the regional map ?year= is part of the canonical URL.
+# preview_locale is not glued: it changes language before cutover, then the
+# server redirects it to the corresponding language host.
 # Rule length limit is 500 characters.
-Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
-Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode&preview_locale
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer&utm_media&utm_group&utm_expid&utm_id
+Clean-param: ysclid&yrclid&yclid&yadclid&yadordid&gclid&gbraid&wbraid&fbclid&msclkid&ttclid&twclid&srsltid
+Clean-param: etext&ybaip&_openstat&openstat&clid&yandex_referrer&erid&from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
 Clean-param: codes /compare
 Clean-param: view
 

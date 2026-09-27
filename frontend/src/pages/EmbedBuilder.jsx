@@ -11,6 +11,8 @@ import useSearchTracking from '../lib/useSearchTracking';
 import { SITE_ORIGIN } from '../lib/siteOrigin';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { toolTrail } from '../lib/breadcrumbs';
 
 const WIDGET_TYPES = [
   { key: 'chart', labelKey: 'embed.type.chart', descKey: 'embed.type.chartDesc', icon: BarChart3 },
@@ -319,6 +321,7 @@ export default function EmbedBuilder() {
 
   return (
     <div className="fe-data-page max-w-7xl mx-auto px-4 pt-24 md:pt-28 pb-16">
+      <Breadcrumbs items={toolTrail(widgetsSeo.h1, widgetsSeo.path)} className="mb-6" />
       <div className="text-center mb-10">
         <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-3">
           {t('embed.constructor')}

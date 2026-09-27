@@ -96,10 +96,12 @@ Disallow: /
 # в секции Yandex не ставим: при конфликте побеждает Disallow.
 # codes только на /compare. view — интерактивный срез, не канон.
 # year не склеиваем: на карте регионов ?year= входит в канонический URL.
+# preview_locale не склеиваем: до языкового переключения он меняет язык,
+# после переключения сервер перенаправляет на соответствующий хост.
 # Лимит длины правила — 500 символов.
-Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer
-Clean-param: yclid&gclid&fbclid&etext&ybaip&_openstat&clid&yandex_referrer
-Clean-param: from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode&preview_locale
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer&utm_media&utm_group&utm_expid&utm_id
+Clean-param: ysclid&yrclid&yclid&yadclid&yadordid&gclid&gbraid&wbraid&fbclid&msclkid&ttclid&twclid&srsltid
+Clean-param: etext&ybaip&_openstat&openstat&clid&yandex_referrer&erid&from&ref&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode
 Clean-param: codes /compare
 Clean-param: view
 

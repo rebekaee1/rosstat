@@ -42,9 +42,12 @@ import {
   sanitizeCompareCodes,
 } from '../lib/compareCompatibility';
 import {
+  comparePath,
   countryRegionsPath,
   regionHubPath,
 } from '../lib/sitePaths';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { toolTrail } from '../lib/breadcrumbs';
 
 function compatText(t, compatibility) {
   const key = compatibility?.reasonKey || compatibility?.reason;
@@ -1675,13 +1678,7 @@ export default function ComparePage() {
       <UpsellModal open={upsellOpen} onClose={() => setUpsellOpen(false)} />
 
       <div className="mb-10 md:mb-12 max-w-4xl">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-tertiary hover:text-champagne transition-colors mb-8 lift-hover group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          {t('common.home')}
-        </Link>
+        <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-6" />
 
         <div className="flex items-center gap-3 mb-4">
           <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">

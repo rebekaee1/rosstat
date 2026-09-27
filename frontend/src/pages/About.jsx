@@ -4,6 +4,8 @@ import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
 import { track, events } from '../lib/track';
 import { footerSourceLinks } from '../lib/footerNav';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { toolTrail } from '../lib/breadcrumbs';
 
 export default function About() {
   const { locale } = useLocale();
@@ -17,6 +19,7 @@ export default function About() {
 
   return (
     <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
+      <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
       <article className="fe-panel fe-reading prose prose-sm max-w-none p-5 sm:p-8">
         <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
           {t('about.eyebrow')}

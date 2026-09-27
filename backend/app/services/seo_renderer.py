@@ -534,7 +534,7 @@ def _breadcrumbs(items: list[tuple[str, str]]) -> dict:
 
 
 def _site_json_ld() -> dict:
-    from app.services.locale import get_locale, get_request_origin
+    from app.services.locale import get_locale, get_request_origin, in_language
 
     en = get_locale() == "en"
     origin = get_request_origin()
@@ -555,7 +555,7 @@ def _site_json_ld() -> dict:
                         "85 регионов и доступных стран: графики, таблицы, сравнения и прогнозы."
                     )
                 ),
-                "inLanguage": "en" if en else "ru-RU",
+                "inLanguage": in_language(),
                 "publisher": {"@id": f"{origin}/#organization"},
             },
             {
@@ -781,11 +781,15 @@ _SSR_PLATFORM_DEEP_LINKS = f"""
 <h2>Разделы платформы</h2>
 <ul class="seo-pills">
 <li><a href="/">Индикаторы России</a></li>
+<li><a href="{paths.russia_categories()}">Категории показателей</a></li>
 <li><a href="{paths.today()}">Экономика сегодня</a></li>
 <li><a href="{paths.region_hub()}">Регионы России</a></li>
+<li><a href="{paths.region_rating_hub()}">Рейтинги регионов</a></li>
 <li><a href="/#countries">Статистика по странам</a></li>
 <li><a href="{paths.calendar()}">Календарь публикаций</a></li>
+<li><a href="{paths.demographics()}">Демография</a></li>
 <li><a href="/compare">Сравнение показателей</a></li>
+<li><a href="/calculator">Калькулятор инфляции</a></li>
 </ul>
 </section>
 """
@@ -795,11 +799,15 @@ _SSR_PLATFORM_DEEP_LINKS_EN = f"""
 <h2>Platform sections</h2>
 <ul class="seo-pills">
 <li><a href="/">Indicators</a></li>
+<li><a href="{paths.russia_categories()}">Indicator categories</a></li>
 <li><a href="{paths.today()}">Economy today</a></li>
 <li><a href="{paths.region_hub()}">Regions</a></li>
+<li><a href="{paths.region_rating_hub()}">Regional rankings</a></li>
 <li><a href="/#countries">Country statistics</a></li>
 <li><a href="{paths.calendar()}">Release calendar</a></li>
+<li><a href="{paths.demographics()}">Demographics</a></li>
 <li><a href="/compare">Compare indicators</a></li>
+<li><a href="/calculator">Inflation calculator</a></li>
 </ul>
 </section>
 """

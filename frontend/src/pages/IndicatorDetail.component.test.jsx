@@ -51,6 +51,20 @@ describe('IndicatorDetail', () => {
     expect(names.length).toBeGreaterThan(0);
   });
 
+  it('после гидрации оставляет ссылки на существующие годовые страницы', async () => {
+    mockApiGet(ROUTES);
+    renderPage(<IndicatorDetail />, {
+      path: russiaIndicatorPath(':code'), route: russiaIndicatorPath('pensioners'),
+    });
+    await screen.findByRole('heading', { name: 'По годам' });
+    const section = document.querySelector('[data-block="indicator-years"]');
+    expect([...section.querySelectorAll('a')].map((link) => link.getAttribute('href'))).toEqual([
+      '/russia/indicator/pensioners/2024',
+      '/russia/indicator/pensioners/2023',
+      '/russia/indicator/pensioners/2022',
+    ]);
+  });
+
   it('не падает на неизвестном коде (все запросы 404)', async () => {
     mockApiGet([['/auth/me', { user: null }]]);
     renderPage(<IndicatorDetail />, {
