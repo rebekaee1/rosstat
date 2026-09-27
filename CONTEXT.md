@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-09-25 (sitemap: потолок 50 000 URL, lastmod по содержанию, шард без полной пересборки — `CONTEXT.md::Sitemap protocol trap`). Ранее 2026-09-20 (локальный пакет `fix/history-access-reliability`; статус и приёмка — [backlog](docs/backlog.md#history-access-reliability-2026-09-20), регламент выкладки — [workflow](docs/workflow.md#прод-деплой)).
+**Last updated:** 2026-09-27 (ночной I/O stall при ротации nginx-лога, `fe:ver:*` под `allkeys-lru` — operational traps ниже; текущий статус и границы доказательства — [backlog](docs/backlog.md#2026-09-27--проверка-выпуска-3-web-worker--scheduler)). Ранее 2026-09-25 (sitemap: потолок 50 000 URL, lastmod по содержанию, шард без полной пересборки — `CONTEXT.md::Sitemap protocol trap`).
 
 **Previous:** 2026-09-19 (**люди не 403 по fe_bind** — HTML и API данных ставят/перевыпускают куку, ферму режем UA и лимитами nginx, не страной и не чужим /24. Ранее 2026-09-06 (**вход без fe_bind** — `/api/v1/auth/*` не режем: SPA `/register` куку не ставит, callback VK меняет /24. Ранее тем же днём (**HTML без заглушки, VPN/хостинг не 403** — человек всегда получает страницу, `fe_bind` на этом ответе; API данных без куки режем. Ранее 2026-09-04, день (**backend cgroup 1536M** на хосте 8 ГБ. Ранее тем же днём (**инцидент: Chrome UA reduction ≠ Playwright** — `Chrome/N.0.0.0` это заголовок живого Chrome с 101, правило 403-ило людей; снято. Ранее тем же днём (**антискрейп: bind на HTML + хостинговые ASN** — чужая `fe_bind` больше не перевыпускается на страницах; режем Hetzner/OVH/Alibaba/AWS по ASN, не по стране. Гео пуст. Ранее тем же днём (**bind-cookie вместо гео-блока** — ферма крутит страны; `fe_bind` = HMAC(/24|/48, день). Гео `SCRAPE_BLOCK_COUNTRIES` пуст, аварийный рычаг). Ранее той же ночью (**BI-in-request trap: дашборд в фоне (202/SWR), индекс соседей мировой карточки, postgres 2,5G** — открытие BI ставило диск и весь сайт; `CONTEXT.md::BI-in-request trap`). Ранее тем же днём (**fail2ban: `backend=polling` + volume только HTML-каталог, ханипот убран из sitemap** — иначе jail банит Яндекс; `CONTEXT.md::Anti-scrape`). Ранее тем же днём (**РСЯ: гейт «реклама только человеку» + обновление блока на SPA-навигации** — робот просил объявление и не показывал, `fillrate` 97%→11,5% при неизменной выручке; `CONTEXT.md::Yandex.RSY`). Ранее 2026-09-03 (**индексация: analytics_engine, статические sitemap, INDEX_POLICY, гео-блок SG,PL**; живые счётчики URL — `/sitemap-stats.json` и `docs/site-inventory.json`). Ранее 2026-08-27, поздний вечер (**восстановление прода завершено по recovery-рецепту** — сайт жив на `774e615`: контейнеры из образов `:774e615`, БД откачена до `20260713_partner_rev`, git выровнен; живой прогон дал 3 поправки в рецепт: мигратор только через `docker run` с URL из `.env`, после downgrade перетегировать движущие теги образов в старые SHA + force-recreate (иначе entrypoint нового образа повторно накатит схему), после восстановления сверять счётчики per-indicator против бэкапа — окно работы нового кода успело усечь историю 5 товарных YoY-рядов (−9 643 точки, восстановлены upsert'ом ADR-0002); детали — `CONTEXT.md::Deploy-scope trap`). Ранее вечером (**Deploy-scope trap: «main» ≠ «одобрено к выкладке»** — инцидент: деплой «анти-скрейпинг» вытянул ff-only весь накопившийся `main` с незаказанной мировой экономикой; автооткат против разогнанной схемы БД = backend crash-loop, сайт 502 ~40 мин; правила: `deploy/approved-shas.txt` (пустой = запрет), предупреждение о миграциях в пачке, migration-direction guard в `scripts/deploy.sh`; рецепт recovery — `CONTEXT.md::Deploy-scope trap`). Ранее 2026-08-27 (LLM-egress trap: внешний OpenRouter-релей молча умер 2026-08-22 после ручного kill — Пульс шесть дней ходил в фолбэк; tinyproxy восстановлен + `Restart=always`, горячий резерв `tor-http-bridge` на проде; details в `CONTEXT.md::traps`). Ранее 2026-08-16 (ADR-0013 Proposed: страна = первый сегмент URL, регионы внутри `/russia`, path-cut на `.com` затем path-identical переезд на `.ru`; карта и счётчики — `docs/backlog.md::Карта миграции URL`). Ранее тем же днём (мировой оперативный срез на официальных первоисточниках: новый парсер-тип `fred_csv` — спотовый Brent Управления энергетической информации США, индекс доллара и доходность десятилетних госбумаг Федрезерва; площадь и население в профиле территории страны — курируемый справочник `app/data/world_country_area.py` плюс concept `population`; страница рейтинга стран только по сопоставимым показателям. Ранее 2026-08-06 — ADR-0011: Eurostat-мир — отдельный TOC-driven data plane с shadow/provenance; до доказанной `sum|avg|last` synthetic частоты карточек fail-closed). Ранее 2026-07-06, вечер (CTO-аудит, дозакрытие хвостов: trap «nginx map с capture-группой» добавлен в traps; adjacency-guard `period_over_period{,_abs}`; батч-hero каталога; COPY-сидер регионов; полная матрица покрытия — `docs/backlog.md::2026-07-06`. Ранее Волна 5: сверены счётчики рядов, source, derived, парсер-типов, ops и generic-семей — актуальные цифры живут в разделах «Indicator» и «Parser» ниже (2026-07-08: минус один авто-сиблинг `wages-nominal-avg-year` после `overrides={"avg-year": "wages-nominal-annual"}` — созвон «На правки 13»); derived-пересчёт стал инкрементальным по dependency-графу в topo-порядке (П-2), «пересчитывает все 31» — история. Ранее 2026-06-24: Фаза 3 — углублена история source-рядов до пола источника: `usd-rub`/`cny-rub`/`gold-price`→1998, `eur-rub`→1999, `m2`→1992, `current-account`→1998 (через `backfill_from`/`backfill_from_year`, деноминация-aware floor; каскад протянул на все уровни матрицы); знаковые квартальные прогнозы закрыты — `trade-balance` тождеством `exports−imports` (`derived_from_source` op=`subtract`, 2-source), `current-account` стратегией `signed_quarterly` (level-diff); skip-лист рядов на полу источника — `docs/backlog.md::A0.3`. Ранее — новая стратегия `generic_quarterly` для положительных квартальных рядов — `exports`/`imports`/`external-debt` получили квартальный прогноз; каскад заполнил прогноз новых yoy-кв/год sibling'ов A0.1. Ранее 2026-06-23 (прогноз во всех режимах: `_mode_forecastable` в `view_model_families` — флаг режима выводится из частоты базы (`yoy/mom/qoq` показывают derived-прогноз, не хардкод False); `monthly_auto` = 36 (+`housing-affordability`/`-primary` собственной моделью на ряде отношения, ретрейн через `scheduler._retrain_self_modeled_derived`); `hero_change` (ускорение Г/г в п.п.) на индекс-карточках; фикс key-rate `_handle_forecasts`). Ранее 2026-06-22 (forecast registry: `monthly_auto` обновлённый алгоритм, 34 ряда).
 **Part of:** [`AGENTS.md`](AGENTS.md) (точка входа для AI-агента).
@@ -55,7 +55,7 @@
 
 - **Backend**: Python 3.12, FastAPI 0.115 + Uvicorn, SQLAlchemy 2.0 (async, asyncpg), Alembic, APScheduler, statsmodels (forecaster + SARIMA-семейство), pandas/openpyxl/xlrd (parsers), beautifulsoup4 (HTML), requests/httpx (HTTP), Redis 7 (cache).
 - **Frontend**: React 19, Vite 7, Tailwind 4, Recharts 3, TanStack React Query 5, GSAP 3, React Router 7, Axios, Lucide, `xlsx` (Excel-экспорт), `@sentry/react` (только фронт — backend без Sentry).
-- **Infra**: Docker Compose × 4 (backend, frontend, postgres-16, redis-7), Caddy reverse-proxy на хосте (HTTPS + CSP с десятками `mc.yandex.*` доменов + `frame-ancestors *` для embed), Nginx внутри контейнера frontend (роутинг между SPA-shell и backend SSR), Yandex.Metrika (counter `107136069`) + Yandex.Webmaster, Telegram alerts (`alerting.py`), кастомный Forecast Analytics MCP (`mcp/forecast-analytics-mcp/`).
+- **Infra**: Docker Compose × 7 (backend: 3 web worker, scheduler: отдельный процесс, frontend, postgres-16, redis-7, redis-state, clickhouse), Caddy reverse-proxy на хосте (HTTPS + CSP с десятками `mc.yandex.*` доменов + `frame-ancestors *` для embed), Nginx внутри контейнера frontend (роутинг между SPA-shell и backend SSR), Yandex.Metrika (counter `107136069`) + Yandex.Webmaster, Telegram alerts (`alerting.py`), кастомный Forecast Analytics MCP (`mcp/forecast-analytics-mcp/`).
 - **Прод**: `201.51.11.170` (Timeweb Cloud, Ubuntu 24.04).
 
 ---
@@ -318,6 +318,32 @@ Eurostat — первый адаптер, а не универсальный и�
 ## Operational invariants and traps
 
 Вещи, которые ломаются неочевидно. Каждый пункт — проверенный пост-мортем.
+
+### nginx-logrotate I/O trap: ротация совпала с задержкой Postgres (2026-09-27)
+
+`frontend/nginx.conf` пишет все запросы в host-level `security.log` для
+fail2ban. При 228 МБ в сутки `compress + delaycompress + copytruncate` заняли
+00:00:03–00:05:49 UTC; все 48 SQL statement timeout пришлись на этот интервал,
+а `sar` показал 131 мс disk await и 43,95% iowait. Совпадение сильное, но
+исторического per-process I/O нет: строгая причинность не доказана. Конфиг
+`deploy/fail2ban/logrotate-rosstat-nginx` подготовлен с rename/create/USR1 и
+семью несжатыми архивами. **Изменение файла в Git само не обновляет
+`/etc/logrotate.d/rosstat-nginx` на хосте**; требуется отдельная установка
+после допуска SHA, проверка reopen nginx и fail2ban `backend=polling`, затем
+контроль места на диске и следующей ночной ротации.
+
+### Cache-version eviction trap: `fe:ver:*` без TTL (2026-09-27)
+
+Версия `fe:ver:{namespace}` управляет ключами `fe:{namespace}:vN:*`.
+`allkeys-lru` может вытеснить версию при заполненном cache-Redis; тогда
+`_ns_version()` вернёт v0 и старый кэш способен вновь стать видимым.
+На проде вытеснение версии не зафиксировано, но сценарий воспроизведён
+локально. В текущем DB 0 все остальные ключи имеют TTL, поэтому
+`volatile-lru` защищает пять версий и продолжает вытеснять обычный кэш.
+Продовый `.env` явно задаёт `REDIS_CACHE_POLICY=allkeys-lru`: compose-default
+не переключит его сам. При выпуске изменить env адресно, проверить
+`CONFIG GET maxmemory-policy` после restart и контролировать долю ключей
+без TTL/ошибки записи; рост неистекающих ключей нарушит предпосылку.
 
 ### Too-many-open-files trap: плановые job'ы копят fd до Errno 24 (2026-09-20)
 
@@ -598,9 +624,16 @@ Goal в Метрике: `rsy_floor_render` — успешный непустой
 
 Маркировку «Реклама» (+ домен/erid рекламодателя) несёт сам креатив РСЯ — отдельный оверлей-ярлык мы не рисуем (убран 2026-06-24: floorAd переменной высоты, фиксированный ярлык попадал в середину объявления).
 
-### Scheduler dual jobs + analytics-scheduler флаг
+### Отдельный scheduler и analytics-scheduler флаг
 
-В `backend/app/main.py` lifespan регистрируются **два обязательных** APScheduler job'а: `daily_etl` (06:00 МСК) и `calendar_refresh` (1-го числа 03:00 МСК). Дополнительно — два опциональных под `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`: `analytics_hourly` (:15) и `analytics_daily` (07:20). С 2026-05-22 добавлен `ticker_live_pull` (interval 5s, `coalesce=True`, `max_instances=1`) — fetch MOEX/Binance/CBR-fallback в Redis для LiveTicker. Если scheduler-флаг выключен — работает только `daily_etl` + `calendar_refresh` + `ticker_live_pull`, analytics cron-ы не регистрируются.
+В проде `scheduler` — отдельный Compose-сервис; web worker не регистрируют
+фоновые job'ы. Актуальный перечень и CronTrigger — в `backend/app/main.py`:
+помимо `daily_etl` и `ticker_live_pull` там есть вечерний и поздние ETL,
+мировые ingest/forecast, rollup'ы, отчёты и другие задачи. `calendar_refresh`
+запускается **ежедневно в 03:00 МСК**, а не первого числа. Дополнительные
+`analytics_hourly`/`analytics_daily` включаются через
+`RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`. Ошибка job должна доходить до
+APScheduler `EVENT_JOB_ERROR`, иначе штатный алерт не сработает.
 
 ### Live ticker: MOEX-приоритет с CBR-fallback для FX
 

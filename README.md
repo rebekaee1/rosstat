@@ -73,7 +73,8 @@
 
 ### Инфраструктура
 
-- **Docker Compose** — 4 сервиса: `db` (Postgres), `redis`, `backend`, `frontend`.
+- **Docker Compose** — 7 сервисов: `postgres`, `redis`, `redis-state`,
+  `backend` (3 web worker), `scheduler` (фоновые задачи), `frontend`, `clickhouse`.
 - **Caddy** — внешний reverse-proxy, HTTPS-сертификат, CSP-политики (Yandex.Metrika, Sentry, Webmaster, шрифты).
 - **Yandex.Metrika** + **Yandex.Webmaster** — публичная аналитика и контроль индексирования.
 - **Forecast Analytics OS / MCP** — отдельный модуль для агрегации Yandex.* данных и сценариев в backend (см. `docs/analytics_api_inventory/`).
