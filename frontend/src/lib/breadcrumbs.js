@@ -24,7 +24,7 @@ import {
   WORLD_RATING_DEFAULT_CONCEPT,
   worldRatingPath,
 } from './sitePaths';
-import { getSiteOrigin } from './siteOrigin';
+import { getSiteOrigin, publicPageUrl } from './siteOrigin';
 import { t } from '../i18n/messages';
 
 /** @typedef {{ path: string, name: string }} Crumb */
@@ -253,16 +253,17 @@ export function toolTrail(name, path) {
   return [homeCrumb(), crumb(path, name)];
 }
 
-/** JSON-LD BreadcrumbList из trail (для CSR-страниц без SSR). */
+/** JSON-LD BreadcrumbList from the same canonical URLs used by SSR. */
 export function breadcrumbJsonLd(items, origin = getSiteOrigin()) {
+  if (!items || items.length < 2) return null;
+  const base = String(origin || '').replace(/\/$/, '');
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: `${origin.replace(/\/$/, '')}${item.path}`,
-    })),
+    itemListElement: items.map((item, index) => {
+      const url = publicPageUrl(base, item.path);
+      return { '@type': 'ListItem', position: index + 1, name: item.name,
+        item: url, url };
+    }),
   };
 }

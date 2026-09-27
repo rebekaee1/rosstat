@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { bindUiLocale } from '../i18n/locale';
 import {
+  breadcrumbJsonLd,
   globalMarketIndicatorTrail,
   regionRatingTrail,
   russiaCategoryTrail,
@@ -19,6 +20,17 @@ import {
 } from './sitePaths';
 
 describe('breadcrumbs', () => {
+  it('uses canonical item and url fields and skips a one-item root trail', () => {
+    const trail = breadcrumbJsonLd([
+      { name: 'Home', path: '/' },
+      { name: 'Germany', path: '/germany' },
+    ], 'https://forecasteconomy.com/');
+    expect(trail.itemListElement[0].item).toBe('https://forecasteconomy.com');
+    expect(trail.itemListElement[1].item).toBe('https://forecasteconomy.com/germany');
+    expect(trail.itemListElement.every((item) => item.item === item.url)).toBe(true);
+    expect(breadcrumbJsonLd([{ name: 'Home', path: '/' }])).toBeNull();
+  });
+
   it('категория России: Главная / Россия / имя — без хаба Категории', () => {
     const trail = russiaCategoryTrail('Валюты', 'currencies');
     expect(trail.map((c) => c.name)).toEqual(['Главная', 'Россия', 'Валюты']);

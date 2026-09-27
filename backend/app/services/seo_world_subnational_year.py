@@ -61,6 +61,10 @@ async def render_subnational_indicator_year_html(
         return 404, "Not found"
 
     en = get_locale() == "en"
+    source_name = (
+        (indicator.source_en if en else indicator.source_ru)
+        or indicator.source_ru or indicator.source_en
+    )
     country_name, region_name, name, unit = _cname(country), _rname(region), _iname(indicator), _iunit(indicator)
     value_date, value = year_rows[-1]
     value_text = f"{format_number_ru(value, locale=get_locale())} {unit}".strip()
@@ -182,6 +186,8 @@ async def render_subnational_indicator_year_html(
         {"@context": "https://schema.org", "@type": "Dataset", "name": title,
          "description": description, "url": _absolute(path), "temporalCoverage": str(year),
          "spatialCoverage": region_name, "image": _absolute(og_path),
+         **({"creator": {"@type": "Organization", "name": source_name}}
+            if source_name else {}),
          "inLanguage": "en" if en else "ru"},
         _breadcrumbs(trail),
         {"@context": "https://schema.org", "@type": "ImageObject", "contentUrl": _absolute(og_path),

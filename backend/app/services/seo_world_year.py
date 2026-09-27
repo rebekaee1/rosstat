@@ -520,7 +520,6 @@ async def render_world_indicator_year_html(
             "url": _absolute(canonical_path),
             "inLanguage": in_language(),
             "creator": {"@type": "Organization", "name": source},
-            "license": "https://creativecommons.org/licenses/by/4.0/",
             "spatialCoverage": spatial,
             "temporalCoverage": f"{_iso_date(first_date)}/{coverage_end}",
             "variableMeasured": display,

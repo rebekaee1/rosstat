@@ -29,6 +29,7 @@ import {
   breadcrumbJsonLd,
   worldCountryTrail,
 } from '../lib/breadcrumbs';
+import { mountJsonLd } from '../lib/jsonLd';
 import {
   countryPath,
   countryRegionsPath,
@@ -206,13 +207,7 @@ export default function WorldCountry() {
 
   useEffect(() => {
     if (!countryName) return undefined;
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'world-country-jsonld';
-    script.textContent = JSON.stringify(breadcrumbJsonLd(worldCountryTrail(countryName, slug)));
-    document.getElementById('world-country-jsonld')?.remove();
-    document.head.appendChild(script);
-    return () => script.remove();
+    return mountJsonLd(breadcrumbJsonLd(worldCountryTrail(countryName, slug)));
   }, [countryName, slug]);
 
   useEffect(() => {

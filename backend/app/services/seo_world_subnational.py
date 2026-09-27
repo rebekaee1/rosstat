@@ -401,7 +401,10 @@ async def render_subnational_indicator_html(
     )
     desc = (indicator.description_en if _en() else indicator.description_ru) or ""
     meth = (indicator.methodology_en if _en() else indicator.methodology_ru) or ""
-    src = (indicator.source_en if _en() else indicator.source_ru) or ""
+    src = (
+        (indicator.source_en if _en() else indicator.source_ru)
+        or indicator.source_ru or indicator.source_en or ""
+    )
     about = "About" if _en() else "О показателе"
     meth_h = "Methodology" if _en() else "Методология"
     src_h = "Source" if _en() else "Источник"
@@ -464,6 +467,8 @@ async def render_subnational_indicator_html(
             "spatialCoverage": region_name,
             "inLanguage": "en" if loc == "en" else "ru",
             "image": _absolute(og_path),
+            **({"creator": {"@type": "Organization", "name": src}}
+               if src else {}),
         },
         _breadcrumbs(trail),
         _image_ld(og_path, title, alt),

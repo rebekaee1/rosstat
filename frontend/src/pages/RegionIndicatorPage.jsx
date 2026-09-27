@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getSiteOrigin } from '../lib/siteOrigin';
+import { completeDataset } from '../lib/datasetJsonLd';
+import { mountJsonLd } from '../lib/jsonLd';
 import {
   useRegionIndicator, useRegionIndicatorMonthly, useRegionsLanding,
   formatRegionValue, shortUnit, yearDelta,
@@ -218,7 +220,7 @@ export default function RegionIndicatorPage() {
 
   useEffect(() => {
     if (!active) return;
-    const jsonLd = {
+    const jsonLd = completeDataset({
       '@context': 'https://schema.org',
       '@type': 'Dataset',
       name: `${indName} — ${regionName}`,
@@ -233,15 +235,9 @@ export default function RegionIndicatorPage() {
       spatialCoverage: regionName,
       creator: { '@type': 'Organization', name: t('regions.ind.creatorRosstat') },
       publisher: { '@type': 'Organization', name: 'Forecast Economy', url: getSiteOrigin() },
-    };
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'region-dataset-jsonld';
-    script.textContent = JSON.stringify(jsonLd);
-    document.getElementById('region-dataset-jsonld')?.remove();
-    document.head.appendChild(script);
-    return () => script.remove();
-  }, [active, indName, regionName, first, last, t]);
+    }, locale);
+    return mountJsonLd(jsonLd);
+  }, [active, indName, regionName, first, last, locale, t]);
 
   const delta = last && activeSeries.length > 1
     ? yearDelta(last.value, activeSeries[activeSeries.length - 2].value)
