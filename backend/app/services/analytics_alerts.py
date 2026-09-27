@@ -175,6 +175,14 @@ async def _alert(alert_key: str, text: str) -> bool:
     return bool(sent)
 
 
+def _own_js_error_params_query(now: datetime):
+    return select(BehaviorEvent.params_json).where(
+        BehaviorEvent.event_type == "js_error",
+        BehaviorEvent.occurred_at >= now - timedelta(minutes=15),
+        BehaviorEvent.params_json["kind"].as_string().in_(("error", "rejection")),
+    )
+
+
 async def check_anomalies() -> None:
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     async with analytics_session() as db:
@@ -200,12 +208,7 @@ async def check_anomalies() -> None:
             )
 
         # 2. Resource failures and third-party scripts are not own JS regressions.
-        error_rows = (await db.execute(
-            select(BehaviorEvent.params_json).where(
-                BehaviorEvent.event_type == "js_error",
-                BehaviorEvent.occurred_at >= now - timedelta(minutes=15),
-            )
-        )).scalars().all()
+        error_rows = (await db.execute(_own_js_error_params_query(now))).scalars().all()
         errors_15m = sum(js_error_counts_for_alert(params) for params in error_rows)
         if errors_15m >= 10:
             await _alert("js_error_spike", f"Всплеск JS-ошибок: {errors_15m} за 15 минут.")

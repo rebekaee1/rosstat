@@ -2061,9 +2061,6 @@ async def render_indicator_html(
 
     category = _category_for_api(indicator.category)
     related = await _related_indicators(db, indicator)
-    # А-4: внутренняя перелинковка «по годам» — год-запросы («X в 2019»)
-    # должны ранжировать годовые landing'и, а не карточку со сниппетом «сегодня».
-    data_years = await indicator_data_years(db, indicator.id)
     # Месячные срезы для перелинковки «по месяцам» (monthly-ряды): последние
     # 12 существующих (год, месяц) пар — против выдуманных пустых лендингов.
     data_month_pairs: list[tuple[int, int]] = []
@@ -2124,7 +2121,6 @@ async def render_indicator_html(
         display_unit=body_unit,
         display_frequency=body_frequency,
         data_code=body_indicator.code,
-        data_years=data_years,
         data_month_pairs=data_month_pairs,
         forecast_ssr=forecast_ssr,
         description=overlay.get("description"),
@@ -3058,7 +3054,6 @@ def _indicator_body(
     display_unit: str | None = None,
     display_frequency: str | None = None,
     data_code: str | None = None,
-    data_years: list[int] | None = None,
     data_month_pairs: list[tuple[int, int]] | None = None,
     forecast_ssr: bool = False,
     description: str | None = None,
@@ -3146,8 +3141,6 @@ def _indicator_body(
         )
         forecast_note_prefix = indicator_template("forecast_chart_note", loc) or FORECAST_SSR_CHART_NOTE
         forecast_link_label = indicator_template("forecast_link", loc) or "how the forecast is calculated"
-        years_h2_tpl = indicator_template("section_years", loc) or "{name} by year"
-        year_link_tpl = indicator_template("year_link", loc) or "{name} in {year}"
         li_latest_tpl = indicator_template("li_latest", loc) or "Latest value: {value}"
         li_date_tpl = indicator_template("li_date", loc) or "Date of latest value: {date}"
         li_freq_tpl = indicator_template("li_frequency", loc) or "Frequency: {frequency}"
@@ -3168,8 +3161,6 @@ def _indicator_body(
         chart_alt_tpl = "{name} — график динамики, последнее значение {value}, источник {source}"
         forecast_note_prefix = FORECAST_SSR_CHART_NOTE
         forecast_link_label = "как считается прогноз"
-        years_h2_tpl = "{name} по годам"
-        year_link_tpl = "{name} в {year} году"
         li_latest_tpl = "Последнее значение: {value}"
         li_date_tpl = "Дата последнего значения: {date}"
         li_freq_tpl = "Периодичность: {frequency}"
@@ -3234,20 +3225,6 @@ def _indicator_body(
             f'<p class="seo-forecast-note">{escape(forecast_note_prefix)}'
             f'{_link("/methodology", forecast_link_label)}.</p>\n'
         )
-    # А-4: блок «по годам» — ссылки на годовые landing'и (последние 12 лет).
-    years_section = ""
-    if data_years:
-        year_links = _links_list(tuple(
-            (
-                paths.russia_indicator_year(indicator.code, y),
-                year_link_tpl.format(name=name, year=y),
-            )
-            for y in sorted(data_years, reverse=True)[:12]
-        ))
-        years_section = (
-            f"<section><h2>{escape(years_h2_tpl.format(name=name))}</h2>"
-            f"{year_links}</section>\n"
-        )
     # А-4 (месяцы): у monthly-рядов перелинковка на месячные лендинги —
     # срезы «X в июле 2026» ранжируют точный срез, не карточку.
     # Пары (year, month) готовит async-вызывающий (data_month_pairs).
@@ -3291,5 +3268,5 @@ def _indicator_body(
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p></section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>
-{years_section}{months_section}{world_compare_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
+{months_section}{world_compare_section}<section><h2>{escape(section_related)}</h2>{_links_list(related_links or ((paths.russia_category(category.slug), category.name),) if category else tuple())}</section>
 </main>"""

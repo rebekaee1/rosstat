@@ -30,6 +30,27 @@ def test_js_error_alert_scope(params, expected):
     assert alerts.js_error_counts_for_alert(params) is expected
 
 
+def test_js_error_query_excludes_resource_noise_before_loading_rows():
+    from sqlalchemy import create_engine
+
+    from app.models import BehaviorEvent
+
+    engine = create_engine("sqlite://")
+    BehaviorEvent.__table__.create(engine)
+    with engine.begin() as conn:
+        conn.execute(BehaviorEvent.__table__.insert(), [
+            {"event_type": "js_error", "occurred_at": NOW, "params_json": {"kind": "error"}},
+            {"event_type": "js_error", "occurred_at": NOW, "params_json": {"kind": "rejection"}},
+            {"event_type": "js_error", "occurred_at": NOW, "params_json": {"kind": "resource"}},
+            {"event_type": "js_error", "occurred_at": NOW - timedelta(minutes=16),
+             "params_json": {"kind": "error"}},
+            {"event_type": "pageview", "occurred_at": NOW, "params_json": {"kind": "error"}},
+        ])
+        rows = conn.execute(alerts._own_js_error_params_query(NOW)).scalars().all()
+    engine.dispose()
+    assert [row["kind"] for row in rows] == ["error", "rejection"]
+
+
 def test_memory_pressure_alerts_once_per_episode():
     assert alerts.memory_pressure_episode(0.86, sticky=False) == "alert"
     assert alerts.memory_pressure_episode(0.99, sticky=True) == "hold"

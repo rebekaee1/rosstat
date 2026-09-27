@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import re
 from datetime import date
 
@@ -223,6 +224,43 @@ def test_sitemap_years_match_ssr_200(year_landing_client, auth_env):
             assert "/russia/indicator/population/2010" not in paths
 
     asyncio.run(_check())
+
+
+def test_main_card_omits_year_links_and_year_lookup(year_landing_client, auth_env, monkeypatch):
+    from app.services import seo_renderer
+
+    async def unexpected_year_lookup(*_args, **_kwargs):
+        raise AssertionError("main card should not query years")
+
+    monkeypatch.setattr(seo_renderer, "indicator_data_years", unexpected_year_lookup)
+
+    async def render():
+        async with auth_env["session_maker"]() as db:
+            return await seo_renderer.render_indicator_html("cpi", db)
+
+    status, html = asyncio.run(render())
+    assert status == 200
+    assert 'href="/russia/indicator/cpi/2024"' not in html
+    assert "Индекс потребительских цен по годам" not in html
+
+
+def test_main_card_chart_rights_cover_og_url(year_landing_client, auth_env):
+    from app.services.seo_renderer import render_indicator_html
+
+    async def render():
+        async with auth_env["session_maker"]() as db:
+            return await render_indicator_html("cpi", db)
+
+    status, html = asyncio.run(render())
+    assert status == 200
+    structured = [json.loads(raw) for raw in re.findall(
+        r'<script type="application/ld\+json">(.*?)</script>', html, re.S,
+    )]
+    chart = next(item for item in structured if item.get("@type") == "ImageObject")
+    assert chart["contentUrl"].endswith("/og/russia/cpi.png")
+    assert chart["copyrightNotice"] == "Forecast Economy (chart only)"
+    assert chart["license"].endswith("/terms")
+    assert chart["acquireLicensePage"].endswith("/terms")
 
 
 def test_mode_og_uses_base_card_code(year_landing_client, auth_env):
