@@ -22,9 +22,11 @@ from typing import Any
 
 import requests
 import yaml
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.cache import WorldCatalogInvalidationError
 
 from app.database import async_session
 from app.models import SubnationalDataPoint, SubnationalIndicator, SubnationalRegion
@@ -418,8 +420,11 @@ def merge_and_scale_points(
     return [(period, value * scale) for period, value in sorted(merged.items())]
 
 
-async def _upsert_regions(db: AsyncSession, passport: SubnationalPassport) -> dict[str, int]:
+async def _upsert_regions(
+    db: AsyncSession, passport: SubnationalPassport,
+) -> tuple[dict[str, int], bool]:
     ids: dict[str, int] = {}
+    changed = False
     for spec in passport.regions:
         stmt = pg_insert(SubnationalRegion).values(
             country_code=passport.country_code,
@@ -431,18 +436,23 @@ async def _upsert_regions(db: AsyncSession, passport: SubnationalPassport) -> di
             fips=spec.fips or None,
             sort_order=spec.sort_order,
         )
+        updates = {
+            "name_en": stmt.excluded.name_en,
+            "name_ru": stmt.excluded.name_ru,
+            "kind": stmt.excluded.kind,
+            "geo_code": stmt.excluded.geo_code,
+            "fips": stmt.excluded.fips,
+            "sort_order": stmt.excluded.sort_order,
+        }
         stmt = stmt.on_conflict_do_update(
             constraint="uq_subnational_region_country_slug",
-            set_={
-                "name_en": stmt.excluded.name_en,
-                "name_ru": stmt.excluded.name_ru,
-                "kind": stmt.excluded.kind,
-                "geo_code": stmt.excluded.geo_code,
-                "fips": stmt.excluded.fips,
-                "sort_order": stmt.excluded.sort_order,
-            },
-        )
-        await db.execute(stmt)
+            set_=updates,
+            where=or_(*(
+                getattr(SubnationalRegion, name).is_distinct_from(value)
+                for name, value in updates.items()
+            )),
+        ).returning(SubnationalRegion.id)
+        changed = (await db.execute(stmt)).scalar_one_or_none() is not None or changed
     await db.flush()
     rows = (
         await db.execute(
@@ -453,18 +463,19 @@ async def _upsert_regions(db: AsyncSession, passport: SubnationalPassport) -> di
     ).scalars().all()
     for row in rows:
         ids[row.slug] = row.id
-    return ids
+    return ids, changed
 
 
 async def _upsert_indicators(
     db: AsyncSession, passport: SubnationalPassport, only: str | None,
-) -> dict[str, int]:
+) -> tuple[dict[str, int], bool]:
     specs = passport.indicators
     if only:
         needle = only.strip().lower()
         specs = tuple(s for s in specs if s.code == needle)
         if not specs:
             raise ValueError(f"no indicator with code={only!r}")
+    changed = False
     for spec in specs:
         stmt = pg_insert(SubnationalIndicator).values(
             country_code=passport.country_code,
@@ -491,33 +502,38 @@ async def _upsert_indicators(
             national_code=spec.national_code,
             better_is_low=spec.better_is_low,
         )
+        updates = {
+            "name_en": stmt.excluded.name_en,
+            "name_ru": stmt.excluded.name_ru,
+            "unit": stmt.excluded.unit,
+            "unit_en": stmt.excluded.unit_en,
+            "unit_ru": stmt.excluded.unit_ru,
+            "frequency": stmt.excluded.frequency,
+            "section_en": stmt.excluded.section_en,
+            "section_ru": stmt.excluded.section_ru,
+            "provider": stmt.excluded.provider,
+            "series_template": stmt.excluded.series_template,
+            "aggregation": stmt.excluded.aggregation,
+            "description_en": stmt.excluded.description_en,
+            "description_ru": stmt.excluded.description_ru,
+            "methodology_en": stmt.excluded.methodology_en,
+            "methodology_ru": stmt.excluded.methodology_ru,
+            "source_en": stmt.excluded.source_en,
+            "source_ru": stmt.excluded.source_ru,
+            "source_url_template": stmt.excluded.source_url_template,
+            "is_listed": stmt.excluded.is_listed,
+            "national_code": stmt.excluded.national_code,
+            "better_is_low": stmt.excluded.better_is_low,
+        }
         stmt = stmt.on_conflict_do_update(
             constraint="uq_subnational_indicator_country_code",
-            set_={
-                "name_en": stmt.excluded.name_en,
-                "name_ru": stmt.excluded.name_ru,
-                "unit": stmt.excluded.unit,
-                "unit_en": stmt.excluded.unit_en,
-                "unit_ru": stmt.excluded.unit_ru,
-                "frequency": stmt.excluded.frequency,
-                "section_en": stmt.excluded.section_en,
-                "section_ru": stmt.excluded.section_ru,
-                "provider": stmt.excluded.provider,
-                "series_template": stmt.excluded.series_template,
-                "aggregation": stmt.excluded.aggregation,
-                "description_en": stmt.excluded.description_en,
-                "description_ru": stmt.excluded.description_ru,
-                "methodology_en": stmt.excluded.methodology_en,
-                "methodology_ru": stmt.excluded.methodology_ru,
-                "source_en": stmt.excluded.source_en,
-                "source_ru": stmt.excluded.source_ru,
-                "source_url_template": stmt.excluded.source_url_template,
-                "is_listed": stmt.excluded.is_listed,
-                "national_code": stmt.excluded.national_code,
-                "better_is_low": stmt.excluded.better_is_low,
-            },
-        )
-        await db.execute(stmt)
+            set_=updates,
+            where=or_(*(
+                getattr(SubnationalIndicator, name).is_distinct_from(value)
+                for name, value in updates.items()
+            )),
+        ).returning(SubnationalIndicator.id)
+        changed = (await db.execute(stmt)).scalar_one_or_none() is not None or changed
     await db.flush()
     rows = (
         await db.execute(
@@ -526,7 +542,7 @@ async def _upsert_indicators(
             )
         )
     ).scalars().all()
-    return {row.code: row.id for row in rows}
+    return {row.code: row.id for row in rows}, changed
 
 
 async def _upsert_points(
@@ -580,6 +596,7 @@ async def ingest_country(
     *,
     only: str | None = None,
     db: AsyncSession | None = None,
+    change_state: dict[str, int | bool] | None = None,
 ) -> list[SeriesReport]:
     passport = load_subnational_passport(country)
     if any(
@@ -593,9 +610,11 @@ async def ingest_country(
     own_session = db is None
 
     async def _run(session: AsyncSession) -> list[SeriesReport]:
-        region_ids = await _upsert_regions(session, passport)
-        indicator_ids = await _upsert_indicators(session, passport, only)
+        region_ids, regions_changed = await _upsert_regions(session, passport)
+        indicator_ids, indicators_changed = await _upsert_indicators(session, passport, only)
         await session.commit()
+        if change_state is not None:
+            change_state["metadata_changed"] = regions_changed or indicators_changed
         specs = passport.indicators
         if only:
             needle = only.strip().lower()
@@ -669,6 +688,8 @@ async def ingest_country(
             )
             n, _ = await _upsert_points(session, iid, rid, scaled)
             await session.commit()
+            if change_state is not None:
+                change_state["points_touched"] = int(change_state.get("points_touched", 0)) + n
             out.append(SeriesReport(
                 ind.code, region.slug, series_id,
                 "error" if series_id in bls_errors else "loaded",
@@ -692,11 +713,13 @@ async def world_subnational_ingest_job() -> None:
     countries = list_subnational_countries()
     logger.info("world_subnational ingest start countries=%s", countries)
     touched = 0
+    metadata_changed = False
     failures: list[str] = []
     checked = loaded_total = skipped_total = error_total = 0
     for cc in countries:
+        change_state: dict[str, int | bool] = {}
         try:
-            reports = await ingest_country(cc.lower())
+            reports = await ingest_country(cc.lower(), change_state=change_state)
             loaded = sum(1 for r in reports if r.status == "loaded")
             skipped = sum(1 for r in reports if r.status == "skipped")
             errors = sum(1 for r in reports if r.status == "error")
@@ -704,7 +727,9 @@ async def world_subnational_ingest_job() -> None:
             loaded_total += loaded
             skipped_total += skipped
             error_total += errors
-            touched += sum(r.points for r in reports)
+            touched += max(
+                sum(r.points for r in reports), int(change_state.get("points_touched", 0))
+            )
             logger.info(
                 "world_subnational %s loaded=%s skipped=%s errors=%s",
                 cc, loaded, skipped, errors,
@@ -716,12 +741,22 @@ async def world_subnational_ingest_job() -> None:
             logger.exception("world_subnational ingest failed for %s", cc)
             failures.append(cc)
             error_total += 1
-    # Passport metadata can change even when every numeric observation is stable.
-    if countries:
+            touched += int(change_state.get("points_touched", 0))
+        metadata_changed |= bool(change_state.get("metadata_changed", False))
+    # Country-directory counts depend on passport metadata, not regional
+    # observations. Ordinary point refreshes must not cold-start that query.
+    if touched or metadata_changed:
         try:
             from app.core.cache import bump_namespaces
 
-            await bump_namespaces("world", "ssr-world", "world-catalog")
+            namespaces = ["world", "ssr-world"]
+            if metadata_changed:
+                namespaces.append("world-catalog")
+            await bump_namespaces(*namespaces)
+        except WorldCatalogInvalidationError:
+            logger.exception("world_subnational catalogue invalidation failed")
+            failures.append("catalogue-cache")
+            error_total += 1
         except Exception:
             logger.warning("world_subnational cache bump failed", exc_info=True)
     elapsed = (datetime.now(timezone.utc) - started).total_seconds()

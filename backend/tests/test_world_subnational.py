@@ -134,7 +134,7 @@ def test_subnational_scheduled_job_invalidates_world_caches(monkeypatch):
     monkeypatch.setattr(cache, "bump_namespaces", bump)
 
     asyncio.run(ingest.world_subnational_ingest_job())
-    bump.assert_awaited_once_with("world", "ssr-world", "world-catalog")
+    bump.assert_awaited_once_with("world", "ssr-world")
 
 
 def test_subnational_scheduled_job_reports_series_failures(monkeypatch):
@@ -145,9 +145,50 @@ def test_subnational_scheduled_job_reports_series_failures(monkeypatch):
     monkeypatch.setattr(ingest, "ingest_country", AsyncMock(return_value=[
         ingest.SeriesReport("civilian-employment", "california", "LASST060000000000005", "error", detail="BLS unavailable"),
     ]))
-    monkeypatch.setattr(cache, "bump_namespaces", AsyncMock())
+    bump = AsyncMock()
+    monkeypatch.setattr(cache, "bump_namespaces", bump)
     with pytest.raises(RuntimeError, match="world_subnational ingest failures: US:1"):
         asyncio.run(ingest.world_subnational_ingest_job())
+    bump.assert_not_awaited()
+
+
+def test_subnational_scheduled_job_invalidates_on_metadata_change(monkeypatch):
+    from app.services import world_subnational_ingest as ingest
+    from app.core import cache
+
+    async def metadata_only(_country, *, change_state):
+        change_state["metadata_changed"] = True
+        return [ingest.SeriesReport("civilian-employment", "california", "CALF", "skipped")]
+
+    monkeypatch.setattr(ingest, "list_subnational_countries", lambda: ["US"])
+    monkeypatch.setattr(ingest, "ingest_country", metadata_only)
+    bump = AsyncMock()
+    monkeypatch.setattr(cache, "bump_namespaces", bump)
+
+    asyncio.run(ingest.world_subnational_ingest_job())
+    bump.assert_awaited_once_with("world", "ssr-world", "world-catalog")
+
+
+def test_subnational_catalogue_invalidation_failure_is_reported(monkeypatch):
+    from app.core import cache
+    from app.services import alerting, world_subnational_ingest as ingest
+
+    async def metadata_only(_country, *, change_state):
+        change_state["metadata_changed"] = True
+        return [ingest.SeriesReport("civilian-employment", "california", "CALF", "skipped")]
+
+    monkeypatch.setattr(ingest, "list_subnational_countries", lambda: ["US"])
+    monkeypatch.setattr(ingest, "ingest_country", metadata_only)
+    monkeypatch.setattr(
+        cache, "bump_namespaces",
+        AsyncMock(side_effect=cache.WorldCatalogInvalidationError("state Redis unavailable")),
+    )
+    alert = AsyncMock()
+    monkeypatch.setattr(alerting, "alert_world_ingest_summary", alert)
+
+    with pytest.raises(RuntimeError, match="catalogue-cache"):
+        asyncio.run(ingest.world_subnational_ingest_job())
+    assert alert.await_args.kwargs["status"] == "partial"
 
 
 def test_period_key_and_parse_roundtrip():

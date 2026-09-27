@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 import yaml
-from sqlalchemy import func, select
+from sqlalchemy import func, inspect, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -164,6 +164,7 @@ class SeriesIngestResult:
     dataset_id: str
     indicator_id: int | None = None
     created: bool = False
+    metadata_changed: bool = False
     points_touched: int = 0
     points_removed: int = 0
     observations: int = 0
@@ -176,7 +177,9 @@ class CountryIngestStats:
     series_ok: int = 0
     series_err: int = 0
     indicators_upserted: int = 0
+    metadata_changed: int = 0
     points_touched: int = 0
+    points_removed: int = 0
     results: list[SeriesIngestResult] = field(default_factory=list)
 
 
@@ -623,6 +626,7 @@ async def upsert_national_indicator(
     ref: WorldSeriesRef,
     points: Sequence[tuple[date, float]],
     source_ru: str,
+    change_state: dict[str, bool] | None = None,
 ) -> tuple[int, bool]:
     """Upsert по (provider, country_id, dataset_id, slice_hash). Eurostat не трогаем."""
     code = build_indicator_code(country.code, spec.code_suffix)
@@ -704,6 +708,8 @@ async def upsert_national_indicator(
             )
             db.add(ind)
             await db.flush()
+            if change_state is not None:
+                change_state["metadata_changed"] = True
             return ind.id, True
 
     # Slice identity may need a new public code (YAML rename). Free the target
@@ -720,6 +726,8 @@ async def upsert_national_indicator(
                 conflict.code = f"{code}-superseded-{conflict.id}"
                 conflict.is_listed = False
                 await db.flush()
+                if change_state is not None:
+                    change_state["metadata_changed"] = True
             else:
                 raise ValueError(
                     f"code {code!r} already owned by provider={conflict.provider!r} "
@@ -749,6 +757,17 @@ async def upsert_national_indicator(
     existing.seo_title = seo_title
     existing.seo_description = seo_desc
     existing.seo_keywords = seo_kw
+    if change_state is not None:
+        # Do not count extent fields here: the source snapshot temporarily sets
+        # them before refresh_indicator_extent recomputes the committed extent.
+        change_state["metadata_changed"] = bool(
+            change_state.get("metadata_changed")
+            or any(
+                attr.history.has_changes()
+                for attr in inspect(existing).attrs
+                if attr.key not in {"points_count", "history_start", "history_end"}
+            )
+        )
     await db.flush()
     return existing.id, created
 
@@ -821,6 +840,7 @@ async def ingest_series(
             if spec.value_scale != 1.0:
                 points = [(d, v * spec.value_scale) for d, v in points]
             result.observations = len(points)
+            change_state: dict[str, bool] = {}
             iid, created = await upsert_national_indicator(
                 db,
                 country=country,
@@ -828,6 +848,7 @@ async def ingest_series(
                 ref=ref,
                 points=points,
                 source_ru=source_ru,
+                change_state=change_state,
             )
             touched, removed = await reconcile_points(db, iid, points)
             await refresh_indicator_extent(db, iid)
@@ -841,6 +862,7 @@ async def ingest_series(
             )
             result.indicator_id = iid
             result.created = created
+            result.metadata_changed = bool(change_state.get("metadata_changed"))
             result.points_touched = touched
             result.points_removed = removed
             return result
@@ -1033,7 +1055,9 @@ async def _ingest_country_series(
         else:
             stats.series_ok += 1
             stats.indicators_upserted += 1
+            stats.metadata_changed += int(res.metadata_changed)
             stats.points_touched += res.points_touched
+            stats.points_removed += res.points_removed
             logger.info(
                 "OK %s provider=%s dataset=%s obs=%d touched=%d created=%s",
                 res.code,
@@ -1072,7 +1096,9 @@ async def run_national_core_ingest(
         run_id = run.id
 
     indicators = 0
+    metadata_changed = 0
     points_touched = 0
+    points_removed = 0
     failures: list[str] = []
     per_country: dict[str, dict[str, int]] = {}
     for cc in countries:
@@ -1084,10 +1110,14 @@ async def run_national_core_ingest(
                 "ok": stats.series_ok,
                 "err": stats.series_err,
                 "indicators": stats.indicators_upserted,
+                "metadata_changed": stats.metadata_changed,
                 "points": stats.points_touched,
+                "removed": stats.points_removed,
             }
             indicators += stats.indicators_upserted
+            metadata_changed += stats.metadata_changed
             points_touched += stats.points_touched
+            points_removed += stats.points_removed
             if stats.series_err:
                 failures.append(cc)
         except Exception as exc:  # noqa: BLE001
@@ -1100,49 +1130,70 @@ async def run_national_core_ingest(
                     run.error_message = f"{cc}: {exc}"[:2000]
                     await db.commit()
 
+    cache_invalidation_error: str | None = None
+    try:
+        if points_touched or points_removed or metadata_changed:
+            from app.core.cache import bump_namespaces
+
+            await bump_namespaces("world", "ssr-world", "world-catalog")
+    except Exception as exc:  # noqa: BLE001
+        logger.error("cache bump after national-core ingest failed", exc_info=True)
+        cache_invalidation_error = (
+            f"world-catalog cache invalidation failed after data commit: "
+            f"{type(exc).__name__}"
+        )
+
     async with async_session() as db:
         run = await db.get(WorldIngestRun, run_id)
         assert run is not None
         run.datasets_succeeded = sum(1 for c in countries if c not in failures)
         run.datasets_failed = len(failures)
-        run.status = "ok" if not failures else "partial"
+        run.status = "ok" if not failures and not cache_invalidation_error else "partial"
+        if cache_invalidation_error:
+            run.error_message = (
+                f"{run.error_message}; {cache_invalidation_error}"
+                if run.error_message else cache_invalidation_error
+            )[:2000]
         run.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
         await db.commit()
-
-    try:
-        if points_touched:
-            from app.core.cache import bump_namespaces
-
-            await bump_namespaces("world", "ssr-world", "world-catalog")
-    except Exception:  # noqa: BLE001
-        logger.warning("cache bump after national-core ingest failed", exc_info=True)
 
     result = {
         "run_id": run_id,
         "countries": len(countries),
         "indicators": indicators,
+        "metadata_changed": metadata_changed,
         "points_touched": points_touched,
+        "points_removed": points_removed,
         "failures": len(failures),
+        "cache_invalidation_failed": int(cache_invalidation_error is not None),
     }
     logger.info("national-core ingest done: %s (%s)", result, per_country)
     from app.services.alerting import alert_world_ingest_summary
 
     await alert_world_ingest_summary(
         "национальные источники (США и другие страны)",
-        status="partial" if failures else "ok",
-        checked=len(countries), changed=points_touched, failed=len(failures),
+        status="partial" if failures or cache_invalidation_error else "ok",
+        checked=len(countries),
+        changed=points_touched + points_removed + metadata_changed,
+        failed=len(failures) + int(cache_invalidation_error is not None),
         checked_label="Проверено стран",
-        changed_label="Изменено точек",
+        changed_label="Изменено точек/карточек",
         details=(
             f"Стран: {len(countries)}; рядов загружено: {indicators}; "
-            f"изменённых точек: {points_touched}. "
+            f"изменённых точек: {points_touched}; удалённых точек: {points_removed}; "
+            f"изменённых карточек: {metadata_changed}. "
             + (
                 f"США: рядов {per_country['us'].get('ok', 0)}, "
                 f"ошибок {per_country['us'].get('err', per_country['us'].get('error', 0))}, "
                 f"изменённых точек {per_country['us'].get('points', 0)}. "
                 if 'us' in per_country else ""
             )
-            + (f"Ошибки: {', '.join(failures[:15])}" if failures else "")
+            + (f"Ошибки: {', '.join(failures[:15])}. " if failures else "")
+            + (
+                "Сбой обновления кэша каталога после записи данных: "
+                "публичный список стран может быть устаревшим."
+                if cache_invalidation_error else ""
+            )
         ).strip(),
     )
     return result

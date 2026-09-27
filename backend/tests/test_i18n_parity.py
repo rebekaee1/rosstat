@@ -561,7 +561,6 @@ def test_render_russia_hub_html_locale_en_no_cyrillic_in_body(monkeypatch):
     finally:
         reset_locale(token_ru)
 
-
 def test_render_categories_hub_html_locale_en(monkeypatch):
     """/seo/category: EN h1/intro/section headings; RU unchanged."""
     import asyncio
@@ -638,6 +637,31 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
 
     monkeypatch.setattr(seo_renderer, "_home_flagship_links_en", fake_us_links)
 
+    # This language-only test must not leave a real Redis client bound to the
+    # short-lived asyncio.run loop before later TestClient lifespan tests.
+    from app.core import cache as cache_mod
+
+    async def no_cache(_key):
+        return None
+
+    async def no_versioned_durable(_locale, _key, *, allow_stale=False):
+        return None, False
+
+    async def fake_cache_key(ns, rest):
+        return f"fe:{ns}:g2:v0:{rest}" if ns == "world-catalog" else f"fe:{ns}:v0:{rest}"
+
+    async def fake_fresh_world_key(rest):
+        return await fake_cache_key("world-catalog", rest)
+
+    async def current_world_key(_locale, _key):
+        return True
+
+    monkeypatch.setattr(cache_mod, "cache_get", no_cache)
+    monkeypatch.setattr(cache_mod, "get_versioned_durable_world_countries", no_versioned_durable)
+    monkeypatch.setattr(cache_mod, "versioned_key", fake_cache_key)
+    monkeypatch.setattr(cache_mod, "fresh_world_catalog_key", fake_fresh_world_key)
+    monkeypatch.setattr(cache_mod, "is_current_world_countries_key", current_world_key)
+
     cyrillic = re.compile(r"[А-Яа-яЁё]")
 
     def _json_ld_blobs(html: str) -> list[dict | list]:
@@ -703,6 +727,12 @@ def test_render_home_html_locale_en_no_cyrillic_in_json_ld(monkeypatch):
         assert any(cyrillic.search(lst["name"] or "") for lst in lists_ru)
     finally:
         reset_locale(token_ru)
+
+    async def state_redis_down(_rest):
+        raise ConnectionError("state Redis unavailable")
+
+    monkeypatch.setattr(cache_mod, "fresh_world_catalog_key", state_redis_down)
+    assert "<html" in asyncio.run(seo_renderer.render_home_html(None))
 
 
 def test_indicator_copy_en_not_stubbed():
@@ -1738,16 +1768,26 @@ def test_home_bootstrap_seeds_world_countries(monkeypatch):
 
     async def fake_cache_get(key):
         if "countries:v8:" in key:
-            return world_payload
+            return None
         if "compare:snapshot:v8:gdp-usd:" in key:
             return snap_payload
         return None
 
     async def fake_versioned_key(ns, rest):
+        if ns == "world-catalog":
+            return f"fe:{ns}:g2:v0:{rest}"
         return f"fe:{ns}:v0:{rest}"
 
-    async def fake_durable(locale):
-        return None
+    async def fake_versioned_durable(locale, key, *, allow_stale=False):
+        assert locale == "en" and allow_stale
+        assert key.endswith("countries:v8:en")
+        return world_payload, False
+
+    async def fake_fresh_world_key(rest):
+        return f"fe:world-catalog:g2:v0:{rest}"
+
+    async def current_world_key(_locale, _key):
+        return True
 
     monkeypatch.setattr(seo_renderer, "_indicators_by_codes", fake_inds)
     monkeypatch.setattr(seo_renderer, "get_app_assets", fake_assets)
@@ -1757,7 +1797,9 @@ def test_home_bootstrap_seeds_world_countries(monkeypatch):
     import app.core.cache as cache_mod
     monkeypatch.setattr(cache_mod, "cache_get", fake_cache_get)
     monkeypatch.setattr(cache_mod, "versioned_key", fake_versioned_key)
-    monkeypatch.setattr(cache_mod, "get_durable_world_countries", fake_durable)
+    monkeypatch.setattr(cache_mod, "fresh_world_catalog_key", fake_fresh_world_key)
+    monkeypatch.setattr(cache_mod, "is_current_world_countries_key", current_world_key)
+    monkeypatch.setattr(cache_mod, "get_versioned_durable_world_countries", fake_versioned_durable)
 
     token = set_locale("en")
     try:

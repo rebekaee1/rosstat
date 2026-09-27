@@ -1436,17 +1436,30 @@ async def render_home_html(db: AsyncSession) -> str:
     # empty map). Misses are fine — client hooks still load.
     from app.core.cache import (
         cache_get,
-        get_durable_world_countries,
+        fresh_world_catalog_key,
+        get_versioned_durable_world_countries,
+        is_current_world_countries_key,
         versioned_key,
     )
     locale = get_locale()
-    world_countries = await cache_get(
-        await versioned_key("world-catalog", f"countries:v8:{locale}")
-    )
-    if not isinstance(world_countries, dict):
-        # Deploy FLUSHDB empties DB 0; durable state-Redis keeps last catalogue
-        # so #fe-bootstrap still has counters (client Axios would time out at 15s).
-        world_countries = await get_durable_world_countries(locale)
+    world_countries = None
+    try:
+        world_catalog_key = await fresh_world_catalog_key(f"countries:v8:{locale}")
+        world_countries = await cache_get(world_catalog_key)
+        if isinstance(world_countries, dict) and not await is_current_world_countries_key(
+            locale, world_catalog_key,
+        ):
+            world_countries = None
+        if not isinstance(world_countries, dict):
+            # State-Redis retains the latest complete catalogue through a
+            # manual DB 0 flush and briefly after an ingest generation bump.
+            world_countries, _ = await get_versioned_durable_world_countries(
+                locale, world_catalog_key, allow_stale=True,
+            )
+    except Exception:
+        # The public API refuses to promote a guessed generation, while the
+        # homepage can render its ordinary fallback counters without Redis.
+        logger.warning("Home country bootstrap unavailable", exc_info=True)
     map_snapshot = await cache_get(
         await versioned_key("world", f"compare:snapshot:v8:gdp-usd:{locale}")
     )
