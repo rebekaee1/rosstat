@@ -459,6 +459,17 @@ async def _catch_up_static_sitemaps() -> None:
         logger.warning("Startup sitemap catch-up aborted: %s", e)
 
 
+async def _calendar_refresh_job() -> None:
+    from app.services.calendar_seed import seed_calendar
+
+    try:
+        inserted = await seed_calendar(months_ahead=12)
+        logger.info("Calendar refresh job: %d new events", inserted)
+    except Exception:
+        logger.exception("Calendar refresh job failed")
+        raise  # APScheduler EVENT_JOB_ERROR must alert on a failed refresh.
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
@@ -531,15 +542,6 @@ async def lifespan(app: FastAPI):
             name="Evening ETL pass (intraday source updates)",
             replace_existing=True,
         )
-        from app.services.calendar_seed import seed_calendar
-
-        async def _calendar_refresh_job():
-            try:
-                inserted = await seed_calendar(months_ahead=12)
-                logger.info("Calendar refresh job: %d new events", inserted)
-            except Exception:
-                logger.exception("Calendar refresh job failed")
-
         scheduler.add_job(
             _calendar_refresh_job,
             trigger=CronTrigger(
