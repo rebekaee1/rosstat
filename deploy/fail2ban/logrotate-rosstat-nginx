@@ -1,12 +1,17 @@
 /var/log/rosstat-nginx/*.log {
     daily
-    rotate 14
+    rotate 7
     missingok
     notifempty
-    compress
-    delaycompress
-    # nginx в контейнере держит файловые дескрипторы; копировать и резать,
-    # потом сигналить docker-контейнеру перечитать (USR1) — без даунтайма.
-    copytruncate
+    # security.log растёт на сотни МиБ в сутки. На общем с Postgres диске
+    # gzip + copytruncate держали I/O несколько минут и роняли SQL-запросы.
+    # Временный предел хранения — 7 несжатых дней; объём контролировать на хосте.
+    nocompress
+    create 0644 101 101
+    # Rename не копирует большой лог; nginx master открывает новый файл по USR1.
+    sharedscripts
+    postrotate
+        /usr/bin/docker kill --signal=USR1 rosstat-frontend-1 >/dev/null
+    endscript
     su root root
 }
