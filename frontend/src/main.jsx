@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/react';
 import SpaRoot from './SpaRoot.jsx';
 import { seedQueryClientFromHomeBootstrap } from './lib/homeBootstrap';
 import { createChunkRecovery } from './lib/chunkRecovery';
+import { mountWhenCssReady } from './lib/mountWhenCssReady';
 import './index.css';
 import './styles/data-visuals.css';
 
@@ -43,6 +44,15 @@ const queryClient = new QueryClient({
 });
 seedQueryClientFromHomeBootstrap(queryClient);
 
-createRoot(document.getElementById('root')).render(
-  <SpaRoot queryClient={queryClient} />,
-);
+function mountApp() {
+  if (window.__feAppMounted) return;
+  const root = document.getElementById('root');
+  if (!root) return;
+  window.__feAppMounted = true;
+  createRoot(root).render(
+    <SpaRoot queryClient={queryClient} />,
+  );
+}
+
+// SSR stays visible under critical CSS until the full stylesheet can style React.
+mountWhenCssReady(mountApp);

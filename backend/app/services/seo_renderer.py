@@ -294,7 +294,82 @@ def _css_preload(head_links: str) -> str:
     if not match:
         return ""
     href = escape(match.group(1))
-    return f'<link rel="preload" href="{href}" as="style">'
+    return f'<link rel="preload" href="{href}" as="style" fetchpriority="low">'
+
+
+def _lcp_preload_from_chart_img(img) -> str:
+    """Preload the visible chart image selected for this viewport."""
+    from urllib.parse import urlsplit
+
+    src = str(img.get("src") or "")
+    if not src or urlsplit(src).scheme in ("http", "https"):
+        return ""
+    href = escape(src)
+    picture = img.find_parent("picture")
+    source = picture.find("source") if picture is not None else None
+    srcset = str(source.get("srcset") or "") if source is not None else ""
+    if srcset:
+        portrait = escape(srcset)
+        return "\n".join((
+            f'<link rel="preload" as="image" href="{portrait}" media="(max-width: 640px)" fetchpriority="high">',
+            f'<link rel="preload" as="image" href="{href}" media="(min-width: 641px)" fetchpriority="high">',
+        ))
+    return f'<link rel="preload" as="image" href="{href}" fetchpriority="high">'
+
+
+def _deprioritize_modulepreload(head_links: str) -> str:
+    lines = []
+    for line in head_links.splitlines():
+        if "modulepreload" in line.lower() and "fetchpriority" not in line.lower():
+            line = re.sub(r"\s*/?>$", ' fetchpriority="low">', line, count=1)
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def _low_priority_module_scripts(scripts: str) -> str:
+    lines = []
+    for line in scripts.splitlines():
+        if "<script" in line.lower() and "fetchpriority" not in line.lower():
+            line = re.sub(r"<script\b", '<script fetchpriority="low"', line, count=1, flags=re.I)
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def _nonblocking_stylesheets(head_links: str) -> str:
+    """Critical inline CSS paints SSR content while full styles load."""
+    lines = []
+    for line in head_links.splitlines():
+        if not re.search(r'\brel="stylesheet"', line, flags=re.I) or "data-fe-css" in line:
+            lines.append(line)
+            continue
+        href_match = re.search(r'href="([^"]+)"', line)
+        if not href_match:
+            lines.append(line)
+            continue
+        href = href_match.group(1)
+        lines.append(re.sub(
+            r"\s*/?>$",
+            ' media="print" data-fe-css="1" fetchpriority="low" onload="this.media=\'all\'">',
+            line,
+            count=1,
+        ))
+        lines.append(f'<noscript><link rel="stylesheet" href="{href}"></noscript>')
+    return "\n".join(lines)
+
+
+def _split_early_head_links(head_links: str, *, prioritize_modules: bool) -> tuple[str, str]:
+    early: list[str] = []
+    late: list[str] = []
+    for line in head_links.splitlines():
+        lowered = line.lower()
+        is_font = 'as="font"' in lowered or "as='font'" in lowered
+        is_css = "stylesheet" in lowered or "data-fe-css" in lowered or "<noscript>" in lowered
+        is_module = "modulepreload" in lowered
+        if is_css or is_font or (prioritize_modules and is_module):
+            early.append(line)
+        else:
+            late.append(line)
+    return "\n".join(early), "\n".join(late)
 
 
 def _format_frequency(value: str | None) -> str:
@@ -524,7 +599,7 @@ def _default_keywords() -> str:
 # Inline critical CSS для SSR-контента (.seo-page): без него при hard refresh
 # виден «голый» HTML до гидратации React — Tailwind bundle не стилизует .seo-page.
 SEO_CRITICAL_CSS = """<style id="seo-critical">
-body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 .seo-page{max-width:56rem;margin:0 auto;padding:2rem 1rem 3rem}
 .seo-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.3em;color:#B8942F;font-weight:600;margin:0 0 .75rem}
 .seo-note{font-size:13px;color:#8a6d1f;background:#fdf6e3;border:1px solid #ecd9a0;border-radius:8px;padding:.5rem .75rem;margin:.5rem 0}
@@ -548,7 +623,7 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:"DM Sans",system-ui,s
 .seo-page tbody tr:hover{background:rgba(184,148,47,.05)}
 .seo-page td:last-child,.seo-page th:last-child{text-align:right;font-variant-numeric:tabular-nums}
 .seo-chart{margin:1.25rem 0 .75rem;border:1px solid rgba(0,0,0,.08);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(26,26,46,.04);max-width:100%}
-.seo-chart img{display:block;width:100%;max-width:100%;height:auto}
+.seo-chart img{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:1200/630}
 .seo-chart-link{display:block;text-decoration:none!important;color:inherit}
 .seo-chart-link:hover{opacity:.97}
 .seo-chart figcaption{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:flex-end;gap:.35rem .75rem;font-size:.8125rem;color:rgba(26,26,46,.6);padding:.5rem .75rem;border-top:1px solid rgba(0,0,0,.06);text-align:right}
@@ -644,6 +719,7 @@ body.seo-fast .seo-cta p,body.seo-fast .seo-cta strong{color:#f3f5f8}
 body.seo-fast .seo-cta a.seo-btn{background:#f6f3ec;color:#263044;border:1px solid #d3c4a3}
 body.seo-fast .seo-cta a.seo-btn:hover{background:#fff;color:#263044}
 @media(max-width:640px){body.seo-fast .seo-page{padding:1rem .8rem 2rem}body.seo-fast .seo-topbar-in{padding:.85rem 1rem;gap:.75rem}body.seo-fast .seo-answer{padding:1.2rem;border-radius:20px}body.seo-fast .seo-hero-value{font-size:2.8rem}body.seo-fast .seo-chart{border-radius:18px}body.seo-fast .seo-chart figcaption{font-size:.75rem;padding:.75rem}body.seo-fast .seo-chart img{border-radius:0}body.seo-fast .seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}body.seo-fast .seo-foot{font-size:.75rem}}
+@media(max-width:640px){.seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}}
 
 </style>"""
 
@@ -895,13 +971,19 @@ def _yandex_verification_meta() -> str:
 
 def _responsive_chart_images(body: str) -> str:
     """Upgrade legacy inline figures as well as shared-helper figures once."""
-    from bs4 import BeautifulSoup
+    html, _preload = _responsive_charts(body)
+    return html
+
+
+def _responsive_charts(body: str) -> tuple[str, str]:
+    """Build responsive pictures and the first chart preload in one parse."""
     from urllib.parse import urlsplit
 
     if 'class="seo-chart"' not in body:
-        return body
+        return body, ""
     soup = BeautifulSoup(body, "html.parser")
-    for i, img in enumerate(soup.select(".seo-chart img")):
+    images = soup.select(".seo-chart img")
+    for i, img in enumerate(images):
         src = str(img.get("src", ""))
         route = urlsplit(src).path
         if route.startswith("/og/") and route.endswith(".png"):
@@ -919,7 +1001,8 @@ def _responsive_chart_images(body: str) -> str:
         if i == 0:
             img["loading"] = "eager"
             img["fetchpriority"] = "high"
-    return str(soup)
+    preload = _lcp_preload_from_chart_img(images[0]) if images else ""
+    return str(soup), preload
 
 
 def _prepare_quicklink_body(body: str, canonical_path: str) -> str:
@@ -1040,7 +1123,6 @@ async def build_document(
     structured = "\n".join(_json_script(item) for item in structured_items)
     extras = extra_head or ""
     hreflang = _hreflang_head(canonical_path)
-    css_preload = _css_preload(assets.head_links)
     og_url = escape(og_image or _absolute("/og-image-v3.png"))
     body_scripts = assets.body_scripts if include_app else ""
     lang = html_lang()
@@ -1067,16 +1149,27 @@ async def build_document(
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
             # тупики с одними крошками. React при гидратации заменит #root.
             body = f"{body.rstrip()}\n{_ssr_platform_deep_links(canonical_path)}"
-    body = _responsive_chart_images(body)
+    # The same parse that creates responsive <picture> supplies the LCP preload.
+    body, lcp_preload = _responsive_charts(body)
     if is_preview_locale():
         body = _preview_body_urls(body, get_locale())
+    if lcp_preload:
+        head_links = _deprioritize_modulepreload(head_links)
+        body_scripts = _low_priority_module_scripts(body_scripts)
+    css_preload = _css_preload(assets.head_links)
+    head_early, head_late = _split_early_head_links(
+        _nonblocking_stylesheets(head_links),
+        prioritize_modules=not lcp_preload,
+    )
     return f"""<!DOCTYPE html>
 <html lang="{lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{lcp_preload}
 {SEO_CRITICAL_CSS}
 {css_preload}
+{head_early}
 {_consent_bootstrap()}
 <title>{safe_title}</title>
 <meta name="description" content="{safe_desc}">
@@ -1102,7 +1195,7 @@ async def build_document(
 <meta name="twitter:title" content="{safe_title}">
 <meta name="twitter:description" content="{safe_desc}">
 <meta name="twitter:image" content="{og_url}">
-{head_links}
+{head_late}
 {structured}
 </head>
 <body class="{body_class}">

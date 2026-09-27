@@ -295,6 +295,63 @@ def test_seo_critical_css_in_build_document():
     assert ".seo-page" in html
     assert 'name="yandex-verification" content="02b4966d46881470"' in html
     assert 'name="yandex-verification" content="5e35c47bf83e75a9"' in html
+    assert "DM Sans" not in html
+    assert "font-family:Manrope,system-ui,sans-serif" in html
+    assert 'media="print"' in html
+    assert 'data-fe-css="1"' in html
+
+
+def test_chart_rewrite_and_lcp_preload_share_one_parse(monkeypatch):
+    """The responsive chart and its head preload use the same parsed body."""
+    import app.services.seo_renderer as renderer
+
+    calls = 0
+    real = renderer.BeautifulSoup
+
+    def counting(markup, *args, **kwargs):
+        nonlocal calls
+        calls += 1
+        return real(markup, *args, **kwargs)
+
+    monkeypatch.setattr(renderer, "BeautifulSoup", counting)
+    html, preload = renderer._responsive_charts(
+        '<figure class="seo-chart"><img src="/og/russia/cpi.png" '
+        'width="1200" height="630" alt="ИПЦ"></figure>'
+    )
+    assert calls == 1
+    assert '<picture>' in html
+    assert 'fetchpriority="high"' in html
+    assert 'portrait=1' in preload
+    assert 'media="(max-width: 640px)"' in preload
+    assert 'media="(min-width: 641px)"' in preload
+
+
+def test_ssr_lcp_chart_preloads_before_css_and_modules(monkeypatch):
+    import asyncio
+
+    from app.services import seo_renderer as renderer
+
+    async def assets():
+        return renderer.AppAssets(
+            '\n'.join((
+                '<link rel="stylesheet" href="/assets/main-test.css">',
+                '<link rel="modulepreload" href="/assets/vendor-test.js">',
+                '<link rel="preload" href="/fonts/manrope-latin-cyrillic.woff2" as="font">',
+            )),
+            '<script type="module" src="/assets/main-test.js"></script>',
+        )
+
+    monkeypatch.setattr(renderer, "get_app_assets", assets)
+    html = asyncio.run(renderer.build_document(
+        title="ИПЦ", description="Тест", canonical_path="/russia/indicator/cpi",
+        body='<figure class="seo-chart"><img src="/og/russia/cpi.png" alt="ИПЦ"></figure>',
+    ))
+    head = html.split('</head>', 1)[0]
+    assert head.index('rel="preload" as="image"') < head.index('id="seo-critical"')
+    assert 'href="/og/russia/cpi.png?portrait=1"' in head
+    assert 'media="print" data-fe-css="1"' in head
+    assert 'href="/assets/vendor-test.js" fetchpriority="low"' in head
+    assert '<script fetchpriority="low" type="module" src="/assets/main-test.js"' in html
 
 
 def test_sort_head_links_stylesheets_first():
