@@ -7775,6 +7775,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/api/sitemap.py",
+          "line": 631,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/cpi_provenance.py",
           "line": 2,
           "kind": "other"
@@ -8061,12 +8066,12 @@
         },
         {
           "file": "backend/app/services/world_adapters/mospi_api.py",
-          "line": 202,
+          "line": 204,
           "kind": "other"
         },
         {
           "file": "backend/app/services/world_adapters/mospi_api.py",
-          "line": 203,
+          "line": 205,
           "kind": "other"
         },
         {
@@ -8901,17 +8906,27 @@
         },
         {
           "file": "backend/tests/test_public_year_contract.py",
-          "line": 50,
+          "line": 59,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_public_year_contract.py",
-          "line": 54,
+          "line": 60,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_public_year_contract.py",
-          "line": 55,
+          "line": 69,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_public_year_contract.py",
+          "line": 73,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_public_year_contract.py",
+          "line": 74,
           "kind": "tests"
         },
         {
@@ -9791,7 +9806,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 350,
+          "line": 357,
           "kind": "other"
         },
         {
@@ -28441,6 +28456,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/api/sitemap.py",
+          "line": 631,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 134,
           "kind": "other"
@@ -28718,6 +28738,11 @@
         {
           "file": "backend/tests/test_og_context.py",
           "line": 92,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_public_year_contract.py",
+          "line": 61,
           "kind": "tests"
         },
         {
@@ -57206,7 +57231,7 @@
         },
         {
           "file": "backend/app/api/sitemap.py",
-          "line": 2060,
+          "line": 2070,
           "kind": "other"
         },
         {
@@ -58826,12 +58851,12 @@
         },
         {
           "file": "backend/tests/test_public_year_contract.py",
-          "line": 51,
+          "line": 70,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_public_year_contract.py",
-          "line": 56,
+          "line": 75,
           "kind": "tests"
         },
         {

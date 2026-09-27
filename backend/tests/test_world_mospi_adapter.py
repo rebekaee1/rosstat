@@ -94,3 +94,27 @@ def test_parse_rejects_empty_match():
 def test_create_adapter_default():
     adapter = create_adapter()
     assert adapter.provider == "mospi"
+
+
+def test_open_api_pagination_never_exceeds_200_rows_per_request():
+    calls = []
+
+    class Session:
+        def get(self, _url, *, params, timeout):
+            calls.append((params, timeout))
+
+            class Response:
+                status_code = 200
+                text = ""
+
+                def json(self):
+                    return {"data": [{"page": params["page"]}], "meta_data": {"totalPages": 101}}
+
+            return Response()
+
+    adapter = create_adapter()
+    adapter._session = Session()
+    rows = adapter._fetch_all_rows_sync("CPI", {})
+    assert len(rows) == 100
+    assert [p["page"] for p, _ in calls] == [str(i) for i in range(1, 101)]
+    assert {p["limit"] for p, _ in calls} == {"200"}

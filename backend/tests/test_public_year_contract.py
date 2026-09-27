@@ -42,6 +42,25 @@ def test_invalid_month_periods(period):
         paths.og_indicator("russia", "x", period)
 
 
+def test_legacy_og_codes_resolve_on_base_month_and_year(monkeypatch):
+    from app.api import sitemap
+    from app.services import og_image
+
+    seen = []
+
+    def cached(key, **_kwargs):
+        seen.append(key)
+        return b"PNG"
+
+    monkeypatch.setattr(og_image, "cached_og", cached)
+    asyncio.run(sitemap.og_image_indicator("inflation", None))
+    asyncio.run(sitemap.og_image_indicator_month("inflation", "2025-06", None))
+    asyncio.run(sitemap.og_image_indicator_year("gdp", 2025, None))
+    assert ":cpi:" in seen[0]
+    assert ":cpi:2025-06:" in seen[1]
+    assert ":gdp-nominal:2025:" in seen[2]
+
+
 def test_nginx_routes_and_rewrite_captures_share_contract():
     config = (Path(__file__).parents[2] / "frontend/nginx.conf").read_text()
     locations = [(re.compile(re.sub(r"\(\?<([a-z_]+)>", r"(?P<\1>", p)), body)

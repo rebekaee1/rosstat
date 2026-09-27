@@ -653,4 +653,7 @@ async def collect_behavior_batch(
         )
     if rows or sessions_stored or (user_id and visitor_hash):
         await db.commit()
+        if rows or sessions_stored:
+            from app.services.analytics_alerts import note_behavior_ingest
+            await note_behavior_ingest(now)
     return {"accepted": True, "stored": len(rows)}

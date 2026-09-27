@@ -60,10 +60,9 @@ def set_session_cookies(response: Response, session_id: str, csrf_token: str) ->
 
 
 def clear_session_cookies(response: Response) -> None:
-    path = "/"
-    domain = effective_auth_cookie_domain() or None
-    response.delete_cookie(session_svc.SESSION_COOKIE, path=path, domain=domain)
-    response.delete_cookie(session_svc.CSRF_COOKIE, path=path, domain=domain)
+    common = _cookie_kwargs()
+    response.delete_cookie(session_svc.SESSION_COOKIE, **common)
+    response.delete_cookie(session_svc.CSRF_COOKIE, **{**common, "httponly": False})
 
 
 async def current_session(request: Request) -> Optional[dict]:
