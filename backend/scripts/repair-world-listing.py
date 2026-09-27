@@ -846,10 +846,9 @@ async def main() -> int:
     nat_eu = await unlist_eurostat_on_national_passports()
     zero_guard = await unlist_all_zero_series()
 
-    try:
-        await bump_namespaces("world")
-    except Exception as exc:  # noqa: BLE001
-        log.warning("cache bump skipped: %s", exc)
+    # Listing and nonzero-signal changes feed /world/countries directly.
+    # Surface a failed durable generation bump instead of reporting success.
+    await bump_namespaces("world", "world-catalog")
 
     after = await _stats()
     log.info("purge_countries=%d retitled=%d", n_purge, n_upd)

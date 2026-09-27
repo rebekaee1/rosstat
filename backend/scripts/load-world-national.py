@@ -87,10 +87,7 @@ async def run(args: argparse.Namespace) -> int:
                 only_suffix=args.only,
             )
 
-    try:
-        await bump_namespaces("world", "ssr-world", "world-catalog")
-    except Exception as exc:  # noqa: BLE001
-        log.warning("cache bump failed: %s", exc)
+    await bump_namespaces("world", "ssr-world", "world-catalog")
 
     log.info("=" * 60)
     log.info(

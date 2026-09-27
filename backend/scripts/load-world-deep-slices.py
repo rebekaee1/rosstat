@@ -90,10 +90,8 @@ async def main() -> int:
                 n_pts,
             )
 
-    try:
-        await bump_namespaces("world")
-    except Exception as exc:  # noqa: BLE001
-        log.warning("cache bump failed: %s", exc)
+    # New deep slices can change the number of visible country indicators.
+    await bump_namespaces("world", "world-catalog")
 
     log.info(
         "DONE in %.1fs | indicators upserted=%d points touched=%d",

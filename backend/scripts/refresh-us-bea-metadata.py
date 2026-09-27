@@ -82,7 +82,10 @@ async def main() -> None:
                         setattr(row, field, value)
                         changed += 1
         await db.commit()
-    await bump_namespaces("world", "ssr-world")
+    if changed:
+        await bump_namespaces("world", "ssr-world", "world-catalog")
+    else:
+        await bump_namespaces("world", "ssr-world")
     print(f"US BEA Russian metadata: {len(catalog)} series, {changed} fields updated")
 
 

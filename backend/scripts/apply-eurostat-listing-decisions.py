@@ -294,10 +294,7 @@ async def main(only: list[str] | None = None) -> int:
     n_dedupe = await dedupe_names_for_datasets(sorted(decisions))
     log.info("name_deduped=%d", n_dedupe)
 
-    try:
-        await bump_namespaces("world", "world-catalog", "ssr-world")
-    except Exception as exc:  # noqa: BLE001
-        log.warning("cache bump skipped: %s", exc)
+    await bump_namespaces("world", "world-catalog", "ssr-world")
 
     after = await _stats()
     log.info("AFTER %s", after)

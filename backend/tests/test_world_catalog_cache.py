@@ -1,13 +1,61 @@
 """Cold country-catalogue requests must not fan out across web workers."""
 
 import asyncio
+import importlib.util
 import json
+from pathlib import Path
 
 import pytest
 from fastapi import HTTPException
 
 from app.api import world
 from app.core import cache
+
+
+def test_listing_repair_invalidates_catalog_and_surfaces_failure(auth_env, monkeypatch):
+    """A manual listing repair must change the API generation after DB writes."""
+    path = Path(__file__).resolve().parents[1] / "scripts" / "repair-world-listing.py"
+    spec = importlib.util.spec_from_file_location("repair_world_listing_test", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    async def unchanged():
+        return 0
+
+    async def stats():
+        return {"dup_name_groups": 0, "listed_empty_unit": 0}
+
+    for name in (
+        "purge_excluded_geos", "apply_editorial_listing_modes",
+        "apply_defect_filters", "dedupe_same_frequency",
+        "fold_frequency_cards", "dedupe_display_names",
+        "apply_country_visibility", "unlist_eurostat_on_national_passports",
+        "unlist_all_zero_series",
+    ):
+        monkeypatch.setattr(module, name, unchanged)
+
+    async def retitle():
+        return 0, {}
+
+    monkeypatch.setattr(module, "retitle_all", retitle)
+    monkeypatch.setattr(module, "_stats", stats)
+    monkeypatch.setattr(module, "_audit_card_keys", stats)
+
+    async def run():
+        before = await cache.fresh_world_catalog_key("countries:v8:ru")
+        assert await module.main() == 0
+        after = await cache.fresh_world_catalog_key("countries:v8:ru")
+        assert before != after
+
+        async def failed_bump(*_namespaces):
+            raise cache.WorldCatalogInvalidationError("state Redis unavailable")
+
+        monkeypatch.setattr(module, "bump_namespaces", failed_bump)
+        with pytest.raises(cache.WorldCatalogInvalidationError):
+            await module.main()
+
+    asyncio.run(run())
 
 
 def test_cold_world_catalog_builds_once(auth_env, monkeypatch):
