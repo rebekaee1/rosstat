@@ -2099,6 +2099,11 @@
           "kind": "other"
         },
         {
+          "file": "docs/code-review-findings.md",
+          "line": 67,
+          "kind": "other"
+        },
+        {
           "file": "docs/data_sources.md",
           "line": 97,
           "kind": "other"
@@ -9811,7 +9816,7 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 91,
+          "line": 197,
           "kind": "other"
         },
         {
@@ -9901,12 +9906,17 @@
         },
         {
           "file": "docs/workflow.md",
-          "line": 118,
+          "line": 85,
           "kind": "other"
         },
         {
           "file": "docs/workflow.md",
-          "line": 128,
+          "line": 196,
+          "kind": "other"
+        },
+        {
+          "file": "docs/workflow.md",
+          "line": 206,
           "kind": "other"
         },
         {
@@ -11281,32 +11291,32 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 249,
+          "line": 250,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 283,
+          "line": 284,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 335,
+          "line": 336,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 346,
+          "line": 347,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 370,
+          "line": 371,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 491,
+          "line": 492,
           "kind": "other"
         },
         {
@@ -11947,12 +11957,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 249,
+          "line": 250,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 283,
+          "line": 284,
           "kind": "other"
         },
         {
@@ -12744,7 +12754,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 283,
+          "line": 284,
           "kind": "other"
         },
         {
@@ -13659,7 +13669,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 283,
+          "line": 284,
           "kind": "other"
         },
         {
@@ -17627,12 +17637,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 569,
+          "line": 570,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 637,
+          "line": 638,
           "kind": "other"
         }
       ]
@@ -24048,6 +24058,21 @@
         {
           "file": "scripts/build-indicator-index.py",
           "line": 120,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/code-review-symbols.mjs",
+          "line": 55,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/code-review-symbols.mjs",
+          "line": 77,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/code-review-symbols.mjs",
+          "line": 79,
           "kind": "other"
         }
       ]
@@ -34933,12 +34958,12 @@
         },
         {
           "file": "docs/architecture-knowledge.json",
-          "line": 218,
+          "line": 221,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 119,
+          "line": 225,
           "kind": "other"
         },
         {
@@ -34979,6 +35004,11 @@
         {
           "file": "docs/backlog.md",
           "line": 1567,
+          "kind": "other"
+        },
+        {
+          "file": "docs/code-review-findings.md",
+          "line": 13,
           "kind": "other"
         },
         {
@@ -35109,6 +35139,26 @@
         {
           "file": "scripts/build-project-terrain.py",
           "line": 6,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/code-review-symbols.mjs",
+          "line": 55,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/code-review-symbols.mjs",
+          "line": 72,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/test_code_documentation.py",
+          "line": 1,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/test_project_terrain.mjs",
+          "line": 17,
           "kind": "other"
         }
       ]
@@ -36259,7 +36309,7 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 369,
+          "line": 370,
           "kind": "other"
         },
         {
@@ -40384,12 +40434,12 @@
         },
         {
           "file": "docs/workflow.md",
-          "line": 89,
+          "line": 167,
           "kind": "other"
         },
         {
           "file": "docs/workflow.md",
-          "line": 92,
+          "line": 170,
           "kind": "other"
         },
         {
@@ -41559,7 +41609,7 @@
         },
         {
           "file": "docs/data_sources.md",
-          "line": 611,
+          "line": 610,
           "kind": "other"
         },
         {
@@ -42019,7 +42069,7 @@
         },
         {
           "file": "docs/data_sources.md",
-          "line": 611,
+          "line": 610,
           "kind": "other"
         },
         {
@@ -42619,7 +42669,7 @@
         },
         {
           "file": "docs/data_sources.md",
-          "line": 611,
+          "line": 610,
           "kind": "other"
         },
         {
@@ -48621,7 +48671,7 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 91,
+          "line": 197,
           "kind": "other"
         },
         {
@@ -48936,17 +48986,17 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 335,
+          "line": 336,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 350,
+          "line": 351,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 493,
+          "line": 494,
           "kind": "other"
         },
         {
@@ -55845,12 +55895,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 569,
+          "line": 570,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 637,
+          "line": 638,
           "kind": "other"
         }
       ]
@@ -55929,7 +55979,7 @@
       "files": [
         {
           "file": ".env.example",
-          "line": 191,
+          "line": 194,
           "kind": "other"
         },
         {
@@ -56934,17 +56984,17 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 354,
+          "line": 355,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 495,
+          "line": 496,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 617,
+          "line": 618,
           "kind": "other"
         }
       ]
@@ -57065,12 +57115,12 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 570,
+          "line": 571,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 638,
+          "line": 639,
           "kind": "other"
         }
       ]
@@ -57412,17 +57462,17 @@
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 570,
+          "line": 571,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 622,
+          "line": 623,
           "kind": "other"
         },
         {
           "file": "scripts/build-indicator-index.py",
-          "line": 638,
+          "line": 639,
           "kind": "other"
         }
       ]
@@ -60716,22 +60766,22 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 80,
+          "line": 186,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 89,
+          "line": 195,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 131,
+          "line": 237,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 147,
+          "line": 253,
           "kind": "other"
         },
         {
@@ -61100,12 +61150,12 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 89,
+          "line": 195,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 131,
+          "line": 237,
           "kind": "other"
         },
         {
@@ -61534,12 +61584,12 @@
         },
         {
           "file": "docs/architecture-history.md",
-          "line": 12,
+          "line": 16,
           "kind": "other"
         },
         {
           "file": "docs/architecture-history.md",
-          "line": 25,
+          "line": 29,
           "kind": "other"
         },
         {

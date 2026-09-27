@@ -1,6 +1,8 @@
 # Архитектура Forecast Economy: карта действующего кода
 
-**Срез:** 2026-09-27, checkout `b684290067bf` с рабочими изменениями других задач. Это карта исходников и Compose-конфигурации, а не утверждение о состоянии production. Важные исторические причины решений остаются в [CONTEXT](../CONTEXT.md), [ADR-0003](adr/0003-seo-single-source-server-rendered.md), [ADR-0006](adr/0006-indicator-card-unification.md), [ADR-0013](adr/0013-country-first-url-architecture.md) и [истории архитектуры](architecture-history.md). Для счётчиков URL используйте `/sitemap-stats.json` и `docs/site-inventory.json`, а не старые числа в документах.
+**Срез:** 2026-09-27, локальная ветка `main`. Точный базовый commit, SHA-256 файлов и незакрытые места приведены в [реестре содержательного разбора](code-review.md). Состояние сервера зафиксировано отдельно ниже и в [runtime-inventory.json](runtime-inventory.json). Важные исторические причины решений остаются в [CONTEXT](../CONTEXT.md), [ADR-0003](adr/0003-seo-single-source-server-rendered.md), [ADR-0006](adr/0006-indicator-card-unification.md), [ADR-0013](adr/0013-country-first-url-architecture.md) и [истории архитектуры](architecture-history.md). Для счётчиков URL используйте `/sitemap-stats.json` и `docs/site-inventory.json`, а не старые числа в документах.
+
+**Сквозные находки и приоритеты:** [итоги разбора](code-review-findings.md) связывают ограничения адаптеров с записью в БД, публичными страницами, аналитикой и ресурсами сервера. Найденный механизм отделён от воспроизведения и от наблюдения production.
 
 **Машинная навигация:** [рельеф проекта](project-terrain.md) и [JSON-граф](project-terrain.json) дают полный файловый инвентарь и статические связи; интерактивный HTML строится из JSON локально и не хранится в Git. При изменении кода обновить срез и проверить drift:
 
@@ -12,13 +14,17 @@ python3 scripts/build-project-terrain.py --render
 
 Переносимый вариант: создать `python3 -m venv /tmp/fe-graphify-venv`, установить туда `graphifyy==0.9.69` через `python -m pip install`, затем вызвать `--refresh` его Python. `--render` и `--check` используют стандартную библиотеку, без Graphify. Полные промежуточные `.artifacts/project-terrain/` локальны и игнорируются Git. Извлечённая связь — подсказка для поиска, не доказательство выполненного вызова; ручные сквозные контракты ниже проверены исходниками.
 
-### Граница полноты: уточнение после проверки 2026-09-27
+### Как проверяется полнота и актуальность
 
-«Общая картина» здесь имеет три разных уровня: полный инвентарь Git-файлов, автоматическая статическая структура и выборочный содержательный разбор. Последний **не охватывает каждую функцию и каждый рабочий сценарий**. Смысловой граф содержит основания утверждений из 68 файлов, включая документацию; это не 68 полностью проверенных модулей. Старые документы прочитаны в объёме, указанном в [индексе истории](architecture-history.md#что-было-прочитано-для-этого-указателя); остальные не объявляются проверенными.
+Реестр [code-review](code-review.md) учитывает каждый отслеживаемый и неигнорируемый файл в явно заданной области. У текстового исходника фиксируются прочитанные диапазоны, назначение, контракты, эффекты, ошибки, зависимости и границы тестов. Каждое именованное определение Python/JavaScript, включая вложенные функции, проверяется на наличие собственной аннотации. Для массивов данных и бинарных ресурсов отдельно отмечается проверка схемы или метаданных: она не означает проверку каждой экономической точки или каждого пикселя.
 
-Начальный счётчик исходников не включал HTML/CSS/Mako; это исправлено. Единственный узел файла также учитывается отдельно от более подробной структуры. Точные числа, неразрешённые связи и файлы без смысловых свидетельств видны в [рельефе](project-terrain.md) и фильтрах просмотрщика. Его обзор группирует каждый файл по явным правилам путей, строит матрицу извлечённых отношений и позволяет перейти от группы или связи к исходникам. Группы не выдаются за автоматически обнаруженные бизнес-домены. Успешные тесты приложения проверяют приложение, а не полноту архитектурного анализа.
+`python3 scripts/audit-code-documentation.py --check` выявляет пропущенные рецензии, изменённые исходники, непрочитанные диапазоны и определения без описания. Генератор не присваивает статус «прочитано». Нулевой список пропусков измеряет полноту зафиксированных свидетельств; он не доказывает корректность всех рабочих сценариев, качество каждого описания или отсутствие дефектов. Доказательства работы приложения — отдельные тесты и датированные проверки среды.
 
-После изменений в соседних задачах `--check` может требовать повторного чтения конкретных смысловых оснований. Автоматическое обновление структуры не снимает это требование; просмотрщик показывает известное отставание на момент сборки.
+Первый смысловой граф `architecture-knowledge.json` содержал основания из 68 файлов и остаётся историческим артефактом первоначального выборочного прохода. Его прежние утверждения и контрольные суммы не переписываются автоматически. Текущий разбор и устаревание показываются отдельно в реестре и просмотрщике. Старые документы и восстановленные из Git материалы сохраняют даты и причины решений в [индексе истории](architecture-history.md).
+
+Структура Graphify включает исходники, HTML/CSS/Mako и конфигурацию; один файловый узел учитывается отдельно от подробной структуры. Группы по путям и матрица отношений помогают найти код, но не устанавливают runtime-связи через HTTP, БД и Redis. Сквозные сценарии описаны ниже и в контрактах.
+
+После изменения исходника необходимо перечитать diff и затронутые контракты, обновить рецензию, затем пересобрать покрытие и структуру. Простая замена hash не является повторным разбором. Просмотрщик автономен и показывает состояние на момент сборки; он не следит за будущими правками файлов в реальном времени.
 
 ## C4: контекст системы
 
@@ -37,7 +43,7 @@ Forecast Economy показывает официальные экономиче�
 
 | Контейнер / процесс | Ответственность и граница | Код и конфигурация |
 |---|---|---|
-| Caddy | TLS/внешний reverse proxy к локальному порту frontend | `Caddyfile` — `reverse_proxy localhost:3000` |
+| Caddy | TLS/внешний reverse proxy к локальному порту frontend | `Caddyfile` — `reverse_proxy 127.0.0.1:3000` (main; на серверном SHA при снимке ещё `localhost`) |
 | Frontend nginx | Статика Vite, `/api/` proxy, `/seo/*` proxy для публичных URL, legacy redirects, sitemap и OG-маршруты | `frontend/nginx.conf` — `/api/`, `/russia/indicator`, `/assets/`; `docker-compose.yml::frontend` |
 | React SPA в браузере | Интерактивные страницы, роутинг, TanStack Query, локаль, сессия и поведенческий поток | `frontend/src/main.jsx`, `SpaRoot.jsx`, `App.jsx`, `lib/hooks.js`, `context/AuthProvider.jsx`, `lib/behavior.js` |
 | FastAPI web | `/api/v1`, SSR HTML, sitemap/OG, авторизация, ingestion behavior; несколько HTTP workers без фонового расписания в Compose | `backend/app/main.py::app`, `api/router.py`, `api/seo_pages.py`, `api/sitemap.py`; `docker-compose.yml::backend` |
@@ -45,6 +51,106 @@ Forecast Economy показывает официальные экономиче�
 | PostgreSQL | Истина для индикаторов, точек, пользователей, сессий аналитики и агрегатов | `backend/app/models.py`, `backend/app/database.py`, `docker-compose.yml::postgres` |
 | Redis cache / Redis state | Первый — версионированные cache namespace; второй — состояние сессий и распределённых job locks | `backend/app/core/cache.py::versioned_key/bump_namespaces/get_state_redis`, `backend/app/services/session.py`, `docker-compose.yml::redis/redis-state` |
 | ClickHouse | Восстанавливаемая аналитическая копия Postgres для BI-срезов; публичная запись идёт в Postgres | `backend/app/services/clickhouse_sync.py`, `backend/app/services/analytics_marts.py`, `docker-compose.yml::clickhouse` |
+
+## Реальное окружение: сервер с 4 vCPU и локальная разработка
+
+**Наблюдение 2026-09-27, 12:24–12:34 UTC (15:24–15:34 МСК).** Параметры ниже прочитаны через SSH, Docker inspect, PostgreSQL `pg_settings`, Redis `CONFIG GET`/`INFO` и readiness. Машинное свидетельство с конфигурацией каждого контейнера, томами, портами, флагами и схемой БД — [runtime-inventory.json](runtime-inventory.json). Секреты и строки пользовательских данных в него не включены. Настройки и нагрузка меняются; это датированный снимок.
+
+### Версии кода и процессы
+
+На сервере `/opt/rosstat` чистый Git на **`e81b86e8e141649fb468097c54ac7563e0bbccc2`**. Локальный код `main` уже содержит последующие изменения. На момент первичного сравнения `main` был `c9c2d95`; во время аудита другие задачи добавили новые коммиты. SHA каждого смыслового свидетельства нужно сверять с реестром разбора. Проверенные 11 файлов web/scheduler/nginx совпали с серверным Git; это выборочная проверка образов, не побайтовая аттестация всех файлов.
+
+```mermaid
+flowchart LR
+  U["HTTPS: apex EN / ru. RU"] --> C["Caddy на хосте: TLS, CSP, body ≤1 MB"]
+  C --> N["127.0.0.1:3000 → nginx:80"]
+  N --> B["backend:8000 — 3 Uvicorn workers"]
+  N --> A["Vite assets + архив 3 релизов"]
+  B --> P["Postgres: факты, identity, аналитика"]
+  B --> R["Redis cache /0"]
+  B --> S["redis-state /0: сессии, локи"]
+  J["scheduler — 1 worker, без host port"] --> P
+  J --> R
+  J --> S
+  J --> H["ClickHouse: производная аналитика"]
+  J --> X["Источники, прогнозы, sitemap, уведомления"]
+```
+
+Caddy запущен через systemd на хосте, в Compose его нет. Backend, scheduler, frontend, Postgres, два Redis и ClickHouse были healthy. Readiness web проверяет БД и оба Redis; проверка scheduler появляется в readiness **самого scheduler**, где расписание включено. Оба ответа были `status=ok`, `degraded=false`. Это не проверка успешности каждого задания или всех пользовательских маршрутов.
+
+### Бюджет CPU, памяти и диска
+
+| Ресурс | Фактически на сервере | Что учитывать при изменении архитектуры |
+|---|---|---|
+| CPU | 4 логических vCPU, x86_64, KVM/QEMU | Квоты ограничивают процессорное время, ядра между контейнерами не закреплены |
+| RAM | 8 326 946 816 байт ≈7,75 GiB | Лимиты контейнеров не являются заранее зарезервированной памятью |
+| Swap | ≈4 GiB; занято около 0,74 GiB на момент снимка | Наличие занятых страниц не доказывает текущий thrashing; нужны rates/latency во времени |
+| Диск `/` | ≈76,45 GiB; занято 88%, доступно ≈9,8 GiB | На том же диске находятся БД, Docker, локальные бэкапы, логи и архив ассетов |
+| ОС | Ubuntu 24.04.4 LTS, kernel 6.8.0-139-generic | `vm.swappiness=60`, `overcommit_memory=0`; provider storage/IOPS/SLA не установлены |
+| Docker | Engine 29.6.1, cgroup v2 | У фактических контейнеров нет cpuset; memory+swap limit вдвое больше RAM limit |
+
+| Сервис | Workers | CPU quota | RAM hard limit | Существенные ограничения |
+|---|---:|---:|---:|---|
+| backend | 3 | 3 CPU | 2304 MiB | Пулы и in-process кэши умножаются на 3; nofile 65536 |
+| scheduler | 1 | 1 CPU | 1024 MiB | Startup catch-up и фоновые джобы делят один контейнер; nofile 65536 |
+| frontend | nginx | 0,5 CPU | 256 MiB | SSR проксируется в backend, nginx хранит статику |
+| postgres | PostgreSQL | не задана | 3072 MiB | Shared memory 256 MiB, stop grace 120s |
+| redis | Redis | не задана | 448 MiB | `maxmemory=384 MiB`, на сервере **allkeys-lru** |
+| redis-state | Redis | не задана | 64 MiB | `maxmemory=48 MiB`, noeviction, AOF everysec |
+| clickhouse | ClickHouse | 0,5 CPU | 448 MiB | Query memory 300 MiB, threads 2, external sort/group thresholds 150 MiB |
+
+Сумма RAM hard limits — **7616 MiB (7,44 GiB)**. Если все контейнеры одновременно приблизятся к лимитам, для хоста останется лишь около 325 MiB: прежний комментарий «около 1 GB запаса» не является гарантией. Caddy, Docker, системные процессы и page cache тоже требуют ресурсов. Фактический `MemAvailable` при снимке был около 3,09 GiB: сумма лимитов не равна текущему расходу. CPU-квоты web+scheduler дают 3+1, но nginx, ClickHouse, Postgres и хост конкурируют за те же четыре vCPU. Значения квот и swap трактуются по [документации Docker](https://docs.docker.com/engine/containers/resource_constraints/).
+
+Нельзя вывести допустимое число посетителей из «4 ядра» или одного healthy-ответа. При переразбиении сервисов считать совокупные пулы/память и измерять смесь cold/warm SSR, API, ETL и BI, p95/p99, queue wait, CPU throttling, disk latency, swap-in/out и OOM. Новый worker увеличивает конкуренцию и память; он не добавляет серверу ядра.
+
+### PostgreSQL: память, соединения, схема
+
+Сервер: `shared_buffers=896 MiB`, `effective_cache_size=2304 MiB`, `work_mem=16 MiB`, `maintenance_work_mem=256 MiB`, `autovacuum_work_mem=128 MiB`, до 3 autovacuum workers. `effective_cache_size` — оценка для планировщика, не выделение памяти. `work_mem` расходуется на операцию сортировки/хеширования и может умножаться на план и parallel workers; это не фиксированные 16 MiB на соединение ([PostgreSQL 16](https://www.postgresql.org/docs/16/runtime-config-resource.html)). `jit=off`, `random_page_cost=1.1`, `track_io_timing=on`, `pg_stat_statements` в preload, slow query threshold 1000ms.
+
+Максимальный бюджет SQLAlchemy по фактическим настройкам:
+
+```
+web:       3 × (pool 8 + overflow 7)             = 45
+scheduler: 1 × (pool 6 + overflow 6)             = 12
+analytics: 4 процесса × (pool 2 + overflow 2)    = 16
+                                                   73
+```
+
+`max_connections=100`, `superuser_reserved_connections=3` проверен на сервере. Остаток до 97 обычных соединений — 24 при одновременном максимуме всех пулов; Alembic, seed, CLI и backup тоже подключаются. Это верхние пределы, соединения открываются по потребности. Web pool timeout 3s, scheduler/analytics 15s. В приложении public statement timeout 30s, analytics 60s, idle-in-transaction 120s; глобальные PostgreSQL `statement_timeout=0`/`idle_in_transaction_session_timeout=0` не отменяют session-level настройки приложения.
+
+На сервере БД занимала 6 481 599 511 байт; в публичной схеме **60 таблиц и 672 колонки**, включая `alembic_version`. Полный перечень колонок, типов, nullability и defaults сохранён в JSON. Серверный Alembic head — `20260924_oauth_locale`; миграция локальной main `20260927_world_nonzero_idx` там ещё не применена. JSON-схема описывает серверную версию, модели/миграции в реестре кода — локальную.
+
+### Кэш и состояние: сервер отличается от локального профиля
+
+На сервере cache Redis `/0` использует `allkeys-lru`; `.env.example`/Compose default — `volatile-lru`. При снимке cache использовал ≈380,7 MiB из 384 MiB, счётчик вытеснений 622534 — накопительный, а не скорость за минуту. State Redis действительно выделен в `redis-state:6379/0`, noeviction+AOF, около 12,5 MiB, 0 вытеснений.
+
+В **локальной main** поколение `world-catalog` и durable last-good хранятся в state Redis, публикация атомарная, ключи `g2`, есть single-flight/stale grace. На **серверном e81b86e** проверенные `core/cache.py` и `api/world.py` старее: новую семантику нельзя приписывать продакшену. Cache fail-open, quota/lockout/session state и namespace generation имеют разные режимы отказа — подробности в [контрактах](data-contracts.md).
+
+На проверенном **локальном** Docker-стеке контейнер `redis-state` существует, однако оба процесса приложения используют `redis:6379/1`. Это отдельная логическая БД того же cache-инстанса, с общей памятью и eviction policy, а не физическая изоляция. Переключение адреса state меняет доступное состояние сессий/локов; при аудите оно не выполнялось.
+
+### Сохранность, расписание и внешние действия
+
+Root cron сервера запускает `scripts/pg-backup.sh` в **04:00 UTC =07:00 МСК** (`Etc/UTC` на хосте). `TZ=Europe/Moscow` внутри backend не меняет timezone host cron. APScheduler использует собственную московскую timezone.
+
+В `/opt/rosstat/backups` было 70 файлов, ≈10,97 GiB; последний полный dump — `rustats_20260927_040001.dump`, 388165057 байт, завершён 04:01:54 UTC. `OFFSITE_S3_BUCKET`/endpoint в проверенном `.env` не заданы, `aws` CLI отсутствует. Поэтому **offsite-ветка именно этого backup-скрипта не настроена**. Независимый backup провайдера или другая система не проверены. Пробное восстановление в этом аудите не выполнялось; heartbeat его не доказывает.
+
+На сервере включены analytics ingestion/live writes, ClickHouse, IndexNow, Pulse, Telegram digest/poller/realtime alerts, Eurostat/subnational/BEA ingest. `analytics_scheduler_enabled=false` — отдельный флаг; его нельзя подменять общим `scheduler_enabled=true`. Global world forecast выключен, отдельные US/Europe forecast gates включены (caps 500/3000). Реестр заданий и их зависимость от флагов смотреть в разборе `main.py`/tasks; наличие флага не доказывает успешную последнюю загрузку.
+
+Хостовые Caddy/fail2ban/logrotate конфиги совпали с серверным checkout. На момент снимка jail limits: nginx-429 30 событий/600s → ban86400s; nginx-volume 80/600s →86400s; honeytrap 1/3600s →172800s; recidive 2/86400s →604800s. Это отдельный слой после nginx rate limits; список заблокированных IP не собирался. Новые изменения Caddy/nginx в локальной main требуют отдельной выкладки и сверки.
+
+### Локальная машина и проверяемый маршрут
+
+MacBook M3 Pro: 11 CPU, 18 GiB RAM, macOS **26.6.2** на момент проверки (старая запись 14.5 неактуальна). Docker Desktop VM: 11 CPU, ≈7,65 GiB RAM, Engine 29.1.3. Локальные контейнеры имеют тот же Compose профиль лимитов; Docker VM сама почти равна сумме этих лимитов. Это не эквивалент Linux VPS по CPU, файловой системе и IO.
+
+| Адрес на localhost | Назначение | Что он не подтверждает |
+|---|---|---|
+| `3000` | nginx + backend SSR + собранные Vite assets | TLS/Caddy, host fail2ban и production-флаги |
+| `5173` | Vite HMR/CSR | SSR/OG/nginx и актуальность контейнерного image |
+| `8000` | FastAPI напрямую | Caddy/nginx headers, compression и rate limits |
+| `5434` | Postgres container:5432 | Совпадение данных с сервером |
+| `6380` | Cache Redis container:6379 | Выделенный state Redis |
+
+Backend/SSR code не bind-mounted: после смены main работающий image может оставаться старым. Срез локальных images создан 26 сентября, последующие коммиты main сами в контейнеры не попали. Запуск Vite читает рабочие frontend файлы. Последовательности локального старта, настройки proxy и точные границы проверки — [workflow](workflow.md#локальная-разработка).
 
 ## C4: основные компоненты backend
 

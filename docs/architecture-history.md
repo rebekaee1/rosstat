@@ -2,6 +2,10 @@
 
 **Срез кода:** `b684290067bf51f02076a43c59daaa241efe396f`, 2026-09-27. Это указатель к существующим документам, а не новый источник продуктовых требований. «Подтверждено кодом» означает наличие механизма в этом checkout; состояние БД, расписания и выпуска на production нужно проверять отдельно. Для текущего статуса выпуска и утверждённого SHA используйте [backlog](backlog.md) и [workflow](workflow.md), а не старые даты внутри ADR.
 
+## Позднейший сквозной аудит
+
+Таблица ниже сохраняет **точечные сверки на `b684290`** и причины решений. Последующий разбор main с пофайловыми SHA, контрактами и пределами проверки ведётся в [отчёте о коде](code-review.md) и [реестре покрытия](code-review/coverage.json); его состояние и базовый коммит указаны там. Эти материалы дополняют исторический индекс и не доказывают состояние запущенного production.
+
 ## Как читать хронологию
 
 | Вопрос | Историческое решение и причина | Текущий механизм / точечная сверка |
@@ -34,7 +38,15 @@
 | `docs/plan.md` (удалён 2026-05-22) | Короткая очередь работ; уникальные G1/G2/F3–F5 перенесены в [backlog](backlog.md) :1353–1375. | `git show 18d692c2b0d92a90efdf8a9b18e9897b91222643^:docs/plan.md` |
 | `docs/cbr_sources.md` (удалён 2026-05-22) | Карта ЦБ/Минфин с idempotent upsert и DataService `element_id` trap; механизм и детали перенесены в docstrings парсеров, [data_sources](data_sources.md) и ADR-0002. | `git show 18d692c2b0d92a90efdf8a9b18e9897b91222643^:docs/cbr_sources.md` |
 | `docs/STATE.md` (удалён откатом 2026-09-26) | Временный handoff о prod SHA и ветках; **истёк** после новых выпусков. Полезен только для реконструкции инцидента, не для текущей работы. | `git show bb84eaab67f1400ad61578ac25084a73db14492f^:docs/STATE.md` |
+| `docs/analytics_api_inventory/metrika_data_import.md` | План интеграции offline-конверсий, расходов и параметров пользователей: отдельные scopes, ограничения и риски. Это запланированный контракт, не свидетельство реализации. | `git show '18d692c^:docs/analytics_api_inventory/metrika_data_import.md'` |
+| `docs/phase0_closeout.md` | Критерии закрытия первой фазы по коду и исследованию с отдельной ручной SEO-проверкой. Даты и счётчики относятся к старой фазе. | `git show 'f994f6e^:docs/phase0_closeout.md'` |
+| `docs/analytics.md` | Подробный архив интеграций: отправленные sitemap URL не равны индексированным; GSC helper должен быть read-only, с файлом `0600`; квоты и top-row выгрузки ограничивают интерпретацию. Raw Metrika visits и hits в документе имеют разные статусы. Локальная приёмка 21 сентября не равна production. | `git show 'bb84eaa^:docs/analytics.md'` |
+| `docs/indicators.md` | Формулирует различие variant (другой ряд/URL) и mode (представление одного ряда), а также связь природы ряда с `FamilyDef`. Старые команды `FLUSHDB` и ручного compose не заменяют нынешний [workflow](workflow.md). | `git show 'bb84eaa^:docs/indicators.md'` |
+| `docs/recap-2026-05-22.md` | Майская мотивация variant-поиска, ловушка годового ряда зарплат в месячном режиме, происхождение legacy redirects и cache incident; локальный отчёт на старом SHA без production-приёмки. | `git show '18d692c^:docs/recap-2026-05-22.md'` |
+| `docs/architecture_2026-02-28_legacy.md` | Первоначальная CPI-архитектура и цепочка Caddy → nginx → FastAPI; старые ETL, IP, команды деплоя и размеры — исторические. | `git show 'f994f6e^:docs/architecture_2026-02-28_legacy.md'` |
+| `docs/embed_widgets_research.md` | Обоснование выбора iframe/light bundle/SVG и необходимости согласованных frame headers у обоих proxy; цены, размеры и оценки апреля не считать актуальными без сверки. | `git show 'f994f6e^:docs/embed_widgets_research.md'` |
+| `docs/wordstat_research_full.md` | Датированные наблюдения Wordstat/SERP 17 марта объясняют long-tail подход; частотности запросов и конкурентные цифры сейчас не подтверждены. | `git show 'f994f6e^:docs/wordstat_research_full.md'` |
 
 ## Что было прочитано для этого указателя
 
-Корневые [README](../README.md), [AGENTS](../AGENTS.md), [CONTEXT](../CONTEXT.md); все 15 файлов [ADR-0001…0015](adr/); [backlog](backlog.md), [dead-code-report](dead-code-report.md), [missed_data_audit](missed_data_audit.md), [indicator-family-playbook](indicator-family-playbook.md); версии трёх утраченных файлов через `git show` выше; Graphify `references/extraction-spec.md` из установленного skill (схема внешнего `semantic-history.json`). Кодовые ссылки в таблице — точечная сверка на указанном SHA. Остальные старые документы не проходили сплошную проверку и не считаются подтверждёнными этим указателем.
+Корневые [README](../README.md), [AGENTS](../AGENTS.md), [CONTEXT](../CONTEXT.md); все 15 файлов [ADR-0001…0015](adr/); [backlog](backlog.md), [dead-code-report](dead-code-report.md), [missed_data_audit](missed_data_audit.md), [indicator-family-playbook](indicator-family-playbook.md); все 11 утраченных файлов в таблице через `git show`; Graphify `references/extraction-spec.md` из установленного skill (схема внешнего `semantic-history.json`). Кодовые ссылки в таблице — точечная сверка на указанном SHA. Для позднейшего охвата остальных документов и тестов служит пофайловый реестр аудита выше.

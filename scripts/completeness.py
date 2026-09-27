@@ -392,7 +392,7 @@ def render_md(data: dict) -> str:
         "> Генерируется `scripts/build-indicator-index.py` (модуль "
         "`scripts/completeness.py`). НЕ редактировать руками. Read-only аудит: "
         "пробел = КАНДИДАТ на добавление режима, не дефект — владелец решает, "
-        "осмыслен ли он для природы ряда. Ожидания — таблица `MAXIMAL_BY_NATURE` "
+        "осмыслен ли он для природы ряда. Ожидания — функция `expected_matrix` "
         "в `completeness.py` (единая точка истины). Доменная модель — "
         "`CONTEXT.md::Матрица представлений`.")
     out.append("")

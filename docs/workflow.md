@@ -1,6 +1,6 @@
 # Рабочий процесс — Forecast Economy
 
-**Last updated:** 2026-09-27 (сверка с HEAD `b684290`: контракты бэкапа, кэша релиза, ETL/прогнозов и аналитического smoke; проверен локальный код, не состояние продакшена).
+**Last updated:** 2026-09-27. Локальная `main` и датированный снимок серверной конфигурации разобраны отдельно: [реестр кода](code-review.md), [архитектура и окружение](architecture.md), [наблюдения и ограничения](code-review-findings.md). Кодовый разбор не заменяет приёмку выпуска на production.
 
 **Previous:** 2026-09-20 (approved-SHA gate, миграции и архив ассетов). Ранее 2026-09-03 (post-deploy watch 15 мин + runbook «хост в свопе»). Ранее 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md).
@@ -40,34 +40,112 @@
 
 ## Локальная разработка
 
-### Поднять стек
+Текущие характеристики VPS с 4 vCPU, локального Mac/Docker VM, лимиты контейнеров, порты и обнаруженные различия — [архитектура: реальное окружение](architecture.md#реальное-окружение-сервер-с-4-vcpu-и-локальная-разработка). Датированные машинные свидетельства — [runtime-inventory.json](runtime-inventory.json). Локальная main и работающий Docker image — разные версии до пересборки.
+
+### Как настройки попадают в процесс
+
+1. Корневой `.env` читает **Compose для подстановки** `${...}`. В контейнер попадают только перечисленные в `docker-compose.yml::environment` ключи. `env_file` для backend не подключён. Просто добавить произвольный `RUSTATS_*` в корневой `.env` недостаточно: нужен явный environment mapping/override.
+2. При прямом `uvicorn`/Python `Settings` читает переменные процесса и `.env` **текущего рабочего каталога** (`config.py::Settings.model_config`). Из `backend/` это `backend/.env`, а не автоматически корневой файл. Default Settings для одного процесса отличается от Compose (например, pool 10+15 против web 8+7).
+3. `VITE_*` — параметры Vite build/dev. Смена runtime env уже собранного nginx-контейнера не меняет JS. Locale build arg в Compose берётся из `RUSTATS_APEX_LOCALE_EN`; SSR и browser должны собираться для одного режима.
+4. Caddy работает на хосте. Корневой `.env` не является `EnvironmentFile` systemd автоматически.
+
+### Профиль A: Compose, SSR и интеграция
+
+Команды выполняются из корня проекта. Существующий `.env` сохраняется:
 
 ```bash
-cp .env.example .env
-docker compose up -d --build
+test -f .env || cp .env.example .env
 ```
 
-Web-role `backend/entrypoint.sh` поднимет миграции (`alembic upgrade head`), seed федеральных индикаторов (`seed_data.py`), отдельный региональный seed (`seed_regional.py`), календарь (`calendar_seed`) и Uvicorn. Первый пустой региональный seed фатален при сбое; если `region_data` уже наполнена, сбой логируется и старт продолжается. Сервис `scheduler` запускает тот же образ с `RUSTATS_PROCESS_ROLE=scheduler`, **пропускает миграции и все seed** и стартует после healthy web-backend.
+Перед стартом проверить локальные значения. Шаблон содержит production origin и включённые locale-флаги; он не является готовым изолированным dev-профилем. Для обычной разработки установить в локальном `.env`:
+
+```dotenv
+RUSTATS_AUTH_PUBLIC_BASE_URL=http://localhost:3000
+RUSTATS_AUTH_COOKIE_SECURE=false
+RUSTATS_APEX_LOCALE_EN=false
+RUSTATS_GEO_LOCALE_REDIRECT_ENABLED=false
+RUSTATS_INDEXNOW_ENABLED=false
+RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED=false
+RUSTATS_ANALYTICS_SCHEDULER_ENABLED=false
+RUSTATS_TELEGRAM_DIGEST_ENABLED=false
+RUSTATS_TELEGRAM_POLLER_ENABLED=false
+RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED=false
+RUSTATS_PULSE_ENABLED=false
+```
+
+Production-токены Telegram/OAuth/Метрики/IndexNow/LLM в dev не копировать. Некоторые интерактивные события (например, login) имеют отдельные пути уведомлений; выключенный digest не является общим выключателем отправки. Для воспроизведения server state-изоляции задать `RUSTATS_STATE_REDIS_URL` на **`redis-state:6379/0`** с локальным Redis-паролем; Compose default — `redis:6379/1`. Не менять адрес поверх работающей сессии незаметно: это другое хранилище. Пароль внутри URL требует URL-encoding.
+
+Первый старт nginx требует доступных bind-каталогов `/var/log/rosstat-nginx` (запись uid101) и архива ассетов (default `/var/lib/rosstat/frontend-assets`, можно переопределить `FRONTEND_ASSET_ARCHIVE` локальным абсолютным путём). Linux-рецепт создания log-каталога есть в CI; на Docker Desktop каталог должен быть доступен для file sharing. `output/` монтируется read-only в `/app/data`; named volumes сохраняют Postgres, Redis, GeoIP, OG, sitemap и ClickHouse.
+
+```bash
+docker compose build backend frontend
+docker compose up -d postgres redis redis-state backend frontend clickhouse
+docker compose ps
+curl --fail http://127.0.0.1:8000/api/v1/health/ready
+curl --fail -A 'YandexBot/3.0' http://127.0.0.1:3000/russia/indicator/cpi
+```
+
+Эта команда `up` **не запускает scheduler впервые**, но уже работающий scheduler не останавливает. При обычной разработке проверить `docker compose ps scheduler` и остановить его явно командой `docker compose stop scheduler`, если он остался от прошлой сессии. `RUSTATS_SCHEDULER_ENABLED=false` в `.env` недостаточно: Compose задаёт для отдельного scheduler литерал `true`.
+
+Web-role `backend/entrypoint.sh` выполняет Alembic, федеральный/региональный/calendar seed и запускает 3 Uvicorn workers. Seed создаёт метаданные; полноценная история всех рядов из этого не следует. Ошибка первого пустого регионального seed фатальна, при уже наполненной региональной БД логируется. Порт **3000** проверяет nginx→SSR и собранные assets. Backend исходники не bind-mounted: после их правки повторить совместную сборку и `up`; Vite HMR не обновляет контейнерный Python.
+
+### Профиль B: быстрый frontend с HMR и локальным API
+
+Нужны Node22, `npm ci` во `frontend/` и работающий локальный backend. Запуск из `frontend/`:
+
+```bash
+npm ci
+VITE_DEV_API_PROXY=http://127.0.0.1:8000 npm run dev -- --host 127.0.0.1
+```
+
+Тот же `VITE_DEV_API_PROXY` можно хранить в игнорируемом `frontend/.env.local`. Без него Vite берёт `VITE_PUBLIC_BASE_URL`, а затем default `https://forecasteconomy.com`. Proxy `/api` **не фильтрует HTTP methods**: утверждение старого комментария «только GET» было неверным. Поэтому локальный UI с default proxy может обращаться к серверным auth/analytics API. Для проверки своего backend указывать localhost явно.
+
+Порт **5173** показывает CSR/HMR. Он не воспроизводит nginx SSR/OG routing, Caddy, host fail2ban, production Secure cookies или серверную производительность. Для UI проверять desktop/mobile, затем отдельно тот же сценарий через **3000**, SSR HTML и API. RU/EN preview через `?preview_locale=` помогает проверить перевод, но не заменяет dual-host canonical/hreflang gate.
+
+### Профиль C: Python вне Docker
+
+Использовать Python3.12 и `backend/.venv` с `requirements-dev.txt`; запускать из `backend/`. Задать явные process env или отдельный локальный `backend/.env`: `RUSTATS_DATABASE_URL` на localhost:**5434**, `RUSTATS_REDIS_URL` на localhost:**6380** с локальными паролями, `RUSTATS_SCHEDULER_ENABLED=false` и отключённые внешние отправки. Default Settings `localhost:5432`/`6379` не соответствует портам Compose. Выделенный `redis-state` не публикует host port; для прямого Python нужно отдельно продуманное подключение либо dev DB1 cache Redis с явно меньшей изоляцией.
+
+```bash
+cd backend
+PYTHONPATH=. .venv/bin/uvicorn app.main:app --reload --host 127.0.0.1 --port 8001
+```
+
+Порт 8001 позволяет не конфликтовать с Compose backend:8000. Для такого процесса Vite proxy направить на 8001. `uvicorn` сам не выполняет shell entrypoint: миграции и нужные seed выполняются отдельно **в выбранной dev-БД**. Не подменять этим запуском проверку production startup.
+
+### Профиль D: ETL и фоновые задания
+
+Для интеграционной проверки расписания после настройки локальной БД и внешних отправок:
+
+```bash
+docker compose up -d scheduler
+docker compose exec -T scheduler curl --fail http://127.0.0.1:8000/api/v1/health/ready
+docker compose logs --tail=100 scheduler
+```
+
+Scheduler — тот же backend image, один worker, без host port; он пропускает Alembic/seed, зависит от healthy web. Запускает startup catch-up и расписание, поэтому может обращаться к официальным источникам и менять dev-данные сразу после старта. Это профиль проверки ETL, а не условие frontend-разработки. После проверки можно остановить только scheduler, сохранив тома. `docker compose down -v` уничтожает named volumes и для обычной разработки не требуется.
 
 ### Синхронизация с продом
 
-Если локальная БД отстала от продa по точкам — read-only sync через публичный API:
+`scripts/sync-local-from-prod.py` — исторический инструмент для **частичного RU gap-fill** через публичный API: фиксированный limit10000, без pagination полного каталога/всех историй, без world/regions/identity. Существующие точки сохраняются (`ON CONFLICT DO NOTHING`), ревизии их значений не переносятся. Публичная API-политика глубины/доступа ограничивает результат; это не эквивалент `pg_dump`.
+
+Файл находится в корневом `scripts/`, которого нет в backend Docker build context. После проверки, что контейнер подключён именно к локальной БД:
 
 ```bash
-docker compose exec backend python /app/scripts/sync-local-from-prod.py
+docker compose exec -T backend python - < scripts/sync-local-from-prod.py
 ```
 
-Идемпотентный — `bulk_upsert` с `ON CONFLICT DO NOTHING` для существующих локально точек, никогда не удаляет.
+Команда не меняет прод через SQL, но пишет в **настроенную target-БД** и делает параллельные GET к продакшену. Название `local` само по себе не проверяет DATABASE_URL. Forecast/derived/cache после этого автоматически не актуализируются.
 
 ### Полный пересчёт derived
 
-Если меняли `derived_ops.py` или `DERIVED_SPECS`, либо вручную правили source через SQL:
+После изменения `derived_ops.py`/`DERIVED_SPECS` или ручной коррекции source в **dev-БД**:
 
 ```bash
-docker compose exec backend python /app/scripts/rebuild-all-derived.py
+docker compose exec -T backend python - < scripts/rebuild-all-derived.py
 ```
 
-Прогон без guard'а (без проверки `source_codes`); first run выводит non-zero changes для stale серий, second run — все нули (idempotency check).
+Корневой скрипт также отсутствует по старому адресу `/app/scripts/rebuild-all-derived.py`. Он вызывает каждый `_execute`, коммитит изменения и инвалидирует изменившиеся индикаторы. Повтор без изменений должен дать нули; это проверяется выводом. Per-spec исключения логируются, но `main` возвращает 0: успешный exit не гарантирует успешность каждого derived. Orphan-derived точки не удаляются автоматически, retrain прогнозов этим скриптом не выполняется.
 
 ### Ручной прогон мировых прогнозов
 

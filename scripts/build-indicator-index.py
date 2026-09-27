@@ -166,6 +166,7 @@ SKIP_RELPATHS = {
     "docs/indicator-index.json", "docs/indicator-index.md",
     "docs/repo-inventory.md", "docs/dead-code-report.md",
     "docs/project-terrain.json", "docs/project-terrain.md", "docs/project-terrain.html",
+    "docs/code-review.md",
 }
 
 
@@ -218,7 +219,7 @@ def _text_files() -> list[Path]:
             continue
         # Browser/HTTP evidence repeats page content; it is not a code reference.
         # Exclude the generated reports so a QA run cannot invalidate this map.
-        if rel in SKIP_RELPATHS or rel.startswith("docs/design/local-acceptance/"):
+        if rel in SKIP_RELPATHS or rel.startswith(("docs/design/local-acceptance/", "docs/code-review/")):
             continue
         out.append(p)
     return out
@@ -499,7 +500,7 @@ def render_md(index: dict) -> str:
     out.append("")
     out.append(f"- Всего кодов: **{s['total_codes']}**")
     out.append(f"- in_both_viewmode_systems (дубль легаси+generic): **{s['in_both_viewmode_systems']}**")
-    out.append(f"- shadowed_legacy (мёртвая легаси-ветка): **{s['shadowed_legacy']}**")
+    out.append(f"- shadowed_legacy (перекрытая standalone-ветка): **{s['shadowed_legacy']}**")
     out.append(f"- unresolved (нет ui_stack): **{s['unresolved']}**")
     out.append(f"- derived_not_seeded: **{s['derived_not_seeded']}**")
     out.append("")

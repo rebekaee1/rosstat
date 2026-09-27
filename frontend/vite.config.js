@@ -108,10 +108,10 @@ function publicOriginPlugin(origin) {
 
 /**
  * В dev без локального backend данные «пропадали»: прокси шёл на :8000.
- * По умолчанию проксируем на продакшен (только GET, публичные данные).
+ * Default proxy target — публичный origin; HTTP methods не фильтруются.
  * Локальный API: в .env.local задать VITE_DEV_API_PROXY=http://127.0.0.1:8000
- * NB: Прокси на прод — только чтение публичного API; мутирующих эндпоинтов нет.
- *     Если появятся POST/PUT, переключить default на localhost.
+ * Auth/analytics уже имеют POST: для разработки с локальным backend
+ * обязательно задать localhost proxy. Порт 5173 не заменяет SSR на 3000.
  */
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')

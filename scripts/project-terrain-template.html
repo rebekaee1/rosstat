@@ -9,7 +9,7 @@
 <header>
 <h1>Рельеф Forecast Economy</h1>
 <p>От общей структуры к конкретному файлу. Группы и их связи рассчитаны из репозитория; глубина анализа показана отдельно.</p>
-<nav><a href="architecture.md">Архитектура и сценарии</a><a href="data-contracts.md">Контракты данных</a><a href="architecture-history.md">История решений</a><a href="project-terrain.md">Покрытие и обновление</a></nav>
+<nav><a href="architecture.md">Архитектура и сервер</a><a href="workflow.md">Локальный запуск</a><a href="data-contracts.md">Контракты данных</a><a href="architecture-history.md">История решений</a><a href="code-review.md">Содержательный разбор</a><a href="project-terrain.md">Статический граф</a></nav>
 </header>
 <main>
 <div class="stats" id="stats"></div>
@@ -27,15 +27,16 @@
 </div>
 <section id="drilldown"><h2>4. Файлы и основания связей</h2>
 <div class="filters">
-<input id="search" type="search" placeholder="Найти файл: world, cache, ADR, wages…" aria-label="Поиск файлов">
+<input id="search" type="search" placeholder="Файл, функция или назначение: world, cache, upsert…" aria-label="Поиск файлов и элементов">
 <select id="group" aria-label="Группа"><option value="">Все группы</option></select>
 <select id="kind" aria-label="Тип файла"><option value="">Все типы</option><option value="code">Код, шаблоны и стили</option><option value="document">Документы и правила</option><option value="asset/data/config">Данные / конфиги / медиа</option></select>
-<select id="coverage" aria-label="Покрытие"><option value="">Всё покрытие</option><option value="nodes">Есть узлы Graphify</option><option value="no_nodes">Экстрактор не создал узлов</option><option value="inventory_only">Только инвентаризация</option><option value="single">Только один файловый узел</option><option value="semantic">Есть смысловые свидетельства</option><option value="no_semantic">Нет смысловых свидетельств</option></select>
+<select id="coverage" aria-label="Покрытие"><option value="">Всё покрытие</option><option value="nodes">Есть узлы Graphify</option><option value="no_nodes">Экстрактор не создал узлов</option><option value="inventory_only">Только инвентаризация</option><option value="single">Только один файловый узел</option><option value="semantic">В историческом смысловом графе</option><option value="no_semantic">Вне исторического смыслового графа</option></select>
+<select id="review-filter" aria-label="Содержательный разбор"><option value="">Все рецензии</option><option value="current">Актуальная рецензия</option><option value="attention">Требует проверки</option><option value="text">Прочитан исходник</option><option value="data">Проверена схема данных</option><option value="asset">Проверены метаданные ресурса</option></select>
 </div>
 <p class="note" id="pair-note"></p><p class="note" id="found" aria-live="polite"></p>
-<div class="columns"><section class="panel"><h2>Файлы проекта</h2><div id="files"></div></section><section class="panel"><h2>Связи выбранного файла</h2><div id="detail"><p>Выберите файл слева.</p></div></section></div>
+<div class="columns"><section class="panel"><h2>Файлы проекта</h2><div id="files"></div></section><section class="panel"><h2>Назначение, элементы и связи</h2><div id="detail"><p>Выберите файл слева.</p></div></section></div>
 </section>
-<details><summary>Как читать эту карту</summary><p><b>EXTRACTED</b> — статическая конструкция исходника. <b>INFERRED</b> — вывод экстрактора, требующий проверки. Граф не доказывает выполнение вызова, отсутствие багов, мёртвый код или состояние production. HTTP, SQL, кэш и расписания описаны также в контрактах.</p><p>Полнота инвентаря ограничена отслеживаемыми и неигнорируемыми файлами Git. Файловый узел может быть единственным, например у пустого __init__.py или конфигурационного модуля. «Есть смысловые свидетельства» означает, что файл служит основанием конкретных утверждений в architecture-knowledge.json, а не что каждая его функция проверена. Тесты приложения также не доказывают полноту карты.</p></details>
+<details><summary>Как читать эту карту</summary><p><b>EXTRACTED</b> — статическая конструкция исходника. <b>INFERRED</b> — вывод экстрактора, требующий проверки. Граф не доказывает выполнение вызова, отсутствие багов, мёртвый код или состояние production. HTTP, SQL, кэш и расписания описаны также в контрактах.</p><p>Полнота инвентаря ограничена отслеживаемыми и неигнорируемыми файлами Git. Файловый узел может быть единственным, например у пустого __init__.py или конфигурационного модуля. Фильтр исторического смыслового графа означает, что файл служит основанием конкретных утверждений в architecture-knowledge.json, а не что каждая его функция проверена. Тесты приложения также не доказывают полноту карты.</p></details>
 </main>
 <footer id="footer"></footer>
 <script id="terrain" type="application/json">__TERRAIN_DATA__</script>
@@ -50,42 +51,56 @@ for(const e of data.edges){adjacent.get(e.source).push(e);adjacent.get(e.target)
 let selected='backend/app/main.py',pair=null;
 const labels={nodes:'Есть узлы Graphify',no_nodes:'Прочитан экстрактором, узлов нет',inventory_only:'Только инвентаризация'};
 const overview=data.overview;
+const audit=data.code_review||{available:false,files:{}};
+const reviews=audit.files;
+const reviewLabels={reviewed:'Исходник прочитан',body_reviewed:'Исходник прочитан',data_schema_reviewed:'Схема данных проверена',artifact_schema_reviewed:'Схема артефакта проверена',asset_metadata_reviewed:'Метаданные ресурса проверены',binary_asset:'Метаданные ресурса',partial:'Разбор не завершён',pending:'Ожидает разбора'};
+const searchText=new Map(data.files.map(f=>{const r=reviews[f.path];return[f.path,[f.path,r?.summary,r?.role,...(r?.elements||[]).flatMap(e=>[e.name,e.purpose])].filter(Boolean).join(' ').toLowerCase()]}));
 const layers=new Map(overview.layers.map(g=>[g.id,g]));
-for(const [value,label] of [[data.stats.files,'файлов в инвентаре'],[overview.code_files,'исходников, шаблонов и стилей'],[overview.semantic_files,'файлов со смысловыми свидетельствами'],[data.stats.file_edges,'статических связей между файлами']]){const n=el('div',undefined,'stat');n.append(el('b',fmt(value)),el('span',label));$('stats').append(n)}
-$('coverage-summary').append(el('strong','Полнота списка файлов ≠ полнота понимания кода'),el('p',`${fmt(overview.code_with_nodes)} из ${fmt(overview.code_files)} исходников дали узлы Graphify; ${fmt(overview.code_file_node_only)} из них — только один файловый узел. Смысловые свидетельства относятся к ${fmt(overview.semantic_files)} файлам, включая документацию. Все функции и рабочие сценарии не проверены.`, 'note'),el('p',`${fmt(data.stats.projection_omissions.missing_endpoint||0)} связей имели неразрешённые конечные узлы; ${fmt(data.stats.projection_omissions.external_or_unresolved_file||0)} — внешние или неразрешённые файлы. Они не изображены как подтверждённые внутренние связи.`, 'note'));
-if(overview.semantic_stale.length){const stale=el('details');stale.append(el('summary',`${overview.semantic_stale.length} файлов изменились после содержательной проверки`),el('p',overview.semantic_stale.join(', '),'note'));$('coverage-summary').append(stale)}
+for(const [value,label] of [[data.stats.files,'файлов в структурном инвентаре'],[audit.available?audit.current_now:overview.semantic_files,audit.available?'актуальных рецензий при сборке':'файлов со смысловыми свидетельствами'],[audit.counts?.annotated_definitions||0,'именованных определений с аннотациями'],[data.stats.file_edges,'статических связей между файлами']]){const n=el('div',undefined,'stat');n.append(el('b',fmt(value)),el('span',label));$('stats').append(n)}
+$('coverage-summary').append(el('strong','Проверяемые границы разбора'),el('p',audit.available?`Рецензии: ${fmt(audit.current_now)} актуальны из ${fmt(audit.counts.files)} файлов. Именованные Python/JS определения: ${fmt(audit.counts.annotated_definitions)} с аннотациями из ${fmt(audit.counts.definitions)}. Чтение кода, схемы данных и метаданные ресурсов учитываются отдельно. Изменённый SHA требует повторной проверки.`:'Реестр полного чтения ещё не подключён. Статический граф и выборочные архитектурные свидетельства не означают разбор каждого элемента.','note'),el('p','Разбор исходников не доказывает все runtime-сценарии, отсутствие дефектов или достоверность каждой точки данных. Сервер и локальная main имеют отдельные датированные свидетельства.','note'));
+if(overview.semantic_stale.length){const stale=el('details');stale.append(el('summary',`Исторический смысловой граф: ${overview.semantic_stale.length} изменившихся оснований`),el('p',overview.semantic_stale.join(', '),'note'));$('coverage-summary').append(stale)}
 function drill(){document.getElementById('drilldown').scrollIntoView({block:'start'})}
 for(const [index,g] of overview.layers.entries()){
  const option=el('option',g.label);option.value=g.id;$('group').append(option);
- const b=el('button',undefined,'layer');b.dataset.layer=g.id;b.append(el('strong',`${index+1}. ${g.label}`),el('small',`${fmt(g.files)} файлов · ${fmt(g.with_nodes)} с узлами · ${fmt(g.semantic_evidence)} со смысловыми основаниями`));b.onclick=()=>{pair=null;$('group').value=g.id;$('search').value='';$('kind').value='';$('coverage').value='';filter();drill()};$('layers').append(b);
+ const b=el('button',undefined,'layer');b.dataset.layer=g.id;b.append(el('strong',`${index+1}. ${g.label}`),el('small',`${fmt(g.files)} файлов · ${fmt(g.with_nodes)} с узлами · ${fmt(g.semantic_evidence)} в историческом графе`));b.onclick=()=>{pair=null;$('group').value=g.id;$('search').value='';$('kind').value='';$('coverage').value='';$('review-filter').value='';filter();drill()};$('layers').append(b);
 }
 const matrix=el('table',undefined,'matrix');matrix.append(el('caption','Направление отношения: строка → столбец · номера соответствуют группам выше'));
 const head=el('tr');head.append(el('th','Источник ↓ / цель →'));for(let i=0;i<overview.layers.length;i++)head.append(el('th',String(i+1)));matrix.append(head);
 const links=new Map(overview.links.map(e=>[e.source+'|'+e.target,e]));const max=Math.max(...overview.links.map(e=>e.file_relations),1);
 for(const [i,g] of overview.layers.entries()){
  const tr=el('tr');tr.append(el('th',`${i+1}. ${g.label}`));
- for(const target of overview.layers){const td=el('td'),edge=links.get(g.id+'|'+target.id),n=edge?.file_relations||0;const b=el('button',n?fmt(n):'·');b.disabled=!n;b.title=`${g.label} → ${target.label}: ${n} отношений`;b.setAttribute('aria-label',b.title);if(n){b.style.background=`rgba(34,120,85,${.09+.38*Math.log1p(n)/Math.log1p(max)})`;b.onclick=()=>{pair=[g.id,target.id];$('group').value='';$('search').value='';$('kind').value='';$('coverage').value='';filter();drill()}}td.append(b);tr.append(td)}matrix.append(tr)
+ for(const target of overview.layers){const td=el('td'),edge=links.get(g.id+'|'+target.id),n=edge?.file_relations||0;const b=el('button',n?fmt(n):'·');b.disabled=!n;b.title=`${g.label} → ${target.label}: ${n} отношений`;b.setAttribute('aria-label',b.title);if(n){b.style.background=`rgba(34,120,85,${.09+.38*Math.log1p(n)/Math.log1p(max)})`;b.onclick=()=>{pair=[g.id,target.id];$('group').value='';$('search').value='';$('kind').value='';$('coverage').value='';$('review-filter').value='';filter();drill()}}td.append(b);tr.append(td)}matrix.append(tr)
 }$('matrix').append(matrix);
 function sourceLink(path,label){const a=el('a',label||path);a.href='../'+path.split('/').map(encodeURIComponent).join('/');a.target='_blank';a.rel='noopener';return a}
+function readable(value){return typeof value==='string'?value:JSON.stringify(value,null,2)}
+function evidenceBlock(parent,title,value){if(value===undefined||value===null||value===''||(Array.isArray(value)&&!value.length))return;const box=el('details');box.append(el('summary',title));if(Array.isArray(value)){const list=el('ul');for(const item of value)list.append(el('li',readable(item)));box.append(list)}else box.append(el('p',readable(value)));parent.append(box)}
+function showReview(parent,path){const r=reviews[path];if(!r){parent.append(el('p','Для файла ещё нет содержательной рецензии.','note'));return}
+ parent.append(el('p',`${reviewLabels[r.status]||r.status} · ${r.current?'SHA и guard актуальны':'требует проверки: '+(r.issues||[]).join(', ')}`,'tag'),el('p',r.summary||r.role||'Назначение ещё не описано'));
+ for(const [key,title] of [['contracts','Контракты и допущения'],['side_effects','Побочные эффекты'],['errors','Ошибки и ограничения'],['dependencies','Зависимости'],['tests','Что проверяют тесты'],['doc_corrections','Поправки к прежним документам']])evidenceBlock(parent,title,r[key]);
+ const elements=r.elements||[];parent.append(el('h4',`Элементы: ${fmt(elements.length)}`));
+ for(const item of elements){const block=el('details');block.append(el('summary',`${item.name} · ${item.kind||'элемент'} · строки ${item.line||'?'}–${item.end_line||item.line||'?'}`),el('p',item.purpose||'Назначение не аннотировано'));for(const [key,title] of [['inputs','Вход'],['outputs','Выход'],['side_effects','Эффекты'],['errors','Границы и ошибки'],['links','Связи'],['verification','Основание проверки']])evidenceBlock(block,title,item[key]);parent.append(block)}
+ if(!elements.length)evidenceBlock(parent,'Метаданные ресурса / схемы',Object.fromEntries(Object.entries(r).filter(([k])=>!['path','sha256','read_ranges','summary','role','status','current','issues','elements','contracts','errors','side_effects','dependencies','tests','doc_corrections'].includes(k))));
+}
 function show(path){selected=path;const f=byPath.get(path);if(!f)return;const d=$('detail');d.replaceChildren(el('h3',path));d.append(sourceLink(path,'Открыть исходный файл'));
  d.append(el('p',`${layers.get(f.layer).label} · ${labels[f.extraction]} · ${fmt(f.bytes)} байт · ${f.lines===null?'бинарный файл':fmt(f.lines)+' строк'} · ${fmt(f.nodes)} узлов`,'note'));
- d.append(el('p',f.semantic_evidence?'Файл служит основанием смысловых утверждений. Это не полный аудит всех его функций.':'Смысловых свидетельств для этого файла в отдельном графе нет.','note'));
+ showReview(d,path);
  const hash=el('details');hash.append(el('summary','Контрольная сумма'),el('code',f.sha256));d.append(hash);
- const edges=adjacent.get(path);d.append(el('p',`${fmt(edges.length)} отношений между файлами. Каждое может объединять несколько связей символов.`,'note'));
+ const edges=adjacent.get(path);d.append(el('h4','Статические связи Graphify'),el('p',`${fmt(edges.length)} отношений между файлами. Каждое может объединять несколько связей символов.`,'note'));
  if(!edges.length)d.append(el('p','Связей между файлами не извлечено. Это не доказывает, что файл не используется.'));
  for(const e of edges){const n=el('div',undefined,'edge');n.append(el('span',e.confidence,'tag'),el('span',`${e.relation} × ${e.count}`,'tag'));const target=e.source===path?e.target:e.source;const b=el('button',(e.source===path?'→ ':'← ')+target);b.onclick=()=>show(target);n.append(el('br'),b);for(const sample of e.evidence)n.append(el('p',`${sample.file||'?'}:${sample.line||'?'} — ${sample.source||'?'} → ${sample.target||'?'}`));d.append(n)}
  history.replaceState(null,'','#'+encodeURIComponent(path));highlight();
 }
 function highlight(){document.querySelectorAll('.file').forEach(n=>{const active=n.dataset.path===selected;n.classList.toggle('selected',active);n.setAttribute('aria-pressed',String(active))})}
 function filter(){
- const q=$('search').value.trim().toLowerCase(),group=$('group').value,kind=$('kind').value,coverage=$('coverage').value;
+ const q=$('search').value.trim().toLowerCase(),group=$('group').value,kind=$('kind').value,coverage=$('coverage').value,reviewFilter=$('review-filter').value;
  let members=null;$('pair-note').replaceChildren();
  if(pair){const edges=data.edges.filter(e=>byPath.get(e.source).layer===pair[0]&&byPath.get(e.target).layer===pair[1]);members=new Set(edges.flatMap(e=>[e.source,e.target]));$('pair-note').append(el('span',`${layers.get(pair[0]).label} → ${layers.get(pair[1]).label}: ${fmt(edges.length)} отношений`));const clear=el('button','Сбросить связь');clear.onclick=()=>{pair=null;filter()};$('pair-note').append(clear)}
  const match=f=>!coverage||(coverage==='single'?f.nodes===1:coverage==='semantic'?f.semantic_evidence:coverage==='no_semantic'?!f.semantic_evidence:f.extraction===coverage);
- const result=data.files.filter(f=>(!q||f.path.toLowerCase().includes(q))&&(!group||f.layer===group)&&(!kind||f.kind===kind)&&match(f)&&(!members||members.has(f.path)));
- $('files').replaceChildren();const frag=document.createDocumentFragment();for(const f of result){const n=el('button',f.path,'file');n.dataset.path=f.path;n.append(el('small',`${labels[f.extraction]} · ${adjacent.get(f.path).length} связей`));n.onclick=()=>show(f.path);frag.append(n)}$('files').append(frag);$('found').textContent=`Найдено ${fmt(result.length)} из ${fmt(data.files.length)} файлов`;highlight()
+ const reviewMatch=f=>{const r=reviews[f.path];return!reviewFilter||(reviewFilter==='current'?r?.current:reviewFilter==='attention'?!r?.current:reviewFilter==='text'?['reviewed','body_reviewed'].includes(r?.status):reviewFilter==='data'?['data_schema_reviewed','artifact_schema_reviewed'].includes(r?.status):['asset_metadata_reviewed','binary_asset'].includes(r?.status))};
+ const result=data.files.filter(f=>(!q||searchText.get(f.path).includes(q))&&(!group||f.layer===group)&&(!kind||f.kind===kind)&&match(f)&&reviewMatch(f)&&(!members||members.has(f.path)));
+ $('files').replaceChildren();const frag=document.createDocumentFragment();for(const f of result){const n=el('button',f.path,'file'),r=reviews[f.path];n.dataset.path=f.path;n.append(el('small',`${r?(reviewLabels[r.status]||r.status)+(r.current?'':' · требует проверки'):'нет рецензии'} · ${adjacent.get(f.path).length} связей`));n.onclick=()=>show(f.path);frag.append(n)}$('files').append(frag);$('found').textContent=`Найдено ${fmt(result.length)} из ${fmt(data.files.length)} файлов`;highlight()
 }
-for(const id of ['search','group','kind','coverage'])$(id).addEventListener('input',()=>{pair=null;filter()});
+for(const id of ['search','group','kind','coverage','review-filter'])$(id).addEventListener('input',()=>{pair=null;filter()});
 $('footer').textContent=`${data.extractor} · базовый commit ${data.baseline_commit.slice(0,12)} + рабочие изменения · актуальность после сборки проверяется scripts/build-project-terrain.py --check. Все данные встроены; внешних запросов нет.`;
 filter();try{const p=decodeURIComponent(location.hash.slice(1));if(byPath.has(p))selected=p}catch{}show(selected);
 </script>

@@ -83,6 +83,23 @@ def test_structural_refresh_does_not_silently_approve_old_semantics(terrain, mon
     assert terrain.check() == 1
 
 
+def test_explicitly_historical_evidence_is_preserved_without_claiming_current(terrain, monkeypatch):
+    monkeypatch.setattr(terrain, "markdown", lambda _: "report")
+    source = terrain.ROOT / "source.py"
+    original = next(f for f in terrain.inventory() if f["path"] == "source.py")
+    historical = {"status": "historical", "source_fingerprints": {"source.py": original["sha256"]}}
+    knowledge = terrain.ROOT / "docs/architecture-knowledge.json"
+    knowledge.write_text(json.dumps(historical))
+    source.write_text("value = 2\n")
+    save_snapshot(terrain)
+    assert terrain.check() == 0
+    assert json.loads(knowledge.read_text()) == historical
+    row = next(f for f in terrain.inventory() if f["path"] == "source.py")
+    row["nodes"] = 1
+    overview = terrain.overview([row], [])
+    assert overview["semantic_stale"] == ["source.py"]
+
+
 def test_projection_preserves_direction_and_confidence(terrain, monkeypatch):
     monkeypatch.setattr(terrain, "git", lambda *args: "baseline")
     nodes = [{"id": key, "label": key, "source_file": path} for key, path in

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Полная проверка как в GitHub Actions: backend pytest + frontend test/lint/build.
+# Основные локальные проверки: pytest + frontend test/lint/build + guards.
+# Не заменяет отдельные CI jobs migrations, docker и e2e.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"

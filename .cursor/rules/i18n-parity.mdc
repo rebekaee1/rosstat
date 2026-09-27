@@ -7,12 +7,12 @@ alwaysApply: true
 
 Директива владельца (2026-09-03): **apex `forecasteconomy.com` = en**,
 `ru.forecasteconomy.com` = ru; пути path-identical (ADR-0013 §F).
-Флаги прода: `RUSTATS_APEX_LOCALE_EN=true` и `RUSTATS_GEO_LOCALE_REDIRECT_ENABLED=true`.
+Флаги production, подтверждённые read-only снимком 2026-09-27 (`docs/runtime-inventory.json`): `RUSTATS_APEX_LOCALE_EN=true` и `RUSTATS_GEO_LOCALE_REDIRECT_ENABLED=true`.
 Людей с IP России/СНГ с apex уводим на `ru.`; поисковые и ИИ-боты остаются
 на запрошенном хосте (hreflang + два канона). Флажок «Русский» ведёт на
 `ru.forecasteconomy.com`. Accept-Language не редиректит.
 Localhost и не-apex хосты = **ru**; EN на localhost — `?preview_locale=en`.
-Не выключать cutover-флаг на проде: иначе весь `.com` снова станет русским
+В `Settings` defaults оба флага `false`; локальный `.env` и реально работающий контейнер проверять отдельно. Не выключать cutover-флаг на проде: иначе весь `.com` снова станет русским
 и разъедется с индексом Google.
 
 ## Разделение ролей

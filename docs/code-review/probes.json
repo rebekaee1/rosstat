@@ -1,0 +1,46 @@
+{
+  "observed_date": "2026-09-27",
+  "scope": "Isolated pure function and mock transport probes; no network/database/production writes",
+  "http_client": {
+    "network_requests": 0,
+    "adapter_timeout_without_argument": [
+      null
+    ],
+    "proxy_exception_attempts": [
+      null,
+      {
+        "http": "http://proxy.invalid",
+        "https": "http://proxy.invalid"
+      }
+    ],
+    "interpretation": "Default timeout remains None; direct and HTTP attempts occur, SOCKS is not reached after HTTP connection failure.",
+    "source_path": "backend/app/services/http_client.py",
+    "source_sha256": "e79639144aedb84be27dab363ce4ba87cce7b5f5d20c9682360e05ef9d8f03a0"
+  },
+  "admin_retention": {
+    "method": "Isolated AST extraction of pure _retention; one visitor with week0,8,9; no app imports/DB/network",
+    "result": {
+      "cohorts": [
+        {
+          "cohort_week": "2026-01-05",
+          "size": 1,
+          "week_plus": {
+            "8": 2
+          }
+        }
+      ],
+      "day_cohorts": [
+        {
+          "cohort_day": "2026-01-05",
+          "size": 1,
+          "day_plus": {}
+        }
+      ],
+      "unique_visitors": 1,
+      "returning_visitors": 1,
+      "returning_pct": 100.0
+    },
+    "source_path": "backend/app/services/admin_bi.py",
+    "source_sha256": "8526861e23ddbf415d5996b2e4b3e7428d8f484b6cad325ebddf8aa61ff95c44"
+  }
+}

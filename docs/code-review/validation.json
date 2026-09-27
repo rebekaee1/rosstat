@@ -1,0 +1,80 @@
+{
+  "observed_utc": "2026-09-27T14:20:46.151817+00:00",
+  "source_baseline_commit": "f8e239a3fca144f691604f47951e2bf80e664430",
+  "source_scope": "Local main and explicitly recorded worktree changes; exact file hashes in coverage.json",
+  "review_ledger_sha256": "80baff96acc0f26f6a5149b4a7fbf68ab4e3fd97e9ab8dacaebd949123a31ec6",
+  "coverage": {
+    "files": 1287,
+    "code_files": 980,
+    "current_reviews": 1287,
+    "statuses": {
+      "artifact_schema_reviewed": 77,
+      "asset_metadata_reviewed": 91,
+      "data_schema_reviewed": 2,
+      "reviewed": 1117
+    },
+    "definitions": 8210,
+    "annotated_definitions": 8210,
+    "files_needing_attention": 0
+  },
+  "checks": [
+    {
+      "command": "./scripts/check-all.sh",
+      "exit_code": 0,
+      "backend": {
+        "passed": 3013,
+        "skipped": 9,
+        "warnings": 66
+      },
+      "frontend": {
+        "test_files": 109,
+        "passed": 904
+      },
+      "lint": "passed",
+      "build": "passed; existing chunk-size warning",
+      "guards": [
+        "indicator-index",
+        "doc-counters",
+        "page-meta",
+        "public-language"
+      ],
+      "log_sha256": "8d1a84898379825b711785d004367d9db7fe6ef0737ce8e53094e041a9b0db25"
+    },
+    {
+      "command": "python3 -m unittest scripts/test_code_documentation.py -v",
+      "passed": 8
+    },
+    {
+      "command": "node scripts/test_project_terrain.mjs",
+      "result": "passed: search, review filters, drilldown reset, missing review and escaping"
+    },
+    {
+      "command": "node scripts/code-review-symbols.mjs --check",
+      "files": 365,
+      "definitions": 1679,
+      "parse_errors": 0
+    },
+    {
+      "command": "python3 scripts/audit-code-documentation.py --check",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 scripts/build-project-terrain.py --check",
+      "exit_code": 0,
+      "files": 1287,
+      "file_edges": 8579,
+      "historical_semantic_fingerprints_changed": 16
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "limits": [
+    "No deploy, push, production configuration change or production data write was performed.",
+    "No full restore drill, sustained mixed load test or new Docker/E2E/migration-drift CI run was performed.",
+    "Terrain DOM behavior was tested with JSDOM. Native browser visual acceptance was not performed because file URL access was blocked by tool policy; it was not bypassed.",
+    "Full source review does not prove every runtime path, every data observation or third-party dependency implementation.",
+    "The two pre-existing HomeDataScope/message worktree edits were reviewed and tested but belong to another task and are not staged in this documentation commit."
+  ]
+}
