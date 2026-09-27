@@ -33,12 +33,29 @@ DEFAULT_PATHS = (
 # поэтому /germany там стабильно 404 и до, и после языкового релиза. Вернуть путь
 # в список можно только вместе с решением о заливке мировых данных на прод.
 CYRILLIC = re.compile(r"[А-Яа-яЁё]")
+OG_429_RETRY_DELAYS = (2, 4, 8, 16)
 
 
 def _html_lang(soup: BeautifulSoup) -> str:
     node = soup.find("html")
     raw = (node.get("lang") if node else "") or ""
     return raw.lower()[:2]
+
+
+def _check_og_image(client: httpx.Client, url: str) -> tuple[bool, int]:
+    """Retry a transient public rate limit, then validate the actual image."""
+    image = client.get(url)
+    for delay in OG_429_RETRY_DELAYS:
+        if image.status_code != 429:
+            break
+        time.sleep(delay)
+        image = client.get(url)
+    valid = (
+        image.status_code == 200
+        and image.headers.get("content-type", "").startswith("image/")
+        and len(image.content) >= 1000
+    )
+    return valid, image.status_code
 
 
 def main() -> int:
@@ -117,9 +134,9 @@ def main() -> int:
                         .replace("https://ru.forecasteconomy.com", "")
                     )
                     time.sleep(0.6)
-                    image = client.get(f"{origin.rstrip('/')}{image_path}")
-                    if image.status_code != 200 or not image.headers.get("content-type", "").startswith("image/") or len(image.content) < 1000:
-                        errors.append(f"{locale} {path}: broken OG {image.status_code}")
+                    image_ok, image_status = _check_og_image(client, f"{origin.rstrip('/')}{image_path}")
+                    if not image_ok:
+                        errors.append(f"{locale} {path}: broken OG {image_status}")
     if errors:
         print("\n".join(errors)); return 1
     mode = "EN-apex cutover" if apex_is_en else "pre-cutover (apex ru)"

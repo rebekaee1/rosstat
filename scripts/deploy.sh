@@ -27,6 +27,18 @@ fi
 echo "==> preflight: pg backup"
 ./scripts/pg-backup.sh || { echo "FAIL: backup failed — деплой остановлен"; exit 1; }
 
+# A code rollback cannot start an image that does not know the database's new
+# Alembic revision. Record the old revision before fetching any new code.
+alembic_revision() {
+  docker compose exec -T postgres psql -X -v ON_ERROR_STOP=1 -U rustats -d rustats -Atqc \
+    "SELECT CASE WHEN count(*) = 1 THEN min(version_num) ELSE '' END FROM alembic_version"
+}
+if ! PREV_DB_REV=$(alembic_revision) || [ -z "${PREV_DB_REV}" ]; then
+  echo "FAIL: не удалось прочитать ревизию БД до деплоя"
+  exit 1
+fi
+echo "==> preflight: Alembic ${PREV_DB_REV}"
+
 # ── 2. Git: чистое дерево + только fast-forward (О-3) ─────────────────
 echo "==> git fetch + ff-only"
 if [ -n "$(git status --porcelain)" ]; then
@@ -96,6 +108,7 @@ for f in $(git diff --name-status "${PREV_SHA}" "${NEW_SHA}" -- backend/alembic/
   git reset --hard "${PREV_SHA}" >/dev/null 2>&1
   exit 1
 done
+MIGRATION_FILES_CHANGED=$(git diff --name-only "${PREV_SHA}" "${NEW_SHA}" -- backend/alembic/versions/)
 
 # ── 2d. Инфра-сервисы с изменённым конфигом (perf batch 3) ────────────────
 # `compose up -d` пересоздаёт postgres/redis, если их compose-конфиг (лимиты,
@@ -320,6 +333,18 @@ rollback() {
   # до git reset: старый compose может не знать сервиса scheduler.
   # shellcheck disable=SC2046
   docker compose logs --no-color --timestamps $(backend_services) > "${DEPLOY_LOG_DIR:-/tmp}/backend-${NEW_SHA:-unknown}-rollback.log" 2>&1 || true
+  if [ "${CUTOVER_STARTED:-0}" = "1" ]; then
+    local current_db_rev=""
+    current_db_rev=$(alembic_revision) || current_db_rev=""
+    # A revision can remain unchanged after partly applied DDL. Once up has
+    # started, an older image is unsafe whenever migration files changed.
+    if [ -n "${MIGRATION_FILES_CHANGED:-}" ] || [ -z "${current_db_rev}" ] || [ "${current_db_rev}" != "${PREV_DB_REV}" ]; then
+      echo "FAIL: автоматический откат кода запрещён: изменённые миграции ${MIGRATION_FILES_CHANGED:-нет}; Alembic до релиза ${PREV_DB_REV}, сейчас ${current_db_rev:-не удалось прочитать}."
+      echo "      Новый код и git оставлены на месте; ручное восстановление схемы — CONTEXT.md::Deploy-scope trap."
+      stop_backend_log || true
+      exit 1
+    fi
+  fi
   local sched_cid=""
   sched_cid=$(docker compose ps -aq scheduler 2>/dev/null || true)
   git reset --hard "${PREV_SHA}"
@@ -358,6 +383,7 @@ rollback() {
   exit 1
 }
 # ERR catches compose/up failures too; previously set -e skipped rollback.
+CUTOVER_STARTED=0
 trap rollback ERR
 
 # ── 4. Up + ожидание readiness (реальный /health/ready, Н-1) ──────────
@@ -376,6 +402,7 @@ if [[ " ${INFRA_RECREATE} " == *" postgres "* ]]; then
   docker compose exec -T postgres psql -U rustats -d rustats -qc 'CHECKPOINT' \
     || echo "    WARN: CHECKPOINT не выполнен, продолжаю"
 fi
+CUTOVER_STARTED=1
 docker compose up -d
 start_backend_log
 

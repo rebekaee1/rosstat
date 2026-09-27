@@ -42,6 +42,7 @@ if publish_frontend_assets image; then exit 10; fi
     def test_rollback_uses_running_image_ids_even_for_same_sha_rebuild(self):
         result = self.run_shell('''
 PREV_SHA=same-sha
+PREV_DB_REV=parent
 PREV_BACKEND_IMAGE=sha256:old-backend
 PREV_FRONTEND_IMAGE=sha256:old-frontend
 ASSET_WORK="$PWD"
@@ -50,6 +51,7 @@ git() { printf 'git %s\\n' "$*"; }
 docker() { printf 'docker %s\\n' "$*"; }
 publish_frontend_assets() { printf 'publish %s\\n' "$*"; }
 python3() { printf 'python %s\\n' "$*"; }
+alembic_revision() { printf 'parent'; }
 ''' + ROLLBACK + '\nrollback\n')
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn('docker tag sha256:old-backend rosstat-backend', result.stdout)
@@ -70,6 +72,7 @@ python3() { printf 'python %s\\n' "$*"; }
     def test_rollback_snapshots_logs_then_invalidates_ssr_after_old_images_up(self):
         result = self.run_shell('''
 PREV_SHA=prev
+PREV_DB_REV=parent
 NEW_SHA=new
 DEPLOY_LOG_DIR="$PWD"
 PREV_BACKEND_IMAGE=sha256:old-backend
@@ -82,6 +85,7 @@ publish_frontend_assets() { printf 'publish %s\\n' "$*"; }
 python3() { printf 'python %s\\n' "$*"; }
 stop_backend_log() { printf 'stop-log\\n'; }
 invalidate_release_cache() { printf 'invalidate\\n'; return 1; }
+alembic_revision() { printf 'parent'; }
 ''' + ROLLBACK + '\nrollback\n')
         self.assertEqual(result.returncode, 1, result.stderr)
         out = result.stdout
@@ -110,6 +114,7 @@ invalidate_release_cache() { printf 'invalidate\\n'; return 1; }
 
     ROLLBACK_FAKES = '''
 PREV_SHA=prev
+PREV_DB_REV=parent
 NEW_SHA=new
 DEPLOY_LOG_DIR="$PWD"
 PREV_BACKEND_IMAGE=sha256:old-backend
@@ -126,7 +131,52 @@ python3() { printf 'python %s\\n' "$*"; }
 stop_backend_log() { printf 'stop-log\\n'; }
 invalidate_release_cache() { printf 'invalidate\\n'; }
 backend_services() { printf 'backend scheduler'; }
+alembic_revision() { printf 'parent'; }
 '''
+
+    def test_rollback_keeps_new_code_when_database_revision_advanced(self):
+        result = self.run_shell(self.ROLLBACK_FAKES + '''
+CUTOVER_STARTED=1
+alembic_revision() { printf 'new-revision'; }
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('автоматический откат кода запрещён', result.stdout)
+        self.assertNotIn('git reset --hard', result.stdout)
+        self.assertNotIn('docker tag', result.stdout)
+        self.assertNotIn('docker compose up -d', result.stdout)
+
+    def test_rollback_keeps_new_code_when_database_revision_unavailable(self):
+        result = self.run_shell(self.ROLLBACK_FAKES + '''
+CUTOVER_STARTED=1
+alembic_revision() { return 1; }
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('не удалось прочитать', result.stdout)
+        self.assertNotIn('git reset --hard', result.stdout)
+
+    def test_rollback_keeps_new_code_for_unstamped_migration(self):
+        result = self.run_shell(self.ROLLBACK_FAKES + '''
+CUTOVER_STARTED=1
+MIGRATION_FILES_CHANGED=backend/alembic/versions/new.py
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('new.py', result.stdout)
+        self.assertNotIn('git reset --hard', result.stdout)
+        self.assertNotIn('docker compose up -d', result.stdout)
+
+    def test_rollback_before_cutover_can_restore_old_code(self):
+        result = self.run_shell(self.ROLLBACK_FAKES + '''
+CUTOVER_STARTED=0
+MIGRATION_FILES_CHANGED=backend/alembic/versions/new.py
+''' + ROLLBACK + '\nrollback\n')
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('git reset --hard prev', result.stdout)
+        self.assertIn('docker compose up -d frontend backend', result.stdout)
+
+    def test_cutover_flag_precedes_compose_up(self):
+        up = SCRIPT.index('docker compose up -d\n', SCRIPT.index('# ── 4. Up'))
+        flag = SCRIPT.index('CUTOVER_STARTED=1\n', SCRIPT.index('# ── 4. Up'))
+        self.assertLess(flag, up)
 
     def test_rollback_to_pre_split_release_removes_orphan_scheduler_first(self):
         # Старый compose без сервиса scheduler: backend старого образа сам

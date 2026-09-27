@@ -122,6 +122,34 @@ class TestBuildCandidates:
         assert date(2026, 9, 23) in dates
         assert all(d >= date(2026, 8, 13) for d in dates)
 
+    def test_release_ordinal_survives_rolling_window(self):
+        # Two GDP releases for the same quarter: when the first exits the
+        # 14-day window, the second must keep its stable r2 key.
+        docx = _docx_bytes("".join([
+            "<w:document><w:body><w:tbl>",
+            _tr("№", "НАИМЕНОВАНИЕ ТЕМЫ", "ДАТА"),
+            _tr("", "СЕНТЯБРЬ", ""),
+            _tr("1", "О валовом внутреннем продукте во II квартале 2026 года", "11 сентября"),
+            _tr("", "ОКТЯБРЬ", ""),
+            _tr("2", "О валовом внутреннем продукте во II квартале 2026 года", "2 октября"),
+            "</w:tbl></w:body></w:document>",
+        ]))
+
+        def nominal(today):
+            return [c for c in build_rosstat_plan_candidates(
+                docx, doc_url=DOC_URL, year=2026, today=today, months_ahead=1,
+            ) if c.indicator_code == "gdp-nominal"]
+
+        before = nominal(date(2026, 9, 24))
+        after = nominal(date(2026, 9, 27))
+        assert [(c.scheduled_date, c.event_key) for c in before] == [
+            (date(2026, 9, 11), "rosstat:plan:gdp-nominal:q2-2026:r1"),
+            (date(2026, 10, 2), "rosstat:plan:gdp-nominal:q2-2026:r2"),
+        ]
+        assert [(c.scheduled_date, c.event_key) for c in after] == [
+            (date(2026, 10, 2), "rosstat:plan:gdp-nominal:q2-2026:r2"),
+        ]
+
     def test_cpi_maps_all_slices(self):
         events = [c for c in self._build(months_ahead=2) if c.scheduled_date == date(2026, 9, 23)]
         assert events  # сентябрьская тема — ИПП

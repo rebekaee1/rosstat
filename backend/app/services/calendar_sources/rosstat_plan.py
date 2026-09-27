@@ -330,10 +330,10 @@ def build_rosstat_plan_candidates(
     # приходится два выпуска (первая оценка + уточнение), у остальных — один.
     # Ключ = (код, ref, ordinal): перенос даты в графике обновляет ту же строку
     # (reschedule_audit в upsert), а не плодит дубликат по новой дате.
+    # Считаем номера по всему документу: иначе после выхода первого выпуска
+    # за rolling window второй ошибочно переименуется из r2 в r1.
     ordinal: dict[tuple[str, str | None], int] = {}
     for scheduled, title in parse_schedule_docx(content, year=year):
-        if not (cutoff <= scheduled <= horizon):
-            continue
         matched = _match_topic(title)
         if not matched:
             continue
@@ -341,6 +341,8 @@ def build_rosstat_plan_candidates(
         ref = _topic_reference_period(title)
         for code in codes:
             n = ordinal[(code, ref)] = ordinal.get((code, ref), 0) + 1
+            if not (cutoff <= scheduled <= horizon):
+                continue
             uid = f"rosstat-plan-{code}-{ref or 'na'}-r{n}-{scheduled.isoformat()}"
             candidates.append(CalendarCandidate(
                 event_key=stable_key("rosstat", "plan", code, ref, f"r{n}"),

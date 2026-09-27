@@ -8460,6 +8460,26 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_dual_host_release_gate.py",
+          "line": 35,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_dual_host_release_gate.py",
+          "line": 45,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_dual_host_release_gate.py",
+          "line": 61,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_dual_host_release_gate.py",
+          "line": 71,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_en_catalog.py",
           "line": 39,
           "kind": "tests"
@@ -8966,27 +8986,27 @@
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 171,
+          "line": 199,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 172,
+          "line": 200,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 275,
+          "line": 303,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 279,
+          "line": 307,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 287,
+          "line": 315,
           "kind": "tests"
         },
         {
@@ -11301,37 +11321,37 @@
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 483,
+          "line": 510,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 523,
+          "line": 550,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 557,
+          "line": 584,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 558,
+          "line": 585,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 560,
+          "line": 587,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 562,
+          "line": 589,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 564,
+          "line": 591,
           "kind": "other"
         },
         {
@@ -28757,7 +28777,27 @@
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 133,
+          "line": 141,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_rosstat_plan.py",
+          "line": 146,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_rosstat_plan.py",
+          "line": 147,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_rosstat_plan.py",
+          "line": 150,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_rosstat_plan.py",
+          "line": 161,
           "kind": "tests"
         },
         {
@@ -29606,12 +29646,12 @@
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 133,
+          "line": 161,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 179,
+          "line": 207,
           "kind": "tests"
         },
         {
@@ -37355,42 +37395,42 @@
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 136,
+          "line": 164,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 144,
+          "line": 172,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 145,
+          "line": 173,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 187,
+          "line": 215,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 188,
+          "line": 216,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 310,
+          "line": 338,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 314,
+          "line": 342,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 321,
+          "line": 349,
           "kind": "tests"
         },
         {
@@ -48381,17 +48421,17 @@
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 137,
+          "line": 165,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 143,
+          "line": 171,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 288,
+          "line": 316,
           "kind": "tests"
         },
         {
@@ -60446,12 +60486,12 @@
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 200,
+          "line": 228,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_rosstat_plan.py",
-          "line": 299,
+          "line": 327,
           "kind": "tests"
         },
         {
