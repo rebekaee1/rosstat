@@ -1,10 +1,10 @@
 # Рабочий процесс — Forecast Economy
 
-**Last updated:** 2026-09-20 (уточнены approved-SHA gate, проверка миграций диапазона и порядок публикации архива ассетов; локальная реализация, не разрешение на прод).
+**Last updated:** 2026-09-27 (сверка с HEAD `b684290`: контракты бэкапа, кэша релиза, ETL/прогнозов и аналитического smoke; проверен локальный код, не состояние продакшена).
 
-**Previous:** 2026-09-03 (post-deploy watch 15 мин + runbook «хост в свопе»). Ранее 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
+**Previous:** 2026-09-20 (approved-SHA gate, миграции и архив ассетов). Ранее 2026-09-03 (post-deploy watch 15 мин + runbook «хост в свопе»). Ранее 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md).
-**See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки 6/6), [`../AGENTS.md::Шаг 4`](../AGENTS.md) (чеклист «новый индикатор» 7/7 — другая ось), [`adr/`](adr/) (архитектурные решения).
+**See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки), [`data-contracts.md`](data-contracts.md) (сквозные контракты данных), [`../AGENTS.md::Шаг 4`](../AGENTS.md) (чеклист нового индикатора), [`adr/`](adr/) (архитектурные решения).
 
 ## Модель работы
 
@@ -20,10 +20,23 @@
 - **GitHub (`git push origin main`)** — основной способ фиксировать прогресс; коммиты должны быть **согласованы** с тем, что реально сделано.
 - **Прод-сервер** (`201.51.11.170`, `/opt/rosstat`; DNS `forecasteconomy.com`) — **не деплоить автоматически** и **не без явного запроса**. Разработка и проверка — локально (Docker Compose) и через CI; выкладка на сервер — отдельным шагом по команде.
 - **SSH на прод — только по ключу** (с 2026-08-27): `ssh fe-prod` (алиас в `~/.ssh/config`) или явно `ssh -i ~/.ssh/id_ed25519_fe_prod root@201.51.11.170`. Парольный вход отключён (`/etc/ssh/sshd_config.d/00-hardening.conf`: `PermitRootLogin prohibit-password`, `PasswordAuthentication no`; бэкап старого конфига — `/etc/ssh/sshd_config.bak-keyauth`). Ключ только у владельца; потеря ключа = восстановление через панель провайдера (VNC/rescue).
-- **Перед каждым прод-деплоем** — обязательный `pg_dump | gzip > /opt/rosstat/backups/pre-deploy-$(date +%Y%m%d-%H%M%S).sql.gz`. См. `scripts/pg-backup.sh` и стандарт ниже.
-- **Персистентность данных пользователей (ADR-0007).** БД хранится в docker volume `postgres_data` — переживает `docker compose up -d --build`. Дополнительно `scripts/pg-backup.sh` (cron `0 4 * * *` на проде) делает (1) полный `pg_dump -Fc` и (2) отдельный data-only SQL identity-таблиц (`users/email_credentials/oauth_identities/consents/auth_audit`) — гарантия, что зарегистрированные пользователи не теряются. Восстановление:
-  - полностью: `docker compose exec -T postgres pg_restore -U rustats -d rustats --clean --if-exists < backups/<file>.dump`;
-  - только пользователи: `gunzip -c backups/<file>.identity.sql.gz | docker compose exec -T postgres psql -U rustats -d rustats`.
+- **Перед каждым прод-деплоем** — `scripts/deploy.sh` запускает `scripts/pg-backup.sh` и прекращает деплой при ненулевом коде бэкапа. Скрипт создаёт полный `pg_dump -Fc` (`.dump`) и отдельный `.identity.sql.gz`; локальные файлы старше `KEEP_DAYS` (по умолчанию 14) удаляет. Offsite-копирование зависит от `OFFSITE_S3_BUCKET` и наличия `aws`; если bucket задан, а `aws` отсутствует, скрипт предупреждает, но завершает работу успешно. Поэтому зелёный preflight доказывает создание локального dump, но сам по себе не доказывает offsite-копию или возможность восстановления. См. [`enterprise_resilience.md`](enterprise_resilience.md#восстановление-и-наблюдаемость).
+- **Персистентность данных пользователей (ADR-0007).** БД хранится в docker volume `postgres_data` — переживает `docker compose up -d --build`. `scripts/pg-backup.sh` создаёт полный custom dump и отдельный data-only SQL пяти identity-таблиц (`users`, `email_credentials`, `oauth_identities`, `consents`, `auth_audit`). Наличие файлов не заменяет пробное восстановление и проверку связности записей. Пример **проверочного** восстановления на отдельном Docker-томе, без публикации порта и без обращения к рабочему compose-сервису (на хосте с доступным Docker; не выполнялось в этом аудите):
+
+  ```bash
+  docker volume create fe_restore_drill_pg
+  docker run -d --rm --name fe_restore_drill_pg --network none \
+    -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_USER=rustats \
+    -e POSTGRES_DB=rustats -v fe_restore_drill_pg:/var/lib/postgresql/data \
+    postgres:16-alpine
+  until docker exec fe_restore_drill_pg pg_isready -U rustats; do sleep 1; done
+  docker exec -i fe_restore_drill_pg pg_restore -U rustats -d rustats \
+    --clean --if-exists < /absolute/path/to/backup.dump
+  docker exec fe_restore_drill_pg psql -U rustats -d rustats \
+    -c 'SELECT count(*) FROM users'
+  ```
+
+  Сверить также числа точек, Alembic-head и выборку identity-связей с контрольными значениями на момент бэкапа. Для проверки `.identity.sql.gz` нужна **другая** чистая БД с совместимой схемой; не импортировать data-only SQL поверх полного dump без плана дедупликации. После проверки остановить только `fe_restore_drill_pg`; именованный том хранить до записи результата учения. Целевой RTO/RPO и дата успешного полного restore-drill пока не подтверждены.
 
 ## Локальная разработка
 
@@ -34,7 +47,7 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-Backend `entrypoint.sh` сам поднимет миграции (`alembic upgrade head`), seed-данные (`seed_data.py` идемпотентный upsert), календарь (`calendar_seed`) и Uvicorn.
+Web-role `backend/entrypoint.sh` поднимет миграции (`alembic upgrade head`), seed федеральных индикаторов (`seed_data.py`), отдельный региональный seed (`seed_regional.py`), календарь (`calendar_seed`) и Uvicorn. Первый пустой региональный seed фатален при сбое; если `region_data` уже наполнена, сбой логируется и старт продолжается. Сервис `scheduler` запускает тот же образ с `RUSTATS_PROCESS_ROLE=scheduler`, **пропускает миграции и все seed** и стартует после healthy web-backend.
 
 ### Синхронизация с продом
 
@@ -80,13 +93,15 @@ docker compose exec backend python -c \
 
 ## Проверки перед коммитом
 
-Локально одной командой (эквивалент CI):
+Локально одной командой (основные unit/lint/build проверки; дополнительные CI gates ниже):
 
 ```bash
 ./scripts/check-all.sh
 ```
 
-Гонит `pytest backend/`, `npm run lint`, `npm test`, `npm run build` во `frontend/`. Зелёное `check-all.sh` — обязательное предусловие для `git push`.
+Гонит `pytest backend/` (если есть `backend/.venv/bin/pytest`, использует его), `npm test`, `npm run lint`, `npm run build` во `frontend/`, затем регенерирует `docs/repo-inventory.md` и проверяет карту индикаторов, счётчики документации, page-meta и публичный язык. Он может изменить файл инвентаря: после прогона просмотреть `git diff`. Зелёное `check-all.sh` — обязательное предусловие для `git push`, но **не** заменяет отдельные CI jobs `migrations` (чистая БД/дрейф Alembic) и `e2e` (Docker Compose + Playwright), определённые в `.github/workflows/ci.yml`.
+
+**Документирование рельефа проекта.** После осмысленных изменений модулей и связей обновить generated-карту через `python scripts/build-project-terrain.py --refresh`, затем проверить `python scripts/build-project-terrain.py --check` и посмотреть diff [`project-terrain.md`](project-terrain.md) / [`project-terrain.json`](project-terrain.json). Генератор читает внешнюю семантическую карту и код; это навигационный срез, не доказательство поведения продакшена. Для фактических полей и статусов сверять [`data-contracts.md`](data-contracts.md) с кодом/тестами.
 
 **Политика зависимостей (Э-1/Э-8, 2026-07-06).** Backend: прямые пины `==` в `backend/requirements.txt`, транзитивные лочатся `backend/constraints.txt` (`pip freeze` из venv Python 3.12; Dockerfile ставит `-r requirements.txt -c constraints.txt`) — после правки requirements регенерировать constraints. Frontend: диапазоны caret в `package.json` осознанны; детерминизм держится на `package-lock.json` + `npm ci` (Dockerfile и CI используют только `npm ci`; `npm install` руками не запускать, кроме намеренного обновления lock). Node — 22 (`frontend/.nvmrc`, `engines` в package.json).
 
@@ -120,16 +135,16 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 
 1. До запуска показать весь диапазон прод → цель: `git log --oneline <PROD_SHA>..<TARGET_SHA>` и изменения `backend/alembic/versions/` в том же диапазоне. При наличии миграций отдельно запросить подтверждение с описанием влияния на данные и возможности отката; guard удаления миграций не заменяет эту проверку. Push — только по отдельной явной команде и после зелёного `./scripts/check-all.sh`.
 2. Только после выполнения этих условий — `ssh fe-prod 'bash /opt/rosstat/scripts/deploy.sh'`. Скрипт fetch/ff-only ориентируется на `origin/main`, поэтому заранее сверить его с одобренной целью, не выкатывать накопившийся `main` и не обходить scope guard. Скрипт выполняет preflight `pg-backup.sh` (hard fail), dirty/scope/migration guards, совместную сборку backend+frontend, `up -d`, readiness, smoke данных/SSR-ассетов/OG, Caddy reload и post-deploy watch. Откат образов не откатывает схему БД; при несовместимости действовать по [CONTEXT, раздел Deploy-scope trap](../CONTEXT.md), а не перезапускать старый код по кругу.
-3. Backend на старте автоматически прогоняет `_catch_up_empty_indicators()` — ETL для всех `is_active=true` индикаторов с 0 точками; провалы алертятся в Telegram.
-4. `redis-cli -n 0 FLUSHDB` — если правки касались форматирования/SSR, добавлены derived (forecast retrain trap), или изменился `seo_renderer.py`. Только DB 0 — кэш; DB 1 = state (сессии), не трогать.
-5. Если деплой добавляет новые derived (`DERIVED_SPECS` пополнен): `docker compose exec backend python -c "import asyncio; from app.services.forecaster import retrain_indicator_forecast; asyncio.run(retrain_indicator_forecast('<source_code>'))"` для каждого изменённого источника. Daily ETL не подхватит автоматически (см. `enterprise_resilience.md::forecast retrain trap`).
+3. Отдельный `scheduler` при старте фоном запускает `_catch_up_empty_indicators()`, затем `_catch_up_empty_forecasts_safe("startup")`. После планового и late-ETL есть повторный gap-fill прогнозов. Эти шаги не блокируют web-readiness и не гарантируют непустой прогноз при короткой истории или неподходящей стратегии; после добавления derived проверять факты и прогнозы через API.
+4. `deploy.sh` сам удаляет только SSR HTML-ключи в cache Redis DB 0 через `SCAN` + `UNLINK`. Data-кэши и ключи версий `fe:ver:*` сохраняются; для доказанной необходимости отдельной инвалидации доступны `DEPLOY_CACHE_EXTRA_PATTERNS` и `DEPLOY_CACHE_BUMP_NAMESPACES`. Не запускать ручной `FLUSHDB` как обычный шаг релиза: он сносит дорогие data-кэши. State Redis (логический DB 1 либо отдельный `redis-state`) не очищать; незакоммиченный рабочий diff `core/cache.py` дополнительно переносит туда поколение `world-catalog`, а diff `deploy.sh` запрещает этот namespace в `DEPLOY_CACHE_BUMP_NAMESPACES` (см. [`data-contracts.md`](data-contracts.md#параллельные-изменения-рабочего-дерева)).
+5. Если менялся контракт факта/derived/forecast, проверить конкретные ряды после деплоя. При отсутствии прогноза сначала проверить `forecast_steps`, доступную историю и результат gap-fill; ручной retrain — диагностический/восстановительный шаг через `app.services.forecast_pipeline.retrain_indicator_forecast(db, indicator)` с `AsyncSession`, а не прежний вызов из `app.services.forecaster` по строковому коду.
 
 ### Smoke C — проверки после деплоя
 
-Минимальный набор curl/SSR-сверок (первые четыре пункта `deploy.sh` делает сам):
+Минимальный набор curl/SSR-сверок: `deploy.sh` выполняет readiness и часть data/SSR/OG-smoke; аналитику, конкретные прогнозы и браузерные сценарии проверяют отдельно.
 
 - `GET /api/v1/health/ready` → 200 (реальный readiness: БД + оба Redis + планировщик).
-- `GET /api/v1/analytics/health` (с токеном `Authorization: Bearer ${RUSTATS_ANALYTICS_API_TOKEN}`) → `enabled=true`, `failed_sync_runs=0`.
+- `GET /api/v1/analytics/health` с заголовком `X-Analytics-Token` → проверить `enabled`, `scheduler_enabled` и последние `last_runs`; `failed_sync_runs` в текущем API — счётчик всех строк `status=failed`, не окно 24 часа, поэтому требование «=0» без контекста неверно.
 - 5–10 ключевых indicator forecast endpoints → 200 с непустым `forecast.values`.
 - SSR главной + 2–3 категорий + 3–5 индикаторов через `User-Agent: YandexBot/3.0` → 200, осмысленные `<title>`, корректные ссылки.
 - `GET /sitemap.xml` → 200, валидный XML.

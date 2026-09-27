@@ -65,6 +65,7 @@ SKIP_NAMES = {"package-lock.json"}
 SKIP_RELPATHS = {
     "docs/repo-inventory.md", "docs/indicator-index.json",
     "docs/indicator-index.md", "docs/dead-code-report.md",
+    "docs/project-terrain.json", "docs/project-terrain.md", "docs/project-terrain.html",
 }
 
 

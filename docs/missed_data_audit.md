@@ -1,5 +1,7 @@
 # Audit пропущенных данных в исходных файлах
 
+> **Статус при сверке 2026-09-27:** исторический аудит источников на дату ниже. Его кандидаты и приоритеты сохранены; перед новой работой сверять определение ряда, текущий seed/parser и поздние решения. Совпадение названия (например, «реальная зарплата») не означает, что официальный ряд из этого аудита уже реализован. См. [индекс истории](architecture-history.md).
+
 **Last updated:** 2026-05-22 (sanity-check после Phase 1-5 + ревизии: за период 2026-05-12 → 2026-05-22 ни один P0 из TOP-25 ниже не извлечён из source files этой карты. Backfill `key-rate`-1992 / `wages-nominal-annual`-1991 — это immutable seeds из публичных Rosstat sборников, не из текущих source-парсеров. Derived `housing-affordability` / `wages-index` — пересчёт из уже извлечённых рядов. Расширение `deposit-rate`-term — новый element_id в существующем парсере DataService, не покрывается этой картой, см. `docs/data_sources.md::ЦБ РФ — DataService JSON`).
 **Part of:** `[AGENTS.md](../AGENTS.md)`, `[docs/data_sources.md](data_sources.md)`.
 

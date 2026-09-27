@@ -27,8 +27,11 @@ and `analytics-smoke.py` exits with `enabled=false`.
 
 Activation cheat-sheet:
 
-- Без `RUSTATS_ANALYTICS_API_TOKEN` (защищающего внутренний REST) endpoints
-  `/api/v1/analytics/*` отвечают 401. Это отдельный токен от Yandex OAuth.
+- `RUSTATS_ANALYTICS_API_TOKEN` защищает внутренние analytics REST endpoints
+  (в частности `/api/v1/analytics/health`) через `X-Analytics-Token`.
+  Публичные POST collectors `/analytics/events` и `/analytics/behavior` имеют
+  отдельные проверки и этот служебный токен не требуют. Это не Yandex OAuth.
+  Сверено 2026-09-27: `backend/app/api/analytics.py`; см. [контракты](../data-contracts.md).
 - `analytics_scheduler_enabled=true` в `.env` включает hourly + daily jobs;
   без Yandex OAuth-токенов они выполняются вхолостую и пишут предупреждение.
 - Live writes (`low_risk_write` / `high_risk_write`) требуют `analytics_live_writes_enabled=true`

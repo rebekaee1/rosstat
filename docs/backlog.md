@@ -1,5 +1,16 @@
 # Backlog — текущие правки в работе
 
+## 2026-09-27 — рельеф проекта и актуализация документации
+
+**Выполнено локально:** сначала прочитаны действующие справочники и исторические ADR/backlog; затем сопоставлены с кодом. [Graphify-срез](project-terrain.md) включает Git-инвентарь, контрольные суммы, извлечённые связи и явные границы покрытия. [Архитектура](architecture.md), [контракты данных](data-contracts.md) и [индекс истории](architecture-history.md) связывают текущий механизм с причинами решений. Смысловые отношения — `architecture-knowledge.json`; десятишаговый маршрут — `.tours/architect-view-mode-contract.tour`.
+
+Обновлены действующие инструкции generic-семейств, web/scheduler, Excel-экспорта, URL/locale, analytics auth, бэкапа и restore. Июньские/августовские планы и хронология сохранены; исправления статуса добавлены с датой. Кандидаты на cache/commit race, BI single-flight между процессами и региональный count guard остаются вопросами для воспроизведения, с конкретными шагами проверки в контрактах.
+
+**Проверки:** `./scripts/check-all.sh` — 2967 backend passed / 9 skipped, 890 frontend passed; lint без ошибок (5 warnings), build и прежние guards прошли. Отдельно 7 тестов инструмента рельефа, CodeTour validator (10 шагов) и браузер 1440×1000 / 390×844: поиск, фильтры, выбор файла, отсутствие горизонтального overflow и JS errors. Это приёмка документации/инструмента, не production-аудит.
+
+**Область снимка:** baseline `b684290067bf` плюс рабочее дерево, включая параллельную незакоммиченную работу над world-кэшем. Поэтому `scripts/build-project-terrain.py --check` — отдельная проверка текущести, не обязательный CI gate. Файл JSON перечисляет unstaged/untracked входы на момент извлечения; после следующих правок структуру надо пересобрать, а изменившиеся смысловые основания перечитать. Сам этот docs-проход не выпускает runtime-изменения.
+
+
 ## 2026-09-27 — проверка выпуска 3 web worker + scheduler
 
 **Текущее состояние.** `origin/main` и Git HEAD прода — `e81b86e8e141649fb468097c54ac7563e0bbccc2`;
@@ -378,6 +389,8 @@ Administration; ряды золота на FRED (`GOLDAMGBD228NLBM`, `PGOLDUSDM`
 ---
 
 ## Карта миграции URL (ADR-0013) — проектирование 2026-08-16
+
+> **Архив проектирования.** Карта и последовательность ниже сохраняют решение на 16 августа. Реализованные country-first пути и языковые хосты сверены 27 сентября в [индексе истории](architecture-history.md); этот раздел не означает, что миграцию нужно запускать заново.
 
 **Статус:** только проектирование. Рабочий код маршрутов / nginx / рендеров в этом заходе **не** менялся.
 **ADR:** [`docs/adr/0013-country-first-url-architecture.md`](adr/0013-country-first-url-architecture.md).
@@ -948,9 +961,11 @@ NEGATIVE-CAPABLE (trade-balance, current-account, budget-deficit, *-migration, *
 
 **Приоритет.** P0 (без объединения интерфейс перегружен — Никита flagged).
 
-**Текущее состояние (2026-06-24, расследование чистки).** Реализовано частично и иначе, чем план выше: объединение дочерних в режимы идёт через generic config-движок (`view_model_families.py` → `viewModelFamilies.generated.json`), а редирект старых URL — **клиентский** (SPA `navigate(..., {replace:true})` в `IndicatorDetail.jsx`), не nginx-301. Покрыты движком и редиректят корректно: `*-yoy`/`*-qoq`/`*-monthly` (exports/imports/trade-balance/current-account/unemployment). **НЕ покрыты** движком и держатся ТОЛЬКО на легаси canonical-редиректе (`viewModeFamilies.js::viewModeCanonicalTarget`, `unemploymentViewModeResolve`): `trade-balance-yoy-abs`, `current-account-yoy-abs`, `unemployment-quarterly`, `unemployment-annual` (старые ряды, в sitemap). Поэтому это легаси пока **нельзя удалять** — см. trap «View-mode shadowed_legacy ≠ мёртвый код» в `CONTEXT.md`. Закрытие A3 = консолидировать эти ряды в движок + явная 301/redirect-карта, затем снять легаси-отрисовку.
+**Состояние на 2026-06-24 (историческое расследование чистки).** Реализовано частично и иначе, чем план выше: объединение дочерних в режимы идёт через generic config-движок (`view_model_families.py` → `viewModelFamilies.generated.json`), а редирект старых URL — **клиентский** (SPA `navigate(..., {replace:true})` в `IndicatorDetail.jsx`), не nginx-301. Покрыты движком и редиректят корректно: `*-yoy`/`*-qoq`/`*-monthly` (exports/imports/trade-balance/current-account/unemployment). **НЕ покрыты** движком и держатся ТОЛЬКО на легаси canonical-редиректе (`viewModeFamilies.js::viewModeCanonicalTarget`, `unemploymentViewModeResolve`): `trade-balance-yoy-abs`, `current-account-yoy-abs`, `unemployment-quarterly`, `unemployment-annual` (старые ряды, в sitemap). Поэтому это легаси пока **нельзя удалять** — см. trap «View-mode shadowed_legacy ≠ мёртвый код» в `CONTEXT.md`. Закрытие A3 = консолидировать эти ряды в движок + явная 301/redirect-карта, затем снять легаси-отрисовку.
 
 ---
+
+**Уточнение 2026-09-27 по коду:** серверные `legacy_redirects.py::canonical_indicator_url` и `seo_pages.py::seo_indicator` теперь отдают 301 на финальный canonical до SSR; SPA canonical остаётся отдельным путём. Поэтому ограничение «только клиентский редирект» в июньском абзаце выше устарело. Это не разрешение удалять legacy resolve/content и не production-приёмка конкретных URL; основания — [architecture-history](architecture-history.md).
 
 ## Кластер B — Глубина истории
 
@@ -1351,6 +1366,8 @@ housing-affordability-index[t] = wages-index[t] / housing-price-index[t]   # б�
 ---
 
 ## Roadmap-задачи (мигрированы из бывшего `docs/plan.md` 2026-05-22)
+
+> **Исторический перенос.** G1/G2 уже закрыты в сводке выше; формулировки F3–F5 сохраняют исходный замысел. Текущее наличие bot/embed/calendar проверять по коду и [архитектуре](architecture.md), не создавать повторные задачи по этому списку.
 
 ### G1 — Search keywords ревизия (P2)
 

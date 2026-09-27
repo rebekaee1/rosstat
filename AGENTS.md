@@ -1,3 +1,18 @@
+## Рельеф проекта — сверка 2026-09-27
+
+Перед сквозной архитектурной работой: [машинный срез Graphify](docs/project-terrain.md) →
+[архитектура и маршруты чтения](docs/architecture.md) → [контракты данных](docs/data-contracts.md) →
+[история решений](docs/architecture-history.md). Полный Git-инвентарь и SHA-256 позволяют проверить,
+не устарел ли срез: `python3 scripts/build-project-terrain.py --check`.
+Обновление — `--refresh` в окружении Graphify; HTML из сохранённого JSON — `--render`.
+
+Исторические абзацы ниже сохраняют причины решений и инциденты. Указанные там счётчики,
+статусы планов и старые пути не становятся текущими автоматически. Нынешние канонические
+пути: `/russia/indicator/{code}`, `/russia/category/{slug}` и `/{country}/indicator/{code}`;
+legacy-пути сохраняются через редиректы. Граф не является списком на удаление.
+Новые архитектурные выводы сначала сверять с ADR и исходниками; наличие кода не доказывает
+его выпуск на production.
+
 <!-- ============================================================ -->
 <!-- FAST-PATH (feature/indicator-index, 2026-06-24)              -->
 <!-- ============================================================ -->
@@ -60,11 +75,12 @@
 обязательных точек касания (эталон — добавление «Индексы»/«Товарные рынки»,
 2026-06-25). `<slug>` латиницей, `<api_category>` — точное русское имя в seed:
 
-1. **Frontend-карточка** — `frontend/src/lib/categories.js::CATEGORIES`: объект
+1. **Frontend-карточка** — `frontend/src/lib/categories.js::CATEGORY_DEFS` → `CATEGORIES`: объект
    `{ slug, name, nameEn, icon, apiCategory, status:'active', flagshipCode,
    sentiment, description, seoTitle, seoDescription, relatedSlugs }`.
-   `seoTitle/seoDescription` обязаны **побайтово** совпасть с backend (п. 2),
-   иначе SSR-meta разойдётся с CSR и поисковик переиндексирует страницу.
+   RU SEO-поля подмешивает `withCategorySeo` из generated-зеркала backend;
+   после правки `CATEGORY_META` обновить `scripts/export-page-meta.py`.
+   Ручные EN-поля также сверять с backend. Источник механизма — `lib/pageMeta.js`.
 2. **Backend-SEO** — `backend/app/services/seo_content.py::CATEGORY_META`: запись
    `CategorySeo(slug, name, api_category, title, description, intro,
    flagship_code, keywords)`. `CATEGORIES` (для sitemap) выводится отсюда —
@@ -221,7 +237,7 @@
 
 1. **[`CONTEXT.md`](CONTEXT.md)** — domain glossary и архитектурный язык. **Spine**, без неё нельзя обсуждать архитектуру. Читать целиком — он сжатый.
 2. **[`README.md`](README.md)** — карта стека, ключевые группы endpoint'ов, индикаторы, deploy. Высокоуровневый обзор.
-3. **[`docs/data_sources.md`](docs/data_sources.md)** — точная карта «индикатор → файл/endpoint» (75 source-индикаторов). Канонический справочник, откуда тянется каждый ряд. Parser internals — в docstrings соответствующего `backend/app/services/*_parser.py`.
+3. **[`docs/data_sources.md`](docs/data_sources.md)** — точная карта «индикатор → файл/endpoint» (российские source-ряды; текущий счётчик — в indicator-index). Канонический справочник, откуда тянется каждый ряд. Parser internals — в docstrings соответствующего `backend/app/services/*_parser.py`.
 4. **[`docs/workflow.md`](docs/workflow.md)** — модель работы, локальный dev, ручной ETL recipe, прод-деплой, smoke C.
 5. **[`docs/enterprise_resilience.md`](docs/enterprise_resilience.md)** — операционные инварианты, чеклист канарейки 6/6 (другой от чеклиста «новый индикатор» 7/7 ниже).
 6. **`docs/adr/`** — архитектурные решения (нумерованные ADR, читать в порядке номеров):
@@ -237,8 +253,9 @@
  - `0010-analytics-contour-identity-goals-marts-olap.md` — аналитический контур поверх сырья: идентичность (visitor_id + identity_links + мост `_ym_uid`), гео по IP своими силами, серверная сессионизация (правило 30 мин), таксономия целей macro/micro/engagement/technical (`goal_taxonomy.py`), rollup-таблицы, единый слой витрин `analytics_marts` (BI + Пульс + бот читают одни функции), BI 10 разделов с деревом метрик, OLAP-копия ClickHouse (вторична, деградация без влияния на сайт), realtime-алерты аномалий.
  - `0011-world-eurostat-data-plane.md` — мировой Eurostat как отдельный TOC-driven data plane: shadow/provenance, curated concepts и fail-closed агрегации частот.
  - `0012-world-multi-provider-official-first-forecasts.md` — multi-provider world: только официальные первоисточники, provider-aware identity, единый adapter contract и quality-gated M/Q прогнозы.
- - `0013-country-first-url-architecture.md` — страна = первый сегмент URL; регионы внутри `/russia`; path-cut на `.com`, затем path-identical переезд на `.ru` (Proposed; карта — `docs/backlog.md`).
+ - `0013-country-first-url-architecture.md` — страна = первый сегмент URL; регионы внутри `/russia`; path-identical языковые хосты apex EN / `ru.` RU. Реализация путей есть в коде; исходный Proposed и смены решений сохранены в ADR, текущая сверка — `docs/architecture-history.md`.
  - `0014-subnational-regions-generic.md` — субнациональные регионы любой страны кроме России (штаты США первыми): bounded context страна × регион × показатель × период поверх официальных рядов (FRED), карта/хаб/профили под `/{country}/regions`, ADR-0008 остаётся за Россией.
+ - `0015-us-bea-regional-catalog.md` — отдельный официальный BEA ZIP-каталог штатов США; дополняет национальные/субнациональные источники, сохраняет российский bounded context.
 
 После этих файлов агент способен ответить на ~90% вопросов и делать осмысленные правки.
 
@@ -249,8 +266,8 @@
 | Вопрос | Файл/папка |
 |--------|------------|
 | Как работает парсер X? | **docstring** `backend/app/services/<X>_parser.py` (canonical: source URL, лист, row/col mapping, `model_config_json` schema, traps) + `CONTEXT.md::Parser` (template-method обзор `BaseParser`) |
-| Откуда берётся индикатор X? | **[`docs/data_sources.md`](docs/data_sources.md)** — точный URL/файл/endpoint по каждому из 75 source |
-| Какие источники, кроме Росстата? | [`docs/data_sources.md`](docs/data_sources.md) (полная карта для всех 75 sources, включая CBR + Минфин) + docstrings парсеров `backend/app/services/{cbr_*,minfin_*}_parser.py` |
+| Откуда берётся индикатор X? | **[`docs/data_sources.md`](docs/data_sources.md)** — точный URL/файл/endpoint по каждому российскому source-ряду |
+| Какие источники, кроме Росстата? | [`docs/data_sources.md`](docs/data_sources.md) (полная карта российских источников, включая CBR + Минфин) + docstrings парсеров `backend/app/services/{cbr_*,minfin_*}_parser.py` |
 | Как считается derived-индикатор Y? | `DERIVED_SPECS` в `backend/app/services/calculation_engine.py` + ADR-0001 |
 | Какая стратегия forecast у индикатора Z? | `Indicator.model_config_json.forecast_strategy` в БД + реестр `backend/app/services/forecast_strategies/registry.py` + таблица в `CONTEXT.md::Forecast` |
 | Как собирается SEO/мета? | `backend/app/services/seo_renderer.py` + `seo_content.py` + ADR-0003 |
@@ -268,7 +285,7 @@
 ## Шаг 3 — режим работы
 
 **Запреты (всегда):**
-- **Не пушить на прод-сервер** (`5.129.204.194`, `/opt/rosstat`) без явной команды пользователя.
+- **Не пушить на прод-сервер** (`fe-prod`, `/opt/rosstat`; текущий доступ — `docs/workflow.md`) без явной команды пользователя.
 - **Не пушить на `main`** без зелёного `./scripts/check-all.sh` (pytest + lint + vitest + vite build).
 - **Не редактировать `git config`**, не делать `--force` push, не амендить коммиты, которые уже на remote.
 - **Не создавать новые .md файлы**, если можно обновить существующий. Документация консолидирована — фрактальная сеть выстроена; новые файлы только если возникает действительно новая категория знания.
@@ -309,7 +326,7 @@
 | Изменение rate-limit / CORS / CSP | `enterprise_resilience.md::API и backend` + `enterprise_resilience.md::Frontend и кэш` |
 | Новая операционная trap, обнаруженная в проде | `CONTEXT.md::Operational invariants and traps` (раздел traps) |
 | Новое архитектурное решение | **Создать новый ADR** `docs/adr/<NNNN>-<kebab-name>.md` (следующий свободный номер); добавить ссылку в шапку `CONTEXT.md::Документы рядом` и в `AGENTS.md::Шаг 1` |
-| Новый view-mode family / variant / virtual transform | `frontend/src/lib/viewModeFamilies.js` (реестр семей) **или** `lib/indicatorVariants.js` (variants). Тест в `viewModeFamilies.test.js`. ADR-0006 «Subsequent additions» если добавляется новый паттерн (не просто новый member существующего паттерна). Крупное семейство (несколько фаз) — чеклист в [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md) |
+| Новый view-mode family / variant / virtual transform | Generic: `backend/app/data/view_model_families.py::FamilyDef` → `scripts/export-view-models.py` → `viewModelFamilies.generated.json`; variant: `frontend/src/lib/indicatorVariants.js`. Legacy `viewModeFamilies.js` обслуживает оставшиеся resolve/content/redirect-пути, не является входом для нового generic-семейства. Проверки и фазы — [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md). |
 | Изменение существующего ADR | Не редактировать body «как если бы решение было таким». Добавить раздел «Subsequent additions (after acceptance)» с датой и описанием. Status в шапке менять только при формальной депрекации |
 | Новый Yandex API client | `docs/analytics_api_inventory/<service>.md` (если файл уже есть — обновить status block) или новый файл при новом сервисе + строка в `analytics_api_inventory/README.md::Implementation status` |
 | Новая roadmap-задача / правка от пользователя | `docs/backlog.md` (приоритеты + ID + затронутые файлы + риски). Когда закрыто — переносим в раздел «История» с SHA коммита. Никаких параллельных `plan.md` — всё в одном backlog. |
@@ -365,9 +382,9 @@ rosstat/
 ├── CONTEXT.md                      ← spine: glossary + invariants
 ├── README.md                       ← high-level overview
 ├── docs/
-│   ├── adr/                        ← architectural decisions (ADR-0001..0006)
+│   ├── adr/                        ← architectural decisions (ADR-0001..0015)
 │   ├── analytics_api_inventory/    ← Yandex API контракт + status (6 файлов)
-│   ├── data_sources.md             ← single source of truth: индикатор → файл/endpoint (75 source)
+│   ├── data_sources.md             ← single source of truth: индикатор → файл/endpoint (источники российских рядов)
 │   ├── missed_data_audit.md        ← reference: ещё не извлечённые поля в source files (TOP-25 P0)
 │   ├── backlog.md                  ← живой бэклог (приоритеты + roadmap + история)
 │   ├── workflow.md                 ← процесс, dev, ручной ETL, deploy
@@ -375,7 +392,7 @@ rosstat/
 ├── backend/
 │   ├── app/
 │   │   ├── api/                    ← FastAPI routes (indicators, forecasts, calendar, embed, ticker, analytics, …)
-│   │   ├── services/               ← parsers (24 типа), forecaster, calculation_engine, derived_ops, seo_renderer
+│   │   ├── services/               ← parser registry, forecaster, calculation_engine, derived_ops, seo_renderer
 │   │   │                           ←   parser internals в docstrings *_parser.py (canonical)
 │   │   ├── tasks/                  ← APScheduler jobs
 │   │   ├── analytics/              ← Yandex clients + warehouse

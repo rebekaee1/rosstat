@@ -4,51 +4,37 @@
 
 **Точка входа в документацию (для AI-агентов и людей):** [`AGENTS.md`](AGENTS.md) — карта документации, режим работы, протокол актуализации.
 **Domain glossary и инварианты:** [`CONTEXT.md`](CONTEXT.md).
+**Рельеф всего проекта:** [`docs/project-terrain.md`](docs/project-terrain.md) — Graphify, полный Git-инвентарь и проверка актуальности.
+**Как всё связано:** [`архитектура`](docs/architecture.md) · [`контракты данных`](docs/data-contracts.md) · [`история решений`](docs/architecture-history.md).
 **Рабочий процесс, локальный dev, прод-деплой:** [`docs/workflow.md`](docs/workflow.md).
 **Источники данных:** [`docs/data_sources.md`](docs/data_sources.md) (per-indicator карта `URL/endpoint/sheet/row`); parser internals — в docstrings `backend/app/services/*_parser.py`.
-**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0013).
+**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0015).
 **Backlog работ:** [`docs/backlog.md`](docs/backlog.md).
 
 ## Архитектура
 
-```
-                     ┌──────────────────┐
-                     │     Caddy        │  HTTPS, CSP, reverse-proxy
-                     │  (forecasteconomy│
-                     │      .com)       │
-                     └─────┬────────┬───┘
-                           │        │
-              ┌────────────▼─┐    ┌─▼─────────────────────┐
-              │   Frontend   │    │      Backend          │
-              │  Nginx + SPA │    │  FastAPI + Uvicorn    │
-              │  React 19    │    │  APScheduler          │
-              │  Vite 7      │    │  SQLAlchemy 2 (async) │
-              └──────────────┘    └──┬──────────┬─────────┘
-                                     │          │
-                       ┌─────────────▼──┐    ┌──▼────────┐
-                       │  PostgreSQL 16 │    │  Redis 7  │
-                       └────────────────┘    └───────────┘
-                                     │
-                ┌────────────────────┼────────────────────┐
-                │                    │                    │
-        ┌───────▼─────┐      ┌───────▼─────┐      ┌───────▼─────┐
-        │   Росстат   │      │    ЦБ РФ    │      │   Минфин    │
-        │  (CPI, GDP, │      │  (key-rate, │      │  (бюджет:   │
-        │   labor,    │      │   FX, M0/   │      │   доходы,   │
-        │   industry, │      │   M1/M2,    │      │   расходы,  │
-        │   demo, …)  │      │   BoP, …)   │      │   баланс)   │
-        └─────────────┘      └─────────────┘      └─────────────┘
+**Сверено с кодом 2026-09-27.** В Compose web backend и scheduler — разные
+процессы одного образа. Данные разделены на российские ряды, регионы России,
+world и субнациональные регионы других стран. Точная топология, потоки и основания
+связей — в [архитектуре](docs/architecture.md). Этот кодовый обзор не подтверждает
+состояние production. Предыдущая схема с APScheduler внутри web backend
+заменена по текущим `docker-compose.yml` и `backend/entrypoint.sh`.
 
-                       ┌─────────────────────────┐
-                       │  Forecast Analytics MCP │  Yandex.Metrika /
-                       │  (Yandex.* + warehouse) │  Webmaster → DB
-                       └─────────────────────────┘
-
-                       ┌─────────────────────────┐
-                       │     Live Ticker         │  USD/EUR/CNY/BTC/Brent
-                       │  MOEX ISS + Binance +   │  → Redis (TTL 30s)
-                       │  CBR XML fallback       │  → /api/v1/ticker/live
-                       └─────────────────────────┘
+```mermaid
+flowchart LR
+  User[Браузер / поисковик] --> Caddy
+  Caddy --> Frontend[nginx / React SPA]
+  Frontend -->|API / SSR| Web[FastAPI: web workers]
+  Scheduler[Отдельный scheduler] -->|HTTP| Sources[Официальные источники / аналитические API]
+  Scheduler --> PG[(PostgreSQL)]
+  Web --> PG
+  Scheduler --> Cache[(Redis cache)]
+  Web --> Cache
+  Scheduler --> State[(Redis state)]
+  Web --> State
+  Scheduler --> CH[(ClickHouse: аналитическая копия)]
+  Web --> CH
+  MCP[Forecast Analytics MCP] -->|HTTP API| Web
 ```
 
 ## Стек
@@ -57,18 +43,18 @@
 
 - **FastAPI** + **Uvicorn** — async REST API.
 - **PostgreSQL 16** + **SQLAlchemy 2** (asyncpg) + **Alembic**.
-- **Redis 7** — кэш форкаст-результатов и rate limit.
-- **APScheduler** — ежедневный ETL (06:00 MSK), daily refresh official-source календаря (03:00 MSK), опциональный analytics scheduler (hourly :15 + daily).
-- **statsmodels** — 8 forecast strategies (`forecast_v2`, `arima`, `sarima`, `derived_forecast`, `derived_transform`, `weekly_yoy`, `approved`, `none`).
+- **Redis 7** — отдельные cache (`volatile-lru`) и state (`noeviction`, AOF); инвалидация через версионированные namespace.
+- **APScheduler** — отдельный сервис `scheduler`: ETL 06:00/20:00 MSK, late-Minfin 15:00, календарь 03:00; дополнительные jobs и флаги — в `app/tasks/` и `app/main.py`.
+- **statsmodels** — расчёт прогнозов; стратегии определены в `forecast_strategies/registry.py`, мировой pipeline изолирован.
 - **pandas / openpyxl / xlrd / beautifulsoup4 / requests / httpx** — парсинг XLSX, HTML и API.
 - **Alerting** — JSON-логи в stdout + Telegram-канал для критических сбоев.
 
 ### Frontend
 
-- **React 19** + **Vite 7** + **Tailwind 4** (dark editorial design).
+- **React 19** + **Vite 7** + **Tailwind 4** (актуальные дизайн-контракты — в `docs/design/`).
 - **TanStack React Query 5** — data fetching и кэш.
-- **Recharts** — графики; **GSAP 3** — анимации.
-- **React Router 7** + **Axios** + **Lucide** + **xlsx** + **@sentry/react**.
+- **Recharts** — графики; **ECharts** — аналитические визуализации; **GSAP 3** — анимации.
+- **React Router 7** + **Axios** + **Lucide** + **@sentry/react**. Excel/CSV создаёт backend; `xlsx` в frontend dependencies отсутствует.
 - **Nginx** внутри `frontend` контейнера — раздаёт статику Vite-сборки и проксирует SSR-запросы (Yandex/Google bot UA → backend `/seo/*`).
 
 ### Инфраструктура
@@ -91,9 +77,10 @@ docker compose up -d --build
 Backend `entrypoint.sh` сам:
 
 1. Применяет Alembic-миграции (`alembic upgrade head`).
-2. Идемпотентно заливает `seed_data.py` (104 индикатора, источники, категории).
-3. Сидит календарь публикаций на 12 месяцев вперёд.
-4. Поднимает Uvicorn.
+2. Идемпотентно применяет `seed_data.py` (российские ряды, включая derived).
+3. Запускает `seed_regional.py`; сбой на пустой региональной БД останавливает startup.
+4. Сидит календарь публикаций на 12 месяцев вперёд.
+5. Поднимает Uvicorn. Роль `scheduler` пропускает миграции/seed и стартует после healthy backend.
 
 После этого:
 
@@ -117,7 +104,7 @@ VITE_DEV_API_PROXY=http://127.0.0.1:8000
 
 ## Проверки и регламент
 
-- **CI-эквивалент локально:** `./scripts/check-all.sh` — pytest + frontend lint/test/build.
+- **Общие локальные проверки:** `./scripts/check-all.sh` — pytest + frontend lint/test/build + guards документации. CI дополнительно проверяет миграции, Docker и E2E.
 - **Полный регламент:** см. [`docs/workflow.md`](docs/workflow.md).
 - **Чеклист устойчивости (rate limit, CORS, asset-hash, бэкап):** [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md).
 
@@ -142,7 +129,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 
 ## Индикаторы
 
-100+ активных индикаторов, разнесённые по 10 категориям (счётчики не фиксируем — растут постоянно; актуальное число в `seed_data.py` и в `/api/v1/system/status`).
+Российский каталог включает 12 категорий. Ряды seed, видимые карточки, world-ряды и URL — разные счётчики: кодовый срез ниже проверяет `scripts/audit-doc-counters.py`, публичное покрытие сверяется по API/БД.
 
 | Категория (slug) | DB category | Покрытие |
 |------------------|-------------|----------|
@@ -150,6 +137,8 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 | `rates` | Ставки | Ключевая ставка ЦБ (с 1992), RUONIA, ставки по кредитам и депозитам (с term split) |
 | `currencies` | Валюты | USD/RUB, EUR/RUB, CNY/RUB, BTC/USD, Brent |
 | `finance` | Деньги и бюджет | M0/M1/M2, золото, резервы, внешний долг, бюджет (доходы/расходы/дефицит) |
+| `indices` | Индексы | Биржевые индексы Московской биржи |
+| `commodities` | Товарные рынки | Официальные ряды цен сырья и топлива |
 | `labor` | Рынок труда | Безработица, номинальная (с 1991) / реальная / индекс / YoY зарплата |
 | `gdp` | ВВП | ВВП номинальный/реальный/потребление/госрасходы (+ annual/QoQ/YoY) |
 | `population` | Население | Численность, рождаемость, смертность, миграция, пенсионеры, трудоспособное |
@@ -161,7 +150,7 @@ Source-индикаторы (118) извлекаются через 34 парс�
 
 ## Прогнозы
 
-13 forecast strategies в реестре `backend/app/services/forecast_strategies/registry.py`: `cpi_combined`, `gdp_{nominal,real,consumption,government}_quarterly`, `housing_quarterly`, `ppi_monthly`, `monthly_auto`, `generic_quarterly` (положительные квартальные: exports/imports/external-debt), `signed_quarterly` (знаковые квартальные сальдо: current-account), `approved`, `derived_from_source` (включая op=`subtract` — тождество trade-balance = exports − imports), `generic_ols`. Стратегия выбирается через `model_config_json.forecast_strategy` индикатора и применяется при каждом ETL, если источник принёс новые точки. Прогнозы НЕ строятся для крипты/биржевых котировок/частоты < месяца (профанация).
+14 forecast strategies в реестре `backend/app/services/forecast_strategies/registry.py`: `annual_auto`, `cpi_combined`, `gdp_{nominal,real,consumption,government}_quarterly`, `housing_quarterly`, `ppi_monthly`, `monthly_auto`, `generic_quarterly` (положительные квартальные: exports/imports/external-debt), `signed_quarterly` (знаковые квартальные сальдо: current-account), `approved`, `derived_from_source` (включая op=`subtract` — тождество trade-balance = exports − imports), `generic_ols`. Стратегия выбирается через `model_config_json.forecast_strategy` индикатора и применяется через retrain pipeline при изменениях факта. Eligibility и ограничения частоты задаются в коде и policy-тестах; наличие стратегии само по себе не обещает публичный прогноз.
 
 Полная таблица «стратегия → индикаторы → notebook» и поля `model_config_json` — в [`CONTEXT.md::Forecast`](CONTEXT.md). Pure formulas стратегий — `backend/app/services/forecast_strategies/*.py`; derived chain — в `derived_ops.py` (ADR-0001).
 
@@ -180,7 +169,7 @@ rosstat/
 │   │   ├── api/            # FastAPI routes (indicators, forecasts, calendar, embed,
 │   │   │                   #   dashboard, demographics, analytics, system, seo, sitemap)
 │   │   ├── core/           # cache (Redis), deps, helpers
-│   │   ├── services/       # parsers (24 файла), forecaster, calculation_engine,
+│   │   ├── services/       # parsers, forecaster, calculation_engine,
 │   │   │                   #   derived_ops, calendar_seed, alerting, seo_renderer
 │   │   ├── tasks/          # scheduler, analytics_scheduler
 │   │   ├── analytics/      # Forecast Analytics OS — Yandex clients, warehouse, MCP
@@ -190,7 +179,7 @@ rosstat/
 │   │   └── main.py         # FastAPI app + lifespan + middleware
 │   ├── alembic/            # миграции
 │   ├── certs/              # Russian Trusted CA (нужен для https-походов на Росстат)
-│   ├── seed_data.py        # идемпотентный seeder (104 индикатора)
+│   ├── seed_data.py        # идемпотентный seeder российского каталога
 │   └── entrypoint.sh
 ├── frontend/
 │   ├── src/
@@ -200,7 +189,7 @@ rosstat/
 │   ├── nginx.conf          # SPA + SSR-bot-proxy + asset hashing
 │   └── Dockerfile
 ├── scripts/
-│   ├── check-all.sh        # CI-эквивалент локально
+│   ├── check-all.sh        # pytest / frontend / guards документации
 │   ├── pg-backup.sh        # pg_dump перед прод-деплоем
 │   ├── deploy.sh           # обвязка sshscript для прод-деплоя
 │   ├── sync-local-from-prod.py
@@ -208,14 +197,14 @@ rosstat/
 │   ├── seo-audit.py
 │   └── analytics-smoke.py
 ├── docs/
-│   ├── adr/                # архитектурные решения (нумерованные ADR-0001..0006)
+│   ├── adr/                # архитектурные решения (ADR-0001..0015)
 │   ├── analytics_api_inventory/  # инвентарь Yandex API (Metrika, Webmaster, …)
 │   ├── data_sources.md     # карта «индикатор → файл/endpoint» (118 source)
 │   ├── missed_data_audit.md  # reference: ещё не извлечённые поля в source-файлах
 │   ├── workflow.md         # dev процесс, smoke C, прод-деплой
 │   ├── enterprise_resilience.md  # rate limit / CSP / asset-hash trap / канарейка
 │   └── backlog.md          # живой бэклог (приоритеты + история)
-├── mcp/                    # Forecast Analytics MCP server (отдельный контейнер)
+├── mcp/                    # Forecast Analytics MCP (отдельный запуск; не сервис Compose)
 ├── Caddyfile
 ├── docker-compose.yml
 ├── CONTEXT.md              # глоссарий и архитектурный язык — главная точка входа
@@ -226,10 +215,10 @@ rosstat/
 
 См. полную процедуру в [`docs/workflow.md::Прод-деплой`](docs/workflow.md). Ключевые моменты:
 
-1. `pg_dump | gzip > /opt/rosstat/backups/pre-deploy-<timestamp>.sql.gz` — обязательно перед каждым релизом.
-2. `git pull && docker compose build backend frontend && docker compose up -d backend frontend` — backend и frontend пересобирать и поднимать **вместе** (asset-hash mismatch trap, см. `enterprise_resilience.md`). Backend на старте сам прогонит `_catch_up_empty_indicators` для новых indicators с 0 точек.
-3. Alembic-миграции применяются автоматически из `entrypoint.sh`.
-4. Smoke C — health-чеки (`/api/v1/health`, `/api/v1/analytics/health`), SSR-сверка через `User-Agent: YandexBot/3.0`, `scripts/seo-audit.py`. Детали — в `docs/workflow.md::Smoke C`.
+1. Деплой проводится через `scripts/deploy.sh` до явно одобренного SHA; проверяется весь диапазон миграций от текущего релиза.
+2. Preflight вызывает `scripts/pg-backup.sh` (custom dump + отдельная identity-копия). Offsite и restore проверяются отдельно от успешного локального dump.
+3. Согласованно обновляются backend, scheduler и frontend; новые ассеты публикуются до HTML, сохраняется возможность отката.
+4. После запуска нужны readiness, SSR/API/OG smoke, проверка ассетов и post-deploy watch. Подробные команды и границы приёмки — в workflow.
 
 ## Что автоматизировано
 
@@ -238,10 +227,10 @@ rosstat/
 | Миграции БД | `entrypoint.sh` → `alembic upgrade head` при каждом старте |
 | Первичный seed | `entrypoint.sh` → идемпотентный `seed_data.py` |
 | Startup catch-up | `app/main.py::_catch_up_empty_indicators()` — после lifespan startup догоняет ETL для всех `is_active=true` индикаторов с 0 точками (новые индикаторы дотягиваются без ручного `run_etl_for_indicator`) |
-| Ежедневный ETL | APScheduler cron 06:00 и 20:00 MSK (все `is_active=true` source-индикаторы; 117 source через `PARSER_REGISTRY`) + late-Minfin 15:00 |
+| Ежедневный ETL | Отдельный scheduler: cron 06:00 и 20:00 MSK (активные российские source-ряды через `PARSER_REGISTRY`) + late-Minfin 15:00 |
 | Calendar refresh | APScheduler daily 03:00 MSK: official-source ingest, rolling 12 мес, public official-only |
-| Forecast retrain | После каждого изменения данных (если `records_added>0`) |
+| Forecast retrain | Изменения, ревизии и поддерживаемые удаления факта проходят `BaseParser` → retrain pipeline |
 | Derived recompute | Каскадно после ETL (если хотя бы один source-индикатор обновился) |
-| Cache invalidation | После forecast retrain — Redis-ключи протухают |
+| Cache invalidation | `cache_invalidate_indicator` повышает версии namespace; порядок относительно DB commit описан в [контрактах](docs/data-contracts.md) |
 | Auto-restart | `restart: unless-stopped` для всех сервисов |
 | Russian Trusted CA | Сертификат в `backend/certs/` для походов на Росстат |

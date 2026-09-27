@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forecast Economy — рельеф проекта</title>
+<style>
+:root{color-scheme:light;--ink:#17322c;--muted:#60716a;--line:#dce3dd;--accent:#227855;--bg:#f6f7f2}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif}header{padding:30px 4vw 22px;background:#173c31;color:#fff}h1{margin:0 0 7px;font-size:clamp(24px,4vw,36px);letter-spacing:-1px}header p{max-width:1000px;color:#c3dbcf;margin:4px 0}header a{color:#edf8cd}nav{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0 0}main{padding:22px 4vw;max-width:1800px;margin:auto}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px}.stat b{display:block;font-size:26px}.stat span{color:var(--muted);font-size:13px}.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}input,select,button{font:inherit;border:1px solid #c4cec5;border-radius:7px;padding:9px 12px;background:#fff;color:var(--ink)}input{min-width:220px;flex:1}button{cursor:pointer}button:hover{background:#e5efe7}button[aria-pressed=true]{background:#d2e9d8}.columns{display:grid;grid-template-columns:minmax(300px,0.9fr) minmax(400px,1.4fr);gap:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}.panel h2{margin:0;font-size:18px;padding:15px 18px;border-bottom:1px solid var(--line)}#files{height:65vh;overflow:auto}.file{display:block;text-align:left;border:0;border-radius:0;border-bottom:1px solid #eef1eb;width:100%;padding:11px 17px;overflow-wrap:anywhere}.file small{display:block;color:var(--muted);font-size:12px}.file.selected{background:#dff0e3;border-left:4px solid var(--accent)}#detail{padding:18px;max-height:72vh;overflow:auto}#detail h3{margin:0 0 10px;overflow-wrap:anywhere;font-size:19px}a{color:#1d6b50}code{font-size:12px;overflow-wrap:anywhere}.note{color:var(--muted);font-size:13px}.tag{display:inline-block;background:#eef2e9;border-radius:5px;padding:2px 6px;font-size:11px;margin-right:6px}.edge{border-top:1px solid var(--line);padding:10px 0}.edge button{border:0;background:none;padding:0;text-align:left;color:#1d6b50;overflow-wrap:anywhere}.edge p{margin:5px 0;font-size:12px;color:var(--muted)}details{margin:15px 0}summary{cursor:pointer;font-weight:600}footer{padding:20px 4vw;color:var(--muted);font-size:12px}@media(max-width:780px){.columns{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}#files{height:35vh}#detail{max-height:65vh}.filters>*{width:100%;min-width:0}header{padding-top:22px}nav{gap:10px}}
+</style>
+<header>
+<h1>Рельеф Forecast Economy</h1>
+<p>Файлы, связи и документация, извлечённые из репозитория. Выберите файл — увидите его соседей и основания связей.</p>
+<nav><a href="architecture.md">Как устроен проект</a><a href="data-contracts.md">Контракты данных</a><a href="architecture-history.md">История решений</a><a href="project-terrain.md">Покрытие и обновление</a></nav>
+</header>
+<main>
+<div class="stats" id="stats"></div>
+<div class="filters">
+<input id="search" type="search" placeholder="Найти файл: world, cache, ADR, wages…" aria-label="Поиск файлов">
+<select id="group" aria-label="Папка"><option value="">Все папки</option></select>
+<select id="kind" aria-label="Тип файла"><option value="">Все типы</option><option value="code">Код</option><option value="document">Документы и правила</option><option value="asset/data/config">Данные / конфиги / медиа</option></select>
+<select id="coverage" aria-label="Покрытие"><option value="">Всё покрытие</option><option value="nodes">Есть узлы Graphify</option><option value="no_nodes">Экстрактор не создал узлов</option><option value="inventory_only">Только инвентаризация</option></select>
+</div>
+<p class="note" id="found" aria-live="polite"></p>
+<div class="columns"><section class="panel"><h2>Файлы проекта</h2><div id="files"></div></section><section class="panel"><h2>Связи выбранного файла</h2><div id="detail"><p>Выберите файл слева.</p></div></section></div>
+<details><summary>Как читать эту карту</summary><p>Стрелка сохраняет направление отношения Graphify. <b>EXTRACTED</b> — статическая конструкция исходника. <b>INFERRED</b> — вывод экстрактора, требующий проверки. Граф не доказывает выполнение вызова, отсутствие багов, мёртвый код или состояние production. HTTP, SQL, кэш и расписания описаны также в контрактах.</p><p>Все файлы учтены с контрольными суммами. Для данных, конфигов, изображений и других неподдержанных форматов может быть только инвентаризация. Наличие тестового файла в графе не является метрикой покрытия тестами. Смысловые объяснения и исторические решения хранятся отдельно от извлечённых связей.</p></details>
+</main>
+<footer id="footer"></footer>
+<script id="terrain" type="application/json">__TERRAIN_DATA__</script>
+<script>
+const data=JSON.parse(document.getElementById('terrain').textContent);
+const $=id=>document.getElementById(id);
+const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n};
+const fmt=n=>new Intl.NumberFormat('ru').format(n);
+const byPath=new Map(data.files.map(f=>[f.path,f]));
+const adjacent=new Map(data.files.map(f=>[f.path,[]]));
+for(const e of data.edges){adjacent.get(e.source).push(e);adjacent.get(e.target).push(e)}
+let selected='backend/app/main.py';
+const labels={nodes:'Есть структура Graphify',no_nodes:'Прочитан экстрактором, узлов нет',inventory_only:'Только инвентаризация'};
+for(const [value,label] of [[data.stats.files,'файлов в инвентаре'],[data.stats.files_with_nodes,'файлов со структурой'],[data.stats.nodes,'узлов Graphify'],[data.stats.file_edges,'связей между файлами']]){const n=el('div',undefined,'stat');n.append(el('b',fmt(value)),el('span',label));$('stats').append(n)}
+for(const group of [...new Set(data.files.map(f=>f.path.includes('/')?f.path.split('/')[0]:'(root)'))].sort()){const o=el('option',group);o.value=group;$('group').append(o)}
+function sourceLink(path,label){const a=el('a',label||path);a.href='../'+path.split('/').map(encodeURIComponent).join('/');a.target='_blank';a.rel='noopener';return a}
+function show(path){selected=path;const f=byPath.get(path);if(!f)return;const d=$('detail');d.replaceChildren(el('h3',path));d.append(sourceLink(path,'Открыть исходный файл'));
+ d.append(el('p',`${labels[f.extraction]} · ${fmt(f.bytes)} байт · ${f.lines===null?'бинарный файл':fmt(f.lines)+' строк'} · ${fmt(f.nodes)} узлов`,'note'));
+ const hash=el('details');hash.append(el('summary','Контрольная сумма'),el('code',f.sha256));d.append(hash);
+ const edges=adjacent.get(path);d.append(el('p',`${fmt(edges.length)} отношений между файлами. Каждое может объединять несколько связей символов.`,'note'));
+ if(!edges.length)d.append(el('p','Связей между файлами не извлечено. Это не доказывает, что файл не используется.'));
+ for(const e of edges){const n=el('div',undefined,'edge');n.append(el('span',e.confidence,'tag'),el('span',`${e.relation} × ${e.count}`,'tag'));const target=e.source===path?e.target:e.source;const b=el('button',(e.source===path?'→ ':'← ')+target);b.onclick=()=>{show(target);highlight()};n.append(el('br'),b);for(const sample of e.evidence)n.append(el('p',`${sample.file||'?'}:${sample.line||'?'} — ${sample.source||'?'} → ${sample.target||'?'}`));d.append(n)}
+ history.replaceState(null,'','#'+encodeURIComponent(path));highlight();
+}
+function highlight(){document.querySelectorAll('.file').forEach(n=>{const active=n.dataset.path===selected;n.classList.toggle('selected',active);n.setAttribute('aria-pressed',String(active))})}
+function filter(){const q=$('search').value.trim().toLowerCase();const group=$('group').value;const kind=$('kind').value;const coverage=$('coverage').value;const result=data.files.filter(f=>(!q||f.path.toLowerCase().includes(q))&&(!group||(f.path.includes('/')?f.path.split('/')[0]:'(root)')===group)&&(!kind||f.kind===kind)&&(!coverage||f.extraction===coverage));$('files').replaceChildren();const frag=document.createDocumentFragment();for(const f of result){const n=el('button',f.path,'file');n.dataset.path=f.path;n.append(el('small',`${labels[f.extraction]} · ${adjacent.get(f.path).length} связей`));n.onclick=()=>show(f.path);frag.append(n)}$('files').append(frag);$('found').textContent=`Найдено ${fmt(result.length)} из ${fmt(data.files.length)} файлов`;highlight()}
+for(const id of ['search','group','kind','coverage'])$(id).addEventListener('input',filter);
+$('footer').textContent=`${data.extractor} · базовый commit ${data.baseline_commit.slice(0,12)} + рабочие изменения · текущесть проверяется scripts/build-project-terrain.py --check. Все данные встроены; внешних запросов нет.`;
+filter();try{const p=decodeURIComponent(location.hash.slice(1));if(byPath.has(p))selected=p}catch{}show(selected);
+</script>
+</html>

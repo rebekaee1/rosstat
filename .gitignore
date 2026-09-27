@@ -106,3 +106,7 @@ backend/.cache/
 
 # Сырые дампы аудита underslice (регенерируются research-скриптами)
 docs/research/eurostat-underslice-*.txt
+
+# Полный локальный Graphify-граф; переносимая проекция хранится в docs/.
+.artifacts/project-terrain/
+docs/project-terrain.html
