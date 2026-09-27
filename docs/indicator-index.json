@@ -2637,7 +2637,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 368,
+          "line": 372,
           "kind": "other"
         },
         {
@@ -2682,7 +2682,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 3188,
+          "line": 3179,
           "kind": "seo"
         },
         {
@@ -4478,7 +4478,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
@@ -7661,32 +7661,32 @@
         },
         {
           "file": "AGENTS.md",
-          "line": 34,
+          "line": 38,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 46,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 47,
+          "line": 51,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 119,
+          "line": 123,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 132,
+          "line": 136,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
@@ -8686,52 +8686,72 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 43,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_indicator_year_landing.py",
           "line": 44,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 73,
+          "line": 45,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 94,
+          "line": 74,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 100,
+          "line": 95,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 203,
+          "line": 101,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 205,
+          "line": 204,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 315,
+          "line": 206,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 339,
+          "line": 239,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 341,
+          "line": 243,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 252,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 260,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 353,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 377,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 379,
           "kind": "tests"
         },
         {
@@ -11136,7 +11156,7 @@
         },
         {
           "file": "frontend/src/pages/WorldIndicatorPage.jsx",
-          "line": 410,
+          "line": 408,
           "kind": "other"
         },
         {
@@ -14131,17 +14151,17 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 305,
+          "line": 343,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 313,
+          "line": 351,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 314,
+          "line": 352,
           "kind": "tests"
         },
         {
@@ -16928,7 +16948,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 368,
+          "line": 372,
           "kind": "other"
         },
         {
@@ -23407,7 +23427,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2933,
+          "line": 2929,
           "kind": "seo"
         },
         {
@@ -23986,7 +24006,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2933,
+          "line": 2929,
           "kind": "seo"
         },
         {
@@ -25065,7 +25085,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
@@ -28132,7 +28152,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
@@ -28437,7 +28457,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 247,
+          "line": 251,
           "kind": "other"
         },
         {
@@ -48728,12 +48748,12 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 226,
+          "line": 230,
           "kind": "other"
         },
         {
@@ -51909,7 +51929,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 3190,
+          "line": 3181,
           "kind": "seo"
         },
         {
@@ -58736,47 +58756,42 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 33,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_indicator_year_landing.py",
           "line": 34,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 73,
+          "line": 35,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 89,
+          "line": 74,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 136,
+          "line": 90,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 173,
+          "line": 137,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 183,
+          "line": 174,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 186,
+          "line": 184,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 200,
+          "line": 187,
           "kind": "tests"
         },
         {
@@ -58786,62 +58801,67 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 206,
+          "line": 202,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 216,
+          "line": 207,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 218,
+          "line": 217,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 221,
+          "line": 219,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 223,
+          "line": 222,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 244,
+          "line": 224,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 283,
+          "line": 282,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 287,
+          "line": 321,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 292,
+          "line": 325,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 293,
+          "line": 330,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 294,
+          "line": 331,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 354,
+          "line": 332,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 392,
           "kind": "tests"
         },
         {
@@ -60241,32 +60261,32 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 34,
+          "line": 38,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 46,
+          "line": 50,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 47,
+          "line": 51,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 119,
+          "line": 123,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 132,
+          "line": 136,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
@@ -63943,7 +63963,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
@@ -64584,7 +64604,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
@@ -66870,7 +66890,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 368,
+          "line": 372,
           "kind": "other"
         },
         {
@@ -67874,7 +67894,7 @@
         },
         {
           "file": "AGENTS.md",
-          "line": 132,
+          "line": 136,
           "kind": "other"
         },
         {
@@ -68354,32 +68374,32 @@
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 462,
+          "line": 467,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 466,
+          "line": 471,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 468,
+          "line": 473,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 470,
+          "line": 475,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 491,
+          "line": 496,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 502,
+          "line": 507,
           "kind": "tests"
         },
         {
@@ -69232,7 +69252,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 56,
+          "line": 60,
           "kind": "other"
         },
         {
@@ -70103,22 +70123,22 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 54,
+          "line": 55,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 234,
+          "line": 272,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 238,
+          "line": 276,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 259,
+          "line": 297,
           "kind": "tests"
         },
         {
@@ -70559,17 +70579,17 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 64,
+          "line": 65,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 239,
+          "line": 277,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 240,
+          "line": 278,
           "kind": "tests"
         },
         {
@@ -72850,7 +72870,7 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
@@ -73349,12 +73369,12 @@
       "files": [
         {
           "file": "AGENTS.md",
-          "line": 224,
+          "line": 228,
           "kind": "other"
         },
         {
           "file": "AGENTS.md",
-          "line": 226,
+          "line": 230,
           "kind": "other"
         },
         {
