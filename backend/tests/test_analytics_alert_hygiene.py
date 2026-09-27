@@ -78,11 +78,42 @@ def test_failed_collection_probe_cannot_create_silence_alert(monkeypatch):
 
 def test_alert_reports_only_successful_delivery(monkeypatch):
     monkeypatch.setattr(alerts, "_muted", AsyncMock(return_value=False))
+    clear = AsyncMock()
+    monkeypatch.setattr(alerts, "_clear_mute", clear)
     send = AsyncMock(return_value=False)
     monkeypatch.setattr("app.services.alerting.send_telegram", send)
     assert not asyncio.run(alerts._alert("memory_pressure", "test"))
+    clear.assert_awaited_once_with("memory_pressure")
     send.return_value = True
     assert asyncio.run(alerts._alert("memory_pressure", "test"))
+    clear.assert_awaited_once()
+
+
+def test_alert_mute_claim_is_atomic_and_failure_can_retry(monkeypatch):
+    class StateRedis:
+        def __init__(self):
+            self.keys = set()
+
+        async def set(self, key, _value, *, ex, nx):
+            assert ex == alerts._MUTE_TTL and nx is True
+            if key in self.keys:
+                return None
+            self.keys.add(key)
+            return True
+
+        async def delete(self, key):
+            self.keys.discard(key)
+
+    redis = StateRedis()
+
+    async def state_redis():
+        return redis
+
+    monkeypatch.setattr("app.core.cache.get_state_redis", state_redis)
+    assert not asyncio.run(alerts._muted("memory_pressure"))
+    assert asyncio.run(alerts._muted("memory_pressure"))
+    asyncio.run(alerts._clear_mute("memory_pressure"))
+    assert not asyncio.run(alerts._muted("memory_pressure"))
 
 
 def test_memory_episode_becomes_sticky_only_after_delivery(monkeypatch):

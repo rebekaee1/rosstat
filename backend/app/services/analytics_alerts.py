@@ -148,12 +148,19 @@ async def _muted(alert_key: str) -> bool:
         from app.core.cache import get_state_redis
         r = await get_state_redis()
         key = f"fe:alerts:mute:{alert_key}"
-        if await r.get(key):
-            return True
-        await r.set(key, "1", ex=_MUTE_TTL)
-        return False
+        return not bool(await r.set(key, "1", ex=_MUTE_TTL, nx=True))
     except Exception:  # noqa: BLE001 — редис недоступен: лучше замолчать, чем упасть
         return True
+
+
+async def _clear_mute(alert_key: str) -> None:
+    """A failed delivery must be eligible for retry on the next check."""
+    try:
+        from app.core.cache import get_state_redis
+        r = await get_state_redis()
+        await r.delete(f"fe:alerts:mute:{alert_key}")
+    except Exception:  # noqa: BLE001
+        logger.debug("failed to clear alert mute for %s", alert_key, exc_info=True)
 
 
 async def _alert(alert_key: str, text: str) -> bool:
@@ -163,6 +170,8 @@ async def _alert(alert_key: str, text: str) -> bool:
     sent = await send_telegram(f"⚠️ <b>Аномалия аналитики</b>\n{text}", kind="analytics_anomaly")
     if sent:
         logger.warning("Analytics anomaly alert: %s", alert_key)
+    else:
+        await _clear_mute(alert_key)
     return bool(sent)
 
 
