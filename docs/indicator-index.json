@@ -9741,7 +9741,7 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 191,
+          "line": 91,
           "kind": "other"
         },
         {
@@ -9831,17 +9831,12 @@
         },
         {
           "file": "docs/workflow.md",
-          "line": 85,
+          "line": 118,
           "kind": "other"
         },
         {
           "file": "docs/workflow.md",
-          "line": 196,
-          "kind": "other"
-        },
-        {
-          "file": "docs/workflow.md",
-          "line": 206,
+          "line": 128,
           "kind": "other"
         },
         {
@@ -34798,7 +34793,7 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 219,
+          "line": 119,
           "kind": "other"
         },
         {
@@ -52319,12 +52314,12 @@
         },
         {
           "file": "docs/workflow.md",
-          "line": 167,
+          "line": 89,
           "kind": "other"
         },
         {
           "file": "docs/workflow.md",
-          "line": 170,
+          "line": 92,
           "kind": "other"
         },
         {
@@ -60571,7 +60566,7 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 191,
+          "line": 91,
           "kind": "other"
         },
         {
@@ -67874,7 +67869,7 @@
       "files": [
         {
           "file": ".env.example",
-          "line": 194,
+          "line": 191,
           "kind": "other"
         },
         {
@@ -72636,22 +72631,22 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 180,
+          "line": 80,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 189,
+          "line": 89,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 231,
+          "line": 131,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 247,
+          "line": 147,
           "kind": "other"
         },
         {
@@ -73020,12 +73015,12 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 189,
+          "line": 89,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 231,
+          "line": 131,
           "kind": "other"
         },
         {
