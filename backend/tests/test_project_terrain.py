@@ -98,3 +98,29 @@ def test_projection_preserves_direction_and_confidence(terrain, monkeypatch):
     assert [r["extraction"] for r in rows] == ["nodes", "nodes", "no_nodes", "inventory_only"]
     assert data["stats"]["projection_omissions"] == {
         "within_file": 1, "external_or_unresolved_file": 1, "missing_endpoint": 1}
+
+
+def test_overview_is_a_complete_partition_and_preserves_relation_totals(terrain):
+    paths = ["frontend/src/pages/Home.jsx", "frontend/src/lib/api.js", "backend/app/api/world.py",
+             "backend/app/services/world.py", "backend/tests/test_world.py", "unknown/deep/file.css"]
+    rows = [dict(path=p, kind="code", nodes=1, sha256="current") for p in paths]
+    rows.append(dict(path="docs/old.md", kind="document", nodes=2, sha256="new"))
+    (terrain.ROOT / "docs/architecture-knowledge.json").write_text(json.dumps({
+        "source_fingerprints": {paths[2]: "current", "docs/old.md": "old"}}))
+    edges = [dict(source=paths[0], target=paths[1], count=3),
+             dict(source=paths[2], target=paths[3], count=7)]
+    overview = terrain.overview(rows, edges)
+    assert sum(g["files"] for g in overview["layers"]) == len(rows)
+    assert [r["layer"] for r in rows] == ["browser", "client", "api", "services", "tests", "other", "docs"]
+    assert sum(e["file_relations"] for e in overview["links"]) == len(edges)
+    assert sum(e["symbol_relations"] for e in overview["links"]) == 10
+    assert overview["semantic_files"] == 2
+    assert overview["semantic_stale"] == ["docs/old.md"]
+    assert overview["code_file_node_only"] == 6
+
+
+def test_inventory_counts_templates_and_styles_as_source(terrain):
+    for name in ["page.html", "theme.css", "migration.mako"]:
+        (terrain.ROOT / name).write_text("source")
+    rows = {r["path"]: r for r in terrain.inventory()}
+    assert all(rows[p]["kind"] == "code" for p in ["page.html", "theme.css", "migration.mako"])

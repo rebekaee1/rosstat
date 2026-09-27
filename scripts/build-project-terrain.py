@@ -30,8 +30,104 @@ GENERATED = {
     "docs/project-terrain.json", "docs/project-terrain.md", "docs/project-terrain.html",
     "docs/repo-inventory.md",  # timestamp/own size changes on every check-all
 }
-CODE = {".py", ".js", ".jsx", ".mjs", ".ts", ".tsx", ".sh", ".sql"}
+CODE = {".py", ".js", ".jsx", ".mjs", ".ts", ".tsx", ".sh", ".sql", ".html", ".css", ".mako"}
 DOCS = {".md", ".mdc", ".rst"}
+
+# Physical layers, derived only from visible repository paths. These are not
+# inferred business domains or a runtime call graph. Every file gets one group.
+LAYERS = [
+    ("browser", "Браузер: страницы и компоненты"),
+    ("client", "Клиент: данные, hooks и состояние"),
+    ("embed", "Встраиваемые виджеты"),
+    ("locale", "Языки и локализация"),
+    ("api", "HTTP API"), ("services", "Сервисы и расчёты"),
+    ("jobs", "Планировщик и фоновые задачи"),
+    ("model", "Модели, ядро и запуск backend"),
+    ("registry", "Реестры и исходные данные"),
+    ("migration", "Миграции БД"),
+    ("operations", "Операционные скрипты"),
+    ("infra", "Инфраструктура и конфигурация"),
+    ("tests", "Тесты и fixtures"),
+    ("docs", "Документация и правила"),
+    ("research", "Исследования и артефакты"),
+    ("assets", "Статические ресурсы"),
+    ("other", "Другие файлы"),
+]
+
+
+def layer_for(row: dict) -> str:
+    p = row["path"]
+    name = Path(p).name
+    if (p.startswith(("backend/tests/", "scripts/e2e/", "frontend/src/test/"))
+            or ".test." in name or ".spec." in name):
+        return "tests"
+    if row.get("kind") == "document" or p.startswith(".tours/"):
+        return "docs"
+    if p.startswith("docs/"):
+        return "research"
+    if p.startswith("frontend/src/embed/"):
+        return "embed"
+    if p.startswith("frontend/src/i18n/"):
+        return "locale"
+    if p.startswith(("frontend/src/pages/", "frontend/src/components/")) or p in {
+        "frontend/src/App.jsx", "frontend/src/main.jsx", "frontend/index.html"}:
+        return "browser"
+    if p.startswith(("frontend/src/lib/", "frontend/src/hooks/", "frontend/src/context/")):
+        return "client"
+    if p.startswith("frontend/src/") and not p.startswith("frontend/src/assets/"):
+        return "browser"
+    if p.startswith("backend/app/api/"):
+        return "api"
+    if p.startswith("backend/app/services/"):
+        return "services"
+    if p.startswith("backend/app/tasks/"):
+        return "jobs"
+    if p.startswith("backend/alembic/"):
+        return "migration"
+    if p.startswith(("backend/app/data/", "frontend/src/data/")):
+        return "registry"
+    if p.startswith(("backend/app/assets/", "frontend/public/", "frontend/src/assets/", "backend/certs/")):
+        return "assets"
+    if p.startswith("backend/app/") or name.startswith("seed_"):
+        return "model"
+    if p.startswith(("scripts/", "backend/scripts/", "frontend/scripts/", "mcp/")):
+        return "operations"
+    if p.startswith(("deploy/", ".github/", "clickhouse/")) or name in {
+        "Dockerfile", "entrypoint.sh", "docker-compose.yml", "Caddyfile"} or Path(p).suffix in {
+        ".conf", ".ini", ".yaml", ".yml"} or "/" not in p or p.count("/") == 1:
+        return "infra"
+    return "other"
+
+
+def overview(rows: list[dict], edges: list[dict]) -> dict:
+    knowledge = ROOT / "docs/architecture-knowledge.json"
+    reviewed = json.loads(knowledge.read_text()).get("source_fingerprints", {}) if knowledge.exists() else {}
+    groups = defaultdict(list)
+    paths = {}
+    for row in rows:
+        row["layer"] = layer_for(row)
+        row["semantic_evidence"] = row["path"] in reviewed
+        row["semantic_current"] = reviewed.get(row["path"]) == row.get("sha256") if row["semantic_evidence"] else None
+        groups[row["layer"]].append(row)
+        paths[row["path"]] = row["layer"]
+    links = defaultdict(lambda: {"file_relations": 0, "symbol_relations": 0})
+    for edge in edges:
+        key = paths[edge["source"]], paths[edge["target"]]
+        links[key]["file_relations"] += 1
+        links[key]["symbol_relations"] += edge["count"]
+    return {"basis": "Deterministic path groups; static relations only; no runtime or complete semantic audit claim",
+            "layers": [dict(id=key, label=label, files=len(groups[key]),
+                            code=sum(r.get("kind") == "code" for r in groups[key]),
+                            with_nodes=sum(r.get("nodes", 0) > 0 for r in groups[key]),
+                            file_node_only=sum(r.get("nodes", 0) == 1 for r in groups[key]),
+                            semantic_evidence=sum(r["semantic_evidence"] for r in groups[key]))
+                       for key, label in LAYERS if groups[key]],
+            "links": [dict(source=a, target=b, **value) for (a, b), value in sorted(links.items())],
+            "semantic_files": sum(r["semantic_evidence"] for r in rows),
+            "semantic_stale": [r["path"] for r in rows if r["semantic_current"] is False],
+            "code_files": sum(r.get("kind") == "code" for r in rows),
+            "code_with_nodes": sum(r.get("kind") == "code" and r.get("nodes", 0) > 0 for r in rows),
+            "code_file_node_only": sum(r.get("kind") == "code" and r.get("nodes", 0) == 1 for r in rows)}
 
 
 def git(*args: str) -> str:
@@ -95,7 +191,7 @@ def projection(extraction: dict, rows: list[dict], attempted: list[str]) -> dict
     edges = [dict(source=a, target=b, relation=rel, confidence=conf, **value)
              for (a, b, rel, conf), value in sorted(links.items())]
     return {
-        "schema_version": 1, "extractor": f"graphifyy=={VERSION}",
+        "schema_version": 2, "extractor": f"graphifyy=={VERSION}",
         "baseline_commit": git("rev-parse", "HEAD").strip(),
         "scope": "Working tree: Git tracked + nonignored new files; generated terrain and repo-inventory excluded",
         "unstaged_at_capture": sorted(p for p in git("diff", "--name-only").splitlines() if p not in GENERATED),
@@ -105,12 +201,13 @@ def projection(extraction: dict, rows: list[dict], attempted: list[str]) -> dict
                   "nodes": len(nodes), "symbol_edges": len(extraction["edges"]),
                   "file_edges": len(edges), "projection_omissions": dict(sorted(omitted.items())),
                   "confidence": dict(sorted(Counter(e.get("confidence", "AMBIGUOUS") for e in extraction["edges"]).items()))},
-        "files": rows, "edges": edges,
+        "overview": overview(rows, edges), "files": rows, "edges": edges,
     }
 
 
 def markdown(data: dict) -> str:
     s = data["stats"]
+    o = data["overview"]
     lines = ["# Рельеф проекта — автоматически извлечённый срез", "",
              "> Генерируется `scripts/build-project-terrain.py --refresh` через Graphify. Не править вручную.", "",
              "[Локальный интерактивный просмотр — после `--render`](project-terrain.html) · [JSON](project-terrain.json) · "
@@ -125,10 +222,23 @@ def markdown(data: dict) -> str:
              f"| Дали узлы графа | {s['files_with_nodes']} |",
              f"| Узлы / связи между символами | {s['nodes']} / {s['symbol_edges']} |",
              f"| Связи между файлами (тип и уверенность сохраняются) | {s['file_edges']} |", "",
+             f"Исходники, шаблоны и стили: **{o['code_files']}** файлов; узлы есть у **{o['code_with_nodes']}**, "
+             f"из них **{o['code_file_node_only']}** дали только один файловый узел. "
+             f"Смысловые свидетельства с проверенными основаниями относятся к **{o['semantic_files']}** файлам "
+             "(включая документы), а не ко всем функциям проекта. Успешный прогон тестов не измеряет полноту этого разбора.", "",
              "Полная инвентаризация относится к Git-дереву. Наличие в списке не означает, что каждый файл "
              "прошёл содержательный аудит. `nodes` — экстрактор нашёл структуру; `no_nodes` — файл прочитан "
              "экстрактором, но сущностей не получено; `inventory_only` — учтён без разбора структуры. "
              "Бинарные материалы, конфиги и данные включены в инвентарь; визуальное содержание скриншотов не анализировалось.", "",
+             "## Общая структура", "",
+             "Просмотрщик начинается с групп исходников и матрицы связей между ними. Группировка "
+             "детерминированная по путям файлов (`layer_for`); каждый файл входит ровно в одну группу, "
+             "остаток виден в «Других файлах». Это технические слои, а не автоматически доказанные бизнес-домены. "
+             "Ячейки матрицы суммируют только извлечённые связи; отсутствие ребра frontend→API не отменяет HTTP-вызов. "
+             "Сквозные потоки через HTTP, БД, Redis и расписания описаны в архитектуре и контрактах.", "",
+             "| Группа | Файлов | Исходников | С узлами | Файлов со смысловыми свидетельствами |",
+             "|---|---:|---:|---:|---:|",
+             *[f"| {g['label']} | {g['files']} | {g['code']} | {g['with_nodes']} | {g['semantic_evidence']} |" for g in o['layers']], "",
              "## Что означает связь", "",
              "`EXTRACTED` и `INFERRED` — метки Graphify. Даже EXTRACTED означает статическую конструкцию, "
              "а не выполненный вызов. JSON сохраняет направление, тип, количество и примеры исходных строк. "
