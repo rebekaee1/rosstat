@@ -235,8 +235,8 @@ describe('WorldIndicatorPage EN overlay', () => {
   });
 });
 
-describe('WorldIndicatorPage US year links', () => {
-  it('shows every observed year from the canonical series', async () => {
+describe('WorldIndicatorPage US annual series', () => {
+  it('keeps the chart without exposing annual landing links', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       [/^\/world\/indicators\/united-states\/us-test$/, {
@@ -257,10 +257,7 @@ describe('WorldIndicatorPage US year links', () => {
       route: '/united-states/indicator/us-test',
     });
 
-    await waitFor(() => {
-      for (const year of [1901, 1950, 2025]) {
-        expect(document.querySelector(`a[href="/united-states/indicator/us-test/${year}"]`)).toBeTruthy();
-      }
-    });
+    await waitFor(() => expect(document.querySelector('[data-testid="chart-stub"]')).toBeTruthy());
+    expect(document.querySelector('a[href^="/united-states/indicator/us-test/"]')).toBeNull();
   });
 });

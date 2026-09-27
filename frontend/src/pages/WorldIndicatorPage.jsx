@@ -44,7 +44,6 @@ import { worldIndicatorTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
   indicatorPath,
-  indicatorYearPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
@@ -257,7 +256,6 @@ export default function WorldIndicatorPage() {
   const empty = !dataQ.isLoading && isEmptySeries(points);
   const last = points.length ? points[points.length - 1] : null;
   const telemetry = useMemo(() => computeWorldTelemetry(points), [points]);
-  const observedYears = slug === 'united-states' ? (metaQ.data?.observed_years || []) : [];
   const rawUnit = dataQ.data?.unit || dataQ.data?.unit_ru
     || modeMeta?.unit || indicator?.unit || indicator?.unit_ru || '';
   const displayUnit = localizeWorldUnit(rawUnit, locale);
@@ -603,21 +601,6 @@ export default function WorldIndicatorPage() {
             conceptSlug={indicator.concept_slug}
             comparisonPeers={metaQ.data.peers || []}
           />
-
-          {observedYears.length > 0 && (
-            <section className="fe-panel mb-8 rounded-xl border border-border-subtle bg-surface p-4">
-              <h2 className="mb-2 text-sm font-semibold text-text-primary">
-                {locale === 'en' ? 'By year' : 'По годам'}
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {observedYears.map((year) => (
-                  <a key={year} href={indicatorYearPath(slug, metaQ.data.primary_code || code, year)} className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne">
-                    {year}
-                  </a>
-                ))}
-              </div>
-            </section>
-          )}
 
           {dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
             <section className="mb-8 rounded-xl border border-border-subtle bg-surface px-4 py-3 text-xs leading-relaxed text-text-secondary" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>

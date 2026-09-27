@@ -101,7 +101,6 @@ async def render_subnational_compare_html(
     og_path = og_subnational_compare(country.slug, a.slug, b.slug)
     th_period = "Period" if en else "Период"
     table_rows = []
-    quick_links = []
     for row in rows:
         unit = row["unit"]
         va, vb = row["a"], row["b"]
@@ -114,13 +113,6 @@ async def render_subnational_compare_html(
             f'<td><a href="{escape(link_a)}">{escape(format_number_ru(va, locale=get_locale()))} {escape(unit)}</a></td>'
             f'<td><a href="{escape(link_b)}">{escape(format_number_ru(vb, locale=get_locale()))} {escape(unit)}</a></td>'
             f"<td>{escape(sign + format_number_ru(diff, locale=get_locale()))} {escape(unit)}</td></tr>"
-        )
-        year = row["period"].year
-        quick_links.append(
-            f'<li><a href="{escape(paths.country_region_indicator_year(country.slug, a.slug, row["code"], year))}">'
-            f'{escape(row["name"])}: {escape(an)}, {year}</a> — '
-            f'<a href="{escape(paths.country_region_indicator_year(country.slug, b.slug, row["code"], year))}">'
-            f'{escape(bn)}, {year}</a></li>'
         )
     figure = _seo_chart_figure(og_path, f"{title}: {len(rows)} {'official indicators' if en else 'официальных показателей'}", desc,
                                href=path, loading="eager")
@@ -136,7 +128,6 @@ async def render_subnational_compare_html(
           f"<th>{th_period}</th><th>{escape(an)}</th><th>{escape(bn)}</th>"
           f"<th>{'Difference, first minus second' if en else 'Разница: первый минус второй'}</th>"
           f"</tr></thead><tbody>{''.join(table_rows)}</tbody></table></section>"
-        + f"<section><h2>{'By year' if en else 'Сравнить по годам'}</h2><ul>{''.join(quick_links)}</ul></section>"
         + f'<p><a href="{escape(paths.country_region(country.slug, a.slug))}">{escape(an)}</a> — '
           f'<a href="{escape(paths.country_region(country.slug, b.slug))}">{escape(bn)}</a></p>'
     )

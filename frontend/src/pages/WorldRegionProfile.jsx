@@ -6,7 +6,7 @@ import {
   ChevronRight, Search, MapPin, TrendingUp, TrendingDown, Minus,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
-import { useWorldRegionProfile, useWorldRegionIndicator, formatSubnationalValue } from '../lib/worldSubnationalApi';
+import { useWorldRegionProfile, formatSubnationalValue } from '../lib/worldSubnationalApi';
 import { shortUnit, yearDelta, pluralRu } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -19,7 +19,6 @@ import { worldSubnationalRegionTrail } from '../lib/breadcrumbs';
 import {
   RUSSIA,
   countryRegionIndicatorPath,
-  countryRegionIndicatorYearPath,
   countryRegionVsPath,
   countryRegionsPath,
   regionPath,
@@ -115,7 +114,6 @@ export default function WorldRegionProfile() {
   const [query, setQuery] = useState('');
   const [activeSection, setActiveSection] = useState('');
   const [searchLimit, setSearchLimit] = useState(120);
-  const [yearIndicatorCode, setYearIndicatorCode] = useState('');
   const deferredQuery = useDeferredValue(query);
   const searching = normalize(deferredQuery).length > 0;
 
@@ -140,17 +138,6 @@ export default function WorldRegionProfile() {
       indicators: section.indicators.filter((item) => item.value !== null),
     })).filter((section) => section.indicators.length > 0);
   }, [profile.data, isUsCatalog]);
-  const yearIndicatorOptions = useMemo(() => (
-    isUsCatalog ? sections.flatMap((section) => section.indicators) : []
-  ), [sections, isUsCatalog]);
-  const selectedYearCode = yearIndicatorOptions.some((item) => item.code === yearIndicatorCode)
-    ? yearIndicatorCode : (yearIndicatorOptions[0]?.code || '');
-  const yearSeries = useWorldRegionIndicator(
-    isUsCatalog ? countrySlug : undefined, slug, selectedYearCode,
-  );
-  const selectedYears = useMemo(() => [
-    ...new Set((yearSeries.data?.series || []).map((point) => Number(point.year))),
-  ].filter(Number.isInteger).sort((a, b) => a - b), [yearSeries.data]);
   const usTopics = useMemo(
     () => isUsCatalog ? groupUsSections(sections, locale) : [],
     [sections, isUsCatalog, locale],
@@ -257,40 +244,6 @@ export default function WorldRegionProfile() {
                 <HeadlineCard key={h.code} item={h} countrySlug={countrySlug} slug={slug} />
               ))}
             </div>
-          )}
-
-          {isUsCatalog && (
-            <section className="mb-6 rounded-xl border border-border-subtle bg-surface p-4" aria-label={locale === 'en' ? 'State data by year' : 'Штат по годам'}>
-              <h2 className="mb-2 text-sm font-semibold text-text-primary">{locale === 'en' ? 'Every indicator by year' : 'Все показатели по годам'}</h2>
-              <label className="mb-3 block text-xs text-text-secondary" htmlFor="us-state-year-indicator">
-                {locale === 'en' ? 'Choose an indicator to see every year with published data' : 'Выберите показатель — доступны все годы с опубликованными данными'}
-              </label>
-              <select
-                id="us-state-year-indicator"
-                value={selectedYearCode}
-                onChange={(event) => setYearIndicatorCode(event.target.value)}
-                className="mb-3 w-full min-w-0 rounded-xl border border-border-subtle bg-white px-3 py-2 text-sm text-text-primary"
-              >
-                {yearIndicatorOptions.map((item) => (
-                  <option key={item.code} value={item.code}>{item.name}</option>
-                ))}
-              </select>
-              {yearSeries.isLoading && <p className="text-xs text-text-secondary">{locale === 'en' ? 'Loading years…' : 'Загружаем годы…'}</p>}
-              {yearSeries.isError && (
-                <ApiRetryBanner onRetry={yearSeries.refetch} isFetching={yearSeries.isFetching}>
-                  {locale === 'en' ? 'Could not load years for this indicator.' : 'Не удалось загрузить годы для показателя.'}
-                </ApiRetryBanner>
-              )}
-              {selectedYears.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {selectedYears.map((year) => (
-                    <a key={year} href={countryRegionIndicatorYearPath(countrySlug, slug, selectedYearCode, year)} className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne">
-                      {year}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </section>
           )}
 
           {isUsCatalog && profile.data.comparison_regions?.length > 0 && (

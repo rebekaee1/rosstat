@@ -200,7 +200,7 @@ describe('WorldRegionsHome', () => {
 
 describe('WorldRegionProfile', () => {
   it('темы слева и строки показателей как у региона РФ', async () => {
-    mockWorld();
+    const get = mockWorld();
     renderPage(<WorldRegionProfile />, {
       path: '/:countrySlug/region/:slug',
       route: '/united-states/region/california',
@@ -213,6 +213,8 @@ describe('WorldRegionProfile', () => {
     fireEvent.click(screen.getByRole('button', { name: /Труд и зарплаты/ }));
     expect(screen.getAllByRole('link', { name: /Безработица/ })[0].getAttribute('href'))
       .toBe('/united-states/region/california/unemployment-rate');
+    expect(document.querySelector('a[href^="/united-states/region/california/unemployment-rate/"]')).toBeNull();
+    expect(get.mock.calls.some(([url]) => url === '/world/united-states/regions/region/california/unemployment-rate')).toBe(false);
   });
 });
 
@@ -232,6 +234,8 @@ describe('WorldRegionIndicatorPage', () => {
     expect(screen.getByLabelText('Скачать Excel')).toBeTruthy();
     expect(screen.getByLabelText('Скачать график картинкой')).toBeTruthy();
     expect(screen.getByText('Таблица значений по годам')).toBeTruthy();
+    expect(document.querySelector('a[href^="/united-states/region/california/unemployment-rate/"]')).toBeNull();
+    expect(document.querySelector('a[href^="/united-states/indicator/us-unemployment-rate/"]')).toBeNull();
     expect(screen.getByRole('link', { name: /Сравнить с США/ }).getAttribute('href'))
       .toBe('/compare?codes=w:united-states:us-unemployment-rate,s:united-states:california:unemployment-rate');
   });

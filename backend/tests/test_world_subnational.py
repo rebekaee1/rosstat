@@ -521,6 +521,8 @@ def test_district_of_columbia_is_in_region_comparisons(subnational_client, auth_
     assert response.status_code == 200
     assert "Штаты и округ Колумбия" in response.text
     assert path in response.text
+    assert "Сравнить по годам" not in response.text
+    assert 'href="/united-states/region/california/unemployment-rate/2024"' not in response.text
 
 
 def test_country_region_paths():

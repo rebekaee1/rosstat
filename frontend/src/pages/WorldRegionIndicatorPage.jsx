@@ -25,11 +25,9 @@ import { worldSubnationalIndicatorTrail } from '../lib/breadcrumbs';
 import {
   RUSSIA,
   countryRegionIndicatorPath,
-  countryRegionIndicatorYearPath,
   countryRegionPath,
   countryRegionsPath,
   indicatorPath,
-  indicatorYearPath,
   regionIndicatorPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
@@ -161,10 +159,6 @@ export default function WorldRegionIndicatorPage() {
     () => (series.length ? [...series].reverse() : []),
     [series],
   );
-  const quickYears = useMemo(() => {
-    const years = [...new Set(series.map((point) => point.year))].sort((a, b) => a - b);
-    return years;
-  }, [series]);
 
   const requireAuth = (blockedEvent) => {
     if (isAuthed) return true;
@@ -474,22 +468,6 @@ export default function WorldRegionIndicatorPage() {
               </StatCell>
             )}
           </div>
-
-          {quickYears.length > 0 && (
-            <section className="fe-panel mb-6 rounded-xl border border-border-subtle bg-surface p-4">
-              <h2 className="mb-2 text-sm font-semibold text-text-primary">{locale === 'en' ? 'By year' : 'По годам'}</h2>
-              <div className="flex flex-wrap gap-2">
-                {quickYears.map((year) => (
-                  <a key={year} href={countryRegionIndicatorYearPath(countrySlug, slug, code, year)} className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne">{year}</a>
-                ))}
-              </div>
-              {payload.indicator.national_code && last && nationalSeries.some((point) => point.year === last.year) && (
-                <a href={indicatorYearPath(countrySlug, payload.indicator.national_code, last.year)} className="mt-3 inline-block text-xs text-champagne hover:underline">
-                  {locale === 'en' ? `United States, ${last.year}` : `США в целом, ${last.year}`}
-                </a>
-              )}
-            </section>
-          )}
 
           {rank?.top?.length > 0 && (
             <div data-block="world-region-rating" className="fe-panel mb-6 rounded-xl border border-border-subtle bg-surface p-4">
