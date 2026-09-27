@@ -1,0 +1,4729 @@
+{
+  "package-lock.json": {
+    "root_keys": [
+      "name",
+      "version",
+      "lockfileVersion",
+      "requires",
+      "packages"
+    ],
+    "lockfileVersion": 3,
+    "root_package_keys": [
+      "name",
+      "version",
+      "dependencies",
+      "devDependencies",
+      "engines"
+    ],
+    "package_count": 430,
+    "package_names": [
+      "",
+      "node_modules/@adobe/css-tools",
+      "node_modules/@asamuzakjp/css-color",
+      "node_modules/@asamuzakjp/css-color/node_modules/lru-cache",
+      "node_modules/@asamuzakjp/dom-selector",
+      "node_modules/@asamuzakjp/dom-selector/node_modules/lru-cache",
+      "node_modules/@asamuzakjp/nwsapi",
+      "node_modules/@babel/code-frame",
+      "node_modules/@babel/compat-data",
+      "node_modules/@babel/core",
+      "node_modules/@babel/generator",
+      "node_modules/@babel/helper-compilation-targets",
+      "node_modules/@babel/helper-globals",
+      "node_modules/@babel/helper-module-imports",
+      "node_modules/@babel/helper-module-transforms",
+      "node_modules/@babel/helper-plugin-utils",
+      "node_modules/@babel/helper-string-parser",
+      "node_modules/@babel/helper-validator-identifier",
+      "node_modules/@babel/helper-validator-option",
+      "node_modules/@babel/helpers",
+      "node_modules/@babel/parser",
+      "node_modules/@babel/plugin-transform-react-jsx-self",
+      "node_modules/@babel/plugin-transform-react-jsx-source",
+      "node_modules/@babel/runtime",
+      "node_modules/@babel/template",
+      "node_modules/@babel/traverse",
+      "node_modules/@babel/types",
+      "node_modules/@csstools/color-helpers",
+      "node_modules/@csstools/css-calc",
+      "node_modules/@csstools/css-color-parser",
+      "node_modules/@csstools/css-parser-algorithms",
+      "node_modules/@csstools/css-syntax-patches-for-csstree",
+      "node_modules/@csstools/css-tokenizer",
+      "node_modules/@esbuild/aix-ppc64",
+      "node_modules/@esbuild/android-arm",
+      "node_modules/@esbuild/android-arm64",
+      "node_modules/@esbuild/android-x64",
+      "node_modules/@esbuild/darwin-arm64",
+      "node_modules/@esbuild/darwin-x64",
+      "node_modules/@esbuild/freebsd-arm64",
+      "node_modules/@esbuild/freebsd-x64",
+      "node_modules/@esbuild/linux-arm",
+      "node_modules/@esbuild/linux-arm64",
+      "node_modules/@esbuild/linux-ia32",
+      "node_modules/@esbuild/linux-loong64",
+      "node_modules/@esbuild/linux-mips64el",
+      "node_modules/@esbuild/linux-ppc64",
+      "node_modules/@esbuild/linux-riscv64",
+      "node_modules/@esbuild/linux-s390x",
+      "node_modules/@esbuild/linux-x64",
+      "node_modules/@esbuild/netbsd-arm64",
+      "node_modules/@esbuild/netbsd-x64",
+      "node_modules/@esbuild/openbsd-arm64",
+      "node_modules/@esbuild/openbsd-x64",
+      "node_modules/@esbuild/openharmony-arm64",
+      "node_modules/@esbuild/sunos-x64",
+      "node_modules/@esbuild/win32-arm64",
+      "node_modules/@esbuild/win32-ia32",
+      "node_modules/@esbuild/win32-x64",
+      "node_modules/@eslint-community/eslint-utils",
+      "node_modules/@eslint-community/eslint-utils/node_modules/eslint-visitor-keys",
+      "node_modules/@eslint-community/regexpp",
+      "node_modules/@eslint/config-array",
+      "node_modules/@eslint/config-helpers",
+      "node_modules/@eslint/core",
+      "node_modules/@eslint/eslintrc",
+      "node_modules/@eslint/eslintrc/node_modules/globals",
+      "node_modules/@eslint/js",
+      "node_modules/@eslint/object-schema",
+      "node_modules/@eslint/plugin-kit",
+      "node_modules/@humanfs/core",
+      "node_modules/@humanfs/node",
+      "node_modules/@humanwhocodes/module-importer",
+      "node_modules/@humanwhocodes/retry",
+      "node_modules/@jridgewell/gen-mapping",
+      "node_modules/@jridgewell/remapping",
+      "node_modules/@jridgewell/resolve-uri",
+      "node_modules/@jridgewell/sourcemap-codec",
+      "node_modules/@jridgewell/trace-mapping",
+      "node_modules/@reduxjs/toolkit",
+      "node_modules/@reduxjs/toolkit/node_modules/immer",
+      "node_modules/@rolldown/pluginutils",
+      "node_modules/@rollup/rollup-android-arm-eabi",
+      "node_modules/@rollup/rollup-android-arm64",
+      "node_modules/@rollup/rollup-darwin-arm64",
+      "node_modules/@rollup/rollup-darwin-x64",
+      "node_modules/@rollup/rollup-freebsd-arm64",
+      "node_modules/@rollup/rollup-freebsd-x64",
+      "node_modules/@rollup/rollup-linux-arm-gnueabihf",
+      "node_modules/@rollup/rollup-linux-arm-musleabihf",
+      "node_modules/@rollup/rollup-linux-arm64-gnu",
+      "node_modules/@rollup/rollup-linux-arm64-musl",
+      "node_modules/@rollup/rollup-linux-loong64-gnu",
+      "node_modules/@rollup/rollup-linux-loong64-musl",
+      "node_modules/@rollup/rollup-linux-ppc64-gnu",
+      "node_modules/@rollup/rollup-linux-ppc64-musl",
+      "node_modules/@rollup/rollup-linux-riscv64-gnu",
+      "node_modules/@rollup/rollup-linux-riscv64-musl",
+      "node_modules/@rollup/rollup-linux-s390x-gnu",
+      "node_modules/@rollup/rollup-linux-x64-gnu",
+      "node_modules/@rollup/rollup-linux-x64-musl",
+      "node_modules/@rollup/rollup-openbsd-x64",
+      "node_modules/@rollup/rollup-openharmony-arm64",
+      "node_modules/@rollup/rollup-win32-arm64-msvc",
+      "node_modules/@rollup/rollup-win32-ia32-msvc",
+      "node_modules/@rollup/rollup-win32-x64-gnu",
+      "node_modules/@rollup/rollup-win32-x64-msvc",
+      "node_modules/@sentry-internal/browser-utils",
+      "node_modules/@sentry-internal/feedback",
+      "node_modules/@sentry-internal/replay",
+      "node_modules/@sentry-internal/replay-canvas",
+      "node_modules/@sentry/browser",
+      "node_modules/@sentry/core",
+      "node_modules/@sentry/react",
+      "node_modules/@standard-schema/spec",
+      "node_modules/@standard-schema/utils",
+      "node_modules/@tailwindcss/node",
+      "node_modules/@tailwindcss/oxide",
+      "node_modules/@tailwindcss/oxide-android-arm64",
+      "node_modules/@tailwindcss/oxide-darwin-arm64",
+      "node_modules/@tailwindcss/oxide-darwin-x64",
+      "node_modules/@tailwindcss/oxide-freebsd-x64",
+      "node_modules/@tailwindcss/oxide-linux-arm-gnueabihf",
+      "node_modules/@tailwindcss/oxide-linux-arm64-gnu",
+      "node_modules/@tailwindcss/oxide-linux-arm64-musl",
+      "node_modules/@tailwindcss/oxide-linux-x64-gnu",
+      "node_modules/@tailwindcss/oxide-linux-x64-musl",
+      "node_modules/@tailwindcss/oxide-wasm32-wasi",
+      "node_modules/@tailwindcss/oxide-win32-arm64-msvc",
+      "node_modules/@tailwindcss/oxide-win32-x64-msvc",
+      "node_modules/@tailwindcss/vite",
+      "node_modules/@tanstack/query-core",
+      "node_modules/@tanstack/react-query",
+      "node_modules/@testing-library/dom",
+      "node_modules/@testing-library/jest-dom",
+      "node_modules/@testing-library/jest-dom/node_modules/dom-accessibility-api",
+      "node_modules/@testing-library/react",
+      "node_modules/@types/aria-query",
+      "node_modules/@types/babel__core",
+      "node_modules/@types/babel__generator",
+      "node_modules/@types/babel__template",
+      "node_modules/@types/babel__traverse",
+      "node_modules/@types/chai",
+      "node_modules/@types/d3-array",
+      "node_modules/@types/d3-color",
+      "node_modules/@types/d3-ease",
+      "node_modules/@types/d3-interpolate",
+      "node_modules/@types/d3-path",
+      "node_modules/@types/d3-scale",
+      "node_modules/@types/d3-shape",
+      "node_modules/@types/d3-time",
+      "node_modules/@types/d3-timer",
+      "node_modules/@types/deep-eql",
+      "node_modules/@types/estree",
+      "node_modules/@types/json-schema",
+      "node_modules/@types/react",
+      "node_modules/@types/react-dom",
+      "node_modules/@types/use-sync-external-store",
+      "node_modules/@vitejs/plugin-react",
+      "node_modules/@vitest/expect",
+      "node_modules/@vitest/mocker",
+      "node_modules/@vitest/pretty-format",
+      "node_modules/@vitest/runner",
+      "node_modules/@vitest/snapshot",
+      "node_modules/@vitest/spy",
+      "node_modules/@vitest/utils",
+      "node_modules/acorn",
+      "node_modules/acorn-jsx",
+      "node_modules/agent-base",
+      "node_modules/ajv",
+      "node_modules/ansi-regex",
+      "node_modules/ansi-styles",
+      "node_modules/argparse",
+      "node_modules/aria-query",
+      "node_modules/assertion-error",
+      "node_modules/asynckit",
+      "node_modules/axios",
+      "node_modules/balanced-match",
+      "node_modules/baseline-browser-mapping",
+      "node_modules/bidi-js",
+      "node_modules/brace-expansion",
+      "node_modules/browserslist",
+      "node_modules/cac",
+      "node_modules/call-bind-apply-helpers",
+      "node_modules/callsites",
+      "node_modules/caniuse-lite",
+      "node_modules/chai",
+      "node_modules/chalk",
+      "node_modules/check-error",
+      "node_modules/clsx",
+      "node_modules/color-convert",
+      "node_modules/color-name",
+      "node_modules/combined-stream",
+      "node_modules/commander",
+      "node_modules/concat-map",
+      "node_modules/convert-source-map",
+      "node_modules/cookie",
+      "node_modules/cross-spawn",
+      "node_modules/css-tree",
+      "node_modules/css.escape",
+      "node_modules/cssstyle",
+      "node_modules/cssstyle/node_modules/lru-cache",
+      "node_modules/csstype",
+      "node_modules/d3-array",
+      "node_modules/d3-color",
+      "node_modules/d3-ease",
+      "node_modules/d3-format",
+      "node_modules/d3-geo",
+      "node_modules/d3-interpolate",
+      "node_modules/d3-path",
+      "node_modules/d3-scale",
+      "node_modules/d3-shape",
+      "node_modules/d3-time",
+      "node_modules/d3-time-format",
+      "node_modules/d3-timer",
+      "node_modules/data-urls",
+      "node_modules/data-urls/node_modules/whatwg-mimetype",
+      "node_modules/debug",
+      "node_modules/decimal.js",
+      "node_modules/decimal.js-light",
+      "node_modules/deep-eql",
+      "node_modules/deep-is",
+      "node_modules/delayed-stream",
+      "node_modules/dequal",
+      "node_modules/detect-libc",
+      "node_modules/dom-accessibility-api",
+      "node_modules/dunder-proto",
+      "node_modules/echarts",
+      "node_modules/electron-to-chromium",
+      "node_modules/enhanced-resolve",
+      "node_modules/entities",
+      "node_modules/es-define-property",
+      "node_modules/es-errors",
+      "node_modules/es-module-lexer",
+      "node_modules/es-object-atoms",
+      "node_modules/es-set-tostringtag",
+      "node_modules/es-toolkit",
+      "node_modules/esbuild",
+      "node_modules/escalade",
+      "node_modules/escape-string-regexp",
+      "node_modules/eslint",
+      "node_modules/eslint-plugin-react-hooks",
+      "node_modules/eslint-plugin-react-refresh",
+      "node_modules/eslint-scope",
+      "node_modules/eslint-visitor-keys",
+      "node_modules/espree",
+      "node_modules/esquery",
+      "node_modules/esrecurse",
+      "node_modules/estraverse",
+      "node_modules/estree-walker",
+      "node_modules/esutils",
+      "node_modules/eventemitter3",
+      "node_modules/expect-type",
+      "node_modules/fast-deep-equal",
+      "node_modules/fast-json-stable-stringify",
+      "node_modules/fast-levenshtein",
+      "node_modules/fdir",
+      "node_modules/file-entry-cache",
+      "node_modules/find-up",
+      "node_modules/flat-cache",
+      "node_modules/flatted",
+      "node_modules/follow-redirects",
+      "node_modules/form-data",
+      "node_modules/fsevents",
+      "node_modules/function-bind",
+      "node_modules/gensync",
+      "node_modules/get-intrinsic",
+      "node_modules/get-proto",
+      "node_modules/gifenc",
+      "node_modules/glob-parent",
+      "node_modules/globals",
+      "node_modules/gopd",
+      "node_modules/graceful-fs",
+      "node_modules/gsap",
+      "node_modules/has-flag",
+      "node_modules/has-symbols",
+      "node_modules/has-tostringtag",
+      "node_modules/hasown",
+      "node_modules/hermes-estree",
+      "node_modules/hermes-parser",
+      "node_modules/html-encoding-sniffer",
+      "node_modules/html-to-image",
+      "node_modules/http-proxy-agent",
+      "node_modules/https-proxy-agent",
+      "node_modules/iconv-lite",
+      "node_modules/ignore",
+      "node_modules/immer",
+      "node_modules/import-fresh",
+      "node_modules/imurmurhash",
+      "node_modules/indent-string",
+      "node_modules/internmap",
+      "node_modules/is-extglob",
+      "node_modules/is-glob",
+      "node_modules/is-potential-custom-element-name",
+      "node_modules/isexe",
+      "node_modules/jiti",
+      "node_modules/js-tokens",
+      "node_modules/js-yaml",
+      "node_modules/jsdom",
+      "node_modules/jsesc",
+      "node_modules/json-buffer",
+      "node_modules/json-schema-traverse",
+      "node_modules/json-stable-stringify-without-jsonify",
+      "node_modules/json5",
+      "node_modules/keyv",
+      "node_modules/levn",
+      "node_modules/lightningcss",
+      "node_modules/lightningcss-android-arm64",
+      "node_modules/lightningcss-darwin-arm64",
+      "node_modules/lightningcss-darwin-x64",
+      "node_modules/lightningcss-freebsd-x64",
+      "node_modules/lightningcss-linux-arm-gnueabihf",
+      "node_modules/lightningcss-linux-arm64-gnu",
+      "node_modules/lightningcss-linux-arm64-musl",
+      "node_modules/lightningcss-linux-x64-gnu",
+      "node_modules/lightningcss-linux-x64-musl",
+      "node_modules/lightningcss-win32-arm64-msvc",
+      "node_modules/lightningcss-win32-x64-msvc",
+      "node_modules/locate-path",
+      "node_modules/lodash.merge",
+      "node_modules/loupe",
+      "node_modules/lru-cache",
+      "node_modules/lucide-react",
+      "node_modules/lz-string",
+      "node_modules/magic-string",
+      "node_modules/math-intrinsics",
+      "node_modules/mdn-data",
+      "node_modules/mime-db",
+      "node_modules/mime-types",
+      "node_modules/min-indent",
+      "node_modules/minimatch",
+      "node_modules/ms",
+      "node_modules/nanoid",
+      "node_modules/natural-compare",
+      "node_modules/node-releases",
+      "node_modules/optionator",
+      "node_modules/p-limit",
+      "node_modules/p-locate",
+      "node_modules/parent-module",
+      "node_modules/parse5",
+      "node_modules/path-exists",
+      "node_modules/path-key",
+      "node_modules/pathe",
+      "node_modules/pathval",
+      "node_modules/picocolors",
+      "node_modules/picomatch",
+      "node_modules/playwright",
+      "node_modules/playwright-core",
+      "node_modules/playwright/node_modules/fsevents",
+      "node_modules/postcss",
+      "node_modules/prelude-ls",
+      "node_modules/pretty-format",
+      "node_modules/pretty-format/node_modules/ansi-styles",
+      "node_modules/pretty-format/node_modules/react-is",
+      "node_modules/proxy-from-env",
+      "node_modules/punycode",
+      "node_modules/react",
+      "node_modules/react-dom",
+      "node_modules/react-is",
+      "node_modules/react-redux",
+      "node_modules/react-refresh",
+      "node_modules/react-router",
+      "node_modules/react-router-dom",
+      "node_modules/recharts",
+      "node_modules/redent",
+      "node_modules/redux",
+      "node_modules/redux-thunk",
+      "node_modules/require-from-string",
+      "node_modules/reselect",
+      "node_modules/resolve-from",
+      "node_modules/rollup",
+      "node_modules/rrweb-cssom",
+      "node_modules/safer-buffer",
+      "node_modules/saxes",
+      "node_modules/scheduler",
+      "node_modules/semver",
+      "node_modules/set-cookie-parser",
+      "node_modules/shebang-command",
+      "node_modules/shebang-regex",
+      "node_modules/siginfo",
+      "node_modules/source-map-js",
+      "node_modules/stackback",
+      "node_modules/std-env",
+      "node_modules/strip-indent",
+      "node_modules/strip-json-comments",
+      "node_modules/strip-literal",
+      "node_modules/strip-literal/node_modules/js-tokens",
+      "node_modules/supports-color",
+      "node_modules/symbol-tree",
+      "node_modules/tailwindcss",
+      "node_modules/tapable",
+      "node_modules/tiny-invariant",
+      "node_modules/tinybench",
+      "node_modules/tinyexec",
+      "node_modules/tinyglobby",
+      "node_modules/tinypool",
+      "node_modules/tinyrainbow",
+      "node_modules/tinyspy",
+      "node_modules/tldts",
+      "node_modules/tldts-core",
+      "node_modules/topojson-client",
+      "node_modules/tough-cookie",
+      "node_modules/tr46",
+      "node_modules/tslib",
+      "node_modules/type-check",
+      "node_modules/update-browserslist-db",
+      "node_modules/uri-js",
+      "node_modules/use-sync-external-store",
+      "node_modules/victory-vendor",
+      "node_modules/vite",
+      "node_modules/vite-node",
+      "node_modules/vitest",
+      "node_modules/w3c-xmlserializer",
+      "node_modules/web-vitals",
+      "node_modules/webidl-conversions",
+      "node_modules/whatwg-encoding",
+      "node_modules/whatwg-mimetype",
+      "node_modules/whatwg-url",
+      "node_modules/which",
+      "node_modules/why-is-node-running",
+      "node_modules/word-wrap",
+      "node_modules/world-atlas",
+      "node_modules/ws",
+      "node_modules/xml-name-validator",
+      "node_modules/xmlchars",
+      "node_modules/yallist",
+      "node_modules/yocto-queue",
+      "node_modules/zod",
+      "node_modules/zod-validation-error",
+      "node_modules/zrender"
+    ],
+    "package_value_key_shapes": {
+      "dependencies,devDependencies,engines,name,version": 1,
+      "dev,integrity,license,resolved,version": 51,
+      "dependencies,dev,integrity,license,resolved,version": 20,
+      "dev,engines,integrity,license,resolved,version": 51,
+      "dependencies,dev,engines,integrity,license,resolved,version": 45,
+      "dependencies,dev,engines,funding,integrity,license,resolved,version": 13,
+      "dependencies,dev,engines,integrity,license,peerDependencies,resolved,version": 5,
+      "bin,dependencies,dev,engines,integrity,license,resolved,version": 3,
+      "dev,engines,funding,integrity,license,resolved,version": 15,
+      "dev,engines,funding,integrity,license,peerDependencies,resolved,version": 2,
+      "dependencies,dev,engines,funding,integrity,license,peerDependencies,resolved,version": 2,
+      "dev,funding,integrity,license,peerDependencies,peerDependenciesMeta,resolved,version": 1,
+      "cpu,dev,engines,integrity,license,optional,os,resolved,version": 37,
+      "dependencies,integrity,license,peerDependencies,peerDependenciesMeta,resolved,version": 2,
+      "funding,integrity,license,resolved,version": 4,
+      "cpu,dev,integrity,license,optional,os,resolved,version": 25,
+      "dependencies,engines,integrity,license,resolved,version": 21,
+      "engines,integrity,license,resolved,version": 14,
+      "dependencies,engines,integrity,license,peerDependencies,resolved,version": 2,
+      "integrity,license,resolved,version": 25,
+      "dev,engines,integrity,license,optionalDependencies,resolved,version": 1,
+      "bundleDependencies,cpu,dependencies,dev,engines,integrity,license,optional,resolved,version": 1,
+      "dependencies,dev,integrity,license,peerDependencies,resolved,version": 1,
+      "dependencies,funding,integrity,license,peerDependencies,resolved,version": 1,
+      "dependencies,dev,engines,integrity,license,peer,resolved,version": 2,
+      "dependencies,dev,engines,integrity,license,peerDependencies,peerDependenciesMeta,resolved,version": 2,
+      "dev,integrity,license,peer,resolved,version": 3,
+      "dependencies,integrity,license,resolved,version": 7,
+      "dependencies,devOptional,integrity,license,resolved,version": 1,
+      "dev,integrity,license,peerDependencies,resolved,version": 3,
+      "dependencies,dev,funding,integrity,license,resolved,version": 9,
+      "dependencies,dev,funding,integrity,license,peerDependencies,peerDependenciesMeta,resolved,version": 1,
+      "bin,dev,engines,integrity,license,resolved,version": 5,
+      "dev,engines,integrity,license,peer,resolved,version": 1,
+      "bin,dependencies,dev,engines,funding,integrity,license,resolved,version": 2,
+      "dev,funding,integrity,license,resolved,version": 2,
+      "engines,funding,integrity,license,resolved,version": 3,
+      "devOptional,integrity,license,resolved,version": 1,
+      "dependencies,dev,engines,integrity,license,peerDependenciesMeta,resolved,version": 1,
+      "integrity,license,resolved,version,workspaces": 1,
+      "bin,dev,engines,hasInstallScript,integrity,license,optionalDependencies,resolved,version": 1,
+      "bin,dependencies,dev,engines,funding,integrity,license,peerDependencies,peerDependenciesMeta,resolved,version": 2,
+      "dev,engines,integrity,license,peerDependencies,peerDependenciesMeta,resolved,version": 2,
+      "engines,funding,integrity,license,peerDependenciesMeta,resolved,version": 1,
+      "dev,engines,hasInstallScript,integrity,license,optional,os,resolved,version": 2,
+      "dependencies,engines,funding,integrity,license,resolved,version": 2,
+      "bin,dev,integrity,license,resolved,version": 2,
+      "bin,dependencies,dev,integrity,license,resolved,version": 2,
+      "dependencies,dev,engines,funding,integrity,license,optionalDependencies,resolved,version": 1,
+      "cpu,dev,engines,funding,integrity,license,optional,os,resolved,version": 11,
+      "integrity,license,peerDependencies,resolved,version": 3,
+      "bin,dev,integrity,license,peer,resolved,version": 1,
+      "bin,dev,engines,funding,integrity,license,resolved,version": 1,
+      "bin,dependencies,dev,engines,integrity,license,optionalDependencies,resolved,version": 2,
+      "dev,engines,funding,integrity,license,peer,resolved,version": 1,
+      "dependencies,integrity,license,peerDependencies,resolved,version": 1,
+      "integrity,license,peer,resolved,version": 1,
+      "dependencies,engines,integrity,license,peerDependencies,peerDependenciesMeta,resolved,version": 1,
+      "dependencies,engines,integrity,license,peerDependencies,resolved,version,workspaces": 1,
+      "bin,dependencies,integrity,license,resolved,version": 1,
+      "bin,dependencies,dev,funding,integrity,license,peerDependencies,resolved,version": 1,
+      "bin,dependencies,dev,engines,funding,integrity,license,optionalDependencies,peerDependencies,peerDependenciesMeta,resolved,version": 1,
+      "dependencies,deprecated,dev,engines,integrity,license,resolved,version": 1,
+      "dev,engines,integrity,license,peerDependencies,resolved,version": 1
+    },
+    "root_manifest_dependencies_equal": true,
+    "root_manifest_dev_dependencies_equal": true,
+    "missing_integrity": []
+  },
+  "src/lib/viewModelFamilies.generated.json": {
+    "family_count": 109,
+    "family_keys": [
+      "auto-loan-rate",
+      "birth-rate",
+      "births",
+      "brent",
+      "btc-usd",
+      "budget-deficit",
+      "budget-expenditure",
+      "budget-revenue",
+      "business-credit",
+      "capital-investment",
+      "cny-rub",
+      "coal",
+      "construction-work",
+      "consumer-credit",
+      "copper",
+      "corp-bond-index",
+      "credit-rate-corp-1to3y",
+      "credit-rate-corp-over3y",
+      "credit-rate-corp-short",
+      "credit-rate-ind-1to3y",
+      "credit-rate-ind-over3y",
+      "credit-rate-ind-short",
+      "current-account",
+      "death-rate",
+      "deaths",
+      "deposit-rate",
+      "deposit-rate-long",
+      "deposit-rate-medium",
+      "deposits-business",
+      "deposits-individual",
+      "depreciation-rate",
+      "doctoral-students",
+      "employment",
+      "eth-usd",
+      "eur-rub",
+      "eur-usd",
+      "exports",
+      "exports-monthly",
+      "external-debt",
+      "fdi-net",
+      "fuel-ai92",
+      "fuel-ai95",
+      "fuel-diesel",
+      "gbp-usd",
+      "gdp-consumption",
+      "gdp-government",
+      "gdp-investment",
+      "gdp-nominal",
+      "gdp-real",
+      "gold-price",
+      "grad-students",
+      "housing-affordability",
+      "housing-affordability-primary",
+      "housing-commissioned",
+      "imoex",
+      "imports",
+      "imports-monthly",
+      "innovation-activity",
+      "international-reserves",
+      "ipi",
+      "ipi-energy",
+      "ipi-manufacturing",
+      "ipi-mining",
+      "ipi-water",
+      "key-rate",
+      "labor-force",
+      "m0",
+      "m1",
+      "m2",
+      "mcftr",
+      "mortgage-rate",
+      "natural-gas",
+      "pensioners",
+      "pop-over-working-age",
+      "pop-under-working-age",
+      "population",
+      "population-migration",
+      "population-natural-growth",
+      "population-total-growth",
+      "rd-organizations",
+      "rd-personnel",
+      "retail-trade",
+      "rgbi",
+      "rtsi",
+      "ruonia",
+      "services-exports",
+      "services-exports-monthly",
+      "services-imports",
+      "services-imports-monthly",
+      "silver",
+      "small-business-innovation",
+      "sol-usd",
+      "soybean",
+      "tech-innovation-share",
+      "trade-balance",
+      "trade-balance-monthly",
+      "unemployment",
+      "usd-cny",
+      "usd-index",
+      "usd-rub",
+      "ust-10y",
+      "wages-nominal",
+      "wages-real",
+      "weo-budget-balance-gdp",
+      "weo-gdp-per-capita-usd",
+      "weo-gdp-usd",
+      "weo-government-debt-gdp",
+      "wheat",
+      "working-age-population"
+    ],
+    "family_field_shapes": {
+      "base,defaultMode,groups,modes,name,template,unit,variantAxis": 109
+    },
+    "group_field_shapes": {
+      "id,label,leaf": 368
+    },
+    "mode_field_shapes": {
+      "code,forecastable,frequency,group,isNative,label,mode,unit": 977
+    },
+    "template_counts": {
+      "T2y": 12,
+      "T10a": 11,
+      "T10": 13,
+      "T1": 21,
+      "T7": 1,
+      "T6": 10,
+      "T3": 12,
+      "T9": 10,
+      "T8": 9,
+      "T9s": 3,
+      "T4": 1,
+      "T5": 4,
+      "T12": 2
+    },
+    "mode_count": 977,
+    "base_mismatches": [],
+    "default_mode_not_in_modes": [],
+    "entries": {
+      "auto-loan-rate": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "auto-loan-rate",
+          "auto-loan-rate-eop-quarter",
+          "auto-loan-rate-eop-year",
+          "auto-loan-rate-avg-quarter",
+          "auto-loan-rate-avg-year",
+          "auto-loan-rate-mom",
+          "auto-loan-rate-qoq",
+          "auto-loan-rate-yoy",
+          "auto-loan-rate-yoy-quarter",
+          "auto-loan-rate-yoy-year",
+          "auto-loan-rate-yoy-year"
+        ]
+      },
+      "birth-rate": {
+        "template": "T10a",
+        "unit": "‰",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "birth-rate",
+          "birth-rate-yoy"
+        ]
+      },
+      "births": {
+        "template": "T10",
+        "unit": "тыс. чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "births",
+          "births-yoy",
+          "births-index"
+        ]
+      },
+      "brent": {
+        "template": "T1",
+        "unit": "USD/баррель",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "brent",
+          "brent-eop-week",
+          "brent-eop-month",
+          "brent-eop-quarter",
+          "brent-eop-year",
+          "brent-avg-week",
+          "brent-avg-month",
+          "brent-avg-quarter",
+          "brent-avg-year",
+          "brent-mom",
+          "brent-qoq",
+          "brent-yoy",
+          "brent-yoy-quarter",
+          "brent-yoy-year",
+          "brent-yoy-year"
+        ]
+      },
+      "btc-usd": {
+        "template": "T1",
+        "unit": "USD",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "btc-usd",
+          "btc-usd-eop-week",
+          "btc-usd-eop-month",
+          "btc-usd-eop-quarter",
+          "btc-usd-eop-year",
+          "btc-usd-avg-week",
+          "btc-usd-avg-month",
+          "btc-usd-avg-quarter",
+          "btc-usd-avg-year",
+          "btc-usd-mom",
+          "btc-usd-qoq",
+          "btc-usd-yoy",
+          "btc-usd-yoy-quarter",
+          "btc-usd-yoy-year",
+          "btc-usd-yoy-year"
+        ]
+      },
+      "budget-deficit": {
+        "template": "T7",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "budget-deficit",
+          "budget-deficit-sum-quarter",
+          "budget-deficit-sum-year",
+          "budget-deficit-mom",
+          "budget-deficit-qoq",
+          "budget-deficit-yoy",
+          "budget-deficit-yoy-quarter",
+          "budget-deficit-yoy-year",
+          "budget-deficit-yoy-year"
+        ]
+      },
+      "budget-expenditure": {
+        "template": "T6",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "budget-expenditure",
+          "budget-expenditure-sum-quarter",
+          "budget-expenditure-sum-year",
+          "budget-expenditure-mom",
+          "budget-expenditure-qoq",
+          "budget-expenditure-yoy",
+          "budget-expenditure-yoy-quarter",
+          "budget-expenditure-yoy-year",
+          "budget-expenditure-yoy-year"
+        ]
+      },
+      "budget-revenue": {
+        "template": "T6",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "budget-revenue",
+          "budget-revenue-sum-quarter",
+          "budget-revenue-sum-year",
+          "budget-revenue-mom",
+          "budget-revenue-qoq",
+          "budget-revenue-yoy",
+          "budget-revenue-yoy-quarter",
+          "budget-revenue-yoy-year",
+          "budget-revenue-yoy-year"
+        ]
+      },
+      "business-credit": {
+        "template": "T3",
+        "unit": "трлн руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "business-credit",
+          "business-credit-eop-quarter",
+          "business-credit-eop-year",
+          "business-credit-avg-quarter",
+          "business-credit-avg-year",
+          "business-credit-mom",
+          "business-credit-qoq",
+          "business-credit-yoy",
+          "business-credit-yoy-quarter",
+          "business-credit-yoy-year",
+          "business-credit-yoy-year"
+        ]
+      },
+      "capital-investment": {
+        "template": "T9",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "capital-investment",
+          "capital-investment-sum-year",
+          "capital-investment-qoq",
+          "capital-investment-yoy",
+          "capital-investment-yoy-year",
+          "capital-investment-yoy-year"
+        ]
+      },
+      "cny-rub": {
+        "template": "T1",
+        "unit": "руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "cny-rub",
+          "cny-rub-eop-week",
+          "cny-rub-eop-month",
+          "cny-rub-eop-quarter",
+          "cny-rub-eop-year",
+          "cny-rub-avg-week",
+          "cny-rub-avg-month",
+          "cny-rub-avg-quarter",
+          "cny-rub-avg-year",
+          "cny-rub-mom",
+          "cny-rub-qoq",
+          "cny-rub-yoy",
+          "cny-rub-yoy-quarter",
+          "cny-rub-yoy-year",
+          "cny-rub-yoy-year"
+        ]
+      },
+      "coal": {
+        "template": "T8",
+        "unit": "USD/т",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "coal",
+          "coal-avg-quarter",
+          "coal-avg-year",
+          "coal-mom",
+          "coal-qoq",
+          "coal-yoy",
+          "coal-yoy-quarter",
+          "coal-yoy-year",
+          "coal-yoy-year"
+        ]
+      },
+      "construction-work": {
+        "template": "T6",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "construction-work",
+          "construction-work-sum-quarter",
+          "construction-work-sum-year",
+          "construction-work-mom",
+          "construction-work-qoq",
+          "construction-work-yoy",
+          "construction-work-yoy-quarter",
+          "construction-work-yoy-year",
+          "construction-work-yoy-year"
+        ]
+      },
+      "consumer-credit": {
+        "template": "T3",
+        "unit": "трлн руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "consumer-credit",
+          "consumer-credit-eop-quarter",
+          "consumer-credit-eop-year",
+          "consumer-credit-avg-quarter",
+          "consumer-credit-avg-year",
+          "consumer-credit-mom",
+          "consumer-credit-qoq",
+          "consumer-credit-yoy",
+          "consumer-credit-yoy-quarter",
+          "consumer-credit-yoy-year",
+          "consumer-credit-yoy-year"
+        ]
+      },
+      "copper": {
+        "template": "T8",
+        "unit": "USD/т",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "copper",
+          "copper-avg-quarter",
+          "copper-avg-year",
+          "copper-mom",
+          "copper-qoq",
+          "copper-yoy",
+          "copper-yoy-quarter",
+          "copper-yoy-year",
+          "copper-yoy-year"
+        ]
+      },
+      "corp-bond-index": {
+        "template": "T1",
+        "unit": "пунктов",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "corp-bond-index",
+          "corp-bond-index-eop-week",
+          "corp-bond-index-eop-month",
+          "corp-bond-index-eop-quarter",
+          "corp-bond-index-eop-year",
+          "corp-bond-index-avg-week",
+          "corp-bond-index-avg-month",
+          "corp-bond-index-avg-quarter",
+          "corp-bond-index-avg-year",
+          "corp-bond-index-mom",
+          "corp-bond-index-qoq",
+          "corp-bond-index-yoy",
+          "corp-bond-index-yoy-quarter",
+          "corp-bond-index-yoy-year",
+          "corp-bond-index-yoy-year"
+        ]
+      },
+      "credit-rate-corp-1to3y": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "credit-rate-corp-1to3y",
+          "credit-rate-corp-1to3y-eop-quarter",
+          "credit-rate-corp-1to3y-eop-year",
+          "credit-rate-corp-1to3y-avg-quarter",
+          "credit-rate-corp-1to3y-avg-year",
+          "credit-rate-corp-1to3y-mom",
+          "credit-rate-corp-1to3y-qoq",
+          "credit-rate-corp-1to3y-yoy",
+          "credit-rate-corp-1to3y-yoy-quarter",
+          "credit-rate-corp-1to3y-yoy-year",
+          "credit-rate-corp-1to3y-yoy-year"
+        ]
+      },
+      "credit-rate-corp-over3y": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "credit-rate-corp-over3y",
+          "credit-rate-corp-over3y-eop-quarter",
+          "credit-rate-corp-over3y-eop-year",
+          "credit-rate-corp-over3y-avg-quarter",
+          "credit-rate-corp-over3y-avg-year",
+          "credit-rate-corp-over3y-mom",
+          "credit-rate-corp-over3y-qoq",
+          "credit-rate-corp-over3y-yoy",
+          "credit-rate-corp-over3y-yoy-quarter",
+          "credit-rate-corp-over3y-yoy-year",
+          "credit-rate-corp-over3y-yoy-year"
+        ]
+      },
+      "credit-rate-corp-short": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "credit-rate-corp-short",
+          "credit-rate-corp-short-eop-quarter",
+          "credit-rate-corp-short-eop-year",
+          "credit-rate-corp-short-avg-quarter",
+          "credit-rate-corp-short-avg-year",
+          "credit-rate-corp-short-mom",
+          "credit-rate-corp-short-qoq",
+          "credit-rate-corp-short-yoy",
+          "credit-rate-corp-short-yoy-quarter",
+          "credit-rate-corp-short-yoy-year",
+          "credit-rate-corp-short-yoy-year"
+        ]
+      },
+      "credit-rate-ind-1to3y": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "credit-rate-ind-1to3y",
+          "credit-rate-ind-1to3y-eop-quarter",
+          "credit-rate-ind-1to3y-eop-year",
+          "credit-rate-ind-1to3y-avg-quarter",
+          "credit-rate-ind-1to3y-avg-year",
+          "credit-rate-ind-1to3y-mom",
+          "credit-rate-ind-1to3y-qoq",
+          "credit-rate-ind-1to3y-yoy",
+          "credit-rate-ind-1to3y-yoy-quarter",
+          "credit-rate-ind-1to3y-yoy-year",
+          "credit-rate-ind-1to3y-yoy-year"
+        ]
+      },
+      "credit-rate-ind-over3y": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "credit-rate-ind-over3y",
+          "credit-rate-ind-over3y-eop-quarter",
+          "credit-rate-ind-over3y-eop-year",
+          "credit-rate-ind-over3y-avg-quarter",
+          "credit-rate-ind-over3y-avg-year",
+          "credit-rate-ind-over3y-mom",
+          "credit-rate-ind-over3y-qoq",
+          "credit-rate-ind-over3y-yoy",
+          "credit-rate-ind-over3y-yoy-quarter",
+          "credit-rate-ind-over3y-yoy-year",
+          "credit-rate-ind-over3y-yoy-year"
+        ]
+      },
+      "credit-rate-ind-short": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "credit-rate-ind-short",
+          "credit-rate-ind-short-eop-quarter",
+          "credit-rate-ind-short-eop-year",
+          "credit-rate-ind-short-avg-quarter",
+          "credit-rate-ind-short-avg-year",
+          "credit-rate-ind-short-mom",
+          "credit-rate-ind-short-qoq",
+          "credit-rate-ind-short-yoy",
+          "credit-rate-ind-short-yoy-quarter",
+          "credit-rate-ind-short-yoy-year",
+          "credit-rate-ind-short-yoy-year"
+        ]
+      },
+      "current-account": {
+        "template": "T9s",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "current-account",
+          "current-account-sum-year",
+          "current-account-qoq",
+          "current-account-yoy",
+          "current-account-yoy-year",
+          "current-account-yoy-year"
+        ]
+      },
+      "death-rate": {
+        "template": "T10a",
+        "unit": "‰",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "death-rate",
+          "death-rate-yoy"
+        ]
+      },
+      "deaths": {
+        "template": "T10",
+        "unit": "тыс. чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "deaths",
+          "deaths-yoy",
+          "deaths-index"
+        ]
+      },
+      "deposit-rate": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "deposit-rate",
+          "deposit-rate-eop-quarter",
+          "deposit-rate-eop-year",
+          "deposit-rate-avg-quarter",
+          "deposit-rate-avg-year",
+          "deposit-rate-mom",
+          "deposit-rate-qoq",
+          "deposit-rate-yoy",
+          "deposit-rate-yoy-quarter",
+          "deposit-rate-yoy-year",
+          "deposit-rate-yoy-year"
+        ]
+      },
+      "deposit-rate-long": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "deposit-rate-long",
+          "deposit-rate-long-eop-quarter",
+          "deposit-rate-long-eop-year",
+          "deposit-rate-long-avg-quarter",
+          "deposit-rate-long-avg-year",
+          "deposit-rate-long-mom",
+          "deposit-rate-long-qoq",
+          "deposit-rate-long-yoy",
+          "deposit-rate-long-yoy-quarter",
+          "deposit-rate-long-yoy-year",
+          "deposit-rate-long-yoy-year"
+        ]
+      },
+      "deposit-rate-medium": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "deposit-rate-medium",
+          "deposit-rate-medium-eop-quarter",
+          "deposit-rate-medium-eop-year",
+          "deposit-rate-medium-avg-quarter",
+          "deposit-rate-medium-avg-year",
+          "deposit-rate-medium-mom",
+          "deposit-rate-medium-qoq",
+          "deposit-rate-medium-yoy",
+          "deposit-rate-medium-yoy-quarter",
+          "deposit-rate-medium-yoy-year",
+          "deposit-rate-medium-yoy-year"
+        ]
+      },
+      "deposits-business": {
+        "template": "T3",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "deposits-business",
+          "deposits-business-eop-quarter",
+          "deposits-business-eop-year",
+          "deposits-business-avg-quarter",
+          "deposits-business-avg-year",
+          "deposits-business-mom",
+          "deposits-business-qoq",
+          "deposits-business-yoy",
+          "deposits-business-yoy-quarter",
+          "deposits-business-yoy-year",
+          "deposits-business-yoy-year"
+        ]
+      },
+      "deposits-individual": {
+        "template": "T3",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "deposits-individual",
+          "deposits-individual-eop-quarter",
+          "deposits-individual-eop-year",
+          "deposits-individual-avg-quarter",
+          "deposits-individual-avg-year",
+          "deposits-individual-mom",
+          "deposits-individual-qoq",
+          "deposits-individual-yoy",
+          "deposits-individual-yoy-quarter",
+          "deposits-individual-yoy-year",
+          "deposits-individual-yoy-year"
+        ]
+      },
+      "depreciation-rate": {
+        "template": "T10a",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "depreciation-rate",
+          "depreciation-rate-yoy"
+        ]
+      },
+      "doctoral-students": {
+        "template": "T10",
+        "unit": "чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "doctoral-students",
+          "doctoral-students-yoy",
+          "doctoral-students-index"
+        ]
+      },
+      "employment": {
+        "template": "T8",
+        "unit": "млн чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "employment",
+          "employment-avg-quarter",
+          "employment-avg-year",
+          "employment-mom",
+          "employment-qoq",
+          "employment-yoy",
+          "employment-yoy-quarter",
+          "employment-yoy-year",
+          "employment-yoy-year"
+        ]
+      },
+      "eth-usd": {
+        "template": "T1",
+        "unit": "USD",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "eth-usd",
+          "eth-usd-eop-week",
+          "eth-usd-eop-month",
+          "eth-usd-eop-quarter",
+          "eth-usd-eop-year",
+          "eth-usd-avg-week",
+          "eth-usd-avg-month",
+          "eth-usd-avg-quarter",
+          "eth-usd-avg-year",
+          "eth-usd-mom",
+          "eth-usd-qoq",
+          "eth-usd-yoy",
+          "eth-usd-yoy-quarter",
+          "eth-usd-yoy-year",
+          "eth-usd-yoy-year"
+        ]
+      },
+      "eur-rub": {
+        "template": "T1",
+        "unit": "руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "eur-rub",
+          "eur-rub-eop-week",
+          "eur-rub-eop-month",
+          "eur-rub-eop-quarter",
+          "eur-rub-eop-year",
+          "eur-rub-avg-week",
+          "eur-rub-avg-month",
+          "eur-rub-avg-quarter",
+          "eur-rub-avg-year",
+          "eur-rub-mom",
+          "eur-rub-qoq",
+          "eur-rub-yoy",
+          "eur-rub-yoy-quarter",
+          "eur-rub-yoy-year",
+          "eur-rub-yoy-year"
+        ]
+      },
+      "eur-usd": {
+        "template": "T1",
+        "unit": "USD",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "eur-usd",
+          "eur-usd-eop-week",
+          "eur-usd-eop-month",
+          "eur-usd-eop-quarter",
+          "eur-usd-eop-year",
+          "eur-usd-avg-week",
+          "eur-usd-avg-month",
+          "eur-usd-avg-quarter",
+          "eur-usd-avg-year",
+          "eur-usd-mom",
+          "eur-usd-qoq",
+          "eur-usd-yoy",
+          "eur-usd-yoy-quarter",
+          "eur-usd-yoy-year",
+          "eur-usd-yoy-year"
+        ]
+      },
+      "exports": {
+        "template": "T9",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "exports",
+          "exports-sum-year",
+          "exports-qoq",
+          "exports-yoy",
+          "exports-yoy-year",
+          "exports-yoy-year"
+        ]
+      },
+      "exports-monthly": {
+        "template": "T6",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "exports-monthly",
+          "exports-monthly-sum-quarter",
+          "exports-monthly-sum-year",
+          "exports-monthly-mom",
+          "exports-monthly-qoq",
+          "exports-monthly-yoy",
+          "exports-monthly-yoy-quarter",
+          "exports-monthly-yoy-year",
+          "exports-monthly-yoy-year"
+        ]
+      },
+      "external-debt": {
+        "template": "T4",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-year",
+          "avg-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "external-debt",
+          "external-debt-eop-year",
+          "external-debt-avg-year",
+          "external-debt-qoq",
+          "external-debt-yoy",
+          "external-debt-yoy-year",
+          "external-debt-yoy-year"
+        ]
+      },
+      "fdi-net": {
+        "template": "T9s",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "fdi-net",
+          "fdi-net-sum-year",
+          "fdi-net-qoq",
+          "fdi-net-yoy",
+          "fdi-net-yoy-year",
+          "fdi-net-yoy-year"
+        ]
+      },
+      "fuel-ai92": {
+        "template": "T5",
+        "unit": "руб./л",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "fuel-ai92",
+          "fuel-ai92-eop-month",
+          "fuel-ai92-eop-quarter",
+          "fuel-ai92-eop-year",
+          "fuel-ai92-avg-month",
+          "fuel-ai92-avg-quarter",
+          "fuel-ai92-avg-year",
+          "fuel-ai92-mom",
+          "fuel-ai92-qoq",
+          "fuel-ai92-yoy",
+          "fuel-ai92-yoy-quarter",
+          "fuel-ai92-yoy-year",
+          "fuel-ai92-yoy-year"
+        ]
+      },
+      "fuel-ai95": {
+        "template": "T5",
+        "unit": "руб./л",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "fuel-ai95",
+          "fuel-ai95-eop-month",
+          "fuel-ai95-eop-quarter",
+          "fuel-ai95-eop-year",
+          "fuel-ai95-avg-month",
+          "fuel-ai95-avg-quarter",
+          "fuel-ai95-avg-year",
+          "fuel-ai95-mom",
+          "fuel-ai95-qoq",
+          "fuel-ai95-yoy",
+          "fuel-ai95-yoy-quarter",
+          "fuel-ai95-yoy-year",
+          "fuel-ai95-yoy-year"
+        ]
+      },
+      "fuel-diesel": {
+        "template": "T5",
+        "unit": "руб./л",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "fuel-diesel",
+          "fuel-diesel-eop-month",
+          "fuel-diesel-eop-quarter",
+          "fuel-diesel-eop-year",
+          "fuel-diesel-avg-month",
+          "fuel-diesel-avg-quarter",
+          "fuel-diesel-avg-year",
+          "fuel-diesel-mom",
+          "fuel-diesel-qoq",
+          "fuel-diesel-yoy",
+          "fuel-diesel-yoy-quarter",
+          "fuel-diesel-yoy-year",
+          "fuel-diesel-yoy-year"
+        ]
+      },
+      "gbp-usd": {
+        "template": "T1",
+        "unit": "USD",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "gbp-usd",
+          "gbp-usd-eop-week",
+          "gbp-usd-eop-month",
+          "gbp-usd-eop-quarter",
+          "gbp-usd-eop-year",
+          "gbp-usd-avg-week",
+          "gbp-usd-avg-month",
+          "gbp-usd-avg-quarter",
+          "gbp-usd-avg-year",
+          "gbp-usd-mom",
+          "gbp-usd-qoq",
+          "gbp-usd-yoy",
+          "gbp-usd-yoy-quarter",
+          "gbp-usd-yoy-year",
+          "gbp-usd-yoy-year"
+        ]
+      },
+      "gdp-consumption": {
+        "template": "T9",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "gdp-consumption",
+          "gdp-consumption-sum-year",
+          "gdp-consumption-qoq",
+          "gdp-consumption-yoy",
+          "gdp-consumption-yoy-year",
+          "gdp-consumption-yoy-year"
+        ]
+      },
+      "gdp-government": {
+        "template": "T9",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "gdp-government",
+          "gdp-government-sum-year",
+          "gdp-government-qoq",
+          "gdp-government-yoy",
+          "gdp-government-yoy-year",
+          "gdp-government-yoy-year"
+        ]
+      },
+      "gdp-investment": {
+        "template": "T9",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "gdp-investment",
+          "gdp-investment-sum-year",
+          "gdp-investment-qoq",
+          "gdp-investment-yoy",
+          "gdp-investment-yoy-year",
+          "gdp-investment-yoy-year"
+        ]
+      },
+      "gdp-nominal": {
+        "template": "T9",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "gdp-nominal",
+          "gdp-nominal-annual",
+          "gdp-qoq",
+          "gdp-yoy",
+          "gdp-nominal-yoy-year",
+          "gdp-nominal-yoy-year"
+        ]
+      },
+      "gdp-real": {
+        "template": "T9",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "gdp-real",
+          "gdp-real-annual",
+          "gdp-real-qoq",
+          "gdp-real-yoy",
+          "gdp-real-yoy-year",
+          "gdp-real-yoy-year"
+        ]
+      },
+      "gold-price": {
+        "template": "T1",
+        "unit": "руб./г",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "gold-price",
+          "gold-price-eop-week",
+          "gold-price-eop-month",
+          "gold-price-eop-quarter",
+          "gold-price-eop-year",
+          "gold-price-avg-week",
+          "gold-price-avg-month",
+          "gold-price-avg-quarter",
+          "gold-price-avg-year",
+          "gold-price-mom",
+          "gold-price-qoq",
+          "gold-price-yoy",
+          "gold-price-yoy-quarter",
+          "gold-price-yoy-year",
+          "gold-price-yoy-year"
+        ]
+      },
+      "grad-students": {
+        "template": "T10",
+        "unit": "чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "grad-students",
+          "grad-students-yoy",
+          "grad-students-index"
+        ]
+      },
+      "housing-affordability": {
+        "template": "T12",
+        "unit": "индекс",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "housing-affordability",
+          "housing-affordability-eop-quarter",
+          "housing-affordability-eop-year",
+          "housing-affordability-avg-quarter",
+          "housing-affordability-avg-year",
+          "housing-affordability-mom",
+          "housing-affordability-qoq",
+          "housing-affordability-yoy",
+          "housing-affordability-yoy-quarter",
+          "housing-affordability-yoy-year",
+          "housing-affordability-yoy-year"
+        ]
+      },
+      "housing-affordability-primary": {
+        "template": "T12",
+        "unit": "индекс",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "housing-affordability-primary",
+          "housing-affordability-primary-eop-quarter",
+          "housing-affordability-primary-eop-year",
+          "housing-affordability-primary-avg-quarter",
+          "housing-affordability-primary-avg-year",
+          "housing-affordability-primary-mom",
+          "housing-affordability-primary-qoq",
+          "housing-affordability-primary-yoy",
+          "housing-affordability-primary-yoy-quarter",
+          "housing-affordability-primary-yoy-year",
+          "housing-affordability-primary-yoy-year"
+        ]
+      },
+      "housing-commissioned": {
+        "template": "T6",
+        "unit": "млн кв.м",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "housing-commissioned",
+          "housing-commissioned-sum-quarter",
+          "housing-commissioned-sum-year",
+          "housing-commissioned-mom",
+          "housing-commissioned-qoq",
+          "housing-commissioned-yoy",
+          "housing-commissioned-yoy-quarter",
+          "housing-commissioned-yoy-year",
+          "housing-commissioned-yoy-year"
+        ]
+      },
+      "imoex": {
+        "template": "T1",
+        "unit": "пунктов",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "imoex",
+          "imoex-eop-week",
+          "imoex-eop-month",
+          "imoex-eop-quarter",
+          "imoex-eop-year",
+          "imoex-avg-week",
+          "imoex-avg-month",
+          "imoex-avg-quarter",
+          "imoex-avg-year",
+          "imoex-mom",
+          "imoex-qoq",
+          "imoex-yoy",
+          "imoex-yoy-quarter",
+          "imoex-yoy-year",
+          "imoex-yoy-year"
+        ]
+      },
+      "imports": {
+        "template": "T9",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "imports",
+          "imports-sum-year",
+          "imports-qoq",
+          "imports-yoy",
+          "imports-yoy-year",
+          "imports-yoy-year"
+        ]
+      },
+      "imports-monthly": {
+        "template": "T6",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "imports-monthly",
+          "imports-monthly-sum-quarter",
+          "imports-monthly-sum-year",
+          "imports-monthly-mom",
+          "imports-monthly-qoq",
+          "imports-monthly-yoy",
+          "imports-monthly-yoy-quarter",
+          "imports-monthly-yoy-year",
+          "imports-monthly-yoy-year"
+        ]
+      },
+      "innovation-activity": {
+        "template": "T10a",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "innovation-activity",
+          "innovation-activity-yoy"
+        ]
+      },
+      "international-reserves": {
+        "template": "T5",
+        "unit": "млрд $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "international-reserves",
+          "international-reserves-eop-month",
+          "international-reserves-eop-quarter",
+          "international-reserves-eop-year",
+          "international-reserves-avg-month",
+          "international-reserves-avg-quarter",
+          "international-reserves-avg-year",
+          "international-reserves-mom",
+          "international-reserves-qoq",
+          "international-reserves-yoy",
+          "international-reserves-yoy-quarter",
+          "international-reserves-yoy-year",
+          "international-reserves-yoy-year"
+        ]
+      },
+      "ipi": {
+        "template": "T3",
+        "unit": "индекс",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "ipi",
+          "ipi-eop-quarter",
+          "ipi-eop-year",
+          "ipi-avg-quarter",
+          "ipi-avg-year",
+          "ipi-mom",
+          "ipi-qoq",
+          "ipi-yoy",
+          "ipi-yoy-quarter",
+          "ipi-yoy-year",
+          "ipi-yoy-year"
+        ]
+      },
+      "ipi-energy": {
+        "template": "T3",
+        "unit": "индекс",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "ipi-energy",
+          "ipi-energy-eop-quarter",
+          "ipi-energy-eop-year",
+          "ipi-energy-avg-quarter",
+          "ipi-energy-avg-year",
+          "ipi-energy-mom",
+          "ipi-energy-qoq",
+          "ipi-energy-yoy",
+          "ipi-energy-yoy-quarter",
+          "ipi-energy-yoy-year",
+          "ipi-energy-yoy-year"
+        ]
+      },
+      "ipi-manufacturing": {
+        "template": "T3",
+        "unit": "индекс",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "ipi-manufacturing",
+          "ipi-manufacturing-eop-quarter",
+          "ipi-manufacturing-eop-year",
+          "ipi-manufacturing-avg-quarter",
+          "ipi-manufacturing-avg-year",
+          "ipi-manufacturing-mom",
+          "ipi-manufacturing-qoq",
+          "ipi-manufacturing-yoy",
+          "ipi-manufacturing-yoy-quarter",
+          "ipi-manufacturing-yoy-year",
+          "ipi-manufacturing-yoy-year"
+        ]
+      },
+      "ipi-mining": {
+        "template": "T3",
+        "unit": "индекс",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "ipi-mining",
+          "ipi-mining-eop-quarter",
+          "ipi-mining-eop-year",
+          "ipi-mining-avg-quarter",
+          "ipi-mining-avg-year",
+          "ipi-mining-mom",
+          "ipi-mining-qoq",
+          "ipi-mining-yoy",
+          "ipi-mining-yoy-quarter",
+          "ipi-mining-yoy-year",
+          "ipi-mining-yoy-year"
+        ]
+      },
+      "ipi-water": {
+        "template": "T3",
+        "unit": "индекс",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "ipi-water",
+          "ipi-water-eop-quarter",
+          "ipi-water-eop-year",
+          "ipi-water-avg-quarter",
+          "ipi-water-avg-year",
+          "ipi-water-mom",
+          "ipi-water-qoq",
+          "ipi-water-yoy",
+          "ipi-water-yoy-quarter",
+          "ipi-water-yoy-year",
+          "ipi-water-yoy-year"
+        ]
+      },
+      "key-rate": {
+        "template": "T1",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "key-rate",
+          "key-rate-eop-week",
+          "key-rate-eop-month",
+          "key-rate-eop-quarter",
+          "key-rate-eop-year",
+          "key-rate-avg-week",
+          "key-rate-avg-month",
+          "key-rate-avg-quarter",
+          "key-rate-avg-year",
+          "key-rate-mom",
+          "key-rate-qoq",
+          "key-rate-yoy",
+          "key-rate-yoy-quarter",
+          "key-rate-yoy-year",
+          "key-rate-yoy-year"
+        ]
+      },
+      "labor-force": {
+        "template": "T8",
+        "unit": "млн чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "labor-force",
+          "labor-force-avg-quarter",
+          "labor-force-avg-year",
+          "labor-force-mom",
+          "labor-force-qoq",
+          "labor-force-yoy",
+          "labor-force-yoy-quarter",
+          "labor-force-yoy-year",
+          "labor-force-yoy-year"
+        ]
+      },
+      "m0": {
+        "template": "T3",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "m0",
+          "m0-eop-quarter",
+          "m0-eop-year",
+          "m0-avg-quarter",
+          "m0-avg-year",
+          "m0-mom",
+          "m0-qoq",
+          "m0-yoy",
+          "m0-yoy-quarter",
+          "m0-yoy-year",
+          "m0-yoy-year"
+        ]
+      },
+      "m1": {
+        "template": "T3",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "m1",
+          "m1-eop-quarter",
+          "m1-eop-year",
+          "m1-avg-quarter",
+          "m1-avg-year",
+          "m1-mom",
+          "m1-qoq",
+          "m1-yoy",
+          "m1-yoy-quarter",
+          "m1-yoy-year",
+          "m1-yoy-year"
+        ]
+      },
+      "m2": {
+        "template": "T3",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "m2",
+          "m2-eop-quarter",
+          "m2-eop-year",
+          "m2-avg-quarter",
+          "m2-avg-year",
+          "m2-mom",
+          "m2-qoq",
+          "m2-yoy",
+          "m2-yoy-quarter",
+          "m2-yoy-year",
+          "m2-yoy-year"
+        ]
+      },
+      "mcftr": {
+        "template": "T1",
+        "unit": "пунктов",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "mcftr",
+          "mcftr-eop-week",
+          "mcftr-eop-month",
+          "mcftr-eop-quarter",
+          "mcftr-eop-year",
+          "mcftr-avg-week",
+          "mcftr-avg-month",
+          "mcftr-avg-quarter",
+          "mcftr-avg-year",
+          "mcftr-mom",
+          "mcftr-qoq",
+          "mcftr-yoy",
+          "mcftr-yoy-quarter",
+          "mcftr-yoy-year",
+          "mcftr-yoy-year"
+        ]
+      },
+      "mortgage-rate": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "mortgage-rate",
+          "mortgage-rate-eop-quarter",
+          "mortgage-rate-eop-year",
+          "mortgage-rate-avg-quarter",
+          "mortgage-rate-avg-year",
+          "mortgage-rate-mom",
+          "mortgage-rate-qoq",
+          "mortgage-rate-yoy",
+          "mortgage-rate-yoy-quarter",
+          "mortgage-rate-yoy-year",
+          "mortgage-rate-yoy-year"
+        ]
+      },
+      "natural-gas": {
+        "template": "T1",
+        "unit": "USD/млн БТЕ",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "natural-gas",
+          "natural-gas-eop-week",
+          "natural-gas-eop-month",
+          "natural-gas-eop-quarter",
+          "natural-gas-eop-year",
+          "natural-gas-avg-week",
+          "natural-gas-avg-month",
+          "natural-gas-avg-quarter",
+          "natural-gas-avg-year",
+          "natural-gas-mom",
+          "natural-gas-qoq",
+          "natural-gas-yoy",
+          "natural-gas-yoy-quarter",
+          "natural-gas-yoy-year",
+          "natural-gas-yoy-year"
+        ]
+      },
+      "pensioners": {
+        "template": "T10",
+        "unit": "тыс. чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "pensioners",
+          "pensioners-yoy",
+          "pensioners-index"
+        ]
+      },
+      "pop-over-working-age": {
+        "template": "T10",
+        "unit": "млн чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "pop-over-working-age",
+          "pop-over-working-age-yoy",
+          "pop-over-working-age-index"
+        ]
+      },
+      "pop-under-working-age": {
+        "template": "T10",
+        "unit": "млн чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "pop-under-working-age",
+          "pop-under-working-age-yoy",
+          "pop-under-working-age-index"
+        ]
+      },
+      "population": {
+        "template": "T10",
+        "unit": "млн чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "population",
+          "population-yoy",
+          "population-index"
+        ]
+      },
+      "population-migration": {
+        "template": "T10a",
+        "unit": "тыс. чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "population-migration",
+          "population-migration-yoy"
+        ]
+      },
+      "population-natural-growth": {
+        "template": "T10a",
+        "unit": "тыс. чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "population-natural-growth",
+          "population-natural-growth-yoy"
+        ]
+      },
+      "population-total-growth": {
+        "template": "T10a",
+        "unit": "тыс. чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "population-total-growth",
+          "population-total-growth-yoy"
+        ]
+      },
+      "rd-organizations": {
+        "template": "T10",
+        "unit": "ед.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "rd-organizations",
+          "rd-organizations-yoy",
+          "rd-organizations-index"
+        ]
+      },
+      "rd-personnel": {
+        "template": "T10",
+        "unit": "чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "rd-personnel",
+          "rd-personnel-yoy",
+          "rd-personnel-index"
+        ]
+      },
+      "retail-trade": {
+        "template": "T6",
+        "unit": "млрд руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "retail-trade",
+          "retail-trade-sum-quarter",
+          "retail-trade-sum-year",
+          "retail-trade-mom",
+          "retail-trade-qoq",
+          "retail-trade-yoy",
+          "retail-trade-yoy-quarter",
+          "retail-trade-yoy-year",
+          "retail-trade-yoy-year"
+        ]
+      },
+      "rgbi": {
+        "template": "T1",
+        "unit": "пунктов",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "rgbi",
+          "rgbi-eop-week",
+          "rgbi-eop-month",
+          "rgbi-eop-quarter",
+          "rgbi-eop-year",
+          "rgbi-avg-week",
+          "rgbi-avg-month",
+          "rgbi-avg-quarter",
+          "rgbi-avg-year",
+          "rgbi-mom",
+          "rgbi-qoq",
+          "rgbi-yoy",
+          "rgbi-yoy-quarter",
+          "rgbi-yoy-year",
+          "rgbi-yoy-year"
+        ]
+      },
+      "rtsi": {
+        "template": "T1",
+        "unit": "пунктов",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "rtsi",
+          "rtsi-eop-week",
+          "rtsi-eop-month",
+          "rtsi-eop-quarter",
+          "rtsi-eop-year",
+          "rtsi-avg-week",
+          "rtsi-avg-month",
+          "rtsi-avg-quarter",
+          "rtsi-avg-year",
+          "rtsi-mom",
+          "rtsi-qoq",
+          "rtsi-yoy",
+          "rtsi-yoy-quarter",
+          "rtsi-yoy-year",
+          "rtsi-yoy-year"
+        ]
+      },
+      "ruonia": {
+        "template": "T1",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "ruonia",
+          "ruonia-eop-week",
+          "ruonia-eop-month",
+          "ruonia-eop-quarter",
+          "ruonia-eop-year",
+          "ruonia-avg-week",
+          "ruonia-avg-month",
+          "ruonia-avg-quarter",
+          "ruonia-avg-year",
+          "ruonia-mom",
+          "ruonia-qoq",
+          "ruonia-yoy",
+          "ruonia-yoy-quarter",
+          "ruonia-yoy-year",
+          "ruonia-yoy-year"
+        ]
+      },
+      "services-exports": {
+        "template": "T9",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "services-exports",
+          "services-exports-sum-year",
+          "services-exports-qoq",
+          "services-exports-yoy",
+          "services-exports-yoy-year",
+          "services-exports-yoy-year"
+        ]
+      },
+      "services-exports-monthly": {
+        "template": "T6",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "services-exports-monthly",
+          "services-exports-monthly-sum-quarter",
+          "services-exports-monthly-sum-year",
+          "services-exports-monthly-mom",
+          "services-exports-monthly-qoq",
+          "services-exports-monthly-yoy",
+          "services-exports-monthly-yoy-quarter",
+          "services-exports-monthly-yoy-year",
+          "services-exports-monthly-yoy-year"
+        ]
+      },
+      "services-imports": {
+        "template": "T9",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "services-imports",
+          "services-imports-sum-year",
+          "services-imports-qoq",
+          "services-imports-yoy",
+          "services-imports-yoy-year",
+          "services-imports-yoy-year"
+        ]
+      },
+      "services-imports-monthly": {
+        "template": "T6",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "services-imports-monthly",
+          "services-imports-monthly-sum-quarter",
+          "services-imports-monthly-sum-year",
+          "services-imports-monthly-mom",
+          "services-imports-monthly-qoq",
+          "services-imports-monthly-yoy",
+          "services-imports-monthly-yoy-quarter",
+          "services-imports-monthly-yoy-year",
+          "services-imports-monthly-yoy-year"
+        ]
+      },
+      "silver": {
+        "template": "T8",
+        "unit": "USD/унция",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "silver",
+          "silver-avg-quarter",
+          "silver-avg-year",
+          "silver-mom",
+          "silver-qoq",
+          "silver-yoy",
+          "silver-yoy-quarter",
+          "silver-yoy-year",
+          "silver-yoy-year"
+        ]
+      },
+      "small-business-innovation": {
+        "template": "T10a",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "small-business-innovation",
+          "small-business-innovation-yoy"
+        ]
+      },
+      "sol-usd": {
+        "template": "T1",
+        "unit": "USD",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "sol-usd",
+          "sol-usd-eop-week",
+          "sol-usd-eop-month",
+          "sol-usd-eop-quarter",
+          "sol-usd-eop-year",
+          "sol-usd-avg-week",
+          "sol-usd-avg-month",
+          "sol-usd-avg-quarter",
+          "sol-usd-avg-year",
+          "sol-usd-mom",
+          "sol-usd-qoq",
+          "sol-usd-yoy",
+          "sol-usd-yoy-quarter",
+          "sol-usd-yoy-year",
+          "sol-usd-yoy-year"
+        ]
+      },
+      "soybean": {
+        "template": "T8",
+        "unit": "USD/т",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "soybean",
+          "soybean-avg-quarter",
+          "soybean-avg-year",
+          "soybean-mom",
+          "soybean-qoq",
+          "soybean-yoy",
+          "soybean-yoy-quarter",
+          "soybean-yoy-year",
+          "soybean-yoy-year"
+        ]
+      },
+      "tech-innovation-share": {
+        "template": "T10a",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "tech-innovation-share",
+          "tech-innovation-share-yoy"
+        ]
+      },
+      "trade-balance": {
+        "template": "T9s",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-year",
+          "qoq",
+          "yoy",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "trade-balance",
+          "trade-balance-sum-year",
+          "trade-balance-qoq",
+          "trade-balance-yoy",
+          "trade-balance-yoy-year",
+          "trade-balance-yoy-year"
+        ]
+      },
+      "trade-balance-monthly": {
+        "template": "T6",
+        "unit": "млн $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "flow",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "sum-quarter",
+          "sum-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "trade-balance-monthly",
+          "trade-balance-monthly-sum-quarter",
+          "trade-balance-monthly-sum-year",
+          "trade-balance-monthly-mom",
+          "trade-balance-monthly-qoq",
+          "trade-balance-monthly-yoy",
+          "trade-balance-monthly-yoy-quarter",
+          "trade-balance-monthly-yoy-year",
+          "trade-balance-monthly-yoy-year"
+        ]
+      },
+      "unemployment": {
+        "template": "T2y",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-quarter",
+          "eop-year",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "unemployment",
+          "unemployment-eop-quarter",
+          "unemployment-eop-year",
+          "unemployment-avg-quarter",
+          "unemployment-avg-year",
+          "unemployment-mom",
+          "unemployment-qoq",
+          "unemployment-yoy",
+          "unemployment-yoy-quarter",
+          "unemployment-yoy-year",
+          "unemployment-yoy-year"
+        ]
+      },
+      "usd-cny": {
+        "template": "T1",
+        "unit": "CNY",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "usd-cny",
+          "usd-cny-eop-week",
+          "usd-cny-eop-month",
+          "usd-cny-eop-quarter",
+          "usd-cny-eop-year",
+          "usd-cny-avg-week",
+          "usd-cny-avg-month",
+          "usd-cny-avg-quarter",
+          "usd-cny-avg-year",
+          "usd-cny-mom",
+          "usd-cny-qoq",
+          "usd-cny-yoy",
+          "usd-cny-yoy-quarter",
+          "usd-cny-yoy-year",
+          "usd-cny-yoy-year"
+        ]
+      },
+      "usd-index": {
+        "template": "T1",
+        "unit": "пунктов",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "usd-index",
+          "usd-index-eop-week",
+          "usd-index-eop-month",
+          "usd-index-eop-quarter",
+          "usd-index-eop-year",
+          "usd-index-avg-week",
+          "usd-index-avg-month",
+          "usd-index-avg-quarter",
+          "usd-index-avg-year",
+          "usd-index-mom",
+          "usd-index-qoq",
+          "usd-index-yoy",
+          "usd-index-yoy-quarter",
+          "usd-index-yoy-year",
+          "usd-index-yoy-year"
+        ]
+      },
+      "usd-rub": {
+        "template": "T1",
+        "unit": "руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "usd-rub",
+          "usd-rub-eop-week",
+          "usd-rub-eop-month",
+          "usd-rub-eop-quarter",
+          "usd-rub-eop-year",
+          "usd-rub-avg-week",
+          "usd-rub-avg-month",
+          "usd-rub-avg-quarter",
+          "usd-rub-avg-year",
+          "usd-rub-mom",
+          "usd-rub-qoq",
+          "usd-rub-yoy",
+          "usd-rub-yoy-quarter",
+          "usd-rub-yoy-year",
+          "usd-rub-yoy-year"
+        ]
+      },
+      "ust-10y": {
+        "template": "T1",
+        "unit": "%",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "eop-week",
+          "eop-month",
+          "eop-quarter",
+          "eop-year",
+          "avg-week",
+          "avg-month",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "ust-10y",
+          "ust-10y-eop-week",
+          "ust-10y-eop-month",
+          "ust-10y-eop-quarter",
+          "ust-10y-eop-year",
+          "ust-10y-avg-week",
+          "ust-10y-avg-month",
+          "ust-10y-avg-quarter",
+          "ust-10y-avg-year",
+          "ust-10y-mom",
+          "ust-10y-qoq",
+          "ust-10y-yoy",
+          "ust-10y-yoy-quarter",
+          "ust-10y-yoy-year",
+          "ust-10y-yoy-year"
+        ]
+      },
+      "wages-nominal": {
+        "template": "T8",
+        "unit": "руб.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year"
+        ],
+        "codes": [
+          "wages-nominal",
+          "wages-nominal-avg-quarter",
+          "wages-nominal-annual",
+          "wages-nominal-mom",
+          "wages-nominal-qoq",
+          "wages-yoy",
+          "wages-nominal-yoy-quarter",
+          "wages-nominal-annual-yoy"
+        ]
+      },
+      "wages-real": {
+        "template": "T8",
+        "unit": "индекс",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year"
+        ],
+        "codes": [
+          "wages-real",
+          "wages-real-avg-quarter",
+          "wages-real-avg-year",
+          "wages-real-mom",
+          "wages-real-qoq",
+          "wages-real-yoy",
+          "wages-real-yoy-quarter",
+          "wages-real-yoy-year"
+        ]
+      },
+      "weo-budget-balance-gdp": {
+        "template": "T10a",
+        "unit": "% ВВП",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "weo-budget-balance-gdp",
+          "weo-budget-balance-gdp-yoy"
+        ]
+      },
+      "weo-gdp-per-capita-usd": {
+        "template": "T10",
+        "unit": "$ на человека",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "weo-gdp-per-capita-usd",
+          "weo-gdp-per-capita-usd-yoy",
+          "weo-gdp-per-capita-usd-index"
+        ]
+      },
+      "weo-gdp-usd": {
+        "template": "T10",
+        "unit": "млрд $",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "weo-gdp-usd",
+          "weo-gdp-usd-yoy",
+          "weo-gdp-usd-index"
+        ]
+      },
+      "weo-government-debt-gdp": {
+        "template": "T10a",
+        "unit": "% ВВП",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "yoy"
+        ],
+        "codes": [
+          "weo-government-debt-gdp",
+          "weo-government-debt-gdp-yoy"
+        ]
+      },
+      "wheat": {
+        "template": "T8",
+        "unit": "USD/т",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "avg",
+          "pop",
+          "yoy"
+        ],
+        "modes": [
+          "level",
+          "avg-quarter",
+          "avg-year",
+          "mom",
+          "qoq",
+          "yoy",
+          "yoy-quarter",
+          "yoy-year",
+          "pop-gg"
+        ],
+        "codes": [
+          "wheat",
+          "wheat-avg-quarter",
+          "wheat-avg-year",
+          "wheat-mom",
+          "wheat-qoq",
+          "wheat-yoy",
+          "wheat-yoy-quarter",
+          "wheat-yoy-year",
+          "wheat-yoy-year"
+        ]
+      },
+      "working-age-population": {
+        "template": "T10",
+        "unit": "млн чел.",
+        "variantAxis": null,
+        "defaultMode": "level",
+        "group_ids": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "modes": [
+          "level",
+          "yoy",
+          "index"
+        ],
+        "codes": [
+          "working-age-population",
+          "working-age-population-yoy",
+          "working-age-population-index"
+        ]
+      }
+    }
+  },
+  "src/lib/pageMeta.generated.json": {
+    "root_keys": [
+      "categories",
+      "en",
+      "pages",
+      "world"
+    ],
+    "ru_category_keys": [
+      "business",
+      "commodities",
+      "currencies",
+      "finance",
+      "gdp",
+      "indices",
+      "labor",
+      "population",
+      "prices",
+      "rates",
+      "science",
+      "trade"
+    ],
+    "en_category_keys": [
+      "business",
+      "commodities",
+      "currencies",
+      "finance",
+      "gdp",
+      "indices",
+      "labor",
+      "population",
+      "prices",
+      "rates",
+      "science",
+      "trade"
+    ],
+    "ru_page_keys": [
+      "about",
+      "calculator",
+      "calculator-compound",
+      "calculator-mortgage",
+      "calendar",
+      "compare",
+      "demographics",
+      "home",
+      "methodology",
+      "privacy",
+      "russia",
+      "russia-categories",
+      "terms",
+      "widgets"
+    ],
+    "en_page_keys": [
+      "about",
+      "calculator",
+      "calculator-compound",
+      "calculator-mortgage",
+      "calendar",
+      "compare",
+      "demographics",
+      "home",
+      "methodology",
+      "privacy",
+      "russia",
+      "russia-categories",
+      "terms",
+      "widgets"
+    ],
+    "ru_world_keys": [
+      "countryDescEurostatTemplate",
+      "countryDescNationalTemplate",
+      "countryGenitive",
+      "countryTitleTemplate"
+    ],
+    "en_world_keys": [
+      "countryDescEurostatTemplate",
+      "countryDescNationalTemplate",
+      "countryTitleTemplate",
+      "nIndicatorsMany",
+      "nIndicatorsOne"
+    ],
+    "category_field_shapes": {
+      "description,h1,intro,name,slug,title": 24
+    },
+    "page_field_shapes": {
+      "description,h1,intro,path,slug,title": 28
+    },
+    "category_locale_key_diff": [],
+    "page_locale_key_diff": [],
+    "country_genitive_keys": [
+      "albania",
+      "armenia",
+      "australia",
+      "austria",
+      "azerbaijan",
+      "belgium",
+      "bosnia",
+      "brazil",
+      "bulgaria",
+      "canada",
+      "china",
+      "croatia",
+      "cyprus",
+      "czechia",
+      "denmark",
+      "estonia",
+      "finland",
+      "france",
+      "georgia",
+      "germany",
+      "greece",
+      "hungary",
+      "iceland",
+      "india",
+      "ireland",
+      "israel",
+      "italy",
+      "japan",
+      "kosovo",
+      "latvia",
+      "lithuania",
+      "luxembourg",
+      "malta",
+      "mexico",
+      "moldova",
+      "montenegro",
+      "netherlands",
+      "new-zealand",
+      "north-macedonia",
+      "norway",
+      "poland",
+      "portugal",
+      "romania",
+      "serbia",
+      "slovakia",
+      "slovenia",
+      "south-africa",
+      "south-korea",
+      "spain",
+      "sweden",
+      "switzerland",
+      "turkey",
+      "ukraine",
+      "united-kingdom",
+      "united-states"
+    ]
+  },
+  "src/lib/regionsMap.json": {
+    "root_keys": [
+      "viewBox",
+      "regions",
+      "markers"
+    ],
+    "viewBox": "0 0 1000 538",
+    "region_count": 84,
+    "region_field_shapes": {
+      "path,slug": 84
+    },
+    "region_slugs": [
+      "respublika-buryatiya",
+      "karachaevo-cherkesskaya-respublika",
+      "sahalinskaya-oblast",
+      "voronezhskaya-oblast",
+      "tomskaya-oblast",
+      "novosibirskaya-oblast",
+      "nenetskiy-ao",
+      "magadanskaya-oblast",
+      "kamchatskiy-kray",
+      "primorskiy-kray",
+      "stavropolskiy-kray",
+      "altayskiy-kray",
+      "moskva",
+      "respublika-tyva",
+      "tambovskaya-oblast",
+      "sverdlovskaya-oblast",
+      "hanty-mansiyskiy-ao",
+      "chukotskiy-ao",
+      "tyumenskaya-oblast",
+      "vladimirskaya-oblast",
+      "moskovskaya-oblast",
+      "volgogradskaya-oblast",
+      "orenburgskaya-oblast",
+      "samarskaya-oblast",
+      "astrahanskaya-oblast",
+      "respublika-adygeya",
+      "respublika-kalmykiya",
+      "krasnodarskiy-kray",
+      "rostovskaya-oblast",
+      "murmanskaya-oblast",
+      "pskovskaya-oblast",
+      "sankt-peterburg",
+      "leningradskaya-oblast",
+      "respublika-mordoviya",
+      "respublika-tatarstan",
+      "kirovskaya-oblast",
+      "kostromskaya-oblast",
+      "tverskaya-oblast",
+      "tulskaya-oblast",
+      "kaluzhskaya-oblast",
+      "ulyanovskaya-oblast",
+      "respublika-mariy-el",
+      "smolenskaya-oblast",
+      "permskiy-kray",
+      "ivanovskaya-oblast",
+      "chuvashskaya-respublika",
+      "respublika-severnaya-osetiya",
+      "bryanskaya-oblast",
+      "penzenskaya-oblast",
+      "belgorodskaya-oblast",
+      "lipetskaya-oblast",
+      "novgorodskaya-oblast",
+      "arhangelskaya-oblast",
+      "nizhegorodskaya-oblast",
+      "kurganskaya-oblast",
+      "kurskaya-oblast",
+      "zabaykalskiy-kray",
+      "respublika-altay",
+      "ryazanskaya-oblast",
+      "yamalo-nenetskiy-ao",
+      "krasnoyarskiy-kray",
+      "respublika-saha",
+      "respublika-dagestan",
+      "omskaya-oblast",
+      "respublika-komi",
+      "chechenskaya-respublika",
+      "kabardino-balkarskaya-respublika",
+      "saratovskaya-oblast",
+      "kaliningradskaya-oblast",
+      "orlovskaya-oblast",
+      "respublika-kareliya",
+      "irkutskaya-oblast",
+      "amurskaya-oblast",
+      "evreyskaya-ao",
+      "habarovskiy-kray",
+      "kemerovskaya-oblast",
+      "respublika-hakasiya",
+      "yaroslavskaya-oblast",
+      "udmurtskaya-respublika",
+      "vologodskaya-oblast",
+      "respublika-ingushetiya",
+      "chelyabinskaya-oblast",
+      "respublika-bashkortostan",
+      "respublika-krym"
+    ],
+    "marker_count": 3,
+    "marker_field_shapes": {
+      "cx,cy,slug": 3
+    },
+    "marker_slugs": [
+      "moskva",
+      "sankt-peterburg",
+      "sevastopol"
+    ]
+  },
+  "src/lib/usStatesMap.json": {
+    "root_keys": [
+      "viewBox",
+      "regions",
+      "markers"
+    ],
+    "viewBox": "0 0 960 600",
+    "region_count": 51,
+    "region_field_shapes": {
+      "path,slug": 51
+    },
+    "region_slugs": [
+      "alabama",
+      "alaska",
+      "arizona",
+      "colorado",
+      "florida",
+      "georgia",
+      "indiana",
+      "kansas",
+      "maine",
+      "massachusetts",
+      "minnesota",
+      "new-jersey",
+      "north-carolina",
+      "north-dakota",
+      "oklahoma",
+      "pennsylvania",
+      "south-dakota",
+      "texas",
+      "wyoming",
+      "connecticut",
+      "missouri",
+      "west-virginia",
+      "illinois",
+      "new-mexico",
+      "arkansas",
+      "california",
+      "delaware",
+      "district-of-columbia",
+      "hawaii",
+      "iowa",
+      "kentucky",
+      "maryland",
+      "michigan",
+      "mississippi",
+      "montana",
+      "new-hampshire",
+      "new-york",
+      "ohio",
+      "oregon",
+      "tennessee",
+      "utah",
+      "virginia",
+      "washington",
+      "wisconsin",
+      "nebraska",
+      "south-carolina",
+      "idaho",
+      "nevada",
+      "vermont",
+      "louisiana",
+      "rhode-island"
+    ],
+    "marker_count": 1,
+    "marker_field_shapes": {
+      "cx,cy,slug": 1
+    },
+    "marker_slugs": [
+      "district-of-columbia"
+    ]
+  },
+  "src/lib/track.js": {
+    "event_keys": {
+      "DOWNLOAD_CSV": "download_csv",
+      "DOWNLOAD_EXCEL": "download_excel",
+      "DOWNLOAD_ICAL": "download_ical",
+      "CHART_MODE_CHANGE": "chart_mode_change",
+      "CHART_RANGE_CHANGE": "chart_range_change",
+      "CHART_ZOOM": "chart_zoom",
+      "FORECAST_TOGGLE": "forecast_toggle",
+      "TABLE_SEARCH": "table_search",
+      "TABLE_SORT": "table_sort",
+      "TABLE_PAGE": "table_page",
+      "COMPARE_OPEN": "compare_open",
+      "COMPARE_CHANGE": "compare_change",
+      "COMPARE_RANGE": "compare_range",
+      "COMPARE_ADD": "compare_add",
+      "COMPARE_SEARCH": "compare_search",
+      "COMPARE_IMAGE_DOWNLOAD": "compare_image_download",
+      "COMPARE_IMAGE_BLOCKED": "compare_image_blocked",
+      "COMPARE_LIMIT_HIT": "compare_limit_hit",
+      "CHART_IMAGE_DOWNLOAD": "chart_image_download",
+      "CHART_IMAGE_BLOCKED": "chart_image_blocked",
+      "REGIONS_MAP_GIF_DOWNLOAD": "regions_map_gif_download",
+      "REGIONS_MAP_GIF_BLOCKED": "regions_map_gif_blocked",
+      "CALC_DIRECTION": "calc_direction",
+      "CALC_PRESET": "calc_preset",
+      "CALC_SHARE": "calc_share",
+      "CALC_COPY_RESULT": "calc_copy_result",
+      "CALC_CHART_MODE": "calc_chart_mode",
+      "CALC_BREAKDOWN": "calc_breakdown",
+      "CALC_MORTGAGE": "calc_mortgage",
+      "CALC_COMPOUND": "calc_compound",
+      "FAQ_TOGGLE": "faq_toggle",
+      "CALENDAR_MONTH_NAV": "calendar_month_nav",
+      "CALENDAR_SOURCE_FILTER": "calendar_source_filter",
+      "CALENDAR_DAY_SELECT": "calendar_day_select",
+      "CALENDAR_CLEAR_DAY": "calendar_clear_day",
+      "DEMOGRAPHICS_CHART_TYPE": "demographics_chart_type",
+      "DEMOGRAPHICS_CSV": "demographics_csv",
+      "EMBED_TYPE_CHANGE": "embed_type_change",
+      "EMBED_INDICATOR_SELECT": "embed_indicator_select",
+      "EMBED_PERIOD_CHANGE": "embed_period_change",
+      "EMBED_THEME_CHANGE": "embed_theme_change",
+      "EMBED_SIZE_CHANGE": "embed_size_change",
+      "EMBED_OPTION_TOGGLE": "embed_option_toggle",
+      "EMBED_CODE_TAB": "embed_code_tab",
+      "EMBED_CODE_COPY": "embed_code_copy",
+      "NAV_CATEGORY_OPEN": "nav_category_open",
+      "NAV_MOBILE_TOGGLE": "nav_mobile_toggle",
+      "NAV_LINK_CLICK": "nav_link_click",
+      "HOME_CATEGORY_CLICK": "home_category_click",
+      "HOME_INDICATOR_CLICK": "home_indicator_click",
+      "HOME_TODAY_CLICK": "home_today_click",
+      "HOME_WORKBENCH_TAB": "home_workbench_tab",
+      "HOME_REGIONS_METRIC": "home_regions_metric",
+      "HOME_REGIONS_CTA": "home_regions_cta",
+      "HOME_COUNTRIES_METRIC": "home_countries_metric",
+      "HOME_COUNTRIES_MACROREGION": "home_countries_macroregion",
+      "HOME_COUNTRIES_CTA": "home_countries_cta",
+      "HOME_COUNTRIES_MAP_SELECT": "home_countries_map_select",
+      "WORLD_RATING_FILTER": "world_rating_filter",
+      "WORLD_RATING_COMPARE_ADD": "world_rating_compare_add",
+      "CATEGORY_TILE_CLICK": "category_tile_click",
+      "RELATED_INDICATOR_CLICK": "related_indicator_click",
+      "BREADCRUMB_CLICK": "breadcrumb_click",
+      "RELATED_LINK_CLICK": "related_link_click",
+      "SCROLL_DEPTH": "scroll_depth",
+      "FORECAST_VIEW": "forecast_view",
+      "SOURCE_LINK_CLICK": "source_link_click",
+      "API_LOAD_ERROR": "api_load_error",
+      "EMPTY_STATE": "empty_state",
+      "EMBED_RUNTIME_VIEW": "embed_runtime_view",
+      "EXPERIMENT_EXPOSURE": "experiment_exposure",
+      "INDICATOR_VIEW": "indicator_view",
+      "FREQUENCY_SWITCH": "frequency_switch",
+      "OUTBOUND_LINK": "outbound_link",
+      "CONTACT_EMAIL": "contact_email",
+      "CONSENT_UPDATE": "consent_update",
+      "API_RETRY": "api_retry",
+      "ERROR_RELOAD": "error_reload",
+      "AUTH_SIGNUP": "signup",
+      "AUTH_LOGIN": "login_success",
+      "OAUTH_START": "oauth_start",
+      "NEWSLETTER_OPT_IN": "newsletter_opt_in",
+      "NEWSLETTER_OPT_OUT": "newsletter_opt_out",
+      "DOWNLOAD_LIMIT_HIT": "download_limit",
+      "REGISTER_NUDGE_VIEW": "register_nudge_view",
+      "REGISTER_NUDGE_EXPAND": "register_nudge_expand",
+      "REGISTER_NUDGE_CTA": "register_nudge_cta",
+      "HEADER_LOGIN_CLICK": "header_login_click",
+      "HEADER_REGISTER_CLICK": "header_register_click",
+      "FEEDBACK_NUDGE_VIEW": "feedback_nudge_view",
+      "FEEDBACK_NUDGE_EXPAND": "feedback_nudge_expand",
+      "FEEDBACK_NUDGE_CTA": "feedback_nudge_cta",
+      "FEEDBACK_SUBMIT": "feedback_submit",
+      "SEARCH_QUERY": "search_query",
+      "SEARCH_SELECT": "search_select",
+      "SEARCH_ABANDON": "search_abandon",
+      "METHODOLOGY_CLICK": "methodology_click",
+      "REGIONS_VIEW_TOGGLE": "regions_view_toggle",
+      "REGIONS_MAP_METRIC": "regions_map_metric",
+      "REGIONS_MAP_SELECT": "regions_map_select",
+      "REGIONS_MAP_TIMELINE": "regions_map_timeline",
+      "REGIONS_CONTRASTS_SHUFFLE": "regions_contrasts_shuffle",
+      "REGION_COMPARE_ADD": "region_compare_add",
+      "REGION_CROSSLINK_CLICK": "region_crosslink_click",
+      "REGION_INDICATOR_VIEW": "region_indicator_view"
+    },
+    "count": 105
+  }
+}

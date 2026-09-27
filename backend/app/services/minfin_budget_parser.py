@@ -591,7 +591,7 @@ class MinfinBudgetParser(BaseParser):
        `data-YYYYMMDDTHHMM-structure-…csv` *in-place*, не меняя URL.
        Timestamp в имени = дата создания паспорта, не snapshot content.
        Контрмеры: 2× daily ETL + лог last_parsed vs last_db.
-    2. Intermittent 503 on catalog: Minfin-specific Retry(total=8), process
+    2. Intermittent 503 on catalog: Minfin-specific Retry(total=1, connect=1, read=1), process
        TTL cache of CSV URL (shared by 3 indicators), last-good URL in state
        Redis. Canonical CSV path NEVER uses `/ru/` (that path 404s).
     """

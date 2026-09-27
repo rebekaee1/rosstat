@@ -1,11 +1,17 @@
 # Yandex Metrika Logs API Inventory
 
-**Last verified:** 2026-05-22 (sanity-check, статус без изменений).
-**Implementation status:** `partial` — `app/services/yandex_metrika_logs.py`.
-Реализовано: `list_requests`, `create_request`, `request_info`, `download_part`,
-`clean_request`. Не реализовано: fields catalog (`logs_fields_catalog`) и
-автоматическая нормализация скачанных TSV в `raw_metrika_visits/hits` —
-сейчас `download_part` возвращает сырой ответ, ingest-pipeline предстоит дописать.
+**Сверка реализации:** 2026-09-27, локальная main; live API в этом проходе не запрашивался.
+**Implementation status:** `partial` — транспорт `app/services/yandex_metrika_logs.py`
+реализует `list_requests`, `create_request`, `request_info`, `download_part`, `clean_request`.
+Нормализация **visits уже реализована** в `metrika_acquisition.py::parse_visits_tsv`,
+`_upsert_visit`, `sync_visits_for_day`: TSV → `raw_metrika_visits`, хэширование client ID,
+повторяемый upsert по counter/visit ID. Scheduler вызывает acquisition sync при
+соответствующих флагах; наличие кода не означает, что job включён в каждом окружении.
+Fields catalog и полноценный ingest `raw_metrika_hits` остаются отдельным пробелом.
+Таблица ниже сохраняет исходный целевой inventory API; названия MCP tools в ней
+не означают, что каждый метод опубликован нынешним MCP сервером (его реестр —
+`mcp/forecast-analytics-mcp/src/index.ts`). Прежняя запись 2026-05-22 о том, что весь
+TSV ingest ещё предстоит написать, устарела для visits.
 
 Base URL: `https://api-metrika.yandex.net`.
 

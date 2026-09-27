@@ -26,7 +26,7 @@
 
 - Всего кодов: **947**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
-- shadowed_legacy (мёртвая легаси-ветка): **24**
+- shadowed_legacy (перекрытая standalone-ветка): **24**
 - unresolved (нет ui_stack): **3**
 - derived_not_seeded: **0**
 
@@ -991,7 +991,7 @@
 
 # Аудит полноты семейств — паспорт полноты
 
-> Генерируется `scripts/build-indicator-index.py` (модуль `scripts/completeness.py`). НЕ редактировать руками. Read-only аудит: пробел = КАНДИДАТ на добавление режима, не дефект — владелец решает, осмыслен ли он для природы ряда. Ожидания — таблица `MAXIMAL_BY_NATURE` в `completeness.py` (единая точка истины). Доменная модель — `CONTEXT.md::Матрица представлений`.
+> Генерируется `scripts/build-indicator-index.py` (модуль `scripts/completeness.py`). НЕ редактировать руками. Read-only аудит: пробел = КАНДИДАТ на добавление режима, не дефект — владелец решает, осмыслен ли он для природы ряда. Ожидания — функция `expected_matrix` в `completeness.py` (единая точка истины). Доменная модель — `CONTEXT.md::Матрица представлений`.
 
 ## Оси матрицы
 

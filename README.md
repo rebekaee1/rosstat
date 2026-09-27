@@ -120,7 +120,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 |--------|------------|
 | `/indicators/*` | список / детали / точки / статистика / прогноз / накопленная инфляция (CPI) |
 | `/calendar/*` | публикации в диапазоне, ближайшие, iCal-фид (источник: ADR-0005) |
-| `/ticker/live` | live снимок USD/EUR/CNY/BTC/Brent из Redis (TTL 30с, MOEX + Binance + CBR fallback) |
+| `/ticker/live` | live снимок USD/EUR/CNY/BTC/Brent из Redis (TTL 90с, MOEX + Binance + CBR fallback) |
 | `/embed/*` | spark/card/badge SVG-виджеты + impression-pixel |
 | `/dashboard/sparklines` | bundle sparkline'ов главной |
 | `/analytics/*` | Forecast Analytics OS (Yandex.* через MCP, требует токен) |
@@ -224,9 +224,9 @@ rosstat/
 
 | Процесс | Как |
 |---------|-----|
-| Миграции БД | `entrypoint.sh` → `alembic upgrade head` при каждом старте |
-| Первичный seed | `entrypoint.sh` → идемпотентный `seed_data.py` |
-| Startup catch-up | `app/main.py::_catch_up_empty_indicators()` — после lifespan startup догоняет ETL для всех `is_active=true` индикаторов с 0 точками (новые индикаторы дотягиваются без ручного `run_etl_for_indicator`) |
+| Миграции БД | Web-role `entrypoint.sh` → `alembic upgrade head`; scheduler-role пропускает миграции/seed |
+| Первичный seed | Web-role `entrypoint.sh` → идемпотентный `seed_data.py` |
+| Startup catch-up | `app/main.py::_catch_up_empty_indicators()` — в отдельной scheduler-role после lifespan startup догоняет ETL для всех `is_active=true` индикаторов с 0 точками (новые индикаторы дотягиваются без ручного `run_etl_for_indicator`) |
 | Ежедневный ETL | Отдельный scheduler: cron 06:00 и 20:00 MSK (активные российские source-ряды через `PARSER_REGISTRY`) + late-Minfin 15:00 |
 | Calendar refresh | APScheduler daily 03:00 MSK: official-source ingest, rolling 12 мес, public official-only |
 | Forecast retrain | Изменения, ревизии и поддерживаемые удаления факта проходят `BaseParser` → retrain pipeline |

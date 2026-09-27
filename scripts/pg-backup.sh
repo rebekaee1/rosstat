@@ -6,17 +6,17 @@
 #   2) Отдельный data-only SQL identity-таблиц (.identity.sql.gz) — подстраховка
 #      «пользователи никогда не теряются» (users / email_credentials /
 #      oauth_identities / consents / auth_audit). Plain SQL читается глазами и
-#      грузится в любую новую БД независимо от схемы.
+#      требует заранее созданной совместимой схемы и проверки связности.
 #
 # Персистентность БД между редеплоями обеспечивает docker volume `postgres_data`
 # (см. docker-compose.yml). Этот скрипт — дополнительный слой на случай порчи тома.
 #
-# Восстановление (полный dump):
-#   docker compose exec -T postgres pg_restore -U rustats -d rustats --clean --if-exists < FILE.dump
-# Восстановление только пользователей (identity SQL):
-#   gunzip -c FILE.identity.sql.gz | docker compose exec -T postgres psql -U rustats -d rustats
+# Проверочное восстановление — в отдельный изолированный контейнер/том,
+# не поверх рабочей БД. Полный рецепт: docs/workflow.md::Git и окружения.
+# Identity SQL требует отдельной чистой совместимой схемы.
 #
-# Cron (прод): 0 4 * * *  /opt/rosstat/scripts/pg-backup.sh >> /var/log/pg-backup.log 2>&1
+# Cron (снимок 2026-09-27): 0 4 * * * /opt/rosstat/scripts/pg-backup.sh
+# Host timezone Etc/UTC: это 04:00 UTC / 07:00 МСК; TZ backend cron не меняет.
 #
 # Наблюдаемость (Н-10): heartbeat в Telegram при успехе (размеры дампов) и
 # алерт при любом сбое (trap ERR). Токен/чат берутся из .env compose-каталога

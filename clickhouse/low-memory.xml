@@ -1,4 +1,4 @@
-<!-- Low-memory профиль для ClickHouse в контейнере с лимитом ~1 ГБ.
+<!-- Low-memory профиль для ClickHouse в контейнере с лимитом 448 MiB (docker-compose.yml; срез 2026-09-27).
      Без него baseline сервера (кэши, пулы потоков) съедает почти весь
      cgroup-лимит и любой GROUP BY падает с MEMORY_LIMIT_EXCEEDED (code 241).
      Роль слоя — OLAP-копия небольшого Postgres (ADR-0010), большие кэши

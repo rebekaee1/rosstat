@@ -1,5 +1,8 @@
 {
   "schema_version": 1,
+  "status": "historical",
+  "superseded_by": "docs/code-review/reviews.jsonl",
+  "historical_note": "Initial selective review retained with its original fingerprints and claims. Current per-file review has a separate SHA/definition coverage guard; this record is not refreshed by structural extraction.",
   "kind": "Reviewed semantic evidence; separate from machine extraction",
   "baseline_commit": "b684290067bf51f02076a43c59daaa241efe396f",
   "reviewed_on": "2026-09-27",

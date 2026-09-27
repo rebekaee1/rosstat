@@ -4,19 +4,19 @@
 
 [Локальный интерактивный просмотр — после `--render`](project-terrain.html) · [JSON](project-terrain.json) · [Архитектура](architecture.md) · [Контракты](data-contracts.md) · [История решений](architecture-history.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `a33696f734da`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `f8e239a3fca1`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
 
 ## Покрытие
 
 | Измерение | Число |
 |---|---:|
-| Файлы в инвентаризации | 1281 |
-| Переданы структурному экстрактору | 1089 |
-| Дали узлы графа | 1018 |
-| Узлы / связи между символами | 13149 / 41099 |
-| Связи между файлами (тип и уверенность сохраняются) | 8554 |
+| Файлы в инвентаризации | 1287 |
+| Переданы структурному экстрактору | 1095 |
+| Дали узлы графа | 1023 |
+| Узлы / связи между символами | 13233 / 41277 |
+| Связи между файлами (тип и уверенность сохраняются) | 8579 |
 
-Исходники, шаблоны и стили: **976** файлов; узлы есть у **967**, из них **72** дали только один файловый узел. Смысловые свидетельства с проверенными основаниями относятся к **68** файлам (включая документы), а не ко всем функциям проекта. Успешный прогон тестов не измеряет полноту этого разбора.
+Исходники, шаблоны и стили: **980** файлов; узлы есть у **971**, из них **72** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
 
 Полная инвентаризация относится к Git-дереву. Наличие в списке не означает, что каждый файл прошёл содержательный аудит. `nodes` — экстрактор нашёл структуру; `no_nodes` — файл прочитан экстрактором, но сущностей не получено; `inventory_only` — учтён без разбора структуры. Бинарные материалы, конфиги и данные включены в инвентарь; визуальное содержание скриншотов не анализировалось.
 
@@ -24,7 +24,7 @@
 
 Просмотрщик начинается с групп исходников и матрицы связей между ними. Группировка детерминированная по путям файлов (`layer_for`); каждый файл входит ровно в одну группу, остаток виден в «Других файлах». Это технические слои, а не автоматически доказанные бизнес-домены. Ячейки матрицы суммируют только извлечённые связи; отсутствие ребра frontend→API не отменяет HTTP-вызов. Сквозные потоки через HTTP, БД, Redis и расписания описаны в архитектуре и контрактах.
 
-| Группа | Файлов | Исходников | С узлами | Файлов со смысловыми свидетельствами |
+| Группа | Файлов | Исходников | С узлами | Оснований в историческом смысловом графе |
 |---|---:|---:|---:|---:|
 | Браузер: страницы и компоненты | 118 | 118 | 115 | 3 |
 | Клиент: данные, hooks и состояние | 99 | 95 | 95 | 4 |
@@ -36,19 +36,19 @@
 | Модели, ядро и запуск backend | 15 | 15 | 15 | 5 |
 | Реестры и исходные данные | 61 | 34 | 34 | 4 |
 | Миграции БД | 37 | 36 | 35 | 0 |
-| Операционные скрипты | 94 | 89 | 90 | 3 |
+| Операционные скрипты | 98 | 93 | 94 | 3 |
 | Инфраструктура и конфигурация | 39 | 7 | 8 | 1 |
 | Тесты и fixtures | 356 | 328 | 328 | 0 |
-| Документация и правила | 60 | 0 | 48 | 21 |
-| Исследования и артефакты | 56 | 1 | 1 | 0 |
+| Документация и правила | 61 | 0 | 49 | 21 |
+| Исследования и артефакты | 57 | 1 | 1 | 0 |
 | Статические ресурсы | 98 | 5 | 1 | 0 |
 
 ## Что означает связь
 
 `EXTRACTED` и `INFERRED` — метки Graphify. Даже EXTRACTED означает статическую конструкцию, а не выполненный вызов. JSON сохраняет направление, тип, количество и примеры исходных строк. Внутрифайловые отношения остаются в полном Graphify-графе; внешние/неразрешённые endpoints не превращаются в выдуманные файлы. Отсутствие входящих связей не доказывает мёртвый код. Динамические реестры, HTTP, SQL, Redis и scheduler требуют контрактов из отдельных документов.
 
-Метки связей: `{"EXTRACTED": 37809, "INFERRED": 3290}`.
-Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2209, "missing_endpoint": 2388, "within_file": 17640}`.
+Метки связей: `{"EXTRACTED": 37962, "INFERRED": 3315}`.
+Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2210, "missing_endpoint": 2418, "within_file": 17753}`.
 
 ## Слои файлов
 
@@ -61,10 +61,10 @@
 | `backend` | 628 | 544 |
 | `clickhouse` | 2 | 0 |
 | `deploy` | 10 | 3 |
-| `docs` | 100 | 45 |
+| `docs` | 102 | 46 |
 | `frontend` | 433 | 348 |
 | `mcp` | 4 | 3 |
-| `scripts` | 81 | 72 |
+| `scripts` | 85 | 76 |
 
 ## Документы и правила
 
@@ -73,7 +73,7 @@
 | Документ | Строк | Извлечение |
 |---|---:|---|
 | [.cursor/rules/i18n-parity.mdc](../.cursor/rules/i18n-parity.mdc) | 52 | inventory_only |
-| [.cursor/rules/indicator-data-delivery.mdc](../.cursor/rules/indicator-data-delivery.mdc) | 53 | inventory_only |
+| [.cursor/rules/indicator-data-delivery.mdc](../.cursor/rules/indicator-data-delivery.mdc) | 58 | inventory_only |
 | [.cursor/rules/methodology-language.mdc](../.cursor/rules/methodology-language.mdc) | 96 | inventory_only |
 | [.cursor/rules/no-middle-dot.mdc](../.cursor/rules/no-middle-dot.mdc) | 32 | inventory_only |
 | [.cursor/rules/outside-acceptance.mdc](../.cursor/rules/outside-acceptance.mdc) | 31 | inventory_only |
@@ -104,15 +104,16 @@
 | [docs/analytics_api_inventory/README.md](../docs/analytics_api_inventory/README.md) | 63 | nodes |
 | [docs/analytics_api_inventory/frontend_instrumentation.md](../docs/analytics_api_inventory/frontend_instrumentation.md) | 279 | nodes |
 | [docs/analytics_api_inventory/google_search_console.md](../docs/analytics_api_inventory/google_search_console.md) | 148 | nodes |
-| [docs/analytics_api_inventory/metrika_logs.md](../docs/analytics_api_inventory/metrika_logs.md) | 51 | nodes |
+| [docs/analytics_api_inventory/metrika_logs.md](../docs/analytics_api_inventory/metrika_logs.md) | 57 | nodes |
 | [docs/analytics_api_inventory/metrika_management.md](../docs/analytics_api_inventory/metrika_management.md) | 49 | nodes |
 | [docs/analytics_api_inventory/metrika_reporting.md](../docs/analytics_api_inventory/metrika_reporting.md) | 47 | nodes |
 | [docs/analytics_api_inventory/yandex_webmaster.md](../docs/analytics_api_inventory/yandex_webmaster.md) | 64 | nodes |
-| [docs/architecture-history.md](../docs/architecture-history.md) | 40 | nodes |
-| [docs/architecture.md](../docs/architecture.md) | 161 | nodes |
+| [docs/architecture-history.md](../docs/architecture-history.md) | 52 | nodes |
+| [docs/architecture.md](../docs/architecture.md) | 267 | nodes |
 | [docs/backlog.md](../docs/backlog.md) | 1667 | nodes |
-| [docs/data-contracts.md](../docs/data-contracts.md) | 91 | nodes |
-| [docs/data_sources.md](../docs/data_sources.md) | 641 | nodes |
+| [docs/code-review-findings.md](../docs/code-review-findings.md) | 100 | nodes |
+| [docs/data-contracts.md](../docs/data-contracts.md) | 97 | nodes |
+| [docs/data_sources.md](../docs/data_sources.md) | 640 | nodes |
 | [docs/dead-code-report.md](../docs/dead-code-report.md) | 82 | nodes |
 | [docs/design/README.md](../docs/design/README.md) | 104 | nodes |
 | [docs/design/accessibility-review.md](../docs/design/accessibility-review.md) | 58 | nodes |
@@ -129,7 +130,7 @@
 | [docs/verification/us-eu-source-audit-2026-09-24.md](../docs/verification/us-eu-source-audit-2026-09-24.md) | 114 | nodes |
 | [docs/verification/us-indicators-2026-09-24.md](../docs/verification/us-indicators-2026-09-24.md) | 41 | nodes |
 | [docs/verification/world-forecast-v2-2026-09-24.md](../docs/verification/world-forecast-v2-2026-09-24.md) | 64 | nodes |
-| [docs/workflow.md](../docs/workflow.md) | 201 | nodes |
+| [docs/workflow.md](../docs/workflow.md) | 279 | nodes |
 | [scripts/audit-world-truthfulness-report.md](../scripts/audit-world-truthfulness-report.md) | 145 | nodes |
 
 ## Обновление и проверка

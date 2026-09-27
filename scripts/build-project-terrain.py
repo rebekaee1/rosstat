@@ -29,6 +29,7 @@ VERSION = "0.9.69"
 GENERATED = {
     "docs/project-terrain.json", "docs/project-terrain.md", "docs/project-terrain.html",
     "docs/repo-inventory.md",  # timestamp/own size changes on every check-all
+    "docs/code-review.md",
 }
 CODE = {".py", ".js", ".jsx", ".mjs", ".ts", ".tsx", ".sh", ".sql", ".html", ".css", ".mako"}
 DOCS = {".md", ".mdc", ".rst"}
@@ -144,6 +145,8 @@ def inventory() -> list[dict]:
     paths.update(git("ls-files", "--others", "--exclude-standard", "-z").split("\0"))
     rows = []
     for rel in sorted(paths - GENERATED - {""}):
+        if rel.startswith("docs/code-review/"):
+            continue
         path = ROOT / rel
         if not path.is_file() and not path.is_symlink():
             continue
@@ -224,8 +227,11 @@ def markdown(data: dict) -> str:
              f"| Связи между файлами (тип и уверенность сохраняются) | {s['file_edges']} |", "",
              f"Исходники, шаблоны и стили: **{o['code_files']}** файлов; узлы есть у **{o['code_with_nodes']}**, "
              f"из них **{o['code_file_node_only']}** дали только один файловый узел. "
-             f"Смысловые свидетельства с проверенными основаниями относятся к **{o['semantic_files']}** файлам "
-             "(включая документы), а не ко всем функциям проекта. Успешный прогон тестов не измеряет полноту этого разбора.", "",
+             f"Исторический смысловой граф содержит основания для **{o['semantic_files']}** файлов. "
+             "Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. "
+             "Текущий содержательный разбор каждого файла и именованного определения находится в "
+             "[реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. "
+             "Успешный прогон тестов не измеряет полноту этого разбора.", "",
              "Полная инвентаризация относится к Git-дереву. Наличие в списке не означает, что каждый файл "
              "прошёл содержательный аудит. `nodes` — экстрактор нашёл структуру; `no_nodes` — файл прочитан "
              "экстрактором, но сущностей не получено; `inventory_only` — учтён без разбора структуры. "
@@ -236,7 +242,7 @@ def markdown(data: dict) -> str:
              "остаток виден в «Других файлах». Это технические слои, а не автоматически доказанные бизнес-домены. "
              "Ячейки матрицы суммируют только извлечённые связи; отсутствие ребра frontend→API не отменяет HTTP-вызов. "
              "Сквозные потоки через HTTP, БД, Redis и расписания описаны в архитектуре и контрактах.", "",
-             "| Группа | Файлов | Исходников | С узлами | Файлов со смысловыми свидетельствами |",
+             "| Группа | Файлов | Исходников | С узлами | Оснований в историческом смысловом графе |",
              "|---|---:|---:|---:|---:|",
              *[f"| {g['label']} | {g['files']} | {g['code']} | {g['with_nodes']} | {g['semantic_evidence']} |" for g in o['layers']], "",
              "## Что означает связь", "",
@@ -280,9 +286,41 @@ def markdown(data: dict) -> str:
     return "\n".join(lines)
 
 
+def review_overlay() -> dict:
+    """Attach separately authored reviews; never infer review from graph nodes."""
+    folder = ROOT / "docs/code-review"
+    ledger, coverage = folder / "reviews.jsonl", folder / "coverage.json"
+    if not ledger.exists() or not coverage.exists():
+        return {"available": False, "files": {}}
+    audit = json.loads(coverage.read_text())
+    ledger_current = audit.get("ledger_sha256") == hashlib.sha256(ledger.read_bytes()).hexdigest()
+    symbols = folder / "javascript-symbols.json"
+    symbols_current = symbols.exists() and audit.get("javascript_inventory_sha256") == hashlib.sha256(symbols.read_bytes()).hexdigest()
+    checked = {r["path"]: r for r in audit["files"]}
+    current = {r["path"]: r["sha256"] for r in inventory()}
+    reviews = {}
+    for line in ledger.read_text().splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        evidence = checked.get(row["path"], {})
+        row["current"] = bool(ledger_current and symbols_current and evidence.get("current") and
+                              row.get("sha256") == evidence.get("sha256") == current.get(row["path"]))
+        row["issues"] = list(evidence.get("issues", ["coverage_missing"]))
+        if not ledger_current or not symbols_current:
+            row["issues"].append("coverage_inputs_changed")
+        if row.get("sha256") != current.get(row["path"]):
+            row["issues"] = sorted(set(row["issues"] + ["source_changed"]))
+        reviews[row["path"]] = row
+    return {"available": True, "baseline_commit": audit["baseline_commit"],
+            "counts": audit["counts"], "current_now": sum(r["current"] for r in reviews.values()),
+            "limitations": audit["limitations"], "files": reviews}
+
+
 def render(data: dict) -> str:
     template = (ROOT / "scripts/project-terrain-template.html").read_text()
-    return template.replace("__TERRAIN_DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c"))
+    display = {**data, "code_review": review_overlay()}
+    return template.replace("__TERRAIN_DATA__", json.dumps(display, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c"))
 
 
 def refresh() -> None:
@@ -347,14 +385,19 @@ def check() -> int:
     generated_ok = REPORT.exists() and REPORT.read_text() == markdown(data)
     knowledge_path = ROOT / "docs/architecture-knowledge.json"
     semantic_stale = []
+    historical = False
     if knowledge_path.exists():
         knowledge = json.loads(knowledge_path.read_text())
+        historical = knowledge.get("status") == "historical"
         semantic_stale = [p for p, digest in knowledge.get("source_fingerprints", {}).items()
                           if now.get(p) != digest]
-    for path in semantic_stale[:15]:
-        print(f"Semantic evidence needs review: {path}")
-    if changes or invalid or not generated_ok or semantic_stale:
-        print(f"Terrain stale: {len(changes)} files, {len(invalid)} invalid edges, generated outputs match={generated_ok}; refresh structure and review semantic evidence as reported")
+    if semantic_stale:
+        if historical:
+            print(f"Historical semantic graph: {len(semantic_stale)} changed source fingerprints; preserved as dated evidence. Current reviews have a separate audit-code-documentation.py --check gate.")
+        else:
+            print(f"Current semantic evidence needs review: {len(semantic_stale)} changed source fingerprints")
+    if changes or invalid or not generated_ok or (semantic_stale and not historical):
+        print(f"Terrain stale: {len(changes)} files, {len(invalid)} invalid edges, generated outputs match={generated_ok}; refresh structure as reported")
         return 1
     print(f"Terrain OK: {len(now)} file fingerprints, {len(data['edges'])} file edges, generated outputs match")
     return 0

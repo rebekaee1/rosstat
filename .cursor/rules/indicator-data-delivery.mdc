@@ -9,6 +9,8 @@ alwaysApply: true
 
 ## Делать автоматически (без отдельной просьбы пользователя)
 
+Ниже — локальная разработка. Production меняется только по явно одобренному SHA через `scripts/deploy.sh` и процедуру `docs/workflow.md`; этот чеклист не даёт разрешения на прод-деплой.
+
 После merge-ready правок в коде, если затронуты `seed_data.py`, `*_parser.py`, `indicator_seo.py`, CPI/view-mode реестры или API-маппинг рядов:
 
 1. **Seed** — прогнать идемпотентный seeder (новые/обновлённые строки `indicators`):
@@ -27,20 +29,23 @@ alwaysApply: true
 
 3. **Derived** (если меняли `DERIVED_SPECS` / `derived_ops.py`, а не только source):
    ```bash
-   docker compose exec backend python /app/scripts/rebuild-all-derived.py
+   docker compose exec -T backend python - < scripts/rebuild-all-derived.py
    ```
 
 4. **Пересборка и подъём** (если меняли frontend и/или backend):
    ```bash
-   docker compose build backend frontend && docker compose up -d backend frontend
+   docker compose build backend frontend
+   docker compose up -d backend frontend
+   # Если scheduler нужен и уже используется: обновить его тем же backend image
+   docker compose up -d scheduler
    ```
-   Только frontend после смены asset-hash — `docker compose build --no-cache frontend`.
+   Backend содержит копию SPA HTML: backend/frontend собирать согласованно. Для HMR явно направлять `VITE_DEV_API_PROXY` на локальный API; default Vite proxy ведёт в production и пропускает все HTTP-методы. Профили запуска — `docs/workflow.md::Локальная разработка`.
 
 5. **Smoke API + UI** — убедиться, что ряд не пустой:
    - `curl -s http://localhost:8000/api/v1/indicators/<code>/data | head` (или эквивалент через прокси Vite).
    - Для правок карточки: открыть целевой URL (например `/indicator/cpi-food?mode=weekly`), snapshot/график не «пустой ряд».
 
-6. **Кэш** — после смены derived/forecast на проде может понадобиться `redis-cli -n 0 FLUSHDB` (только DB 0 — кэш; DB 1 = сессии); локально — при странных stale-ответах перезапуск backend.
+6. **Кэш** — проверить адресную инвалидацию consumer namespace через `core/cache.py` после изменения данных. `world-catalog` имеет отдельное поколение в state Redis. Перезапуск backend не очищает Redis; `FLUSHDB` не является обычным шагом. Фактический state URL проверять отдельно: production использует `redis-state/0`, локальный Compose default — `redis/1`. См. `docs/data-contracts.md`.
 
 ## Не останавливаться на
 
@@ -50,4 +55,4 @@ alwaysApply: true
 ## Исключения
 
 - Пользователь явно просит **только** дизайн/ревью/план без прогона данных.
-- Прод-сервер (`5.129.204.194`) — без явной команды не трогать (см. `docs/workflow.md`).
+- Прод-сервер (`201.51.11.170`, SSH `fe-prod`) — без явной команды не трогать (см. `docs/workflow.md`).

@@ -66,6 +66,7 @@ SKIP_RELPATHS = {
     "docs/repo-inventory.md", "docs/indicator-index.json",
     "docs/indicator-index.md", "docs/dead-code-report.md",
     "docs/project-terrain.json", "docs/project-terrain.md", "docs/project-terrain.html",
+    "docs/code-review.md",
 }
 
 
@@ -90,7 +91,8 @@ def iter_files() -> list[Path]:
             continue
         if path.name in SKIP_NAMES:
             continue
-        if str(path.relative_to(ROOT)) in SKIP_RELPATHS:
+        rel = str(path.relative_to(ROOT))
+        if rel in SKIP_RELPATHS or rel.startswith("docs/code-review/"):
             continue
         out.append(path)
     return sorted(out, key=lambda p: str(p.relative_to(ROOT)))
