@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   REP_LEVEL, REP_POP, REP_YOY,
   compareRepresentationsFor, resolveCompareSeries, applyCompareTransform,
-  isIndexableBase, rebaseToHundred, resolveStepOverride,
+  isIndexableBase, commonIndexBase, rebaseToHundred, resolveStepOverride,
   worldCompareRepresentationsFor, worldCompareTransformFor,
 } from './compareRepresentation';
 
@@ -168,6 +168,40 @@ describe('compareRepresentation — index base guard', () => {
     expect(rebaseToHundred(50, 200)).toBeCloseTo(25);
     // на невалидной базе не вызывается — но математически guard выше её отсекает
     expect(isIndexableBase(0)).toBe(false);
+  });
+
+  it('uses the first shared actual date, even when one history starts earlier', () => {
+    const dates = ['2020-01-01', '2021-01-01', '2022-01-01'];
+    const maps = [
+      new Map([['2020-01-01', 100], ['2021-01-01', 120], ['2022-01-01', 130]]),
+      new Map([['2021-01-01', 200], ['2022-01-01', 240]]),
+      new Map([['2022-01-01', 5]]),
+    ];
+    const series = [
+      { unit: 'bn $', rep: REP_LEVEL },
+      { unit: 'bn $', rep: REP_LEVEL },
+      { unit: '%', rep: REP_LEVEL },
+    ];
+    const base = commonIndexBase(maps, series, dates);
+    expect(base.date).toBe('2021-01-01');
+    expect(base.candidates).toEqual([0, 1]);
+    expect(base.bases).toEqual([120, 200, null]);
+    expect(rebaseToHundred(maps[0].get(base.date), base.bases[0])).toBe(100);
+    expect(rebaseToHundred(maps[1].get(base.date), base.bases[1])).toBe(100);
+  });
+
+  it('does not invent a shared base when observation dates do not overlap', () => {
+    const dates = ['2020-01-01', '2021-01-01'];
+    const maps = [
+      new Map([['2020-01-01', 100]]),
+      new Map([['2021-01-01', 200]]),
+    ];
+    const base = commonIndexBase(maps, [
+      { unit: 'bn $', rep: REP_LEVEL },
+      { unit: 'bn $', rep: REP_LEVEL },
+    ], dates);
+    expect(base.date).toBeNull();
+    expect(base.candidates).toEqual([0, 1]);
   });
 });
 

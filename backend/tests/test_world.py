@@ -490,6 +490,7 @@ def test_world_countries(world_client):
     assert by_slug["russia"]["code"] == "RU"
     assert by_slug["russia"]["indicators_count"] == 1
     assert by_slug["russia"]["name"] == "Россия"
+    assert body["russia_regional_indicators_count"] == 0
     # Cold-home CDN/browser cache: avoid 15s Axios abort on every visit.
     cc = r.headers.get("cache-control", "")
     assert "max-age=60" in cc

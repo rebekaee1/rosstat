@@ -19,6 +19,7 @@ function renderScope(countriesPayload, locale) {
       total: 55,
       world_indicators_count: 38146,
       russia_macro_indicators_count: 145,
+      russia_regional_indicators_count: 495,
       regional_indicators_count: 2377,
       us_state_indicators_count: 1882,
       us_states_count: 50,
@@ -44,8 +45,10 @@ describe('HomeDataScope — состав платформы в hero главно
     });
     expect(screen.getByText(/стран мира/)).toBeTruthy();
 
-    expect(screen.getByText(/2\s*377/)).toBeTruthy();
-    expect(screen.getByText(/региональных показателей/)).toBeTruthy();
+    expect(screen.getByText('495')).toBeTruthy();
+    expect(screen.getByText(/региональных показателей России/)).toBeTruthy();
+    expect(screen.queryByText(/2\s*377/)).toBeNull();
+    expect(screen.queryByText(/США:.*штатам/)).toBeNull();
     expect(screen.queryByText(/42\s*075/)).toBeNull();
     expect(screen.queryByText(/495\s*[×x]/)).toBeNull();
 
@@ -92,7 +95,7 @@ describe('HomeDataScope — состав платформы в hero главно
     renderScope(undefined, 'en');
 
     expect(screen.getByRole('heading', { name: 'Inside the platform' })).toBeTruthy();
-    expect(screen.getByText(/indicators across world countries/)).toBeTruthy();
+    expect(screen.getByText(/indicators across countries/)).toBeTruthy();
     expect(screen.getByText(/countries worldwide/)).toBeTruthy();
     expect(screen.queryByText(/Russian macro indicators/)).toBeNull();
     expect(screen.queryByText('100+')).toBeNull();

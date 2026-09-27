@@ -1212,7 +1212,7 @@ _ANNUAL_AUTO_MAX_STEPS = 4
 def train_annual_auto(
     dates: List[date],
     values: List[float],
-    forecast_steps: int = 2,
+    forecast_steps: int = 1,
 ) -> ForecastResult:
     """Generic annual forecast — порт `Прогноз_годовых_данных.ipynb`.
 

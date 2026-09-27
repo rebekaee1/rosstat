@@ -20,6 +20,7 @@ import {
   russiaHomePath,
   russiaIndicatorPath,
   russiaIndicatorYearPath,
+  isCurrencyIndicator,
   todayPath,
   WORLD_RATING_DEFAULT_CONCEPT,
   worldRatingPath,
@@ -68,6 +69,7 @@ export function russiaCategoriesTrail() {
 
 export function russiaCategoryTrail(categoryName, categorySlug) {
   // Хаб /russia/category остаётся живой страницей, но не уровнем крошек.
+  if (categorySlug === 'currencies') return [homeCrumb(), crumb('/currencies', categoryName)];
   return [
     homeCrumb(),
     russiaCrumb(),
@@ -76,7 +78,8 @@ export function russiaCategoryTrail(categoryName, categorySlug) {
 }
 
 export function russiaIndicatorTrail(categoryName, categorySlug, indicatorName, indicatorCode) {
-  const items = [homeCrumb(), russiaCrumb()];
+  const items = isCurrencyIndicator(indicatorCode)
+    ? [homeCrumb()] : [homeCrumb(), russiaCrumb()];
   if (categoryName && categorySlug) {
     items.push(crumb(russiaCategoryPath(categorySlug), categoryName));
   }

@@ -1,8 +1,10 @@
 import math
 import re
+from datetime import date
+from typing import Sequence, TypeVar
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -43,10 +45,24 @@ def _validate_code(code: str) -> None:
         raise HTTPException(status_code=400, detail="Invalid indicator code format")
 
 
+_ForecastValueT = TypeVar("_ForecastValueT")
+
+
+def _public_annual_values(
+    values: Sequence[_ForecastValueT], last_actual: date | None, *, replaces_partial: bool,
+) -> list[_ForecastValueT]:
+    """One future calendar year after the latest fact; retain a partial-year revision."""
+    if last_actual is None:
+        return list(values[:1])
+    anchor = [v for v in values if v.date == last_actual] if replaces_partial else []
+    future = [v for v in values if v.date.year == last_actual.year + 1]
+    return anchor + future[:1]
+
+
 @router.get("/{code}/forecast", response_model=ForecastResponse)
 async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
-    cache_key = await versioned_key(code, "forecast:partial-v1")
+    cache_key = await versioned_key(code, "forecast:partial-v2")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -86,6 +102,16 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
         .order_by(ForecastValue.date)
     )
     values = vals.scalars().all()
+    if indicator.frequency == "annual":
+        last_actual = (
+            await db.execute(
+                select(func.max(IndicatorData.date))
+                .where(IndicatorData.indicator_id == indicator.id)
+            )
+        ).scalar_one_or_none()
+        values = _public_annual_values(
+            values, last_actual, replaces_partial=_replaces_partial_actual(cfg),
+        )
 
     out = ForecastOut(
         model_name=forecast.model_name,

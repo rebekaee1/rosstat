@@ -25,7 +25,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.core.cache import bump_namespaces
-from app.data.world_forecast_policy import forecast_eligibility_for
+from app.data.world_forecast_policy import WORLD_FORECAST_HORIZONS, forecast_eligibility_for
 from app.database import async_session
 from app.models import (
     WorldCountry,
@@ -121,7 +121,7 @@ def concept_priority_sets() -> tuple[frozenset[str], frozenset[str]]:
 
 def forecast_fingerprint(
     *, history_end: date | None, points_count: int, history_digest: str | None = None,
-    source_ready: bool = True,
+    source_ready: bool = True, frequency: str | None = None,
 ) -> dict:
     return {
         "history_end": history_end.isoformat() if history_end else None,
@@ -129,6 +129,9 @@ def forecast_fingerprint(
         "history_digest": history_digest,
         "source_ready": source_ready,
         "method_version": WORLD_FORECAST_METHOD_VERSION,
+        # Only annual policy changed here. Old monthly/quarterly records remain
+        # fresh; old two-year annual records are retrained on the next job run.
+        "annual_horizon": WORLD_FORECAST_HORIZONS["annual"] if frequency == "annual" else None,
     }
 
 
@@ -146,6 +149,7 @@ def _stored_fingerprint(params: object) -> dict | None:
         "history_digest": params.get("history_digest"),
         "source_ready": params.get("source_ready", True),
         "method_version": params.get("method_version"),
+        "annual_horizon": params.get("annual_horizon"),
     }
 
 
@@ -169,6 +173,7 @@ def forecast_is_unchanged(
     now: datetime,
     max_age_days: int,
     force: bool,
+    frequency: str | None = None,
 ) -> bool:
     """Пропуск обучения: тот же отпечаток и запись не старше max_age.
 
@@ -186,7 +191,7 @@ def forecast_is_unchanged(
         return False
     expected = forecast_fingerprint(
         history_end=history_end, points_count=points_count,
-        history_digest=history_digest, source_ready=source_ready,
+        history_digest=history_digest, source_ready=source_ready, frequency=frequency,
     )
     stored = _stored_fingerprint(getattr(latest, "model_params", None))
     if stored is not None:
@@ -355,6 +360,7 @@ def _model_params_for(
             points_count=indicator.points_count,
             history_digest=history_digest,
             source_ready=source_ready,
+            frequency=indicator.frequency,
         ),
     }
     if eligibility is not None:
@@ -619,6 +625,7 @@ def classify_unchanged(
             now=now,
             max_age_days=max_age_days,
             force=force,
+            frequency=row.frequency,
         ):
             unchanged.add(row.id)
     return unchanged

@@ -3,11 +3,24 @@ import { beforeEach, afterEach, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import IndicatorSearch from './IndicatorSearch';
+const localeState = vi.hoisted(() => ({ value: 'ru' }));
 vi.mock('../lib/hooks', () => ({ useIndicators: () => ({ data: [] }) }));
-vi.mock('../lib/worldApi', () => ({ useWorldSearch: () => ({ data: null }), WORLD_GLOBAL_SEARCH_LIMIT: 50 }));
+vi.mock('../lib/worldApi', () => ({
+  useWorldSearch: () => ({ data: null, isPending: false }),
+  useWorldCompareCatalog: () => ({
+    data: { items: [
+      { country_slug: 'united-states', indicator_code: 'us-gdp', concept_name: 'GDP', concept_name_en: 'GDP', country_name_en: 'United States' },
+      { country_slug: 'russia', indicator_code: 'gdp', concept_name: 'ВВП', concept_name_en: 'GDP', country_name_en: 'Russia' },
+    ] },
+    isPending: false,
+  }),
+  WORLD_GLOBAL_SEARCH_LIMIT: 50,
+}));
 vi.mock('../lib/track', () => ({ track: vi.fn(), events: {} }));
-vi.mock('../i18n', () => ({ useT: () => key => key, useLocale: () => ({ locale: 'ru' }) }));
+vi.mock('../i18n', () => ({ useT: () => key => key, useLocale: () => ({ locale: localeState.value }) }));
 beforeEach(() => {
+  localeState.value = 'ru';
+  HTMLElement.prototype.scrollIntoView = vi.fn();
   // jsdom has no layout. Simulate actual browser rects, including hidden parents.
   vi.spyOn(HTMLElement.prototype, 'getClientRects').mockImplementation(function () {
     return this.closest('[data-hidden]') ? [] : [{ width: 100, height: 30 }];
@@ -53,4 +66,11 @@ it('a mounted hidden trigger cannot open a portal by keyboard', () => {
   fireEvent.keyDown(document, { key: 'k', metaKey: true });
   fireEvent.keyDown(document, { key: '/' });
   expect(screen.queryAllByRole('dialog')).toHaveLength(0);
+});
+it('starts an empty English search with US indicators and no Russian default results', () => {
+  localeState.value = 'en';
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  expect(screen.getAllByRole('option')).toHaveLength(1);
+  expect(screen.getByRole('option').textContent).toContain('United States');
 });

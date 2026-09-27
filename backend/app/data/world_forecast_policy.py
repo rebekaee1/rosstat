@@ -51,7 +51,7 @@ _FREQ_STRATEGIES = {
     "annual": "annual_auto",
 }
 _FREQ_MIN_POINTS = {"monthly": 72, "quarterly": 32, "annual": 14}
-_FREQ_HORIZONS = {"monthly": 12, "quarterly": 4, "annual": 2}
+WORLD_FORECAST_HORIZONS = {"monthly": 12, "quarterly": 4, "annual": 1}
 _FREQ_SEASONS = {"monthly": 12, "quarterly": 4, "annual": 1}
 _FREQ_MAX_AGE_DAYS = {"monthly": 150, "quarterly": 260, "annual": 1400}
 
@@ -61,7 +61,7 @@ def _official_policy(provider: str) -> ProviderForecastPolicy:
         provider=provider,
         strategies=_FREQ_STRATEGIES,
         min_points=_FREQ_MIN_POINTS,
-        horizons=_FREQ_HORIZONS,
+        horizons=WORLD_FORECAST_HORIZONS,
         seasons=_FREQ_SEASONS,
         max_age_days=_FREQ_MAX_AGE_DAYS,
     )

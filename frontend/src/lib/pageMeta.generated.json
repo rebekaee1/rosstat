@@ -17,12 +17,12 @@
       "title": "Цены на сырьё и товарные рынки"
     },
     "currencies": {
-      "description": "Курсы доллара, евро и юаня к рублю — официальные ежедневные данные Банка России.",
-      "h1": "Курсы валют ЦБ РФ",
-      "intro": "Раздел собирает официальные ежедневные курсы основных валют к рублю, устанавливаемые Банком России.",
+      "description": "Курсы валют к рублю и мировые валютные пары, а также цены криптовалют. Данные Банка России, ЕЦБ и Binance.",
+      "h1": "Курсы валют и криптовалют",
+      "intro": "Курсы к рублю, мировые валютные пары и криптовалюты в одном разделе. У каждого ряда указан собственный источник и период обновления.",
       "name": "Валюты",
       "slug": "currencies",
-      "title": "Курсы валют ЦБ РФ"
+      "title": "Курсы валют и криптовалют"
     },
     "finance": {
       "description": "Денежная масса, резервы, кредиты, депозиты, бюджет — данные ЦБ РФ и Минфина.",
@@ -116,12 +116,12 @@
         "title": "Commodity prices and markets"
       },
       "currencies": {
-        "description": "USD, EUR, and CNY against the ruble — official daily rates from the Bank of Russia.",
-        "h1": "Bank of Russia exchange rates",
-        "intro": "Official daily exchange rates of major currencies against the ruble, set by the Bank of Russia.",
+        "description": "Ruble exchange rates, global currency pairs, and cryptocurrency prices from the Bank of Russia, ECB, and Binance.",
+        "h1": "Currency and cryptocurrency rates",
+        "intro": "Explore ruble exchange rates, global currency pairs, and cryptocurrency prices. Each series shows its own source and update period.",
         "name": "Currencies",
         "slug": "currencies",
-        "title": "Bank of Russia exchange rates"
+        "title": "Currency and cryptocurrency rates"
       },
       "finance": {
         "description": "Money supply, reserves, credit, deposits, and the budget — Bank of Russia and Ministry of Finance data.",

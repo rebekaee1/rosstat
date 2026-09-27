@@ -69,6 +69,7 @@ RESERVED_FIRST_SEGMENTS: frozenset[str] = frozenset({
     "admin",
     # Мировой хаб и кросс-рейтинги (не карточка страны)
     "world",
+    "currencies",
     # Технические / edge
     "api",
     "assets",
@@ -147,15 +148,40 @@ def russia_home() -> str:
     return country(RUSSIA)
 
 
+_CURRENCY_BASE_CODES = (
+    "btc-usd", "cny-eur", "cny-rub", "eth-usd", "eur-rub", "eur-usd",
+    "gbp-eur", "gbp-usd", "sol-usd", "usd-cny", "usd-rub",
+)
+
+
+def is_currency_indicator(code: str) -> bool:
+    """All active currency base rows and their generated frequency/view siblings."""
+    return any(code == base or code.startswith(f"{base}-") for base in _CURRENCY_BASE_CODES)
+
+
 def russia_indicator(code: str) -> str:
+    # Historical helper name. Currency rows now have a country-independent
+    # canonical URL; old /russia/indicator URLs are redirected by seo_pages.
+    if is_currency_indicator(code):
+        return f"/currencies/indicator/{_code(code)}"
     return indicator(RUSSIA, code)
 
 
 def russia_indicator_year(code: str, year: int | str) -> str:
+    if is_currency_indicator(code):
+        return f"{russia_indicator(code)}/{_year(year)}"
     return indicator_year(RUSSIA, code, year)
 
 
+def russia_indicator_month(code: str, year: int, month: int) -> str:
+    if is_currency_indicator(code):
+        return f"{russia_indicator(code)}/{_year(year)}-{_month(month):02d}"
+    return indicator_month(RUSSIA, code, year, month)
+
+
 def russia_category(slug: str) -> str:
+    if slug == "currencies":
+        return "/currencies"
     return category(RUSSIA, slug)
 
 

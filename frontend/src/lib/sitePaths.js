@@ -8,6 +8,17 @@
 
 export const RUSSIA = 'russia';
 
+const CURRENCY_BASE_CODES = Object.freeze([
+  'btc-usd', 'cny-eur', 'cny-rub', 'eth-usd', 'eur-rub', 'eur-usd',
+  'gbp-eur', 'gbp-usd', 'sol-usd', 'usd-cny', 'usd-rub',
+]);
+
+export function isCurrencyIndicator(indicatorCode) {
+  if (!indicatorCode) return false;
+  return CURRENCY_BASE_CODES.some((base) =>
+    indicatorCode === base || indicatorCode.startsWith(`${base}-`));
+}
+
 /** Первые сегменты, запрещённые как слаг страны/региона. */
 export const RESERVED_FIRST_SEGMENTS = Object.freeze([
   'about',
@@ -22,6 +33,7 @@ export const RESERVED_FIRST_SEGMENTS = Object.freeze([
   'account',
   'admin',
   'world',
+  'currencies',
   'api',
   'assets',
   'og',
@@ -101,14 +113,17 @@ export function isRussiaSectionPath(pathname) {
 }
 
 export function russiaIndicatorPath(indicatorCode) {
+  if (isCurrencyIndicator(indicatorCode)) return `/currencies/indicator/${code(indicatorCode)}`;
   return indicatorPath(RUSSIA, indicatorCode);
 }
 
 export function russiaIndicatorYearPath(indicatorCode, year) {
+  if (isCurrencyIndicator(indicatorCode)) return `${russiaIndicatorPath(indicatorCode)}/${year}`;
   return indicatorYearPath(RUSSIA, indicatorCode, year);
 }
 
 export function russiaCategoryPath(categorySlug) {
+  if (categorySlug === 'currencies') return '/currencies';
   return categoryPath(RUSSIA, categorySlug);
 }
 

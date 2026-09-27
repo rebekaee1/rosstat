@@ -1247,6 +1247,20 @@ def test_year_template_title_shape():
         assert "в 2024" not in title
         assert "Consumer price index in 2024" in desc
         assert "значений" not in desc
+        currency_title, _ = _year_page_title_desc(
+            name="Euro to US dollar exchange rate",
+            year=2024,
+            frequency="daily",
+            n_rows=252,
+            current_year=False,
+            period_note="",
+            summary_label="Year-end value",
+            summary_text="1.09",
+            source="ECB",
+            country_independent=True,
+        )
+        assert currency_title.startswith("Euro to US dollar exchange rate, 2024")
+        assert "Russia" not in currency_title
     finally:
         reset_locale(token)
 

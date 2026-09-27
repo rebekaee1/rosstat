@@ -38,8 +38,9 @@ const CATEGORY_FEATURES = {
   },
 };
 
-export default function CategoryPage() {
-  const { slug } = useParams();
+export default function CategoryPage({ fixedSlug }) {
+  const params = useParams();
+  const slug = fixedSlug || params.slug;
   const { locale } = useLocale();
   const t = useT();
   const cat = getCategoryBySlug(slug);

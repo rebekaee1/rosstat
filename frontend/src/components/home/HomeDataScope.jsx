@@ -31,20 +31,32 @@ export default function HomeDataScope() {
     return n != null ? String(n) : t('home.scope.stat.countries.value');
   }, [countriesQ.data, t]);
 
-  const countValue = (key, field) => {
-    const count = Number(countriesQ.data?.[field]);
+  const countValue = (key, count) => {
     if (!Number.isFinite(count) || count <= 0) return t(`home.scope.stat.${key}.value`);
     return new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU').format(count);
   };
 
+  const ruRegionalCount = (() => {
+    const direct = Number(countriesQ.data?.russia_regional_indicators_count);
+    if (Number.isFinite(direct) && direct > 0) return direct;
+    // An older cached country response can lack the dedicated field.
+    const russia = countriesQ.data?.countries?.find((country) =>
+      country.code === 'RU' || country.slug === 'russia');
+    const total = Number(russia?.indicators_count);
+    const macro = Number(countriesQ.data?.russia_macro_indicators_count);
+    return Number.isFinite(total) && Number.isFinite(macro) && total >= macro
+      ? total - macro
+      : NaN;
+  })();
+
   const valueFor = (key) => {
     if (key === 'countries') return countriesValue;
+    if (key === 'regions') return countValue(key, ruRegionalCount);
     const fields = {
       world: 'world_indicators_count',
       macro: 'russia_macro_indicators_count',
-      regions: 'regional_indicators_count',
     };
-    return countValue(key, fields[key]);
+    return countValue(key, Number(countriesQ.data?.[fields[key]]));
   };
   const usIndicators = Number(countriesQ.data?.us_state_indicators_count);
   const usStates = Number(countriesQ.data?.us_states_count);
@@ -58,7 +70,7 @@ export default function HomeDataScope() {
       <div className="pointer-events-none absolute -right-12 -top-14 h-36 w-36 rounded-full bg-champagne/10 blur-3xl" />
 
       <div className="relative">
-        <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-champagne sm:text-sm">
           <Database size={12} className="shrink-0" />
           <h2 id="home-data-scope-title" className="font-semibold">
             {t('home.scope.title')}
@@ -68,7 +80,7 @@ export default function HomeDataScope() {
         <dl className="mt-3.5 grid grid-cols-2 gap-x-3 gap-y-3.5">
           {scopeStats.map(({ key, icon: Icon }) => (
             <div key={key} className="min-w-0">
-              <dt className="flex items-center gap-1.5 text-[9px] font-medium uppercase tracking-[0.14em] text-text-tertiary">
+              <dt className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary sm:text-xs">
                 <Icon size={11} className="shrink-0 text-champagne/70" aria-hidden="true" />
                 <span className="line-clamp-2 leading-snug">{t(`home.scope.stat.${key}.label`)}</span>
               </dt>
@@ -78,7 +90,7 @@ export default function HomeDataScope() {
             </div>
           ))}
           <div className="col-span-2 min-w-0 border-t border-border-subtle pt-3">
-            <dt className="flex items-center gap-1.5 text-[9px] font-medium uppercase tracking-[0.14em] text-text-tertiary">
+            <dt className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary sm:text-xs">
               <CalendarRange size={11} className="shrink-0 text-champagne/70" aria-hidden="true" />
               <span className="leading-snug">{t('home.scope.period.label')}</span>
             </dt>
@@ -89,7 +101,7 @@ export default function HomeDataScope() {
         </dl>
 
         <div className="mt-3.5 border-t border-border-subtle pt-3">
-          {usIndicators > 0 && usStates > 0 && (
+          {locale === 'en' && usIndicators > 0 && usStates > 0 && (
             <p className="mb-2 text-[11px] leading-snug text-text-secondary">
               {t('home.scope.usStates', {
                 indicators: new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU').format(usIndicators),
@@ -97,7 +109,7 @@ export default function HomeDataScope() {
               })}
             </p>
           )}
-          <p className="text-[9px] font-medium uppercase tracking-[0.14em] text-text-tertiary">
+          <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary sm:text-xs">
             {t('home.scope.sources.label')}
           </p>
           <p className="mt-1 text-xs font-medium leading-snug text-text-secondary">

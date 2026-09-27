@@ -70,19 +70,19 @@ CATEGORY_META_EN: dict[str, CategorySeo] = {
         slug="currencies",
         name="Currencies",
         api_category="Валюты",
-        title="Bank of Russia exchange rates",
+        title="Currency and cryptocurrency rates",
         description=(
-            "USD, EUR, and CNY against the ruble — official daily rates "
-            "from the Bank of Russia."
+            "Ruble exchange rates, global currency pairs, and cryptocurrency prices "
+            "from the Bank of Russia, ECB, and Binance."
         ),
         intro=(
-            "Official daily exchange rates of major currencies against the ruble, "
-            "set by the Bank of Russia."
+            "Explore ruble exchange rates, global currency pairs, and cryptocurrency "
+            "prices. Each series shows its own source and update period."
         ),
         flagship_code="usd-rub",
         keywords=(
             "USD RUB, EUR RUB, CNY RUB, dollar exchange rate, euro exchange rate, "
-            "Bank of Russia FX rates, Russia currency market"
+            "Bank of Russia FX rates, EUR USD, GBP USD, BTC USD, crypto prices"
         ),
     ),
     "indices": CategorySeo(

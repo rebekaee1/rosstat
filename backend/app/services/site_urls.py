@@ -1265,7 +1265,7 @@ def _month_rows_urls(rows, today: date) -> list[SiteUrl]:
             continue
         year, month = int(year), int(month)
         urls.append(_u(
-            paths.indicator_month(paths.RUSSIA, code, year, month),
+            paths.russia_indicator_month(code, year, month),
             _iso(last),
             "monthly",
             "0.5",

@@ -286,6 +286,10 @@ function AppRoutes() {
             <Route path="/world/rating" element={<WorldRatingPage />} />
             <Route path="/world/rating/:conceptSlug" element={<WorldRatingPage />} />
 
+            <Route path="/currencies" element={<CategoryPage fixedSlug="currencies" />} />
+            <Route path="/currencies/indicator/:code" element={<IndicatorDetailKeyed />} />
+            <Route path="/currencies/indicator/:code/:year" element={<IndicatorDetailKeyed />} />
+
             {/* Россия — явные префиксы */}
             <Route path="/russia" element={<RussiaHome />} />
             <Route path="/russia/category" element={<CategoriesHub />} />

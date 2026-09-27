@@ -31,18 +31,18 @@ describe('breadcrumbs', () => {
     expect(breadcrumbJsonLd([{ name: 'Home', path: '/' }])).toBeNull();
   });
 
-  it('категория России: Главная / Россия / имя — без хаба Категории', () => {
+  it('валюты: самостоятельный раздел без России', () => {
     const trail = russiaCategoryTrail('Валюты', 'currencies');
-    expect(trail.map((c) => c.name)).toEqual(['Главная', 'Россия', 'Валюты']);
-    expect(trail[1].path).toBe(russiaHomePath());
+    expect(trail.map((c) => c.name)).toEqual(['Главная', 'Валюты']);
+    expect(trail[1].path).toBe('/currencies');
     expect(trail.map((c) => c.path)).not.toContain(russiaCategoriesPath());
   });
 
-  it('EN-крошки категории тоже без узла Categories', () => {
+  it('EN-крошки валютного раздела без России', () => {
     bindUiLocale('en');
     try {
       expect(russiaCategoryTrail('Currencies', 'currencies').map((c) => c.name)).toEqual([
-        'Home', 'Russia', 'Currencies',
+        'Home', 'Currencies',
       ]);
     } finally {
       bindUiLocale(undefined);

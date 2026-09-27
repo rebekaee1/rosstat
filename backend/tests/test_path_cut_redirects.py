@@ -31,6 +31,11 @@ def _assert_relative_location(location: str) -> str:
 
 
 class TestFinalLegacyTargets:
+    def test_currency_month_and_year_paths_are_canonical(self):
+        assert paths.russia_indicator_month("eur-usd", 2025, 4) == "/currencies/indicator/eur-usd/2025-04"
+        assert paths.russia_indicator_year("eur-usd", 2025) == "/currencies/indicator/eur-usd/2025"
+        assert paths.russia_indicator_month("cpi", 2025, 4) == "/russia/indicator/cpi/2025-04"
+
     def test_all_legacy_indicator_targets_are_final(self):
         for code, target in LEGACY_INDICATOR_REDIRECTS.items():
             assert not target.startswith("/indicator/"), (code, target)
@@ -84,6 +89,21 @@ class TestSsrSingleHop:
         assert r.status_code == 301
         loc = _assert_relative_location(r.headers["location"])
         assert loc == paths.russia_indicator("cpi")
+
+    def test_currency_old_indicator_and_year_redirect_directly(self):
+        from app.main import app
+
+        client = TestClient(app)
+        cases = (
+            ("/seo/indicator/eur-usd", "/russia/indicator/eur-usd", paths.russia_indicator("eur-usd")),
+            ("/seo/indicator-year/eur-usd/2025", "/russia/indicator/eur-usd/2025", paths.russia_indicator_year("eur-usd", 2025)),
+            ("/seo/indicator-month/eur-usd/2025-04", "/russia/indicator/eur-usd/2025-04", f"{paths.russia_indicator('eur-usd')}/2025-04"),
+            ("/seo/category/currencies", "/russia/category/currencies", paths.russia_category("currencies")),
+        )
+        for endpoint, original, expected in cases:
+            response = client.get(endpoint, follow_redirects=False, headers={"X-Original-URI": original})
+            assert response.status_code == 301, (endpoint, response.text)
+            assert response.headers["location"] == expected
 
     def test_path_cut_legacy_world_country_relative(self):
         r = self._get("/seo/world/germany", legacy=True)

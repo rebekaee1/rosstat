@@ -909,7 +909,7 @@ INDICATORS = [
             # того, как режим «По годам» карточки/сравнения стал указывать сюда
             # (view_model_families overrides avg-year), а не на короткий
             # auto-generated `wages-nominal-avg-year`, прогноз восстановлен здесь.
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "wages-nominal",
@@ -1183,7 +1183,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "gdp-nominal",
@@ -1214,7 +1214,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "gdp-real",
@@ -1262,7 +1262,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "cpi",
@@ -1310,7 +1310,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "cpi-food",
@@ -1358,7 +1358,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "cpi-nonfood",
@@ -1406,7 +1406,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "cpi-services",
@@ -2959,7 +2959,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "ppi",
@@ -3081,7 +3081,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "housing-price-primary",
@@ -3114,7 +3114,7 @@ INDICATORS = [
         ),
         "parser_type": "derived",
         "model_config_json": {
-            "forecast_steps": 2,
+            "forecast_steps": 1,
             "forecast_strategy": "derived_from_source",
             "derived_forecast": {
                 "source_code": "housing-price-secondary",
@@ -5051,9 +5051,9 @@ def _sibling_texts(meta: dict) -> tuple[str, str]:
     )
 
 
-# Горизонт-gate прогноза для протянутых агрегатов (реальный горизонт берётся
-# из длины прогноза источника через future_only в derived_from_source).
-_FCAST_STEPS_BY_FREQ = {"monthly": 12, "quarterly": 4, "annual": 2}
+# Горизонт прогноза для протянутых агрегатов; годовые производные ряды
+# дополнительно ограничиваются одним будущим годом в derived_from_source.
+_FCAST_STEPS_BY_FREQ = {"monthly": 12, "quarterly": 4, "annual": 1}
 
 _generated_sibling_codes: list[str] = []
 for _meta in _iter_vmf_siblings():
@@ -5174,7 +5174,7 @@ ANNUAL_AUTO_FORECAST_CODES = {
 for _ind in INDICATORS:
     if _ind["code"] in ANNUAL_AUTO_FORECAST_CODES:
         _cfg = _ind.setdefault("model_config_json", {})
-        _cfg["forecast_steps"] = 2
+        _cfg["forecast_steps"] = 1
         _cfg["forecast_strategy"] = "annual_auto"
 
 

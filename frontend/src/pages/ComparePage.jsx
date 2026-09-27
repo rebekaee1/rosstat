@@ -31,7 +31,7 @@ import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
   compareDifferenceUnit, compareLegendParts, REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
-  applyCompareTransform, isIndexableBase, rebaseToHundred, resolveStepOverride,
+  applyCompareTransform, commonIndexBase, rebaseToHundred, resolveStepOverride,
   worldCompareRepresentationsFor, worldCompareTransformFor,
 } from '../lib/compareRepresentation';
 import {
@@ -724,6 +724,7 @@ function AddWorldCountrySeries({
     const map = new Map();
     for (const item of items || []) {
       if (item.country_slug !== countrySlug) continue;
+      if (selected.includes(item.code) || !compatibilityFor(item.code).allowed) continue;
       if (map.has(item.concept_slug)) continue;
       const freq = item.frequency === 'monthly'
         ? t('compare.freq.monthShort')
@@ -738,7 +739,7 @@ function AddWorldCountrySeries({
       });
     }
     return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, 'ru'));
-  }, [items, countrySlug, t]);
+  }, [items, countrySlug, selected, compatibilityFor, t]);
 
   const selectedConcept = conceptItems.find((item) => item.value === conceptSlug);
   const code = selectedConcept?.code || null;
@@ -854,8 +855,15 @@ function CompareSeriesPicker({
       : countries
     ).filter((c) => c.key !== 'russia');
     const showRussia = !q || 'россия'.includes(q) || 'russia'.includes(q) || russia.label.toLowerCase().includes(q);
+    if (q) return showRussia ? [russia, ...rest] : rest;
+    if (locale === 'en') {
+      const all = [...rest, ...(showRussia ? [russia] : [])]
+        .sort((a, b) => a.label.localeCompare(b.label, 'en'));
+      const us = all.find((c) => c.key === 'united-states');
+      return [...(us ? [us] : []), ...all.filter((c) => c.key !== 'united-states')];
+    }
     return showRussia ? [russia, ...rest] : rest;
-  }, [countries, countryQuery, t]);
+  }, [countries, countryQuery, locale, t]);
 
   // Поиск страны в дереве сравнения — без клика по результату.
   useSearchTracking(
@@ -867,6 +875,8 @@ function CompareSeriesPicker({
   const selectedCountry = countryKey === 'russia'
     ? { key: 'russia', label: t('compare.russia') }
     : countries.find((c) => c.key === countryKey) || null;
+  const activeWorldConcept = selected.map(parseWorldCompareCode).find(Boolean)?.conceptSlug;
+  const activeWorldConceptName = worldItems.find((item) => item.concept_slug === activeWorldConcept)?.concept_name;
 
   const resetCountry = () => {
     setCountryKey(null);
@@ -889,6 +899,11 @@ function CompareSeriesPicker({
         <div className="mt-1 text-sm text-text-secondary">
           {t('compare.pickCountryFirst')}
         </div>
+        {activeWorldConceptName && (
+          <p className="mt-2 text-xs leading-relaxed text-text-tertiary">
+            {t('compare.sameConceptHint', { indicator: activeWorldConceptName })}
+          </p>
+        )}
       </div>
 
       {!countryKey && (
@@ -1214,7 +1229,7 @@ export default function ComparePage() {
     return () => ro.disconnect();
   }, []);
 
-  const { isAuthed } = useAuth();
+  const { isAuthed, isLoading: isAuthLoading } = useAuth();
   const cap = isAuthed ? USER_MAX : GUEST_MAX;
   // Гость никогда не рендерит/экспортирует больше двух рядов — даже если коды
   // переданы напрямую в URL.
@@ -1431,7 +1446,7 @@ export default function ComparePage() {
   const indexed = forceIndex || scale === 'index';
 
   const chartData = useMemo(() => {
-    const EMPTY = { rows: [], nonIndexableNames: [], nonIndexableKeys: new Set(), maxPan: 0 };
+    const EMPTY = { rows: [], nonIndexableNames: [], nonIndexableKeys: new Set(), maxPan: 0, baseDate: null, noSharedBase: false };
     if (!series.length) return EMPTY;
     const maps = series.map((s) => {
       const raw = Array.isArray(s.data?.data) ? s.data.data : [];
@@ -1460,23 +1475,7 @@ export default function ComparePage() {
     const endIdx = allDates.length - pan;
     const startIdx = Math.max(0, endIdx - windowLen);
 
-    const last = series.map(() => null);
-    for (let di = 0; di < startIdx; di += 1) {
-      const d = allDates[di];
-      maps.forEach((m, i) => { if (m.has(d)) last[i] = m.get(d); });
-    }
     const dates = allDates.slice(startIdx, endIdx);
-
-    // База приведения: последнее значение до окна, иначе первое значение в окне.
-    const base = series.map((_, i) => last[i]);
-    for (const d of dates) {
-      let allSet = true;
-      maps.forEach((m, i) => {
-        if (base[i] == null && m.has(d)) base[i] = m.get(d);
-        if (base[i] == null) allSet = false;
-      });
-      if (allSet) break;
-    }
 
     // К общей базе (=100) приводится ТОЛЬКО положительный уровень. Знакопеременные
     // ряды (сальдо, счёт текущих операций, дефицит), %-ряды и представления
@@ -1484,17 +1483,19 @@ export default function ComparePage() {
     // приводятся: деление на ~0 → выброс, отрицательная база → переворот знака,
     // «инфляция 5% = 100 пунктов» — смысловой мусор. Такие ряды в режиме общей
     // базы исключаем и подписываем, а не рисуем.
-    const indexable = series.map((s, i) => isIndexableBase(base[i], {
-      unit: s.unit,
-      repId: s.rep,
-      values: dates.map((d) => maps[i].get(d)),
-    }));
+    const { date: baseDate, candidates, bases } = indexed
+      ? commonIndexBase(maps, series, dates)
+      : { date: null, candidates: [], bases: [] };
+    const indexable = series.map((_, i) => candidates.includes(i));
     const nonIndexableNames = indexed
       ? series.filter((_, i) => !indexable[i]).map((s) => s.ind?.name || s.code)
       : [];
     const nonIndexableKeys = new Set(
       indexed ? series.filter((_, i) => !indexable[i]).map((s) => s.key) : [],
     );
+    if (indexed && !baseDate) {
+      return { ...EMPTY, nonIndexableNames, nonIndexableKeys, maxPan, noSharedBase: candidates.length > 0 };
+    }
     const idxUnit = t('compare.indexUnit');
 
     // В-13 (CTO-аудит 2026-07-06): значение пишется в строку ТОЛЬКО на датах,
@@ -1502,14 +1503,15 @@ export default function ComparePage() {
     // последнее значение через даты без данных: тултип показывал «значение»
     // там, где наблюдения нет, а линия шла ступенькой. Разрывы между точками
     // соединяет connectNulls на <Line> — честная интерполяция между фактами.
-    const rows = dates.map((d) => {
+    const visibleDates = indexed ? dates.filter((date) => date >= baseDate) : dates;
+    const rows = visibleDates.map((d) => {
       const row = { date: d };
       maps.forEach((m, i) => {
         if (!m.has(d)) return;
         const v = m.get(d);
         const s = series[i];
         if (indexed) {
-          if (indexable[i]) { row[s.key] = rebaseToHundred(v, base[i]); row[`${s.key}_unit`] = idxUnit; }
+          if (indexable[i]) { row[s.key] = rebaseToHundred(v, bases[i]); row[`${s.key}_unit`] = idxUnit; }
         } else {
           row[s.key] = v;
           row[`${s.key}_unit`] = s.unit || '%';
@@ -1517,11 +1519,11 @@ export default function ComparePage() {
       });
       return row;
     });
-    return { rows, nonIndexableNames, nonIndexableKeys, maxPan };
+    return { rows, nonIndexableNames, nonIndexableKeys, maxPan, baseDate, noSharedBase: false };
   }, [series, range, indexed, step, panOffset, t]);
 
   const chartRows = chartData.rows;
-  const { nonIndexableNames, nonIndexableKeys, maxPan } = chartData;
+  const { nonIndexableNames, nonIndexableKeys, maxPan, baseDate, noSharedBase } = chartData;
   const analysisSummary = useMemo(() => {
     const metrics = series.map((item) => {
       const points = chartRows
@@ -1804,27 +1806,30 @@ export default function ComparePage() {
 
           <span
             className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4"
-            title={t('compare.stepTitle')}
+            title={t(hasWorldSeries ? 'compare.worldOfficialOnly' : 'compare.stepTitle')}
           >
             {t('compare.stepLabel')}
           </span>
-          <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
-            {STEP_OPTIONS.map((opt) => (
-              <button
-                key={opt.key}
-                disabled={hasWorldSeries && opt.key !== 'auto'}
-                onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
-                title={hasWorldSeries && opt.key !== 'auto' ? t('compare.worldOfficialOnly') : undefined}
-                className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                  step === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
-                  hasWorldSeries && opt.key !== 'auto' && 'cursor-not-allowed opacity-45 hover:text-text-tertiary',
-                )}
-              >
-                {t(opt.labelKey)}
-              </button>
-            ))}
-          </div>
+          {hasWorldSeries ? (
+            <span className="rounded-lg border border-border-subtle bg-obsidian-lighter px-3 py-2 text-xs text-text-secondary">
+              {t('compare.step.official')}
+            </span>
+          ) : (
+            <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+              {STEP_OPTIONS.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
+                  className={cn(
+                    'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
+                    step === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
+                  )}
+                >
+                  {t(opt.labelKey)}
+                </button>
+              ))}
+            </div>
+          )}
 
           <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4">{t('compare.scaleLabel')}</span>
           <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
@@ -1882,7 +1887,11 @@ export default function ComparePage() {
                 ? t('compare.emptyAdd')
                 : loadFailed
                   ? t('compare.emptyUnavailable')
-                  : t('compare.emptyData')}
+                  : noSharedBase
+                    ? t('compare.noSharedBase')
+                    : indexed && nonIndexableNames.length === series.length
+                      ? t('compare.noIndexableBase')
+                      : t('compare.emptyData')}
             </p>
           </div>
         ) : (
@@ -1892,7 +1901,7 @@ export default function ComparePage() {
             </h2>
             <p className="text-center text-xs text-text-tertiary mb-4">
               {indexed
-                ? t('compare.hintIndex')
+                ? t('compare.hintIndex', { date: formatDate(baseDate, compareDateFmt) })
                 : t('compare.hintValues')}
               {` ${t('compare.periodLabel')}: ${t(RANGE_OPTIONS.find((r) => r.key === range)?.labelKey || 'compare.range.all').toLowerCase()}`}
             </p>
@@ -1934,15 +1943,15 @@ export default function ComparePage() {
               )}
               style={{ touchAction: 'pan-y' }}
             >
-              {/* Бренд на экране; в PNG зарегистрированным не попадает
-                  (data-no-export + watermark:false в exportNodeToPng). */}
-              <div
-                aria-hidden="true"
-                data-no-export="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
-              >
-                forecasteconomy.com
-              </div>
+              {!isAuthed && !isAuthLoading && (
+                <div
+                  aria-hidden="true"
+                  data-no-export="true"
+                  className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
+                >
+                  forecasteconomy.com
+                </div>
+              )}
               <ResponsiveContainer width="100%" height={480}>
                 <ComposedChart data={chartRows} margin={{ top: 10, right: 20, bottom: 44, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />

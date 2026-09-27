@@ -13,6 +13,7 @@ import {
 } from '../lib/sitePaths';
 import {
   useWorldSearch,
+  useWorldCompareCatalog,
   WORLD_GLOBAL_SEARCH_LIMIT,
 } from '../lib/worldApi';
 import { useLocale, useT } from '../i18n';
@@ -28,10 +29,10 @@ import {
 // Две стадии (чтобы пустой запрос не вываливал ~900 авто-сиблингов режимов вида
 // `cpi-food-yoy`, `corp-bond-index-mom` — это выглядело бы как «сделано
 // студентом»):
-//   • пустой запрос → чистая витрина: только листинговые индикаторы России
-//     (is_listed), листается целиком;
-//   • введён запрос → Россия (весь каталог, включая скрытые срезы) + мир
-//     через /world/search; сначала российские, затем мировые с меткой страны.
+//   • пустой запрос → RU: листинговые индикаторы России; EN: курируемые
+//     национальные показатели США, без загрузки всего каталога страны;
+//   • введён запрос → Россия (включая скрытые срезы) + весь мир через
+//     /world/search; на EN международные результаты впереди российских.
 // MAX_RESULTS — страховка от патологического рендера на коротком запросе
 // (только российская часть; мир ограничен WORLD_GLOBAL_SEARCH_LIMIT).
 const MAX_RESULTS = 600;
@@ -79,13 +80,30 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
 
   const qTrim = query.trim();
   const worldNeedle = expandSearchQuery(qTrim);
-  const { data: worldSearch } = useWorldSearch(worldNeedle, {
+  const worldSearchQ = useWorldSearch(worldNeedle, {
     limit: WORLD_GLOBAL_SEARCH_LIMIT,
     enabled: shouldLoad && open && worldNeedle.length >= 1,
   });
+  const { data: worldPreview, isPending: isPreviewPending } = useWorldCompareCatalog({
+    enabled: locale === 'en' && shouldLoad && open && !qTrim,
+  });
+  const isSearchPending = locale === 'en' && Boolean(qTrim) && worldSearchQ.isPending;
 
   const results = useMemo(() => {
     if (!qTrim) {
+      if (locale === 'en') {
+        return (worldPreview?.items || [])
+          .filter((item) => item.country_slug === 'united-states' && item.indicator_code)
+          .map((item) => ({
+            kind: 'world',
+            key: `world:united-states:${item.indicator_code}`,
+            code: item.indicator_code,
+            name: item.concept_name,
+            name_en: item.concept_name_en,
+            country_slug: 'united-states',
+            country_name: item.country_name_en || item.country_name,
+          }));
+      }
       // Витрина: только листинговые индикаторы России, листается целиком.
       return indicators
         .filter((ind) => ind.is_listed !== false)
@@ -114,7 +132,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
         category_ru: ind.category_ru,
       }));
 
-    const worldHits = (worldSearch?.results || []).map((row) => ({
+    const worldHits = (worldSearchQ.data?.results || []).map((row) => ({
       kind: 'world',
       key: `world:${row.country_slug}:${row.code}`,
       code: row.code,
@@ -125,8 +143,10 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
       country_name: row.country_name,
     }));
 
-    return [...russiaHits, ...worldHits];
-  }, [qTrim, indicators, worldSearch]);
+    return locale === 'en'
+      ? (isSearchPending ? [] : [...worldHits, ...russiaHits])
+      : [...russiaHits, ...worldHits];
+  }, [qTrim, indicators, worldSearchQ.data, worldPreview, locale, isSearchPending]);
 
   const close = useCallback(() => {
     // Брошенный запрос (закрыли без выбора) — сигнал спроса не хуже выбранного.
@@ -375,9 +395,11 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             <div ref={listRef} className="min-h-0 max-h-[60vh] overflow-y-auto py-2" role="listbox">
               {results.length === 0 ? (
                 <div className="px-4 py-6 text-sm text-text-tertiary">
-                  {query.trim()
-                    ? t('search.nothingFound', { query: query.trim() })
-                    : t('search.empty')}
+                  {(isSearchPending || (locale === 'en' && !query.trim() && isPreviewPending))
+                    ? t('search.loading')
+                    : query.trim()
+                      ? t('search.nothingFound', { query: query.trim() })
+                      : t('search.empty')}
                 </div>
               ) : (
                 results.map((item, i) => {

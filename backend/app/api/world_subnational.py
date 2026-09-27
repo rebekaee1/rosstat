@@ -596,7 +596,7 @@ async def region_indicator_forecast(
     from app.services.world_subnational_forecast import state_forecast
 
     cache_key = await versioned_key(
-        "world", f"subnat:forecast:v3:{country_slug}:{slug}:{code}:{get_locale()}",
+        "world", f"subnat:forecast:v4:{country_slug}:{slug}:{code}:{get_locale()}",
     )
     cached = await cache_get(cache_key)
     if cached is not None:

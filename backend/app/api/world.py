@@ -857,6 +857,7 @@ async def _build_world_countries_payload(db: AsyncSession) -> dict:
         "total": len(countries),
         "world_indicators_count": sum(int(c.get("indicators_count") or 0) for c in countries if c.get("code") != "RU"),
         "russia_macro_indicators_count": ru_macro_indicators,
+        "russia_regional_indicators_count": ru_region_indicators,
         "regional_indicators_count": ru_region_indicators + subnational_count,
         "us_state_indicators_count": us_state_indicators,
         "us_states_count": us_states,
@@ -2133,7 +2134,7 @@ async def indicator_data(
 ):
     cache_key = await versioned_key(
         "world",
-        f"data:v10:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:"
+        f"data:v11:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:"
         f"{date_from}:{date_to}:{get_locale()}",
     )
     cached = await cache_get(cache_key)
@@ -2230,12 +2231,17 @@ async def indicator_data(
                 )
             except ValueError:
                 continue
-            forecast_points = [
-                row
-                for row in forecast_points
-                if last_displayed is None or row[0] > last_displayed
-                or row[0] not in displayed_dates
-            ]
+            if parsed.freq == "annual":
+                forecast_points = [
+                    row for row in forecast_points
+                    if last_displayed is None or row[0].year == last_displayed.year + 1
+                ][:1]
+            else:
+                forecast_points = [
+                    row for row in forecast_points
+                    if last_displayed is None or row[0] > last_displayed
+                    or row[0] not in displayed_dates
+                ]
             if not forecast_points:
                 continue
             derived_from = (

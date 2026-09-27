@@ -65,11 +65,10 @@ it('world page: external source_url wins over an internal sourcePath fallback', 
   expect(link.getAttribute('target')).toBe('_blank');
 });
 
-it('falls back to an internal link only when no source URL is known', () => {
+it('shows a source badge without a misleading link when no source URL is known', () => {
   renderPanel({
     indicator: { code: 'some-series', name: 'X', source: 'Unknown agency' },
   });
-  const link = screen.getByRole('link', { name: /источник|source/i });
-  expect(link.getAttribute('href')).toBe('/russia/indicator/some-series');
-  expect(link.getAttribute('target')).toBeNull();
+  expect(screen.queryByRole('link', { name: /источник|source/i })).toBeNull();
+  expect(screen.getByText(/источник|source/i)).toBeTruthy();
 });

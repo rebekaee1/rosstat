@@ -174,6 +174,30 @@ export function rebaseToHundred(value, base) {
   return (value / base) * 100;
 }
 
+/**
+ * Первая общая фактическая дата положительных уровней в видимом окне.
+ * Процентные и знакопеременные ряды не сдвигают базу остальных. Если общей
+ * даты нет, возвращаем null: отдельные даты начала не выдаём за одну точку.
+ */
+export function commonIndexBase(maps, series, dates) {
+  const candidates = series.flatMap((item, index) => {
+    const values = dates.map((date) => maps[index].get(date));
+    const positive = values.find((value) => typeof value === 'number' && Number.isFinite(value) && value > 0);
+    return isIndexableBase(positive, { unit: item.unit, repId: item.rep, values }) ? [index] : [];
+  });
+  const date = candidates.length
+    ? dates.find((candidateDate) => candidates.every((index) => {
+      const value = maps[index].get(candidateDate);
+      return typeof value === 'number' && Number.isFinite(value) && value > 0;
+    })) || null
+    : null;
+  return {
+    date,
+    candidates,
+    bases: series.map((_, index) => date && candidates.includes(index) ? maps[index].get(date) : null),
+  };
+}
+
 // Шаг переключателя времени → ключ `alternate_frequencies` на карточке
 // индикатора (тот же справочник частот, что `frequencySwitcher.js`).
 const STEP_FREQ_KEY = { month: 'monthly', quarter: 'quarterly', year: 'annual' };

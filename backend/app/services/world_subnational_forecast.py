@@ -15,7 +15,7 @@ from typing import Sequence
 from app.services.world_forecaster import train_quality_gated_world_forecast
 
 FREQUENCIES = {
-    "annual": (14, 2, 1, "annual_auto", 1400),
+    "annual": (14, 1, 1, "annual_auto", 1400),
     "quarterly": (32, 4, 4, "quarterly_auto", 260),
     "monthly": (72, 12, 12, "monthly_auto", 150),
 }

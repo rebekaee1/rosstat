@@ -302,6 +302,26 @@ def test_annual_sum_drops_incomplete_future_year():
     assert [p.date for p in points] == [date(2025, 1, 1)]
 
 
+def test_annual_derived_forecast_stops_after_one_future_year():
+    source = [
+        (date(year, month, 1), 100.0)
+        for year in (2023, 2024, 2025, 2026)
+        for month in (3, 6, 9, 12)
+    ]
+    ctx = _make_ctx(
+        indicator_code="gdp-real-annual",
+        frequency="annual",
+        cfg={
+            "derived_forecast": {"operation": "annual_sum", "model_name": "Annual-GDP"},
+            "_source_data": source,
+        },
+    )
+    outputs = derived_from_source_strategy(
+        [date(2023, 1, 1), date(2024, 1, 1)], [400.0, 400.0], ctx,
+    )
+    assert [point.date for point in outputs[0].result.points] == [date(2025, 1, 1)]
+
+
 def test_cpi_mom_yoy_emits_only_future_months():
     """cpi-yoy: прогноз строится на цепочке уровней из месячных ИПЦ (~100)."""
     actuals = [(date(2024, m, 1), 100.5) for m in range(1, 13)]

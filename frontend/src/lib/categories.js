@@ -56,17 +56,17 @@ const CATEGORY_DEFS = [
     slug: 'currencies',
     name: 'Валюты',
     nameEn: 'Currencies',
-    seoTitleEn: 'Bank of Russia exchange rates',
+    seoTitleEn: 'Currency and cryptocurrency rates',
     seoDescriptionEn:
-      'USD, EUR, and CNY against the ruble — official daily rates from the Bank of Russia.',
+      'Ruble exchange rates, global currency pairs, and cryptocurrency prices from the Bank of Russia, ECB, and Binance.',
     icon: 'CircleDollarSign',
     apiCategory: 'Валюты',
     status: 'active',
     flagshipCode: 'usd-rub',
     sentiment: 'inverse',
-    description: 'Официальные курсы доллара, евро и юаня к рублю — ежедневные котировки Банка России.',
+    description: 'Курсы к рублю, мировые валютные пары и криптовалюты из разных источников.',
     descriptionEn:
-      'Official USD, EUR and CNY rates against the ruble — daily Bank of Russia quotes.',
+      'Ruble exchange rates, global currency pairs, and cryptocurrency prices from multiple sources.',
     relatedSlugs: ['finance', 'rates', 'trade'],
   },
   {

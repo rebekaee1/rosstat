@@ -325,7 +325,11 @@ def test_index_lastmod_and_urlset_omit_unverifiable_dates():
     assert urls.normalize_sitemap_lastmod("not-a-date") is None
     assert urls._static_lastmod("/about", date(2026, 9, 1)) is None
     assert urls._static_lastmod("/", date(2026, 9, 1)) == "2026-09-01"
-    months = urls._month_rows_urls([("cpi", 2026, 9, date(2026, 9, 10))], date(2026, 9, 25))
+    months = urls._month_rows_urls([
+        ("cpi", 2026, 9, date(2026, 9, 10)),
+        ("eur-usd", 2026, 9, date(2026, 9, 10)),
+    ], date(2026, 9, 25))
+    assert any(item.path == "/currencies/indicator/eur-usd/2026-09" for item in months)
     assert months[0].lastmod == "2026-09-10"
 
 

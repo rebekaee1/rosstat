@@ -62,6 +62,8 @@ def russia_categories_trail() -> list[Crumb]:
 def russia_category_trail(category_name: str, category_path: str) -> list[Crumb]:
     # Хаб /russia/category остаётся живой страницей, но не уровнем крошек:
     # как у мировой карточки, трейл страны не вставляет «Категории».
+    if category_path == paths.russia_category("currencies"):
+        return trail(home(), (category_path, category_name))
     return trail(home(), russia(), (category_path, category_name))
 
 
@@ -71,7 +73,7 @@ def russia_indicator_trail(
     indicator_name: str,
     indicator_path: str,
 ) -> list[Crumb]:
-    items = [home(), russia()]
+    items = [home()] if indicator_path.startswith("/currencies/") else [home(), russia()]
     if category_name and category_path:
         items.append((category_path, category_name))
     items.append((indicator_path, indicator_name))
@@ -86,8 +88,7 @@ def global_market_indicator_trail(
 ) -> list[Crumb]:
     """Мировой рыночный ряд: Главная / [категория] / показатель.
 
-    Без узла «Россия» — ряд не относится к российской статистике, даже если
-    URL лежит в общем каталоге `/russia/indicator/...`.
+    Без узла «Россия» — ряд не относится к российской статистике.
     """
     items = [home()]
     if category_name and category_path:

@@ -1,6 +1,7 @@
 /**
- * Мировые рыночные ряды в общем каталоге (URL `/russia/indicator/...`),
- * но не российская статистика — в крошках без «Россия».
+ * Мировые рыночные ряды общего каталога: валюты имеют путь `/currencies`,
+ * остальные рыночные ряды пока живут под `/russia/indicator/...`.
+ * В хлебных крошках они не считаются российской статистикой.
  * Зеркало backend `app/data/global_market_indicators.py`.
  */
 export const GLOBAL_MARKET_INDICATOR_BASES = Object.freeze([

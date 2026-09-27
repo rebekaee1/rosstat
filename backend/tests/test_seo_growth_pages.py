@@ -1054,7 +1054,7 @@ def test_sitemap_sections(seeded_env):
 
         core = tc.get("/sitemap-core.xml")
         assert core.status_code == 200
-        assert "/russia/indicator/usd-rub" in core.text
+        assert "/currencies/indicator/usd-rub" in core.text
         assert "/__honeypot__" not in core.text
         assert "links-exchange" not in core.text
 

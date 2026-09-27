@@ -51,6 +51,7 @@ describe('Dashboard', () => {
       ['/world/countries', {
         countries: [], total: 0,
         regional_indicators_count: 2377,
+        russia_regional_indicators_count: 495,
       }],
       [/^\/world\/rating\/concepts/, { concepts: [], total: 0 }],
       [/^\/world\/compare\/map-series\//, {
@@ -68,8 +69,8 @@ describe('Dashboard', () => {
     expect(screen.queryByLabelText('Россия')).toBeNull();
     // Блок состава платформы.
     expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
-    await waitFor(() => expect(screen.getByText(/2\s*377/)).toBeTruthy());
-    expect(screen.getByText(/региональных показателей/)).toBeTruthy();
+    await waitFor(() => expect(screen.getByText('495')).toBeTruthy());
+    expect(screen.getByText(/региональных показателей России/)).toBeTruthy();
     expect(screen.queryByText(/42\s*075/)).toBeNull();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Сколько данных доступно' })).toBeNull();

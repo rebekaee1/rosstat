@@ -254,7 +254,7 @@ async def render_indicator_month_html(
     month_label = _month_label(year, month)
     month_label_en = _month_label_en(year, month)
     trail_label = month_label_en if en else month_label
-    canonical_path = paths.indicator_month(paths.RUSSIA, code, year, month)
+    canonical_path = paths.russia_indicator_month(code, year, month)
     trail = _month_trail(code, category, cat_name, name, canonical_path, trail_label)
 
     by_month = await _month_last_values(db, indicator.id)
@@ -270,11 +270,13 @@ async def render_indicator_month_html(
     shown_last = display_value(code, last.value)
 
     # RU-месяц в H1 — именительный падеж; EN — свой словарь месяцев.
+    # Валютный раздел не привязан к стране, включая пары с рублём.
     if en:
-        title = f"{name} in Russia — {month_label_en}, monthly value"
-        h1 = f"{name} in Russia, {month_label_en}"
+        country_phrase = "" if paths.is_currency_indicator(code) else " in Russia"
+        title = f"{name}{country_phrase} — {month_label_en}, monthly value"
+        h1 = f"{name}{country_phrase}, {month_label_en}"
         desc = (
-            f"{name} in Russia for {month_label_en}: monthly value, change versus "
+            f"{name}{country_phrase} for {month_label_en}: monthly value, change versus "
             f"the previous month and the same month a year earlier. "
             f"Official data — {source}."
         )
@@ -345,7 +347,7 @@ async def render_indicator_month_html(
     months_in_year = sorted(m for y, m in by_month if y == year)
     month_links = _links_list(
         tuple(
-            (paths.indicator_month(paths.RUSSIA, code, year, m), _month_label(year, m))
+            (paths.russia_indicator_month(code, year, m), _month_label(year, m))
             for m in months_in_year
             if m != month
         )
@@ -362,7 +364,7 @@ async def render_indicator_month_html(
     year_link_tpl = "{name} in {year}" if en else "{name} в {year} году"
     year_links = _links_list(
         tuple(
-            (paths.indicator_year(paths.RUSSIA, code, y), year_link_tpl.format(name=name, year=y))
+            (paths.russia_indicator_year(code, y), year_link_tpl.format(name=name, year=y))
             for y in years[-(_YEARS_LINKS_MAX + 1):]
         )
     )
@@ -407,7 +409,7 @@ async def render_indicator_month_html(
 </main>"""
 
     jsonld_name = (
-        f"{name} in Russia — {month_label_en}" if en else f"{name} — {month_label} {year}"
+        f"{name}{country_phrase} — {month_label_en}" if en else f"{name} — {month_label} {year}"
     )
     json_ld = [
         _site_json_ld(),

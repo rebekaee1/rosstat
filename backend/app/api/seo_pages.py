@@ -329,6 +329,9 @@ async def seo_categories_hub(request: Request, db: AsyncSession = Depends(get_db
 
 @router.api_route("/seo/category/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_category(slug: str, request: Request, db: AsyncSession = Depends(get_db)):
+    original_path = request.headers.get("x-original-uri", "").split("?", 1)[0]
+    if slug == "currencies" and original_path.startswith("/russia/category/"):
+        return _permanent_redirect(paths.russia_category(slug), request)
     status, html = await render_category_html(slug, db)
     return _html_response(status, html, request)
 
@@ -344,6 +347,13 @@ async def seo_indicator(
     target = resolve_legacy_indicator(code) or resolve_unlisted_indicator(code)
     if target:
         return _permanent_redirect(target, request)
+    original_path = request.headers.get("x-original-uri", "").split("?", 1)[0]
+    if paths.is_currency_indicator(code) and original_path.startswith("/russia/indicator/"):
+        dest = paths.russia_indicator(code)
+        return _permanent_redirect(f"{dest}?mode={mode}" if mode else dest, request)
+    if not paths.is_currency_indicator(code) and original_path.startswith("/currencies/indicator/"):
+        dest = paths.russia_indicator(code)
+        return _permanent_redirect(f"{dest}?mode={mode}" if mode else dest, request)
     # Старый публичный /indicator/{code} (X-Path-Cut-Legacy) → канон /russia/…
     if request.headers.get("x-path-cut-legacy") == "1":
         dest = paths.russia_indicator(code)
@@ -508,6 +518,11 @@ async def seo_indicator_year(
         if "/category/" in base_path:
             return _permanent_redirect(target.split("?")[0], request)
         return _permanent_redirect(f"{base_path}/{year}", request)
+    original_path = request.headers.get("x-original-uri", "").split("?", 1)[0]
+    if paths.is_currency_indicator(code) and original_path.startswith("/russia/indicator/"):
+        return _permanent_redirect(paths.russia_indicator_year(code, year), request)
+    if not paths.is_currency_indicator(code) and original_path.startswith("/currencies/indicator/"):
+        return _permanent_redirect(paths.russia_indicator_year(code, year), request)
     if request.headers.get("x-path-cut-legacy") == "1":
         return _permanent_redirect(paths.russia_indicator_year(code, year), request)
     status, html = await _cached_html(
@@ -528,6 +543,11 @@ async def seo_indicator_month(
 ):
     if not paths.is_public_month_period(period):
         return _html_response(404, "Not found")
+    original_path = request.headers.get("x-original-uri", "").split("?", 1)[0]
+    if paths.is_currency_indicator(code) and original_path.startswith("/russia/indicator/"):
+        return _permanent_redirect(f"{paths.russia_indicator(code)}/{period}", request)
+    if not paths.is_currency_indicator(code) and original_path.startswith("/currencies/indicator/"):
+        return _permanent_redirect(f"{paths.russia_indicator(code)}/{period}", request)
     status, html = await _cached_html(
         code, f"indicator-month:{code}:{period}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_month_html(code, int(period[:4]), int(period[5:]), db),

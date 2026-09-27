@@ -426,6 +426,13 @@ def derived_from_source_strategy(
         derived_cfg=derived_cfg,
         source_last_actual=source_last_actual,
     )
+    if ctx.indicator_frequency == "annual":
+        last_actual = max(dates) if dates else source_last_actual
+        anchor = [row for row in future_only if last_actual is not None and row[0] == last_actual]
+        future_only = anchor + [
+            row for row in future_only
+            if last_actual is None or row[0].year == last_actual.year + 1
+        ][:1]
 
     if not future_only:
         logger.info(

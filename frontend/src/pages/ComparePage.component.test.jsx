@@ -196,6 +196,13 @@ describe('ComparePage', () => {
     renderPage(<ComparePage />, { path: '/compare', route: '/compare', locale: 'en' });
     const heading = await screen.findByRole('heading', { level: 1 });
     expect(heading.textContent).toBe('Compare indicators');
+    const picker = document.querySelector('[data-block="compare-add"]');
+    await waitFor(() => {
+      const countryOrder = [...picker.querySelectorAll('button')]
+        .map((button) => button.textContent.trim())
+        .filter((label) => ['United States', 'Canada', 'Russia'].includes(label));
+      expect(countryOrder).toEqual(['United States', 'Canada', 'Russia']);
+    });
     fireEvent.click(await screen.findByRole('button', { name: 'Russia' }));
     expect(screen.getByRole('button', { name: /Macro indicators/ })).toBeTruthy();
     expect(screen.getByRole('button', { name: /Regions/ })).toBeTruthy();

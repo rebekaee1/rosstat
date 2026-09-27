@@ -282,7 +282,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "auto-loan-rate",
       "variant_group": null,
@@ -344,7 +344,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "auto-loan-rate",
       "variant_group": null,
@@ -357,7 +357,7 @@
       "files": [
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 344,
+          "line": 364,
           "kind": "tests"
         },
         {
@@ -514,7 +514,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "auto-loan-rate",
       "variant_group": null,
@@ -550,7 +550,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -693,7 +693,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "birth-rate",
       "variant_group": null,
@@ -729,7 +729,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -955,7 +955,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1603,
+          "line": 1608,
           "kind": "other"
         },
         {
@@ -1003,7 +1003,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "births",
       "variant_group": null,
@@ -1034,7 +1034,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "births",
       "variant_group": null,
@@ -1422,7 +1422,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 15,
+          "line": 16,
           "kind": "other"
         },
         {
@@ -1483,6 +1483,11 @@
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
           "line": 176,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.test.js",
+          "line": 81,
           "kind": "tests"
         },
         {
@@ -2009,6 +2014,11 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 152,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/ticker_sources/__init__.py",
           "line": 26,
           "kind": "other"
@@ -2125,7 +2135,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 7,
+          "line": 8,
           "kind": "other"
         },
         {
@@ -2167,6 +2177,11 @@
           "file": "frontend/src/lib/searchSynonyms.test.js",
           "line": 132,
           "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 12,
+          "kind": "other"
         },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
@@ -2681,11 +2696,6 @@
           "kind": "other"
         },
         {
-          "file": "backend/app/services/seo_renderer.py",
-          "line": 3179,
-          "kind": "seo"
-        },
-        {
           "file": "backend/scripts/audit-groups-submodes.py",
           "line": 167,
           "kind": "other"
@@ -2823,11 +2833,6 @@
         {
           "file": "docs/indicator-family-playbook.md",
           "line": 434,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/components/IndicatorMethodologyPanel.jsx",
-          "line": 29,
           "kind": "other"
         },
         {
@@ -2988,7 +2993,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "budget-deficit",
       "variant_group": null,
@@ -3091,7 +3096,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "budget-deficit",
       "variant_group": null,
@@ -3379,7 +3384,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "budget-expenditure",
       "variant_group": null,
@@ -3472,7 +3477,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "budget-expenditure",
       "variant_group": null,
@@ -3853,7 +3858,7 @@
       "files": [
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 449,
+          "line": 469,
           "kind": "tests"
         },
         {
@@ -3881,7 +3886,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "budget-revenue",
       "variant_group": null,
@@ -3894,7 +3899,7 @@
       "files": [
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 417,
+          "line": 437,
           "kind": "tests"
         },
         {
@@ -3984,7 +3989,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "budget-revenue",
       "variant_group": null,
@@ -4207,7 +4212,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "business-credit",
       "variant_group": null,
@@ -4269,7 +4274,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "business-credit",
       "variant_group": null,
@@ -4424,7 +4429,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "business-credit",
       "variant_group": null,
@@ -4617,7 +4622,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "capital-investment",
       "variant_group": null,
@@ -4684,7 +4689,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "capital-investment",
       "variant_group": null,
@@ -4749,6 +4754,11 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 152,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 4369,
           "kind": "seed"
@@ -4756,6 +4766,11 @@
         {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
           "line": 134,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 12,
           "kind": "other"
         }
       ]
@@ -4864,6 +4879,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 152,
+          "kind": "other"
+        },
+        {
           "file": "backend/scripts/export_seo_demand_quarter.py",
           "line": 499,
           "kind": "other"
@@ -4960,17 +4980,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1330,
+          "line": 1334,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1332,
+          "line": 1336,
           "kind": "other"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.js",
           "line": 38,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 12,
           "kind": "other"
         },
         {
@@ -5667,7 +5692,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 21,
+          "line": 22,
           "kind": "other"
         },
         {
@@ -6159,7 +6184,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "construction-work",
       "variant_group": null,
@@ -6252,7 +6277,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "construction-work",
       "variant_group": null,
@@ -6490,7 +6515,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "consumer-credit",
       "variant_group": null,
@@ -6552,7 +6577,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "consumer-credit",
       "variant_group": null,
@@ -6707,7 +6732,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "consumer-credit",
       "variant_group": null,
@@ -6859,7 +6884,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 17,
+          "line": 18,
           "kind": "other"
         },
         {
@@ -7480,7 +7505,7 @@
       "files": [
         {
           "file": "frontend/src/components/IndicatorSearch.jsx",
-          "line": 29,
+          "line": 30,
           "kind": "other"
         },
         {
@@ -7761,12 +7786,12 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 122,
+          "line": 148,
           "kind": "other"
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 126,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -8041,12 +8066,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1398,
+          "line": 1409,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1399,
+          "line": 1410,
           "kind": "seo"
         },
         {
@@ -8266,7 +8291,7 @@
         },
         {
           "file": "backend/tests/test_breadcrumbs.py",
-          "line": 27,
+          "line": 26,
           "kind": "tests"
         },
         {
@@ -8641,42 +8666,42 @@
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1519,
+          "line": 1533,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1566,
+          "line": 1580,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1573,
+          "line": 1587,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1624,
+          "line": 1638,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1631,
+          "line": 1645,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1653,
+          "line": 1667,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1669,
+          "line": 1683,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_i18n_parity.py",
-          "line": 1735,
+          "line": 1749,
           "kind": "tests"
         },
         {
@@ -8901,37 +8926,42 @@
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 55,
+          "line": 37,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 70,
+          "line": 60,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 71,
+          "line": 75,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 72,
+          "line": 76,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 82,
+          "line": 77,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 83,
+          "line": 87,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 86,
+          "line": 88,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 91,
           "kind": "tests"
         },
         {
@@ -9526,7 +9556,7 @@
         },
         {
           "file": "backend/tests/test_sitemap_static.py",
-          "line": 328,
+          "line": 329,
           "kind": "tests"
         },
         {
@@ -10056,26 +10086,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1054,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1055,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1056,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1057,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
           "line": 1058,
           "kind": "other"
         },
@@ -10086,12 +10096,32 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1162,
+          "line": 1060,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1332,
+          "line": 1061,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1062,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1063,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1166,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1336,
           "kind": "other"
         },
         {
@@ -10116,26 +10146,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1054,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1055,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1056,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1057,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
           "line": 1058,
           "kind": "other"
         },
@@ -10146,12 +10156,32 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1163,
+          "line": 1060,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1334,
+          "line": 1061,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1062,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1063,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1167,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1338,
           "kind": "other"
         },
         {
@@ -10371,7 +10401,7 @@
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 198,
+          "line": 232,
           "kind": "tests"
         },
         {
@@ -10956,22 +10986,22 @@
         },
         {
           "file": "frontend/src/lib/sitePaths.test.js",
-          "line": 36,
+          "line": 39,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/sitePaths.test.js",
-          "line": 38,
+          "line": 41,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/sitePaths.test.js",
-          "line": 52,
+          "line": 55,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/sitePaths.test.js",
-          "line": 73,
+          "line": 86,
           "kind": "tests"
         },
         {
@@ -11076,12 +11106,12 @@
         },
         {
           "file": "frontend/src/pages/CategoryPage.jsx",
-          "line": 79,
+          "line": 80,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/CategoryPage.jsx",
-          "line": 87,
+          "line": 88,
           "kind": "other"
         },
         {
@@ -11121,12 +11151,12 @@
         },
         {
           "file": "frontend/src/pages/ComparePage.component.test.jsx",
-          "line": 216,
+          "line": 223,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/ComparePage.component.test.jsx",
-          "line": 272,
+          "line": 279,
           "kind": "other"
         },
         {
@@ -11527,12 +11557,12 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 122,
+          "line": 148,
           "kind": "other"
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 126,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -11877,12 +11907,12 @@
         },
         {
           "file": "frontend/src/pages/CategoryPage.jsx",
-          "line": 80,
+          "line": 81,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/CategoryPage.jsx",
-          "line": 88,
+          "line": 89,
           "kind": "other"
         },
         {
@@ -11945,7 +11975,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "cpi",
       "redirect_parent": "cpi-food",
       "variant_group": null,
@@ -11983,7 +12013,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1802,
+          "line": 1821,
           "kind": "seo"
         },
         {
@@ -12232,7 +12262,7 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 23,
+          "line": 25,
           "kind": "other"
         },
         {
@@ -12368,7 +12398,7 @@
         },
         {
           "file": "frontend/src/components/IndicatorSearch.jsx",
-          "line": 29,
+          "line": 30,
           "kind": "other"
         },
         {
@@ -12439,12 +12469,12 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 122,
+          "line": 148,
           "kind": "other"
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 126,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -12679,12 +12709,12 @@
         },
         {
           "file": "frontend/src/pages/CategoryPage.jsx",
-          "line": 81,
+          "line": 82,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/CategoryPage.jsx",
-          "line": 89,
+          "line": 90,
           "kind": "other"
         },
         {
@@ -12737,7 +12767,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "cpi",
       "redirect_parent": "cpi-nonfood",
       "variant_group": null,
@@ -13009,7 +13039,7 @@
       "files": [
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 24,
+          "line": 26,
           "kind": "other"
         },
         {
@@ -13166,12 +13196,12 @@
         },
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 502,
+          "line": 522,
           "kind": "tests"
         },
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 521,
+          "line": 541,
           "kind": "tests"
         },
         {
@@ -13354,12 +13384,12 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 122,
+          "line": 148,
           "kind": "other"
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 126,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -13594,12 +13624,12 @@
         },
         {
           "file": "frontend/src/pages/CategoryPage.jsx",
-          "line": 82,
+          "line": 83,
           "kind": "other"
         },
         {
           "file": "frontend/src/pages/CategoryPage.jsx",
-          "line": 90,
+          "line": 91,
           "kind": "other"
         },
         {
@@ -13652,7 +13682,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "cpi",
       "redirect_parent": "cpi-services",
       "variant_group": null,
@@ -13929,7 +13959,7 @@
       "files": [
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 25,
+          "line": 27,
           "kind": "other"
         },
         {
@@ -14141,12 +14171,12 @@
         },
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 306,
+          "line": 326,
           "kind": "tests"
         },
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 314,
+          "line": 334,
           "kind": "tests"
         },
         {
@@ -14456,7 +14486,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-1to3y",
       "variant_group": null,
@@ -14518,7 +14548,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-1to3y",
       "variant_group": null,
@@ -14673,7 +14703,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-1to3y",
       "variant_group": null,
@@ -14896,7 +14926,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-over3y",
       "variant_group": null,
@@ -14958,7 +14988,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-over3y",
       "variant_group": null,
@@ -15113,7 +15143,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-over3y",
       "variant_group": null,
@@ -15361,7 +15391,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-short",
       "variant_group": null,
@@ -15423,7 +15453,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-short",
       "variant_group": null,
@@ -15578,7 +15608,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-corp-short",
       "variant_group": null,
@@ -15801,7 +15831,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-1to3y",
       "variant_group": null,
@@ -15863,7 +15893,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-1to3y",
       "variant_group": null,
@@ -16018,7 +16048,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-1to3y",
       "variant_group": null,
@@ -16241,7 +16271,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-over3y",
       "variant_group": null,
@@ -16303,7 +16333,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-over3y",
       "variant_group": null,
@@ -16458,7 +16488,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-over3y",
       "variant_group": null,
@@ -16696,7 +16726,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-short",
       "variant_group": null,
@@ -16758,7 +16788,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-short",
       "variant_group": null,
@@ -16913,7 +16943,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "credit-rate-ind-short",
       "variant_group": null,
@@ -17327,7 +17357,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "current-account",
       "variant_group": null,
@@ -17421,7 +17451,7 @@
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 42,
+          "line": 47,
           "kind": "tests"
         },
         {
@@ -17620,7 +17650,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "current-account",
       "variant_group": null,
@@ -17656,7 +17686,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -17784,7 +17814,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "death-rate",
       "variant_group": null,
@@ -17815,7 +17845,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -18089,7 +18119,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deaths",
       "variant_group": null,
@@ -18120,7 +18150,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deaths",
       "variant_group": null,
@@ -18433,7 +18463,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate",
       "variant_group": null,
@@ -18495,7 +18525,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate",
       "variant_group": null,
@@ -18693,7 +18723,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-long",
       "variant_group": null,
@@ -18755,7 +18785,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-long",
       "variant_group": null,
@@ -18910,7 +18940,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-long",
       "variant_group": null,
@@ -19113,7 +19143,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-medium",
       "variant_group": null,
@@ -19175,7 +19205,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-medium",
       "variant_group": null,
@@ -19330,7 +19360,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate-medium",
       "variant_group": null,
@@ -19490,7 +19520,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposit-rate",
       "variant_group": null,
@@ -19708,7 +19738,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposits-business",
       "variant_group": null,
@@ -19770,7 +19800,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposits-business",
       "variant_group": null,
@@ -19925,7 +19955,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposits-business",
       "variant_group": null,
@@ -20173,7 +20203,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposits-individual",
       "variant_group": null,
@@ -20235,7 +20265,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposits-individual",
       "variant_group": null,
@@ -20390,7 +20420,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "deposits-individual",
       "variant_group": null,
@@ -20426,7 +20456,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -20519,7 +20549,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "depreciation-rate",
       "variant_group": null,
@@ -20550,7 +20580,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -20649,7 +20679,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "doctoral-students",
       "variant_group": null,
@@ -20680,7 +20710,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "doctoral-students",
       "variant_group": null,
@@ -21117,17 +21147,17 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1118,
+          "line": 1122,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1120,
+          "line": 1124,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1121,
+          "line": 1125,
           "kind": "other"
         },
         {
@@ -21226,7 +21256,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "employment",
       "variant_group": null,
@@ -21381,7 +21411,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "employment",
       "variant_group": null,
@@ -21473,6 +21503,11 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 152,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 4021,
           "kind": "seed"
@@ -21489,7 +21524,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 8,
+          "line": 9,
           "kind": "other"
         },
         {
@@ -21500,6 +21535,11 @@
         {
           "file": "frontend/src/lib/searchSynonyms.js",
           "line": 42,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 12,
           "kind": "other"
         },
         {
@@ -22042,12 +22082,17 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1402,
+          "line": 1413,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_today.py",
           "line": 130,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/site_paths.py",
+          "line": 152,
           "kind": "other"
         },
         {
@@ -22142,12 +22187,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1329,
+          "line": 1333,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1331,
+          "line": 1335,
           "kind": "other"
         },
         {
@@ -22168,6 +22213,11 @@
         {
           "file": "frontend/src/lib/searchSynonyms.js",
           "line": 37,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 12,
           "kind": "other"
         },
         {
@@ -22681,6 +22731,11 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 152,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/tasks/ticker_worker.py",
           "line": 47,
           "kind": "other"
@@ -22689,6 +22744,41 @@
           "file": "backend/seed_data.py",
           "line": 4302,
           "kind": "seed"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 35,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 36,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 98,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 99,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_path_cut_redirects.py",
+          "line": 100,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_static.py",
+          "line": 330,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_sitemap_static.py",
+          "line": 332,
+          "kind": "tests"
         },
         {
           "file": "backend/tests/test_ticker_sources.py",
@@ -22732,7 +22822,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 12,
+          "line": 13,
           "kind": "other"
         },
         {
@@ -22743,6 +22833,16 @@
         {
           "file": "frontend/src/lib/homeWorkbench.test.js",
           "line": 72,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 12,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.test.js",
+          "line": 80,
           "kind": "tests"
         },
         {
@@ -22884,6 +22984,11 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "frontend/src/lib/sitePaths.test.js",
+          "line": 76,
+          "kind": "tests"
+        },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 4479,
@@ -23447,7 +23552,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2929,
+          "line": 2953,
           "kind": "seo"
         },
         {
@@ -23602,7 +23707,7 @@
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 78,
+          "line": 83,
           "kind": "tests"
         },
         {
@@ -23747,12 +23852,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 473,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1079,
+          "line": 477,
           "kind": "other"
         },
         {
@@ -23762,17 +23862,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1200,
+          "line": 1087,
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1079,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1204,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
           "line": 1083,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1087,
           "kind": "other"
         },
         {
@@ -23812,17 +23917,17 @@
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 202,
+          "line": 236,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 203,
+          "line": 237,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 204,
+          "line": 238,
           "kind": "tests"
         },
         {
@@ -24026,7 +24131,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2929,
+          "line": 2953,
           "kind": "seo"
         },
         {
@@ -24096,12 +24201,12 @@
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 203,
+          "line": 237,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 204,
+          "line": 238,
           "kind": "tests"
         },
         {
@@ -24282,7 +24387,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "exports-monthly",
       "variant_group": null,
@@ -24375,7 +24480,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "exports-monthly",
       "variant_group": null,
@@ -24502,7 +24607,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "exports",
       "variant_group": null,
@@ -24596,12 +24701,12 @@
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 43,
+          "line": 48,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 75,
+          "line": 80,
           "kind": "tests"
         },
         {
@@ -24699,7 +24804,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "exports",
       "variant_group": null,
@@ -24907,7 +25012,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "external-debt",
       "variant_group": null,
@@ -24938,7 +25043,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "external-debt",
       "variant_group": null,
@@ -25051,7 +25156,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "external-debt",
       "variant_group": null,
@@ -25264,7 +25369,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "fdi-net",
       "variant_group": null,
@@ -25326,7 +25431,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "fdi-net",
       "variant_group": null,
@@ -25492,12 +25597,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1334,
+          "line": 1338,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1336,
+          "line": 1340,
           "kind": "other"
         },
         {
@@ -26024,12 +26129,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1335,
+          "line": 1339,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1337,
+          "line": 1341,
           "kind": "other"
         },
         {
@@ -26541,12 +26646,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1336,
+          "line": 1340,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1338,
+          "line": 1342,
           "kind": "other"
         },
         {
@@ -26982,6 +27087,11 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 153,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 4337,
           "kind": "seed"
@@ -26989,6 +27099,11 @@
         {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
           "line": 134,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 13,
           "kind": "other"
         }
       ]
@@ -27067,6 +27182,11 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 153,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/tasks/ticker_worker.py",
           "line": 48,
           "kind": "other"
@@ -27098,6 +27218,11 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
+          "line": 14,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
           "line": 13,
           "kind": "other"
         },
@@ -27736,7 +27861,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-consumption",
       "variant_group": null,
@@ -27798,7 +27923,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-consumption",
       "variant_group": null,
@@ -28026,7 +28151,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-government",
       "variant_group": null,
@@ -28088,7 +28213,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-government",
       "variant_group": null,
@@ -28316,7 +28441,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-investment",
       "variant_group": null,
@@ -28378,7 +28503,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-investment",
       "variant_group": null,
@@ -28622,7 +28747,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1404,
+          "line": 1415,
           "kind": "seo"
         },
         {
@@ -29015,7 +29140,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-nominal",
       "variant_group": null,
@@ -29206,7 +29331,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-nominal",
       "variant_group": null,
@@ -29809,7 +29934,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-real",
       "variant_group": null,
@@ -29868,6 +29993,11 @@
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
           "line": 288,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/forecast_strategies/test_derived.py",
+          "line": 312,
           "kind": "tests"
         },
         {
@@ -30147,7 +30277,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "gdp-real",
       "variant_group": null,
@@ -30616,12 +30746,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1333,
+          "line": 1337,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1335,
+          "line": 1339,
           "kind": "other"
         },
         {
@@ -31112,7 +31242,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -31211,7 +31341,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "grad-students",
       "variant_group": null,
@@ -31242,7 +31372,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "grad-students",
       "variant_group": null,
@@ -31530,7 +31660,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability",
       "variant_group": null,
@@ -31592,7 +31722,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability",
       "variant_group": null,
@@ -31811,7 +31941,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability-primary",
       "variant_group": null,
@@ -31873,7 +32003,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability-primary",
       "variant_group": null,
@@ -32028,7 +32158,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability-primary",
       "variant_group": null,
@@ -32157,7 +32287,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "housing-affordability",
       "variant_group": null,
@@ -32203,7 +32333,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "housing",
       "redirect_parent": "housing-price-primary",
       "variant_group": null,
@@ -32294,7 +32424,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "housing",
       "redirect_parent": "housing-price-secondary",
       "variant_group": null,
@@ -32597,7 +32727,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "housing-commissioned",
       "variant_group": null,
@@ -32690,7 +32820,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "housing-commissioned",
       "variant_group": null,
@@ -33929,22 +34059,22 @@
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 105,
+          "line": 125,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 109,
+          "line": 129,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 114,
+          "line": 134,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 121,
+          "line": 141,
           "kind": "tests"
         },
         {
@@ -33959,12 +34089,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1337,
+          "line": 1341,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1339,
+          "line": 1343,
           "kind": "other"
         },
         {
@@ -34878,22 +35008,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1080,
+          "line": 1084,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1084,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1080,
+          "line": 1088,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
           "line": 1084,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1088,
           "kind": "other"
         },
         {
@@ -35223,7 +35353,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "imports-monthly",
       "variant_group": null,
@@ -35316,7 +35446,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "imports-monthly",
       "variant_group": null,
@@ -35433,7 +35563,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "imports",
       "variant_group": null,
@@ -35545,7 +35675,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "imports",
       "variant_group": null,
@@ -35581,7 +35711,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "cpi",
       "redirect_parent": "cpi",
       "variant_group": null,
@@ -35750,7 +35880,7 @@
         },
         {
           "file": "backend/app/api/forecasts.py",
-          "line": 22,
+          "line": 24,
           "kind": "other"
         },
         {
@@ -35795,7 +35925,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1801,
+          "line": 1820,
           "kind": "seo"
         },
         {
@@ -36534,7 +36664,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -36642,7 +36772,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "innovation-activity",
       "variant_group": null,
@@ -37505,26 +37635,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1066,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1067,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1068,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1069,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
           "line": 1070,
           "kind": "other"
         },
@@ -37534,23 +37644,23 @@
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1066,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1072,
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1067,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1073,
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1068,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1074,
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1069,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1075,
           "kind": "other"
         },
         {
@@ -37561,6 +37671,26 @@
         {
           "file": "frontend/src/i18n/messages.ru.js",
           "line": 1071,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1072,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1073,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1074,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1075,
           "kind": "other"
         },
         {
@@ -37709,7 +37839,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi",
       "variant_group": null,
@@ -37867,7 +37997,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-energy",
       "variant_group": null,
@@ -37929,7 +38059,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-energy",
       "variant_group": null,
@@ -37973,7 +38103,7 @@
       "files": [
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 480,
+          "line": 500,
           "kind": "tests"
         },
         {
@@ -38089,7 +38219,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-energy",
       "variant_group": null,
@@ -38156,7 +38286,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi",
       "variant_group": null,
@@ -38329,7 +38459,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-manufacturing",
       "variant_group": null,
@@ -38391,7 +38521,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-manufacturing",
       "variant_group": null,
@@ -38546,7 +38676,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-manufacturing",
       "variant_group": null,
@@ -38719,7 +38849,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-mining",
       "variant_group": null,
@@ -38781,7 +38911,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-mining",
       "variant_group": null,
@@ -38936,7 +39066,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-mining",
       "variant_group": null,
@@ -39161,7 +39291,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-water",
       "variant_group": null,
@@ -39223,7 +39353,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-water",
       "variant_group": null,
@@ -39378,7 +39508,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi-water",
       "variant_group": null,
@@ -39591,7 +39721,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "ipi",
       "variant_group": null,
@@ -39874,12 +40004,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1396,
-          "kind": "seo"
-        },
-        {
-          "file": "backend/app/services/seo_renderer.py",
-          "line": 3181,
+          "line": 1407,
           "kind": "seo"
         },
         {
@@ -40298,23 +40423,18 @@
           "kind": "other"
         },
         {
-          "file": "frontend/src/components/IndicatorMethodologyPanel.jsx",
-          "line": 30,
-          "kind": "other"
-        },
-        {
           "file": "frontend/src/embed/EmbedTicker.jsx",
           "line": 45,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1331,
+          "line": 1335,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1333,
+          "line": 1337,
           "kind": "other"
         },
         {
@@ -41150,7 +41270,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "labor-force",
       "variant_group": null,
@@ -41305,7 +41425,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "labor-force",
       "variant_group": null,
@@ -41449,12 +41569,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1114,
+          "line": 1118,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1115,
+          "line": 1119,
           "kind": "other"
         },
         {
@@ -41533,7 +41653,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m0",
       "variant_group": null,
@@ -41595,7 +41715,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m0",
       "variant_group": null,
@@ -41750,7 +41870,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m0",
       "variant_group": null,
@@ -41909,12 +42029,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1115,
+          "line": 1119,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1116,
+          "line": 1120,
           "kind": "other"
         },
         {
@@ -41993,7 +42113,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m1",
       "variant_group": null,
@@ -42055,7 +42175,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m1",
       "variant_group": null,
@@ -42210,7 +42330,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m1",
       "variant_group": null,
@@ -42389,7 +42509,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1400,
+          "line": 1411,
           "kind": "seo"
         },
         {
@@ -42514,12 +42634,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1116,
+          "line": 1120,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1117,
+          "line": 1121,
           "kind": "other"
         },
         {
@@ -42663,7 +42783,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m2",
       "variant_group": null,
@@ -42730,7 +42850,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m2",
       "variant_group": null,
@@ -42935,7 +43055,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "m2",
       "variant_group": null,
@@ -43686,7 +43806,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "mortgage-rate",
       "variant_group": null,
@@ -43748,7 +43868,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "mortgage-rate",
       "variant_group": null,
@@ -43903,7 +44023,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "mortgage-rate",
       "variant_group": null,
@@ -44036,7 +44156,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 16,
+          "line": 17,
           "kind": "other"
         },
         {
@@ -44527,7 +44647,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -44741,7 +44861,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "pensioners",
       "variant_group": null,
@@ -44772,7 +44892,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "pensioners",
       "variant_group": null,
@@ -44803,7 +44923,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -44927,7 +45047,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "pop-over-working-age",
       "variant_group": null,
@@ -44958,7 +45078,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "pop-over-working-age",
       "variant_group": null,
@@ -44989,7 +45109,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -45113,7 +45233,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "pop-under-working-age",
       "variant_group": null,
@@ -45144,7 +45264,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "pop-under-working-age",
       "variant_group": null,
@@ -45175,7 +45295,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -45226,17 +45346,17 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1834,
-          "kind": "other"
-        },
-        {
-          "file": "backend/app/api/world.py",
-          "line": 1861,
+          "line": 1835,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
           "line": 1862,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/api/world.py",
+          "line": 1863,
           "kind": "other"
         },
         {
@@ -46971,11 +47091,6 @@
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 536,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_world.py",
           "line": 537,
           "kind": "tests"
         },
@@ -47001,7 +47116,12 @@
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 545,
+          "line": 542,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_world.py",
+          "line": 546,
           "kind": "tests"
         },
         {
@@ -47316,62 +47436,62 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 406,
+          "line": 410,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 873,
+          "line": 877,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 882,
+          "line": 886,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 885,
+          "line": 889,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 887,
+          "line": 891,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 916,
+          "line": 920,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1120,
+          "line": 1124,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1273,
+          "line": 1277,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1342,
+          "line": 1346,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1399,
+          "line": 1403,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1725,
+          "line": 1730,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1726,
+          "line": 1731,
           "kind": "other"
         },
         {
@@ -47386,27 +47506,27 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 406,
+          "line": 410,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 873,
+          "line": 877,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1401,
+          "line": 1405,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1727,
+          "line": 1732,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1728,
+          "line": 1733,
           "kind": "other"
         },
         {
@@ -47689,7 +47809,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "population",
       "variant_group": null,
@@ -47720,7 +47840,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -47833,7 +47953,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "population-migration",
       "variant_group": null,
@@ -47864,7 +47984,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -47967,7 +48087,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "population-natural-growth",
       "variant_group": null,
@@ -47998,7 +48118,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -48096,7 +48216,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "population-total-growth",
       "variant_group": null,
@@ -48127,7 +48247,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "population",
       "variant_group": null,
@@ -48321,7 +48441,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2040,
+          "line": 2059,
           "kind": "seo"
         },
         {
@@ -48591,12 +48711,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 620,
+          "line": 624,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 620,
+          "line": 624,
           "kind": "other"
         },
         {
@@ -48874,7 +48994,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "ppi",
       "redirect_parent": "ppi",
       "variant_group": null,
@@ -49235,12 +49355,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1996,
+          "line": 2015,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2040,
+          "line": 2059,
           "kind": "seo"
         },
         {
@@ -49353,7 +49473,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -49452,7 +49572,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "rd-organizations",
       "variant_group": null,
@@ -49483,7 +49603,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "rd-organizations",
       "variant_group": null,
@@ -49514,7 +49634,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -49633,7 +49753,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "rd-personnel",
       "variant_group": null,
@@ -49664,7 +49784,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "rd-personnel",
       "variant_group": null,
@@ -49924,7 +50044,7 @@
       "files": [
         {
           "file": "backend/tests/forecast_strategies/test_derived.py",
-          "line": 383,
+          "line": 403,
           "kind": "tests"
         },
         {
@@ -49947,7 +50067,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "retail-trade",
       "variant_group": null,
@@ -50045,7 +50165,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "retail-trade",
       "variant_group": null,
@@ -51199,7 +51319,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1397,
+          "line": 1408,
           "kind": "seo"
         },
         {
@@ -51374,12 +51494,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 854,
+          "line": 858,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 854,
+          "line": 858,
           "kind": "other"
         },
         {
@@ -52238,7 +52358,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "services-exports-monthly",
       "variant_group": null,
@@ -52331,7 +52451,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "services-exports-monthly",
       "variant_group": null,
@@ -52398,7 +52518,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "services-exports",
       "variant_group": null,
@@ -52460,7 +52580,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "services-exports",
       "variant_group": null,
@@ -52879,7 +52999,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "services-imports-monthly",
       "variant_group": null,
@@ -52972,7 +53092,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "services-imports-monthly",
       "variant_group": null,
@@ -53039,7 +53159,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "services-imports",
       "variant_group": null,
@@ -53101,7 +53221,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "services-imports",
       "variant_group": null,
@@ -53248,7 +53368,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 18,
+          "line": 19,
           "kind": "other"
         },
         {
@@ -53513,7 +53633,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -53621,7 +53741,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "small-business-innovation",
       "variant_group": null,
@@ -53708,6 +53828,11 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 153,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 4054,
           "kind": "seed"
@@ -53724,13 +53849,18 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 9,
+          "line": 10,
           "kind": "other"
         },
         {
           "file": "frontend/src/lib/homeWorkbench.test.js",
           "line": 78,
           "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 13,
+          "kind": "other"
         },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
@@ -54261,7 +54391,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 20,
+          "line": 21,
           "kind": "other"
         },
         {
@@ -54574,7 +54704,7 @@
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 56,
+          "line": 61,
           "kind": "tests"
         },
         {
@@ -54642,7 +54772,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -54750,7 +54880,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "tech-innovation-share",
       "variant_group": null,
@@ -55395,7 +55525,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "trade-balance-monthly",
       "variant_group": null,
@@ -55488,7 +55618,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "trade-balance-monthly",
       "variant_group": null,
@@ -55555,7 +55685,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "trade-balance",
       "variant_group": null,
@@ -55738,7 +55868,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "trade-balance",
       "variant_group": null,
@@ -55839,7 +55969,7 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 2367,
+          "line": 2373,
           "kind": "other"
         },
         {
@@ -56189,12 +56319,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 622,
+          "line": 633,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1403,
+          "line": 1414,
           "kind": "seo"
         },
         {
@@ -56439,37 +56569,37 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 405,
+          "line": 409,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 874,
+          "line": 878,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 882,
+          "line": 886,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 887,
+          "line": 891,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 916,
+          "line": 920,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 405,
+          "line": 409,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 874,
+          "line": 878,
           "kind": "other"
         },
         {
@@ -56989,7 +57119,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "unemployment",
       "variant_group": null,
@@ -57051,7 +57181,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "unemployment",
       "variant_group": null,
@@ -57197,7 +57327,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2040,
+          "line": 2059,
           "kind": "seo"
         },
         {
@@ -57217,7 +57347,7 @@
         },
         {
           "file": "backend/tests/test_path_cut_redirects.py",
-          "line": 44,
+          "line": 49,
           "kind": "tests"
         },
         {
@@ -57372,7 +57502,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "unemployment",
       "variant_group": null,
@@ -57474,6 +57604,11 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/site_paths.py",
+          "line": 153,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/tasks/ticker_worker.py",
           "line": 49,
           "kind": "other"
@@ -57505,7 +57640,12 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 14,
+          "line": 15,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 13,
           "kind": "other"
         },
         {
@@ -58098,7 +58238,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 10,
+          "line": 11,
           "kind": "other"
         },
         {
@@ -58109,6 +58249,11 @@
         {
           "file": "frontend/src/lib/homeWorkbench.test.js",
           "line": 72,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.test.js",
+          "line": 77,
           "kind": "tests"
         },
         {
@@ -58716,12 +58861,17 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1401,
+          "line": 1412,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_today.py",
           "line": 129,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/site_paths.py",
+          "line": 153,
           "kind": "other"
         },
         {
@@ -58901,12 +59051,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1328,
+          "line": 1332,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1330,
+          "line": 1334,
           "kind": "other"
         },
         {
@@ -58937,6 +59087,16 @@
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
           "line": 26,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.js",
+          "line": 13,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/sitePaths.test.js",
+          "line": 79,
           "kind": "tests"
         },
         {
@@ -59499,7 +59659,7 @@
         },
         {
           "file": "backend/tests/test_breadcrumbs.py",
-          "line": 38,
+          "line": 37,
           "kind": "tests"
         },
         {
@@ -59579,7 +59739,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 11,
+          "line": 12,
           "kind": "other"
         },
         {
@@ -60666,12 +60826,12 @@
         },
         {
           "file": "frontend/src/lib/compareRepresentation.js",
-          "line": 185,
+          "line": 209,
           "kind": "other"
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 175,
+          "line": 209,
           "kind": "tests"
         },
         {
@@ -60759,7 +60919,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "wages-nominal",
       "variant_group": null,
@@ -61005,17 +61165,17 @@
         },
         {
           "file": "frontend/src/lib/compareRepresentation.js",
-          "line": 185,
+          "line": 209,
           "kind": "other"
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 175,
+          "line": 209,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/compareRepresentation.test.js",
-          "line": 178,
+          "line": 212,
           "kind": "tests"
         },
         {
@@ -61453,7 +61613,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "wages-real",
       "variant_group": null,
@@ -61618,7 +61778,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "wages-real",
       "variant_group": null,
@@ -62721,7 +62881,7 @@
         },
         {
           "file": "frontend/src/lib/globalMarketIndicators.js",
-          "line": 19,
+          "line": 20,
           "kind": "other"
         },
         {
@@ -62986,7 +63146,7 @@
       "monthly_auto": false,
       "forecast_strategy": "annual_auto",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": null,
       "variant_group": null,
@@ -63120,7 +63280,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "working-age-population",
       "variant_group": null,
@@ -63151,7 +63311,7 @@
       "monthly_auto": false,
       "forecast_strategy": "derived_from_source",
       "forecast_strategy_source": "explicit",
-      "forecast_steps": 2,
+      "forecast_steps": 1,
       "ui_stack": "generic",
       "redirect_parent": "working-age-population",
       "variant_group": null,

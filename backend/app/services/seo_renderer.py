@@ -187,6 +187,17 @@ def _link(path: str, label: str) -> str:
     return f'<a href="{escape(path)}">{escape(label)}</a>'
 
 
+def _published_source_link(source_url: str | None, label: str) -> str:
+    """Link only to the actual published source, never to a site section."""
+    from urllib.parse import urlsplit
+
+    candidate = (source_url or "").strip()
+    parts = urlsplit(candidate)
+    if parts.scheme in {"http", "https"} and parts.netloc:
+        return _link(candidate, label)
+    return escape(label)
+
+
 def _seo_chart_figure(
     og_path: str,
     alt: str,
@@ -1666,6 +1677,15 @@ async def render_home_html(db: AsyncSession) -> str:
             world_count = int(scope.get("world_indicators_count") or 0)
             ru_count = int(scope.get("russia_macro_indicators_count") or 0)
             regional_count = int(scope.get("regional_indicators_count") or 0)
+            ru_regional_count = scope.get("russia_regional_indicators_count")
+            if ru_regional_count is None:
+                ru_country = next(
+                    (country for country in scope.get("countries", [])
+                     if country.get("code") == "RU" or country.get("slug") == "russia"),
+                    None,
+                )
+                ru_regional_count = max(0, int((ru_country or {}).get("indicators_count") or 0) - ru_count)
+            ru_regional_count = int(ru_regional_count)
             us_count = int(scope.get("us_state_indicators_count") or 0)
             fmt = (
                 (lambda value: f"{value:,}") if locale == "en"
@@ -1684,8 +1704,7 @@ async def render_home_html(db: AsyncSession) -> str:
                 about = (
                     f"На платформе доступны ряды по странам: {fmt(world_count)}; "
                     f"макроэкономические ряды России: {fmt(ru_count)}; "
-                    f"региональные ряды России и США: {fmt(regional_count)} "
-                    f"(из них по штатам США и округу Колумбия: {fmt(us_count)}). "
+                    f"региональные ряды России: {fmt(ru_regional_count)}. "
                     "Карточки показывают историю, режимы представления, таблицы и сопоставимые ряды; "
                     "прогноз публикуется только там, где модель прошла проверку качества."
                 )
@@ -2494,6 +2513,7 @@ def _year_page_title_desc(
     summary_label: str,
     summary_text: str,
     source: str,
+    country_independent: bool = False,
 ) -> tuple[str, str]:
     """Заголовок и description с учётом частоты и числа точек за год."""
     from app.services.seo_i18n import year_template
@@ -2521,7 +2541,10 @@ def _year_page_title_desc(
             title_key = "title_monthly"
         # EN-формула включает {country} («Consumer price index in Russia, 2024»);
         # РФ-лендинги подставляют константу, мир передаёт своё имя страны.
-        title = yt(title_key).format(name=name, year=year, country="Russia")
+        title_template = yt(title_key)
+        if country_independent:
+            title_template = title_template.replace(" in {country}", "")
+        title = title_template.format(name=name, year=year, country="Russia")
         desc_key = "desc_single" if (n_rows == 1 or freq == "annual") else "desc_multi"
         desc = yt(desc_key).format(
             name=name,
@@ -2683,6 +2706,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         summary_label=summary_label,
         summary_text=summary_text,
         source=source,
+        country_independent=paths.is_currency_indicator(code),
     )
 
     series = await yearly_last_points(db, indicator.id)
@@ -3173,19 +3197,7 @@ def _indicator_body(
         f"<td>{escape(format_number_ru(display_value(value_code, row.value), signed=cpi_mode))}</td></tr>"
         for row in latest_rows
     )
-    # Подпись ведомства остаётся, клик не уводит с сайта.
-    low = (src or "").strip().lower()
-    if "минфин" in low:
-        source_href = paths.russia_indicator("budget-deficit")
-    elif "банк россии" in low or low in {"цб", "цб рф"}:
-        source_href = paths.russia_indicator("key-rate")
-    elif "росстат" in low or "rosstat" in low:
-        source_href = paths.russia_home()
-    elif low:
-        source_href = paths.russia_indicator(indicator.code)
-    else:
-        source_href = ""
-    source_link = _link(source_href, src) if source_href and src else escape(src)
+    source_link = _published_source_link(indicator.source_url, src)
     related_links = tuple(
         (
             paths.russia_indicator(ind.code),
@@ -3241,7 +3253,7 @@ def _indicator_body(
         )
         month_links = _links_list(tuple(
             (
-                paths.indicator_month(paths.RUSSIA, indicator.code, y, m),
+                paths.russia_indicator_month(indicator.code, y, m),
                 m_link_tpl.format(name=name, month_year=format_month_year(date(y, m, 1), locale=loc)),
             )
             for y, m in data_month_pairs

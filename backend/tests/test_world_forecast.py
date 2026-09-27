@@ -285,7 +285,7 @@ def test_policy_is_official_provider_and_freshness_fail_closed():
     assert annual_reason == "eligible"
     assert annual_el is not None
     assert annual_el.strategy == "annual_auto"
-    assert annual_el.horizon == 2
+    assert annual_el.horizon == 1
     assert annual_el.season == 1
 
     fred = SimpleNamespace(**{**base, "provider": "fred"})
@@ -470,6 +470,33 @@ def test_world_forecast_unchanged_skip_by_fingerprint_and_force():
         stale, history_end=history_end, points_count=120,
         now=now, max_age_days=30, force=False,
     )
+
+
+def test_one_year_annual_policy_retrains_only_old_annual_forecasts():
+    from datetime import datetime
+
+    from app.services.world_forecast_pipeline import forecast_fingerprint, forecast_is_unchanged
+
+    history_end = date(2025, 1, 1)
+    now = datetime(2026, 9, 27)
+    old = SimpleNamespace(
+        created_at=datetime(2026, 9, 26),
+        model_params=forecast_fingerprint(history_end=history_end, points_count=25),
+    )
+    arguments = dict(
+        history_end=history_end, points_count=25,
+        now=now, max_age_days=30, force=False,
+    )
+    assert not forecast_is_unchanged(old, frequency="annual", **arguments)
+    assert forecast_is_unchanged(old, frequency="monthly", **arguments)
+
+    updated = SimpleNamespace(
+        created_at=old.created_at,
+        model_params=forecast_fingerprint(
+            history_end=history_end, points_count=25, frequency="annual",
+        ),
+    )
+    assert forecast_is_unchanged(updated, frequency="annual", **arguments)
 
 
 def test_eurostat_success_after_forecast_retrains_even_if_points_unchanged():

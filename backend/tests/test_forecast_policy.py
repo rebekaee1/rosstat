@@ -258,7 +258,7 @@ def test_monthly_auto_forecasts_have_named_strategy() -> None:
 
 
 def test_annual_auto_forecasts_have_named_strategy() -> None:
-    """Годовые ряды ноутбука руководителя: annual_auto, 2 шага, частота annual."""
+    """Годовые ряды ноутбука руководителя: annual_auto, 1 шаг, частота annual."""
     by_code = {ind["code"]: ind for ind in INDICATORS}
     for code in ANNUAL_AUTO_CODES:
         assert code in by_code, f"{code} missing from seed_data.INDICATORS"
@@ -269,8 +269,8 @@ def test_annual_auto_forecasts_have_named_strategy() -> None:
             f"{code}: expected forecast_strategy='annual_auto', "
             f"got '{cfg.get('forecast_strategy')}'"
         )
-        assert int(cfg.get("forecast_steps", 0) or 0) == 2, \
-            f"{code} must have forecast_steps=2"
+        assert int(cfg.get("forecast_steps", 0) or 0) == 1, \
+            f"{code} must have forecast_steps=1"
 
 
 def test_birth_rate_yoy_has_derived_forecast() -> None:
@@ -439,4 +439,3 @@ def test_all_gdp_family_indicators_have_active_forecast_config() -> None:
         )
         steps = int(cfg.get("forecast_steps", 0) or 0)
         assert steps > 0, f"{code} must have forecast_steps>0 (got {steps})"
-

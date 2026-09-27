@@ -80,7 +80,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
   const isCustom = !!activeCode;
 
   return (
-    <div className="relative min-w-0 flex-1 sm:max-w-xs">
+    <div className="relative w-full shrink-0 sm:w-64 sm:flex-none">
       <div className={`flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs transition-colors sm:py-1.5 ${
         isCustom
           ? 'border-transparent bg-champagne/15 text-champagne'
@@ -412,7 +412,7 @@ export default function WorldRegionsHome() {
       {hub.data && view === 'map' && (
         <div className="mt-4">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="scrollbar-hide flex min-w-0 items-center gap-1.5 overflow-x-auto pb-1" role="tablist" aria-label={t('regions.map.metricAria')}>
+            <div className="scrollbar-hide flex w-full min-w-0 items-center gap-1.5 overflow-x-auto pb-1 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
               <button
                 type="button"
                 role="tab"

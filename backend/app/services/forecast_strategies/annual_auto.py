@@ -27,7 +27,7 @@ def annual_auto_strategy(
 ) -> Sequence[StrategyOutput]:
     result = train_annual_auto(
         list(dates), list(values),
-        forecast_steps=ctx.forecast_steps or 2,
+        forecast_steps=ctx.forecast_steps or 1,
     )
     logger.info("annual_auto: %s → %d points", ctx.indicator_code, len(result.points))
     return [StrategyOutput(result=result)]

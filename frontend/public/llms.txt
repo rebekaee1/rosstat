@@ -28,7 +28,7 @@
 - Экономика России сегодня: __PUBLIC_ORIGIN__/russia/today
 - ИПЦ России: __PUBLIC_ORIGIN__/russia/indicator/cpi
 - Ключевая ставка Банка России: __PUBLIC_ORIGIN__/russia/indicator/key-rate
-- Курс доллара (USD/RUB): __PUBLIC_ORIGIN__/russia/indicator/usd-rub
+- Курс доллара (USD/RUB): __PUBLIC_ORIGIN__/currencies/indicator/usd-rub
 - Регионы России: __PUBLIC_ORIGIN__/russia/region
 - О проекте: __PUBLIC_ORIGIN__/about
 

@@ -23,6 +23,9 @@ import {
   countryRegionsPath,
   russiaCategoriesPath,
   russiaIndicatorPath,
+  russiaIndicatorYearPath,
+  russiaCategoryPath,
+  isCurrencyIndicator,
   todayPath,
   WORLD_RATING_DEFAULT_CONCEPT,
   worldHubPath,
@@ -65,7 +68,17 @@ describe('sitePaths', () => {
     expect(isReservedFirstSegment(RUSSIA)).toBe(false);
     expect(RESERVED_FIRST_SEGMENTS).toContain('compare');
     expect(RESERVED_FIRST_SEGMENTS).toContain('world');
+    expect(RESERVED_FIRST_SEGMENTS).toContain('currencies');
     expect(isReservedFirstSegment('sitemap-core.xml')).toBe(true);
+  });
+
+  it('строит самостоятельные канонические адреса валютных рядов и годов', () => {
+    expect(isCurrencyIndicator('eur-usd-avg-year')).toBe(true);
+    expect(isCurrencyIndicator('usd-index')).toBe(false);
+    expect(russiaCategoryPath('currencies')).toBe('/currencies');
+    expect(russiaIndicatorPath('usd-rub')).toBe('/currencies/indicator/usd-rub');
+    expect(russiaIndicatorYearPath('eur-usd', 2025)).toBe('/currencies/indicator/eur-usd/2025');
+    expect(russiaIndicatorPath('brent')).toBe('/russia/indicator/brent');
   });
 
   it('отличает раздел России от остального сайта для ленты котировок', () => {
