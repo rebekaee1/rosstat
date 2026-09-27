@@ -49,20 +49,8 @@ describe('IndicatorDetail', () => {
     });
     const names = await screen.findAllByText(/Численность пенсионеров/);
     expect(names.length).toBeGreaterThan(0);
-  });
-
-  it('после гидрации оставляет ссылки на существующие годовые страницы', async () => {
-    mockApiGet(ROUTES);
-    renderPage(<IndicatorDetail />, {
-      path: russiaIndicatorPath(':code'), route: russiaIndicatorPath('pensioners'),
-    });
-    await screen.findByRole('heading', { name: 'По годам' });
-    const section = document.querySelector('[data-block="indicator-years"]');
-    expect([...section.querySelectorAll('a')].map((link) => link.getAttribute('href'))).toEqual([
-      '/russia/indicator/pensioners/2024',
-      '/russia/indicator/pensioners/2023',
-      '/russia/indicator/pensioners/2022',
-    ]);
+    // Годовые страницы остаются в SSR для поиска и не перегружают карточку SPA.
+    expect(document.querySelector('[data-block="indicator-years"]')).toBeNull();
   });
 
   it('не падает на неизвестном коде (все запросы 404)', async () => {

@@ -13,7 +13,6 @@ import IndicatorMethodologyPanel from './IndicatorMethodologyPanel';
 import IndicatorForecastSection from './IndicatorForecastSection';
 import IndicatorDataTableSection from './IndicatorDataTableSection';
 import IndicatorSeoBlocks from './IndicatorSeoBlocks';
-import IndicatorYearLinks from './IndicatorYearLinks';
 import { relatedIndicatorCardCopy } from '../lib/indicatorVariants';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
@@ -76,7 +75,6 @@ export default function GenericIndicatorView({
   relatedIndicators = [],
   loadingInd,
   headerRef,
-  yearLinks,
 }) {
   const t = useT();
   const [showForecast, setShowForecast] = useState(true);
@@ -215,7 +213,6 @@ export default function GenericIndicatorView({
         dataPoints={dataPoints}
       />
 
-      <IndicatorYearLinks code={code} years={yearLinks} />
       <IndicatorSeoBlocks blocks={indicator?.seo_blocks} indicatorCode={code} />
 
       {relatedIndicators.length > 0 && (
