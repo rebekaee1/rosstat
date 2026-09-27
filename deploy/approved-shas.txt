@@ -115,3 +115,5 @@ c30ac80a270f0c8b455dd4132498ad5e76586605  # explicit owner GO 2026-09-26; DB poo
 8cf29a5469c4746e1369e4881c1cbcc60bff75ec  # explicit owner GO 2026-09-26; SSR ?mode= body shows mode series (yoy % instead of index level; bespoke + generic families), meta/canonical unchanged; no migrations
 
 e9109588ae7e16e01a02526ddd83b6f6abdbd458  # approval-only wrapper of 8cf29a5 (same runtime tree); comment above reworded so the indicator map guard stays green
+
+f8e239a3fca144f691604f47951e2bf80e664430  # explicit owner GO 2026-09-27; e81b86e..f8e239a (25 commits), including 20260927_world_nonzero_idx migration
