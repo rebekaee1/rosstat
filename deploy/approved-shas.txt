@@ -121,3 +121,4 @@ f8e239a3fca144f691604f47951e2bf80e664430  # explicit owner GO 2026-09-27; e81b86
 e6f3d791ee9769e0750365b9fd3361f78c0c7093  # explicit owner GO 2026-09-27; retry after restored rollback, e81b86e..e6f3d79 (27 commits), same 20260927_world_nonzero_idx migration
 a00de45258d9f38ae928851ef8e419ea143f8a1d  # explicit owner GO 2026-09-27; deploy a00de45 from production 88ce7dc, six commits, no new migrations
 52462a0f7513a828dbac8257378e41765a6165ec  # explicit owner GO 2026-09-28; country catalog performance and GDP comparison values, one runtime commit from production 7e5579f; no migrations
+adf9845a3fd0370179276dedd7c1c7bb110dee01  # explicit owner GO 2026-09-28; same runtime as 52462a0, CI-only test timeout and generated inventory; no migrations
