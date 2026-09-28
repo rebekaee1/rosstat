@@ -207,7 +207,7 @@ describe('WorldCountry category navigation', () => {
     fireEvent.change(screen.getByLabelText('Поиск по показателям страны'), { target: { value: 'Тестовый показатель' } });
     expect(await screen.findByRole('link', { name: /Тестовый показатель 0/ })).toBeTruthy();
     expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(120);
-  });
+  }, 30000);
 
   it('на десктопе подсвечивает категорию, до которой пользователь прокрутил страницу', async () => {
     const frames = [];

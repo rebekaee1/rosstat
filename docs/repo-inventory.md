@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-28
 
-**Файлов:** 1164  ·  **Строк:** 567 677  ·  **Токенов (≈):** 5 693 316
+**Файлов:** 1164  ·  **Строк:** 567 678  ·  **Токенов (≈):** 5 693 365
 
 ## По верхним папкам
 
@@ -15,9 +15,9 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 600 | 227 181 | 2 457 550 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 10 | 545 | 6 477 |
+| `deploy` | 10 | 546 | 6 524 |
 | `docs` | 87 | 240 283 | 2 148 615 |
-| `frontend` | 371 | 79 155 | 817 396 |
+| `frontend` | 371 | 79 155 | 817 398 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 79 | 17 613 | 200 467 |
 
@@ -217,7 +217,7 @@
 | `backend/app/api/oauth.py` | 476 | 4 419 |
 | `backend/app/services/seo_world_subnational.py` | 463 | 4 406 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
-| `frontend/src/pages/WorldCountry.component.test.jsx` | 473 | 4 399 |
+| `frontend/src/pages/WorldCountry.component.test.jsx` | 473 | 4 401 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 393 |
 | `backend/alembic/versions/20260428_add_analytics_os_tables.py` | 327 | 4 373 |
 | `backend/app/services/world_adapters/boj_stat.py` | 492 | 4 366 |
@@ -396,10 +396,10 @@
 | `frontend/src/pages/CategoryPage.jsx` | 242 | 2 323 |
 | `backend/tests/test_parser_fixtures.py` | 283 | 2 304 |
 | `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 263 | 2 287 |
+| `deploy/approved-shas.txt` | 123 | 2 282 |
 | `frontend/src/lib/useCountryComparison.js` | 262 | 2 254 |
 | `backend/tests/test_world_boc_valet_adapter.py` | 292 | 2 250 |
 | `scripts/audit-public-language.py` | 256 | 2 250 |
-| `deploy/approved-shas.txt` | 122 | 2 235 |
 | `docs/design/local-acceptance/performance-country-before.json` | 263 | 2 228 |
 | `frontend/src/lib/searchSynonyms.js` | 225 | 2 218 |
 | `backend/app/tasks/ticker_worker.py` | 241 | 2 208 |
