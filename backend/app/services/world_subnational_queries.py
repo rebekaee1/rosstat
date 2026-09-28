@@ -98,6 +98,54 @@ async def latest_world_points(
     return {int(iid): (dt, float(value)) for iid, dt, value in rows}
 
 
+async def latest_world_point_series(
+    db: AsyncSession,
+    indicator_ids: list[int],
+    *,
+    limit: int = 2,
+) -> dict[int, list[tuple[date, float]]]:
+    """Last N world observations per indicator without ranking full histories."""
+    if not indicator_ids:
+        return {}
+    if not _is_postgres(db):
+        rn = func.row_number().over(
+            partition_by=WorldDataPoint.indicator_id,
+            order_by=WorldDataPoint.date.desc(),
+        ).label("rn")
+        ranked = (
+            select(WorldDataPoint.indicator_id, WorldDataPoint.date, WorldDataPoint.value, rn)
+            .where(WorldDataPoint.indicator_id.in_(indicator_ids))
+            .subquery()
+        )
+        rows = (
+            await db.execute(
+                select(ranked.c.indicator_id, ranked.c.date, ranked.c.value)
+                .where(ranked.c.rn <= limit)
+                .order_by(ranked.c.indicator_id, ranked.c.date.desc())
+            )
+        ).all()
+    else:
+        ids = _ids_subquery(sorted(set(int(i) for i in indicator_ids)))
+        pts = (
+            select(WorldDataPoint.date, WorldDataPoint.value)
+            .where(WorldDataPoint.indicator_id == ids.c.id)
+            .order_by(WorldDataPoint.date.desc())
+            .limit(limit)
+            .lateral("pts")
+        )
+        rows = (
+            await db.execute(
+                select(ids.c.id, pts.c.date, pts.c.value)
+                .select_from(ids.join(pts, true()))
+                .order_by(ids.c.id, pts.c.date.desc())
+            )
+        ).all()
+    grouped: dict[int, list[tuple[date, float]]] = defaultdict(list)
+    for iid, dt, value in rows:
+        grouped[int(iid)].append((dt, float(value)))
+    return dict(grouped)
+
+
 # --- Портируемый фолбэк (SQLite в тестах): прежний window-запрос ------------
 
 

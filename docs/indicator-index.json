@@ -45386,27 +45386,27 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 272,
+          "line": 273,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 296,
+          "line": 297,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1835,
+          "line": 1814,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1862,
+          "line": 1841,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1863,
+          "line": 1842,
           "kind": "other"
         },
         {
@@ -47141,16 +47141,6 @@
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 537,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_world.py",
-          "line": 538,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_world.py",
           "line": 539,
           "kind": "tests"
         },
@@ -47171,7 +47161,17 @@
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 546,
+          "line": 543,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_world.py",
+          "line": 544,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_world.py",
+          "line": 548,
           "kind": "tests"
         },
         {
@@ -56019,7 +56019,7 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 2373,
+          "line": 2352,
           "kind": "other"
         },
         {

@@ -525,6 +525,8 @@ def test_world_country_detail_hides_raw(world_client):
     assert "de-zz_raw" not in codes
     assert body["overview"][0]["concept_slug"] == "hicp-index"
     assert body["coverage"]["history_start"] == "2024-01-01"
+    hicp = next(i for cat in body["categories"] for i in cat["indicators"] if i["code"] == "de-prc_hicp_midx-cp00-i15")
+    assert (hicp["last_value"], hicp["prev_value"], hicp["change"]) == (117.0, 116.0, 1.0)
 
 
 def test_world_country_detail_area_and_population(world_client):

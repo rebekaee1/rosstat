@@ -130,6 +130,7 @@ from app.services.world_cards import (
     pick_primary,
     resolve_series_for_mode,
 )
+from app.services.world_subnational_queries import latest_world_point_series
 
 
 # Browser/CDN cache for cold-home catalogue + map payloads. Locale is Host-
@@ -1602,31 +1603,9 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     last_map: dict[int, tuple[date, float]] = {}
     prev_map: dict[int, float] = {}
     if listed:
-        ids = [i.id for i in listed]
-        ranked = (
-            select(
-                WorldDataPoint.indicator_id.label("indicator_id"),
-                WorldDataPoint.date.label("date"),
-                WorldDataPoint.value.label("value"),
-                func.row_number().over(
-                    partition_by=WorldDataPoint.indicator_id,
-                    order_by=WorldDataPoint.date.desc(),
-                ).label("rn"),
-            )
-            .where(WorldDataPoint.indicator_id.in_(ids))
-            .subquery()
-        )
-        last_rows = (
-            await db.execute(
-                select(ranked.c.indicator_id, ranked.c.date, ranked.c.value, ranked.c.rn)
-                .where(ranked.c.rn <= 2)
-            )
-        ).all()
-        for iid, d, v, rn in last_rows:
-            if rn == 1:
-                last_map[iid] = (d, float(v))
-            elif rn == 2:
-                prev_map[iid] = float(v)
+        recent = await latest_world_point_series(db, [i.id for i in listed], limit=2)
+        last_map = {iid: points[0] for iid, points in recent.items()}
+        prev_map = {iid: points[1][1] for iid, points in recent.items() if len(points) > 1}
 
     catalog_index = index_by_catalog_key(all_inds)
 

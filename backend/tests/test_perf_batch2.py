@@ -284,13 +284,18 @@ def test_latest_points_fallback_on_sqlite(tmp_path):
             ])
             await db.commit()
             world = await wsq.latest_world_points(db, [1, 2, 3])
+            world_pairs = await wsq.latest_world_point_series(db, [1, 2, 3], limit=2)
             region = await wsq.latest_region_points(db, 7, [5, 6, 42], limit=2)
             empty = await wsq.latest_world_points(db, [])
         await engine.dispose()
-        return world, region, empty
+        return world, world_pairs, region, empty
 
-    world, region, empty = asyncio.run(run())
+    world, world_pairs, region, empty = asyncio.run(run())
     assert world == {1: (date(2022, 1, 1), 3.0), 2: (date(2019, 1, 1), 9.0)}
+    assert world_pairs == {
+        1: [(date(2022, 1, 1), 3.0), (date(2021, 1, 1), 2.0)],
+        2: [(date(2019, 1, 1), 9.0)],
+    }
     assert region == {
         5: [(date(2023, 1, 1), 4.0), (date(2021, 1, 1), 2.0)],
         6: [(date(2018, 1, 1), 6.0)],
@@ -335,6 +340,8 @@ def test_lateral_matches_window_on_postgres():
                 new = await wsq.latest_world_points(db, list(ids))
                 old = await wsq._latest_world_points_window(db, list(ids))
                 assert new == old, cid
+                pairs = await wsq.latest_world_point_series(db, list(ids), limit=2)
+                assert {iid: values[0] for iid, values in pairs.items()} == old, cid
         await engine.dispose()
 
     asyncio.run(run())

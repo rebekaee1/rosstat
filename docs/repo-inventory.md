@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-28
 
-**Файлов:** 1164  ·  **Строк:** 567 678  ·  **Токенов (≈):** 5 693 365
+**Файлов:** 1164  ·  **Строк:** 567 715  ·  **Токенов (≈):** 5 693 839
 
 ## По верхним папкам
 
@@ -13,9 +13,9 @@
 | `(root)` | 8 | 2 378 | 57 657 |
 | `.github` | 3 | 272 | 2 747 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 600 | 227 181 | 2 457 550 |
+| `backend` | 600 | 227 217 | 2 457 984 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 10 | 546 | 6 524 |
+| `deploy` | 10 | 547 | 6 564 |
 | `docs` | 87 | 240 283 | 2 148 615 |
 | `frontend` | 371 | 79 155 | 817 398 |
 | `mcp` | 3 | 158 | 1 120 |
@@ -50,7 +50,7 @@
 | `frontend/src/i18n/messages.ru.js` | 1 976 | 27 828 |
 | `frontend/src/i18n/messages.en.js` | 1 967 | 26 868 |
 | `backend/app/api/sitemap.py` | 2 568 | 26 855 |
-| `backend/app/api/world.py` | 2 510 | 23 893 |
+| `backend/app/api/world.py` | 2 489 | 23 741 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
 | `frontend/src/pages/ComparePage.jsx` | 2 123 | 22 144 |
 | `backend/app/services/site_urls.py` | 2 251 | 22 000 |
@@ -90,8 +90,8 @@
 | `backend/app/data/world_bea_regional/description_ru.json` | 477 | 9 258 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 838 | 9 207 |
 | `backend/scripts/repair-world-listing.py` | 971 | 9 115 |
+| `backend/tests/test_world.py` | 933 | 8 950 |
 | `frontend/src/pages/RegionsHome.jsx` | 802 | 8 898 |
-| `backend/tests/test_world.py` | 931 | 8 897 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 832 | 8 808 |
 | `backend/app/services/derived_ops.py` | 840 | 8 754 |
 | `docs/architecture.md` | 267 | 8 699 |
@@ -278,6 +278,7 @@
 | `backend/app/services/scrape_guard.py` | 430 | 3 451 |
 | `docs/architecture-history.md` | 52 | 3 439 |
 | `scripts/build-us-bea-catalog.py` | 263 | 3 407 |
+| `backend/tests/test_perf_batch2.py` | 347 | 3 380 |
 | `frontend/src/components/RegionAnnualChart.jsx` | 349 | 3 363 |
 | `backend/tests/forecast_strategies/snapshots/prod_generic_ols.json` | 985 | 3 333 |
 | `frontend/src/lib/worldViewModes.test.js` | 348 | 3 322 |
@@ -286,7 +287,6 @@
 | `scripts/audit-world-country-coverage.py` | 345 | 3 293 |
 | `backend/app/data/world_national_core/uk.yaml` | 312 | 3 288 |
 | `backend/tests/forecast_strategies/fixtures/construction_work_series.json` | 1 | 3 279 |
-| `backend/tests/test_perf_batch2.py` | 340 | 3 276 |
 | `scripts/test_deploy_asset_flow.py` | 281 | 3 276 |
 | `frontend/src/pages/ComparePage.component.test.jsx` | 319 | 3 262 |
 | `backend/tests/test_sitemap_scheduler_hardening.py` | 346 | 3 255 |
@@ -394,9 +394,9 @@
 | `backend/alembic/versions/20260706_analytics2.py` | 181 | 2 337 |
 | `frontend/src/pages/WorldRegionsHome.component.test.jsx` | 242 | 2 337 |
 | `frontend/src/pages/CategoryPage.jsx` | 242 | 2 323 |
+| `deploy/approved-shas.txt` | 124 | 2 322 |
 | `backend/tests/test_parser_fixtures.py` | 283 | 2 304 |
 | `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 263 | 2 287 |
-| `deploy/approved-shas.txt` | 123 | 2 282 |
 | `frontend/src/lib/useCountryComparison.js` | 262 | 2 254 |
 | `backend/tests/test_world_boc_valet_adapter.py` | 292 | 2 250 |
 | `scripts/audit-public-language.py` | 256 | 2 250 |
@@ -475,6 +475,7 @@
 | `backend/app/services/breadcrumbs.py` | 278 | 1 788 |
 | `backend/scripts/load-world-auto-deep.py` | 222 | 1 783 |
 | `backend/app/data/world_national_core/kr.yaml` | 190 | 1 769 |
+| `backend/app/services/world_subnational_queries.py` | 202 | 1 766 |
 | `docs/adr/0008-regional-bounded-context.md` | 118 | 1 765 |
 | `backend/app/services/geoip.py` | 219 | 1 763 |
 | `backend/app/services/rosstat_ipi_parser.py` | 207 | 1 762 |
@@ -566,7 +567,6 @@
 | `scripts/pg-backup.sh` | 115 | 1 372 |
 | `backend/tests/test_world_fred_adapter.py` | 180 | 1 364 |
 | `backend/tests/test_webmaster_integrity.py` | 102 | 1 342 |
-| `backend/app/services/world_subnational_queries.py` | 154 | 1 337 |
 | `Caddyfile` | 59 | 1 330 |
 | `frontend/src/pages/TodayHub.jsx` | 148 | 1 330 |
 | `backend/app/data/eurostat_substance.py` | 157 | 1 324 |
