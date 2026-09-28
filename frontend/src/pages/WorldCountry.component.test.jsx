@@ -170,6 +170,45 @@ describe('WorldCountry category navigation', () => {
     expect(screen.getByRole('link', { name: /Индекс цен/ })).toBeTruthy();
   });
 
+  it('ограничивает огромный каталог и оставляет все показатели доступными через разделы и поиск', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
+      matches: media.includes('min-width'), media,
+      addEventListener() {}, removeEventListener() {},
+    }));
+    const indicators = Array.from({ length: 220 }, (_, index) => ({
+      code: `at-test-${index}`,
+      name: `Тестовый показатель ${index}`,
+      frequency: 'annual',
+      last_value: index,
+      last_date: '2025-01-01',
+    }));
+    renderCountry('austria', {
+      ...GERMANY,
+      country: { ...GERMANY.country, code: 'AT', slug: 'austria', name: 'Австрия', indicators_count: 221 },
+      categories: [
+        { name: 'Общество', indicators },
+        { name: 'Цены', indicators: [{ code: 'at-cpi', name: 'Индекс цен Австрии', frequency: 'monthly' }] },
+      ],
+    });
+
+    expect(await screen.findByRole('heading', { name: 'Общество' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
+    expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(41);
+    fireEvent.click(screen.getByRole('button', { name: /Показать ещё показатели/ }));
+    expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(161);
+    fireEvent.click(screen.getByRole('button', { name: /Показать ещё показатели/ }));
+    expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(221);
+
+    fireEvent.click(within(document.querySelector('aside')).getByRole('button', { name: /Цены/ }));
+    expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /Индекс цен Австрии/ })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Общество' })).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText('Поиск по показателям страны'), { target: { value: 'Тестовый показатель' } });
+    expect(await screen.findByRole('link', { name: /Тестовый показатель 0/ })).toBeTruthy();
+    expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(120);
+  });
+
   it('на десктопе подсвечивает категорию, до которой пользователь прокрутил страницу', async () => {
     const frames = [];
     vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({

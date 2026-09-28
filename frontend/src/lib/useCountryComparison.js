@@ -16,6 +16,9 @@ import { useLocale, useT } from '../i18n';
 export const COMPARISON_COLORS = ['#397C8C', '#7856A8', '#C86B5B', '#4D8A64'];
 export const MAX_COMPARISONS = COMPARISON_COLORS.length;
 const EMPTY_LIST = [];
+// Both series use the same USD unit, so their sizes must be visible by default.
+// A 1992=100 index makes the much larger US GDP look smaller than Russia's.
+const DIRECT_VALUE_CONCEPTS = new Set(['gdp-usd', 'gdp-per-capita-usd']);
 
 function isAbsoluteLevel(unit, modeMeta) {
   const normalized = (unit || '').toLowerCase();
@@ -222,6 +225,7 @@ export function useCountryComparison({
       !activeComparisonIds.includes(id)
       && activeComparisonIds.length === 0
       && absolute
+      && !DIRECT_VALUE_CONCEPTS.has(conceptSlug)
     ) {
       setComparisonScale('index');
     }

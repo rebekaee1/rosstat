@@ -2,9 +2,9 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-09-27
+**Сгенерировано:** 2026-09-28
 
-**Файлов:** 1163  ·  **Строк:** 567 562  ·  **Токенов (≈):** 5 691 789
+**Файлов:** 1164  ·  **Строк:** 567 677  ·  **Токенов (≈):** 5 693 316
 
 ## По верхним папкам
 
@@ -15,9 +15,9 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 600 | 227 181 | 2 457 550 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 10 | 544 | 6 441 |
+| `deploy` | 10 | 545 | 6 477 |
 | `docs` | 87 | 240 283 | 2 148 615 |
-| `frontend` | 370 | 79 041 | 815 905 |
+| `frontend` | 371 | 79 155 | 817 396 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 79 | 17 613 | 200 467 |
 
@@ -115,6 +115,7 @@
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 646 | 7 453 |
 | `backend/app/services/seo_content.py` | 613 | 7 300 |
 | `scripts/e2e/liquid-glass-acceptance.mjs` | 351 | 7 284 |
+| `frontend/src/pages/WorldCountry.jsx` | 639 | 7 208 |
 | `docs/design/local-acceptance/inventory.json` | 1 430 | 7 192 |
 | `frontend/src/pages/WorldRegionIndicatorPage.jsx` | 631 | 7 180 |
 | `docs/research/_fpsr_raw/agent07.json` | 581 | 7 138 |
@@ -125,7 +126,6 @@
 | `backend/app/api/analytics.py` | 659 | 6 944 |
 | `frontend/src/lib/pageMeta.generated.json` | 497 | 6 908 |
 | `docs/missed_data_audit.md` | 449 | 6 887 |
-| `frontend/src/pages/WorldCountry.jsx` | 616 | 6 877 |
 | `docs/research/_fpsr_raw/agent09.json` | 471 | 6 863 |
 | `backend/app/services/world_cards.py` | 808 | 6 786 |
 | `frontend/src/lib/behavior.js` | 720 | 6 780 |
@@ -217,6 +217,7 @@
 | `backend/app/api/oauth.py` | 476 | 4 419 |
 | `backend/app/services/seo_world_subnational.py` | 463 | 4 406 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
+| `frontend/src/pages/WorldCountry.component.test.jsx` | 473 | 4 399 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 393 |
 | `backend/alembic/versions/20260428_add_analytics_os_tables.py` | 327 | 4 373 |
 | `backend/app/services/world_adapters/boj_stat.py` | 492 | 4 366 |
@@ -243,7 +244,6 @@
 | `frontend/src/components/RegionsMap.jsx` | 366 | 3 873 |
 | `backend/tests/test_indicator_year_landing.py` | 396 | 3 872 |
 | `frontend/src/lib/biLabels.js` | 366 | 3 850 |
-| `frontend/src/pages/WorldCountry.component.test.jsx` | 434 | 3 846 |
 | `frontend/src/lib/worldApi.js` | 457 | 3 812 |
 | `scripts/regional/backfill_word.py` | 337 | 3 810 |
 | `frontend/src/pages/CompoundCalculatorPage.jsx` | 296 | 3 802 |
@@ -396,17 +396,17 @@
 | `frontend/src/pages/CategoryPage.jsx` | 242 | 2 323 |
 | `backend/tests/test_parser_fixtures.py` | 283 | 2 304 |
 | `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 263 | 2 287 |
+| `frontend/src/lib/useCountryComparison.js` | 262 | 2 254 |
 | `backend/tests/test_world_boc_valet_adapter.py` | 292 | 2 250 |
 | `scripts/audit-public-language.py` | 256 | 2 250 |
+| `deploy/approved-shas.txt` | 122 | 2 235 |
 | `docs/design/local-acceptance/performance-country-before.json` | 263 | 2 228 |
 | `frontend/src/lib/searchSynonyms.js` | 225 | 2 218 |
 | `backend/app/tasks/ticker_worker.py` | 241 | 2 208 |
 | `backend/app/services/calendar_sources/enrichment.py` | 265 | 2 200 |
-| `deploy/approved-shas.txt` | 121 | 2 199 |
 | `frontend/src/pages/Terms.jsx` | 175 | 2 198 |
 | `backend/app/data/world_national_core/cn.yaml` | 231 | 2 193 |
 | `frontend/src/components/OAuthButtons.jsx` | 212 | 2 187 |
-| `frontend/src/lib/useCountryComparison.js` | 258 | 2 184 |
 | `backend/app/data/world_national_core/br.yaml` | 220 | 2 182 |
 | `backend/app/data/eurostat_dim_labels_en.py` | 237 | 2 157 |
 | `backend/tests/test_minfin_budget.py` | 274 | 2 150 |
@@ -879,6 +879,7 @@
 | `frontend/src/components/IndicatorSeoBlocks.jsx` | 64 | 543 |
 | `frontend/src/lib/regionsMapColors.js` | 58 | 543 |
 | `backend/tests/test_seed_integrity.py` | 68 | 541 |
+| `frontend/src/lib/useCountryComparison.component.test.jsx` | 48 | 537 |
 | `backend/tests/test_household_finance_seo.py` | 59 | 536 |
 | `frontend/src/context/AuthProvider.jsx` | 57 | 533 |
 | `frontend/src/components/SourceLink.component.test.jsx` | 45 | 528 |
