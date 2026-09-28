@@ -31,7 +31,7 @@ import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
   compareDifferenceUnit, compareLegendParts, REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
-  applyCompareTransform, commonIndexBase, rebaseToHundred, resolveStepOverride,
+  applyCompareTransform, commonIndexBase, rebaseToHundred, requiresRebasedPriceIndex, resolveStepOverride,
   worldCompareRepresentationsFor, worldCompareTransformFor,
 } from '../lib/compareRepresentation';
 import {
@@ -1442,7 +1442,8 @@ export default function ComparePage() {
     series.forEach((s) => { const u = s.unit || '%'; if (!seen.includes(u)) seen.push(u); });
     return seen;
   }, [series]);
-  const forceIndex = distinctUnits.length > 2;
+  const mixedPriceIndexBases = requiresRebasedPriceIndex(series);
+  const forceIndex = distinctUnits.length > 2 || mixedPriceIndexBases;
   const indexed = forceIndex || scale === 'index';
 
   const chartData = useMemo(() => {
@@ -1871,7 +1872,12 @@ export default function ComparePage() {
 
         {forceIndex && (
           <p className="-mt-3 mb-6 text-xs text-text-tertiary">
-            {t('compare.forceIndexHint')}
+            {t(mixedPriceIndexBases ? 'compare.priceIndexBaseHint' : 'compare.forceIndexHint')}
+            {mixedPriceIndexBases && (
+              <> {' '}<Link to="/world/rating/hicp-index" className="text-champagne hover:underline">
+                {t('world.chart.compareInflationRates')}
+              </Link></>
+            )}
           </p>
         )}
 
@@ -1927,7 +1933,9 @@ export default function ComparePage() {
 
             {nonIndexableNames.length > 0 && (
               <p className="mb-4 -mt-1 text-center text-[11px] text-text-tertiary">
-              {t('compare.nonIndexableNote', { names: nonIndexableNames.join(', ') })}
+              {t(mixedPriceIndexBases ? 'compare.priceIndexPercentExcluded' : 'compare.nonIndexableNote', {
+                names: nonIndexableNames.join(', '),
+              })}
               </p>
             )}
 

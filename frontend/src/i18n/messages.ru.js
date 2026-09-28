@@ -935,6 +935,9 @@ export default {
   'compare.imageButton': 'Картинка',
   'compare.forceIndexHint':
     'Выбрано 3+ разных единиц измерения — график доступен только в режиме «Общая база». Чтобы вернуть исходные значения на общую ось, приведите ряды к одному представлению (например, «К прошлому году» — тогда все они станут процентами).',
+  'compare.priceIndexBaseHint':
+    'У индексов цен разные базовые годы: показана динамика от общей даты. Процентные ряды к базе 100 не приводятся.',
+  'compare.priceIndexPercentExcluded': 'Процентные ряды скрыты на графике общей базы ({names}); сравните их в рейтинге инфляции.',
   'compare.panHint': 'перетащите график мышью или двигайте ползунок',
   'compare.analysis.eyebrow': 'Аналитическая сводка',
   'compare.analysis.title': 'Что изменилось за выбранный период',
@@ -1002,6 +1005,8 @@ export default {
   'world.chart.countryNotFound': 'Страна не найдена',
   'world.chart.scaleValues': 'Значения',
   'world.chart.scaleIndex': 'Динамика (=100)',
+  'world.chart.priceIndexBaseHint': 'У индексов цен разных стран различаются базовые годы.',
+  'world.chart.compareInflationRates': 'Сравнить инфляцию в процентах',
   'world.chart.removeSeries': 'Убрать ряд',
   'world.chart.openFullCompare': 'Открыть полное сравнение',
   'world.chart.rebaseNote':

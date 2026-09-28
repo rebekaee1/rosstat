@@ -105,6 +105,7 @@ from app.services.world_compare import (
     concept_members as _concept_members,
     concept_member_rank as _concept_member_rank,
     concept_unit_compatible as _concept_unit_compatible,
+    peer_fetch_mode as _peer_fetch_mode,
 )
 from app.services.world_russia_rank import (
     merge_russia_into_values_by_year,
@@ -1008,7 +1009,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     Британия/Индия/Мексика в калькуляторе инфляции отдают свой официальный
     индекс цен с родными юнитом и источником, а не 404.
     """
-    cache_key = await versioned_key("world", f"compare:catalog:v7:{get_locale()}")
+    cache_key = await versioned_key("world", f"compare:catalog:v8:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1060,6 +1061,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
             if concept is None or concept.slug not in concepts:
                 continue
         payload = _compare_series_payload(country, indicator, concept)
+        payload["peer_mode"], payload["value_adjust"] = _peer_fetch_mode(concept, indicator)
         # Юнит национального ряда — родной из его метаданных (разные базы
         # индекса у FRED/ABS/ONS не притворяются «2015=100»).
         if is_national(indicator):
@@ -1089,7 +1091,10 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
             "concept_name": concept_public_name(concept),
             "concept_name_en": (concept.name_en or "").strip(),
             "frequency": "annual",
-            "unit": concept_public_unit(concept),
+            "unit": ranking_public_unit(
+                "yoy" if link.value_kind == "yoy_ready" else "level",
+                concept_public_unit(concept),
+            ),
             "national_method": concept.slug in {"gdp-usd", "gdp-per-capita-usd"},
         })
 
@@ -1140,7 +1145,11 @@ async def _russia_compare_series(db: AsyncSession, concept) -> dict:
             "concept_slug": concept.slug,
             "concept_name": concept_public_name(concept),
             "frequency": freq,
-            "unit": sample.get("unit") or public_unit,
+            "unit": (
+                ranking_public_unit("yoy", public_unit)
+                if link and link.value_kind == "yoy_ready"
+                else sample.get("unit") or public_unit
+            ),
             "note": meta_extra.get("note"),
             "source": sample.get("source"),
             "national_method": concept.slug in {"gdp-usd", "gdp-per-capita-usd"},
@@ -1174,7 +1183,7 @@ async def world_compare_series(
 
     if country_slug == "russia":
         cache_key = await versioned_key(
-            "world", f"compare:series:v1:russia:{concept.slug}:{get_locale()}"
+            "world", f"compare:series:v2:russia:{concept.slug}:{get_locale()}"
         )
         cached = await cache_get(cache_key)
         if cached:

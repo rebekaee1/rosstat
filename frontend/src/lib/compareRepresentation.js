@@ -157,7 +157,9 @@ export function resolveCompareSeries(indicator, repId) {
  * решения «индексируется/нет» — здесь (используется ComparePage и тестом).
  */
 export function isIndexableBase(base, { unit, repId, values } = {}) {
-  if (unit === '%' || unit === '‰') return false;
+  const normalizedUnit = String(unit || '').toLowerCase();
+  if (normalizedUnit.includes('%') || normalizedUnit.includes('‰')
+    || normalizedUnit.includes('процент') || normalizedUnit.includes('percent')) return false;
   if (repId === REP_POP || repId === REP_YOY) return false;
   if (!(typeof base === 'number' && Number.isFinite(base) && base > 0)) return false;
   // Положительной базы мало: у знакопеременного ряда (дефицит бюджета, сальдо)
@@ -167,6 +169,13 @@ export function isIndexableBase(base, { unit, repId, values } = {}) {
     return false;
   }
   return true;
+}
+
+/** Разные базы индекса цен нельзя показывать как сопоставимые уровни. */
+export function requiresRebasedPriceIndex(series) {
+  return series.length > 1
+    && series.every((item) => item.isWorld && item.ind?.conceptSlug === 'hicp-index')
+    && new Set(series.map((item) => item.unit)).size > 1;
 }
 
 /** Значение ряда, приведённое к базе-100. Вызывать только при isIndexableBase(base). */

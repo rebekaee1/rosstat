@@ -113,6 +113,9 @@ export default function WorldChartSection({
   const unit = unitOverride || modeMeta?.unit || indicator?.unit || '';
   const activeFreq = frequency || modeMeta?.freq || indicator?.frequency;
   const title = worldChartTitle(indicator, modeMeta, activeFreq, locale);
+  const priceIndexLevel = conceptSlug === 'hicp-index'
+    && modeMeta?.type === 'level'
+    && /индекс|index/i.test(indicator?.unit || '');
   const {
     pickerOptions,
     activeComparisonIds,
@@ -264,6 +267,15 @@ export default function WorldChartSection({
         rebased={rebased}
         loadedComparisonSeries={loadedComparisonSeries}
       />
+
+      {priceIndexLevel && activeComparisonIds.length === 0 && (
+        <p className="mb-4 text-xs text-text-tertiary">
+          {t('world.chart.priceIndexBaseHint')}{' '}
+          <Link to="/world/rating/hicp-index" className="text-champagne hover:underline">
+            {t('world.chart.compareInflationRates')}
+          </Link>
+        </p>
+      )}
 
       {comparisonQueries.some((query) => query.isError) && (
         <p className="mb-3 text-[12px] text-text-secondary">

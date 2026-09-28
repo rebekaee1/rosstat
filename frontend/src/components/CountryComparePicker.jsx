@@ -148,7 +148,11 @@ export default function CountryComparePanel({
               <X size={11} className="shrink-0 text-text-tertiary" />
             </button>
           ))}
-          {conceptSlug && compareCodes.length > 0 && (
+          {conceptSlug === 'hicp-index' && compareCodes.length > 0 ? (
+            <Link to="/world/rating/hicp-index" className="ml-auto text-xs text-champagne hover:underline">
+              {t('world.chart.compareInflationRates')}
+            </Link>
+          ) : conceptSlug && compareCodes.length > 0 && (
             <Link
               to={`/compare?codes=${encodeURIComponent(
                 [`w:${countrySlug}:${conceptSlug}`, ...compareCodes].join(','),

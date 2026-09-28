@@ -117,6 +117,29 @@ describe('CountryComparePicker', () => {
     );
     expect(screen.getByText('Сравнение стран')).toBeTruthy();
   });
+
+  it('sends inflation comparisons to the rate ranking instead of raw index levels', () => {
+    renderPicker(
+      <CountryComparePanel
+        pickerOptions={OPTIONS}
+        activeComparisonIds={['peer:germany:de-hicp']}
+        selectedComparisons={[{ id: 'peer:germany:de-hicp', label: 'Германия', color: '#397C8C' }]}
+        comparisonQueries={[]}
+        comparisonScale="values"
+        onToggle={vi.fn()}
+        onOpen={vi.fn()}
+        onScale={vi.fn()}
+        conceptSlug="hicp-index"
+        countrySlug="russia"
+        compareCodes={['w:germany:hicp-index']}
+        rebased={null}
+        loadedComparisonSeries={[]}
+      />,
+    );
+    expect(screen.getByRole('link', { name: 'Сравнить инфляцию в процентах' }).getAttribute('href'))
+      .toBe('/world/rating/hicp-index');
+    expect(screen.queryByRole('link', { name: 'Открыть полное сравнение' })).toBeNull();
+  });
 });
 
 describe('IndicatorChartSection world compare', () => {

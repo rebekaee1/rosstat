@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   REP_LEVEL, REP_POP, REP_YOY,
   compareRepresentationsFor, resolveCompareSeries, applyCompareTransform,
-  isIndexableBase, commonIndexBase, rebaseToHundred, resolveStepOverride,
+  isIndexableBase, commonIndexBase, rebaseToHundred, requiresRebasedPriceIndex, resolveStepOverride,
   worldCompareRepresentationsFor, worldCompareTransformFor,
 } from './compareRepresentation';
 
@@ -154,6 +154,8 @@ describe('compareRepresentation — index base guard', () => {
     // Инфляция 5% — темп, а не уровень: «= 100 пунктов» смыслово неверно.
     expect(isIndexableBase(5, { unit: '%', repId: REP_LEVEL })).toBe(false);
     expect(isIndexableBase(8.6, { unit: '‰' })).toBe(false);
+    expect(isIndexableBase(17.2, { unit: '% ВВП', repId: REP_LEVEL })).toBe(false);
+    expect(isIndexableBase(6.34, { unit: 'изменение за год, %', repId: REP_LEVEL })).toBe(false);
     // Представления «к прошлому периоду» / «к году» — тоже темпы.
     expect(isIndexableBase(120, { unit: 'млрд руб.', repId: REP_POP })).toBe(false);
     expect(isIndexableBase(120, { unit: 'млрд руб.', repId: REP_YOY })).toBe(false);
@@ -161,6 +163,15 @@ describe('compareRepresentation — index base guard', () => {
     expect(isIndexableBase(120, { unit: 'млрд руб.', repId: REP_LEVEL })).toBe(true);
     expect(isIndexableBase(2100, { unit: 'bn $', repId: REP_LEVEL })).toBe(true);
     expect(isIndexableBase(120, { unit: 'индекс' })).toBe(true);
+  });
+
+  it('forces a shared base for price indices with different base years', () => {
+    const germany = { isWorld: true, ind: { conceptSlug: 'hicp-index' }, unit: 'индекс 2015=100' };
+    const unitedStates = { isWorld: true, ind: { conceptSlug: 'hicp-index' }, unit: 'индекс 1982–84=100' };
+    const france = { isWorld: true, ind: { conceptSlug: 'hicp-index' }, unit: 'индекс 2015=100' };
+    expect(requiresRebasedPriceIndex([germany, unitedStates])).toBe(true);
+    expect(requiresRebasedPriceIndex([germany, france])).toBe(false);
+    expect(requiresRebasedPriceIndex([germany])).toBe(false);
   });
 
   it('rebaseToHundred приводит к базе-100 без выбросов на валидной базе', () => {

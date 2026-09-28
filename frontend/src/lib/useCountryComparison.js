@@ -16,9 +16,15 @@ import { useLocale, useT } from '../i18n';
 export const COMPARISON_COLORS = ['#397C8C', '#7856A8', '#C86B5B', '#4D8A64'];
 export const MAX_COMPARISONS = COMPARISON_COLORS.length;
 const EMPTY_LIST = [];
-// Both series use the same USD unit, so their sizes must be visible by default.
-// A 1992=100 index makes the much larger US GDP look smaller than Russia's.
-const DIRECT_VALUE_CONCEPTS = new Set(['gdp-usd', 'gdp-per-capita-usd']);
+// Comparable sizes should stay visible by default. Rebased growth can make
+// a larger country look smaller, and population dates may not match exactly.
+const DIRECT_VALUE_CONCEPTS = new Set([
+  'gdp-usd',
+  'gdp-per-capita-usd',
+  'gdp-volume-annual',
+  'gdp-volume-quarterly',
+  'population',
+]);
 
 function isAbsoluteLevel(unit, modeMeta) {
   const normalized = (unit || '').toLowerCase();
@@ -50,6 +56,10 @@ function scalePoints(points, scale, adjust) {
   });
 }
 
+function sameInflationFrequency(item, frequency) {
+  return item.peer_mode?.endsWith(`-${frequency}`);
+}
+
 /**
  * Общий хук сравнения стран: мировая карточка и российская с концептом.
  *
@@ -76,6 +86,20 @@ export function useCountryComparison({
   });
   const [comparisonIds, setComparisonIds] = useState([]);
   const [comparisonScale, setComparisonScale] = useState('values');
+  const hicpWorldCard = surface === 'world' && conceptSlug === 'hicp-index';
+  const ownCatalogItem = hicpWorldCard
+    ? compareCatalog.data?.items?.find((item) => (
+      item.concept_slug === conceptSlug && item.country_slug === countrySlug
+    ))
+    : null;
+  const modeFrequency = modeMeta?.freq || modeMeta?.id?.split('-').at(-1);
+  const ownRateMode = ownCatalogItem?.peer_mode || '';
+  // HICP levels may have different base years. Cross-provider peers are safe
+  // only when both sides represent inflation rates at the same frequency.
+  const comparableInflationRate = hicpWorldCard
+    && !ownCatalogItem?.value_adjust
+    && ((ownRateMode.startsWith('yoy-') && modeMeta?.type === 'yoy')
+      || (ownRateMode.startsWith('level-') && modeMeta?.type === 'level'));
 
   const comparisonOptions = useMemo(() => {
     const bySlug = new Map();
@@ -83,7 +107,11 @@ export function useCountryComparison({
       if (!item?.country_slug || item.country_slug === countrySlug) return;
       if (!bySlug.has(item.country_slug)) bySlug.set(item.country_slug, item);
     };
-    (peers || []).forEach((item) => add({
+    // The world-card Russia endpoint returns annual CPI snapshots, while the
+    // Russian indicator card has the actual monthly YoY series for comparison.
+    (peers || []).filter((item) => (
+      !hicpWorldCard || item.country_slug !== 'russia'
+    )).forEach((item) => add({
       ...item,
       country_name: locale === 'en'
         ? (item.country_name_en || item.country_name)
@@ -91,7 +119,14 @@ export function useCountryComparison({
       code: item.code || `peer:${item.country_slug}:${item.indicator_code}`,
     }));
     (compareCatalog.data?.items || [])
-      .filter((item) => item.concept_slug === conceptSlug)
+      .filter((item) => (
+        item.concept_slug === conceptSlug
+        && (!hicpWorldCard || (
+          item.country_slug !== 'russia'
+          && comparableInflationRate
+          && sameInflationFrequency(item, modeFrequency)
+        ))
+      ))
       .forEach((item) => add({
         ...item,
         country_name: locale === 'en'
@@ -105,15 +140,17 @@ export function useCountryComparison({
       )
     ));
     return sorted.length ? sorted : EMPTY_LIST;
-  }, [peers, compareCatalog.data, conceptSlug, countrySlug, locale]);
+  }, [peers, compareCatalog.data, conceptSlug, countrySlug, locale, hicpWorldCard, comparableInflationRate, modeFrequency]);
 
   const pickerOptions = useMemo(() => {
-    if (!WORLD_RANKING_AVERAGE_CONCEPTS.has(conceptSlug)) return comparisonOptions;
+    // The shared HICP benchmark endpoint aggregates raw levels from countries
+    // with different index bases; do not offer that misleading line here.
+    if (hicpWorldCard || !WORLD_RANKING_AVERAGE_CONCEPTS.has(conceptSlug)) return comparisonOptions;
     return [
       { code: 'average', country_name: averageCountryLabel(conceptSlug, t) },
       ...comparisonOptions,
     ];
-  }, [comparisonOptions, conceptSlug, t]);
+  }, [comparisonOptions, conceptSlug, t, hicpWorldCard]);
 
   const activeComparisonIds = comparisonIds.filter((id) => (
     pickerOptions.some((option) => option.code === id)
@@ -146,12 +183,18 @@ export function useCountryComparison({
           return fetchWorldCompareSeries('russia', conceptSlug, { signal });
         }
         if (surface === 'world') {
-          return fetchWorldIndicatorMode(
+          const payload = await fetchWorldIndicatorMode(
             option.country_slug,
             option.indicator_code,
-            modeMeta?.id,
+            hicpWorldCard && comparableInflationRate
+              ? (option.peer_mode || modeMeta?.id)
+              : modeMeta?.id,
             { signal },
           );
+          if (!hicpWorldCard || !comparableInflationRate) return payload;
+          const points = payload?.points || payload?.data || [];
+          const mapped = scalePoints(points, 1, option.value_adjust);
+          return { ...payload, points: mapped, data: mapped };
         }
         const mode = option.peer_mode || peerMode;
         const payload = await fetchWorldIndicatorMode(

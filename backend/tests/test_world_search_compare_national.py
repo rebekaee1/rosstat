@@ -181,6 +181,9 @@ def test_compare_catalog_includes_national_cpi(national_world_client):
     # Частота — родная для национального ряда.
     assert us["frequency"] == "monthly"
     assert au["frequency"] == "quarterly"
+    assert us["peer_mode"] == "yoy-monthly"
+    assert au["peer_mode"] == "yoy-quarterly"
+    assert us["value_adjust"] is None
 
 
 def test_compare_series_us_hicp_not_404(national_world_client):

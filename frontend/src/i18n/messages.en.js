@@ -935,6 +935,9 @@ export default {
   'compare.imageButton': 'Image',
   'compare.forceIndexHint':
     '3+ different units selected — the chart is available only in Common base mode. To plot source values on a shared axis, switch series to the same representation (for example YoY — then all become percentages).',
+  'compare.priceIndexBaseHint':
+    'Price indices use different base years, so the chart shows change from a shared date. Percentage series are not rebased to 100.',
+  'compare.priceIndexPercentExcluded': 'Percentage series are hidden on the common-base chart ({names}); compare them in the inflation ranking.',
   'compare.panHint': 'drag the chart or move the slider',
   'compare.analysis.eyebrow': 'Analytical summary',
   'compare.analysis.title': 'What changed over the selected period',
@@ -1002,6 +1005,8 @@ export default {
   'world.chart.countryNotFound': 'Country not found',
   'world.chart.scaleValues': 'Values',
   'world.chart.scaleIndex': 'Change (=100)',
+  'world.chart.priceIndexBaseHint': 'Price indices can use different base years across countries.',
+  'world.chart.compareInflationRates': 'Compare inflation rates in percent',
   'world.chart.removeSeries': 'Remove series',
   'world.chart.openFullCompare': 'Open full comparison',
   'world.chart.rebaseNote':

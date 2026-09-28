@@ -872,6 +872,8 @@ def test_world_compare_contract_and_snapshot(world_client):
     russia_items = [row for row in catalog.json()["items"] if row["country_slug"] == "russia"]
     assert russia_items, "compare catalog must include Russia via RUSSIA_CONCEPT_LINKS"
     assert all(row["code"].startswith("w:russia:") for row in russia_items)
+    russia_hicp = next(row for row in russia_items if row["concept_slug"] == "hicp-index")
+    assert russia_hicp["unit"] == "изменение за год, %"
 
     snapshot = world_client.get("/api/v1/world/compare/snapshot/hicp-index")
     assert snapshot.status_code == 200
@@ -896,6 +898,27 @@ def test_world_compare_contract_and_snapshot(world_client):
     assert map_payload["values_by_year"]["2025"]["DE"]["date"] == "2025-06-01"
     # FR: 2025-01 YoY (103/99-1)*100 = 4.04; в 2025 нет пары для июня.
     assert map_payload["values_by_year"]["2025"]["FR"]["value"] == 4.04
+
+
+def test_russia_compare_series_labels_ready_yoy_as_percent(monkeypatch):
+    import asyncio
+
+    from app.api.world import _russia_compare_series
+    from app.data.world_concepts import CONCEPT_BY_SLUG
+    from app.services import world_russia_rank
+
+    async def yearly(_db, _slug, *, concept_mode, public_unit):
+        assert concept_mode == "level"
+        return {"2025": {
+            "date": "2025-12-01", "value": 6.34,
+            "frequency": "annual", "unit": public_unit,
+        }}
+
+    monkeypatch.setattr(world_russia_rank, "russia_yearly_by_code", yearly)
+    monkeypatch.setattr(world_russia_rank, "russia_meta_for_concept", lambda _slug: {})
+    payload = asyncio.run(_russia_compare_series(None, CONCEPT_BY_SLUG["hicp-index"]))
+    assert payload["meta"]["unit"] == "изменение за год, %"
+    assert payload["data"] == [{"date": "2025-12-01", "value": 6.34}]
 
 
 def test_world_search_and_404(world_client):
