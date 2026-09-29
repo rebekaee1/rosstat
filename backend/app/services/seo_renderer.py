@@ -1375,7 +1375,7 @@ def render_not_found_html(message: str | None = None) -> str:
 <title>{safe} — Forecast Economy</title>
 <meta name="robots" content="noindex, follow">
 </head>
-<body class="seo-fast">
+<body class="seo-fast" data-no-ads>
 {_ssr_chrome_header()}
 <main class="seo-page">
 <h1>{safe}</h1>
