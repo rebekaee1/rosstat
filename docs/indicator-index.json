@@ -21037,22 +21037,22 @@
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 416,
+          "line": 418,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 434,
+          "line": 436,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 718,
+          "line": 719,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 727,
+          "line": 728,
           "kind": "other"
         },
         {
@@ -21062,12 +21062,12 @@
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 783,
+          "line": 782,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 800,
+          "line": 799,
           "kind": "other"
         },
         {
@@ -41634,7 +41634,7 @@
         },
         {
           "file": "docs/data_sources.md",
-          "line": 610,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -42094,7 +42094,7 @@
         },
         {
           "file": "docs/data_sources.md",
-          "line": 610,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -42694,7 +42694,7 @@
         },
         {
           "file": "docs/data_sources.md",
-          "line": 610,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -46486,32 +46486,32 @@
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 23,
+          "line": 25,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 460,
+          "line": 462,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 537,
+          "line": 539,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 569,
+          "line": 571,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 588,
+          "line": 590,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 592,
+          "line": 594,
           "kind": "other"
         },
         {
@@ -47346,7 +47346,7 @@
         },
         {
           "file": "docs/data_sources.md",
-          "line": 545,
+          "line": 547,
           "kind": "other"
         },
         {
@@ -56344,12 +56344,12 @@
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 774,
+          "line": 773,
           "kind": "other"
         },
         {
           "file": "backend/app/data/world_subnational/us.yaml",
-          "line": 778,
+          "line": 777,
           "kind": "other"
         },
         {
@@ -56514,32 +56514,32 @@
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 467,
+          "line": 470,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 471,
+          "line": 474,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 473,
+          "line": 476,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 475,
+          "line": 478,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 496,
+          "line": 499,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_world_subnational.py",
-          "line": 507,
+          "line": 510,
           "kind": "tests"
         },
         {
