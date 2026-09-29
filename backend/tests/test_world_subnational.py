@@ -43,7 +43,10 @@ def test_us_passport_loads_51_territories_and_listed_indicators():
     assert scaled["civilian-employment"].value_scale == 0.001
     assert scaled["government-employment"].value_scale == 1.0
     assert scaled["unemployed-persons"].national_code == "us-unemployed"
-    assert scaled["civilian-labor-force"].bls_series_template == "LASST{fips}0000000000006"
+    # BLS API отвечает 403 (Akamai) на IP прода: наложение ни разу не
+    # сработало и каждую ночь давало 153 «ошибки». FRED LASST-зеркало той же
+    # свежести — паспорт на BLS не опирается (механизм в коде сохранён).
+    assert all(i.bls_series_template is None for i in passport.indicators)
 
 
 def test_real_income_vintage_updates_all_public_labels():

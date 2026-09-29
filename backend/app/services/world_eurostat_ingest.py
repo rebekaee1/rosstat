@@ -40,6 +40,12 @@ DEFAULT_THEMES = (
     "ei_,sts_,prc_,namq_,nama_,une_,lfsi_,lfsq_,irt_,ert_,ext_,bop_,"
     "gov_,demo_,nrg_,road_,tour_,educ_,hlth_,ilc_,isoc_,sdg_,tec,tei,tin,tps"
 )
+# Частоты, которые берёт loader (scripts/load-world-eurostat.py --freq M,Q,A).
+# Отбор задачи обязан совпадать: D/S/W набор loader отбрасывал («Selected 0»)
+# и выходил с кодом 1 — 29 ложных ошибок каждый прогон.
+LOADER_FREQUENCIES = ("M", "Q", "A")
+# Набор без разреза по странам (курсы, города, рыболовные районы) — не ошибка.
+_NOT_COUNTRY_SHAPED = "JSON-stat missing geo/time dims"
 MAX_DATASETS_PER_RUN = 200
 MAX_RUN_SECONDS = 3 * 3600
 
@@ -99,18 +105,26 @@ def _theme_sql(themes: list[str]) -> tuple[str, dict[str, str]]:
     return "(" + " OR ".join(clauses) + ")", params
 
 
-async def _catalog_dataset_ids() -> set[str]:
-    """Тот же curated set, что ручной loader, но без повторной выгрузки TOC."""
+def _catalog_query() -> tuple[str, dict[str, str]]:
     themes = [value.strip() for value in DEFAULT_THEMES.split(",") if value.strip()]
     theme_sql, params = _theme_sql(themes)
-    sql = text(
+    freq_params = {f"freq_{i}": freq for i, freq in enumerate(LOADER_FREQUENCIES)}
+    freq_sql = ", ".join(f":{key}" for key in freq_params)
+    sql = (
         "SELECT dataset_id FROM research.source_catalog "
         "WHERE source = 'eurostat' AND period_end IS NOT NULL "
         "AND period_end >= '2024' "
+        f"AND upper(frequency) IN ({freq_sql}) "
         f"AND {theme_sql}"
     )
+    return sql, {**params, **freq_params}
+
+
+async def _catalog_dataset_ids() -> set[str]:
+    """Тот же curated set, что ручной loader, но без повторной выгрузки TOC."""
+    sql, params = _catalog_query()
     async with async_session() as db:
-        return set((await db.execute(sql, params)).scalars().all())
+        return set((await db.execute(text(sql), params)).scalars().all())
 
 
 async def _listed_dataset_ids() -> set[str]:
@@ -203,7 +217,7 @@ async def _record_dataset(
                 db.add(state)
             # A failed/quarantined attempt must not advance the applied TOC
             # version: a later retry must still see the unreviewed DSD change.
-            if status == "ok":
+            if status in ("ok", "skipped"):
                 state.last_update_of_data = entry.updated_at
                 state.last_structure_change = entry.structure_changed_at
             state.status = status
@@ -369,6 +383,7 @@ async def world_eurostat_ingest_job(
 
     succeeded = 0
     failed = 0
+    skipped = 0
     processed = 0
     for entry in changed:
         if not shadow and processed and time.monotonic() - run_clock >= MAX_RUN_SECONDS:
@@ -407,6 +422,16 @@ async def world_eurostat_ingest_job(
                 update_state=True,
                 rows_fetched=await _persisted_rows(entry.dataset_id, entry.provider),
             )
+        elif _NOT_COUNTRY_SHAPED in detail:
+            skipped += 1
+            logger.info("World Eurostat dataset %s has no country dimension, skipped", entry.dataset_id)
+            await _record_dataset(
+                run_id=run_id,
+                entry=entry,
+                status="skipped",
+                error=detail,
+                update_state=True,
+            )
         else:
             failed += 1
             logger.error("World Eurostat loader failed for %s: %s", entry.dataset_id, detail)
@@ -433,6 +458,7 @@ async def world_eurostat_ingest_job(
         "selected": processed,
         "succeeded": succeeded,
         "failed": failed,
+        "skipped": skipped,
         "shadow": int(shadow),
         "pending": pending,
     }
@@ -454,6 +480,7 @@ async def world_eurostat_ingest_job(
         changed_label="Успешно обновлено наборов",
         details=(
             f"Наборов обновлено: {succeeded}; очередь: {pending}. "
+            + (f"Без разреза по странам (пропущено): {skipped}. " if skipped else "")
             + ("Данные не записаны (shadow). " if shadow else "")
             + ("Отдельный источник IMF WEO: ошибка обновления. " if result.get("imf_error") else "")
         ).strip(),

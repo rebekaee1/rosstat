@@ -271,13 +271,12 @@ async def run_emiss_regional_update(
 
     codes = list(PRICE_FUELS.values())
     indicators = {
-        code: ind
-        for code, ind in (
+        ind.code: ind
+        for ind in (
             await db.execute(
                 select(RegionIndicator).where(RegionIndicator.code.in_(codes))
             )
-        ).all()
-        if ind
+        ).scalars()
     }
     missing = [c for c in codes if c not in indicators]
     if missing:

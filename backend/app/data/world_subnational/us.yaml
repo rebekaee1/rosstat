@@ -6,6 +6,8 @@
 # BLS LAUS household counts start in 1976; source values are persons, stored
 # as thousands to align with the national CPS series on comparison charts.
 # Placeholders: {geo} = postal code, {fips} = 2-digit FIPS, {series_id} after expand.
+# No bls_series_template overlay: api.bls.gov answers 403 (Akamai) to the
+# production IP, while the FRED LASST mirror is equally fresh (2026-09-29).
 # Loader: backend/scripts/load-world-subnational.py --country us
 
 country_code: US
@@ -706,7 +708,6 @@ indicators:
     section_ru: Рынок труда
     provider: fred
     series_template: '{geo}LF'
-    bls_series_template: 'LASST{fips}0000000000006'
     value_scale: 0.001
     aggregation: last
     source_en: U.S. Bureau of Labor Statistics
@@ -734,7 +735,6 @@ indicators:
     section_ru: Рынок труда
     provider: fred
     series_template: 'LASST{fips}0000000000005'
-    bls_series_template: 'LASST{fips}0000000000005'
     value_scale: 0.001
     aggregation: last
     source_en: U.S. Bureau of Labor Statistics
@@ -762,7 +762,6 @@ indicators:
     section_ru: Рынок труда
     provider: fred
     series_template: 'LASST{fips}0000000000004'
-    bls_series_template: 'LASST{fips}0000000000004'
     value_scale: 0.001
     aggregation: last
     source_en: U.S. Bureau of Labor Statistics

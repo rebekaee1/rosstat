@@ -134,3 +134,48 @@ class TestRunUpdate:
         # run_emiss_regional_update требует живой БД (Region/RegionIndicator);
         # сам upsert-guard и parse-слой покрыты выше, полный цикл — смоуком.
         assert callable(run_emiss_regional_update)
+
+
+def test_run_update_resolves_indicators_from_real_session(tmp_path, monkeypatch):
+    """Регрессия 2026-09-25: `select(RegionIndicator)` отдаёт однокортежные
+    строки, а их распаковывали в (code, ind) — первый плановый запуск упал с
+    «not enough values to unpack», цены на топливо встали на 2026-07."""
+    import app.services.emiss_regional_parser as mod
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.models import Base, RegionIndicator
+
+    db_path = tmp_path / "emiss.db"
+    sync_engine = create_engine(f"sqlite:///{db_path}")
+    Base.metadata.create_all(sync_engine)
+    sync_engine.dispose()
+
+    fetched = []
+
+    async def fake_fetch(year, month, territory_ids, dimnames, post_grid=None):
+        fetched.append((year, month))
+        return []
+
+    monkeypatch.setattr(mod, "fetch_month_points", fake_fetch)
+    monkeypatch.setattr(mod, "months_to_fetch", lambda existing: [(2026, 8)])
+    monkeypatch.setattr(mod, "_PAUSE_BETWEEN_REQUESTS", 0)
+
+    async def scenario():
+        engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}")
+        maker = async_sessionmaker(engine, expire_on_commit=False)
+        try:
+            async with maker() as db:
+                for code in mod.PRICE_FUELS.values():
+                    db.add(RegionIndicator(code=code, table_code="0", section_num=0,
+                                           section_name="Цены", name=code))
+                await db.commit()
+                return await mod.run_emiss_regional_update(
+                    db, territory_ids=["1849012"], dimnames={},
+                )
+        finally:
+            await engine.dispose()
+
+    stats = asyncio.run(scenario())
+    assert stats == {"months": 1, "added": 0, "updated": 0}
+    assert fetched == [(2026, 8)]
