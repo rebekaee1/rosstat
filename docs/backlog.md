@@ -1,5 +1,13 @@
 # Backlog — текущие правки в работе
 
+## 2026-09-29 — алерты Telegram и индексация: разбор и фиксы
+
+**Разбор архива `telegram_outbox` за 7 дней.** Главный шум — `Timeout reading from redis-state` у `telegram_poll`/`indexnow_drain` — оказался голоданием памяти процесса scheduler, а не Redis ([CONTEXT, Scheduler memory-starvation trap](../CONTEXT.md)). Утренний провал 04:27–06:06 UTC — потеря IP хостом (DHCP-lease trap). `europe_world_forecast` падал каждый вечер с 2026-09-25: запрос кандидатов считается ~80 с при лимите пула 30 с. `indexnow_history` падал на оконных границах чанков по 16 млн `world_data_points`. Ошибки sitemap Вебмастера (77–91k) — старый дефект lastmod до 1970, исправленный 2026-09-26, но не перечитанный роботом.
+
+**Сделано (локально, тесты):** потоковый `clickhouse_sync` с `ch.insert` в executor; оконный ночной `sessionize` и лёгкие выборки rollup'ов; `indexnow_drain` возвращает снятый батч в очередь при сбое и проверяет debounce одним pipeline; `indexnow_history` читает опубликованную ночную генерацию sitemap; SET LOCAL statement_timeout 10 мин для планирования мировых прогнозов; lastmod шарда в индексе = max(данные, смена содержимого); антиспам алертов планировщика (1/ч на джобу+ошибку); алерт sitemap-ошибок только на рост; имя класса исключения в `telegram_outbox.error`.
+
+**После выката:** следить за `memory.events`/RSS scheduler и за тем, что ночной `rollups_daily` завершился (строки `server_sessions` старше 3 дней с ночным `computed_at`); запустить `sitemap_build` (или дождаться 03:10 МСК) — все шарды получат новую дату в индексе; через 1–3 дня счётчик ошибок sitemap в Вебмастере должен упасть. Отдельно — ошибки источников (FRED штатов, Eurostat, национальные au/br/cn/in/jp/kr/mx, `emiss_regional`).
+
 ## 2026-09-27 — рельеф проекта и актуализация документации
 
 **Выполнено локально:** сначала прочитаны действующие справочники и исторические ADR/backlog; затем сопоставлены с кодом. [Graphify-срез](project-terrain.md) включает Git-инвентарь, контрольные суммы, извлечённые связи и явные границы покрытия. [Архитектура](architecture.md), [контракты данных](data-contracts.md) и [индекс истории](architecture-history.md) связывают текущий механизм с причинами решений. Смысловые отношения — `architecture-knowledge.json`; десятишаговый маршрут — `.tours/architect-view-mode-contract.tour`.

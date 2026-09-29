@@ -874,6 +874,22 @@ Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставл�
 
 **Правило:** после ребута/переустановки хоста проверять `ip -4 addr show eth0` → `valid_lft forever`; сигнатуру `eth0: Failed` в `journalctl -u systemd-networkd` считать инцидентом с таймером на сутки.
 
+### Scheduler memory-starvation trap: «Timeout reading from redis-state» — не Redis (2026-09-29)
+
+Десятки алертов `telegram_poll` / `indexnow_drain` «Timeout reading from redis-state:6379», параллельно BrokenPipe/statement timeout Postgres и пустые сбои MOEX/Telegram в той же секунде. Redis здоров (slowlog ≤ 25 мс). Причина — процесс `scheduler` замирает: cgroup 1 ГиБ достигнут 17 050 раз за 2 ч после старта (`memory.events: max`), своп, `memory.pressure full` ~15%, в логе дыра ~70 с. Все ожидания I/O внутри event loop одновременно истекают. Источники памяти и блокировок: (1) `clickhouse_sync` каждые 15 мин грузил ~130k ORM-объектов (сессии + визиты Метрики за 2 суток, раздутые бот-фермой) и вызывал синхронный `ch.insert` прямо в event loop; (2) ночной `rollups_daily` (60 дней) грузил ~255k портретов ORM + ~845k событий и строил список всех сессий — ни разу не завершился (в `server_sessions` нет строк старше 3 дней с ночным `computed_at`). Своп scheduler давал iowait хоста — та же «давка», при которой сорвалось продление DHCP.
+
+**Фикс:** синк CH — колонки вместо ORM, потоковые пачки по 5k, `ch.insert` в thread executor; `sessionize(since, until)` + ночной пересчёт окнами по 3 МСК-дня; портреты — только нужные поля; «известные посетители» — только из окна; визиты Метрики — только нужные ключи `raw_json` потоком. Антиспам алертов планировщика: одна ошибка джобы — не чаще раза в час (in-process, без Redis).
+
+**Правило:** синхронный сетевой клиент (clickhouse_connect, requests, openpyxl-разбор) из корутины — только через `run_in_executor`/`to_thread`. Пакетное чтение аналитики — выборка колонок + `db.stream(...yield_per)`, не `select(Model).scalars().all()`. При «таймаутах Redis» сначала смотреть `memory.events`/`memory.pressure` cgroup scheduler и дыры в его логе.
+
+### Sitemap-index lastmod trap: исправленный шард Яндекс не перечитывает (2026-09-29)
+
+Ошибки Вебмастера по sitemap (до 91k на хост) — `<lastmod>` раньше 1970 у годовых страниц 1929–1969 (справочник Яндекса: «неверная дата»). Код исправлен 2026-09-26 (`SITEMAP_LASTMOD_MIN`), но `lastmod` шарда в индексе считался как max(lastmod URL) — у исторических шардов он не сдвинулся, и робот не перечитывал исправленные файлы. API v4 отдаёт только `errors_count`, тип ошибки виден лишь в интерфейсе.
+
+**Фикс:** `lastmod` файла в индексе = max(дата данных, дата смены содержимого по отпечатку шарда); история — `section_changed` в `sitemap-stats.json`. Первая сборка после выката помечает все шарды изменёнными один раз. Алерт «ошибок sitemap» — только при росте счётчика.
+
+**Правило:** любое изменение разметки/дат в шардах должно менять отпечаток (`section_fingerprint` берёт lastmod после нормализации) — тогда дата смены в индексе сдвинется сама.
+
 ---
 
 ## Architectural language (from improve-codebase-architecture skill)
