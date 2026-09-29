@@ -46,6 +46,7 @@ SESSION_GAP_MIN = 30  # правило Метрики: разрыв ≥ 30 ми�
 # Окно одного прохода сессионизации (МСК-дни). 15-минутный прогон (2 суток)
 # укладывается в одно окно; ночной 60-дневный — в ~20 окон с ограниченной памятью.
 SESSIONIZE_WINDOW_DAYS = 3
+_SESSION_EVENT_TYPES = ("pageview", "dwell", "click", "move")
 # Потоковое чтение длинных окон (визиты Метрики, dwell) — строк за раз.
 _STREAM_BATCH = 5_000
 # Ключи raw_json визита, которые читает rollup_daily_traffic.
@@ -84,7 +85,11 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
     одним проходом (~845k событий + ~255k портретов + все сессии списком)
     не помещались в память процесса scheduler и ни разу не завершились.
     """
-    event_window = [BehaviorEvent.occurred_at >= since]
+    event_window = [
+        BehaviorEvent.occurred_at >= since,
+        # move нужен антибот-скорингу (ноль движений = сигнал бота).
+        BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES),
+    ]
     if until is not None:
         event_window.append(BehaviorEvent.occurred_at < until)
     rows = (await db.execute(
@@ -97,11 +102,7 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
             BehaviorEvent.user_id,
             BehaviorEvent.params_json,
         )
-        .where(
-            *event_window,
-            # move нужен антибот-скорингу (ноль движений = сигнал бота).
-            BehaviorEvent.event_type.in_(("pageview", "dwell", "click", "move")),
-        )
+        .where(*event_window)
         .order_by(BehaviorEvent.occurred_at)
     )).all()
 
