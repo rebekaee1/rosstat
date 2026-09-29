@@ -80,7 +80,7 @@ def test_dataset_without_country_dimension_is_skipped_not_failed(monkeypatch):
     async def fake_toc():
         return {}
 
-    async def fake_loader(entry):
+    async def fake_loader(entry, **_kwargs):
         return False, "ERROR ValueError: JSON-stat missing geo/time dims: ['freq', 'currency', 'time']"
 
     async def fake_record(**kwargs):
@@ -165,3 +165,99 @@ def test_skipped_dataset_applies_toc_version():
     assert state.status == "skipped"
     assert state.last_update_of_data == date(2026, 9, 1)
     assert state.last_structure_change == date(2026, 8, 1)
+
+
+def _job_env(monkeypatch, loader_result, *, structure_changed=True):
+    recorded, alerts, loader_calls = [], [], []
+
+    async def fake_select(_toc):
+        return [TocEntry("nrg_stk_oem", date(2026, 9, 28), date(2026, 9, 25))]
+
+    async def fake_toc():
+        return {}
+
+    async def fake_loader(entry, **kwargs):
+        loader_calls.append(kwargs)
+        return loader_result
+
+    async def fake_record(**kwargs):
+        recorded.append(kwargs)
+
+    async def changed(_entry):
+        return structure_changed
+
+    async def empty_set():
+        return set()
+
+    async def noop(*_a, **_k):
+        return None
+
+    async def rows(*_a, **_k):
+        return 126
+
+    class Run:
+        id = 7
+        datasets_selected = 0
+
+    class Session:
+        async def __aenter__(self):
+            return self
+        async def __aexit__(self, *_):
+            pass
+        def add(self, obj):
+            pass
+        async def commit(self):
+            pass
+        async def refresh(self, obj):
+            obj.id = 7
+        async def get(self, *_):
+            return Run()
+
+    async def fake_alert(*args, **kwargs):
+        alerts.append(kwargs)
+
+    monkeypatch.setattr(ingest, "async_session", Session)
+    monkeypatch.setattr(ingest, "fetch_toc", fake_toc)
+    monkeypatch.setattr(ingest, "select_changed_datasets", fake_select)
+    monkeypatch.setattr(ingest, "_run_one_loader", fake_loader)
+    monkeypatch.setattr(ingest, "_record_dataset", fake_record)
+    monkeypatch.setattr(ingest, "_structure_change_requires_quarantine", changed)
+    monkeypatch.setattr(ingest, "_mark_changed_states_pending", noop)
+    monkeypatch.setattr(ingest, "_listed_dataset_ids", empty_set)
+    monkeypatch.setattr(ingest, "_failed_dataset_ids", empty_set)
+    monkeypatch.setattr(ingest, "_persisted_rows", rows)
+    monkeypatch.setattr("app.services.alerting.alert_world_ingest_summary", fake_alert)
+    return recorded, alerts, loader_calls
+
+
+def test_structure_change_is_verified_and_accepted_automatically(monkeypatch):
+    """Смена структуры больше не означает вечный карантин: loader сверяет
+    срезы и при успехе набор обновляется, версия структуры применяется."""
+    verdict = '{"dataset_id": "nrg_stk_oem", "accept": true, "kept": 126, "remapped": 2, "orphans": 0, "orphans_listed": 0, "reason": "ok"}'
+    recorded, alerts, calls = _job_env(
+        monkeypatch, (True, "... DONE\nSTRUCTURE_VERDICT " + verdict + "\n"),
+    )
+    result = asyncio.run(ingest.world_eurostat_ingest_job(shadow=False, include_imf=False))
+    assert calls == [{"structure_check": True}]
+    assert result["succeeded"] == 1 and result["failed"] == 0
+    assert result["structure_accepted"] == 1
+    assert recorded[0]["status"] == "ok"
+    assert "переподключено рядов: 2" in alerts[0]["details"]
+
+
+def test_structural_break_stays_in_quarantine_with_reason(monkeypatch):
+    verdict = '{"dataset_id": "nrg_stk_oem", "accept": false, "kept": 3, "remapped": 0, "orphans": 90, "orphans_listed": 88, "reason": "88 из 120 публичных карточек не нашли срез в новой структуре"}'
+    recorded, alerts, _calls = _job_env(
+        monkeypatch, (False, "STRUCTURE_VERDICT " + verdict),
+    )
+    result = asyncio.run(ingest.world_eurostat_ingest_job(shadow=False, include_imf=False))
+    assert result["failed"] == 1 and result["structure_blocked"] == 1
+    assert recorded[0]["status"] == "quarantine"
+    assert "88 из 120" in recorded[0]["error"]
+
+
+def test_unchanged_structure_runs_plain_loader(monkeypatch):
+    recorded, _alerts, calls = _job_env(monkeypatch, (True, "DONE"), structure_changed=False)
+    asyncio.run(ingest.world_eurostat_ingest_job(shadow=False, include_imf=False))
+    assert calls == [{}]
+    assert recorded[0]["status"] == "ok"

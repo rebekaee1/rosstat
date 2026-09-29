@@ -12,8 +12,10 @@ from __future__ import annotations
 import asyncio
 import csv
 import io
+import json
 import logging
 import os
+import re
 import sys
 import time
 from dataclasses import dataclass
@@ -258,17 +260,19 @@ async def _structure_change_requires_quarantine(entry: TocEntry) -> bool:
         )
 
 
-async def _run_one_loader(entry: TocEntry) -> tuple[bool, str]:
-    """Запустить проверенный manual-loader для одного dataset без stale disk cache."""
+async def _run_one_loader(entry: TocEntry, *, structure_check: bool = False) -> tuple[bool, str]:
+    """Запустить проверенный manual-loader для одного dataset без stale disk cache.
+
+    ``structure_check`` — TOC сообщил смену структуры: loader сначала сверяет
+    карточки с новыми срезами (eurostat_structure) и пишет только при успехе.
+    """
     script = Path(__file__).resolve().parents[2] / "scripts" / "load-world-eurostat.py"
+    args = [str(script), "--only", entry.dataset_id, "--workers", "1", "--no-cache"]
+    if structure_check:
+        args.append("--structure-check")
     process = await asyncio.create_subprocess_exec(
         sys.executable,
-        str(script),
-        "--only",
-        entry.dataset_id,
-        "--workers",
-        "1",
-        "--no-cache",
+        *args,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.STDOUT,
         env=os.environ.copy(),
@@ -286,6 +290,21 @@ async def _run_one_loader(entry: TocEntry) -> tuple[bool, str]:
         raise
     text_output = output.decode("utf-8", "replace")
     return process.returncode == 0, text_output[-2000:]
+
+
+_VERDICT_RE = re.compile(r"^STRUCTURE_VERDICT (\{.*\})$", re.MULTILINE)
+
+
+def _structure_verdict(detail: str) -> dict | None:
+    """Итог сверки структуры из хвоста вывода loader'а (последняя строка-вердикт)."""
+    found = _VERDICT_RE.findall(detail or "")
+    if not found:
+        return None
+    try:
+        verdict = json.loads(found[-1])
+    except ValueError:
+        return None
+    return verdict if isinstance(verdict, dict) else None
 
 
 async def _persisted_rows(dataset_id: str, provider: str = "eurostat") -> int:
@@ -385,6 +404,10 @@ async def world_eurostat_ingest_job(
     failed = 0
     skipped = 0
     processed = 0
+    structure_accepted = 0
+    structure_blocked = 0
+    remapped_total = 0
+    orphans_total = 0
     for entry in changed:
         if not shadow and processed and time.monotonic() - run_clock >= MAX_RUN_SECONDS:
             pending += len(changed) - processed
@@ -398,21 +421,37 @@ async def world_eurostat_ingest_job(
                 update_state=False,
             )
             continue
-        if await _structure_change_requires_quarantine(entry):
+        structure_changed = await _structure_change_requires_quarantine(entry)
+        if structure_changed:
+            ok, detail = await _run_one_loader(entry, structure_check=True)
+        else:
+            ok, detail = await _run_one_loader(entry)
+        verdict = _structure_verdict(detail) if structure_changed else None
+        if structure_changed and not ok and verdict is not None and not verdict.get("accept"):
+            # Разлом набора: много публичных карточек без среза в новой
+            # структуре. Ничего не записано; повтор — следующим прогоном.
             failed += 1
+            structure_blocked += 1
             await _record_dataset(
                 run_id=run_id,
                 entry=entry,
                 status="quarantine",
-                error="Eurostat TOC reports a structure change; pinned slices need review",
+                error=f"structure check: {verdict.get('reason') or 'blocked'}",
                 update_state=True,
             )
             logger.warning(
-                "World Eurostat dataset %s quarantined after TOC structure change",
-                entry.dataset_id,
+                "World Eurostat dataset %s kept in quarantine: %s",
+                entry.dataset_id, verdict.get("reason"),
             )
             continue
-        ok, detail = await _run_one_loader(entry)
+        if ok and verdict is not None:
+            structure_accepted += 1
+            remapped_total += int(verdict.get("remapped") or 0)
+            orphans_total += int(verdict.get("orphans") or 0)
+            logger.info(
+                "World Eurostat dataset %s accepted after structure check: %s",
+                entry.dataset_id, verdict.get("reason"),
+            )
         if ok:
             succeeded += 1
             await _record_dataset(
@@ -459,6 +498,8 @@ async def world_eurostat_ingest_job(
         "succeeded": succeeded,
         "failed": failed,
         "skipped": skipped,
+        "structure_accepted": structure_accepted,
+        "structure_blocked": structure_blocked,
         "shadow": int(shadow),
         "pending": pending,
     }
@@ -481,6 +522,12 @@ async def world_eurostat_ingest_job(
         details=(
             f"Наборов обновлено: {succeeded}; очередь: {pending}. "
             + (f"Без разреза по странам (пропущено): {skipped}. " if skipped else "")
+            + (
+                f"Смена структуры сверена и принята: {structure_accepted} "
+                f"(переподключено рядов: {remapped_total}, без замены: {orphans_total}). "
+                if structure_accepted else ""
+            )
+            + (f"Разлом структуры, оставлено в карантине: {structure_blocked}. " if structure_blocked else "")
             + ("Данные не записаны (shadow). " if shadow else "")
             + ("Отдельный источник IMF WEO: ошибка обновления. " if result.get("imf_error") else "")
         ).strip(),

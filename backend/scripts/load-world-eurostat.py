@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import logging
 import sys
 import time
@@ -65,6 +66,11 @@ from app.services.eurostat_parser import (  # noqa: E402
     make_indicator_code,
 )
 from app.core.cache import bump_namespaces  # noqa: E402
+from app.services.eurostat_structure import (  # noqa: E402
+    ExistingSlice,
+    StructureVerdict,
+    plan_structure_migration,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -85,6 +91,10 @@ PRIORITY_PREFIXES = (
 )
 
 _UPSERT_CHUNK = 3000
+# Код возврата: смена структуры не прошла сверку, ничего не записано.
+EXIT_STRUCTURE_BLOCKED = 3
+# Машиночитаемый итог сверки для world_eurostat_ingest (последние строки вывода).
+STRUCTURE_VERDICT_PREFIX = "STRUCTURE_VERDICT "
 
 
 def _theme_sql(themes: list[str]) -> tuple[str, dict]:
@@ -378,7 +388,9 @@ async def upsert_indicator_meta(
             await db.flush()
             return ind.id, True
 
-    existing.code = code
+    # Код = URL карточки: после создания не меняется (редиректов для мировых
+    # карточек нет). Переподключённая после смены структуры карточка сохраняет
+    # прежний адрес, хотя её срез уже другой.
     existing.provider = "eurostat"
     existing.slice_json = result.slice_
     existing.name_ru = name_ru
@@ -453,31 +465,65 @@ async def persist_result(
                     result=result,
                     points=points,
                 )
-                ind = await db.get(WorldIndicator, iid)
-                if ind is not None:
-                    country = await db.get(WorldCountry, ind.country_id)
-                    if country is not None:
-                        new_code = make_indicator_code(
-                            country.code,
-                            result.dataset_id,
-                            result.slice_,
-                        )
-                        if ind.code != new_code:
-                            clash = (
-                                await db.execute(
-                                    select(WorldIndicator).where(
-                                        WorldIndicator.code == new_code,
-                                        WorldIndicator.id != ind.id,
-                                    )
-                                )
-                            ).scalar_one_or_none()
-                            if clash is None:
-                                ind.code = new_code
                 touched, _removed = await reconcile_points(db, iid, points)
                 await refresh_indicator_extent(db, iid)
                 n_ind += 1
                 n_pts += touched
     return n_ind, n_pts
+
+
+async def check_structure(
+    dataset_id: str, results: list[DatasetParseResult], session_factory=None,
+) -> StructureVerdict:
+    """Сверить карточки набора с новой структурой до любой записи."""
+    session_factory = session_factory or async_session
+    new_series = {
+        (geo, one.slice_hash): (one.slice_, points)
+        for one in results
+        for geo, points in one.series_by_geo.items()
+    }
+    async with session_factory() as db:
+        rows = (await db.execute(
+            select(
+                WorldIndicator.id, WorldCountry.code, WorldIndicator.slice_json,
+                WorldIndicator.slice_hash, WorldIndicator.is_listed,
+            )
+            .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
+            .where(
+                WorldIndicator.provider == "eurostat",
+                WorldIndicator.dataset_id == dataset_id,
+            )
+        )).all()
+        existing = [
+            ExistingSlice(int(iid), str(geo), dict(sj or {}), str(sh), bool(listed))
+            for iid, geo, sj, sh, listed in rows
+        ]
+        missing_ids = [
+            e.indicator_id for e in existing if (e.geo, e.slice_hash) not in new_series
+        ]
+        old_points: dict[int, list[tuple[date, float]]] = {}
+        if missing_ids:
+            for iid, d, v in (await db.execute(
+                select(WorldDataPoint.indicator_id, WorldDataPoint.date, WorldDataPoint.value)
+                .where(WorldDataPoint.indicator_id.in_(missing_ids))
+                .order_by(WorldDataPoint.indicator_id, WorldDataPoint.date)
+            )).all():
+                old_points.setdefault(int(iid), []).append((d, float(v)))
+    return plan_structure_migration(existing, new_series, old_points=old_points)
+
+
+async def apply_remaps(verdict: StructureVerdict, session_factory=None) -> None:
+    """Переподключить карточки к новым срезам (код/URL не меняется)."""
+    if not verdict.remapped:
+        return
+    session_factory = session_factory or async_session
+    async with session_factory() as db:
+        for iid, (new_slice, new_hash) in verdict.remapped.items():
+            ind = await db.get(WorldIndicator, iid)
+            if ind is not None:
+                ind.slice_json = new_slice
+                ind.slice_hash = new_hash
+        await db.commit()
 
 
 async def run(args: argparse.Namespace) -> int:
@@ -510,10 +556,12 @@ async def run(args: argparse.Namespace) -> int:
     stats = {
         "datasets_ok": 0,
         "datasets_err": 0,
+        "structure_blocked": 0,
         "indicators": 0,
         "points": 0,
         "errors": [],
     }
+    verdicts: list[dict] = []
     t0 = time.time()
     workers = max(1, min(args.workers, DEFAULT_WORKERS))
 
@@ -539,6 +587,14 @@ async def run(args: argparse.Namespace) -> int:
                 log.error("[%d/%d] FAIL %s: %s", done, len(datasets), ds_id, result)
                 continue
             results = result if isinstance(result, list) else [result]
+            if args.structure_check:
+                verdict = await check_structure(ds_id, results)
+                verdicts.append({"dataset_id": ds_id, **verdict.as_dict()})
+                log.info("[%d/%d] STRUCTURE %s: %s", done, len(datasets), ds_id, verdict.reason)
+                if not verdict.accept:
+                    stats["structure_blocked"] += 1
+                    continue
+                await apply_remaps(verdict)
             n_ind_total = 0
             n_pts_total = 0
             geos = 0
@@ -592,7 +648,12 @@ async def run(args: argparse.Namespace) -> int:
         log.info("Errors (%d):", len(stats["errors"]))
         for e in stats["errors"][:30]:
             log.info("  %s", e)
-    return 0 if stats["datasets_ok"] else 1
+    # Последними строками: world_eurostat_ingest читает хвост вывода.
+    for verdict in verdicts:
+        print(STRUCTURE_VERDICT_PREFIX + json.dumps(verdict, ensure_ascii=False), flush=True)
+    if stats["datasets_ok"]:
+        return 0
+    return EXIT_STRUCTURE_BLOCKED if stats["structure_blocked"] else 1
 
 
 def main() -> None:
@@ -608,6 +669,12 @@ def main() -> None:
     )
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--only", default=None, help="Single dataset_id")
+    p.add_argument(
+        "--structure-check",
+        action="store_true",
+        help="TOC reports a structure change: verify cards against the new "
+             "slices first (remap renamed ones, block on a structural break).",
+    )
     p.add_argument(
         "--no-cache",
         action="store_true",
