@@ -167,14 +167,18 @@ async def _acquisition_from_warehouse(db, d: date) -> dict[str, Any]:
             {"phrase": p, "engine": e, "visits": v} for p, e, v in phrases
         ]
 
+    from app.services.analytics_marts import metrika_visit_not_headless
+
+    # Без headless-роботов: иначе ферма 2026-09 давала LLM «20k прямых визитов».
+    human = metrika_visit_not_headless()
     visits_total = await db.scalar(
         select(func.count(RawMetrikaVisit.id)).where(
-            RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id)
+            RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id, human)
     ) or 0
     if visits_total:
         by_source = dict((await db.execute(
             select(RawMetrikaVisit.traffic_source, func.count())
-            .where(RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id)
+            .where(RawMetrikaVisit.visit_date == d, RawMetrikaVisit.counter_id == counter_id, human)
             .group_by(RawMetrikaVisit.traffic_source)
         )).all())
         acq["raw_visits"] = {"total": visits_total, "by_source": by_source}

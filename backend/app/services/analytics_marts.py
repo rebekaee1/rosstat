@@ -146,7 +146,22 @@ def visit_is_robot(v: RawMetrikaVisit) -> bool:
     robot = visit_field(v, "ym:s:isRobot").strip().lower()
     if robot in {"1", "yes", "true"}:
         return True
+    if visit_field(v, "ym:s:browser").lower().startswith(HEADLESS_BROWSER_PREFIX):
+        return True
     return visit_field(v, "ym:s:isRobotPro") == "1"
+
+
+# Logs API на нашем тарифе отклоняет isRobot (поле снимается фолбэком), зато
+# headless-браузер Метрика распознаёт сама: ферма 2026-09-20..29 давала
+# 15–20k визитов/день с ym:s:browser=headlesschrome при подменённом UA.
+HEADLESS_BROWSER_PREFIX = "headless"
+
+
+def metrika_visit_not_headless():
+    """SQL-условие «визит Метрики не из headless-браузера» для агрегатов в БД."""
+    return func.lower(func.coalesce(
+        RawMetrikaVisit.raw_json["ym:s:browser"].as_string(), ""
+    )).notlike(f"{HEADLESS_BROWSER_PREFIX}%")
 
 
 # SQL-разворот goals_json (формат Logs API: {"goals": "[123,456]"} | list).

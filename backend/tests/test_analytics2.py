@@ -12,7 +12,7 @@
 import asyncio
 import os
 import tempfile
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import pytest
 
@@ -600,6 +600,82 @@ def test_sessionize_sets_bot_score():
             rows = {s.visitor_id_hash: s for s in (await db.execute(select(ServerSession))).scalars()}
             assert not rows["bot1"].is_bot and 0 < rows["bot1"].bot_score < 60
             assert not rows["hum1"].is_bot and rows["hum1"].bot_score < 60
+
+    _run_with_db(scenario)
+
+
+def test_bot_score_catches_headless_farm_by_hardware_not_ua():
+    """Ферма 2026-09: UA обычного Chrome, но квадратное окно 1366×1366 и
+    160–192 ядра. Люди с обычным экраном/ядрами не штрафуются."""
+    from app.services.bot_score import BOT_THRESHOLD, SessionSignals, score_session, signal_breakdown
+
+    ua = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+          "(KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36")
+
+    def sig(**kw):
+        base = dict(pageviews=1, clicks=0, moves=0, active_ms=1200, max_scroll_pct=0,
+                    synthetic_clicks=0, visitor_sessions=1, has_portrait=True,
+                    ua_raw=ua, device_type="desktop", touch=False,
+                    screen_w=1920, screen_h=1080, cpu_cores=8)
+        base.update(kw)
+        return SessionSignals(**base)
+
+    farm = sig(screen_w=1366, screen_h=1366, cpu_cores=188)
+    assert score_session(farm) >= BOT_THRESHOLD
+    assert {"square_desktop_screen", "server_cpu"} <= set(signal_breakdown(farm))
+    # Каждый сигнал сам по себе — приговор.
+    assert score_session(sig(screen_w=1366, screen_h=1366)) >= BOT_THRESHOLD
+    assert score_session(sig(cpu_cores=640)) >= BOT_THRESHOLD
+    # Люди: обычный десктоп, 32-ядерный Mac Studio, квадратный вьюпорт телефона.
+    assert score_session(sig()) < BOT_THRESHOLD
+    assert score_session(sig(cpu_cores=32)) < BOT_THRESHOLD
+    assert score_session(sig(device_type="mobile", touch=True, screen_w=820, screen_h=820)) < BOT_THRESHOLD
+    # Портрета нет — железо неизвестно, сигнал молчит.
+    assert "square_desktop_screen" not in signal_breakdown(sig(has_portrait=False, screen_w=1366, screen_h=1366))
+
+
+def test_visit_is_robot_uses_metrika_headless_browser():
+    from app.models import RawMetrikaVisit
+    from app.services.analytics_marts import visit_is_robot
+
+    def visit(browser):
+        return RawMetrikaVisit(raw_json={"ym:s:browser": browser})
+
+    assert visit_is_robot(visit("headlesschrome"))
+    assert visit_is_robot(visit("HeadlessChrome"))
+    assert not visit_is_robot(visit("chrome"))
+    assert not visit_is_robot(visit(""))
+
+
+def test_daily_traffic_and_pulse_skip_headless_metrika_visits():
+    """Витрина daily_traffic и Пульс считают только не-headless визиты Метрики."""
+    from sqlalchemy import func, select
+
+    from app.models import DailyTraffic, RawMetrikaVisit
+    from app.services.analytics_marts import metrika_visit_not_headless
+    from app.tasks import analytics_rollups as ar
+
+    day = date(2026, 9, 28)
+
+    async def scenario(maker):
+        async with maker() as db:
+            for i, browser in enumerate(("chrome", "yandex_browser", "headlesschrome", "headlesschrome", None)):
+                raw = {"ym:s:deviceCategory": "1", "ym:s:isNewUser": "1",
+                       "ym:s:pageViews": "1", "ym:s:bounce": "1"}
+                if browser:
+                    raw["ym:s:browser"] = browser
+                db.add(RawMetrikaVisit(
+                    counter_id="c1", visit_id=f"v{i}", row_hash=f"h{i}", visit_date=day,
+                    client_id_hash=f"c{i}", traffic_source="direct", raw_json=raw,
+                    ingested_at=datetime.utcnow(),
+                ))
+            await db.commit()
+
+            await ar.rollup_daily_traffic(db, day)
+            assert await db.scalar(select(func.sum(DailyTraffic.visits))) == 3
+            assert await db.scalar(
+                select(func.count(RawMetrikaVisit.id)).where(metrika_visit_not_headless())
+            ) == 3
 
     _run_with_db(scenario)
 

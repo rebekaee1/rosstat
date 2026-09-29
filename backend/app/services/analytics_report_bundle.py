@@ -288,21 +288,25 @@ async def build_day_bundle(d: date, period_start: date | None = None) -> dict[st
             )).all()
         ]
 
+        from app.services.analytics_marts import metrika_visit_not_headless
+
+        # Визиты headless-роботов (ym:s:browser) в бандл не идут.
+        human = metrika_visit_not_headless()
         visits_total = await db.scalar(
-            select(func.count(RawMetrikaVisit.id)).where(RawMetrikaVisit.visit_date == d)
+            select(func.count(RawMetrikaVisit.id)).where(RawMetrikaVisit.visit_date == d, human)
         ) or 0
         raw: dict[str, Any] = {"total": visits_total}
         if visits_total:
             raw["by_source"] = dict((await db.execute(
                 select(RawMetrikaVisit.traffic_source, func.count())
-                .where(RawMetrikaVisit.visit_date == d)
+                .where(RawMetrikaVisit.visit_date == d, human)
                 .group_by(RawMetrikaVisit.traffic_source)
             )).all())
             raw["phrases"] = [
                 {"phrase": p, "search_engine": e, "visits": int(n)}
                 for p, e, n in (await db.execute(
                     select(RawMetrikaVisit.search_phrase, RawMetrikaVisit.search_engine, func.count())
-                    .where(RawMetrikaVisit.visit_date == d,
+                    .where(RawMetrikaVisit.visit_date == d, human,
                            RawMetrikaVisit.search_phrase.isnot(None),
                            RawMetrikaVisit.search_phrase != "")
                     .group_by(RawMetrikaVisit.search_phrase, RawMetrikaVisit.search_engine)
@@ -313,7 +317,7 @@ async def build_day_bundle(d: date, period_start: date | None = None) -> dict[st
                 {"url": u, "visits": int(n)}
                 for u, n in (await db.execute(
                     select(RawMetrikaVisit.start_url, func.count())
-                    .where(RawMetrikaVisit.visit_date == d, RawMetrikaVisit.start_url.isnot(None))
+                    .where(RawMetrikaVisit.visit_date == d, human, RawMetrikaVisit.start_url.isnot(None))
                     .group_by(RawMetrikaVisit.start_url)
                     .order_by(func.count().desc())
                 )).all()
@@ -322,7 +326,7 @@ async def build_day_bundle(d: date, period_start: date | None = None) -> dict[st
                 {"referer": r, "visits": int(n)}
                 for r, n in (await db.execute(
                     select(RawMetrikaVisit.referer, func.count())
-                    .where(RawMetrikaVisit.visit_date == d, RawMetrikaVisit.referer.isnot(None),
+                    .where(RawMetrikaVisit.visit_date == d, human, RawMetrikaVisit.referer.isnot(None),
                            RawMetrikaVisit.referer != "")
                     .group_by(RawMetrikaVisit.referer)
                     .order_by(func.count().desc())

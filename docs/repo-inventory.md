@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-29
 
-**Файлов:** 1166  ·  **Строк:** 569 300  ·  **Токенов (≈):** 5 712 794
+**Файлов:** 1166  ·  **Строк:** 569 312  ·  **Токенов (≈):** 5 712 985
 
 ## По верхним папкам
 
@@ -16,7 +16,7 @@
 | `backend` | 601 | 228 414 | 2 470 630 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 10 | 551 | 6 652 |
-| `docs` | 87 | 240 305 | 2 149 703 |
+| `docs` | 87 | 240 317 | 2 149 894 |
 | `frontend` | 372 | 79 493 | 821 392 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 79 | 17 613 | 200 467 |
@@ -323,6 +323,7 @@
 | `frontend/src/components/Navbar.jsx` | 305 | 2 873 |
 | `frontend/src/pages/Account.jsx` | 269 | 2 864 |
 | `backend/app/services/rosstat_gdp_parser.py` | 319 | 2 859 |
+| `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 197 | 2 842 |
 | `backend/app/data/world_national_core/ca.yaml` | 293 | 2 838 |
 | `backend/app/services/world_compare.py` | 320 | 2 830 |
 | `backend/tests/test_analytics_api.py` | 303 | 2 828 |
@@ -352,7 +353,6 @@
 | `backend/tests/test_og_fit.py` | 296 | 2 686 |
 | `docs/adr/0012-world-multi-provider-official-first-forecasts.md` | 185 | 2 678 |
 | `scripts/e2e/acceptance-matrix.mjs` | 217 | 2 660 |
-| `docs/adr/0010-analytics-contour-identity-goals-marts-olap.md` | 185 | 2 651 |
 | `backend/app/services/seo_world_subnational_year.py` | 202 | 2 650 |
 | `frontend/src/lib/track.js` | 282 | 2 643 |
 | `backend/app/services/site_paths.py` | 360 | 2 625 |

@@ -55,6 +55,25 @@ class SessionSignals:
     touch: bool | None = None
     screen_w: int | None = None
     screen_h: int | None = None
+    cpu_cores: int | None = None
+
+
+# Больше стольких логических ядер у потребительских устройств не бывает
+# (Mac до 32, игровые/рабочие ПК до 64); 65+ — облачная VM или подмена.
+SERVER_CPU_CORES = 64
+
+
+def _square_desktop_screen(s: SessionSignals) -> bool:
+    """Квадратный экран десктопа — окно headless-браузера, не монитор.
+
+    Ферма 2026-09-20..29 (Alibaba Cloud SG): 1366×1366, окно == экран, UA
+    подменён на обычный Chrome. За 60 дней прода — 55k сессий фермы и ни
+    одного человека с квадратным десктопным экраном.
+    """
+    return bool(
+        s.has_portrait and s.device_type == "desktop"
+        and s.screen_w and s.screen_w >= 600 and s.screen_w == s.screen_h
+    )
 
 
 def _no_input_traces(s: SessionSignals) -> bool:
@@ -89,6 +108,10 @@ HEURISTICS: tuple[tuple[str, int, Any], ...] = (
     # Все клики сессии синтетические (isTrusted=false) — кликает скрипт.
     ("synthetic_clicks", 60, lambda s: s.synthetic_clicks > 0 and s.synthetic_clicks >= s.clicks),
     ("visitor_flood", 40, lambda s: s.visitor_sessions > VISITOR_SESSION_FLOOD),
+    # Железо, которого нет у людей: сигналы не зависят от строки UA, которую
+    # headless-фермы подменяют первой.
+    ("square_desktop_screen", 60, _square_desktop_screen),
+    ("server_cpu", 60, lambda s: s.cpu_cores is not None and s.cpu_cores > SERVER_CPU_CORES),
     # Неконсистентность устройства: мобильный UA без touch или нулевой экран.
     ("device_mismatch", 20, lambda s: s.has_portrait and (
         (s.device_type == "mobile" and s.touch is False)

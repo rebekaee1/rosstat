@@ -50,7 +50,11 @@ _SESSION_EVENT_TYPES = ("pageview", "dwell", "click", "move")
 # Потоковое чтение длинных окон (визиты Метрики, dwell) — строк за раз.
 _STREAM_BATCH = 5_000
 # Ключи raw_json визита, которые читает rollup_daily_traffic.
-_TRAFFIC_JSON_KEYS = ("ym:s:deviceCategory", "ym:s:isNewUser", "ym:s:pageViews", "ym:s:bounce")
+_TRAFFIC_JSON_KEYS = (
+    "ym:s:deviceCategory", "ym:s:isNewUser", "ym:s:pageViews", "ym:s:bounce",
+    # Признаки робота (visit_is_robot): визиты роботов в витрину не идут.
+    "ym:s:browser", "ym:s:isRobot", "ym:s:isRobotPro",
+)
 
 # lastTrafficSource Метрики → наши каналы (traffic_channel.CHANNELS)
 METRIKA_SOURCE_TO_CHANNEL = {
@@ -125,6 +129,7 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
             BehaviorSession.yclid, BehaviorSession.device_type,
             BehaviorSession.is_webdriver, BehaviorSession.ua_raw,
             BehaviorSession.touch, BehaviorSession.screen_w, BehaviorSession.screen_h,
+            BehaviorSession.cpu_cores,
         )
         .where(*portrait_window)
         .order_by(BehaviorSession.started_at)
@@ -346,6 +351,7 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
         touch=portrait.touch if portrait else None,
         screen_w=portrait.screen_w if portrait else None,
         screen_h=portrait.screen_h if portrait else None,
+        cpu_cores=portrait.cpu_cores if portrait else None,
     ))
     return {
         "day": msk_day(started),  # день сессии — МСК (BI 2.1)
@@ -394,9 +400,14 @@ async def rollup_daily_traffic(db, since_day: date) -> int:
     """день × канал × устройство × новизна из raw_metrika_visits (визиты Метрики).
 
     goal_visits — только business-tier цели (этап 2б BI 2.1): авто-цели
-    (скролл, показы, ошибки) конверсией не считаются.
+    (скролл, показы, ошибки) конверсией не считаются. Визиты роботов
+    (visit_is_robot, в т.ч. headless-браузеры) не считаются вовсе.
     """
-    from app.services.analytics_marts import business_goal_ids, visit_has_business_goal
+    from app.services.analytics_marts import (
+        business_goal_ids,
+        visit_has_business_goal,
+        visit_is_robot,
+    )
 
     biz_ids = await business_goal_ids(db)
     # Только нужные колонки и, на Postgres, только нужные ключи raw_json
@@ -444,6 +455,8 @@ async def rollup_daily_traffic(db, since_day: date) -> int:
                     traffic_source=traffic_source,
                     raw_json=raw_json,
                 )
+                if visit_is_robot(stub):
+                    continue
                 key = (
                     visit_date, _metrika_channel(stub), _metrika_device(stub),
                     _visit_raw(stub, "ym:s:isNewUser") == "1",

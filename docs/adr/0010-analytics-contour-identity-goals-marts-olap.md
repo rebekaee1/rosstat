@@ -183,3 +183,15 @@ sunburst / calendar-heatmap; Recharts остаётся для линий и ба
 по фазам. `/metrics`: pool/RSS/cgroup. Алерты memory_pressure /
 db_pool_saturation / idle_in_tx. ClickHouse лимит 448M; backend на 4 ГБ
 хосте был 1 ГиБ. 2026-09-04: хост 8 ГБ, backend cgroup 1536M.
+
+**2026-09-29 — антибот по железу и роботы Метрики.** Headless-ферма
+(Alibaba Cloud SG, 2026-09-20..29) подменяла UA на обычный Chrome и прошла
+весь скоринг: ~95% «людей» BI 26–29.09 были ею. Новые сигналы `bot_score`
+не зависят от UA: `square_desktop_screen` (квадратный десктопный экран —
+окно headless, 1366×1366) и `server_cpu` (> 64 логических ядер), по 60 —
+каждый приговор. Проверка на 60 днях прода: людей с такими признаками нет.
+Сессионизация читает `cpu_cores` из портрета; ночной хвост 60 дней
+перечищает историю. Роботы Метрики: Logs API отклоняет `ym:s:isRobot`,
+поэтому `visit_is_robot` дополнительно признаёт `ym:s:browser=headless*`;
+`daily_traffic`, `raw_visits` Пульса и бандл отчёта считают визиты без
+роботов (`metrika_visit_not_headless`).
