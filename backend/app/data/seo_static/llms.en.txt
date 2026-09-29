@@ -1,6 +1,6 @@
 # Forecast Economy
 
-> Forecast Economy (__PUBLIC_HOST__) — a public analytics platform for official economic statistics by country: charts, tables, rankings, comparisons, and forecasts. Sources are national statistical offices, central banks, Eurostat, and the IMF. Coverage includes the United States, Europe, and other available countries. Data update automatically as publishers release (daily runs at 06:00 and 20:00 Moscow time). When citing, give __PUBLIC_HOST__ and the date of the latest value — it appears on every page.
+> Forecast Economy (__PUBLIC_HOST__) — a public analytics platform for official economic statistics by country: charts, tables, rankings, comparisons, and forecasts. More than 50 countries; sources are national statistical offices, central banks, Eurostat, and the IMF. The United States is covered down to all 50 states and the District of Columbia; Russia has deep coverage including 85 regions. Data update automatically as publishers release (daily runs at 06:00 and 20:00 Moscow time). When citing, give __PUBLIC_HOST__ and the date of the latest value — it appears on every page.
 
 ## Languages
 
@@ -10,9 +10,11 @@
 ## What is on the site
 
 - **Country indicators** — hundreds of thousands of series from official national and international sources: __PUBLIC_ORIGIN__/
-- **Country rankings** — comparable slices (GDP, population, unemployment, and others): __PUBLIC_ORIGIN__/world/rating
+- **Country rankings** — comparable slices (GDP, population, unemployment, and others), including rankings for a given year: __PUBLIC_ORIGIN__/world/rating
+- **Two-country comparison** — one indicator for a pair of countries on one chart, e.g. __PUBLIC_ORIGIN__/france-vs-germany/gdp-usd
 - **Indicator comparison** — several series on one chart: __PUBLIC_ORIGIN__/compare
 - **Country card** — profile and indicator set: __PUBLIC_ORIGIN__/united-states, __PUBLIC_ORIGIN__/canada, __PUBLIC_ORIGIN__/germany, __PUBLIC_ORIGIN__/russia
+- **U.S. states** — GDP, income, wages, consumption, and other indicators for every state from the Bureau of Economic Analysis regional accounts: __PUBLIC_ORIGIN__/united-states/regions
 - **Forecasts** — only where the model has passed a quality check; methodology: __PUBLIC_ORIGIN__/methodology
 - **Calculators** — inflation, mortgage, compound interest
 - **Embed widgets** for charts on third-party sites
@@ -21,10 +23,13 @@
 
 - Home (map and ranking): __PUBLIC_ORIGIN__/
 - Country ranking by GDP: __PUBLIC_ORIGIN__/world/rating/gdp-usd
+- Country ranking by population, 2026: __PUBLIC_ORIGIN__/world/rating/population/2026
 - Compare: __PUBLIC_ORIGIN__/compare
 - United States: __PUBLIC_ORIGIN__/united-states
 - US unemployment: __PUBLIC_ORIGIN__/united-states/indicator/us-unemployment-rate
 - US CPI: __PUBLIC_ORIGIN__/united-states/indicator/us-cpi-all
+- U.S. states: __PUBLIC_ORIGIN__/united-states/regions
+- California: __PUBLIC_ORIGIN__/united-states/region/california
 - Canada GDP (example country series): __PUBLIC_ORIGIN__/canada/indicator/ca-weo-ngdpd
 - Russia: __PUBLIC_ORIGIN__/russia
 - About: __PUBLIC_ORIGIN__/about
@@ -34,15 +39,18 @@
 - Country: /{country} — profile, indicator set, source.
 - Country indicator: /{country}/indicator/{code} — chart, history, view modes, methodology, source.
 - Annual summary: /{country}/indicator/{code}/{year}
-- Cross-country ranking: /world/rating/{concept}
+- Cross-country ranking: /world/rating/{concept} and /world/rating/{concept}/{year}
+- Two-country comparison: /{country-a}-vs-{country-b}/{concept} — countries in alphabetical order of their slugs.
+- U.S. state: /united-states/region/{state} and /united-states/region/{state}/{code}, annual summary /united-states/region/{state}/{code}/{year}
 - Every page shows: date of the latest value, unit of measurement, official source.
 
 ## Data sources
 
 - **Eurostat** — official statistics for European countries and related series.
 - **IMF** — comparable estimates (including GDP at current prices in US dollars).
-- **U.S. agencies** — Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve (FRED), U.S. Census Bureau.
-- **National statistical offices and central banks** — the primary source of a country series when it is available.
+- **United States** — Bureau of Economic Analysis (national and state regional accounts), FRED of the Federal Reserve Bank of St. Louis (which republishes Bureau of Labor Statistics and other agency series), U.S. Census Bureau.
+- **National statistical offices and central banks** — the primary source of a country series when it is available: United Kingdom (ONS, Bank of England), Canada (Statistics Canada, Bank of Canada), Japan (Bank of Japan), China (National Bureau of Statistics, CFETS), India (Reserve Bank of India, MoSPI), Brazil (Central Bank of Brazil, IBGE), Mexico (Bank of Mexico), Australia (Australian Bureau of Statistics).
+- **Russia** — Rosstat, Bank of Russia, Ministry of Finance, Moscow Exchange.
 
 All data are public and official; the exact primary-source link is on each indicator page. Browsing analytics is free and requires no registration; downloading tables and charts requires a free account.
 

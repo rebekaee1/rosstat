@@ -7891,7 +7891,7 @@
         },
         {
           "file": "backend/app/data/seo_static/llms.txt",
-          "line": 29,
+          "line": 35,
           "kind": "other"
         },
         {
@@ -9946,7 +9946,7 @@
         },
         {
           "file": "frontend/public/llms.txt",
-          "line": 29,
+          "line": 35,
           "kind": "other"
         },
         {
@@ -39954,7 +39954,7 @@
         },
         {
           "file": "backend/app/data/seo_static/llms.txt",
-          "line": 30,
+          "line": 36,
           "kind": "other"
         },
         {
@@ -40474,7 +40474,7 @@
         },
         {
           "file": "frontend/public/llms.txt",
-          "line": 30,
+          "line": 36,
           "kind": "other"
         },
         {
@@ -46390,8 +46390,18 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/data/seo_static/llms.en.txt",
+          "line": 26,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/data/seo_static/llms.txt",
-          "line": 35,
+          "line": 27,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/data/seo_static/llms.txt",
+          "line": 41,
           "kind": "other"
         },
         {
@@ -47376,7 +47386,12 @@
         },
         {
           "file": "frontend/public/llms.txt",
-          "line": 35,
+          "line": 27,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/public/llms.txt",
+          "line": 41,
           "kind": "other"
         },
         {
@@ -56229,7 +56244,7 @@
         },
         {
           "file": "backend/app/data/seo_static/llms.en.txt",
-          "line": 26,
+          "line": 29,
           "kind": "other"
         },
         {
@@ -58911,7 +58926,7 @@
         },
         {
           "file": "backend/app/data/seo_static/llms.txt",
-          "line": 31,
+          "line": 37,
           "kind": "other"
         },
         {
@@ -59141,7 +59156,7 @@
         },
         {
           "file": "frontend/public/llms.txt",
-          "line": 31,
+          "line": 37,
           "kind": "other"
         },
         {
