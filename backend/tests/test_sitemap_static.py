@@ -37,6 +37,8 @@ def publication(tmp_path, monkeypatch):
     monkeypatch.setattr(sm, "analytics_session", session)
     monkeypatch.setattr(urls, "iter_url_sections", sections)
     monkeypatch.setattr(urls, "chunk_counts", no_dynamic_chunks)
+    # Дата сборки детерминирована: lastmod шарда в индексе зависит от неё.
+    monkeypatch.setattr(sm, "today_msk", lambda: date(2026, 9, 10))
     return tmp_path
 
 
@@ -415,3 +417,62 @@ def test_oversized_disk_section_is_not_served(publication, monkeypatch):
     assert sms.published_section_size("core", "https://forecasteconomy.com") == 50_001
     # section_file still points at the bytes; callers must check the size.
     assert sms.section_file("core", "https://forecasteconomy.com").is_file()
+
+
+def test_index_lastmod_moves_when_shard_content_changes(publication, monkeypatch):
+    """lastmod шарда в индексе = max(дата данных, дата смены содержимого).
+
+    2026-09-26 из исторических шардов убрали lastmod до 1970, но max(lastmod
+    URL) остался прежним (например 2025-01-01) — Яндекс не перечитал файлы
+    и две недели показывал ~169k старых ошибок sitemap.
+    """
+    import app.services.site_urls as urls
+
+    async def historical(db):
+        yield "core", [SiteUrl("/russia/x/1932", "1932-01-01", "yearly", "0.4"),
+                       SiteUrl("/russia/x/2024", "2024-01-01", "yearly", "0.4")]
+
+    monkeypatch.setattr(urls, "iter_url_sections", historical)
+    first = asyncio.run(sm.build_static_sitemaps())
+    # Первая сборка — содержимое новое.
+    assert first["section_lastmod"]["core"] == "2026-09-10"
+    assert first["section_changed"]["core"] == "2026-09-10"
+
+    monkeypatch.setattr(sm, "today_msk", lambda: date(2026, 9, 20))
+    second = asyncio.run(sm.build_static_sitemaps())
+    # Содержимое то же — дата не «прыгает» каждую ночь.
+    assert second["section_changed"]["core"] == "2026-09-10"
+    assert second["section_lastmod"]["core"] == "2026-09-10"
+
+    async def changed(db):
+        # Граница шарда сдвинулась: исторический URL пришёл, дата данных та же.
+        yield "core", [SiteUrl("/russia/x/1931", None, "yearly", "0.4"),
+                       SiteUrl("/russia/x/1932", None, "yearly", "0.4"),
+                       SiteUrl("/russia/x/2024", "2024-01-01", "yearly", "0.4")]
+
+    monkeypatch.setattr(urls, "iter_url_sections", changed)
+    monkeypatch.setattr(sm, "today_msk", lambda: date(2026, 9, 29))
+    third = asyncio.run(sm.build_static_sitemaps())
+    assert third["section_changed"]["core"] == "2026-09-29"
+    assert sm.section_lastmods("https://forecasteconomy.com")["core"] == "2026-09-29"
+
+
+def test_generation_without_change_history_marks_all_shards_changed(publication, monkeypatch):
+    """Первая сборка после выката: у прошлой генерации нет section_changed —
+    все шарды получают дату сборки один раз, чтобы робот перечитал файлы,
+    исправленные до появления этой истории."""
+    import json
+
+    first = asyncio.run(sm.build_static_sitemaps())
+    stats_path = publication / "generations" / first["generation"] / sm.STATS_NAME
+    legacy = json.loads(stats_path.read_text())
+    legacy.pop("section_changed", None)
+    for host in legacy["hosts"].values():
+        host.pop("section_changed", None)
+    stats_path.write_text(json.dumps(legacy))
+
+    monkeypatch.setattr(sm, "today_msk", lambda: date(2026, 9, 29))
+    second = asyncio.run(sm.build_static_sitemaps())
+    assert second["sections_reused"] == 1
+    assert second["section_changed"]["core"] == "2026-09-29"
+    assert second["section_lastmod"]["core"] == "2026-09-29"

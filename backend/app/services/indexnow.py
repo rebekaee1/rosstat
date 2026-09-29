@@ -389,8 +389,6 @@ async def _enqueue_history_family(
     targets: list[tuple[str, str]],
 ) -> tuple[int, str]:
     """Advance one family through fresh then older pages up to its share."""
-    from app.services.site_urls import resolve_section
-
     queued = 0
     last_section = ""
     while budget > 0 and cursor["phase"] < 2:
@@ -403,9 +401,8 @@ async def _enqueue_history_family(
 
         section = sections[cursor["i"]]
         last_section = section
-        urls = await resolve_section(db, section)
         filtered = [
-            path for path in _section_paths(urls)
+            path for path in await _history_section_paths(db, section, targets)
             if _matches_history_phase(path, phase=cursor["phase"], year_min=year_min)
         ]
         skip = min(cursor["skip"], len(filtered))
@@ -428,13 +425,43 @@ async def _enqueue_history_family(
     return queued, last_section
 
 
+def _published_origin(targets: list[tuple[str, str]] | None = None) -> str | None:
+    """Origin с опубликованной ночной генерацией sitemap (пути у хостов общие)."""
+    from app.services.sitemap_static import has_published_generation
+
+    for origin, _host in targets or _indexnow_targets():
+        if has_published_generation(origin):
+            return origin
+    return None
+
+
 async def _history_section_names(db) -> list[str]:
     from app.services.site_urls import _chunked_prefix_for, section_names
+    from app.services.sitemap_static import published_sections
 
-    names = await section_names(db)
+    # Ночная генерация уже знает группы и число чанков: пересчёт из БД
+    # (count/оконные границы по 16 млн world_data_points) не укладывался в
+    # statement_timeout 30 с — indexnow_history падал 2026-09-27/29.
+    origin = _published_origin()
+    names = published_sections(origin) if origin else None
+    if names is None:
+        names = await section_names(db)
     # Sitemap сам определяет опубликованные группы и число чанков. Отдельный
     # allowlist здесь терял базовые мировые и региональные карточки.
     return [name for name in names if _chunked_prefix_for(name) is not None]
+
+
+async def _history_section_paths(db, section: str, targets) -> list[str]:
+    """Пути чанка: файл опубликованной генерации, без неё — сборка из БД."""
+    from app.services.site_urls import resolve_section
+    from app.services.sitemap_static import published_section_paths
+
+    origin = _published_origin(targets)
+    if origin:
+        paths = await asyncio.to_thread(published_section_paths, section, origin)
+        if paths is not None:
+            return paths
+    return _section_paths(await resolve_section(db, section))
 
 
 async def _queue_backed_up(redis, hosts: list[str], cap: int) -> bool:
@@ -660,27 +687,40 @@ async def drain_indexnow_queue(*, limit: int = _QUEUE_BATCH) -> int:
             continue
         if isinstance(batch, (bytes, str)):
             batch = [batch]
-        fresh: list[str] = []
-        for path in batch:
-            path = path.decode() if isinstance(path, bytes) else path
-            if await redis.exists(f"{_DEBOUNCE_PREFIX}{ping_host}:{path}"):
+        batch = [p.decode() if isinstance(p, bytes) else p for p in batch]
+        try:
+            # Один round-trip на весь батч: 800 последовательных EXISTS
+            # каждые 10 минут — 800 шансов поймать таймаут state-Redis.
+            pipe = redis.pipeline(transaction=False)
+            for path in batch:
+                pipe.exists(f"{_DEBOUNCE_PREFIX}{ping_host}:{path}")
+            seen = await pipe.execute()
+            fresh = [path for path, hit in zip(batch, seen) if not hit]
+            if not fresh:
                 continue
-            fresh.append(path)
-        if not fresh:
-            continue
-        ok = await ping_urls(fresh, origin=origins.get(ping_host), host=ping_host)
-        if ok:
-            pipe = redis.pipeline()
-            for path in fresh:
-                pipe.set(
-                    f"{_DEBOUNCE_PREFIX}{ping_host}:{path}",
-                    "1",
-                    ex=_DEBOUNCE_TTL,
+            ok = await ping_urls(fresh, origin=origins.get(ping_host), host=ping_host)
+            if ok:
+                pipe = redis.pipeline(transaction=False)
+                for path in fresh:
+                    pipe.set(
+                        f"{_DEBOUNCE_PREFIX}{ping_host}:{path}",
+                        "1",
+                        ex=_DEBOUNCE_TTL,
+                    )
+                await pipe.execute()
+                sent += len(fresh)
+            else:
+                await redis.sadd(queue_key, *fresh)
+        except Exception:
+            # SPOP уже снял батч: без возврата сбой посреди drain терял URL.
+            try:
+                await redis.sadd(queue_key, *batch)
+            except Exception:
+                logger.warning(
+                    "IndexNow drain: could not return %d URL(s) to %s",
+                    len(batch), queue_key,
                 )
-            await pipe.execute()
-            sent += len(fresh)
-        else:
-            await redis.sadd(queue_key, *fresh)
+            raise
     return sent
 
 

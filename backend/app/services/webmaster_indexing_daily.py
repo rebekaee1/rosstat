@@ -243,6 +243,22 @@ async def _alerting(day: date) -> None:
         await _alert_host(day, _host_label(host_id))
 
 
+def sitemap_errors_alert_text(host: str, day, current: int | None, previous: int | None) -> str | None:
+    """Текст алерта об ошибках sitemap — только при росте.
+
+    Вебмастер держит счётчик до перечитывания файла: одно и то же число
+    неделю подряд — не новость (недельный отчёт его всё равно покажет).
+    """
+    current = int(current or 0)
+    if current <= 0:
+        return None
+    if previous is None:
+        return f"{host}, Вебмастер: {current} ошибок sitemap за {day}."
+    if current <= int(previous):
+        return None
+    return f"{host}, Вебмастер: ошибок sitemap {current} за {day} (было {int(previous)})."
+
+
 async def _alert_host(day: date, host: str) -> None:
     from app.services.analytics_alerts import _alert
 
@@ -270,11 +286,16 @@ async def _alert_host(day: date, host: str) -> None:
                 f"webmaster_5xx:{host}",
                 f"{host}, Вебмастер: {row.crawled_5xx} ответов 5xx роботу за {day}.",
             )
-        if (row.sitemap_errors or 0) > 0:
-            await _alert(
-                f"webmaster_sitemap_errors:{host}",
-                f"{host}, Вебмастер: {row.sitemap_errors} ошибок sitemap за {day}.",
-            )
+        prev_errors = await db.scalar(
+            select(WebmasterIndexingDaily.sitemap_errors).where(
+                WebmasterIndexingDaily.host == host,
+                WebmasterIndexingDaily.day < day,
+                WebmasterIndexingDaily.sitemap_errors.isnot(None),
+            ).order_by(WebmasterIndexingDaily.day.desc()).limit(1)
+        )
+        text = sitemap_errors_alert_text(host, day, row.sitemap_errors, prev_errors)
+        if text:
+            await _alert(f"webmaster_sitemap_errors:{host}", text)
         prev = (await db.execute(
             select(WebmasterIndexingDaily).where(
                 WebmasterIndexingDaily.host == row.host,

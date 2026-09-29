@@ -100,3 +100,16 @@ def test_sync_requests_nonempty_day_interval(monkeypatch):
     assert [p["date_from"] for p in client.intervals] == ["2026-08-27", "2026-09-03", "2026-08-27"]
     assert db.writes[0]["in_search"] == 123
     assert db.writes[0]["crawled_5xx"] == 510
+
+
+def test_sitemap_error_alert_only_on_growth():
+    """2026-09-26…29: одно и то же «77637 ошибок sitemap» приходило каждый
+    день. Алерт — только когда ошибок стало больше (или первое наблюдение)."""
+    from app.services.webmaster_indexing_daily import sitemap_errors_alert_text
+
+    assert sitemap_errors_alert_text("h", "2026-09-28", 0, None) is None
+    assert "77637" in sitemap_errors_alert_text("h", "2026-09-26", 77637, None)
+    assert sitemap_errors_alert_text("h", "2026-09-28", 77637, 77637) is None
+    assert sitemap_errors_alert_text("h", "2026-09-30", 1200, 77637) is None
+    text = sitemap_errors_alert_text("h", "2026-09-26", 77637, 535)
+    assert "77637" in text and "535" in text

@@ -1309,3 +1309,98 @@ def test_ssr_public_pages_have_deep_links_beyond_breadcrumbs(seeded_env):
             )
             # Кросс-семейный выход в хабы (блок seo-platform-nav или богатый контент).
             assert 'href="/russia/region"' in r.text or 'href="/russia/today"' in r.text, path
+
+
+def test_indexnow_drain_returns_popped_batch_on_failure(monkeypatch):
+    """SPOP уже снял батч: сбой до пинга (таймаут Redis/сеть) не теряет URL.
+
+    Инцидент 2026-09-28/29: `indexnow_drain` падал с «Timeout reading from
+    redis-state» посреди проверки debounce — снятые до 800 URL пропадали.
+    """
+    import fakeredis.aioredis
+    from redis.exceptions import TimeoutError as RedisTimeoutError
+    import app.core.cache as cache_mod
+    import app.services.indexnow as inx
+
+    redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
+
+    async def _get_state_redis():
+        return redis
+
+    monkeypatch.setattr(cache_mod, "get_state_redis", _get_state_redis)
+    monkeypatch.setattr(inx.settings, "indexnow_enabled", True)
+    monkeypatch.setattr(inx.settings, "indexnow_key", "k" * 32)
+    monkeypatch.setattr(inx.settings, "apex_locale_en", False)
+
+    async def boom(*_a, **_k):
+        raise RedisTimeoutError("Timeout reading from redis-state:6379")
+
+    monkeypatch.setattr(inx, "ping_urls", boom)
+    queue = f"in:queue:{inx.settings.public_host}"
+    paths = ["/russia/indicator/cpi", "/russia/indicator/gdp", "/today"]
+
+    async def scenario():
+        await inx.enqueue_paths(paths, host=inx.settings.public_host)
+        with pytest.raises(RedisTimeoutError):
+            await inx.drain_indexnow_queue()
+        return sorted(await redis.smembers(queue))
+
+    assert asyncio.run(scenario()) == sorted(paths)
+
+
+def test_indexnow_history_reads_published_generation_not_db(monkeypatch, tmp_path):
+    """Длинный хвост берётся из ночной генерации sitemap, а не пересчётом БД.
+
+    2026-09-27/29 indexnow_history трижды падал по statement_timeout: границы
+    чанков world-years считались оконным запросом по 16 млн world_data_points
+    (тот же класс сбоя, что webmaster_recrawl до 2026-09-26).
+    """
+    import json
+
+    import app.services.indexnow as inx
+
+    real_names = inx._history_section_names
+    redis, inx = _history_env(monkeypatch, cap=10)
+    monkeypatch.setattr(inx, "_history_section_names", real_names)
+    monkeypatch.setattr(inx.settings, "sitemap_dir", str(tmp_path))
+
+    host = inx.settings.public_host
+    generation = tmp_path / "generations" / ("a" * 32)
+    (generation / host).mkdir(parents=True)
+    shards = {
+        "regional-years-1": ["/russia/region/a/pop/2019", "/russia/region/a/pop/2010"],
+        "regional-years-2": ["/russia/region/b/pop/2021"],
+    }
+    for name, paths in shards.items():
+        locs = "".join(
+            f"<url><loc>https://{host}{p}</loc>"
+            f"<image:image><image:loc>https://{host}/og{p}.png</image:loc></image:image></url>"
+            for p in paths
+        )
+        (generation / host / f"sitemap-{name}.xml").write_text(
+            f'<?xml version="1.0"?><urlset>{locs}</urlset>', encoding="utf-8"
+        )
+    sections = {"core": 1, **{name: len(p) for name, p in shards.items()}}
+    (generation / "sitemap-stats.json").write_text(
+        json.dumps({"hosts": {host: {"sections": sections}}}), encoding="utf-8"
+    )
+    (tmp_path / "current").symlink_to(generation)
+
+    async def db_forbidden(*_a, **_k):
+        raise AssertionError("history must not rebuild sitemap sections from the DB")
+
+    monkeypatch.setattr("app.services.site_urls.resolve_section", db_forbidden)
+    monkeypatch.setattr("app.services.site_urls.section_names", db_forbidden)
+
+    async def scenario():
+        stats = await inx.enqueue_history_urls(object())
+        return stats, sorted(await redis.smembers(f"in:queue:{host}"))
+
+    stats, queued = asyncio.run(scenario())
+    assert queued == sorted([
+        "/russia/indicator/cpi",
+        "/russia/region/a/pop/2019",
+        "/russia/region/a/pop/2010",
+        "/russia/region/b/pop/2021",
+    ])
+    assert stats["queued"] == 4

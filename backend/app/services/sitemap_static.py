@@ -21,6 +21,7 @@ from urllib.parse import urlparse
 
 from app.config import settings
 from app.database import analytics_session
+from app.services.display import today_msk
 from app.services.index_policy import is_noindex_path
 from app.services.site_urls import (
     SITEMAP_MAX_BYTES,
@@ -136,6 +137,28 @@ def iter_published_paths(origin: str):
         for match in _LOC.finditer(raw):
             parsed = urlparse(unescape(match.group(1).decode("utf-8", "replace")).strip())
             yield parsed.path + (f"?{parsed.query}" if parsed.query else "")
+
+
+def published_section_paths(name: str, origin: str) -> list[str] | None:
+    """Пути одного опубликованного шарда хоста; None — шарда нет в генерации.
+
+    Синхронно (чтение файла): вызывать через ``asyncio.to_thread``.
+    """
+    from html import unescape
+
+    path = section_file(name, origin)
+    if path is None:
+        return None
+    try:
+        raw = path.read_bytes()
+    except OSError:
+        logger.warning("Published sitemap shard missing: %s", path)
+        return None
+    out: list[str] = []
+    for match in _LOC.finditer(raw):
+        parsed = urlparse(unescape(match.group(1).decode("utf-8", "replace")).strip())
+        out.append(parsed.path + (f"?{parsed.query}" if parsed.query else ""))
+    return out
 
 
 def has_published_generation(origin: str) -> bool:
@@ -299,10 +322,20 @@ async def build_static_sitemaps() -> dict:
         rewritten = 0
         started = datetime.now(timezone.utc)
         previous_digests = {}
+        # Дата последней смены содержимого шарда. None — прошлая генерация
+        # собрана до появления этой истории: все шарды считаются изменёнными
+        # один раз (робот перечитывает файлы, исправленные раньше).
+        previous_changed: dict[str, str] | None = None
         if previous is not None:
-            raw_digests = _read_json(previous / STATS_NAME).get("section_digest") or {}
+            previous_stats = _read_json(previous / STATS_NAME)
+            raw_digests = previous_stats.get("section_digest") or {}
             if isinstance(raw_digests, dict):
                 previous_digests = {str(key): str(value) for key, value in raw_digests.items()}
+            raw_changed = previous_stats.get("section_changed")
+            if isinstance(raw_changed, dict):
+                previous_changed = {str(key): str(value) for key, value in raw_changed.items()}
+        build_day = today_msk().isoformat()
+        section_changed: dict[str, str] = {}
         try:
             async with analytics_session() as db:
                 async for name, urls in iter_url_sections(db):
@@ -319,8 +352,16 @@ async def build_static_sitemaps() -> dict:
                         name, urls, previous, previous_digests, generation, origins,
                         _render_urlset, SITEMAP_ORIGIN_TOKEN,
                     )
-                    if stamp:
-                        section_stamps[name] = stamp
+                    # lastmod файла в индексе = max(дата данных, дата смены
+                    # содержимого). Только max(lastmod URL) не сдвигался, когда
+                    # правка убирала/меняла даты (2026-09-26: lastmod до 1970),
+                    # и робот не перечитывал исправленные шарды.
+                    changed_on = None
+                    if previous_changed is not None and previous_digests.get(name) == digest:
+                        changed_on = previous_changed.get(name)
+                    changed_on = changed_on or build_day
+                    section_changed[name] = changed_on
+                    section_stamps[name] = max(v for v in (stamp, changed_on) if v)
                     section_digests[name] = digest
                     if was_reused:
                         reused += 1
@@ -332,6 +373,7 @@ async def build_static_sitemaps() -> dict:
             hosts = {urlparse(origin).hostname: {
                 "origin": origin, "sections": sections,
                 "section_lastmod": section_stamps,
+                "section_changed": section_changed,
                 "section_digest": section_digests,
                 "urls_total": sum(sections.values()), "section_count": len(sections),
             } for origin in origins}
@@ -341,6 +383,7 @@ async def build_static_sitemaps() -> dict:
                 "generation": generation.name,
                 "origin": origins[0], "sections": sections,
                 "section_lastmod": section_stamps,
+                "section_changed": section_changed,
                 "section_digest": section_digests,
                 "sections_reused": reused,
                 "sections_rewritten": rewritten,
