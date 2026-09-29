@@ -291,6 +291,23 @@ def locked_job(fn, job_id: str, ttl_seconds: int):
 _shutting_down = False
 
 
+# Антиспам алертов планировщика: одна и та же ошибка джобы — не чаще раза в
+# час (in-process: алерт не должен зависеть от state-Redis, который сам бывает
+# причиной сбоя). 2026-09-29 telegram_poll (каждые 30 с) прислал 85 одинаковых
+# «Timeout reading from redis-state» за утро.
+_SCHEDULER_ALERT_DEDUP_SEC = 3600
+_scheduler_alert_last: dict[str, float] = {}
+
+
+def _scheduler_alert_signature(job_id: str, exc: BaseException | None) -> str:
+    import re
+
+    if exc is None:
+        return f"{job_id}:missed"
+    text = re.sub(r"\d+", "N", str(exc))[:120]
+    return f"{job_id}:{type(exc).__name__}:{text}"
+
+
 def _scheduler_event_listener(event) -> None:
     """Н-2: упавшая/пропущенная job планировщика — алерт, а не только строка в логах."""
     try:
@@ -317,6 +334,14 @@ def _scheduler_event_listener(event) -> None:
         )
         logger.error("Scheduler event: job=%s exc=%s", event.job_id,
                      getattr(event, "exception", None))
+        signature = _scheduler_alert_signature(
+            str(event.job_id), getattr(event, "exception", None)
+        )
+        now = time.monotonic()
+        last = _scheduler_alert_last.get(signature)
+        if last is not None and now - last < _SCHEDULER_ALERT_DEDUP_SEC:
+            return
+        _scheduler_alert_last[signature] = now
         asyncio.get_running_loop().create_task(send_telegram(msg, kind="scheduler_alert"))
     except Exception:  # алерт не должен ронять loop планировщика
         logger.exception("Scheduler event listener failed")

@@ -89,7 +89,8 @@ async def send_telegram(
             except Exception:
                 pass
     except Exception as exc:
-        error = str(exc)[:250]
+        # str(httpx.ConnectTimeout()) пустая — без имени класса архив молчит.
+        error = f"{type(exc).__name__}: {exc}"[:250]
         logger.warning("Telegram alert failed", exc_info=True)
 
     await archive_finish(row_id, ok=ok, telegram_message_id=tg_message_id, error=error)

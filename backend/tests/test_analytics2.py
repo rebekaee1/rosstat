@@ -680,3 +680,85 @@ def test_visitor_flood_uses_msk_day_not_refresh_window():
             assert len(scores) == 35
             assert all(score < 60 for score in scores)
     _run_with_db(scenario)
+
+
+def test_sessionize_until_bounds_window_and_keeps_other_sessions():
+    """sessionize(since, until) пересчитывает только [since, until) —
+    ночной 60-дневный пересчёт идёт окнами и не держит всё в памяти."""
+    from app.models import BehaviorEvent, ServerSession
+    from app.tasks.analytics_rollups import sessionize
+    from sqlalchemy import select
+
+    base = datetime.utcnow().replace(microsecond=0) - timedelta(days=3)
+
+    async def scenario(maker):
+        async with maker() as db:
+            for day in range(3):
+                db.add(BehaviorEvent(
+                    session_id_hash=f"s{day}", visitor_id_hash="visitorA",
+                    event_type="pageview", page="/", params_json={},
+                    occurred_at=base + timedelta(days=day),
+                ))
+            await db.commit()
+            n_all = await sessionize(db, base - timedelta(minutes=5))
+            assert n_all == 3
+            n_mid = await sessionize(
+                db, base + timedelta(days=1) - timedelta(minutes=5),
+                until=base + timedelta(days=2) - timedelta(minutes=5),
+            )
+            assert n_mid == 1
+            rows = (await db.execute(
+                select(ServerSession.started_at, ServerSession.is_new_visitor)
+                .order_by(ServerSession.started_at)
+            )).all()
+            assert [r.started_at for r in rows] == [base + timedelta(days=d) for d in range(3)]
+            # Новизна в окне считается по сессиям до окна.
+            assert [r.is_new_visitor for r in rows] == [True, False, False]
+
+    _run_with_db(scenario)
+
+
+def test_windowed_rollups_match_single_pass(monkeypatch):
+    """run_rollups(days=N) режет сессионизацию на окна по МСК-дням: итог
+    совпадает с одним сплошным проходом (для сессий не на стыке окон)."""
+    import app.tasks.analytics_rollups as ar
+    from app.models import BehaviorEvent, ServerSession
+    from sqlalchemy import select
+
+    now = datetime.utcnow().replace(microsecond=0)
+
+    async def scenario(maker):
+        async with maker() as db:
+            for d in range(1, 9):
+                for v in ("A", "B"):
+                    db.add(BehaviorEvent(
+                        session_id_hash=f"s{d}{v}", visitor_id_hash=f"visitor{v}",
+                        event_type="pageview", page="/", params_json={},
+                        occurred_at=now - timedelta(days=d, hours=1),
+                    ))
+            await db.commit()
+
+        monkeypatch.setattr(ar, "analytics_session", maker)
+        monkeypatch.setattr(ar, "SESSIONIZE_WINDOW_DAYS", 3)
+        calls = []
+        real = ar.sessionize
+
+        async def spy(db, since, until=None):
+            calls.append((since, until))
+            return await real(db, since, until=until)
+
+        monkeypatch.setattr(ar, "sessionize", spy)
+        stats = await ar.run_rollups(days=10)
+        assert len(calls) >= 3, "длинное окно должно делиться"
+        assert calls[-1][1] is None
+        assert all(a[1] == b[0] for a, b in zip(calls, calls[1:])), "окна стыкуются без дыр"
+        async with maker() as db:
+            rows = (await db.execute(
+                select(ServerSession.visitor_id_hash, ServerSession.is_new_visitor)
+                .order_by(ServerSession.started_at, ServerSession.visitor_id_hash)
+            )).all()
+        assert stats["sessions"] == 16 == len(rows)
+        # Первая сессия каждого посетителя — новая, остальные нет.
+        assert sum(1 for r in rows if r.is_new_visitor) == 2
+
+    _run_with_db(scenario)

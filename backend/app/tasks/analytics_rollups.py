@@ -43,6 +43,13 @@ from app.services.traffic_channel import classify_channel
 logger = logging.getLogger(__name__)
 
 SESSION_GAP_MIN = 30  # правило Метрики: разрыв ≥ 30 минут = новая сессия
+# Окно одного прохода сессионизации (МСК-дни). 15-минутный прогон (2 суток)
+# укладывается в одно окно; ночной 60-дневный — в ~20 окон с ограниченной памятью.
+SESSIONIZE_WINDOW_DAYS = 3
+# Потоковое чтение длинных окон (визиты Метрики, dwell) — строк за раз.
+_STREAM_BATCH = 5_000
+# Ключи raw_json визита, которые читает rollup_daily_traffic.
+_TRAFFIC_JSON_KEYS = ("ym:s:deviceCategory", "ym:s:isNewUser", "ym:s:pageViews", "ym:s:bounce")
 
 # lastTrafficSource Метрики → наши каналы (traffic_channel.CHANNELS)
 METRIKA_SOURCE_TO_CHANNEL = {
@@ -68,12 +75,18 @@ def _utcnow() -> datetime:
 # Серверная сессионизация
 # ---------------------------------------------------------------------------
 
-async def sessionize(db, since: datetime) -> int:
-    """Пересчитать server_sessions для окна [since, now). Возвращает число сессий.
+async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
+    """Пересчитать server_sessions для окна [since, until) (until=None — до now).
 
-    Визитор без visitor_id (старые данные до 2026-07-06) сессионизируется по
-    session_id_hash — исторические ряды не проваливаются в ноль.
+    Возвращает число сессий. Визитор без visitor_id (старые данные до
+    2026-07-06) сессионизируется по session_id_hash — исторические ряды не
+    проваливаются в ноль. Верхняя граница нужна ночному пересчёту: 60 дней
+    одним проходом (~845k событий + ~255k портретов + все сессии списком)
+    не помещались в память процесса scheduler и ни разу не завершились.
     """
+    event_window = [BehaviorEvent.occurred_at >= since]
+    if until is not None:
+        event_window.append(BehaviorEvent.occurred_at < until)
     rows = (await db.execute(
         select(
             BehaviorEvent.visitor_id_hash,
@@ -85,7 +98,7 @@ async def sessionize(db, since: datetime) -> int:
             BehaviorEvent.params_json,
         )
         .where(
-            BehaviorEvent.occurred_at >= since,
+            *event_window,
             # move нужен антибот-скорингу (ноль движений = сигнал бота).
             BehaviorEvent.event_type.in_(("pageview", "dwell", "click", "move")),
         )
@@ -96,21 +109,37 @@ async def sessionize(db, since: datetime) -> int:
     # По visitor'у — фолбэк: если конкретная клиентская сессия потеряла
     # session_start (21% на проде), канал/устройство берём из последнего
     # известного портрета того же посетителя (backfill каналов, этап 0б).
+    # Только поля, которые читает _finalize_session: ORM-сущности целиком
+    # (UA, referrer, гео, …) весили в разы больше и не нужны.
+    portrait_window = [BehaviorSession.started_at >= since - timedelta(days=1)]
+    if until is not None:
+        portrait_window.append(BehaviorSession.started_at < until)
     portraits = {}
     portraits_by_visitor: dict[str, Any] = {}
     for p in (await db.execute(
-        select(BehaviorSession)
-        .where(BehaviorSession.started_at >= since - timedelta(days=1))
+        select(
+            BehaviorSession.session_id_hash, BehaviorSession.visitor_id_hash,
+            BehaviorSession.channel, BehaviorSession.referrer,
+            BehaviorSession.utm_source, BehaviorSession.utm_medium,
+            BehaviorSession.yclid, BehaviorSession.device_type,
+            BehaviorSession.is_webdriver, BehaviorSession.ua_raw,
+            BehaviorSession.touch, BehaviorSession.screen_w, BehaviorSession.screen_h,
+        )
+        .where(*portrait_window)
         .order_by(BehaviorSession.started_at)
-    )).scalars():
+    )).all():
         portraits[p.session_id_hash] = p
         if p.visitor_id_hash:
             portraits_by_visitor[p.visitor_id_hash] = p
 
     # Бизнес-события окна: цели по tier'ам, привязка по session_id_hash.
+    goal_window = [FrontendEvent.occurred_at >= since]
+    if until is not None:
+        # +5 минут: цель привязывается к сессии с таким допуском.
+        goal_window.append(FrontendEvent.occurred_at < until + timedelta(minutes=5))
     goal_rows = (await db.execute(
         select(FrontendEvent.session_id_hash, FrontendEvent.event_name, FrontendEvent.occurred_at)
-        .where(FrontendEvent.occurred_at >= since, FrontendEvent.session_id_hash.isnot(None))
+        .where(*goal_window, FrontendEvent.session_id_hash.isnot(None))
     )).all()
     goals_by_session: dict[str, list[tuple[datetime, str]]] = defaultdict(list)
     for sid, name, ts in goal_rows:
@@ -123,9 +152,20 @@ async def sessionize(db, since: datetime) -> int:
             by_visitor[key].append(r)
 
     # «Новизна»: первый ли это визит посетителя за всю историю.
+    # Только посетители окна: DISTINCT по всей истории (~270k хэшей) каждые
+    # 15 минут — лишняя память и до 30 с запроса.
+    window_visitors = (
+        select(func.coalesce(BehaviorEvent.visitor_id_hash, BehaviorEvent.session_id_hash))
+        .where(*event_window)
+    )
     known_visitors: set[str] = set(
         (await db.execute(
-            select(ServerSession.visitor_id_hash).where(ServerSession.started_at < since).distinct()
+            select(ServerSession.visitor_id_hash)
+            .where(
+                ServerSession.started_at < since,
+                ServerSession.visitor_id_hash.in_(window_visitors),
+            )
+            .distinct()
         )).scalars()
     )
 
@@ -178,7 +218,10 @@ async def sessionize(db, since: datetime) -> int:
         sessions.append(row)
         known_visitors.add(visitor)
 
-    await db.execute(delete(ServerSession).where(ServerSession.started_at >= since))
+    session_window = [ServerSession.started_at >= since]
+    if until is not None:
+        session_window.append(ServerSession.started_at < until)
+    await db.execute(delete(ServerSession).where(*session_window))
     if sessions:
         await db.execute(ServerSession.__table__.insert(), sessions)
     await db.commit()
@@ -355,43 +398,71 @@ async def rollup_daily_traffic(db, since_day: date) -> int:
     from app.services.analytics_marts import business_goal_ids, visit_has_business_goal
 
     biz_ids = await business_goal_ids(db)
-    # Только нужные колонки — не ORM-объекты со всем raw_json в идентичности.
-    visits = (await db.execute(
-        select(
-            RawMetrikaVisit.visit_date,
-            RawMetrikaVisit.client_id_hash,
-            RawMetrikaVisit.duration_seconds,
-            RawMetrikaVisit.goals_json,
-            RawMetrikaVisit.traffic_source,
-            RawMetrikaVisit.raw_json,
-        ).where(RawMetrikaVisit.visit_date >= since_day)
-    )).all()
+    # Только нужные колонки и, на Postgres, только нужные ключи raw_json
+    # (~1 КБ на визит), потоком: ночное окно 60 дней — ~94k визитов.
+    base = [
+        RawMetrikaVisit.visit_date,
+        RawMetrikaVisit.client_id_hash,
+        RawMetrikaVisit.duration_seconds,
+        RawMetrikaVisit.goals_json,
+        RawMetrikaVisit.traffic_source,
+    ]
+    pg = db.bind is not None and db.bind.dialect.name == "postgresql"
+    if pg:
+        raw_cols = [
+            RawMetrikaVisit.raw_json[key].as_string().label(f"jk{i}")
+            for i, key in enumerate(_TRAFFIC_JSON_KEYS)
+        ]
+    else:
+        raw_cols = [RawMetrikaVisit.raw_json]
+    result = await db.stream(
+        select(*base, *raw_cols)
+        .where(RawMetrikaVisit.visit_date >= since_day)
+        .execution_options(yield_per=_STREAM_BATCH)
+    )
 
     agg: dict[tuple, dict[str, Any]] = {}
     visitors: dict[tuple, set] = defaultdict(set)
-    for visit_date, client_id_hash, duration_seconds, goals_json, traffic_source, raw_json in visits:
-        if not visit_date:
-            continue
-        stub = RawMetrikaVisit(
-            visit_date=visit_date,
-            client_id_hash=client_id_hash,
-            duration_seconds=duration_seconds,
-            goals_json=goals_json,
-            traffic_source=traffic_source,
-            raw_json=raw_json,
-        )
-        key = (visit_date, _metrika_channel(stub), _metrika_device(stub), _visit_raw(stub, "ym:s:isNewUser") == "1")
-        a = agg.setdefault(key, {"visits": 0, "pageviews": 0, "goal_visits": 0, "total_duration_sec": 0, "bounces": 0})
-        a["visits"] += 1
-        try:
-            a["pageviews"] += int(_visit_raw(stub, "ym:s:pageViews") or 0)
-        except ValueError:
-            pass
-        a["goal_visits"] += 1 if visit_has_business_goal(stub, biz_ids) else 0
-        a["total_duration_sec"] += int(duration_seconds or 0)
-        a["bounces"] += 1 if _visit_raw(stub, "ym:s:bounce") == "1" else 0
-        if client_id_hash:
-            visitors[key].add(client_id_hash)
+    try:
+        async for part in result.partitions(_STREAM_BATCH):
+            for row in part:
+                visit_date, client_id_hash, duration_seconds, goals_json, traffic_source = row[:5]
+                if not visit_date:
+                    continue
+                if pg:
+                    raw_json = {
+                        k: row[5 + i] for i, k in enumerate(_TRAFFIC_JSON_KEYS) if row[5 + i]
+                    }
+                else:
+                    raw_json = row[5]
+                stub = RawMetrikaVisit(
+                    visit_date=visit_date,
+                    client_id_hash=client_id_hash,
+                    duration_seconds=duration_seconds,
+                    goals_json=goals_json,
+                    traffic_source=traffic_source,
+                    raw_json=raw_json,
+                )
+                key = (
+                    visit_date, _metrika_channel(stub), _metrika_device(stub),
+                    _visit_raw(stub, "ym:s:isNewUser") == "1",
+                )
+                a = agg.setdefault(key, {
+                    "visits": 0, "pageviews": 0, "goal_visits": 0,
+                    "total_duration_sec": 0, "bounces": 0,
+                })
+                a["visits"] += 1
+                try:
+                    a["pageviews"] += int(_visit_raw(stub, "ym:s:pageViews") or 0)
+                except ValueError:
+                    pass
+                a["goal_visits"] += 1 if visit_has_business_goal(stub, biz_ids) else 0
+                a["total_duration_sec"] += int(duration_seconds or 0)
+                a["bounces"] += 1 if _visit_raw(stub, "ym:s:bounce") == "1" else 0
+                if client_id_hash:
+                    visitors[key].add(client_id_hash)
+    finally:
+        await result.close()
 
     await db.execute(delete(DailyTraffic).where(DailyTraffic.day >= since_day))
     rows = [
@@ -468,21 +539,27 @@ async def rollup_daily_pages(db, since_day: date) -> int:
         .group_by(day_expr, BehaviorEvent.page)
     )).all())
 
-    # dwell: params_json → стримим только нужные колонки окна (объём дней мал)
-    dwell_rows = (await db.execute(
+    # dwell: params_json → потоком пачками (ночное окно 60 дней — сотни
+    # тысяч dwell-событий; целиком в память не держим).
+    dwell: dict[tuple, dict[str, int]] = defaultdict(lambda: {"ms": 0, "active": 0, "scroll_sum": 0, "n": 0})
+    result = await db.stream(
         select(BehaviorEvent.occurred_at, BehaviorEvent.page, BehaviorEvent.params_json)
         .where(BehaviorEvent.occurred_at >= since_dt, BehaviorEvent.event_type == "dwell", BehaviorEvent.page.isnot(None),
                ~BehaviorEvent.page.like("/admin%"))
-    )).all()
-    dwell: dict[tuple, dict[str, int]] = defaultdict(lambda: {"ms": 0, "active": 0, "scroll_sum": 0, "n": 0})
-    for ts, page, params in dwell_rows:
-        if not isinstance(params, dict):
-            continue
-        d = dwell[(msk_day(ts).isoformat(), page)]
-        d["ms"] += int(params.get("ms") or 0)
-        d["active"] += int(params.get("active_ms") or 0)
-        d["scroll_sum"] += int(params.get("scroll_pct") or 0)
-        d["n"] += 1
+        .execution_options(yield_per=_STREAM_BATCH)
+    )
+    try:
+        async for part in result.partitions(_STREAM_BATCH):
+            for ts, page, params in part:
+                if not isinstance(params, dict):
+                    continue
+                d = dwell[(msk_day(ts).isoformat(), page)]
+                d["ms"] += int(params.get("ms") or 0)
+                d["active"] += int(params.get("active_ms") or 0)
+                d["scroll_sum"] += int(params.get("scroll_pct") or 0)
+                d["n"] += 1
+    finally:
+        await result.close()
 
     await db.execute(delete(DailyPage).where(DailyPage.day >= since_day))
     out = []
@@ -596,11 +673,21 @@ async def run_rollups(days: int = 2) -> dict[str, int]:
     from app.services.analytics_period import msk_day_start_utc
 
     since_day = msk_day(_utcnow() - timedelta(days=days))
-    since_dt = msk_day_start_utc(since_day)
     # Короткие сессии по фазам: одна длинная транзакция держала пул 20 мин
-    # (инцидент 2026-09-03).
-    async with analytics_session() as db:
-        n_sessions = await sessionize(db, since_dt)
+    # (инцидент 2026-09-03). Сессионизация длинного окна — по МСК-дням
+    # окнами SESSIONIZE_WINDOW_DAYS, от старых к новым: новизна посетителя
+    # в окне опирается на уже пересчитанные предыдущие окна.
+    n_sessions = 0
+    window_day = since_day
+    today = msk_day(_utcnow())
+    while True:
+        next_day = window_day + timedelta(days=SESSIONIZE_WINDOW_DAYS)
+        until = msk_day_start_utc(next_day) if next_day <= today else None
+        async with analytics_session() as db:
+            n_sessions += await sessionize(db, msk_day_start_utc(window_day), until=until)
+        if until is None:
+            break
+        window_day = next_day
     async with analytics_session() as db:
         n_traffic = await rollup_daily_traffic(db, since_day)
     async with analytics_session() as db:

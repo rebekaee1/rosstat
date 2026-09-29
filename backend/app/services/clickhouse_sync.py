@@ -20,6 +20,7 @@ COLUMN IF NOT EXISTS), иначе дрейф схемы виден только 
 from __future__ import annotations
 
 import asyncio
+import functools
 import json
 import logging
 from datetime import datetime, timedelta, timezone
@@ -43,6 +44,8 @@ logger = logging.getLogger(__name__)
 _CURSOR_KEY = "fe:ch:cursor:{table}"
 _LAST_SYNC_KEY = "fe:ch:last_sync_at"
 _BATCH = 20_000
+# Перезаливаемые слои (сессии/визиты окна) — потоком по столько строк.
+_REPLACING_BATCH = 5_000
 
 # DDL: MergeTree, партиции по месяцу, ORDER BY под типовые срезы.
 _DDL = [
@@ -149,36 +152,62 @@ async def last_sync_age_minutes() -> int | None:
     return int((datetime.now(timezone.utc).replace(tzinfo=None) - ts).total_seconds() / 60)
 
 
+async def _ch_insert(ch, table: str, rows: list, column_names: list[str]) -> None:
+    """Сетевой insert в CH — только в thread executor.
+
+    Клиент clickhouse_connect синхронный: вызов прямо из корутины держал event
+    loop scheduler'а на всё время HTTP-вставки, и соседние джобы ловили
+    «Timeout reading from redis-state» (инцидент 2026-09-28/29).
+    """
+    await asyncio.get_running_loop().run_in_executor(
+        None, functools.partial(ch.insert, table, rows, column_names=column_names)
+    )
+
+
+_EVENT_COLUMNS = [
+    "id", "event_type", "session_id_hash", "visitor_id_hash", "user_id",
+    "authed", "page", "element_path", "element_text", "is_dead", "is_rage",
+    "params", "occurred_at",
+]
+_FRONTEND_COLUMNS = [
+    "id", "event_name", "session_id_hash", "visitor_id_hash", "user_id",
+    "authed", "url", "params", "occurred_at",
+]
+
+
 async def _sync_events(ch) -> int:
-    """behavior_events + frontend_events: fetch batch → close PG → insert CH."""
+    """behavior_events + frontend_events: batch колонок → close PG → insert CH.
+
+    Выбираются колонки, не ORM-сущности: 20k ORM-объектов с identity map
+    весили на порядок больше кортежей.
+    """
     total = 0
     cursor = await _cursor_get("behavior_events")
     while True:
         async with analytics_session() as db:
             rows = (await db.execute(
-                select(BehaviorEvent).where(BehaviorEvent.id > cursor)
+                select(
+                    BehaviorEvent.id, BehaviorEvent.event_type,
+                    BehaviorEvent.session_id_hash, BehaviorEvent.visitor_id_hash,
+                    BehaviorEvent.user_id, BehaviorEvent.authed, BehaviorEvent.page,
+                    BehaviorEvent.element_path, BehaviorEvent.element_text,
+                    BehaviorEvent.is_dead, BehaviorEvent.is_rage,
+                    BehaviorEvent.params_json, BehaviorEvent.occurred_at,
+                ).where(BehaviorEvent.id > cursor)
                 .order_by(BehaviorEvent.id).limit(_BATCH)
-            )).scalars().all()
-            payload = [[
-                r.id, r.event_type or "", r.session_id_hash or "", r.visitor_id_hash or "",
-                r.user_id or "", 1 if r.authed else 0, r.page or "", r.element_path or "",
-                r.element_text or "", 1 if r.is_dead else 0, 1 if r.is_rage else 0,
-                json.dumps(r.params_json or {}, ensure_ascii=False), _dt(r.occurred_at),
-            ] for r in rows] if rows else []
-            last_id = rows[-1].id if rows else None
-            n = len(rows)
-        if not payload:
+            )).all()
+        if not rows:
             break
-        ch.insert(
-            "behavior_events",
-            payload,
-            column_names=[
-                "id", "event_type", "session_id_hash", "visitor_id_hash", "user_id",
-                "authed", "page", "element_path", "element_text", "is_dead", "is_rage",
-                "params", "occurred_at",
-            ],
-        )
-        cursor = last_id
+        payload = [[
+            r.id, r.event_type or "", r.session_id_hash or "", r.visitor_id_hash or "",
+            r.user_id or "", 1 if r.authed else 0, r.page or "", r.element_path or "",
+            r.element_text or "", 1 if r.is_dead else 0, 1 if r.is_rage else 0,
+            json.dumps(r.params_json or {}, ensure_ascii=False), _dt(r.occurred_at),
+        ] for r in rows]
+        n = len(rows)
+        cursor = rows[-1].id
+        del rows
+        await _ch_insert(ch, "behavior_events", payload, _EVENT_COLUMNS)
         total += n
         await _cursor_set("behavior_events", cursor)
         if n < _BATCH:
@@ -188,27 +217,25 @@ async def _sync_events(ch) -> int:
     while True:
         async with analytics_session() as db:
             rows = (await db.execute(
-                select(FrontendEvent).where(FrontendEvent.id > cursor)
+                select(
+                    FrontendEvent.id, FrontendEvent.event_name,
+                    FrontendEvent.session_id_hash, FrontendEvent.visitor_id_hash,
+                    FrontendEvent.user_id, FrontendEvent.authed, FrontendEvent.url,
+                    FrontendEvent.params_json, FrontendEvent.occurred_at,
+                ).where(FrontendEvent.id > cursor)
                 .order_by(FrontendEvent.id).limit(_BATCH)
-            )).scalars().all()
-            payload = [[
-                r.id, r.event_name or "", r.session_id_hash or "", r.visitor_id_hash or "",
-                r.user_id or "", 1 if r.authed else 0, r.url or "",
-                json.dumps(r.params_json or {}, ensure_ascii=False), _dt(r.occurred_at),
-            ] for r in rows] if rows else []
-            last_id = rows[-1].id if rows else None
-            n = len(rows)
-        if not payload:
+            )).all()
+        if not rows:
             break
-        ch.insert(
-            "frontend_events",
-            payload,
-            column_names=[
-                "id", "event_name", "session_id_hash", "visitor_id_hash", "user_id",
-                "authed", "url", "params", "occurred_at",
-            ],
-        )
-        cursor = last_id
+        payload = [[
+            r.id, r.event_name or "", r.session_id_hash or "", r.visitor_id_hash or "",
+            r.user_id or "", 1 if r.authed else 0, r.url or "",
+            json.dumps(r.params_json or {}, ensure_ascii=False), _dt(r.occurred_at),
+        ] for r in rows]
+        n = len(rows)
+        cursor = rows[-1].id
+        del rows
+        await _ch_insert(ch, "frontend_events", payload, _FRONTEND_COLUMNS)
         total += n
         await _cursor_set("frontend_events", cursor)
         if n < _BATCH:
@@ -216,8 +243,63 @@ async def _sync_events(ch) -> int:
     return total
 
 
-async def _sync_replacing(db, ch, days: int = 2) -> int:
-    """Идемпотентные слои: последние N суток перезаливкой (Replacing-дедуп)."""
+# Ключи raw_json визита, которые нужны CH (устройство/браузер/ОС/новизна).
+# На Postgres вынимаются в SQL: полный raw_json визита ~1,3 КБ × 35k строк.
+_VISIT_JSON_KEYS = (
+    "ym:s:deviceCategory", "ym:s:browser", "ym:s:operatingSystemRoot", "ym:s:isNewUser",
+)
+
+
+class _VisitLite:
+    """Минимальный визит для хелперов analytics_marts (goals_json + raw_json)."""
+    __slots__ = ("goals_json", "raw_json")
+
+    def __init__(self, goals_json, raw_json):
+        self.goals_json = goals_json
+        self.raw_json = raw_json or {}
+
+
+def _json_text(col, key: str):
+    indexed = col[key]
+    as_string = getattr(indexed, "as_string", None)
+    return as_string() if callable(as_string) else indexed.astext
+
+
+async def _stream_partitions(stmt, size: int):
+    """Серверный курсор: в памяти одновременно не больше `size` строк."""
+    async with analytics_session() as db:
+        result = await db.stream(stmt.execution_options(yield_per=size))
+        async for part in result.partitions(size):
+            yield part
+
+
+_SESSION_COLUMNS = [
+    "session_id_hash", "visitor_id_hash", "ym_client_id", "user_id", "authed",
+    "started_at", "entry_page", "referrer_host", "channel", "utm_source",
+    "utm_campaign", "country", "geo_region", "city", "browser", "os",
+    "device_type", "language", "is_webdriver",
+]
+_SERVER_SESSION_COLUMNS = [
+    "id", "day", "visitor_id_hash", "user_id", "started_at", "duration_ms",
+    "active_ms", "pageviews", "clicks", "max_scroll_pct", "entry_page",
+    "exit_page", "channel", "device", "is_new_visitor", "is_engaged",
+    "micro_goals", "macro_goals", "is_bot",
+    "bot_score", "is_internal",
+]
+_VISIT_COLUMNS = [
+    "visit_id", "client_id_hash", "visit_date", "start_time", "start_url",
+    "traffic_source", "search_engine", "duration_seconds", "has_goal",
+    "device", "browser", "os", "is_new",
+]
+
+
+async def _sync_replacing(ch, days: int = 2) -> int:
+    """Идемпотентные слои: последние N суток перезаливкой (Replacing-дедуп).
+
+    Потоково, пачками `_REPLACING_BATCH`: раньше все сессии и визиты окна
+    (~130k ORM-объектов при бот-шторме) материализовались разом и процесс
+    scheduler упирался в лимит памяти контейнера.
+    """
     from app.services.analytics_marts import (
         business_goal_ids,
         visit_browser,
@@ -230,84 +312,105 @@ async def _sync_replacing(db, ch, days: int = 2) -> int:
     since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
     total = 0
     # has_goal в CH — только business-tier цели (этап 2б BI 2.1).
-    biz_ids = await business_goal_ids(db)
+    async with analytics_session() as db:
+        biz_ids = await business_goal_ids(db)
+        dialect = db.bind.dialect.name if db.bind is not None else ""
 
-    sessions = (await db.execute(
-        select(BehaviorSession).where(BehaviorSession.started_at >= since)
-    )).scalars().all()
-    if sessions:
-        ch.insert(
-            "behavior_sessions",
-            [[
-                s.session_id_hash, s.visitor_id_hash or "", s.ym_client_id or "", s.user_id or "",
-                1 if s.authed else 0, _dt(s.started_at), s.entry_page or "", s.referrer_host or "",
-                s.channel or "", s.utm_source or "", s.utm_campaign or "",
-                s.country or "", s.geo_region or "", s.city or "",
-                s.browser or "", s.os or "", s.device_type or "", s.language or "",
-                1 if s.is_webdriver else 0,
-            ] for s in sessions],
-            column_names=[
-                "session_id_hash", "visitor_id_hash", "ym_client_id", "user_id", "authed",
-                "started_at", "entry_page", "referrer_host", "channel", "utm_source",
-                "utm_campaign", "country", "geo_region", "city", "browser", "os",
-                "device_type", "language", "is_webdriver",
-            ],
-        )
-        total += len(sessions)
+    async for part in _stream_partitions(
+        select(
+            BehaviorSession.session_id_hash, BehaviorSession.visitor_id_hash,
+            BehaviorSession.ym_client_id, BehaviorSession.user_id, BehaviorSession.authed,
+            BehaviorSession.started_at, BehaviorSession.entry_page,
+            BehaviorSession.referrer_host, BehaviorSession.channel,
+            BehaviorSession.utm_source, BehaviorSession.utm_campaign,
+            BehaviorSession.country, BehaviorSession.geo_region, BehaviorSession.city,
+            BehaviorSession.browser, BehaviorSession.os, BehaviorSession.device_type,
+            BehaviorSession.language, BehaviorSession.is_webdriver,
+        ).where(BehaviorSession.started_at >= since),
+        _REPLACING_BATCH,
+    ):
+        await _ch_insert(ch, "behavior_sessions", [[
+            s.session_id_hash, s.visitor_id_hash or "", s.ym_client_id or "", s.user_id or "",
+            1 if s.authed else 0, _dt(s.started_at), s.entry_page or "", s.referrer_host or "",
+            s.channel or "", s.utm_source or "", s.utm_campaign or "",
+            s.country or "", s.geo_region or "", s.city or "",
+            s.browser or "", s.os or "", s.device_type or "", s.language or "",
+            1 if s.is_webdriver else 0,
+        ] for s in part], _SESSION_COLUMNS)
+        total += len(part)
 
-    srv = (await db.execute(
-        select(ServerSession).where(ServerSession.started_at >= since)
-    )).scalars().all()
-    if srv:
-        ch.insert(
-            "server_sessions",
-            [[
-                s.id, s.day, s.visitor_id_hash, s.user_id or "", _dt(s.started_at),
-                int(s.duration_ms or 0), int(s.active_ms or 0), int(s.pageviews or 0),
-                int(s.clicks or 0), int(s.max_scroll_pct or 0), s.entry_page or "",
-                s.exit_page or "", s.channel or "", s.device or "",
-                1 if s.is_new_visitor else 0, 1 if s.is_engaged else 0,
-                int(s.micro_goals or 0), int(s.macro_goals or 0), 1 if s.is_bot else 0,
-                int(s.bot_score or 0), 1 if s.is_internal else 0,
-            ] for s in srv],
-            column_names=[
-                "id", "day", "visitor_id_hash", "user_id", "started_at", "duration_ms",
-                "active_ms", "pageviews", "clicks", "max_scroll_pct", "entry_page",
-                "exit_page", "channel", "device", "is_new_visitor", "is_engaged",
-                "micro_goals", "macro_goals", "is_bot",
-                "bot_score", "is_internal",
-            ],
-        )
-        total += len(srv)
+    async for part in _stream_partitions(
+        select(
+            ServerSession.id, ServerSession.day, ServerSession.visitor_id_hash,
+            ServerSession.user_id, ServerSession.started_at, ServerSession.duration_ms,
+            ServerSession.active_ms, ServerSession.pageviews, ServerSession.clicks,
+            ServerSession.max_scroll_pct, ServerSession.entry_page, ServerSession.exit_page,
+            ServerSession.channel, ServerSession.device, ServerSession.is_new_visitor,
+            ServerSession.is_engaged, ServerSession.micro_goals, ServerSession.macro_goals,
+            ServerSession.is_bot, ServerSession.bot_score, ServerSession.is_internal,
+        ).where(ServerSession.started_at >= since),
+        _REPLACING_BATCH,
+    ):
+        await _ch_insert(ch, "server_sessions", [[
+            s.id, s.day, s.visitor_id_hash, s.user_id or "", _dt(s.started_at),
+            int(s.duration_ms or 0), int(s.active_ms or 0), int(s.pageviews or 0),
+            int(s.clicks or 0), int(s.max_scroll_pct or 0), s.entry_page or "",
+            s.exit_page or "", s.channel or "", s.device or "",
+            1 if s.is_new_visitor else 0, 1 if s.is_engaged else 0,
+            int(s.micro_goals or 0), int(s.macro_goals or 0), 1 if s.is_bot else 0,
+            int(s.bot_score or 0), 1 if s.is_internal else 0,
+        ] for s in part], _SERVER_SESSION_COLUMNS)
+        total += len(part)
 
-    visits = (await db.execute(
-        select(RawMetrikaVisit).where(RawMetrikaVisit.visit_date >= since.date())
-    )).scalars().all()
-    if visits:
-        ch.insert(
-            "raw_metrika_visits",
-            [[
-                v.visit_id, v.client_id_hash or "", v.visit_date or datetime(1970, 1, 1).date(),
-                _dt(v.start_time), v.start_url or "", v.traffic_source or "",
-                v.search_engine or "", int(v.duration_seconds or 0),
+    base = [
+        RawMetrikaVisit.visit_id, RawMetrikaVisit.client_id_hash,
+        RawMetrikaVisit.visit_date, RawMetrikaVisit.start_time,
+        RawMetrikaVisit.start_url, RawMetrikaVisit.traffic_source,
+        RawMetrikaVisit.search_engine, RawMetrikaVisit.duration_seconds,
+        RawMetrikaVisit.goals_json,
+    ]
+    if dialect == "postgresql":
+        extra = [
+            _json_text(RawMetrikaVisit.raw_json, k).label(f"jk{i}")
+            for i, k in enumerate(_VISIT_JSON_KEYS)
+        ]
+    else:
+        extra = [RawMetrikaVisit.raw_json]
+    n_base = len(base)
+    async for part in _stream_partitions(
+        select(*base, *extra).where(RawMetrikaVisit.visit_date >= since.date()),
+        _REPLACING_BATCH,
+    ):
+        payload = []
+        for row in part:
+            if dialect == "postgresql":
+                blob = {k: row[n_base + i] for i, k in enumerate(_VISIT_JSON_KEYS)
+                        if row[n_base + i]}
+            else:
+                blob = row[n_base]
+            v = _VisitLite(row.goals_json, blob)
+            payload.append([
+                row.visit_id, row.client_id_hash or "",
+                row.visit_date or datetime(1970, 1, 1).date(),
+                _dt(row.start_time), row.start_url or "", row.traffic_source or "",
+                row.search_engine or "", int(row.duration_seconds or 0),
                 1 if visit_has_business_goal(v, biz_ids) else 0,
                 visit_device(v), visit_browser(v), visit_os(v),
                 1 if visit_field(v, "ym:s:isNewUser") == "1" else 0,
-            ] for v in visits],
-            column_names=[
-                "visit_id", "client_id_hash", "visit_date", "start_time", "start_url",
-                "traffic_source", "search_engine", "duration_seconds", "has_goal",
-                "device", "browser", "os", "is_new",
-            ],
-        )
-        total += len(visits)
+            ])
+        await _ch_insert(ch, "raw_metrika_visits", payload, _VISIT_COLUMNS)
+        total += len(part)
 
-    links = (await db.execute(select(IdentityLink))).scalars().all()
+    async with analytics_session() as db:
+        links = (await db.execute(select(
+            IdentityLink.user_id, IdentityLink.visitor_id_hash,
+            IdentityLink.first_seen, IdentityLink.last_seen,
+        ))).all()
     if links:
-        ch.insert(
-            "identity_links",
+        await _ch_insert(
+            ch, "identity_links",
             [[l.user_id, l.visitor_id_hash, _dt(l.first_seen), _dt(l.last_seen)] for l in links],
-            column_names=["user_id", "visitor_id_hash", "first_seen", "last_seen"],
+            ["user_id", "visitor_id_hash", "first_seen", "last_seen"],
         )
         total += len(links)
     return total
@@ -333,8 +436,7 @@ async def clickhouse_sync_job() -> None:
         return
     try:
         n_events = await _sync_events(ch)
-        async with analytics_session() as db:
-            n_repl = await _sync_replacing(db, ch)
+        n_repl = await _sync_replacing(ch)
         from app.core.cache import get_state_redis
         r = await get_state_redis()
         await r.set(_LAST_SYNC_KEY, datetime.now(timezone.utc).replace(tzinfo=None).isoformat())
@@ -363,8 +465,7 @@ async def resync() -> None:
         for table in ("behavior_events", "frontend_events"):
             await _cursor_set(table, 0)
         n_events = await _sync_events(ch)
-        async with analytics_session() as db:
-            n_repl = await _sync_replacing(db, ch, days=3650)
+        n_repl = await _sync_replacing(ch, days=3650)
         from app.core.cache import get_state_redis
         r = await get_state_redis()
         await r.set(_LAST_SYNC_KEY, datetime.now(timezone.utc).replace(tzinfo=None).isoformat())

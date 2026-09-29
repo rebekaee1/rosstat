@@ -344,3 +344,44 @@ def test_scheduler_listener_silent_during_shutdown(monkeypatch):
     monkeypatch.setattr(main.scheduler, "get_job", lambda job_id: None)
     asyncio.run(run())
     assert len(sent) == 1 and "sitemap_build" in sent[0]
+
+
+def test_scheduler_listener_dedups_repeated_failures(monkeypatch):
+    """Инцидент 2026-09-29: telegram_poll (каждые 30 с) слал алерт на каждый
+    сбой — 85 одинаковых сообщений за утро. Одна и та же ошибка джобы —
+    не чаще раза в час; другая ошибка или другая джоба — сразу."""
+    import app.main as main
+
+    sent = []
+
+    async def fake_send(msg, kind=None):
+        sent.append(msg)
+
+    monkeypatch.setattr("app.services.alerting.send_telegram", fake_send)
+    monkeypatch.setattr(main, "_shutting_down", False)
+    monkeypatch.setattr(main.scheduler, "get_job", lambda job_id: None)
+    main._scheduler_alert_last.clear()
+
+    def event(job, exc):
+        class _Event:
+            job_id = job
+            exception = exc
+        return _Event()
+
+    async def run(ev):
+        main._scheduler_event_listener(ev)
+        await asyncio.sleep(0)
+
+    for n in (1, 2, 3):
+        asyncio.run(run(event("telegram_poll", TimeoutError(f"Timeout reading from redis-state:6379 #{n}"))))
+    assert len(sent) == 1
+
+    asyncio.run(run(event("indexnow_drain", TimeoutError("Timeout reading from redis-state:6379"))))
+    asyncio.run(run(event("telegram_poll", RuntimeError("other failure"))))
+    assert len(sent) == 3
+
+    # Через час тот же сбой снова виден.
+    for key in list(main._scheduler_alert_last):
+        main._scheduler_alert_last[key] -= 3601
+    asyncio.run(run(event("telegram_poll", TimeoutError("Timeout reading from redis-state:6379"))))
+    assert len(sent) == 4
