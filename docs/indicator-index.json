@@ -9171,32 +9171,32 @@
         },
         {
           "file": "backend/tests/test_scrape_access_policy.py",
-          "line": 62,
+          "line": 74,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_access_policy.py",
-          "line": 98,
+          "line": 110,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_access_policy.py",
-          "line": 99,
+          "line": 111,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_access_policy.py",
-          "line": 123,
+          "line": 135,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_access_policy.py",
-          "line": 136,
+          "line": 148,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_scrape_access_policy.py",
-          "line": 138,
+          "line": 150,
           "kind": "tests"
         },
         {
@@ -9921,7 +9921,7 @@
         },
         {
           "file": "frontend/nginx.conf",
-          "line": 357,
+          "line": 375,
           "kind": "other"
         },
         {

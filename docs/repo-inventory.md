@@ -2,22 +2,22 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-09-28
+**Сгенерировано:** 2026-09-29
 
-**Файлов:** 1164  ·  **Строк:** 567 998  ·  **Токенов (≈):** 5 697 641
+**Файлов:** 1164  ·  **Строк:** 568 038  ·  **Токенов (≈):** 5 698 414
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 378 | 57 657 |
+| `(root)` | 8 | 2 386 | 58 112 |
 | `.github` | 3 | 272 | 2 747 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 600 | 227 252 | 2 458 374 |
+| `backend` | 600 | 227 264 | 2 458 511 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 10 | 547 | 6 564 |
+| `deploy` | 10 | 549 | 6 606 |
 | `docs` | 87 | 240 285 | 2 148 793 |
-| `frontend` | 371 | 79 401 | 820 632 |
+| `frontend` | 371 | 79 419 | 820 771 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 79 | 17 613 | 200 467 |
 
@@ -46,7 +46,7 @@
 | `backend/app/services/seo_renderer.py` | 3 284 | 34 300 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 080 |
-| `CONTEXT.md` | 900 | 29 966 |
+| `CONTEXT.md` | 908 | 30 421 |
 | `frontend/src/i18n/messages.ru.js` | 1 981 | 27 940 |
 | `frontend/src/i18n/messages.en.js` | 1 972 | 26 990 |
 | `backend/app/api/sitemap.py` | 2 568 | 26 855 |
@@ -71,8 +71,8 @@
 | `backend/app/data/world_national_core/us.yaml` | 1 498 | 14 637 |
 | `AGENTS.md` | 425 | 14 595 |
 | `docs/data_sources.md` | 640 | 12 923 |
+| `frontend/nginx.conf` | 1 066 | 12 886 |
 | `backend/app/services/admin_bi.py` | 1 315 | 12 850 |
-| `frontend/nginx.conf` | 1 048 | 12 747 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
 | `backend/tests/test_seo_growth_pages.py` | 1 311 | 12 600 |
 | `backend/app/data/eurostat_unit_codelist_en.json` | 760 | 11 604 |
@@ -389,13 +389,13 @@
 | `backend/scripts/google-search-console.py` | 193 | 2 378 |
 | `frontend/src/components/calendar/CalendarEventCard.jsx` | 259 | 2 371 |
 | `frontend/src/i18n/locale.js` | 264 | 2 366 |
+| `deploy/approved-shas.txt` | 126 | 2 364 |
 | `frontend/src/components/LiveTicker.jsx` | 260 | 2 359 |
 | `scripts/audit_world_lib.py` | 282 | 2 341 |
 | `frontend/src/components/home/HomeWorkbench.component.test.jsx` | 275 | 2 338 |
 | `backend/alembic/versions/20260706_analytics2.py` | 181 | 2 337 |
 | `frontend/src/pages/WorldRegionsHome.component.test.jsx` | 242 | 2 337 |
 | `frontend/src/pages/CategoryPage.jsx` | 242 | 2 323 |
-| `deploy/approved-shas.txt` | 124 | 2 322 |
 | `backend/tests/test_parser_fixtures.py` | 283 | 2 304 |
 | `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 263 | 2 287 |
 | `backend/tests/test_world_boc_valet_adapter.py` | 292 | 2 250 |
@@ -495,6 +495,7 @@
 | `backend/app/services/rosstat_ppi_parser.py` | 188 | 1 675 |
 | `backend/app/services/upsert.py` | 170 | 1 670 |
 | `backend/app/services/goal_taxonomy.py` | 217 | 1 656 |
+| `backend/tests/test_scrape_access_policy.py` | 152 | 1 643 |
 | `frontend/vite.config.js` | 164 | 1 643 |
 | `backend/tests/test_rosstat_wages_backfill.py` | 167 | 1 641 |
 | `backend/tests/test_us_br_pop_adapter.py` | 190 | 1 635 |
@@ -520,7 +521,6 @@
 | `docs/design/local-acceptance/final-us-images-before.json` | 155 | 1 524 |
 | `backend/app/services/rosstat_cpi_parser.py` | 138 | 1 516 |
 | `scripts/e2e/asset-retention.mjs` | 118 | 1 513 |
-| `backend/tests/test_scrape_access_policy.py` | 140 | 1 506 |
 | `backend/tests/test_russia_world_compare.py` | 161 | 1 500 |
 | `backend/tests/test_world_bcb_sgs_adapter.py` | 203 | 1 500 |
 | `frontend/src/components/WorldViewModePicker.jsx` | 185 | 1 500 |

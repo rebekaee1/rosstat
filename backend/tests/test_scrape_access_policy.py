@@ -48,6 +48,18 @@ def test_nginx_does_not_deny_browser_variants_by_ua():
     assert config.count("proxy_set_header X-Forwarded-For $remote_addr;") == config.count("proxy_set_header X-Forwarded-Host $host;")
 
 
+def test_scraper_networks_denied_by_real_ip_but_robots_stays_open():
+    config = nginx_directives()
+    geo = config.split("geo $scraper_net {", 1)[1].split("}", 1)[0]
+    for net in ("43.119.0.0/16", "47.78.0.0/15", "47.80.0.0/14"):
+        assert f"{net} 1;" in geo
+    assert "default 0;" in geo
+    assert 'map "$scraper_net:$crawler_policy_document" $deny_scraper_net' in config
+    server = config.split("server {", 1)[1]
+    deny = server.index("if ($deny_scraper_net)")
+    assert server.index("real_ip_header X-Forwarded-For;") < deny
+
+
 @pytest.mark.parametrize("peer", ["8.8.8.8", "2606:4700:4700::1111", "testclient"])
 def test_untrusted_socket_peer_cannot_spoof_ip(peer):
     assert pick_client_ip("1.1.1.1, 10.0.0.1", peer) == peer
