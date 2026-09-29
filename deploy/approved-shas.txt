@@ -124,3 +124,5 @@ a00de45258d9f38ae928851ef8e419ea143f8a1d  # explicit owner GO 2026-09-27; deploy
 adf9845a3fd0370179276dedd7c1c7bb110dee01  # explicit owner GO 2026-09-28; same runtime as 52462a0, CI-only test timeout and generated inventory; no migrations
 
 35cb524debb2bc855d918a35c6b90e9d9a764654  # explicit owner GO 2026-09-28; 7fdba97..35cb524 (2 commits: cold Austria query and comparable country charts), no migrations
+
+d3222d677d1baa4ca5d680f0c27706cad87a4703  # explicit owner GO 2026-09-29; f0dcbae..d3222d6 (2 commits: DHCP-lease outage docs, nginx deny of Alibaba SG scraper nets), no migrations
