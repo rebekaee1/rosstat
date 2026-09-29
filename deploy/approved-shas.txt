@@ -126,3 +126,5 @@ adf9845a3fd0370179276dedd7c1c7bb110dee01  # explicit owner GO 2026-09-28; same r
 35cb524debb2bc855d918a35c6b90e9d9a764654  # explicit owner GO 2026-09-28; 7fdba97..35cb524 (2 commits: cold Austria query and comparable country charts), no migrations
 
 d3222d677d1baa4ca5d680f0c27706cad87a4703  # explicit owner GO 2026-09-29; f0dcbae..d3222d6 (2 commits: DHCP-lease outage docs, nginx deny of Alibaba SG scraper nets), no migrations
+
+535f226a84f497d85695c569d01a92f273fe8b26  # explicit owner GO 2026-09-29 ("деплой актуальную версию"); 1fa191a..535f226 (12 commits: scheduler memory, IndexNow shards, world forecast timeout, analytics index, source alerts, RSY ads on quicklinks, Eurostat structure checks, bot_score hardware signals, llms.txt), no migrations
