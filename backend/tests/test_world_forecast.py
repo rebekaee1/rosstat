@@ -550,3 +550,40 @@ def test_world_forecast_legacy_row_without_fingerprint_retrains():
         latest, history_end=date(2026, 9, 20), points_count=81,
         now=now, max_age_days=30, force=False,
     )
+
+
+def test_forecast_plan_raises_statement_timeout_for_its_transaction(monkeypatch):
+    """Кандидаты Европы (~277k рядов, md5 по 13 млн точек) считаются ~80 с —
+    под публичным statement_timeout 30 с europe_world_forecast падал каждый
+    вечер с 2026-09-25. Планирование поднимает лимит только в своей транзакции."""
+    import asyncio
+    from contextlib import asynccontextmanager
+
+    import app.services.world_forecast_pipeline as wfp
+
+    calls = []
+
+    @asynccontextmanager
+    async def fake_session():
+        yield "db"
+
+    async def fake_timeout(db, ms):
+        calls.append(("timeout", db, ms))
+
+    async def fake_candidates(db, slugs):
+        calls.append(("candidates", db))
+        return []
+
+    async def fake_latest(db, *, country_slugs=None):
+        calls.append(("latest", db))
+        return {}
+
+    monkeypatch.setattr(wfp, "async_session", fake_session)
+    monkeypatch.setattr(wfp, "set_local_statement_timeout", fake_timeout)
+    monkeypatch.setattr(wfp, "_load_candidates", fake_candidates)
+    monkeypatch.setattr(wfp, "_latest_forecasts_map", fake_latest)
+
+    asyncio.run(wfp.load_world_forecast_plan(country_slugs="austria", limit=10))
+    assert calls[0] == ("timeout", "db", wfp.WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS)
+    assert wfp.WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS >= 300_000
+    assert [c[0] for c in calls[1:]] == ["candidates", "latest"]

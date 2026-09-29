@@ -26,7 +26,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.core.cache import bump_namespaces
 from app.data.world_forecast_policy import WORLD_FORECAST_HORIZONS, forecast_eligibility_for
-from app.database import async_session
+from app.database import async_session, set_local_statement_timeout
 from app.models import (
     WorldCountry,
     WorldDataPoint,
@@ -643,6 +643,9 @@ def select_forecast_batch(
     return selected, set()
 
 
+WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS = 600_000
+
+
 async def load_world_forecast_plan(
     *,
     country_slugs: Sequence[str] | str | None = None,
@@ -653,6 +656,9 @@ async def load_world_forecast_plan(
     """Отсортированный план обхода и id рядов, которые можно пропустить."""
     slugs = parse_country_slugs(country_slugs)
     async with async_session() as db:
+        # md5 истории каждого кандидата — пакетный проход (Европа: ~277k рядов,
+        # ~13 млн точек, ~80 с); публичный лимит 30 с ронял джобу ежедневно.
+        await set_local_statement_timeout(db, WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS)
         candidates = sort_world_forecast_candidates(
             await _load_candidates(db, slugs or None),
         )

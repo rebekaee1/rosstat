@@ -1,6 +1,7 @@
 import json
 from collections.abc import AsyncGenerator
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.config import settings
@@ -66,6 +67,20 @@ analytics_engine = create_async_engine(
 analytics_session = async_sessionmaker(
     analytics_engine, class_=AsyncSession, expire_on_commit=False
 )
+
+
+async def set_local_statement_timeout(db: AsyncSession, ms: int) -> None:
+    """Поднять statement_timeout только для текущей транзакции (SET LOCAL).
+
+    Для пакетных запросов фоновых джоб, которые заведомо дольше публичного
+    лимита пула (30 с). Соединение возвращается в пул со штатным лимитом.
+    Не-Postgres (SQLite в тестах) — no-op.
+    """
+    if db.bind is None or db.bind.dialect.name != "postgresql":
+        return
+    await db.execute(
+        text("SELECT set_config('statement_timeout', :v, true)"), {"v": str(int(ms))}
+    )
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
