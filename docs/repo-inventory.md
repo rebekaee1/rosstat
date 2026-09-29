@@ -4,19 +4,19 @@
 
 **Сгенерировано:** 2026-09-29
 
-**Файлов:** 1168  ·  **Строк:** 569 920  ·  **Токенов (≈):** 5 720 170
+**Файлов:** 1168  ·  **Строк:** 569 940  ·  **Токенов (≈):** 5 720 585
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 402 | 58 796 |
+| `(root)` | 8 | 2 418 | 59 032 |
 | `.github` | 3 | 272 | 2 747 |
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 603 | 228 987 | 2 476 978 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 10 | 551 | 6 652 |
-| `docs` | 87 | 240 343 | 2 150 388 |
+| `deploy` | 10 | 553 | 6 734 |
+| `docs` | 87 | 240 345 | 2 150 485 |
 | `frontend` | 372 | 79 502 | 821 735 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 79 | 17 613 | 200 467 |
@@ -34,7 +34,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `backend/app/data/indicator_seo.py` | 9 073 | 116 019 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
-| `docs/backlog.md` | 1 687 | 59 329 |
+| `docs/backlog.md` | 1 689 | 59 426 |
 | `backend/seed_data.py` | 5 562 | 57 382 |
 | `backend/app/data/regional/indicators.json` | 6 440 | 56 948 |
 | `docs/runtime-inventory.json` | 6 776 | 52 887 |
@@ -45,7 +45,7 @@
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `backend/app/services/seo_renderer.py` | 3 284 | 34 303 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
-| `CONTEXT.md` | 924 | 31 105 |
+| `CONTEXT.md` | 940 | 31 341 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 080 |
 | `frontend/src/i18n/messages.ru.js` | 1 981 | 27 940 |
 | `frontend/src/i18n/messages.en.js` | 1 972 | 26 990 |
@@ -369,6 +369,7 @@
 | `backend/scripts/indexnow-ping-all.py` | 268 | 2 518 |
 | `docs/design/local-acceptance/performance-country-after.json` | 283 | 2 508 |
 | `scripts/regional/unit_normalize.py` | 290 | 2 504 |
+| `deploy/approved-shas.txt` | 130 | 2 492 |
 | `backend/app/services/gsc_client.py` | 206 | 2 482 |
 | `frontend/src/i18n/messages.parity.test.js` | 265 | 2 480 |
 | `backend/tests/test_display_adapter.py` | 245 | 2 472 |
@@ -381,7 +382,6 @@
 | `backend/app/services/binance_btcusdt_parser.py` | 221 | 2 421 |
 | `scripts/audit-world-truthfulness-report.md` | 145 | 2 419 |
 | `frontend/src/lib/searchSynonyms.test.js` | 208 | 2 415 |
-| `deploy/approved-shas.txt` | 128 | 2 410 |
 | `backend/app/data/world_country_area.py` | 258 | 2 407 |
 | `backend/app/services/webmaster_recrawl.py` | 249 | 2 402 |
 | `backend/tests/test_world_rba_adapter.py` | 319 | 2 400 |
