@@ -4,6 +4,8 @@
 
 Сервер проверен отдельно: [архитектура и бюджет 4 vCPU](architecture.md#реальное-окружение-сервер-с-4-vcpu-и-локальная-разработка), [машинный снимок](runtime-inventory.json), [профили локального запуска](workflow.md#локальная-разработка). Серверный `e81b86e` отличается от разобранной локальной main. Этот документ не устанавливает, что все найденные кодовые сценарии происходили на сервере.
 
+**Последующая сверка, 30 сентября:** [сопоставление с анализом Opus](code-review/readiness-criteria.md#opus-reconciliation-2026-09-30) выполнено по `main c3ad382`; оно уточняет сохранённые риски, уже исправленные механизмы и границы предложений. Снимок сервера от 27 сентября не становится текущим по дате этой ссылки.
+
 ## Как читать результат
 
 - **Воспроизведено изолированно** — небольшой вызов чистой функции или mock транспорта, без БД/сети/записи на сервере. Данные проверок — [probes.json](code-review/probes.json).
@@ -53,7 +55,7 @@
 | [alerting.py](../backend/app/services/alerting.py), [webmaster_indexing_report.py](../backend/app/services/webmaster_indexing_report.py) | Антиспам/предыдущее наблюдение обновляются до подтверждённой доставки; неудачное уведомление может быть подавлено или потерять дельту |
 | [telegram_bot.py](../backend/app/services/telegram_bot.py) | Polling offset продвигается и после ошибки handler; повторная доставка такой команды не гарантируется |
 | [pulse.py](../backend/app/services/pulse.py) | `build_snapshot` может отправить alert через `_bot_signals`; старое описание «без побочных эффектов» неполно |
-| [clickhouse_sync.py](../backend/app/services/clickhouse_sync.py) | Синхронный `ch.insert` выполняется внутри async-пути; может задерживать event loop scheduler |
+| [clickhouse_sync.py](../backend/app/services/clickhouse_sync.py) | Историческое наблюдение 27 сентября: синхронный `ch.insert` мог задерживать event loop scheduler. **Уточнение 30 сентября:** `e32abdf` вынес `_ch_insert` в executor; исправление подтверждено в текущем коде. Курсор `id` и полнота синхронизации требуют отдельной проверки; приёмка выпуска на сервере здесь не установлена |
 
 Доработки должны сохранять различия read fail-open, auth/state fail-closed, retryable source error и partial success. Один общий `except → []` уничтожает важную для последующего слоя информацию.
 
