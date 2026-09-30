@@ -1773,3 +1773,22 @@ Scope approved by owner: repair, commit, GitHub push, production deploy and live
 - Historical SEO: no unconditional forecast promise for daily gold/FX; nearby year links preserved for old pages, Dataset coverage ends at the last actual observation. A 20-URL baseline/acceptance manifest lives in the local modern-strategy research artifacts.
 
 Remaining product/research decisions: design reference selection, commercial offer/pricing, password recovery/email verification, official direct YoY series if a complete source is established. Search-engine LOW_QUALITY and 10,000 real daily users are outcomes to measure, not guaranteed by this release. Device-clock freshness is a potential edge case; no affected real session established in the audit.
+
+## 2026-09-30 — последующая случайная проверка поиска
+
+**Выполнено, source без изменений:** новый frozen Monte-Carlo набор на
+`bdcee357`: 1 000 global API запросов, 850 local matcher cases, 20 controls
+и 123 literal table cases. [Отчёт и ограничения gold](research/search-monte-carlo-2026-09-30.md).
+Точные global имена/коды — 301/400, random words — 170/200; local — 843/850.
+Десять отдельно проверенных natural questions при наличии правильной
+меры дали пустоту; code diagnostics находят все десять целей. Raw semantic
+keyword scores не являются экономической точностью: обнаружены неверные
+availability witnesses и отличия темы от меры. Старый 197/201 остаётся
+результатом tuned corpus; сильный произвольный поиск не подтверждён.
+
+**Открыто:** literal code/date collision (`1000`, `quarter`), специфичность
+областей без автономных округов, ISO country aliases в служебных английских
+словах, два layout preprocessing механизма. После исправления — новая
+закрытая выборка и строгий экономический oracle; этот набор сохранить
+как regression evidence. Поиск/данные/настройки во время audit не менялись;
+push/deploy/live acceptance не выполнялись.

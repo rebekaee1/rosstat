@@ -19,14 +19,14 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 1320,
+    "files": 1321,
     "code_files": 1004,
-    "current_reviews": 1320,
+    "current_reviews": 1321,
     "statuses": {
       "artifact_schema_reviewed": 77,
       "asset_metadata_reviewed": 91,
       "data_schema_reviewed": 4,
-      "reviewed": 1148
+      "reviewed": 1149
     },
     "definitions": 8543,
     "annotated_definitions": 8543,
@@ -9149,9 +9149,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "654f8f3dea45d31d8bc6297ceed0c5c3dc766afc16042789acfd9e437435b3a5",
-      "bytes": 363796,
-      "lines": 1775,
+      "sha256": "3bc77170fb604b1fdc3405733a00a1579055dd59af2a90098339a2de9a0aa1a4",
+      "bytes": 365486,
+      "lines": 1794,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -9695,9 +9695,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "246780965ea75e364591309fcb8229d2cefb999787ab86924ab26460d0bceaf5",
-      "bytes": 2032173,
-      "lines": 70663,
+      "sha256": "aa8fa8050514b00c7f303c034db3ebe9163e981e5bf040abeb0afc44b35da764",
+      "bytes": 2032311,
+      "lines": 70668,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -10084,6 +10084,19 @@
       "missing_definitions": []
     },
     {
+      "path": "docs/research/search-monte-carlo-2026-09-30.md",
+      "sha256": "200fe2bd1f6426d289a4b15e0d09c56fac19ef1ec88d9281349b6ecd8761a0ce",
+      "bytes": 14550,
+      "lines": 167,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "docs/research/south-korea-official-sources.xlsx",
       "sha256": "41354109cb35c16a4effd5e8defe668265bfe62c9a4868477b60f25988a011bf",
       "bytes": 14386,
@@ -10150,9 +10163,9 @@
     },
     {
       "path": "docs/search.md",
-      "sha256": "7a94fb070888129cbdbfecb71daaa8f3b19ad1a17c12fc5dabf52103a829597a",
-      "bytes": 26662,
-      "lines": 275,
+      "sha256": "f82131513da77579584b0f336264fe33df7d9e0023c9f89aa0919db096af29fd",
+      "bytes": 28171,
+      "lines": 292,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -17196,9 +17209,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "33fbbdbaa76f003a4a7d78133fb64db21143f7a1f5b687d51ce344347521bf37",
+  "ledger_sha256": "ec8faa98858603b33fe13d9d3700551116eb667707f0b917f2985da740f0ae69",
   "javascript_inventory_sha256": "bea6284923e504f6f965e20e4362db7d6aabb623489344dcef528e185945c299",
-  "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+  "baseline_commit": "bdcee357c6e9708139d7978b0d0a5d88f1499a15",
   "branch": "codex/search-v2-20260930",
   "unstaged_at_capture": []
 }

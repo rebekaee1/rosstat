@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `05302ff1c4dbe104850116e6206d168ec4fa91d3`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `bdcee357c6e9708139d7978b0d0a5d88f1499a15`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1320 |
+| Файлы в явно определённом scope | 1321 |
 | Код, шаблоны и стили | 1004 |
-| Актуальные рецензии без пропусков guard | 1320 |
+| Актуальные рецензии без пропусков guard | 1321 |
 | Именованные определения Python/JS: с аннотацией / всего | 8543 / 8543 |
 | Файлы, требующие внимания | 0 |
 
@@ -811,6 +811,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/search-history-2026-09-30.md](../docs/research/search-history-2026-09-30.md) | reviewed | 0/0 | актуально |
 | [docs/research/search-matrix-2026-09-30.json](../docs/research/search-matrix-2026-09-30.json) | data_schema_reviewed | 0/0 | актуально |
 | [docs/research/search-methods-2026-09-30.md](../docs/research/search-methods-2026-09-30.md) | reviewed | 0/0 | актуально |
+| [docs/research/search-monte-carlo-2026-09-30.md](../docs/research/search-monte-carlo-2026-09-30.md) | reviewed | 0/0 | актуально |
 | [docs/research/south-korea-official-sources.xlsx](../docs/research/south-korea-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/turkey-official-sources.xlsx](../docs/research/turkey-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/uk-official-sources.xlsx](../docs/research/uk-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |

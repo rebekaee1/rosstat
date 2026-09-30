@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-30
 
-**Файлов:** 1192  ·  **Строк:** 581 880  ·  **Токенов (≈):** 5 849 999
+**Файлов:** 1193  ·  **Строк:** 582 064  ·  **Токенов (≈):** 5 852 578
 
 ## По верхним папкам
 
@@ -16,7 +16,7 @@
 | `backend` | 609 | 230 646 | 2 500 401 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 10 | 553 | 6 734 |
-| `docs` | 95 | 249 330 | 2 244 289 |
+| `docs` | 96 | 249 514 | 2 246 868 |
 | `frontend` | 377 | 80 079 | 830 991 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 84 | 18 525 | 213 584 |
@@ -34,7 +34,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `backend/app/data/indicator_seo.py` | 9 073 | 116 019 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
-| `docs/backlog.md` | 1 775 | 61 971 |
+| `docs/backlog.md` | 1 794 | 62 258 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `backend/seed_data.py` | 5 562 | 57 382 |
 | `backend/app/data/regional/indicators.json` | 6 440 | 56 948 |
@@ -211,6 +211,7 @@
 | `docs/architecture-history.md` | 101 | 4 695 |
 | `backend/app/services/world_bea_regional.py` | 453 | 4 679 |
 | `backend/tests/test_forecast_policy.py` | 441 | 4 660 |
+| `docs/search.md` | 292 | 4 660 |
 | `backend/app/services/seo_i18n.py` | 596 | 4 648 |
 | `backend/app/services/analytics_report_bundle.py` | 439 | 4 636 |
 | `backend/app/services/world_adapters/rba_stats.py` | 551 | 4 618 |
@@ -226,7 +227,6 @@
 | `backend/app/services/metrika_acquisition.py` | 449 | 4 486 |
 | `docs/design/art-prompts/approved-collection.json` | 93 | 4 468 |
 | `backend/app/api/oauth.py` | 476 | 4 419 |
-| `docs/search.md` | 275 | 4 419 |
 | `backend/app/services/seo_world_subnational.py` | 463 | 4 406 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 393 |
@@ -435,6 +435,7 @@
 | `backend/app/services/seo_calendar.py` | 214 | 2 078 |
 | `docs/research/search-acceptance-2026-09-30.md` | 148 | 2 073 |
 | `docs/analytics_api_inventory/yandex_webmaster.md` | 64 | 2 063 |
+| `docs/research/search-monte-carlo-2026-09-30.md` | 148 | 2 051 |
 | `backend/app/services/ticker_sources/moex_iss.py` | 217 | 2 049 |
 | `frontend/src/embed/EmbedCompare.jsx` | 155 | 2 043 |
 | `backend/app/services/world_plausibility.py` | 264 | 2 040 |

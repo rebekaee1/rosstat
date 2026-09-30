@@ -27146,6 +27146,11 @@
       },
       "files": [
         {
+          "file": "docs/research/search-monte-carlo-2026-09-30.md",
+          "line": 134,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 5156,
           "kind": "other"

@@ -1,27 +1,28 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+  "baseline_commit": "bdcee357c6e9708139d7978b0d0a5d88f1499a15",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/code-review/coverage.json"
+    "docs/code-review/coverage.json",
+    "docs/code-review/materials-2026-09-30.json"
   ],
   "untracked_at_capture": [],
   "stats": {
-    "files": 1320,
-    "attempted": 1128,
-    "files_with_nodes": 1055,
-    "nodes": 13746,
-    "symbol_edges": 42887,
-    "file_edges": 8894,
+    "files": 1321,
+    "attempted": 1129,
+    "files_with_nodes": 1056,
+    "nodes": 13757,
+    "symbol_edges": 42900,
+    "file_edges": 8897,
     "projection_omissions": {
       "external_or_unresolved_file": 2255,
       "missing_endpoint": 2520,
-      "within_file": 18502
+      "within_file": 18512
     },
     "confidence": {
-      "EXTRACTED": 39347,
-      "INFERRED": 3540
+      "EXTRACTED": 39359,
+      "INFERRED": 3541
     }
   },
   "overview": {
@@ -147,9 +148,9 @@
       {
         "id": "docs",
         "label": "Документация и правила",
-        "files": 69,
+        "files": 70,
         "code": 0,
-        "with_nodes": 57,
+        "with_nodes": 58,
         "file_node_only": 0,
         "semantic_evidence": 21
       },
@@ -272,8 +273,8 @@
       {
         "source": "docs",
         "target": "browser",
-        "file_relations": 87,
-        "symbol_relations": 106
+        "file_relations": 88,
+        "symbol_relations": 107
       },
       {
         "source": "docs",
@@ -284,8 +285,8 @@
       {
         "source": "docs",
         "target": "docs",
-        "file_relations": 240,
-        "symbol_relations": 240
+        "file_relations": 242,
+        "symbol_relations": 242
       },
       {
         "source": "docs",
@@ -1338,7 +1339,7 @@
     {"path": "docs/architecture-history.md", "kind": "document", "bytes": 27475, "lines": 101, "sha256": "ec3877aa9064fbaf2e2fd77418245ec9706bf4038deda62dd142c4a7007bc2fe", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/architecture-knowledge.json", "kind": "asset/data/config", "bytes": 89676, "lines": 2436, "sha256": "86587255fded212e1a67835787614a9bd9c2b64ce583c57da2d64088dd5dbc2c", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/architecture.md", "kind": "document", "bytes": 58154, "lines": 308, "sha256": "5dfefcede3c23ec0e1a793dd9d41db11db3001e523b745532aa6dfeada00710e", "symlink": false, "nodes": 25, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/backlog.md", "kind": "document", "bytes": 363796, "lines": 1775, "sha256": "654f8f3dea45d31d8bc6297ceed0c5c3dc766afc16042789acfd9e437435b3a5", "symlink": false, "nodes": 113, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/backlog.md", "kind": "document", "bytes": 365486, "lines": 1794, "sha256": "3bc77170fb604b1fdc3405733a00a1579055dd59af2a90098339a2de9a0aa1a4", "symlink": false, "nodes": 114, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 28564, "lines": 124, "sha256": "6da47b8837781ecdedba7ded718b894a98cd4742c31ea8149ba6dfb0faa0f252", "symlink": false, "nodes": 12, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/data-contracts.md", "kind": "document", "bytes": 44803, "lines": 159, "sha256": "8192828361dfc6991b1cf6b626d549e9897c2c9d2006201095a8f2fbe18cbcdf", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/data_sources.md", "kind": "document", "bytes": 70700, "lines": 642, "sha256": "260c17baf3425c579a66ad999f5495adffd45e18a587e87ca2d4ccf568d14bab", "symlink": false, "nodes": 38, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1380,7 +1381,7 @@
     {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 30342, "lines": 100, "sha256": "3cc7de8a11aecb8cb1779222aa1ee0c0961b9533045c7d9ef04e98549fc7d3e5", "symlink": false, "nodes": 12, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 46781, "lines": 614, "sha256": "8c07a29ff4a5a68b323c4f10035cad8fb8af81fc10d9d1d4b36ca6ccb99a8186", "symlink": false, "nodes": 59, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 2032173, "lines": 70663, "sha256": "246780965ea75e364591309fcb8229d2cefb999787ab86924ab26460d0bceaf5", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 2032311, "lines": 70668, "sha256": "aa8fa8050514b00c7f303c034db3ebe9163e981e5bf040abeb0afc44b35da764", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 96125, "lines": 1055, "sha256": "e2a3be4c76b0d64df2d515efcc7bd6f5d6f204c1d95cf1cef8431162119dd826", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 10764, "lines": 98, "sha256": "058cff9b8d59b8ccb51f3a11200630c2ba43ddb5aa6c9de8a1526721b365ecc3", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
@@ -1410,12 +1411,13 @@
     {"path": "docs/research/search-history-2026-09-30.md", "kind": "document", "bytes": 21234, "lines": 231, "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/search-matrix-2026-09-30.json", "kind": "asset/data/config", "bytes": 258812, "lines": 7211, "sha256": "8aec2bb6bd24e6c6bc8d49dcfbb90dc9175e70bcf4f145d70294d50384df3e3e", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/search-methods-2026-09-30.md", "kind": "document", "bytes": 38591, "lines": 350, "sha256": "c61d8dd05ad713425e5c595bb145aabf78457cbc6cd75c95ec9840382ef53cc5", "symlink": false, "nodes": 12, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/research/search-monte-carlo-2026-09-30.md", "kind": "document", "bytes": 14550, "lines": 167, "sha256": "200fe2bd1f6426d289a4b15e0d09c56fac19ef1ec88d9281349b6ecd8761a0ce", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/south-korea-official-sources.xlsx", "kind": "asset/data/config", "bytes": 14386, "lines": null, "sha256": "41354109cb35c16a4effd5e8defe668265bfe62c9a4868477b60f25988a011bf", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/turkey-official-sources.xlsx", "kind": "asset/data/config", "bytes": 14419, "lines": null, "sha256": "b661aac648e124f3ee80e598a82148f005e2331bf3070eb0f148bc5fc55b746b", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/uk-official-sources.xlsx", "kind": "asset/data/config", "bytes": 15777, "lines": null, "sha256": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/usa-official-sources.xlsx", "kind": "asset/data/config", "bytes": 17255, "lines": null, "sha256": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/runtime-inventory.json", "kind": "asset/data/config", "bytes": 212637, "lines": 6794, "sha256": "db80facaf90a05b0426ab1983c06c33f56ba699c1163ef51b264357564d9c71a", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/search.md", "kind": "document", "bytes": 26662, "lines": 275, "sha256": "7a94fb070888129cbdbfecb71daaa8f3b19ad1a17c12fc5dabf52103a829597a", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/search.md", "kind": "document", "bytes": 28171, "lines": 292, "sha256": "f82131513da77579584b0f336264fe33df7d9e0023c9f89aa0919db096af29fd", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/site-inventory.json", "kind": "asset/data/config", "bytes": 445, "lines": 9, "sha256": "c628cc19ea494dcec92f4b44f2bff1b9066fb7bae86606c151a595fc9be714fb", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/traffic-platform-2026-09-10.md", "kind": "document", "bytes": 5960, "lines": 47, "sha256": "b1108dda38345640549754179e7380483324d992bafa4dea90ffc549fc736af6", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/verification/us-eu-source-audit-2026-09-24.md", "kind": "document", "bytes": 10885, "lines": 114, "sha256": "e0548dcf2b4155648fe21c8924efa9752b0b174fb96160f89843db1a924c66d2", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -7091,6 +7093,7 @@
     {"source": "docs/backlog.md", "target": "docs/knowledge-workflow.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/backlog.md", "line": "L67", "source": "backlog.md", "target": "knowledge-workflow.md"}]},
     {"source": "docs/backlog.md", "target": "docs/research/search-acceptance-2026-09-30.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/backlog.md", "line": "L43", "source": "backlog.md", "target": "search-acceptance-2026-09-30.md"}]},
     {"source": "docs/backlog.md", "target": "docs/research/search-history-2026-09-30.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/backlog.md", "line": "L19", "source": "backlog.md", "target": "search-history-2026-09-30.md"}]},
+    {"source": "docs/backlog.md", "target": "docs/research/search-monte-carlo-2026-09-30.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/backlog.md", "line": "L1781", "source": "backlog.md", "target": "search-monte-carlo-2026-09-30.md"}]},
     {"source": "docs/backlog.md", "target": "docs/search.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/backlog.md", "line": "L11", "source": "backlog.md", "target": "search.md"}]},
     {"source": "docs/backlog.md", "target": "docs/workflow.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/backlog.md", "line": "L278", "source": "backlog.md", "target": "workflow.md"}]},
     {"source": "docs/backlog.md", "target": "frontend/src/components/CalcSlider.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/backlog.md", "line": "L253", "source": "2026-09-24 — Liquid glass: основной сайт, быстрые страницы и PNG (снимок на дату)", "target": "CalcSlider()"}]},
@@ -7267,6 +7270,7 @@
     {"source": "docs/research/search-methods-2026-09-30.md", "target": "docs/search.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/research/search-methods-2026-09-30.md", "line": "L4", "source": "search-methods-2026-09-30.md", "target": "search.md"}]},
     {"source": "docs/research/search-methods-2026-09-30.md", "target": "frontend/src/lib/searchSynonyms.js", "relation": "references", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "docs/research/search-methods-2026-09-30.md", "line": "L29", "source": "Что установлено в текущем коде", "target": "resolveSynonymTargets()"}]},
     {"source": "docs/research/search-methods-2026-09-30.md", "target": "scripts/search-history-analyze.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/research/search-methods-2026-09-30.md", "line": "L275", "source": "Что нужно добавить к телеметрии для следующего шага", "target": "context()"}]},
+    {"source": "docs/research/search-monte-carlo-2026-09-30.md", "target": "frontend/src/pages/RegionsHome.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/research/search-monte-carlo-2026-09-30.md", "line": "L127", "source": "Локальные поля и конкретные дефекты", "target": "normalize()"}]},
     {"source": "docs/search.md", "target": "backend/app/data/legacy_redirects.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/search.md", "line": "L150", "source": "Методы и границы ранжирования", "target": "resolve_world_frequency_sibling()"}]},
     {"source": "docs/search.md", "target": "backend/app/models.py", "relation": "references", "confidence": "INFERRED", "count": 4, "evidence": [{"file": "docs/search.md", "line": "L52", "source": "Глобальный API", "target": "Indicator"}]},
     {"source": "docs/search.md", "target": "backend/app/services/breadcrumbs.py", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/search.md", "line": "L57", "source": "Глобальный API", "target": "russia()"}]},
@@ -7282,6 +7286,7 @@
     {"source": "docs/search.md", "target": "docs/research/search-acceptance-2026-09-30.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/search.md", "line": "L259", "source": "search.md", "target": "search-acceptance-2026-09-30.md"}]},
     {"source": "docs/search.md", "target": "docs/research/search-history-2026-09-30.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/search.md", "line": "L6", "source": "search.md", "target": "search-history-2026-09-30.md"}]},
     {"source": "docs/search.md", "target": "docs/research/search-methods-2026-09-30.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/search.md", "line": "L7", "source": "search.md", "target": "search-methods-2026-09-30.md"}]},
+    {"source": "docs/search.md", "target": "docs/research/search-monte-carlo-2026-09-30.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/search.md", "line": "L281", "source": "search.md", "target": "search-monte-carlo-2026-09-30.md"}]},
     {"source": "docs/search.md", "target": "frontend/src/lib/searchSynonyms.js", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/search.md", "line": "L156", "source": "Методы и границы ранжирования", "target": "filterSearchOptions()"}]},
     {"source": "docs/search.md", "target": "frontend/src/lib/sitePaths.js", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/search.md", "line": "L49", "source": "Глобальный API", "target": "code()"}]},
     {"source": "docs/search.md", "target": "frontend/src/lib/tableSearch.js", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/search.md", "line": "L183", "source": "Все обнаруженные поисковые поверхности", "target": "tableRowMatches()"}]},
