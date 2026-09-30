@@ -22,15 +22,17 @@ annual-in-monthly mixing, CONTEXT.md).
   значения схлопываются в последнюю выбранную ячейку — фетч идёт запросами
   «год × месяц», каждый отдаёт все территории и все три топлива (~0.8 с).
 
-Инкрементальность: за прогон запрашиваются только месяцы, которых ещё нет в
-БД для slug ``russia`` (РФ публикуется первой и полной), плюс текущий месяц
-на случай ревизии. Отсутствие точек по региону за существующий месяц —
+Инкрементальность: от последнего месяца опорного ряда ``russia`` догоняем
+текущий месяц, добавляем два хвостовых месяца и повторяем текущий/предыдущий
+на случай ревизии. Произвольные старые гэпы этот план не перепроверяет.
+Отсутствие точек по региону за существующий месяц —
 легитимно (источник иногда дозаливает задним числом): гэпы не вычищаем,
 значения не удаляем — только добавляем/обновляем по фактическому payload.
 
 Идемпотентность ADR-0002: ON CONFLICT DO UPDATE с guard'ом ``value <>
-excluded.value`` — повторный прогон без изменений не пишет в БД и не
-инвалидирует кэш.
+excluded.value``. Если точки и границы истории в метаданных не меняются,
+прогон не инвалидирует кэш. Каждый изменившийся месяц публикуется после
+его commit, поэтому ошибка последующего месяца не скрывает сохранённые цены.
 
 Обновление: ежемесячный job ``emiss_regional_job`` (25-е число, 07:40 МСК —
 после фактической публикации цен за отчётный месяц в середине следующего).
@@ -51,9 +53,10 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.cache import bump_namespaces
+from app.core.cache import publish_committed_regional_changes
 from app.database import async_session
 from app.models import Region, RegionIndicator, RegionMonthlyPoint
+from app.services.regional_storage import acquire_regional_write_lock, update_regional_year_bounds
 
 logger = logging.getLogger(__name__)
 
@@ -246,6 +249,9 @@ def months_to_fetch(
     # Ревизия текущего и прошлого месяца — всегда (значения могут уточняться).
     if (cur_y, cur_m) not in out:
         out.append((cur_y, cur_m))
+    previous = (cur_y, cur_m - 1) if cur_m > 1 else (cur_y - 1, 12)
+    if previous not in out and previous >= (first_year, 1):
+        out.append(previous)
     return out
 
 
@@ -256,16 +262,18 @@ async def run_emiss_regional_update(
     territory_ids: Sequence[str] | None = None,
     dimnames: dict[str, str] | None = None,
 ) -> dict[str, int]:
-    """Полный цикл обновления: fetch → upsert → invalidate. Возвращает счётчики.
+    """Fetch → месячная SQL-транзакция → commit → публикация кэша.
 
-    Идемпотентен (ADR-0002): guard ``value <> excluded.value`` — прогон без
-    изменений возвращает added=updated=0 и не инвалидирует кэш.
+    Идемпотентен (ADR-0002): guard ``value <> excluded.value``. Нулевые
+    added/updated могут сопровождать исправление metadata bounds; кэш не
+    публикуется только если и точки, и границы фактической истории неизменны.
     """
     if dimnames is None:
         # Справочник «ОКАТО-oid → slug»: и территориальные id, и сопоставление
         # slug'ов — из одного файла (одна точка истины, emiss_dimnames.json в
         # scripts/regional — dev-копия того же маппинга).
-        dimnames = json.loads(_OKATO_PATH.read_text(encoding="utf-8"))
+        mapping = json.loads(_OKATO_PATH.read_text(encoding="utf-8"))
+        dimnames = {str(oid): slug for slug, oid in mapping.items()}
     if territory_ids is None:
         territory_ids = load_territory_ids()
 
@@ -310,27 +318,38 @@ async def run_emiss_regional_update(
         by_code: dict[str, list[tuple[str, int, float]]] = {}
         for code, slug, period, value in points:
             by_code.setdefault(code, []).append((slug, period, value))
-        for code, rows in by_code.items():
-            ind_id = indicators[code].id
-            values = [
-                (ind_id, regions[slug], period, value)
-                for slug, period, value in rows
-                if slug in regions
-            ]
-            if not values:
-                continue
-            a, u = await _upsert_monthly_points(db, values)
-            added += a
-            updated += u
-        await db.commit()
+        month_added = month_updated = 0
+        affected_ids = set()
+        try:
+            await acquire_regional_write_lock(db)
+            for code, rows in by_code.items():
+                ind_id = indicators[code].id
+                values = [
+                    (ind_id, regions[slug], period, value)
+                    for slug, period, value in rows
+                    if slug in regions
+                ]
+                if not values:
+                    continue
+                a, u = await _upsert_monthly_points(db, values)
+                month_added += a
+                month_updated += u
+                affected_ids.add(ind_id)
+            metadata_changed = await update_regional_year_bounds(db, affected_ids)
+            await db.commit()
+        except BaseException:
+            await db.rollback()
+            raise
+        added += month_added
+        updated += month_updated
+        if month_added or month_updated or metadata_changed:
+            await publish_committed_regional_changes()
         logger.info(
             "emiss_regional: %04d-%02d parsed %d points (added=%d updated=%d)",
             year, month, len(points), added, updated,
         )
         await asyncio.sleep(_PAUSE_BETWEEN_REQUESTS)
 
-    if added or updated:
-        await bump_namespaces("regions")
     return {"months": len(plan), "added": added, "updated": updated}
 
 

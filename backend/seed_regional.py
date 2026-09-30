@@ -1,32 +1,32 @@
-"""Идемпотентный сидер регионального bounded context.
+"""Regional artifact reconciliation, preserving stored history (ADR-0008).
 
-Источник — статический артефакт app/data/regional/ (создаётся host-скриптом
-scripts/regional/parse_pril_2025.py из Excel-приложения Росстата
-«Регионы России. Социально-экономические показатели»; дособор из старых
-Word-редакций доклеивается туда же скриптами scripts/regional/backfill_*.py).
+Annual artifact keys insert/revise values; absent stored keys are retained.
+Monthly artifact keys only fill missing values: existing monthly observations
+belong to the live EMISS writer, whose provenance cannot be inferred from a
+count or an artifact date. Metadata and both layers commit atomically.
 
-Идемпотентность: метаданные (regions, region_indicators) — upsert по slug/code;
-точки — если счётчик region_data совпадает с артефактом, шаг пропускается;
-иначе полная перезаливка (TRUNCATE + COPY-стиль вставки чанками). Данные
-полностью воспроизводимы из артефакта, пользовательских данных в таблицах нет.
-
-Запуск: python seed_regional.py (вызывается из entrypoint.sh после seed_data.py).
+Every startup compares content through temporary COPY staging tables. Python
+holds at most CHUNK records; no TRUNCATE, table-wide replacement or count skip.
+The commit owner publishes regional generations only after an actual change.
 """
 
 import asyncio
 import csv
+from decimal import Decimal, InvalidOperation
 import gzip
 import json
 import sys
 from pathlib import Path
 
-from sqlalchemy import func, select, text
+from sqlalchemy import or_, select, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from app.database import async_session
-from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
+from app.core.cache import publish_committed_regional_changes
+from app.database import async_session, set_local_statement_timeout
+from app.models import Region, RegionIndicator
+from app.services.regional_storage import acquire_regional_write_lock, update_regional_year_bounds
 
 DATA_DIR = Path(__file__).parent / "app" / "data" / "regional"
 CHUNK = 10_000
@@ -38,44 +38,113 @@ def load_meta():
     return regions, indicators
 
 
+def _value(raw: str) -> Decimal:
+    try:
+        value = Decimal(raw)
+    except InvalidOperation as exc:
+        raise ValueError("regional: invalid artifact value") from exc
+    if not value.is_finite():
+        raise ValueError("regional: nonfinite artifact value")
+    return value
+
+
 def iter_points():
-    """Стрим точек из артефакта (О-10): не держим ~1M кортежей в памяти."""
+    """Stream annual numeric observations; invalid rows abort the transaction."""
     with gzip.open(DATA_DIR / "data.csv.gz", "rt", encoding="utf-8") as fh:
         reader = csv.reader(fh, delimiter=";")
         next(reader)
-        for code, rslug, year, value in reader:
-            yield code, rslug, int(year), float(value)
+        for code, rslug, raw_year, raw_value in reader:
+            year = int(raw_year)
+            if not 1 <= year <= 9999:
+                raise ValueError("regional: invalid annual year")
+            yield code, rslug, year, _value(raw_value)
 
 
 def iter_monthly_points():
-    """Стрим помесячных точек из fuel_points.csv (период YYYYMM).
+    """Stream YYYYMM values; legitimate four-digit annual fuel rows are skipped.
 
-    Файл может отсутствовать — помесячный слой тогда просто пуст.
+    Missing monthly artifact means no bootstrap observations, never deletion.
     """
     path = DATA_DIR / "fuel_points.csv"
     if not path.exists():
         return
-    with open(path, encoding="utf-8") as fh:
+    with path.open(encoding="utf-8") as fh:
         reader = csv.reader(fh, delimiter=";")
         next(reader, None)
-        for code, rslug, period, value in reader:
-            if len(period) == 6 and period.isdigit():
-                yield code, rslug, int(period), float(value)
+        for code, rslug, period, raw_value in reader:
+            if len(period) == 4 and period.isdigit() and 1 <= int(period) <= 9999:
+                continue
+            if (len(period) != 6 or not period.isdigit()
+                    or not 1 <= int(period[:4]) <= 9999
+                    or not 1 <= int(period[4:]) <= 12):
+                raise ValueError("regional: invalid monthly period")
+            yield code, rslug, int(period), _value(raw_value)
 
 
-def count_points() -> int:
-    with gzip.open(DATA_DIR / "data.csv.gz", "rt", encoding="utf-8") as fh:
-        return sum(1 for _ in fh) - 1  # минус заголовок
+async def _upsert_metadata(db, regions, indicators) -> int:
+    """Apply artifact-owned metadata only when fields actually differ."""
+    changed = 0
+    for order, region in enumerate(regions):
+        values = dict(slug=region["slug"], name=region["name"], kind=region["kind"],
+                      district_slug=region["district"], sort_order=order)
+        stmt = pg_insert(Region).values(**values)
+        fields = {k: getattr(stmt.excluded, k) for k in values if k != "slug"}
+        result = await db.execute(stmt.on_conflict_do_update(
+            index_elements=["slug"], set_=fields,
+            where=or_(*(getattr(Region, k).is_distinct_from(v) for k, v in fields.items())),
+        ))
+        changed += result.rowcount
+    for indicator in indicators:
+        values = dict(
+            code=indicator["code"], table_code=indicator["table_code"],
+            section_num=indicator["section_num"], section_name=indicator["section_name"],
+            name=indicator["name"][:300], unit=indicator["unit"][:120],
+            note=indicator.get("note") or None,
+            source_note=indicator.get("source_sheet", "")[:200] or None,
+        )
+        # Bounds come from surviving observations, not the artifact's extent.
+        stmt = pg_insert(RegionIndicator).values(**values)
+        fields = {k: getattr(stmt.excluded, k) for k in values if k != "code"}
+        result = await db.execute(stmt.on_conflict_do_update(
+            index_elements=["code"], set_=fields,
+            where=or_(*(getattr(RegionIndicator, k).is_distinct_from(v) for k, v in fields.items())),
+        ))
+        changed += result.rowcount
+    return changed
 
 
-def count_monthly_points() -> int:
-    path = DATA_DIR / "fuel_points.csv"
-    if not path.exists():
-        return 0
-    with open(path, encoding="utf-8") as fh:
-        reader = csv.reader(fh, delimiter=";")
-        next(reader, None)
-        return sum(1 for row in reader if len(row[2]) == 6 and row[2].isdigit())
+async def _stage_points(db, table, points, indicator_ids, region_ids) -> int:
+    """COPY bounded chunks to a transaction-local table; reject duplicate keys."""
+    # Table names are internal constants, never user/artifact input.
+    if table not in {"regional_seed_annual", "regional_seed_monthly"}:
+        raise ValueError("regional: invalid staging table")
+    await db.execute(text(f"""CREATE TEMP TABLE {table} (
+        indicator_id integer NOT NULL, region_id integer NOT NULL,
+        period integer NOT NULL, value numeric(18,4) NOT NULL,
+        PRIMARY KEY (indicator_id, region_id, period)
+    ) ON COMMIT DROP"""))
+    raw = await (await db.connection()).get_raw_connection()
+    driver = raw.driver_connection
+    total = 0
+    chunk = []
+    for code, slug, period, value in points:
+        indicator_id, region_id = indicator_ids.get(code), region_ids.get(slug)
+        if indicator_id is None or region_id is None:
+            raise RuntimeError(f"regional: нет метаданных для {code!r}/{slug!r}")
+        chunk.append((indicator_id, region_id, period, value))
+        if len(chunk) >= CHUNK:
+            await driver.copy_records_to_table(
+                table, records=chunk, columns=("indicator_id", "region_id", "period", "value"),
+            )
+            total += len(chunk)
+            chunk = []
+    if chunk:
+        await driver.copy_records_to_table(
+            table, records=chunk, columns=("indicator_id", "region_id", "period", "value"),
+        )
+        total += len(chunk)
+    await db.execute(text(f"ANALYZE {table}"))
+    return total
 
 
 async def seed_regional() -> None:
@@ -83,110 +152,49 @@ async def seed_regional() -> None:
         print("regional: артефакт app/data/regional/data.csv.gz отсутствует — пропуск")
         return
     regions, indicators = load_meta()
-    n_artifact = count_points()
-
     async with async_session() as db:
-        # --- регионы (upsert по slug) ---
-        for i, r in enumerate(regions):
-            stmt = pg_insert(Region).values(
-                slug=r["slug"], name=r["name"], kind=r["kind"],
-                district_slug=r["district"], sort_order=i,
-            ).on_conflict_do_update(
-                index_elements=["slug"],
-                set_={"name": r["name"], "kind": r["kind"],
-                      "district_slug": r["district"], "sort_order": i},
-            )
-            await db.execute(stmt)
-
-        # --- показатели (upsert по code) ---
-        for ind in indicators:
-            stmt = pg_insert(RegionIndicator).values(
-                code=ind["code"], table_code=ind["table_code"],
-                section_num=ind["section_num"], section_name=ind["section_name"],
-                name=ind["name"][:300], unit=ind["unit"][:120],
-                note=ind.get("note") or None,
-                source_note=ind.get("source_sheet", "")[:200] or None,
-                year_min=ind.get("year_min"), year_max=ind.get("year_max"),
-            ).on_conflict_do_update(
-                index_elements=["code"],
-                set_={"table_code": ind["table_code"],
-                      "section_num": ind["section_num"],
-                      "section_name": ind["section_name"],
-                      "name": ind["name"][:300], "unit": ind["unit"][:120],
-                      "note": ind.get("note") or None,
-                      "source_note": ind.get("source_sheet", "")[:200] or None,
-                      "year_min": ind.get("year_min"),
-                      "year_max": ind.get("year_max")},
-            )
-            await db.execute(stmt)
+        # Serialize both writers before metadata/point row locks. EMISS owns
+        # monthly conflicts regardless of transaction arrival order.
+        await set_local_statement_timeout(db, 120_000)
+        await acquire_regional_write_lock(db)
+        changed_meta = await _upsert_metadata(db, regions, indicators)
+        region_ids = dict((await db.execute(select(Region.slug, Region.id))).all())
+        indicator_ids = dict((await db.execute(select(RegionIndicator.code, RegionIndicator.id))).all())
+        annual_count = await _stage_points(
+            db, "regional_seed_annual", iter_points(), indicator_ids, region_ids,
+        )
+        monthly_count = await _stage_points(
+            db, "regional_seed_monthly", iter_monthly_points(), indicator_ids, region_ids,
+        )
+        # Filter unchanged rows before INSERT to avoid consuming ~1M sequence
+        # ids on every unchanged restart. ON CONFLICT also handles other writers.
+        annual = await db.execute(text("""
+            INSERT INTO region_data AS target (indicator_id, region_id, year, value)
+            SELECT source.indicator_id, source.region_id, source.period, source.value
+            FROM regional_seed_annual source
+            LEFT JOIN region_data stored ON stored.indicator_id = source.indicator_id
+                AND stored.region_id = source.region_id AND stored.year = source.period
+            WHERE stored.value IS DISTINCT FROM source.value
+            ON CONFLICT (indicator_id, region_id, year) DO UPDATE SET value = excluded.value
+            WHERE target.value IS DISTINCT FROM excluded.value
+        """))
+        monthly = await db.execute(text("""
+            INSERT INTO region_monthly_data (indicator_id, region_id, month, value)
+            SELECT source.indicator_id, source.region_id, source.period, source.value
+            FROM regional_seed_monthly source
+            LEFT JOIN region_monthly_data stored ON stored.indicator_id = source.indicator_id
+                AND stored.region_id = source.region_id AND stored.month = source.period
+            WHERE stored.id IS NULL
+            ON CONFLICT (indicator_id, region_id, month) DO NOTHING
+        """))
+        changed_bounds = await update_regional_year_bounds(db)
+        changed = changed_meta + annual.rowcount + monthly.rowcount + changed_bounds
         await db.commit()
-
-        # --- точки: пропуск, если счётчик совпадает ---
-        n_db = (await db.execute(select(func.count()).select_from(RegionDataPoint))).scalar()
-        n_db_monthly = (
-            await db.execute(select(func.count()).select_from(RegionMonthlyPoint))
-        ).scalar()
-        n_artifact_monthly = count_monthly_points()
-        if n_db == n_artifact and n_db_monthly == n_artifact_monthly:
-            print(f"regional: {n_db}+{n_db_monthly} точек уже загружены — пропуск")
-            return
-
-        print(f"regional: в БД {n_db}+{n_db_monthly}, в артефакте {n_artifact}+{n_artifact_monthly}"
-              " — полная перезаливка")
-        rid = {s: i for s, i in (await db.execute(select(Region.slug, Region.id))).all()}
-        iid = {c: i for c, i in
-               (await db.execute(select(RegionIndicator.code, RegionIndicator.id))).all()}
-
-        await db.execute(text("TRUNCATE region_data, region_monthly_data RESTART IDENTITY"))
-        # О-10: COPY чанками через asyncpg вместо ~1M executemany-инсертов —
-        # на порядок быстрее и без гигантского списка в памяти.
-        raw = await (await db.connection()).get_raw_connection()
-        driver = raw.driver_connection
-        total = 0
-        chunk: list[tuple[int, int, int, float]] = []
-        for c, r, y, v in iter_points():
-            ind_id, reg_id = iid.get(c), rid.get(r)
-            if ind_id is None or reg_id is None:
-                raise RuntimeError(f"regional: нет метаданных для {c!r}/{r!r}")
-            chunk.append((ind_id, reg_id, y, v))
-            if len(chunk) >= CHUNK:
-                await driver.copy_records_to_table(
-                    "region_data", records=chunk,
-                    columns=("indicator_id", "region_id", "year", "value"),
-                )
-                total += len(chunk)
-                chunk = []
-        if chunk:
-            await driver.copy_records_to_table(
-                "region_data", records=chunk,
-                columns=("indicator_id", "region_id", "year", "value"),
-            )
-            total += len(chunk)
-
-        total_m = 0
-        chunk = []
-        for c, r, m, v in iter_monthly_points():
-            ind_id, reg_id = iid.get(c), rid.get(r)
-            if ind_id is None or reg_id is None:
-                raise RuntimeError(f"regional-monthly: нет метаданных для {c!r}/{r!r}")
-            chunk.append((ind_id, reg_id, m, v))
-            if len(chunk) >= CHUNK:
-                await driver.copy_records_to_table(
-                    "region_monthly_data", records=chunk,
-                    columns=("indicator_id", "region_id", "month", "value"),
-                )
-                total_m += len(chunk)
-                chunk = []
-        if chunk:
-            await driver.copy_records_to_table(
-                "region_monthly_data", records=chunk,
-                columns=("indicator_id", "region_id", "month", "value"),
-            )
-            total_m += len(chunk)
-
-        await db.commit()
-        print(f"regional: загружено {total} годовых + {total_m} месячных точек, "
-              f"{len(indicators)} показателей, {len(regions)} территорий")
+        if changed:
+            await publish_committed_regional_changes()
+        print(f"regional: сверено {annual_count} годовых + {monthly_count} месячных точек; "
+              f"изменено {annual.rowcount} годовых + {monthly.rowcount} новых месячных, "
+              f"{changed_meta} метаданных + {changed_bounds} диапазонов")
 
 
 if __name__ == "__main__":

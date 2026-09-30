@@ -130,6 +130,22 @@ curl --fail -A 'YandexBot/3.0' http://127.0.0.1:3000/russia/indicator/cpi
 
 Web-role `backend/entrypoint.sh` выполняет Alembic, федеральный/региональный/calendar seed и запускает 3 Uvicorn workers. Seed создаёт метаданные; полноценная история всех рядов из этого не следует. Ошибка первого пустого регионального seed фатальна, при уже наполненной региональной БД логируется. Порт **3000** проверяет nginx→SSR и собранные assets. Backend исходники не bind-mounted: после их правки повторить совместную сборку и `up`; Vite HMR не обновляет контейнерный Python.
 
+### Региональный startup после пакета F03, 30.09
+
+`seed_regional.py` выполняет содержательную COPY/staging сверку при каждом
+web startup. Временные таблицы, чанки 10 000 и conditional merge сохраняют
+память ограниченной и не перезаписывают всю БД; неизменный запуск всё равно
+читает артефакт и сравнивает его с БД. SQL budget сидера — `SET LOCAL
+statement_timeout=120000` (на statement), advisory xact lock сериализует
+SQL-запись сидера и ЕМИСС (HTTP fetch предшествует lock), после транзакции возвращается обычный timeout. Metadata и обе частоты
+commit вместе; месячные конфликты принадлежат live-обновлению ЕМИСС.
+Старый startup fallback при уже заполненной годовой таблице сохраняется.
+
+После выпуска проверить startup duration/temp disk/SQL waits на общем
+сервере 4 vCPU, региональные API/SSR/OG и очередную sitemap generation.
+Локальный constrained PostgreSQL замер приведён в [приёмке](code-review/regional-publication-acceptance-2026-09-30.md);
+он не заменяет измерение совместного ETL/BI/SSR workload production.
+
 ### Профиль B: быстрый frontend с HMR и локальным API
 
 Нужны Node22, `npm ci` во `frontend/` и работающий локальный backend. Запуск из `frontend/`:

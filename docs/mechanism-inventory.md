@@ -16,7 +16,7 @@
 - Registry declarations: **843**
 - Registry references: **1600**
 - Migration operations: **348**
-- Candidate effects: **1888**
+- Candidate effects: **1906**
 - Unresolved syntax: **0**
 - MCP tools: **7**
 
@@ -107,35 +107,35 @@
 | GET | /api/v1/world/{country_slug}/regions/region/{slug}/{code}/forecast | app.api.world_subnational.region_indicator_forecast | [backend/app/api/world_subnational.py:591](../backend/app/api/world_subnational.py#L591) |
 | GET | /api/auth/{provider}/start | app.api.oauth.oauth_start | [backend/app/api/oauth.py:475](../backend/app/api/oauth.py#L475) |
 | GET | /api/auth/{provider}/callback | app.api.oauth.oauth_callback | [backend/app/api/oauth.py:476](../backend/app/api/oauth.py#L476) |
-| GET/HEAD | /sitemap.xml | app.api.sitemap.sitemap_index | [backend/app/api/sitemap.py:270](../backend/app/api/sitemap.py#L270) |
-| GET/HEAD | /sitemap-{section}.xml | app.api.sitemap.sitemap_section | [backend/app/api/sitemap.py:324](../backend/app/api/sitemap.py#L324) |
-| GET/HEAD | /sitemap-stats.json | app.api.sitemap.sitemap_stats | [backend/app/api/sitemap.py:475](../backend/app/api/sitemap.py#L475) |
-| GET/HEAD | /robots.txt | app.api.sitemap.robots_txt | [backend/app/api/sitemap.py:495](../backend/app/api/sitemap.py#L495) |
-| GET/HEAD | /llms.txt | app.api.sitemap.llms_txt | [backend/app/api/sitemap.py:510](../backend/app/api/sitemap.py#L510) |
-| GET/HEAD | /feed.xml | app.api.sitemap.rss_feed | [backend/app/api/sitemap.py:525](../backend/app/api/sitemap.py#L525) |
-| GET | /api/v1/og-image/indicator/{code}.png | app.api.sitemap.og_image_indicator | [backend/app/api/sitemap.py:638](../backend/app/api/sitemap.py#L638) |
-| GET | /api/v1/og-image/indicator/{code}/{period}.png | app.api.sitemap.og_image_indicator_month | [backend/app/api/sitemap.py:723](../backend/app/api/sitemap.py#L723) |
-| GET | /api/v1/og-image/indicator/{code}/{year}.png | app.api.sitemap.og_image_indicator_year | [backend/app/api/sitemap.py:842](../backend/app/api/sitemap.py#L842) |
-| GET | /api/v1/og-image/region/{slug}/{code}.png | app.api.sitemap.og_image_region_indicator | [backend/app/api/sitemap.py:983](../backend/app/api/sitemap.py#L983) |
-| GET | /api/v1/og-image/region/{slug}/{code}/{year}.png | app.api.sitemap.og_image_region_indicator_year | [backend/app/api/sitemap.py:1092](../backend/app/api/sitemap.py#L1092) |
-| GET | /api/v1/og-image/region-rating/{code}.png | app.api.sitemap.og_image_region_rating | [backend/app/api/sitemap.py:1198](../backend/app/api/sitemap.py#L1198) |
-| GET | /api/v1/og-image/today.png | app.api.sitemap.og_image_today_hub | [backend/app/api/sitemap.py:1273](../backend/app/api/sitemap.py#L1273) |
-| GET | /api/v1/og-image/region-vs/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_region_vs | [backend/app/api/sitemap.py:1316](../backend/app/api/sitemap.py#L1316) |
-| GET | /api/v1/og-image/world-vs/{slug_a}-vs-{slug_b}/{concept_slug}.png | app.api.sitemap.og_image_world_vs | [backend/app/api/sitemap.py:1387](../backend/app/api/sitemap.py#L1387) |
-| GET | /api/v1/og-image/world/{slug}.png | app.api.sitemap.og_image_world_country | [backend/app/api/sitemap.py:1535](../backend/app/api/sitemap.py#L1535) |
-| GET | /api/v1/og-image/world-rating/{concept_slug}.png | app.api.sitemap.og_image_world_rating | [backend/app/api/sitemap.py:1667](../backend/app/api/sitemap.py#L1667) |
-| GET | /api/v1/og-image/world-rating/{concept_slug}/{year}.png | app.api.sitemap.og_image_world_rating_year | [backend/app/api/sitemap.py:1722](../backend/app/api/sitemap.py#L1722) |
-| GET | /api/v1/og-image/world/{slug}/{code}.png | app.api.sitemap.og_image_world_indicator | [backend/app/api/sitemap.py:1789](../backend/app/api/sitemap.py#L1789) |
-| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1883](../backend/app/api/sitemap.py#L1883) |
-| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2042](../backend/app/api/sitemap.py#L2042) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2114](../backend/app/api/sitemap.py#L2114) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2194](../backend/app/api/sitemap.py#L2194) |
-| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2280](../backend/app/api/sitemap.py#L2280) |
-| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2416](../backend/app/api/sitemap.py#L2416) |
-| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2522](../backend/app/api/sitemap.py#L2522) |
-| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2529](../backend/app/api/sitemap.py#L2529) |
-| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2536](../backend/app/api/sitemap.py#L2536) |
-| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2545](../backend/app/api/sitemap.py#L2545) |
+| GET/HEAD | /sitemap.xml | app.api.sitemap.sitemap_index | [backend/app/api/sitemap.py:271](../backend/app/api/sitemap.py#L271) |
+| GET/HEAD | /sitemap-{section}.xml | app.api.sitemap.sitemap_section | [backend/app/api/sitemap.py:325](../backend/app/api/sitemap.py#L325) |
+| GET/HEAD | /sitemap-stats.json | app.api.sitemap.sitemap_stats | [backend/app/api/sitemap.py:476](../backend/app/api/sitemap.py#L476) |
+| GET/HEAD | /robots.txt | app.api.sitemap.robots_txt | [backend/app/api/sitemap.py:496](../backend/app/api/sitemap.py#L496) |
+| GET/HEAD | /llms.txt | app.api.sitemap.llms_txt | [backend/app/api/sitemap.py:511](../backend/app/api/sitemap.py#L511) |
+| GET/HEAD | /feed.xml | app.api.sitemap.rss_feed | [backend/app/api/sitemap.py:526](../backend/app/api/sitemap.py#L526) |
+| GET | /api/v1/og-image/indicator/{code}.png | app.api.sitemap.og_image_indicator | [backend/app/api/sitemap.py:639](../backend/app/api/sitemap.py#L639) |
+| GET | /api/v1/og-image/indicator/{code}/{period}.png | app.api.sitemap.og_image_indicator_month | [backend/app/api/sitemap.py:724](../backend/app/api/sitemap.py#L724) |
+| GET | /api/v1/og-image/indicator/{code}/{year}.png | app.api.sitemap.og_image_indicator_year | [backend/app/api/sitemap.py:843](../backend/app/api/sitemap.py#L843) |
+| GET | /api/v1/og-image/region/{slug}/{code}.png | app.api.sitemap.og_image_region_indicator | [backend/app/api/sitemap.py:984](../backend/app/api/sitemap.py#L984) |
+| GET | /api/v1/og-image/region/{slug}/{code}/{year}.png | app.api.sitemap.og_image_region_indicator_year | [backend/app/api/sitemap.py:1093](../backend/app/api/sitemap.py#L1093) |
+| GET | /api/v1/og-image/region-rating/{code}.png | app.api.sitemap.og_image_region_rating | [backend/app/api/sitemap.py:1199](../backend/app/api/sitemap.py#L1199) |
+| GET | /api/v1/og-image/today.png | app.api.sitemap.og_image_today_hub | [backend/app/api/sitemap.py:1277](../backend/app/api/sitemap.py#L1277) |
+| GET | /api/v1/og-image/region-vs/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_region_vs | [backend/app/api/sitemap.py:1320](../backend/app/api/sitemap.py#L1320) |
+| GET | /api/v1/og-image/world-vs/{slug_a}-vs-{slug_b}/{concept_slug}.png | app.api.sitemap.og_image_world_vs | [backend/app/api/sitemap.py:1394](../backend/app/api/sitemap.py#L1394) |
+| GET | /api/v1/og-image/world/{slug}.png | app.api.sitemap.og_image_world_country | [backend/app/api/sitemap.py:1542](../backend/app/api/sitemap.py#L1542) |
+| GET | /api/v1/og-image/world-rating/{concept_slug}.png | app.api.sitemap.og_image_world_rating | [backend/app/api/sitemap.py:1674](../backend/app/api/sitemap.py#L1674) |
+| GET | /api/v1/og-image/world-rating/{concept_slug}/{year}.png | app.api.sitemap.og_image_world_rating_year | [backend/app/api/sitemap.py:1729](../backend/app/api/sitemap.py#L1729) |
+| GET | /api/v1/og-image/world/{slug}/{code}.png | app.api.sitemap.og_image_world_indicator | [backend/app/api/sitemap.py:1796](../backend/app/api/sitemap.py#L1796) |
+| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1890](../backend/app/api/sitemap.py#L1890) |
+| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2049](../backend/app/api/sitemap.py#L2049) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2121](../backend/app/api/sitemap.py#L2121) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2201](../backend/app/api/sitemap.py#L2201) |
+| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2287](../backend/app/api/sitemap.py#L2287) |
+| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2423](../backend/app/api/sitemap.py#L2423) |
+| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2529](../backend/app/api/sitemap.py#L2529) |
+| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2536](../backend/app/api/sitemap.py#L2536) |
+| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2543](../backend/app/api/sitemap.py#L2543) |
+| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2552](../backend/app/api/sitemap.py#L2552) |
 | GET/HEAD | /seo/not-found | app.api.seo_pages.seo_not_found | [backend/app/api/seo_pages.py:296](../backend/app/api/seo_pages.py#L296) |
 | GET/HEAD | /seo/page/home | app.api.seo_pages.seo_home | [backend/app/api/seo_pages.py:302](../backend/app/api/seo_pages.py#L302) |
 | GET/HEAD | /seo/page/{page} | app.api.seo_pages.seo_page | [backend/app/api/seo_pages.py:314](../backend/app/api/seo_pages.py#L314) |
@@ -1558,8 +1558,8 @@ Relationships: `[]`
 | app.api.regions.LANDING_TABLES | Tuple | sequence/source expression | [backend/app/api/regions.py:67](../backend/app/api/regions.py#L67) |
 | app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:569](../backend/app/api/regions.py#L569) |
 | app.api.seo_pages._RENDER_SEM | Call | computed source expression | [backend/app/api/seo_pages.py:153](../backend/app/api/seo_pages.py#L153) |
-| app.api.sitemap._ANNUAL_SUMMARY_EN | Dict | 'Рост цен за год', 'Итог за год (сумма)', 'Значение на конец года', 'Среднее за год' | [backend/app/api/sitemap.py:89](../backend/app/api/sitemap.py#L89) |
-| app.api.sitemap._OG_INDICATOR_ALIASES | Dict | 'inflation', 'gdp' | [backend/app/api/sitemap.py:631](../backend/app/api/sitemap.py#L631) |
+| app.api.sitemap._ANNUAL_SUMMARY_EN | Dict | 'Рост цен за год', 'Итог за год (сумма)', 'Значение на конец года', 'Среднее за год' | [backend/app/api/sitemap.py:90](../backend/app/api/sitemap.py#L90) |
+| app.api.sitemap._OG_INDICATOR_ALIASES | Dict | 'inflation', 'gdp' | [backend/app/api/sitemap.py:632](../backend/app/api/sitemap.py#L632) |
 | app.api.system._START_TIME | Call | computed source expression | [backend/app/api/system.py:16](../backend/app/api/system.py#L16) |
 | app.api.ticker.TICKER_SET_RUSSIA | Tuple | sequence/source expression | [backend/app/api/ticker.py:59](../backend/app/api/ticker.py#L59) |
 | app.api.ticker.TICKER_SET_WORLD | Tuple | sequence/source expression | [backend/app/api/ticker.py:67](../backend/app/api/ticker.py#L67) |
@@ -1906,8 +1906,8 @@ Relationships: `[]`
 | app.services.display._CYRILLIC_RE | Call | computed source expression | [backend/app/services/display.py:317](../backend/app/services/display.py#L317) |
 | app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:438](../backend/app/services/display.py#L438) |
 | app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:540](../backend/app/services/display.py#L540) |
-| app.services.emiss_regional_parser.PRICE_FUELS | Dict | '1709730', '1709750', '1755196' | [backend/app/services/emiss_regional_parser.py:67](../backend/app/services/emiss_regional_parser.py#L67) |
-| app.services.emiss_regional_parser.MONTH_OIDS | Dict | '1540283', '1540282', '1540236', '1540229', '1540235', '1540234', '1540233', '1540228', '1540276', '1540273', '1540272', '1540230' | [backend/app/services/emiss_regional_parser.py:74](../backend/app/services/emiss_regional_parser.py#L74) |
+| app.services.emiss_regional_parser.PRICE_FUELS | Dict | '1709730', '1709750', '1755196' | [backend/app/services/emiss_regional_parser.py:70](../backend/app/services/emiss_regional_parser.py#L70) |
+| app.services.emiss_regional_parser.MONTH_OIDS | Dict | '1540283', '1540282', '1540236', '1540229', '1540235', '1540234', '1540233', '1540228', '1540276', '1540273', '1540272', '1540230' | [backend/app/services/emiss_regional_parser.py:77](../backend/app/services/emiss_regional_parser.py#L77) |
 | app.services.eurostat_parser.HEADLINE_PRIORITY | Dict | 'unit', 's_adj', 'nace_r2', 'nace_r1', 'coicop', 'coicop18', 'sex', 'age', 'na_item', 'geo', 'time', 'freq', 'indic', 'indic_bt', 'indic_sb', 'indic_de', 'cpa2_1', 'sizeclas', 'worktime', 'citizen', 'wstatus', 'isced11', 'currency', 'stk_flow', 'partner', 'sitc06', 'nrg_bal', 'siec' | [backend/app/services/eurostat_parser.py:91](../backend/app/services/eurostat_parser.py#L91) |
 | app.services.eurostat_parser._SKIP_DIMS | Call | computed source expression | [backend/app/services/eurostat_parser.py:140](../backend/app/services/eurostat_parser.py#L140) |
 | app.services.eurostat_parser.FREQ_MAP | Dict | 'M', 'Q', 'A', 'W', 'D', 'S' | [backend/app/services/eurostat_parser.py:142](../backend/app/services/eurostat_parser.py#L142) |

@@ -1,5 +1,73 @@
 # Контракты данных Forecast Economy
 
+## Региональный контур F03 — 2026-09-30
+
+Локальный пакет после `main c2a883d` заменяет count-skip/общую перезаливку
+артефакта и публикацию ЕМИСС только в конце полного прогона. Старые описания
+ниже сохраняют дату наблюдения. Основания выбора —
+[ADR-0008](adr/0008-regional-bounded-context.md#2026-09-30--права-записи-артефакта-и-емисс),
+сценарии и фактические результаты —
+[приёмка](code-review/regional-publication-acceptance-2026-09-30.md).
+
+| Producer | Права записи | Что сохраняется |
+|---|---|---|
+| Годовой артефакт `data.csv.gz` | INSERT отсутствующих ключей; UPDATE отличающегося значения по `(indicator_id,region_id,year)` | Все DB-only годы, показатели и территории, включая исторический дособор; отсутствие ключа не является DELETE |
+| Месячный артефакт `fuel_points.csv` | INSERT отсутствующих `(indicator_id,region_id,YYYYMM)`; конфликт оставляет существующее значение | Живые ревизии и новые месяцы ЕМИСС; отсутствие файла не очищает месячную таблицу |
+| ЕМИСС 31448 | INSERT/UPDATE фактически полученных месячных точек; каждый месяц — отдельный commit | Пропущенные в ответе точки и ранее закоммиченные месяцы при поздней ошибке |
+
+**Сидер.** [Реализация](../backend/seed_regional.py) больше не принимает равенство
+счётчиков за равенство содержания. При наличии годового артефакта каждый запуск
+потоково переносит входные точки во временные PostgreSQL staging-таблицы
+чанками по 10 000, проверяет их и
+объединяет по уникальным ключам; в Python не строится список всей истории.
+Годовые значения сравниваются в точности хранения `Numeric(18,4)`. Метаданные
+и обе частоты фиксируются одной транзакцией; некорректный импорт откатывает их
+вместе. Обновление metadata при тех же точках тоже является изменением.
+Четырёхзначные годовые строки `fuel_points.csv` относятся к годовым топливным
+рядам и не превращаются в месячные.
+
+**Совместная запись.** Сидер и месячный ЕМИСС используют один PostgreSQL
+transaction advisory lock для региональной записи. Он удерживается только
+на SQL-части до commit/rollback; внешняя загрузка ЕМИСС выполняется до lock.
+Это сохраняет общий порядок metadata/points и предотвращает встречное ожидание
+при одновременном startup и живом месячном обновлении. Месячные конфликты по
+значениям по-прежнему разрешаются описанными выше правами; lock не устанавливает
+происхождение точки.
+
+**Метаданные и происхождение.** Артефакт управляет names/units/notes имеющихся
+в нём записей; отсутствие записи не удаляет её из БД. `year_min/year_max`
+считаются по сохранённому объединению годовых лет и лет месячных точек, а не
+по границам последнего файла. Живой месячный ingest поддерживает эти границы.
+`note/source_note` — описание происхождения показателя, а не отдельный журнал
+каждой точки. Без такого журнала нельзя безопасно отличить старое месячное
+seed-значение от более свежей ревизии: поэтому месячный bootstrap оставляет
+конфликтующее существующее значение. Обновление существующих месячных значений
+из изменённого артефакта этим пакетом не реализовано.
+
+**Commit → consumers.** После успешного commit выполняется ограниченная
+best-effort попытка обновить namespaces `regions`, `ssr-region`, `og-region`;
+regional API/SSR/OG используют их поколения.
+ЕМИСС публикует каждую изменённую транзакцию до следующего fetch, поэтому
+поздний source failure не оставляет предыдущий успешный месяц ожидающим
+финальной публикации всего прогона. Rollback не публикуется. TTL и мемоизация
+поколения остаются ограничением видимости; отдельные PostgreSQL и Redis не
+дают гарантии доставки после падения процесса. Публикация статических sitemap
+shards остаётся отдельным job, а не частью этой транзакции.
+
+**План ЕМИСС.** Сохранённый артефакт сопоставляет slug → ОКАТО-id; grid parser
+получает обратный id → slug, включая особую строку РФ до 2023 года. Помимо
+догоняющего плана проверяются текущий и предыдущий календарные месяцы.
+Это ограниченный хвост ревизий, не повторная сверка всех регионов и месяцев
+истории с ЕМИСС. Метаданные могут требовать публикации даже при неизменных
+значениях точек.
+
+**Окружение.** [Entrypoint](../backend/entrypoint.sh) по-прежнему останавливает
+первичный startup при ошибке сидера на пустой годовой БД, но продолжает старт
+при уже имеющейся годовой истории. Это fallback доступности, не доказательство
+актуальности источника. Полный restore после ЕМИСС требует БД, одного артефакта
+недостаточно. Локальные тесты/замеры и production release различаются; число
+4 vCPU не является измеренной пропускной способностью этого механизма.
+
 ## Защита истории и commit → публикация — 2026-09-30
 
 Текущий локальный пакет после `main 506122b` уточняет F01/F02/F04; старые
@@ -61,7 +129,7 @@ DTO, HTTP/Depends, jobs/locks/flags, Settings/readers и candidate effects. Ка
 имеет source anchor и SHA; произвольный `execute/set/add` без receiver dispatch не
 считается автоматически SQL/Redis write. [Backend trace](code-review/backend-mechanism-acceptance-2026-09-30.md)
 и [actual-body probes](code-review/backend-mechanism-probes-2026-09-30.json)
-уточняют прежние риски BM01–BM07: nonempty partial удаляет 2 из 3 дат; bump до commit
+сохраняют наблюдения до исправлений F01/F02/F03/F04 и уточняют прежние риски BM01–BM07: nonempty partial удаляет 2 из 3 дат; bump до commit
 допускает old cache; равные regional counts скрывают values revision; fixed monthly key
 не меняется от regions bump; remap+первый Eurostat slice сохраняются при ошибке второго
 без final bump; 4-minute session через границу chunk даёт2 вместо1; late id1 пропускается
@@ -108,7 +176,7 @@ analytics batches, embed/identity и loading/error/empty. Численное com
 
 **Год и месяц не смешивать.** `seed_regional.py` читает `regions.json`, `indicators.json`, `data.csv.gz`, опциональный `fuel_points.csv`; метаданные upsert по slug/code, годовые и месячные таблицы отдельно. `source_note`/`note` несут происхождение исторических добавлений; единица в `RegionIndicator.unit`, а не в значении точки. [Артефакт](../backend/seed_regional.py#L35-L63), [модель](../backend/app/models.py#L93-L165).
 
-**Публикация.** Сидер пропускает загрузку точек, если **оба** счётчика БД равны счётчикам артефактов; иначе `TRUNCATE` обеих таблиц и потоковая загрузка внутри транзакции, затем commit. Это контракт *по количеству*, не по хэшу содержания: изменение значения без изменения числа строк само по себе не запустит перезаливку. Для редакции артефакта с прежней кардинальностью нужна отдельная проверка и управляемый refresh; в исходном аудите 27.09 такой сценарий не воспроизводился. Продолжение 30.09 проверило actual count-skip и cache-key/bump in-memory (BM03 выше); полная live-value сверка не выполнена. [Guard](../backend/seed_regional.py#L124-L140), [commit](../backend/seed_regional.py#L145-L187). `entrypoint.sh` считает ошибку первичной загрузки фатальной, но при уже наполненной `region_data` продолжает старт; это operational fallback, не подтверждение свежести данных. [Entrypoint](../backend/entrypoint.sh#L20-L44).
+**История публикации 27–30.09 до F03.** Сидер пропускает загрузку точек, если **оба** счётчика БД равны счётчикам артефактов; иначе `TRUNCATE` обеих таблиц и потоковая загрузка внутри транзакции, затем commit. Это контракт *по количеству*, не по хэшу содержания: изменение значения без изменения числа строк само по себе не запустит перезаливку. Для редакции артефакта с прежней кардинальностью нужна отдельная проверка и управляемый refresh; в исходном аудите 27.09 такой сценарий не воспроизводился. Продолжение 30.09 проверило actual count-skip и cache-key/bump in-memory (BM03 выше); полная live-value сверка не выполнена. Старые позиции guard/commit относятся к тому исходному снимку, а не текущему файлу. [Действующий механизм](#региональный-контур-f03--2026-09-30) заменяет эту перезаливку. `entrypoint.sh` считает ошибку первичной загрузки фатальной, но при уже наполненной `region_data` продолжает старт; это operational fallback, не подтверждение свежести данных. [Entrypoint](../backend/entrypoint.sh#L20-L44).
 
 **API.** Месячный `/regions/{slug}/i/{code}/monthly` возвращает `frequency="monthly"`, точки `{year,month,value,label}`, ряд РФ и соседей; при отсутствии точек выбранного региона — 404, не пустой `series`. [API](../backend/app/api/regions.py#L575-L667). Годовой путь использует другую таблицу и форму. Тесты артефакта проверяют известные метаданные, диапазоны и дубли; месячный/годовой consumer проверять раздельно. [Тесты](../backend/tests/test_regional.py#L35-L165).
 
@@ -150,7 +218,7 @@ Public guard требует `official_explicit` либо `official_rule` **то�
 |---|---|---|
 | Федеральный парсер/формула | Парсер: commit после upsert/forecast/invalidate; derived: commit делает scheduler после closure. Redis `fe:{ns}:vN:*` бампается по изменившемуся коду, листингу и dashboard. [Parser](../backend/app/services/base_parser.py#L182-L231), [cache в HEAD](../backend/app/core/cache.py#L218-L304). | Повтор без изменений `(0,0)`, in-place ревизия, `parsed_zero/fallback_used`, зависимый derived и API после cache-hit. [ETL tests](../backend/tests/test_etl_statuses.py#L92-L129), [derived ops](../backend/tests/test_derived_ops.py). |
 | World ingest | National-core — savepoint серии/commit страны; Eurostat — remap commit отдельно, parsed slice и dataset state/log в своих транзакциях, namespace bump в конце loader; BEA — commit архива; subnational FRED — commit каждой пары. `world`, `ssr-world`, `world-catalog` бампать только после подтверждённой записи. [National](../backend/app/services/world_national_ingest.py#L1054-L1116), [Eurostat commit](../backend/scripts/load-world-eurostat.py#L431-L526), [BEA](../backend/app/services/world_bea_regional.py#L410-L420), [subnational](../backend/app/services/world_subnational_ingest.py#L682-L753). | Source failure против missing series; structure accepted/remap/orphan либо quarantine при разломе, без advance TOC на error/quarantine; same-value revision, `forecast=null`, RU/EN payload. [Eurostat tests](../backend/tests/test_world_eurostat_ingest.py), [subnational tests](../backend/tests/test_world_subnational.py). |
-| Regional artifact | Metadata commit отдельно; count guard или `TRUNCATE`/COPY/commit, API-кэш регионов имеет TTL. [Seed](../backend/seed_regional.py#L81-L187), [API](../backend/app/api/regions.py#L575-L667). | Сверить hash/значения артефакта и БД, а не один count; прогнать годовой и месячный consumer и проверить cache-expiry/инвалидацию. |
+| Regional artifact — история до F03 | Metadata commit отдельно; count guard или `TRUNCATE`/COPY/commit, API-кэш регионов имеет TTL. Эти прежние границы заменены [новым контрактом](#региональный-контур-f03--2026-09-30). | Сверить значения артефакта и БД, а не один count; прогнать годовой и месячный consumer и проверить cache-expiry/инвалидацию. |
 | Аналитика | Коллекторы commit batch; rollup-фазы commit раздельно; BI snapshot TTL 24 ч с окнами свежести 5/15 мин. [Collector](../backend/app/api/analytics.py#L641-L655), [rollups](../backend/app/tasks/analytics_rollups.py#L592-L610), [BI](../backend/app/api/admin_bi.py#L53-L125). | Различить сессии и людей, МСК-границы, late/duplicate batch, пустой и stale BI; тесты — [`test_analytics_api.py`](../backend/tests/test_analytics_api.py), [`test_analytics2.py`](../backend/tests/test_analytics2.py), [`test_analytics_engine.py`](../backend/tests/test_analytics_engine.py). |
 
 ### Непроверенные риски и следующий доказательный шаг

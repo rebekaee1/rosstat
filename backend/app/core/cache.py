@@ -600,7 +600,29 @@ async def publish_committed_indicator_changes(
             except Exception:
                 logger.exception("Committed indicator '%s': cache publication failed", code)
 
-    publication = asyncio.create_task(asyncio.wait_for(publish(), timeout=15))
+    await _finish_committed_publication(publish(), "indicator changes")
+
+
+async def publish_committed_regional_changes() -> None:
+    """Publish committed regional SQL to API, SSR and memory/disk OG readers.
+
+    Each namespace is attempted independently. Static sitemap shard generation
+    remains the separate publication job. Redis outages fall back to existing
+    TTLs; this bounded attempt does not provide durable SQL/Redis atomicity.
+    """
+    async def publish() -> None:
+        for namespace in ("regions", "ssr-region", "og-region"):
+            try:
+                await bump_namespaces(namespace)
+            except Exception:
+                logger.exception("Committed regional changes: '%s' publication failed", namespace)
+
+    await _finish_committed_publication(publish(), "regional changes")
+
+
+async def _finish_committed_publication(work: Awaitable[None], description: str) -> None:
+    """Wait for a bounded postcommit attempt even during cooperative cancellation."""
+    publication = asyncio.create_task(asyncio.wait_for(work, timeout=15))
     cancelled = False
     try:
         while not publication.done():
@@ -610,6 +632,6 @@ async def publish_committed_indicator_changes(
                 cancelled = True
         publication.result()
     except Exception:
-        logger.exception("Committed indicator changes: cache publication did not finish")
+        logger.exception("Committed %s: cache publication did not finish", description)
     if cancelled:
         raise asyncio.CancelledError

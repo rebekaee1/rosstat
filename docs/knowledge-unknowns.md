@@ -1,5 +1,15 @@
 # Границы знания и подтверждённые проблемы
 
+## Локальное уточнение F03 — 2026-09-30
+
+После `main c2a883d` воспроизведённые count/content, destructive startup,
+metadata rollback, terminal EMISS publication и fixed API/OG key дефекты
+исправлены локально: [приёмка](code-review/regional-publication-acceptance-2026-09-30.md).
+Строка F03 ниже сохраняет первоначальное основание. Открыты per-point
+provenance существующих месячных значений, обновление их из нового артефакта,
+crash recovery между SQL/Redis, обновление static sitemap и production release.
+
+
 Срез 30 сентября 2026. Основная [приёмка](project-knowledge-acceptance.md) различает
 устройство, риск в конструкции и фактически наблюдавшуюся потерю/сбой.
 Этот реестр не является delete-list или принятой новой архитектурой.

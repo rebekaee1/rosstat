@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cache import versioned_key
 from app.database import get_db, release_session
 from app.models import Indicator, IndicatorData
 from app.services.display import (
@@ -990,7 +991,7 @@ async def og_image_region_indicator(slug: str, code: str, db: AsyncSession = Dep
     from app.services.seo_regional import _fmt as _fmt_ru
 
     loc = get_locale()
-    cache_key = f"fe1:region:{loc}:{slug}:{code}"
+    cache_key = await versioned_key("og-region", f"fe1:region:{loc}:{slug}:{code}")
     cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key)
     if png is None:
@@ -1113,7 +1114,7 @@ async def og_image_region_indicator_year(
     from app.services.seo_renderer import neighbor_year_window
 
     loc = get_locale()
-    cache_key = f"fe1:ryear:{loc}:{slug}:{code}:{year}"
+    cache_key = await versioned_key("og-region", f"fe1:ryear:{loc}:{slug}:{code}:{year}")
     cache_key += ":portrait" if portrait else ":landscape"
     png = cached_og(cache_key, historical=_og_historical(year))
     if png is None:
@@ -1211,7 +1212,10 @@ async def og_image_region_rating(code: str, db: AsyncSession = Depends(get_db), 
     from app.services.og_image import cached_og, render_rating_og, store_og_async
 
     loc = get_locale()
-    cache_key = f"rating:v3:{loc}:{code}:{year if year is not None else 'latest'}" + (":portrait" if portrait else ":landscape")
+    cache_key = await versioned_key(
+        "og-region", f"rating:v3:{loc}:{code}:{year if year is not None else 'latest'}"
+        + (":portrait" if portrait else ":landscape"),
+    )
     png = cached_og(cache_key, historical=_og_historical(year))
     if png is None:
         indicator = (await db.execute(
@@ -1324,7 +1328,10 @@ async def og_image_region_vs(slug_a: str, slug_b: str, db: AsyncSession = Depend
     loc = get_locale()
     # Payload строится по get_locale() (имена регионов: REGIONS_EN на EN),
     # поэтому локаль обязана быть в ключе — иначе залипает язык картинки.
-    cache_key = f"vs:{loc}:{slug_a}:{slug_b}" + (":portrait" if portrait else ":landscape")
+    cache_key = await versioned_key(
+        "og-region", f"vs:{loc}:{slug_a}:{slug_b}"
+        + (":portrait" if portrait else ":landscape"),
+    )
     png = cached_og(cache_key)
     if png is None:
         payload = await build_region_compare_payload(slug_a, slug_b, db)

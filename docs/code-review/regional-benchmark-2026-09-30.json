@@ -1,0 +1,47 @@
+{
+  "limits": {
+    "postgres_cpu": 1,
+    "postgres_memory_mib": 384,
+    "chunk_records": 10000
+  },
+  "runs": [
+    {
+      "phase": "initial",
+      "seconds": 53.764,
+      "annual": 961494,
+      "monthly": 73740,
+      "publications": 1,
+      "python_peak_rss_mib": 95.56
+    },
+    {
+      "phase": "unchanged",
+      "seconds": 9.122,
+      "annual": 961494,
+      "monthly": 73740,
+      "publications": 0,
+      "python_peak_rss_mib": 95.56
+    },
+    {
+      "phase": "same_count_revision",
+      "seconds": 5.601,
+      "annual": 961494,
+      "monthly": 73740,
+      "publications": 1,
+      "python_peak_rss_mib": 95.56
+    }
+  ],
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-30T19:03:06.378522+00:00",
+  "base_commit": "c2a883df98cefd6a658828d1a51186eb2c9faacc",
+  "environment": "Isolated cached PostgreSQL16-alpine container, synthetic test schema; host Python on macOS; complete committed regional artifact read, no production access.",
+  "publication": "Counting spy only for benchmark; actual PostgreSQL/Redis publication verified in test_regional_publication_pg.py",
+  "meaning": "Individual local samples, not percentile/SLA or mixed4vCPU capacity. Other local checks concurrently active.",
+  "source_sha256": {
+    "backend/seed_regional.py": "ff8146b42e8842c236837c5f4050da12fa23d21e813dcd6e47c0fe3591e740b9",
+    "backend/app/services/regional_storage.py": "48f2a2cebb8247c54ae8e491b1ec89c37529a30798c5710007d477595d871ddd",
+    "backend/app/data/regional/data.csv.gz": "e0540565ff745567d8d71f5877241d04266fa5e035a79006d4111e1839d7f4b8",
+    "backend/app/data/regional/fuel_points.csv": "3439b2a2ecc99ba7571f63055184fdefce58dd45ef24f89ab5041075a92ac342",
+    "backend/app/data/regional/regions.json": "5f1fc760ba99252ef28a90784bd38e6942f7587d7734a181f229f262d2958a4b",
+    "backend/app/data/regional/indicators.json": "fcd3f92a74bb35673d887aa173f13306672d32cd57f2ee20b0602d3d5abbeb3f"
+  }
+}

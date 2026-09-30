@@ -15,7 +15,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.core.cache import cache_get, cache_set
+from app.core.cache import cache_get, cache_set, versioned_key
 from app.data.region_indicator_polarity import (
     region_rating_meta,
     region_rating_order_by,
@@ -130,7 +130,7 @@ async def _latest_values(db: AsyncSession, indicator_ids: list[int],
 
 @router.get("")
 async def regions_landing(db: AsyncSession = Depends(get_db)):
-    cache_key = f"fe:regions:landing:{get_locale()}"
+    cache_key = await versioned_key("regions", f"landing:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -206,7 +206,7 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
 @router.get("/catalog")
 async def regions_catalog(db: AsyncSession = Depends(get_db)):
     """Каталог показателей по разделам — одинаков для всех регионов."""
-    cache_key = f"fe:regions:catalog:{get_locale()}"
+    cache_key = await versioned_key("regions", f"catalog:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -242,7 +242,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
 
     Роут объявлен до `/{slug}` — иначе «heatmap» перехватится как slug региона.
     """
-    cache_key = f"fe:regions:heatmap:v2:{code}:{get_locale()}"
+    cache_key = await versioned_key("regions", f"heatmap:v2:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -299,7 +299,7 @@ async def regions_heatmap_series(code: str, db: AsyncSession = Depends(get_db)):
     показывает относительную позицию региона в этом году, а не абсолютный рост
     во времени. Роут — до `/{slug}`, иначе перехватится как slug региона.
     """
-    cache_key = f"fe:regions:heatmap-series:{code}:{get_locale()}"
+    cache_key = await versioned_key("regions", f"heatmap-series:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -347,7 +347,7 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
     """Сравнение двух регионов по ключевым показателям — JSON для SPA /region-vs/*."""
     from app.services.region_compare_data import build_region_compare_payload
 
-    cache_key = f"fe:regions:vs:{slug_a}:{slug_b}:{get_locale()}"
+    cache_key = await versioned_key("regions", f"vs:{slug_a}:{slug_b}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -362,7 +362,7 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
 
 @router.get("/{slug}")
 async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = f"fe:regions:profile:{slug}:{get_locale()}"
+    cache_key = await versioned_key("regions", f"profile:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -463,7 +463,7 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
 
 @router.get("/{slug}/i/{code}")
 async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depends(get_db)):
-    cache_key = f"fe:regions:detail:v2:{slug}:{code}:{get_locale()}"
+    cache_key = await versioned_key("regions", f"detail:v2:{slug}:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -580,7 +580,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
     Сравнение с РФ строится, рейтинг — нет: цена зависит от структуры рынка
     и логистики региона, «место в рейтинге цен» вводило бы в заблуждение.
     """
-    cache_key = f"fe:regions:monthly:v1:{slug}:{code}:{get_locale()}"
+    cache_key = await versioned_key("regions", f"monthly:v1:{slug}:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
