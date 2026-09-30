@@ -1,0 +1,145 @@
+{
+  "observed_date_msk": "2026-09-30",
+  "current_source_commit": "972579f",
+  "repository_read_paths": [
+    {
+      "path": ".env.example",
+      "sha256": "b334194a57e4856ef1b97007c0bc50837c24a72eae8dddea4567e152b78582a0",
+      "lines": 222,
+      "scope": "full current body"
+    },
+    {
+      "path": "backend/app/config.py",
+      "sha256": "ad369a89256c4b3651384cf754d7dda3c7cc8a83faf7b9301681f227f027d994",
+      "lines": 355,
+      "scope": "full current body"
+    },
+    {
+      "path": "backend/entrypoint.sh",
+      "sha256": "30c710da7f297e29254c76886b6b34c5d77e2f25f60fac5ee9be12837b398ec4",
+      "lines": 50,
+      "scope": "full current body"
+    },
+    {
+      "path": "backend/Dockerfile",
+      "sha256": "c225c3ba9edbb443a3d35290d29d437004b18555b5c2a895462188d7fa239bd7",
+      "lines": 48,
+      "scope": "full current body"
+    },
+    {
+      "path": "docker-compose.yml",
+      "sha256": "cc0c45af675f4e3f1877a1f085ce8e2087595572621862de7794e608d3c88720",
+      "lines": 424,
+      "scope": "full current body"
+    },
+    {
+      "path": "scripts/pg-backup.sh",
+      "sha256": "abea1df9a96c36ca1bea8c8c1cdd228f290a575852b27498a7a5a864a8946864",
+      "lines": 115,
+      "scope": "full current body"
+    },
+    {
+      "path": "scripts/deploy.sh",
+      "sha256": "2e69bcfcc54e9670de8ed80b10a236db8a8589a540bf8e9465063120bc9f4dcc",
+      "lines": 684,
+      "scope": "full current body"
+    },
+    {
+      "path": "deploy/approved-shas.txt",
+      "sha256": "1839f5e0cb89a755d4ae7f28f6d08347b777deecc1db553efe8822b085369124",
+      "lines": 130,
+      "scope": "full current body"
+    },
+    {
+      "path": "frontend/nginx.conf",
+      "sha256": "c593b85d6268061bbd2c54b34ae64471019288fce768683d562223ac12833db2",
+      "lines": 1066,
+      "scope": "full current body"
+    },
+    {
+      "path": "Caddyfile",
+      "sha256": "d8a391018618ee51f0ef194318abe2703676f3dc1e6ebdd68822a594a1a07446",
+      "lines": 59,
+      "scope": "full current body"
+    },
+    {
+      "path": "clickhouse/low-memory.xml",
+      "sha256": "bcc85a0843dec3a7afb3d5ed811535527dbdec50d231159563d27ff794635803",
+      "lines": 24,
+      "scope": "full current body"
+    },
+    {
+      "path": "clickhouse/low-memory-users.xml",
+      "sha256": "080f86dcb363402e39661016991bd3476b535dc80bc6984dc2111e046a62cbff",
+      "lines": 13,
+      "scope": "full current body"
+    },
+    {
+      "path": "scripts/dual-host-release-gate.py",
+      "sha256": "31c19766316435f1d45952414d50ffe4510464dcae2d2c7da56120915fd8f7ff",
+      "lines": 147,
+      "scope": "full current body"
+    },
+    {
+      "path": "scripts/test_deploy_asset_flow.py",
+      "sha256": "7ad2d06bd6515bd3acee639b53410f0cfdc8097748b430c0f6360003bdc22972",
+      "lines": 281,
+      "scope": "full current body"
+    },
+    {
+      "path": "backend/tests/test_dual_host_release_gate.py",
+      "sha256": "63b7b49670a4ea3d4366b057efaf9f51d75e4a34981a29f811a86c0384db75b1",
+      "lines": 73,
+      "scope": "full current body"
+    },
+    {
+      "path": "docs/architecture.md",
+      "sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6",
+      "lines": 273,
+      "scope": "full current body"
+    },
+    {
+      "path": "docs/workflow.md",
+      "sha256": "5f13dd41465908b85b7565cb1b30905ebc33620149ebe9db7264bd6c6da7046f",
+      "lines": 292,
+      "scope": "full current body"
+    },
+    {
+      "path": "docs/enterprise_resilience.md",
+      "sha256": "3cc7de8a11aecb8cb1779222aa1ee0c0961b9533045c7d9ef04e98549fc7d3e5",
+      "lines": 100,
+      "scope": "full current body"
+    },
+    {
+      "path": "docs/runtime-inventory.json",
+      "sha256": "db80facaf90a05b0426ab1983c06c33f56ba699c1163ef51b264357564d9c71a",
+      "lines": 6794,
+      "scope": "schema/metadata read and30.09 evidence reconciled; historical672column records retained unchanged, not each economic datum"
+    },
+    {
+      "path": "docs/adr/0007-identity-user-accounts.md",
+      "sha256": "8f60df542b612f0c420b7ed8d62abb9828472111272cbf53ebc3ae105e9be682",
+      "lines": 237,
+      "scope": "Historical identity/backup context read; current identity implementation reviewed by backend agent"
+    }
+  ],
+  "external_read_paths": [
+    "/Users/iprofi/bin/fe-backup-pull.sh",
+    "/Users/iprofi/Library/LaunchAgents/com.forecasteconomy.backup-pull.plist",
+    "/Users/iprofi/Backups/forecasteconomy/pull.log"
+  ],
+  "partial_context_reads": [
+    "CONTEXT.md deploy traps and backup history",
+    "docs/architecture-history.md relevant ops history",
+    "backend/app/api/system.py metrics token check lines177-183",
+    "Initial .cursor/rules instructions read before concurrent root edits; root owns new-current reviews",
+    "backend/app/services/scrape_guard.py should_block compatibility consumer lines209-215",
+    "docs/code-review/backend-delta-2026-09-30.md method/contract table and specialist supplied cited ranges, used only to integrate architecture paragraph",
+    "build-project-terrain.py --help verified tracked-only support; root owns source review"
+  ],
+  "reviews_file": "docs/code-review/ops-delta-reviews-2026-09-30.jsonl",
+  "limitations": [
+    "Repository review covers named listed files, not every production-loaded image file or private/runtime variable",
+    "Source config parity is seven selected checkout files, not complete server attestation"
+  ]
+}

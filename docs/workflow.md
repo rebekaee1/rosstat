@@ -1,10 +1,10 @@
 # Рабочий процесс — Forecast Economy
 
-**Last updated:** 2026-09-27. Локальная `main` и датированный снимок серверной конфигурации разобраны отдельно: [реестр кода](code-review.md), [архитектура и окружение](architecture.md), [наблюдения и ограничения](code-review-findings.md). Кодовый разбор не заменяет приёмку выпуска на production.
+**Last updated:** 2026-09-30 (ops: свежая доставка и изолированный restore; история 27.09 сохранена). Локальная `main` и датированный снимок серверной конфигурации разобраны отдельно: [реестр кода](code-review.md), [архитектура и окружение](architecture.md), [наблюдения и ограничения](code-review-findings.md). Кодовый разбор не заменяет приёмку выпуска на production.
 
 **Previous:** 2026-09-20 (approved-SHA gate, миграции и архив ассетов). Ранее 2026-09-03 (post-deploy watch 15 мин + runbook «хост в свопе»). Ранее 2026-07-06 (CTO-аудит, Волна 5: прод-IP актуализирован — 201.51.11.170 (переезд 2026-07-03, старый 5.129.204.194 упразднён); прод-деплой переведён на `scripts/deploy.sh` — preflight-бэкап, ff-only guard, версионированные образы с автооткатом, расширенный smoke (SSR asset-hash / data-endpoint / OG), Caddy reload после smoke; ETL идёт двумя прогонами (06:00 и 20:00 МСК) + late-Minfin 15:00; smoke-набор дополнен readiness `/health/ready`; E2E-runner `scripts/e2e/smoke.mjs` реализован (Playwright, 5 сценариев + YandexBot SSR-suite) и включён в CI. Ранее 2026-05-22: добавлен ручной ETL recipe, `_catch_up_empty_indicators` + `redis-cli FLUSHDB`.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md).
-**See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки), [`data-contracts.md`](data-contracts.md) (сквозные контракты данных), [`../AGENTS.md::Шаг 4`](../AGENTS.md) (чеклист нового индикатора), [`adr/`](adr/) (архитектурные решения).
+**See also:** [`enterprise_resilience.md`](enterprise_resilience.md) (чеклист канарейки), [`data-contracts.md`](data-contracts.md) (сквозные контракты данных), [`agent-recipes.md`](agent-recipes.md) (рецепты индикаторов), [`knowledge-workflow.md`](knowledge-workflow.md) (сопровождение знаний), [`adr/`](adr/) (архитектурные решения).
 
 ## Модель работы
 
@@ -21,22 +21,30 @@
 - **Прод-сервер** (`201.51.11.170`, `/opt/rosstat`; DNS `forecasteconomy.com`) — **не деплоить автоматически** и **не без явного запроса**. Разработка и проверка — локально (Docker Compose) и через CI; выкладка на сервер — отдельным шагом по команде.
 - **SSH на прод — только по ключу** (с 2026-08-27): `ssh fe-prod` (алиас в `~/.ssh/config`) или явно `ssh -i ~/.ssh/id_ed25519_fe_prod root@201.51.11.170`. Парольный вход отключён (`/etc/ssh/sshd_config.d/00-hardening.conf`: `PermitRootLogin prohibit-password`, `PasswordAuthentication no`; бэкап старого конфига — `/etc/ssh/sshd_config.bak-keyauth`). Ключ только у владельца; потеря ключа = восстановление через панель провайдера (VNC/rescue).
 - **Перед каждым прод-деплоем** — `scripts/deploy.sh` запускает `scripts/pg-backup.sh` и прекращает деплой при ненулевом коде бэкапа. Скрипт создаёт полный `pg_dump -Fc` (`.dump`) и отдельный `.identity.sql.gz`; локальные файлы старше `KEEP_DAYS` (по умолчанию 14) удаляет. Offsite-копирование зависит от `OFFSITE_S3_BUCKET` и наличия `aws`; если bucket задан, а `aws` отсутствует, скрипт предупреждает, но завершает работу успешно. Поэтому зелёный preflight доказывает создание локального dump, но сам по себе не доказывает offsite-копию или возможность восстановления. См. [`enterprise_resilience.md`](enterprise_resilience.md#восстановление-и-наблюдаемость).
-- **Персистентность данных пользователей (ADR-0007).** БД хранится в docker volume `postgres_data` — переживает `docker compose up -d --build`. `scripts/pg-backup.sh` создаёт полный custom dump и отдельный data-only SQL пяти identity-таблиц (`users`, `email_credentials`, `oauth_identities`, `consents`, `auth_audit`). Наличие файлов не заменяет пробное восстановление и проверку связности записей. Пример **проверочного** восстановления на отдельном Docker-томе, без публикации порта и без обращения к рабочему compose-сервису (на хосте с доступным Docker; не выполнялось в этом аудите):
+- **Персистентность данных пользователей (ADR-0007).** БД хранится в docker volume `postgres_data` — переживает `docker compose up -d --build`. `scripts/pg-backup.sh` создаёт полный custom dump и отдельный data-only SQL пяти identity-таблиц (`users`, `email_credentials`, `oauth_identities`, `consents`, `auth_audit`). Наличие файлов не заменяет пробное восстановление и проверку связности записей. Пример **проверочного** восстановления на отдельном Docker-томе, без публикации порта и без обращения к рабочему compose-сервису. **30.09 этот подход выполнен** для свежих full/identity файлов: [протокол](code-review/backup-acceptance-2026-09-30.md). Переносимый пример для следующей проверки на хосте с доступным Docker:
 
   ```bash
-  docker volume create fe_restore_drill_pg
-  docker run -d --rm --name fe_restore_drill_pg --network none \
+  drill_id="fe_restore_drill_$(date -u +%Y%m%dT%H%M%SZ)"
+  docker volume create --label fe.acceptance.owner="$drill_id" "$drill_id"
+  docker run -d --name "$drill_id" --network none --memory 1g --cpus 1 \
+    --label fe.acceptance.owner="$drill_id" \
     -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_USER=rustats \
-    -e POSTGRES_DB=rustats -v fe_restore_drill_pg:/var/lib/postgresql/data \
+    -e POSTGRES_DB=rustats -v "$drill_id:/var/lib/postgresql/data" \
     postgres:16-alpine
-  until docker exec fe_restore_drill_pg pg_isready -U rustats; do sleep 1; done
-  docker exec -i fe_restore_drill_pg pg_restore -U rustats -d rustats \
-    --clean --if-exists < /absolute/path/to/backup.dump
-  docker exec fe_restore_drill_pg psql -U rustats -d rustats \
+  until docker exec "$drill_id" pg_isready -U rustats; do sleep 1; done
+  docker exec -i "$drill_id" pg_restore -U rustats -d rustats \
+    --exit-on-error --no-owner --no-privileges < /absolute/path/to/backup.dump
+  docker exec "$drill_id" psql -U rustats -d rustats \
     -c 'SELECT count(*) FROM users'
   ```
 
-  Сверить также числа точек, Alembic-head и выборку identity-связей с контрольными значениями на момент бэкапа. Для проверки `.identity.sql.gz` нужна **другая** чистая БД с совместимой схемой; не импортировать data-only SQL поверх полного dump без плана дедупликации. После проверки остановить только `fe_restore_drill_pg`; именованный том хранить до записи результата учения. Целевой RTO/RPO и дата успешного полного restore-drill пока не подтверждены.
+  Сверить также числа точек, Alembic-head и выборку identity-связей с контрольными значениями на момент бэкапа. Для проверки `.identity.sql.gz` нужна **другая** чистая БД с совместимой схемой; не импортировать data-only SQL поверх полного dump без плана дедупликации. После записи результата проверить у **обоих** ресурсов label `fe.acceptance.owner`, точное имя, отсутствие host ports и единственный собственный PostgreSQL-том; затем удалить только созданные ресурсы. `--no-owner --no-privileges` проверяет восстановление схемы/данных без исходных owner/ACL, их replay требует отдельного сценария. **30.09** full dump восстановился за 154,885 с, отдельный identity SQL — успешно, размеры/хэши обоих совпали с сервером, сирот identity нет. Это время `pg_restore`, а не целевой RTO/RPO или время полного failover.
+
+### Доставка существующего backup на Mac
+
+`~/Library/LaunchAgents/com.forecasteconomy.backup-pull.plist` запускает `~/bin/fe-backup-pull.sh` в **08:15 МСК**; каталог `~/Backups/forecasteconomy`, основной журнал `~/Backups/forecasteconomy/pull.log` (launchd stdout/stderr рядом). Скрипт выбирает завершённый daily dump (не `.partial` и не pre-deploy), скачивает full/identity и сверяет SHA-256/размеры, custom-dump TOC (если доступен pg_restore/Docker) и gzip до отметки `.verified`; уже проверенную пару пропускает. Эти файлы находятся вне Git и не являются dev DATABASE_URL.
+
+**Проверка 30.09:** после SSH errors 27–30.09 исходная версия скрипта сохранена рядом (`.before-20260930T133007Z`), SSH multiplexing отключён через `ControlMaster=no` / `ControlPath=none`, keepalive ограничен 15 с ×2. Исторический Broken pipe/Connection closed не устанавливает единственную причину: независимое SSH-соединение в момент проверки работало. Ручной pull 16:30–16:32 МСК и повтор 16:43 успешно подтверждены; следующий плановый запуск ещё не наблюдался. Полный restore и identity restore описаны в [датированном протоколе](code-review/backup-acceptance-2026-09-30.md). Production jobs при этой проверке не запускались.
 
 ## Локальная разработка
 
@@ -209,7 +217,7 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 
 ## Прод-деплой
 
-Для первого выпуска с индексом `20260927_world_nonzero_idx` перед ручной сборкой индекса выполнить `scripts/pg-backup.sh` и проверить успешное завершение.
+**Текущее наблюдение 30.09:** серверный head уже `20260927_world_nonzero_idx`, checkout `367ff336`, выбранные `deploy.sh`/Compose/Caddy/nginx совпадают с main. Ниже сохраняется рецепт **первого** выпуска и инцидент 27.09: он не является инструкцией повторно выполнять уже применённую миграцию. Для любого нового выпуска заново проверять прод → цель и совместимость схемы.
 
 **Регламент 2026-09-20: `main` не означает разрешение на выкладку.** Нужна явная команда владельца «деплой до `<sha>`, включая всё, что он тянет» и полный целевой SHA в `deploy/approved-shas.txt`. Пустой/отсутствующий список = запрет. Эта документация не одобряет ни один SHA.
 
@@ -217,7 +225,7 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
    Для **первого** выпуска с `20260927_world_nonzero_idx` заранее, после подтверждения этой миграции, построить индекс на работающем старом backend через `CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_world_data_points_nonzero_indicator ON world_data_points (indicator_id) WHERE value <> 0` отдельным `psql`-вызовом вне транзакции. Перед `deploy.sh` проверить в `pg_catalog.pg_index`, что `indisvalid AND indisready` истинны: установленный на проде старый `deploy.sh` не содержит нового шага prebuild и не подхватит его надёжно при собственном `git merge`; полный `alembic upgrade` заранее не запускать, чтобы старый backend оставался пригоден для отката. После первого выпуска вручную проверить `/api/v1/world/countries` на RU и EN хостах: HTTP 200, непустые `countries`, повторный быстрый ответ; старый `deploy.sh` не содержит и нового smoke этого маршрута.
 2. Только после выполнения этих условий — `ssh fe-prod 'bash /opt/rosstat/scripts/deploy.sh'`. Скрипт fetch/ff-only ориентируется на `origin/main`, поэтому заранее сверить его с одобренной целью, не выкатывать накопившийся `main` и не обходить scope guard. Скрипт выполняет preflight `pg-backup.sh` (hard fail), dirty/scope/migration guards, совместную сборку backend+frontend, `up -d`, readiness, smoke данных/SSR-ассетов/OG, Caddy reload и post-deploy watch.
 
-   **Первый выпуск с обновлённым скриптом после инцидента 2026-09-27:** установленный на проде старый `deploy.sh` при собственном `git merge` не получает надёжно новые шаги. После `git fetch` и проверки точного SHA `origin/main` взять `scripts/deploy.sh` из этого SHA в отдельный файл `/tmp/rosstat-deploy-<sha>.sh` и запустить его: он читает `deploy/approved-shas.txt` из `/opt/rosstat` и остаётся неизменным во время merge. Тогда одиночный 429 на OG проверяется повторно, а при новых файлах миграций или неизвестной ревизии БД автоматический откат кода прекращается без запуска несовместимого старого образа; ручное восстановление — [CONTEXT, Deploy-scope trap](../CONTEXT.md), со свежим бэкапом и проверкой ревизии до старта старого backend. В первом запуске 2026-09-27 старый gate ошибочно счёл временный 429 поломкой OG и автооткат оставил новую ревизию БД под старым кодом; база и сайт были восстановлены по этому рецепту.
+   **Первый выпуск с обновлённым скриптом после инцидента 2026-09-27:** установленный на проде старый `deploy.sh` при собственном `git merge` не получает надёжно новые шаги. После `git fetch` и проверки точного SHA `origin/main` взять `scripts/deploy.sh` из этого SHA в отдельный файл `/tmp/rosstat-deploy-<sha>.sh` и запустить его: он читает `deploy/approved-shas.txt` из `/opt/rosstat` и остаётся неизменным во время merge. После Caddy reload `dual-host-release-gate.py::_check_og_image` повторяет **только HTTP 429** с паузами 2/4/8/16 с; первичный OG curl в `deploy.sh` выполняется один раз и может завершить smoke раньше gate. Gate требует 200, image Content-Type и тело ≥1000 байт, транспортные ошибки/другие HTTP статусы не повторяет. При новых файлах миграций, изменении Alembic revision или неизвестной ревизии БД автоматический откат кода прекращается без запуска несовместимого старого образа; ручное восстановление — [CONTEXT, Deploy-scope trap](../CONTEXT.md), со свежим бэкапом и проверкой ревизии до старта старого backend. В первом запуске 2026-09-27 старый gate ошибочно счёл временный 429 поломкой OG и автооткат оставил новую ревизию БД под старым кодом; база и сайт были восстановлены по этому рецепту.
 
    **Окно 502 при cutover ещё существует.** `up -d` может снять единственный frontend на `:3000`, пока новый backend выполняет миграции и сиды; IPv4-адрес Caddy устраняет только ошибку резолвинга `localhost` в `::1`. Черновой preboot из PR #1 не перенесён: он запускал новые миграции и сиды рядом со старым web и scheduler без проверки совместимости схемы и повторной записи; перед staged cutover нужен прогон на копии production БД и проверка rollback для всего диапазона миграций.
 3. Отдельный `scheduler` при старте фоном запускает `_catch_up_empty_indicators()`, затем `_catch_up_empty_forecasts_safe("startup")`. После планового и late-ETL есть повторный gap-fill прогнозов. Эти шаги не блокируют web-readiness и не гарантируют непустой прогноз при короткой истории или неподходящей стратегии; после добавления derived проверять факты и прогнозы через API.
@@ -236,7 +244,7 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 - Headless E2E на 6+ страницах → 0 console errors / 0 4xx-5xx.
 
 `deploy.sh` после smoke держит **15-минутный watch**: TTFB главной, `/health/ready`,
-память контейнера backend, признак `OOMKilled`. Срыв — автооткат на предыдущий SHA.
+память контейнера backend, признак `OOMKilled`. Срыв передаётся в rollback; возврат прежних image IDs допускается только при подтверждённой совместимости миграций/revision. При неизвестной ревизии или изменении схемы автоматический запуск старого кода прекращается.
 
 **Архив ассетов (локальная реализация 2026-09-20).** `scripts/deploy.sh` под общей блокировкой публикует hashed-ассеты фактически работающего frontend и новой сборки через `scripts/frontend-asset-archive.py` **до** замены контейнеров и выдачи нового HTML. nginx читает архив как fallback; HTML, source maps и файлы без хэша туда не попадают. На успешном пути `prune --keep 3` выполняется только после smoke и 15-минутного watch. На пути отката сначала повторно публикуется восстановленный frontend, затем выполняется очистка. Проверять старый ассет, отсутствующий в новой сборке, и навигацию старой вкладки; retention ограничен тремя релизами, это не бессрочная гарантия Вебвизора. Приёмка пакета — [backlog](backlog.md#history-access-reliability-2026-09-20).
 
@@ -249,8 +257,11 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 ```
 docker stats --no-stream
 docker compose exec postgres psql -c "select datname, state, now()-state_change as idle, query from pg_stat_activity where state <> 'idle' order by state_change"
-curl -sS https://forecasteconomy.com/api/v1/metrics | grep -E 'fe_db_pool|fe_process_rss|fe_cgroup_memory'
+# /api/v1/metrics требует непустой RUSTATS_METRICS_TOKEN и query token;
+# 30.09 effective token web пуст, поэтому endpoint закрыт (403).
 ```
+
+Дополнительно: пул/FD/pressure gauges в коде существуют, но scrape требует отдельно настроенного токена/коллектора. Токен не помещать в общий журнал/документ. Readiness, Docker stats и pg_stat_activity доступны для диагностики; один снимок не измеряет swap-in/out или latency во времени.
 
 Делать: не рестартовать по кругу, если схема обогнала код (Deploy-scope trap).
 Аналитические джобы — на `analytics_engine`; если старый код ещё на проде —

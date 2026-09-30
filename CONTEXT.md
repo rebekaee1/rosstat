@@ -1,6 +1,6 @@
 # Forecast Economy — Project Context
 
-**Last updated:** 2026-09-27 (ночной I/O stall при ротации nginx-лога, `fe:ver:*` под `allkeys-lru` — operational traps ниже; текущий статус и границы доказательства — [backlog](docs/backlog.md#2026-09-27--проверка-выпуска-3-web-worker--scheduler)). Ранее 2026-09-25 (sitemap: потолок 50 000 URL, lastmod по содержанию, шард без полной пересборки — `CONTEXT.md::Sitemap protocol trap`).
+**Last updated:** 2026-09-30 (содержательная сверка frontend/docs на `main 972579f`; цикл знаний, валютные canonical, ticker и РСЯ; production этим проходом не опрашивался). Ранее 2026-09-27 (ночной I/O stall при ротации nginx-лога, `fe:ver:*` под `allkeys-lru` — operational traps ниже; текущий статус и границы доказательства — [backlog](docs/backlog.md#2026-09-27--проверка-выпуска-3-web-worker--scheduler)). Ранее 2026-09-25 (sitemap: потолок 50 000 URL, lastmod по содержанию, шард без полной пересборки — `CONTEXT.md::Sitemap protocol trap`).
 
 > **Историческая хроника:** следующий абзац сохраняет решения на указанные даты. Поздние дополнения ADR и текущий код могут их уточнять или отменять; указатель сверок — [architecture-history](docs/architecture-history.md).
 
@@ -58,6 +58,57 @@
 [история](docs/architecture-history.md) — причины решений и поздние уточнения.
 Динамические связи через HTTP/БД/Redis проверяются по контрактам; статический путь
 в графе сам по себе не доказывает поток данных или runtime-дефект.
+
+## Цикл знаний и текущие уточнения — 2026-09-30
+
+Каждая обычная задача включает чтение затронутого кода, прежних рецензий,
+ADR и истории, проверку producer/consumer и актуализацию основного документа,
+рецензий и карт. Порядок и условия завершения — [knowledge-workflow](docs/knowledge-workflow.md).
+Короткий вход — [AGENTS](AGENTS.md); действующие рецепты владельца —
+[agent-recipes](docs/agent-recipes.md). Прежний AGENTS сохранён побайтово в
+[архиве](docs/code-review/source-documents/AGENTS-before-knowledge-workflow-2026-09-30.md);
+его старые ссылки/номера строк относятся к исходному расположению в корне.
+Архив и хроника объясняют причины, текущая инструкция находится в тематическом документе.
+
+Основание этого дополнения — локальная `main 972579f0b95b70d0ac8d4293331cd8d18c2521fe`
+и прочитанная дельта после точных версий прежних рецензий. [Отчёт и ограничения](docs/code-review/frontend-docs-delta-2026-09-30.md)
+различают полное чтение, прежнее чтение с новой дельтой и метаданные.
+Датированные prod-наблюдения 27–29 сентября сохраняются как свидетельства своего времени;
+наличие механизма в main не устанавливает текущий production или полноту K01–K12.
+
+- **Валюты — исключение из country-first URL:** `/currencies`,
+  `/currencies/indicator/{code}` и периоды. Список валютных баз и производных
+  задают `site_paths.py` и frontend `sitePaths.js`; старые `/indicator` и
+  `/russia/indicator` ведут через серверную карту редиректов. Сырьё вроде Brent
+  этим исключением не становится валютой. Поиск, breadcrumbs и generated page meta
+  должны пользоваться тем же построителем пути.
+- **Сравнение:** одна concept-группа допускает страны с доказанной сопоставимостью.
+  Различающиеся базовые годы индексов цен требуют общей базы 100 на первой общей
+  положительной дате фактических наблюдений внутри выбранного окна; нет такой даты —
+  empty state. Процентные и знакопеременные ряды к базе 100 не приводятся.
+  Мировые ряды сохраняют официальную частоту. Источники: `compareRepresentation.js`,
+  `ComparePage.jsx`, `useCountryComparison.js` и связанные компонентные тесты.
+- **Отображение источника:** основная карточка при отсутствии точного URL показывает
+  имя источника текстом; ложный fallback на российский хаб убран в
+  `IndicatorMethodologyPanel.jsx`. У быстрых страниц свой контракт внутренней
+  навигации; внешний source URL в provenance/JSON-LD не отменяется.
+- **Охват главной и каталог:** RU-блок отдельно считает региональные ряды России
+  (`russia_regional_indicators_count`, совместимый fallback старого payload),
+  EN сохраняет мировой охват и подпись штатов. Огромный каталог любой страны
+  ограничивает начальный DOM и предлагает «Показать ещё»; список данных доступен
+  через разделы и поиск, это не удаление рядов. Пустой EN-поиск начинает с
+  curated US-пула; при вводе подключаются другие страны.
+- **Backend — датированная связь с новым разбором:** [backend-дельта](docs/code-review/backend-delta-2026-09-30.md)
+  подтверждает `annual horizon=1` в изменённых seed/strategy/API/world/territory
+  путях; допустимая поправка неполного годового факта сохраняется. Годовая
+  fingerprint требует будущей перетренировки старой двухлетней модели, но её
+  исполнение на сервере этим чтением не установлено. Python `visit_is_robot`,
+  SQL `metrika_visit_not_headless` и CH raw visits используют разные выборки;
+  их агрегаты нельзя автоматически считать одинаковым человеческим трафиком.
+  Eurostat loader фиксирует remap metadata отдельным commit, факты — транзакцией
+  каждого parsed slice, а cache namespace bump — лишь в конце loader. Это
+  несколько границ записи, а не атомарная замена всего dataset; ошибка после
+  remap может оставить прежние факты под новым slice до следующей записи.
 
 ## What this is
 
@@ -569,6 +620,12 @@ embed отвечают на запрошенном хосте — иначе clo
 
 ### Pure-revision day
 
+**Уточнение 2026-09-30:** следующий абзац — прежний предел, отменённый
+дополнением ADR-0002. Текущий `scheduler.py::_fetch_changed` признаёт `success`
+изменением; для `fallback_used` проверяет и `records_added`, и `records_updated`.
+Чистая ревизия входит в каскад. `fetch_log.records_added` сам по себе не измеряет
+все изменения; трактовка ниже «dispatch только по added» историческая.
+
 Описано в ADR-0002. Если в ETL-батч ни один парсер не добавил новые строки (только in-place revisions), `run_for_updated_sources` не сработает; derived останутся stale до следующего «обычного» дня. Митигируется тем, что `cbr-fx`/`cbr-ruonia`/`gold-price`/`key-rate` — daily-источники. На практике pure-revision day без `records_added > 0` — крайне редкое явление. Жёсткий триггер ручного катчапа: `scripts/rebuild-all-derived.py`.
 
 ### Derived-forecast ordering trap (прогноз поверх свежего факта)
@@ -624,6 +681,18 @@ embed отвечают на запрошенном хосте — иначе clo
 
 ### Yandex.RSY (РСЯ floor-ad) — отдельный CSP-набор доменов
 
+**Текущая сверка 2026-09-30:** React-обвязка `YandexRSY.jsx` и чистые SSR-страницы
+(`behavior-standalone.js`) ставят в `yaContextCb` общий `lib/rsyFloorAd.js::renderFloorAd`.
+Consent/robot/human gate остаётся в `consent.js`. `data-no-ads` исключает 404
+из standalone-очереди; admin/embed исключаются в SPA. Таймерное уничтожение
+пустого shell **отключено** (`AUTO_DESTROY_DISABLED`, `EMPTY_CHECK_MS=3600000`);
+детектор через 8 секунд лишь проверяет fill для цели. Автоматический cleanup
+только по явному SDK `onError`; refresh маршрута отдельно делает destroy/render
+с cooldown 15 секунд. Поэтому пункт 5 ниже о сносе по `.needsclick`/таймеру —
+исторический. Отсутствие объявления из-за выключенной площадки у провайдера
+([RSY-page-disabled trap](#rsy-page-disabled-trap-рекламы-нет-а-код-исправен-2026-09-29))
+не доказывает дефект очереди; состояние кабинета этим проходом не проверено.
+
 Контекстная реклама РСЯ — **независимый от Метрики** домен-граф (официальный CSP partner docs + наш Caddyfile):
 - `script-src https://yandex.ru https://an.yandex.ru https://yastatic.net https://*.yandex.ru https://*.adfox.ru` — `context.js` / AdvManager.
 - `img-src` + `media-src` для `yandex.ru` / `*.yandex.ru` / `*.yandex.net` / `*.adfox.ru` / `yastatic.net` / `blob:` / `data:` — картинки и **видео** Floor Ad (touch).
@@ -664,6 +733,19 @@ Goal в Метрике: `rsy_floor_render` — успешный непустой
 APScheduler `EVENT_JOB_ERROR`, иначе штатный алерт не сработает.
 
 ### Live ticker: MOEX-приоритет с CBR-fallback для FX
+
+**Текущая сверка 2026-09-30:** старое описание ниже сохраняет происхождение
+FX-fallback. `ticker.py` выбирает шесть кодов по lane: RU — рублёвые пары,
+BTC, Brent и золото; EN — EUR/USD, GBP/USD, USD/CNY, BTC, Brent и золото в ₽/г.
+Lane определяется locale (`tickerLane.js`), не URL. `ticker_worker.py` берёт
+Brent (EIA), золото (Банк России) и EN-кроссы (ЕЦБ) из тех же дневных DB-рядов,
+что карточки; MOEX Brent/gold отбрасываются. Текущий TTL Redis — **90 секунд**,
+локальная память дневных рядов — 300 секунд. `tickerPoll.js` обычно опрашивает
+раз в 4 секунды, при 429 ждёт retry-after/60 секунд, при другой ошибке — 16 секунд.
+Старые «пять snapshot», «TTL30» и гарантированный лаг ≤9с не описывают нынешний
+код: задержка источника и ошибки не ограничены такой оценкой. Дата/источник
+дневного значения и fetched_at внутридневного различаются. Это чтение кода,
+нового замера источников или runtime в данном проходе нет.
 
 Источники (`backend/app/services/ticker_sources/`):
 - **MOEX ISS** — USD/RUB (`USD000UTSTOM`), CNY/RUB (`CNYRUB_TOM`), Brent (ближайший фьючерс `BR-X.Y` на FORTS, динамически определяется по `LASTTRADEDATE`). ISS возвращает 4 строки marketdata по бордам — реальные сделки на **CETS**, остальные пустые.
@@ -816,6 +898,8 @@ docker compose exec backend python -c \
 
 ### View-mode template change orphans (сироты при смене шаблона)
 
+**Уточнение 2026-09-30:** нижний рецепт удаления относится к конкретному инциденту 2026-06-06. Само отсутствие кода в новом seed не разрешает удалять исторический ряд: сначала проверить consumers, variant/frequency reachability и оба canonical/301 пути по `docs/dead-code-report.md` и текущим рецептам. Флаги карты — кандидаты на расследование; сохранность истории и индексируемых URL остаётся обязательной.
+
 При смене view-mode шаблона индикатора, при которой **исчезают режимы** (T3→T8 убрал «на конец периода» у зарплаты/labor-force/employment; Tidx→Tidxq убрал «М/м» у `housing-affordability`), sibling-коды старых режимов (`*-eop-quarter`, `*-mom`, …) перестают генерироваться конфигом, но **остаются в БД** с прошлого seed. Seed не удаляет строки и сбрасывает `is_listed=True` для всех, пряча обратно только коды из `INDICATOR_HIDDEN_FROM_LISTING`. Сироты в этот набор не попадают → **всплывают карточками в каталоге**.
 
 **Случай 2026-06-06:** перевод зарплаты/labor-force/employment на T8 оставил 6 сирот `*-eop-quarter/-year` → «Рынок труда» показал 10 карточек вместо 4.
@@ -853,11 +937,15 @@ Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставл�
 
 **Trap 2 — локалка должна зеркалить прод.** Если глушишь алерты на локалке (`realtime=false`) ради тестового шума — это рвёт паритет «локалка = прод» и выглядит как «уведомления сломаны»: на `localhost` регистрация молчит by design. Правильный паритет — `realtime=true` и на локалке, и на проде (оба `./.env`). Тестовый шум гасить не флагом, а дисциплиной (не гонять лишние E2E-регистрации) либо опциональным suppression по test-email-паттерну. Прод-факт на момент 2026-06-20: `realtime=true`, `digest=true` (дайджест 09:00 МСК), `chat_id=433221767`, токен задан, `debug=false`.
 
+**Уточнение 2026-09-30:** правило «только создание» ниже историческое. Текущий email-login в `api/auth.py` вызывает `_notify_login_safe`; рабочее соглашение 2 сентября требует уведомлять повторные входы через `notify_login` и хранить сообщения в `telegram_outbox`. Для конкретного OAuth-пути проверять callback и outbox; здесь новая доставка не выполнялась.
+
 **Trap 3 — что НЕ триггерит пинг.** Уведомление шлётся только на **создание нового** пользователя (`created=True`); повторный вход существующим аккаунтом — тишина. И `sendMessage` доставит, только если получатель раньше нажал Start у бота (иначе HTTP 403 «can't initiate conversation»). Быстрый E2E канала: `curl -s "https://api.telegram.org/bot<token>/sendMessage" -d chat_id=<id> -d text=ping` → ждём `{"ok":true}`. Узнать реальный `chat_id` получателя: `getUpdates` после его `/start`.
 
 **Trap 4 — прод не достаёт Telegram по IPv6 (главная причина «с сайта не шлётся»).** На прод-сервере `api.telegram.org` резолвится **только в IPv6**, а IPv6-маршрут до Telegram у хостера мёртвый → `httpx.ConnectTimeout` (15s), который глушится в `_notify_*_safe`/`send_telegram` (warning в логах). Симптом: тест из dev-окружения приходит, а **с прода и дайджест — нет**. Диагностика: `docker compose exec backend python -c "import socket; socket.create_connection(('149.154.167.220',443),5)"` — рабочий IPv4 Telegram DC. Фикс — `extra_hosts: api.telegram.org:${TELEGRAM_API_IP:-149.154.167.220}` у backend в `docker-compose.yml` (пишет `/etc/hosts` контейнера на уровне C-резолвера; Python-monkeypatch `socket.getaddrinfo` НЕ помогает — httpx/anyio резолвит мимо него). Проверка из контейнера: `docker compose exec backend curl --resolve api.telegram.org:443:149.154.167.220 -s ".../getMe"` → `{"ok":true}`.
 
 ### View-mode `shadowed_legacy` ≠ мёртвый код (расследование 2026-06-24)
+
+**Уточнение 2026-09-30:** серверный `legacy_redirects.py` и `seo_pages.py` теперь также отдают canonical 301 до рендера. «ТОЛЬКО на легаси» в следующем историческом пункте описывает старый SPA-механизм. Проверять нужно серверный и клиентский путь; bespoke content по-прежнему может иметь consumers. См. датированную сверку в `docs/architecture-history.md`.
 
 Карта (`docs/indicator-index.json`) ставит `shadowed_legacy` / `in_both_viewmode_systems` для кодов, чья **standalone-ветка рендера** в `IndicatorDetail.jsx` перекрыта generic-движком (early-return `getViewModeFamily` ПЕРВЫМ). Флаг ловит только shadowing рендера и **НЕ доказывает**, что легаси-файл можно удалить. Подтверждено на cbr-term / unemployment / trade двумя независимыми причинами:
 

@@ -1,5 +1,27 @@
 # Итоги содержательного разбора main
 
+## Актуализация backend — 2026-09-30, `main 972579f`
+
+Сохранённый разбор дополнен чтением изменённых блоков **63 backend путей** и их сквозных контрактов. Основание переноса неизменённых тел, конкретные named-function аннотации, файлы/диапазоны и границы тестов — [backend delta](code-review/backend-delta-2026-09-30.md). Новая дата не обновляет серверный снимок 27 сентября и не означает, что runtime-defects исправлены документацией.
+
+| Прежнее наблюдение | Текущий статус по коду |
+|---|---|
+| Росстат ordinal после фильтра менял r2→r1 | **Исправлено:** ordinal назначается по полному DOCX до cutoff; [код](../backend/app/services/calendar_sources/rosstat_plan.py#L312-L368), [новая fixture](../backend/tests/test_rosstat_plan.py#L125-L151). Исторический пункт ниже объясняет причину изменения |
+| Синхронный CH insert блокировал loop | **Исправлено в исходниках:** executor, column projection, bounded batches; [код](../backend/app/services/clickhouse_sync.py#L155-L416). Реальная завершённость sync, late-commit id cursor и resource acceptance отдельно |
+| Безусловный Eurostat structure quarantine | **Заменено:** предварительная exact/remap/orphan проверка, code/URL сохраняется; [planner](../backend/app/services/eurostat_structure.py), [ADR-0011](adr/0011-world-eurostat-data-plane.md#2026-09-29--смена-структуры-автоматическая-сверка-вместо-вечного-карантина). Это не формальная проверка равенства методологий |
+| Annual forecast на второй год | **Ограничено:** source/derived/world/subnational horizon и public filters = один следующий год; old annual fingerprint требует retrain. [API](../backend/app/api/forecasts.py#L51-L132), [pipeline](../backend/app/services/world_forecast_pipeline.py#L122-L199). Stored/prod acceptance не установлены |
+| Sitemap correction не сдвигала shard lastmod | **Добавлено:** section_changed/content digest учитываются в index date; [код](../backend/app/services/sitemap_static.py#L288-L405). Реальное перечитывание и index inclusion отдельно |
+| IndexNow exception теряла popped batch | **Exception ветка возвращает batch:** [drain](../backend/app/services/indexnow.py#L658-L724). Crash после SPOP или отказ Redis при возврате всё ещё не durable ack |
+
+Новые статические вопросы требуют воспроизведения перед исправлением:
+
+1. **Eurostat commit consistency:** [apply_remaps](../backend/scripts/load-world-eurostat.py#L515-L526) отдельно коммитит новый slice/hash до [persist_result](../backend/scripts/load-world-eurostat.py#L431-L472). Ошибка следующего slice может оставить прежние facts под новым slice и не достигнуть финального cache bump. Проверка: controlled failure после remap/первого slice, затем metadata/points/state/forecast/cache. Orphans сохраняются listed, допустимый порог включает до двух даже в маленьком наборе.
+2. **Сессия через границу 3 дней:** [sessionize](../backend/app/tasks/analytics_rollups.py#L83-L234) не переносит предыдущий chunk; следующий pageview создаёт другую session, leading dwell/click без pageview отбрасывается. [Fixture окон](../backend/tests/test_analytics2.py#L797-L840) исключает boundary-crossing. Проверка: один visitor с 30-мин session и целью/dwell вокруг MSK boundary, сравнить whole-window/chunked result.
+3. **Populations аналитики различаются:** Python isRobot/isRobotPro/headless и SQL only-headless не эквивалентны; CH raw visits ещё без этого фильтра, own sessions оцениваются hardware/поведением. [Predicates](../backend/app/services/analytics_marts.py#L138-L164). Подписать определения метрик и сравнить одинаковые fixtures; не объявлять весь оставшийся трафик людьми.
+4. **CH streaming hold-time:** append events закрывают PG до insert, replacing stream держит analytics session во время CH network call; identity links всё ещё полностью материализованы. Executor исправляет loop blocking, не доказывает бюджет RAM/PG contention. Проверка на разрешённом runtime совместно с ops evidence.
+
+Риски destructive history reconcile, invalidate-before-commit, региональных двух writers/count guard/fixed cache keys, SSR/sitemap eligibility и разнородных BI чисел из прежнего разбора остаются открытыми. Политика владельца «все действующие canonical в sitemap» сохраняется; demand-фильтры/массовое 410 не приняты. Полный audit, production restore/capacity и внешняя SEO-приёмка здесь не закрыты.
+
 **Дата:** 27 сентября 2026. Кодовая основа — локальная `main` (`f8e239a` перед фиксацией этой документации), включая описанные рабочие изменения документации и её инструментов. Точные SHA-256, функции, контракты, побочные эффекты и тестовые границы каждого файла — в [реестре](code-review.md). Новые коммиты требуют проверки diff и обновления соответствующих рецензий.
 
 Сервер проверен отдельно: [архитектура и бюджет 4 vCPU](architecture.md#реальное-окружение-сервер-с-4-vcpu-и-локальная-разработка), [машинный снимок](runtime-inventory.json), [профили локального запуска](workflow.md#локальная-разработка). Серверный `e81b86e` отличается от разобранной локальной main. Этот документ не устанавливает, что все найденные кодовые сценарии происходили на сервере.

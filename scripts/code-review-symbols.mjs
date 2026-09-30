@@ -13,7 +13,8 @@ const parser = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const output = path.join(root, 'docs/code-review/javascript-symbols.json');
 const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
-const paths = [...new Set([...git('ls-files', '-z'), ...git('ls-files', '--others', '--exclude-standard', '-z')])]
+const untracked = process.argv.includes('--tracked-only') ? [] : git('ls-files', '--others', '--exclude-standard', '-z');
+const paths = [...new Set([...git('ls-files', '-z'), ...untracked])]
   .filter(name => /\.(js|jsx|mjs|ts|tsx)$/.test(name) && !name.startsWith('docs/code-review/')).sort();
 
 function keyName(node) {

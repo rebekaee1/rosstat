@@ -1,0 +1,226 @@
+{
+  "observed_utc": "2026-09-30T13:40:31.942109+00:00",
+  "git_commit": "367ff336a307ad57d528b26078ca35883ec3de68",
+  "git_status": "",
+  "logical_cpus": 4,
+  "host_memory_bytes": {
+    "MemTotal": 8326946816,
+    "MemAvailable": 3372871680,
+    "SwapTotal": 4294963200,
+    "SwapFree": 3867303936
+  },
+  "filesystem": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda1      82086711296 64148992000 17878003712  79% /",
+  "services": [
+    {
+      "name": "rosstat-scheduler-1",
+      "image_id": "sha256:61bc497c528d6c76b88a220c8d00eae8806b11836c73d701ffd2225b5acb2b95",
+      "created": "2026-09-29T10:36:27.769155546Z",
+      "status": "running",
+      "health": "healthy",
+      "memory_limit_bytes": 1073741824,
+      "nano_cpus": 1000000000,
+      "restart_count": 0,
+      "oom_killed": false,
+      "environment_allowlist": {
+        "UVICORN_WORKERS": "1",
+        "RUSTATS_SCHEDULER_ENABLED": "true",
+        "RUSTATS_PROCESS_ROLE": "scheduler",
+        "RUSTATS_DB_POOL_SIZE": "6",
+        "RUSTATS_DB_MAX_OVERFLOW": "6",
+        "RUSTATS_DB_POOL_TIMEOUT": "15",
+        "state_redis_location": {
+          "host": "redis-state",
+          "port": 6379,
+          "database": "/0"
+        }
+      }
+    },
+    {
+      "name": "rosstat-frontend-1",
+      "image_id": "sha256:7936f40220a74a254bc713f4cc7491359c86e111c72571c98b2adb36a9738eae",
+      "created": "2026-09-29T10:36:27.734954363Z",
+      "status": "running",
+      "health": "healthy",
+      "memory_limit_bytes": 268435456,
+      "nano_cpus": 500000000,
+      "restart_count": 0,
+      "oom_killed": false,
+      "environment_allowlist": {}
+    },
+    {
+      "name": "rosstat-backend-1",
+      "image_id": "sha256:61bc497c528d6c76b88a220c8d00eae8806b11836c73d701ffd2225b5acb2b95",
+      "created": "2026-09-29T10:36:17.649080389Z",
+      "status": "running",
+      "health": "healthy",
+      "memory_limit_bytes": 2415919104,
+      "nano_cpus": 3000000000,
+      "restart_count": 0,
+      "oom_killed": false,
+      "environment_allowlist": {
+        "UVICORN_WORKERS": "3",
+        "RUSTATS_SCHEDULER_ENABLED": "false",
+        "RUSTATS_DB_POOL_SIZE": "8",
+        "RUSTATS_DB_MAX_OVERFLOW": "7",
+        "state_redis_location": {
+          "host": "redis-state",
+          "port": 6379,
+          "database": "/0"
+        }
+      }
+    },
+    {
+      "name": "rosstat-postgres-1",
+      "image_id": "sha256:e013e867e712fec275706a6c51c966f0bb0c93cfa8f51000f85a15f9865a28cb",
+      "created": "2026-09-26T14:50:03.931805929Z",
+      "status": "running",
+      "health": "healthy",
+      "memory_limit_bytes": 3221225472,
+      "nano_cpus": 0,
+      "restart_count": 0,
+      "oom_killed": false,
+      "environment_allowlist": {}
+    },
+    {
+      "name": "rosstat-redis-1",
+      "image_id": "sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99",
+      "created": "2026-09-26T14:50:03.92742Z",
+      "status": "running",
+      "health": "healthy",
+      "memory_limit_bytes": 469762048,
+      "nano_cpus": 0,
+      "restart_count": 0,
+      "oom_killed": false,
+      "environment_allowlist": {}
+    },
+    {
+      "name": "rosstat-clickhouse-1",
+      "image_id": "sha256:b002e56ed5c16e224c312527f6fcba7e77216fec5d7a88a7828f59efc614feb5",
+      "created": "2026-09-03T17:52:43.221716027Z",
+      "status": "running",
+      "health": "healthy",
+      "memory_limit_bytes": 469762048,
+      "nano_cpus": 500000000,
+      "restart_count": 0,
+      "oom_killed": false,
+      "environment_allowlist": {}
+    },
+    {
+      "name": "rosstat-redis-state-1",
+      "image_id": "sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99",
+      "created": "2026-07-13T20:21:45.560294358Z",
+      "status": "running",
+      "health": "healthy",
+      "memory_limit_bytes": 67108864,
+      "nano_cpus": 0,
+      "restart_count": 0,
+      "oom_killed": false,
+      "environment_allowlist": {}
+    }
+  ],
+  "effective_backend_settings_allowlist": {
+    "metrics_token_configured": false,
+    "scheduler_enabled": false,
+    "db_pool_size": 8,
+    "db_max_overflow": 7,
+    "db_pool_timeout": 3,
+    "analytics_db_pool_size": 2,
+    "analytics_db_max_overflow": 2,
+    "analytics_db_pool_timeout": 15,
+    "state_redis_location": {
+      "host": "redis-state",
+      "port": 6379,
+      "database": "/0"
+    },
+    "cache_config": {
+      "maxmemory-clients": "0",
+      "maxmemory-eviction-tenacity": "10",
+      "maxmemory-samples": "5",
+      "maxmemory-policy": "allkeys-lru",
+      "maxmemory": "402653184"
+    },
+    "cache_memory_used_bytes": 402652792,
+    "backup_heartbeat": "1790740938.1899047"
+  },
+  "readiness": {
+    "backend": {
+      "status": "ok",
+      "degraded": false,
+      "checks": {
+        "db": "ok",
+        "cache_redis": "ok",
+        "state_redis": "ok",
+        "etl_last_ok_age_hours": "10.5",
+        "pg_backup_age_hours": "9.6",
+        "open_fds": "42",
+        "open_fds_limit": "65536",
+        "open_fds_pressure": "0.00"
+      }
+    },
+    "scheduler": {
+      "status": "ok",
+      "degraded": false,
+      "checks": {
+        "db": "ok",
+        "cache_redis": "ok",
+        "state_redis": "ok",
+        "scheduler": "ok",
+        "etl_last_ok_age_hours": "10.5",
+        "pg_backup_age_hours": "9.6",
+        "open_fds": "31",
+        "open_fds_limit": "65536",
+        "open_fds_pressure": "0.00"
+      }
+    }
+  },
+  "postgres_read_only_control": {
+    "alembic_revision": "20260927_world_nonzero_idx",
+    "shared_buffers": "896MB",
+    "effective_cache_size": "2304MB",
+    "work_mem": "16MB",
+    "max_connections": "100",
+    "users": 119,
+    "oauth_identities": 43,
+    "email_credentials": 76,
+    "consents": 196,
+    "auth_audit": 208
+  },
+  "config_allowlist": {
+    "OFFSITE_S3_BUCKET_configured": false,
+    "OFFSITE_S3_ENDPOINT_configured": false,
+    "REDIS_CACHE_POLICY": "allkeys-lru"
+  },
+  "aws_cli_present": false,
+  "backup_cron": [
+    "0 4 * * * cd /opt/rosstat && ./scripts/pg-backup.sh >> /var/log/pg-backup.log 2>&1"
+  ],
+  "backup_directory": {
+    "files": 92,
+    "bytes": 16757707534,
+    "latest_daily_dump": {
+      "name": "rustats_20260930_040001.dump",
+      "bytes": 434247670,
+      "mtime_utc": "2026-09-30T04:02:14.209125+00:00"
+    }
+  },
+  "selected_server_source_sha256": {
+    "docker-compose.yml": "cc0c45af675f4e3f1877a1f085ce8e2087595572621862de7794e608d3c88720",
+    "backend/entrypoint.sh": "30c710da7f297e29254c76886b6b34c5d77e2f25f60fac5ee9be12837b398ec4",
+    "scripts/pg-backup.sh": "abea1df9a96c36ca1bea8c8c1cdd228f290a575852b27498a7a5a864a8946864",
+    "scripts/deploy.sh": "2e69bcfcc54e9670de8ed80b10a236db8a8589a540bf8e9465063120bc9f4dcc",
+    "frontend/nginx.conf": "c593b85d6268061bbd2c54b34ae64471019288fce768683d562223ac12833db2",
+    "backend/app/config.py": "ad369a89256c4b3651384cf754d7dda3c7cc8a83faf7b9301681f227f027d994",
+    "Caddyfile": "d8a391018618ee51f0ef194318abe2703676f3dc1e6ebdd68822a594a1a07446"
+  },
+  "observation_scope": "Read-only follow-up, host/resource/config/backup/readiness subset; no production job, restart, deploy or mutation.",
+  "local_source_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+  "selected_local_source_sha256": {
+    "docker-compose.yml": "cc0c45af675f4e3f1877a1f085ce8e2087595572621862de7794e608d3c88720",
+    "backend/entrypoint.sh": "30c710da7f297e29254c76886b6b34c5d77e2f25f60fac5ee9be12837b398ec4",
+    "scripts/pg-backup.sh": "abea1df9a96c36ca1bea8c8c1cdd228f290a575852b27498a7a5a864a8946864",
+    "scripts/deploy.sh": "2e69bcfcc54e9670de8ed80b10a236db8a8589a540bf8e9465063120bc9f4dcc",
+    "frontend/nginx.conf": "c593b85d6268061bbd2c54b34ae64471019288fce768683d562223ac12833db2",
+    "backend/app/config.py": "ad369a89256c4b3651384cf754d7dda3c7cc8a83faf7b9301681f227f027d994",
+    "Caddyfile": "d8a391018618ee51f0ef194318abe2703676f3dc1e6ebdd68822a594a1a07446"
+  }
+}

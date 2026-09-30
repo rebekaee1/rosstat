@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Read-only dated runtime observations. server/local sections retain the full 2026-09-27 snapshot; followup_observations link narrower 2026-09-30 checks. No credentials/user rows/private keys. Healthy is not proof of all jobs, capacity or full failover.",
+  "description": "Read-only dated runtime observations; no credentials, user rows, requests, tokens or private keys. A healthy process is not proof of all jobs, restore or load capacity.",
   "local_source_commit": "cf7daf1f954f3c04187fe2decc20b59ad7241bab",
   "server": {
     "observed_utc": "2026-09-27T12:24:17.446240+00:00",
@@ -6767,28 +6767,10 @@
   },
   "unverified": [
     "Provider physical CPU/storage model and SLA",
+    "Successful restore from latest backup",
     "Offsite mechanism outside inspected pg-backup path",
     "Sustained peak throughput and simultaneous container peak memory",
     "Every image file matches server Git (11 selected paths checked)",
-    "Running Vite process effective proxy environment",
-    "Application acceptance on restored database, original owners/ACL replay, full failover and target RTO/RPO",
-    "Next scheduled local launchd backup delivery after 2026-09-30 repair"
-  ],
-  "historical_snapshot": {
-    "path": "code-review/runtime-inventory-2026-09-27.json",
-    "sha256": "ba22e1e7d1d6f30551b97f62ed9d84f1194e7157a19a7136ff25bfb0b450d899",
-    "scope": "Original unmodified full runtime snapshot 2026-09-27"
-  },
-  "followup_observations": [
-    {
-      "observed_utc": "2026-09-30T13:40:31.942109+00:00",
-      "path": "code-review/runtime-observation-2026-09-30.json",
-      "scope": "Read-only host/resources/selected effective settings/readiness/backup/head and seven checkout hashes; not full schema or image attestation"
-    },
-    {
-      "observed_date_msk": "2026-09-30",
-      "path": "code-review/backup-acceptance-2026-09-30.json",
-      "scope": "Fresh existing full and identity backup delivery/hash checks and isolated local restore, without original owners/ACL replay or application E2E"
-    }
+    "Running Vite process effective proxy environment"
   ]
 }

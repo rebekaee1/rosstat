@@ -6,6 +6,22 @@ on:
   pull_request:
 
 jobs:
+  knowledge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Static saved-symbol/hash/range and Graphify projection checks need only
+      # stdlib. No automatic review stamps, refresh, DB or server access in CI.
+      - name: Project knowledge guard
+        run: ./scripts/check-project-knowledge.sh
+      - name: Guard regression tests
+        run: |
+          python -m unittest discover -s scripts -p 'test_code_documentation.py'
+          python -m unittest discover -s scripts -p 'test_knowledge_materials.py'
+
   backend:
     runs-on: ubuntu-latest
     defaults:
@@ -88,6 +104,8 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install dependencies
         run: npm ci
+      - name: JavaScript review symbol guard
+        run: node ../scripts/code-review-symbols.mjs --check --tracked-only
       - name: ESLint
         run: npm run lint
       - name: Vitest

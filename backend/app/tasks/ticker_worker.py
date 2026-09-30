@@ -1,7 +1,7 @@
-"""Live ticker worker: APScheduler-driven, runs every 5 seconds.
+"""Live ticker worker: APScheduler-driven, interval from Settings.
 
 Pulls live FX quotes from MOEX ISS and BTC/USD from Binance, persists
-the result in Redis under `ticker:<code>` with TTL 30 seconds. The frontend
+the result in Redis under `ticker:<code>` with TTL 90 seconds. The frontend
 hits `GET /api/v1/ticker/live`, which reads these keys atomically (no per-
 request external API call, no rate-limit issues at scale).
 
@@ -10,18 +10,18 @@ Brent and gold always come from the same DB series as their indicator cards
 that contradicted the cards on the home page (P0).
 
 Design notes:
-  - One worker per backend process. Each tick is bounded by the 10s timeout
-    of the underlying httpx clients; we use `coalesce=True` and
-    `max_instances=1` in main.py so two concurrent ticks cannot pile up.
+  - The scheduler-enabled process registers the configured interval;
+    `coalesce=True` and `max_instances=1` bound overlap inside that scheduler.
+    They are not a distributed single-worker guarantee.
   - Failures of one source don't kill the other. If MOEX is down, BTC still
-    updates; the missing snapshots in Redis simply expire (TTL = 30s), and
+    updates; the missing snapshots in Redis simply expire (TTL = 90s), and
     the API endpoint silently omits them from the response.
   - The TTL is deliberately much longer (90s) than the polling interval so
     that several consecutive pull failures (flaky MOEX, a slow tick) don't
     black out the ticker — the previous snapshot stays until the next
-    successful pull replaces it. Sources are fetched concurrently with a 5s
-    per-request timeout (see moex_iss._TIMEOUT), so a healthy tick finishes
-    well under the TTL; raising the TTL only widens the safety margin.
+    successful pull replaces it. MOEX requests have a 5s timeout; Binance
+    uses 10s per attempted mirror. Source duration and the scheduler interval
+    are separate limits; coalescing skips overlapping runs.
 """
 from __future__ import annotations
 
@@ -49,8 +49,8 @@ _SERIES_TICKER_SPECS: tuple[tuple[str, str, str], ...] = (
     ("usd-cny", "usd-cny", "ЕЦБ"),
 )
 
-# Воркер тикает каждые 5 секунд, а дневной ряд обновляется раз в сутки:
-# без памяти это ~17 тысяч одинаковых запросов к БД в день.
+# Воркер тикает с настроенным интервалом, а дневной ряд обновляется раз в сутки:
+# память сокращает повторные чтения одной и той же пары точек.
 _SERIES_CACHE_TTL_SECONDS = 300
 _series_cache: dict[str, tuple[float, object]] = {}
 
@@ -186,7 +186,7 @@ async def ticker_pull_job() -> None:
 
 
 # --- Н-20: тикер молча протухает по TTL, если запись не проходит -----------
-# job интервальная (каждые ~30с); если успешной записи не было дольше
+# job интервальная (Settings.ticker_pull_interval_seconds); если записи не было дольше
 # _STALE_ALERT_SECONDS — один алерт, дальше молчим _ALERT_COOLDOWN.
 _STALE_ALERT_SECONDS = 180
 _ALERT_COOLDOWN = 1800

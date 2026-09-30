@@ -3,7 +3,8 @@
 
 The ledger is written by reviewers after reading source. This tool checks hashes,
 read ranges and named Python definitions. JavaScript symbols are supplied by the
-separate Babel inventory. Generated review artifacts are excluded from recursion.
+separate Babel inventory. The evidence directory is excluded from this ledger
+to avoid recursion; its material identities have a separate manifest guard.
 No application import, database access, network call or production mutation.
 """
 from __future__ import annotations
@@ -43,10 +44,11 @@ def included(path: str) -> bool:
     return path not in EXCLUDED_FILES and not path.startswith("docs/code-review/")
 
 
-def inventory() -> dict[str, dict]:
-    """Use tracked/nonignored paths, without following symlinks or ignored envs."""
+def inventory(tracked_only: bool = False) -> dict[str, dict]:
+    """Read tracked/index paths; optionally include nonignored untracked inputs."""
     paths = set(git("ls-files", "-z").split("\0"))
-    paths.update(git("ls-files", "--others", "--exclude-standard", "-z").split("\0"))
+    if not tracked_only:
+        paths.update(git("ls-files", "--others", "--exclude-standard", "-z").split("\0"))
     result = {}
     for name in sorted(filter(None, paths)):
         path = ROOT / name
@@ -185,7 +187,7 @@ def evaluate(files: dict[str, dict], reviews: dict[str, dict], js: dict) -> dict
     counts = Counter(r["status"] for r in rows)
     return {
         "schema_version": 1,
-        "scope": "Git tracked and nonignored worktree files, excluding explicit generated review/terrain outputs",
+        "scope": "Git tracked and nonignored worktree files, excluding generated maps and docs/code-review evidence directory",
         "excluded_files": sorted(EXCLUDED_FILES), "excluded_prefixes": ["docs/code-review/"],
         "limitations": [
             "A substantive source review is not proof of every runtime path or absence of defects.",
@@ -209,6 +211,7 @@ def markdown(data: dict) -> str:
     lines = ["# Содержательный разбор локальной main", "",
              "> Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».", "",
              f"Базовый commit: `{data['baseline_commit']}`. SHA-256 каждого файла фиксирует также рабочие изменения.", "",
+             f"Input scope: `{data.get('input_scope', 'worktree')}` — {data['scope']}.", "",
              "[Просмотрщик](project-terrain.html) · [Архитектура](architecture.md) · [Контракты](data-contracts.md) · "
              "[Сервер и локальная среда](runtime-inventory.json) · [История решений](architecture-history.md) · "
              "[Рецензии JSONL](code-review/reviews.jsonl) · [Покрытие JSON](code-review/coverage.json)", "",
@@ -222,11 +225,12 @@ def markdown(data: dict) -> str:
              "Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. "
              "Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.", "",
              "## Обновление", "", "```bash", "# После изменения исходников — перепрочитать изменённые функции и обновить соответствующую рецензию",
-             "node scripts/code-review-symbols.mjs", "python3 scripts/audit-code-documentation.py --build",
+             "node scripts/code-review-symbols.mjs --tracked-only", "python3 scripts/audit-code-documentation.py --build --tracked-only",
              "python3 scripts/audit-code-documentation.py --check", "python3 scripts/build-project-terrain.py --render", "```", "",
              "`--build` не устраняет пропуски: они остаются в отчёте. `--check` возвращает ненулевой код при изменённом SHA, "
              "непрочитанном файле или определении без аннотации. Нельзя просто заменить hash, не проверив diff и затронутые контракты.", "",
-             "Scope исключает только генерируемые terrain/review outputs и repo-inventory; перечень исключений сохранён в JSON. "
+             "Scope исключает генерируемые карты, repo-inventory и каталог `docs/code-review/`; перечень исключений сохранён в JSON. "
+             "Ручные критерии и другие материалы этого каталога проходят отдельный `audit-knowledge-materials.py --check` по реестру материалов, без присвоения body-reviewed. "
              "Игнорируемые `.env`, данные локальных томов и сторонний `node_modules` не входят в кодовую рецензию. "
              "Фактическая серверная конфигурация документируется отдельным разрешённым списком полей, без секретов.", "",
              "## Файлы", "", "| Файл | Статус | Определения | Проверка |", "|---|---|---:|---|"]
@@ -241,10 +245,17 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--build", action="store_true")
     mode.add_argument("--check", action="store_true")
+    parser.add_argument("--tracked-only", action="store_true", default=None,
+                        help="Use Git tracked/index paths for a reproducible main/CI snapshot")
     args = parser.parse_args()
+    old = json.loads(SNAPSHOT.read_text()) if SNAPSHOT.exists() else {}
+    tracked_only = args.tracked_only if args.tracked_only is not None else old.get("input_scope") == "tracked"
     reviews, errors = read_ledger()
     js = json.loads(SYMBOLS.read_text()) if SYMBOLS.exists() else {}
-    data = evaluate(inventory(), reviews, js)
+    data = evaluate(inventory(tracked_only=tracked_only), reviews, js)
+    data["input_scope"] = "tracked" if tracked_only else "worktree"
+    data["scope"] = ("Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main"
+                     if tracked_only else data["scope"])
     errors.extend(f"Review outside current scope: {path}" for path in data["orphan_reviews"])
     data["ledger_sha256"] = hashlib.sha256(LEDGER.read_bytes()).hexdigest() if LEDGER.exists() else None
     data["javascript_inventory_sha256"] = hashlib.sha256(SYMBOLS.read_bytes()).hexdigest() if SYMBOLS.exists() else None
@@ -259,9 +270,8 @@ def main() -> int:
         if not SNAPSHOT.exists():
             errors.append("Missing coverage snapshot: run --build after updating reviews")
         else:
-            old = json.loads(SNAPSHOT.read_text())
             if any(old.get(key) != data.get(key) for key in (
-                "files", "counts", "ledger_sha256", "javascript_inventory_sha256", "orphan_reviews"
+                "files", "counts", "ledger_sha256", "javascript_inventory_sha256", "orphan_reviews", "input_scope"
             )):
                 errors.append("Coverage snapshot differs from current source/reviews")
             if not REPORT.exists() or REPORT.read_text() != markdown(old):

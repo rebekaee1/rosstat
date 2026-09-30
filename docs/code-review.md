@@ -2,7 +2,9 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `f8e239a3fca144f691604f47951e2bf80e664430`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `972579f0b95b70d0ac8d4293331cd8d18c2521fe`. SHA-256 каждого файла фиксирует также рабочие изменения.
+
+Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
 [Просмотрщик](project-terrain.html) · [Архитектура](architecture.md) · [Контракты](data-contracts.md) · [Сервер и локальная среда](runtime-inventory.json) · [История решений](architecture-history.md) · [Рецензии JSONL](code-review/reviews.jsonl) · [Покрытие JSON](code-review/coverage.json)
 
@@ -10,10 +12,10 @@
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1287 |
-| Код, шаблоны и стили | 980 |
-| Актуальные рецензии без пропусков guard | 1287 |
-| Именованные определения Python/JS: с аннотацией / всего | 8210 / 8210 |
+| Файлы в явно определённом scope | 1301 |
+| Код, шаблоны и стили | 991 |
+| Актуальные рецензии без пропусков guard | 1301 |
+| Именованные определения Python/JS: с аннотацией / всего | 8413 / 8413 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -22,15 +24,15 @@
 
 ```bash
 # После изменения исходников — перепрочитать изменённые функции и обновить соответствующую рецензию
-node scripts/code-review-symbols.mjs
-python3 scripts/audit-code-documentation.py --build
+node scripts/code-review-symbols.mjs --tracked-only
+python3 scripts/audit-code-documentation.py --build --tracked-only
 python3 scripts/audit-code-documentation.py --check
 python3 scripts/build-project-terrain.py --render
 ```
 
 `--build` не устраняет пропуски: они остаются в отчёте. `--check` возвращает ненулевой код при изменённом SHA, непрочитанном файле или определении без аннотации. Нельзя просто заменить hash, не проверив diff и затронутые контракты.
 
-Scope исключает только генерируемые terrain/review outputs и repo-inventory; перечень исключений сохранён в JSON. Игнорируемые `.env`, данные локальных томов и сторонний `node_modules` не входят в кодовую рецензию. Фактическая серверная конфигурация документируется отдельным разрешённым списком полей, без секретов.
+Scope исключает генерируемые карты, repo-inventory и каталог `docs/code-review/`; перечень исключений сохранён в JSON. Ручные критерии и другие материалы этого каталога проходят отдельный `audit-knowledge-materials.py --check` по реестру материалов, без присвоения body-reviewed. Игнорируемые `.env`, данные локальных томов и сторонний `node_modules` не входят в кодовую рецензию. Фактическая серверная конфигурация документируется отдельным разрешённым списком полей, без секретов.
 
 ## Файлы
 
@@ -108,7 +110,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/api/demographics.py](../backend/app/api/demographics.py) | reviewed | 1/1 | актуально |
 | [backend/app/api/embed.py](../backend/app/api/embed.py) | reviewed | 17/17 | актуально |
 | [backend/app/api/export.py](../backend/app/api/export.py) | reviewed | 19/19 | актуально |
-| [backend/app/api/forecasts.py](../backend/app/api/forecasts.py) | reviewed | 4/4 | актуально |
+| [backend/app/api/forecasts.py](../backend/app/api/forecasts.py) | reviewed | 5/5 | актуально |
 | [backend/app/api/indicators.py](../backend/app/api/indicators.py) | reviewed | 12/12 | актуально |
 | [backend/app/api/oauth.py](../backend/app/api/oauth.py) | reviewed | 21/21 | актуально |
 | [backend/app/api/regions.py](../backend/app/api/regions.py) | reviewed | 15/15 | актуально |
@@ -206,8 +208,8 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/data/world_national_core/uk.yaml](../backend/app/data/world_national_core/uk.yaml) | reviewed | 0/0 | актуально |
 | [backend/app/data/world_national_core/us.yaml](../backend/app/data/world_national_core/us.yaml) | reviewed | 0/0 | актуально |
 | [backend/app/data/world_subnational/us.yaml](../backend/app/data/world_subnational/us.yaml) | reviewed | 0/0 | актуально |
-| [backend/app/database.py](../backend/app/database.py) | reviewed | 5/5 | актуально |
-| [backend/app/main.py](../backend/app/main.py) | reviewed | 40/40 | актуально |
+| [backend/app/database.py](../backend/app/database.py) | reviewed | 6/6 | актуально |
+| [backend/app/main.py](../backend/app/main.py) | reviewed | 41/41 | актуально |
 | [backend/app/models.py](../backend/app/models.py) | reviewed | 59/59 | актуально |
 | [backend/app/schemas.py](../backend/app/schemas.py) | reviewed | 14/14 | актуально |
 | [backend/app/security/__init__.py](../backend/app/security/__init__.py) | reviewed | 0/0 | актуально |
@@ -223,7 +225,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/analytics_backfill.py](../backend/app/services/analytics_backfill.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/analytics_features.py](../backend/app/services/analytics_features.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/analytics_ingestion.py](../backend/app/services/analytics_ingestion.py) | reviewed | 5/5 | актуально |
-| [backend/app/services/analytics_marts.py](../backend/app/services/analytics_marts.py) | reviewed | 38/38 | актуально |
+| [backend/app/services/analytics_marts.py](../backend/app/services/analytics_marts.py) | reviewed | 39/39 | актуально |
 | [backend/app/services/analytics_period.py](../backend/app/services/analytics_period.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/analytics_repair.py](../backend/app/services/analytics_repair.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/analytics_report_bundle.py](../backend/app/services/analytics_report_bundle.py) | reviewed | 4/4 | актуально |
@@ -231,7 +233,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/attribution_query.py](../backend/app/services/attribution_query.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/base_parser.py](../backend/app/services/base_parser.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/binance_btcusdt_parser.py](../backend/app/services/binance_btcusdt_parser.py) | reviewed | 6/6 | актуально |
-| [backend/app/services/bot_score.py](../backend/app/services/bot_score.py) | reviewed | 7/7 | актуально |
+| [backend/app/services/bot_score.py](../backend/app/services/bot_score.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/br_pop_adapter.py](../backend/app/services/br_pop_adapter.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/breadcrumbs.py](../backend/app/services/breadcrumbs.py) | reviewed | 34/34 | актуально |
 | [backend/app/services/brent_fred_parser.py](../backend/app/services/brent_fred_parser.py) | reviewed | 4/4 | актуально |
@@ -257,7 +259,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/cbr_ruonia_parser.py](../backend/app/services/cbr_ruonia_parser.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/cbr_trade_goods_monthly_parser.py](../backend/app/services/cbr_trade_goods_monthly_parser.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/cbr_trade_services_monthly_parser.py](../backend/app/services/cbr_trade_services_monthly_parser.py) | reviewed | 6/6 | актуально |
-| [backend/app/services/clickhouse_sync.py](../backend/app/services/clickhouse_sync.py) | reviewed | 12/12 | актуально |
+| [backend/app/services/clickhouse_sync.py](../backend/app/services/clickhouse_sync.py) | reviewed | 17/17 | актуально |
 | [backend/app/services/data_validator.py](../backend/app/services/data_validator.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/dataset_inventory.py](../backend/app/services/dataset_inventory.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/demand_router.py](../backend/app/services/demand_router.py) | reviewed | 6/6 | актуально |
@@ -267,6 +269,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/ecb_fx_parser.py](../backend/app/services/ecb_fx_parser.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/emiss_regional_parser.py](../backend/app/services/emiss_regional_parser.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/eurostat_parser.py](../backend/app/services/eurostat_parser.py) | reviewed | 27/27 | актуально |
+| [backend/app/services/eurostat_structure.py](../backend/app/services/eurostat_structure.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/export_render.py](../backend/app/services/export_render.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/fetcher.py](../backend/app/services/fetcher.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/forecast_pipeline.py](../backend/app/services/forecast_pipeline.py) | reviewed | 16/16 | актуально |
@@ -302,7 +305,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/imf_weo_adapter.py](../backend/app/services/imf_weo_adapter.py) | reviewed | 23/23 | актуально |
 | [backend/app/services/imf_weo_parser.py](../backend/app/services/imf_weo_parser.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/index_policy.py](../backend/app/services/index_policy.py) | reviewed | 4/4 | актуально |
-| [backend/app/services/indexnow.py](../backend/app/services/indexnow.py) | reviewed | 27/27 | актуально |
+| [backend/app/services/indexnow.py](../backend/app/services/indexnow.py) | reviewed | 29/29 | актуально |
 | [backend/app/services/locale.py](../backend/app/services/locale.py) | reviewed | 29/29 | актуально |
 | [backend/app/services/metrika_acquisition.py](../backend/app/services/metrika_acquisition.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/minfin_budget_parser.py](../backend/app/services/minfin_budget_parser.py) | reviewed | 21/21 | актуально |
@@ -347,7 +350,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/seo_region_compare.py](../backend/app/services/seo_region_compare.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/seo_regional.py](../backend/app/services/seo_regional.py) | reviewed | 20/20 | актуально |
 | [backend/app/services/seo_regional_year.py](../backend/app/services/seo_regional_year.py) | reviewed | 10/10 | актуально |
-| [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 86/86 | актуально |
+| [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 87/87 | актуально |
 | [backend/app/services/seo_today.py](../backend/app/services/seo_today.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/seo_world.py](../backend/app/services/seo_world.py) | reviewed | 44/44 | актуально |
 | [backend/app/services/seo_world_compare.py](../backend/app/services/seo_world_compare.py) | reviewed | 14/14 | актуально |
@@ -356,10 +359,10 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/seo_world_subnational_year.py](../backend/app/services/seo_world_subnational_year.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/seo_world_year.py](../backend/app/services/seo_world_year.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/session.py](../backend/app/services/session.py) | reviewed | 7/7 | актуально |
-| [backend/app/services/site_paths.py](../backend/app/services/site_paths.py) | reviewed | 49/49 | актуально |
+| [backend/app/services/site_paths.py](../backend/app/services/site_paths.py) | reviewed | 51/51 | актуально |
 | [backend/app/services/site_urls.py](../backend/app/services/site_urls.py) | reviewed | 87/87 | актуально |
 | [backend/app/services/sitemap_images.py](../backend/app/services/sitemap_images.py) | reviewed | 4/4 | актуально |
-| [backend/app/services/sitemap_static.py](../backend/app/services/sitemap_static.py) | reviewed | 20/20 | актуально |
+| [backend/app/services/sitemap_static.py](../backend/app/services/sitemap_static.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/telegram_bot.py](../backend/app/services/telegram_bot.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/telegram_outbox.py](../backend/app/services/telegram_outbox.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/ticker_sources/__init__.py](../backend/app/services/ticker_sources/__init__.py) | reviewed | 3/3 | актуально |
@@ -369,7 +372,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/ua_parser.py](../backend/app/services/ua_parser.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/upsert.py](../backend/app/services/upsert.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/us_pop_adapter.py](../backend/app/services/us_pop_adapter.py) | reviewed | 15/15 | актуально |
-| [backend/app/services/webmaster_indexing_daily.py](../backend/app/services/webmaster_indexing_daily.py) | reviewed | 13/13 | актуально |
+| [backend/app/services/webmaster_indexing_daily.py](../backend/app/services/webmaster_indexing_daily.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/webmaster_indexing_report.py](../backend/app/services/webmaster_indexing_report.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/webmaster_recrawl.py](../backend/app/services/webmaster_recrawl.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/world_adapters/__init__.py](../backend/app/services/world_adapters/__init__.py) | reviewed | 1/1 | актуально |
@@ -395,7 +398,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/world_bea_regional.py](../backend/app/services/world_bea_regional.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/world_cards.py](../backend/app/services/world_cards.py) | reviewed | 28/28 | актуально |
 | [backend/app/services/world_compare.py](../backend/app/services/world_compare.py) | reviewed | 9/9 | актуально |
-| [backend/app/services/world_eurostat_ingest.py](../backend/app/services/world_eurostat_ingest.py) | reviewed | 16/16 | актуально |
+| [backend/app/services/world_eurostat_ingest.py](../backend/app/services/world_eurostat_ingest.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/world_forecast_pipeline.py](../backend/app/services/world_forecast_pipeline.py) | reviewed | 32/32 | актуально |
 | [backend/app/services/world_forecaster.py](../backend/app/services/world_forecaster.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/world_imf_ingest.py](../backend/app/services/world_imf_ingest.py) | reviewed | 4/4 | актуально |
@@ -407,7 +410,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/app/services/world_source_adapter.py](../backend/app/services/world_source_adapter.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/world_subnational_forecast.py](../backend/app/services/world_subnational_forecast.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/world_subnational_ingest.py](../backend/app/services/world_subnational_ingest.py) | reviewed | 27/27 | актуально |
-| [backend/app/services/world_subnational_queries.py](../backend/app/services/world_subnational_queries.py) | reviewed | 6/6 | актуально |
+| [backend/app/services/world_subnational_queries.py](../backend/app/services/world_subnational_queries.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/world_view_modes.py](../backend/app/services/world_view_modes.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/yandex_clean_param.py](../backend/app/services/yandex_clean_param.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/yandex_client.py](../backend/app/services/yandex_client.py) | reviewed | 7/7 | актуально |
@@ -446,7 +449,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/scripts/load-world-auto-deep.py](../backend/scripts/load-world-auto-deep.py) | reviewed | 6/6 | актуально |
 | [backend/scripts/load-world-bea-regional.py](../backend/scripts/load-world-bea-regional.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/load-world-deep-slices.py](../backend/scripts/load-world-deep-slices.py) | reviewed | 1/1 | актуально |
-| [backend/scripts/load-world-eurostat.py](../backend/scripts/load-world-eurostat.py) | reviewed | 11/11 | актуально |
+| [backend/scripts/load-world-eurostat.py](../backend/scripts/load-world-eurostat.py) | reviewed | 13/13 | актуально |
 | [backend/scripts/load-world-national.py](../backend/scripts/load-world-national.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/load-world-subnational.py](../backend/scripts/load-world-subnational.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/metrika-goals-redesign.py](../backend/scripts/metrika-goals-redesign.py) | reviewed | 3/3 | актуально |
@@ -485,7 +488,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/forecast_strategies/snapshots/prod_signed_quarterly.json](../backend/tests/forecast_strategies/snapshots/prod_signed_quarterly.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [backend/tests/forecast_strategies/test_annual_auto.py](../backend/tests/forecast_strategies/test_annual_auto.py) | reviewed | 7/7 | актуально |
 | [backend/tests/forecast_strategies/test_cpi_snapshot.py](../backend/tests/forecast_strategies/test_cpi_snapshot.py) | reviewed | 6/6 | актуально |
-| [backend/tests/forecast_strategies/test_derived.py](../backend/tests/forecast_strategies/test_derived.py) | reviewed | 17/17 | актуально |
+| [backend/tests/forecast_strategies/test_derived.py](../backend/tests/forecast_strategies/test_derived.py) | reviewed | 18/18 | актуально |
 | [backend/tests/forecast_strategies/test_gdp_real_snapshot.py](../backend/tests/forecast_strategies/test_gdp_real_snapshot.py) | reviewed | 4/4 | актуально |
 | [backend/tests/forecast_strategies/test_housing_quarterly_snapshot.py](../backend/tests/forecast_strategies/test_housing_quarterly_snapshot.py) | reviewed | 4/4 | актуально |
 | [backend/tests/forecast_strategies/test_monthly_auto.py](../backend/tests/forecast_strategies/test_monthly_auto.py) | reviewed | 6/6 | актуально |
@@ -494,7 +497,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/forecast_strategies/test_registry.py](../backend/tests/forecast_strategies/test_registry.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_admin_bi.py](../backend/tests/test_admin_bi.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_alerting.py](../backend/tests/test_alerting.py) | reviewed | 31/31 | актуально |
-| [backend/tests/test_analytics2.py](../backend/tests/test_analytics2.py) | reviewed | 37/37 | актуально |
+| [backend/tests/test_analytics2.py](../backend/tests/test_analytics2.py) | reviewed | 48/48 | актуально |
 | [backend/tests/test_analytics_alert_hygiene.py](../backend/tests/test_analytics_alert_hygiene.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_analytics_api.py](../backend/tests/test_analytics_api.py) | reviewed | 30/30 | актуально |
 | [backend/tests/test_analytics_engine.py](../backend/tests/test_analytics_engine.py) | reviewed | 3/3 | актуально |
@@ -527,6 +530,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/test_cbr_reserves.py](../backend/tests/test_cbr_reserves.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_cbr_ruonia.py](../backend/tests/test_cbr_ruonia.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_cbr_trade_monthly.py](../backend/tests/test_cbr_trade_monthly.py) | reviewed | 25/25 | актуально |
+| [backend/tests/test_clickhouse_sync.py](../backend/tests/test_clickhouse_sync.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_cny_rub_seo.py](../backend/tests/test_cny_rub_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_cpi_provenance.py](../backend/tests/test_cpi_provenance.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_credit_indicators.py](../backend/tests/test_credit_indicators.py) | reviewed | 6/6 | актуально |
@@ -539,22 +543,24 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/test_derived_ops.py](../backend/tests/test_derived_ops.py) | reviewed | 54/54 | актуально |
 | [backend/tests/test_derived_specs_execution.py](../backend/tests/test_derived_specs_execution.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_display_adapter.py](../backend/tests/test_display_adapter.py) | reviewed | 16/16 | актуально |
+| [backend/tests/test_dual_host_release_gate.py](../backend/tests/test_dual_host_release_gate.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_ecb_fx_parser.py](../backend/tests/test_ecb_fx_parser.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_embed_tracking.py](../backend/tests/test_embed_tracking.py) | reviewed | 5/5 | актуально |
-| [backend/tests/test_emiss_regional_parser.py](../backend/tests/test_emiss_regional_parser.py) | reviewed | 17/17 | актуально |
+| [backend/tests/test_emiss_regional_parser.py](../backend/tests/test_emiss_regional_parser.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_en_catalog.py](../backend/tests/test_en_catalog.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_etl_side_effect_sources.py](../backend/tests/test_etl_side_effect_sources.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_etl_statuses.py](../backend/tests/test_etl_statuses.py) | reviewed | 30/30 | актуально |
 | [backend/tests/test_eur_rub_seo.py](../backend/tests/test_eur_rub_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_eurostat_deep_expand.py](../backend/tests/test_eurostat_deep_expand.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_eurostat_listing_modes.py](../backend/tests/test_eurostat_listing_modes.py) | reviewed | 6/6 | актуально |
+| [backend/tests/test_eurostat_structure.py](../backend/tests/test_eurostat_structure.py) | reviewed | 13/13 | актуально |
 | [backend/tests/test_export.py](../backend/tests/test_export.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_export_render.py](../backend/tests/test_export_render.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_external_debt_seo.py](../backend/tests/test_external_debt_seo.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_fd_leak.py](../backend/tests/test_fd_leak.py) | reviewed | 27/27 | актуально |
 | [backend/tests/test_forecast_catch_up.py](../backend/tests/test_forecast_catch_up.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_forecast_constraints.py](../backend/tests/test_forecast_constraints.py) | reviewed | 7/7 | актуально |
-| [backend/tests/test_forecast_partial_actual.py](../backend/tests/test_forecast_partial_actual.py) | reviewed | 1/1 | актуально |
+| [backend/tests/test_forecast_partial_actual.py](../backend/tests/test_forecast_partial_actual.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_forecast_policy.py](../backend/tests/test_forecast_policy.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_forecaster.py](../backend/tests/test_forecaster.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_fred_parser.py](../backend/tests/test_fred_parser.py) | reviewed | 7/7 | актуально |
@@ -596,7 +602,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/test_page_meta_export.py](../backend/tests/test_page_meta_export.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_parser_fixtures.py](../backend/tests/test_parser_fixtures.py) | reviewed | 27/27 | актуально |
 | [backend/tests/test_parser_hooks.py](../backend/tests/test_parser_hooks.py) | reviewed | 2/2 | актуально |
-| [backend/tests/test_path_cut_redirects.py](../backend/tests/test_path_cut_redirects.py) | reviewed | 14/14 | актуально |
+| [backend/tests/test_path_cut_redirects.py](../backend/tests/test_path_cut_redirects.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_perf_batch2.py](../backend/tests/test_perf_batch2.py) | reviewed | 30/30 | актуально |
 | [backend/tests/test_project_terrain.py](../backend/tests/test_project_terrain.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_public_year_contract.py](../backend/tests/test_public_year_contract.py) | reviewed | 9/9 | актуально |
@@ -610,7 +616,7 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/test_rosstat_ind.py](../backend/tests/test_rosstat_ind.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_rosstat_ipi.py](../backend/tests/test_rosstat_ipi.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_rosstat_labor.py](../backend/tests/test_rosstat_labor.py) | reviewed | 13/13 | актуально |
-| [backend/tests/test_rosstat_plan.py](../backend/tests/test_rosstat_plan.py) | reviewed | 32/32 | актуально |
+| [backend/tests/test_rosstat_plan.py](../backend/tests/test_rosstat_plan.py) | reviewed | 34/34 | актуально |
 | [backend/tests/test_rosstat_population.py](../backend/tests/test_rosstat_population.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_rosstat_ppi.py](../backend/tests/test_rosstat_ppi.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_rosstat_wages_backfill.py](../backend/tests/test_rosstat_wages_backfill.py) | reviewed | 14/14 | актуально |
@@ -618,15 +624,16 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/test_route_smoke.py](../backend/tests/test_route_smoke.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_ruonia_seo.py](../backend/tests/test_ruonia_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_russia_world_compare.py](../backend/tests/test_russia_world_compare.py) | reviewed | 9/9 | актуально |
-| [backend/tests/test_scrape_access_policy.py](../backend/tests/test_scrape_access_policy.py) | reviewed | 17/17 | актуально |
+| [backend/tests/test_scrape_access_policy.py](../backend/tests/test_scrape_access_policy.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_scrape_guard.py](../backend/tests/test_scrape_guard.py) | reviewed | 35/35 | актуально |
 | [backend/tests/test_search_intent_copy.py](../backend/tests/test_search_intent_copy.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_seed_hash.py](../backend/tests/test_seed_hash.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_seed_integrity.py](../backend/tests/test_seed_integrity.py) | reviewed | 7/7 | актуально |
-| [backend/tests/test_seo_growth_pages.py](../backend/tests/test_seo_growth_pages.py) | reviewed | 121/121 | актуально |
-| [backend/tests/test_seo_not_found.py](../backend/tests/test_seo_not_found.py) | reviewed | 1/1 | актуально |
+| [backend/tests/test_seo_growth_pages.py](../backend/tests/test_seo_growth_pages.py) | reviewed | 128/128 | актуально |
+| [backend/tests/test_seo_not_found.py](../backend/tests/test_seo_not_found.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_seo_og.py](../backend/tests/test_seo_og.py) | reviewed | 77/77 | актуально |
 | [backend/tests/test_seo_regional_year.py](../backend/tests/test_seo_regional_year.py) | reviewed | 19/19 | актуально |
+| [backend/tests/test_seo_source_link.py](../backend/tests/test_seo_source_link.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_seo_world.py](../backend/tests/test_seo_world.py) | reviewed | 31/31 | актуально |
 | [backend/tests/test_seo_world_year.py](../backend/tests/test_seo_world_year.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_site_path_collisions.py](../backend/tests/test_site_path_collisions.py) | reviewed | 6/6 | актуально |
@@ -634,8 +641,8 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/test_site_urls_recrawl_filter.py](../backend/tests/test_site_urls_recrawl_filter.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_sitemap_images.py](../backend/tests/test_sitemap_images.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_sitemap_public_coverage.py](../backend/tests/test_sitemap_public_coverage.py) | reviewed | 9/9 | актуально |
-| [backend/tests/test_sitemap_scheduler_hardening.py](../backend/tests/test_sitemap_scheduler_hardening.py) | reviewed | 49/49 | актуально |
-| [backend/tests/test_sitemap_static.py](../backend/tests/test_sitemap_static.py) | reviewed | 40/40 | актуально |
+| [backend/tests/test_sitemap_scheduler_hardening.py](../backend/tests/test_sitemap_scheduler_hardening.py) | reviewed | 54/54 | актуально |
+| [backend/tests/test_sitemap_static.py](../backend/tests/test_sitemap_static.py) | reviewed | 44/44 | актуально |
 | [backend/tests/test_ssr_cache.py](../backend/tests/test_ssr_cache.py) | reviewed | 45/45 | актуально |
 | [backend/tests/test_ssr_matrix.py](../backend/tests/test_ssr_matrix.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_ssr_pool_release.py](../backend/tests/test_ssr_pool_release.py) | reviewed | 22/22 | актуально |
@@ -647,9 +654,9 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/test_usd_rub_seo.py](../backend/tests/test_usd_rub_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_view_model_families.py](../backend/tests/test_view_model_families.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_wages_nominal_seo.py](../backend/tests/test_wages_nominal_seo.py) | reviewed | 4/4 | актуально |
-| [backend/tests/test_webmaster_integrity.py](../backend/tests/test_webmaster_integrity.py) | reviewed | 19/19 | актуально |
+| [backend/tests/test_webmaster_integrity.py](../backend/tests/test_webmaster_integrity.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_weo_listing.py](../backend/tests/test_weo_listing.py) | reviewed | 4/4 | актуально |
-| [backend/tests/test_world.py](../backend/tests/test_world.py) | reviewed | 39/39 | актуально |
+| [backend/tests/test_world.py](../backend/tests/test_world.py) | reviewed | 41/41 | актуально |
 | [backend/tests/test_world_abs_adapter.py](../backend/tests/test_world_abs_adapter.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_world_aggregation.py](../backend/tests/test_world_aggregation.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_world_bank_pink_sheet_parser.py](../backend/tests/test_world_bank_pink_sheet_parser.py) | reviewed | 8/8 | актуально |
@@ -668,8 +675,8 @@ Scope исключает только генерируемые terrain/review ou
 | [backend/tests/test_world_country_markets.py](../backend/tests/test_world_country_markets.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_world_ecos_adapter.py](../backend/tests/test_world_ecos_adapter.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_world_estat_adapter.py](../backend/tests/test_world_estat_adapter.py) | reviewed | 6/6 | актуально |
-| [backend/tests/test_world_eurostat_ingest.py](../backend/tests/test_world_eurostat_ingest.py) | reviewed | 9/9 | актуально |
-| [backend/tests/test_world_forecast.py](../backend/tests/test_world_forecast.py) | reviewed | 22/22 | актуально |
+| [backend/tests/test_world_eurostat_ingest.py](../backend/tests/test_world_eurostat_ingest.py) | reviewed | 55/55 | актуально |
+| [backend/tests/test_world_forecast.py](../backend/tests/test_world_forecast.py) | reviewed | 28/28 | актуально |
 | [backend/tests/test_world_fred_adapter.py](../backend/tests/test_world_fred_adapter.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_world_mospi_adapter.py](../backend/tests/test_world_mospi_adapter.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_world_national_core_job.py](../backend/tests/test_world_national_core_job.py) | reviewed | 12/12 | актуально |
@@ -714,6 +721,7 @@ Scope исключает только генерируемые terrain/review ou
 | [docs/adr/0013-country-first-url-architecture.md](../docs/adr/0013-country-first-url-architecture.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0014-subnational-regions-generic.md](../docs/adr/0014-subnational-regions-generic.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0015-us-bea-regional-catalog.md](../docs/adr/0015-us-bea-regional-catalog.md) | reviewed | 0/0 | актуально |
+| [docs/agent-recipes.md](../docs/agent-recipes.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/README.md](../docs/analytics_api_inventory/README.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/frontend_instrumentation.md](../docs/analytics_api_inventory/frontend_instrumentation.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/google_search_console.md](../docs/analytics_api_inventory/google_search_console.md) | reviewed | 0/0 | актуально |
@@ -768,7 +776,9 @@ Scope исключает только генерируемые terrain/review ou
 | [docs/indicator-family-playbook.md](../docs/indicator-family-playbook.md) | reviewed | 0/0 | актуально |
 | [docs/indicator-index.json](../docs/indicator-index.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/indicator-index.md](../docs/indicator-index.md) | reviewed | 0/0 | актуально |
+| [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | reviewed | 0/0 | актуально |
 | [docs/missed_data_audit.md](../docs/missed_data_audit.md) | reviewed | 0/0 | актуально |
+| [docs/pravki-21-reanalysis.md](../docs/pravki-21-reanalysis.md) | reviewed | 0/0 | актуально |
 | [docs/research/_fpsr_raw/agent01.json](../docs/research/_fpsr_raw/agent01.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/_fpsr_raw/agent02.json](../docs/research/_fpsr_raw/agent02.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/_fpsr_raw/agent03.json](../docs/research/_fpsr_raw/agent03.json) | artifact_schema_reviewed | 0/0 | актуально |
@@ -886,7 +896,8 @@ Scope исключает только генерируемые terrain/review ou
 | [frontend/src/App.jsx](../frontend/src/App.jsx) | reviewed | 12/12 | актуально |
 | [frontend/src/SpaRoot.jsx](../frontend/src/SpaRoot.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/assets/react.svg](../frontend/src/assets/react.svg) | reviewed | 0/0 | актуально |
-| [frontend/src/behavior-standalone.js](../frontend/src/behavior-standalone.js) | reviewed | 0/0 | актуально |
+| [frontend/src/behavior-standalone.js](../frontend/src/behavior-standalone.js) | reviewed | 2/2 | актуально |
+| [frontend/src/behavior-standalone.test.js](../frontend/src/behavior-standalone.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/components/ApiRetryBanner.jsx](../frontend/src/components/ApiRetryBanner.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/Brand.jsx](../frontend/src/components/Brand.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/Breadcrumbs.jsx](../frontend/src/components/Breadcrumbs.jsx) | reviewed | 1/1 | актуально |
@@ -896,6 +907,7 @@ Scope исключает только генерируемые terrain/review ou
 | [frontend/src/components/CategoryBlock.jsx](../frontend/src/components/CategoryBlock.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/CbrTermSliceRateIndicatorControls.jsx](../frontend/src/components/CbrTermSliceRateIndicatorControls.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/CbrTermSliceRateViewModePicker.jsx](../frontend/src/components/CbrTermSliceRateViewModePicker.jsx) | reviewed | 3/3 | актуально |
+| [frontend/src/components/ChartBrandCaption.component.test.jsx](../frontend/src/components/ChartBrandCaption.component.test.jsx) | reviewed | 0/0 | актуально |
 | [frontend/src/components/ChartBrandCaption.jsx](../frontend/src/components/ChartBrandCaption.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/CookieConsent.jsx](../frontend/src/components/CookieConsent.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/CountryComparePicker.component.test.jsx](../frontend/src/components/CountryComparePicker.component.test.jsx) | reviewed | 1/1 | актуально |
@@ -926,7 +938,7 @@ Scope исключает только генерируемые terrain/review ou
 | [frontend/src/components/IndicatorForecastSection.jsx](../frontend/src/components/IndicatorForecastSection.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/IndicatorMethodologyPanel.component.test.jsx](../frontend/src/components/IndicatorMethodologyPanel.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/IndicatorMethodologyPanel.jsx](../frontend/src/components/IndicatorMethodologyPanel.jsx) | reviewed | 1/1 | актуально |
-| [frontend/src/components/IndicatorSearch.component.test.jsx](../frontend/src/components/IndicatorSearch.component.test.jsx) | reviewed | 6/6 | актуально |
+| [frontend/src/components/IndicatorSearch.component.test.jsx](../frontend/src/components/IndicatorSearch.component.test.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/components/IndicatorSearch.jsx](../frontend/src/components/IndicatorSearch.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/IndicatorSeoBlocks.jsx](../frontend/src/components/IndicatorSeoBlocks.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/IndicatorTelemetryGrid.component.test.jsx](../frontend/src/components/IndicatorTelemetryGrid.component.test.jsx) | reviewed | 1/1 | актуально |
@@ -1048,7 +1060,7 @@ Scope исключает только генерируемые terrain/review ou
 | [frontend/src/lib/cleanUrl.test.js](../frontend/src/lib/cleanUrl.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/compareCompatibility.js](../frontend/src/lib/compareCompatibility.js) | reviewed | 7/7 | актуально |
 | [frontend/src/lib/compareCompatibility.test.js](../frontend/src/lib/compareCompatibility.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/compareRepresentation.js](../frontend/src/lib/compareRepresentation.js) | reviewed | 18/18 | актуально |
+| [frontend/src/lib/compareRepresentation.js](../frontend/src/lib/compareRepresentation.js) | reviewed | 20/20 | актуально |
 | [frontend/src/lib/compareRepresentation.test.js](../frontend/src/lib/compareRepresentation.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/consent.js](../frontend/src/lib/consent.js) | reviewed | 4/4 | актуально |
 | [frontend/src/lib/consentAdsGate.component.test.jsx](../frontend/src/lib/consentAdsGate.component.test.jsx) | reviewed | 14/14 | актуально |
@@ -1100,7 +1112,7 @@ Scope исключает только генерируемые terrain/review ou
 | [frontend/src/lib/noMiddleDot.test.js](../frontend/src/lib/noMiddleDot.test.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/pageImage.js](../frontend/src/lib/pageImage.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/pageImage.test.js](../frontend/src/lib/pageImage.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/pageMeta.generated.json](../frontend/src/lib/pageMeta.generated.json) | reviewed | 0/0 | актуально |
+| [frontend/src/lib/pageMeta.generated.json](../frontend/src/lib/pageMeta.generated.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [frontend/src/lib/pageMeta.js](../frontend/src/lib/pageMeta.js) | reviewed | 8/8 | актуально |
 | [frontend/src/lib/pageMeta.test.js](../frontend/src/lib/pageMeta.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/ppiViewModeContent.jsx](../frontend/src/lib/ppiViewModeContent.jsx) | reviewed | 12/12 | актуально |
@@ -1124,7 +1136,7 @@ Scope исключает только генерируемые terrain/review ou
 | [frontend/src/lib/searchSynonyms.test.js](../frontend/src/lib/searchSynonyms.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/siteOrigin.js](../frontend/src/lib/siteOrigin.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/siteOrigin.test.js](../frontend/src/lib/siteOrigin.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/sitePaths.js](../frontend/src/lib/sitePaths.js) | reviewed | 35/35 | актуально |
+| [frontend/src/lib/sitePaths.js](../frontend/src/lib/sitePaths.js) | reviewed | 36/36 | актуально |
 | [frontend/src/lib/sitePaths.test.js](../frontend/src/lib/sitePaths.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/sourceLink.js](../frontend/src/lib/sourceLink.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/spaReveal.js](../frontend/src/lib/spaReveal.js) | reviewed | 2/2 | актуально |
@@ -1145,7 +1157,8 @@ Scope исключает только генерируемые terrain/review ou
 | [frontend/src/lib/usCatalogTopics.test.js](../frontend/src/lib/usCatalogTopics.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/usStatesMap.json](../frontend/src/lib/usStatesMap.json) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/usStatesMap.test.js](../frontend/src/lib/usStatesMap.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/useCountryComparison.js](../frontend/src/lib/useCountryComparison.js) | reviewed | 7/7 | актуально |
+| [frontend/src/lib/useCountryComparison.component.test.jsx](../frontend/src/lib/useCountryComparison.component.test.jsx) | reviewed | 1/1 | актуально |
+| [frontend/src/lib/useCountryComparison.js](../frontend/src/lib/useCountryComparison.js) | reviewed | 8/8 | актуально |
 | [frontend/src/lib/useDownloadAccess.js](../frontend/src/lib/useDownloadAccess.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/useGenericViewModeData.js](../frontend/src/lib/useGenericViewModeData.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/useIndicatorViewModeData.js](../frontend/src/lib/useIndicatorViewModeData.js) | reviewed | 5/5 | актуально |
@@ -1219,8 +1232,8 @@ Scope исключает только генерируемые terrain/review ou
 | [frontend/src/pages/Terms.jsx](../frontend/src/pages/Terms.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/pages/TodayHub.jsx](../frontend/src/pages/TodayHub.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/pages/TodayIndicatorPage.jsx](../frontend/src/pages/TodayIndicatorPage.jsx) | reviewed | 4/4 | актуально |
-| [frontend/src/pages/WorldCountry.component.test.jsx](../frontend/src/pages/WorldCountry.component.test.jsx) | reviewed | 9/9 | актуально |
-| [frontend/src/pages/WorldCountry.jsx](../frontend/src/pages/WorldCountry.jsx) | reviewed | 12/12 | актуально |
+| [frontend/src/pages/WorldCountry.component.test.jsx](../frontend/src/pages/WorldCountry.component.test.jsx) | reviewed | 11/11 | актуально |
+| [frontend/src/pages/WorldCountry.jsx](../frontend/src/pages/WorldCountry.jsx) | reviewed | 13/13 | актуально |
 | [frontend/src/pages/WorldIndicatorPage.component.test.jsx](../frontend/src/pages/WorldIndicatorPage.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/pages/WorldIndicatorPage.jsx](../frontend/src/pages/WorldIndicatorPage.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/WorldRatingPage.component.test.jsx](../frontend/src/pages/WorldRatingPage.component.test.jsx) | reviewed | 5/5 | актуально |
@@ -1244,6 +1257,7 @@ Scope исключает только генерируемые terrain/review ou
 | [scripts/audit-doc-counters.py](../scripts/audit-doc-counters.py) | reviewed | 2/2 | актуально |
 | [scripts/audit-indicator-unification.py](../scripts/audit-indicator-unification.py) | reviewed | 7/7 | актуально |
 | [scripts/audit-indicators-history.py](../scripts/audit-indicators-history.py) | reviewed | 1/1 | актуально |
+| [scripts/audit-knowledge-materials.py](../scripts/audit-knowledge-materials.py) | reviewed | 8/8 | актуально |
 | [scripts/audit-public-language.py](../scripts/audit-public-language.py) | reviewed | 7/7 | актуально |
 | [scripts/audit-seo-title-dupes.py](../scripts/audit-seo-title-dupes.py) | reviewed | 27/27 | актуально |
 | [scripts/audit-world-country-coverage.py](../scripts/audit-world-country-coverage.py) | reviewed | 3/3 | актуально |
@@ -1263,12 +1277,13 @@ Scope исключает только генерируемые terrain/review ou
 | [scripts/build-us-bea-catalog.py](../scripts/build-us-bea-catalog.py) | reviewed | 5/5 | актуально |
 | [scripts/catalog-harvest.py](../scripts/catalog-harvest.py) | reviewed | 17/17 | актуально |
 | [scripts/check-all.sh](../scripts/check-all.sh) | reviewed | 0/0 | актуально |
+| [scripts/check-project-knowledge.sh](../scripts/check-project-knowledge.sh) | reviewed | 0/0 | актуально |
 | [scripts/code-review-symbols.mjs](../scripts/code-review-symbols.mjs) | reviewed | 9/9 | актуально |
 | [scripts/completeness.py](../scripts/completeness.py) | reviewed | 13/13 | актуально |
 | [scripts/db-cleanup-perf-batch3.sh](../scripts/db-cleanup-perf-batch3.sh) | reviewed | 0/0 | актуально |
 | [scripts/deploy.sh](../scripts/deploy.sh) | reviewed | 0/0 | актуально |
 | [scripts/docker-cleanup.sh](../scripts/docker-cleanup.sh) | reviewed | 0/0 | актуально |
-| [scripts/dual-host-release-gate.py](../scripts/dual-host-release-gate.py) | reviewed | 2/2 | актуально |
+| [scripts/dual-host-release-gate.py](../scripts/dual-host-release-gate.py) | reviewed | 3/3 | актуально |
 | [scripts/e2e/acceptance-matrix.mjs](../scripts/e2e/acceptance-matrix.mjs) | reviewed | 3/3 | актуально |
 | [scripts/e2e/acceptance-shots/01-home-mobile-360-full.png](../scripts/e2e/acceptance-shots/01-home-mobile-360-full.png) | asset_metadata_reviewed | 0/0 | актуально |
 | [scripts/e2e/acceptance-shots/01-home-mobile-360.png](../scripts/e2e/acceptance-shots/01-home-mobile-360.png) | asset_metadata_reviewed | 0/0 | актуально |
@@ -1317,9 +1332,10 @@ Scope исключает только генерируемые terrain/review ou
 | [scripts/sitemap-inventory.py](../scripts/sitemap-inventory.py) | reviewed | 1/1 | актуально |
 | [scripts/sync-local-from-prod.py](../scripts/sync-local-from-prod.py) | reviewed | 5/5 | актуально |
 | [scripts/test-crawler-routing.py](../scripts/test-crawler-routing.py) | reviewed | 4/4 | актуально |
-| [scripts/test_code_documentation.py](../scripts/test_code_documentation.py) | reviewed | 11/11 | актуально |
-| [scripts/test_deploy_asset_flow.py](../scripts/test_deploy_asset_flow.py) | reviewed | 16/16 | актуально |
+| [scripts/test_code_documentation.py](../scripts/test_code_documentation.py) | reviewed | 14/14 | актуально |
+| [scripts/test_deploy_asset_flow.py](../scripts/test_deploy_asset_flow.py) | reviewed | 21/21 | актуально |
 | [scripts/test_frontend_asset_archive.py](../scripts/test_frontend_asset_archive.py) | reviewed | 6/6 | актуально |
+| [scripts/test_knowledge_materials.py](../scripts/test_knowledge_materials.py) | reviewed | 14/14 | актуально |
 | [scripts/test_project_terrain.mjs](../scripts/test_project_terrain.mjs) | reviewed | 3/3 | актуально |
 | [scripts/verify-data-loaded.py](../scripts/verify-data-loaded.py) | reviewed | 1/1 | актуально |
 | [scripts/verify-derived-incremental.py](../scripts/verify-derived-incremental.py) | reviewed | 5/5 | актуально |

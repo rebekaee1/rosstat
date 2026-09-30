@@ -58,12 +58,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 582,
+          "line": 639,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 584,
+          "line": 641,
           "kind": "other"
         },
         {
@@ -178,12 +178,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 810,
+          "line": 841,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 875,
+          "line": 906,
           "kind": "other"
         },
         {
@@ -650,7 +650,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 969,
+          "line": 1000,
           "kind": "other"
         },
         {
@@ -935,12 +935,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 814,
+          "line": 845,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 969,
+          "line": 1000,
           "kind": "other"
         },
         {
@@ -1092,7 +1092,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 153,
+          "line": 204,
           "kind": "other"
         },
         {
@@ -1347,22 +1347,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 334,
+          "line": 365,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 350,
+          "line": 381,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1444,
+          "line": 1475,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1585,
+          "line": 1616,
           "kind": "other"
         },
         {
@@ -1965,7 +1965,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 153,
+          "line": 204,
           "kind": "other"
         },
         {
@@ -2090,17 +2090,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 336,
+          "line": 367,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1585,
+          "line": 1616,
           "kind": "other"
         },
         {
           "file": "docs/code-review-findings.md",
-          "line": 67,
+          "line": 91,
           "kind": "other"
         },
         {
@@ -2656,11 +2656,6 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 372,
-          "kind": "other"
-        },
-        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 188,
           "kind": "other"
@@ -2806,23 +2801,28 @@
           "kind": "other"
         },
         {
-          "file": "docs/backlog.md",
-          "line": 822,
+          "file": "docs/agent-recipes.md",
+          "line": 215,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 895,
+          "line": 853,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 934,
+          "line": 926,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1314,
+          "line": 965,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1345,
           "kind": "other"
         },
         {
@@ -3720,17 +3720,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 810,
+          "line": 841,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 847,
+          "line": 878,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 877,
+          "line": 908,
           "kind": "other"
         },
         {
@@ -3971,7 +3971,7 @@
       "files": [
         {
           "file": "docs/backlog.md",
-          "line": 853,
+          "line": 884,
           "kind": "other"
         },
         {
@@ -4007,12 +4007,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 178,
+          "line": 229,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 847,
+          "line": 878,
           "kind": "other"
         },
         {
@@ -4063,7 +4063,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 595,
+          "line": 652,
           "kind": "other"
         },
         {
@@ -4128,17 +4128,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 809,
+          "line": 840,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 875,
+          "line": 906,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1245,
+          "line": 1276,
           "kind": "other"
         },
         {
@@ -4487,11 +4487,6 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 228,
-          "kind": "other"
-        },
-        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 422,
           "kind": "other"
@@ -4548,12 +4543,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 202,
           "kind": "other"
         },
         {
@@ -4640,7 +4635,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 807,
+          "line": 889,
           "kind": "other"
         },
         {
@@ -4820,7 +4815,7 @@
       "files": [
         {
           "file": ".github/workflows/ci.yml",
-          "line": 151,
+          "line": 169,
           "kind": "other"
         },
         {
@@ -4940,32 +4935,32 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 202,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 867,
+          "line": 898,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 922,
+          "line": 953,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1242,
+          "line": 1273,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1585,
+          "line": 1616,
           "kind": "other"
         },
         {
@@ -5467,7 +5462,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 561,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -5973,7 +5968,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 197,
+          "line": 248,
           "kind": "other"
         },
         {
@@ -6048,12 +6043,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1463,
+          "line": 1494,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1465,
+          "line": 1496,
           "kind": "other"
         },
         {
@@ -6341,7 +6336,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 595,
+          "line": 652,
           "kind": "other"
         },
         {
@@ -6421,17 +6416,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 809,
+          "line": 840,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 875,
+          "line": 906,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1245,
+          "line": 1276,
           "kind": "other"
         },
         {
@@ -6794,7 +6789,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 561,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -7681,82 +7676,52 @@
       "files": [
         {
           "file": ".github/workflows/ci.yml",
-          "line": 142,
+          "line": 160,
           "kind": "other"
         },
         {
           "file": ".github/workflows/ci.yml",
-          "line": 151,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 38,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 50,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 51,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 123,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 136,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 228,
+          "line": 169,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 81,
+          "line": 132,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 93,
+          "line": 144,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 138,
+          "line": 189,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 142,
+          "line": 193,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 174,
+          "line": 225,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 188,
+          "line": 239,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 211,
+          "line": 262,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 697,
+          "line": 779,
           "kind": "other"
         },
         {
@@ -9835,18 +9800,38 @@
           "kind": "other"
         },
         {
+          "file": "docs/agent-recipes.md",
+          "line": 17,
+          "kind": "other"
+        },
+        {
+          "file": "docs/agent-recipes.md",
+          "line": 29,
+          "kind": "other"
+        },
+        {
+          "file": "docs/agent-recipes.md",
+          "line": 30,
+          "kind": "other"
+        },
+        {
+          "file": "docs/agent-recipes.md",
+          "line": 102,
+          "kind": "other"
+        },
+        {
+          "file": "docs/agent-recipes.md",
+          "line": 115,
+          "kind": "other"
+        },
+        {
           "file": "docs/architecture.md",
-          "line": 197,
+          "line": 203,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 165,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 169,
+          "line": 196,
           "kind": "other"
         },
         {
@@ -9856,42 +9841,47 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 522,
+          "line": 231,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 584,
+          "line": 553,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 711,
+          "line": 615,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 715,
+          "line": 742,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 716,
+          "line": 746,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1146,
+          "line": 747,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1398,
+          "line": 1177,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1464,
+          "line": 1429,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1495,
           "kind": "other"
         },
         {
@@ -9926,17 +9916,17 @@
         },
         {
           "file": "docs/workflow.md",
-          "line": 85,
+          "line": 93,
           "kind": "other"
         },
         {
           "file": "docs/workflow.md",
-          "line": 196,
+          "line": 204,
           "kind": "other"
         },
         {
           "file": "docs/workflow.md",
-          "line": 206,
+          "line": 214,
           "kind": "other"
         },
         {
@@ -11577,12 +11567,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 142,
+          "line": 193,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 188,
+          "line": 239,
           "kind": "other"
         },
         {
@@ -11757,12 +11747,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 964,
+          "line": 995,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1464,
+          "line": 1495,
           "kind": "other"
         },
         {
@@ -12287,7 +12277,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 93,
+          "line": 144,
           "kind": "other"
         },
         {
@@ -12494,7 +12484,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 188,
+          "line": 239,
           "kind": "other"
         },
         {
@@ -12634,12 +12624,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 964,
+          "line": 995,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1464,
+          "line": 1495,
           "kind": "other"
         },
         {
@@ -13409,7 +13399,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 188,
+          "line": 239,
           "kind": "other"
         },
         {
@@ -13549,12 +13539,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 964,
+          "line": 995,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1464,
+          "line": 1495,
           "kind": "other"
         },
         {
@@ -13770,7 +13760,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 964,
+          "line": 995,
           "kind": "other"
         },
         {
@@ -14039,7 +14029,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 964,
+          "line": 995,
           "kind": "other"
         },
         {
@@ -14141,12 +14131,12 @@
       "files": [
         {
           "file": ".github/workflows/ci.yml",
-          "line": 142,
+          "line": 160,
           "kind": "other"
         },
         {
           "file": ".github/workflows/ci.yml",
-          "line": 151,
+          "line": 169,
           "kind": "other"
         },
         {
@@ -14266,7 +14256,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 167,
+          "line": 198,
           "kind": "other"
         },
         {
@@ -15242,7 +15232,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 161,
+          "line": 212,
           "kind": "other"
         },
         {
@@ -15312,12 +15302,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 965,
+          "line": 996,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1586,
+          "line": 1617,
           "kind": "other"
         },
         {
@@ -16587,7 +16577,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 161,
+          "line": 212,
           "kind": "other"
         },
         {
@@ -16657,12 +16647,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 966,
+          "line": 997,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1586,
+          "line": 1617,
           "kind": "other"
         },
         {
@@ -17037,23 +17027,18 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 372,
-          "kind": "other"
-        },
-        {
           "file": "CONTEXT.md",
           "line": 7,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 195,
+          "line": 246,
           "kind": "other"
         },
         {
           "file": "README.md",
-          "line": 153,
+          "line": 161,
           "kind": "other"
         },
         {
@@ -17237,53 +17222,58 @@
           "kind": "other"
         },
         {
-          "file": "docs/backlog.md",
-          "line": 169,
+          "file": "docs/agent-recipes.md",
+          "line": 215,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 870,
+          "line": 202,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 882,
+          "line": 901,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 887,
+          "line": 913,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 895,
+          "line": 918,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 934,
+          "line": 926,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 960,
+          "line": 965,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 988,
+          "line": 991,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1589,
+          "line": 1019,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1620,
           "kind": "other"
         },
         {
@@ -17441,7 +17431,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 146,
+          "line": 197,
           "kind": "other"
         },
         {
@@ -17546,7 +17536,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 960,
+          "line": 991,
           "kind": "other"
         },
         {
@@ -17582,12 +17572,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 146,
+          "line": 197,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 864,
+          "line": 952,
           "kind": "other"
         },
         {
@@ -17642,12 +17632,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 872,
+          "line": 903,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 988,
+          "line": 1019,
           "kind": "other"
         },
         {
@@ -17811,7 +17801,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 969,
+          "line": 1000,
           "kind": "other"
         },
         {
@@ -18076,22 +18066,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 814,
+          "line": 845,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 969,
+          "line": 1000,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1549,
+          "line": 1580,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1556,
+          "line": 1587,
           "kind": "other"
         },
         {
@@ -18244,7 +18234,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 161,
+          "line": 212,
           "kind": "other"
         },
         {
@@ -18354,27 +18344,27 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 826,
+          "line": 857,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 875,
+          "line": 906,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 967,
+          "line": 998,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1086,
+          "line": 1117,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1586,
+          "line": 1617,
           "kind": "other"
         },
         {
@@ -18619,7 +18609,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 777,
+          "line": 859,
           "kind": "other"
         },
         {
@@ -19039,7 +19029,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 777,
+          "line": 859,
           "kind": "other"
         },
         {
@@ -19619,7 +19609,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 593,
+          "line": 650,
           "kind": "other"
         },
         {
@@ -19709,7 +19699,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1245,
+          "line": 1276,
           "kind": "other"
         },
         {
@@ -20054,7 +20044,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 593,
+          "line": 650,
           "kind": "other"
         },
         {
@@ -20159,7 +20149,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1245,
+          "line": 1276,
           "kind": "other"
         },
         {
@@ -20551,7 +20541,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 813,
+          "line": 844,
           "kind": "other"
         },
         {
@@ -20681,7 +20671,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 846,
           "kind": "other"
         },
         {
@@ -20802,12 +20792,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 819,
+          "line": 903,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 821,
+          "line": 905,
           "kind": "other"
         },
         {
@@ -21157,7 +21147,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 880,
+          "line": 911,
           "kind": "other"
         },
         {
@@ -22052,7 +22042,7 @@
       "files": [
         {
           "file": ".github/workflows/ci.yml",
-          "line": 151,
+          "line": 169,
           "kind": "other"
         },
         {
@@ -22187,22 +22177,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 866,
+          "line": 897,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 922,
+          "line": 953,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1242,
+          "line": 1273,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1585,
+          "line": 1616,
           "kind": "other"
         },
         {
@@ -23357,27 +23347,27 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 106,
+          "line": 157,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 194,
+          "line": 245,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 200,
+          "line": 251,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 690,
+          "line": 772,
           "kind": "other"
         },
         {
           "file": "README.md",
-          "line": 153,
+          "line": 161,
           "kind": "other"
         },
         {
@@ -23807,57 +23797,57 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 167,
+          "line": 198,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 202,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 853,
+          "line": 884,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 879,
+          "line": 910,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 886,
+          "line": 917,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 955,
+          "line": 986,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 971,
+          "line": 1002,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 988,
+          "line": 1019,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1433,
+          "line": 1464,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1589,
+          "line": 1620,
           "kind": "other"
         },
         {
@@ -24092,17 +24082,17 @@
         },
         {
           "file": "scripts/code-review-symbols.mjs",
-          "line": 55,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "scripts/code-review-symbols.mjs",
-          "line": 77,
+          "line": 78,
           "kind": "other"
         },
         {
           "file": "scripts/code-review-symbols.mjs",
-          "line": 79,
+          "line": 80,
           "kind": "other"
         }
       ]
@@ -24141,7 +24131,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 690,
+          "line": 772,
           "kind": "other"
         },
         {
@@ -24246,7 +24236,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 955,
+          "line": 986,
           "kind": "other"
         },
         {
@@ -24624,12 +24614,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 955,
+          "line": 986,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 972,
+          "line": 1003,
           "kind": "other"
         },
         {
@@ -24796,22 +24786,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 906,
+          "line": 937,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 955,
+          "line": 986,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 971,
+          "line": 1002,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 972,
+          "line": 1003,
           "kind": "other"
         },
         {
@@ -24919,12 +24909,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 194,
+          "line": 245,
           "kind": "other"
         },
         {
           "file": "README.md",
-          "line": 153,
+          "line": 161,
           "kind": "other"
         },
         {
@@ -24989,32 +24979,32 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 202,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 810,
+          "line": 841,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 853,
+          "line": 884,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 876,
+          "line": 907,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1245,
+          "line": 1276,
           "kind": "other"
         },
         {
@@ -25264,11 +25254,6 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 228,
-          "kind": "other"
-        },
-        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 356,
           "kind": "other"
@@ -25345,12 +25330,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 879,
+          "line": 910,
           "kind": "other"
         },
         {
@@ -25637,7 +25622,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 165,
+          "line": 196,
           "kind": "other"
         },
         {
@@ -27737,12 +27722,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 192,
+          "line": 243,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 746,
+          "line": 828,
           "kind": "other"
         },
         {
@@ -28032,12 +28017,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 193,
+          "line": 244,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 746,
+          "line": 828,
           "kind": "other"
         },
         {
@@ -28321,13 +28306,8 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 228,
-          "kind": "other"
-        },
-        {
           "file": "CONTEXT.md",
-          "line": 746,
+          "line": 828,
           "kind": "other"
         },
         {
@@ -28402,22 +28382,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 202,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1549,
+          "line": 1580,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1556,
+          "line": 1587,
           "kind": "other"
         },
         {
@@ -28611,53 +28591,48 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 251,
-          "kind": "other"
-        },
-        {
           "file": "CONTEXT.md",
           "line": 27,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 81,
+          "line": 132,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 144,
+          "line": 195,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 190,
+          "line": 241,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 199,
+          "line": 250,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 740,
+          "line": 822,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 742,
+          "line": 824,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 744,
+          "line": 826,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 746,
+          "line": 828,
           "kind": "other"
         },
         {
@@ -29399,7 +29374,7 @@
       "files": [
         {
           "file": "docs/backlog.md",
-          "line": 853,
+          "line": 884,
           "kind": "other"
         },
         {
@@ -29571,12 +29546,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 144,
+          "line": 195,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 191,
+          "line": 242,
           "kind": "other"
         },
         {
@@ -29881,12 +29856,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 165,
+          "line": 196,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1402,
+          "line": 1433,
           "kind": "other"
         },
         {
@@ -30381,7 +30356,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 744,
+          "line": 826,
           "kind": "other"
         },
         {
@@ -30601,12 +30576,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 153,
+          "line": 204,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 572,
+          "line": 629,
           "kind": "other"
         },
         {
@@ -30751,32 +30726,32 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 335,
+          "line": 366,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 868,
+          "line": 899,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 922,
+          "line": 953,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1243,
+          "line": 1274,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1585,
+          "line": 1616,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1664,
+          "line": 1695,
           "kind": "other"
         },
         {
@@ -31358,7 +31333,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 846,
           "kind": "other"
         },
         {
@@ -31486,12 +31461,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 197,
+          "line": 248,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 819,
+          "line": 903,
           "kind": "other"
         },
         {
@@ -31591,52 +31566,52 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 826,
+          "line": 857,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 843,
+          "line": 874,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1037,
+          "line": 1068,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1040,
+          "line": 1071,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1052,
+          "line": 1083,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1452,
+          "line": 1483,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1514,
+          "line": 1545,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1610,
+          "line": 1641,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1614,
+          "line": 1645,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1623,
+          "line": 1654,
           "kind": "other"
         },
         {
@@ -31795,7 +31770,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1610,
+          "line": 1641,
           "kind": "other"
         },
         {
@@ -31927,7 +31902,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1614,
+          "line": 1645,
           "kind": "other"
         },
         {
@@ -32929,12 +32904,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 189,
+          "line": 240,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 799,
+          "line": 881,
           "kind": "other"
         },
         {
@@ -33124,7 +33099,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1198,
+          "line": 1229,
           "kind": "other"
         },
         {
@@ -33345,7 +33320,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 189,
+          "line": 240,
           "kind": "other"
         },
         {
@@ -33485,17 +33460,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1040,
+          "line": 1071,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1058,
+          "line": 1089,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1623,
+          "line": 1654,
           "kind": "other"
         },
         {
@@ -33671,7 +33646,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1553,
+          "line": 1584,
           "kind": "other"
         },
         {
@@ -33757,7 +33732,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1553,
+          "line": 1584,
           "kind": "other"
         },
         {
@@ -33798,7 +33773,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 200,
+          "line": 251,
           "kind": "other"
         },
         {
@@ -33894,7 +33869,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 200,
+          "line": 251,
           "kind": "other"
         },
         {
@@ -34638,22 +34613,22 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 106,
+          "line": 157,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 194,
+          "line": 245,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 200,
+          "line": 251,
           "kind": "other"
         },
         {
           "file": "README.md",
-          "line": 153,
+          "line": 161,
           "kind": "other"
         },
         {
@@ -34993,52 +34968,52 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 225,
+          "line": 231,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 202,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 853,
+          "line": 884,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 879,
+          "line": 910,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 886,
+          "line": 917,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 956,
+          "line": 987,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 988,
+          "line": 1019,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1589,
+          "line": 1620,
           "kind": "other"
         },
         {
           "file": "docs/code-review-findings.md",
-          "line": 13,
+          "line": 37,
           "kind": "other"
         },
         {
@@ -35173,12 +35148,12 @@
         },
         {
           "file": "scripts/code-review-symbols.mjs",
-          "line": 55,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "scripts/code-review-symbols.mjs",
-          "line": 72,
+          "line": 73,
           "kind": "other"
         },
         {
@@ -35287,7 +35262,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 956,
+          "line": 987,
           "kind": "other"
         },
         {
@@ -35610,12 +35585,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 956,
+          "line": 987,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1433,
+          "line": 1464,
           "kind": "other"
         },
         {
@@ -35727,7 +35702,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 956,
+          "line": 987,
           "kind": "other"
         },
         {
@@ -35804,12 +35779,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 81,
+          "line": 132,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 142,
+          "line": 193,
           "kind": "other"
         },
         {
@@ -35955,7 +35930,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 142,
+          "line": 193,
           "kind": "other"
         },
         {
@@ -36114,42 +36089,42 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 201,
+          "line": 252,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 207,
+          "line": 258,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 599,
+          "line": 656,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 611,
+          "line": 668,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 613,
+          "line": 670,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 697,
+          "line": 779,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 725,
+          "line": 807,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 761,
+          "line": 843,
           "kind": "other"
         },
         {
@@ -36274,12 +36249,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 849,
+          "line": 880,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1602,
+          "line": 1633,
           "kind": "other"
         },
         {
@@ -36804,12 +36779,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 846,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1443,
+          "line": 1474,
           "kind": "other"
         },
         {
@@ -36907,18 +36882,8 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 228,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 230,
-          "kind": "other"
-        },
-        {
           "file": "CONTEXT.md",
-          "line": 811,
+          "line": 893,
           "kind": "other"
         },
         {
@@ -37043,12 +37008,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
+          "line": 873,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1244,
+          "line": 1275,
           "kind": "other"
         },
         {
@@ -37300,12 +37265,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 178,
+          "line": 229,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 847,
+          "line": 878,
           "kind": "other"
         },
         {
@@ -37490,12 +37455,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 178,
+          "line": 229,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 197,
+          "line": 248,
           "kind": "other"
         },
         {
@@ -37670,12 +37635,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 842,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 849,
+          "line": 873,
           "kind": "other"
         },
         {
@@ -37685,22 +37645,27 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 926,
+          "line": 911,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 963,
+          "line": 957,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1463,
+          "line": 994,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1615,
+          "line": 1494,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1646,
           "kind": "other"
         },
         {
@@ -39637,7 +39602,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 147,
+          "line": 198,
           "kind": "other"
         },
         {
@@ -39707,22 +39672,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 963,
+          "line": 994,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1463,
+          "line": 1494,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1465,
+          "line": 1496,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1615,
+          "line": 1646,
           "kind": "other"
         },
         {
@@ -39864,7 +39829,7 @@
       "files": [
         {
           "file": ".github/workflows/ci.yml",
-          "line": 151,
+          "line": 169,
           "kind": "other"
         },
         {
@@ -39874,17 +39839,17 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 153,
+          "line": 204,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 572,
+          "line": 629,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 758,
+          "line": 840,
           "kind": "other"
         },
         {
@@ -40369,37 +40334,22 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 165,
+          "line": 196,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 823,
+          "line": 854,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 825,
+          "line": 856,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 922,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 998,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 1008,
-          "kind": "other"
-        },
-        {
-          "file": "docs/backlog.md",
-          "line": 1013,
+          "line": 953,
           "kind": "other"
         },
         {
@@ -40409,37 +40359,52 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1402,
+          "line": 1039,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1447,
+          "line": 1044,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1449,
+          "line": 1060,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1455,
+          "line": 1433,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1585,
+          "line": 1478,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1619,
+          "line": 1480,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1624,
+          "line": 1486,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1616,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1650,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1655,
           "kind": "other"
         },
         {
@@ -40464,12 +40429,12 @@
         },
         {
           "file": "docs/workflow.md",
-          "line": 167,
+          "line": 175,
           "kind": "other"
         },
         {
           "file": "docs/workflow.md",
-          "line": 170,
+          "line": 178,
           "kind": "other"
         },
         {
@@ -41171,12 +41136,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 819,
+          "line": 903,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 821,
+          "line": 905,
           "kind": "other"
         },
         {
@@ -41256,7 +41221,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 880,
+          "line": 911,
           "kind": "other"
         },
         {
@@ -41564,7 +41529,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 593,
+          "line": 650,
           "kind": "other"
         },
         {
@@ -41624,7 +41589,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 878,
+          "line": 909,
           "kind": "other"
         },
         {
@@ -42009,7 +41974,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 593,
+          "line": 650,
           "kind": "other"
         },
         {
@@ -42084,7 +42049,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 878,
+          "line": 909,
           "kind": "other"
         },
         {
@@ -42474,7 +42439,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 593,
+          "line": 650,
           "kind": "other"
         },
         {
@@ -42654,37 +42619,37 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 202,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 869,
+          "line": 900,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 872,
+          "line": 903,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1244,
+          "line": 1275,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1549,
+          "line": 1580,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1556,
+          "line": 1587,
           "kind": "other"
         },
         {
@@ -42876,7 +42841,7 @@
       "files": [
         {
           "file": "docs/backlog.md",
-          "line": 872,
+          "line": 903,
           "kind": "other"
         },
         {
@@ -43102,17 +43067,17 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 178,
+          "line": 229,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 847,
+          "line": 878,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 853,
+          "line": 884,
           "kind": "other"
         },
         {
@@ -43792,7 +43757,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 875,
+          "line": 906,
           "kind": "other"
         },
         {
@@ -44838,7 +44803,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 814,
+          "line": 845,
           "kind": "other"
         },
         {
@@ -45396,7 +45361,7 @@
         },
         {
           "file": "README.md",
-          "line": 144,
+          "line": 152,
           "kind": "other"
         },
         {
@@ -47321,27 +47286,27 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 163,
+          "line": 194,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 165,
+          "line": 196,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 262,
+          "line": 293,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 297,
+          "line": 328,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 814,
+          "line": 845,
           "kind": "other"
         },
         {
@@ -48030,12 +47995,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 895,
+          "line": 926,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 969,
+          "line": 1000,
           "kind": "other"
         },
         {
@@ -48164,12 +48129,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 895,
+          "line": 926,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 969,
+          "line": 1000,
           "kind": "other"
         },
         {
@@ -48298,7 +48263,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 969,
+          "line": 1000,
           "kind": "other"
         },
         {
@@ -48415,48 +48380,18 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 38,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 50,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 51,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 123,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 136,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 228,
+          "file": "CONTEXT.md",
+          "line": 225,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 174,
+          "line": 247,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 196,
-          "kind": "other"
-        },
-        {
-          "file": "CONTEXT.md",
-          "line": 199,
+          "line": 250,
           "kind": "other"
         },
         {
@@ -48740,43 +48675,68 @@
           "kind": "other"
         },
         {
+          "file": "docs/agent-recipes.md",
+          "line": 17,
+          "kind": "other"
+        },
+        {
+          "file": "docs/agent-recipes.md",
+          "line": 29,
+          "kind": "other"
+        },
+        {
+          "file": "docs/agent-recipes.md",
+          "line": 30,
+          "kind": "other"
+        },
+        {
+          "file": "docs/agent-recipes.md",
+          "line": 102,
+          "kind": "other"
+        },
+        {
+          "file": "docs/agent-recipes.md",
+          "line": 115,
+          "kind": "other"
+        },
+        {
           "file": "docs/architecture.md",
-          "line": 197,
+          "line": 203,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 855,
+          "line": 886,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 880,
+          "line": 911,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 926,
+          "line": 957,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 964,
+          "line": 995,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1464,
+          "line": 1495,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1629,
+          "line": 1660,
           "kind": "other"
         },
         {
@@ -49127,7 +49087,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 143,
+          "line": 194,
           "kind": "other"
         },
         {
@@ -49430,7 +49390,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 143,
+          "line": 194,
           "kind": "other"
         },
         {
@@ -49654,7 +49614,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 846,
           "kind": "other"
         },
         {
@@ -49830,7 +49790,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 846,
           "kind": "other"
         },
         {
@@ -49956,7 +49916,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 197,
+          "line": 248,
           "kind": "other"
         },
         {
@@ -50036,12 +49996,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 926,
+          "line": 957,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1463,
+          "line": 1494,
           "kind": "other"
         },
         {
@@ -51344,7 +51304,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 153,
+          "line": 204,
           "kind": "other"
         },
         {
@@ -51589,12 +51549,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 922,
+          "line": 953,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1585,
+          "line": 1616,
           "kind": "other"
         },
         {
@@ -52112,11 +52072,6 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 228,
-          "kind": "other"
-        },
-        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 344,
           "kind": "other"
@@ -52193,12 +52148,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 958,
+          "line": 989,
           "kind": "other"
         },
         {
@@ -52332,7 +52287,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 958,
+          "line": 989,
           "kind": "other"
         },
         {
@@ -52753,11 +52708,6 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 228,
-          "kind": "other"
-        },
-        {
           "file": "backend/app/data/i18n/indicator_copy_en.py",
           "line": 350,
           "kind": "other"
@@ -52834,17 +52784,17 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 167,
+          "line": 198,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 959,
+          "line": 990,
           "kind": "other"
         },
         {
@@ -52973,7 +52923,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 959,
+          "line": 990,
           "kind": "other"
         },
         {
@@ -53398,7 +53348,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 561,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -53813,12 +53763,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 846,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1443,
+          "line": 1474,
           "kind": "other"
         },
         {
@@ -54446,7 +54396,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 561,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -54952,12 +54902,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 815,
+          "line": 846,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1443,
+          "line": 1474,
           "kind": "other"
         },
         {
@@ -55049,33 +54999,28 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 372,
-          "kind": "other"
-        },
-        {
           "file": "CONTEXT.md",
           "line": 7,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 195,
+          "line": 246,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 200,
-          "kind": "other"
-        },
-        {
-          "file": "README.md",
-          "line": 145,
+          "line": 251,
           "kind": "other"
         },
         {
           "file": "README.md",
           "line": 153,
+          "kind": "other"
+        },
+        {
+          "file": "README.md",
+          "line": 161,
           "kind": "other"
         },
         {
@@ -55284,48 +55229,48 @@
           "kind": "other"
         },
         {
-          "file": "docs/backlog.md",
-          "line": 169,
+          "file": "docs/agent-recipes.md",
+          "line": 215,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 171,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 879,
+          "line": 202,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 882,
+          "line": 910,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 886,
+          "line": 913,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 889,
+          "line": 917,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 895,
+          "line": 920,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 934,
+          "line": 926,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 957,
+          "line": 965,
           "kind": "other"
         },
         {
@@ -55335,7 +55280,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 1589,
+          "line": 1019,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1620,
           "kind": "other"
         },
         {
@@ -55514,7 +55464,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 957,
+          "line": 988,
           "kind": "other"
         },
         {
@@ -55880,12 +55830,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 146,
+          "line": 197,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 864,
+          "line": 952,
           "kind": "other"
         },
         {
@@ -55945,7 +55895,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 988,
+          "line": 1019,
           "kind": "other"
         },
         {
@@ -56049,37 +55999,32 @@
       "files": [
         {
           "file": ".env.example",
-          "line": 194,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 136,
+          "line": 195,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 137,
+          "line": 188,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 157,
+          "line": 208,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 197,
+          "line": 248,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 842,
+          "line": 926,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 862,
+          "line": 950,
           "kind": "other"
         },
         {
@@ -56598,38 +56543,43 @@
           "kind": "other"
         },
         {
-          "file": "docs/backlog.md",
-          "line": 165,
+          "file": "docs/agent-recipes.md",
+          "line": 115,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 200,
+          "line": 196,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 880,
+          "line": 231,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 961,
+          "line": 911,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 988,
+          "line": 992,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1574,
+          "line": 1019,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1588,
+          "line": 1605,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1619,
           "kind": "other"
         },
         {
@@ -57095,7 +57045,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 864,
+          "line": 952,
           "kind": "other"
         },
         {
@@ -57160,12 +57110,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 961,
+          "line": 992,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 988,
+          "line": 1019,
           "kind": "other"
         },
         {
@@ -57406,13 +57356,8 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 60,
-          "kind": "other"
-        },
-        {
           "file": "CONTEXT.md",
-          "line": 864,
+          "line": 952,
           "kind": "other"
         },
         {
@@ -57496,13 +57441,18 @@
           "kind": "other"
         },
         {
-          "file": "docs/backlog.md",
-          "line": 961,
+          "file": "docs/agent-recipes.md",
+          "line": 39,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 988,
+          "line": 992,
+          "kind": "other"
+        },
+        {
+          "file": "docs/backlog.md",
+          "line": 1019,
           "kind": "other"
         },
         {
@@ -58323,7 +58273,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 348,
+          "line": 379,
           "kind": "other"
         },
         {
@@ -58876,7 +58826,7 @@
       "files": [
         {
           "file": ".github/workflows/ci.yml",
-          "line": 151,
+          "line": 169,
           "kind": "other"
         },
         {
@@ -58886,7 +58836,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 81,
+          "line": 132,
           "kind": "other"
         },
         {
@@ -59111,32 +59061,32 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 281,
+          "line": 312,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 865,
+          "line": 896,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 872,
+          "line": 903,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 922,
+          "line": 953,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1242,
+          "line": 1273,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1585,
+          "line": 1616,
           "kind": "other"
         },
         {
@@ -59405,7 +59355,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 872,
+          "line": 903,
           "kind": "other"
         },
         {
@@ -59814,7 +59764,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 349,
+          "line": 380,
           "kind": "other"
         },
         {
@@ -60441,47 +60391,47 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 825,
+          "line": 856,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 826,
+          "line": 857,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1029,
+          "line": 1060,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1046,
+          "line": 1077,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1061,
+          "line": 1092,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1073,
+          "line": 1104,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1614,
+          "line": 1645,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1622,
+          "line": 1653,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1623,
+          "line": 1654,
           "kind": "other"
         },
         {
@@ -60526,37 +60476,37 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 138,
+          "line": 189,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 157,
+          "line": 208,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 757,
+          "line": 839,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 787,
+          "line": 869,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 789,
+          "line": 871,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 831,
+          "line": 915,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 842,
+          "line": 926,
           "kind": "other"
         },
         {
@@ -60836,87 +60786,87 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 186,
+          "line": 192,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 195,
+          "line": 201,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 237,
+          "line": 243,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 253,
+          "line": 259,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 165,
+          "line": 196,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 880,
+          "line": 911,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 962,
+          "line": 993,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1040,
+          "line": 1071,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1058,
+          "line": 1089,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1069,
+          "line": 1100,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1453,
+          "line": 1484,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1560,
+          "line": 1591,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1563,
+          "line": 1594,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1574,
+          "line": 1605,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1580,
+          "line": 1611,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1588,
+          "line": 1619,
           "kind": "other"
         },
         {
@@ -61054,33 +61004,28 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 228,
-          "kind": "other"
-        },
-        {
           "file": "CONTEXT.md",
           "line": 7,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 178,
+          "line": 229,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 787,
+          "line": 869,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 789,
+          "line": 871,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 831,
+          "line": 915,
           "kind": "other"
         },
         {
@@ -61220,57 +61165,57 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 195,
+          "line": 201,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 237,
+          "line": 243,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 169,
+          "line": 200,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 799,
+          "line": 830,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 824,
+          "line": 855,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 843,
+          "line": 874,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 849,
+          "line": 880,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1023,
+          "line": 1054,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1402,
+          "line": 1433,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1563,
+          "line": 1594,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1580,
+          "line": 1611,
           "kind": "other"
         },
         {
@@ -61386,7 +61331,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 165,
+          "line": 196,
           "kind": "other"
         },
         {
@@ -61553,18 +61498,8 @@
       },
       "files": [
         {
-          "file": "AGENTS.md",
-          "line": 228,
-          "kind": "other"
-        },
-        {
-          "file": "AGENTS.md",
-          "line": 230,
-          "kind": "other"
-        },
-        {
           "file": "CONTEXT.md",
-          "line": 145,
+          "line": 196,
           "kind": "other"
         },
         {
@@ -61942,7 +61877,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 145,
+          "line": 196,
           "kind": "other"
         },
         {
@@ -62017,12 +61952,12 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 962,
+          "line": 993,
           "kind": "other"
         },
         {
           "file": "docs/backlog.md",
-          "line": 1453,
+          "line": 1484,
           "kind": "other"
         },
         {
@@ -63176,7 +63111,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 561,
+          "line": 612,
           "kind": "other"
         },
         {
@@ -63352,7 +63287,7 @@
         },
         {
           "file": "docs/backlog.md",
-          "line": 814,
+          "line": 845,
           "kind": "other"
         },
         {

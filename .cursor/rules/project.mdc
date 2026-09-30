@@ -14,16 +14,18 @@ alwaysApply: true
 | Любой индикатор X | `python scripts/locate-indicator.py X` + `docs/indicator-index.md` |
 | Архитектура / traps | `CONTEXT.md` — точечно, не целиком |
 | Источник ряда | `docs/data_sources.md` + docstring парсера |
-| Новый индикатор / категория | `AGENTS.md` FAST-PATH + чеклист Шаг 4 |
+| Новый индикатор / категория | `docs/agent-recipes.md` + `docs/knowledge-workflow.md` |
 | Процесс / деплой | `docs/workflow.md` |
 | Живой бэклог | `docs/backlog.md` — только если задача про приоритет/историю |
 | ADR | `docs/adr/` — нужный номер, не папка целиком |
+
+Каждая задача включает цикл `docs/knowledge-workflow.md`: чтение затронутого кода и старых оснований, актуализация основного документа/рецензий/карт, проверка сценария. Прежний длинный AGENTS сохранён в `docs/code-review/source-documents/AGENTS-before-knowledge-workflow-2026-09-30.md`; текущие рецепты — `docs/agent-recipes.md`.
 
 После архитектурной правки: обновить соответствующий .md, `Last updated`, cross-links в `CONTEXT.md` и `AGENTS.md`. Новый ADR — только на новое решение.
 
 ## Жёсткие запреты
 
-- **Не пушить на прод** (`5.129.204.194`, `/opt/rosstat`) без явной команды. Деплой — `docs/workflow.md`.
+- **Не выполнять production push/deploy** без явной команды. Target/SSH и каталог выпуска сверять с `docs/workflow.md` и датированным `docs/runtime-inventory.json`; **уточнение 2026-09-30:** прежний literal `5.129.204.194` относится к старому target, не к сегодняшней настройке.
 - **Не деплоить накопившийся `main`.** Только SHA из `deploy/approved-shas.txt` после явного «деплой до `<sha>`, включая всё, что он тянет». Перед деплоем — миграции в диапазоне прод→цель; есть alembic — отдельной строкой спросить.
 - **Не пушить на `main`** без зелёного `./scripts/check-all.sh`.
 - **Не** править `git config`, **не** `--force` на `main`, **не** амлендить уже на remote.
@@ -42,10 +44,10 @@ alwaysApply: true
 - **ADR-0003**: SEO single source `seo_content.py`; `categories.js` синхронен.
 - **ADR-0004**: Rosstat-русский canonical; SDDS fetcher не в `PARSER_REGISTRY`.
 - **ADR-0005**: календарь — только official dates с provenance.
-- **ADR-0006**: карточка ≠ derived ≠ variant ≠ frequency. Новый indicator — чеклист в `AGENTS.md::Шаг 4`.
+- **ADR-0006**: карточка ≠ derived ≠ variant ≠ frequency. Новый indicator — чеклист в `docs/agent-recipes.md`.
 - **Asset-hash**: backend+frontend вместе; frontend-only rebuild — `--no-cache`.
 - **Browser-cache**: SSR HTML `no-store`; `/assets/` immutable.
-- **Forecast retrain**: новый derived → `retrain_indicator_forecast` + Redis DB 0 `FLUSHDB` (DB 1 не трогать).
+- **Forecast retrain (уточнение 2026-09-30):** новый derived → `retrain_indicator_forecast` и инвалидация только затронутых versioned namespaces через `core/cache.py::bump_namespaces()`. Не выполнять `FLUSHDB` как стандартный шаг; Redis state/DB 1 не очищать. Прежний рецепт с DB 0 `FLUSHDB` был связан с разовым холодным кэшем старого выпуска; действующий delivery-контракт — `indicator-data-delivery.mdc` и `docs/workflow.md`.
 - **Annual-in-monthly**: перед upsert сверить `frequency` с точками.
 
 ## Стиль

@@ -3,6 +3,8 @@ import hashlib
 import importlib.util
 from pathlib import Path
 import unittest
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location(
     "audit_code_documentation", Path(__file__).with_name("audit-code-documentation.py")
@@ -69,6 +71,25 @@ class EvidenceGuardTests(unittest.TestCase):
         self.assertFalse(audit.included("docs/project-terrain.json"))
         self.assertTrue(audit.included("scripts/audit-code-documentation.py"))
         self.assertTrue(audit.included("docs/architecture.md"))
+
+    def test_tracked_snapshot_excludes_foreign_untracked_and_keeps_staged_new(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'existing.py').write_text('value = 1\n')
+            (root / 'staged-new.py').write_text('value = 2\n')
+            (root / 'other-task.md').write_text('Foreign work remains on disk\n')
+            def fake_git(*args):
+                return ('other-task.md\0' if '--others' in args
+                        else 'existing.py\0staged-new.py\0')
+            with patch.object(audit, 'ROOT', root), patch.object(audit, 'git', fake_git):
+                self.assertEqual(set(audit.inventory(tracked_only=True)), {'existing.py', 'staged-new.py'})
+                self.assertIn('other-task.md', audit.inventory())
+
+    def test_new_tracked_source_requires_review_and_deleted_source_leaves_orphan(self):
+        file, review = self.fixture()
+        data = audit.evaluate({'new.py': file}, {'deleted.py': review}, {})
+        self.assertIn('missing_review', data['files'][0]['issues'])
+        self.assertEqual(data['orphan_reviews'], ['deleted.py'])
 
 
 if __name__ == "__main__":

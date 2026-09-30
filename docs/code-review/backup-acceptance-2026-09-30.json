@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "observed_date_msk": "2026-09-30",
+  "local_source_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+  "source_scope": "Downloaded existing completed daily dump; source server was read only. Isolated local schema/data restore omits original owners/ACLs. No restore to production.",
+  "files": {
+    "rustats_20260930_040001.dump": {
+      "bytes": 434247670,
+      "sha256": "729783e7e419f62b44f461bc4eec307db9d853576dca8b180563730022ea8211"
+    },
+    "rustats_20260930_040001.identity.sql.gz": {
+      "bytes": 37171,
+      "sha256": "d19b2c88efde57bf03a8163cab6ee2b8f503aa17ae7edf2d33eca306fe8e9067"
+    }
+  },
+  "hash_comparison": "Both sizes and SHA-256 matched server by fe-backup-pull.sh log at 2026-09-30 16:32:37 MSK",
+  "local_script": {
+    "path": "/Users/iprofi/bin/fe-backup-pull.sh",
+    "preserved_copy": "/Users/iprofi/bin/fe-backup-pull.sh.before-20260930T133007Z",
+    "before_sha256": "927f291d4e9913d4fcdf6120eecf1be5ada1905b7fa7c0aa08addb7278cb9624",
+    "after_sha256": "69da400e5d99076418cc517218b35db867088dc73a2a9d6611205162b04e45dc",
+    "change": "Disable SSH ControlMaster/ControlPath reuse; bound dead connection with ServerAliveInterval 15 and ServerAliveCountMax 2. launchd schedule 08:15 unchanged."
+  },
+  "restore_resources": {
+    "container": "fe_restore_drill_20260930t133353z",
+    "volume": "fe_restore_drill_20260930t133353z",
+    "owner": "rosstat-backup-acceptance-2026-09-30",
+    "created_utc": "2026-09-30T13:33:53.866772+00:00",
+    "image": "postgres:16-alpine",
+    "dump": "/Users/iprofi/Backups/forecasteconomy/rustats_20260930_040001.dump",
+    "memory_limit_bytes": 1073741824,
+    "nano_cpus": 1000000000,
+    "shm_size_bytes": 134217728,
+    "network_mode": "none",
+    "host_ports": [],
+    "backup_mount_read_only": true,
+    "image_id": "sha256:23e88eb049fd5d54894d70100df61d38a49ed97909263f79d4ff4c30a5d5fca2"
+  },
+  "full_restore": {
+    "started_utc": "2026-09-30T13:34:14.267818+00:00",
+    "completed_utc": "2026-09-30T13:36:49.151104+00:00",
+    "elapsed_seconds": 154.885,
+    "exit_code": 0,
+    "scope": "full dump schema and data restored; source owner/ACL replay omitted in isolated superuser database"
+  },
+  "full_restore_checks": {
+    "observed_utc": "2026-09-30T13:38:50.452720+00:00",
+    "database_size_bytes": 5963862499,
+    "postgres_version": "16.11",
+    "alembic_revision": "20260927_world_nonzero_idx",
+    "public_table_count": 58,
+    "table_counts": {
+      "agent_action_audit": 0,
+      "agent_findings": 0,
+      "alembic_version": 1,
+      "analytics_sync_runs": 1532,
+      "analytics_watermarks": 0,
+      "auth_audit": 205,
+      "behavior_events": 2392090,
+      "behavior_sessions": 280271,
+      "consents": 194,
+      "daily_goals": 4445,
+      "daily_pages": 194622,
+      "daily_traffic": 2245,
+      "direct_costs": 0,
+      "economic_events": 1855,
+      "email_credentials": 75,
+      "experiments": 0,
+      "fetch_log": 28891,
+      "forecast_values": 49027,
+      "forecasts": 7100,
+      "frontend_events": 371393,
+      "gsc_search_queries": 0,
+      "hypotheses": 249,
+      "identity_links": 130,
+      "indicator_data": 311759,
+      "indicators": 991,
+      "metrika_counter_snapshots": 3,
+      "metrika_daily_page_metrics": 8476,
+      "metrika_goal_snapshots": 0,
+      "metrika_goals": 97,
+      "metrika_report_snapshots": 837,
+      "metrika_search_phrases": 7754,
+      "oauth_identities": 43,
+      "partner_revenue": 99,
+      "raw_metrika_hits": 0,
+      "raw_metrika_visits": 117512,
+      "region_data": 961494,
+      "region_indicators": 495,
+      "region_monthly_data": 73740,
+      "regions": 96,
+      "seed_state": 1,
+      "seo_page_snapshots": 107,
+      "server_sessions": 279667,
+      "subnational_data_points": 4476315,
+      "subnational_indicators": 1882,
+      "subnational_regions": 51,
+      "telegram_outbox": 2985,
+      "users": 118,
+      "webmaster_diagnostics": 0,
+      "webmaster_indexing_daily": 54,
+      "webmaster_search_queries": 63765,
+      "world_countries": 55,
+      "world_data_points": 16191915,
+      "world_dataset_state": 1997,
+      "world_forecast_values": 7514,
+      "world_forecasts": 10111,
+      "world_indicators": 355057,
+      "world_ingest_dataset_logs": 3608,
+      "world_ingest_runs": 63
+    },
+    "identity_counts": {
+      "users": 118,
+      "oauth_identities": 43,
+      "email_credentials": 75,
+      "consents": 194,
+      "auth_audit": 205
+    },
+    "identity_orphans": {
+      "oauth_identities": 0,
+      "email_credentials": 0,
+      "consents": 0,
+      "auth_audit": 0
+    },
+    "unvalidated_constraints": 0,
+    "duplicate_indicator_periods": 0,
+    "sample_public_series": [
+      {
+        "code": "cpi",
+        "points": 428,
+        "first_date": "1991-01-01",
+        "last_date": "2026-08-01",
+        "min_value": 99.46,
+        "max_value": 345.3
+      },
+      {
+        "code": "usd-rub",
+        "points": 7132,
+        "first_date": "1998-01-01",
+        "last_date": "2026-09-30",
+        "min_value": 5.96,
+        "max_value": 120.3785
+      }
+    ],
+    "checks_elapsed_seconds": 6.438,
+    "additional_schemas": {
+      "research.source_catalog": 17264
+    },
+    "non_system_table_count": 59
+  },
+  "identity_restore_checks": {
+    "observed_utc": "2026-09-30T13:38:52.463210+00:00",
+    "schema_source": "full-dump schema-only, in distinct empty fe_identity_drill database",
+    "data_source": "identity.sql.gz",
+    "psql_exit_code": 0,
+    "identity_counts": {
+      "users": 118,
+      "oauth_identities": 43,
+      "email_credentials": 75,
+      "consents": 194,
+      "auth_audit": 205
+    },
+    "identity_orphans": {
+      "oauth_identities": 0,
+      "email_credentials": 0,
+      "consents": 0,
+      "auth_audit": 0
+    },
+    "counts_equal_full_dump": true,
+    "unvalidated_constraints": 0
+  },
+  "historical_runtime_snapshot": {
+    "path": "docs/code-review/runtime-inventory-2026-09-27.json",
+    "sha256": "ba22e1e7d1d6f30551b97f62ed9d84f1194e7157a19a7136ff25bfb0b450d899"
+  },
+  "limitations": [
+    "No source owner/ACL replay or application end-to-end test in restored database.",
+    "No loss-of-server failover, WAL/PITR or target RTO/RPO acceptance.",
+    "No offsite object-store configuration changed; provider-managed backups remain unverified.",
+    "Next scheduled launchd execution has not yet occurred."
+  ],
+  "cleanup": {
+    "completed_utc": "2026-09-30T13:45:32.477578+00:00",
+    "ownership_checked": {
+      "container_label": "rosstat-backup-acceptance-2026-09-30",
+      "volume_label": "rosstat-backup-acceptance-2026-09-30",
+      "network": "none",
+      "host_ports": [],
+      "postgres_volume": "fe_restore_drill_20260930t133353z"
+    },
+    "removed_container": "fe_restore_drill_20260930t133353z",
+    "removed_volume": "fe_restore_drill_20260930t133353z",
+    "container_absent": true,
+    "volume_absent": true
+  },
+  "local_delivery": {
+    "started_msk": "2026-09-30 16:30:24",
+    "completed_msk": "2026-09-30 16:32:38",
+    "manual_exit_code": 0,
+    "repeat_msk": "2026-09-30 16:43:47",
+    "repeat_result": "already present and verified, skip",
+    "schedule_msk": "08:15",
+    "scheduled_execution_after_repair_verified": false
+  },
+  "local_raw_checks_directory": "/Users/iprofi/Backups/forecasteconomy/acceptance-2026-09-30"
+}

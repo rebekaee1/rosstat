@@ -4,19 +4,21 @@
 
 [Локальный интерактивный просмотр — после `--render`](project-terrain.html) · [JSON](project-terrain.json) · [Архитектура](architecture.md) · [Контракты](data-contracts.md) · [История решений](architecture-history.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `f8e239a3fca1`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `972579f0b95b`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+
+Input scope: `tracked`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.
 
 ## Покрытие
 
 | Измерение | Число |
 |---|---:|
-| Файлы в инвентаризации | 1287 |
-| Переданы структурному экстрактору | 1095 |
-| Дали узлы графа | 1023 |
-| Узлы / связи между символами | 13233 / 41277 |
-| Связи между файлами (тип и уверенность сохраняются) | 8579 |
+| Файлы в инвентаризации | 1301 |
+| Переданы структурному экстрактору | 1109 |
+| Дали узлы графа | 1037 |
+| Узлы / связи между символами | 13525 / 42017 |
+| Связи между файлами (тип и уверенность сохраняются) | 8661 |
 
-Исходники, шаблоны и стили: **980** файлов; узлы есть у **971**, из них **72** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
+Исходники, шаблоны и стили: **991** файлов; узлы есть у **982**, из них **72** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
 
 Полная инвентаризация относится к Git-дереву. Наличие в списке не означает, что каждый файл прошёл содержательный аудит. `nodes` — экстрактор нашёл структуру; `no_nodes` — файл прочитан экстрактором, но сущностей не получено; `inventory_only` — учтён без разбора структуры. Бинарные материалы, конфиги и данные включены в инвентарь; визуальное содержание скриншотов не анализировалось.
 
@@ -31,15 +33,15 @@
 | Встраиваемые виджеты | 7 | 7 | 7 | 0 |
 | Языки и локализация | 14 | 14 | 14 | 0 |
 | HTTP API | 20 | 20 | 20 | 9 |
-| Сервисы и расчёты | 202 | 202 | 202 | 16 |
+| Сервисы и расчёты | 203 | 203 | 203 | 16 |
 | Планировщик и фоновые задачи | 5 | 5 | 5 | 2 |
 | Модели, ядро и запуск backend | 15 | 15 | 15 | 5 |
 | Реестры и исходные данные | 61 | 34 | 34 | 4 |
 | Миграции БД | 37 | 36 | 35 | 0 |
-| Операционные скрипты | 98 | 93 | 94 | 3 |
+| Операционные скрипты | 101 | 96 | 97 | 3 |
 | Инфраструктура и конфигурация | 39 | 7 | 8 | 1 |
-| Тесты и fixtures | 356 | 328 | 328 | 0 |
-| Документация и правила | 61 | 0 | 49 | 21 |
+| Тесты и fixtures | 363 | 335 | 335 | 0 |
+| Документация и правила | 64 | 0 | 52 | 21 |
 | Исследования и артефакты | 57 | 1 | 1 | 0 |
 | Статические ресурсы | 98 | 5 | 1 | 0 |
 
@@ -47,8 +49,8 @@
 
 `EXTRACTED` и `INFERRED` — метки Graphify. Даже EXTRACTED означает статическую конструкцию, а не выполненный вызов. JSON сохраняет направление, тип, количество и примеры исходных строк. Внутрифайловые отношения остаются в полном Graphify-графе; внешние/неразрешённые endpoints не превращаются в выдуманные файлы. Отсутствие входящих связей не доказывает мёртвый код. Динамические реестры, HTTP, SQL, Redis и scheduler требуют контрактов из отдельных документов.
 
-Метки связей: `{"EXTRACTED": 37962, "INFERRED": 3315}`.
-Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2210, "missing_endpoint": 2418, "within_file": 17753}`.
+Метки связей: `{"EXTRACTED": 38620, "INFERRED": 3397}`.
+Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2224, "missing_endpoint": 2476, "within_file": 18179}`.
 
 ## Слои файлов
 
@@ -58,13 +60,13 @@
 | `.cursor` | 11 | 0 |
 | `.github` | 3 | 0 |
 | `.tours` | 1 | 0 |
-| `backend` | 628 | 544 |
+| `backend` | 633 | 549 |
 | `clickhouse` | 2 | 0 |
 | `deploy` | 10 | 3 |
-| `docs` | 102 | 46 |
-| `frontend` | 433 | 348 |
+| `docs` | 105 | 49 |
+| `frontend` | 436 | 351 |
 | `mcp` | 4 | 3 |
-| `scripts` | 85 | 76 |
+| `scripts` | 88 | 79 |
 
 ## Документы и правила
 
@@ -79,13 +81,13 @@
 | [.cursor/rules/outside-acceptance.mdc](../.cursor/rules/outside-acceptance.mdc) | 31 | inventory_only |
 | [.cursor/rules/packet-fixes.mdc](../.cursor/rules/packet-fixes.mdc) | 32 | inventory_only |
 | [.cursor/rules/prod-ssh.mdc](../.cursor/rules/prod-ssh.mdc) | 32 | inventory_only |
-| [.cursor/rules/project.mdc](../.cursor/rules/project.mdc) | 53 | inventory_only |
+| [.cursor/rules/project.mdc](../.cursor/rules/project.mdc) | 55 | inventory_only |
 | [.cursor/rules/subagents.mdc](../.cursor/rules/subagents.mdc) | 12 | inventory_only |
-| [.cursor/rules/working-agreement.mdc](../.cursor/rules/working-agreement.mdc) | 61 | inventory_only |
+| [.cursor/rules/working-agreement.mdc](../.cursor/rules/working-agreement.mdc) | 63 | inventory_only |
 | [.cursor/rules/world-ui-parity.mdc](../.cursor/rules/world-ui-parity.mdc) | 32 | inventory_only |
-| [AGENTS.md](../AGENTS.md) | 425 | nodes |
-| [CONTEXT.md](../CONTEXT.md) | 900 | nodes |
-| [README.md](../README.md) | 236 | nodes |
+| [AGENTS.md](../AGENTS.md) | 76 | nodes |
+| [CONTEXT.md](../CONTEXT.md) | 1028 | nodes |
+| [README.md](../README.md) | 244 | nodes |
 | [docs/adr/0001-derived-indicators-engine-shape.md](../docs/adr/0001-derived-indicators-engine-shape.md) | 142 | nodes |
 | [docs/adr/0002-derived-always-reflects-source.md](../docs/adr/0002-derived-always-reflects-source.md) | 136 | nodes |
 | [docs/adr/0003-seo-single-source-server-rendered.md](../docs/adr/0003-seo-single-source-server-rendered.md) | 210 | nodes |
@@ -95,12 +97,13 @@
 | [docs/adr/0007-identity-user-accounts.md](../docs/adr/0007-identity-user-accounts.md) | 237 | nodes |
 | [docs/adr/0008-regional-bounded-context.md](../docs/adr/0008-regional-bounded-context.md) | 118 | nodes |
 | [docs/adr/0009-behavior-stream-first-party.md](../docs/adr/0009-behavior-stream-first-party.md) | 128 | nodes |
-| [docs/adr/0010-analytics-contour-identity-goals-marts-olap.md](../docs/adr/0010-analytics-contour-identity-goals-marts-olap.md) | 185 | nodes |
-| [docs/adr/0011-world-eurostat-data-plane.md](../docs/adr/0011-world-eurostat-data-plane.md) | 248 | nodes |
+| [docs/adr/0010-analytics-contour-identity-goals-marts-olap.md](../docs/adr/0010-analytics-contour-identity-goals-marts-olap.md) | 197 | nodes |
+| [docs/adr/0011-world-eurostat-data-plane.md](../docs/adr/0011-world-eurostat-data-plane.md) | 272 | nodes |
 | [docs/adr/0012-world-multi-provider-official-first-forecasts.md](../docs/adr/0012-world-multi-provider-official-first-forecasts.md) | 185 | nodes |
 | [docs/adr/0013-country-first-url-architecture.md](../docs/adr/0013-country-first-url-architecture.md) | 309 | nodes |
 | [docs/adr/0014-subnational-regions-generic.md](../docs/adr/0014-subnational-regions-generic.md) | 99 | nodes |
 | [docs/adr/0015-us-bea-regional-catalog.md](../docs/adr/0015-us-bea-regional-catalog.md) | 67 | nodes |
+| [docs/agent-recipes.md](../docs/agent-recipes.md) | 220 | nodes |
 | [docs/analytics_api_inventory/README.md](../docs/analytics_api_inventory/README.md) | 63 | nodes |
 | [docs/analytics_api_inventory/frontend_instrumentation.md](../docs/analytics_api_inventory/frontend_instrumentation.md) | 279 | nodes |
 | [docs/analytics_api_inventory/google_search_console.md](../docs/analytics_api_inventory/google_search_console.md) | 148 | nodes |
@@ -108,12 +111,12 @@
 | [docs/analytics_api_inventory/metrika_management.md](../docs/analytics_api_inventory/metrika_management.md) | 49 | nodes |
 | [docs/analytics_api_inventory/metrika_reporting.md](../docs/analytics_api_inventory/metrika_reporting.md) | 47 | nodes |
 | [docs/analytics_api_inventory/yandex_webmaster.md](../docs/analytics_api_inventory/yandex_webmaster.md) | 64 | nodes |
-| [docs/architecture-history.md](../docs/architecture-history.md) | 52 | nodes |
-| [docs/architecture.md](../docs/architecture.md) | 267 | nodes |
-| [docs/backlog.md](../docs/backlog.md) | 1667 | nodes |
-| [docs/code-review-findings.md](../docs/code-review-findings.md) | 100 | nodes |
-| [docs/data-contracts.md](../docs/data-contracts.md) | 97 | nodes |
-| [docs/data_sources.md](../docs/data_sources.md) | 640 | nodes |
+| [docs/architecture-history.md](../docs/architecture-history.md) | 75 | nodes |
+| [docs/architecture.md](../docs/architecture.md) | 273 | nodes |
+| [docs/backlog.md](../docs/backlog.md) | 1720 | nodes |
+| [docs/code-review-findings.md](../docs/code-review-findings.md) | 124 | nodes |
+| [docs/data-contracts.md](../docs/data-contracts.md) | 121 | nodes |
+| [docs/data_sources.md](../docs/data_sources.md) | 642 | nodes |
 | [docs/dead-code-report.md](../docs/dead-code-report.md) | 82 | nodes |
 | [docs/design/README.md](../docs/design/README.md) | 104 | nodes |
 | [docs/design/accessibility-review.md](../docs/design/accessibility-review.md) | 58 | nodes |
@@ -125,25 +128,27 @@
 | [docs/indexnow-sitemap-backfill-plan.md](../docs/indexnow-sitemap-backfill-plan.md) | 204 | nodes |
 | [docs/indicator-family-playbook.md](../docs/indicator-family-playbook.md) | 614 | nodes |
 | [docs/indicator-index.md](../docs/indicator-index.md) | 1055 | nodes |
+| [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | 98 | nodes |
 | [docs/missed_data_audit.md](../docs/missed_data_audit.md) | 449 | nodes |
+| [docs/pravki-21-reanalysis.md](../docs/pravki-21-reanalysis.md) | 52 | nodes |
 | [docs/traffic-platform-2026-09-10.md](../docs/traffic-platform-2026-09-10.md) | 47 | nodes |
 | [docs/verification/us-eu-source-audit-2026-09-24.md](../docs/verification/us-eu-source-audit-2026-09-24.md) | 114 | nodes |
 | [docs/verification/us-indicators-2026-09-24.md](../docs/verification/us-indicators-2026-09-24.md) | 41 | nodes |
 | [docs/verification/world-forecast-v2-2026-09-24.md](../docs/verification/world-forecast-v2-2026-09-24.md) | 64 | nodes |
-| [docs/workflow.md](../docs/workflow.md) | 279 | nodes |
+| [docs/workflow.md](../docs/workflow.md) | 292 | nodes |
 | [scripts/audit-world-truthfulness-report.md](../scripts/audit-world-truthfulness-report.md) | 145 | nodes |
 
 ## Обновление и проверка
 
 ```bash
 # В окружении с graphifyy==0.9.69; не импортирует backend и не обращается к БД
-python scripts/build-project-terrain.py --refresh
+python scripts/build-project-terrain.py --refresh --tracked-only
 # Проверка drift, Graphify не требуется
 python3 scripts/build-project-terrain.py --check
 # Пересоздать HTML из закоммиченного JSON, без Graphify
 python3 scripts/build-project-terrain.py --render
 ```
 
-Полные `extraction.json`, `graph.json` и диагностика сохраняются в `.artifacts/project-terrain/` (локальные, не Git). `graphify explain <symbol> --graph .artifacts/project-terrain/graph.json` даёт точечную навигацию. Для просмотра HTML достаточно открыть файл; сеть и CDN не нужны. Проверка `--check` отдельная: не включена в обязательные gates `check-all`/CI, поскольку этот датированный срез включает рабочие изменения параллельных задач. Команды требуют Git checkout; Python-зависимости для `--check`/`--render` не нужны.
+Полные `extraction.json`, `graph.json` и диагностика сохраняются в `.artifacts/project-terrain/` (локальные, не Git). `graphify explain <symbol> --graph .artifacts/project-terrain/graph.json` даёт точечную навигацию. Для просмотра HTML достаточно открыть файл; сеть и CDN не нужны. Проверка `--check --tracked-only` включена в `check-project-knowledge.sh`, `check-all.sh` и CI knowledge job. Она читает сохранённый срез без перезаписи и требует актуальной main-карты. Команды требуют Git checkout; Python-зависимости для `--check`/`--render` не нужны.
 
 Смысловой граф исследовательских агентов — отдельное датированное свидетельство в `docs/architecture-knowledge.json`; он не смешивается со статическим графом и не обновляется автоматически при изменении кода. Проверяйте его ссылки и дату аудита.

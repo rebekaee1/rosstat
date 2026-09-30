@@ -135,14 +135,15 @@ def git(*args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=ROOT, text=True)
 
 
-def inventory() -> list[dict]:
-    """Include tracked and nonignored new files, stable before/after git add.
+def inventory(tracked_only: bool = False) -> list[dict]:
+    """Include tracked/index paths; optionally include nonignored new files.
 
     Generated terrain files are outside their own input set. Symlinks are
     recorded without following them; private ignored files never enter it.
     """
     paths = set(git("ls-files", "-z").split("\0"))
-    paths.update(git("ls-files", "--others", "--exclude-standard", "-z").split("\0"))
+    if not tracked_only:
+        paths.update(git("ls-files", "--others", "--exclude-standard", "-z").split("\0"))
     rows = []
     for rel in sorted(paths - GENERATED - {""}):
         if rel.startswith("docs/code-review/"):
@@ -196,7 +197,7 @@ def projection(extraction: dict, rows: list[dict], attempted: list[str]) -> dict
     return {
         "schema_version": 2, "extractor": f"graphifyy=={VERSION}",
         "baseline_commit": git("rev-parse", "HEAD").strip(),
-        "scope": "Working tree: Git tracked + nonignored new files; generated terrain and repo-inventory excluded",
+        "scope": "Working tree: Git tracked + nonignored new files; generated maps and docs/code-review evidence directory excluded",
         "unstaged_at_capture": sorted(p for p in git("diff", "--name-only").splitlines() if p not in GENERATED),
         "untracked_at_capture": sorted(p for p in git("ls-files", "--others", "--exclude-standard").splitlines() if p not in GENERATED),
         "stats": {"files": len(rows), "attempted": len(attempted),
@@ -219,6 +220,8 @@ def markdown(data: dict) -> str:
              "снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. "
              "`unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе "
              "не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.", "",
+             f"Input scope: `{data.get('input_scope', 'worktree')}`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. "
+             "Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.", "",
              "## Покрытие", "", "| Измерение | Число |", "|---|---:|",
              f"| Файлы в инвентаризации | {s['files']} |",
              f"| Переданы структурному экстрактору | {s['attempted']} |",
@@ -268,7 +271,7 @@ def markdown(data: dict) -> str:
             lines.append(f"| [{f['path']}](../{f['path']}) | {f['lines']} | {f['extraction']} |")
     lines += ["", "## Обновление и проверка", "", "```bash",
               "# В окружении с graphifyy==0.9.69; не импортирует backend и не обращается к БД",
-              "python scripts/build-project-terrain.py --refresh",
+              "python scripts/build-project-terrain.py --refresh --tracked-only",
               "# Проверка drift, Graphify не требуется",
               "python3 scripts/build-project-terrain.py --check",
               "# Пересоздать HTML из закоммиченного JSON, без Graphify",
@@ -277,8 +280,8 @@ def markdown(data: dict) -> str:
               "`.artifacts/project-terrain/` (локальные, не Git). "
               "`graphify explain <symbol> --graph .artifacts/project-terrain/graph.json` даёт точечную навигацию. "
               "Для просмотра HTML достаточно открыть файл; сеть и CDN не нужны. "
-              "Проверка `--check` отдельная: не включена в обязательные gates `check-all`/CI, "
-              "поскольку этот датированный срез включает рабочие изменения параллельных задач. "
+              "Проверка `--check --tracked-only` включена в `check-project-knowledge.sh`, `check-all.sh` и CI knowledge job. "
+              "Она читает сохранённый срез без перезаписи и требует актуальной main-карты. "
               "Команды требуют Git checkout; Python-зависимости для `--check`/`--render` не нужны.", "",
               "Смысловой граф исследовательских агентов — отдельное датированное свидетельство в "
               "`docs/architecture-knowledge.json`; он не смешивается со статическим графом и "
@@ -323,7 +326,7 @@ def render(data: dict) -> str:
     return template.replace("__TERRAIN_DATA__", json.dumps(display, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c"))
 
 
-def refresh() -> None:
+def refresh(tracked_only: bool = False) -> None:
     try:
         version = importlib.metadata.version("graphifyy")
     except importlib.metadata.PackageNotFoundError:
@@ -335,7 +338,7 @@ def refresh() -> None:
     from graphify.cluster import cluster
     from graphify.export import to_json
     from graphify.diagnostics import diagnose_extraction
-    rows = inventory()
+    rows = inventory(tracked_only=tracked_only)
     allowed = {r["path"] for r in rows if not r["symlink"]}
     new_files = [p for p in git("ls-files", "--others", "--exclude-standard").splitlines() if p in allowed]
     if new_files:
@@ -357,6 +360,10 @@ def refresh() -> None:
         graph_path.replace(RAW / "graph.previous.json")
     to_json(graph, cluster(graph), str(graph_path))
     data = projection(extraction, rows, [str(p.relative_to(ROOT)) for p in paths])
+    data["input_scope"] = "tracked" if tracked_only else "worktree"
+    if tracked_only:
+        data["scope"] = "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main"
+        data["untracked_at_capture"] = []
     # One JSON record per line: smaller than pretty JSON, reviewable Git diffs.
     header = {k: v for k, v in data.items() if k not in {"files", "edges"}}
     payload = json.dumps(header, ensure_ascii=False, indent=2)[:-2]
@@ -370,13 +377,17 @@ def refresh() -> None:
     print(json.dumps(data["stats"], ensure_ascii=False))
 
 
-def check() -> int:
+def check(tracked_only: bool | None = None) -> int:
     if not SNAPSHOT.exists():
         print("Terrain missing: run --refresh")
         return 1
     data = json.loads(SNAPSHOT.read_text())
+    if tracked_only is None:
+        tracked_only = data.get("input_scope") == "tracked"
+    expected_scope = "tracked" if tracked_only else "worktree"
+    scope_matches = data.get("input_scope", "worktree") == expected_scope
     old = {r["path"]: r["sha256"] for r in data["files"]}
-    now = {r["path"]: r["sha256"] for r in inventory()}
+    now = {r["path"]: r["sha256"] for r in inventory(tracked_only=tracked_only)}
     changes = [p for p in sorted(old.keys() | now.keys()) if old.get(p) != now.get(p)]
     for path in changes[:30]:
         print(f"Terrain drift: {path}")
@@ -396,8 +407,8 @@ def check() -> int:
             print(f"Historical semantic graph: {len(semantic_stale)} changed source fingerprints; preserved as dated evidence. Current reviews have a separate audit-code-documentation.py --check gate.")
         else:
             print(f"Current semantic evidence needs review: {len(semantic_stale)} changed source fingerprints")
-    if changes or invalid or not generated_ok or (semantic_stale and not historical):
-        print(f"Terrain stale: {len(changes)} files, {len(invalid)} invalid edges, generated outputs match={generated_ok}; refresh structure as reported")
+    if changes or invalid or not generated_ok or not scope_matches or (semantic_stale and not historical):
+        print(f"Terrain stale: {len(changes)} files, {len(invalid)} invalid edges, generated outputs match={generated_ok}, input scope match={scope_matches}; refresh structure as reported")
         return 1
     print(f"Terrain OK: {len(now)} file fingerprints, {len(data['edges'])} file edges, generated outputs match")
     return 0
@@ -409,14 +420,16 @@ def main() -> int:
     mode.add_argument("--refresh", action="store_true")
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--render", action="store_true", help="Render local HTML from the saved JSON (stdlib only)")
+    parser.add_argument("--tracked-only", action="store_true", default=None,
+                        help="Use Git tracked/index inputs for a reproducible main/CI snapshot")
     args = parser.parse_args()
     if args.check:
-        return check()
+        return check(tracked_only=args.tracked_only)
     if args.render:
         HTML.write_text(render(json.loads(SNAPSHOT.read_text())))
         print(f"Rendered {HTML.relative_to(ROOT)}")
         return 0
-    refresh()
+    refresh(tracked_only=bool(args.tracked_only))
     return 0
 
 

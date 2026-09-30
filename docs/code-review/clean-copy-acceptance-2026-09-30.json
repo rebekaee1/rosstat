@@ -1,0 +1,46 @@
+{
+  "date_msk": "2026-09-30",
+  "at_utc": "2026-09-30T14:36:56.105513+00:00",
+  "exported_index_tree": "adf61a3308c5679d5c928c8d9a56abfb48cc435e",
+  "meaning": "Fresh Git tree archive without local untracked/ignored dependencies; stdlib knowledge CI gate and regressions. Not remote GitHub CI, application E2E, or new-agent cold-start acceptance.",
+  "temporary_copy_removed_on_exit": true,
+  "checks": [
+    {
+      "command": [
+        "bash",
+        "scripts/check-project-knowledge.sh"
+      ],
+      "exit_code": 0,
+      "output": "AGENTS routes OK, 8180 bytes\n{\"files\": 1301, \"code_files\": 991, \"current_reviews\": 1301, \"statuses\": {\"artifact_schema_reviewed\": 78, \"asset_metadata_reviewed\": 91, \"data_schema_reviewed\": 2, \"reviewed\": 1130}, \"definitions\": 8413, \"annotated_definitions\": 8413, \"files_needing_attention\": 0}\nHistorical semantic graph: 31 changed source fingerprints; preserved as dated evidence. Current reviews have a separate audit-code-documentation.py --check gate.\nTerrain OK: 1301 file fingerprints, 8661 file edges, generated outputs match\n{\"required\": 150, \"checked\": 237, \"skipped_untracked\": 5, \"meaning\": \"Content identity only; review_status and body-read claims are not assigned or upgraded.\"}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_code_documentation.py"
+      ],
+      "exit_code": 0,
+      "output": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_knowledge_materials.py"
+      ],
+      "exit_code": 0,
+      "output": "Knowledge materials check failed: noncanonical repository_path: '../other.json'\nKnowledge materials check failed: Expecting value: line 1 column 1 (char 0)\n{\"required\": 8, \"checked\": 9, \"skipped_untracked\": 0, \"meaning\": \"Content identity only; review_status and body-read claims are not assigned or upgraded.\"}\nMaterial source changed: AGENTS.md\n{\"required\": 8, \"checked\": 9, \"skipped_untracked\": 0, \"meaning\": \"Content identity only; review_status and body-read claims are not assigned or upgraded.\"}\nKnowledge materials check failed: Active materials pointer is not tracked/indexed: docs/code-review/materials-current.json\nTerrain stale: 0 files, 0 invalid edges, generated outputs match=True, input scope match=False; refresh structure as reported\nTerrain OK: 0 file fingerprints, 0 file edges, generated outputs match\nTerrain OK: 0 file fingerprints, 0 file edges, generated outputs match\n..........\n----------------------------------------------------------------------\nRan 10 tests in 0.024s\n\nOK\n"
+    }
+  ],
+  "passed": true
+}

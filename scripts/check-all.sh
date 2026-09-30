@@ -5,6 +5,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+echo "== project knowledge (read-only) =="
+./scripts/check-project-knowledge.sh
+
 echo "== backend pytest =="
 cd "$ROOT/backend"
 if [[ -x .venv/bin/pytest ]]; then
@@ -15,11 +18,10 @@ fi
 
 echo "== frontend test + lint + build =="
 cd "$ROOT/frontend"
+node ../scripts/code-review-symbols.mjs --check --tracked-only
 npm run test
 npm run lint
 npm run build
-
-echo "== OK =="
 
 # --- Карта индикаторов (детерминированная навигация для агента) ---------------
 # repo-inventory регенерируется (информационный срез «что есть в проекте»);
@@ -40,3 +42,4 @@ fi
 echo "== public language audit =="
 "$MAP_PY" scripts/audit-public-language.py
 echo "== map OK =="
+echo "== ALL CHECKS OK =="

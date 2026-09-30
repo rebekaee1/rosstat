@@ -6,6 +6,8 @@
 **Domain glossary и инварианты:** [`CONTEXT.md`](CONTEXT.md).
 **Рельеф всего проекта:** [`docs/project-terrain.md`](docs/project-terrain.md) — Graphify, полный Git-инвентарь и проверка актуальности.
 **Как всё связано:** [`архитектура`](docs/architecture.md) · [`контракты данных`](docs/data-contracts.md) · [`история решений`](docs/architecture-history.md).
+**Обязательный цикл при каждой задаче:** [`docs/knowledge-workflow.md`](docs/knowledge-workflow.md); рецепты владельца — [`docs/agent-recipes.md`](docs/agent-recipes.md).
+**Содержательная дельта frontend/docs 30 сентября:** [`отчёт`](docs/code-review/frontend-docs-delta-2026-09-30.md): локальный код, история и ограничения полноты.
 **Рабочий процесс, локальный dev, прод-деплой:** [`docs/workflow.md`](docs/workflow.md).
 **Источники данных:** [`docs/data_sources.md`](docs/data_sources.md) (per-indicator карта `URL/endpoint/sheet/row`); parser internals — в docstrings `backend/app/services/*_parser.py`.
 **Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0015).
@@ -37,6 +39,12 @@ flowchart LR
   MCP[Forecast Analytics MCP] -->|HTTP API| Web
 ```
 
+**Уточнение URL 2026-09-30:** страна задаёт основные пути (`/russia/...`,
+`/{country}/indicator/{code}`); валюты имеют отдельный раздел `/currencies`
+и `/currencies/indicator/{code}`, включая производные и периоды. Источник —
+backend `site_paths.py` и frontend `sitePaths.js`. Наличие этих путей в main
+не заменяет проверку выпущенного SHA и живых редиректов.
+
 ## Стек
 
 ### Backend
@@ -55,7 +63,7 @@ flowchart LR
 - **TanStack React Query 5** — data fetching и кэш.
 - **Recharts** — графики; **ECharts** — аналитические визуализации; **GSAP 3** — анимации.
 - **React Router 7** + **Axios** + **Lucide** + **@sentry/react**. Excel/CSV создаёт backend; `xlsx` в frontend dependencies отсутствует.
-- **Nginx** внутри `frontend` контейнера — раздаёт статику Vite-сборки и проксирует SSR-запросы (Yandex/Google bot UA → backend `/seo/*`).
+- **Nginx** внутри `frontend` контейнера — раздаёт статику Vite-сборки и проксирует публичные SSR-пути к backend `/seo/*` для браузеров и роботов; переход в SPA и исключения определяет маршрутизация.
 
 ### Инфраструктура
 
@@ -186,12 +194,12 @@ rosstat/
 │   │   ├── components/     # Navbar, Footer, Chart, MetricCard, EmbedHelpers, …
 │   │   ├── pages/          # Home, Category, IndicatorDetail, Calendar, Embed, …
 │   │   └── lib/            # api client, categories.js, formatters, hooks
-│   ├── nginx.conf          # SPA + SSR-bot-proxy + asset hashing
+│   ├── nginx.conf          # SPA + SSR routing + asset hashing
 │   └── Dockerfile
 ├── scripts/
 │   ├── check-all.sh        # pytest / frontend / guards документации
 │   ├── pg-backup.sh        # pg_dump перед прод-деплоем
-│   ├── deploy.sh           # обвязка sshscript для прод-деплоя
+│   ├── deploy.sh           # выпуск до одобренного SHA, smoke и rollback
 │   ├── sync-local-from-prod.py
 │   ├── rebuild-all-derived.py
 │   ├── seo-audit.py
