@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import secrets
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
@@ -542,18 +544,53 @@ def _normalize_page(url: Any) -> str | None:
     return s.split("?", 1)[0].split("#", 1)[0][:500] or "/"
 
 
-async def _is_duplicate_batch(batch_id: str | None) -> bool:
-    """Дедуп повторной доставки батча (sendBeacon ретраит): SETNX с TTL.
-    Redis недоступен — принимаем батч (лучше редкий дубль, чем потеря)."""
+@dataclass(frozen=True)
+class _BehaviorBatchClaim:
+    state: str
+    key: str | None = None
+    token: str | None = None
+
+
+async def _claim_behavior_batch(batch_id: str | None) -> _BehaviorBatchClaim:
+    """Only a completed DB write is a duplicate; an active claim is retryable.
+
+    v2 avoids treating legacy pre-commit markers as confirmed writes. Redis
+    remains best effort: losing it can cause a duplicate, never a false ack.
+    """
     if not batch_id:
-        return False
+        return _BehaviorBatchClaim("untracked")
     try:
         from app.core.cache import get_state_redis
         r = await get_state_redis()
-        fresh = await r.set(f"fe:beh:batch:{batch_id[:64]}", "1", nx=True, ex=3600)
-        return not fresh
+        key = f"fe:beh:batch:v2:{batch_id[:64]}"
+        token = f"pending:{secrets.token_hex(16)}"
+        if await r.set(key, token, nx=True, ex=120):
+            return _BehaviorBatchClaim("claimed", key, token)
+        if await r.get(key) in ("done", b"done"):
+            return _BehaviorBatchClaim("done")
+        return _BehaviorBatchClaim("pending")
     except Exception:  # noqa: BLE001
-        return False
+        return _BehaviorBatchClaim("untracked")
+
+
+async def _finish_behavior_batch(claim: _BehaviorBatchClaim, *, committed: bool) -> None:
+    if claim.state != "claimed":
+        return
+    try:
+        from app.core.cache import get_state_redis
+        r = await get_state_redis()
+        if committed:
+            script = """if redis.call('GET', KEYS[1]) == ARGV[1] then
+                return redis.call('SET', KEYS[1], 'done', 'EX', 3600)
+                end return 0"""
+        else:
+            script = """if redis.call('GET', KEYS[1]) == ARGV[1] then
+                return redis.call('DEL', KEYS[1]) end return 0"""
+        # An expired/replaced lease belongs to another request: never clear it
+        # or acknowledge it using this request's stale ownership token.
+        await r.eval(script, 1, claim.key, claim.token)
+    except Exception:  # noqa: BLE001 — a committed DB write stays accepted
+        pass
 
 
 @router.post("/behavior")
@@ -571,8 +608,25 @@ async def collect_behavior_batch(
         return {"accepted": False, "reason": "ignored"}
     if not events:
         return {"accepted": True, "stored": 0}
-    if await _is_duplicate_batch(payload.batch_id):
+    claim = await _claim_behavior_batch(payload.batch_id)
+    if claim.state == "done":
         return {"accepted": True, "stored": 0, "duplicate": True}
+    if claim.state == "pending":
+        raise HTTPException(status_code=503, detail="Behavior batch delivery pending", headers={"Retry-After": "1"})
+    try:
+        result = await _store_behavior_batch(request, payload, events, db)
+    except BaseException:
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001 — preserve the original write failure
+            pass
+        await _finish_behavior_batch(claim, committed=False)
+        raise
+    await _finish_behavior_batch(claim, committed=True)
+    return result
+
+
+async def _store_behavior_batch(request: Request, payload: BehaviorBatchIn, events: list[dict[str, Any]], db: AsyncSession):
 
     session_hash = (
         hashlib.sha256(payload.session_id.encode("utf-8")).hexdigest()

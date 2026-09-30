@@ -25,7 +25,7 @@
  * clientID Метрики) уходит в каждом батче; _ym_uid из куки Метрики в
  * session_start даёт ретро-мост к повизитной истории raw_metrika_visits.
  *
- * Транспорт: буфер в памяти → sendBeacon на /api/v1/analytics/behavior батчами
+ * Транспорт: буфер в памяти → подтверждаемый fetch; на уходе best-effort beacon
  * (интервал 10 с / 60 событий / pagehide). При 100k посетителей/день это даёт
  * порядка сотен вставок в секунду в пике — держится bulk-insert'ом на бэке.
  *
@@ -47,6 +47,12 @@ const CONSENT_V = '2026-06-16';
 
 const FLUSH_INTERVAL_MS = 10_000;
 const FLUSH_AT_QUEUE = 60;
+const DELIVERY_RETRY_MS = [1000, 3000, 10_000];
+const DELIVERY_LIFETIME_MS = 60_000;
+const DELIVERY_MAX_BATCHES = 4;
+const DELIVERY_MAX_PENDING_BYTES = 128 * 1024;
+// keepalive has a shared 64KiB browser budget, also used by other collectors.
+const DELIVERY_BODY_BYTES = 48 * 1024;
 const MOVE_SAMPLE_MS = 120;      // не чаще одной точки в 120 мс
 const MOVE_MIN_DIST = 12;        // и только если сдвиг > 12px
 const MOVE_MAX_POINTS = 240;     // жёсткий потолок точек на один move-батч
@@ -78,6 +84,11 @@ export function isAutomationClient() {
 }
 
 let _queue = [];
+let _pendingBatches = [];
+let _deliveryActive = null;
+let _deliveryTimer = null;
+let _leavingBytes = 0;
+let _flushing = false;
 let _identity = { authed: false, userId: null };
 let _pageLoadId = null;
 let _pageEnteredAt = 0;
@@ -332,37 +343,160 @@ function batchId() {
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 }
 
-export function flush() {
-  drainMoves();
-  if (!_queue.length) return;
-  const events = _queue;
-  _queue = [];
-  // batch_id — идемпотентность на инжесте: sendBeacon умеет ретраить,
-  // сервер дедуплицирует повторную доставку того же батча (Redis SETNX).
-  const hasPortrait = events.some((e) => e.t === 'session_start');
-  const body = JSON.stringify({
-    session_id: sessionId(),
-    visitor_id: visitorId(),
-    authed: _identity.authed ? 1 : 0,
-    batch_id: batchId(),
-    events,
-  });
+function deliveryCurrent(batch) {
+  return _enabled && consentAllows() && batch.generation === _generation && _pendingBatches.includes(batch)
+    && Date.now() < batch.createdAt + DELIVERY_LIFETIME_MS;
+}
+
+function removeBatch(batch) {
+  _pendingBatches = _pendingBatches.filter((item) => item !== batch);
+  if (_deliveryActive === batch) _deliveryActive = null;
+  for (const controller of batch.controllers) {
+    try { controller.abort(); } catch { /* ignore */ }
+  }
+}
+
+function clearDelivery() {
+  if (_deliveryTimer) clearTimeout(_deliveryTimer);
+  _deliveryTimer = null;
+  for (const batch of _pendingBatches) removeBatch(batch);
+  _pendingBatches = [];
+  _deliveryActive = null;
+  _leavingBytes = 0;
+}
+
+function retryAfterMs(resp) {
+  let value;
+  try { value = resp?.headers?.get('Retry-After'); } catch { return null; }
+  if (!value) return null;
+  if (/^\d+(?:\.\d+)?$/.test(value.trim())) return Number(value) * 1000;
+  const when = Date.parse(value);
+  return Number.isFinite(when) ? Math.max(0, when - Date.now()) : null;
+}
+
+async function deliveryResponse(resp) {
+  if (!resp?.ok) return resp;
   try {
-    // Батч с портретом шлём через fetch: только подтверждённая доставка
-    // (resp.ok) помечает session_start отправленным — иначе портрет
-    // переотправится на следующем pageview (сервер идемпотентен).
-    if (!hasPortrait && navigator.sendBeacon) {
-      const ok = navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'application/json' }));
-      if (ok) return;
+    const result = await resp.json();
+    if (result?.accepted === true) return resp;
+    if (result?.accepted === false) return { rejected: true };
+  } catch { /* an unreadable response is not an acknowledgement */ }
+  return null;
+}
+
+function acknowledge(batch) {
+  if (!deliveryCurrent(batch)) return;
+  if (batch.hasPortrait) {
+    try { window.sessionStorage.setItem(SESSION_META_KEY, '1'); } catch { /* ignore */ }
+  }
+  removeBatch(batch);
+}
+
+function applyDeliveryResult(batch, resp) {
+  if (!deliveryCurrent(batch)) return;
+  if (resp?.ok) acknowledge(batch);
+  else if ((!resp || resp.status >= 500 || resp.status === 429) && batch.attempts <= DELIVERY_RETRY_MS.length) {
+    const backoff = DELIVERY_RETRY_MS[batch.attempts - 1];
+    const delay = Math.max(backoff, retryAfterMs(resp) ?? 0);
+    batch.nextAt = Math.max(batch.nextAt, Date.now() + delay);
+    // A long Retry-After must never be truncated into an earlier retry.
+    if (batch.nextAt >= batch.createdAt + DELIVERY_LIFETIME_MS) removeBatch(batch);
+  } else removeBatch(batch);
+}
+
+function finishDelivery(batch, attempt, resp) {
+  if (!deliveryCurrent(batch) || batch.attempt !== attempt) return;
+  if (_deliveryActive === batch) _deliveryActive = null;
+  applyDeliveryResult(batch, resp);
+  pumpDelivery();
+}
+
+function scheduleDelivery() {
+  if (_deliveryTimer) clearTimeout(_deliveryTimer);
+  _deliveryTimer = null;
+  if (!_pendingBatches.length) return;
+  let next = Math.min(..._pendingBatches.map((batch) => batch.createdAt + DELIVERY_LIFETIME_MS));
+  if (!_deliveryActive && !_pageSuspended) next = Math.min(next,
+    ..._pendingBatches.filter((batch) => batch.attempts <= DELIVERY_RETRY_MS.length).map((batch) => batch.nextAt));
+  _deliveryTimer = setTimeout(() => { _deliveryTimer = null; pumpDelivery(); }, Math.max(0, next - Date.now()));
+}
+
+function pumpDelivery() {
+  if (!_enabled || !consentAllows()) { clearDelivery(); return; }
+  for (const batch of _pendingBatches) if (!deliveryCurrent(batch)) removeBatch(batch);
+  if (!_deliveryActive && !_pageSuspended) {
+    const batch = _pendingBatches.find((item) => item.nextAt <= Date.now() && item.attempts <= DELIVERY_RETRY_MS.length);
+    if (batch) {
+      const attempt = {};
+      batch.attempt = attempt;
+      batch.attempts += 1;
+      _deliveryActive = batch;
+      try {
+        const controller = typeof AbortController === 'function' ? new AbortController() : null;
+        if (controller) batch.controllers.push(controller);
+        // Regular delivery has a response and does not consume shared keepalive quota.
+        Promise.resolve(fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: batch.body, keepalive: false, ...(controller ? { signal: controller.signal } : {}) }))
+          .then(deliveryResponse)
+          .then((resp) => finishDelivery(batch, attempt, resp), () => finishDelivery(batch, attempt, null));
+      } catch { finishDelivery(batch, attempt, null); }
     }
-    fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true })
-      .then((resp) => {
-        if (hasPortrait && resp && resp.ok) {
-          try { window.sessionStorage.setItem(SESSION_META_KEY, '1'); } catch { /* ignore */ }
-        }
-      })
-      .catch(() => {});
+  }
+  scheduleDelivery();
+}
+
+function sendLeavingBatches() {
+  for (const batch of _pendingBatches) {
+    if (!deliveryCurrent(batch) || batch.leftAttempted || batch.nextAt > Date.now() || batch.attempts > DELIVERY_RETRY_MS.length
+      || _leavingBytes + batch.bytes > DELIVERY_BODY_BYTES) continue;
+    batch.leftAttempted = true;
+    _leavingBytes += batch.bytes;
+    batch.attempts += 1;
+    try {
+      if (navigator.sendBeacon?.(ENDPOINT, new Blob([batch.body], { type: 'application/json' }))) {
+        // Queue acceptance is not a server response. Retain until ack/expiry.
+        continue;
+      }
+    } catch { /* fall back to the same first-party endpoint */ }
+    try {
+      const controller = typeof AbortController === 'function' ? new AbortController() : null;
+      if (controller) batch.controllers.push(controller);
+      Promise.resolve(fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: batch.body, keepalive: true, ...(controller ? { signal: controller.signal } : {}) }))
+        .then(deliveryResponse)
+        .then((resp) => { applyDeliveryResult(batch, resp); pumpDelivery(); }, () => { applyDeliveryResult(batch, null); pumpDelivery(); });
+    } catch { /* leaving delivery is best effort */ }
+  }
+  scheduleDelivery();
+}
+
+export function flush({ leaving = false } = {}) {
+  if (_flushing || !_enabled || !consentAllows()) return;
+  _flushing = true;
+  try {
+    drainMoves();
+    for (const batch of _pendingBatches) if (!deliveryCurrent(batch)) removeBatch(batch);
+    while (_queue.length) {
+      const envelope = { session_id: sessionId(), visitor_id: visitorId(), authed: _identity.authed ? 1 : 0, batch_id: batchId() };
+      let count = Math.min(_queue.length, FLUSH_AT_QUEUE);
+      let body, bytes;
+      do {
+        body = JSON.stringify({ ...envelope, events: _queue.slice(0, count) });
+        bytes = new Blob([body]).size;
+        if (bytes <= DELIVERY_BODY_BYTES || count === 1) break;
+        count = Math.max(1, Math.floor(count / 2));
+      } while (count);
+      const events = _queue.splice(0, count);
+      const pendingBytes = _pendingBatches.reduce((total, batch) => total + batch.bytes, 0);
+      if (bytes > DELIVERY_BODY_BYTES || _pendingBatches.length >= DELIVERY_MAX_BATCHES
+        || pendingBytes + bytes > DELIVERY_MAX_PENDING_BYTES) continue;
+      _pendingBatches.push({ body, bytes, hasPortrait: events.some((event) => event.t === 'session_start'),
+        createdAt: Date.now(), nextAt: Date.now(), generation: _generation, attempts: 0, controllers: [], leftAttempted: false });
+    }
+    pumpDelivery();
+    if (leaving) sendLeavingBatches();
   } catch { /* телеметрия никогда не ломает UX */ }
+  finally { _flushing = false; }
 }
 
 const DWELL_MAX_MS = 4 * 3600 * 1000; // страховка от вкладок, забытых на ночь
@@ -904,7 +1038,7 @@ function onLeave() {
     _attention.visibility(Date.now(), false);
     refreshBlocks(false);
   }
-  flush();
+  flush({ leaving: true });
 }
 
 function onVisibility() {
@@ -912,6 +1046,9 @@ function onVisibility() {
   if (document.visibilityState !== 'hidden' && _pageSuspended) {
     _pageSuspended = false;
     _pageEnteredAt = Date.now();
+    _leavingBytes = 0;
+    for (const batch of _pendingBatches) batch.leftAttempted = false;
+    pumpDelivery();
   }
   _attention.visibility(Date.now(), visible);
   refreshBlocks();
@@ -976,6 +1113,7 @@ function onConsentChange(event) {
   _enabled = allowed;
   if (!allowed) {
     // Revocation applies immediately even if localStorage or a tracker failed.
+    clearDelivery();
     _queue = []; _movePoints = []; _pointers = new Map(); _pageHistory = []; _inputTargets = [];
     _pageSuspended = true;
     _attention.reset(Date.now(), false);
@@ -991,6 +1129,8 @@ function onConsentChange(event) {
 /** Для тестов: сброс состояния модуля. */
 export function _resetForTests() {
   _generation += 1;
+  clearDelivery();
+  _flushing = false;
   for (const remove of _listeners) remove();
   _listeners = [];
   if (_restoreFetch) { _restoreFetch(); _restoreFetch = null; }

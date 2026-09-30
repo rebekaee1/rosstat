@@ -19,6 +19,7 @@ See `docs/adr/0003-seo-single-source-server-rendered.md`.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import re
@@ -866,10 +867,21 @@ def _ssr_chrome_header(canonical_path: str | None = None) -> str:
     return header.replace("</div></header>", f"{link}</div></header>", 1)
 
 
-def _ssr_chrome_footer() -> str:
+def _ssr_chrome_footer(assets: AppAssets | None = None) -> str:
     from app.services.locale import get_locale
 
-    return _SSR_CHROME_FOOTER_EN if get_locale() == "en" else _SSR_CHROME_FOOTER
+    footer = _SSR_CHROME_FOOTER_EN if get_locale() == "en" else _SSR_CHROME_FOOTER
+    # Before September this fixed URL was cached immutable for a year. New
+    # no-cache headers cannot invalidate those existing browser entries, whose
+    # imported chunks may already have left the retained release archive.
+    # A release-derived query escapes that cache without changing nginx routing;
+    # the fixed entry continues to revalidate on the current server.
+    shell = assets or _APP_ASSETS or _fallback_assets()
+    version = hashlib.sha256(shell.body_scripts.encode("utf-8")).hexdigest()[:16]
+    return footer.replace(
+        'src="/assets/behavior-standalone.js"',
+        f'src="/assets/behavior-standalone.js?v={version}"',
+    )
 
 
 def _ssr_platform_deep_links(canonical_path: str | None = None) -> str:
@@ -1257,7 +1269,7 @@ async def build_document(
         # Чистые SSR-страницы получают брендовый хром: шапка-навигация + CTA на
         # платформу + футер об источниках. React-страницы — нет (гидратация
         # заменит #root своим layout'ом). Locale-aware: EN chrome на apex.
-        body = f"{_ssr_chrome_header(canonical_path)}\n{body}\n{_ssr_chrome_footer()}"
+        body = f"{_ssr_chrome_header(canonical_path)}\n{body}\n{_ssr_chrome_footer(assets)}"
     else:
         spa_hide = _SPA_SSR_HIDE_SCRIPT
         if "seo-platform-nav" not in body:

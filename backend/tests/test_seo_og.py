@@ -747,9 +747,12 @@ def test_build_document_year_page_excludes_app(client):
     assert "modulepreload" not in html
     assert "/assets/behavior-standalone.js" in body
     # React-бандл (хэшированный index-*.js) в чистый SSR не попадает.
-    body_without_collector = body.replace(
-        '<script type="module" src="/assets/behavior-standalone.js" defer></script>', "")
-    assert "module" not in body_without_collector
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(body, "html.parser")
+    modules = soup.find_all("script", type="module")
+    assert len(modules) == 1
+    assert modules[0]["src"].startswith("/assets/behavior-standalone.js?v=")
 
 
 def test_ssr_chrome_topnav_keeps_hub_deep_links():

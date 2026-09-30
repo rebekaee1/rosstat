@@ -12,6 +12,7 @@ const baseTime = Date.UTC(2026, 8, 30, 13, 44, 20);
 const box = (top, bottom) => ({ left: 0, right: 339, top, bottom });
 const events = () => fetchMock.mock.calls.flatMap(([, init]) => JSON.parse(init.body).events);
 const matching = (type) => events().filter((event) => event.t === type);
+const settleDelivery = async () => { for (let i = 0; i < 12; i += 1) await Promise.resolve(); };
 const pointer = (type, target, trusted = true) => handlers.get(type)({ type, target, isTrusted: trusted,
   timeStamp: Date.now() - baseTime, pointerId: 1, pointerType: 'touch', changedTouches: [{ identifier: 1 }] });
 const capturedClick = (target) => handlers.get('click')({ type: 'click', target, isTrusted: true,
@@ -36,7 +37,7 @@ beforeEach(() => {
     constructor(callback) { this.callback = callback; observer = this; }
     observe() {} unobserve() {} disconnect() {}
   });
-  fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 });
+  fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ accepted: true }) });
   vi.stubGlobal('fetch', fetchMock);
   vi.spyOn(navigator, 'sendBeacon', 'get').mockReturnValue(undefined);
   handlers = new Map();
@@ -113,7 +114,7 @@ describe('browser evidence integration', () => {
       inp_reported_target: 'button[data-fe-interaction-action=accept-all]' });
   });
 
-  it('excludes cookie occlusion and focus loss, while retaining one clock across flushes', () => {
+  it('excludes cookie occlusion and focus loss, while retaining one clock across flushes', async () => {
     document.body.innerHTML = '<section data-block="chart"></section><aside data-analytics-overlay="cookie-consent"><button data-fe-interaction-action="accept">Хорошо</button></aside>';
     const block = document.querySelector('section');
     const overlay = document.querySelector('aside');
@@ -136,6 +137,7 @@ describe('browser evidence integration', () => {
     document.dispatchEvent(new Event('visibilitychange'));
     const first = matching('block_view')[0];
     expect(first).toMatchObject({ block: 'chart', ms: 2000, visible_ms: 2000, active_ms: 1000, visibility_version: 3 });
+    await settleDelivery();
     visibility = 'visible';
     document.dispatchEvent(new Event('visibilitychange'));
     pointer('touchstart', block);
@@ -210,11 +212,12 @@ describe('browser evidence integration', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('limits lifecycle volume and keeps untrusted input out of active time', () => {
+  it('limits lifecycle volume and keeps untrusted input out of active time', async () => {
     document.body.innerHTML = '<button data-fe-interaction-action="accept">Хорошо</button>';
     behaviorInit();
     const button = document.querySelector('button');
     for (let i = 0; i < 100; i++) { pointer('touchstart', button, false); pointer('touchend', button, false); }
+    await settleDelivery();
     vi.advanceTimersByTime(1000);
     window.dispatchEvent(new Event('pagehide'));
     expect(matching('interaction')).toHaveLength(160);
