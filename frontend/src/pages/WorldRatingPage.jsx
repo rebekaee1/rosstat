@@ -37,7 +37,7 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import WorldConceptPicker from '../components/WorldConceptPicker';
 import WorldMapConceptNote from '../components/WorldMapConceptNote';
 import { useLocale, useT } from '../i18n';
-import WorldMap from '../components/WorldMap';
+import PlanetView from '../components/PlanetView';
 import MapTimeline from '../components/MapTimeline';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
@@ -561,13 +561,14 @@ export default function WorldRatingPage() {
             )}
           </section>
 
-          <section id="chart" className="mb-5 grid scroll-mt-24 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(min(100%,24rem),0.85fr)]">
+          <section id="chart" className="mb-5 grid scroll-mt-24 gap-4">
             <div className="rounded-[1.5rem] border border-border-subtle bg-surface p-3 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
               {mapSeriesQ.isLoading ? (
                 <SkeletonBox className="aspect-[2/1] w-full rounded-2xl" />
               ) : (
                 <>
-                  <WorldMap
+                  <PlanetView
+                    initialMode="data"
                     countries={mapCountries}
                     valuesByCode={valuesByCode}
                     detailsByCode={detailsByCode}

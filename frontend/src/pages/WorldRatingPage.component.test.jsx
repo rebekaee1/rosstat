@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import WorldRatingPage from './WorldRatingPage';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
-vi.mock('../components/WorldMap', () => ({
+vi.mock('../components/PlanetView', () => ({
   default: vi.fn(() => <div data-testid="world-map-stub">map</div>),
 }));
 
@@ -444,7 +444,7 @@ describe('WorldRatingPage', () => {
 
   it('переводит карту в текущее направление сортировки (colorDirection)', async () => {
     mockApiGet(ratingMocks());
-    const WorldMap = (await import('../components/WorldMap')).default;
+    const WorldMap = (await import('../components/PlanetView')).default;
 
     renderPage(
       <WorldRatingPage />,

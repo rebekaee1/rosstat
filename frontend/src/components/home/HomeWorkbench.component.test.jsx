@@ -3,7 +3,7 @@ import { screen, waitFor } from '@testing-library/react';
 import HomeWorkbench from './HomeWorkbench';
 import { renderPage, mockApiGet } from '../../test/renderPage';
 
-vi.mock('../WorldMap', () => ({
+vi.mock('../PlanetView', () => ({
   default: () => <div data-testid="world-map-stub">map</div>,
 }));
 vi.mock('../MapTimeline', () => ({

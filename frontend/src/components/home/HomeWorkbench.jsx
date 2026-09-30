@@ -35,20 +35,20 @@ import HomeDataScope from './HomeDataScope';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
 
-const loadWorldMap = () => import('../WorldMap');
-const WorldMap = lazy(loadWorldMap);
+const loadPlanetView = () => import('../PlanetView');
+const PlanetView = lazy(loadPlanetView);
 const MapTimeline = lazy(() => import('../MapTimeline'));
 
 /**
- * true после первого кадра: карта (SVG ~250 стран + d3-geo) монтируется
+ * true после первого кадра: планета монтируется
  * низкоприоритетным transition уже после первой отрисовки hero/поиска,
- * чтобы не удлинять первую длинную задачу. Чанк карты при этом начинает
- * качаться сразу. Плейсхолдер того же размера — без CLS.
+ * чтобы не удлинять первую длинную задачу. Чанк интерфейса начинает
+ * качаться сразу; плейсхолдер резервирует место под сцену и карточку.
  */
 function useAfterFirstPaint() {
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    loadWorldMap().catch(() => {});
+    loadPlanetView().catch(() => {});
     let timer = null;
     const raf = typeof window.requestAnimationFrame === 'function'
       ? window.requestAnimationFrame(() => {
@@ -238,17 +238,13 @@ export default function HomeWorkbench({ ratingConcepts }) {
           </ApiRetryBanner>
         )}
 
-        {/*
-          Карта задаёт высоту; рейтинг на lg абсолютен по её кромкам —
-          общая нижняя граница, хвост списка скроллится внутри, ничего ниже.
-        */}
         <div className="relative">
-          <div className="min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4 lg:ml-[calc(18rem+1.25rem)]">
+          <div className="min-w-0 overflow-hidden rounded-2xl border border-border-subtle bg-surface p-2.5 sm:p-4">
             {!mapMounted ? (
-              <SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />
+              <SkeletonBox className="h-[44rem] w-full rounded-2xl sm:h-[40rem]" />
             ) : (
-              <Suspense fallback={<SkeletonBox className="h-[16rem] w-full rounded-2xl sm:h-[28rem]" />}>
-                <WorldMap
+              <Suspense fallback={<SkeletonBox className="h-[44rem] w-full rounded-2xl sm:h-[40rem]" />}>
+                <PlanetView
                   countries={mapCountries}
                   valuesByCode={valuesByCode}
                   detailsByCode={detailsByCode}
@@ -274,7 +270,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
             )}
           </div>
 
-          <div className="relative z-10 mt-4 flex max-h-[22rem] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3 lg:absolute lg:inset-y-0 lg:left-0 lg:mt-0 lg:max-h-none lg:w-[18rem]">
+          <div className="relative z-10 mt-4 flex max-h-[24rem] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border-subtle bg-obsidian-light/40 px-3.5 py-3">
             <div className="shrink-0 text-[10px] font-mono uppercase tracking-[0.16em] text-champagne">
               {t('home.map.rating')}
             </div>
@@ -298,7 +294,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                 </div>
               </div>
             )}
-            <ol className="mt-2 min-h-0 flex-1 space-y-0.5 overflow-y-auto overscroll-contain">
+            <ol className="mt-2 grid min-h-0 flex-1 gap-x-6 gap-y-1 overflow-y-auto overscroll-contain sm:grid-cols-2 lg:grid-cols-3">
               {ranking.length === 0 && mapDataPending && (
                 <li className="space-y-1.5 py-1" aria-hidden="true">
                   <SkeletonBox className="h-4 w-full rounded" />
