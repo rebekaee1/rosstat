@@ -28,6 +28,8 @@ GENERATED = {
     "docs/code-review/coverage.json", "docs/code-review/reviews.jsonl",
     "docs/code-review/javascript-symbols.json", "docs/code-review/index.html",
     "docs/code-review/architecture-knowledge.json",
+    "docs/mechanism-inventory.json", "docs/mechanism-inventory.md",
+    "docs/client-mechanism-inventory.json", "docs/client-mechanism-inventory.md",
 }
 
 
@@ -107,7 +109,7 @@ def refresh(manifest: dict, assertions: dict) -> dict:
             row["body_reviewed_in_this_pass"] = False
             row["current_delta_reviewed_in_this_pass"] = False
             row.update({key: assertion[key] for key in (
-                "review_status", "body_reviewed_in_this_pass", "classification"
+                "review_status", "body_reviewed_in_this_pass", "current_delta_reviewed_in_this_pass", "classification"
             ) if key in assertion})
             row["review_basis"] = deepcopy(assertion)
         elif name in GENERATED or row.get("classification") == "generated":

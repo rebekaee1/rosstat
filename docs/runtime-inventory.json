@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Read-only dated runtime observations. server/local sections retain the full 2026-09-27 snapshot; followup_observations link narrower 2026-09-30 checks. No credentials/user rows/private keys. Healthy is not proof of all jobs, capacity or full failover.",
+  "description": "Read-only dated runtime observations. server/local retain full2026-09-27 snapshot; followup observations link30.09 resource/backup checks plus independent mechanism/config/full payload attestation and isolated bounded app/startup proof. No credentials/user rows/private keys. Capacity/full failover not inferred.",
   "local_source_commit": "cf7daf1f954f3c04187fe2decc20b59ad7241bab",
   "server": {
     "observed_utc": "2026-09-27T12:24:17.446240+00:00",
@@ -6766,13 +6766,12 @@
     "image_matches_current_main": "not established; images created 2026-09-26, newer main commits need rebuild"
   },
   "unverified": [
-    "Provider physical CPU/storage model and SLA",
-    "Offsite mechanism outside inspected pg-backup path",
-    "Sustained peak throughput and simultaneous container peak memory",
-    "Every image file matches server Git (11 selected paths checked)",
-    "Running Vite process effective proxy environment",
-    "Application acceptance on restored database, original owners/ACL replay, full failover and target RTO/RPO",
-    "Next scheduled local launchd backup delivery after 2026-09-30 repair"
+    "Provider control-plane/physicalCPU/storage IOPS/SLA/external backups/firewall: explicitaccesslimit OPS-U01",
+    "Sustained mixed-load capacity, simultaneous peakmemory/p95/p99 and fullRTO: unmeasured OPS-U03",
+    "Business-approved RPO/RTO targets: unaccepteddecision OPS-U04",
+    "Full failover including original RedisAOF/ClickHouseresync/browser/external OAuth/provider journey: outside bounded acceptance OPS-U05",
+    "Next scheduled locallaunchd backup delivery afterrepair: mechanism inspected/futureobservation OPS-U02",
+    "Running preexisting Vite process effective proxy: separate from isolated current config and Docker/nginx probes"
   ],
   "historical_snapshot": {
     "path": "code-review/runtime-inventory-2026-09-27.json",
@@ -6789,6 +6788,12 @@
       "observed_date_msk": "2026-09-30",
       "path": "code-review/backup-acceptance-2026-09-30.json",
       "scope": "Fresh existing full and identity backup delivery/hash checks and isolated local restore, without original owners/ACL replay or application E2E"
+    },
+    {
+      "observed_date_msk": "2026-09-30",
+      "local_main_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+      "path": "code-review/ops-mechanism-acceptance-2026-09-30.json",
+      "scope": "All160Settings and Compose services/env/activation; host loaded config/network/service/sysctl;402backendpayload SHA and264frontenddist; ownerACL+HTTP restored API/auth/nginx; clean emptyDBstartup; ownership cleanup."
     }
   ]
 }

@@ -24798,6 +24798,105 @@
     "exports": [],
     "anonymous_functions": 7
   },
+  "scripts/build-client-mechanism-inventory.mjs": {
+    "sha256": "2c21357a670d7e8565fd981177ccd895c47154cc6844dda98728630139f6533f",
+    "definitions": [
+      {
+        "name": "functionName",
+        "line": 22,
+        "end_line": 26,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "owner",
+        "line": 28,
+        "end_line": 34,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "resolveImport",
+        "line": 36,
+        "end_line": 42,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "expr",
+        "line": 48,
+        "end_line": 48,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "anchor",
+        "line": 49,
+        "end_line": 49,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ImportDeclaration",
+        "line": 52,
+        "end_line": 52,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "ExportNamedDeclaration",
+        "line": 53,
+        "end_line": 53,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "Function",
+        "line": 54,
+        "end_line": 54,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "JSXOpeningElement",
+        "line": 55,
+        "end_line": 60,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "VariableDeclarator",
+        "line": 61,
+        "end_line": 66,
+        "kind": "ObjectMethod"
+      },
+      {
+        "name": "CallExpression",
+        "line": 67,
+        "end_line": 76,
+        "kind": "ObjectMethod"
+      }
+    ],
+    "imports": [
+      {
+        "source": "node:fs",
+        "line": 3
+      },
+      {
+        "source": "node:path",
+        "line": 4
+      },
+      {
+        "source": "node:url",
+        "line": 5
+      },
+      {
+        "source": "node:module",
+        "line": 6
+      },
+      {
+        "source": "node:child_process",
+        "line": 7
+      },
+      {
+        "source": "node:crypto",
+        "line": 8
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 15
+  },
   "scripts/build-design-review.mjs": {
     "sha256": "a8cddaae00f4a24f67457903c81b8dbf443c6e61bf68daf7b4fee31af7419115",
     "definitions": [
@@ -25574,24 +25673,24 @@
     "anonymous_functions": 2
   },
   "scripts/test_project_terrain.mjs": {
-    "sha256": "9bd1be003cabf098712b6371afe5b9768fc1cebdc573aac1c6864bfe85670d69",
+    "sha256": "e67bec7eae17f652cd68a0942e5a086e8bcd18cdef3b360e0945c9c5aff5c2d0",
     "definitions": [
       {
         "name": "scrollIntoView",
-        "line": 33,
-        "end_line": 33,
+        "line": 37,
+        "end_line": 37,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "set",
-        "line": 34,
-        "end_line": 34,
+        "line": 38,
+        "end_line": 38,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "count",
-        "line": 35,
-        "end_line": 35,
+        "line": 39,
+        "end_line": 39,
         "kind": "ArrowFunctionExpression"
       }
     ],

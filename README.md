@@ -5,6 +5,7 @@
 **Точка входа в документацию (для AI-агентов и людей):** [`AGENTS.md`](AGENTS.md) — карта документации, режим работы, протокол актуализации.
 **Domain glossary и инварианты:** [`CONTEXT.md`](CONTEXT.md).
 **Рельеф всего проекта:** [`docs/project-terrain.md`](docs/project-terrain.md) — Graphify, полный Git-инвентарь и проверка актуальности.
+**Приёмка и границы полноты:** [K01–K12 по подсистемам](docs/project-knowledge-acceptance.md) · [backend inventory](docs/mechanism-inventory.md) · [client inventory](docs/client-mechanism-inventory.md) · [неизвестное и проблемы](docs/knowledge-unknowns.md).
 **Как всё связано:** [`архитектура`](docs/architecture.md) · [`контракты данных`](docs/data-contracts.md) · [`история решений`](docs/architecture-history.md).
 **Обязательный цикл при каждой задаче:** [`docs/knowledge-workflow.md`](docs/knowledge-workflow.md); рецепты владельца — [`docs/agent-recipes.md`](docs/agent-recipes.md).
 **Содержательная дельта frontend/docs 30 сентября:** [`отчёт`](docs/code-review/frontend-docs-delta-2026-09-30.md): локальный код, история и ограничения полноты.
@@ -78,7 +79,7 @@ backend `site_paths.py` и frontend `sitePaths.js`. Наличие этих пу
 ### Локально через Docker Compose
 
 ```bash
-cp .env.example .env
+test -f .env || cp .env.example .env
 docker compose up -d --build
 ```
 

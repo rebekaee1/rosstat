@@ -1,0 +1,256 @@
+{
+  "date_msk": "2026-09-30",
+  "baseline_main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+  "scope": "Local main documentation/tool collection; no push/deploy or new runtime fixes",
+  "app_test_run": {
+    "command": "./scripts/check-all.sh",
+    "exit_code": 1,
+    "log_sha256": "c30daacdd9e74d9832477b51bfb32f96ecf9d8bc6b65ad0d42df29d5498fe67d",
+    "backend": {
+      "passed": 3062,
+      "skipped": 9,
+      "warnings": 73
+    },
+    "frontend": {
+      "passed": 924,
+      "files": 112
+    },
+    "eslint": {
+      "errors": 0,
+      "warnings": 5
+    },
+    "build": "passed",
+    "first_remaining_failure": "indicator-index --check stale generated map"
+  },
+  "final_gates": {
+    "status": "passed",
+    "checks": [
+      {
+        "command": [
+          "backend/.venv/bin/python",
+          "scripts/build-indicator-index.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "indicator-index: --check OK (карта актуальна)\n"
+      },
+      {
+        "command": [
+          "backend/.venv/bin/python",
+          "scripts/audit-doc-counters.py"
+        ],
+        "exit_code": 0,
+        "output": "audit-doc-counters: OK rows=947 source=118 specs=829 manual=44 generated=785 ops=28 parsers=34 families=109\n"
+      },
+      {
+        "command": [
+          "backend/.venv/bin/python",
+          "scripts/export-page-meta.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "page-meta: --check OK\n"
+      },
+      {
+        "command": [
+          "backend/.venv/bin/python",
+          "scripts/audit-public-language.py"
+        ],
+        "exit_code": 0,
+        "output": "OK: no public-language leaks found.\n"
+      },
+      {
+        "command": [
+          "bash",
+          "scripts/check-project-knowledge.sh"
+        ],
+        "exit_code": 0,
+        "output": "AGENTS routes OK, 8860 bytes\n{\"files\": 1312, \"code_files\": 996, \"current_reviews\": 1312, \"statuses\": {\"artifact_schema_reviewed\": 83, \"asset_metadata_reviewed\": 91, \"data_schema_reviewed\": 1, \"reviewed\": 1137}, \"definitions\": 8474, \"annotated_definitions\": 8474, \"files_needing_attention\": 0}\n{\"source_files\": 405, \"routes\": 144, \"tables\": 57, \"settings\": 160, \"jobs\": 39, \"unresolved\": 0}\nHistorical semantic graph: 31 changed source fingerprints; preserved as dated evidence. Current reviews have a separate audit-code-documentation.py --check gate.\nTerrain OK: 1312 file fingerprints, 8702 file edges, generated outputs match\nOmission classification OK: 4787 preserved edges; terrain SHA current\n{\"required\": 191, \"checked\": 278, \"skipped_untracked\": 5, \"meaning\": \"Content identity only; review_status and body-read claims are not assigned or upgraded.\"}\n"
+      },
+      {
+        "command": [
+          "node",
+          "scripts/code-review-symbols.mjs",
+          "--check",
+          "--tracked-only"
+        ],
+        "exit_code": 0,
+        "output": "{\"files\":369,\"definitions\":1703,\"parse_errors\":0}\n"
+      },
+      {
+        "command": [
+          "node",
+          "scripts/build-client-mechanism-inventory.mjs",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "{\"imports\":1707,\"routes\":72,\"functions\":5376,\"hooks\":1339,\"http\":64,\"storage\":29,\"events\":105,\"jsx_handlers\":555,\"registries\":316,\"mcp_tools\":7,\"files\":351,\"parse_errors\":0}\n"
+      },
+      {
+        "command": [
+          "node",
+          "scripts/test_project_terrain.mjs"
+        ],
+        "exit_code": 0,
+        "output": "Terrain DOM: search, review filters, drilldown reset, missing review and text escaping passed\n"
+      },
+      {
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "scripts/tests",
+          "-p",
+          "test_mechanism_inventories.py"
+        ],
+        "exit_code": 0,
+        "output": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.778s\n\nOK\nLocal HTML absent (ignored artifact): use --render to view checked portable data\nTerrain OK: 0 file fingerprints, 0 file edges, generated outputs match\nTerrain stale: 0 files, 0 invalid edges, generated outputs match=False, input scope match=True; refresh structure as reported\nTerrain OK: 0 file fingerprints, 0 file edges, generated outputs match\n"
+      },
+      {
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "scripts",
+          "-p",
+          "test_code_documentation.py"
+        ],
+        "exit_code": 0,
+        "output": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.002s\n\nOK\n"
+      },
+      {
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "scripts",
+          "-p",
+          "test_knowledge_materials.py"
+        ],
+        "exit_code": 0,
+        "output": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.052s\n\nOK\nKnowledge materials check failed: noncanonical repository_path: '../other.json'\nKnowledge materials check failed: Expecting value: line 1 column 1 (char 0)\n{\"required\": 8, \"checked\": 9, \"skipped_untracked\": 0, \"meaning\": \"Content identity only; review_status and body-read claims are not assigned or upgraded.\"}\nMaterial source changed: AGENTS.md\n{\"required\": 8, \"checked\": 9, \"skipped_untracked\": 0, \"meaning\": \"Content identity only; review_status and body-read claims are not assigned or upgraded.\"}\nKnowledge materials check failed: Active materials pointer is not tracked/indexed: docs/code-review/materials-current.json\nTerrain stale: 0 files, 0 invalid edges, generated outputs match=True, input scope match=False; refresh structure as reported\nLocal HTML absent (ignored artifact): use --render to view checked portable data\nTerrain OK: 0 file fingerprints, 0 file edges, generated outputs match\nLocal HTML absent (ignored artifact): use --render to view checked portable data\nTerrain OK: 0 file fingerprints, 0 file edges, generated outputs match\n"
+      },
+      {
+        "command": [
+          "python3",
+          ".artifacts/check-knowledge-links.py"
+        ],
+        "exit_code": 0,
+        "output": "{\"checked\": 654, \"missing\": []}\n"
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check",
+          "HEAD"
+        ],
+        "exit_code": 0,
+        "output": ""
+      }
+    ],
+    "limit": "Report captures checks before final evidence-only material refresh; no application/runtime source changed afterwards."
+  },
+  "limits": [
+    "No remote CI/deploy",
+    "No universal scenario/value correctness claim",
+    "Runtime findings in knowledge-unknowns remain separate work"
+  ],
+  "map_scope_resolution": {
+    "cause": "Legacy maps enumerated nonignored untracked historical research files; generated file references also had real tracked documentation deltas. Runtime/semantic indicator fields did not change.",
+    "fix": "Default tracked/index; explicit --include-untracked optional; filesystem fallback labelled",
+    "codes": 947,
+    "changed_records": 189,
+    "changed_fields": [
+      "files"
+    ],
+    "summary_and_completeness_unchanged": true,
+    "regression": "Both generators tested against temporary Git index and explicit untracked option",
+    "excludes_foreign_materials_from_main": true
+  },
+  "refresh_order_resolution": {
+    "cause": "Refresh moved input_scope into serialized JSON header but rendered original insertion order; existing HTML byte check correctly rejected it.",
+    "fix": "Refresh renders json.loads of the just saved snapshot; --refresh/--render/--check share key order",
+    "regression": "Actual three refresh artifact writes extracted via AST, fixture with differing memory/saved key order, no Graphify/network",
+    "targeted_tests": 8,
+    "outcome": "passed"
+  },
+  "publication_review": {
+    "reviewer": "ops specialist, read-only",
+    "scope": "76 changed paths at preceding captured diff; index plus working tree,152blobs/~92.5MB. Later scoped generator/AST regression patches reviewed by root.",
+    "production_secret_or_private_raw_content_found": false,
+    "tor_credentials_redacted": true,
+    "excluded_private_locations": [
+      ".artifacts",
+      "assets",
+      "external originals"
+    ],
+    "limit": "Keyword and contextual review; not byte comparison against private originals."
+  },
+  "final_source_counts": {
+    "files": 1312,
+    "code_files": 996,
+    "current_reviews": 1312,
+    "statuses": {
+      "artifact_schema_reviewed": 83,
+      "asset_metadata_reviewed": 91,
+      "data_schema_reviewed": 1,
+      "reviewed": 1137
+    },
+    "definitions": 8474,
+    "annotated_definitions": 8474,
+    "files_needing_attention": 0
+  },
+  "runtime_change_scope": {
+    "backend_app": false,
+    "frontend_runtime": false,
+    "migrations": false,
+    "compose_or_proxy_config": false,
+    "production": false,
+    "changes": "Documentation, knowledge tools/gates, scoped test fixtures and .env.example comments"
+  },
+  "completed_app_test_run": {
+    "command": "./scripts/check-all.sh",
+    "exit_code": 0,
+    "log_sha256": "a2040329a0aac7a4d5ae38cd7b61da751522bdfaa73b1c14c96ada29f784d581",
+    "backend": {
+      "passed": 3062,
+      "skipped": 9,
+      "warnings": 73,
+      "seconds": 67.57
+    },
+    "frontend": {
+      "passed": 924,
+      "files": 112
+    },
+    "eslint": {
+      "errors": 0,
+      "warnings": 5
+    },
+    "vite_build": "passed",
+    "large_chunk_warnings_preserved": true,
+    "map_guards": "passed",
+    "public_language_audit": "passed",
+    "terminal_result": "ALL CHECKS OK",
+    "limit": "Local tests/build/gates, not remote CI/deploy or every runtime/value scenario."
+  },
+  "clean_copy": {
+    "passed": true,
+    "exported_index_tree": "ea1ff9be5a8f0e66b14163088edccf5b5a056d2c",
+    "evidence": "docs/code-review/clean-copy-acceptance-2026-09-30.json",
+    "checks": 4,
+    "new_regressions": {
+      "discovered": 8,
+      "skipped_missing_babel": 1,
+      "passed": 7
+    },
+    "previous_stage_preserved": true
+  },
+  "completion_status": "collection_documentation_and_local_acceptance_complete_with_declared_limits"
+}

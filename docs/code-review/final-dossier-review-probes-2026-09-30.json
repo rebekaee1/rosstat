@@ -1,0 +1,32 @@
+{
+  "basis": "Actual terrain functions; temporary files and identical inventory double; no application/network imports.",
+  "source_sha256": "c57e8fa946b8a6ac359071ceb367f5ae177c028cf0447ca99774d3616ff6d72f",
+  "tests_run": 4,
+  "failures": 0,
+  "errors": 0,
+  "observations": [
+    {
+      "case": "clean_clone_html_absent",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "stdout": "Local HTML absent (ignored artifact): use --render to view checked portable data\nTerrain OK: 1312 file fingerprints, 8702 file edges, generated outputs match"
+    },
+    {
+      "case": "backend_mcp_fallback",
+      "expected": 7,
+      "actual": 7,
+      "source_current": true
+    },
+    {
+      "case": "client_mcp_deduplication",
+      "expected": 7,
+      "actual": 7
+    },
+    {
+      "case": "present_stale_html",
+      "expected_nonzero": true,
+      "actual_exit": 1,
+      "stdout": "Terrain stale: 0 files, 0 invalid edges, generated outputs match=False, input scope match=True; refresh structure as reported"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "date": "2026-09-30",
+  "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+  "evidence_json_sha256": "d3637ae305eaa2366ebc2d74381f373a6a044ad548d4181cda8c66577ec6f637",
+  "preserve_prior_evidence": true,
+  "areas": [
+    {
+      "location": "/Users/iprofi/tradingeconomics/rosstat-docs",
+      "review_status": "historical_document_delta_read_exact_copies_distinguished",
+      "scope": "Only listed external document paths; not all1248 runtime files",
+      "record_set": "external_documents"
+    },
+    {
+      "location": "/Users/iprofi/tradingeconomics/rosstat-analysis",
+      "review_status": "historical_document_delta_read_exact_copies_distinguished",
+      "scope": "Only listed external document paths; not all625 runtime files",
+      "record_set": "external_documents"
+    },
+    {
+      "location": "/Users/iprofi/tradingeconomics/rosstat-wip-snapshots",
+      "review_status": "doc_patch_member_and_visual_review",
+      "scope": "Documentary members/fixture schemas/49 archive images; code/AST/bundle not full-body accepted",
+      "record_set": "archives"
+    },
+    {
+      "location": "/Users/iprofi/tradingeconomics/rosstat-branch-backups",
+      "review_status": "doc_patch_member_and_visual_review_bundle_metadata_only",
+      "scope": "All nonempty textpatches and BRANCH_AUDIT; no restore/current apply",
+      "record_set": "archives"
+    },
+    {
+      "location": "/Users/iprofi/.cursor/projects/Users-iprofi-tradingeconomics-rosstat/agent-transcripts",
+      "review_status": "all_user_messages_scanned_selected_owner_decisions_reviewed",
+      "scope": "1373 files exact SHA plus dedup line anchors; no rawprivate copy/no assistant/tool authority",
+      "record_set": "cursor_scan"
+    },
+    {
+      "location": "linked formats from Cursor messages",
+      "review_status": "per_source_status_not_blanket_body_acceptance",
+      "scope": "Source-only notebooks, actual contact visual reading, derivativeTXT, rootPDF/audio, unavailable sources and partial linked-text scans",
+      "record_set": "linked_materials"
+    }
+  ],
+  "substantive_linked_plan_handoff": [
+    {
+      "path": "/Users/iprofi/.cursor/plans/dual-host_indexing_plan_67fe793c.plan.md",
+      "sha256": "64ed0095f5d40b359546c5f7d7dcf6f9168f989675c5c5d858ddcb4a7bd16ccf",
+      "bytes": 14331,
+      "status": "remaining_root_handoff"
+    },
+    {
+      "path": "/Users/iprofi/.cursor/plans/forecast_economy_v2_2205b526.plan.md",
+      "sha256": "58872709efcb7839b39f878fccb2fca34eab148acb7c94b231854a688adf5caf",
+      "bytes": 45807,
+      "status": "remaining_root_handoff"
+    },
+    {
+      "path": "/Users/iprofi/.cursor/plans/frontend_7_improvements_6e93d49e.plan.md",
+      "sha256": "4a5a2d258c951b4d43a812b7285ff78d09a95a9e5474fa81b4683ffa5726b19a",
+      "bytes": 16296,
+      "status": "remaining_root_handoff"
+    },
+    {
+      "path": "/Users/iprofi/.cursor/projects/Users-iprofi-tradingeconomics-rosstat/uploads/_D0_BF_D0_B5_D1_80_D0_B5_D0_B4_D0_B5_D0_BB_D0_BA_D0_B0_bi_2.1_1f5e393b.plan-L1-L210-0.md",
+      "sha256": "b2f6731964783a3d031335bc0e142d7ee928e42a12e28487ba00de773719667e",
+      "bytes": 42398,
+      "status": "remaining_root_handoff"
+    },
+    {
+      "path": "/Users/iprofi/.cursor/projects/Users-iprofi-tradingeconomics-rosstat/uploads/analytics-os_71a51ec5.plan-L1-L921-0.md",
+      "sha256": "a437e4b0fb7e239f1513fc696d4783acadd18df8e628fd9a6353963ff6625305",
+      "bytes": 48061,
+      "status": "completed_material_reviewer"
+    }
+  ]
+}

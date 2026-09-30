@@ -1,6 +1,6 @@
 # Enterprise resilience — практики и инварианты
 
-**Last updated:** 2026-09-27 (сверка backend/data/ops с HEAD `b684290`; статусы ETL, календаря, кэша и восстановление подтверждены локальным кодом, не живой приёмкой продакшена).
+**Last updated:** 2026-09-30 (ops-механизмы main `05302ff`: owners/ACL restore, bounded HTTP auth/API/nginx и clean startup; source/runtime host config различия датированы). Прежняя сверка27.09 с `b684290` сохраняется в истории; проверки не означают новый production release.
 
 **Previous:** 2026-09-20 (локальный пакет `fix/history-access-reliability`: история, per-IP доступ, архив ассетов и происхождение метрик Пульса; прод не принят). Ранее 2026-07-06 (CTO-аудит, Волны 1/4: наблюдаемость и операционка выросли — реальный readiness `/health/ready` (БД + оба Redis + планировщик + возраст ETL как мягкая деградация), APScheduler-listener EVENT_JOB_ERROR/MISSED → Telegram, staleness-монитор индикаторов (10:00 МСК), алерты derived/retrain/backup-heartbeat/lockout/5xx-spike/rate-limit-fail-open, 5xx-счётчики в `/metrics`; deploy.sh с автооткатом на SHA-теги; Redis: maxmemory + выделенный `redis-state` (noeviction+AOF) для сессий; распределённые локи мутационных джобов (state-Redis SET NX); prod-assertions при `debug=false` (warn-режим); body-limit/таймауты на nginx и Caddy. Ранее 2026-05-22: nginx no-cache always на SSR routes.)
 **Part of:** [`../AGENTS.md`](../AGENTS.md), [`../CONTEXT.md`](../CONTEXT.md) (раздел «Operational invariants and traps»).
@@ -19,7 +19,7 @@
 - **Пустой ряд / no data** — нет общей схемы для всех контекстов: федеральный `/indicators/{code}/data` отдаёт `{"indicator", "count", "data"}` с пустым `data`; world `/indicators/{slug}/{code}/data` отдаёт `points` и `forecast`; региональный месячный маршрут возвращает 404 при отсутствии точек. Семантика — в [`data-contracts.md`](data-contracts.md).
 - **`/api/docs`, `/api/redoc`, `/api/openapi.json`** — гейтированы через `settings.debug`. На проде (`DEBUG=false`) Swagger физически отключён в FastAPI-конструкторе (`docs_url=None`). Не оставлять `DEBUG=true` на проде.
 - **Backend Sentry** — **не подключён** (нет ни SDK в `requirements.txt`, ни init в `main.py`). Aspirational — добавить при первом инциденте, требующем трейсинга. Сейчас единственный backend-канал — JSON-логи в `stdout` (формат через `JsonFormatter`, видны через `docker compose logs backend`).
-- **Telegram-алерты (`alerting.py`)** — кастомный канал для критических событий ETL и форкастов: уведомление о провале daily-job или конкретного парсера. Включается через `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` в `.env`. См. `backend/app/services/alerting.py`.
+- **Telegram-алерты (`alerting.py`)** — кастомный канал для критических событий ETL и форкастов: уведомление о провале daily-job или конкретного парсера. Включается через `RUSTATS_TELEGRAM_BOT_TOKEN` + `RUSTATS_TELEGRAM_CHAT_ID` через действующий environment mapping. См. `backend/app/services/alerting.py`.
 
 ## База данных и ETL
 
@@ -32,7 +32,7 @@
 ## Парсеры и источники
 
 - **Защита от частичной загрузки** — `BaseParser.run` откатывает текущую транзакцию при исключении, затем записывает `fetch_log.status="failed"` и `error_message`; факты живут в `indicator_data`. Пустой ответ ранее живого ряда получает `parsed_zero`, ожидаемо пустой — `no_new_data`, резервный источник — `fallback_used`. `records_added` и `records_updated` учитываются отдельно. `fetch_log` со статусом `running` создаётся отдельным commit до fetch, поэтому это не одна транзакция на весь аудит.
-- **Ретраи** — Rosstat-парсеры используют `requests` + явный `try/except`; CBR-парсеры — то же. Backoff не реализован централизованно, ретраи делаются повторным прогоном daily-job на следующий день.
+- **Ретраи (уточнение30.09)** — общий `http_client.create_session` использует urllib3 `Retry(total=3, backoff_factor=2)` для GET/POST и408/500/502/504;403/407/429/503 переходят direct→HTTP→SOCKS fallback без status-retry. Parser-specific Retry/timeout и прямые `requests.get` имеют собственные границы: общий client не охватывает автоматически все запросы. Повтор daily-job — дополнительный job-level механизм, не единственный retry.
 - **`is_active=false`** — выключение парсера для индикатора без удаления данных. ETL job их пропускает.
 - **`is_listed=false`** — федеральный индикатор скрыт из обычного листинга категорий, но `/indicators?include_unlisted=true` отдаёт его глобальному поиску. Детальный маршрут доступен по коду. Перед скрытием проверить reachability через sibling/variant/frequency/bespoke (anti-orphan контракт в `AGENTS.md`).
 - **Minfin in-place CSV content update (trap)** — `minfin.gov.ru/opendata/7710168360-fedbud_month/` публикует CSV под стабильным URL `data-YYYYMMDDTHHMM-structure-...csv`. Timestamp в имени = **дата создания паспорта набора**, не snapshot content. Минфин **дополняет content того же URL** новыми месяцами в течение дня без смены URL. Симптом, который мы наблюдали 5-11 мая 2026: `daily_update_job` в 03:00 MSK скачивал CSV → `bulk_upsert` возвращал `(0, 0)` → status `no_new_data`; через 12-14 часов тот же CSV отдавал уже свежий контент с новым месяцем. **Контрмеры**: 1) `late_minfin_etl_job` (APScheduler, 15:00 MSK ежедневно) — second pass через `run_etl_for_parser_type("minfin_budget_csv")`; 2) `minfin_budget_parser` логирует `last_parsed_date` + `last_db_date` + `len(points)` (см. `MinfinBudgetParser._fetch_and_parse`) — для последующих аномалий легче ловить разрыв через `docker compose logs backend | grep "Minfin budget"`. См. `docs/data_sources.md::budget-*`.
@@ -51,6 +51,21 @@
 - **Frontend Sentry** — `@sentry/react` подключён в `frontend/src/main.jsx`. DSN — env-переменная `VITE_SENTRY_DSN`. Backend Sentry — отдельная задача (см. выше).
 - **SEO single-source** — `__spa-index.html` собирается на каждый запрос: SSR-meta в `<head>` для ботов и людей; legacy локальные `seo.js` константы удалены. См. ADR-0003.
 
+### Effective окружение30.09
+
+[Ops-досье](code-review/ops-mechanism-acceptance-2026-09-30.md) связывает source, image,
+host units и limits. CPU quotas суммарно5 при общем4vCPU, PG/Redis/host дополнительно
+конкурируют; RAM limits7616MiB оставляют≈325MiB при одновременном максимуме. App pools73,
+ordinary budget97, но app-role rustats superuser и может занять reserved slots. Work_mem
+расходуется по операциям/планам, а не фиксированно по соединениям; capacity не выведена из
+этой арифметики. Host nginx logrotate — всё ещё14/compress/copytruncate, source —
+7/nocompress/rename+USR1. Caddy active config и402backend payload SHA аттестованы отдельно.
+
+Host HTTP CONNECT→Tor bridge вне Git использует hardcoded Basic credential и логирует
+headers вместе с Proxy-Authorization. Это подтверждённый дефект; его исправление/rotation
+не выполнялись при read-only сборе. Provider backup/SLA/control-panel остаются access limit,
+а capacity/RTO — unmeasured properties. Санитизированный snapshot/точные источники — в JSON.
+
 ## Производительность
 
 - **Cache (Redis)** — `app/core/cache.py` строит инвалидируемые ключи через `versioned_key(ns, rest)` и `bump_namespaces()`; федеральные detail/data/list, мировые карточки и SSR используют разные namespace. `deploy.sh` удаляет только SSR HTML через `SCAN` + `UNLINK`; версии namespace не сбрасывает. Есть отдельный state Redis для сессий/локов и durable-копии каталога стран. Локальная main хранит поколение `world-catalog` в state Redis и использует отдельный `g2`-ключ; механизм описан в [`data-contracts.md`](data-contracts.md#параллельные-изменения-рабочего-дерева). Для ручной SQL-правки составить адресную инвалидацию по конкретным consumer'ам и проверить холодный ответ.
@@ -67,7 +82,7 @@
 
 ## Восстановление и наблюдаемость
 
-**Статус проверки 2026-09-30:** [свежий существующий dump доставлен на Mac и восстановлен](code-review/backup-acceptance-2026-09-30.md) в изолированном PostgreSQL, отдельно проверен identity SQL. Размеры/SHA-256 совпали с сервером; full restore 154,885 с, все constraints валидны, identity без сирот. Исходный [снимок 27.09](code-review/runtime-inventory-2026-09-27.json), когда restore ещё не проводился, сохранён; [повторная ops-сверка](code-review/runtime-observation-2026-09-30.json) и [runtime-inventory.json](runtime-inventory.json) разделяют даты. Cron backup — 04:00 UTC (07:00 МСК). S3 bucket/endpoint и aws CLI по-прежнему не настроены; внешние бэкапы провайдера не проверялись. Owner/ACL replay, application E2E на восстановленной БД, полный failover и бизнес-цели RTO/RPO остаются открытыми; время pg_restore не подменяет RTO.
+**Статус проверки 2026-09-30:** [свежий существующий dump доставлен на Mac и восстановлен](code-review/backup-acceptance-2026-09-30.md) в изолированном PostgreSQL, отдельно проверен identity SQL. Размеры/SHA-256 совпали с сервером; full restore 154,885 с, все constraints валидны, identity без сирот. Исходный [снимок 27.09](code-review/runtime-inventory-2026-09-27.json), когда restore ещё не проводился, сохранён; [повторная ops-сверка](code-review/runtime-observation-2026-09-30.json) и [runtime-inventory.json](runtime-inventory.json) разделяют даты. Cron backup — 04:00 UTC (07:00 МСК). S3 bucket/endpoint и aws CLI по-прежнему не настроены; внешние бэкапы провайдера не проверялись. Первый сценарий не проверял owner/ACL/application. [Поздняя проверка30.09](code-review/ops-mechanism-acceptance-2026-09-30.md) добавила restore без подавления owner/ACL (182,967с, синтетический исходный role rustats, nondefault ACL0), HTTP API/email auth/CSRF/state-session и current nginx SSR/assets на restored DB. Полный browser/external-provider/AOF/CH failover и бизнес-цели RTO/RPO остаются вне этих bounded probes; время pg_restore не подменяет RTO.
 
 - **Что является исходным состоянием.** Postgres хранит ряды, пользователей и аналитику; полный `.dump` — основной путь восстановления, `.identity.sql.gz` — отдельный data-only запас для пяти identity-таблиц. Российский годовой региональный контекст дополнительно воспроизводится из версионированного артефакта `backend/app/data/regional/` через `seed_regional.py`. ClickHouse — вторичная копия Postgres, восстанавливается через resync; том `clickhouse_data` не входит в `pg_dump`. Сессии, lockout и локи живут в state Redis (в compose отдельный `redis-state` с AOF, если `RUSTATS_STATE_REDIS_URL` указывает на него); не подменять восстановление Postgres очисткой state Redis.
 - **Что доказывает heartbeat.** `pg-backup.sh` сначала создаёт оба файла, при настроенном S3 загружает их, удаляет старые локальные файлы, затем шлёт зелёное Telegram-сообщение и пытается записать `fe:ops:pg_backup_last_ok` в state Redis. Отказ записи heartbeat только предупреждает. `/health/ready` выводит устаревший существующий heartbeat как мягкую деградацию; полностью отсутствующий heartbeat её не включает, а 503 даёт при отказе БД/Redis/планировщика; heartbeat не проверяет читаемость dump и полноту offsite-копии. Если `OFFSITE_S3_BUCKET` задан, а `aws` отсутствует, текущий скрипт посылает жёлтое предупреждение, но всё равно может послать зелёное сообщение и завершиться успешно. Это **статический пробел сигнала**. Отдельный runtime-снимок подтверждает отсутствие настройки именно S3-пути этого скрипта; он не исследует внешнюю систему бэкапов провайдера. Источники: `scripts/pg-backup.sh:62-115`, `backend/app/api/system.py:74-174`, `backend/tests/test_backup_readiness.py`.

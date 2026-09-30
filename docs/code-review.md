@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `972579f0b95b70d0ac8d4293331cd8d18c2521fe`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `05302ff1c4dbe104850116e6206d168ec4fa91d3`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1301 |
-| Код, шаблоны и стили | 991 |
-| Актуальные рецензии без пропусков guard | 1301 |
-| Именованные определения Python/JS: с аннотацией / всего | 8413 / 8413 |
+| Файлы в явно определённом scope | 1312 |
+| Код, шаблоны и стили | 996 |
+| Актуальные рецензии без пропусков guard | 1312 |
+| Именованные определения Python/JS: с аннотацией / всего | 8474 / 8474 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -733,6 +733,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/architecture-knowledge.json](../docs/architecture-knowledge.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/architecture.md](../docs/architecture.md) | reviewed | 0/0 | актуально |
 | [docs/backlog.md](../docs/backlog.md) | reviewed | 0/0 | актуально |
+| [docs/client-mechanism-inventory.json](../docs/client-mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/client-mechanism-inventory.md](../docs/client-mechanism-inventory.md) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/code-review-findings.md](../docs/code-review-findings.md) | reviewed | 0/0 | актуально |
 | [docs/data-contracts.md](../docs/data-contracts.md) | reviewed | 0/0 | актуально |
 | [docs/data_sources.md](../docs/data_sources.md) | reviewed | 0/0 | актуально |
@@ -776,9 +778,13 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/indicator-family-playbook.md](../docs/indicator-family-playbook.md) | reviewed | 0/0 | актуально |
 | [docs/indicator-index.json](../docs/indicator-index.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/indicator-index.md](../docs/indicator-index.md) | reviewed | 0/0 | актуально |
+| [docs/knowledge-unknowns.md](../docs/knowledge-unknowns.md) | reviewed | 0/0 | актуально |
 | [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | reviewed | 0/0 | актуально |
+| [docs/mechanism-inventory.json](../docs/mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/missed_data_audit.md](../docs/missed_data_audit.md) | reviewed | 0/0 | актуально |
 | [docs/pravki-21-reanalysis.md](../docs/pravki-21-reanalysis.md) | reviewed | 0/0 | актуально |
+| [docs/project-knowledge-acceptance.md](../docs/project-knowledge-acceptance.md) | reviewed | 0/0 | актуально |
 | [docs/research/_fpsr_raw/agent01.json](../docs/research/_fpsr_raw/agent01.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/_fpsr_raw/agent02.json](../docs/research/_fpsr_raw/agent02.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/_fpsr_raw/agent03.json](../docs/research/_fpsr_raw/agent03.json) | artifact_schema_reviewed | 0/0 | актуально |
@@ -804,7 +810,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/turkey-official-sources.xlsx](../docs/research/turkey-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/uk-official-sources.xlsx](../docs/research/uk-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/usa-official-sources.xlsx](../docs/research/usa-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
-| [docs/runtime-inventory.json](../docs/runtime-inventory.json) | data_schema_reviewed | 0/0 | актуально |
+| [docs/runtime-inventory.json](../docs/runtime-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/site-inventory.json](../docs/site-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/traffic-platform-2026-09-10.md](../docs/traffic-platform-2026-09-10.md) | reviewed | 0/0 | актуально |
 | [docs/verification/us-eu-source-audit-2026-09-24.md](../docs/verification/us-eu-source-audit-2026-09-24.md) | reviewed | 0/0 | актуально |
@@ -1270,14 +1276,17 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/audit_world_lib.py](../scripts/audit_world_lib.py) | reviewed | 20/20 | актуально |
 | [scripts/backfill-keyrate-history.py](../scripts/backfill-keyrate-history.py) | reviewed | 2/2 | актуально |
 | [scripts/backfill_housing_historical.py](../scripts/backfill_housing_historical.py) | reviewed | 2/2 | актуально |
+| [scripts/build-client-mechanism-inventory.mjs](../scripts/build-client-mechanism-inventory.mjs) | reviewed | 11/11 | актуально |
 | [scripts/build-design-review.mjs](../scripts/build-design-review.mjs) | reviewed | 17/17 | актуально |
 | [scripts/build-indicator-index.py](../scripts/build-indicator-index.py) | reviewed | 18/18 | актуально |
-| [scripts/build-project-terrain.py](../scripts/build-project-terrain.py) | reviewed | 11/11 | актуально |
+| [scripts/build-mechanism-inventory.py](../scripts/build-mechanism-inventory.py) | reviewed | 24/24 | актуально |
+| [scripts/build-project-terrain.py](../scripts/build-project-terrain.py) | reviewed | 12/12 | актуально |
 | [scripts/build-rid-listing.py](../scripts/build-rid-listing.py) | reviewed | 7/7 | актуально |
 | [scripts/build-us-bea-catalog.py](../scripts/build-us-bea-catalog.py) | reviewed | 5/5 | актуально |
 | [scripts/catalog-harvest.py](../scripts/catalog-harvest.py) | reviewed | 17/17 | актуально |
 | [scripts/check-all.sh](../scripts/check-all.sh) | reviewed | 0/0 | актуально |
 | [scripts/check-project-knowledge.sh](../scripts/check-project-knowledge.sh) | reviewed | 0/0 | актуально |
+| [scripts/classify-graph-omissions.py](../scripts/classify-graph-omissions.py) | reviewed | 5/5 | актуально |
 | [scripts/code-review-symbols.mjs](../scripts/code-review-symbols.mjs) | reviewed | 9/9 | актуально |
 | [scripts/completeness.py](../scripts/completeness.py) | reviewed | 13/13 | актуально |
 | [scripts/db-cleanup-perf-batch3.sh](../scripts/db-cleanup-perf-batch3.sh) | reviewed | 0/0 | актуально |
@@ -1313,6 +1322,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/metrika_daily_report.py](../scripts/metrika_daily_report.py) | reviewed | 56/56 | актуально |
 | [scripts/pg-backup.sh](../scripts/pg-backup.sh) | reviewed | 0/0 | актуально |
 | [scripts/project-terrain-template.html](../scripts/project-terrain-template.html) | reviewed | 0/0 | актуально |
+| [scripts/read-project-workbooks.py](../scripts/read-project-workbooks.py) | reviewed | 7/7 | актуально |
 | [scripts/rebuild-all-derived.py](../scripts/rebuild-all-derived.py) | reviewed | 1/1 | актуально |
 | [scripts/regional/append_fuel_to_artifact.py](../scripts/regional/append_fuel_to_artifact.py) | reviewed | 2/2 | актуально |
 | [scripts/regional/backfill_pril_2022_2023.py](../scripts/regional/backfill_pril_2022_2023.py) | reviewed | 2/2 | актуально |
@@ -1337,5 +1347,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/test_frontend_asset_archive.py](../scripts/test_frontend_asset_archive.py) | reviewed | 6/6 | актуально |
 | [scripts/test_knowledge_materials.py](../scripts/test_knowledge_materials.py) | reviewed | 14/14 | актуально |
 | [scripts/test_project_terrain.mjs](../scripts/test_project_terrain.mjs) | reviewed | 3/3 | актуально |
+| [scripts/tests/test_mechanism_inventories.py](../scripts/tests/test_mechanism_inventories.py) | reviewed | 13/13 | актуально |
 | [scripts/verify-data-loaded.py](../scripts/verify-data-loaded.py) | reviewed | 1/1 | актуально |
 | [scripts/verify-derived-incremental.py](../scripts/verify-derived-incremental.py) | reviewed | 5/5 | актуально |

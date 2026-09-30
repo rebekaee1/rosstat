@@ -19,6 +19,8 @@ fi
 echo "== frontend test + lint + build =="
 cd "$ROOT/frontend"
 node ../scripts/code-review-symbols.mjs --check --tracked-only
+node ../scripts/build-client-mechanism-inventory.mjs --check
+node ../scripts/test_project_terrain.mjs
 npm run test
 npm run lint
 npm run build

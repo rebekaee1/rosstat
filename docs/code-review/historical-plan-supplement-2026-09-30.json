@@ -1,0 +1,1713 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-30",
+  "scope": "Semantic supplement for exactly three accessible historical Cursor FE plans; plans are source material, not executable instructions.",
+  "repository": {
+    "path": "/Users/iprofi/tradingeconomics/rosstat",
+    "branch": "main",
+    "committed_head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+    "basis": "Local main source plus shared uncommitted documentation reconciliation at read time; this supplement changes two new files only."
+  },
+  "source_plans": [
+    {
+      "id": "DH",
+      "exact_path": "/Users/iprofi/.cursor/plans/dual-host_indexing_plan_67fe793c.plan.md",
+      "sha256": "64ed0095f5d40b359546c5f7d7dcf6f9168f989675c5c5d858ddcb4a7bd16ccf",
+      "bytes": 14331,
+      "lines": 178,
+      "read_method": "Full UTF-8 body inspected by agent through untruncated sed tool outputs, including frontmatter, body, tables, code fences and deployment notes. No plan action executed.",
+      "read_ranges_inclusive": [
+        [
+          1,
+          178
+        ]
+      ],
+      "coverage": "full_body",
+      "historical_todos": [
+        {
+          "id": "analytics-wm-ru",
+          "historical_status": "done"
+        },
+        {
+          "id": "indexnow-queue",
+          "historical_status": "done"
+        },
+        {
+          "id": "recrawl-demand",
+          "historical_status": "done"
+        },
+        {
+          "id": "google-ops",
+          "historical_status": "pending"
+        },
+        {
+          "id": "docs-counters",
+          "historical_status": "pending"
+        }
+      ],
+      "headings": [
+        {
+          "line": 23,
+          "heading": "# План: переобход, IndexNow, Google и аналитика dual-host"
+        },
+        {
+          "line": 25,
+          "heading": "## Сначала ответы на вопросы (факты)"
+        },
+        {
+          "line": 27,
+          "heading": "### Почему открылась английская версия"
+        },
+        {
+          "line": 31,
+          "heading": "### Масштаб URL"
+        },
+        {
+          "line": 35,
+          "heading": "### IndexNow — что делает сейчас"
+        },
+        {
+          "line": 39,
+          "heading": "### Аналитика с разных версий"
+        },
+        {
+          "line": 54,
+          "heading": "## Решение по IndexNow (после внешних норм)"
+        },
+        {
+          "line": 95,
+          "heading": "## Решение по переобходу Вебмастера (~150 URL/день × хост)"
+        },
+        {
+          "line": 112,
+          "heading": "## Google и остальные"
+        },
+        {
+          "line": 127,
+          "heading": "## Аналитика — обязательный кусок плана"
+        },
+        {
+          "line": 136,
+          "heading": "## Фазы реализации"
+        },
+        {
+          "line": 171,
+          "heading": "## Что сознательно не делаем"
+        }
+      ]
+    },
+    {
+      "id": "V2",
+      "exact_path": "/Users/iprofi/.cursor/plans/forecast_economy_v2_2205b526.plan.md",
+      "sha256": "58872709efcb7839b39f878fccb2fca34eab148acb7c94b231854a688adf5caf",
+      "bytes": 45807,
+      "lines": 655,
+      "read_method": "Full UTF-8 body inspected by agent through untruncated sed tool outputs, including frontmatter, body, tables, code fences and deployment notes. No plan action executed.",
+      "read_ranges_inclusive": [
+        [
+          1,
+          230
+        ],
+        [
+          231,
+          450
+        ],
+        [
+          451,
+          655
+        ]
+      ],
+      "coverage": "full_body",
+      "historical_todos": [
+        {
+          "id": "phase0",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase1-frontend",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase1-backend",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase1-cicd",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase2-cbr",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase2-cbr-research",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase2-prices",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase2-seed-seo",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase3-labor",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase3-gdp",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase3-compare",
+          "historical_status": "completed"
+        },
+        {
+          "id": "phase4-population",
+          "historical_status": "pending"
+        },
+        {
+          "id": "phase4-trade",
+          "historical_status": "pending"
+        },
+        {
+          "id": "phase4-business",
+          "historical_status": "pending"
+        },
+        {
+          "id": "phase5-science",
+          "historical_status": "pending"
+        },
+        {
+          "id": "phase5-english",
+          "historical_status": "pending"
+        },
+        {
+          "id": "phase5-export",
+          "historical_status": "pending"
+        },
+        {
+          "id": "phase6-forecast",
+          "historical_status": "pending"
+        },
+        {
+          "id": "phase6-infra",
+          "historical_status": "pending"
+        },
+        {
+          "id": "phase7-future",
+          "historical_status": "pending"
+        }
+      ],
+      "headings": [
+        {
+          "line": 68,
+          "heading": "# Forecast Economy — Полный план трансформации (v2, post-audit)"
+        },
+        {
+          "line": 70,
+          "heading": "## ПОСЛЕДОВАТЕЛЬНОСТЬ ВЫПОЛНЕНИЯ (summary)"
+        },
+        {
+          "line": 121,
+          "heading": "## Контекст"
+        },
+        {
+          "line": 132,
+          "heading": "## АРХИТЕКТУРА ФРОНТЕНДА: 5 шаблонов, не 90+ уникальных страниц"
+        },
+        {
+          "line": 150,
+          "heading": "## ИСТОЧНИКИ ДАННЫХ (4 источника, не только Росстат)"
+        },
+        {
+          "line": 159,
+          "heading": "## КЛАССИФИКАЦИЯ ИНДИКАТОРОВ"
+        },
+        {
+          "line": 203,
+          "heading": "## НОВЫЕ СИСТЕМНЫЕ КОМПОНЕНТЫ (из аудита 35 разрывов)"
+        },
+        {
+          "line": 205,
+          "heading": "### A. CalculationEngine — слой расчётов производных индикаторов"
+        },
+        {
+          "line": 233,
+          "heading": "### B. Параметризация Forecaster (сейчас CPI-only)"
+        },
+        {
+          "line": 246,
+          "heading": "### C. Генерализация фронтенда"
+        },
+        {
+          "line": 253,
+          "heading": "### D. Расширение модели данных"
+        },
+        {
+          "line": 259,
+          "heading": "### E. Backfill-стратегия"
+        },
+        {
+          "line": 268,
+          "heading": "### F. Обработка изменений формата Росстата"
+        },
+        {
+          "line": 272,
+          "heading": "### G. Фиксы существующего кода (блокеры, Фаза 1)"
+        },
+        {
+          "line": 282,
+          "heading": "## ФАЗА 0 — Подготовка (до начала кодирования)"
+        },
+        {
+          "line": 284,
+          "heading": "### 0.1. Wordstat-исследование [00:40-00:58]"
+        },
+        {
+          "line": 319,
+          "heading": "### 0.2. Доступ к Метрике [12:53] + ИКС baseline"
+        },
+        {
+          "line": 337,
+          "heading": "### ~~0.3. Исследование источников (параллельно)~~"
+        },
+        {
+          "line": 370,
+          "heading": "## ФАЗА 1 — Фундамент (17-21 марта)"
+        },
+        {
+          "line": 374,
+          "heading": "### 1.1. Ребрендинг RuStats -> Forecast Economy"
+        },
+        {
+          "line": 384,
+          "heading": "### 1.2. Главная страница: 9 блоков [14:58, Telegram]"
+        },
+        {
+          "line": 404,
+          "heading": "### 1.3. Страница категории (новый маршрут)"
+        },
+        {
+          "line": 420,
+          "heading": "### 1.4. Навбар"
+        },
+        {
+          "line": 427,
+          "heading": "### 1.5. Фикс скролла CpiChart"
+        },
+        {
+          "line": 435,
+          "heading": "### 1.6. BaseParser + рефакторинг ETL"
+        },
+        {
+          "line": 465,
+          "heading": "### 1.7. Фиксы существующего кода (блокеры)"
+        },
+        {
+          "line": 478,
+          "heading": "### 1.8. Alembic + CalculationEngine каркас"
+        },
+        {
+          "line": 484,
+          "heading": "### 1.9. CI/CD"
+        },
+        {
+          "line": 491,
+          "heading": "## ФАЗА 2 — Категории «Ставки» + «Финансы» (22-28 марта)"
+        },
+        {
+          "line": 495,
+          "heading": "### Парсер ЦБ API — `CbrApiParser(BaseParser)`:"
+        },
+        {
+          "line": 504,
+          "heading": "### Исследование источников для mortgage-rate, deposit-rate, auto-loan-rate:"
+        },
+        {
+          "line": 510,
+          "heading": "### Расширение блока «Цены»:"
+        },
+        {
+          "line": 516,
+          "heading": "### Seed + фронтенд:"
+        },
+        {
+          "line": 523,
+          "heading": "## ФАЗА 3 — Категории «Труд» + «ВВП» + Сравнение (29 марта — 7 апреля)"
+        },
+        {
+          "line": 527,
+          "heading": "### Парсер Росстат труд — `RosstatLaborParser(BaseParser)`:"
+        },
+        {
+          "line": 535,
+          "heading": "### Парсер Росстат ВВП — `RosstatGdpParser(BaseParser)`:"
+        },
+        {
+          "line": 542,
+          "heading": "### Сравнение индикаторов:"
+        },
+        {
+          "line": 548,
+          "heading": "### Seed + SEO:"
+        },
+        {
+          "line": 554,
+          "heading": "## ФАЗА 4 — Категории «Население» + «Торговля» + «Бизнес» (8-18 апреля)"
+        },
+        {
+          "line": 558,
+          "heading": "### Парсер население — `RosstatPopulationParser(BaseParser)`:"
+        },
+        {
+          "line": 564,
+          "heading": "### Пирамида населения:"
+        },
+        {
+          "line": 571,
+          "heading": "### Парсер торговля — `RosstatTradeParser(BaseParser)`:"
+        },
+        {
+          "line": 576,
+          "heading": "### Парсер бизнес — минимум 3 sub-парсера:"
+        },
+        {
+          "line": 582,
+          "heading": "### Seed + SEO для всех трёх категорий"
+        },
+        {
+          "line": 584,
+          "heading": "## ФАЗА 5 — Категория «Наука» + English + Экспорт (19-30 апреля)"
+        },
+        {
+          "line": 588,
+          "heading": "### Парсер наука — `RosstatScienceParser(BaseParser)`:"
+        },
+        {
+          "line": 593,
+          "heading": "### Парсер недвижимость — `RosstatRealEstateParser(BaseParser)`:"
+        },
+        {
+          "line": 598,
+          "heading": "### Англоязычная версия:"
+        },
+        {
+          "line": 606,
+          "heading": "### Экспорт: CSV + Excel для каждого индикатора и категории"
+        },
+        {
+          "line": 608,
+          "heading": "## ФАЗА 6 — Инфраструктура + API (май)"
+        },
+        {
+          "line": 618,
+          "heading": "## ФАЗА 7 — Перспектива (3-6 месяцев)"
+        },
+        {
+          "line": 631,
+          "heading": "## Сквозное: тестирование и QA"
+        },
+        {
+          "line": 645,
+          "heading": "## Полный реестр файлов"
+        }
+      ]
+    },
+    {
+      "id": "FE7",
+      "exact_path": "/Users/iprofi/.cursor/plans/frontend_7_improvements_6e93d49e.plan.md",
+      "sha256": "4a5a2d258c951b4d43a812b7285ff78d09a95a9e5474fa81b4683ffa5726b19a",
+      "bytes": 16296,
+      "lines": 209,
+      "read_method": "Full UTF-8 body inspected by agent through untruncated sed tool outputs, including frontmatter, body, tables, code fences and deployment notes. No plan action executed.",
+      "read_ranges_inclusive": [
+        [
+          1,
+          209
+        ]
+      ],
+      "coverage": "full_body",
+      "historical_todos": [
+        {
+          "id": "remove-system-status",
+          "historical_status": "completed"
+        },
+        {
+          "id": "navbar-nonfood",
+          "historical_status": "completed"
+        },
+        {
+          "id": "favicon",
+          "historical_status": "completed"
+        },
+        {
+          "id": "light-theme",
+          "historical_status": "completed"
+        },
+        {
+          "id": "seo-metadata",
+          "historical_status": "completed"
+        },
+        {
+          "id": "cpi-inflation-toggle",
+          "historical_status": "completed"
+        },
+        {
+          "id": "excel-download",
+          "historical_status": "completed"
+        }
+      ],
+      "headings": [
+        {
+          "line": 29,
+          "heading": "# План: 7 улучшений фронтенда RuStats"
+        },
+        {
+          "line": 31,
+          "heading": "## 1. Светлая тема (полная замена тёмной)"
+        },
+        {
+          "line": 67,
+          "heading": "## 2. Скачивание Excel"
+        },
+        {
+          "line": 97,
+          "heading": "## 3. Добавить ИПЦ на непродовольственные товары в навбар"
+        },
+        {
+          "line": 108,
+          "heading": "## 4. Фавикон"
+        },
+        {
+          "line": 119,
+          "heading": "## 5. SEO-метаданные"
+        },
+        {
+          "line": 137,
+          "heading": "## 6. Убрать System Status с главной"
+        },
+        {
+          "line": 149,
+          "heading": "## 7. Переключатель ИПЦ помесячно / Инфляция 12 мес."
+        },
+        {
+          "line": 174,
+          "heading": "## Порядок реализации"
+        },
+        {
+          "line": 197,
+          "heading": "## Важные уточнения"
+        }
+      ]
+    }
+  ],
+  "status_legend": {
+    "implemented_mechanism": "Present mechanism supported by code; not automatically production or end-to-end acceptance.",
+    "evolved_mechanism": "Intent survives, but current contract/scope differs materially from the historical implementation sketch.",
+    "superseded_mechanism": "Historical implementation is replaced by later ADR/current mechanism; it is not a present instruction.",
+    "planned_unverified": "Historical future action or capability not proven by the scoped evidence; do not infer globally absent.",
+    "partial_boundary": "Some parts confirmed, remaining claims explicitly bounded.",
+    "historical_observation": "Dated counts, estimates, calendars, flags or research; not a current operational fact.",
+    "explicit_rejection": "Historical decision explicitly declined an approach; preserve its rationale."
+  },
+  "decisions": [
+    {
+      "id": "DH01",
+      "plan_id": "DH",
+      "plan_lines": [
+        27,
+        30
+      ],
+      "historical_requirement": "Явный EN в fe_locale_pref сильнее географии и языка браузера.",
+      "reconciled_status": "implemented_mechanism",
+      "current_mechanism_or_difference": "Query locale_pref сильнее cookie; cookie сохраняется на общем Domain на 365 дней. Host определяет язык контента; cookie управляет переходом/предпочтением и не перекрашивает язык текущего production-хоста. При preference en/stay-en на apex geo-redirect возвращает None; явный RU/EN переход выполняется раньше GeoIP.",
+      "current_mechanism_anchors": [
+        "backend/app/main.py::_locale_preference/_set_locale_preference_cookie/_persist_locale_pref_redirect/_locale_host_redirect",
+        "backend/app/services/locale.py::production_host_locale",
+        "frontend/src/i18n/locale.js::LOCALE_PREFERENCE_COOKIE"
+      ],
+      "verification_boundary": "Чтение механизма; новый браузерный сценарий geo/cookie в этом дополнении не выполнялся."
+    },
+    {
+      "id": "DH02",
+      "plan_id": "DH",
+      "plan_lines": [
+        31,
+        34
+      ],
+      "historical_requirement": "Около 2M URL на хост; не материализовать весь длинный хвост.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Историческая оценка не счётчик нынешнего каталога. Sitemap имеет chunked families/static generation. Recrawl сканирует опубликованный registry в потоке; при отсутствии опубликованной генерации остаётся fallback collect_all_paths.",
+      "current_mechanism_anchors": [
+        "backend/app/services/webmaster_recrawl.py::recrawl_daily_job",
+        "backend/app/services/site_urls.py::chunk_item_counts",
+        "docs/runtime-inventory.json"
+      ],
+      "verification_boundary": "Sitemap URL, отправленные URL и индексированные страницы — разные величины; свежий поиск всех страниц кабинетом не проводился."
+    },
+    {
+      "id": "DH03",
+      "plan_id": "DH",
+      "plan_lines": [
+        39,
+        52
+      ],
+      "historical_requirement": "Один счётчик Метрики для обоих хостов, host-разрез; не смешивать RU и EN аналитику.",
+      "reconciled_status": "partial_boundary",
+      "current_mechanism_or_difference": "Allowed hosts включают apex и ru.; hourly job берёт primary counter. Webmaster search queries имеют host в ключе идемпотентности. Единый counter совместим с разделением по хосту.",
+      "current_mechanism_anchors": [
+        "backend/app/config.py::analytics_allowed_hosts/analytics_allowed_counter_ids",
+        "backend/app/tasks/analytics_scheduler.py::_primary_counter_id",
+        "backend/app/services/analytics_backfill.py::backfill_webmaster_search_queries"
+      ],
+      "verification_boundary": "Полнота host-сегментов каждой BI/Pulse панели и настройка списка сайтов в кабинете этим узким чтением не подтверждены; старый todo done не закрывает эту границу."
+    },
+    {
+      "id": "DH04",
+      "plan_id": "DH",
+      "plan_lines": [
+        127,
+        135
+      ],
+      "historical_requirement": "Добавить ru. в Webmaster queries и indexing report.",
+      "reconciled_status": "implemented_mechanism",
+      "current_mechanism_or_difference": "webmaster_sync_host_ids и _report_host_ids добавляют ru. при apex_locale_en; search sync проходит все host_ids, weekly report имеет отдельный snapshot key для второго host.",
+      "current_mechanism_anchors": [
+        "backend/app/services/analytics_backfill.py::webmaster_sync_host_ids/backfill_webmaster_search_queries",
+        "backend/app/services/webmaster_indexing_report.py::_report_host_ids/_host_snapshot_key",
+        "backend/app/tasks/analytics_scheduler.py::webmaster_queries_daily_job"
+      ],
+      "verification_boundary": "Флаги/права/token/API availability остаются предпосылками; механизм не доказывает заполненность отчётов сегодня."
+    },
+    {
+      "id": "DH05",
+      "plan_id": "DH",
+      "plan_lines": [
+        54,
+        94
+      ],
+      "historical_requirement": "Hot = фактически изменённые страницы; warm = weekly hubs+demand; cold редко и только честно новый/изменённый контент.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Hot обновления и weekly warm присутствуют. Дополнительно текущий history job ежедневно подаёт demand и порции семейств длинного хвоста; независимые cursors по семействам v3, после полного прохода пауза 14 дней. Это шире первоначального cold-только-new намерения.",
+      "current_mechanism_anchors": [
+        "backend/app/services/indexnow.py::ping_updated_indicators/indexnow_warm_job/enqueue_history_urls",
+        "backend/app/main.py::indexnow_history scheduling",
+        "docs/indexnow-sitemap-backfill-plan.md"
+      ],
+      "verification_boundary": "Очередь не является доказательством изменения содержимого каждого URL. Политическое расхождение cold/new и нынешнего replay нужно сохранять явно; этот отчёт не меняет policy и не посылает POST."
+    },
+    {
+      "id": "DH06",
+      "plan_id": "DH",
+      "plan_lines": [
+        71,
+        94
+      ],
+      "historical_requirement": "Очереди per host, debounce 24h, 500–1000 URL, 429 Retry-After/retry; не mixed-host POST.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Очередь и debounce имеют host в ключе, batch drainer 800, debounce 86400s. 429 ограничивает паузу 5–60s и прекращает проход; failed batch возвращается в очередь. Daily send cap — общий для apex+ru UTC, верхний предел 30000, попытка списывает квоту до HTTP; history cursors по семействам общие, не per-host.",
+      "current_mechanism_anchors": [
+        "backend/app/services/indexnow.py::reserve_daily_send_quota/ping_urls/drain_indexnow_queue/_HISTORY_CURSOR_VERSION"
+      ],
+      "verification_boundary": "Код подтверждает алгоритм; свежих send/429 внешних проб нет. Drain retry не равен немедленному повтору того же POST."
+    },
+    {
+      "id": "DH07",
+      "plan_id": "DH",
+      "plan_lines": [
+        95,
+        111
+      ],
+      "historical_requirement": "Recrawl около 150 URL/day/host: demand→свежие страницы→хабы→cursor, два daily drain.",
+      "reconciled_status": "implemented_mechanism",
+      "current_mechanism_or_difference": "Recrawl получает реальную quota_remainder от API; demand соответствует eligible canonical registry, cursors раздельные. Scheduler регистрирует apex 09:10, ru. 09:15 MSK при нужных флагах/token; live writes отдельно gated.",
+      "current_mechanism_anchors": [
+        "backend/app/services/webmaster_recrawl.py::recrawl_daily_job",
+        "backend/app/main.py::webmaster_recrawl/webmaster_recrawl_ru scheduling"
+      ],
+      "verification_boundary": "150 — исторический ориентир, не гарантированная API-квота; успешная текущая подача и полнота обхода не следуют из schedule."
+    },
+    {
+      "id": "DH08",
+      "plan_id": "DH",
+      "plan_lines": [
+        112,
+        126
+      ],
+      "historical_requirement": "Google Domain property, sitemap/honest lastmod, ручная Request Indexing; Bing/Webmaster/region настройки.",
+      "reconciled_status": "planned_unverified",
+      "current_mechanism_or_difference": "Текущий config предусматривает Google Domain property; в backend/scripts есть read-only GSC helper. Ручные properties, submissions, Yandex region и Bing кабинет не проверялись при дополнении.",
+      "current_mechanism_anchors": [
+        "backend/app/config.py::gsc_site_url",
+        "backend/scripts/google-search-console.py",
+        "docs/knowledge-unknowns.md"
+      ],
+      "verification_boundary": "Исторический google-ops pending сохраняется как непроверенное внешнее действие, а не как утверждение, что property сейчас отсутствует. Новая браузерная/кабинетная операция не выполнялась."
+    },
+    {
+      "id": "DH09",
+      "plan_id": "DH",
+      "plan_lines": [
+        171,
+        178
+      ],
+      "historical_requirement": "Не делать blind monthly 2M×2, не считать recrawl обходом всего сайта, не заводить второй counter, не использовать общий Google Indexing API, не ставить geo выше cookie.",
+      "reconciled_status": "explicit_rejection",
+      "current_mechanism_or_difference": "Это явные отказы исторического решения. Текущие queue caps, host-aware аналитика и locale preference согласуются с частью основания; history replay имеет отдельную более позднюю реализацию (DH05).",
+      "current_mechanism_anchors": [
+        "backend/app/services/indexnow.py::daily_send_cap",
+        "backend/app/main.py::_locale_preference",
+        "backend/app/tasks/analytics_scheduler.py::_primary_counter_id"
+      ],
+      "verification_boundary": "Не превращать список отказов в доказательство отсутствия любого внешнего кабинета/ручного действия. Отмена решения требует нового основания, а не повторного выполнения старого плана."
+    },
+    {
+      "id": "DH10",
+      "plan_id": "DH",
+      "plan_lines": [
+        136,
+        170
+      ],
+      "historical_requirement": "Фазы A–E; 1–2 дня реализации и 4–8 недель наблюдения индексации/429.",
+      "reconciled_status": "historical_observation",
+      "current_mechanism_or_difference": "Implementation todos относятся к времени плана. Analytics/indexnow/recrawl механизмы есть; недельный report и snapshot дают инструмент наблюдения. Результат 4–8 недель и причинное улучшение индексации не установлены этим чтением.",
+      "current_mechanism_anchors": [
+        "backend/app/services/webmaster_indexing_report.py::build_indexing_report",
+        "docs/code-review/readiness-criteria.md"
+      ],
+      "verification_boundary": "Оценки времени и todo done/pending не используются как измеренная длительность или performance acceptance."
+    },
+    {
+      "id": "V201",
+      "plan_id": "V2",
+      "plan_lines": [
+        68,
+        149
+      ],
+      "historical_requirement": "RuStats → Forecast Economy; бесплатная платформа России, примерно 65 рядов/9 категорий и 5 шаблонов.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Бренд и повторно используемые страницы присутствуют. Сегодня домен охватывает страны, валюты и региональные bounded contexts; датированная локальная clean seed проверка дала 947 российских индикаторов. Исходные 65/9/5 — масштаб и схема этапа, не верхний предел нынешней платформы.",
+      "current_mechanism_anchors": [
+        "CONTEXT.md::What this is/Indicator",
+        "frontend/src/App.jsx::Routes",
+        "docs/code-review/ops-mechanism-acceptance-2026-09-30.md::clean startup"
+      ],
+      "verification_boundary": "Наличие template/page не доказывает все сценарии UI; бизнес-обещание бесплатности сохраняется отдельно от rate/download/auth ограничений."
+    },
+    {
+      "id": "V202",
+      "plan_id": "V2",
+      "plan_lines": [
+        150,
+        202
+      ],
+      "historical_requirement": "Росстат/ЦБ/Минфин/open API; официальные исходники; derived отличать от source и частот.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Source/derived/variant/frequency разведены в контрактах. Official-first поддержан ADR-0004/0012; нынешний registry содержит нескольких CBR/Rosstat/Minfin и зарубежных провайдеров. Нельзя возвращать модель всех стран к четырём источникам России.",
+      "current_mechanism_anchors": [
+        "docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md",
+        "docs/adr/0012-world-multi-provider-official-first-forecasts.md",
+        "docs/data-contracts.md",
+        "backend/app/services/rosstat_cpi_parser.py::PARSER_REGISTRY"
+      ],
+      "verification_boundary": "Документированный источник и наличие parser не доказывают сегодняшнюю свежесть каждой серии или юридические права коммерческого продукта."
+    },
+    {
+      "id": "V203",
+      "plan_id": "V2",
+      "plan_lines": [
+        272,
+        279
+      ],
+      "historical_requirement": "is_active/category/include_inactive; защитить inflation от non-CPI; cache prefix fe.",
+      "reconciled_status": "implemented_mechanism",
+      "current_mechanism_or_difference": "list_indicators фильтрует is_active, category и теперь отдельно is_listed; cache versioned и locale-aware. Inflation API разрешает ровно cpi/cpi-food/cpi-nonfood/cpi-services (не любую категорию цен); там fe:{code}:inflation.",
+      "current_mechanism_anchors": [
+        "backend/app/api/indicators.py::list_indicators",
+        "backend/app/api/forecasts.py::get_inflation"
+      ],
+      "verification_boundary": "Code-level contract; актуальная API матрица за пределами выбранного запроса сверяется отдельным backend-досье. Историческая category-проверка эволюционировала в whitelist."
+    },
+    {
+      "id": "V204",
+      "plan_id": "V2",
+      "plan_lines": [
+        132,
+        149
+      ],
+      "historical_requirement": "Не держать SEO_MAP: metadata из Indicator/DB, автоматически генерировать sitemap.",
+      "reconciled_status": "superseded_mechanism",
+      "current_mechanism_or_difference": "Главный источник metadata/видимого HTML — backend seo_content/seo_renderer плюс editorial поля Indicator и generated page meta; nginx отдаёт indexable routes через SSR. useMeta — клиентский fallback, не единственная гарантия SEO. В фазе3 старый план снова упоминает SEO_MAP, что внутренне расходится с исходным запретом.",
+      "current_mechanism_anchors": [
+        "docs/adr/0003-seo-single-source-server-rendered.md",
+        "backend/app/services/seo_renderer.py",
+        "backend/app/models.py::Indicator",
+        "backend/app/services/sitemap_static.py"
+      ],
+      "verification_boundary": "Смысл единого источника сохранён; способ только client head заменён. Упоминание SEO_MAP не основание вернуть константы или удалить современные тексты."
+    },
+    {
+      "id": "V205",
+      "plan_id": "V2",
+      "plan_lines": [
+        142,
+        149
+      ],
+      "historical_requirement": "react-i18next, locales ru/en и route prefix /:lang?/.",
+      "reconciled_status": "superseded_mechanism",
+      "current_mechanism_or_difference": "Текущий собственный LocaleProvider/messages; production host определяет RU/EN. Path-identical apex EN и ru. RU по ADR-0013, country-first/currencies routes. frontend/package.json не содержит react-i18next.",
+      "current_mechanism_anchors": [
+        "frontend/src/i18n/LocaleProvider.jsx",
+        "frontend/src/i18n/locale.js",
+        "frontend/src/App.jsx::Routes",
+        "docs/adr/0013-country-first-url-architecture.md"
+      ],
+      "verification_boundary": "Цель двуязычности реализована другим контрактом; старый /en-prefix или ccTLD migration не действующая инструкция."
+    },
+    {
+      "id": "V206",
+      "plan_id": "V2",
+      "plan_lines": [
+        203,
+        232
+      ],
+      "historical_requirement": "CalculationEngine с depends_on, incremental derived pipeline.",
+      "reconciled_status": "implemented_mechanism",
+      "current_mechanism_or_difference": "DERIVED_SPECS включает ручные и generated операции. run_for_updated_sources вычисляет транзитивное замыкание зависимых в topo порядке; changed/revised source включается scheduler. Полный rebuild остаётся отдельным escape hatch, цикл specs логируется и остаток дописывается в registry order.",
+      "current_mechanism_anchors": [
+        "backend/app/services/calculation_engine.py::DERIVED_SPECS/dependents_closure_topo/run_for_updated_sources",
+        "backend/app/tasks/scheduler.py::_fetch_changed",
+        "docs/adr/0001-derived-indicators-engine-shape.md",
+        "docs/adr/0002-derived-always-reflects-source.md"
+      ],
+      "verification_boundary": "Нельзя обещать атомарный commit всего ETL→derived→forecast→SEO pipeline только по диаграмме; ошибки/транзакции имеют реальные отдельные границы."
+    },
+    {
+      "id": "V207",
+      "plan_id": "V2",
+      "plan_lines": [
+        435,
+        464
+      ],
+      "historical_requirement": "BaseParser fetch/parse/validate/store/run и registry по parser_type.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "BaseParser стал template method: run оркестрирует upsert/retrain/cache/log; дочерний hook _fetch_and_parse и optional hooks. Registry исторически расположен в rosstat_cpi_parser.py, scheduler вызывает get_parser. Это не буквальный набор отдельных abstract fetch/parse методов из плана.",
+      "current_mechanism_anchors": [
+        "backend/app/services/base_parser.py::BaseParser",
+        "backend/app/services/rosstat_cpi_parser.py::PARSER_REGISTRY/get_parser",
+        "backend/app/tasks/scheduler.py::run_etl_for_indicator_status"
+      ],
+      "verification_boundary": "Сохранить имя исторического root как совместимость/lineage; это не причина удалить CPI parser или насильно перенести registry сейчас."
+    },
+    {
+      "id": "V208",
+      "plan_id": "V2",
+      "plan_lines": [
+        233,
+        245
+      ],
+      "historical_requirement": "Четыре forecast_transform; порог 36 точек; для annual линейный fallback или none.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Текущий STRATEGIES содержит monthly_auto, annual_auto, signed/generic_quarterly и bespoke/derived стратегии, с постепенным legacy fallback. annual_auto — порт исследовательского annual алгоритма, fallback horizon=1; нынешняя backend-дельта разделяет annual one-year API и ещё не доказанную серверную перетренировку.",
+      "current_mechanism_anchors": [
+        "backend/app/services/forecast_strategies/registry.py::STRATEGIES/resolve",
+        "backend/app/services/forecast_strategies/annual_auto.py::annual_auto_strategy",
+        "docs/code-review/backend-delta-2026-09-30.md"
+      ],
+      "verification_boundary": "36 не универсальная достаточность для всех частот/моделей; существование registry не доказывает качество прогноза или retrain в production."
+    },
+    {
+      "id": "V209",
+      "plan_id": "V2",
+      "plan_lines": [
+        246,
+        252
+      ],
+      "historical_requirement": "CpiChart→IndicatorChart; unit-aware график, tooltip/карточки/таблица.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "IndicatorChart присутствует; generic mode metadata формируется из generated FamilyDef config в viewModeEngine. Variant ортогонален mode; bespoke CPI/PPI/housing сохраняют отдельные контракты.",
+      "current_mechanism_anchors": [
+        "frontend/src/components/IndicatorChart.jsx",
+        "frontend/src/lib/viewModeEngine.js::resolveViewMode/buildViewModeGroups",
+        "docs/adr/0006-indicator-card-unification.md",
+        "CONTEXT.md::FamilyDef"
+      ],
+      "verification_boundary": "Старое намерение убрать CPI-specific toggle не разрешает удалять действующий bespoke resolve; numeric formatter для каждого UI здесь не перепроверялся."
+    },
+    {
+      "id": "V210",
+      "plan_id": "V2",
+      "plan_lines": [
+        253,
+        271
+      ],
+      "historical_requirement": "model_config min/max/backfill; format_changed для смены Росстат layout; исторические floors 1992/2009.",
+      "reconciled_status": "partial_boundary",
+      "current_mechanism_or_difference": "Range-validation optional уже реализован. BaseParser vocabulary содержит parsed_zero/fallback_used и DEGRADED_STATUSES; format_changed не объявлен его единым статусом. Source-specific backfill остаётся per parser/config; текущая хроника отмечает denomination-aware RUB floor 1998 и другие уточнения.",
+      "current_mechanism_anchors": [
+        "backend/app/services/data_validator.py::validate_points",
+        "backend/app/services/base_parser.py::DEGRADED_STATUSES",
+        "CONTEXT.md::Source/историческая запись 2026-06-24",
+        "docs/data_sources.md"
+      ],
+      "verification_boundary": "Не утверждать, что все парсеры имеют одинаковый format detector/alert или одинаковый floor. Отсутствие format_changed в общей константе не доказывает отсутствие parser-specific detection."
+    },
+    {
+      "id": "V211",
+      "plan_id": "V2",
+      "plan_lines": [
+        253,
+        258
+      ],
+      "historical_requirement": "PyramidData, bilingual model fields и Alembic/category index.",
+      "reconciled_status": "partial_boundary",
+      "current_mechanism_or_difference": "Alembic migrations и Indicator model существуют, bilingual API использует отдельные i18n overlays. Полная локальная clean startup проверка прошла 34 миграции до текущего head. Отдельная PyramidData requirement рассмотрена V214.",
+      "current_mechanism_anchors": [
+        "backend/app/models.py::Indicator",
+        "backend/app/services/api_i18n.py",
+        "docs/code-review/ops-mechanism-acceptance-2026-09-30.md::clean startup"
+      ],
+      "verification_boundary": "Миграционный head не подтверждает буквальную реализацию всех полей из старого списка; пересоздание схемы здесь не выполнялось."
+    },
+    {
+      "id": "V212",
+      "plan_id": "V2",
+      "plan_lines": [
+        337,
+        369
+      ],
+      "historical_requirement": "Source research: несколько специализированных CBR parser types; auto-loan-rate до подтверждения не seed.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Текущий registry разделяет KeyRate/Fx/Ruonia/DataService/monetary и др.; auto-loan-rate уже активный seed с официальным CBR int_rat источником и cbr_dataservice_json. Внутри старого плана фаза2 вновь предлагает единый CbrApiParser, вопреки решению 0.3.",
+      "current_mechanism_anchors": [
+        "backend/app/services/rosstat_cpi_parser.py::PARSER_REGISTRY",
+        "backend/seed_data.py::auto-loan-rate",
+        "docs/data_sources.md"
+      ],
+      "verification_boundary": "Current seed — evidence изменения решения, но не свежий внешний fetch всех CBR publications; старый запрет был условным до source confirmation."
+    },
+    {
+      "id": "V213",
+      "plan_id": "V2",
+      "plan_lines": [
+        491,
+        606
+      ],
+      "historical_requirement": "Фазы2–5: CBR, labor/GDP, population/trade/business/science/housing и экспорт.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Соответствующие специализированные parsers представлены registry; seed имеет population, births/deaths, working-age и science; CSV/XLSX export серверный. Исторические phase4/5 pending не равны отсутствию этих подсистем сегодня.",
+      "current_mechanism_anchors": [
+        "backend/app/services/rosstat_cpi_parser.py::PARSER_REGISTRY",
+        "backend/seed_data.py",
+        "backend/app/api/export.py",
+        "docs/data_sources.md"
+      ],
+      "verification_boundary": "Готовность каждого обещанного ряда, frequency/window, источника и category-wide export не выводится из наличия parser. Не закрываются целиком все исходные фазы только по registry."
+    },
+    {
+      "id": "V214",
+      "plan_id": "V2",
+      "plan_lines": [
+        564,
+        570
+      ],
+      "historical_requirement": "Возрастно-половая пирамида: PyramidData(age_group,gender,count), отдельный endpoint и chart.",
+      "reconciled_status": "planned_unverified",
+      "current_mechanism_or_difference": "Текущий /demographics/structure возвращает три официальные возрастные группы; DemographicsPage рисует структуру без оси gender. В выбранных models.py и DemographicsPage не найдены PyramidData/pyramid. Это не полная age×gender пирамида из плана.",
+      "current_mechanism_anchors": [
+        "backend/app/api/demographics.py::age_structure",
+        "frontend/src/pages/DemographicsPage.jsx::GROUPS",
+        "backend/app/models.py"
+      ],
+      "verification_boundary": "Не заявляется глобальное отсутствие любой экспериментальной пирамиды. Для полного закрытия requirement нужны явная age×gender schema, source, API и UI приёмка; в этом чтении они не доказаны."
+    },
+    {
+      "id": "V215",
+      "plan_id": "V2",
+      "plan_lines": [
+        542,
+        547
+      ],
+      "historical_requirement": "Compare dual axes и разные частоты на общем графике.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "ComparePage существует; current CONTEXT задаёт concept comparability, общую базу100 только для допустимых положительных index рядов и explicit empty state без общей даты. Native частоты не заменяются без доказанного контракта. Это больше требований, чем old dual-axis.",
+      "current_mechanism_anchors": [
+        "frontend/src/App.jsx::ComparePage route",
+        "CONTEXT.md::Содержательная сверка 2026-09-30/Сравнение",
+        "docs/code-review/client-mechanism-acceptance-2026-09-30.md"
+      ],
+      "verification_boundary": "Эта запись связывает уже существующее client-досье; новый графический/E2E тест не выполнялся."
+    },
+    {
+      "id": "V216",
+      "plan_id": "V2",
+      "plan_lines": [
+        608,
+        617
+      ],
+      "historical_requirement": "Frontend/backend на разных серверах; отдельный calculation worker.",
+      "reconciled_status": "partial_boundary",
+      "current_mechanism_or_difference": "Current Compose имеет отдельный scheduler service/process, но backend/frontend/PG/Redis/ClickHouse делят один production host с 4vCPU. Это изоляция процессов/квот, не два сервера или независимый autoscaled worker.",
+      "current_mechanism_anchors": [
+        "docker-compose.yml::backend/scheduler/frontend",
+        "docs/runtime-inventory.json",
+        "docs/code-review/ops-mechanism-acceptance-2026-09-30.md::budgets"
+      ],
+      "verification_boundary": "Совместное потребление CPU/RAM/I/O измерено в датированном ops-снимке; capacity benchmark и полный RTO не следуют из количества workers."
+    },
+    {
+      "id": "V217",
+      "plan_id": "V2",
+      "plan_lines": [
+        608,
+        617
+      ],
+      "historical_requirement": "Документированная public API, API keys, 100 req/min free, pip forecasteconomy.",
+      "reconciled_status": "planned_unverified",
+      "current_mechanism_or_difference": "HTTP API существует. Старые обещания public API product, universal 100/min key policy и опубликованный Python SDK не получили отдельного доказательства этим узким чтением; наличие /api/v1 и rate-limits самого сайта их не подтверждает.",
+      "current_mechanism_anchors": [
+        "README.md::API",
+        "backend/app/main.py",
+        "docs/code-review/readiness-criteria.md"
+      ],
+      "verification_boundary": "Не утверждать, что SDK/package/кабинет отсутствует глобально; приоритет и коммерческий contract требуют отдельного решения и package/API acceptance."
+    },
+    {
+      "id": "V218",
+      "plan_id": "V2",
+      "plan_lines": [
+        618,
+        629
+      ],
+      "historical_requirement": "About/team, регионы, мультистраны, нормативные акты, реклама/consulting/premium, Yandex.Direct, backlinks, RID.",
+      "reconciled_status": "partial_boundary",
+      "current_mechanism_or_difference": "About/страны/российские и другие регионы имеют текущие routes и ADR; рекламная/consent механика документирована в текущем client-досье. Нормативные акты, консалтинг/API premium, бюджет Direct, backlinks и юридическая регистрация RID — исторические направления, не принятые этой проверкой результаты.",
+      "current_mechanism_anchors": [
+        "frontend/src/App.jsx::About/country/region routes",
+        "docs/adr/0008-regional-bounded-context.md",
+        "docs/adr/0012-world-multi-provider-official-first-forecasts.md",
+        "docs/code-review/client-mechanism-acceptance-2026-09-30.md"
+      ],
+      "verification_boundary": "UI-механизм не доказывает фактическую выручку, юридическое оформление или выполненные внешние коммерческие действия. Эти идеи не стираются из истории."
+    },
+    {
+      "id": "V219",
+      "plan_id": "V2",
+      "plan_lines": [
+        631,
+        655
+      ],
+      "historical_requirement": "Parser/API/unit/E2E mobile tests, CI on PR, staging→confirmation→prod, ETL data quality alerts.",
+      "reconciled_status": "partial_boundary",
+      "current_mechanism_or_difference": "Есть текущие check-all/project-knowledge, pytest/vitest/CI и безопасный approved-SHA deploy с smoke/rollback guards. Сохранённые ops/client/backend acceptance отдельны. Автоматический staging deployment, E2E каждого старого flow и все source-specific quality alarms этим дополнением не проверены.",
+      "current_mechanism_anchors": [
+        "scripts/check-all.sh",
+        ".github/workflows/ci.yml",
+        "scripts/deploy.sh",
+        "docs/workflow.md",
+        "docs/code-review/ops-mechanism-acceptance-2026-09-30.md"
+      ],
+      "verification_boundary": "Наличие тестов не означает их запуск этим читателем; новых tests/deploy из плана не выполнялось. Последний file registry — исторический список, не нынешний delete-list."
+    },
+    {
+      "id": "V220",
+      "plan_id": "V2",
+      "plan_lines": [
+        282,
+        336
+      ],
+      "historical_requirement": "Wordstat March17 baseline, counter107136069, webmaster verification/ИКС owner tasks.",
+      "reconciled_status": "historical_observation",
+      "current_mechanism_or_difference": "Сохраняются численные baseline/Wordstat как датированные результаты источника. Сегодня consent bootstrap управляет Metrika/RSY, index.html содержит обе verification meta. Старый phase0_closeout больше не на прежнем пути, но architecture-history указывает git:f994f6e^ для чтения.",
+      "current_mechanism_anchors": [
+        "frontend/index.html",
+        "docs/architecture-history.md::Восстановление отсутствующих документов из Git"
+      ],
+      "verification_boundary": "March Wordstat и baseline2visits не являются текущим traffic/SEO спросом. Исторические Wordstat/phase0 ссылки не дают права выполнить новые внешние проверки или удалить хронику."
+    },
+    {
+      "id": "V221",
+      "plan_id": "V2",
+      "plan_lines": [
+        68,
+        120
+      ],
+      "historical_requirement": "35 архитектурных разрывов; фазовые даты March→May и цели трансформации.",
+      "reconciled_status": "historical_observation",
+      "current_mechanism_or_difference": "Plan фиксирует intent/order и источники обсуждения. Расширение current платформы и наличие механизмов не являются доказательством устранения всех35 разрывов или исполнения каждой фазы к указанной дате.",
+      "current_mechanism_anchors": [
+        "docs/code-review/readiness-criteria.md",
+        "docs/architecture-history.md",
+        "docs/project-knowledge-acceptance.md"
+      ],
+      "verification_boundary": "Фазовый календарь и frontmatter markers сохранены в JSON как исторические metadata; их не переписывают сегодняшним статусом и не исполняют как новую task list."
+    },
+    {
+      "id": "FE01",
+      "plan_id": "FE7",
+      "plan_lines": [
+        31,
+        66
+      ],
+      "historical_requirement": "Полная светлая тема, новые contrast/grid/tooltip/noise значения.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "Default :root light и светлые токены присутствуют, значения уже изменились (obsidian #EEF0F4). Есть explicit data-theme dark/.dark overrides. Таким образом смысл светлой базы сохранён, но обещание полного удаления dark-theme больше не буквальное.",
+      "current_mechanism_anchors": [
+        "frontend/src/index.css::@theme/:root/[data-theme=dark]",
+        "frontend/src/components/IndicatorChart.jsx"
+      ],
+      "verification_boundary": "Текущая визуальная/контрастная доступность всех элементов не проверялась в этой supplement; исторические HEX не служат current specification."
+    },
+    {
+      "id": "FE02",
+      "plan_id": "FE7",
+      "plan_lines": [
+        67,
+        96
+      ],
+      "historical_requirement": "Client dynamic SheetJS XLSX ~400KB, sheets Fact/Forecast, экспорт текущего mode/range.",
+      "reconciled_status": "superseded_mechanism",
+      "current_mechanism_or_difference": "SheetJS/xlsx нет в current frontend dependencies. excel.js готовит points/mode/range/provenance и получает backend blob через /export/table. Backend реализует auth/download quota и anonymous history limit; forecast передаётся только где actual отсутствует.",
+      "current_mechanism_anchors": [
+        "frontend/package.json",
+        "frontend/src/lib/excel.js::downloadExcel/toPoints",
+        "frontend/src/lib/api.js::exportTable",
+        "backend/app/api/export.py::ExportIn/_limit_history"
+      ],
+      "verification_boundary": "Текущий конкретный workbook, sheet layout и полная UI parity не проверены новым скачиванием; старое обещание двух листов/полного ряда не подменяет нынешние guest limits."
+    },
+    {
+      "id": "FE03",
+      "plan_id": "FE7",
+      "plan_lines": [
+        97,
+        107
+      ],
+      "historical_requirement": "Прямой cpi-nonfood пункт navbar desktop/mobile, legacy /indicator URL.",
+      "reconciled_status": "superseded_mechanism",
+      "current_mechanism_or_difference": "Navbar использует PRIMARY_NAV/primaryNav: country/platform navigation и калькуляторы. Nonfood остаётся частью CPI/catalogue/view contract; старый direct navbar link не обязательный нынешний nav. /indicator путь стал legacy; canonical строится sitePaths.",
+      "current_mechanism_anchors": [
+        "frontend/src/components/Navbar.jsx",
+        "frontend/src/lib/navItems.js::PRIMARY_NAV/primaryNav",
+        "frontend/src/lib/sitePaths.js",
+        "frontend/src/pages/IndicatorDetail.jsx"
+      ],
+      "verification_boundary": "Доступность конкретного nonfood посетительского перехода проверяется отдельным client/API flow; отсутствие старого navbar пункта не означает удаления данных."
+    },
+    {
+      "id": "FE04",
+      "plan_id": "FE7",
+      "plan_lines": [
+        108,
+        118
+      ],
+      "historical_requirement": "Favicon SVG/PNG32/apple180, удалить vite.svg.",
+      "reconciled_status": "implemented_mechanism",
+      "current_mechanism_or_difference": "index.html подключает favicon.ico/svg/png; public inventory содержит эти файлы и favicon-32.png. favicon.ico явно предотвращает SPA fallback HTML.",
+      "current_mechanism_anchors": [
+        "frontend/index.html::favicon links",
+        "frontend/public/favicon.svg",
+        "frontend/public/favicon.png",
+        "frontend/public/favicon.ico"
+      ],
+      "verification_boundary": "Это file/link evidence; screenshot качества и apple180 binary/spec этим чтением не подтверждены. Historical completed не равен полной browser icon acceptance."
+    },
+    {
+      "id": "FE05",
+      "plan_id": "FE7",
+      "plan_lines": [
+        119,
+        136
+      ],
+      "historical_requirement": "Static OG/Twitter/canonical/WebApp/og-banner, robots allow all, ручной sitemap5URL.",
+      "reconciled_status": "superseded_mechanism",
+      "current_mechanism_or_difference": "Public indexable HTML/OG/JSON-LD/paths выдаются backend SSR по ADR0003/0013. Raw shell имеет noindex,nofollow; существуют dynamically generated/static-published sitemap families, а не ручные пять URL. Public hostname placeholder и двойная webmaster verification отражают эволюцию.",
+      "current_mechanism_anchors": [
+        "frontend/index.html",
+        "docs/adr/0003-seo-single-source-server-rendered.md",
+        "backend/app/services/sitemap_static.py",
+        "backend/app/services/site_urls.py",
+        "frontend/nginx.conf"
+      ],
+      "verification_boundary": "Shell noindex нельзя механически заменить allow-all из старого плана. Наличие SSR/sitemap не является доказательством реального индексирования всех URL."
+    },
+    {
+      "id": "FE06",
+      "plan_id": "FE7",
+      "plan_lines": [
+        137,
+        148
+      ],
+      "historical_requirement": "Убрать Dashboard SystemStatus/useSystemStatus/icons/statsRef.",
+      "reconciled_status": "implemented_mechanism",
+      "current_mechanism_or_difference": "В current Dashboard нет SystemStatus/useSystemStatus/statsRef совпадений. API fetchSystemStatus в api.js сохранился: это отдельная operational возможность, а не старый главный UI блок.",
+      "current_mechanism_anchors": [
+        "frontend/src/pages/Dashboard.jsx",
+        "frontend/src/lib/api.js::fetchSystemStatus"
+      ],
+      "verification_boundary": "Narrow source search подтверждает удаление указанного блока из выбранной страницы, не удаление всех system status механизмов проекта."
+    },
+    {
+      "id": "FE07",
+      "plan_id": "FE7",
+      "plan_lines": [
+        149,
+        173
+      ],
+      "historical_requirement": "Два режима CPI monthly / inflation12months, inflation default, связанные chart/table/export; backend без изменений.",
+      "reconciled_status": "evolved_mechanism",
+      "current_mechanism_or_difference": "CPI viewMode хранится URL; inflation default и inflation API присутствуют, generic families имеют отдельную mode config. Export получает prepared chart points; современная система включает больше двух представлений и backend-contract evolution.",
+      "current_mechanism_anchors": [
+        "frontend/src/pages/IndicatorDetail.jsx::viewMode/defaultViewMode",
+        "frontend/src/lib/viewModeEngine.js",
+        "backend/app/api/forecasts.py::get_inflation",
+        "frontend/src/lib/excel.js"
+      ],
+      "verification_boundary": "Backend-unchanged относилось к той historical delivery; не является сегодняшним разрешением release толькоfrontend. Новые numeric/mode/export scenarios этим дополнением не запускались."
+    },
+    {
+      "id": "FE08",
+      "plan_id": "FE7",
+      "plan_lines": [
+        197,
+        209
+      ],
+      "historical_requirement": "Frontend-only server build после gitpush/gitpull; hashed assets+one-year cache исключат проблемы.",
+      "reconciled_status": "superseded_mechanism",
+      "current_mechanism_or_difference": "Current release разрешён только approved runtime SHA; собираются backend+frontend, web/scheduler cutover совместимы, old+new assets публикуются до нового HTML, есть smoke/watch и guarded rollback относительно migration head. Asset-hash mismatch был реальным классом инцидента и закрывается механизмом retention/acceptance, а не обещанием.",
+      "current_mechanism_anchors": [
+        "scripts/deploy.sh::approved_sha/publish_frontend_assets/rollback",
+        "docs/adr/0003-seo-single-source-server-rendered.md::Asset-hash mismatch trap",
+        "docs/workflow.md",
+        "docs/enterprise_resilience.md"
+      ],
+      "verification_boundary": "Все исторические gitpush/SSH/docker команды являются текстом источника, не исполнялись. Нынешняя просьба исследовать документацию не авторизует релиз."
+    },
+    {
+      "id": "FE09",
+      "plan_id": "FE7",
+      "plan_lines": [
+        174,
+        209
+      ],
+      "historical_requirement": "Implementation order, список файлов, backend already provides endpoints.",
+      "reconciled_status": "historical_observation",
+      "current_mechanism_or_difference": "Порядок служил зависимостям того CPI этапа. Current producer/consumer/cache/locale/schema/resources boundaries шире; старый file list сохраняется для lineage, а не как доказательство полноты нынешнего frontend/backend.",
+      "current_mechanism_anchors": [
+        "docs/knowledge-workflow.md",
+        "docs/data-contracts.md",
+        "docs/code-review/readiness-criteria.md"
+      ],
+      "verification_boundary": "Старые completed flags не переоценивают существующие ошибки/непроверенное качество; no legacy cleanup производится этим отчётом."
+    }
+  ],
+  "decision_counts_by_status": {
+    "implemented_mechanism": 7,
+    "evolved_mechanism": 13,
+    "partial_boundary": 6,
+    "planned_unverified": 3,
+    "explicit_rejection": 1,
+    "historical_observation": 4,
+    "superseded_mechanism": 6
+  },
+  "current_anchor_snapshots": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "exists": true,
+      "sha256_at_reconciliation": "0267da48e264c0236c310ff682a47c961cf14407898801f74fe91c712f6f1dfd",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "CONTEXT.md",
+      "exists": true,
+      "sha256_at_reconciliation": "589f8bfd4a23f2f85621aab9f36b92701e911474afb11bef253ae19a66531260",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "README.md",
+      "exists": true,
+      "sha256_at_reconciliation": "e59b1f7a52eec8c6595afabbd564313915f76797389e69bafb67f990a456d588",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/api/demographics.py",
+      "exists": true,
+      "sha256_at_reconciliation": "e6fe903420b631ef1ef40b5f8d0faff3288dd6abf0eda20de5d043fca2520b3e",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/api/export.py",
+      "exists": true,
+      "sha256_at_reconciliation": "2fcafdc02c39a8b8dc8d624d148ed9c0ab58f7255cc69320ebd249c7172138bf",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/api/forecasts.py",
+      "exists": true,
+      "sha256_at_reconciliation": "0b0a326dd35c74bd1283f3a54f5a201b037c3e465220932f5de462887e97a6e2",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/api/indicators.py",
+      "exists": true,
+      "sha256_at_reconciliation": "87c64718919bdb37b1a864d8dcc2a1ed2b75a99732dcf5aa4dfb47a94a3e5265",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/config.py",
+      "exists": true,
+      "sha256_at_reconciliation": "ad369a89256c4b3651384cf754d7dda3c7cc8a83faf7b9301681f227f027d994",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/main.py",
+      "exists": true,
+      "sha256_at_reconciliation": "a4177428b5a080d6bb8a66669259655750f0a3191437d0a84c71d429855e68a8",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/models.py",
+      "exists": true,
+      "sha256_at_reconciliation": "83136977358d3e6f79ce14d4ccd0ae01a591fd0a008bc7b8a3051b3b4a891175",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/analytics_backfill.py",
+      "exists": true,
+      "sha256_at_reconciliation": "5f539ea1ac8ddd48894d3b3591aeb4f5dc3d6127e905835f27f9aa7ab3109fca",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/api_i18n.py",
+      "exists": true,
+      "sha256_at_reconciliation": "615e793f9b57ecdcc0b2be71f4eb17fcf2c58123c94f731c2861f46151db441c",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/base_parser.py",
+      "exists": true,
+      "sha256_at_reconciliation": "213d8116abd30708935d7f4cc91a8d2197ee06ac19beabecbc4af95f2a2aee3f",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/calculation_engine.py",
+      "exists": true,
+      "sha256_at_reconciliation": "bbe7cc6bddae3d30266b6e8d54c160a572d512e295205192c9dd71d022054eb3",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/data_validator.py",
+      "exists": true,
+      "sha256_at_reconciliation": "bf76740ec00300f0f1cd2df90a96be6e4110f86428955c096b302ccd878b14f8",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/forecast_strategies/annual_auto.py",
+      "exists": true,
+      "sha256_at_reconciliation": "ca25adefdf34ef53b2c14737a88b7fd81a977c6aed2c46eefe464fb921a73dbd",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/forecast_strategies/registry.py",
+      "exists": true,
+      "sha256_at_reconciliation": "04974baa6aba6a16912f5286cdac70f36ab9a828f13747baa90435c5649be66f",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/indexnow.py",
+      "exists": true,
+      "sha256_at_reconciliation": "22824cf4b6a642263e73868da050425224b23e0095f415d46ce867d3b927a9ed",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/locale.py",
+      "exists": true,
+      "sha256_at_reconciliation": "01885d8faf66e7b4e0a3d0e5c21591ae311e98c8c8a6e72e6347897143a50c5c",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/rosstat_cpi_parser.py",
+      "exists": true,
+      "sha256_at_reconciliation": "b45e393b80d127752a41897b3acdde483749f6dc6aaade954c65ea8e1a2deddc",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "exists": true,
+      "sha256_at_reconciliation": "f86b1504fe43a08cb579c2ddb59c1b66d4da916bdd8041c4051d91be82f37215",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/site_urls.py",
+      "exists": true,
+      "sha256_at_reconciliation": "0e04ba59f0aeae5d8640f4cc15ed880fc511d8db32e706490e9130b58712e4ef",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/sitemap_static.py",
+      "exists": true,
+      "sha256_at_reconciliation": "06a7bfae08df3e915bfc91705834ab96b842ef33fb49e05499f645e8a1e35f14",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/webmaster_indexing_report.py",
+      "exists": true,
+      "sha256_at_reconciliation": "1777b5df05b23febafe0e5dc0b5d71a08eeeef89a652662ffbed955bcfefbaf4",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/services/webmaster_recrawl.py",
+      "exists": true,
+      "sha256_at_reconciliation": "d176ef600b8879ec9624d5d826b036986106e1daba94aac68afe37f39fa779f6",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/tasks/analytics_scheduler.py",
+      "exists": true,
+      "sha256_at_reconciliation": "75aa09be869f2dc468ba06ae72f18be8cdb00adf11046f5ee96267373388f492",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "exists": true,
+      "sha256_at_reconciliation": "e3262f3d7e7351d54f2cd619ca16008dd656e6d67d27e18d78916458a6e43bb6",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/scripts/google-search-console.py",
+      "exists": true,
+      "sha256_at_reconciliation": "a7830e2188755f4db146eb056217694d763877aeec230bf2b4067f25032d5dd0",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "backend/seed_data.py",
+      "exists": true,
+      "sha256_at_reconciliation": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docker-compose.yml",
+      "exists": true,
+      "sha256_at_reconciliation": "cc0c45af675f4e3f1877a1f085ce8e2087595572621862de7794e608d3c88720",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/adr/0001-derived-indicators-engine-shape.md",
+      "exists": true,
+      "sha256_at_reconciliation": "c4b75545a979c5b75fb588fd17b4be02361653b1fb4c31990026bf539b5c3650",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/adr/0002-derived-always-reflects-source.md",
+      "exists": true,
+      "sha256_at_reconciliation": "477aecee55c0a5ed9ef663dc6901eeb8d3f593c450449b53395e4a951310587b",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/adr/0003-seo-single-source-server-rendered.md",
+      "exists": true,
+      "sha256_at_reconciliation": "8f4db34bca0bd97866baaf0475a1d6ba01cccd1c9ae6117f6ad0ccd23a837f38",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md",
+      "exists": true,
+      "sha256_at_reconciliation": "352a14ac814e321fec149d3ca292c9dd3bf0d2532aa943256b950f9b3e436edc",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/adr/0006-indicator-card-unification.md",
+      "exists": true,
+      "sha256_at_reconciliation": "08026a6d29ec4b0cb9436176d6cc84c0fe4ef0ed9c4f499ce37f13735f1937a3",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/adr/0008-regional-bounded-context.md",
+      "exists": true,
+      "sha256_at_reconciliation": "1adea7b934d5e479f9a24f533e3196c82dae13f297c74e827db579a9e3d0a546",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/adr/0012-world-multi-provider-official-first-forecasts.md",
+      "exists": true,
+      "sha256_at_reconciliation": "216069cac210c9dd09690e4b8973ccf2b734533709713944bb7ac46b856973ad",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/adr/0013-country-first-url-architecture.md",
+      "exists": true,
+      "sha256_at_reconciliation": "f8f1e7da130fe1b654231f25b07f7e28d08d4a156e730c8abb5ac047988d872c",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/architecture-history.md",
+      "exists": true,
+      "sha256_at_reconciliation": "873653925235036f6d5650b32f239cdf57371f03095c32b1f1ad9291fda5edec",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/code-review/backend-delta-2026-09-30.md",
+      "exists": true,
+      "sha256_at_reconciliation": "3a77673afc8037819e16331e6e5ca18563855aa0e2eb119894f2061f6cd24299",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/code-review/client-mechanism-acceptance-2026-09-30.md",
+      "exists": true,
+      "sha256_at_reconciliation": "839838b807644a6a11df6eaf0fc627628c978818157484b819651eeb25f9ed92",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/code-review/ops-mechanism-acceptance-2026-09-30.md",
+      "exists": true,
+      "sha256_at_reconciliation": "7cf6afc720a657f4c5882a10a097907d9b0a6c7c0db6d304fd328e80bf3d3346",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/code-review/readiness-criteria.md",
+      "exists": true,
+      "sha256_at_reconciliation": "0107fbd45c5be83b0a99805ca69807b32d11bb4f5f73caa38c5a6f184f6517d4",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/data-contracts.md",
+      "exists": true,
+      "sha256_at_reconciliation": "39362e410fe784a19af7857131eb8ee01ecad35619b3358efc50775642fc2d29",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/data_sources.md",
+      "exists": true,
+      "sha256_at_reconciliation": "260c17baf3425c579a66ad999f5495adffd45e18a587e87ca2d4ccf568d14bab",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/enterprise_resilience.md",
+      "exists": true,
+      "sha256_at_reconciliation": "4122da4c09d0ef0f537d5b32d69d6b96dbd2b9d5dee9344184b6b125f1de7b99",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/indexnow-sitemap-backfill-plan.md",
+      "exists": true,
+      "sha256_at_reconciliation": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/knowledge-unknowns.md",
+      "exists": true,
+      "sha256_at_reconciliation": "5db40f731636e701bfa96ac678c91bec9a6ad18f68a5dc6506ff59837f762108",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/knowledge-workflow.md",
+      "exists": true,
+      "sha256_at_reconciliation": "9d58e7e72cdf8eab3c30ed921ef9c71a5c1847ee68e9e74a83dacdf6db688bc3",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/project-knowledge-acceptance.md",
+      "exists": true,
+      "sha256_at_reconciliation": "6321aeb4a3ed09db6280b97b6601088d71ef8f679e1035741b058f8280bcfebe",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/runtime-inventory.json",
+      "exists": true,
+      "sha256_at_reconciliation": "558bbb6d7e8fa913706955a511a68efadee0899a67c7d2580a44dac034cc45c4",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "docs/workflow.md",
+      "exists": true,
+      "sha256_at_reconciliation": "1fad25cbdcc3bd788b1cbecab871eaf7b6e3e9ae77a7d7a0093c39c22a3f3fbf",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/index.html",
+      "exists": true,
+      "sha256_at_reconciliation": "1f400ae86b24179fc34587c820a885061b176a0ebd2b4922aee989ba61b83e35",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/nginx.conf",
+      "exists": true,
+      "sha256_at_reconciliation": "c593b85d6268061bbd2c54b34ae64471019288fce768683d562223ac12833db2",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/package.json",
+      "exists": true,
+      "sha256_at_reconciliation": "82f3f56c883ac36d61bc76ed99c6afef21fa60f77c6d6267bd2378142e5b9a2b",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/public/favicon.ico",
+      "exists": true,
+      "sha256_at_reconciliation": "60d90b00bac7b6b1d9cfe3a270b090b0fabc058eaeeae90b30f8e5c6298c1040",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/public/favicon.png",
+      "exists": true,
+      "sha256_at_reconciliation": "302ecc8948731f828f18df639235f42c4b45e110b43f78c40d3c90d82cd06555",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/public/favicon.svg",
+      "exists": true,
+      "sha256_at_reconciliation": "6074899d86f98cf1d862f4a0315ae668a590ded214cc378afca2fffa5d16dafb",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/App.jsx",
+      "exists": true,
+      "sha256_at_reconciliation": "2f98894ba0a3edc3375d8fba50dc7ba4619c00660a54865435564b0ebcff73a0",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/components/IndicatorChart.jsx",
+      "exists": true,
+      "sha256_at_reconciliation": "f50811001679957e7e1e25d73bb5708f8d90ebaca05a25c05e13444dd364e4c3",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/components/Navbar.jsx",
+      "exists": true,
+      "sha256_at_reconciliation": "5d30707ac4714290236ae85e837e2df3281009649f890ea661cec6a35408c3b7",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/i18n/LocaleProvider.jsx",
+      "exists": true,
+      "sha256_at_reconciliation": "aeee4788e94c64cc26dae21401b89ce4a0d7347ad8bd66b515952fc2cafab7b8",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/i18n/locale.js",
+      "exists": true,
+      "sha256_at_reconciliation": "d679f5e80bb3089c9ed9e29f2a0743c3739d485dcaa0356ab712a047c15f995e",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/index.css",
+      "exists": true,
+      "sha256_at_reconciliation": "b4d3cf034cd0245bbf584eebf2ed1869122f34952116bf81cf920398a6b358a5",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/lib/api.js",
+      "exists": true,
+      "sha256_at_reconciliation": "2cb548c7aba9c8edca344b9464e1268ab696bc0377516584ce7af303d9c1e48a",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/lib/excel.js",
+      "exists": true,
+      "sha256_at_reconciliation": "2ce555e6ec0393f2d18b8eea01dd1c6e7df5d43c1a9964623e21c950603b4d52",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/lib/navItems.js",
+      "exists": true,
+      "sha256_at_reconciliation": "eb189efadbadcbfdfe545254f894d0038fb0f9775fc24e5d0e3ed1cb493e5af7",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/lib/sitePaths.js",
+      "exists": true,
+      "sha256_at_reconciliation": "fab163e2f26bed78f8862ea9bece2bedcf55df0e055ce4745f6572552fdc552d",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/lib/viewModeEngine.js",
+      "exists": true,
+      "sha256_at_reconciliation": "1affbc2824564520e6b0e5482267dfb17caf922cb2eaac95d520200d4b0a9ac2",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/pages/Dashboard.jsx",
+      "exists": true,
+      "sha256_at_reconciliation": "437a78f5b6f8c20fcb17d5deb35e3d5a39baa726c9f501b1612e8d0afd12b187",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/pages/DemographicsPage.jsx",
+      "exists": true,
+      "sha256_at_reconciliation": "99433fa0696ee92f6394b9b1fd7de68330a866702e1e13a80e55073719b43d67",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "frontend/src/pages/IndicatorDetail.jsx",
+      "exists": true,
+      "sha256_at_reconciliation": "7f851482dfe94bf0b1127da34c733073c3f2c3901e493fec1e96a44368d750e6",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "scripts/check-all.sh",
+      "exists": true,
+      "sha256_at_reconciliation": "47186b67442a2b7acabec3c12c93ebb0d8d4dc21e038bf42fdbef2806c48bb8b",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    },
+    {
+      "path": "scripts/deploy.sh",
+      "exists": true,
+      "sha256_at_reconciliation": "2e69bcfcc54e9670de8ed80b10a236db8a8589a540bf8e9465063120bc9f4dcc",
+      "read_basis": "Targeted current source/ADR/context blocks or cited already-read 2026-09-30 mechanism dossier; presence/hash alone is not execution evidence."
+    }
+  ],
+  "preserved_internal_plan_divergences": [
+    {
+      "plan_id": "V2",
+      "a_lines": [
+        352,
+        368
+      ],
+      "b_lines": [
+        495,
+        503
+      ],
+      "issue": "Source research rejects one CbrApiParser, but phase2 later proposes that single parser; current specialized registry resolves implementation lineage."
+    },
+    {
+      "plan_id": "V2",
+      "a_lines": [
+        134,
+        140
+      ],
+      "b_lines": [
+        548,
+        552
+      ],
+      "issue": "Early architecture rejects hardcoded SEO_MAP, later phase3 repeats SEO_MAP; ADR0003/current SSR supersede the ambiguous sketch."
+    }
+  ],
+  "limits": [
+    "All three historical plan bodies were read in full; current source reconciliation is targeted and reuses current dated mechanism dossiers rather than repeating an exhaustive code audit.",
+    "Source frontmatter statuses and prior measurements are retained unchanged and never treated as fresh behavioral proof.",
+    "No old plan command, provider write, job, deploy, test suite, external web request, browser or production mutation was executed for this supplement.",
+    "No shared canonical document, reviews ledger, materials manifest, backlog or memory was edited. Root owns their integration.",
+    "External cabinet properties, indexing gains, legal/commercial outcomes, package publication and full source/data/UX parity require separate accepted evidence. Unverified is not absent.",
+    "The three external plan files are hashed pointers with a semantic supplement, not byte archives in this repository; continued exact-file availability is a separate provenance boundary."
+  ],
+  "verification": {
+    "plan_hashes_rechecked": true,
+    "read_range_union_covers_every_source_line": true,
+    "json_serialization": "UTF-8 JSON with all decision/source IDs explicit",
+    "supplement_only_paths": [
+      "docs/code-review/historical-plan-supplement-2026-09-30.md",
+      "docs/code-review/historical-plan-supplement-2026-09-30.json"
+    ],
+    "supplement_validation": {
+      "json_loads": true,
+      "40_unique_decision_ids": true,
+      "all_source_hashes_unchanged": true,
+      "all_markdown_link_targets_exist": true,
+      "new_plan_commands_executed": false,
+      "new_tests_or_production_probes_run": false
+    },
+    "historical_plan_commands_executed": false
+  }
+}

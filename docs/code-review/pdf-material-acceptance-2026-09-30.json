@@ -1,0 +1,96 @@
+{
+  "date": "2026-09-30",
+  "materials": [
+    {
+      "path": "/Users/iprofi/Documents/ForecastEconomy-Images/2026-09-21/approval-pack/output/pdf/ForecastEconomy-cards.pdf",
+      "sha256": "130dced788e38f70847d873770564a8726374cf8a20d71b1380b488c36711924",
+      "bytes": 9861173,
+      "pages": 58,
+      "role": "historical_design_prototype",
+      "review_scope": "Full extracted text and all rendered pages visually inspected at contact-sheet overview; paired README and manifest read; numbers not revalidated against live data.",
+      "body_reviewed": true,
+      "visual_pages_reviewed": 58,
+      "contents": [
+        "36 themes +21 analytical prototypes,57 images",
+        "time-series,step rate,rank,scatter,seasonality heatmap,M2 decomposition,one-year/partial-year",
+        "forecast separated,source/native units,negative values,null waiting state,map and distribution"
+      ]
+    },
+    {
+      "path": "/Users/iprofi/Documents/ForecastEconomy-Images/2026-09-21/approval-pack/output/pdf/ForecastEconomy-screens.pdf",
+      "sha256": "40c7b09a0da61a4406469d77cda901d553100f9fcefd039adedafcbe0b16e1f8",
+      "bytes": 3994601,
+      "pages": 36,
+      "role": "historical_design_prototype",
+      "review_scope": "Full extracted text and all rendered pages visually inspected at contact-sheet overview; paired README and manifest read; numbers not revalidated against live data.",
+      "body_reviewed": true,
+      "visual_pages_reviewed": 36,
+      "contents": [
+        "21 CSS viewport profiles +14 scenario pairs",
+        "mobile standalone graph and download card distinct",
+        "desktop related context,table/methodology/navigation",
+        "historical browser emulation,not physical device proof"
+      ]
+    },
+    {
+      "path": "/Users/iprofi/Downloads/Telegram Desktop/Project Plan-5.pdf",
+      "sha256": "7922ad60b43935829871144d61e33b7d9645a5014a63ddc1b757366ec878e30b",
+      "bytes": 7396219,
+      "pages": 23,
+      "role": "unrelated_project_document",
+      "review_scope": "Title/initial pages and complete text relevance scan: no ForecastEconomy references. Excluded from platform dossier, not labelled complete content review.",
+      "body_reviewed": false,
+      "visual_pages_reviewed": 0
+    },
+    {
+      "path": "/Users/iprofi/Downloads/Telegram Desktop/Защита_команда_Екатерины.pptx.pdf",
+      "sha256": "d4c41e32ea18038b9d4f3c32dff4fdbad23b379a1e0daa7fa6d967c78aed99cd",
+      "bytes": 526493,
+      "pages": 17,
+      "role": "unrelated_project_document",
+      "review_scope": "Title/initial pages and complete text relevance scan: no ForecastEconomy references. Excluded from platform dossier, not labelled complete content review.",
+      "body_reviewed": false,
+      "visual_pages_reviewed": 0
+    },
+    {
+      "path": "/Users/iprofi/Downloads/Telegram Desktop/Код.pdf",
+      "sha256": "0ccc9abbc1ac943ce1b83b2191c6b3a42963dd328b2316549ba3f162bedd32a0",
+      "bytes": 754203,
+      "pages": 51,
+      "role": "unrelated_project_document",
+      "review_scope": "Title/initial pages and complete text relevance scan: no ForecastEconomy references. Excluded from platform dossier, not labelled complete content review.",
+      "body_reviewed": false,
+      "visual_pages_reviewed": 0
+    }
+  ],
+  "paired_sources": [
+    {
+      "path": "/Users/iprofi/Documents/ForecastEconomy-Images/2026-09-21/approval-pack/README.md",
+      "sha256": "e19f8444ccf99a1fe0b945d538f244199259c961a63881ba069f68624c5aa0cd"
+    },
+    {
+      "path": "/Users/iprofi/Documents/ForecastEconomy-Images/2026-09-21/approval-pack/manifest.json",
+      "sha256": "6555b7e72fed161069eeb06c2ea8cd854e896601aa54bd2edb3333dc94b33cdf"
+    },
+    {
+      "path": "/Users/iprofi/Documents/ForecastEconomy-Images/2026-09-21/approval-pack/responsive-qa.json",
+      "sha256": "1b1a559e35f38c71069f77530b0c137618a642df716e3dff9c64b356bfc99868"
+    }
+  ],
+  "saved_qa": {
+    "records": 294,
+    "errors_records": 0,
+    "engines": {
+      "chromium": 98,
+      "webkit": 98,
+      "firefox": 98
+    },
+    "rerun": false
+  },
+  "limits": [
+    "PDFs are prototypes dated21Sep,not current production renders or universal data contracts.",
+    "At21Sep all_approved=false; later approval/current implementation is traced separately in24Sep main design docs.",
+    "Contact-sheet inspection identifies visual structures/states,not exact numerical acceptance of every small caption.",
+    "Unrelated commercial/academic PDFs remain untouched; raw text and render intermediates are private ignored files."
+  ]
+}

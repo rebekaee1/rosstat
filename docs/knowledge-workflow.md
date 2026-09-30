@@ -62,9 +62,15 @@
 
 ```bash
 node scripts/code-review-symbols.mjs --tracked-only
+node scripts/build-client-mechanism-inventory.mjs --build
+python3 scripts/build-mechanism-inventory.py --build
+# После generated inventories: их Markdown тоже входит в ссылки индикаторов.
+backend/.venv/bin/python scripts/build-indicator-index.py
+python3 scripts/repo-inventory.py
 python3 scripts/audit-code-documentation.py --build --tracked-only
 # Локальный изолированный Python с graphifyy==0.9.69:
 /Users/iprofi/.codex/tools/graphify-venv/bin/python scripts/build-project-terrain.py --refresh --tracked-only
+python3 scripts/classify-graph-omissions.py
 # Если среда Graphify находится в другом месте, используй её Python.
 ./scripts/check-project-knowledge.sh
 ./scripts/check-all.sh
@@ -75,6 +81,9 @@ python3 scripts/audit-code-documentation.py --build --tracked-only
 к серверу; для сохранённого снимка использует тот же input scope. В обычном
 check/CI артефакты проверяются без перезаписи. HTML не хранится в Git:
 `python3 scripts/build-project-terrain.py --render` восстанавливает просмотрщик.
+Рабочий срез index/repo-inventory с `--include-untracked` — отдельное наблюдение;
+его нельзя сохранять как карту `main`. Если backend venv отсутствует, генератор
+индикаторов требует Python с установленными backend dependencies.
 
 ## 4. Условие завершения и передача
 

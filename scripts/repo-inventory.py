@@ -12,6 +12,12 @@ build/*.lock/бинарники). Для каждого файла: путь, ч
 Запуск:
     python scripts/repo-inventory.py            # пишет docs/repo-inventory.md
     python scripts/repo-inventory.py --stdout    # печатает в stdout, не пишет файл
+    python scripts/repo-inventory.py --include-untracked  # необязательный рабочий срез
+
+По умолчанию используется только Git tracked/index, включая новые git add
+файлы. --include-untracked добавляет nonignored рабочие файлы; такой срез
+не подтверждает переносимый состав main. Если Git недоступен, сохраняется
+filesystem fallback с прежними фильтрами.
 """
 from __future__ import annotations
 
@@ -24,22 +30,26 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "docs" / "repo-inventory.md"
 
 
-def _git_tracked() -> list[Path] | None:
-    """git-tracked + untracked-not-ignored файлы (детерминированно; авто-исключает
-    gitignored скрэтч *.temp.txt и build-артефакты dist/; стабильно до и после
-    коммита новых файлов). None — git недоступен."""
+def _git_tracked(include_untracked: bool = False) -> list[Path] | None:
+    """Git tracked/index; nonignored untracked только по явному запросу.
+
+    Новые indexed файлы входят до commit. None сохраняет filesystem fallback
+    вызывающего кода, если Git недоступен.
+    """
     try:
         tracked = subprocess.run(
             ["git", "ls-files", "-z"], cwd=ROOT,
             capture_output=True, text=True, check=True,
         )
-        others = subprocess.run(
-            ["git", "ls-files", "-z", "--others", "--exclude-standard"], cwd=ROOT,
-            capture_output=True, text=True, check=True,
-        )
+        rels = set(tracked.stdout.split("\0"))
+        if include_untracked:
+            others = subprocess.run(
+                ["git", "ls-files", "-z", "--others", "--exclude-standard"], cwd=ROOT,
+                capture_output=True, text=True, check=True,
+            )
+            rels.update(others.stdout.split("\0"))
     except (OSError, subprocess.CalledProcessError):
         return None
-    rels = set(tracked.stdout.split("\0")) | set(others.stdout.split("\0"))
     return [ROOT / r for r in sorted(rels) if r]
 
 # Папки, которые целиком пропускаем (мусор / производное / venv).
@@ -75,8 +85,8 @@ def _est_tokens(text: str) -> int:
     return len(text) // 4
 
 
-def iter_files() -> list[Path]:
-    tracked = _git_tracked()
+def iter_files(include_untracked: bool = False) -> list[Path]:
+    tracked = _git_tracked(include_untracked=include_untracked)
     candidates = tracked if tracked is not None else [
         p for p in ROOT.rglob("*") if p.is_file()
     ]
@@ -103,8 +113,8 @@ def _top_group(rel: str) -> str:
     return head if "/" in rel else "(root)"
 
 
-def build() -> str:
-    files = iter_files()
+def build(include_untracked: bool = False) -> str:
+    files = iter_files(include_untracked=include_untracked)
     rows = []
     total_lines = 0
     total_tokens = 0
@@ -138,6 +148,14 @@ def build() -> str:
     out.append("")
     out.append(f"**Сгенерировано:** {_dt.date.today().isoformat()}")
     out.append("")
+    out.append("**Scope:** " + (
+        "Git tracked/index + nonignored untracked (`--include-untracked`), необязательный рабочий срез."
+        if include_untracked else
+        "Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят."
+    ))
+    out.append("Если Git недоступен, применяется filesystem fallback с прежними фильтрами; "
+               "такой срез не подтверждает состав main.")
+    out.append("")
     out.append(f"**Файлов:** {len(rows)}  ·  **Строк:** {total_lines:,}  ·  "
                f"**Токенов (≈):** {total_tokens:,}".replace(",", " "))
     out.append("")
@@ -160,7 +178,7 @@ def build() -> str:
 
 
 def main() -> int:
-    md = build()
+    md = build(include_untracked="--include-untracked" in sys.argv)
     if "--stdout" in sys.argv:
         print(md)
         return 0

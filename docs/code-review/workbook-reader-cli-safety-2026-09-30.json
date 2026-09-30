@@ -1,0 +1,74 @@
+{
+  "date": "2026-09-30",
+  "scope": "CLI output safety correction to read-only helper; no app/runtime/source material changes",
+  "script": "scripts/read-project-workbooks.py",
+  "prior_script_sha256": "b1a0bc545b0f2667098cc8b1e82d230e3368f036db98301c631444be47674d9f",
+  "current_script_sha256": "8b4f6c0cef46bbf2495090f243acf6caff351ddc0c050baec6485117c1173d90",
+  "guard": "Output/summary require .json suffix, resolved paths distinct from all source XLSX/self and each other; checked before extraction/writes",
+  "isolated_misuse_fixture": [
+    {
+      "case": "xlsx_destination",
+      "exit_code": 2,
+      "sources_and_reader_unchanged": true,
+      "rejected_before_output": true
+    },
+    {
+      "case": "json_symlink_to_source",
+      "exit_code": 2,
+      "sources_and_reader_unchanged": true,
+      "rejected_before_output": true
+    },
+    {
+      "case": "json_symlink_to_reader",
+      "exit_code": 2,
+      "sources_and_reader_unchanged": true,
+      "rejected_before_output": true
+    },
+    {
+      "case": "same_output_summary",
+      "exit_code": 2,
+      "sources_and_reader_unchanged": true,
+      "rejected_before_output": true
+    }
+  ],
+  "real_source_run": {
+    "exit_code": 0,
+    "workbooks": 13,
+    "source_unchanged_before_after": true,
+    "source_sha256_before": {
+      "docs/research/brazil-official-sources.xlsx": "56b6b74c76b986237587e39f19ecb3fae62db5bf3170b7bd9546821a9623db6f",
+      "docs/research/catalog-scan.xlsx": "41c72daa4fb9de204f37129c5e3d167bbb825a1740fec1ac3838afbbcfb60a8a",
+      "docs/research/china-official-sources.xlsx": "a3f7bac69696435237687e0400d0359a2b3756be99417f12411d3adade24db60",
+      "docs/research/france-official-sources.xlsx": "05cd2f29a403fb267da3ca2d9b59751f5421f2cf7168b77fc6b2c2e1b05661a8",
+      "docs/research/germany-official-sources.xlsx": "ade56805105abc8a5ad1c1bd681f8d7e88a47478dc8041c3742e9e2936e000e9",
+      "docs/research/india-official-sources.xlsx": "12032f633fe04ec1ef0fdd2582008e17a55c42f3c16d3813ef6e17a121dc8863",
+      "docs/research/intl-official-sources.xlsx": "317243ccf87fee465667636f231fc26e4879f725115a8ad31de7966cbb8672b4",
+      "docs/research/japan-official-sources.xlsx": "14698ceb0bc1dffcf1784d9d30c6fa46adabe8660d71835b4253ab1b5a03bc7c",
+      "docs/research/russia-fpsr-official-sources.xlsx": "a65fc039de33066dfeb4fbe0768b6b528daeb8a6b6170a5608efd082628966de",
+      "docs/research/south-korea-official-sources.xlsx": "41354109cb35c16a4effd5e8defe668265bfe62c9a4868477b60f25988a011bf",
+      "docs/research/turkey-official-sources.xlsx": "b661aac648e124f3ee80e598a82148f005e2331bf3070eb0f148bc5fc55b746b",
+      "docs/research/uk-official-sources.xlsx": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf",
+      "docs/research/usa-official-sources.xlsx": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710"
+    },
+    "source_sha256_after": {
+      "docs/research/brazil-official-sources.xlsx": "56b6b74c76b986237587e39f19ecb3fae62db5bf3170b7bd9546821a9623db6f",
+      "docs/research/catalog-scan.xlsx": "41c72daa4fb9de204f37129c5e3d167bbb825a1740fec1ac3838afbbcfb60a8a",
+      "docs/research/china-official-sources.xlsx": "a3f7bac69696435237687e0400d0359a2b3756be99417f12411d3adade24db60",
+      "docs/research/france-official-sources.xlsx": "05cd2f29a403fb267da3ca2d9b59751f5421f2cf7168b77fc6b2c2e1b05661a8",
+      "docs/research/germany-official-sources.xlsx": "ade56805105abc8a5ad1c1bd681f8d7e88a47478dc8041c3742e9e2936e000e9",
+      "docs/research/india-official-sources.xlsx": "12032f633fe04ec1ef0fdd2582008e17a55c42f3c16d3813ef6e17a121dc8863",
+      "docs/research/intl-official-sources.xlsx": "317243ccf87fee465667636f231fc26e4879f725115a8ad31de7966cbb8672b4",
+      "docs/research/japan-official-sources.xlsx": "14698ceb0bc1dffcf1784d9d30c6fa46adabe8660d71835b4253ab1b5a03bc7c",
+      "docs/research/russia-fpsr-official-sources.xlsx": "a65fc039de33066dfeb4fbe0768b6b528daeb8a6b6170a5608efd082628966de",
+      "docs/research/south-korea-official-sources.xlsx": "41354109cb35c16a4effd5e8defe668265bfe62c9a4868477b60f25988a011bf",
+      "docs/research/turkey-official-sources.xlsx": "b661aac648e124f3ee80e598a82148f005e2331bf3070eb0f148bc5fc55b746b",
+      "docs/research/uk-official-sources.xlsx": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf",
+      "docs/research/usa-official-sources.xlsx": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710"
+    },
+    "sheets": 37,
+    "nonempty_cells": 94224
+  },
+  "limits": "Focused output-safety checks and real source-only read; no full suite/Excel/app/API/production execution; original source contents not copied to evidence",
+  "core_material_report_sha256_unchanged": "f2849aaf74b18e219b6f071f97e383b5ba2764d1bcdd563ced83626051734836",
+  "core_material_json_sha256_unchanged": "d3637ae305eaa2366ebc2d74381f373a6a044ad548d4181cda8c66577ec6f637"
+}

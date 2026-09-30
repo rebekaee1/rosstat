@@ -27,6 +27,12 @@ config-driven движок, рендерятся generic, даже если у �
 Запуск:
     python scripts/build-indicator-index.py           # пишет docs/indicator-index.{json,md}
     python scripts/build-indicator-index.py --check    # падает, если карта расходится с кодом
+    python scripts/build-indicator-index.py --include-untracked  # необязательный рабочий срез
+
+Ссылки на файлы по умолчанию собираются только из Git tracked/index, включая
+новые git add файлы. --include-untracked добавляет nonignored рабочие файлы;
+его результат не является переносимой main-картой. Без Git сохраняется
+filesystem fallback с прежними фильтрами.
 """
 from __future__ import annotations
 
@@ -185,26 +191,31 @@ def _strip_stamp(text: str) -> str:
     )
 
 
-def _git_tracked() -> list[Path] | None:
-    """git-tracked + untracked-not-ignored — детерминированно, без gitignored
-    скрэтча/build, стабильно до и после коммита новых файлов."""
+def _git_tracked(include_untracked: bool = False) -> list[Path] | None:
+    """Git tracked/index; nonignored untracked только по явному запросу.
+
+    Новые indexed файлы входят до commit. None сохраняет filesystem fallback
+    вызывающего кода, если Git недоступен.
+    """
     try:
         tracked = subprocess.run(
             ["git", "ls-files", "-z"], cwd=ROOT,
             capture_output=True, text=True, check=True,
         )
-        others = subprocess.run(
-            ["git", "ls-files", "-z", "--others", "--exclude-standard"], cwd=ROOT,
-            capture_output=True, text=True, check=True,
-        )
+        rels = set(tracked.stdout.split("\0"))
+        if include_untracked:
+            others = subprocess.run(
+                ["git", "ls-files", "-z", "--others", "--exclude-standard"], cwd=ROOT,
+                capture_output=True, text=True, check=True,
+            )
+            rels.update(others.stdout.split("\0"))
     except (OSError, subprocess.CalledProcessError):
         return None
-    rels = set(tracked.stdout.split("\0")) | set(others.stdout.split("\0"))
     return [ROOT / r for r in sorted(rels) if r]
 
 
-def _text_files() -> list[Path]:
-    tracked = _git_tracked()
+def _text_files(include_untracked: bool = False) -> list[Path]:
+    tracked = _git_tracked(include_untracked=include_untracked)
     candidates = tracked if tracked is not None else [
         p for p in ROOT.rglob("*") if p.is_file()
     ]
@@ -245,7 +256,7 @@ def _classify(rel: str) -> str:
     return "other"
 
 
-def build_file_refs(codes: list[str]) -> dict[str, list[dict]]:
+def build_file_refs(codes: list[str], include_untracked: bool = False) -> dict[str, list[dict]]:
     # Один комбинированный regex со всеми кодами (длинные — первыми), чтобы
     # 'cpi-food' матчился раньше 'cpi'. Границы: символ-код = [a-z0-9-];
     # слева/справа не должно быть [A-Za-z0-9_-].
@@ -253,7 +264,7 @@ def build_file_refs(codes: list[str]) -> dict[str, list[dict]]:
     alternation = "|".join(re.escape(c) for c in ordered)
     pattern = re.compile(rf"(?<![A-Za-z0-9_-])({alternation})(?![A-Za-z0-9_-])")
     refs: dict[str, list[tuple[str, int]]] = defaultdict(list)
-    for p in _text_files():
+    for p in _text_files(include_untracked=include_untracked):
         rel = str(p.relative_to(ROOT))
         try:
             lines = p.read_text(encoding="utf-8").splitlines()
@@ -306,7 +317,7 @@ def resolve_forecast_strategy(code: str, mc: dict) -> tuple[str | None, str]:
 #  Сборка карты
 # ---------------------------------------------------------------------------
 
-def build_index() -> dict:
+def build_index(include_untracked: bool = False) -> dict:
     py = load_python_sources()
     js = parse_legacy_js()
 
@@ -387,7 +398,7 @@ def build_index() -> dict:
     counts = defaultdict(int)
 
     all_file_codes = list(codes)
-    file_refs = build_file_refs(all_file_codes)
+    file_refs = build_file_refs(all_file_codes, include_untracked=include_untracked)
 
     for code in codes:
         ind = indicators[code]
@@ -461,7 +472,7 @@ def build_index() -> dict:
     return index
 
 
-def render_md(index: dict) -> str:
+def render_md(index: dict, include_untracked: bool = False) -> str:
     s = index["summary"]
     out: list[str] = []
     out.append("# Indicator index — карта индикаторов")
@@ -473,6 +484,14 @@ def render_md(index: dict) -> str:
     )
     out.append("")
     out.append(head_stamp())
+    out.append("")
+    out.append("**Scope файлов-ссылок:** " + (
+        "Git tracked/index + nonignored untracked (`--include-untracked`), необязательный рабочий срез."
+        if include_untracked else
+        "Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят."
+    ))
+    out.append("Если Git недоступен, применяется filesystem fallback с прежними фильтрами; "
+               "такой срез не подтверждает состав main.")
     out.append("")
     out.append("## Как пользоваться (для агента)")
     out.append("")
@@ -650,9 +669,10 @@ def render_dead_code(index: dict) -> str:
 
 
 def main() -> int:
-    index = build_index()
+    include_untracked = "--include-untracked" in sys.argv
+    index = build_index(include_untracked=include_untracked)
     index["completeness"] = completeness.build_completeness()
-    md = render_md(index)
+    md = render_md(index, include_untracked=include_untracked)
     comp_md = completeness.render_md(index["completeness"])
     dead = render_dead_code(index)
     json_text = json.dumps(index, ensure_ascii=False, indent=2, sort_keys=False) + "\n"

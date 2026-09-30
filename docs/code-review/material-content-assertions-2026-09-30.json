@@ -1,0 +1,197 @@
+{
+  "docs/research/brazil-official-sources.xlsx": {
+    "sha256": "56b6b74c76b986237587e39f19ecb3fae62db5bf3170b7bd9546821a9623db6f",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "ebbdd43bf018afdb958708b9c6415e0d457d56ae6a00c3643706b4a20afe7787",
+      "255912a6e7dab762b22f7b71708cce992a60e620fb06137c6401c8758ad80079"
+    ]
+  },
+  "docs/research/catalog-scan.xlsx": {
+    "sha256": "41c72daa4fb9de204f37129c5e3d167bbb825a1740fec1ac3838afbbcfb60a8a",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "6d1663ae9cb3e3e1b7ecf2985590ad9e4a613668a4ea88a35432ee7e3a2e650b",
+      "1a971704aa6f46fbc51e8835b8488335ff95f5715b7de558ebfdeabdd091853e"
+    ]
+  },
+  "docs/research/china-official-sources.xlsx": {
+    "sha256": "a3f7bac69696435237687e0400d0359a2b3756be99417f12411d3adade24db60",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "eb6f1f11068f0661fc05bc03e85611ce4c97bc2314dd6843ca3ec185b1e4f9af",
+      "086e99374f89ba98a20f1519c6b2df4b78bbd17dfa087a3c2dd7ca06d7257dcd"
+    ]
+  },
+  "docs/research/france-official-sources.xlsx": {
+    "sha256": "05cd2f29a403fb267da3ca2d9b59751f5421f2cf7168b77fc6b2c2e1b05661a8",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "e7f6d230902469b7fb9f39db7a02ef25202603b3338579d9230013e9dc3988a6",
+      "9f7912b73b3d993829da1fdcdd0cf8747263ba770d78ed543c9c777503257e20"
+    ]
+  },
+  "docs/research/germany-official-sources.xlsx": {
+    "sha256": "ade56805105abc8a5ad1c1bd681f8d7e88a47478dc8041c3742e9e2936e000e9",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "e9942bbd70b696bf2aee5f4152d0c455ba93dac7d6524dafc2d7cada8e95e8bf",
+      "cb2c6e20ec1330c1c52ee133ae5fce830d391fd647a86ab65dcd66fe41d8568f"
+    ]
+  },
+  "docs/research/india-official-sources.xlsx": {
+    "sha256": "12032f633fe04ec1ef0fdd2582008e17a55c42f3c16d3813ef6e17a121dc8863",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "5e93b8833e4e95cb0cba77df39a98bb73cab4e69696fca137423b0d28cf6c69c",
+      "0f8b4d96b05ac1698f9f250a1770f74d43a466ad0d6bff22636d1b45eecf7f91"
+    ]
+  },
+  "docs/research/intl-official-sources.xlsx": {
+    "sha256": "317243ccf87fee465667636f231fc26e4879f725115a8ad31de7966cbb8672b4",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "3d2ba26d3b742a0c0e009ed0d2d51e9e74d6a39d886782426f63765c65c769ac",
+      "15b1fb9a30c5544dcc58af5ff846f64c33c245c9743b5add76051a9faf39a0bf",
+      "b2b4ce7f146b69065b34f9f483f0b7d2d34f675933d74546d24fff4903deac1d",
+      "ea0de19ec5a1bda99a7a6ae561ea7843e0ff4c41d0e33004cf50bc7d17df4521",
+      "d9bd6e4d5a0c33f90e82bc810f08129ce34fb13c4d3c8d5289eb7a1d0f760af7",
+      "e5067a3202b5453c0d0dee5552cf86bbf0067af858da9817429d517ddede8fdd",
+      "4c49558331eded054e3f7fd3dfa890db7c5a43ef9d84fdf80abfdc7700dab3a9",
+      "d907134aadab0b6f919db551e5bc2f0b718fb463152dd87b784c3953c0a2fe61",
+      "dbce7a9adfe76a56c9e6efb691d0efa08ee1334be6e80b210764d96e6f41e731",
+      "a1891a502319984aca10f6a0dfd83febe227300846f5d8952b4161cee686d2fd",
+      "d4e01f1214dab15b7040cfff20c04f9488b3df708c334c7232a3784df26130a9",
+      "9058affec523d04d7665d11bc0925e2b80a11677048b7ad0ddab457cda7cb94f",
+      "b47cd3ff31a2983142ff6b489ebc8b6c1b5e449990a886c27e0c5f329d0a723f"
+    ]
+  },
+  "docs/research/japan-official-sources.xlsx": {
+    "sha256": "14698ceb0bc1dffcf1784d9d30c6fa46adabe8660d71835b4253ab1b5a03bc7c",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "a9ed59aa88028b98e6c43ac4de478b06cdda420ec0095e6b6cb7f0d774f7dcc7",
+      "b5a7bc1f5102feede4a129c1d8ef11d002a002e6ad6cf23f830dfa880da5f2c6"
+    ]
+  },
+  "docs/research/russia-fpsr-official-sources.xlsx": {
+    "sha256": "a65fc039de33066dfeb4fbe0768b6b528daeb8a6b6170a5608efd082628966de",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "1abc79cb803c40683f09b83ff22751f0d56b3e66964e0047425fb5cff347e7af",
+      "2f8db55c4942c3a690c5b09d13fb79ecc93c2a2f1d8103e630a8760ec99ceae4"
+    ]
+  },
+  "docs/research/south-korea-official-sources.xlsx": {
+    "sha256": "41354109cb35c16a4effd5e8defe668265bfe62c9a4868477b60f25988a011bf",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "9d7ac21b576da966820f7a33e79b60fa537e2761d4ec7366137d7852fe3f4bf1",
+      "c4d416cf4872ce4e8cfc869d91b358ce243adaf5e572597fd9d39984baf1804a"
+    ]
+  },
+  "docs/research/turkey-official-sources.xlsx": {
+    "sha256": "b661aac648e124f3ee80e598a82148f005e2331bf3070eb0f148bc5fc55b746b",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "a39c3876e8cdb7956ef1f42e96241e4f997bb13eb8202f4a4a895c9ac27f4072",
+      "c5f961775d9fa51577a1d49de931e856da741f792615cdb2be0b7ed1bcd1caa7"
+    ]
+  },
+  "docs/research/uk-official-sources.xlsx": {
+    "sha256": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "64fc11627ea6a494b1761a54620f51816c9ff3401e97ab1192144b47a004fc02",
+      "2e890282c79fa8878e98bb003ebd20f0cced088fc19665c915370db2d82c1234"
+    ]
+  },
+  "docs/research/usa-official-sources.xlsx": {
+    "sha256": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710",
+    "classification": "historical_research",
+    "review_status": "structured_source_read_plus_semantic_review",
+    "body_reviewed_in_this_pass": false,
+    "method": "All ZIP members and worksheet nonempty values/formulas/annotations extracted; schema, source notes, units/cadence and selected decisive cells interpreted; no current endpoint or cellwise fact validation.",
+    "evidence": "docs/code-review/material-content-acceptance-2026-09-30.md",
+    "structured_cell_content_sha256": [
+      "58af692ac241141b00d04c953cd2bba700f06c30d7bd3c61c9338f1b20a728d4",
+      "320898810a7fed659fcce3f76719f3f5f2bd4e95c4fd33db4fc2eb163c2bf50b"
+    ]
+  },
+  "docs/code-review/material-content-acceptance-2026-09-30.md": {
+    "sha256": "f2849aaf74b18e219b6f071f97e383b5ba2764d1bcdd563ced83626051734836",
+    "classification": "current_task_evidence",
+    "review_status": "authored_and_current_body_reviewed",
+    "body_reviewed_in_this_pass": true,
+    "method": "Authored source conclusions, exact evidence references and honest status boundaries; metadata index is not new full semantic reading of every source."
+  },
+  "docs/code-review/material-content-acceptance-2026-09-30.json": {
+    "sha256": "d3637ae305eaa2366ebc2d74381f373a6a044ad548d4181cda8c66577ec6f637",
+    "classification": "current_task_evidence",
+    "review_status": "artifact_schema_and_provenance_reviewed",
+    "body_reviewed_in_this_pass": false,
+    "method": "Authored source conclusions, exact evidence references and honest status boundaries; metadata index is not new full semantic reading of every source."
+  },
+  "docs/code-review/material-content-reader-reviews-2026-09-30.jsonl": {
+    "sha256": "4dcc0258e5345124503230a9bca89dce134d147cc27bad8772cc048f8db3764c",
+    "classification": "current_task_evidence",
+    "review_status": "manual_review_proposal_authored_schema_checked",
+    "body_reviewed_in_this_pass": false,
+    "method": "Script full source read plus authored markdown and artifact-schema rows; original external/private materials are not a new blanket full-body review."
+  },
+  "docs/code-review/workbook-reader-cli-safety-2026-09-30.json": {
+    "sha256": "f5ae0ec25b3ef8ff4933c34d753c86fa2b83ff7ea75adc1f32b4664ba7a76820",
+    "classification": "current_task_evidence",
+    "review_status": "authored_focused_cli_source_safety_evidence",
+    "body_reviewed_in_this_pass": false,
+    "method": "Executed isolated rejection fixture plus all13actual books unchanged before/after; exact before/current script versions; structured evidence not app acceptance."
+  }
+}

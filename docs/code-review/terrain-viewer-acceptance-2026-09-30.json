@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-30",
+  "scope": "Current offline terrain viewer, App source elements at two viewports; not application UI",
+  "checks": [
+    {
+      "width": 1440,
+      "records": 213,
+      "expected": 213,
+      "overflow": false,
+      "errors": [],
+      "external_requests": 0
+    },
+    {
+      "width": 390,
+      "records": 213,
+      "expected": 213,
+      "overflow": false,
+      "errors": [],
+      "external_requests": 0
+    }
+  ]
+}

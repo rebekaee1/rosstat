@@ -25,6 +25,10 @@ const fixture = {
     available: true, current_now: 1, counts: { files: 2, definitions: 1, annotated_definitions: 1 },
     files: { 'backend/app/main.py': { status: 'reviewed', current: true, summary: '<img src=x onerror=alert(1)>', contracts: ['Request lifecycle'], elements: [{ name: 'lifespan', purpose: 'Register background tasks', verification: 'body_reviewed', line: 1, end_line: 2 }] } },
   },
+  mechanisms: {'frontend/src/App.jsx': { current: true, records: [
+    { inventory_kind: 'functions', kind: 'ArrowFunctionExpression', name: null, owner: 'App', line: 2, end_line: 3 },
+    { inventory_kind: 'jsx_handlers', event: 'onClick', expression: '<img src=x onerror=alert(1)>', line: 2, end_line: 2 },
+  ]}},
 };
 const template = fs.readFileSync(path.join(root, 'scripts/project-terrain-template.html'), 'utf8');
 const html = template.replace('__TERRAIN_DATA__', JSON.stringify(fixture).replaceAll('<', '\\u003c'));
@@ -47,5 +51,8 @@ assert.equal(document.getElementById('review-filter').value, '', 'Matrix selecti
 assert.equal(count(), 2);
 document.querySelector('[data-path="frontend/src/App.jsx"]').click();
 assert.match(document.getElementById('detail').textContent, /ещё нет содержательной рецензии/);
+assert.match(document.getElementById('detail').textContent, /Независимые элементы: 2/);
+assert.match(document.getElementById('detail').textContent, /ArrowFunctionExpression/);
+assert.equal(document.querySelector('#detail img'), null, 'Mechanism expressions must remain text');
 dom.window.close();
 console.log('Terrain DOM: search, review filters, drilldown reset, missing review and text escaping passed');

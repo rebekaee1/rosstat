@@ -1,0 +1,17 @@
+{
+  "date_msk": "2026-09-30",
+  "location": "/Users/iprofi/Downloads/Минская улица 2.m4a",
+  "sha256": "5e3f1422e7e7b2d7380056253ce5029efd5878c582d6d1b0945338edd688c195",
+  "bytes": 1412058,
+  "duration_seconds": 164.8,
+  "method": "Local cached mlx-community/whisper-large-v3-turbo, Russian, temperature0; full automatic transcript read, no external API/audio upload",
+  "segments": 17,
+  "review_status": "automatic_transcription_content_review_for_project_relevance",
+  "result": "Current file contains unrelated personal conversation; excluded from project requirements. Raw audio/transcript not copied to Git.",
+  "historical_link": "Cursor e4580183...:1526 -> derivative REVVEKA/VOICE/tmp/minskaya-ulitsa-2/transcript.txt",
+  "provenance_limit": "Historical derivative has project UI requirements; filename alone does not establish that it was produced from these current source bytes. Original version identity unknown.",
+  "not_claimed": [
+    "Diarization or manual acoustic correctness of every word",
+    "Current audio as evidence for historical hero-value requirements"
+  ]
+}

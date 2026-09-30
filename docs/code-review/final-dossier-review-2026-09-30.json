@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-09-30T15:59:56.015445+00:00",
+  "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+  "scope": "Independent knowledge-tool/source/portable artifact review; no runtime changes or production calls.",
+  "sources": [
+    {
+      "path": "scripts/build-client-mechanism-inventory.mjs",
+      "sha256": "2c21357a670d7e8565fd981177ccd895c47154cc6844dda98728630139f6533f"
+    },
+    {
+      "path": "scripts/classify-graph-omissions.py",
+      "sha256": "d2cc4832e6d366ac44ede2945ad73a69c11a32c4a3c834d625fc898f4a6f4753"
+    },
+    {
+      "path": "scripts/build-project-terrain.py",
+      "sha256": "c57e8fa946b8a6ac359071ceb367f5ae177c028cf0447ca99774d3616ff6d72f"
+    },
+    {
+      "path": "scripts/project-terrain-template.html",
+      "sha256": "8dbe3496eb5892860eaf70706e9e1d2fbc27f96e11efd7acfb69e9c4b689d331"
+    },
+    {
+      "path": "scripts/check-project-knowledge.sh",
+      "sha256": "e80d214b65adfea9d31223b271a57c6aad2eb9486e927deaf9467bb372e659dd"
+    },
+    {
+      "path": "scripts/check-all.sh",
+      "sha256": "47186b67442a2b7acabec3c12c93ebb0d8d4dc21e038bf42fdbef2806c48bb8b"
+    },
+    {
+      "path": "scripts/tests/test_mechanism_inventories.py",
+      "sha256": "28cdb9ec0dbff72938192daf9e2ffdbbd9a08d1e738cd8cd0fea08e148da4e48"
+    },
+    {
+      "path": "scripts/test_project_terrain.mjs",
+      "sha256": "e67bec7eae17f652cd68a0942e5a086e8bcd18cdef3b360e0945c9c5aff5c2d0"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "0267da48e264c0236c310ff682a47c961cf14407898801f74fe91c712f6f1dfd"
+    },
+    {
+      "path": "docs/project-knowledge-acceptance.md",
+      "sha256": "233a58ed22327f1689b4baa91ea6b1452f2e731de1a21823a3dbe9b27a0fcf11"
+    },
+    {
+      "path": "docs/knowledge-unknowns.md",
+      "sha256": "960fff7428307c51ddad4e68a6639e23d2cca6ea895632dbc860395c12c9fc81"
+    }
+  ],
+  "findings": [
+    {
+      "id": "DR01",
+      "severity": "P2",
+      "status": "fixed_and_independently_retested",
+      "source": "scripts/build-project-terrain.py:429",
+      "before": "JSON/Markdown valid + obsolete local HTML returned check exit0; HTML overlays were outside material identity coverage.",
+      "after": "Present ignored HTML is compared against render(data); absent ignored HTML explicitly permitted in clean clones with a message.",
+      "evidence": "Actual check/render functions: obsolete present HTML exit1; absent HTML exit0; 4 independent regressions passed."
+    },
+    {
+      "id": "DR02",
+      "severity": "P2",
+      "status": "fixed_and_independently_retested",
+      "source": "scripts/build-project-terrain.py:342",
+      "before": "Backend MCP fallback with 7 tools and no client inventory yielded only1 tool with current=True. The loop used its newly appended first row as deduplication evidence.",
+      "after": "Client MCP paths are captured before backend loop. All7 backend tools survive; existing7 client tools are not duplicated.",
+      "evidence": "Actual mechanism_overlay: fallback7/7 and client-prefilled7/7; source current flags true."
+    },
+    {
+      "id": "DR03",
+      "severity": "P2",
+      "status": "fixed_and_independently_retested",
+      "source": "scripts/classify-graph-omissions.py:117",
+      "before": "Saved classification had no portable terrain identity check; refreshed terrain could retain stale evidence while material SHA coverage stayed green.",
+      "after": "terrain_sha256 and count/category checks run via --check in check-project-knowledge.sh; no local raw Graphify artifact is needed for CI.",
+      "evidence": "Existing new regression checks unchanged identity accepted, changed terrain bytes rejected and missing records rejected; all6 root regressions passed."
+    },
+    {
+      "id": "DR04",
+      "severity": "P3",
+      "status": "fixed_document_claim",
+      "source": "docs/project-knowledge-acceptance.md:45",
+      "before": "8 risky mechanisms claimed, but backend probes contain7 risk mechanisms plus1 AST inventory fixture.",
+      "after": "Acceptance now says7 risky mechanisms and inventory fixture.",
+      "evidence": "Compared all8 named cases in backend-mechanism-probes evidence; count now agrees."
+    }
+  ],
+  "remaining_blocking_findings": [],
+  "tests": [
+    {
+      "command": "python3 docs/code-review/final-dossier-review-probes-2026-09-30.py",
+      "exit_code": 0,
+      "tests": 4,
+      "evidence": "docs/code-review/final-dossier-review-probes-2026-09-30.json"
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts/tests -p 'test_mechanism_inventories.py' -v",
+      "exit_code": 0,
+      "tests": 6,
+      "includes": "Isolated Node fixture ran, not skipped"
+    },
+    {
+      "command": "node scripts/test_project_terrain.mjs",
+      "exit_code": 0,
+      "includes": "DOM search/filters/reset/missing review/full mechanisms/text escaping"
+    },
+    {
+      "command": "node scripts/build-client-mechanism-inventory.mjs --check",
+      "exit_code": 0,
+      "totals": {
+        "imports": 1707,
+        "routes": 72,
+        "functions": 5376,
+        "hooks": 1339,
+        "http": 64,
+        "storage": 29,
+        "events": 105,
+        "jsx_handlers": 555,
+        "registries": 316,
+        "mcp_tools": 7,
+        "files": 351,
+        "parse_errors": 0
+      }
+    }
+  ],
+  "cycle_assessment": "No self-hash cycle found: terrain generated outputs and code-review evidence excluded from terrain inputs; classifier output references terrain SHA and is not a terrain input; HTML render reads overlays without hashing itself; material registry excludes itself/pointer. Backend/client generators do not read review ledger.",
+  "claim_assessment": "Backend counts/7+1 probes and F01-F07/F14 agree with our source/probe evidence. Production observations, restore, external historical materials, notebooks and browser visual acceptance are other agents evidence, not independently repeated here.",
+  "limits": [
+    "Static/Babel/AST identity is not semantic correctness, execution coverage or dynamic import/dispatch proof.",
+    "Node-dependent inventory test intentionally skips in stdlib-only job and is rerun after npm ci in frontend CI.",
+    "Ignored HTML absence is permitted for portable clean CI; --render is necessary to view local map.",
+    "Final root-owned regeneration, materials identities, current ledger/source gates and overall app test run are separate integration steps."
+  ],
+  "final_backend_crosscheck": {
+    "checked_at_utc": "2026-09-30T16:25:52.020740+00:00",
+    "inventory_sha256": "1388b97045fe6d61770123c7d1e7a348952cdf3c2a085d49729c200a9af2d40e",
+    "ledger_sha256": "200432ce4ba2d12be0cb92aa1c6b5c66449d94c8b2c08c946cb7a7406fc25057",
+    "counts": {
+      "source_files": 405,
+      "routes": 144,
+      "schemas": 27,
+      "tables": 57,
+      "jobs": 39,
+      "settings": 160,
+      "registries": 843,
+      "registry_mutations": 23,
+      "registry_references": 1601,
+      "effects": 1886,
+      "definitions": 3655,
+      "setting_reads": 390,
+      "environment_reads": 29,
+      "sql": 186,
+      "migrations": 348,
+      "unresolved": 0,
+      "mcp_tools": 7
+    },
+    "orm_fields": 626,
+    "orm_relationships": 34,
+    "status": "current",
+    "source_missing_ledger": [],
+    "source_stale_inventory": [],
+    "source_stale_ledger": [],
+    "named_definitions_without_current_annotation": [],
+    "routes_without_handler_annotation": [],
+    "duplicate_method_paths": [],
+    "duplicate_ledger_paths": []
+  }
+}

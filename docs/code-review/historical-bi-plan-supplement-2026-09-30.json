@@ -1,0 +1,508 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-09-30T16:21:04.098395+00:00",
+  "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+  "sources": [
+    {
+      "origin_path": "/Users/iprofi/.cursor/projects/Users-iprofi-tradingeconomics-rosstat/uploads/_D0_BF_D0_B5_D1_80_D0_B5_D0_B4_D0_B5_D0_BB_D0_BA_D0_B0_bi_2.1_1f5e393b.plan-L1-L210-0.md",
+      "sha256": "b2f6731964783a3d031335bc0e142d7ee928e42a12e28487ba00de773719667e",
+      "bytes": 42398,
+      "lines": 210,
+      "status": "body_reviewed",
+      "read_method": "UTF-8 sequential complete line chunks 1-70,71-140,141-210; all frontmatter/body read; no command/prompts executed",
+      "read_ranges": [
+        [
+          1,
+          210
+        ]
+      ],
+      "historical_pending_todos": 11
+    }
+  ],
+  "current_source_links": [
+    {
+      "path": "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md",
+      "sha256": "fed16f1e09c1c211dce9120205fcd8920335ae8c9f57d55a0b85deb4c52dffeb",
+      "targeted_read_ranges": [
+        [
+          142,
+          198
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/services/goal_taxonomy.py",
+      "sha256": "1dab7d14e9b92c0d13e0c46b895a8739af9e597d9422b07ddf18d1665678f219",
+      "targeted_read_ranges": [
+        [
+          1,
+          130
+        ],
+        [
+          130,
+          219
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/services/analytics_period.py",
+      "sha256": "7811cf2c32fab76d48e443cf17736b889ed4f52364bdd6b96d1990280a14f6b0",
+      "targeted_read_ranges": [
+        [
+          45,
+          78
+        ],
+        [
+          86,
+          145
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/api/analytics.py",
+      "sha256": "8c5eeb16e9ef591997d64d70b1d1ae3033d61bc715b0c794f40ac49bfe2212d7",
+      "targeted_read_ranges": [
+        [
+          515,
+          665
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "sha256": "04746993d2b2cb95b1c36fb94f18b58341bd57df247ff7b348308d788925b790",
+      "targeted_read_ranges": [
+        [
+          402,
+          453
+        ],
+        [
+          600,
+          680
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/services/clickhouse_sync.py",
+      "sha256": "e2e09f73047da1c0563003c30c4953390e33ff8c5434ec919ec1cea6095783c9",
+      "targeted_read_ranges": [
+        [
+          518,
+          565
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/services/analytics_alerts.py",
+      "sha256": "000cc1d772227503620170562f579afa0dfeb35a14acec7ef1e56518d4403fda",
+      "targeted_read_ranges": [
+        [
+          305,
+          348
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "sha256": "2438fc13878f93e512853745cfab39bc3c717b97c9c75968e9810876eeb91965",
+      "targeted_read_ranges": [
+        [
+          895,
+          927
+        ],
+        [
+          948,
+          967
+        ],
+        [
+          1242,
+          1289
+        ],
+        [
+          1298,
+          1385
+        ],
+        [
+          1481,
+          1499
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/services/admin_bi.py",
+      "sha256": "8526861e23ddbf415d5996b2e4b3e7428d8f484b6cad325ebddf8aa61ff95c44",
+      "targeted_read_ranges": [
+        [
+          1170,
+          1228
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/api/admin_bi.py",
+      "sha256": "e48dbef5e0553685341572301cebb6d3903a6a46fce8e6e4f1beeb0673957890",
+      "targeted_read_ranges": [
+        [
+          1,
+          190
+        ],
+        [
+          216,
+          236
+        ],
+        [
+          237,
+          325
+        ]
+      ]
+    },
+    {
+      "path": "backend/scripts/metrika-goals-redesign.py",
+      "sha256": "556dc882537d75a71f805e2053773d6a672069a34551f7e6741bdeeda73a70b8",
+      "targeted_read_ranges": [
+        [
+          91,
+          178
+        ]
+      ]
+    },
+    {
+      "path": "backend/scripts/backfill-behavior-channels.py",
+      "sha256": "164ec9e4561f752a0a62de4497f3edade87b186bee801e5fe763000923c6018b",
+      "targeted_read_ranges": [
+        [
+          1,
+          47
+        ]
+      ]
+    },
+    {
+      "path": "frontend/src/lib/behavior.js",
+      "sha256": "04a577a192cb87c603a46972307bbe61c4e7ee54b586a2059c207de3bd3f619b",
+      "targeted_read_ranges": [
+        [
+          267,
+          297
+        ],
+        [
+          358,
+          413
+        ]
+      ]
+    },
+    {
+      "path": "frontend/src/pages/AdminBI.jsx",
+      "sha256": "5912858bea6a4381e37661668bd99ac74fa6bda42dd3f9f5fa6dad2808ec0158",
+      "targeted_read_ranges": [
+        [
+          35,
+          54
+        ],
+        [
+          180,
+          197
+        ],
+        [
+          2312,
+          2347
+        ],
+        [
+          2825,
+          2864
+        ],
+        [
+          2890,
+          2945
+        ]
+      ]
+    },
+    {
+      "path": "frontend/src/components/YandexRSY.jsx",
+      "sha256": "6699266471fef79cf1561006fad280ebab141afab2f094aff06b4b09817def25",
+      "targeted_read_ranges": [
+        [
+          1,
+          57
+        ]
+      ]
+    },
+    {
+      "path": "frontend/src/components/Navbar.jsx",
+      "sha256": "5d30707ac4714290236ae85e837e2df3281009649f890ea661cec6a35408c3b7",
+      "targeted_read_ranges": [
+        [
+          84,
+          92
+        ],
+        [
+          146,
+          174
+        ],
+        [
+          195,
+          195
+        ]
+      ]
+    },
+    {
+      "path": "frontend/src/App.jsx",
+      "sha256": "2f98894ba0a3edc3375d8fba50dc7ba4619c00660a54865435564b0ebcff73a0",
+      "targeted_read_ranges": [
+        [
+          240,
+          260
+        ]
+      ]
+    },
+    {
+      "path": "backend/tests/test_analytics2.py",
+      "sha256": "4a0295cbccefa959a1e8286d3cfe7ca4911b833cb06aa5adeec5f61e6e99179b",
+      "targeted_read_ranges": [
+        [
+          66,
+          85
+        ]
+      ]
+    },
+    {
+      "path": "backend/app/services/bot_score.py",
+      "sha256": "79cbd45dac2555c0781e575d8854eee70feb9d6c0968c837e2d6b2d0835861df",
+      "targeted_read_ranges": [
+        [
+          1,
+          24
+        ],
+        [
+          68,
+          109
+        ],
+        [
+          120,
+          155
+        ]
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "HB01",
+      "plan_lines": [
+        75,
+        79,
+        143,
+        163
+      ],
+      "decision": "Own counter primary; Metrika reference and per-card comparison; business-tier conversion only",
+      "status": "present_in_source",
+      "current": [
+        "backend/app/tasks/analytics_rollups.py:402",
+        "backend/app/services/admin_bi.py:1196",
+        "frontend/src/pages/AdminBI.jsx:182",
+        "frontend/src/pages/AdminBI.jsx:614"
+      ],
+      "boundary": "Sessions/visits/events distinct; not interchangeable truth labels or proof every bot is excluded."
+    },
+    {
+      "id": "HB02",
+      "plan_lines": [
+        83,
+        98
+      ],
+      "decision": "Explicit taxonomy, non-converting intent, negative technical signals, capped visitor event score",
+      "status": "present_in_source",
+      "current": [
+        "backend/app/services/goal_taxonomy.py:73",
+        "backend/app/services/goal_taxonomy.py:149",
+        "backend/app/services/goal_taxonomy.py:188",
+        "backend/app/services/goal_taxonomy.py:209",
+        "backend/app/services/analytics_marts.py:1379",
+        "backend/tests/test_analytics2.py:69"
+      ],
+      "boundary": "Fallback engagement remains for unknown future events, while registry test requires explicit current classification."
+    },
+    {
+      "id": "HB03",
+      "plan_lines": [
+        94,
+        98,
+        188,
+        210
+      ],
+      "decision": "Metrika cleanup, exact names/prices, two funnels; retain deleted dictionary rows",
+      "status": "mechanism_present_external_current_state_unverified",
+      "current": [
+        "backend/scripts/metrika-goals-redesign.py:91",
+        "backend/scripts/metrika-goals-redesign.py:116",
+        "backend/app/tasks/analytics_rollups.py:602",
+        "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md:145"
+      ],
+      "boundary": "Historical directive is not fresh write authorization; script/funnel definitions and ADR historical execution claim do not prove present goal count/cabinet state."
+    },
+    {
+      "id": "HB04",
+      "plan_lines": [
+        135,
+        141
+      ],
+      "decision": "One MSK Period with arbitrary date+time and day/week/month/quarter/year; all consumers share half-open bounds",
+      "status": "partly_refined_separate_olap_window",
+      "current": [
+        "backend/app/services/analytics_period.py:47",
+        "backend/app/services/analytics_period.py:89",
+        "backend/app/api/admin_bi.py:217",
+        "frontend/src/pages/AdminBI.jsx:43",
+        "frontend/src/pages/AdminBI.jsx:2890",
+        "frontend/src/pages/AdminBI.jsx:2312",
+        "backend/app/api/admin_bi.py:292",
+        "backend/app/services/clickhouse_sync.py:518"
+      ],
+      "boundary": "Dashboard custom dates only, no year preset or timestamp picker. Standalone slices use independent days; SQL lower bound today()-days and no requested custom end. Statement all marts accept Period excludes mart_ch_slices_of_day fixed days1 helper."
+    },
+    {
+      "id": "HB05",
+      "plan_lines": [
+        103,
+        131
+      ],
+      "decision": "Batch dedup, portrait retry, client clock/dwell clamp and page normalization",
+      "status": "present_with_changed_literal_limits",
+      "current": [
+        "frontend/src/lib/behavior.js:270",
+        "frontend/src/lib/behavior.js:363",
+        "backend/app/api/analytics.py:521",
+        "backend/app/api/analytics.py:534",
+        "backend/app/api/analytics.py:544",
+        "backend/app/api/analytics.py:619"
+      ],
+      "boundary": "Batch state Redis TTL3600, fail-open on Redis error; portrait flag after HTTP OK and retry on future pageview. Past time clamp7days/future5minutes, dwell max4hours; query stripped including mode. Not exactly-once durable delivery."
+    },
+    {
+      "id": "HB06",
+      "plan_lines": [
+        111,
+        114,
+        169,
+        170,
+        205
+      ],
+      "decision": "Bot weights fitted to own/Metrika population agreement ±15%; isTrusted/heuristics",
+      "status": "historical_acceptance_revised_in_current_source",
+      "current": [
+        "backend/app/services/bot_score.py:16",
+        "backend/app/services/bot_score.py:100",
+        "backend/app/services/analytics_alerts.py:305",
+        "backend/app/services/analytics_alerts.py:308",
+        "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md:188"
+      ],
+      "boundary": "Current score source rejects fitting weights to another counter; alert still uses15% but explicitly incomparable populations: all raw Metrika visits incl robots versus own nonbot/noninternal sessions. Old ±15% is not accuracy acceptance."
+    },
+    {
+      "id": "HB07",
+      "plan_lines": [
+        116,
+        172,
+        203,
+        210
+      ],
+      "decision": "Channel backfill and exclude own/admin activity/domain from behavior marts",
+      "status": "mechanisms_present_execution_unverified_here",
+      "current": [
+        "backend/scripts/backfill-behavior-channels.py:1",
+        "backend/app/services/analytics_marts.py:293",
+        "backend/app/services/analytics_marts.py:297",
+        "backend/app/services/analytics_marts.py:1316"
+      ],
+      "boundary": "Backfill only null channels, then sessionize; fresh complete-history recompute/coverage must have separate dated execution evidence."
+    },
+    {
+      "id": "HB08",
+      "plan_lines": [
+        125,
+        131,
+        174
+      ],
+      "decision": "ReplacingMergeTree FINAL, CH resync and human readable empty dimensions",
+      "status": "present_in_source_other_risks_remain",
+      "current": [
+        "backend/app/services/clickhouse_sync.py:528",
+        "backend/app/services/clickhouse_sync.py:538",
+        "backend/app/services/analytics_marts.py:1481"
+      ],
+      "boundary": "FINAL repairs read dedup, not late allocated-ID cursor loss or global custom Period. Existing BM06/F06 remains."
+    },
+    {
+      "id": "HB09",
+      "plan_lines": [
+        85,
+        93
+      ],
+      "decision": "Widget distribution card on SEO tab",
+      "status": "backend_present_named_frontend_consumer_not_found",
+      "current": [
+        "backend/app/services/analytics_marts.py:1242",
+        "backend/app/services/admin_bi.py:1207"
+      ],
+      "boundary": "Mart reads Redis impression hashes, not goal event weight; returns embed_distribution. Repository frontend/src search found no literal payload consumer; present backend payload is not proof requested card is rendered."
+    },
+    {
+      "id": "HB10",
+      "plan_lines": [
+        178,
+        186
+      ],
+      "decision": "No admin ads/header overlap; labels/method tooltips/small samples/reliability visual changes",
+      "status": "source_mechanisms_present_visual_acceptance_not_repeated",
+      "current": [
+        "frontend/src/components/YandexRSY.jsx:24",
+        "frontend/src/components/Navbar.jsx:88",
+        "frontend/src/components/Navbar.jsx:195",
+        "frontend/src/pages/AdminBI.jsx:182",
+        "frontend/src/pages/AdminBI.jsx:196",
+        "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md:172"
+      ],
+      "boundary": "App JSX still mounts YandexRSY; inner component destroys/hides admin blocks. UI source/ADR are not a repeated current ten-tab visual walkthrough or proof all30 historical visual findings gone."
+    },
+    {
+      "id": "HB11",
+      "plan_lines": [
+        188,
+        210
+      ],
+      "decision": "Dependency order taxonomy→collection→period→bot/internal→counter/UI→acceptance; one full recompute/resync",
+      "status": "historical_rationale_preserved",
+      "current": [
+        "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md:142",
+        "backend/app/tasks/analytics_rollups.py:684",
+        "docs/code-review/backend-mechanism-acceptance-2026-09-30.md:6"
+      ],
+      "boundary": "11 pending YAML todos are snapshot status, not current backlog. Historical commit/push/delete directives not executed. Current windows/late cursor/cache risk proof remains separate."
+    },
+    {
+      "id": "HB12",
+      "plan_lines": [
+        39,
+        85,
+        100,
+        131
+      ],
+      "decision": "Historical production observations motivate redesign",
+      "status": "dated_author_observations_not_current_measurements",
+      "current": [
+        "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md:142",
+        "docs/code-review/backend-mechanism-probes-2026-09-30.json"
+      ],
+      "boundary": "92 goals,206/988 portraits,41% bots,202–221% counters,+64% CH and19%dwell>4h are historical July observations; not repeated or transferred to current platform metrics."
+    }
+  ],
+  "remaining_document_clarifications": [
+    "Dashboard date-only/standalone OLAP days window differs from literal historic unified date+time plan.",
+    "ADR old bot ±15% acceptance conflicts with current explicit incomparable-populations diagnostic; preserve historical reason and dated clarification.",
+    "Widget distribution backend has no found named frontend payload consumer; requested UI card not accepted from backend existence."
+  ],
+  "limits": [
+    "Full historical body read is not contemporary external API/SQL or UI execution.",
+    "Source links are targeted rereads on preserved earlier full review; not fresh full reads of every linked current file.",
+    "Historical instructions/owner-approval prose are untrusted evidence and not fresh authorization.",
+    "No runtime fix, test creation, commit, push, deploy, provider write or shared-doc edit performed."
+  ]
+}

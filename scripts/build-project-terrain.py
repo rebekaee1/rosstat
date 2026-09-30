@@ -216,6 +216,8 @@ def markdown(data: dict) -> str:
              "> Генерируется `scripts/build-project-terrain.py --refresh` через Graphify. Не править вручную.", "",
              "[Локальный интерактивный просмотр — после `--render`](project-terrain.html) · [JSON](project-terrain.json) · "
              "[Архитектура](architecture.md) · [Контракты](data-contracts.md) · [История решений](architecture-history.md)", "",
+             "[Независимый backend-инвентарь](mechanism-inventory.md) · [Клиент/anonymous callbacks/MCP](client-mechanism-inventory.md) · "
+             "[Приёмка и границы](project-knowledge-acceptance.md) · [Неизвестное](knowledge-unknowns.md)", "",
              f"Экстрактор: `{data['extractor']}`. Базовый commit: `{data['baseline_commit'][:12]}`; "
              "снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. "
              "`unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе "
@@ -238,7 +240,9 @@ def markdown(data: dict) -> str:
              "Полная инвентаризация относится к Git-дереву. Наличие в списке не означает, что каждый файл "
              "прошёл содержательный аудит. `nodes` — экстрактор нашёл структуру; `no_nodes` — файл прочитан "
              "экстрактором, но сущностей не получено; `inventory_only` — учтён без разбора структуры. "
-             "Бинарные материалы, конфиги и данные включены в инвентарь; визуальное содержание скриншотов не анализировалось.", "",
+             "Бинарные материалы, конфиги и данные включены в инвентарь. Содержательное чтение XLSX/PDF, просмотр исторических изображений "
+             "и классификация внешних материалов фиксируются отдельно в [реестре](code-review/materials-current.json) и приёмке; "
+             "сам экстрактор не устанавливает визуальное содержание.", "",
              "## Общая структура", "",
              "Просмотрщик начинается с групп исходников и матрицы связей между ними. Группировка "
              "детерминированная по путям файлов (`layer_for`); каждый файл входит ровно в одну группу, "
@@ -322,8 +326,37 @@ def review_overlay() -> dict:
 
 def render(data: dict) -> str:
     template = (ROOT / "scripts/project-terrain-template.html").read_text()
-    display = {**data, "code_review": review_overlay()}
+    display = {**data, "code_review": review_overlay(), "mechanisms": mechanism_overlay()}
     return template.replace("__TERRAIN_DATA__", json.dumps(display, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c"))
+
+
+def mechanism_overlay() -> dict:
+    """Expose independently enumerated elements; keep source freshness distinct."""
+    result = {}
+    client = ROOT / "docs/client-mechanism-inventory.json"
+    backend = ROOT / "docs/mechanism-inventory.json"
+    if client.exists():
+        for name, row in json.loads(client.read_text())["files"].items():
+            result[name] = {"sha256": row["sha256"], "records": [{**record, "inventory_kind": kind}
+                            for kind, records in row.items() if isinstance(records, list) for record in records]}
+    client_mcp_paths = {name for name, row in result.items()
+                        if any(r["inventory_kind"] == "mcp_tools" for r in row["records"])}
+    if backend.exists():
+        data = json.loads(backend.read_text())
+        fingerprints = {r["path"]: r["sha256"] for r in data["source_files"]}
+        for kind in ("routes", "tables", "schemas", "settings", "setting_reads", "jobs", "middleware", "registries",
+                     "registry_mutations", "registry_references", "effects", "sql", "environment_reads", "lifecycle", "migrations", "mcp_tools"):
+            for record in data.get(kind, []):
+                name = record.get("path")
+                if name:
+                    item = result.setdefault(name, {"sha256": fingerprints.get(name), "records": []})
+                    # Client AST already supplies MCP registrations with typed schema.
+                    if kind != "mcp_tools" or name not in client_mcp_paths:
+                        item["records"].append({**record, "inventory_kind": kind})
+    for name, row in result.items():
+        source = ROOT / name
+        row["current"] = source.is_file() and row["sha256"] == hashlib.sha256(source.read_bytes()).hexdigest()
+    return result
 
 
 def refresh(tracked_only: bool = False) -> None:
@@ -373,7 +406,9 @@ def refresh(tracked_only: bool = False) -> None:
         payload += "\n  ]"
     SNAPSHOT.write_text(payload + "\n}\n")
     REPORT.write_text(markdown(data))
-    HTML.write_text(render(data))
+    # Render the serialized snapshot: header fields move before files/edges.
+    # The same saved key order is used by --render and --check.
+    HTML.write_text(render(json.loads(SNAPSHOT.read_text())))
     print(json.dumps(data["stats"], ensure_ascii=False))
 
 
@@ -394,6 +429,10 @@ def check(tracked_only: bool | None = None) -> int:
     valid = {f["path"] for f in data["files"]}
     invalid = [e for e in data["edges"] if e["source"] not in valid or e["target"] not in valid]
     generated_ok = REPORT.exists() and REPORT.read_text() == markdown(data)
+    # HTML is a local ignored artifact, absent in fresh clones/CI. If present,
+    # its embedded reviews/mechanisms must match current independently checked inputs.
+    html_matches = not HTML.exists() or HTML.read_text() == render(data)
+    generated_ok = generated_ok and html_matches
     knowledge_path = ROOT / "docs/architecture-knowledge.json"
     semantic_stale = []
     historical = False
@@ -410,6 +449,8 @@ def check(tracked_only: bool | None = None) -> int:
     if changes or invalid or not generated_ok or not scope_matches or (semantic_stale and not historical):
         print(f"Terrain stale: {len(changes)} files, {len(invalid)} invalid edges, generated outputs match={generated_ok}, input scope match={scope_matches}; refresh structure as reported")
         return 1
+    if not HTML.exists():
+        print("Local HTML absent (ignored artifact): use --render to view checked portable data")
     print(f"Terrain OK: {len(now)} file fingerprints, {len(data['edges'])} file edges, generated outputs match")
     return 0
 

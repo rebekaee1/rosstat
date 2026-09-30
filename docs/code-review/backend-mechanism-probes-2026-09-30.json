@@ -1,0 +1,195 @@
+{
+  "date": "2026-09-30",
+  "basis": "local main 05302ff source bodies, in-memory doubles; no network/runtime state",
+  "source_anchors": [
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "function": "reconcile_points",
+      "line": 536,
+      "end_line": 580,
+      "sha256": "d5d5bf927dbde97631cb9c5fe1836b97157f5d16a73b3a4c816a5abd10cdd980"
+    },
+    {
+      "path": "backend/app/services/base_parser.py",
+      "function": "run",
+      "line": 137,
+      "end_line": 231,
+      "sha256": "213d8116abd30708935d7f4cc91a8d2197ee06ac19beabecbc4af95f2a2aee3f"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
+      "function": "apply_remaps",
+      "line": 515,
+      "end_line": 526,
+      "sha256": "27ce7482d433af556e9d79b5fd7080575cdd44a564a06a39cafa1d07e7f8456d"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
+      "function": "run",
+      "line": 529,
+      "end_line": 656,
+      "sha256": "27ce7482d433af556e9d79b5fd7080575cdd44a564a06a39cafa1d07e7f8456d"
+    },
+    {
+      "path": "backend/app/tasks/analytics_rollups.py",
+      "function": "sessionize",
+      "line": 83,
+      "end_line": 234,
+      "sha256": "04746993d2b2cb95b1c36fb94f18b58341bd57df247ff7b348308d788925b790"
+    },
+    {
+      "path": "backend/app/services/clickhouse_sync.py",
+      "function": "_sync_events",
+      "line": 178,
+      "end_line": 243,
+      "sha256": "e2e09f73047da1c0563003c30c4953390e33ff8c5434ec919ec1cea6095783c9"
+    },
+    {
+      "path": "backend/seed_regional.py",
+      "function": "seed_regional",
+      "line": 81,
+      "end_line": 189,
+      "sha256": "3575fb138dd0116a6020e35443113e6371b0f64ccebca98e1f9874ccfee82174"
+    },
+    {
+      "path": "backend/app/core/cache.py",
+      "function": "bump_namespaces",
+      "line": 283,
+      "end_line": 324,
+      "sha256": "91ba5ef3d8dce9cb3016111c15e5874d547692949dc2a7ab4b2e8c88629b71d3"
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "function": "region_indicator_monthly cache_key assignment",
+      "line": 583,
+      "end_line": 583,
+      "sha256": "297eae291a4e1c2d4ad99b2936ccdea919e5bf1d87dd875ce82c4c852ebab0d4"
+    },
+    {
+      "path": "backend/app/main.py",
+      "function": "locked_job",
+      "line": 243,
+      "end_line": 283,
+      "sha256": "a4177428b5a080d6bb8a66669259655750f0a3191437d0a84c71d429855e68a8"
+    }
+  ],
+  "results": {
+    "inventory_fixture": {
+      "compose_prefix": true,
+      "explicit_registration": true,
+      "unknown_router_retained": true,
+      "establishes": "isolated AST composition handles includes, explicit routes and unresolved child; no application import"
+    },
+    "partial_replace": {
+      "premise": "stored 2020/2021/2022; nonempty normalized response contains only 2022, with no completeness marker",
+      "before": {
+        "2020-01-01": 1.0,
+        "2021-01-01": 2.0,
+        "2022-01-01": 3.0
+      },
+      "after": {
+        "2022-01-01": 3.0
+      },
+      "removed": 2,
+      "touched_double": 1,
+      "empty_response_preserves": true,
+      "establishes": "actual reconcile_points selects and deletes absent source dates; fake SQL result counts do not prove PostgreSQL behavior"
+    },
+    "invalidate_before_commit": {
+      "premise": "reader runs after invalidate and before commit, and reads only committed old facts",
+      "trace": [
+        "write_pending",
+        "invalidate",
+        "concurrent_reader_cached_old_committed_value",
+        "commit"
+      ],
+      "database_after": 2,
+      "cache_after": 1,
+      "establishes": "actual BaseParser.run orders invalidate before commit; visibility/reader interleaving is explicitly simulated, not live PG/Redis"
+    },
+    "eurostat_remap_partial_failure": {
+      "premise": "accepted remap, first persist_result commits, second persist_result raises",
+      "trace": [
+        "remap_commit",
+        "persist_first",
+        "first_slice_transaction_committed",
+        "persist_second"
+      ],
+      "metadata_hash_after": "new",
+      "establishes": "actual loader.run/apply_remaps sequence leaves precommitted metadata and bypasses final bump on exception; DB atomicity of slice is source-established, simulated commit"
+    },
+    "session_window_boundary": {
+      "premise": "same visitor, two pageviews 4min apart across an MSK chunk boundary; no carry state between sessionize calls",
+      "whole_count": 1,
+      "chunked_count": 2,
+      "whole": [
+        {
+          "user_id": null,
+          "started_at": "2026-09-28 20:58:00",
+          "pageviews": 2,
+          "is_internal": false
+        }
+      ],
+      "chunked": [
+        {
+          "user_id": null,
+          "started_at": "2026-09-28 20:58:00",
+          "pageviews": 1,
+          "is_internal": false
+        },
+        {
+          "user_id": null,
+          "started_at": "2026-09-28 21:02:00",
+          "pageviews": 1,
+          "is_internal": false
+        }
+      ],
+      "establishes": "actual sessionize event window and chunk logic split one <30min session; finalizer/admin/SQL are doubles, no observed BI impact"
+    },
+    "clickhouse_late_id": {
+      "premise": "id1 allocated earlier but invisible at first SELECT; committed id2 visible and copied, cursor advances to2, id1 commits afterwards",
+      "first_count": 1,
+      "second_count": 0,
+      "copied_ids": [
+        2
+      ],
+      "pg_committed_ids_double": [
+        1,
+        2
+      ],
+      "cursor": {
+        "behavior_events": 2,
+        "frontend_events": 0
+      },
+      "establishes": "actual id>cursor logic skips late id1 under this permitted ordering; no live PostgreSQL sequence/transaction or CH merge test"
+    },
+    "regional_count_and_cache": {
+      "premise": "artifact and DB annual/monthly row counts equal while one stored value differs; API has a populated fixed monthly key",
+      "seed_trace": [
+        "metadata_commit",
+        "count_annual",
+        "count_monthly"
+      ],
+      "equal_count_skips_value_comparison": true,
+      "api_key": "fe:regions:monthly:v1:fixture:fuel:ru",
+      "namespace_after": {
+        "fe:ver:regions": 1
+      },
+      "cached_fixed_key_after": 999.0,
+      "establishes": "actual seed returns after counts; actual namespace bump increments version without touching fixed API key; EMISS commit per month and terminal regions bump are source-established separately"
+    },
+    "scheduler_lock_expiry": {
+      "premise": "two scheduler invocations same job id; first function still running when Redis SET NX EX lease expires",
+      "before_expiry_skips": true,
+      "after_expiry_executes": 2,
+      "peak_concurrent_calls": 2,
+      "establishes": "actual locked_job has no lease renewal and permits overlap after TTL; Redis clock/atomic SET/token-Lua release are doubles"
+    }
+  },
+  "not_established": [
+    "production incidence or frequency",
+    "real PG/Redis/CH multi-process correctness",
+    "capacity/p99/RTO",
+    "external provider completeness"
+  ]
+}

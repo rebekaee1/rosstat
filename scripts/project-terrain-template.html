@@ -9,7 +9,7 @@
 <header>
 <h1>Рельеф Forecast Economy</h1>
 <p>От общей структуры к конкретному файлу. Группы и их связи рассчитаны из репозитория; глубина анализа показана отдельно.</p>
-<nav><a href="architecture.md">Архитектура и сервер</a><a href="workflow.md">Локальный запуск</a><a href="data-contracts.md">Контракты данных</a><a href="architecture-history.md">История решений</a><a href="code-review.md">Содержательный разбор</a><a href="project-terrain.md">Статический граф</a></nav>
+<nav><a href="project-knowledge-acceptance.md">Приёмка и границы</a><a href="architecture.md">Архитектура и сервер</a><a href="workflow.md">Локальный запуск</a><a href="data-contracts.md">Контракты данных</a><a href="architecture-history.md">История решений</a><a href="mechanism-inventory.md">API / модели / jobs / config</a><a href="client-mechanism-inventory.md">UI / callbacks / MCP</a><a href="knowledge-unknowns.md">Неизвестное</a><a href="code-review.md">Содержательный разбор</a><a href="project-terrain.md">Статический граф</a></nav>
 </header>
 <main>
 <div class="stats" id="stats"></div>
@@ -81,9 +81,14 @@ function showReview(parent,path){const r=reviews[path];if(!r){parent.append(el('
  for(const item of elements){const block=el('details');block.append(el('summary',`${item.name} · ${item.kind||'элемент'} · строки ${item.line||'?'}–${item.end_line||item.line||'?'}`),el('p',item.purpose||'Назначение не аннотировано'));for(const [key,title] of [['inputs','Вход'],['outputs','Выход'],['side_effects','Эффекты'],['errors','Границы и ошибки'],['links','Связи'],['verification','Основание проверки']])evidenceBlock(block,title,item[key]);parent.append(block)}
  if(!elements.length)evidenceBlock(parent,'Метаданные ресурса / схемы',Object.fromEntries(Object.entries(r).filter(([k])=>!['path','sha256','read_ranges','summary','role','status','current','issues','elements','contracts','errors','side_effects','dependencies','tests','doc_corrections'].includes(k))));
 }
+function showMechanisms(parent,path){const inventory=data.mechanisms?.[path];if(!inventory)return;
+ const box=el('details');box.append(el('summary',`Независимые элементы: ${fmt(inventory.records.length)} · ${inventory.current?'source SHA актуален':'требует пересборки'}`),el('p','Декларации и call sites из исходника. Это адреса для проверки рецензии, не доказательство исполнения всех ветвей. Безымянные callbacks включены; список не обрезается.','note'));
+ for(const item of inventory.records){const part=el('details');part.append(el('summary',`${item.inventory_kind} · ${item.name||item.model||item.full_path||item.callee||item.event||item.owner||'callback'} · ${item.line||'?'}–${item.end_line||item.line||'?'}`));const pre=el('pre',JSON.stringify(item,null,2));pre.style.whiteSpace='pre-wrap';pre.style.overflowWrap='anywhere';part.append(pre);box.append(part)}parent.append(box)
+}
 function show(path){selected=path;const f=byPath.get(path);if(!f)return;const d=$('detail');d.replaceChildren(el('h3',path));d.append(sourceLink(path,'Открыть исходный файл'));
  d.append(el('p',`${layers.get(f.layer).label} · ${labels[f.extraction]} · ${fmt(f.bytes)} байт · ${f.lines===null?'бинарный файл':fmt(f.lines)+' строк'} · ${fmt(f.nodes)} узлов`,'note'));
  showReview(d,path);
+ showMechanisms(d,path);
  const hash=el('details');hash.append(el('summary','Контрольная сумма'),el('code',f.sha256));d.append(hash);
  const edges=adjacent.get(path);d.append(el('h4','Статические связи Graphify'),el('p',`${fmt(edges.length)} отношений между файлами. Каждое может объединять несколько связей символов.`,'note'));
  if(!edges.length)d.append(el('p','Связей между файлами не извлечено. Это не доказывает, что файл не используется.'));

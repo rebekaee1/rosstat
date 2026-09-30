@@ -44,7 +44,7 @@
 
 `~/Library/LaunchAgents/com.forecasteconomy.backup-pull.plist` запускает `~/bin/fe-backup-pull.sh` в **08:15 МСК**; каталог `~/Backups/forecasteconomy`, основной журнал `~/Backups/forecasteconomy/pull.log` (launchd stdout/stderr рядом). Скрипт выбирает завершённый daily dump (не `.partial` и не pre-deploy), скачивает full/identity и сверяет SHA-256/размеры, custom-dump TOC (если доступен pg_restore/Docker) и gzip до отметки `.verified`; уже проверенную пару пропускает. Эти файлы находятся вне Git и не являются dev DATABASE_URL.
 
-**Проверка 30.09:** после SSH errors 27–30.09 исходная версия скрипта сохранена рядом (`.before-20260930T133007Z`), SSH multiplexing отключён через `ControlMaster=no` / `ControlPath=none`, keepalive ограничен 15 с ×2. Исторический Broken pipe/Connection closed не устанавливает единственную причину: независимое SSH-соединение в момент проверки работало. Ручной pull 16:30–16:32 МСК и повтор 16:43 успешно подтверждены; следующий плановый запуск ещё не наблюдался. Полный restore и identity restore описаны в [датированном протоколе](code-review/backup-acceptance-2026-09-30.md). Production jobs при этой проверке не запускались.
+**Проверка 30.09:** после SSH errors 27–30.09 исходная версия скрипта сохранена рядом (`.before-20260930T133007Z`), SSH multiplexing отключён через `ControlMaster=no` / `ControlPath=none`, keepalive ограничен 15 с ×2. Исторический Broken pipe/Connection closed не устанавливает единственную причину: независимое SSH-соединение в момент проверки работало. Ручной pull 16:30–16:32 МСК и повтор 16:43 успешно подтверждены; следующий плановый запуск ещё не наблюдался. Поздняя проверка plist/launchctl подтвердила08:15/RunAtLoad и регистрацию; last launchd exit1 исторический, manual success учитывается отдельно, ждать следующего расписания для описания механизма не требуется. Полный restore и identity restore описаны в [датированном протоколе](code-review/backup-acceptance-2026-09-30.md). Production jobs при этой проверке не запускались.
 
 ## Локальная разработка
 
@@ -56,6 +56,39 @@
 2. При прямом `uvicorn`/Python `Settings` читает переменные процесса и `.env` **текущего рабочего каталога** (`config.py::Settings.model_config`). Из `backend/` это `backend/.env`, а не автоматически корневой файл. Default Settings для одного процесса отличается от Compose (например, pool 10+15 против web 8+7).
 3. `VITE_*` — параметры Vite build/dev. Смена runtime env уже собранного nginx-контейнера не меняет JS. Locale build arg в Compose берётся из `RUSTATS_APEX_LOCALE_EN`; SSR и browser должны собираться для одного режима.
 4. Caddy работает на хосте. Корневой `.env` не является `EnvironmentFile` systemd автоматически.
+
+### Проверенная активация и изолированный startup, 30.09
+
+[Ops-протокол](code-review/ops-mechanism-acceptance-2026-09-30.md) / [JSON](code-review/ops-mechanism-acceptance-2026-09-30.json)
+перечисляют160 Settings-полей, их readers/defaults/type и environment mapping каждого service.
+При прямом Python приоритет initializer→process env→cwd dotenv→default; Settings global
+создаётся при импорте. Для environment changes нужен restart, для Compose — recreate,
+для Vite client/build args — rebuild. Типы не гарантируют domain bounds: отрицательный
+pool-size принимается Settings, затем зависит от consumer/library validation.
+
+`PUBLIC_HOST` не читает нынешний Caddy. В root `.env` этого Compose также не передаются
+metrics token, scheduler cron hour/minute, forecast steps, world forecast max-age/cache-bump/
+priority и webmaster recrawl flag. Требуется явный service mapping/override; существующий
+empty metrics token закрывает endpoint403. Banxico aliases читаются direct os.environ,
+а не неизвестным Settings dotenv-field. `VITE_SENTRY_DSN` source-reader существует,
+но в нынешние Docker build args не включён. `debug=false` даёт warn diagnostics;
+fake-provider при `!debug` — настоящий hard startup fail.
+
+Изолированная проверка выполнила current backend web entrypoint на пустой собственной БД:
+34 migrations,947 indicators,961494 region points,438 calendar events, users0, readiness200.
+Scheduler/jobs выключены; internal network блокировала внешнюю сеть, CBR calendar DNS
+failed и startup продолжился. Это проверка запуска/seeds, а не полноты экономических фактов.
+Current code исполнялся поверх существующего local dependency image, без online build.
+Отдельная restored БД прошла owners/ACL + API/email auth/CSRF/state-session + current nginx
+SSR/assets; client JS был прежнего local image. Все6 своих containers/volume/network
+удалены после ownership checks,15 других container IDs сохранены.
+
+На сервере source logrotate и effective host config отличаются: main rotate7/nocompress/
+rename+USR1, host rotate14/compress/copytruncate. Выпуск/замена host-config — отдельное
+разрешённое действие; `deploy.sh` не устанавливает fail2ban/logrotate install bundle сам.
+Host `tor-http-bridge.service` вне Git обеспечивает gateway8888→Tor9050. Hardcoded Basic
+credential и логирование headers — текущая известная проблема; не копировать private
+source/журнал с credentials в Git. Санитизированный механизм и исходныйSHA — в ops JSON.
 
 ### Профиль A: Compose, SSR и интеграция
 

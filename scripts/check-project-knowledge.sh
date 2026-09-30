@@ -24,5 +24,7 @@ for name in required:
 print(f'AGENTS routes OK, {size} bytes')
 PY
 "$KNOWLEDGE_PY" scripts/audit-code-documentation.py --check --tracked-only
+"$KNOWLEDGE_PY" scripts/build-mechanism-inventory.py --check
 "$KNOWLEDGE_PY" scripts/build-project-terrain.py --check --tracked-only
+"$KNOWLEDGE_PY" scripts/classify-graph-omissions.py --check
 "$KNOWLEDGE_PY" scripts/audit-knowledge-materials.py --check

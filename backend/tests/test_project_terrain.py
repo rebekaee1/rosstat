@@ -32,7 +32,7 @@ def save_snapshot(module):
     data = {"files": module.inventory(), "edges": []}
     module.SNAPSHOT.write_text(json.dumps(data))
     module.REPORT.write_text("report")
-    module.HTML.write_text("html")
+    module.HTML.write_text(module.render(data))
     return data
 
 
@@ -48,9 +48,9 @@ def test_inventory_excludes_private_ignored_files_and_generated_outputs(terrain)
 
 @pytest.mark.parametrize("change", ["modify", "add", "delete"])
 def test_check_fails_when_checkout_changes(terrain, monkeypatch, change):
-    save_snapshot(terrain)
     monkeypatch.setattr(terrain, "markdown", lambda _: "report")
     monkeypatch.setattr(terrain, "render", lambda _: "html")
+    save_snapshot(terrain)
     assert terrain.check() == 0
     if change == "modify":
         (terrain.ROOT / "source.py").write_text("value = 2\n")

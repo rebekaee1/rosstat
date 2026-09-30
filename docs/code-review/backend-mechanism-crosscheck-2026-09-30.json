@@ -1,0 +1,342 @@
+{
+  "basis": "Independent source inventory first; subsequent ledger comparison. Local main05302ff with concurrent root-owned tracked worktree edits identified below.",
+  "inventory_sha256": "0ad57f7813073973b0e90623f987a55665cb061510e0373d49df88845b44a8f3",
+  "ledger_sha256": "a331c95e8961e400648b00ff4e13dfe23102beaa875ffa8612adabcf38493a8f",
+  "counts": {
+    "source_files": 403,
+    "routes": 144,
+    "schemas": 27,
+    "tables": 57,
+    "jobs": 39,
+    "settings": 160,
+    "registries": 842,
+    "registry_mutations": 23,
+    "registry_references": 1584,
+    "effects": 1881,
+    "definitions": 3643,
+    "setting_reads": 390,
+    "environment_reads": 29,
+    "sql": 180,
+    "migrations": 348,
+    "unresolved": 0,
+    "mcp_tools": 7
+  },
+  "orm_fields": 626,
+  "orm_relationships": 34,
+  "source_missing_ledger": [],
+  "source_stale_ledger": [
+    "scripts/build-project-terrain.py"
+  ],
+  "source_review_statuses": {
+    "reviewed": 403
+  },
+  "named_definitions_without_current_annotation": [
+    {
+      "path": "scripts/build-project-terrain.py",
+      "line": 296,
+      "end_line": 324,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "review_overlay",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/build-project-terrain.py",
+      "line": 327,
+      "end_line": 330,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "render",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/build-project-terrain.py",
+      "line": 333,
+      "end_line": 357,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "mechanism_overlay",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/build-project-terrain.py",
+      "line": 360,
+      "end_line": 408,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "refresh",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/build-project-terrain.py",
+      "line": 411,
+      "end_line": 445,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "check",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/build-project-terrain.py",
+      "line": 448,
+      "end_line": 464,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "main",
+      "kind": "FunctionDef"
+    }
+  ],
+  "routes_without_handler_annotation": [],
+  "duplicate_method_paths": [],
+  "limits": "Identity/localization coverage does not prove semantic correctness/runtime. Previously captured baseline403/403 current reviews and3642/3642 named annotations before concurrent root edits; current discrepancies require owning author rows refresh, not automated reviewed status.",
+  "final_reconciliation_2026_09_30": {
+    "checked_at_utc": "2026-09-30T17:01:57.644419+00:00",
+    "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+    "basis": "Independent inventory is generated from source without ledger input; final comparison then checks exact source/ledger SHA and named-definition/handler coordinates+manual purpose. Preserved old full source review is the semantic basis of unchanged bodies; no fresh reread is claimed from hashes.",
+    "inventory_sha256": "abf29662200b1745d2bb8a4599d518addcfe1e12d62f6730eb62201e5af2d867",
+    "ledger_sha256": "658f0cfa9eea3e6cd04ac13282112f749d66ba13dfe44627377b95765ba50e9b",
+    "counts": {
+      "source_files": 405,
+      "routes": 144,
+      "schemas": 27,
+      "tables": 57,
+      "jobs": 39,
+      "settings": 160,
+      "registries": 843,
+      "registry_mutations": 23,
+      "registry_references": 1601,
+      "effects": 1886,
+      "definitions": 3655,
+      "setting_reads": 390,
+      "environment_reads": 29,
+      "sql": 186,
+      "migrations": 348,
+      "unresolved": 0,
+      "mcp_tools": 7
+    },
+    "orm_fields": 626,
+    "orm_relationships": 34,
+    "http_method_path_pairs": 182,
+    "source_missing_ledger": [],
+    "source_stale_inventory": [],
+    "source_stale_ledger": [],
+    "source_review_statuses": {
+      "reviewed": 405
+    },
+    "named_definitions_without_current_annotation": [],
+    "routes_without_handler_annotation": [],
+    "duplicate_method_paths": [],
+    "duplicate_ledger_paths": [],
+    "status": "current",
+    "limits": [
+      "Exact identity/locations/purpose coverage does not prove execution or semantic correctness.",
+      "Generated syntax is not application registration; runtime probes and ops acceptance have separate bounded evidence."
+    ],
+    "recheck_reason": "Root final freeze after fixing terrain HTML key-order identity: refresh renders the saved JSON instead of insertion-ordered pre-serialization data. New eighth targeted regression was reported passed by root. Root rebuilt inventory, indicator map and source ledger; final exact byte/name/location/manual-purpose comparison repeated; no source/ledger edit or broad test rerun here.",
+    "tracked_scope_fix": {
+      "default": "Git tracked/index with current worktree bytes",
+      "optional": "--include-untracked adds nonignored untracked files; non-Git filesystem fallback is documented",
+      "verification": "Initial scope fix: seven targeted tests passed with recorded initial source SHA. The subsequent root HTML serialization regression makes eight tests; its pass is root-reported. Final current source SHA are separately captured; this final comparison does not rerun broad application tests.",
+      "initial_scope_fix_source_sha256": {
+        "scripts/build-indicator-index.py": "06e0004ea18c9979096726d653980a7c2b2c9024c17a9cbc23d44936815daf31",
+        "scripts/repo-inventory.py": "72e6ad0604ce3ea380f763d7f63fd700dfe47a1b5547ab5bbf68f7dbffc3f69f",
+        "scripts/tests/test_mechanism_inventories.py": "0fad02550922f03c53a72e8312bf39ff0fb01540399f6e8d348a6548891f3d03"
+      },
+      "current_source_sha256": {
+        "scripts/build-indicator-index.py": "06e0004ea18c9979096726d653980a7c2b2c9024c17a9cbc23d44936815daf31",
+        "scripts/repo-inventory.py": "72e6ad0604ce3ea380f763d7f63fd700dfe47a1b5547ab5bbf68f7dbffc3f69f",
+        "scripts/tests/test_mechanism_inventories.py": "9aef5755aa9e4ad9095f77605827b6f9a21935cd3aeb928b61cceac5dde4dbb2"
+      }
+    },
+    "index_scope_reconciliation": {
+      "baseline": "HEAD:docs/indicator-index.json",
+      "current_sha256": "b221fdb984912eaa6326dd019f0037aec2a3137202339c174f31dfdb7a356b44",
+      "baseline_codes": 947,
+      "current_codes": 947,
+      "added_codes": [],
+      "removed_codes": [],
+      "changed_records": 189,
+      "changed_fields": [
+        "files"
+      ],
+      "summary_unchanged": true,
+      "completeness_unchanged": true,
+      "temporary_untracked_comparison_note": "The earlier453 changed records referred to the diagnostic untracked-inclusive temporary output, not the final tracked/index map."
+    },
+    "generator_check": {
+      "command": "python3 scripts/build-mechanism-inventory.py --check",
+      "exit_code": 0,
+      "scope": "Local generated inventory JSON/MD against current tracked/index source; no app import, external calls, DB or production.",
+      "verification_stage": "Earlier final tracked/index stage, preserved command result; root independently reported a successful rebuild at the latest freeze. Latest source-file identity/localization compared again here."
+    },
+    "root_freeze_report": {
+      "source_ledger_files": 1312,
+      "named_definition_annotations": 8474,
+      "targeted_mechanism_tests_passed": 8,
+      "terrain_check": "PASS",
+      "verification_basis": "Parent/root report at final freeze; full global gates were not rerun by this subagent."
+    }
+  },
+  "previous_final_reconciliation_before_reader_cli_guard": {
+    "checked_at_utc": "2026-09-30T16:09:25.278152+00:00",
+    "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+    "basis": "Independent inventory is generated from source without ledger input; final comparison then checks exact source/ledger SHA and named-definition/handler coordinates+manual purpose. Preserved old full source review is the semantic basis of unchanged bodies; no fresh reread is claimed from hashes.",
+    "inventory_sha256": "60cd3d812340fda52f895bdb12541917738c7b0a2e7d9b1383f946cc566d6cc8",
+    "ledger_sha256": "d907dfaf5eec3431a9ce2d014f1398ae8914b311ce263526e6e06010a3335488",
+    "counts": {
+      "source_files": 405,
+      "routes": 144,
+      "schemas": 27,
+      "tables": 57,
+      "jobs": 39,
+      "settings": 160,
+      "registries": 843,
+      "registry_mutations": 23,
+      "registry_references": 1601,
+      "effects": 1885,
+      "definitions": 3655,
+      "setting_reads": 390,
+      "environment_reads": 29,
+      "sql": 186,
+      "migrations": 348,
+      "unresolved": 0,
+      "mcp_tools": 7
+    },
+    "orm_fields": 626,
+    "orm_relationships": 34,
+    "source_missing_ledger": [],
+    "source_stale_inventory": [],
+    "source_stale_ledger": [],
+    "source_review_statuses": {
+      "reviewed": 405
+    },
+    "named_definitions_without_current_annotation": [],
+    "routes_without_handler_annotation": [],
+    "duplicate_method_paths": [],
+    "duplicate_ledger_paths": [],
+    "status": "current",
+    "limits": [
+      "Exact identity/locations/purpose coverage does not prove execution or semantic correctness.",
+      "Generated syntax is not application registration; runtime probes and ops acceptance have separate bounded evidence."
+    ]
+  },
+  "previous_final_reconciliation_before_tracked_scope_fix": {
+    "checked_at_utc": "2026-09-30T16:25:52.020740+00:00",
+    "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+    "basis": "Independent inventory is generated from source without ledger input; final comparison then checks exact source/ledger SHA and named-definition/handler coordinates+manual purpose. Preserved old full source review is the semantic basis of unchanged bodies; no fresh reread is claimed from hashes.",
+    "inventory_sha256": "1388b97045fe6d61770123c7d1e7a348952cdf3c2a085d49729c200a9af2d40e",
+    "ledger_sha256": "200432ce4ba2d12be0cb92aa1c6b5c66449d94c8b2c08c946cb7a7406fc25057",
+    "counts": {
+      "source_files": 405,
+      "routes": 144,
+      "schemas": 27,
+      "tables": 57,
+      "jobs": 39,
+      "settings": 160,
+      "registries": 843,
+      "registry_mutations": 23,
+      "registry_references": 1601,
+      "effects": 1886,
+      "definitions": 3655,
+      "setting_reads": 390,
+      "environment_reads": 29,
+      "sql": 186,
+      "migrations": 348,
+      "unresolved": 0,
+      "mcp_tools": 7
+    },
+    "orm_fields": 626,
+    "orm_relationships": 34,
+    "source_missing_ledger": [],
+    "source_stale_inventory": [],
+    "source_stale_ledger": [],
+    "source_review_statuses": {
+      "reviewed": 405
+    },
+    "named_definitions_without_current_annotation": [],
+    "routes_without_handler_annotation": [],
+    "duplicate_method_paths": [],
+    "duplicate_ledger_paths": [],
+    "status": "current",
+    "limits": [
+      "Exact identity/locations/purpose coverage does not prove execution or semantic correctness.",
+      "Generated syntax is not application registration; runtime probes and ops acceptance have separate bounded evidence."
+    ],
+    "recheck_reason": "Reader output-path CLI guard authored by materials owner; source/ledger remerged and inventory rebuilt by root. Definition count stable; final identity/localization repeated."
+  },
+  "previous_final_reconciliation_before_html_serialization_fix": {
+    "checked_at_utc": "2026-09-30T16:55:43.375277+00:00",
+    "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+    "basis": "Independent inventory is generated from source without ledger input; final comparison then checks exact source/ledger SHA and named-definition/handler coordinates+manual purpose. Preserved old full source review is the semantic basis of unchanged bodies; no fresh reread is claimed from hashes.",
+    "inventory_sha256": "7687c54b746bb9f907c504d8ac566fdfbcabecd7d9d7d87646382ffe2663244e",
+    "ledger_sha256": "33c2d25e5d59669003e73da0098587eead6deed668ecee49657c56056f6b25af",
+    "counts": {
+      "source_files": 405,
+      "routes": 144,
+      "schemas": 27,
+      "tables": 57,
+      "jobs": 39,
+      "settings": 160,
+      "registries": 843,
+      "registry_mutations": 23,
+      "registry_references": 1601,
+      "effects": 1886,
+      "definitions": 3655,
+      "setting_reads": 390,
+      "environment_reads": 29,
+      "sql": 186,
+      "migrations": 348,
+      "unresolved": 0,
+      "mcp_tools": 7
+    },
+    "orm_fields": 626,
+    "orm_relationships": 34,
+    "http_method_path_pairs": 182,
+    "source_missing_ledger": [],
+    "source_stale_inventory": [],
+    "source_stale_ledger": [],
+    "source_review_statuses": {
+      "reviewed": 405
+    },
+    "named_definitions_without_current_annotation": [],
+    "routes_without_handler_annotation": [],
+    "duplicate_method_paths": [],
+    "duplicate_ledger_paths": [],
+    "status": "current",
+    "limits": [
+      "Exact identity/locations/purpose coverage does not prove execution or semantic correctness.",
+      "Generated syntax is not application registration; runtime probes and ops acceptance have separate bounded evidence."
+    ],
+    "recheck_reason": "Final tracked/index scope correction in indicator/repo generators; root rebuilt backend inventory before indicator map, then froze the latest generated-map and knowledge-workflow ledger rows. Final byte/localization comparison repeated.",
+    "tracked_scope_fix": {
+      "files": {
+        "scripts/build-indicator-index.py": "06e0004ea18c9979096726d653980a7c2b2c9024c17a9cbc23d44936815daf31",
+        "scripts/repo-inventory.py": "72e6ad0604ce3ea380f763d7f63fd700dfe47a1b5547ab5bbf68f7dbffc3f69f",
+        "scripts/tests/test_mechanism_inventories.py": "0fad02550922f03c53a72e8312bf39ff0fb01540399f6e8d348a6548891f3d03"
+      },
+      "default": "Git tracked/index with current worktree bytes",
+      "optional": "--include-untracked adds nonignored untracked files; non-Git filesystem fallback is documented",
+      "verification": "Previously executed targeted unittest suite7/7 passed with these exact three source SHA; this final comparison did not rerun broad application tests."
+    },
+    "index_scope_reconciliation": {
+      "baseline": "HEAD:docs/indicator-index.json",
+      "current_sha256": "b221fdb984912eaa6326dd019f0037aec2a3137202339c174f31dfdb7a356b44",
+      "baseline_codes": 947,
+      "current_codes": 947,
+      "added_codes": [],
+      "removed_codes": [],
+      "changed_records": 189,
+      "changed_fields": [
+        "files"
+      ],
+      "summary_unchanged": true,
+      "completeness_unchanged": true,
+      "temporary_untracked_comparison_note": "The earlier453 changed records referred to the diagnostic untracked-inclusive temporary output, not the final tracked/index map."
+    },
+    "generator_check": {
+      "command": "python3 scripts/build-mechanism-inventory.py --check",
+      "exit_code": 0,
+      "scope": "Local generated inventory JSON/MD against current tracked/index source; no app import, external calls, DB or production."
+    }
+  }
+}

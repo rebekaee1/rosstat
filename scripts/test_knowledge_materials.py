@@ -129,7 +129,8 @@ class TerrainScopeTests(unittest.TestCase):
             snapshot.write_text(json.dumps(data))
             report.write_text(terrain.markdown(data))
             with patch.object(terrain, "ROOT", root), patch.object(terrain, "SNAPSHOT", snapshot), \
-                    patch.object(terrain, "REPORT", report), patch.object(terrain, "inventory", return_value=[]):
+                    patch.object(terrain, "REPORT", report), patch.object(terrain, "HTML", root / "terrain.html"), \
+                    patch.object(terrain, "inventory", return_value=[]):
                 self.assertEqual(terrain.check(tracked_only=True), 1)
                 self.assertEqual(terrain.check(tracked_only=False), 0)
                 data["input_scope"] = "tracked"

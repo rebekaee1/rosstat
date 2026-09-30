@@ -1,5 +1,11 @@
 # Приёмка рабочего цикла знаний — 30 сентября 2026
 
+**Последующее завершение:** [приёмка K01–K12](../project-knowledge-acceptance.md).
+Этот протокол сохраняет первый этап 30 сентября; новые inventories, actual-body
+probes, restore owners/auth, visual materials и fresh-agent acceptance отражены
+в последующем протоколе, не переписывают исходные пределы этого испытания.
+
+
 Основа: локальная `main 972579f` и изменения этой задачи. Итоговая структура
 фиксирует tracked/index inputs; чужие untracked материалы не удалены и не
 включены в commit. Это выполнение первых шагов [очереди](../backlog.md#knowledge-workflow-2026-09-30),

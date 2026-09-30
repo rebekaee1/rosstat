@@ -58,6 +58,32 @@ Forecast Economy показывает официальные экономиче�
 
 **Повторное наблюдение 2026-09-30, 13:40 UTC (16:40 МСК).** Ресурсы хоста, семь контейнеров, readiness, выбранные effective Settings, PostgreSQL head и существующие backup прочитаны без изменения сервера: [снимок 30.09](code-review/runtime-observation-2026-09-30.json). Полный исходный снимок **27.09, 12:24–12:34 UTC** со схемой БД, флагами, томами и хостовыми настройками сохранён [отдельно](code-review/runtime-inventory-2026-09-27.json); [runtime-inventory.json](runtime-inventory.json) связывает оба наблюдения. Ни одна величина не становится постоянной настройкой только из-за записи в документе; строки пользователей и секреты не публикуются.
 
+### Дополнение механизмов 30.09, local main `05302ff`
+
+Поздняя [ops-проверка](code-review/ops-mechanism-acceptance-2026-09-30.md) и её
+[полный JSON](code-review/ops-mechanism-acceptance-2026-09-30.json) расширили ранний
+снимок: 160 Settings-полей/consumers/defaults/Compose mapping, все 7 service/mount/limit
+контракты, host units/network/sysctl и 402 backend payload-файла работающих web/scheduler.
+Все 402 совпали с серверным checkout; единственное отличие от local main — комментарии
+`ticker_worker.py`. Frontend image содержит проверенные 264 dist-файла и все 6 index bundles.
+Caddy active JSON равен адаптированному `/etc/caddy/Caddyfile`, а его файл — checkout.
+
+Повторный restore с синтетическим исходным role `rustats` **без подавления owner/ACL**
+завершился за182,967с; owners сохранены, nondefault table ACL=0. Current backend на restored
+БД прошёл HTTP API/readiness/email-auth/CSRF и сохранение session после очистки только
+своего cache Redis; current nginx — CPI/currency SSR и все shell assets. Вторая пустая
+своя БД прошла34 migrations/metadata+regional seed/startup (947 indicators,961494 regional
+points), без scheduler/jobs и внешней сети. Offline CBR calendar failure не остановил
+startup. Client JS был из прежнего local image; full browser/production failover не заявлен.
+
+Два конструкционных расхождения теперь объяснены: host logrotate всё ещё rotate14/compress/
+copytruncate, хотя main — rotate7/nocompress/rename+USR1; 9 имён `.env.example` не передаются
+этим Compose. `PUBLIC_HOST` исторический и не читается текущим Caddy. Найден active host
+`tor-http-bridge.service`: gateway8888→Tor9050, вне Git. Его hardcoded Basic credential и
+логирование headers — подтверждённый дефект; в публичном свидетельстве credential редактирован.
+Provider control plane/SLA/offsite — явная недоступная область, capacity/RTO — неизмеренные
+свойства, RPO/RTO targets — непринятое бизнес-решение; они не смешиваются с устройством.
+
 ### Версии кода и процессы
 
 30.09 `/opt/rosstat` — чистый Git на **`367ff336a307ad57d528b26078ca35883ec3de68`** (approval wrapper выпуска `535f226`). Локальная main при повторной сверке — `972579f`. Семь выбранных файлов **серверного checkout** (`docker-compose.yml`, `backend/entrypoint.sh`, `scripts/pg-backup.sh`, `scripts/deploy.sh`, `frontend/nginx.conf`, `backend/app/config.py`, `Caddyfile`) побайтово совпали с локальными исходниками. Это не аттестация всех файлов работающих images. Исторически 27.09 сервер был на `e81b86e`, а 11 выбранных файлов web/scheduler/nginx совпали с тем серверным Git; полное свидетельство сохранено с первоначальной датой.
@@ -118,7 +144,7 @@ analytics: 4 процесса × (pool 2 + overflow 2)    = 16
                                                    73
 ```
 
-`max_connections=100`, `superuser_reserved_connections=3` проверен на сервере. Остаток до 97 обычных соединений — 24 при одновременном максимуме всех пулов; Alembic, seed, CLI и backup тоже подключаются. Это верхние пределы, соединения открываются по потребности. Web pool timeout 3s, scheduler/analytics 15s. В приложении public statement timeout 30s, analytics 60s, idle-in-transaction 120s; глобальные PostgreSQL `statement_timeout=0`/`idle_in_transaction_session_timeout=0` не отменяют session-level настройки приложения.
+`max_connections=100`, `superuser_reserved_connections=3` проверен на сервере. Остаток до 97 обычных соединений — 24 при одновременном максимуме всех пулов; Alembic, seed, CLI и backup тоже подключаются. Поздняя сверка 30.09 установила, что app-role `rustats` — superuser и может занять reserved slots: это консервативный бюджет, а не enforced изоляция от приложения. Это верхние пределы, соединения открываются по потребности. Web pool timeout 3s, scheduler/analytics 15s. В приложении public statement timeout 30s, analytics 60s, idle-in-transaction 120s; глобальные PostgreSQL `statement_timeout=0`/`idle_in_transaction_session_timeout=0` не отменяют session-level настройки приложения.
 
 В полном снимке **27.09** серверная БД занимала 6 481 599 511 байт; публичная схема содержала **60 таблиц и 672 колонки**, включая `alembic_version`, с head `20260924_oauth_locale`. Перечень колонок, типов, nullability и defaults сохранён в историческом JSON. **30.09** серверный head уже `20260927_world_nonzero_idx`, та же ревизия восстановлена из свежего dump; старое утверждение «миграция ещё не применена» больше не является текущим. В восстановленном dump 58 public-таблиц и `research.source_catalog` (59 всего). Это схема backup на 04:00 UTC, а не новый полный live-инвентарь колонок; свежая полная инвентаризация live-схемы пока не проведена.
 
@@ -126,7 +152,7 @@ analytics: 4 процесса × (pool 2 + overflow 2)    = 16
 
 На сервере cache Redis `/0` использует `allkeys-lru`; `.env.example`/Compose default — `volatile-lru`. 30.09 cache использовал почти все 384 MiB (402652792 байт из 402653184); текущая скорость eviction не измерялась. Снимок 27.09 содержал ≈380,7 MiB и накопительный счётчик 622534. Effective Settings web 30.09 подтверждают отдельный `redis-state:6379/0`; noeviction+AOF и прежние ≈12,5 MiB / 0 вытеснений относятся к полному снимку 27.09, не к новому замеру памяти state.
 
-В **локальной main** поколение `world-catalog` и durable last-good хранятся в state Redis, публикация атомарная, ключи `g2`, есть single-flight/stale grace. Исторически **27.09 на e81b86e** проверенные `core/cache.py` и `api/world.py` были старее. **30.09 checkout обновлён до 367ff336**, но тела этих двух файлов в работающем image повторно не сравнивались; граница между исходниками и effective runtime сохраняется. Cache fail-open, quota/lockout/session state и namespace generation имеют разные режимы отказа — подробности в [контрактах](data-contracts.md).
+В **локальной main** поколение `world-catalog` и durable last-good хранятся в state Redis, публикация атомарная, ключи `g2`, есть single-flight/stale grace. Исторически **27.09 на e81b86e** проверенные `core/cache.py` и `api/world.py` были старее. **В ранней сверке 30.09, 13:40 UTC checkout обновлён до 367ff336**, но эти image-файлы ещё не сравнивались. Поздняя [аттестация 402 payload-файлов](code-review/ops-mechanism-acceptance-2026-09-30.json) установила их SHA-паритет с checkout у web и scheduler; это filesystem evidence, не проверка каждого состояния БД/job. Cache fail-open, quota/lockout/session state и namespace generation имеют разные режимы отказа — подробности в [контрактах](data-contracts.md).
 
 В снимке **локального Docker-стека 27.09** контейнер `redis-state` существует, однако оба процесса приложения используют `redis:6379/1`. Это отдельная логическая БД того же cache-инстанса, с общей памятью и eviction policy, а не физическая изоляция. Переключение адреса state меняет доступное состояние сессий/локов; при аудите оно не выполнялось.
 
@@ -140,7 +166,7 @@ Root cron сервера запускает `scripts/pg-backup.sh` в **04:00 UT
 
 В полном снимке **27.09** на сервере включены analytics ingestion/live writes, ClickHouse, IndexNow, Pulse, Telegram digest/poller/realtime alerts, Eurostat/subnational/BEA ingest. `analytics_scheduler_enabled=false` — отдельный флаг; его нельзя подменять общим `scheduler_enabled=true`. Global world forecast выключен, отдельные US/Europe forecast gates включены (caps 500/3000). Реестр заданий и их зависимость от флагов смотреть в разборе `main.py`/tasks; наличие флага не доказывает успешную последнюю загрузку.
 
-**27.09** хостовые Caddy/fail2ban/logrotate конфиги совпали с серверным checkout. Тогда jail limits: nginx-429 30 событий/600s → ban86400s; nginx-volume 80/600s →86400s; honeytrap 1/3600s →172800s; recidive 2/86400s →604800s. Это отдельный слой после nginx rate limits; список заблокированных IP не собирался. **30.09** Caddy/nginx файлы серверного checkout совпали с main; host-loaded Caddy и effective nginx конфигурация заново не аттестованы. В текущем nginx есть адресная блокировка трёх сетей Alibaba (`43.119.0.0/16`, `47.78.0.0/15`, `47.80.0.0/14`); отключённый `fe_bind` не означает отсутствие этого сетевого правила.
+**27.09** хостовые Caddy/fail2ban/logrotate конфиги совпали с серверным checkout. Тогда jail limits: nginx-429 30 событий/600s → ban86400s; nginx-volume 80/600s →86400s; honeytrap 1/3600s →172800s; recidive 2/86400s →604800s. Это отдельный слой после nginx rate limits; список заблокированных IP не собирался. **30.09, ранняя сверка:** Caddy/nginx checkout совпали с main, host-loaded конфиги ещё не аттестованы. **Поздняя сверка:** Caddy active JSON совпал с disk-adapted/checkout; `nginx -T` и image config проверены, writable config changes отсутствуют. Effective host logrotate при этом старый: rotate14/compress/copytruncate против main rotate7/nocompress/rename+USR1. См. [ops-досье](code-review/ops-mechanism-acceptance-2026-09-30.md). В текущем nginx есть адресная блокировка трёх сетей Alibaba (`43.119.0.0/16`, `47.78.0.0/15`, `47.80.0.0/14`); отключённый `fe_bind` не означает отсутствие этого сетевого правила.
 
 **Метрики.** Инструментация `/api/v1/metrics` существует. Effective `Settings.metrics_token` web 30.09 пуст: endpoint по коду отвечает 403, рабочий scrape этим наблюдением не подтверждён. Readiness был успешен у web и scheduler, но это не измерение latency/throughput и не проверка каждой джобы. Включение токена/коллектора не выполнялось.
 
@@ -270,4 +296,4 @@ SPA-маршруты России находятся под `/russia`, друг�
 
 ## Что эта карта не подтверждает
 
-Первоначальный кодовый проход 27.09 не запускал application browser/E2E, ETL, миграции или release smoke; браузерная проверка касалась навигатора рельефа. Флаги, схема и effective конфигурация **не отсутствуют**: они датированно зафиксированы в [полном снимке 27.09](code-review/runtime-inventory-2026-09-27.json) и [повторной ops-сверке 30.09](code-review/runtime-observation-2026-09-30.json). [Restore 30.09](code-review/backup-acceptance-2026-09-30.md) подтверждает читаемость и восстановление свежего dump, но не работу приложения на восстановленной БД. Не установлены текущие QPS/p95/p99/LCP/CLS, capacity при одновременном ETL/BI/SSR, актуальный полный live-инвентарь колонок, provider backup/SLA, полный failover/RTO/RPO, число индексируемых страниц и количество HTTP-запросов React в выбранном режиме. Для них нужны отдельные проверки, а не вывод из графа или healthy.
+Первоначальный кодовый проход 27.09 не запускал application browser/E2E, ETL, миграции или release smoke; браузерная проверка касалась навигатора рельефа. Флаги, схема и effective конфигурация **не отсутствуют**: они датированно зафиксированы в [полном снимке 27.09](code-review/runtime-inventory-2026-09-27.json) и [повторной ops-сверке 30.09](code-review/runtime-observation-2026-09-30.json). [Первое restore-учение 30.09](code-review/backup-acceptance-2026-09-30.md) проверяло schema/data без application acceptance. [Поздняя проверка механизмов](code-review/ops-mechanism-acceptance-2026-09-30.md) добавила owner/ACL, HTTP restored API/email-auth/nginx SSR и чистый startup; её bounded сценарии не являются full browser/production failover. Не установлены текущие QPS/p95/p99/LCP/CLS, capacity при одновременном ETL/BI/SSR, актуальный полный live-инвентарь колонок, provider backup/SLA, полный failover/RTO/RPO, число индексируемых страниц и количество HTTP-запросов React в выбранном режиме. Для них нужны отдельные проверки, а не вывод из графа или healthy.
