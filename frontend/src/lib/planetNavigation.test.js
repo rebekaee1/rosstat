@@ -1,11 +1,37 @@
 import { describe, expect, it } from 'vitest';
 import {
   beginPlanetPointer, createPlanetPointerState, endPlanetPointer,
-  movePlanetPointer, planetFitDistance,
+  movePlanetPointer, planetFitDistance, planetRenderBudget,
 } from './planetNavigation';
 
 const pointer = (overrides = {}) => ({
   pointerId: 1, clientX: 100, clientY: 100, button: 0, isPrimary: true, ...overrides,
+});
+
+describe('planet rendering budget', () => {
+  it('caps pixel work for desktop and compact displays', () => {
+    expect(planetRenderBudget().maxDpr).toBe(1.5);
+    expect(planetRenderBudget({ compact: true }).maxDpr).toBe(1.25);
+  });
+
+  it('limits low-memory devices while retaining material detail', () => {
+    const budget = planetRenderBudget({ deviceMemory: 4 });
+    expect(budget.maxDpr).toBe(1);
+    expect(budget.sphereSegments).toEqual([64, 48]);
+    expect(budget.materialDetail).toBe(true);
+    expect(planetRenderBudget({ deviceMemory: 8 }).sphereSegments).toEqual([96, 64]);
+  });
+
+  it('honors explicit data saving by skipping the secondary material request', () => {
+    const budget = planetRenderBudget({ saveData: true, deviceMemory: 16 });
+    expect(budget.maxDpr).toBe(1);
+    expect(budget.materialDetail).toBe(false);
+  });
+
+  it('uses a bounded desktop default when device memory is unavailable', () => {
+    expect(planetRenderBudget({ deviceMemory: undefined })).toEqual(planetRenderBudget());
+    expect(planetRenderBudget({ deviceMemory: NaN }).maxDpr).toBe(1.5);
+  });
 });
 
 describe('planet camera framing', () => {

@@ -9,6 +9,16 @@ export function planetFitDistance({ fov = 40, aspect = 1, radius = 1, padding = 
   return safeRadius * safePadding / Math.sin(Math.min(verticalAngle, horizontalAngle));
 }
 
+/** Bound pixel work, independently of a high-density display's native DPR. */
+export function planetRenderBudget({ compact = false, deviceMemory, saveData = false } = {}) {
+  const constrained = saveData || (Number.isFinite(deviceMemory) && deviceMemory <= 4);
+  return {
+    maxDpr: constrained ? 1 : compact ? 1.25 : 1.5,
+    materialDetail: !saveData,
+    sphereSegments: compact || constrained ? [64, 48] : [96, 64],
+  };
+}
+
 export function createPlanetPointerState() {
   return { pointerId: null, x: 0, y: 0, moved: false, cancelled: false, activeIds: [] };
 }

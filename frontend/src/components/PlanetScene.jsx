@@ -1,9 +1,9 @@
 import {
-  Component, Suspense, useEffect, useMemo, useRef, useState,
+  Component, Suspense, useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
-  AdditiveBlending, BackSide, CanvasTexture, Color, LinearFilter,
+  BackSide, CanvasTexture, DataTexture, LinearFilter, NormalBlending,
   NoColorSpace, Quaternion, SphereGeometry, SRGBColorSpace,
   TextureLoader, Vector3,
 } from 'three';
@@ -11,19 +11,18 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { geoEquirectangular, geoPath } from 'd3-geo';
 import {
   bindPlanetCountries, loadPlanetFeatures, lonLatToSphere,
-  normalizePlanetCountryCode, pickPlanetCountry, sphereToLonLat,
+  normalizePlanetCountryCode, pickPlanetCountry, planetNeedsFineFeatures, sphereToLonLat,
 } from '../lib/planetGeometry';
 import { WORLD_FEATURES } from '../lib/worldTopology';
 import {
   beginPlanetPointer, createPlanetPointerState, endPlanetPointer,
-  movePlanetPointer, planetFitDistance,
+  movePlanetPointer, planetFitDistance, planetRenderBudget,
 } from '../lib/planetNavigation';
 import { useT } from '../i18n';
 import {
   ATMOSPHERE_FRAGMENT, PLANET_FRAGMENT, PLANET_VERTEX,
 } from '../lib/planetShaders';
 
-const SUN = new Vector3(-0.8, 0.55, 1).normalize();
 const DEFAULT_FOCUS = [25, 24];
 const MIN_DISTANCE = 1.45;
 const MAX_DISTANCE = 4.8;
@@ -34,7 +33,7 @@ function valueFor(collection, code) {
 }
 
 /** Geography is rendered independently of country coverage in the API. */
-function paintAtlas(entries, { mode, valuesByCode, colorModel, selectedCode }) {
+function paintAtlas(entries, { mode, valuesByCode, colorModel }) {
   const canvas = document.createElement('canvas');
   canvas.width = 2048;
   canvas.height = 1024;
@@ -44,32 +43,59 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel, selectedCode }) {
     .scale(canvas.width / (2 * Math.PI))
     .translate([canvas.width / 2, canvas.height / 2]);
   const path = geoPath(projection, context);
-  const selected = normalizePlanetCountryCode(selectedCode);
+  context.lineJoin = 'round';
   for (const entry of entries) {
     context.beginPath();
     path(entry.feature);
     const value = valueFor(valuesByCode, entry.dataCode);
     const hasValue = value != null && value !== '' && Number.isFinite(Number(value));
     if (mode === 'data') {
-      context.globalAlpha = hasValue ? 0.72 : 0.12;
+      context.globalAlpha = hasValue ? 0.68 : 0.12;
       context.fillStyle = hasValue ? colorModel.colorFor(value) : '#7f8c9b';
       context.fill();
     }
-    context.globalAlpha = mode === 'data' ? 0.62 : 0.4;
-    context.strokeStyle = '#bacbdd';
+    // Two tones keep thin borders legible over clouds, desert and water alike.
+    context.globalAlpha = mode === 'data' ? 0.55 : 0.62;
+    context.strokeStyle = '#244b61';
+    context.lineWidth = 1.8;
+    context.stroke();
+    context.globalAlpha = 0.88;
+    context.strokeStyle = '#f2fcff';
     context.lineWidth = 0.85;
     context.stroke();
   }
-  if (selected) {
-    for (const entry of entries.filter((item) => item.code === selected)) {
+  context.globalAlpha = 1;
+  return canvas;
+}
+
+/** Hover/selection update two polygons, without repainting the complete atlas. */
+function paintHighlight(entries, selectedCode, hoveredCode) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 512;
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('Cannot render country selection');
+  const path = geoPath(geoEquirectangular()
+    .scale(canvas.width / (2 * Math.PI))
+    .translate([canvas.width / 2, canvas.height / 2]), context);
+  context.lineJoin = 'round';
+  const selected = normalizePlanetCountryCode(selectedCode);
+  const hovered = normalizePlanetCountryCode(hoveredCode);
+  for (const code of new Set([hovered, selected].filter(Boolean))) {
+    const isSelected = code === selected;
+    for (const entry of entries.filter((item) => item.code === code)) {
       context.beginPath();
       path(entry.feature);
-      context.globalAlpha = mode === 'data' ? 0.14 : 0.27;
-      context.fillStyle = '#eac98b';
+      context.globalAlpha = isSelected ? 0.1 : 0.065;
+      context.fillStyle = '#13a4b3';
       context.fill();
+      context.globalAlpha = 0.95;
+      context.strokeStyle = '#efffff';
+      context.lineWidth = isSelected ? 3.2 : 2.5;
+      context.stroke();
       context.globalAlpha = 1;
-      context.strokeStyle = '#ffe1a4';
-      context.lineWidth = 2.5;
+      context.strokeStyle = isSelected ? '#0095a9' : '#36afc0';
+      context.lineWidth = isSelected ? 1.8 : 1.3;
       context.stroke();
     }
   }
@@ -78,30 +104,32 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel, selectedCode }) {
 }
 
 /** Owns resources so retries/unmounts release textures, including partial loads. */
-function usePlanetTextures(compact, onError) {
+function usePlanetTextures(budget, onError) {
   const [textures, setTextures] = useState(null);
   useEffect(() => {
     let active = true;
     const owned = [];
     const loader = new TextureLoader();
-    const paths = compact ? [
-      '/planet/earth_day_2048.webp',
-      '/planet/earth_night_2048.webp',
-      '/planet/earth_bump_roughness_clouds_1024.webp',
-    ] : [
-      '/planet/earth_day_4096.jpg',
-      '/planet/earth_night_4096.jpg',
-      '/planet/earth_bump_roughness_clouds_4096.jpg',
-    ];
-    const requests = paths.map((path, index) => loader.loadAsync(path).then((texture) => {
-      owned.push(texture);
-      if (!active) { texture.dispose(); return texture; }
-      texture.colorSpace = index === 2 ? NoColorSpace : SRGBColorSpace;
-      texture.anisotropy = compact ? 2 : 4;
-      return texture;
-    }));
-    Promise.all(requests).then(([day, night, surface]) => {
-      if (active) setTextures({ day, night, surface });
+    // A neutral one-pixel material lets the real day image appear independently.
+    const neutral = new DataTexture(new Uint8Array([128, 255, 0, 255]), 1, 1);
+    neutral.colorSpace = NoColorSpace;
+    neutral.needsUpdate = true;
+    owned.push(neutral);
+    loader.loadAsync('/planet/earth_day_2048.webp').then((day) => {
+      owned.push(day);
+      if (!active) { day.dispose(); return; }
+      day.colorSpace = SRGBColorSpace;
+      day.anisotropy = 2;
+      setTextures({ day, surface: neutral });
+      // Material detail is optional: it never blocks the first credible surface.
+      if (!budget.materialDetail) return;
+      loader.loadAsync('/planet/earth_material_512_4dfa031876a1.webp').then((surface) => {
+        owned.push(surface);
+        if (!active) { surface.dispose(); return; }
+        surface.colorSpace = NoColorSpace;
+        surface.anisotropy = 2;
+        setTextures({ day, surface });
+      }).catch(() => { /* Keep the real day surface if optional detail is unavailable. */ });
     }).catch((error) => {
       if (active) onError(error);
     });
@@ -109,7 +137,7 @@ function usePlanetTextures(compact, onError) {
       active = false;
       owned.forEach((texture) => texture.dispose());
     };
-  }, [compact, onError]);
+  }, [budget, onError]);
   return textures;
 }
 
@@ -212,38 +240,49 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
   return null;
 }
 
-function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
+function Earth({ textures, budget, entries, mode, valuesByCode, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
   const { invalidate, gl } = useThree();
   const pointerState = useRef(createPlanetPointerState());
   const completedTap = useRef(null);
   const hoverCode = useRef(null);
+  const [hover, setHover] = useState(null);
+  const hoveredCode = hover && hover.command === cameraCommand ? hover.code : null;
   const readyRef = useRef(false);
   const geometry = useMemo(() => {
-    const sphere = new SphereGeometry(1, 96, 64);
+    const sphere = new SphereGeometry(1, ...budget.sphereSegments);
     // SphereGeometry starts at -X. This aligns its u=0 with longitude ±180°.
     sphere.rotateY(-Math.PI / 2);
     return sphere;
-  }, []);
+  }, [budget]);
   const atlas = useMemo(() => {
-    const texture = new CanvasTexture(paintAtlas(entries, { mode, valuesByCode, colorModel, selectedCode }));
+    const texture = new CanvasTexture(paintAtlas(entries, { mode, valuesByCode, colorModel }));
     texture.colorSpace = SRGBColorSpace;
     texture.minFilter = LinearFilter;
     texture.generateMipmaps = false;
     return texture;
-  }, [entries, mode, valuesByCode, colorModel, selectedCode]);
+  }, [entries, mode, valuesByCode, colorModel]);
+  const highlight = useMemo(() => {
+    const texture = new CanvasTexture(paintHighlight(entries, selectedCode, hoveredCode));
+    texture.colorSpace = SRGBColorSpace;
+    texture.minFilter = LinearFilter;
+    texture.generateMipmaps = false;
+    return texture;
+  }, [entries, selectedCode, hoveredCode]);
   useEffect(() => {
     invalidate();
     return () => atlas.dispose();
   }, [atlas, invalidate]);
+  useEffect(() => {
+    invalidate();
+    return () => highlight.dispose();
+  }, [highlight, invalidate]);
   const uniforms = useMemo(() => ({
     dayMap: { value: textures.day },
-    nightMap: { value: textures.night },
     surfaceMap: { value: textures.surface },
     atlasMap: { value: atlas },
-    sunDirection: { value: SUN },
+    highlightMap: { value: highlight },
     surfaceTexel: { value: 1 / textures.surface.image.width },
-  }), [textures, atlas]);
-  const atmosphereUniforms = useMemo(() => ({ sunDirection: { value: SUN } }), []);
+  }), [textures, atlas, highlight]);
   useEffect(() => () => geometry.dispose(), [geometry]);
 
   useEffect(() => {
@@ -253,6 +292,7 @@ function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode
       completedTap.current = null;
       pointerState.current = beginPlanetPointer(pointerState.current, event);
       hoverCode.current = null;
+      setHover(null);
       onHover(null);
     };
     const additionalDown = (event) => {
@@ -262,6 +302,7 @@ function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode
       completedTap.current = null;
       pointerState.current = beginPlanetPointer(state, event);
       hoverCode.current = null;
+      setHover(null);
       onHover(null);
     };
     const move = (event) => {
@@ -302,6 +343,7 @@ function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode
     gl.domElement.style.setProperty('cursor', code ? 'pointer' : 'grab');
     if (hoverCode.current !== code) {
       hoverCode.current = code;
+      setHover({ code, command: cameraCommand });
       onHover(code);
     }
   };
@@ -314,7 +356,7 @@ function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode
   };
   const selected = selectedCode
     ? entries.find((entry) => entry.code === normalizePlanetCountryCode(selectedCode)) : null;
-  const markerPosition = selected ? new Vector3(...lonLatToSphere(selected.focus, 1.013)) : null;
+  const markerPosition = selected?.focus ? new Vector3(...lonLatToSphere(selected.focus, 1.013)) : null;
   const markerRotation = markerPosition
     ? new Quaternion().setFromUnitVectors(new Vector3(0, 0, 1), markerPosition.clone().normalize())
     : null;
@@ -328,7 +370,7 @@ function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode
         }}
         onPointerUp={pointerUp}
         onPointerMove={pointerMove}
-        onPointerOut={() => { hoverCode.current = null; onHover(null); gl.domElement.style.setProperty('cursor', 'grab'); }}
+        onPointerOut={() => { hoverCode.current = null; setHover(null); onHover(null); gl.domElement.style.setProperty('cursor', 'grab'); }}
       >
         <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} />
       </mesh>
@@ -337,29 +379,32 @@ function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode
         <shaderMaterial
           vertexShader={PLANET_VERTEX}
           fragmentShader={ATMOSPHERE_FRAGMENT}
-          uniforms={atmosphereUniforms}
           side={BackSide}
           transparent
           depthWrite={false}
-          blending={AdditiveBlending}
+          blending={NormalBlending}
         />
       </mesh>
-      {selected && (
+      {markerPosition && (
         <mesh position={markerPosition} quaternion={markerRotation} raycast={() => null}>
-          <ringGeometry args={[0.009, 0.014, 32]} />
-          <meshBasicMaterial color="#ffe1a4" toneMapped={false} />
+          <ringGeometry args={[0.01, 0.016, 32]} />
+          <meshBasicMaterial color="#eaffff" toneMapped={false} />
+          <mesh position={[0, 0, 0.001]} raycast={() => null}>
+            <ringGeometry args={[0.0115, 0.014, 32]} />
+            <meshBasicMaterial color="#008fa6" toneMapped={false} />
+          </mesh>
         </mesh>
       )}
     </>
   );
 }
 
-function SceneContents({ entries, compact, onError, ...props }) {
-  const textures = usePlanetTextures(compact, onError);
+function SceneContents({ entries, budget, onError, ...props }) {
+  const textures = usePlanetTextures(budget, onError);
   return (
     <>
       <PlanetControls entries={entries} {...props} />
-      {textures && <Earth textures={textures} entries={entries} {...props} />}
+      {textures && <Earth textures={textures} budget={budget} entries={entries} {...props} />}
     </>
   );
 }
@@ -372,25 +417,42 @@ class SceneBoundary extends Component {
 }
 
 /** Three is a lazy leaf: HTML search/cards and SVG fallback never depend on a GPU. */
-export default function PlanetScene({ countries, defaultScope, onError, interactive = true, touchNavigation = false, ...props }) {
+export default function PlanetScene({ countries, defaultScope, onError, onReady, interactive = true, touchNavigation = false, ...props }) {
   const t = useT();
   const [features, setFeatures] = useState(WORLD_FEATURES);
   const atlasLevel = useRef(0);
-  const [compact] = useState(() => window.matchMedia('(max-width: 767px)').matches);
+  const [surfaceReady, setSurfaceReady] = useState(false);
+  const [budget] = useState(() => planetRenderBudget({
+    compact: window.matchMedia('(max-width: 767px), (pointer: coarse)').matches,
+    deviceMemory: navigator.deviceMemory,
+    saveData: navigator.connection?.saveData,
+  }));
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const entries = useMemo(() => bindPlanetCountries(countries, features), [countries, features]);
+  const handleReady = useCallback(() => {
+    setSurfaceReady(true);
+    onReady();
+  }, [onReady]);
   useEffect(() => {
+    if (!surfaceReady || !budget.materialDetail) return undefined;
     let active = true;
-    loadPlanetFeatures('detailed').then((detail) => {
-      if (active && detail?.length && atlasLevel.current < 1) {
-        atlasLevel.current = 1;
-        setFeatures(detail);
-      }
-    });
-    return () => { active = false; };
-  }, []);
+    const refine = () => loadPlanetFeatures('detailed').then((detail) => {
+        if (active && detail?.length && atlasLevel.current < 1) {
+          atlasLevel.current = 1;
+          setFeatures(detail);
+        }
+      });
+    // Draw the base atlas first; refinement must not compete with the day map.
+    const idle = window.requestIdleCallback?.(refine, { timeout: 1500 });
+    const timer = idle == null ? window.setTimeout(refine, 200) : null;
+    return () => {
+      active = false;
+      if (idle != null) window.cancelIdleCallback(idle);
+      if (timer != null) window.clearTimeout(timer);
+    };
+  }, [surfaceReady, budget]);
   useEffect(() => {
-    if (!props.selectedCode) return undefined;
+    if (atlasLevel.current >= 2 || !planetNeedsFineFeatures(entries, props.selectedCode)) return undefined;
     let active = true;
     // Microstates and disconnected territories need the complete atlas when focused.
     loadPlanetFeatures('fine').then((fine) => {
@@ -400,7 +462,7 @@ export default function PlanetScene({ countries, defaultScope, onError, interact
       }
     });
     return () => { active = false; };
-  }, [props.selectedCode]);
+  }, [entries, props.selectedCode]);
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReducedMotion(preference.matches);
@@ -412,11 +474,11 @@ export default function PlanetScene({ countries, defaultScope, onError, interact
     <SceneBoundary onError={onError}>
       <Canvas
         frameloop="demand"
-        dpr={[1, compact ? 1.25 : 1.75]}
+        dpr={[1, budget.maxDpr]}
         camera={{ position: initialPosition, fov: 40, near: 0.05, far: 20 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'low-power' }}
-        onCreated={({ gl, scene }) => {
-          scene.background = new Color('#040b15');
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
           gl.domElement.setAttribute('aria-label', t('planet.earth'));
         }}
       >
@@ -424,13 +486,14 @@ export default function PlanetScene({ countries, defaultScope, onError, interact
           <ContextLifecycle onError={onError} />
           <SceneContents
             entries={entries}
-            compact={compact}
+            budget={budget}
             reducedMotion={reducedMotion}
             defaultScope={defaultScope}
             onError={onError}
             interactive={interactive}
             touchNavigation={touchNavigation}
             {...props}
+            onReady={handleReady}
           />
         </Suspense>
       </Canvas>

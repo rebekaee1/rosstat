@@ -25,7 +25,7 @@ does not replace the texture attribution requirement.
 Suggested visible credit:
 
 > Earth textures: Solar System Scope / INOVE, CC BY 4.0. Adapted by Three.js;
-> mobile versions resized for ForecastEconomy.
+> versions resized for ForecastEconomy.
 
 Link `Solar System Scope` to the collection above and `CC BY 4.0` to the license.
 The originals and the derivatives retain the same texture attribution.
@@ -33,33 +33,35 @@ The originals and the derivatives retain the same texture attribution.
 Exact source URLs, byte lengths, SHA-256 hashes, dimensions, conversion recipes,
 runtime paths and channel meanings are in [source-manifest.json](source-manifest.json).
 
-## Runtime sets
+## Runtime set and first surface
 
-| Asset | Desktop | Mobile |
-| --- | --- | --- |
-| Surface color | `earth_day_4096.jpg` | `earth_day_2048.webp` |
-| Night lights | `earth_night_4096.jpg` | `earth_night_2048.webp` |
-| Packed material data | `earth_bump_roughness_clouds_4096.jpg` | `earth_bump_roughness_clouds_1024.webp` |
+All devices use one shared set. The real 2048 × 1024 surface appears as soon as
+`earth_day_2048.webp` has loaded (**263,130 bytes**). It is not delayed by material
+maps or optional geography refinement. A neutral one-pixel material supplies
+valid initial shader input.
 
-Desktop transfer: **2,248,543 bytes** for all three textures. Mobile transfer:
-**1,136,358 bytes**. These are actual file lengths, excluding HTTP headers and
-the JavaScript renderer. Load one set at a time; avoid preloading both sets.
+After the day surface, `earth_material_512_4dfa031876a1.webp` adds the cloud,
+roughness and bump channels (**186,426 bytes**). This map is optional: an error
+keeps the already loaded Earth usable. Browsers reporting `connection.saveData`
+receive only the day map. Night lights and the original 4096 maps remain source
+assets; the runtime does not request them.
 
-The mobile color maps retain 2048 × 1024 resolution. Their WebP encodings use
-Pillow 12.1.1, Lanczos resizing, quality 92 (day), quality 95 (night), method 6.
-The mobile packed map uses 1024 × 512 resolution and lossless WebP, method 6.
-Its decoded RGB bytes were verified to equal the resized RGB pixels exactly.
-Resizing necessarily changes sampling; the lossless encoding adds no additional
-channel loss. The downloaded source packed JPEG already contains its author's
-JPEG compression.
+The complete texture transfer is **449,556 bytes**, excluding headers,
+JavaScript and atlas geometry. The former desktop and compact sets transferred
+2,248,543 and 1,136,358 bytes respectively. The first-surface image is unchanged;
+the new material filename includes its content hash to permit safe static caching.
 
-A lossless 2048 packed derivative was evaluated and discarded because it
-increased transfer size to 2.69 MB. The 1024 material map provides a genuinely
-smaller mobile set without introducing another lossy compression step.
+The 512 × 256 material derivative uses Pillow 11.1.0, Lanczos resizing and
+lossless WebP (method 6). Decoded RGB bytes were verified to equal the resized
+RGB pixels exactly. Resizing changes sampling; its encoding adds no channel
+loss or sRGB/profile transformation. The source JPEG already has compression.
 
-RGBA8 storage with full mipmaps is approximately 128 MiB for the three desktop
-textures and 24 MiB for the mobile set. This is arithmetic from dimensions, not
-a browser GPU-memory measurement; actual renderer storage can differ.
+Approximate RGBA8 texture storage with mipmaps is 10.67 MiB for day and 0.67 MiB
+for the material. The 2048 × 1024 country atlas and 1024 × 512 selection atlas
+use no mipmaps, adding 8 and 2 MiB. The resulting approximately 21.34 MiB is
+arithmetic from dimensions, excluding framebuffers and geometry; actual GPU
+memory is not measured. Pixel density is capped at 1.5 on desktop, 1.25 on
+compact devices and 1 on devices reporting at most 4 GB or explicit data saving.
 
 ## Packed map channels
 

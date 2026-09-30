@@ -89,29 +89,40 @@
         "quality": null,
         "method": 6
       }
+    },
+    {
+      "file": "earth_material_512_4dfa031876a1.webp",
+      "source_file": "earth_bump_roughness_clouds_4096.jpg",
+      "sha256": "4dfa031876a19daeadf9c9999c86a3f7c0a78d121e181e8e7b4400d7bc324e5e",
+      "bytes": 186426,
+      "dimensions": [
+        512,
+        256
+      ],
+      "resampling": "Pillow 11.1.0 LANCZOS",
+      "encoding": {
+        "format": "WebP",
+        "lossless": true,
+        "quality": null,
+        "method": 6
+      }
     }
   ],
   "totals": {
-    "desktop_transfer_bytes": 2248543,
-    "mobile_transfer_bytes": 1136358
+    "first_surface_transfer_bytes": 263130,
+    "complete_surface_transfer_bytes": 449556
   },
   "runtime_sets": {
-    "desktop": {
-      "day": "/planet/earth_day_4096.jpg",
-      "night": "/planet/earth_night_4096.jpg",
-      "packed": "/planet/earth_bump_roughness_clouds_4096.jpg"
-    },
-    "mobile": {
-      "day": "/planet/earth_day_2048.webp",
-      "night": "/planet/earth_night_2048.webp",
-      "packed": "/planet/earth_bump_roughness_clouds_1024.webp"
+    "all_devices": {
+      "first_surface": "/planet/earth_day_2048.webp",
+      "optional_packed": "/planet/earth_material_512_4dfa031876a1.webp"
     }
   },
   "license": {
     "name": "Creative Commons Attribution 4.0 International",
     "spdx": "CC-BY-4.0",
     "url": "https://creativecommons.org/licenses/by/4.0/",
-    "attribution": "Earth textures by Solar System Scope / INOVE, adapted by Three.js contributors. Mobile derivatives resized for ForecastEconomy."
+    "attribution": "Earth textures by Solar System Scope / INOVE, adapted by Three.js contributors. Resized for ForecastEconomy."
   },
   "channels": {
     "day": {

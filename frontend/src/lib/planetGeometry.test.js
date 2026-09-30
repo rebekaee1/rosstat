@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { geoContains } from 'd3-geo';
 import { WORLD_FEATURES } from './worldTopology';
 import {
   bindPlanetCountries,
@@ -8,6 +9,7 @@ import {
   lonLatToSphere,
   normalizePlanetCountryCode,
   pickPlanetCountry,
+  planetNeedsFineFeatures,
   sphereToLonLat,
 } from './planetGeometry';
 
@@ -98,6 +100,31 @@ describe('planet coordinates', () => {
 });
 
 describe('planet focus and geographic picking', () => {
+  it('reserves the fine atlas for missing or genuinely small countries', () => {
+    const large = polygon('276', [ring(0, 0, 2, 2)]);
+    const small = polygon('492', [ring(10, 10, 10.1, 10.1)]);
+    const entries = bindPlanetCountries([], [large, small]);
+    expect(planetNeedsFineFeatures(entries, 'DE')).toBe(false);
+    expect(planetNeedsFineFeatures(entries, 'MC')).toBe(true);
+    expect(planetNeedsFineFeatures(entries, 'MT')).toBe(true);
+    expect(planetNeedsFineFeatures(entries, 'ZZ')).toBe(false);
+    expect(planetNeedsFineFeatures(entries, null)).toBe(false);
+  });
+
+  it('does not download the fine atlas for typical catalog selections or aliases', () => {
+    const entries = bindPlanetCountries([]);
+    for (const code of ['DE', 'FR', 'UK', 'EL', 'RU', 'US']) {
+      expect(planetNeedsFineFeatures(entries, code), code).toBe(false);
+    }
+  });
+
+  it('recognizes real microstates in the detailed atlas instead of hiding them', async () => {
+    const entries = bindPlanetCountries([], await loadPlanetFeatures('detailed'));
+    expect(planetNeedsFineFeatures(entries, 'MT')).toBe(true);
+    expect(planetNeedsFineFeatures(entries, 'LU')).toBe(true);
+    expect(planetNeedsFineFeatures(entries, 'DE')).toBe(false);
+  });
+
   it('handles an empty or partial atlas without an invented focus', () => {
     expect(bindPlanetCountries([], [])).toEqual([]);
     expect(pickPlanetCountry([], [0, 0])).toBeNull();
@@ -144,5 +171,16 @@ describe('planet focus and geographic picking', () => {
       expect(pickPlanetCountry(entries, point)?.code).toBe(code);
     }
     expect(pickPlanetCountry(entries, [-140, 0])).toBeNull();
+  });
+
+  it('preserves exhaustive geographic picking when skipping distant country bounds', async () => {
+    const entries = bindPlanetCountries([], await loadPlanetFeatures('detailed'));
+    for (let longitude = -175; longitude <= 175; longitude += 30) {
+      for (let latitude = -75; latitude <= 75; latitude += 15) {
+        const point = [longitude, latitude];
+        const exhaustive = entries.find((entry) => geoContains(entry.feature, point)) || null;
+        expect(pickPlanetCountry(entries, point), point.join(',')).toBe(exhaustive);
+      }
+    }
   });
 });

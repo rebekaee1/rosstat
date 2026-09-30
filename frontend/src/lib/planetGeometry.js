@@ -1,4 +1,4 @@
-import { geoArea, geoCentroid, geoContains } from 'd3-geo';
+import { geoArea, geoBounds, geoCentroid, geoContains } from 'd3-geo';
 import { feature as topologyFeature } from 'topojson-client';
 import { numericId, WORLD_FEATURES } from './worldTopology';
 
@@ -171,6 +171,7 @@ export function bindPlanetCountries(countries = [], features = WORLD_FEATURES, {
         feature: item,
         name,
         focus: countryFocusLonLat(item),
+        bounds: geoBounds(item),
       };
     });
 }
@@ -179,5 +180,24 @@ export function bindPlanetCountries(countries = [], features = WORLD_FEATURES, {
 export function pickPlanetCountry(entries, point) {
   if (!validLonLat(point)) return null;
   const normalized = [wrapLongitude(point[0]), point[1]];
-  return entries.find((entry) => entry.feature && geoContains(entry.feature, normalized)) || null;
+  return entries.find((entry) => {
+    if (!entry.feature) return false;
+    const [[west, south], [east, north]] = entry.bounds || [[-180, -90], [180, 90]];
+    const longitudeFits = west <= east
+      ? normalized[0] >= west && normalized[0] <= east
+      : normalized[0] >= west || normalized[0] <= east;
+    return longitudeFits && normalized[1] >= south && normalized[1] <= north
+      && geoContains(entry.feature, normalized);
+  }) || null;
+}
+
+/** Keep the 10m atlas off the ordinary selection path; tiny land needs it. */
+export function planetNeedsFineFeatures(entries, selectedCode) {
+  const code = normalizePlanetCountryCode(selectedCode);
+  if (!code) return false;
+  const matches = entries.filter((entry) => entry.code === code);
+  if (!matches.length) return true;
+  // About 4,870 km² on Earth: sufficient to cover Malta, Luxembourg and microstates.
+  const area = matches.reduce((total, entry) => total + geoArea(entry.feature), 0);
+  return area < 0.00012;
 }

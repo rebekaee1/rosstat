@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import PlanetView from './PlanetView';
 
 const scene = vi.hoisted(() => ({ fail: false, props: null, locale: 'ru' }));
@@ -74,10 +75,14 @@ describe('PlanetView interaction contract', () => {
     expect(scene.props.selectedCode).toBe('DE');
     expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
 
-    fireEvent.click(screen.getByRole('button', { name: 'planet.clearSelection' }));
+    const clear = screen.getByRole('button', { name: 'planet.clearSelection' });
+    act(() => clear.focus());
+    fireEvent.click(clear);
     expect(scene.props.selectedCode).toBeNull();
     expect(countryList().getByRole('button', { name: /Германия/ }).getAttribute('aria-pressed')).toBe('false');
     expect(screen.queryByRole('button', { name: 'planet.openIndicator' })).toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole('group', { name: 'planet.countries' }));
+    expect(screen.getByRole('combobox').getAttribute('aria-expanded')).toBe('false');
     expect(onSelect).not.toHaveBeenCalled();
   });
 
@@ -232,6 +237,84 @@ describe('PlanetView interaction contract', () => {
     expect(codes).toBe('w:germany:unemployment-rate,w:malta:unemployment-rate');
     expect(codes).not.toContain(germanyDetail.indicator_code);
     expect(codes).not.toContain(maltaDetail.indicator_code);
+  });
+
+  it('opens country search from the empty comparison slot and allows real zero observations', async () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 0 }} conceptSlug="budget-balance" />);
+    selectListCountry('Германия');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    fireEvent.click(screen.getByRole('button', { name: 'planet.chooseSecond' }));
+    const input = screen.getByRole('combobox');
+    expect(document.activeElement).toBe(input);
+    expect(input.getAttribute('aria-expanded')).toBe('true');
+    fireEvent.change(input, { target: { value: 'MT' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(scene.props.selectedCode).toBe('MT'));
+    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    expect(new URL(screen.getByRole('link', { name: 'planet.showComparison' }).href).searchParams.get('codes')).toBe('w:germany:budget-balance,w:malta:budget-balance');
+    expect(screen.queryByRole('button', { name: 'planet.chooseSecond' })).toBeNull();
+  });
+
+  it('explains the two-country limit and makes room for a replacement when a chip is removed', () => {
+    const france = { code: 'FR', slug: 'france', name: 'Франция' };
+    const { container } = render(<PlanetView countries={[...countries, france]} valuesByCode={{ DE: 3.2, MT: 1.7, FR: 5 }} conceptSlug="unemployment-rate" />);
+    for (const name of ['Германия', 'Мальта']) {
+      selectListCountry(name);
+      fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    }
+    selectListCountry('Франция');
+    const pin = screen.getByRole('button', { name: 'planet.addComparison' });
+    expect(pin.disabled).toBe(true);
+    expect(document.getElementById(pin.getAttribute('aria-describedby')).textContent).toBe('planet.comparisonFull');
+    const pair = within(container.querySelector('.planet-comparison-pair'));
+    fireEvent.click(pair.getAllByRole('button', { name: 'planet.removeComparison' })[0]);
+    expect(pin.disabled).toBe(false);
+    expect(screen.queryByText('planet.comparisonFull')).toBeNull();
+    fireEvent.click(pin);
+    expect(new URL(screen.getByRole('link', { name: 'planet.showComparison' }).href).searchParams.get('codes')).toBe('w:malta:unemployment-rate,w:france:unemployment-rate');
+  });
+
+  it('keeps removal available when a pinned country has no observation in the new year', () => {
+    const props = { countries, valuesByCode: { DE: 3.2, MT: 1.7 }, conceptSlug: 'unemployment-rate' };
+    const { rerender } = render(<PlanetView {...props} />);
+    selectListCountry('Германия');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    rerender(<PlanetView {...props} valuesByCode={{ DE: null, MT: 1.7 }} />);
+    const pin = screen.getByRole('button', { name: 'planet.inComparison' });
+    expect(pin.disabled).toBe(false);
+    fireEvent.click(pin);
+    expect(screen.queryByLabelText('planet.comparison')).toBeNull();
+    expect(screen.getByRole('button', { name: 'planet.addComparison' }).disabled).toBe(true);
+  });
+
+  it('clears an unsuccessful search and returns focus to the complete country pool', () => {
+    render(<PlanetView countries={countries} />);
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: 'nonexistent' } });
+    expect(screen.getByText('planet.noMatches').getAttribute('role')).toBe('status');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.clearSearch' }));
+    expect(input.value).toBe('');
+    expect(document.activeElement).toBe(input);
+    expect(screen.getAllByRole('option')).toHaveLength(2);
+  });
+
+  it('uses client-side routes for country, comparison and the chosen rating year', () => {
+    function LocationProbe() {
+      const location = useLocation();
+      return <output data-testid="location">{location.pathname + location.search}</output>;
+    }
+    render(<MemoryRouter><PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} conceptSlug="unemployment-rate" ratingHref="/world/rating/unemployment-rate?year=2024" /><LocationProbe /></MemoryRouter>);
+    selectListCountry('Германия');
+    fireEvent.click(screen.getByRole('link', { name: 'planet.allIndicators' }));
+    expect(screen.getByTestId('location').textContent).toBe('/germany');
+    fireEvent.click(screen.getByRole('link', { name: 'planet.fullRating' }));
+    expect(screen.getByTestId('location').textContent).toBe('/world/rating/unemployment-rate?year=2024');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    selectListCountry('Мальта');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    fireEvent.click(screen.getByRole('link', { name: 'planet.showComparison' }));
+    expect(screen.getByTestId('location').textContent).toContain('/compare?codes=');
+    expect(new URL(screen.getByTestId('location').textContent, window.location.href).searchParams.get('codes')).toBe('w:germany:unemployment-rate,w:malta:unemployment-rate');
   });
 
   it('keeps Russia browsable without a value but cannot pin a missing observation for comparison', () => {

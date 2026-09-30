@@ -45,6 +45,8 @@ export default {
   "planet.countries": "Countries",
   "planet.median": "Median",
   "planet.fullRating": "Full ranking",
+  "planet.clearSearch": "Clear country search",
+  "planet.comparisonFull": "Two countries are selected. Remove one to add this country.",
   'preview.banner': 'Locale preview (noindex). Canonical language is set by host.',
   'preview.exit': 'Exit preview',
 

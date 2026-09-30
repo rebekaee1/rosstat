@@ -1,6 +1,7 @@
 import {
   Component, Suspense, lazy, useCallback, useEffect, useId, useMemo, useRef, useState,
 } from 'react';
+import { Link, useInRouterContext } from 'react-router-dom';
 import {
   ArrowUpRight, Check, ChevronDown, Globe2, GitCompare, Layers3,
   LoaderCircle, Minus, Move, Plus, RotateCcw, Search, X,
@@ -18,6 +19,11 @@ import SourceLink from './SourceLink';
 import './PlanetView.css';
 
 const WorldMap = lazy(() => import('./WorldMap'));
+
+function PlanetLink({ href, children, ...props }) {
+  const inRouter = useInRouterContext();
+  return inRouter ? <Link to={href} {...props}>{children}</Link> : <a href={href} {...props}>{children}</a>;
+}
 
 function collectionValue(collection, code) {
   return collection instanceof Map ? collection.get(code) : collection?.[code];
@@ -78,6 +84,7 @@ export default function PlanetView({
   const searchInput = useRef(null);
   const searchResults = useRef(null);
   const countryCard = useRef(null);
+  const countryList = useRef(null);
   const focusCountryCard = useRef(false);
 
   useEffect(() => {
@@ -173,7 +180,8 @@ export default function PlanetView({
   const compareReady = Boolean(conceptSlug) && comparisonCountries.length === 2 && comparisonCountries.every((country) => hasValue(valueForCountry(country)));
   const comparisonHref = compareReady ? comparePath() + '?' + new URLSearchParams({ codes: comparisonCountries.map((country) => 'w:' + country.slug + ':' + conceptSlug).join(',') }) : '';
   const selectedPinned = comparisonCodes.includes(selectedCode);
-  const canPin = selectedCountry?.slug && conceptSlug && hasValue(selectedValue) && (selectedPinned || comparisonCodes.length < 2);
+  const canPin = selectedPinned || (selectedCountry?.slug && conceptSlug && hasValue(selectedValue) && comparisonCodes.length < 2);
+  const comparisonFull = comparisonCodes.length === 2 && !selectedPinned && hasValue(selectedValue);
   const median = benchmark?.value ?? colorModel.median;
 
   function handleSearchKey(event) {
@@ -197,10 +205,15 @@ export default function PlanetView({
   }
   function clearSelection() {
     setSelectedCode(null); setHoverCode(null); commandCamera('reset');
+    countryList.current?.focus({ preventScroll: true });
   }
   function toggleComparison() {
     setComparisonCodes((codes) => codes.includes(selectedCode) ? codes.filter((code) => code !== selectedCode)
       : codes.length < 2 ? [...codes, selectedCode] : codes);
+  }
+  function chooseComparisonCountry() {
+    setQuery(''); setActiveOption(0); setSearchOpen(true);
+    searchInput.current?.focus();
   }
 
   return (
@@ -210,15 +223,16 @@ export default function PlanetView({
         <div className="planet-search" onBlur={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget)) setSearchOpen(false);
         }}>
-          <label className="sr-only" htmlFor={'planet-' + id + '-search'}>{t('planet.search')}</label>
+          <label className="planet-control-label" htmlFor={'planet-' + id + '-search'}>{t('planet.search')}</label>
           <div className="planet-search-field">
             <Search size={18} aria-hidden="true" />
             <input ref={searchInput} id={'planet-' + id + '-search'} type="text" role="combobox" autoComplete="off" autoCapitalize="none" autoCorrect="off" enterKeyHint="search"
-              placeholder={t('planet.searchPlaceholder')} value={query} aria-expanded={searchOpen} aria-autocomplete="list"
+              placeholder={selectedCountry && !searchOpen ? countryName(selectedCountry, locale) : t('planet.searchPlaceholder')} value={query} aria-expanded={searchOpen} aria-autocomplete="list"
               aria-controls={searchOpen && searchCountries.length > 0 ? 'planet-' + id + '-results' : undefined}
               aria-activedescendant={searchOpen && activeCountry ? optionId(activeCountry.code) : undefined}
               onFocus={() => { setSearchOpen(true); setActiveOption(0); }}
               onChange={(event) => { setQuery(event.target.value); setActiveOption(0); setSearchOpen(true); }} onKeyDown={handleSearchKey} />
+            {query && <button type="button" aria-label={t('planet.clearSearch')} onClick={() => { setQuery(''); setActiveOption(0); searchInput.current?.focus(); }}><X size={16} aria-hidden="true" /></button>}
             <button type="button" aria-label={t('planet.search')} aria-expanded={searchOpen} onClick={() => {
               if (searchOpen) setSearchOpen(false); else { setSearchOpen(true); searchInput.current?.focus(); }
             }}><ChevronDown size={16} aria-hidden="true" /></button>
@@ -239,17 +253,19 @@ export default function PlanetView({
               {[...years].reverse().map((value) => <option key={value} value={value}>{value}</option>)}
             </select>
           </label>}
-          {hasMetric && !isMap && <div className="planet-layer-switch" role="group" aria-label={t('planet.layerLabel')}>
-            <button type="button" aria-pressed={mode === 'earth'} onClick={() => { setMode('earth'); setHoverCode(null); }}><Globe2 size={15} aria-hidden="true" />{t('planet.earth')}</button>
-            <button type="button" aria-pressed={mode === 'data'} onClick={() => { setMode('data'); setHoverCode(null); }}><Layers3 size={15} aria-hidden="true" />{t('planet.data')}</button>
-          </div>}
+          {hasMetric && !isMap && <div className="planet-layer-control"><span className="planet-control-label">{t('planet.viewLabel')}</span><div className="planet-layer-switch" role="group" aria-label={t('planet.layerLabel')}>
+              <button type="button" aria-pressed={mode === 'earth'} onClick={() => { setMode('earth'); setHoverCode(null); }}><Globe2 size={15} aria-hidden="true" />{t('planet.earth')}</button>
+              <button type="button" aria-pressed={mode === 'data'} onClick={() => { setMode('data'); setHoverCode(null); }}><Layers3 size={15} aria-hidden="true" />{t('planet.data')}</button>
+            </div></div>}
         </div>
       </div>
       {comparisonCountries.length > 0 && <div className="planet-comparison" aria-label={t('planet.comparison')}>
-        <GitCompare size={16} aria-hidden="true" />
-        {comparisonCountries.map((country) => <button type="button" key={country.code} onClick={() => setComparisonCodes((codes) => codes.filter((code) => code !== country.code))}
-          aria-label={t('planet.removeComparison', { country: countryName(country, locale) })}>{countryName(country, locale)}<X size={13} aria-hidden="true" /></button>)}
-        {compareReady ? <a href={comparisonHref}>{t('planet.showComparison')}<ArrowUpRight size={14} aria-hidden="true" /></a> : <span>{t(comparisonCountries.length === 2 ? 'planet.noData' : 'planet.chooseSecond')}</span>}
+        <span className="planet-comparison-title"><GitCompare size={17} aria-hidden="true" />{t('planet.comparison')}<small>{comparisonCountries.length}/2</small></span>
+        <div className="planet-comparison-pair">{comparisonCountries.map((country) => <button type="button" key={country.code} onClick={() => setComparisonCodes((codes) => codes.filter((code) => code !== country.code))}
+            aria-label={t('planet.removeComparison', { country: countryName(country, locale) })}>{countryName(country, locale)}<X size={14} aria-hidden="true" /></button>)}
+          {comparisonCountries.length === 1 && <button type="button" className="planet-comparison-empty" onClick={chooseComparisonCountry}><Plus size={15} aria-hidden="true" />{t('planet.chooseSecond')}</button>}
+        </div>
+        {compareReady ? <PlanetLink href={comparisonHref}>{t('planet.showComparison')}<ArrowUpRight size={15} aria-hidden="true" /></PlanetLink> : comparisonCountries.length === 2 && <span role="status">{t('planet.noData')}</span>}
       </div>}
       <div className="planet-shell">
         <div className="planet-geography">
@@ -264,6 +280,7 @@ export default function PlanetView({
                   interactive={!touchNavigation || interactiveTouch} touchNavigation={touchNavigation} />
               </Suspense></SceneBoundary>
               {sceneStatus === 'loading' && <div className="planet-loading" role="status"><LoaderCircle size={19} aria-hidden="true" />{t('planet.loading')}</div>}
+              {!selectedCountry && sceneStatus === 'ready' && <p className="planet-select-hint">{t('planet.subtitle')}</p>}
               <div className="planet-camera-controls">
                 <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')}><Plus size={18} aria-hidden="true" /></button>
                 <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={t('planet.zoomOut')} title={t('planet.zoomOut')}><Minus size={18} aria-hidden="true" /></button>
@@ -293,18 +310,19 @@ export default function PlanetView({
               {hasMetric && (hasValue(selectedValue) ? <div className="planet-value-line"><strong aria-label={t('planet.value')}>{formatWorldValue(selectedValue, undefined, locale)}</strong><span>{displayUnit}</span></div> : <p className="planet-no-data">{t('planet.noData')}</p>)}
               {selectedDetail?.source && <div className="planet-source"><SourceLink href={selectedDetail.source_url}>{localizeSource(selectedDetail.source, locale)}</SourceLink></div>}
               <div className="planet-country-actions"><button type="button" className="planet-open-country" disabled={!selectedCountry.slug || typeof onSelect !== 'function'} onClick={() => onSelect?.(selectedCountry, selectedDetail)}>{t(selectedDetail?.indicator_code ? 'planet.openIndicator' : 'planet.openCountry')}<ArrowUpRight size={15} aria-hidden="true" /></button>
-                {conceptSlug && <button type="button" className="planet-pin-country" aria-pressed={selectedPinned} disabled={!canPin} onClick={toggleComparison} title={t('planet.addComparison')}><GitCompare size={15} aria-hidden="true" />{t(selectedPinned ? 'planet.inComparison' : 'planet.addComparison')}</button>}
+                {conceptSlug && <button type="button" className="planet-pin-country" aria-pressed={selectedPinned} disabled={!canPin} onClick={toggleComparison} title={t(selectedPinned ? 'planet.removeComparison' : 'planet.addComparison', { country: countryName(selectedCountry, locale) })} aria-describedby={comparisonFull ? 'planet-' + id + '-comparison-full' : undefined}>{selectedPinned ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}{t(selectedPinned ? 'planet.inComparison' : 'planet.addComparison')}</button>}
               </div>
-              {selectedCountry.slug && <a className="planet-all-indicators" href={countryPath(selectedCountry.slug)}>{t('planet.allIndicators')}<ArrowUpRight size={12} aria-hidden="true" /></a>}
+              {conceptSlug && comparisonFull && <p className="planet-comparison-limit" id={'planet-' + id + '-comparison-full'}>{t('planet.comparisonFull')}</p>}
+              {selectedCountry.slug && <PlanetLink className="planet-all-indicators" href={countryPath(selectedCountry.slug)}>{t('planet.allIndicators')}<ArrowUpRight size={12} aria-hidden="true" /></PlanetLink>}
             </>}
           </div>
-          <div className="planet-list-heading"><h4>{metricName || t('planet.countries')}</h4><span>{periodLabel}{displayUnit ? ', ' + displayUnit : ''}</span></div>
-          <div className="planet-country-list" role="group" aria-label={t('planet.countries')}>
+          <div className="planet-list-heading"><div><h4>{t('planet.countries')}</h4>{metricName && <p>{metricName}</p>}</div><span>{periodLabel}{displayUnit ? ', ' + displayUnit : ''}</span></div>
+          <div ref={countryList} className="planet-country-list" role="group" tabIndex={-1} aria-label={t('planet.countries')}>
             {rankedCountries.map(({ country, value, rank }) => <button key={country.code} type="button" className={selectedCode === country.code ? 'is-selected' : ''} aria-pressed={selectedCode === country.code} onClick={() => selectCountry(country.code, true)}>
               <span className="planet-list-rank">{rank || '—'}</span><span className="planet-list-name">{countryName(country, locale)}</span><strong>{hasValue(value) ? formatWorldValue(value, undefined, locale) : t('planet.noDataLegend')}</strong>
             </button>)}
           </div>
-          <div className="planet-list-footer">{hasValue(median) && hasMetric && <span>{benchmark?.label || t('planet.median')}: <strong>{formatWorldValue(median, undefined, locale)} {displayUnit}</strong></span>}{ratingHref && <a href={ratingHref}>{t('planet.fullRating')}<ArrowUpRight size={13} aria-hidden="true" /></a>}</div>
+          <div className="planet-list-footer">{hasValue(median) && hasMetric && <span>{benchmark?.label || t('planet.median')}: <strong>{formatWorldValue(median, undefined, locale)} {displayUnit}</strong></span>}{ratingHref && <PlanetLink href={ratingHref}>{t('planet.fullRating')}<ArrowUpRight size={13} aria-hidden="true" /></PlanetLink>}</div>
         </aside>
       </div>
       <p className="planet-attribution">{t('planet.imageryCredit')} <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>. {t('planet.imageryAdapted')}</p>

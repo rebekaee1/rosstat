@@ -325,6 +325,7 @@ export function useWorldCompareSnapshot(conceptSlug) {
     enabled: !!conceptSlug,
     staleTime: STALE,
     gcTime: GC,
+    retry: WORLD_SURFACE_RETRY,
   });
 }
 

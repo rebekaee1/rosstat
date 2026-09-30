@@ -45,6 +45,8 @@ export default {
   "planet.countries": "Страны",
   "planet.median": "Медиана",
   "planet.fullRating": "Полный рейтинг",
+  "planet.clearSearch": "Очистить поиск страны",
+  "planet.comparisonFull": "В сравнении уже две страны. Уберите одну, чтобы добавить эту.",
   'preview.banner': 'Превью локали (noindex). Канонический язык задаётся хостом.',
   'preview.exit': 'Выйти из превью',
 
