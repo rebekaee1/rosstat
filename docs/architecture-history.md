@@ -1,5 +1,22 @@
 # История архитектурных решений: индекс и сверка
 
+## 2026-09-30 — сессия через расчётное окно и committed event ceiling
+
+F05/F06 после локальной `main 83c4555` уточняют
+[ADR-0010](adr/0010-analytics-contour-identity-goals-marts-olap.md#2026-09-30--логическая-граница-сессии-и-committed-ceiling).
+Трёхдневные окна введены после memory-pressure инцидента, но не являются
+доменными границами сессии. Новый SQL ownership и bounded stream сохраняют
+ресурсное основание, ремонтируя левое продолжение и late bridge. Fallback
+атрибуция привязана к сессии вместо будущего портрета произвольного окна.
+
+ID allocation не означает commit: event cursor теперь использует короткий
+NOWAIT барьер, проверенный default/sequence контракт и captured ceiling.
+Revision replay и exact-ID метрики исправляют прежние пропуски и повторное
+считание event retries. [Приёмка](code-review/analytics-boundaries-acceptance-2026-09-30.md)
+не означает production release, доказанную общую capacity или согласованность
+CH session-copy. Последняя остаётся F05b: удаление logical keys требует
+durable deletion/snapshot механизма, которого replacing insert не даёт.
+
 ## 2026-09-30 — региональный артефакт и живое обновление
 
 F03 после локальной `main c2a883d` уточняет

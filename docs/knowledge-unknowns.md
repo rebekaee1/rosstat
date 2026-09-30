@@ -1,5 +1,22 @@
 # Границы знания и подтверждённые проблемы
 
+## Локальное уточнение F05/F06 — 2026-09-30
+
+После `main 83c4555` исправляются воспроизведённые границы расчёта PG сессий
+и поздние commits обычных append event writers в CH-копию.
+[Приёмка](code-review/analytics-boundaries-acceptance-2026-09-30.md) различает
+actual PG/CH, герметические doubles и ресурсные наблюдения. Исходные F05/F06
+строки ниже остаются историей дефектов. Гарантия F06 требует READ COMMITTED,
+автоматических возрастающих CACHE 1 ids без manual writes/sequence reset;
+catch-up v2 выполняется постепенно. F05 не обещает произвольный старый backfill
+за пределами штатного lookback или восстановление удалённого raw history.
+
+**F05b открыт:** CH session-copy сохраняет удалённые PG keys и не копирует
+старое carry. Нужны durable mutation/deletion и generation/ack snapshot либо
+tombstones; разовый resync этого постоянно не решает. SQL historical readwork,
+exact-distinct memory, общее расписание на 4 vCPU и production release
+остаются непроверенными. Документальная текущесть не закрывает эти границы.
+
 ## Локальное уточнение F03 — 2026-09-30
 
 После `main c2a883d` воспроизведённые count/content, destructive startup,

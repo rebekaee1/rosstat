@@ -1,5 +1,24 @@
 # Backlog — текущие правки в работе
 
+## 2026-09-30 — аналитические окна и event-репликация F05/F06
+
+Локальная база `main 83c4555`. Sessionize восстанавливает ownership в SQL,
+стримит компактные поля и ремонтирует carry/late bridge в одном commit окна.
+Сохраняются MSK day, novelty, цели и pageviewless tails; fallback-портрет
+привязан к фактической сессии. CH event-copy использует SHARE NOWAIT committed
+ceiling, guarded sequence, revision cursor и лимит 80k строк каждой таблицы
+на job; retry-дубли исключены в pageview/click метриках. Metadata/heartbeat
+различают неполный replay и достигнутые captured ceilings.
+[Приёмка и точные границы](code-review/analytics-boundaries-acceptance-2026-09-30.md).
+
+**Следующий приоритет — F05b:** после объединения сессий CH оставляет старый
+ключ; start вне двух суток исключает новый carry из incremental copy. Нужны
+durable изменения/удаления в PG commit и generation-aware snapshot либо
+versioned tombstones; единичный resync не исправляет будущие удаления.
+Затем F07 lease/lock ownership, остальные ops/UI findings. SQL-work по старой
+истории, exact-distinct RAM, смешанная capacity 4 vCPU и production release
+остаются отдельной приёмкой. Сервер и рабочая локальная БД не изменены.
+
 ## 2026-09-30 — региональные данные и публикация F03
 
 Следующий локальный runtime-пакет, база `main c2a883d`. Убраны count-skip и

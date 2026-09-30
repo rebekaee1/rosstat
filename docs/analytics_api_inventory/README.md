@@ -61,3 +61,16 @@ Safety classes:
 
 Implementation rule: a client module is not complete until every endpoint family in
 its inventory has a storage/API/MCP decision and at least one fixture.
+
+## 2026-09-30 — local event-copy progress
+
+`GET /api/v1/admin/bi/slices/meta` remains admin-only and adds `sync_progress`:
+per-source `cursor`, captured committed `ceiling`, `caught_up`, `deferred`.
+This is the last stored capture; failure before its write can leave an older
+result. Read it with sync age and job logs, not as live PostgreSQL state.
+`resync_pending` reports unfinished rebuild; metadata returns unavailable
+with a reason, and slice reads defer until controlled rebuild completes.
+The revised heartbeat does not assert commits after capture, correct CH
+session deletions, or complete external integration coverage. Event replay
+does not call Metrika/Direct APIs. [Canonical contract](../data-contracts.md#аналитические-окна-и-репликация-f05f06--2026-09-30)
+and [local evidence/limits](../code-review/analytics-boundaries-acceptance-2026-09-30.md).

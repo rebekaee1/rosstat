@@ -1,0 +1,1373 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-30T20:37:15.889000+00:00",
+  "scope": "Local F05 PostgreSQL session calculation and F06 immutable automatic-ID event replication. Not production, complete BI session-copy or 4vCPU capacity acceptance.",
+  "base_local_main_commit": "83c455556998821ac3dcdc140e35b549dad064ec",
+  "current_source_sha256": {
+    "backend/app/tasks/analytics_rollups.py": "51b65469da05ab9a68a1e997e90fab433b8ae03b5ce7cef4953fc1684c26220d",
+    "backend/app/services/clickhouse_sync.py": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e",
+    "backend/app/api/admin_bi.py": "94ad7cde603c4b2c03c16d9605134baebb5c479a02969ebe3f344187e8ac5a4f",
+    "backend/tests/test_sessionize_boundaries.py": "e548b9db5876bae12bb6c5aaf4410eac4fffb1e0c05bc2097f634568e061903c",
+    "backend/tests/test_sessionize_boundaries_pg.py": "48219a43522f1efb4843fd776a66a87e706193a79f65d82146d99055246a2b2c",
+    "backend/tests/test_clickhouse_replication_pg.py": "ce8d6222a4ad43fe213329fab46a9d871300326f24c199afea41f84c45645f4c",
+    "backend/tests/test_clickhouse_replication_ch.py": "dd48d32255232e35e5602f349c3ea066662727e0c6c4f8fd21b4d2841965e100"
+  },
+  "baseline_source_sha256": {
+    "backend/app/tasks/analytics_rollups.py": "04746993d2b2cb95b1c36fb94f18b58341bd57df247ff7b348308d788925b790",
+    "backend/app/services/clickhouse_sync.py": "e2e09f73047da1c0563003c30c4953390e33ff8c5434ec919ec1cea6095783c9",
+    "backend/app/api/admin_bi.py": "e48dbef5e0553685341572301cebb6d3903a6a46fce8e6e4f1beeb0673957890"
+  },
+  "f05": {
+    "actual_caller_red": "4 failed / 2 passed before correction",
+    "focused_tests": {
+      "actual_red": "4failed2passed1.22s before source fix: boundary continuity/pageviewless tail/late bridge",
+      "focused_final": "65passed25warnings4.12s old+new SQLite/engine tests at intermediate68d74e source; final51b docstring-only clarification; source body unchanged",
+      "real_pg_final": "12passed7.98s at intermediate68d74e source; final51b docstring-only clarification; source body unchanged",
+      "final_benchmark": "Measured final exact source51b65469;100k raw+5kportraits+5kgoals actual source/caller and literal goal/attribution counts, contentSHA equality",
+      "diff_check": "git diff --check current owned3paths clean"
+    },
+    "initial_real_timeout": {
+      "date": "2026-09-30",
+      "status": "failed_observation",
+      "source_sha256": "fefe29d15819eaeb0b6e4d3e1f0a3c5ee2598dd140a984db188f11ac20f86851",
+      "source_copy": ".artifacts/f05-timeout-source.py",
+      "log": ".artifacts/f05-benchmark-first-timeout.log",
+      "source_events": 100000,
+      "shape": "70000 continuous visitor events spanning>8days+5000ordinary6event sessions",
+      "phase": "continuous sessionize(SINCE,NOW), before caller windows",
+      "failure": "actual PostgreSQL statement_timeout60000ms while opening/fetching source query",
+      "limits": "Private1CPU512MiB PostgreSQL; no production; diagnostic work remains before acceptance."
+    },
+    "diagnostic_manual_analyze_intermediate": {
+      "date": "2026-09-30",
+      "state": "local_only",
+      "source_sha256": "fefe29d15819eaeb0b6e4d3e1f0a3c5ee2598dd140a984db188f11ac20f86851",
+      "fixture": {
+        "events": 100000,
+        "long_chain": 70000,
+        "ordinary_sessions": 5000,
+        "max_loader_batch": 5000,
+        "seconds": 1.67833383299876
+      },
+      "environment": {
+        "postgres": "16 isolated UUID schema",
+        "postgres_limits": "1 CPU /512MiB (root container)",
+        "python": "3.13.12",
+        "platform": "darwin",
+        "rss_units": "MiB; macOS ru_maxrss converted from bytes; current ps RSS from KiB"
+      },
+      "observations": [
+        {
+          "label": "continuous",
+          "wall_seconds": 2.8927190829999745,
+          "before": {
+            "current_rss_mib": 82.109375,
+            "process_peak_rss_mib": 85.453125
+          },
+          "after": {
+            "current_rss_mib": 110.453125,
+            "process_peak_rss_mib": 110.453125
+          },
+          "stats": {
+            "sessions": 5000
+          },
+          "content": {
+            "count": 5001,
+            "sha256": "577dc6519d4b9e987f47f202a6bb6b359eff0f265e56cfe297f3af70120c959f",
+            "long_chain": [
+              70000,
+              "2026-09-21 11:50:00",
+              "2026-09-29 14:16:30"
+            ]
+          }
+        },
+        {
+          "label": "three_day_caller",
+          "wall_seconds": 3.9093184580560774,
+          "before": {
+            "current_rss_mib": 110.609375,
+            "process_peak_rss_mib": 110.625
+          },
+          "after": {
+            "current_rss_mib": 111.0,
+            "process_peak_rss_mib": 111.015625
+          },
+          "stats": {
+            "sessions": 5000,
+            "traffic": 0,
+            "goals": 0,
+            "pages": 15
+          },
+          "content": {
+            "count": 5001,
+            "sha256": "577dc6519d4b9e987f47f202a6bb6b359eff0f265e56cfe297f3af70120c959f",
+            "long_chain": [
+              70000,
+              "2026-09-21 11:50:00",
+              "2026-09-29 14:16:30"
+            ]
+          }
+        }
+      ],
+      "limits": [
+        "Single local observations with imports and fixture-loader RSS included in process peak, not per-body allocation-only peaks.",
+        "SQL inspects older raw history of window visitors and uses DB window/CTE/temp staging; Python holds at most5000 source/output rows, <=10000 portrait keys and one compact session.",
+        "One long visitor started before requested ownership interval:5001 stored logicalsessions,5000 starts owned by caller interval.",
+        "No production/shared4vCPU capacity, p95, HTTP/BI/CH acceptance or external source verification."
+      ]
+    },
+    "staged_events_only_intermediate": {
+      "date": "2026-09-30",
+      "state": "local_only",
+      "source_sha256": "68d74e0006403e3387fd6e3165f5da261d8985ceba392f47a44f6243adac5303",
+      "fixture": {
+        "events": 100000,
+        "long_chain": 70000,
+        "ordinary_sessions": 5000,
+        "max_loader_batch": 5000,
+        "seconds": 1.565894917002879,
+        "raw_source_analyzed": false,
+        "temporary_source_stages": "indexed transaction-scoped visitor/history; ANALYZE only their stats"
+      },
+      "environment": {
+        "postgres": "16 isolated UUID schema",
+        "postgres_limits": "1 CPU /512MiB (root container)",
+        "python": "3.13.12",
+        "platform": "darwin",
+        "rss_units": "MiB; macOS ru_maxrss converted from bytes; current ps RSS from KiB"
+      },
+      "observations": [
+        {
+          "label": "continuous",
+          "wall_seconds": 2.400410708039999,
+          "before": {
+            "current_rss_mib": 81.53125,
+            "process_peak_rss_mib": 86.109375
+          },
+          "after": {
+            "current_rss_mib": 110.234375,
+            "process_peak_rss_mib": 110.234375
+          },
+          "stats": {
+            "sessions": 5000
+          },
+          "content": {
+            "count": 5001,
+            "sha256": "577dc6519d4b9e987f47f202a6bb6b359eff0f265e56cfe297f3af70120c959f",
+            "long_chain": [
+              70000,
+              "2026-09-21 11:50:00",
+              "2026-09-29 14:16:30"
+            ]
+          }
+        },
+        {
+          "label": "three_day_caller",
+          "wall_seconds": 4.324851874960586,
+          "before": {
+            "current_rss_mib": 110.203125,
+            "process_peak_rss_mib": 110.25
+          },
+          "after": {
+            "current_rss_mib": 103.828125,
+            "process_peak_rss_mib": 110.25
+          },
+          "stats": {
+            "sessions": 5000,
+            "traffic": 0,
+            "goals": 0,
+            "pages": 15
+          },
+          "content": {
+            "count": 5001,
+            "sha256": "577dc6519d4b9e987f47f202a6bb6b359eff0f265e56cfe297f3af70120c959f",
+            "long_chain": [
+              70000,
+              "2026-09-21 11:50:00",
+              "2026-09-29 14:16:30"
+            ]
+          }
+        }
+      ],
+      "limits": [
+        "Single local observations with imports and fixture-loader RSS included in process peak, not per-body allocation-only peaks.",
+        "SQL inspects older raw history of window visitors and uses DB window/CTE/temp staging; Python holds at most5000 source/output rows, <=10000 portrait keys and one compact session.",
+        "One long visitor started before requested ownership interval:5001 stored logicalsessions,5000 starts owned by caller interval.",
+        "No production/shared4vCPU capacity, p95, HTTP/BI/CH acceptance or external source verification."
+      ]
+    },
+    "final_exact_source_observation": {
+      "date": "2026-09-30",
+      "state": "local_only",
+      "source_sha256": "51b65469da05ab9a68a1e997e90fab433b8ae03b5ce7cef4953fc1684c26220d",
+      "fixture": {
+        "events": 100000,
+        "long_chain": 70000,
+        "ordinary_sessions": 5000,
+        "max_loader_batch": 5000,
+        "seconds": 2.0741892920341343,
+        "portraits": 5000,
+        "frontend_goals": 5000,
+        "manual_raw_source_analyze_called": false,
+        "temporary_source_stages": "indexed transaction-scoped visitor/history; ANALYZE only their stats"
+      },
+      "diagnostic_stage_observation": [
+        {
+          "kind": "visitors",
+          "rows": 5001,
+          "relation_bytes": 434176
+        },
+        {
+          "kind": "history",
+          "rows": 100000,
+          "relation_bytes": 22708224
+        }
+      ],
+      "environment": {
+        "postgres": "16 isolated UUID schema",
+        "postgres_limits": "1 CPU /512MiB (root container)",
+        "python": "3.13.12",
+        "platform": "darwin",
+        "rss_units": "MiB; macOS ru_maxrss converted from bytes; current ps RSS from KiB"
+      },
+      "observations": [
+        {
+          "label": "continuous",
+          "wall_seconds": 2.69622454198543,
+          "before": {
+            "current_rss_mib": 81.109375,
+            "process_peak_rss_mib": 84.1875
+          },
+          "after": {
+            "current_rss_mib": 108.328125,
+            "process_peak_rss_mib": 108.328125
+          },
+          "stats": {
+            "sessions": 5000
+          },
+          "content": {
+            "count": 5001,
+            "sha256": "aacda036ed691d41d445fed603cdaf4f36c8f761b5380367d870ccadb2a0c49e",
+            "long_chain": [
+              70000,
+              "2026-09-21 11:50:00",
+              "2026-09-29 14:16:30"
+            ],
+            "macro_goals": 5000,
+            "search_mobile_sessions": 5000
+          }
+        },
+        {
+          "label": "three_day_caller",
+          "wall_seconds": 5.488102083094418,
+          "before": {
+            "current_rss_mib": 108.359375,
+            "process_peak_rss_mib": 108.375
+          },
+          "after": {
+            "current_rss_mib": 101.140625,
+            "process_peak_rss_mib": 108.75
+          },
+          "stats": {
+            "sessions": 5000,
+            "traffic": 0,
+            "goals": 7,
+            "pages": 15
+          },
+          "content": {
+            "count": 5001,
+            "sha256": "aacda036ed691d41d445fed603cdaf4f36c8f761b5380367d870ccadb2a0c49e",
+            "long_chain": [
+              70000,
+              "2026-09-21 11:50:00",
+              "2026-09-29 14:16:30"
+            ],
+            "macro_goals": 5000,
+            "search_mobile_sessions": 5000
+          }
+        }
+      ],
+      "limits": [
+        "Single local observations with imports and fixture-loader RSS included in process peak, not per-body allocation-only peaks.",
+        "Cold raw means no manual ANALYZE; PostgreSQL autovacuum/automatic analyze timing was not measured.",
+        "SQL inspects older raw history of window visitors and uses DB window/CTE/temp staging; Python holds at most5000 source/output rows, <=10000 portrait keys and one compact session.",
+        "One long visitor started before requested ownership interval:5001 stored logicalsessions,5000 starts owned by caller interval.",
+        "No production/shared4vCPU capacity, p95, HTTP/BI/CH acceptance or external source verification."
+      ]
+    }
+  },
+  "f06": {
+    "focused_tests": "25 passed /9.52s:17 PostgreSQL,6 native CH,2 old tests, final09d SHA. Final project gate recorded separately.",
+    "initial_red": "Held lower sequence IDs lost after later higher IDs committed on both real PG tables; old metric counted physical5 rather than logical2.",
+    "final_exact_source_observation": {
+      "recorded_at": "2026-09-30T20:15:12.130040+00:00",
+      "baseline_commit": "83c455556998821ac3dcdc140e35b549dad064ec",
+      "baseline_source_sha256": "e2e09f73047da1c0563003c30c4953390e33ff8c5434ec919ec1cea6095783c9",
+      "working_source_sha256": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e",
+      "head": "83c455556998821ac3dcdc140e35b549dad064ec",
+      "source": "backend/app/services/clickhouse_sync.py",
+      "infra": {
+        "pg": {
+          "name": "fe-f05-f06-9f2bb0-pg",
+          "port": 59787,
+          "memory": "512m",
+          "cpus": "1"
+        },
+        "redis": {
+          "name": "fe-f05-f06-9f2bb0-redis",
+          "port": 59788,
+          "memory": "96m",
+          "cpus": ".25"
+        },
+        "ch": {
+          "name": "fe-f05-f06-9f2bb0-ch",
+          "port": 59789,
+          "memory": "768m",
+          "cpus": "1"
+        }
+      },
+      "events": 100000,
+      "pg_seed_batch": 5000,
+      "copy_batch": 20000,
+      "ordinary_batches_per_table": 4,
+      "evidence_scope": "Synthetic point observation on owned loopback containers, not production capacity or scale proof",
+      "ack_fault": "Injected ConnectionError before one real Redis SET after a successful native CH insert; not a network chaos test",
+      "phases": [
+        {
+          "phase": "pg_seed",
+          "seconds": 2.72704,
+          "rows": 100000
+        },
+        {
+          "phase": "failed_ack_after_first_ch_batch",
+          "seconds": 0.42846
+        },
+        {
+          "phase": "ordinary_sync",
+          "seconds": 1.224038,
+          "copied": 80000,
+          "progress": {
+            "behavior_events": {
+              "cursor": 80000,
+              "ceiling": 100000,
+              "caught_up": false,
+              "deferred": false
+            },
+            "frontend_events": {
+              "cursor": 0,
+              "ceiling": 0,
+              "caught_up": true,
+              "deferred": false
+            }
+          }
+        },
+        {
+          "phase": "ordinary_sync",
+          "seconds": 0.30439,
+          "copied": 20000,
+          "progress": {
+            "behavior_events": {
+              "cursor": 100000,
+              "ceiling": 100000,
+              "caught_up": true,
+              "deferred": false
+            },
+            "frontend_events": {
+              "cursor": 0,
+              "ceiling": 0,
+              "caught_up": true,
+              "deferred": false
+            }
+          }
+        },
+        {
+          "phase": "ordinary_sync",
+          "seconds": 0.059957,
+          "copied": 0,
+          "progress": {
+            "behavior_events": {
+              "cursor": 100000,
+              "ceiling": 100000,
+              "caught_up": true,
+              "deferred": false
+            },
+            "frontend_events": {
+              "cursor": 0,
+              "ceiling": 0,
+              "caught_up": true,
+              "deferred": false
+            }
+          }
+        },
+        {
+          "phase": "physical_logical_count",
+          "seconds": 0.013172,
+          "physical": 120000,
+          "logical": 100000,
+          "query_summary": {
+            "read_rows": "120000",
+            "read_bytes": "960000",
+            "written_rows": "0",
+            "written_bytes": "0",
+            "total_rows_to_read": "120000",
+            "result_rows": "1",
+            "result_bytes": "272",
+            "elapsed_ns": "11619958",
+            "query_id": "6ad843e6-6ffa-4561-8357-4484bfb62d59"
+          }
+        },
+        {
+          "phase": "actual_run_slice",
+          "metric": "pageviews",
+          "seconds": 0.02236,
+          "logical_total": 50000,
+          "groups": 10
+        },
+        {
+          "phase": "actual_run_slice",
+          "metric": "clicks",
+          "seconds": 0.021472,
+          "logical_total": 50000,
+          "groups": 10
+        }
+      ],
+      "ch_memory_point": {
+        "OSMemoryAvailable": 3128938496.0,
+        "MemoryResident": 361353216.0,
+        "MemoryVirtual": 18306416640.0
+      },
+      "docker_stats_point": {
+        "BlockIO": "165MB / 10.2MB",
+        "CPUPerc": "1.94%",
+        "Container": "fe-f05-f06-9f2bb0-ch",
+        "ID": "552425e97ffd",
+        "MemPerc": "47.28%",
+        "MemUsage": "363.1MiB / 768MiB",
+        "Name": "fe-f05-f06-9f2bb0-ch",
+        "NetIO": "2.2MB / 3.99MB",
+        "PIDs": "675"
+      },
+      "ch_version": "24.8.14.39"
+    },
+    "interrupted_resync_red_and_final_green": {
+      "reviewed_source_sha256": "fe41aea80a9d8971621e81d10477eec115d9ffbb679a902b8d966ffe98a859c1",
+      "source_unchanged_during_repro": true,
+      "scope": "Real isolated PostgreSQL and native ClickHouse; fake Redis state; replacing phase explicitly no-op double; injected second DROP exception after genuine first DROP. Private fixture schemas/database cleaned.",
+      "initial_ch_rows_unique": [
+        2,
+        2
+      ],
+      "cursor_after_failure": 2,
+      "table_really_absent_after_failure": true,
+      "pg_source_rows": 2,
+      "after_ordinary_job_ch_rows_unique": [
+        0,
+        0
+      ],
+      "heartbeat_age_minutes": 0,
+      "progress": {
+        "behavior_events": {
+          "cursor": 2,
+          "ceiling": 2,
+          "caught_up": true,
+          "deferred": false
+        },
+        "frontend_events": {
+          "cursor": 0,
+          "ceiling": 0,
+          "caught_up": true,
+          "deferred": false
+        }
+      },
+      "finding": "Blocking partial resync preserves old event cursor, ordinary retry can advertise fresh empty event table.",
+      "requested_fix": "Set maintenance marker and reset both event cursors before any destructive DROP; ordinary jobs must defer until successful explicit full resync. Transport/state authority must expose pending maintenance.",
+      "recorded_at": "2026-09-30",
+      "queries": {
+        "initial": "SELECT count(),uniqExact(id) FROM behavior_events",
+        "table_absent": "EXISTS TABLE behavior_events",
+        "source": "SELECT count(*) FROM behavior_events (actual SQLAlchemy source query in private PostgreSQL schema)",
+        "after_ordinary": "SELECT count(),uniqExact(id) FROM behavior_events"
+      },
+      "fixture_helpers": [
+        "backend/tests/test_clickhouse_replication_pg.py::event_database",
+        "backend/tests/test_clickhouse_replication_ch.py::actual_clickhouse",
+        "backend/tests/test_clickhouse_replication_pg.py::source_event"
+      ],
+      "cleanup": "Fixtures finally dropped UUID PostgreSQL schema and UUID ClickHouse database, disposed PG engine, closed native CH clients and fake Redis. No application/production DB or source changes.",
+      "final_green_verification": {
+        "recorded_at_utc": "2026-09-30T20:28:05.343449+00:00",
+        "source_head": "83c455556998821ac3dcdc140e35b549dad064ec",
+        "source_sha256": {
+          "backend/app/services/clickhouse_sync.py": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e",
+          "backend/app/api/admin_bi.py": "94ad7cde603c4b2c03c16d9605134baebb5c479a02969ebe3f344187e8ac5a4f"
+        },
+        "infrastructure": {
+          "PG": "actual isolated PostgreSQL16 UUID schema",
+          "CH": "actual isolated ClickHouse24.8 UUID database",
+          "Redis": "actual isolated Redis7 reserved DB15; event_database unused FakeRedis exists but actual_state_redis overrides state cache"
+        },
+        "failure_injection": "one RuntimeError before second real CH DROP; not network chaos",
+        "double": "_sync_replacing returns0 and recordsdays3650; PG fixture has only both event tables, so all-replacing end-to-end rebuild is outside this proof",
+        "queries": {
+          "behavior_events": "SELECT count(),uniqExact(id) FROM behavior_events",
+          "frontend_events": "SELECT count(),uniqExact(id) FROM frontend_events"
+        },
+        "observations": {
+          "before_failure_CH_counts": {
+            "behavior_events": [
+              [
+                2,
+                2
+              ]
+            ],
+            "frontend_events": [
+              [
+                2,
+                2
+              ]
+            ]
+          },
+          "after_failure": {
+            "cursors": {
+              "behavior_events": 0,
+              "frontend_events": 0
+            },
+            "pending": true,
+            "heartbeat": null,
+            "progress": {},
+            "behavior_table_exists": 0
+          },
+          "after_ordinary_job": {
+            "opened_clients": 1,
+            "pending": true,
+            "heartbeat": null,
+            "behavior_table_exists": 0
+          },
+          "read_guard": {
+            "meta_available": false,
+            "meta_resync_pending": true,
+            "run_slice": "RuntimeError maintenance",
+            "slices_query_http": 503,
+            "new_clients_opened": 0
+          },
+          "after_operator_retry": {
+            "cursors": {
+              "behavior_events": 2,
+              "frontend_events": 2
+            },
+            "pending": false,
+            "heartbeat_age_minutes": 0,
+            "CH_counts": {
+              "behavior_events": [
+                [
+                  2,
+                  2
+                ]
+              ],
+              "frontend_events": [
+                [
+                  2,
+                  2
+                ]
+              ]
+            },
+            "progress": {
+              "behavior_events": {
+                "cursor": 2,
+                "ceiling": 2,
+                "caught_up": true,
+                "deferred": false
+              },
+              "frontend_events": {
+                "cursor": 2,
+                "ceiling": 2,
+                "caught_up": true,
+                "deferred": false
+              }
+            },
+            "replacing_windows": [
+              3650
+            ]
+          }
+        },
+        "cleanup": "owned UUID PG schema and CH database removed by fixtures; owned Redis15 keys deleted; all clients disposed",
+        "source_sha256_after": {
+          "backend/app/services/clickhouse_sync.py": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e",
+          "backend/app/api/admin_bi.py": "94ad7cde603c4b2c03c16d9605134baebb5c479a02969ebe3f344187e8ac5a4f"
+        },
+        "source_changed_during_repro": false
+      }
+    }
+  },
+  "f05b": {
+    "status": "open confirmed independently on final frozen sources",
+    "historical_and_final_proof": {
+      "recorded_at_utc": "2026-09-30T19:33:37.966836+00:00",
+      "source_head": "83c455556998821ac3dcdc140e35b549dad064ec",
+      "source_sha256": {
+        "backend/app/tasks/analytics_rollups.py": "22bd39a6e4b798c4164f507c31d0a999088fdda942835a2754e7f0a612747ba4",
+        "backend/app/services/clickhouse_sync.py": "bf3fcad26428ac749e3c5c2771e761efe84d9d954f2dcf479f6e955f6e18fde8"
+      },
+      "source_functions": {
+        "sessionize_sha256": "c396e780fd5d1b627e1e5d38c39d812d4d9122a55b9c033223edbcb07c6a8339",
+        "sync_replacing_sha256": "d02b26ad9c83f39dddf42ead70b5bc4ef63d0e33850cb7a090a24e165167a49d"
+      },
+      "source_database": "private temporary SQLite using actual SQLAlchemy models/test_analytics2._run_with_db; no claim real PostgreSQL acceptance",
+      "sink_database": {
+        "kind": "isolated real ClickHouse",
+        "version": "24.8.14.39",
+        "schema": "fe_analytics",
+        "table": "f05b_contract_fc2db1ff9aae402b9105bf78d837448c",
+        "cleanup": "private CH table dropped and absence verified; private SQLite file removed by harness"
+      },
+      "publication": "actual _sync_replacing to scoped sink that forwards server_sessions unchanged to private CH table; unrelated layers empty",
+      "cases": [
+        {
+          "name": "late_bridge_after_clean_initial_copy",
+          "visitor": "bridge",
+          "technical_session": "client",
+          "source_observations": [
+            {
+              "id": 1,
+              "occurred_at": "2026-09-30T18:33:38",
+              "kind": "pageview",
+              "active_ms": 0
+            },
+            {
+              "id": 2,
+              "occurred_at": "2026-09-30T19:13:38",
+              "kind": "pageview",
+              "active_ms": 0
+            },
+            {
+              "id": 3,
+              "occurred_at": "2026-09-30T18:53:38",
+              "kind": "pageview",
+              "active_ms": 0
+            }
+          ],
+          "sessionize_window": [
+            "2026-09-29T19:33:38",
+            "2026-09-30T19:33:38"
+          ],
+          "copy_days": 2,
+          "CH_FINAL_query": "SELECT count(),sum(pageviews) FROM f05b_contract_fc2db1ff9aae402b9105bf78d837448c FINAL",
+          "initial_CH_FINAL_sessions_pageviews": [
+            2,
+            2
+          ],
+          "PG_sql": "SELECT id,started_at,pageviews FROM server_sessions",
+          "PG_rows": [
+            {
+              "id": 1,
+              "started_at": "2026-09-30T18:33:38",
+              "pageviews": 3
+            }
+          ],
+          "after_CH_FINAL_sessions_pageviews": [
+            2,
+            4
+          ],
+          "CH_FINAL_rows": [
+            {
+              "id": 1,
+              "started_at": "2026-09-30T15:33:38",
+              "pageviews": 3
+            },
+            {
+              "id": 2,
+              "started_at": "2026-09-30T16:13:38",
+              "pageviews": 1
+            }
+          ],
+          "expected_sessions_pageviews": [
+            1,
+            3
+          ],
+          "defect_reproduced": true
+        },
+        {
+          "name": "updated_old_start_carry_outside_recent_replication_filter",
+          "visitor": "bridge",
+          "technical_session": "client",
+          "source_observations": [
+            {
+              "id": 1,
+              "occurred_at": "2026-09-27T19:33:38",
+              "kind": "pageview",
+              "active_ms": 0
+            },
+            {
+              "id": 2,
+              "occurred_at": "2026-09-30T19:33:38",
+              "kind": "dwell",
+              "active_ms": 25000
+            }
+          ],
+          "initial_copy_days": 4,
+          "update_copy_days": 2,
+          "sessionize_window": [
+            "2026-09-26T19:33:38",
+            "2026-09-30T19:33:39"
+          ],
+          "PG_sql": "SELECT id,active_ms,started_at FROM server_sessions",
+          "PG_rows": [
+            {
+              "id": 1,
+              "started_at": "2026-09-27T19:33:38",
+              "active_ms": 25000
+            }
+          ],
+          "CH_FINAL_query": "SELECT sum(active_ms),count() FROM f05b_contract_fc2db1ff9aae402b9105bf78d837448c FINAL",
+          "CH_FINAL_active_ms_sessions": [
+            0,
+            1
+          ],
+          "expected_active_ms_sessions": [
+            25000,
+            1
+          ],
+          "defect_reproduced": true
+        }
+      ],
+      "exposure": "local only; no production application DB, no production ClickHouse, no push/deploy",
+      "source_sha256_after": {
+        "backend/app/tasks/analytics_rollups.py": "22bd39a6e4b798c4164f507c31d0a999088fdda942835a2754e7f0a612747ba4",
+        "backend/app/services/clickhouse_sync.py": "bf3fcad26428ac749e3c5c2771e761efe84d9d954f2dcf479f6e955f6e18fde8"
+      },
+      "source_changed_during_repro": false,
+      "final_verification": {
+        "recorded_at_utc": "2026-09-30T20:25:55.294133+00:00",
+        "source_head": "83c455556998821ac3dcdc140e35b549dad064ec",
+        "source_sha256": {
+          "backend/app/tasks/analytics_rollups.py": "51b65469da05ab9a68a1e997e90fab433b8ae03b5ce7cef4953fc1684c26220d",
+          "backend/app/services/clickhouse_sync.py": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e"
+        },
+        "source_database": "private temporary SQLite via actual SQLAlchemy models; not PostgreSQL acceptance",
+        "sink_database": "isolated real ClickHouse UUID database; actual _sync_replacing; all unrelated source layers empty",
+        "cases": [
+          {
+            "name": "late_bridge_after_clean_copy",
+            "source_observations": [
+              {
+                "id": 1,
+                "occurred_at": "2026-09-30T19:25:55",
+                "kind": "pageview",
+                "params": {}
+              },
+              {
+                "id": 2,
+                "occurred_at": "2026-09-30T20:05:55",
+                "kind": "pageview",
+                "params": {}
+              },
+              {
+                "id": 3,
+                "occurred_at": "2026-09-30T19:45:55",
+                "kind": "pageview",
+                "params": {}
+              }
+            ],
+            "window": [
+              "2026-09-29 20:25:55",
+              "2026-09-30 20:25:55"
+            ],
+            "copy_days": 2,
+            "initial_CH_FINAL_sessions_pageviews": [
+              [
+                2,
+                2
+              ]
+            ],
+            "source_rows": [
+              {
+                "id": 1,
+                "started_at": "2026-09-30T19:25:55",
+                "pageviews": 3,
+                "active_ms": 0
+              }
+            ],
+            "CH_FINAL_query": "SELECT count(),sum(pageviews) FROM server_sessions FINAL",
+            "final_CH_FINAL_sessions_pageviews": [
+              [
+                2,
+                4
+              ]
+            ],
+            "desired": [
+              1,
+              3
+            ],
+            "defect_reproduced": true
+          },
+          {
+            "name": "older_owner_updated_outside_recent_start_filter",
+            "source_observations": [
+              {
+                "id": 1,
+                "occurred_at": "2026-09-27T20:25:55",
+                "kind": "pageview",
+                "params": {}
+              },
+              {
+                "id": 2,
+                "occurred_at": "2026-09-30T20:25:55",
+                "kind": "dwell",
+                "params": {
+                  "active_ms": 25000
+                }
+              }
+            ],
+            "window": [
+              "2026-09-26 20:25:55",
+              "2026-09-30 20:25:56"
+            ],
+            "first_copy_days": 4,
+            "update_copy_days": 2,
+            "source_rows": [
+              {
+                "id": 1,
+                "started_at": "2026-09-27T20:25:55",
+                "pageviews": 1,
+                "active_ms": 25000
+              }
+            ],
+            "CH_FINAL_query": "SELECT count(),sum(active_ms) FROM server_sessions FINAL",
+            "final_CH_FINAL_sessions_active_ms": [
+              [
+                1,
+                0
+              ]
+            ],
+            "desired": [
+              1,
+              25000
+            ],
+            "defect_reproduced": true
+          }
+        ],
+        "clickhouse_version": "24.8.14.39",
+        "cleanup": "actual_clickhouse fixture dropped owned UUID database; _run_with_db removed temporary SQLite file",
+        "source_sha256_after": {
+          "backend/app/tasks/analytics_rollups.py": "51b65469da05ab9a68a1e997e90fab433b8ae03b5ce7cef4953fc1684c26220d",
+          "backend/app/services/clickhouse_sync.py": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e"
+        },
+        "source_changed_during_repro": false
+      }
+    }
+  },
+  "proof_artifacts": [
+    {
+      "path": ".artifacts/f05-evidence.json",
+      "sha256": "84554e8a75887951249d8eab382e2bed5147eb0010bdf58891ecba84d86ea744",
+      "bytes": 4593
+    },
+    {
+      "path": ".artifacts/f05-review.jsonl",
+      "sha256": "ce49b21ce376533062bbf716e788ea51038e5106e338cdcbb1b7ece894c00913",
+      "bytes": 76717
+    },
+    {
+      "path": ".artifacts/f06-review.jsonl",
+      "sha256": "1b60a5ed0339a71f21a4bacafbeb89e27057657f96418b085cdd2396ff950f5e",
+      "bytes": 163150
+    },
+    {
+      "path": ".artifacts/f05-session-boundary-red.log",
+      "sha256": "c14ffb2b94dbd98c918438e2989ef64c200558fb768646f88f185cc4a41ec3bc",
+      "bytes": 8325
+    },
+    {
+      "path": ".artifacts/f05-session-focused-final.log",
+      "sha256": "94b23beaaec9a9571e477d451799f44e9ec97a8d97dabdc503ec72aa5cf44c04",
+      "bytes": 5505
+    },
+    {
+      "path": ".artifacts/f05-session-pg-final.log",
+      "sha256": "b0b5cf138951500fe35e97cf58e85efbddd69b1f259093261992badbd36360c9",
+      "bytes": 99
+    },
+    {
+      "path": ".artifacts/f06-old-metric-red.log",
+      "sha256": "dd303ee074e90409d188b65836f1b4e55776124b2eee4da0db2d4319557eb04a",
+      "bytes": 2216
+    },
+    {
+      "path": ".artifacts/f06-resync-interruption-red.log",
+      "sha256": "e2286093c436e850b1b646269bfc836fc0b1fcc9185d7cb7c5e797f999b180e7",
+      "bytes": 1307
+    }
+  ],
+  "independent_final_review": {
+    "schema_version": 1,
+    "recorded_at_utc": "2026-09-30T20:31:59.422145+00:00",
+    "reviewer": "independent child /root/regional_contracts",
+    "baseline_head": "83c455556998821ac3dcdc140e35b549dad064ec",
+    "branch": "main",
+    "status": "no material blocker within explicitly bounded F05 PostgreSQL-session and F06 automatic-append-event replication scope; F05b remains open",
+    "exact_sources": {
+      "backend/app/tasks/analytics_rollups.py": {
+        "sha256": "51b65469da05ab9a68a1e997e90fab433b8ae03b5ce7cef4953fc1684c26220d",
+        "line_count": 911
+      },
+      "backend/app/services/clickhouse_sync.py": {
+        "sha256": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e",
+        "line_count": 692
+      },
+      "backend/app/api/admin_bi.py": {
+        "sha256": "94ad7cde603c4b2c03c16d9605134baebb5c479a02969ebe3f344187e8ac5a4f",
+        "line_count": 326
+      }
+    },
+    "exact_tests": {
+      "backend/tests/test_sessionize_boundaries.py": {
+        "sha256": "e548b9db5876bae12bb6c5aaf4410eac4fffb1e0c05bc2097f634568e061903c",
+        "line_count": 266
+      },
+      "backend/tests/test_sessionize_boundaries_pg.py": {
+        "sha256": "48219a43522f1efb4843fd776a66a87e706193a79f65d82146d99055246a2b2c",
+        "line_count": 127
+      },
+      "backend/tests/test_clickhouse_replication_pg.py": {
+        "sha256": "ce8d6222a4ad43fe213329fab46a9d871300326f24c199afea41f84c45645f4c",
+        "line_count": 324
+      },
+      "backend/tests/test_clickhouse_replication_ch.py": {
+        "sha256": "dd48d32255232e35e5602f349c3ea066662727e0c6c4f8fd21b4d2841965e100",
+        "line_count": 296
+      }
+    },
+    "docs_reviewed_at_this_snapshot": {
+      "CONTEXT.md": {
+        "sha256": "12c394d9dd5728fcc3bce0478b698b4dd2d45ae652acb18b697372d4f6286483",
+        "line_count": 1109
+      },
+      "README.md": {
+        "sha256": "fed5717567189b062056c68b7c5e16bf60fece601bdd7478227d90921c63430f",
+        "line_count": 261
+      },
+      "docs/architecture.md": {
+        "sha256": "de26fa15c3a4d620b676b5e2cf8060cc45d2aea01850a7983e40e627a0819a19",
+        "line_count": 344
+      },
+      "docs/data-contracts.md": {
+        "sha256": "cd106999b13881c2bddf5bc08978797eaef3fce988370438c97101e5aaf8686c",
+        "line_count": 340
+      },
+      "docs/architecture-history.md": {
+        "sha256": "eaee0b258c12c20ada86e5a65007041ddae1603e3e4e0c5a13b76323c69f2b39",
+        "line_count": 138
+      },
+      "docs/backlog.md": {
+        "sha256": "d427982e68f6b1ddafd252988390f18df3c1697fd2dc1f6e7bda05f80da6887a",
+        "line_count": 1791
+      },
+      "docs/code-review-findings.md": {
+        "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13",
+        "line_count": 161
+      },
+      "docs/knowledge-unknowns.md": {
+        "sha256": "208afba5d0d8c2752b066e6917f9b4e10d709829a49458848ad540aa49aa9160",
+        "line_count": 83
+      },
+      "docs/workflow.md": {
+        "sha256": "d4ee6a83798e2dfc43e5d8f5199d717a424dab252c76de8b9f27e463543ef1d1",
+        "line_count": 385
+      },
+      "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md": {
+        "sha256": "388888398d8bd422c9cba704da6cc2a41059d6d7407b4ce0dda132a95baee016",
+        "line_count": 240
+      },
+      "docs/analytics_api_inventory/README.md": {
+        "sha256": "8af16a3cd7ee81c00e28402f41a2bd4a59597522c5dca2ebe16bb29c4784dfc9",
+        "line_count": 76
+      },
+      "docs/code-review/analytics-boundaries-acceptance-2026-09-30.md": {
+        "sha256": "7844f7af76e65454498626f8930d0921968243d327212e574f74eeaf5f359ec8",
+        "line_count": 183
+      }
+    },
+    "owner_ledgers_sha_match": [
+      {
+        "ledger": ".artifacts/f05-review.jsonl",
+        "file": "backend/app/tasks/analytics_rollups.py",
+        "expected_sha256": "51b65469da05ab9a68a1e997e90fab433b8ae03b5ce7cef4953fc1684c26220d",
+        "actual_sha256": "51b65469da05ab9a68a1e997e90fab433b8ae03b5ce7cef4953fc1684c26220d",
+        "matches": true
+      },
+      {
+        "ledger": ".artifacts/f05-review.jsonl",
+        "file": "backend/tests/test_sessionize_boundaries.py",
+        "expected_sha256": "e548b9db5876bae12bb6c5aaf4410eac4fffb1e0c05bc2097f634568e061903c",
+        "actual_sha256": "e548b9db5876bae12bb6c5aaf4410eac4fffb1e0c05bc2097f634568e061903c",
+        "matches": true
+      },
+      {
+        "ledger": ".artifacts/f05-review.jsonl",
+        "file": "backend/tests/test_sessionize_boundaries_pg.py",
+        "expected_sha256": "48219a43522f1efb4843fd776a66a87e706193a79f65d82146d99055246a2b2c",
+        "actual_sha256": "48219a43522f1efb4843fd776a66a87e706193a79f65d82146d99055246a2b2c",
+        "matches": true
+      },
+      {
+        "ledger": ".artifacts/f06-review.jsonl",
+        "file": "backend/app/services/clickhouse_sync.py",
+        "expected_sha256": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e",
+        "actual_sha256": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e",
+        "matches": true
+      },
+      {
+        "ledger": ".artifacts/f06-review.jsonl",
+        "file": "backend/app/api/admin_bi.py",
+        "expected_sha256": "94ad7cde603c4b2c03c16d9605134baebb5c479a02969ebe3f344187e8ac5a4f",
+        "actual_sha256": "94ad7cde603c4b2c03c16d9605134baebb5c479a02969ebe3f344187e8ac5a4f",
+        "matches": true
+      },
+      {
+        "ledger": ".artifacts/f06-review.jsonl",
+        "file": "backend/tests/test_clickhouse_replication_pg.py",
+        "expected_sha256": "ce8d6222a4ad43fe213329fab46a9d871300326f24c199afea41f84c45645f4c",
+        "actual_sha256": "ce8d6222a4ad43fe213329fab46a9d871300326f24c199afea41f84c45645f4c",
+        "matches": true
+      },
+      {
+        "ledger": ".artifacts/f06-review.jsonl",
+        "file": "backend/tests/test_clickhouse_replication_ch.py",
+        "expected_sha256": "dd48d32255232e35e5602f349c3ea066662727e0c6c4f8fd21b4d2841965e100",
+        "actual_sha256": "dd48d32255232e35e5602f349c3ea066662727e0c6c4f8fd21b4d2841965e100",
+        "matches": true
+      }
+    ],
+    "read_scope": [
+      {
+        "file": "backend/app/tasks/analytics_rollups.py",
+        "scope": "all changed session ownership/staging/accumulator code1-414, weighted finalizer/goal overrides, run_rollups three-day caller; unchanged rollup phases/source consumers and history reviewed for affected boundaries, not an all-branch execution claim"
+      },
+      {
+        "file": "backend/app/services/clickhouse_sync.py",
+        "scope": "source DDL/key/ceiling/copy/query/resync and all changed maintenance guards; append producers, session and pulse readers traced; replacing stream protocol reviewed separately from append closed-transaction claim"
+      },
+      {
+        "file": "backend/app/api/admin_bi.py",
+        "scope": "changed slices_meta/slices_query/auth route context plus current frontend availability/read consumers; unrelated dashboard snapshot builder unchanged"
+      },
+      {
+        "file": "backend/tests/test_sessionize_boundaries.py + test_sessionize_boundaries_pg.py",
+        "scope": "all fixture/setup/literal edge cases read; meaningful actual-caller backfill repair and real-PG rollback/temporary-table cases inspected"
+      },
+      {
+        "file": "backend/tests/test_clickhouse_replication_pg.py + test_clickhouse_replication_ch.py",
+        "scope": "complete current fixtures/sequence-late-commit, snapshot-isolation, bounded replay, progress/heartbeat, native logical distinct and partial-resync tests read"
+      },
+      {
+        "file": "canonical docs listed above",
+        "scope": "new dated F05/F06 deltas and protocol, preserved old ADR/resource history; source/claim consistency checked; aggregate final gates are root-owned and still pending at this snapshot"
+      }
+    ],
+    "resolved_review_findings": [
+      {
+        "name": "future matching SID portrait contamination",
+        "proof": "literal fixture reproduced future ad/mobile/bot signal leak before own-portrait time bound; final candidate.started_at<=logical_end and regression reviewed; independent repeat retained search/non-bot attribution"
+      },
+      {
+        "name": "fresh-statistics100k timeout",
+        "proof": "real60s timeout/EXPLAIN diagnosed cardinality1/2 nested loops; final materialized indexed/analyzed private visitor/history stages reviewed. No global raw ANALYZE/timeout/cgroup increase introduced"
+      },
+      {
+        "name": "partial destructive resync falsely caught up",
+        "proof": "independent first-freeze realPG/CH with fakeRedis RED retained cursor2 over absent/recreated empty table and fresh heartbeat. Final09d realPG/CH/Redis15 GREEN clears both cursors before first DROP, keeps pending and blocks normal job/read until explicit operator repair"
+      }
+    ],
+    "independent_final_probes": {
+      "F05b": {
+        "artifact": ".artifacts/f05b-ch-session-repro.json",
+        "json_pointer": "/final_verification",
+        "real_services": [
+          "ClickHouse24.8"
+        ],
+        "fixture_or_double": [
+          "temporary SQLite SQLAlchemy source; not real PG acceptance"
+        ],
+        "results": [
+          {
+            "name": "late_bridge_after_clean_copy",
+            "source_observations": [
+              {
+                "id": 1,
+                "occurred_at": "2026-09-30T19:25:55",
+                "kind": "pageview",
+                "params": {}
+              },
+              {
+                "id": 2,
+                "occurred_at": "2026-09-30T20:05:55",
+                "kind": "pageview",
+                "params": {}
+              },
+              {
+                "id": 3,
+                "occurred_at": "2026-09-30T19:45:55",
+                "kind": "pageview",
+                "params": {}
+              }
+            ],
+            "window": [
+              "2026-09-29 20:25:55",
+              "2026-09-30 20:25:55"
+            ],
+            "copy_days": 2,
+            "initial_CH_FINAL_sessions_pageviews": [
+              [
+                2,
+                2
+              ]
+            ],
+            "source_rows": [
+              {
+                "id": 1,
+                "started_at": "2026-09-30T19:25:55",
+                "pageviews": 3,
+                "active_ms": 0
+              }
+            ],
+            "CH_FINAL_query": "SELECT count(),sum(pageviews) FROM server_sessions FINAL",
+            "final_CH_FINAL_sessions_pageviews": [
+              [
+                2,
+                4
+              ]
+            ],
+            "desired": [
+              1,
+              3
+            ],
+            "defect_reproduced": true
+          },
+          {
+            "name": "older_owner_updated_outside_recent_start_filter",
+            "source_observations": [
+              {
+                "id": 1,
+                "occurred_at": "2026-09-27T20:25:55",
+                "kind": "pageview",
+                "params": {}
+              },
+              {
+                "id": 2,
+                "occurred_at": "2026-09-30T20:25:55",
+                "kind": "dwell",
+                "params": {
+                  "active_ms": 25000
+                }
+              }
+            ],
+            "window": [
+              "2026-09-26 20:25:55",
+              "2026-09-30 20:25:56"
+            ],
+            "first_copy_days": 4,
+            "update_copy_days": 2,
+            "source_rows": [
+              {
+                "id": 1,
+                "started_at": "2026-09-27T20:25:55",
+                "pageviews": 1,
+                "active_ms": 25000
+              }
+            ],
+            "CH_FINAL_query": "SELECT count(),sum(active_ms) FROM server_sessions FINAL",
+            "final_CH_FINAL_sessions_active_ms": [
+              [
+                1,
+                0
+              ]
+            ],
+            "desired": [
+              1,
+              25000
+            ],
+            "defect_reproduced": true
+          }
+        ],
+        "source_unchanged": true,
+        "cleanup": "actual_clickhouse fixture dropped owned UUID database; _run_with_db removed temporary SQLite file"
+      },
+      "resync_recovery": {
+        "artifact": ".artifacts/f06-resync-failure-repro.json",
+        "json_pointer": "/final_green_verification",
+        "real_services": [
+          "PostgreSQL16",
+          "ClickHouse24.8",
+          "Redis7 DB15"
+        ],
+        "fixture_or_double": [
+          "replacing layer returns0/days3650 because event-only source schema",
+          "one injected exception before second DROP; first DROP native; not network chaos"
+        ],
+        "results": {
+          "before_failure_CH_counts": {
+            "behavior_events": [
+              [
+                2,
+                2
+              ]
+            ],
+            "frontend_events": [
+              [
+                2,
+                2
+              ]
+            ]
+          },
+          "after_failure": {
+            "cursors": {
+              "behavior_events": 0,
+              "frontend_events": 0
+            },
+            "pending": true,
+            "heartbeat": null,
+            "progress": {},
+            "behavior_table_exists": 0
+          },
+          "after_ordinary_job": {
+            "opened_clients": 1,
+            "pending": true,
+            "heartbeat": null,
+            "behavior_table_exists": 0
+          },
+          "read_guard": {
+            "meta_available": false,
+            "meta_resync_pending": true,
+            "run_slice": "RuntimeError maintenance",
+            "slices_query_http": 503,
+            "new_clients_opened": 0
+          },
+          "after_operator_retry": {
+            "cursors": {
+              "behavior_events": 2,
+              "frontend_events": 2
+            },
+            "pending": false,
+            "heartbeat_age_minutes": 0,
+            "CH_counts": {
+              "behavior_events": [
+                [
+                  2,
+                  2
+                ]
+              ],
+              "frontend_events": [
+                [
+                  2,
+                  2
+                ]
+              ]
+            },
+            "progress": {
+              "behavior_events": {
+                "cursor": 2,
+                "ceiling": 2,
+                "caught_up": true,
+                "deferred": false
+              },
+              "frontend_events": {
+                "cursor": 2,
+                "ceiling": 2,
+                "caught_up": true,
+                "deferred": false
+              }
+            },
+            "replacing_windows": [
+              3650
+            ]
+          }
+        },
+        "source_unchanged": true,
+        "cleanup": "owned UUID PG schema and CH database removed by fixtures; owned Redis15 keys deleted; all clients disposed"
+      }
+    },
+    "benchmark_review": {
+      "F05": {
+        "artifact": ".artifacts/f05-benchmark.json",
+        "scope": "owner observation inspected, not independently rerun",
+        "source_sha256": "51b65469da05ab9a68a1e997e90fab433b8ae03b5ce7cef4953fc1684c26220d",
+        "continuous_seconds": 2.696224542,
+        "three_day_caller_seconds": 5.488102083,
+        "peak_python_mib": 108.75,
+        "sample": "100k raw,5k portraits,5k goals;5001 sessions; matching content; source raw manual ANALYZE false, autostats timing unmeasured"
+      },
+      "F06": {
+        "artifact": ".artifacts/f06-benchmark.json",
+        "scope": "owner native observation inspected, not independently rerun",
+        "source_sha256": "09d60144066d7cc7fc291a4afdc41fbbbb5742b3e661abd0806b5d0468acf84e",
+        "sample": "100k source; failed ACK physical120k/logical100k; actual pageview/click consumers50k/50k; resource points are not peak or capacity"
+      },
+      "interpretation": "isolated synthetic warm-after-seed observations under1CPU PG512MiB/CH768MiB; no shared production4vCPU capacity, p95 or cold-disk guarantee"
+    },
+    "remaining_limits": [
+      "F05b ongoing: late bridge deletes source logical key without CH tombstone; old owning start outside2-day copy cutoff misses updates; FINAL/resync once cannot prevent recurrence",
+      "Window output commit atomic; visitor/history/goals/portraits multiple READ COMMITTED statements do not create one source snapshot; concurrent rollup publisher/lease fencing F07 open",
+      "Historical visitor SQL scan/temp storage can grow and repeat across windows; bounded Python5k/10k/constant accumulator excludes admin identity sets and DBwork/disk",
+      "Event guard supports immutable automatic ascending CACHE1 noncycling IDs only; manual IDs, out-of-band allocation, resets and live cache transitions excluded. Old cached blocks require drained old backends for supported reentry",
+      "SHARE NOWAIT source barrier short SQL only can defer repeatedly under sustained writers; captured progress is last stored result, not wallclock/source atomic completeness",
+      "Append source transactions close before CH/Redis I/O; replacing SQL stream retains its transaction across CH awaits and must not inherit append-only transaction claim",
+      "Exact uniq state and physical replay growth consume CH memory/disk; query limits/batch caps do not prove capacity",
+      "Resync marker requires retained state Redis; not fencing for in-flight job/operator, not cross-store atomicity/state-loss recovery; explicit maintenance must stop/drain overlap",
+      "Independent resync proof excludes content of all replacing layers; cutoff3650 days remains existing behavior",
+      "Raw retention, browser loss, arbitrary old backfill outside2/60day periods, clock skew, ingestion identity/people truth, source integration and production release are not closed"
+    ],
+    "docs_conclusion": "dated current deltas preserve prior historical grounds; explicit openF05b/resource/state-failure limits agree with inspected code; final canonical contract/protocol now distinguish atomic output from source snapshot. No contradictory material claim identified in reviewed deltas",
+    "project_gates": "not rerun by this reviewer; root runs knowledge/check-all after maps and evidence sync. No inherited GREEN count assigned to changed final source",
+    "mutations_by_reviewer": "only .artifacts/f05b-ch-session-repro.json final_verification, .artifacts/f06-resync-failure-repro.json final_green_verification and this JSON; no source/test/canonical-doc edits",
+    "release_state": "local worktree only; no commit/push/deploy/production application DB exposure by reviewer"
+  },
+  "integration_gates": {
+    "status": "passed",
+    "command": "./scripts/check-all.sh",
+    "started_at_utc": "2026-09-30T20:31:11.480262+00:00",
+    "finished_at_utc": "2026-09-30T20:34:25.691101+00:00",
+    "seconds": 194.16764487500768,
+    "exit_code": 0,
+    "log": ".artifacts/analytics-check-all-final.log",
+    "log_sha256": "18c117fb859ec928296237254ff74c9101e63ea8c128291b5a9d99ea11ef1a97",
+    "fixture_scope": "All explicit isolated PG/Redis14/Redis15/CH URLs opted in; no fallback to application DSN; local gates do not substitute production/remote CI migration/docker/E2E acceptance.",
+    "backend": {
+      "passed": 3198,
+      "skipped": 9,
+      "warnings": 74,
+      "seconds": 108.25,
+      "new_isolated_cases": "all explicit opt-in fixtures included"
+    },
+    "frontend": {
+      "test_files": 112,
+      "passed": 924,
+      "lint_errors": 0,
+      "lint_warnings": 5,
+      "build": "passed"
+    },
+    "other_checks": [
+      "knowledge content/SHA/definitions/mechanisms/terrain/material identity",
+      "JavaScript symbols/client mechanisms/terrain DOM",
+      "indicator index/doc counters/page metadata/public language"
+    ]
+  },
+  "cleanup": {
+    "recorded_at_utc": "2026-09-30T20:35:34.196632+00:00",
+    "removed_owned_containers": [
+      "fe-f05-f06-9f2bb0-pg",
+      "fe-f05-f06-9f2bb0-redis",
+      "fe-f05-f06-9f2bb0-ch"
+    ],
+    "absence_verified": true,
+    "private_fixture_credential_file_removed": true,
+    "scope": "Exact owned synthetic container names and their anonymous volumes only; repository CH bind mounts, foreign containers, .artifacts proofs/assets and application/production DB preserved."
+  },
+  "limits": [
+    "Failure injections are exceptions at stated protocol boundaries, not network/process chaos.",
+    "Synthetic warm-after-seed elapsed/RSS observations do not establish production peaks/p95 or shared4vCPU capacity.",
+    "SHARE NOWAIT and sequence guards cover stated existing automatic immutable writers, not manual lower IDs/out-of-band allocations/live CACHE reconfiguration.",
+    "Last stored event progress may remain from a preceding job if failure occurs before its write.",
+    "Redis pending survives only with its state store and does not fence already running jobs or provide cross-store atomicity.",
+    "F05b ongoing ReplacingMergeTree session deletion/old-carry divergence and F07 lease ownership remain open."
+  ]
+}

@@ -195,3 +195,46 @@ db_pool_saturation / idle_in_tx. ClickHouse лимит 448M; backend на 4 ГБ
 поэтому `visit_is_robot` дополнительно признаёт `ym:s:browser=headless*`;
 `daily_traffic`, `raw_visits` Пульса и бандл отчёта считают визиты без
 роботов (`metrika_visit_not_headless`).
+
+### 2026-09-30 — логическая граница сессии и committed ceiling
+
+Локальный пакет после `main 83c4555`; июльские/сентябрьские причины выше
+сохраняются. Три МСК-дня — ограничение расчётного рабочего набора, не визита.
+Обычный30мин gap и присоединение pageviewless tail сохраняются; SQL восстанавливает
+logical owner, streaming accumulator/staging ремонтируют затронутую сессию
+слева и старые splits в одной транзакции окна. Own SID имеет приоритет при
+portrait start не позже logical end;
+fallback выбирается между start−сутки и end вместо будущего портрета окна.
+Исторический SQL readwork остаётся ресурсным риском, даже при bounded Python RAM.
+После изолированного cold-stats timeout visitor/history вынесены в private
+indexed TEMP relations с ANALYZE; исходные таблицы и глобальные timeouts/
+planner settings не изменены.
+
+Append event ID выделяется до commit, поэтому прежний cursor по max visible id
+был недостаточен. Короткий SHARE NOWAIT барьер либо откладывает занятую таблицу,
+либо позволяет получить committed ceiling после writer commit. READ COMMITTED
+и штатная возрастающая default/identity sequence CACHE1/no-cycle проверяются;
+manual IDs, внешняя preallocation и незаметные sequence resets не поддерживаются.
+PG закрывается до CH/Redis I/O. Revision cursor v2 повторно читает историю
+батчами, ordinary job ограничен80k строк каждой таблицы. Existing MergeTree
+сохраняется; event-метрики используют exact distinct id, поэтому повторная
+вставка не повторяет число событий. Это не физическая дедупликация таблиц.
+
+Progress отдельно показывает captured ceiling/cursor/caught_up/deferred;
+heartbeat появляется после replacing phase только при caught_up обеих event
+таблиц. Manual resync остаётся явной полной загрузкой производной копии,
+ordinary job продолжает prefix на следующих запусках. Ограничения shared4vCPU,
+query-level exact-distinct RAM и полного recovery подтверждаются отдельно.
+После независимого partial-DROP RED manual resync сохраняет pending intent
+до reset обоих cursors и разрушения CH tables. Ordinary job и slice reads
+откладываются до полного operator success; pending снимается после него.
+Marker требует сохранного state Redis и не заменяет межпроцессный fencing
+или cross-store crash recovery.
+
+**Не закрыто F05b:** replacing session insert не передаёт delete старого
+logical key, двухсуточный cutoff пропускает старое carry. FINAL и один resync
+не исправляют будущую рассинхронизацию. Для следующего решения нужны PG durable
+mutation/deletion в session commit и versioned tombstones либо согласованный
+bounded snapshot с generation/ack; это ещё не принятая реализация.
+[Действующий контракт](../data-contracts.md#аналитические-окна-и-репликация-f05f06--2026-09-30),
+[доказательства](../code-review/analytics-boundaries-acceptance-2026-09-30.md).

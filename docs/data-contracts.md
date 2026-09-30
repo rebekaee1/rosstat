@@ -1,5 +1,99 @@
 # Контракты данных Forecast Economy
 
+## Аналитические окна и репликация F05/F06 — 2026-09-30
+
+Локальное уточнение после `main 83c4555`; старые датированные строки ниже
+сохраняют прежние механизмы и основания. [Приёмка и границы](code-review/analytics-boundaries-acceptance-2026-09-30.md).
+
+### PostgreSQL: логический визит
+
+`sessionize` выбирает посетителей с pageview/dwell/click/move в `[since,stop)`;
+`stop=until` либо время начала вызова. Для них SQL рассматривает сохранённые
+события до stop, включая историю раньше since. Разрыв `>=30 минут` отделяет
+burst; burst без pageview до первого просмотра не образует сессию, последующие
+такие bursts присоединяются к предыдущей сессии с pageview. Это сохраняет
+прежний контракт позднего dwell даже после долгой паузы; не равно новой
+30-минутной сессии по любому событию. Равные timestamps упорядочиваются по id.
+
+Окно восстанавливает затронутые logical keys, в том числе начавшиеся слева;
+temp staging, удаление старых splits и вставка итогов фиксируются вместе.
+Временные visitor/history relations индексируются и ANALYZE внутри транзакции;
+статистика source tables и глобальные planner/timeout настройки не меняются.
+Unrelated visitors слева и будущие starts сохраняются. Те же observations и
+cutoff сохраняют visitor/start; backfill может сдвинуть старт или объединить
+прежние keys. SQL surrogate id при пересчёте меняется. Пачки Python
+входа/выхода — по5 000 строк, портретный lookup — до10 000 own/fallback SID,
+плюс один компактный накопитель. Admin identity считывается отдельно, прежним
+механизмом. Это не общий фиксированный предел всей памяти sessionize;
+SQL historical scan и temporary disk тоже расходуют ресурсы.
+`run_rollups` сохраняет три МСК-дня на окно и отдельный analytics pool.
+
+День и новизна относятся к первоначальному старту, visitor flood — к его
+МСК-дню. Цели связываются через distinct client SID и logical start, с допуском
+±5 минут от фактических краёв сессии. Own SID portrait имеет приоритет и
+допускается только со started_at не позже logical end;
+fallback — последний портрет между start−сутки и end. Последнее устраняет
+зависимость от будущих портретов другого расчётного окна. Поздняя запись
+подхватывается повторным пересчётом затронутого периода: обычный job берёт
+2 суток, ночной — 60; автоматическое обнаружение произвольного старого backfill
+вне этих окон не заявлено. При включённой raw retention source history может
+стать недостаточной; это не механизм архивного восстановления.
+
+### ClickHouse: append event-копия
+
+Перед чтением committed ceiling `max(id)` отдельная короткая PG-транзакция
+берёт `SHARE NOWAIT`. При конфликте с writer копия сразу откладывает таблицу;
+после успешного lock новый writer может кратко ждать metadata/max query.
+PG закрывается до Redis и CH network I/O. READ COMMITTED и обычная возрастающая
+default/identity sequence с CACHE 1 без CYCLE проверяются; несовместимая схема
+останавливает event-копию. Это контракт существующих INSERT writers: ручные
+меньшие id, out-of-band nextval, сброс и live reconfiguration sequence не входят
+в гарантию. Текущее CACHE1 не выявляет старые cached blocks после прежнего
+CACHE>1; возвращение к поддерживаемому режиму требует закрытия старых
+соединений и контролируемого catch-up. Такая runtime история здесь не проверена.
+
+Revision `v2` игнорирует прежний cursor и повторно читает сохранённую историю.
+Обычный job — до четырёх батчей по 20 000 **каждой** таблицы, затем продолжает
+в следующем запуске. Cursor продвигается только после успешного CH insert.
+Retry может оставить физические дубли MergeTree; pageviews/clicks используют
+`uniqExactIf(id,...)`. Другой CH event-reader обязан соблюдать тот же immutable
+ID контракт. Exact distinct state требует памяти; лимит строк копирования не
+является лимитом памяти произвольного аналитического запроса.
+
+`/admin/bi/slices/meta` дополнен `sync_progress`: cursor, ceiling, caught_up,
+deferred по таблицам. `v2` heartbeat обновляется после replacing phase только
+при достижении обоих captured ceilings. При partial/deferred прежний v2 timestamp
+остаётся возрастом последнего успешного среза. `sync_progress` — последний
+сохранённый capture: сбой до его записи может оставить прежний результат.
+Он читается вместе с age и журналом job, а не как live-состояние PostgreSQL.
+`available=true` означает enabled без известного pending rebuild, а не здоровую
+или содержательно полную копию. Heartbeat не подтверждает новые commits после
+capture и не подтверждает правильность session-копии. Manual `resync()` сначала
+сохраняет state-Redis pending intent, сбрасывает оба event cursors, затем удаляет
+derived CH tables и читает event history последовательными батчами. Pending
+снимается только после полного успеха; прерывание блокирует ordinary sync и
+`run_slice`, admin metadata возвращает unavailable/reason. Сохранность state
+Redis и исключение уже запущенного concurrent sync — предпосылки; marker не
+является fencing или atomic commit между Redis и CH. Потеря marker/state после
+инфраструктурного сбоя требует отдельного recovery acceptance.
+
+Сессии выбранного окна публикуются одним output commit. Visitor selection,
+history, goals и portraits читаются несколькими READ COMMITTED statements;
+единый snapshot всех источников при concurrent ingest не заявлен. Проверенные
+сравнения относятся к зафиксированным observations и cutoff. Допуск late data
+следующим штатным окном не гарантирует произвольный старый backfill вне lookback.
+
+### F05b: session-копия пока не согласуется с удалениями
+
+`server_sessions` в CH — ReplacingMergeTree по visitor/start. Новый logical key
+не удаляет старый, даже с FINAL. После late bridge PG может иметь одну сессию,
+а CH — две; обновление carry со start старше двух суток также не входит в
+обычный copy window. Это постоянный дефект, а не только initial replay.
+Нужны durable изменения/удаления logical keys в том же PG commit и versioned
+tombstones либо согласованный snapshot с правилами generation/ack и ресурсным
+бюджетом. Простое увеличение days или разовый resync не закрывает механизм.
+До этого CH session-витрины не имеют принятой гарантии равенства PostgreSQL.
+
 ## Региональный контур F03 — 2026-09-30
 
 Локальный пакет после `main c2a883d` заменяет count-skip/общую перезаливку

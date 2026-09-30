@@ -276,16 +276,24 @@ async def bi_dashboard(
 async def slices_meta(_admin: User = Depends(require_admin)):
     """Справочник конструктора «Срезы»: доступные метрики и измерения."""
     from app.config import settings
-    from app.services.clickhouse_sync import SLICE_DIMENSIONS, SLICE_METRICS, last_sync_age_minutes
+    from app.services.clickhouse_sync import (
+        SLICE_DIMENSIONS, SLICE_METRICS, event_sync_progress, last_sync_age_minutes, resync_pending,
+    )
 
     if not settings.clickhouse_enabled:
         return {"available": False, "reason": "Слой ClickHouse выключен"}
-    return {
-        "available": True,
+    pending = await resync_pending()
+    result = {
+        "available": not pending,
+        "resync_pending": pending,
         "sync_age_minutes": await last_sync_age_minutes(),
+        "sync_progress": await event_sync_progress(),
         "metrics": {m: table for m, (table, _) in SLICE_METRICS.items()},
         "dimensions": {t: list(d.keys()) for t, d in SLICE_DIMENSIONS.items()},
     }
+    if pending:
+        result["reason"] = "Слой данных временно недоступен: обслуживание"
+    return result
 
 
 @router.get("/slices")

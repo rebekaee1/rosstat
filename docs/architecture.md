@@ -1,5 +1,27 @@
 # Архитектура Forecast Economy: карта действующего кода
 
+## Граница визита и event-копии — уточнение 2026-09-30
+
+Пакет после локальной `main 83c4555` отделяет логическую сессию от трёхдневного
+вычислительного окна. PostgreSQL оконными функциями восстанавливает bursts,
+owning start и затронутую историю; Python stream/staging сохраняют ограниченный
+рабочий набор. Commit окна исправляет старые splits и carry вместе. SQL читает
+историю посетителей окна: ограничение Python RAM не ограничивает объём SQL-work.
+
+Event-копия CH сначала получает committed ceiling под коротким PG SHARE NOWAIT,
+затем закрывает PG и копирует конечные батчи в executor. При занятом source
+копирование откладывается; новый revision cursor делает bounded historical
+replay. После retry raw MergeTree может содержать дубли, event-метрики считают
+уникальные id. Metadata различает catch-up/deferred и завершённость captured
+среза. Это не lease/outbox/CDC и не атомарный snapshot всех таблиц.
+
+**F05b:** CH session-copy не удаляет старые visitor/start и не выбирает carry
+старше двух суток; FINAL этого не исправляет. PG BI/marts и CH session-срезы
+поэтому могут различаться после backfill. [Контракт](data-contracts.md#аналитические-окна-и-репликация-f05f06--2026-09-30),
+[проверки и ресурсные пределы](code-review/analytics-boundaries-acceptance-2026-09-30.md).
+Сохраняются отдельный analytics pool, low-memory CH profile и прежние причины
+инцидентов. Production 4 vCPU, смешанная нагрузка и release не приняты заново.
+
 ## Региональные writers и consumers — уточнение 2026-09-30
 
 После `main c2a883d` региональный сидер объединяет годовые значения по ключу,

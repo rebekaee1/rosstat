@@ -15,6 +15,50 @@
 
 Любая правка должна проходить регламент ниже. Ничего «полу-готового» в `main`.
 
+## Аналитические окна и event replay — локальное уточнение 30.09
+
+После `main 83c4555` ordinary rollup остаётся в отдельном analytics pool,
+окна по3МСК-дня; temp staging и historical visitor SQL предотвращают разрыв
+логической сессии без материализации60дней в Python. CPU/readwork SQL и
+temporary disk не ограничиваются размером Python batch; прежние timeout,
+pool и low-memory CH settings не повышаются этим пакетом.
+Индексы и ANALYZE применяются только к private temp visitor/history stages:
+это устраняет плохие cardinality estimates на новой БД без global tuning.
+
+Event cursor/heartbeat перешли наv2. Первый запуск повторно читает сохранённые
+PG event rows, до80k каждой таблицы на job; оставшийся prefix продолжится
+следующим job. Проверять `/api/v1/admin/bi/slices/meta::sync_progress`, а не
+старый Redis heartbeat. Прежний v2 age остаётся last successful copy, даже если
+последний записанный progress уже partial/deferred. Сбой до его записи может
+оставить прежний capture; сверять также age и журнал job. `available` — enabled без pending
+rebuild, не доказательство health/полноты.
+Live sequence reconfiguration не поддерживается: CACHE1 после CACHE>1 при
+старых живых backends не доказывает отсутствие reserved lower ids. Нужны
+закрытие старых соединений и controlled catch-up, это отдельный release gate.
+SHARE NOWAIT не ждёт открытого writer; после успешного
+lock новые INSERT могут кратко ждать SQL metadata/max phase. Incompatible
+sequence/isolation останавливает copy без продвижения cursor.
+
+`resync()` — отдельная разрушительная для **производной CH-копии** операция:
+reset/drop/rebuild и последовательная полная event загрузка, replacing cutoff
+по-прежнему3650суток. Это не импорт PostgreSQL и не обычный15min job.
+Сбой оставляет CH incomplete без нового успешного heartbeat; повтор требует
+того же контролируемого maintenance сценария. Не запускать автоматически
+ради F05b: resync не обеспечивает передачу будущих session deletes.
+Pending intent записывается до cursor reset и первого DROP; обычный job и
+срезы блокируются до полного operator repair. После успеха marker снимается.
+Это действует при сохранном state Redis, не обеспечивает cross-store atomicity
+при потере state/AOF и не заменяет полноценный recovery протокол.
+Перед manual resync исключить одновременно работающий incremental sync,
+включая уже начатый: pending marker не заменяет межпроцессный fencing F07.
+
+Изолированные проверки принимают explicit loopback PostgreSQL `fe_f01_*`,
+необычный порт и unique schema; RedisDB14/15 и CH также только на owned
+контейнерах. Cred-файл временный0600, после gates удаляется вместе с ними.
+[Приёмка](code-review/analytics-boundaries-acceptance-2026-09-30.md) различает
+synthetic ресурсы и общий сервер4vCPU. Production release отдельно; до F05b
+CH session-метрики не имеют гарантии равенства PG после backfill/carry.
+
 ## Git и окружения
 
 - **GitHub (`git push origin main`)** — основной способ фиксировать прогресс; коммиты должны быть **согласованы** с тем, что реально сделано.

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `c2a883df98cefd6a658828d1a51186eb2c9faacc`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `83c455556998821ac3dcdc140e35b549dad064ec`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1321 |
-| Код, шаблоны и стили | 1005 |
-| Актуальные рецензии без пропусков guard | 1321 |
-| Именованные определения Python/JS: с аннотацией / всего | 8688 / 8688 |
+| Файлы в явно определённом scope | 1325 |
+| Код, шаблоны и стили | 1009 |
+| Актуальные рецензии без пропусков guard | 1325 |
+| Именованные определения Python/JS: с аннотацией / всего | 8794 / 8794 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -259,7 +259,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/cbr_ruonia_parser.py](../backend/app/services/cbr_ruonia_parser.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/cbr_trade_goods_monthly_parser.py](../backend/app/services/cbr_trade_goods_monthly_parser.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/cbr_trade_services_monthly_parser.py](../backend/app/services/cbr_trade_services_monthly_parser.py) | reviewed | 6/6 | актуально |
-| [backend/app/services/clickhouse_sync.py](../backend/app/services/clickhouse_sync.py) | reviewed | 17/17 | актуально |
+| [backend/app/services/clickhouse_sync.py](../backend/app/services/clickhouse_sync.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/data_validator.py](../backend/app/services/data_validator.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/dataset_inventory.py](../backend/app/services/dataset_inventory.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/demand_router.py](../backend/app/services/demand_router.py) | reviewed | 6/6 | актуально |
@@ -421,7 +421,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/yandex_partner_stats.py](../backend/app/services/yandex_partner_stats.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/yandex_webmaster_client.py](../backend/app/services/yandex_webmaster_client.py) | reviewed | 19/19 | актуально |
 | [backend/app/tasks/__init__.py](../backend/app/tasks/__init__.py) | reviewed | 0/0 | актуально |
-| [backend/app/tasks/analytics_rollups.py](../backend/app/tasks/analytics_rollups.py) | reviewed | 14/14 | актуально |
+| [backend/app/tasks/analytics_rollups.py](../backend/app/tasks/analytics_rollups.py) | reviewed | 24/24 | актуально |
 | [backend/app/tasks/analytics_scheduler.py](../backend/app/tasks/analytics_scheduler.py) | reviewed | 14/14 | актуально |
 | [backend/app/tasks/scheduler.py](../backend/app/tasks/scheduler.py) | reviewed | 18/18 | актуально |
 | [backend/app/tasks/ticker_worker.py](../backend/app/tasks/ticker_worker.py) | reviewed | 5/5 | актуально |
@@ -531,6 +531,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_cbr_reserves.py](../backend/tests/test_cbr_reserves.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_cbr_ruonia.py](../backend/tests/test_cbr_ruonia.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_cbr_trade_monthly.py](../backend/tests/test_cbr_trade_monthly.py) | reviewed | 25/25 | актуально |
+| [backend/tests/test_clickhouse_replication_ch.py](../backend/tests/test_clickhouse_replication_ch.py) | reviewed | 23/23 | актуально |
+| [backend/tests/test_clickhouse_replication_pg.py](../backend/tests/test_clickhouse_replication_pg.py) | reviewed | 34/34 | актуально |
 | [backend/tests/test_clickhouse_sync.py](../backend/tests/test_clickhouse_sync.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_cny_rub_seo.py](../backend/tests/test_cny_rub_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_cpi_provenance.py](../backend/tests/test_cpi_provenance.py) | reviewed | 3/3 | актуально |
@@ -644,6 +646,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_seo_source_link.py](../backend/tests/test_seo_source_link.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_seo_world.py](../backend/tests/test_seo_world.py) | reviewed | 31/31 | актуально |
 | [backend/tests/test_seo_world_year.py](../backend/tests/test_seo_world_year.py) | reviewed | 20/20 | актуально |
+| [backend/tests/test_sessionize_boundaries.py](../backend/tests/test_sessionize_boundaries.py) | reviewed | 28/28 | актуально |
+| [backend/tests/test_sessionize_boundaries_pg.py](../backend/tests/test_sessionize_boundaries_pg.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_site_path_collisions.py](../backend/tests/test_site_path_collisions.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_site_paths.py](../backend/tests/test_site_paths.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_site_urls_recrawl_filter.py](../backend/tests/test_site_urls_recrawl_filter.py) | reviewed | 11/11 | актуально |

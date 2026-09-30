@@ -17,11 +17,15 @@
 from __future__ import annotations
 
 import logging
+import json
+from types import SimpleNamespace
+from uuid import uuid4
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import case, delete, func, select
+from sqlalchemy import BigInteger, Column, Index, Integer, MetaData, Table, and_, case, cast, delete, func, or_, select, text
+from sqlalchemy.schema import CreateIndex, CreateTable, DropTable
 
 from app.config import settings
 from app.database import analytics_session
@@ -80,158 +84,317 @@ def _utcnow() -> datetime:
 # Серверная сессионизация
 # ---------------------------------------------------------------------------
 
-async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
-    """Пересчитать server_sessions для окна [since, until) (until=None — до now).
+def _session_epoch_us(column):
+    """Exact fixture timestamps; julianday rounds a30min boundary incorrectly."""
+    return (cast(func.strftime("%s", func.substr(column, 1, 19)), BigInteger) * 1_000_000
+            + cast(func.substr(column, 21, 6), Integer))
 
-    Возвращает число сессий. Визитор без visitor_id (старые данные до
-    2026-07-06) сессионизируется по session_id_hash — исторические ряды не
-    проваливаются в ноль. Верхняя граница нужна ночному пересчёту: 60 дней
-    одним проходом (~845k событий + ~255k портретов + все сессии списком)
-    не помещались в память процесса scheduler и ни разу не завершились.
+
+def _session_time_between(column, start, end, minutes: int, dialect: str):
+    """Inclusive logical-session margins; SQLite is only a hermetic fixture."""
+    if dialect == "sqlite":
+        margin = minutes * 60 * 1_000_000
+        return and_(_session_epoch_us(column) >= _session_epoch_us(start) - margin,
+                    _session_epoch_us(column) <= _session_epoch_us(end) + margin)
+    margin = timedelta(minutes=minutes)
+    return and_(column >= start - margin, column <= end + margin)
+
+
+def _session_history_query(db, since: datetime, until: datetime, visitors=None):
+    """Resolve logical ownership in SQL, including history of window visitors.
+
+    A fixed30min halo cannot recover a long continuous chain or a delayed
+    pageviewless tail. SQL examines older raw rows of visitors present in this
+    window; Python never loads that history or an all-visitor dictionary.
     """
-    event_window = [
-        BehaviorEvent.occurred_at >= since,
-        # move нужен антибот-скорингу (ноль движений = сигнал бота).
+    dialect = db.bind.dialect.name
+    key = func.coalesce(func.nullif(BehaviorEvent.visitor_id_hash, ""),
+                        func.nullif(BehaviorEvent.session_id_hash, ""))
+    window_visitors = select(key.label("visitor")).where(
+        BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
+        BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES), key.isnot(None),
+    ).distinct()
+    order = (BehaviorEvent.occurred_at, BehaviorEvent.id)
+    params = BehaviorEvent.params_json
+    is_object = (func.json_type(params) == "object" if dialect == "sqlite"
+                 else func.json_typeof(params) == "object")
+    # Move/click payloads can contain large polylines. Project only six fields
+    # consumed below, while retaining the distinction between dict and null.
+    names = ("ref", "touch", "vw", "synthetic", "active_ms", "scroll_pct")
+    pairs = []
+    for name in names:
+        pairs.extend((name, func.json_extract(params, "$." + name) if dialect == "sqlite" else params[name]))
+    compact_json = (func.json_object(*pairs) if dialect == "sqlite"
+                    else func.json_build_object(*pairs))
+    projected = case((is_object, compact_json), else_=None).label("params_json")
+    ordered = select(
+        key.label("visitor"), BehaviorEvent.id, BehaviorEvent.session_id_hash,
+        BehaviorEvent.event_type, BehaviorEvent.occurred_at, BehaviorEvent.page,
+        BehaviorEvent.user_id, projected,
+        func.lag(BehaviorEvent.occurred_at).over(partition_by=key, order_by=order).label("previous"),
+    ).where(
         BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES),
-    ]
-    if until is not None:
-        event_window.append(BehaviorEvent.occurred_at < until)
-    rows = (await db.execute(
-        select(
-            BehaviorEvent.visitor_id_hash,
-            BehaviorEvent.session_id_hash,
-            BehaviorEvent.event_type,
-            BehaviorEvent.occurred_at,
-            BehaviorEvent.page,
-            BehaviorEvent.user_id,
-            BehaviorEvent.params_json,
-        )
-        .where(*event_window)
-        .order_by(BehaviorEvent.occurred_at)
-    )).all()
-
-    # Портреты сессий: канал/устройство/бот-признак + ym/visitor склейка.
-    # По visitor'у — фолбэк: если конкретная клиентская сессия потеряла
-    # session_start (21% на проде), канал/устройство берём из последнего
-    # известного портрета того же посетителя (backfill каналов, этап 0б).
-    # Только поля, которые читает _finalize_session: ORM-сущности целиком
-    # (UA, referrer, гео, …) весили в разы больше и не нужны.
-    portrait_window = [BehaviorSession.started_at >= since - timedelta(days=1)]
-    if until is not None:
-        portrait_window.append(BehaviorSession.started_at < until)
-    portraits = {}
-    portraits_by_visitor: dict[str, Any] = {}
-    for p in (await db.execute(
-        select(
-            BehaviorSession.session_id_hash, BehaviorSession.visitor_id_hash,
-            BehaviorSession.channel, BehaviorSession.referrer,
-            BehaviorSession.utm_source, BehaviorSession.utm_medium,
-            BehaviorSession.yclid, BehaviorSession.device_type,
-            BehaviorSession.is_webdriver, BehaviorSession.ua_raw,
-            BehaviorSession.touch, BehaviorSession.screen_w, BehaviorSession.screen_h,
-            BehaviorSession.cpu_cores,
-        )
-        .where(*portrait_window)
-        .order_by(BehaviorSession.started_at)
-    )).all():
-        portraits[p.session_id_hash] = p
-        if p.visitor_id_hash:
-            portraits_by_visitor[p.visitor_id_hash] = p
-
-    # Бизнес-события окна: цели по tier'ам, привязка по session_id_hash.
-    goal_window = [FrontendEvent.occurred_at >= since]
-    if until is not None:
-        # +5 минут: цель привязывается к сессии с таким допуском.
-        goal_window.append(FrontendEvent.occurred_at < until + timedelta(minutes=5))
-    goal_rows = (await db.execute(
-        select(FrontendEvent.session_id_hash, FrontendEvent.event_name, FrontendEvent.occurred_at)
-        .where(*goal_window, FrontendEvent.session_id_hash.isnot(None))
-    )).all()
-    goals_by_session: dict[str, list[tuple[datetime, str]]] = defaultdict(list)
-    for sid, name, ts in goal_rows:
-        goals_by_session[sid].append((ts, name))
-
-    by_visitor: dict[str, list] = defaultdict(list)
-    for r in rows:
-        key = r.visitor_id_hash or r.session_id_hash
-        if key:
-            by_visitor[key].append(r)
-
-    # «Новизна»: первый ли это визит посетителя за всю историю.
-    # Только посетители окна: DISTINCT по всей истории (~270k хэшей) каждые
-    # 15 минут — лишняя память и до 30 с запроса.
-    window_visitors = (
-        select(func.coalesce(BehaviorEvent.visitor_id_hash, BehaviorEvent.session_id_hash))
-        .where(*event_window)
+        BehaviorEvent.occurred_at < until,
     )
-    known_visitors: set[str] = set(
-        (await db.execute(
-            select(ServerSession.visitor_id_hash)
-            .where(
-                ServerSession.started_at < since,
-                ServerSession.visitor_id_hash.in_(window_visitors),
-            )
-            .distinct()
-        )).scalars()
+    ordered = (ordered.where(key.in_(window_visitors)) if visitors is None else
+               ordered.join(visitors, key == visitors.c.visitor))
+    ordered = ordered.cte("session_events")
+    gap = (_session_epoch_us(ordered.c.occurred_at) >= _session_epoch_us(ordered.c.previous) + SESSION_GAP_MIN * 60 * 1_000_000
+           if dialect == "sqlite" else ordered.c.occurred_at >= ordered.c.previous + timedelta(minutes=SESSION_GAP_MIN))
+    burst = func.sum(case((or_(ordered.c.previous.is_(None), gap), 1), else_=0)).over(
+        partition_by=ordered.c.visitor, order_by=(ordered.c.occurred_at, ordered.c.id), rows=(None, 0),
     )
+    bursts = select(ordered, burst.label("burst")).cte("session_bursts")
+    burst_key = (bursts.c.visitor, bursts.c.burst)
+    marked = select(
+        bursts,
+        func.min(bursts.c.occurred_at).over(partition_by=burst_key).label("burst_start"),
+        func.max(case((bursts.c.event_type == "pageview", 1), else_=0)).over(partition_by=burst_key).label("has_pageview"),
+    ).cte("session_burst_marks")
+    logical_start = func.max(case((marked.c.has_pageview == 1, marked.c.burst_start), else_=None)).over(
+        partition_by=marked.c.visitor, order_by=(marked.c.occurred_at, marked.c.id), rows=(None, 0),
+    )
+    return select(marked.c.visitor, marked.c.id, marked.c.session_id_hash,
+        marked.c.event_type, marked.c.occurred_at, marked.c.page, marked.c.user_id,
+        marked.c.params_json, logical_start.label("logical_start"))
 
-    gap = timedelta(minutes=SESSION_GAP_MIN)
-    # Частота сессий per-visitor нужна антибот-скорингу — считаем чанки заранее.
-    visitor_session_counts: dict[tuple[str, date], int] = defaultdict(int)
-    visitor_chunks: list[tuple[str, list]] = []
-    for visitor, evs in by_visitor.items():
-        chunks: list[list] = []
-        cur: list = []
-        for ev in evs:
-            if cur and ev.occurred_at - cur[-1].occurred_at >= gap:
-                chunks.append(cur)
-                cur = []
-            cur.append(ev)
-        if cur:
-            chunks.append(cur)
-        # Чанк без единого pageview — не новая сессия, а доигрывание
-        # предыдущей: dwell/click, доставленные после 30-мин паузы (вкладка
-        # лежала в фоне). Сливаем назад; головной хвост (его сессия началась
-        # до окна пересчёта) отбрасываем — иначе визиты задваиваются
-        # относительно Метрики (у неё визит без просмотра не существует).
-        merged: list[list] = []
-        for chunk in chunks:
-            if any(e.event_type == "pageview" for e in chunk):
-                merged.append(chunk)
-            elif merged:
-                merged[-1].extend(chunk)
-        for chunk in merged:
-            visitor_session_counts[(visitor, msk_day(chunk[0].occurred_at))] += 1
-        visitor_chunks.extend((visitor, chunk) for chunk in merged)
 
-    # Самоисключение (этап 3б): сессии владельца/админов помечаются
-    # is_internal и не попадают в витрины (но не считаются ботами).
+async def _prepare_session_history(db, since: datetime, until: datetime, temporary: list):
+    """Indexed SQL ownership stages have fresh stats even for cold raw tables.
+
+    Historical work lives in PostgreSQL temporary storage, not Python lists.
+    ANALYZE touches only these private transaction-scoped stages.
+    """
+    visitors = Table("sessionize_visitors_" + uuid4().hex, MetaData(),
+        Column("visitor", BehaviorEvent.visitor_id_hash.type, primary_key=True),
+        prefixes=["TEMPORARY"], postgresql_on_commit="DROP")
+    temporary.append(visitors)
+    await db.execute(CreateTable(visitors))
+    key = func.coalesce(func.nullif(BehaviorEvent.visitor_id_hash, ""),
+                        func.nullif(BehaviorEvent.session_id_hash, ""))
+    await db.execute(visitors.insert().from_select(["visitor"], select(key).where(
+        BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
+        BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES), key.isnot(None),
+    ).distinct()))
+    if db.bind.dialect.name == "postgresql":
+        await db.execute(text("ANALYZE " + visitors.name))
+    history = Table("sessionize_history_" + uuid4().hex, MetaData(),
+        Column("visitor", BehaviorEvent.visitor_id_hash.type),
+        *(Column(name, BehaviorEvent.__table__.c[name].type) for name in
+          ("id", "session_id_hash", "event_type", "occurred_at", "page", "user_id", "params_json")),
+        Column("logical_start", BehaviorEvent.occurred_at.type),
+        prefixes=["TEMPORARY"], postgresql_on_commit="DROP")
+    temporary.append(history)
+    await db.execute(CreateTable(history))
+    await db.execute(history.insert().from_select(
+        [c.name for c in history.columns], _session_history_query(db, since, until, visitors)))
+    await db.execute(CreateIndex(Index("ix_" + history.name, history.c.visitor, history.c.logical_start)))
+    if db.bind.dialect.name == "postgresql":
+        await db.execute(text("ANALYZE " + history.name))
+    return history
+
+
+def _session_source_query(db, since: datetime, until: datetime, events=None):
+    """Join compact logical-session bounds, goals and portraits in SQL."""
+    dialect = db.bind.dialect.name
+    if events is None:
+        events = _session_history_query(db, since, until).cte("logical_session_events")
+    keys = (events.c.visitor, events.c.logical_start)
+    all_bounds = select(
+        *keys, func.max(events.c.occurred_at).label("logical_end"),
+    ).where(events.c.logical_start.isnot(None)).group_by(*keys).cte("all_session_bounds")
+    day = msk_day_expr(all_bounds.c.logical_start, dialect)
+    counts = select(
+        all_bounds,
+        func.count().over(partition_by=(all_bounds.c.visitor, day)).label("visitor_sessions"),
+        func.min(all_bounds.c.logical_start).over(partition_by=all_bounds.c.visitor).label("first_start"),
+    ).cte("session_day_counts")
+    bounds = select(counts).where(counts.c.logical_end >= since).cte("touched_session_bounds")
+    sids = select(*keys, events.c.session_id_hash).join(
+        bounds, and_(events.c.visitor == bounds.c.visitor, events.c.logical_start == bounds.c.logical_start),
+    ).where(events.c.session_id_hash.isnot(None), events.c.session_id_hash != "").distinct().cte("logical_session_client_ids")
+    from app.services.goal_taxonomy import explicit_events
+    micro_names = sorted(name for name in explicit_events() if tier_for_event(name) == TIER_MICRO)
+    macro_names = sorted(name for name in explicit_events() if tier_for_event(name) == TIER_MACRO)
+    goals = select(
+        sids.c.visitor, sids.c.logical_start,
+        func.sum(case((FrontendEvent.event_name.in_(micro_names), 1), else_=0)).label("micro_goals"),
+        func.sum(case((FrontendEvent.event_name.in_(macro_names), 1), else_=0)).label("macro_goals"),
+    ).join(bounds, and_(sids.c.visitor == bounds.c.visitor, sids.c.logical_start == bounds.c.logical_start)).join(
+        FrontendEvent, and_(FrontendEvent.session_id_hash == sids.c.session_id_hash,
+            _session_time_between(FrontendEvent.occurred_at, bounds.c.logical_start, bounds.c.logical_end, 5, dialect)),
+    ).group_by(sids.c.visitor, sids.c.logical_start).cte("logical_session_goals")
+    fallback = select(BehaviorSession.session_id_hash).where(
+        BehaviorSession.visitor_id_hash == bounds.c.visitor,
+        and_(
+            BehaviorSession.started_at <= bounds.c.logical_end,
+            (_session_epoch_us(BehaviorSession.started_at) >= _session_epoch_us(bounds.c.logical_start) - 86_400_000_000
+             if dialect == "sqlite" else BehaviorSession.started_at >= bounds.c.logical_start - timedelta(days=1)),
+        ),
+    ).order_by(BehaviorSession.started_at.desc(), BehaviorSession.session_id_hash).limit(1).correlate(bounds).scalar_subquery()
+    earlier = select(ServerSession.id).where(
+        ServerSession.visitor_id_hash == bounds.c.visitor, ServerSession.started_at < bounds.c.first_start,
+    ).exists()
+    details = select(bounds, fallback.label("fallback_sid"),
+        and_(bounds.c.logical_start == bounds.c.first_start, ~earlier).label("is_new_visitor"),
+    ).cte("session_attribution").prefix_with("MATERIALIZED", dialect="postgresql")
+    return select(
+        events, details.c.logical_end, details.c.visitor_sessions, details.c.is_new_visitor,
+        details.c.fallback_sid, func.coalesce(goals.c.micro_goals, 0).label("micro_goals"),
+        func.coalesce(goals.c.macro_goals, 0).label("macro_goals"),
+    ).join(details, and_(events.c.visitor == details.c.visitor, events.c.logical_start == details.c.logical_start)).outerjoin(
+        goals, and_(goals.c.visitor == details.c.visitor, goals.c.logical_start == details.c.logical_start),
+    ).order_by(events.c.visitor, events.c.logical_start, events.c.occurred_at, events.c.id)
+
+
+class _SessionAccumulator:
+    """Constant-size sufficient statistics; no raw event list or SID set."""
+    def __init__(self, event, portraits):
+        self.visitor = event.visitor
+        self.started = event.logical_start
+        self.ended = event.logical_end
+        self.is_new = event.is_new_visitor
+        self.visitor_sessions = event.visitor_sessions
+        self.goals = (event.micro_goals, event.macro_goals)
+        self.fallback = portraits.get(event.fallback_sid)
+        self.own = None
+        self.first_pv = None
+        self.entry = self.exit = self.user_id = None
+        self.counts = defaultdict(int)
+        self.active_ms = self.scroll = self.synthetic = 0
+        self.admin_page = False
+
+    def add(self, event, portraits):
+        self.counts[event.event_type] += 1
+        params = event.params_json
+        if isinstance(params, str):
+            params = json.loads(params)
+        if isinstance(params, dict):
+            if event.event_type == "dwell":
+                self.active_ms += int(params.get("active_ms") or 0)
+                self.scroll = max(self.scroll, int(params.get("scroll_pct") or 0))
+            if event.event_type == "click" and params.get("synthetic"):
+                self.synthetic += 1
+            if event.event_type == "pageview" and self.first_pv is None:
+                self.first_pv = params
+        candidate = portraits.get(event.session_id_hash)
+        if self.own is None and candidate is not None and candidate.started_at <= self.ended:
+            self.own = candidate
+        if event.page:
+            self.entry = self.entry or event.page
+            self.exit = event.page
+            self.admin_page |= event.page.startswith("/admin")
+        self.user_id = self.user_id or event.user_id
+
+    def finish(self, admin_users, admin_visitors):
+        # A fixed-size adapter keeps the established finalizer/score semantics.
+        def event(kind, *, page=None, params=None, weight=1, sid=None, user=None, ended=False):
+            return SimpleNamespace(event_type=kind, occurred_at=self.ended if ended else self.started,
+                                   page=page, params_json=params, weight=weight, session_id_hash=sid, user_id=user)
+        sid = self.own.session_id_hash if self.own else None
+        evs = [event("boundary", page=self.entry, sid=sid, user=self.user_id),
+               event("pageview", params=self.first_pv, weight=self.counts["pageview"]),
+               event("click", params={"synthetic": True}, weight=self.synthetic),
+               event("click", weight=self.counts["click"] - self.synthetic),
+               event("move", weight=self.counts["move"]),
+               event("dwell", params={"active_ms": self.active_ms, "scroll_pct": self.scroll}),
+               event("boundary", page=self.exit, ended=True)]
+        row = _finalize_session(self.visitor, evs, {sid: self.own} if self.own else {}, {},
+            set() if self.is_new else {self.visitor}, self.visitor_sessions,
+            fallback_portrait=self.fallback, goal_counts=self.goals)
+        row["is_internal"] = self.admin_page or self.visitor in admin_visitors or self.user_id in admin_users
+        return row
+
+
+async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
+    """Recompute touched logical sessions; return starts owned by [since,until).
+
+    SQL resolves historical continuity for window visitors. Python uses source
+    and write batches of at most 5k rows, portrait lookup keys of at most 10k
+    SIDs and one compact accumulator, even for a chain spanning many windows.
+    Existing admin identity sets are separate allocations, not covered by this
+    batch bound. Left-owner rows are repaired atomically with this window;
+    their day remains the original MSK start day.
+    """
     from app.services.analytics_marts import admin_identity
-    admin_user_ids, admin_visitors = await admin_identity(db)
+    stop = until or _utcnow()
+    if stop <= since:
+        return 0
+    stage = Table("sessionize_stage_" + uuid4().hex, MetaData(),
+                  *(Column(c.name, c.type, nullable=c.nullable) for c in ServerSession.__table__.columns if c.name != "id"),
+                  prefixes=["TEMPORARY"], postgresql_on_commit="DROP")
+    temporary = [stage]
+    try:
+        await db.execute(CreateTable(stage))
+        history = await _prepare_session_history(db, since, stop, temporary)
+        admin_users, admin_visitors = await admin_identity(db)
+        result = await db.stream(_session_source_query(db, since, stop, history).execution_options(yield_per=_STREAM_BATCH))
+        current = None
+        output = []
+        owned = 0
+        try:
+            async for part in result.partitions(_STREAM_BATCH):
+                needed = {sid for event in part for sid in (event.session_id_hash, event.fallback_sid) if sid}
+                portraits = {p.session_id_hash: p for p in (await db.execute(select(
+                    BehaviorSession.session_id_hash, BehaviorSession.started_at, BehaviorSession.channel, BehaviorSession.referrer,
+                    BehaviorSession.utm_source, BehaviorSession.utm_medium, BehaviorSession.yclid,
+                    BehaviorSession.device_type, BehaviorSession.is_webdriver, BehaviorSession.ua_raw,
+                    BehaviorSession.touch, BehaviorSession.screen_w, BehaviorSession.screen_h, BehaviorSession.cpu_cores,
+                ).where(BehaviorSession.session_id_hash.in_(needed)))).all()} if needed else {}
+                for event in part:
+                    key = (event.visitor, event.logical_start)
+                    if current is None or (current.visitor, current.started) != key:
+                        if current is not None:
+                            output.append(current.finish(admin_users, admin_visitors))
+                            owned += current.started >= since
+                        current = _SessionAccumulator(event, portraits)
+                    current.add(event, portraits)
+                    if len(output) >= _STREAM_BATCH:
+                        await db.execute(stage.insert(), output)
+                        output.clear()
+            if current is not None:
+                output.append(current.finish(admin_users, admin_visitors))
+                owned += current.started >= since
+            if output:
+                await db.execute(stage.insert(), output)
+        finally:
+            await result.close()
+        # Delete old splits and repair left ownership, without erasing unrelated
+        # visitors or later sessions beyond this explicit source cutoff.
+        carried = select(stage.c.visitor_id_hash, func.min(stage.c.started_at).label("first_start")).where(
+            stage.c.started_at < since,
+        ).group_by(stage.c.visitor_id_hash).subquery()
+        await db.execute(delete(ServerSession).where(
+            ServerSession.started_at >= since, ServerSession.started_at < stop,
+        ))
+        matches = and_(ServerSession.visitor_id_hash == carried.c.visitor_id_hash,
+                       ServerSession.started_at >= carried.c.first_start)
+        if db.bind.dialect.name == "sqlite":
+            matches = select(carried.c.visitor_id_hash).where(matches).exists()
+        await db.execute(delete(ServerSession).where(ServerSession.started_at < since, matches))
+        columns = [c.name for c in stage.columns]
+        await db.execute(ServerSession.__table__.insert().from_select(columns, select(*stage.columns)))
+        # asyncpg retains the exhausted server portal until transaction end.
+        # PostgreSQL closes it before ON COMMIT DROP; explicit DROP of the
+        # streamed history table would fail with ObjectInUseError here.
+        if db.bind.dialect.name == "sqlite":
+            for table in reversed(temporary):
+                await db.execute(DropTable(table))
+        await db.commit()
+        return owned
+    except BaseException:
+        await db.rollback()
+        # PostgreSQL rolls back CREATE/ON COMMIT DROP itself. SQLite's DDL
+        # fixture may retain its temporary table on a reused pooled connection.
+        if db.bind.dialect.name == "sqlite":
+            try:
+                for table in reversed(temporary):
+                    await db.execute(DropTable(table, if_exists=True))
+                await db.commit()
+            except Exception:
+                await db.rollback()
+        raise
 
-    sessions: list[dict[str, Any]] = []
-    for visitor, chunk in visitor_chunks:
-        row = _finalize_session(
-            visitor, chunk, portraits, goals_by_session, known_visitors,
-            visitor_session_counts[(visitor, msk_day(chunk[0].occurred_at))],
-            fallback_portrait=portraits_by_visitor.get(visitor),
-        )
-        row["is_internal"] = (
-            visitor in admin_visitors
-            or (row["user_id"] in admin_user_ids if row["user_id"] else False)
-            or any((e.page or "").startswith("/admin") for e in chunk)
-        )
-        sessions.append(row)
-        known_visitors.add(visitor)
-
-    session_window = [ServerSession.started_at >= since]
-    if until is not None:
-        session_window.append(ServerSession.started_at < until)
-    await db.execute(delete(ServerSession).where(*session_window))
-    if sessions:
-        await db.execute(ServerSession.__table__.insert(), sessions)
-    await db.commit()
-    return len(sessions)
 
 
 def _infer_from_pageviews(evs) -> tuple[str | None, str | None, bool]:
@@ -266,15 +429,15 @@ def _infer_from_pageviews(evs) -> tuple[str | None, str | None, bool]:
 
 
 def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
-                      visitor_sessions: int = 1, fallback_portrait=None) -> dict[str, Any]:
+                      visitor_sessions: int = 1, fallback_portrait=None, goal_counts=None) -> dict[str, Any]:
     from app.services.bot_score import BOT_THRESHOLD, SessionSignals, score_session
 
     started, ended = evs[0].occurred_at, evs[-1].occurred_at
-    pageviews = sum(1 for e in evs if e.event_type == "pageview")
-    clicks = sum(1 for e in evs if e.event_type == "click")
-    moves = sum(1 for e in evs if e.event_type == "move")
+    pageviews = sum(getattr(e, "weight", 1) for e in evs if e.event_type == "pageview")
+    clicks = sum(getattr(e, "weight", 1) for e in evs if e.event_type == "click")
+    moves = sum(getattr(e, "weight", 1) for e in evs if e.event_type == "move")
     synthetic_clicks = sum(
-        1 for e in evs
+        getattr(e, "weight", 1) for e in evs
         if e.event_type == "click" and isinstance(e.params_json, dict) and e.params_json.get("synthetic")
     )
     active_ms = 0
@@ -332,6 +495,9 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
                     micro += 1
                 elif tier == TIER_MACRO:
                     macro += 1
+
+    if goal_counts is not None:
+        micro, macro = goal_counts
 
     engaged = active_ms > 15_000 or max_scroll > 50 or pageviews >= 2
     user_id = next((e.user_id for e in evs if e.user_id), None)

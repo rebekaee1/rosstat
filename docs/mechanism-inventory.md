@@ -14,9 +14,9 @@
 - Jobs: **39**
 - Middleware: **5**
 - Registry declarations: **843**
-- Registry references: **1600**
+- Registry references: **1602**
 - Migration operations: **348**
-- Candidate effects: **1906**
+- Candidate effects: **1933**
 - Unresolved syntax: **0**
 - MCP tools: **7**
 
@@ -88,7 +88,7 @@
 | GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:575](../backend/app/api/regions.py#L575) |
 | GET | /api/v1/admin/bi/dashboard | app.api.admin_bi.bi_dashboard | [backend/app/api/admin_bi.py:216](../backend/app/api/admin_bi.py#L216) |
 | GET | /api/v1/admin/bi/slices/meta | app.api.admin_bi.slices_meta | [backend/app/api/admin_bi.py:275](../backend/app/api/admin_bi.py#L275) |
-| GET | /api/v1/admin/bi/slices | app.api.admin_bi.slices_query | [backend/app/api/admin_bi.py:291](../backend/app/api/admin_bi.py#L291) |
+| GET | /api/v1/admin/bi/slices | app.api.admin_bi.slices_query | [backend/app/api/admin_bi.py:299](../backend/app/api/admin_bi.py#L299) |
 | GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:870](../backend/app/api/world.py#L870) |
 | GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:971](../backend/app/api/world.py#L971) |
 | GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1003](../backend/app/api/world.py#L1003) |
@@ -1879,16 +1879,16 @@ Relationships: `[]`
 | app.services.cbr_trade_services_monthly_parser._MONTH_RU_SHORT | Dict | 'янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек' | [backend/app/services/cbr_trade_services_monthly_parser.py:43](../backend/app/services/cbr_trade_services_monthly_parser.py#L43) |
 | app.services.cbr_trade_services_monthly_parser._TARGET_LABEL | Dict | 'services-exports-monthly', 'services-imports-monthly' | [backend/app/services/cbr_trade_services_monthly_parser.py:48](../backend/app/services/cbr_trade_services_monthly_parser.py#L48) |
 | app.services.cbr_trade_services_monthly_parser._HEADER_STR_RE | Call | computed source expression | [backend/app/services/cbr_trade_services_monthly_parser.py:53](../backend/app/services/cbr_trade_services_monthly_parser.py#L53) |
-| app.services.clickhouse_sync._DDL | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:51](../backend/app/services/clickhouse_sync.py#L51) |
-| app.services.clickhouse_sync._COLUMN_GUARDS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:106](../backend/app/services/clickhouse_sync.py#L106) |
-| app.services.clickhouse_sync._EVENT_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:167](../backend/app/services/clickhouse_sync.py#L167) |
-| app.services.clickhouse_sync._FRONTEND_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:172](../backend/app/services/clickhouse_sync.py#L172) |
-| app.services.clickhouse_sync._VISIT_JSON_KEYS | Tuple | sequence/source expression | [backend/app/services/clickhouse_sync.py:248](../backend/app/services/clickhouse_sync.py#L248) |
-| app.services.clickhouse_sync._SESSION_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:276](../backend/app/services/clickhouse_sync.py#L276) |
-| app.services.clickhouse_sync._SERVER_SESSION_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:282](../backend/app/services/clickhouse_sync.py#L282) |
-| app.services.clickhouse_sync._VISIT_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:289](../backend/app/services/clickhouse_sync.py#L289) |
-| app.services.clickhouse_sync.SLICE_METRICS | Dict | 'sessions', 'visitors', 'pageviews', 'clicks', 'engaged_sessions', 'micro_goals', 'macro_goals', 'metrika_visits', 'metrika_goal_visits' | [backend/app/services/clickhouse_sync.py:484](../backend/app/services/clickhouse_sync.py#L484) |
-| app.services.clickhouse_sync.SLICE_DIMENSIONS | Dict | 'server_sessions', 'behavior_events', 'raw_metrika_visits' | [backend/app/services/clickhouse_sync.py:496](../backend/app/services/clickhouse_sync.py#L496) |
+| app.services.clickhouse_sync._DDL | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:63](../backend/app/services/clickhouse_sync.py#L63) |
+| app.services.clickhouse_sync._COLUMN_GUARDS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:118](../backend/app/services/clickhouse_sync.py#L118) |
+| app.services.clickhouse_sync._EVENT_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:251](../backend/app/services/clickhouse_sync.py#L251) |
+| app.services.clickhouse_sync._FRONTEND_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:256](../backend/app/services/clickhouse_sync.py#L256) |
+| app.services.clickhouse_sync._VISIT_JSON_KEYS | Tuple | sequence/source expression | [backend/app/services/clickhouse_sync.py:344](../backend/app/services/clickhouse_sync.py#L344) |
+| app.services.clickhouse_sync._SESSION_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:372](../backend/app/services/clickhouse_sync.py#L372) |
+| app.services.clickhouse_sync._SERVER_SESSION_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:378](../backend/app/services/clickhouse_sync.py#L378) |
+| app.services.clickhouse_sync._VISIT_COLUMNS | List | sequence/source expression | [backend/app/services/clickhouse_sync.py:385](../backend/app/services/clickhouse_sync.py#L385) |
+| app.services.clickhouse_sync.SLICE_METRICS | Dict | 'sessions', 'visitors', 'pageviews', 'clicks', 'engaged_sessions', 'micro_goals', 'macro_goals', 'metrika_visits', 'metrika_goal_visits' | [backend/app/services/clickhouse_sync.py:604](../backend/app/services/clickhouse_sync.py#L604) |
+| app.services.clickhouse_sync.SLICE_DIMENSIONS | Dict | 'server_sessions', 'behavior_events', 'raw_metrika_visits' | [backend/app/services/clickhouse_sync.py:616](../backend/app/services/clickhouse_sync.py#L616) |
 | app.services.demand_router._SYNONYMS | Tuple | sequence/source expression | [backend/app/services/demand_router.py:36](../backend/app/services/demand_router.py#L36) |
 | app.services.demand_router._STOP_TOKENS | Call | computed source expression | [backend/app/services/demand_router.py:107](../backend/app/services/demand_router.py#L107) |
 | app.services.demand_router._YEAR_RE | Call | computed source expression | [backend/app/services/demand_router.py:113](../backend/app/services/demand_router.py#L113) |
@@ -2227,9 +2227,9 @@ Relationships: `[]`
 | app.services.world_view_modes._TRANSFORMS | Dict | 'level', 'mom', 'mom_abs', 'qoq', 'qoq_abs', 'yoy', 'yoy_abs', 'index_first', 'avg_quarter', 'avg_year' | [backend/app/services/world_view_modes.py:139](../backend/app/services/world_view_modes.py#L139) |
 | app.services.yandex_clean_param.CLEAN_PARAM_RULES | Tuple | sequence/source expression | [backend/app/services/yandex_clean_param.py:14](../backend/app/services/yandex_clean_param.py#L14) |
 | app.services.yandex_clean_param.CONTENT_PARAMS | Call | computed source expression | [backend/app/services/yandex_clean_param.py:25](../backend/app/services/yandex_clean_param.py#L25) |
-| app.tasks.analytics_rollups._SESSION_EVENT_TYPES | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:49](../backend/app/tasks/analytics_rollups.py#L49) |
-| app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:53](../backend/app/tasks/analytics_rollups.py#L53) |
-| app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:60](../backend/app/tasks/analytics_rollups.py#L60) |
+| app.tasks.analytics_rollups._SESSION_EVENT_TYPES | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:53](../backend/app/tasks/analytics_rollups.py#L53) |
+| app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:57](../backend/app/tasks/analytics_rollups.py#L57) |
+| app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:64](../backend/app/tasks/analytics_rollups.py#L64) |
 | app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:33](../backend/app/tasks/scheduler.py#L33) |
 | app.tasks.scheduler.STALENESS_SLA_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/tasks/scheduler.py:454](../backend/app/tasks/scheduler.py#L454) |
 | app.tasks.ticker_worker._SERIES_TICKER_SPECS | Tuple | sequence/source expression | [backend/app/tasks/ticker_worker.py:43](../backend/app/tasks/ticker_worker.py#L43) |

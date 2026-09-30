@@ -6,8 +6,13 @@
 снести и налить заново полным ресинком (`resync()`), поэтому том
 clickhouse_data в бэкапы не входит.
 
-Синк — APScheduler каждые 15 минут (main.py): батчи по id-курсору
-(курсоры в state-Redis DB 1), события append-only. raw_metrika_visits —
+Синк — APScheduler каждые 15 минут (main.py): ограниченные батчи по
+v2 id-курсору в state-Redis. SHARE NOWAIT фиксирует безопасный committed
+ceiling при READ COMMITTED и возрастающей uncached sequence; занятая
+таблица откладывается. Старые курсоры не используются: история постепенно
+перечитывается для восстановления прежних пропусков. Повторная вставка в
+MergeTree может физически дублировать события; публичные срезы считают
+уникальные id. raw_metrika_visits —
 перезаливка последних 2 суток, ReplacingMergeTree дедуплицирует по visit_id.
 Идемпотентный DDL выполняется на старте каждого прогона (CREATE TABLE IF NOT
 EXISTS) — новая таблица появляется без ручных миграций CH; для колонок,
@@ -23,10 +28,12 @@ import asyncio
 import functools
 import json
 import logging
+import re
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
 
 from app.config import settings
 from app.database import analytics_session
@@ -41,9 +48,14 @@ from app.models import (
 
 logger = logging.getLogger(__name__)
 
-_CURSOR_KEY = "fe:ch:cursor:{table}"
-_LAST_SYNC_KEY = "fe:ch:last_sync_at"
+_CURSOR_KEY = "fe:ch:cursor:v2:{table}"
+_LAST_SYNC_KEY = "fe:ch:last_sync_at:v2"
+_EVENT_PROGRESS_KEY = "fe:ch:events-progress:v2"
+_RESYNC_PENDING_KEY = "fe:ch:resync_pending:v2"
 _BATCH = 20_000
+# Ограничение одного обычного прогона: не больше 80k строк каждой таблицы.
+# Полный historical replay продолжается по сохранённому курсору следующих jobs.
+_EVENT_BATCHES_PER_TABLE = 4
 # Перезаливаемые слои (сессии/визиты окна) — потоком по столько строк.
 _REPLACING_BATCH = 5_000
 
@@ -139,6 +151,78 @@ async def _cursor_set(table: str, value: int) -> None:
     await r.set(_CURSOR_KEY.format(table=table), str(value))
 
 
+async def event_sync_progress() -> dict[str, Any]:
+    """Captured committed ceilings and bounded-copy progress, not wall-clock completeness."""
+    from app.core.cache import get_state_redis
+    redis = await get_state_redis()
+    raw = await redis.get(_EVENT_PROGRESS_KEY)
+    return json.loads(raw) if raw else {}
+
+
+async def resync_pending() -> bool:
+    """Durable known-maintenance state; cleared only after a complete resync."""
+    from app.core.cache import get_state_redis
+    redis = await get_state_redis()
+    return bool(await redis.get(_RESYNC_PENDING_KEY))
+
+
+async def _event_ceiling(model) -> int:
+    """Take a short INSERT barrier; release PG before Redis or CH I/O.
+
+    INSERT defaults allocate IDs only under the table's ROW EXCLUSIVE lock.
+    SHARE NOWAIT therefore either observes all preceding writer commits or
+    defers immediately, without queuing behind an open telemetry transaction.
+    A newly arriving writer can briefly wait while the acquired barrier reads
+    metadata/max(id). This relies on ascending CACHE 1, noncycling automatic
+    IDs and READ COMMITTED; manual lower-ID writes/sequence resets are outside
+    the append contract, and detectable schema/config mismatches fail closed.
+    """
+    table = model.__tablename__
+    if table not in ("behavior_events", "frontend_events"):
+        raise ValueError("Unknown event replication source")
+    async with analytics_session() as db:
+        if db.bind is not None and db.bind.dialect.name == "postgresql":
+            connection = await db.connection()
+            if await connection.get_isolation_level() != "READ COMMITTED":
+                raise RuntimeError("Event replication requires READ COMMITTED")
+            await db.execute(text(f"LOCK TABLE {table} IN SHARE MODE NOWAIT"))
+            info = (await db.execute(text("""
+                SELECT pg_get_expr(d.adbin, d.adrelid) AS id_default,
+                       a.attidentity, s.seqcache, s.seqcycle, s.seqincrement,
+                       s.seqmin, s.seqrelid::oid AS sequence_oid
+                FROM pg_attribute a
+                LEFT JOIN pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
+                LEFT JOIN pg_sequence s ON s.seqrelid = pg_get_serial_sequence(:table, 'id')::regclass
+                WHERE a.attrelid = to_regclass(:table) AND a.attname = 'id'
+            """), {"table": table})).mappings().one()
+            identity = info["attidentity"] in ("a", "d")
+            default = re.fullmatch(r"nextval\('([^']+)'::regclass\)", info["id_default"] or "")
+            default_oid = await db.scalar(text("SELECT to_regclass(:name)::oid"), {"name": default[1]}) if default else None
+            if (
+                not (identity or default_oid == info["sequence_oid"] and default_oid is not None)
+                or info["seqcache"] != 1 or info["seqcycle"]
+                or info["seqincrement"] != 1 or info["seqmin"] < 1
+            ):
+                raise RuntimeError(f"Unsafe {table} sequence/default for event replication")
+        # READ COMMITTED obtains this statement's snapshot after the barrier.
+        ceiling = int(await db.scalar(select(func.max(model.id))) or 0)
+        if db.bind is not None and db.bind.dialect.name == "postgresql" and ceiling:
+            allocated = await db.scalar(text("SELECT pg_sequence_last_value(CAST(:sequence_oid AS oid)::regclass)"), {"sequence_oid": info["sequence_oid"]})
+            if allocated is None or allocated < ceiling:
+                raise RuntimeError(f"Unsafe {table} sequence reset below committed IDs")
+        return ceiling
+
+
+async def _ceiling_or_deferred(model) -> int | None:
+    try:
+        return await _event_ceiling(model)
+    except DBAPIError as exc:
+        if getattr(exc.orig, "sqlstate", None) != "55P03":
+            raise
+        logger.info("ClickHouse event source deferred: active %s writer", model.__tablename__)
+        return None
+
+
 async def last_sync_age_minutes() -> int | None:
     from app.core.cache import get_state_redis
     r = await get_state_redis()
@@ -182,8 +266,12 @@ async def _sync_events(ch) -> int:
     весили на порядок больше кортежей.
     """
     total = 0
+    progress = {}
     cursor = await _cursor_get("behavior_events")
-    while True:
+    ceiling = await _ceiling_or_deferred(BehaviorEvent)
+    for _ in range(_EVENT_BATCHES_PER_TABLE):
+        if ceiling is None or cursor >= ceiling:
+            break
         async with analytics_session() as db:
             rows = (await db.execute(
                 select(
@@ -193,7 +281,7 @@ async def _sync_events(ch) -> int:
                     BehaviorEvent.element_path, BehaviorEvent.element_text,
                     BehaviorEvent.is_dead, BehaviorEvent.is_rage,
                     BehaviorEvent.params_json, BehaviorEvent.occurred_at,
-                ).where(BehaviorEvent.id > cursor)
+                ).where(BehaviorEvent.id > cursor, BehaviorEvent.id <= ceiling)
                 .order_by(BehaviorEvent.id).limit(_BATCH)
             )).all()
         if not rows:
@@ -212,9 +300,13 @@ async def _sync_events(ch) -> int:
         await _cursor_set("behavior_events", cursor)
         if n < _BATCH:
             break
+    progress["behavior_events"] = {"cursor": cursor, "ceiling": ceiling, "caught_up": ceiling is not None and cursor >= ceiling, "deferred": ceiling is None}
 
     cursor = await _cursor_get("frontend_events")
-    while True:
+    ceiling = await _ceiling_or_deferred(FrontendEvent)
+    for _ in range(_EVENT_BATCHES_PER_TABLE):
+        if ceiling is None or cursor >= ceiling:
+            break
         async with analytics_session() as db:
             rows = (await db.execute(
                 select(
@@ -222,7 +314,7 @@ async def _sync_events(ch) -> int:
                     FrontendEvent.session_id_hash, FrontendEvent.visitor_id_hash,
                     FrontendEvent.user_id, FrontendEvent.authed, FrontendEvent.url,
                     FrontendEvent.params_json, FrontendEvent.occurred_at,
-                ).where(FrontendEvent.id > cursor)
+                ).where(FrontendEvent.id > cursor, FrontendEvent.id <= ceiling)
                 .order_by(FrontendEvent.id).limit(_BATCH)
             )).all()
         if not rows:
@@ -240,6 +332,10 @@ async def _sync_events(ch) -> int:
         await _cursor_set("frontend_events", cursor)
         if n < _BATCH:
             break
+    progress["frontend_events"] = {"cursor": cursor, "ceiling": ceiling, "caught_up": ceiling is not None and cursor >= ceiling, "deferred": ceiling is None}
+    from app.core.cache import get_state_redis
+    redis = await get_state_redis()
+    await redis.set(_EVENT_PROGRESS_KEY, json.dumps(progress))
     return total
 
 
@@ -429,6 +525,9 @@ async def clickhouse_sync_job() -> None:
         return
     loop = asyncio.get_running_loop()
     try:
+        if await resync_pending():
+            logger.info("ClickHouse sync deferred: incomplete operator resync")
+            return
         ch = await loop.run_in_executor(None, _client)
         await loop.run_in_executor(None, _ensure_schema, ch)
     except Exception as exc:  # noqa: BLE001 — мягкая деградация
@@ -439,7 +538,9 @@ async def clickhouse_sync_job() -> None:
         n_repl = await _sync_replacing(ch)
         from app.core.cache import get_state_redis
         r = await get_state_redis()
-        await r.set(_LAST_SYNC_KEY, datetime.now(timezone.utc).replace(tzinfo=None).isoformat())
+        progress = await event_sync_progress()
+        if progress and all(part["caught_up"] for part in progress.values()) and not await resync_pending():
+            await r.set(_LAST_SYNC_KEY, datetime.now(timezone.utc).replace(tzinfo=None).isoformat())
         if n_events or n_repl:
             logger.info("ClickHouse sync: %d event rows, %d replacing rows", n_events, n_repl)
     except Exception:
@@ -452,23 +553,42 @@ async def clickhouse_sync_job() -> None:
 
 
 async def resync() -> None:
-    """Полный ресинк с нуля: сброс курсоров + очистка таблиц CH + вся история."""
+    """Explicit full rebuild, streaming repeated bounded pages until caught up.
+
+    Unlike an ordinary job this operator action traverses the whole history.
+    A busy PostgreSQL writer defers completion rather than advertising a fresh
+    heartbeat over a partial rebuild. Durable resync_pending blocks ordinary
+    jobs and slice reads until a successful operator retry. Coordinate this
+    action with the scheduler: the marker is not a cross-process fencing lease.
+    """
     loop = asyncio.get_running_loop()
     ch = await loop.run_in_executor(None, _client)
     try:
+        from app.core.cache import get_state_redis
+        r = await get_state_redis()
+        await r.set(_RESYNC_PENDING_KEY, "1")
+        await r.delete(_LAST_SYNC_KEY, _EVENT_PROGRESS_KEY)
+        # Reset both before the first destructive operation. Failure midway
+        # must never leave an empty CH event table paired with an old cursor.
+        for table in ("behavior_events", "frontend_events"):
+            await _cursor_set(table, 0)
         # DROP+CREATE (не TRUNCATE): ресинк подхватывает и изменения схемы
         # (новые колонки вроде bot_score/is_internal) без ручных ALTER.
         for table in ("behavior_events", "frontend_events", "behavior_sessions",
                       "server_sessions", "raw_metrika_visits", "identity_links"):
             await loop.run_in_executor(None, ch.command, f"DROP TABLE IF EXISTS {table}")
         await loop.run_in_executor(None, _ensure_schema, ch)
-        for table in ("behavior_events", "frontend_events"):
-            await _cursor_set(table, 0)
-        n_events = await _sync_events(ch)
+        n_events = 0
+        while True:
+            n_events += await _sync_events(ch)
+            progress = await event_sync_progress()
+            if progress and all(part["caught_up"] for part in progress.values()):
+                break
+            if any(part["deferred"] for part in progress.values()):
+                raise RuntimeError("ClickHouse resync incomplete: active PostgreSQL event writer")
         n_repl = await _sync_replacing(ch, days=3650)
-        from app.core.cache import get_state_redis
-        r = await get_state_redis()
         await r.set(_LAST_SYNC_KEY, datetime.now(timezone.utc).replace(tzinfo=None).isoformat())
+        await r.delete(_RESYNC_PENDING_KEY)
         logger.info("ClickHouse resync: %d event rows, %d replacing rows", n_events, n_repl)
     finally:
         try:
@@ -484,8 +604,8 @@ async def resync() -> None:
 SLICE_METRICS = {
     "sessions": ("server_sessions", "count()"),
     "visitors": ("server_sessions", "uniq(visitor_id_hash)"),
-    "pageviews": ("behavior_events", "countIf(event_type = 'pageview')"),
-    "clicks": ("behavior_events", "countIf(event_type = 'click')"),
+    "pageviews": ("behavior_events", "uniqExactIf(id, event_type = 'pageview')"),
+    "clicks": ("behavior_events", "uniqExactIf(id, event_type = 'click')"),
     "engaged_sessions": ("server_sessions", "countIf(is_engaged = 1)"),
     "micro_goals": ("server_sessions", "sum(micro_goals)"),
     "macro_goals": ("server_sessions", "sum(macro_goals)"),
@@ -523,6 +643,8 @@ async def run_slice(metric: str, dims: list[str], days: int = 30, limit: int = 1
     """
     if metric not in SLICE_METRICS:
         raise ValueError(f"Unknown metric: {metric}")
+    if await resync_pending():
+        raise RuntimeError("Слой данных временно недоступен: обслуживание")
     table, expr = SLICE_METRICS[metric]
     allowed = SLICE_DIMENSIONS.get(table, {})
     sel_dims = [d for d in dims if d in allowed][:2]
