@@ -6,7 +6,7 @@ import {
 } from 'three';
 import { buildPlanetLabels, layoutPlanetLabels, packPlanetLabelAtlas } from '../lib/planetLabels';
 
-const MAX_LABELS = 24;
+const MAX_LABELS = 16;
 const FONT_FAMILY = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 const ATLAS_WIDTH = 2048;
 const ATLAS_HEIGHT = 1024;
@@ -29,21 +29,24 @@ const VERTEX = `
 const FRAGMENT = `
   uniform sampler2D labelMap;
   uniform vec3 ink;
-  uniform vec3 selectedInk;
-  uniform vec3 hoverInk;
-  uniform vec3 halo;
+  uniform vec3 paper;
+  uniform vec3 line;
+  uniform vec3 selectedLine;
   varying vec2 vLabelUv;
   varying float vLabelActive;
   void main() {
     vec4 mask = texture2D(labelMap, vLabelUv);
     if (mask.a < 0.035) discard;
-    vec3 textInk = vLabelActive > 1.5 ? selectedInk : vLabelActive > 0.5 ? hoverInk : ink;
-    gl_FragColor = vec4(mix(textInk, halo, mask.r), mask.a);
+    // Gray glyphs encode ink coverage; red pixels encode only the panel border.
+    vec3 panel = mix(ink, paper, mask.g);
+    vec3 border = vLabelActive > 0.5 ? selectedLine : line;
+    panel = mix(panel, border, clamp(mask.r - mask.g, 0.0, 1.0));
+    gl_FragColor = vec4(panel, mask.a);
     #include <colorspace_fragment>
   }
 `;
 
-/** System-font text mask; the atlas is shared by every visible instance. */
+/** Opaque panels and system-font text share one atlas and one draw call. */
 function createLabelAtlas(labels) {
   const canvas = document.createElement('canvas');
   canvas.width = ATLAS_WIDTH;
@@ -54,23 +57,46 @@ function createLabelAtlas(labels) {
   context.textBaseline = 'middle';
   context.lineJoin = 'round';
   let items = null;
-  let fontPixels = 20;
-  for (const candidateSize of [20, 18, 16]) {
-    context.font = `600 ${candidateSize}px ${FONT_FAMILY}`;
-    items = packPlanetLabelAtlas(labels, (text) => context.measureText(text).width, { lineHeight: candidateSize + 4 });
+  let fontPixels = 24;
+  for (const candidateSize of [24, 22, 20, 18]) {
+    const nameSize = candidateSize * 5 / 6;
+    items = packPlanetLabelAtlas(labels, (text) => {
+      context.font = `500 ${nameSize}px ${FONT_FAMILY}`;
+      return context.measureText(text).width;
+    }, {
+      lineHeight: nameSize + 4, valueLineHeight: candidateSize + 4,
+      measureValue: (text) => {
+        context.font = `600 ${candidateSize}px ${FONT_FAMILY}`;
+        return context.measureText(text).width;
+      }, paddingX: 12, paddingY: 8, lineGap: 4,
+    });
     fontPixels = candidateSize;
     if (items) break;
   }
   if (!items) return null;
   for (const label of items) {
-    const { x, y, width, height, lines } = label;
-    for (let index = 0; index < lines.length; index += 1) {
-      const baseline = y + 4 + index * (fontPixels + 4) + (fontPixels + 4) / 2;
-      context.lineWidth = 3;
-      context.strokeStyle = '#fff';
-      context.strokeText(lines[index], x + width / 2, baseline);
+    const { x, y, width, height, nameLines, valueLines } = label;
+    context.beginPath();
+    context.roundRect(x + 1, y + 1, width - 2, height - 2, 10);
+    context.fillStyle = '#fff';
+    context.fill();
+    context.strokeStyle = '#f00';
+    context.lineWidth = 2;
+    context.stroke();
+    const nameSize = fontPixels * 5 / 6;
+    context.font = `500 ${nameSize}px ${FONT_FAMILY}`;
+    context.fillStyle = '#151515';
+    for (let index = 0; index < nameLines.length; index += 1) {
+      const baseline = y + 8 + index * (nameSize + 4) + (nameSize + 4) / 2;
+      context.fillText(nameLines[index], x + width / 2, baseline);
+    }
+    if (valueLines.length) {
+      context.font = `600 ${fontPixels}px ${FONT_FAMILY}`;
       context.fillStyle = '#000';
-      context.fillText(lines[index], x + width / 2, baseline);
+      for (let index = 0; index < valueLines.length; index += 1) {
+        const baseline = y + 8 + nameLines.length * (nameSize + 4) + 4 + index * (fontPixels + 4) + (fontPixels + 4) / 2;
+        context.fillText(valueLines[index], x + width / 2, baseline);
+      }
     }
     label.uv = [x / ATLAS_WIDTH, 1 - (y + height) / ATLAS_HEIGHT, (x + width) / ATLAS_WIDTH, 1 - y / ATLAS_HEIGHT];
   }
@@ -96,9 +122,9 @@ function createLabelResources(labels) {
     uniforms: {
       labelMap: { value: atlas.texture },
       ink: { value: new Color('#202A3C') },
-      selectedInk: { value: new Color('#AD8A48') },
-      hoverInk: { value: new Color('#80642F') },
-      halo: { value: new Color('#FFFFFF') },
+      paper: { value: new Color('#FFFFFF') },
+      line: { value: new Color('#D3C4A3') },
+      selectedLine: { value: new Color('#80642F') },
     },
     transparent: true,
     // Explicit hemisphere and whole-label silhouette clipping keeps the glyphs
@@ -119,9 +145,13 @@ function createLabelResources(labels) {
  * Geographic labels share one texture and one draw call. This callback only runs
  * on the parent demand frames; it never requests another frame or sets state.
  */
-export default function PlanetLabels({ entries, locale = 'ru', selectedCode, hoverCode, compact = false }) {
+export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, unit = '', showValues = false, selectedCode, hoverCode, compact = false }) {
   const { camera, size, invalidate } = useThree();
-  const labels = useMemo(() => buildPlanetLabels(entries, { locale }), [entries, locale]);
+  // The metric heading and country card retain the denominator of percentage
+  // units; repeating it on every country would obscure the surface.
+  const labels = useMemo(() => buildPlanetLabels(entries, {
+    locale, valuesByCode, unit: unit.trim().startsWith('%') ? '%' : unit,
+  }), [entries, locale, valuesByCode, unit]);
   const resources = useMemo(() => createLabelResources(labels), [labels]);
   const activeResources = useRef(null);
   const scratch = useMemo(() => ({
@@ -136,7 +166,7 @@ export default function PlanetLabels({ entries, locale = 'ru', selectedCode, hov
   }, [resources, invalidate]);
   useEffect(() => {
     invalidate();
-  }, [selectedCode, hoverCode, compact, size.width, size.height, invalidate]);
+  }, [selectedCode, hoverCode, compact, showValues, size.width, size.height, invalidate]);
   useEffect(() => () => {
     resources?.mesh.dispose();
     resources?.texture.dispose();
@@ -148,7 +178,7 @@ export default function PlanetLabels({ entries, locale = 'ru', selectedCode, hov
     const current = activeResources.current;
     if (!current || !size.height) return;
     const compactLayout = compact || size.width < 600;
-    const fontPixels = compactLayout ? 11.5 : 13;
+    const fontPixels = compactLayout ? 13 : 14.5;
     const fontScale = fontPixels / current.fontPixels;
     const halfFrustum = Math.tan(camera.fov * Math.PI / 360);
     const candidates = current.items.map((label) => {
@@ -178,7 +208,8 @@ export default function PlanetLabels({ entries, locale = 'ru', selectedCode, hov
     const visible = layoutPlanetLabels(candidates, {
       width: size.width, height: size.height,
       cameraDistance: camera.position.length(), selectedCode, hoverCode,
-      maxVisible: compactLayout ? 12 : MAX_LABELS,
+      maxVisible: compactLayout ? 8 : MAX_LABELS,
+      valuesOnly: showValues,
       globe,
     });
     current.mesh.count = visible.length;

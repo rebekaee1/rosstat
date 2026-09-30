@@ -67,6 +67,43 @@ describe('buildWorldColorModel', () => {
     expect(model.colorFor('not-a-number')).toBe(WORLD_NO_DATA);
   });
 
+  const invalidValues = [null, undefined, '', ' \t\n', false, true, NaN, Infinity, -Infinity, 'Infinity', 'not-a-number', [], {}];
+
+  it.each(['relative', 'diverging'])('excludes no-data values from the %s sample and its median', (mode) => {
+    const observations = [['DE', 3.2], ['US', 4.8]];
+    const baseline = buildWorldColorModel(new Map(observations), { mode });
+    const model = buildWorldColorModel(new Map([
+      ...observations,
+      ...invalidValues.map((value, index) => [`missing${index}`, value]),
+    ]), { mode });
+
+    expect(model.sampleSize).toBe(2);
+    expect(model.median).toBe(3.2);
+    expect(model.bins).toEqual(baseline.bins);
+    expect(model.colorFor(3.2)).toBe(baseline.colorFor(3.2));
+    for (const value of invalidValues) {
+      expect(model.colorFor(value)).toBe(WORLD_NO_DATA);
+      expect(model.labelColorFor(value)).toBe('#6F746F');
+      expect(model.describe(value)).toBeNull();
+    }
+    const empty = buildWorldColorModel(Object.fromEntries(
+      invalidValues.map((value, index) => [`missing${index}`, value]),
+    ), { mode });
+    expect(empty).toMatchObject({ kind: 'empty', sampleSize: 0, median: null, bins: [] });
+  });
+
+  it.each(['relative', 'diverging'])('retains real zero, negative values and numeric strings in the %s sample', (mode) => {
+    const model = buildWorldColorModel({ negative: -3, zero: 0, positive: ' 2.5 ' }, { mode });
+    expect(model.sampleSize).toBe(3);
+    expect(model.median).toBe(0);
+    expect(model.colorFor(0)).not.toBe(WORLD_NO_DATA);
+    expect(model.colorFor('0')).toBe(model.colorFor(0));
+    expect(model.colorFor(' -3 ')).toBe(model.colorFor(-3));
+    expect(model.colorFor('2.5')).toBe(model.colorFor(2.5));
+    expect(model.describe('0')).toEqual(model.describe(0));
+    expect(model.describe(-3)).not.toBeNull();
+  });
+
   it('переворачивает шкалу при порядке по возрастанию (правка 16)', () => {
     const values = Object.fromEntries(
       Array.from({ length: 35 }, (_, index) => [`c${index}`, index + 1]),

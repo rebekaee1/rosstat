@@ -46,13 +46,20 @@ const DIVERGING_LABELS = [
   'world.map.band.zero6',
 ];
 
+function numericValue(rawValue) {
+  if (typeof rawValue !== 'number' && typeof rawValue !== 'string') return null;
+  if (typeof rawValue === 'string' && rawValue.trim() === '') return null;
+  const value = Number(rawValue);
+  return Number.isFinite(value) ? value : null;
+}
+
 function numericValues(valuesByCode) {
   const entries = valuesByCode instanceof Map
     ? [...valuesByCode.entries()]
     : Object.entries(valuesByCode || {});
   return entries
-    .map(([, value]) => Number(value))
-    .filter(Number.isFinite)
+    .map(([, value]) => numericValue(value))
+    .filter((value) => value !== null)
     .sort((a, b) => a - b);
 }
 
@@ -65,8 +72,8 @@ function quantile(sorted, share) {
 }
 
 function percentile(values, rawValue) {
-  const value = Number(rawValue);
-  if (!Number.isFinite(value) || !values.length) return null;
+  const value = numericValue(rawValue);
+  if (value === null || !values.length) return null;
   let first = values.findIndex((item) => item >= value);
   if (first === -1) first = values.length;
   let last = first;
@@ -89,9 +96,8 @@ function relativeModel(values, { direction = null } = {}) {
     .slice(0, -1)
     .map((_, index) => quantile(values, (index + 1) / WORLD_RELATIVE_SCALE.length));
   const bandFor = (rawValue) => {
-    if (rawValue == null || rawValue === '') return -1;
-    const value = Number(rawValue);
-    if (!Number.isFinite(value)) return -1;
+    const value = numericValue(rawValue);
+    if (value === null) return -1;
     const index = thresholds.findIndex((threshold) => value <= threshold);
     return index === -1 ? WORLD_RELATIVE_SCALE.length - 1 : index;
   };
@@ -133,9 +139,8 @@ function divergingModel(values, { direction = null } = {}) {
   const third = maxAbs / 3;
   const twoThirds = third * 2;
   const bandFor = (rawValue) => {
-    if (rawValue == null || rawValue === '') return -1;
-    const value = Number(rawValue);
-    if (!Number.isFinite(value)) return -1;
+    const value = numericValue(rawValue);
+    if (value === null) return -1;
     if (value <= -twoThirds) return 0;
     if (value <= -third) return 1;
     if (value < 0) return 2;

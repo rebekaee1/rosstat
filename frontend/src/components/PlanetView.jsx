@@ -120,12 +120,18 @@ export default function PlanetView({
     return availableCountries.filter((country) => country.code === code
       || fields(country).some((value) => value.includes(needle))).sort((a, b) => score(a) - score(b));
   }, [availableCountries, locale, query]);
-  const colorModel = useMemo(() => buildWorldColorModel(valuesByCode, { mode: colorMode, direction: colorDirection }), [valuesByCode, colorMode, colorDirection]);
-  const extent = useMemo(() => valueExtent(valuesByCode), [valuesByCode]);
-  const mapDetails = useMemo(() => detailsByCode instanceof Map ? detailsByCode : new Map(Object.entries(detailsByCode || {})), [detailsByCode]);
-  const periodFormat = useMemo(() => resolveWorldPeriodFormat(worldPeriodDates(detailsByCode)), [detailsByCode]);
   const valueForCountry = useCallback((country) => collectionValue(valuesByCode, country.code)
     ?? collectionValue(detailsByCode, country.code)?.value, [valuesByCode, detailsByCode]);
+  // The surface labels, color scale and country card share the same observation.
+  const displayValues = useMemo(() => {
+    const result = new Map(valuesByCode instanceof Map ? valuesByCode : Object.entries(valuesByCode || {}));
+    for (const country of availableCountries) result.set(country.code, valueForCountry(country));
+    return result;
+  }, [valuesByCode, availableCountries, valueForCountry]);
+  const colorModel = useMemo(() => buildWorldColorModel(displayValues, { mode: colorMode, direction: colorDirection }), [displayValues, colorMode, colorDirection]);
+  const extent = useMemo(() => valueExtent(displayValues), [displayValues]);
+  const mapDetails = useMemo(() => detailsByCode instanceof Map ? detailsByCode : new Map(Object.entries(detailsByCode || {})), [detailsByCode]);
+  const periodFormat = useMemo(() => resolveWorldPeriodFormat(worldPeriodDates(detailsByCode)), [detailsByCode]);
   const rankedCountries = useMemo(() => {
     const rankByCode = new Map(rankingItems.map((row, index) => [row.country_code, row.rank || index + 1]));
     const entries = availableCountries.map((country) => ({ country, value: valueForCountry(country), rank: rankByCode.get(country.code) }));
@@ -272,10 +278,10 @@ export default function PlanetView({
           <div className={'planet-stage' + (isMap ? ' planet-stage--map' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode}>
             {isMap ? <div className="planet-map-fallback">
               <div className="planet-fallback-message" role="status"><span>{t('planet.unavailable')}</span><button type="button" onClick={retryScene}>{t('planet.retry')}</button></div>
-              <Suspense fallback={<div className="planet-loading">{t('planet.loading')}</div>}><WorldMap countries={availableCountries} valuesByCode={valuesByCode} detailsByCode={mapDetails} unit={unit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection} defaultScope={defaultScope} onSelect={(country) => selectCountry(country.code, true)} /></Suspense>
+              <Suspense fallback={<div className="planet-loading">{t('planet.loading')}</div>}><WorldMap countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={unit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection} defaultScope={defaultScope} onSelect={(country) => selectCountry(country.code, true)} /></Suspense>
             </div> : <>
               <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
-                <PlanetScene countries={availableCountries} valuesByCode={valuesByCode} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
+                <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
                   onHover={setHoverCode} onSelect={selectCountry} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
                   interactive={!touchNavigation || interactiveTouch} touchNavigation={touchNavigation} />
               </Suspense></SceneBoundary>

@@ -4,7 +4,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import PlanetView from './PlanetView';
 
-const scene = vi.hoisted(() => ({ fail: false, props: null, locale: 'ru' }));
+const scene = vi.hoisted(() => ({ fail: false, props: null, mapProps: null, locale: 'ru' }));
 
 vi.mock('../i18n', () => ({
   useT: () => (key, vars) => (vars?.count == null ? key : `${key}: ${vars.count}`),
@@ -22,7 +22,10 @@ vi.mock('./PlanetScene', () => ({
   },
 }));
 vi.mock('./WorldMap', () => ({
-  default: (props) => <div data-testid="fallback-map"><button type="button" onClick={() => props.onSelect(props.countries[0], props.detailsByCode?.get(props.countries[0]?.code))}>Select on map</button></div>,
+  default: (props) => {
+    scene.mapProps = props;
+    return <div data-testid="fallback-map"><button type="button" onClick={() => props.onSelect(props.countries[0], props.detailsByCode?.get(props.countries[0]?.code))}>Select on map</button></div>;
+  },
 }));
 
 const countries = [
@@ -43,6 +46,7 @@ function selectListCountry(name) {
 beforeEach(() => {
   scene.fail = false;
   scene.props = null;
+  scene.mapProps = null;
   scene.locale = 'ru';
 });
 afterEach(() => vi.restoreAllMocks());
@@ -187,6 +191,7 @@ describe('PlanetView interaction contract', () => {
       detailsByCode: new Map([['DE', germanyDetail]]),
       valuesByCode: new Map([['DE', 3.2]]),
       metricName: 'Безработица',
+      unit: '%',
       initialMode: 'data',
       onSelect,
     };
@@ -194,6 +199,8 @@ describe('PlanetView interaction contract', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
     fireEvent.click(screen.getByRole('button', { name: 'planet.earth' }));
     expect(scene.props.mode).toBe('earth');
+    expect(scene.props.valuesByCode.get('DE')).toBe(3.2);
+    expect(scene.props.unit).toBe('%');
 
     const currentDetail = { ...germanyDetail, date: '2026-07-01', value: 5.1 };
     rerender(<PlanetView {...initialProps} detailsByCode={{ DE: currentDetail }} valuesByCode={{ DE: 5.1 }} />);
@@ -201,6 +208,7 @@ describe('PlanetView interaction contract', () => {
     expect(screen.getByText('июль 2026')).toBeTruthy();
     expect(screen.queryByText('июнь 2026')).toBeNull();
     expect(screen.getByLabelText('planet.value').textContent).toBe('5,10');
+    expect(scene.props.valuesByCode.get('DE')).toBe(5.1);
 
     fireEvent.click(screen.getByRole('button', { name: 'planet.data' }));
     expect(scene.props.selectedCode).toBe('DE');
@@ -208,6 +216,33 @@ describe('PlanetView interaction contract', () => {
     expect(onSelect).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'planet.openIndicator' }));
     expect(onSelect).toHaveBeenCalledWith(countries[0], currentDetail);
+  });
+
+  it('passes the card observation fallback and zero to the surface with the current localized unit', async () => {
+    const props = { countries, detailsByCode: { DE: germanyDetail }, valuesByCode: { DE: null }, unit: '%' };
+    const { rerender } = render(<PlanetView {...props} />);
+    await screen.findByTestId('planet-scene');
+    expect(scene.props.valuesByCode.get('DE')).toBe(3.2);
+    expect(scene.props.unit).toBe('%');
+    scene.locale = 'en';
+    rerender(<PlanetView {...props} valuesByCode={{ DE: 0 }} unit="млрд $" />);
+    expect(scene.props.valuesByCode.get('DE')).toBe(0);
+    expect(scene.props.unit).toBe('billion $');
+  });
+
+  it('keeps the same effective observation in SVG fallback and preserves real zero', async () => {
+    scene.fail = true;
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const props = { countries, detailsByCode: { DE: germanyDetail, MT: { ...maltaDetail, value: null } }, valuesByCode: { DE: null }, unit: '%' };
+    const { rerender } = render(<PlanetView {...props} />);
+    await screen.findByTestId('fallback-map');
+    expect(scene.mapProps.valuesByCode.get('DE')).toBe(3.2);
+    expect(scene.mapProps.valuesByCode.get('MT')).toBeNull();
+    selectListCountry('Германия');
+    expect(screen.getByLabelText('planet.value').textContent).toBe('3,20');
+    rerender(<PlanetView {...props} valuesByCode={{ DE: 0 }} />);
+    expect(scene.mapProps.valuesByCode.get('DE')).toBe(0);
+    expect(screen.getByLabelText('planet.value').textContent).toBe('0,00');
   });
 
   it('passes the chosen year as a number without opening a country', () => {

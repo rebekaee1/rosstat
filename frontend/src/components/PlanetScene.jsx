@@ -241,7 +241,7 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
   return null;
 }
 
-function Earth({ textures, budget, entries, locale, mode, valuesByCode, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
+function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, showValues, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
   const { invalidate, gl } = useThree();
   const pointerState = useRef(createPlanetPointerState());
   const completedTap = useRef(null);
@@ -375,7 +375,7 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, colorMod
       >
         <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} />
       </mesh>
-      <PlanetLabels entries={entries} locale={locale} selectedCode={selectedCode}
+      <PlanetLabels entries={entries} locale={locale} valuesByCode={valuesByCode} unit={unit} showValues={showValues} selectedCode={selectedCode}
         hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} />
       {markerPosition && (
         <mesh position={markerPosition} quaternion={markerRotation} raycast={() => null}>
