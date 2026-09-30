@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
-  BackSide, CanvasTexture, DataTexture, LinearFilter, NormalBlending,
+  CanvasTexture, DataTexture, LinearFilter,
   NoColorSpace, Quaternion, SphereGeometry, SRGBColorSpace,
   TextureLoader, Vector3,
 } from 'three';
@@ -18,9 +18,10 @@ import {
   beginPlanetPointer, createPlanetPointerState, endPlanetPointer,
   movePlanetPointer, planetFitDistance, planetRenderBudget,
 } from '../lib/planetNavigation';
-import { useT } from '../i18n';
+import { useLocale, useT } from '../i18n';
+import PlanetLabels from './PlanetLabels';
 import {
-  ATMOSPHERE_FRAGMENT, PLANET_FRAGMENT, PLANET_VERTEX,
+  PLANET_FRAGMENT, PLANET_VERTEX,
 } from '../lib/planetShaders';
 
 const DEFAULT_FOCUS = [25, 24];
@@ -54,14 +55,14 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel }) {
       context.fillStyle = hasValue ? colorModel.colorFor(value) : '#7f8c9b';
       context.fill();
     }
-    // Two tones keep thin borders legible over clouds, desert and water alike.
-    context.globalAlpha = mode === 'data' ? 0.55 : 0.62;
-    context.strokeStyle = '#244b61';
-    context.lineWidth = 1.8;
+    // A paper halo and graphite line preserve borders over any real terrain.
+    context.globalAlpha = 0.86;
+    context.strokeStyle = '#fffaf0';
+    context.lineWidth = 2.8;
     context.stroke();
-    context.globalAlpha = 0.88;
-    context.strokeStyle = '#f2fcff';
-    context.lineWidth = 0.85;
+    context.globalAlpha = mode === 'data' ? 0.72 : 0.82;
+    context.strokeStyle = '#202a3c';
+    context.lineWidth = 1.15;
     context.stroke();
   }
   context.globalAlpha = 1;
@@ -86,16 +87,16 @@ function paintHighlight(entries, selectedCode, hoveredCode) {
     for (const entry of entries.filter((item) => item.code === code)) {
       context.beginPath();
       path(entry.feature);
-      context.globalAlpha = isSelected ? 0.1 : 0.065;
-      context.fillStyle = '#13a4b3';
+      context.globalAlpha = isSelected ? 0.18 : 0.1;
+      context.fillStyle = '#ad8a48';
       context.fill();
       context.globalAlpha = 0.95;
-      context.strokeStyle = '#efffff';
-      context.lineWidth = isSelected ? 3.2 : 2.5;
+      context.strokeStyle = '#fffaf0';
+      context.lineWidth = isSelected ? 4.1 : 3.1;
       context.stroke();
       context.globalAlpha = 1;
-      context.strokeStyle = isSelected ? '#0095a9' : '#36afc0';
-      context.lineWidth = isSelected ? 1.8 : 1.3;
+      context.strokeStyle = isSelected ? '#80642f' : '#ad8a48';
+      context.lineWidth = isSelected ? 2.3 : 1.7;
       context.stroke();
     }
   }
@@ -123,7 +124,7 @@ function usePlanetTextures(budget, onError) {
       setTextures({ day, surface: neutral });
       // Material detail is optional: it never blocks the first credible surface.
       if (!budget.materialDetail) return;
-      loader.loadAsync('/planet/earth_material_512_4dfa031876a1.webp').then((surface) => {
+      loader.loadAsync('/planet/earth_material_cloudless_512_10eb5bd716c9.webp').then((surface) => {
         owned.push(surface);
         if (!active) { surface.dispose(); return; }
         surface.colorSpace = NoColorSpace;
@@ -240,7 +241,7 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
   return null;
 }
 
-function Earth({ textures, budget, entries, mode, valuesByCode, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
+function Earth({ textures, budget, entries, locale, mode, valuesByCode, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
   const { invalidate, gl } = useThree();
   const pointerState = useRef(createPlanetPointerState());
   const completedTap = useRef(null);
@@ -374,24 +375,15 @@ function Earth({ textures, budget, entries, mode, valuesByCode, colorModel, sele
       >
         <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} />
       </mesh>
-      <mesh scale={1.025} raycast={() => null}>
-        <sphereGeometry args={[1, 64, 48]} />
-        <shaderMaterial
-          vertexShader={PLANET_VERTEX}
-          fragmentShader={ATMOSPHERE_FRAGMENT}
-          side={BackSide}
-          transparent
-          depthWrite={false}
-          blending={NormalBlending}
-        />
-      </mesh>
+      <PlanetLabels entries={entries} locale={locale} selectedCode={selectedCode}
+        hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} />
       {markerPosition && (
         <mesh position={markerPosition} quaternion={markerRotation} raycast={() => null}>
           <ringGeometry args={[0.01, 0.016, 32]} />
-          <meshBasicMaterial color="#eaffff" toneMapped={false} />
+          <meshBasicMaterial color="#fffaf0" toneMapped={false} />
           <mesh position={[0, 0, 0.001]} raycast={() => null}>
             <ringGeometry args={[0.0115, 0.014, 32]} />
-            <meshBasicMaterial color="#008fa6" toneMapped={false} />
+            <meshBasicMaterial color="#ad8a48" toneMapped={false} />
           </mesh>
         </mesh>
       )}
@@ -419,6 +411,7 @@ class SceneBoundary extends Component {
 /** Three is a lazy leaf: HTML search/cards and SVG fallback never depend on a GPU. */
 export default function PlanetScene({ countries, defaultScope, onError, onReady, interactive = true, touchNavigation = false, ...props }) {
   const t = useT();
+  const { locale } = useLocale();
   const [features, setFeatures] = useState(WORLD_FEATURES);
   const atlasLevel = useRef(0);
   const [surfaceReady, setSurfaceReady] = useState(false);
@@ -428,7 +421,7 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
     saveData: navigator.connection?.saveData,
   }));
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const entries = useMemo(() => bindPlanetCountries(countries, features), [countries, features]);
+  const entries = useMemo(() => bindPlanetCountries(countries, features, { locale }), [countries, features, locale]);
   const handleReady = useCallback(() => {
     setSurfaceReady(true);
     onReady();
@@ -486,6 +479,7 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
           <ContextLifecycle onError={onError} />
           <SceneContents
             entries={entries}
+            locale={locale}
             budget={budget}
             reducedMotion={reducedMotion}
             defaultScope={defaultScope}

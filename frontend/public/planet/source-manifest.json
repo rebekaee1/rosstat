@@ -106,16 +106,34 @@
         "quality": null,
         "method": 6
       }
+    },
+    {
+      "file": "earth_material_cloudless_512_10eb5bd716c9.webp",
+      "source_file": "earth_bump_roughness_clouds_4096.jpg",
+      "sha256": "10eb5bd716c9a0a12b2f98ca3e8eac6c345c9a4de186b88224a79d8abca41dca",
+      "bytes": 90120,
+      "dimensions": [
+        512,
+        256
+      ],
+      "resampling": "Pillow 11.1.0 LANCZOS",
+      "channel_processing": "Resize RGB first, keep R/G exactly, replace B with zero; no profile or sRGB conversion.",
+      "encoding": {
+        "format": "WebP",
+        "lossless": true,
+        "quality": null,
+        "method": 6
+      }
     }
   ],
   "totals": {
     "first_surface_transfer_bytes": 263130,
-    "complete_surface_transfer_bytes": 449556
+    "complete_surface_transfer_bytes": 353250
   },
   "runtime_sets": {
     "all_devices": {
       "first_surface": "/planet/earth_day_2048.webp",
-      "optional_packed": "/planet/earth_material_512_4dfa031876a1.webp"
+      "optional_packed": "/planet/earth_material_cloudless_512_10eb5bd716c9.webp"
     }
   },
   "license": {
@@ -135,7 +153,13 @@
       "color_space": "NoColorSpace",
       "r": "bump/elevation",
       "g": "roughness",
-      "b": "cloud mask"
+      "b": "zero (cloud-free runtime derivative)"
+    },
+    "source_packed": {
+      "color_space": "NoColorSpace",
+      "r": "bump/elevation",
+      "g": "roughness",
+      "b": "cloud mask (archived original; not rendered)"
     }
   }
 }

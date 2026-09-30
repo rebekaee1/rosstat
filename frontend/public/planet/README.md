@@ -25,7 +25,7 @@ does not replace the texture attribution requirement.
 Suggested visible credit:
 
 > Earth textures: Solar System Scope / INOVE, CC BY 4.0. Adapted by Three.js;
-> versions resized for ForecastEconomy.
+> resized and cloud channel removed for ForecastEconomy.
 
 Link `Solar System Scope` to the collection above and `CC BY 4.0` to the license.
 The originals and the derivatives retain the same texture attribution.
@@ -40,45 +40,53 @@ All devices use one shared set. The real 2048 × 1024 surface appears as soon as
 maps or optional geography refinement. A neutral one-pixel material supplies
 valid initial shader input.
 
-After the day surface, `earth_material_512_4dfa031876a1.webp` adds the cloud,
-roughness and bump channels (**186,426 bytes**). This map is optional: an error
+The day image is already cloud-free; geographical pixels remain unchanged.
+The shader uses restrained neutral/warm grading and broad camera-side lighting,
+without clouds, a colored rim, atmosphere halo or synthetic ocean highlights.
+
+After the day surface, `earth_material_cloudless_512_10eb5bd716c9.webp` supplies
+bump and retained roughness channels (**90,120 bytes**); its B channel is zero.
+This map is optional: an error
 keeps the already loaded Earth usable. Browsers reporting `connection.saveData`
 receive only the day map. Night lights and the original 4096 maps remain source
 assets; the runtime does not request them.
 
-The complete texture transfer is **449,556 bytes**, excluding headers,
+The complete texture transfer is **353,250 bytes**, excluding headers,
 JavaScript and atlas geometry. The former desktop and compact sets transferred
 2,248,543 and 1,136,358 bytes respectively. The first-surface image is unchanged;
 the new material filename includes its content hash to permit safe static caching.
 
 The 512 × 256 material derivative uses Pillow 11.1.0, Lanczos resizing and
-lossless WebP (method 6). Decoded RGB bytes were verified to equal the resized
-RGB pixels exactly. Resizing changes sampling; its encoding adds no channel
-loss or sRGB/profile transformation. The source JPEG already has compression.
+lossless WebP (method 6). The original RGB was resized first; R/G were retained
+exactly and B was replaced with zero. Decoded R/G bytes were verified to equal
+the resized source channels, and every decoded B byte is zero. Resizing changes
+sampling; encoding adds no R/G loss or sRGB/profile transformation. The source
+JPEG already has compression. The previous cloud-bearing 512 derivative remains
+an archived asset and is not requested by the current runtime.
 
 Approximate RGBA8 texture storage with mipmaps is 10.67 MiB for day and 0.67 MiB
 for the material. The 2048 × 1024 country atlas and 1024 × 512 selection atlas
-use no mipmaps, adding 8 and 2 MiB. The resulting approximately 21.34 MiB is
+use no mipmaps, adding 8 and 2 MiB. The system-font label atlas adds another
+8 MiB (2048 × 1024, no mipmaps). The resulting approximately 29.34 MiB is
 arithmetic from dimensions, excluding framebuffers and geometry; actual GPU
 memory is not measured. Pixel density is capped at 1.5 on desktop, 1.25 on
 compact devices and 1 on devices reporting at most 4 GB or explicit data saving.
 
 ## Packed map channels
 
-This layout follows the official Three.js example source:
+The runtime uses the example's R/G channels with its cloud channel removed:
 
 | Channel | Meaning | Color space |
 | --- | --- | --- |
 | Day RGB | Surface color | `SRGBColorSpace` |
-| Night RGB | City lights | `SRGBColorSpace` |
+| Night RGB (archived) | City lights; not rendered | `SRGBColorSpace` |
 | Packed R | Bump / elevation | `NoColorSpace` |
-| Packed G | Roughness | `NoColorSpace` |
-| Packed B | Cloud mask | `NoColorSpace` |
+| Packed G | Roughness retained; current shader has no specular term | `NoColorSpace` |
+| Packed B | Zero | `NoColorSpace` |
 
-The example calculates cloud strength with `smoothstep(0.2, 1.0, packed.b)`,
-roughness from `max(packed.g, step(0.01, cloudsStrength))`, and bump elevation
-from `max(packed.r, cloudsStrength)`. This is material detail; bump mapping
-changes lighting and does not create actual terrain geometry.
+The archived original packed map has its cloud mask in B. The current runtime
+does not sample it or produce clouds. Bump mapping changes lighting and does not
+create actual terrain geometry.
 
 Do not assign sRGB conversion to the packed map or save it through a color
 profile conversion. The texture images use a 2:1 equirectangular projection.
