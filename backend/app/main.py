@@ -1054,6 +1054,25 @@ async def lifespan(app: FastAPI):
                 replace_existing=True,
             )
 
+        if settings.behavior_events_enabled and settings.session_analysis_enabled:
+            from app.tasks.session_analysis import session_analysis_job
+            scheduler.add_job(
+                locked_job(session_analysis_job, "session_analysis", ttl_seconds=4 * 60),
+                trigger=IntervalTrigger(minutes=5),
+                id="session_analysis",
+                name="Session evidence: revision queue and closed-session analyses",
+                replace_existing=True, coalesce=True, max_instances=1,
+            )
+        if settings.session_replay_enabled:
+            from app.api.session_replay import replay_retention_job
+            scheduler.add_job(
+                locked_job(replay_retention_job, "session_replay_retention", ttl_seconds=4 * 60),
+                trigger=IntervalTrigger(minutes=5),
+                id="session_replay_retention",
+                name="Bounded session recording retention cleanup",
+                replace_existing=True, coalesce=True, max_instances=1,
+            )
+
         # Вычислительный фундамент аналитики (ADR-0010): каждые 15 минут —
         # серверная сессионизация (30-мин правило Метрики) + инкремент
         # rollup'ов последних 2 суток + пороговые алерты-аномалии; раз в сутки

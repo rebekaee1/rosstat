@@ -17,6 +17,7 @@
  * исполнится. Страница без рекламы (брендовая 404) помечена `data-no-ads`.
  */
 import { behaviorInit } from './lib/behavior';
+import { sessionReplayInit } from './lib/sessionReplay';
 import { renderFloorAd } from './lib/rsyFloorAd';
 
 function queueFloorAd() {
@@ -33,6 +34,7 @@ function queueFloorAd() {
 
 function init() {
   behaviorInit();
+  sessionReplayInit();
   queueFloorAd();
 }
 

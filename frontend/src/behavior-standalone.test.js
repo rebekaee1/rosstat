@@ -2,8 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const renderFloorAd = vi.fn();
 const behaviorInit = vi.fn();
+const sessionReplayInit = vi.fn();
 vi.mock('./lib/rsyFloorAd', () => ({ renderFloorAd }));
 vi.mock('./lib/behavior', () => ({ behaviorInit }));
+vi.mock('./lib/sessionReplay', () => ({ sessionReplayInit }));
 
 /** Минимальный document/window без jsdom (vitest environment: node). */
 function stubDom({ noAds = false } = {}) {
@@ -20,6 +22,7 @@ describe('behavior-standalone: реклама на быстрых ссылках
     vi.resetModules();
     renderFloorAd.mockClear();
     behaviorInit.mockClear();
+    sessionReplayInit.mockClear();
   });
   afterEach(() => vi.unstubAllGlobals());
 
@@ -27,6 +30,7 @@ describe('behavior-standalone: реклама на быстрых ссылках
     stubDom();
     await import('./behavior-standalone');
     expect(behaviorInit).toHaveBeenCalledTimes(1);
+    expect(sessionReplayInit).toHaveBeenCalledTimes(1);
     expect(window.yaContextCb).toHaveLength(1);
     // Рендер только когда context.js (после сигнала человека) разберёт очередь.
     expect(renderFloorAd).not.toHaveBeenCalled();

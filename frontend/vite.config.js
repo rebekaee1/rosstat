@@ -134,6 +134,11 @@ export default defineConfig(({ mode }) => {
           // Vite EN preview: forward ?preview_locale= from Referer so API
           // returns name_en in `name` without touching production hosts.
           proxy.on('proxyReq', (proxyReq, req) => {
+            // Local replay collector validates Origin against Host. Keep the
+            // browser's Host when forwarding to a loopback development API.
+            if (['localhost', '127.0.0.1', '[::1]'].includes(new URL(apiTarget).hostname)) {
+              proxyReq.setHeader('Host', req.headers.host);
+            }
             const referer = req.headers.referer || ''
             const m = /[?&]preview_locale=(en|ru)\b/i.exec(referer)
             if (m) proxyReq.setHeader('X-FE-Locale', m[1].toLowerCase())

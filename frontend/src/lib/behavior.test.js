@@ -75,6 +75,14 @@ describe('isAutomationUa', () => {
 });
 
 describe('attention clock', () => {
+  it('does not duplicate elapsed time when the wall clock moves backwards', () => {
+    const clock = createAttentionClock();
+    clock.reset(1000, true);
+    clock.input(1000, true, true);
+    expect(clock.snapshot(2000)).toEqual({ active_ms: 1000, visible_ms: 1000 });
+    expect(clock.snapshot(1500)).toEqual({ active_ms: 0, visible_ms: 0 });
+    expect(clock.snapshot(2500)).toEqual({ active_ms: 500, visible_ms: 500 });
+  });
   it('does not turn a passive 2.8-second load into input activity', () => {
     const clock = createAttentionClock();
     clock.reset(0, true);

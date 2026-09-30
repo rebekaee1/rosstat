@@ -15,6 +15,7 @@ export const CONSENT_KEY = 'fe:consent:v1';
 // (см. isConsentCurrent). ОБЯЗАНА совпадать с CURRENT_V в public/consent.js.
 export const CONSENT_VERSION = '2026-06-16';
 export const CONSENT_OPEN_EVENT = 'fe:consent:open';
+export const CONSENT_CHANGE_EVENT = 'fe:consent:change';
 
 export function getConsent() {
   try {
@@ -41,10 +42,13 @@ export function saveConsent({ analytics, ads }) {
   } catch {
     // Приватный режим: выбор применится на текущую сессию, но не сохранится.
   }
-  if (typeof window.__feApplyConsent === 'function') {
+  try { if (typeof window.__feApplyConsent === 'function') {
     // explicit: выбор сделан кликом по баннеру — доверенный ввод человека,
     // рекламный гейт в public/consent.js открывается сразу.
     window.__feApplyConsent(record, { explicit: true });
+  } } finally {
+    // Collection stops even when a tracker throws or storage is unavailable.
+    window.dispatchEvent(new CustomEvent(CONSENT_CHANGE_EVENT, { detail: record }));
   }
   return record;
 }

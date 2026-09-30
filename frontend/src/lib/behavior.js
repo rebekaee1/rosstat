@@ -35,6 +35,9 @@
  * Не работает на /embed/* (iframe на чужих сайтах).
  */
 
+import { EVIDENCE_VERSION, SCROLL_SETTLE_MS, createBlockClock, createScrollProgress, evidenceToken, inpEvidence, interactionTarget, unobscuredRatio } from './behaviorEvidence';
+import { CONSENT_CHANGE_EVENT } from './consent';
+
 const ENDPOINT = '/api/v1/analytics/behavior';
 const SESSION_KEY = 'fe:analytics:session';
 const SESSION_META_KEY = 'fe:analytics:session:meta';
@@ -58,6 +61,10 @@ const ACTIVE_GAP_MS = 15_000;    // разрыв активности больш
 const ERRORS_MAX_PER_PAGE = 10;  // потолок js_error с одной страницы
 const API_TIMING_SAMPLE = 5;     // латентность API — каждый 5-й запрос
 const BLOCK_RESCAN_MS = 3_000;   // как часто искать новые [data-block] в DOM
+const MAX_BLOCK_ELEMENTS = 64;
+const MAX_INTERACTIONS_PER_PAGE = 160;
+const GEOMETRY_REFRESH_MS = 200;
+const INPUT_CAPTURE_TYPES = new Set(['pointerdown', 'pointerup', 'pointercancel', 'touchstart', 'touchend', 'touchcancel', 'click', 'keydown', 'keyup', 'keypress']);
 
 /** Headless-ферма и вкладка Cursor не должны писать behavior/events. */
 export function isAutomationUa(ua, webdriver = false) {
@@ -75,7 +82,22 @@ let _identity = { authed: false, userId: null };
 let _pageLoadId = null;
 let _pageEnteredAt = 0;
 let _pageUrl = null;
-let _maxScrollPct = 0;
+let _scrollProgress = createScrollProgress();
+let _scrollTimer = null;
+let _pageSuspended = false;
+let _windowFocused = true;
+let _routeTimer = null;
+let _pageHistory = [];
+let _inputTargets = [];
+let _generation = 0;
+let _listeners = [];
+let _restoreFetch = null;
+let _interactionCount = 0;
+let _interactionSequence = 0;
+let _pointers = new Map();
+let _overlayState = null;
+let _geometryAt = 0;
+let _geometryTimer = null;
 let _clickCount = 0;
 let _moveDistance = 0;
 let _movePoints = [];
@@ -84,16 +106,20 @@ let _recentClicks = [];
 let _timer = null;
 let _inited = false;
 let _enabled = true;
+let _collectorsStarted = false;
+let _explicitAnalytics = null;
+let _captureStartedAt = 0;
 const _attention = createAttentionClock();
 let _errorCount = 0;
 let _apiCallCounter = 0;
-// блочная аналитика: имя блока → { enter: ts|null, ms: суммарно видим }
+// One clock per semantic block; duplicate DOM nodes never multiply its time.
 let _blocks = new Map();
+let _blockElements = new Map();
 let _blockObserver = null;
 let _blockTimer = null;
 let _formsSeen = new Set();
 
-function sessionId() {
+export function sessionId() {
   try {
     let v = window.sessionStorage.getItem(SESSION_KEY);
     if (!v) {
@@ -142,6 +168,7 @@ export function createAttentionClock() {
   let active = 0;
   let seen = 0;
   function advance(now) {
+    now = Math.max(tick, now);
     if (visible) {
       seen += Math.max(0, now - tick);
       if (inputAt !== null) active += Math.max(0, Math.min(now, inputAt + ACTIVE_GAP_MS) - tick);
@@ -157,7 +184,7 @@ export function createAttentionClock() {
     input(now, trusted, isVisible) {
       advance(now);
       visible = isVisible;
-      if (trusted && visible) inputAt = now;
+      if (trusted && visible) inputAt = Math.max(tick, now);
       if (!visible) inputAt = null;
     },
     snapshot(now) {
@@ -166,18 +193,52 @@ export function createAttentionClock() {
       active = 0; seen = 0;
       return result;
     },
+    activeUntil() { return visible && inputAt !== null ? inputAt + ACTIVE_GAP_MS : null; },
   };
 }
 
 function attentionVisible() {
-  return document.visibilityState !== 'hidden' && document.hasFocus();
+  return _windowFocused && document.visibilityState !== 'hidden' && document.hasFocus();
 }
 
 function markActivity(event) {
-  _attention.input(Date.now(), event?.isTrusted === true, attentionVisible());
+  if (!_enabled) return;
+  captureInputTarget(event);
+  const now = Date.now();
+  _attention.input(now, event?.isTrusted === true, attentionVisible());
+  // Close preceding block intervals before extending their input-backed window.
+  refreshBlocks(false, now);
 }
 
-function consentAllows() {
+function captureInputTarget(event) {
+  if (event?.isTrusted !== true || !INPUT_CAPTURE_TYPES.has(event.type) || !(event.target instanceof Element)) return;
+  let start = event.timeStamp;
+  if (!Number.isFinite(start)) return;
+  // Legacy Safari timestamps can be epoch-based rather than performance-relative.
+  if (start > 1e12) start -= performance.timeOrigin;
+  if (start < 0 || start > performance.now() + 8) return;
+  const url = cleanUrl();
+  _inputTargets.push({ start, type: event.type, family: event.type.startsWith('key') ? 'keyboard' : 'pointer',
+    target: interactionTarget(event.target), url, pl: url === _pageUrl ? _pageLoadId : null });
+  if (_inputTargets.length > 400) _inputTargets.shift();
+}
+
+function originalInpTarget(metric, evidence) {
+  if (evidence.inp_start_ms === null) return null;
+  const entryType = metric.entries?.[0]?.name;
+  const exactType = INPUT_CAPTURE_TYPES.has(entryType) ? entryType : null;
+  const matches = _inputTargets.filter((input) => input.family === evidence.inp_type
+    && (!exactType || input.type === exactType) && Math.abs(input.start - evidence.inp_start_ms) <= 8)
+    .sort((a, b) => Math.abs(a.start - evidence.inp_start_ms) - Math.abs(b.start - evidence.inp_start_ms));
+  if (!matches.length) return null;
+  // Equal-time inputs with different targets are ambiguous, never a guessed target.
+  if (matches[1] && Math.abs(matches[0].start - evidence.inp_start_ms) === Math.abs(matches[1].start - evidence.inp_start_ms)
+    && matches[0].target !== matches[1].target) return null;
+  return matches[0];
+}
+
+export function consentAllows() {
+  if (_explicitAnalytics === false) return false;
   // Подразумеваемое согласие; уважаем только явный отказ текущей редакции.
   try {
     const raw = window.localStorage.getItem(CONSENT_KEY);
@@ -190,6 +251,15 @@ function consentAllows() {
 
 function newPageLoadId() {
   return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function listen(target, type, handler, options) {
+  target.addEventListener(type, handler, options);
+  _listeners.push(() => target.removeEventListener(type, handler, options));
+}
+
+function relativeTime() {
+  return Math.max(0, Math.round(performance.now()));
 }
 
 /**
@@ -298,16 +368,22 @@ export function flush() {
 const DWELL_MAX_MS = 4 * 3600 * 1000; // страховка от вкладок, забытых на ночь
 
 function emitDwell() {
-  if (!_pageLoadId || !_pageEnteredAt) return;
+  if (!_pageLoadId || !_pageEnteredAt || _pageSuspended) return;
   const now = Date.now();
   const attention = _attention.snapshot(now);
-  const ms = Math.min(now - _pageEnteredAt, DWELL_MAX_MS);
+  const ms = Math.max(0, Math.min(now - _pageEnteredAt, DWELL_MAX_MS));
+  const scroll = observeScroll(false);
   push('dwell', {
     ms,
     active_ms: Math.min(attention.active_ms, ms),
     visible_ms: Math.min(attention.visible_ms, ms),
     attention_version: 2,
-    scroll_pct: _maxScrollPct,
+    scroll_pct: scroll.pct,
+    scroll_valid: scroll.valid ? 1 : 0,
+    scroll_height: Math.round(scroll.height),
+    scroll_viewport: Math.round(scroll.viewport),
+    scroll_max_y: scroll.max_y,
+    scroll_version: EVIDENCE_VERSION,
     clicks: _clickCount,
     move_px: Math.round(_moveDistance),
   });
@@ -321,35 +397,93 @@ function emitDwell() {
 /** Блочная аналитика: закрыть учёт видимости и отправить по событию на блок. */
 function emitBlockViews() {
   const now = Date.now();
+  refreshBlocks(true, now);
   for (const [name, rec] of _blocks) {
-    if (rec.enter) { rec.ms += now - rec.enter; rec.enter = null; }
-    if (rec.ms >= 500) push('block_view', { block: name, ms: Math.round(rec.ms) });
+    const observed = rec.clock.snapshot(now);
+    if (observed.visible_ms >= 500) push('block_view', {
+      block: name,
+      ms: Math.round(observed.visible_ms),
+      visible_ms: Math.round(observed.visible_ms),
+      active_ms: Math.round(observed.active_ms),
+      visibility_version: EVIDENCE_VERSION,
+    });
   }
-  _blocks = new Map();
 }
 
 function observeBlocksNow() {
-  if (!_blockObserver) return;
-  document.querySelectorAll('[data-block]').forEach((el) => {
-    if (el.__feBlockObserved) return;
-    el.__feBlockObserved = true;
+  if (!_blockObserver || !_enabled) return;
+  for (const [el] of _blockElements) {
+    if (!el.isConnected) { _blockObserver.unobserve(el); _blockElements.delete(el); }
+  }
+  for (const el of document.querySelectorAll('[data-block]')) {
+    if (_blockElements.has(el)) continue;
+    if (_blockElements.size >= MAX_BLOCK_ELEMENTS) break;
+    const name = evidenceToken(el.getAttribute('data-block'));
+    if (!name) continue;
+    if (!_blocks.has(name) && _blocks.size >= MAX_BLOCK_ELEMENTS) continue;
+    _blockElements.set(el, { name, intersecting: false, ratio: 0 });
+    if (!_blocks.has(name)) _blocks.set(name, { clock: createBlockClock(Date.now()), visible: false });
     _blockObserver.observe(el);
-  });
+  }
+  refreshBlocks();
+  observeScroll(false);
+}
+
+function overlayRects() {
+  const rects = [];
+  for (const el of document.querySelectorAll('[data-analytics-overlay]')) {
+    if (rects.length >= 8) break;
+    const style = window.getComputedStyle(el);
+    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') continue;
+    const rect = el.getBoundingClientRect();
+    if (rect.right > rect.left && rect.bottom > rect.top) rects.push(rect);
+  }
+  return rects;
+}
+
+function refreshBlocks(measure = true, now = Date.now()) {
+  const focused = attentionVisible() && !_pageSuspended;
+  if (measure) {
+    const visibleNames = new Set();
+    const viewport = { left: 0, top: 0, right: window.innerWidth, bottom: window.innerHeight };
+    const overlays = focused ? overlayRects() : [];
+    if (focused) {
+      for (const [el, rec] of _blockElements) {
+        if (el.isConnected && rec.intersecting && rec.ratio >= 0.5
+          && unobscuredRatio(el.getBoundingClientRect(), viewport, overlays) >= 0.5) visibleNames.add(rec.name);
+      }
+    }
+    for (const [name, rec] of _blocks) rec.visible = visibleNames.has(name);
+    _geometryAt = now;
+  }
+  for (const rec of _blocks.values()) rec.clock.update(now, focused && rec.visible, _attention.activeUntil());
+}
+
+function scheduleGeometry() {
+  if (Date.now() - _geometryAt >= GEOMETRY_REFRESH_MS) { refreshBlocks(); return; }
+  if (!_geometryTimer) _geometryTimer = setTimeout(() => {
+    _geometryTimer = null;
+    refreshBlocks();
+  }, GEOMETRY_REFRESH_MS);
+}
+
+function resetBlocks() {
+  if (_blockObserver) _blockObserver.disconnect();
+  _blockElements = new Map();
+  _blocks = new Map();
 }
 
 function setupBlockObserver() {
   if (typeof IntersectionObserver === 'undefined') return;
   _blockObserver = new IntersectionObserver((entries) => {
-    const now = Date.now();
     for (const entry of entries) {
-      const name = entry.target.getAttribute('data-block');
-      if (!name) continue;
-      let rec = _blocks.get(name);
-      if (!rec) { rec = { enter: null, ms: 0 }; _blocks.set(name, rec); }
-      if (entry.isIntersecting && !rec.enter) rec.enter = now;
-      else if (!entry.isIntersecting && rec.enter) { rec.ms += now - rec.enter; rec.enter = null; }
+      const rec = _blockElements.get(entry.target);
+      if (!rec) continue;
+      rec.intersecting = entry.isIntersecting;
+      rec.ratio = entry.intersectionRatio;
     }
-  }, { threshold: 0.5 });
+    refreshBlocks();
+  }, { threshold: [0, 0.5, 1] });
   observeBlocksNow();
   _blockTimer = setInterval(observeBlocksNow, BLOCK_RESCAN_MS);
 }
@@ -442,13 +576,36 @@ function emitSessionStart() {
 /** Web Vitals глазами клиента: LCP/INP/CLS/FCP/TTFB с рейтингом. Динамический
  * импорт — библиотека не попадает в критический путь загрузки. */
 function setupVitals() {
-  import('web-vitals').then(({ onLCP, onINP, onCLS, onFCP, onTTFB }) => {
-    const report = (m) => push('vital', {
+  const generation = _generation;
+  const report = (m) => {
+    if (generation !== _generation) return;
+    const evidence = m.name === 'INP' ? inpEvidence(m, performance.timeOrigin) : {};
+    if (m.name === 'INP' && evidence.inp_start_ms !== null && evidence.inp_start_ms < _captureStartedAt) return;
+    const originalInput = m.name === 'INP' ? originalInpTarget(m, evidence) : null;
+    if (m.name === 'INP') {
+      // The library sees entry.target after handlers/React have mutated it.
+      evidence.inp_reported_target = evidence.inp_target;
+      evidence.inp_target = originalInput?.target ?? null;
+      evidence.inp_target_source = originalInput ? 'capture_event' : 'unmatched_library';
+    }
+    // A delayed INP report can describe an interaction on the preceding SPA route.
+    const page = originalInput || (m.name === 'INP' && evidence.inp_start_ms !== null
+      ? [..._pageHistory].reverse().find((p) => p.start <= evidence.inp_start_ms) : null);
+    push('vital', {
       m: m.name,
       v: Math.round(m.value * (m.name === 'CLS' ? 1000 : 1)) / (m.name === 'CLS' ? 1000 : 1),
       rating: m.rating,
+      ...evidence,
+      ...(page ? { url: page.url, pl: page.pl } : {}),
     });
-    onLCP(report); onINP(report); onCLS(report); onFCP(report); onTTFB(report);
+  };
+  import('web-vitals').then(({ onLCP, onCLS, onFCP, onTTFB }) => {
+    if (generation !== _generation) return;
+    onLCP(report); onCLS(report); onFCP(report); onTTFB(report);
+  }).catch(() => { /* vitals опциональны */ });
+  import('web-vitals/attribution').then(({ onINP }) => {
+    if (generation !== _generation) return;
+    onINP(report, { generateTarget: interactionTarget, includeProcessedEventEntries: false });
   }).catch(() => { /* vitals опциональны */ });
 }
 
@@ -456,7 +613,7 @@ function setupVitals() {
  * (__BUILD_ID__ подставляет Vite) привязывает регрессии к деплоям. */
 function setupErrorCapture() {
   const build = (typeof __BUILD_ID__ !== 'undefined' && __BUILD_ID__) || null;
-  window.addEventListener('error', (e) => {
+  listen(window, 'error', (e) => {
     if (_errorCount >= ERRORS_MAX_PER_PAGE) return;
     _errorCount += 1;
     if (e.target && e.target !== window && (e.target.src || e.target.href)) {
@@ -472,7 +629,7 @@ function setupErrorCapture() {
       build,
     });
   }, { capture: true });
-  window.addEventListener('unhandledrejection', (e) => {
+  listen(window, 'unhandledrejection', (e) => {
     if (_errorCount >= ERRORS_MAX_PER_PAGE) return;
     _errorCount += 1;
     const r = e.reason;
@@ -516,6 +673,8 @@ function setupApiTiming() {
       throw err;
     });
   };
+  const wrapper = window.fetch;
+  _restoreFetch = () => { if (window.fetch === wrapper) window.fetch = orig; };
 }
 
 /** Воронка форм без снятия текста: первый фокус в форме и submit. */
@@ -544,12 +703,20 @@ function enterPage(url) {
   _pageLoadId = newPageLoadId();
   _pageEnteredAt = Date.now();
   _pageUrl = url;
-  _maxScrollPct = 0;
+  _scrollProgress = createScrollProgress();
+  _pageSuspended = false;
+  _pointers = new Map();
+  _interactionCount = 0;
+  _interactionSequence = 0;
+  _overlayState = null;
+  resetBlocks();
   _clickCount = 0;
   _moveDistance = 0;
   _attention.reset(Date.now(), attentionVisible());
   _errorCount = 0;
   _formsSeen = new Set();
+  _pageHistory.push({ start: relativeTime(), url, pl: _pageLoadId });
+  _pageHistory = _pageHistory.slice(-40);
   push('pageview', {
     ref: document.referrer || null,
     vw: window.innerWidth,
@@ -559,16 +726,23 @@ function enterPage(url) {
     title: (document.title || '').slice(0, 120),
   });
   emitSessionStart(); // ретрай портрета, пока доставка не подтверждена
+  observeScroll(false);
+  observeBlocksNow();
+  recordOverlayState();
 }
 
 /** Вызывается роутером при смене страницы: закрывает предыдущую (dwell) и открывает новую. */
 export function behaviorRouteChange(url) {
   if (!_inited || !_enabled) return;
+  if (_routeTimer) clearTimeout(_routeTimer);
   drainMoves();
   emitBlockViews();
   emitDwell();
+  _pageSuspended = true;
+  _attention.visibility(Date.now(), false);
+  refreshBlocks(false);
   // отложить на тик, чтобы document.title успел обновиться через useMeta
-  setTimeout(() => enterPage(url), 60);
+  _routeTimer = setTimeout(() => { _routeTimer = null; enterPage(url); }, 60);
 }
 
 /** Идентичность из AuthProvider (через track.js) — уходит в каждый батч. */
@@ -577,6 +751,7 @@ export function behaviorSetIdentity({ authed, userId } = {}) {
 }
 
 function onClick(e) {
+  if (!_enabled) return;
   const el = e.target instanceof Element ? e.target : null;
   if (!el) return;
   _clickCount += 1;
@@ -615,7 +790,68 @@ function onClick(e) {
     // антибот-скоринг сервера читает этот флаг (BI 2.1, этап 3).
     ...(e.isTrusted ? {} : { synthetic: 1 }),
     ...(out ? { out } : {}),
+    interaction_target: interactionTarget(target),
+    action: interactionAction(target),
+    relative_ms: relativeTime(),
+    evidence_version: EVIDENCE_VERSION,
   });
+}
+
+function interactionAction(target) {
+  return evidenceToken(target?.closest?.('[data-fe-interaction-action]')?.getAttribute('data-fe-interaction-action'));
+}
+
+/** Pointer lifecycle is evidence of input delivery, not proof of a dispatched click. */
+function onPointer(event) {
+  if (!_enabled) return;
+  markActivity(event);
+  if (_interactionCount >= MAX_INTERACTIONS_PER_PAGE) return;
+  const touch = event.type.startsWith('touch') ? event.changedTouches?.[0] : null;
+  const pointer = touch ? `t${touch.identifier}` : `p${event.pointerId ?? 0}`;
+  const phase = /(?:down|start)$/.test(event.type) ? 'start' : /cancel$/.test(event.type) ? 'cancel' : 'end';
+  const el = event.target instanceof Element ? event.target : null;
+  if (!el) return;
+  const now = relativeTime();
+  let rec = _pointers.get(pointer);
+  if (phase === 'start') {
+    if (_pointers.size >= 8) return;
+    rec = { id: ++_interactionSequence, started: now };
+    _pointers.set(pointer, rec);
+  }
+  _interactionCount += 1;
+  push('interaction', {
+    interaction_type: event.type,
+    input_type: touch ? 'touch' : (['mouse', 'pen', 'touch'].includes(event.pointerType) ? event.pointerType : 'unknown'),
+    phase,
+    interaction_id: rec?.id ?? null,
+    target: interactionTarget(el),
+    action: interactionAction(el),
+    trusted: event.isTrusted === true ? 1 : 0,
+    relative_ms: now,
+    duration_ms: phase !== 'start' && rec ? Math.min(60_000, Math.max(0, now - rec.started)) : null,
+    evidence_version: EVIDENCE_VERSION,
+  });
+  if (phase !== 'start') _pointers.delete(pointer);
+}
+
+function recordOverlayState(event) {
+  const detail = event?.detail;
+  if (detail && detail.id !== 'cookie-consent') return;
+  const panel = document.querySelector('[data-analytics-overlay="cookie-consent"]');
+  const style = panel && window.getComputedStyle(panel);
+  const visible = detail ? detail.visible === true
+    : !!panel && style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+  const expanded = detail?.expanded === true;
+  const key = `${visible}:${expanded}`;
+  if (key !== _overlayState) {
+    _overlayState = key;
+    push('ui_state', {
+      component: 'cookie-consent', visible: visible ? 1 : 0, expanded: expanded ? 1 : 0,
+      config_version: CONSENT_V, evidence_version: EVIDENCE_VERSION,
+      relative_ms: relativeTime(), source: detail ? 'component' : 'dom',
+    });
+  }
+  refreshBlocks();
 }
 
 function onMove(e) {
@@ -632,12 +868,22 @@ function onMove(e) {
   _lastMove = { x: e.pageX, y: e.pageY, t: now };
 }
 
-function onScroll() {
+function observeScroll(input = false) {
   const doc = document.documentElement;
-  const total = doc.scrollHeight - window.innerHeight;
-  if (total <= 0) { _maxScrollPct = 100; return; }
-  const pct = Math.min(100, Math.round((window.scrollY / total) * 100));
-  if (pct > _maxScrollPct) _maxScrollPct = pct;
+  return _scrollProgress.observe({
+    height: Math.max(doc.scrollHeight, document.body?.scrollHeight || 0), viewport: window.innerHeight,
+    y: window.scrollY, time: Date.now(), input, visible: attentionVisible() && !_pageSuspended,
+  });
+}
+
+function onScroll(event) {
+  // Browser-generated scroll can also follow script scrollTo; require recent
+  // trusted pointer/wheel/key input before treating it as visitor progress.
+  const until = _attention.activeUntil();
+  observeScroll(event?.isTrusted === true && until !== null && Date.now() <= until);
+  scheduleGeometry();
+  if (_scrollTimer) clearTimeout(_scrollTimer);
+  _scrollTimer = setTimeout(() => { _scrollTimer = null; observeScroll(false); }, SCROLL_SETTLE_MS);
 }
 
 function onCopy() {
@@ -650,10 +896,26 @@ function onCopy() {
 }
 
 function onLeave() {
-  drainMoves();
-  emitBlockViews();
-  emitDwell();
+  if (!_pageSuspended) {
+    drainMoves();
+    emitBlockViews();
+    emitDwell();
+    _pageSuspended = true;
+    _attention.visibility(Date.now(), false);
+    refreshBlocks(false);
+  }
   flush();
+}
+
+function onVisibility() {
+  const visible = attentionVisible();
+  if (document.visibilityState !== 'hidden' && _pageSuspended) {
+    _pageSuspended = false;
+    _pageEnteredAt = Date.now();
+  }
+  _attention.visibility(Date.now(), visible);
+  refreshBlocks();
+  if (document.visibilityState === 'hidden') onLeave();
 }
 
 /** Единственная точка входа; идемпотентна. Вызывается из App при монтировании
@@ -665,8 +927,16 @@ export function behaviorInit() {
   if (/^\/embed\//.test(window.location.pathname)) return;
   _enabled = consentAllows();
   _inited = true;
+  listen(window, CONSENT_CHANGE_EVENT, onConsentChange);
+  listen(window, 'storage', (event) => { if (event.key === CONSENT_KEY) onConsentChange(); });
   if (!_enabled) return;
 
+  startCollectors();
+}
+
+function startCollectors() {
+  _collectorsStarted = true;
+  _captureStartedAt = relativeTime();
   visitorId(); // создать постоянный идентификатор при первом заходе
   setupErrorCapture();
   setupApiTiming();
@@ -674,36 +944,77 @@ export function behaviorInit() {
   setupVitals();
   setupBlockObserver();
 
-  document.addEventListener('click', (e) => { markActivity(e); onClick(e); }, { capture: true, passive: true });
-  document.addEventListener('mousemove', (e) => { markActivity(e); onMove(e); }, { passive: true });
-  window.addEventListener('scroll', (e) => { markActivity(e); onScroll(); }, { passive: true });
-  document.addEventListener('keydown', markActivity, { passive: true });
-  document.addEventListener('copy', onCopy);
-  document.addEventListener('focusin', onFormFocus, { passive: true });
-  document.addEventListener('submit', onFormSubmit, { capture: true });
-  window.addEventListener('pagehide', onLeave);
-  document.addEventListener('visibilitychange', () => {
-    _attention.visibility(Date.now(), attentionVisible());
-    if (document.visibilityState === 'hidden') onLeave();
-  });
+  listen(document, 'click', (e) => { markActivity(e); onClick(e); }, { capture: true, passive: true });
+  listen(document, 'mousemove', (e) => { markActivity(e); onMove(e); }, { passive: true });
+  listen(window, 'scroll', onScroll, { passive: true });
+  listen(document, 'wheel', markActivity, { passive: true });
+  for (const type of ['keydown', 'keyup', 'keypress']) listen(document, type, markActivity, { capture: true, passive: true });
+  const pointerTypes = typeof window.PointerEvent === 'function'
+    ? ['pointerdown', 'pointerup', 'pointercancel'] : ['touchstart', 'touchend', 'touchcancel'];
+  for (const type of pointerTypes) listen(document, type, onPointer, { capture: true, passive: true });
+  listen(document, 'copy', onCopy);
+  listen(document, 'focusin', onFormFocus, { passive: true });
+  listen(document, 'submit', onFormSubmit, { capture: true });
+  listen(window, 'pagehide', onLeave);
+  listen(document, 'visibilitychange', onVisibility);
+  listen(window, 'pageshow', onVisibility);
+  listen(window, 'fe:analytics-overlay:change', recordOverlayState);
+  listen(window, 'resize', () => { observeScroll(false); refreshBlocks(); });
 
-  window.addEventListener('blur', () => _attention.visibility(Date.now(), false));
-  window.addEventListener('focus', () => _attention.visibility(Date.now(), attentionVisible()));
+  listen(window, 'blur', () => { _windowFocused = false; _attention.visibility(Date.now(), false); refreshBlocks(false); });
+  listen(window, 'focus', () => { _windowFocused = true; onVisibility(); });
 
   _timer = setInterval(flush, FLUSH_INTERVAL_MS);
 }
 
+function onConsentChange(event) {
+  _explicitAnalytics = event?.detail?.v === CONSENT_V && typeof event.detail.analytics === 'boolean'
+    ? event.detail.analytics : null;
+  const allowed = consentAllows();
+  if (allowed === _enabled) return;
+  _generation += 1;
+  _enabled = allowed;
+  if (!allowed) {
+    // Revocation applies immediately even if localStorage or a tracker failed.
+    _queue = []; _movePoints = []; _pointers = new Map(); _pageHistory = []; _inputTargets = [];
+    _pageSuspended = true;
+    _attention.reset(Date.now(), false);
+    resetBlocks();
+  } else if (!_collectorsStarted) startCollectors();
+  else {
+    _captureStartedAt = relativeTime();
+    enterPage(cleanUrl());
+    setupVitals();
+  }
+}
+
 /** Для тестов: сброс состояния модуля. */
 export function _resetForTests() {
+  _generation += 1;
+  for (const remove of _listeners) remove();
+  _listeners = [];
+  if (_restoreFetch) { _restoreFetch(); _restoreFetch = null; }
   _queue = [];
   _movePoints = [];
   _recentClicks = [];
   _inited = false;
   _enabled = true;
+  _collectorsStarted = false;
+  _explicitAnalytics = null;
+  _captureStartedAt = 0;
   _pageLoadId = null;
   _pageEnteredAt = 0;
   _pageUrl = null;
-  _maxScrollPct = 0;
+  _scrollProgress = createScrollProgress();
+  _pageSuspended = false;
+  _windowFocused = true;
+  _pageHistory = [];
+  _inputTargets = [];
+  _interactionCount = 0;
+  _interactionSequence = 0;
+  _pointers = new Map();
+  _overlayState = null;
+  _geometryAt = 0;
   _clickCount = 0;
   _moveDistance = 0;
   _lastMove = { x: 0, y: 0, t: 0 };
@@ -711,10 +1022,14 @@ export function _resetForTests() {
   _errorCount = 0;
   _apiCallCounter = 0;
   _blocks = new Map();
+  _blockElements = new Map();
   _formsSeen = new Set();
   if (_timer) { clearInterval(_timer); _timer = null; }
   if (_blockTimer) { clearInterval(_blockTimer); _blockTimer = null; }
   if (_blockObserver) { _blockObserver.disconnect(); _blockObserver = null; }
+  if (_scrollTimer) { clearTimeout(_scrollTimer); _scrollTimer = null; }
+  if (_geometryTimer) { clearTimeout(_geometryTimer); _geometryTimer = null; }
+  if (_routeTimer) { clearTimeout(_routeTimer); _routeTimer = null; }
 }
 
 export { elementPath as _elementPath, consentAllows as _consentAllows };

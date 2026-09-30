@@ -16,6 +16,35 @@ class Base(DeclarativeBase):
     pass
 
 
+class SessionReplayChunk(Base):
+    """Compressed fragments of a masked recording, never executable server-side.
+
+    One sequence holds a complete JSON batch. Missing fragments remain an
+    explicit coverage gap; a retry has the same recording/sequence/part key.
+    """
+    __tablename__ = "session_replay_chunks"
+    __table_args__ = (
+        UniqueConstraint("recording_id", "sequence", "part", name="uq_session_replay_part"),
+        Index("ix_session_replay_session", "session_id_hash", "created_at"),
+        Index("ix_session_replay_visitor_hour", "visitor_id_hash", "created_at"),
+        Index("ix_session_replay_session_order", "session_id_hash", "recording_id", "sequence", "part"),
+        Index("ix_session_replay_retention", "created_at"),
+    )
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True)
+    session_id_hash: Mapped[str] = mapped_column(String(80), nullable=False)
+    visitor_id_hash: Mapped[str] = mapped_column(String(80), nullable=False)
+    recording_id: Mapped[str] = mapped_column(String(40), nullable=False)
+    page: Mapped[str] = mapped_column(String(500), nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False)
+    part: Mapped[int] = mapped_column(Integer, nullable=False)
+    parts: Mapped[int] = mapped_column(Integer, nullable=False)
+    payload_gzip: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
+    payload_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    raw_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
+    ended: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
 class Indicator(Base):
     __tablename__ = "indicators"
     # Индекс живёт в миграции 20260320; объявлен и здесь, чтобы metadata
@@ -968,6 +997,8 @@ class FrontendEvent(Base):
     __table_args__ = (
         Index("ix_frontend_event_name_time", "event_name", "occurred_at"),
         Index("ix_frontend_event_url", "url"),
+        Index("ix_frontend_session_event", "session_id_hash", "id"),
+        Index("ix_frontend_occurred", "occurred_at"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -1000,6 +1031,8 @@ class BehaviorEvent(Base):
     __table_args__ = (
         Index("ix_behavior_type_time", "event_type", "occurred_at"),
         Index("ix_behavior_page_time", "page", "occurred_at"),
+        Index("ix_behavior_session_event", "session_id_hash", "id"),
+        Index("ix_behavior_occurred", "occurred_at"),
     )
 
     # BigInteger на проде (поток большой), Integer-variant для sqlite-тестов
@@ -1479,3 +1512,31 @@ class AuthAudit(Base):
     user_agent: Mapped[str | None] = mapped_column(String(500))
     detail: Mapped[str | None] = mapped_column(String(200))
     ts: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+class SessionAnalysisReport(Base):
+    """Versioned first-party session evidence and a durable analysis queue.
+
+    pending_event_id follows ingestion, latest_event_id follows completed
+    analysis. Late batches enqueue a revision rather than disappearing behind
+    a session-start cursor. The report does not establish a physical person.
+    """
+    __tablename__ = "session_analysis_reports"
+    __table_args__ = (
+        Index("ix_session_analysis_due", "status", "due_at"),
+    )
+
+    session_id_hash: Mapped[str] = mapped_column(String(80), primary_key=True)
+    schema_version: Mapped[str] = mapped_column(String(20), nullable=False, default="1", server_default="1")
+    source_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, default="", server_default="")
+    latest_event_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), nullable=False, default=0, server_default="0")
+    pending_event_id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), nullable=False, default=0, server_default="0")
+    event_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending", server_default="pending")
+    report_json: Mapped[dict | None] = mapped_column(JSON)
+    visual_json: Mapped[dict | None] = mapped_column(JSON)
+    pending_at: Mapped[datetime | None] = mapped_column(DateTime)
+    due_at: Mapped[datetime | None] = mapped_column(DateTime)
+    attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    error: Mapped[str | None] = mapped_column(String(300))
+    generated_at: Mapped[datetime | None] = mapped_column(DateTime)

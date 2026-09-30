@@ -22,6 +22,7 @@ import {
   SlidersHorizontal, Layers, Info,
 } from 'lucide-react';
 import EChart from '../components/EChart';
+import SessionAnalysisTab from '../components/SessionAnalysisTab';
 import api, { loginUser } from '../lib/api';
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
@@ -2805,6 +2806,7 @@ const TABS = [
   { id: 'acquisition', label: 'Привлечение', icon: Megaphone, C: AcquisitionFullTab },
   { id: 'audience', label: 'Аудитория', icon: Users, C: AudienceFullTab },
   { id: 'behavior', label: 'Поведение', icon: MousePointerClick, C: BehaviorTab },
+  { id: 'sessions', label: 'Разбор сессий', icon: Brain, C: SessionAnalysisTab },
   { id: 'conversion', label: 'Конверсия', icon: Filter, C: ConversionTab },
   { id: 'retention', label: 'Удержание', icon: Users, C: RetentionTab },
   { id: 'demand', label: 'Спрос и SEO', icon: Search, C: DemandTab },
@@ -2826,6 +2828,8 @@ export default function AdminBI() {
   // custom без выбранной даты «с» — запрос не шлём (бэкенд упал бы в 30d молча).
   const customReady = period !== 'custom' || Boolean(customFrom);
   const onSlices = tab === 'slices';
+  const onSessions = tab === 'sessions';
+  const onIndependent = onSlices || onSessions;
   // Кнопка «Обновить» просит пересчёт (fresh) один раз; опросы идут без него.
   const freshRef = useRef(false);
   const { data: raw, isLoading: biLoading, isError, error, refetch, isFetching } = useQuery({
@@ -2835,9 +2839,9 @@ export default function AdminBI() {
       freshRef.current = false;
       return fetchDashboard(period, customFrom, customTo, fresh);
     },
-    enabled: isAdmin && customReady && !onSlices,
+    enabled: isAdmin && customReady && !onIndependent,
     refetchInterval: (query) => {
-      if (onSlices) return false;
+      if (onIndependent) return false;
       const d = query.state.data;
       if (isBuilding(d) || d?.cache_meta?.refreshing) return BI_BUILD_POLL_MS;
       return 15 * 60 * 1000;
@@ -2850,7 +2854,7 @@ export default function AdminBI() {
   const meta = data?.cache_meta;
   const builtAt = meta?.built_at ? new Date(`${meta.built_at}Z`) : null;
   const refreshNow = () => {
-    if (onSlices) return;
+    if (onIndependent) return;
     freshRef.current = true;
     refetch();
   };
@@ -2909,9 +2913,9 @@ export default function AdminBI() {
         )}
         <button
           type="button" onClick={refreshNow}
-          disabled={onSlices || building || Boolean(meta?.refreshing)}
+          disabled={onIndependent || building || Boolean(meta?.refreshing)}
           className="ml-auto flex items-center gap-1.5 text-[12px] text-text-tertiary hover:text-text-primary disabled:opacity-40"
-          title={onSlices ? 'На вкладке «Срезы» полный дашборд не пересчитывается' : 'Пересчитать сейчас (в фоне)'}
+          title={onIndependent ? 'Этот раздел загружает данные самостоятельно' : 'Пересчитать сейчас (в фоне)'}
         >
           <RefreshCw size={13} className={isFetching || building || meta?.refreshing ? 'animate-spin' : ''} />
           {builtAt ? `снимок ${builtAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : ''}
@@ -2942,18 +2946,18 @@ export default function AdminBI() {
       {!onSlices && !customReady && (
         <p className="text-[14px] text-text-tertiary py-10 text-center">Выберите даты периода (московское время).</p>
       )}
-      {!onSlices && customReady && (biLoading || building) && (
+      {!onIndependent && customReady && (biLoading || building) && (
         <p className="text-[14px] text-text-tertiary py-10 text-center">
           Считаем витрины{raw?.elapsed_sec ? ` — ${raw.elapsed_sec} с` : '…'}
           {raw?.queued_builds > 1 ? `, в очереди периодов: ${raw.queued_builds}` : ''}
         </p>
       )}
-      {!onSlices && isError && (
+      {!onIndependent && isError && (
         <p className="text-[14px] text-negative py-10 text-center">
           {error?.response?.data?.detail || 'Не удалось загрузить данные. Попробуйте обновить.'}
         </p>
       )}
-      {onSlices ? <SlicesTab /> : (data && <Active d={data} onOpenSlices={openSlices} />)}
+      {onSlices ? <SlicesTab /> : onSessions ? (customReady && <SessionAnalysisTab key={`${period}-${customFrom}-${customTo}`} period={period} dateFrom={customFrom} dateTo={customTo} />) : (data && <Active d={data} onOpenSlices={openSlices} />)}
     </div>
   );
 }

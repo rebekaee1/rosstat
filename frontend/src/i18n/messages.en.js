@@ -586,6 +586,8 @@ export default {
 
   'cookie.aria': 'Cookie settings',
   'cookie.title': 'Cookies on this site',
+  'cookie.summary': 'We use cookies for analytics and ads. By continuing to use this site, you agree to their use.',
+  'cookie.privacyShort': 'Details',
   'cookie.bodyBefore':
     'By continuing to use the site, you agree to cookies, including analytics (Yandex Metrica) and advertising (Yandex Advertising Network). This helps us measure traffic and keep the site running. You can opt out or adjust settings at any time. Details in the',
   'cookie.privacyLink': 'privacy policy',

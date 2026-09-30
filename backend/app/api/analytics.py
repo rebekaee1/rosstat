@@ -297,6 +297,7 @@ _BEHAVIOR_COLUMN_KEYS = {"t", "ts", "url", "pl", "path", "text", "x", "y", "dead
 _BEHAVIOR_TYPES = {
     "pageview", "click", "move", "dwell", "copy",
     "vital", "js_error", "api_timing", "block_view", "form",
+    "interaction", "ui_state",
 }
 
 
