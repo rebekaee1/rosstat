@@ -38,7 +38,6 @@ import WorldConceptPicker from '../components/WorldConceptPicker';
 import WorldMapConceptNote from '../components/WorldMapConceptNote';
 import { useLocale, useT } from '../i18n';
 import PlanetView from '../components/PlanetView';
-import MapTimeline from '../components/MapTimeline';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
@@ -562,7 +561,7 @@ export default function WorldRatingPage() {
           </section>
 
           <section id="chart" className="mb-5 grid scroll-mt-24 gap-4">
-            <div className="rounded-[1.5rem] border border-border-subtle bg-surface p-3 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
+            <div className="min-w-0">
               {mapSeriesQ.isLoading ? (
                 <SkeletonBox className="aspect-[2/1] w-full rounded-2xl" />
               ) : (
@@ -578,16 +577,15 @@ export default function WorldRatingPage() {
                     colorMode={conceptColorMode(activeConcept)}
                     colorDirection={sortedColDir}
                     defaultScope="world"
+                    years={years}
+                    year={activeYear}
+                    onYearChange={setSelectedYear}
+                    conceptSlug={activeConcept}
+                    rankingItems={ranked}
+                    benchmark={mapSeriesQ.data?.benchmark_by_year?.[String(activeYear)]}
+                    ratingHref="#rating-table"
                     onSelect={openCountry}
                   />
-                  {years.length > 1 && activeYear && (
-                    <MapTimeline
-                      years={years}
-                      year={activeYear}
-                      onYearChange={setSelectedYear}
-                      metric={`world-rating:${activeConcept}`}
-                    />
-                  )}
                 </>
               )}
             </div>

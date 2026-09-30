@@ -1,20 +1,24 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
+import { useLocation } from 'react-router-dom';
 import HomeWorkbench from './HomeWorkbench';
 import { renderPage, mockApiGet } from '../../test/renderPage';
 
 vi.mock('../PlanetView', () => ({
-  default: () => <div data-testid="world-map-stub">map</div>,
-}));
-vi.mock('../MapTimeline', () => ({
-  default: ({ years, year, onYearChange }) => (
-    <div data-testid="map-timeline-stub">
-      timeline:{Array.isArray(years) ? years.join(',') : 'none'}:{year ?? 'nil'}:{typeof onYearChange}
-    </div>
-  ),
+  default: vi.fn(() => <div data-testid="world-map-stub">map</div>),
 }));
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); });
+
+async function planetProps() {
+  const PlanetView = (await import('../PlanetView')).default;
+  return PlanetView.mock.calls.at(-1)?.[0];
+}
+
+function LocationProbe() {
+  const { pathname } = useLocation();
+  return <output data-testid="location-probe">{pathname}</output>;
+}
 
 const INDICATORS = [
   {
@@ -29,7 +33,7 @@ const INDICATORS = [
 ];
 
 describe('HomeWorkbench', () => {
-  it('рисует карту, рейтинг и подсказку на полный рейтинг вместо боковых переходов', async () => {
+  it('передаёт рейтинг и годы одной панели планеты без нижних дубликатов', async () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       [/^\/indicators/, INDICATORS],
@@ -96,9 +100,14 @@ describe('HomeWorkbench', () => {
     await waitFor(() => {
       expect(screen.getByTestId('world-map-stub')).toBeTruthy();
     });
-    // MapTimeline is lazy and mounts only after years resolve — wait for it.
-    const timeline = await screen.findByTestId('map-timeline-stub');
-    expect(timeline.textContent).toContain('timeline:2024,2025:2025:function');
+    await waitFor(async () => {
+      expect(await planetProps()).toMatchObject({
+        years: [2024, 2025], year: 2025, conceptSlug: 'unemployment-rate',
+        ratingHref: '/world/rating/unemployment-rate/2025',
+        rankingItems: [{ country_code: 'DE', value: 3.1 }],
+      });
+    });
+    expect((await planetProps()).onYearChange).toEqual(expect.any(Function));
 
     const scope = document.querySelector('[data-block="home-data-scope"]');
     const controls = document.querySelector('[data-block="home-map-controls"]');
@@ -107,17 +116,9 @@ describe('HomeWorkbench', () => {
     expect(scope.compareDocumentPosition(controls) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(workbench.contains(controls)).toBe(true);
 
-    await waitFor(() => {
-      expect(screen.getByText(/3,10/)).toBeTruthy();
-    });
-    const rankingBtn = screen.getByRole('button', { name: /Германия/ });
-    expect(rankingBtn.textContent).toMatch(/Германия/);
-    expect(rankingBtn.textContent).toMatch(/3,10/);
-    // Единица один раз в шапке блока, не в каждой строке.
-    expect(rankingBtn.textContent).not.toMatch(/% экономически/);
-    expect(screen.getByText('%')).toBeTruthy();
-    // В строках рейтинга нет обрезанных имён (ellipsis в placeholder поиска — ок).
-    expect(rankingBtn.textContent).not.toMatch(/\.\.\.|…/);
+    expect((await planetProps()).unit).toBe('%');
+    expect(screen.queryByRole('button', { name: /Германия/ })).toBeNull();
+    expect(screen.queryByTestId('map-timeline-stub')).toBeNull();
   });
 
   it('для ВВП показывает справку МВФ и медиану с сервера, без выдуманного среднего', async () => {
@@ -175,12 +176,11 @@ describe('HomeWorkbench', () => {
       { path: '/', route: '/' },
     );
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
-    });
+    await waitFor(async () => expect((await planetProps())?.rankingItems).toHaveLength(1));
     expect(screen.getByRole('button', { name: 'Как читается карта валового внутреннего продукта' })).toBeTruthy();
-    expect(screen.getByText('Медиана по 48 странам с данными')).toBeTruthy();
-    expect(screen.getByText(/12,40/)).toBeTruthy();
+    expect((await planetProps()).benchmark).toEqual({
+      value: 12.4, label: 'Медиана по 48 странам с данными', countries_count: 48,
+    });
   });
 
   it('рисует карту по snapshot, не дожидаясь полной истории map-series', async () => {
@@ -222,11 +222,10 @@ describe('HomeWorkbench', () => {
       { path: '/', route: '/' },
     );
 
-    await waitFor(() => {
+    await waitFor(async () => {
       expect(screen.getByTestId('world-map-stub')).toBeTruthy();
-      expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
+      expect((await planetProps()).rankingItems).toMatchObject([{ country_code: 'DE', value: 3.1 }]);
     });
-    expect(screen.getByRole('button', { name: /Германия/ }).textContent).toMatch(/3,10/);
     expect(screen.queryByTestId('map-timeline-stub')).toBeNull();
   });
 
@@ -267,9 +266,65 @@ describe('HomeWorkbench', () => {
       { path: '/', route: '/' },
     );
 
-    await waitFor(() => {
+    await waitFor(async () => {
       expect(screen.getByTestId('world-map-stub')).toBeTruthy();
-      expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
+      expect((await planetProps()).countries).toMatchObject([{ code: 'DE', slug: 'germany' }]);
+      expect((await planetProps()).rankingItems).toMatchObject([{ country_code: 'DE', value: 3.1 }]);
     });
+  });
+
+  it('переключает год панели, сохраняет ноль и не выдумывает российское наблюдение', async () => {
+    const point = (code, slug, value, year) => ({
+      country_code: code, country_slug: slug, country_name: code === 'RU' ? 'Россия' : 'Германия',
+      indicator_code: code === 'RU' ? 'unemployment' : 'de-une',
+      date: `${year}-06-01`, value,
+    });
+    mockApiGet([
+      ['/auth/me', { user: null }], [/^\/indicators/, INDICATORS],
+      ['/world/countries', { countries: [{ code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany' }] }],
+      [/^\/world\/compare\/map-series\//, {
+        concept: { slug: 'unemployment-rate', unit: '%', russia: { eligible: true, indicator_code: 'unemployment' } },
+        years: [2024, 2025],
+        values_by_year: {
+          2024: { DE: point('DE', 'germany', 3.1, 2024) },
+          2025: { DE: point('DE', 'germany', 3.2, 2025), RU: point('RU', 'russia', 0, 2025) },
+        },
+      }],
+    ]);
+    renderPage(<><HomeWorkbench ratingConcepts={{ data: { concepts: [{ slug: 'unemployment-rate', unit: '%' }] } }} /><LocationProbe /></>,
+      { path: '/*', route: '/' });
+    await waitFor(async () => expect((await planetProps())?.year).toBe(2025));
+    expect((await planetProps()).rankingItems[0]).toMatchObject({ country_code: 'RU', value: 0 });
+    const changeYear = (await planetProps()).onYearChange;
+    act(() => changeYear(2024));
+    await waitFor(async () => expect((await planetProps())?.year).toBe(2024));
+    const props = await planetProps();
+    expect(props.ratingHref).toBe('/world/rating/unemployment-rate/2024');
+    expect(props.countries.some((country) => country.code === 'RU')).toBe(true);
+    expect(props.rankingItems).toMatchObject([{ country_code: 'DE', value: 3.1 }]);
+    expect(props.valuesByCode.has('RU')).toBe(false);
+    expect(props.detailsByCode.has('RU')).toBe(false);
+    const russia = props.countries.find((country) => country.code === 'RU');
+    act(() => props.onSelect(russia, null));
+    expect(screen.getByTestId('location-probe').textContent).toBe('/russia/indicator/unemployment');
+  });
+
+  it('передаёт все строки рейтинга, включая страны за прежним пределом 32', async () => {
+    const rows = Array.from({ length: 40 }, (_, index) => ({
+      country_code: `C${index}`, country_slug: `country-${index}`, country_name: `Страна ${index}`,
+      value: index,
+    }));
+    mockApiGet([
+      ['/auth/me', { user: null }], [/^\/indicators/, INDICATORS],
+      ['/world/countries', { countries: [] }],
+      [/^\/world\/compare\/map-series\//, {
+        concept: { slug: 'unemployment-rate', unit: '%' }, years: [2025],
+        values_by_year: { 2025: Object.fromEntries(rows.map((row) => [row.country_code, row])) },
+      }],
+    ]);
+    renderPage(<HomeWorkbench ratingConcepts={{ data: { concepts: [{ slug: 'unemployment-rate', unit: '%' }] } }} />);
+    await waitFor(async () => expect((await planetProps())?.rankingItems).toHaveLength(40));
+    expect((await planetProps()).rankingItems.at(-1)).toMatchObject({ country_code: 'C39', value: 39 });
+    expect((await planetProps()).rankingItems[0].value).toBe(0);
   });
 });

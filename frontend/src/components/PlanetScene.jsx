@@ -14,6 +14,10 @@ import {
   normalizePlanetCountryCode, pickPlanetCountry, sphereToLonLat,
 } from '../lib/planetGeometry';
 import { WORLD_FEATURES } from '../lib/worldTopology';
+import {
+  beginPlanetPointer, createPlanetPointerState, endPlanetPointer,
+  movePlanetPointer, planetFitDistance,
+} from '../lib/planetNavigation';
 import { useT } from '../i18n';
 import {
   ATMOSPHERE_FRAGMENT, PLANET_FRAGMENT, PLANET_VERTEX,
@@ -109,23 +113,29 @@ function usePlanetTextures(compact, onError) {
   return textures;
 }
 
-function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope }) {
-  const { camera, gl, invalidate } = useThree();
+function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, interactive, touchNavigation, onHover }) {
+  const { camera, gl, invalidate, size } = useThree();
   const controlsRef = useRef(null);
   const flightRef = useRef(null);
+  const fitDistance = planetFitDistance({ fov: camera.fov, aspect: size.width / size.height });
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
+    controls.enabled = interactive;
+    // Wheel belongs to the page. Only an explicitly active touch mode owns pinch.
+    controls.enableZoom = interactive && touchNavigation;
+    // OrbitControls.connect() writes 'none'; override it after connecting.
+    gl.domElement.style.setProperty('touch-action', interactive ? 'none' : 'pan-y pinch-zoom');
     controls.enablePan = false;
     controls.enableDamping = !reducedMotion;
     controls.dampingFactor = 0.12;
     controls.rotateSpeed = 0.55;
     controls.zoomSpeed = 0.75;
     controls.minDistance = MIN_DISTANCE;
-    controls.maxDistance = MAX_DISTANCE;
+    controls.maxDistance = Math.max(MAX_DISTANCE, fitDistance);
     controls.minPolarAngle = 0.035;
     controls.maxPolarAngle = Math.PI - 0.035;
     controls.addEventListener('change', invalidate);
-    const interrupt = () => { flightRef.current = null; invalidate(); };
+    const interrupt = () => { flightRef.current = null; onHover(null); invalidate(); };
     controls.addEventListener('start', interrupt);
     controlsRef.current = controls;
     controls.update();
@@ -135,27 +145,38 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope })
       controls.dispose();
       controlsRef.current = null;
     };
-  }, [camera, gl, invalidate, reducedMotion]);
+  }, [camera, gl, invalidate, reducedMotion, interactive, touchNavigation, onHover, fitDistance]);
+
+  useEffect(() => {
+    if (camera.position.length() < fitDistance) {
+      camera.position.normalize().multiplyScalar(fitDistance);
+      camera.lookAt(0, 0, 0);
+      controlsRef.current?.update();
+      invalidate();
+    }
+  }, [camera, fitDistance, invalidate]);
 
   useEffect(() => {
     if (!cameraCommand) return;
+    onHover(null);
     const currentDistance = camera.position.length();
     let target = camera.position.clone();
     if (cameraCommand.type === 'focus') {
       const code = normalizePlanetCountryCode(cameraCommand.countryCode);
       const entry = entries.find((item) => item.code === code);
       if (!entry) return;
-      target = new Vector3(...lonLatToSphere(entry.focus, 2.6));
+      if (!entry.focus) return;
+      target = new Vector3(...lonLatToSphere(entry.focus, Math.max(currentDistance, fitDistance)));
     } else if (cameraCommand.type === 'reset') {
       target = new Vector3(...lonLatToSphere(
         defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS,
-        INITIAL_DISTANCE,
+        Math.max(INITIAL_DISTANCE, fitDistance),
       ));
     } else {
       const factor = cameraCommand.type === 'zoomIn' ? 0.8 : 1.25;
-      target.normalize().multiplyScalar(Math.min(MAX_DISTANCE, Math.max(MIN_DISTANCE, currentDistance * factor)));
+      target.normalize().multiplyScalar(Math.min(Math.max(MAX_DISTANCE, fitDistance), Math.max(MIN_DISTANCE, currentDistance * factor)));
     }
-    if (reducedMotion) {
+    if (reducedMotion || cameraCommand.instant) {
       camera.position.copy(target);
       camera.lookAt(0, 0, 0);
       controlsRef.current?.update();
@@ -171,13 +192,13 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope })
       };
     }
     invalidate();
-  }, [cameraCommand, entries, camera, invalidate, reducedMotion, defaultScope]);
+  }, [cameraCommand, entries, camera, invalidate, reducedMotion, defaultScope, fitDistance, onHover]);
 
   useFrame((_, delta) => {
     const flight = flightRef.current;
     if (flight) {
       flight.elapsed += Math.min(delta, 0.05);
-      const progress = Math.min(1, flight.elapsed / 0.65);
+      const progress = Math.min(1, flight.elapsed / 0.25);
       const ease = 1 - (1 - progress) ** 3;
       const rotation = new Quaternion().slerpQuaternions(new Quaternion(), flight.rotation, ease);
       camera.position.copy(flight.start).applyQuaternion(rotation)
@@ -191,9 +212,11 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope })
   return null;
 }
 
-function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode, onHover, onSelect, onReady }) {
+function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
   const { invalidate, gl } = useThree();
-  const downRef = useRef(null);
+  const pointerState = useRef(createPlanetPointerState());
+  const completedTap = useRef(null);
+  const hoverCode = useRef(null);
   const readyRef = useRef(false);
   const geometry = useMemo(() => {
     const sphere = new SphereGeometry(1, 96, 64);
@@ -223,18 +246,69 @@ function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode
   const atmosphereUniforms = useMemo(() => ({ sunDirection: { value: SUN } }), []);
   useEffect(() => () => geometry.dispose(), [geometry]);
 
+  useEffect(() => {
+    const canvas = gl.domElement;
+    const ownerDocument = canvas.ownerDocument;
+    const down = (event) => {
+      completedTap.current = null;
+      pointerState.current = beginPlanetPointer(pointerState.current, event);
+      hoverCode.current = null;
+      onHover(null);
+    };
+    const additionalDown = (event) => {
+      const state = pointerState.current;
+      // Only a gesture started on this canvas owns outside contacts.
+      if (!state.activeIds.length || state.activeIds.includes(event.pointerId)) return;
+      completedTap.current = null;
+      pointerState.current = beginPlanetPointer(state, event);
+      hoverCode.current = null;
+      onHover(null);
+    };
+    const move = (event) => {
+      pointerState.current = movePlanetPointer(pointerState.current, event);
+    };
+    const end = (event) => {
+      const result = endPlanetPointer(pointerState.current, event, event.type === 'pointercancel');
+      pointerState.current = result.state;
+      completedTap.current = result.tap ? { pointerId: event.pointerId, timeStamp: event.timeStamp } : null;
+    };
+    canvas.addEventListener('pointerdown', down, true);
+    ownerDocument.addEventListener('pointerdown', additionalDown, true);
+    ownerDocument.addEventListener('pointermove', move, true);
+    ownerDocument.addEventListener('pointerup', end, true);
+    ownerDocument.addEventListener('pointercancel', end, true);
+    return () => {
+      canvas.removeEventListener('pointerdown', down, true);
+      ownerDocument.removeEventListener('pointerdown', additionalDown, true);
+      ownerDocument.removeEventListener('pointermove', move, true);
+      ownerDocument.removeEventListener('pointerup', end, true);
+      ownerDocument.removeEventListener('pointercancel', end, true);
+      pointerState.current = createPlanetPointerState();
+      completedTap.current = null;
+    };
+  }, [gl, onHover]);
+
+  useEffect(() => {
+    hoverCode.current = null;
+    onHover(null);
+    gl.domElement.style.setProperty('cursor', 'grab');
+  }, [cameraCommand, gl, onHover]);
+
   const hit = (event) => pickPlanetCountry(entries, sphereToLonLat(event.point));
   const pointerMove = (event) => {
-    if (event.buttons) return;
+    if (event.buttons || event.pointerType === 'touch') return;
     const entry = hit(event);
     const code = entry?.country ? entry.dataCode : null;
     gl.domElement.style.setProperty('cursor', code ? 'pointer' : 'grab');
-    onHover(code);
+    if (hoverCode.current !== code) {
+      hoverCode.current = code;
+      onHover(code);
+    }
   };
   const pointerUp = (event) => {
-    const down = downRef.current;
-    downRef.current = null;
-    if (!down || Math.hypot(event.clientX - down.x, event.clientY - down.y) > 6) return;
+    const tap = completedTap.current;
+    completedTap.current = null;
+    if (!tap || tap.pointerId !== event.pointerId || tap.timeStamp !== event.nativeEvent.timeStamp) return;
     const entry = hit(event);
     onSelect(entry?.country ? entry.dataCode : null);
   };
@@ -252,10 +326,9 @@ function Earth({ textures, entries, mode, valuesByCode, colorModel, selectedCode
         onAfterRender={() => {
           if (!readyRef.current) { readyRef.current = true; onReady(); }
         }}
-        onPointerDown={(event) => { downRef.current = { x: event.clientX, y: event.clientY }; }}
         onPointerUp={pointerUp}
         onPointerMove={pointerMove}
-        onPointerOut={() => { onHover(null); gl.domElement.style.setProperty('cursor', 'grab'); }}
+        onPointerOut={() => { hoverCode.current = null; onHover(null); gl.domElement.style.setProperty('cursor', 'grab'); }}
       >
         <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} />
       </mesh>
@@ -299,7 +372,7 @@ class SceneBoundary extends Component {
 }
 
 /** Three is a lazy leaf: HTML search/cards and SVG fallback never depend on a GPU. */
-export default function PlanetScene({ countries, defaultScope, onError, ...props }) {
+export default function PlanetScene({ countries, defaultScope, onError, interactive = true, touchNavigation = false, ...props }) {
   const t = useT();
   const [features, setFeatures] = useState(WORLD_FEATURES);
   const atlasLevel = useRef(0);
@@ -355,6 +428,8 @@ export default function PlanetScene({ countries, defaultScope, onError, ...props
             reducedMotion={reducedMotion}
             defaultScope={defaultScope}
             onError={onError}
+            interactive={interactive}
+            touchNavigation={touchNavigation}
             {...props}
           />
         </Suspense>

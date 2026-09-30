@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import WorldRatingPage from './WorldRatingPage';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
@@ -7,15 +7,12 @@ vi.mock('../components/PlanetView', () => ({
   default: vi.fn(() => <div data-testid="world-map-stub">map</div>),
 }));
 
-vi.mock('../components/MapTimeline', () => ({
-  default: ({ years, year, onYearChange }) => (
-    <div data-testid="map-timeline-stub">
-      timeline:{years.join(',')}:{year}:{typeof onYearChange}
-    </div>
-  ),
-}));
+afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); });
 
-afterEach(() => vi.restoreAllMocks());
+async function planetProps() {
+  const PlanetView = (await import('../components/PlanetView')).default;
+  return PlanetView.mock.calls.at(-1)?.[0];
+}
 
 /** Строки полной таблицы (внутри #rating-table). */
 function dataRows(container = document.body) {
@@ -165,6 +162,14 @@ describe('WorldRatingPage', () => {
       expect(within(rows[1]).getByRole('link', { name: 'Германия' })).toBeTruthy();
       expect(rows[0].textContent).toMatch(/2[.,]20/);
     });
+    // Список у планеты остаётся рейтингом базовой безработицы: сортировка
+    // дополнительной колонки таблицы не подменяет показатель этого списка.
+    expect((await planetProps()).rankingItems).toMatchObject([
+      { country_code: 'DE', rank: 1, value: 3.1 },
+      { country_code: 'FR', rank: 2, value: 7.2 },
+    ]);
+    expect((await planetProps()).ratingHref).toBe('#rating-table');
+    expect((await planetProps()).conceptSlug).toBe('unemployment-rate');
 
     // Второй клик разворачивает доп-колонку по возрастанию.
     fireEvent.click(extraHeader);
@@ -656,12 +661,57 @@ it('сохраняет год из быстрой ссылки и переклю
       years: [2024, 2025], values_by_year: { 2024: { DE: point(4100, 2024) }, 2025: { DE: point(4900, 2025) } }, benchmark_by_year: {} }],
   ]);
   renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/gdp-usd?view=interactive&year=2024#chart' });
-  await waitFor(() => expect(screen.getByTestId('map-timeline-stub').textContent).toContain(':2024:'));
+  await waitFor(async () => expect((await planetProps())?.year).toBe(2024));
+  expect((await planetProps()).years).toEqual([2024, 2025]);
+  expect((await planetProps()).rankingItems).toMatchObject([{ country_code: 'DE', value: 4100 }]);
   const select = within(document.querySelector('#rating-table')).getByRole('combobox');
   expect(select.value).toBe('2024');
   expect(document.querySelector('link[rel=canonical]').href).toMatch(/\/world\/rating\/gdp-usd\/2024$/);
   expect(document.querySelector('meta[property="og:image"]').content).toMatch(/\/2024\.png$/);
-  fireEvent.change(select, { target: { value: '2025' } });
-  await waitFor(() => expect(screen.getByTestId('map-timeline-stub').textContent).toContain(':2025:'));
+  const changeYear = (await planetProps()).onYearChange;
+  act(() => changeYear(2025));
+  await waitFor(async () => expect((await planetProps())?.year).toBe(2025));
+  expect(select.value).toBe('2025');
+  expect((await planetProps()).rankingItems).toMatchObject([{ country_code: 'DE', value: 4900 }]);
   expect(document.querySelector('link[rel=canonical]').href).toMatch(/\/world\/rating\/gdp-usd$/);
+  fireEvent.change(select, { target: { value: '2024' } });
+  await waitFor(async () => expect((await planetProps())?.year).toBe(2024));
+  expect(screen.queryByTestId('map-timeline-stub')).toBeNull();
+});
+
+it('смена года планеты сохраняет нулевую Россию и пустое российское наблюдение', async () => {
+  const point = (code, slug, value, year) => ({
+    country_code: code, country_slug: slug, country_name: code === 'RU' ? 'Россия' : 'Германия',
+    indicator_code: code === 'RU' ? 'unemployment' : 'de-une',
+    date: `${year}-06-01`, value, unit: '%',
+  });
+  mockApiGet([
+    ['/auth/me', { user: null }], [/^\/indicators/, []],
+    [/^\/world\/countries/, { countries: [{ code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany' }] }],
+    [/^\/world\/rating\/concepts/, { concepts: [{ slug: 'unemployment-rate', name: 'Безработица', unit: '%', default_sort: 'asc' }] }],
+    [/^\/world\/compare\/map-series\//, {
+      concept: { slug: 'unemployment-rate', unit: '%', russia: { eligible: true, indicator_code: 'unemployment' } },
+      years: [2024, 2025],
+      values_by_year: {
+        2024: { DE: point('DE', 'germany', 3.1, 2024) },
+        2025: { DE: point('DE', 'germany', 3.2, 2025), RU: point('RU', 'russia', 0, 2025) },
+      },
+      benchmark_by_year: { 2025: { value: 0, label: 'Сравнимое значение' } },
+    }],
+  ]);
+  renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' });
+  await waitFor(async () => expect((await planetProps())?.year).toBe(2025));
+  expect((await planetProps()).rankingItems[0]).toMatchObject({ country_code: 'RU', value: 0, rank: 1 });
+  expect((await planetProps()).benchmark).toEqual({ value: 0, label: 'Сравнимое значение' });
+  const changeYear = (await planetProps()).onYearChange;
+  act(() => changeYear(2024));
+  await waitFor(async () => expect((await planetProps())?.year).toBe(2024));
+  const props = await planetProps();
+  expect(props.countries.some((country) => country.code === 'RU')).toBe(true);
+  expect(props.valuesByCode.has('RU')).toBe(false);
+  expect(props.detailsByCode.has('RU')).toBe(false);
+  expect(props.rankingItems).toMatchObject([{ country_code: 'DE', value: 3.1, rank: 1 }]);
+  expect(props.benchmark).toBeUndefined();
+  expect(dataRows()).toHaveLength(1);
+  expect(screen.getByRole('link', { name: 'Россия' }).getAttribute('href')).toBe('/russia/indicator/unemployment');
 });

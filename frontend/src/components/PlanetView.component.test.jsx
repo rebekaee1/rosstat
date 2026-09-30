@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import PlanetView from './PlanetView';
 
-const scene = vi.hoisted(() => ({ fail: false, props: null }));
+const scene = vi.hoisted(() => ({ fail: false, props: null, locale: 'ru' }));
 
 vi.mock('../i18n', () => ({
   useT: () => (key, vars) => (vars?.count == null ? key : `${key}: ${vars.count}`),
-  useLocale: () => ({ locale: 'ru' }),
+  useLocale: () => ({ locale: scene.locale }),
 }));
 vi.mock('./PlanetScene', () => ({
   default: function MockPlanetScene(props) {
@@ -28,12 +28,23 @@ const countries = [
   { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany' },
   { code: 'MT', slug: 'malta', name: 'Мальта', name_en: 'Malta' },
 ];
-const germanyDetail = { country_code: 'DE', country_slug: 'germany', date: '2026-06-01', value: 3.2, indicator_code: 'unemployment-rate' };
+const germanyDetail = { country_code: 'DE', country_slug: 'germany', date: '2026-06-01', value: 3.2, indicator_code: 'de-labour-survey-rate' };
+const maltaDetail = { country_code: 'MT', country_slug: 'malta', date: '2026-06-01', value: 1.7, indicator_code: 'mt-national-jobless-rate' };
+
+function countryList() {
+  return within(screen.getByRole('group', { name: 'planet.countries' }));
+}
+
+function selectListCountry(name) {
+  fireEvent.click(countryList().getByRole('button', { name: new RegExp(name) }));
+}
 
 beforeEach(() => {
   scene.fail = false;
   scene.props = null;
+  scene.locale = 'ru';
 });
+afterEach(() => vi.restoreAllMocks());
 
 describe('PlanetView interaction contract', () => {
   it('starts in Earth and selects a country before opening its actual row', async () => {
@@ -49,7 +60,28 @@ describe('PlanetView interaction contract', () => {
     expect(onSelect).toHaveBeenCalledWith(countries[0], germanyDetail);
   });
 
-  it('finds a microstate by code using the keyboard without opening automatically', async () => {
+  it('selects from the ranking without navigation, preserves selection on overview and clears it explicitly', async () => {
+    const onSelect = vi.fn();
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} detailsByCode={{ DE: germanyDetail }} onSelect={onSelect} />);
+    await screen.findByTestId('planet-scene');
+    selectListCountry('Германия');
+    expect(scene.props.selectedCode).toBe('DE');
+    expect(countryList().getByRole('button', { name: /Германия/ }).getAttribute('aria-pressed')).toBe('true');
+    expect(onSelect).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'planet.reset' }));
+    expect(scene.props.cameraCommand.type).toBe('reset');
+    expect(scene.props.selectedCode).toBe('DE');
+    expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'planet.clearSelection' }));
+    expect(scene.props.selectedCode).toBeNull();
+    expect(countryList().getByRole('button', { name: /Германия/ }).getAttribute('aria-pressed')).toBe('false');
+    expect(screen.queryByRole('button', { name: 'planet.openIndicator' })).toBeNull();
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  it('finds a microstate with an instant keyboard focus command and closes search on repeated selection', async () => {
     const onSelect = vi.fn();
     const { container } = render(<PlanetView countries={countries} onSelect={onSelect} />);
     const input = screen.getByRole('combobox');
@@ -58,15 +90,13 @@ describe('PlanetView interaction contract', () => {
     expect(screen.getAllByRole('option')).toHaveLength(1);
     fireEvent.keyDown(input, { key: 'Enter' });
     await waitFor(() => expect(scene.props.selectedCode).toBe('MT'));
-    expect(scene.props.cameraCommand).toMatchObject({ type: 'focus', countryCode: 'MT' });
+    expect(scene.props.cameraCommand).toMatchObject({ type: 'focus', countryCode: 'MT', instant: true });
     expect(screen.queryByRole('listbox')).toBeNull();
     const card = container.querySelector('[data-selected-country="MT"]');
     expect(document.activeElement).toBe(card);
     expect(input.getAttribute('aria-expanded')).toBe('false');
     expect(onSelect).not.toHaveBeenCalled();
 
-    // Choosing the same country again must still close search and leave focus
-    // on the result, even though selectedCode itself does not change.
     act(() => input.focus());
     fireEvent.change(input, { target: { value: 'mt' } });
     fireEvent.keyDown(input, { key: 'Enter' });
@@ -74,6 +104,32 @@ describe('PlanetView interaction contract', () => {
     expect(document.activeElement).toBe(card);
     fireEvent.click(screen.getByRole('button', { name: 'planet.openCountry' }));
     expect(onSelect).toHaveBeenCalledWith(countries[1], null);
+  });
+
+  it('prioritizes the UK code over Ukraine and resolves the GB alias in English search', async () => {
+    scene.locale = 'en';
+    const englishCountries = [
+      { code: 'UA', slug: 'ukraine', name: 'Украина', name_en: 'Ukraine' },
+      { code: 'UK', slug: 'united-kingdom', name: 'Великобритания', name_en: 'United Kingdom' },
+    ];
+    const onSelect = vi.fn();
+    render(<PlanetView countries={englishCountries} onSelect={onSelect} />);
+    const input = screen.getByRole('combobox');
+    act(() => input.focus());
+    fireEvent.change(input, { target: { value: 'UK' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(scene.props.selectedCode).toBe('UK'));
+    expect(screen.getByRole('heading', { name: 'United Kingdom' })).toBeTruthy();
+    const firstCommandId = scene.props.cameraCommand.id;
+    act(() => input.focus());
+    fireEvent.change(input, { target: { value: 'GB' } });
+    expect(screen.getAllByRole('option')).toHaveLength(1);
+    expect(screen.getByRole('option', { name: /United Kingdom/ })).toBeTruthy();
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(scene.props.cameraCommand).toMatchObject({ type: 'focus', countryCode: 'UK', instant: true });
+    expect(scene.props.cameraCommand.id).toBeGreaterThan(firstCommandId);
+    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(onSelect).not.toHaveBeenCalled();
   });
 
   it('preserves map-series countries absent from the catalogue and real zero values', async () => {
@@ -101,21 +157,25 @@ describe('PlanetView interaction contract', () => {
     expect(onSelect).not.toHaveBeenCalled();
   });
 
-  it('explains data colours with visible numeric endpoints, units and each interval', async () => {
-    render(<PlanetView countries={countries} valuesByCode={{ DE: -5, MT: 10 }} unit="%" metricName="Сальдо" colorMode="diverging" initialMode="data" />);
+  it('offers Earth and Data while numeric colour intervals remain available through a disclosure', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: -5, MT: 10 }} unit="%" metricName="Сальдо" colorMode="diverging" initialMode="data" />);
     await screen.findByTestId('planet-scene');
-    expect(screen.getByText('-5,00')).toBeTruthy();
-    expect(screen.getByText('10,00')).toBeTruthy();
-    expect(screen.getByText('%')).toBeTruthy();
-    expect(screen.getByText('world.map.scaleZero')).toBeTruthy();
-    const swatches = screen.getAllByRole('img');
-    expect(swatches).toHaveLength(7);
-    expect(swatches[0].getAttribute('title')).toContain('≤ -6,67 %');
-    expect(swatches[3].getAttribute('aria-label')).toContain('0,00 %');
-    expect(swatches[6].getAttribute('title')).toContain('≥ 6,67 %');
+    const layers = within(screen.getByRole('group', { name: 'planet.layerLabel' }));
+    expect(layers.getAllByRole('button').map((button) => button.textContent)).toEqual(['planet.earth', 'planet.data']);
+    expect(screen.queryByRole('button', { name: 'planet.map' })).toBeNull();
+
+    const summary = container.querySelector('details summary');
+    expect(summary.textContent).toContain('-5,00–10,00 %');
+    fireEvent.click(summary);
+    expect(summary.parentElement.open).toBe(true);
+    const legend = within(screen.getByLabelText('planet.legend'));
+    expect(legend.getByText('world.map.scaleZero')).toBeTruthy();
+    expect(legend.getByText('≤ -6,67 %')).toBeTruthy();
+    expect(legend.getByText('0,00 %')).toBeTruthy();
+    expect(legend.getByText('≥ 6,67 %')).toBeTruthy();
   });
 
-  it('keeps the country selected across views and opens the current observation after the period changes', async () => {
+  it('keeps the country selected across layers and opens the current observation after the period changes', async () => {
     const onSelect = vi.fn();
     const initialProps = {
       countries,
@@ -127,8 +187,8 @@ describe('PlanetView interaction contract', () => {
     };
     const { container, rerender } = render(<PlanetView {...initialProps} />);
     fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
-    fireEvent.click(screen.getByRole('button', { name: 'planet.map' }));
-    await screen.findByTestId('fallback-map');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.earth' }));
+    expect(scene.props.mode).toBe('earth');
 
     const currentDetail = { ...germanyDetail, date: '2026-07-01', value: 5.1 };
     rerender(<PlanetView {...initialProps} detailsByCode={{ DE: currentDetail }} valuesByCode={{ DE: 5.1 }} />);
@@ -137,8 +197,7 @@ describe('PlanetView interaction contract', () => {
     expect(screen.queryByText('июнь 2026')).toBeNull();
     expect(screen.getByLabelText('planet.value').textContent).toBe('5,10');
 
-    fireEvent.click(screen.getByRole('button', { name: 'planet.earth' }));
-    await screen.findByTestId('planet-scene');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.data' }));
     expect(scene.props.selectedCode).toBe('DE');
     expect(scene.props.mode).toBe('data');
     expect(onSelect).not.toHaveBeenCalled();
@@ -146,8 +205,77 @@ describe('PlanetView interaction contract', () => {
     expect(onSelect).toHaveBeenCalledWith(countries[0], currentDetail);
   });
 
-  it('falls back after a scene error and retains country selection and CTA', async () => {
+  it('passes the chosen year as a number without opening a country', () => {
+    const onYearChange = vi.fn();
+    const onSelect = vi.fn();
+    render(<PlanetView countries={countries} years={[2024, 2025, 2026]} year={2026} onYearChange={onYearChange} onSelect={onSelect} />);
+    fireEvent.change(screen.getByRole('combobox', { name: 'map.timeline.yearOnMap' }), { target: { value: '2025' } });
+    expect(onYearChange).toHaveBeenCalledWith(2025);
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  it('preserves the server benchmark label when the value is a mean rather than a median', () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} unit="%" benchmark={{ value: 3, label: 'Среднее стран мира' }} />);
+    expect(screen.getByText(/Среднее стран мира:/).textContent).toContain('3,00 %');
+    expect(screen.queryByText(/planet.median/)).toBeNull();
+  });
+
+  it('compares two countries by the common concept rather than their different national indicator codes', () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} detailsByCode={{ DE: germanyDetail, MT: maltaDetail }} conceptSlug="unemployment-rate" />);
+    selectListCountry('Германия');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    expect(screen.queryByRole('link', { name: 'planet.showComparison' })).toBeNull();
+    selectListCountry('Мальта');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    const link = screen.getByRole('link', { name: 'planet.showComparison' });
+    const codes = new URL(link.getAttribute('href'), window.location.href).searchParams.get('codes');
+    expect(codes).toBe('w:germany:unemployment-rate,w:malta:unemployment-rate');
+    expect(codes).not.toContain(germanyDetail.indicator_code);
+    expect(codes).not.toContain(maltaDetail.indicator_code);
+  });
+
+  it('keeps Russia browsable without a value but cannot pin a missing observation for comparison', () => {
+    const russia = { code: 'RU', slug: 'russia', name: 'Россия' };
+    render(<PlanetView countries={[...countries, russia]} valuesByCode={{ DE: 3.2, MT: 1.7, RU: null }} detailsByCode={{ RU: { indicator_code: 'unemployment', value: null } }} conceptSlug="unemployment-rate" />);
+    selectListCountry('Россия');
+    expect(screen.getByText('planet.noData')).toBeTruthy();
+    const pin = screen.getByRole('button', { name: 'planet.addComparison' });
+    expect(pin.disabled).toBe(true);
+    fireEvent.click(pin);
+    expect(screen.queryByRole('link', { name: 'planet.showComparison' })).toBeNull();
+    expect(screen.queryByLabelText('planet.comparison')).toBeNull();
+  });
+
+  it('includes the complete country pool when the supplied ranking covers only 32 rows', () => {
+    const allCountries = Array.from({ length: 40 }, (_, index) => ({ code: `X${index}`, slug: `country-${index}`, name: `Страна ${index}` }));
+    const valuesByCode = Object.fromEntries(allCountries.map((country, index) => [country.code, index]));
+    const rankingItems = allCountries.slice(0, 32).map((country, index) => ({ country_code: country.code, value: index, rank: index + 1 }));
+    render(<PlanetView countries={allCountries} valuesByCode={valuesByCode} rankingItems={rankingItems} colorDirection="asc" />);
+    expect(countryList().getAllByRole('button')).toHaveLength(40);
+    const lastCountry = countryList().getByRole('button', { name: /Страна 39/ });
+    fireEvent.click(lastCountry);
+    expect(screen.getByRole('heading', { name: 'Страна 39' })).toBeTruthy();
+    expect(lastCountry.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('starts the coarse-pointer scene with interaction disabled, enables Rotate and disables it on Done', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
+      matches: query === '(pointer: coarse)', media: query,
+      addEventListener: vi.fn(), removeEventListener: vi.fn(),
+    }));
+    render(<PlanetView countries={countries} />);
+    await screen.findByTestId('planet-scene');
+    expect(scene.props.touchNavigation).toBe(true);
+    expect(scene.props.interactive).toBe(false);
+    fireEvent.click(screen.getByRole('button', { name: 'planet.rotate' }));
+    expect(scene.props.interactive).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'planet.doneRotating' }));
+    expect(scene.props.interactive).toBe(false);
+  });
+
+  it('falls back after a scene error and retains country selection and CTA through retry', async () => {
     scene.fail = true;
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
     const onSelect = vi.fn();
     const { container } = render(<PlanetView countries={countries} detailsByCode={{ DE: germanyDetail }} onSelect={onSelect} />);
     await screen.findByTestId('fallback-map');
