@@ -87,7 +87,7 @@ def test_run_for_updated_sources_recomputes_dependents_closure(monkeypatch):
     engine.register("deep", ["a"], fn("deep"))  # derived-от-derived
 
     monkeypatch.setattr(
-        "app.services.calculation_engine.cache_invalidate_indicator",
+        "app.core.cache.cache_invalidate_indicator",
         AsyncMock(),
     )
 
@@ -155,7 +155,7 @@ def test_direct_dependents_delegates_to_closure(monkeypatch):
 
     invalidate = AsyncMock()
     monkeypatch.setattr(
-        "app.services.calculation_engine.cache_invalidate_indicator",
+        "app.core.cache.cache_invalidate_indicator",
         invalidate,
     )
 
@@ -177,7 +177,7 @@ def test_run_for_updated_sources_short_circuits_on_empty_batch(monkeypatch):
 
     engine.register("a", ["src1"], fn_a)
     monkeypatch.setattr(
-        "app.services.calculation_engine.cache_invalidate_indicator",
+        "app.core.cache.cache_invalidate_indicator",
         AsyncMock(),
     )
 
@@ -204,7 +204,7 @@ def test_run_for_updated_sources_returns_only_codes_with_actual_changes(monkeypa
 
     invalidate = AsyncMock()
     monkeypatch.setattr(
-        "app.services.calculation_engine.cache_invalidate_indicator",
+        "app.core.cache.cache_invalidate_indicator",
         invalidate,
     )
 
@@ -213,7 +213,7 @@ def test_run_for_updated_sources_returns_only_codes_with_actual_changes(monkeypa
     )
 
     assert result == ["changed"]
-    invalidate.assert_awaited_once_with("changed")
+    invalidate.assert_not_awaited()  # The SQL owner publishes after commit.
 
 
 def test_run_for_direct_dependents_only_touches_matching_sources(monkeypatch):
@@ -239,7 +239,7 @@ def test_run_for_direct_dependents_only_touches_matching_sources(monkeypatch):
 
     invalidate = AsyncMock()
     monkeypatch.setattr(
-        "app.services.calculation_engine.cache_invalidate_indicator",
+        "app.core.cache.cache_invalidate_indicator",
         invalidate,
     )
 
@@ -273,7 +273,7 @@ def test_run_for_updated_sources_isolates_failures(monkeypatch):
     engine.register("after", ["s"], fn_after)
 
     monkeypatch.setattr(
-        "app.services.calculation_engine.cache_invalidate_indicator",
+        "app.core.cache.cache_invalidate_indicator",
         AsyncMock(),
     )
 

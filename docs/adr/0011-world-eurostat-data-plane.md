@@ -270,3 +270,17 @@ max(2, 20%) публичных карточек набора; причина п�
 Инвариант: код карточки (URL) после создания не меняется — loader больше не
 переписывает `WorldIndicator.code` (редиректов для мировых карточек нет).
 
+
+### 2026-09-30 — публикация каждой записанной транзакции
+
+F04 воспроизведён после отдельного remap commit: ошибка следующего slice
+пропускает прежний финальный cache bump. Теперь country metadata (при изменении),
+remap (при изменении) и parsed slice (при сохранённом индикаторе) публикуют
+world/catalog/SSR непосредственно после своего commit и до session close.
+Транзакции отдельных slices сохраняются; весь dataset не стал атомарным.
+URL не меняется. Ошибка loader не продвигает applied TOC в scheduler.
+
+Публикация ждёт bounded Redis attempt при cooperative cancellation; DB0 остаётся
+best-effort, state/catalog strict. SIGKILL и unknown commit outcome требуют
+reconciliation/outbox отдельно. [Локальная приёмка](../code-review/history-publication-acceptance-2026-09-30.md),
+без production release. История условий quarantine выше сохраняется.

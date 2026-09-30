@@ -36,6 +36,7 @@ from app.services.world_source_adapter import (
     WorldSeriesPayload,
     WorldSeriesRef,
     WorldSourceAdapter,
+    validate_complete_coverage,
 )
 
 logger = logging.getLogger(__name__)
@@ -537,8 +538,23 @@ async def reconcile_points(
     db: AsyncSession,
     indicator_id: int,
     points: list[tuple[date, float]],
+    *,
+    is_complete: bool = False,
+    coverage_start: date | None = None,
+    coverage_end: date | None = None,
 ) -> tuple[int, int]:
-    """Идемпотентный upsert точек + удаление дат, исчезнувших из source-ответа."""
+    """Merge revisions; prune only within an explicitly complete source window.
+
+    The caller owns the transaction. Partial/default responses retain every
+    absent historical date; invalid completeness fails before point writes.
+    A complete response cannot remove points outside its declared coverage.
+    """
+    replacement_window = validate_complete_coverage(
+        is_complete=is_complete,
+        coverage_start=coverage_start,
+        coverage_end=coverage_end,
+        periods=(period for period, _ in points),
+    )
     if not points:
         return 0, 0
     touched = 0
@@ -559,10 +575,15 @@ async def reconcile_points(
         res = await db.execute(stmt)
         touched += len(res.fetchall())
 
+    if replacement_window is None:
+        return touched, 0
+    replacement_start, replacement_end = replacement_window
     existing_dates = (
         await db.execute(
             select(WorldDataPoint.date).where(
-                WorldDataPoint.indicator_id == indicator_id
+                WorldDataPoint.indicator_id == indicator_id,
+                WorldDataPoint.date >= replacement_start,
+                WorldDataPoint.date <= replacement_end,
             )
         )
     ).scalars().all()
@@ -712,6 +733,20 @@ async def upsert_national_indicator(
                 change_state["metadata_changed"] = True
             return ind.id, True
 
+    if not spec.description:
+        # An incoming window cannot redefine the published historical span.
+        # Keep the stored span while writing metadata; after reconciliation the
+        # caller rebuilds this generated text from the actual database extent.
+        desc = default_description(
+            name_ru=spec.name_ru,
+            country_name_ru=country.name_ru,
+            unit_ru=spec.unit_ru,
+            source_ru=source_ru,
+            history_start=existing.history_start,
+            history_end=existing.history_end,
+        )
+        seo_desc = desc
+
     # Slice identity may need a new public code (YAML rename). Free the target
     # code if another same-country national row still holds the old suffix.
     if existing.code != code:
@@ -836,6 +871,8 @@ async def ingest_series(
                 return result
 
             payload = await adapter_obj.fetch_series(ref)
+            if payload.ref.slice_hash != ref.slice_hash:
+                raise ValueError("Source payload identity does not match requested series")
             points = observations_to_points(payload)
             if spec.value_scale != 1.0:
                 points = [(d, v * spec.value_scale) for d, v in points]
@@ -850,15 +887,38 @@ async def ingest_series(
                 source_ru=source_ru,
                 change_state=change_state,
             )
-            touched, removed = await reconcile_points(db, iid, points)
+            touched, removed = await reconcile_points(
+                db,
+                iid,
+                points,
+                is_complete=payload.is_complete,
+                coverage_start=payload.coverage_start,
+                coverage_end=payload.coverage_end,
+            )
             await refresh_indicator_extent(db, iid)
+            indicator = await db.get(WorldIndicator, iid)
+            if indicator is None:
+                raise RuntimeError("National indicator disappeared after point reconciliation")
+            if not spec.description:
+                description = default_description(
+                    name_ru=spec.name_ru,
+                    country_name_ru=country.name_ru,
+                    unit_ru=spec.unit_ru,
+                    source_ru=source_ru,
+                    history_start=indicator.history_start,
+                    history_end=indicator.history_end,
+                )
+                if indicator.description != description or indicator.seo_description != description:
+                    change_state["metadata_changed"] = True
+                indicator.description = description
+                indicator.seo_description = description
             await touch_dataset_state(
                 db,
                 provider=spec.provider,
                 dataset_id=spec.dataset_id,
                 status="ok",
                 slice_hash=ref.slice_hash,
-                data_updated_at=points[-1][0] if points else None,
+                data_updated_at=indicator.history_end,
             )
             result.indicator_id = iid
             result.created = created

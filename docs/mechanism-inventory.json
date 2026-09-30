@@ -295,8 +295,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "sha256": "91ba5ef3d8dce9cb3016111c15e5874d547692949dc2a7ab4b2e8c88629b71d3",
-      "lines": 575
+      "sha256": "60a06a1113b9fb127b727ece047bb7a8bb1ca55f644cbb37508be6eb389bb64d",
+      "lines": 615
     },
     {
       "path": "backend/app/core/deps.py",
@@ -690,8 +690,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "sha256": "213d8116abd30708935d7f4cc91a8d2197ee06ac19beabecbc4af95f2a2aee3f",
-      "lines": 369
+      "sha256": "522179762a48e61c13f741af766ce7b1e3d29f1217c9f4b9269f2f9aa08b2fe3",
+      "lines": 391
     },
     {
       "path": "backend/app/services/binance_btcusdt_parser.py",
@@ -720,7 +720,7 @@
     },
     {
       "path": "backend/app/services/calculation_engine.py",
-      "sha256": "bbe7cc6bddae3d30266b6e8d54c160a572d512e295205192c9dd71d022054eb3",
+      "sha256": "8a7a889e68749b31848a1c012b5090e47f73e2f3892e97be8db563d7d9a8b878",
       "lines": 445
     },
     {
@@ -1075,8 +1075,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "sha256": "0acd45455157b54d21bce5edcaaab95b09e103e4bada21a11dbbbfa13eb21881",
-      "lines": 668
+      "sha256": "5528679a4f39a6262db9628bfd63ed7f5d6e3bc3c24d41b874ec8df81b7fddc4",
+      "lines": 669
     },
     {
       "path": "backend/app/services/moex_index_parser.py",
@@ -1190,8 +1190,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "sha256": "4fea897c32ea330b5a9b48dee8cbcd336c1fd13779625f65fa9c18e70a28b772",
-      "lines": 282
+      "sha256": "75e44d5f4d2380b39468a3f0041452f1222768d3eed3c7760180afc184d78059",
+      "lines": 283
     },
     {
       "path": "backend/app/services/rosstat_ipi_parser.py",
@@ -1225,8 +1225,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "sha256": "6e5cc94f268eb626a5bf09689757ef0e47dc3df58f47505f5277caf1764f8ec1",
-      "lines": 912
+      "sha256": "ba7c058fd5b66ea5927c12d89d5f51b1a10c25bee7df502ed6e4298da6319b5c",
+      "lines": 924
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
@@ -1545,8 +1545,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "sha256": "d5d5bf927dbde97631cb9c5fe1836b97157f5d16a73b3a4c816a5abd10cdd980",
-      "lines": 1199
+      "sha256": "c61bac16b5134e551afdc11f261f09285c64604e20e4113a654fa3604352fa54",
+      "lines": 1259
     },
     {
       "path": "backend/app/services/world_plausibility.py",
@@ -1570,8 +1570,8 @@
     },
     {
       "path": "backend/app/services/world_source_adapter.py",
-      "sha256": "13528ffc8113043ce9a1e8bc8a329b921a4d96ebd410ff463817a289a86f66a5",
-      "lines": 100
+      "sha256": "4dc3946e92f8426875d609fbbb6712fae03e02f759d149048e792f445ffeefc5",
+      "lines": 149
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
@@ -1645,8 +1645,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "sha256": "e3262f3d7e7351d54f2cd619ca16008dd656e6d67d27e18d78916458a6e43bb6",
-      "lines": 571
+      "sha256": "6ba52e39083057b6916068c84a1294cf619b7b1084552710518f8a59e9e77f13",
+      "lines": 598
     },
     {
       "path": "backend/app/tasks/ticker_worker.py",
@@ -1735,8 +1735,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "sha256": "27ce7482d433af556e9d79b5fd7080575cdd44a564a06a39cafa1d07e7f8456d",
-      "lines": 688
+      "sha256": "feee2281db54ff65ba2c6550f554a5c6ea31f723297c593bfd1e854bcf451d21",
+      "lines": 726
     },
     {
       "path": "backend/scripts/load-world-national.py",
@@ -1775,8 +1775,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "sha256": "9705aa9c0ff7ef05ff2b4373b27118302a9765ccf4798d17ee2f196bd0ca0762",
-      "lines": 282
+      "sha256": "b8bdf56493ad3213bab9b537e0dfc4675ab346eb4dc674caf9a02f872520c052",
+      "lines": 278
     },
     {
       "path": "backend/scripts/retrain-all-monthly-auto.py",
@@ -1790,8 +1790,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "sha256": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547",
-      "lines": 5562
+      "sha256": "2493178b8e78013f02af7180630fc6f6a89dca53caa795206e06033af29988f0",
+      "lines": 5566
     },
     {
       "path": "backend/seed_regional.py",
@@ -1960,8 +1960,8 @@
     },
     {
       "path": "scripts/insert-gdp-q1-2026-estimate.py",
-      "sha256": "7b6c20fb4851ff90c8831de5b2f6b753ffac88beeefc4fbe7f7df712e6992656",
-      "lines": 84
+      "sha256": "f460b99e919327e4e18886acffe523a7b0c792943ce4166b3b0ea30d8d0627a0",
+      "lines": 85
     },
     {
       "path": "scripts/locate-indicator.py",
@@ -2025,8 +2025,8 @@
     },
     {
       "path": "scripts/verify-derived-incremental.py",
-      "sha256": "b0cf4be61d550856ec95133dee08977b1ebcb599731d5e57030bf585a6ba9317",
-      "lines": 130
+      "sha256": "fd7465dc336998157e24ab32b977f3d73b478562d202126d25453d13c41afb30",
+      "lines": 117
     }
   ],
   "declarative_data": [
@@ -26647,8 +26647,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 63,
+      "end_line": 63,
       "owner": "_state_redis_url",
       "conditions": [],
       "name": "state_redis_url",
@@ -26656,8 +26656,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 64,
+      "end_line": 64,
       "owner": "_state_redis_url",
       "conditions": [
         "settings.state_redis_url"
@@ -26667,8 +26667,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 64,
-      "end_line": 64,
+      "line": 65,
+      "end_line": 65,
       "owner": "_state_redis_url",
       "conditions": [],
       "name": "redis_url",
@@ -26676,8 +26676,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 162,
+      "end_line": 162,
       "owner": "cache_set",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -26685,8 +26685,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 207,
-      "end_line": 207,
+      "line": 208,
+      "end_line": 208,
       "owner": "ssr_cache_set",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -26694,8 +26694,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 33,
-      "end_line": 33,
+      "line": 34,
+      "end_line": 34,
       "owner": "get_redis",
       "conditions": [
         "_redis is None"
@@ -26705,8 +26705,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 47,
-      "end_line": 47,
+      "line": 48,
+      "end_line": 48,
       "owner": "get_redis_bin",
       "conditions": [
         "_redis_bin is None"
@@ -30869,6 +30869,15 @@
       "symbol": "asyncio.get_running_loop().create_task"
     },
     {
+      "path": "backend/app/core/cache.py",
+      "line": 603,
+      "end_line": 603,
+      "owner": "publish_committed_indicator_changes",
+      "conditions": [],
+      "call": "asyncio.create_task(asyncio.wait_for(publish(), timeout=15))",
+      "symbol": "asyncio.create_task"
+    },
+    {
       "path": "backend/app/data/eurostat_titles_ru.py",
       "line": 979,
       "end_line": 979,
@@ -31080,6 +31089,15 @@
       "conditions": [],
       "call": "engine.dispose()",
       "symbol": "scripts.gen-forecast-snapshots.engine.dispose"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
+      "line": 107,
+      "end_line": 109,
+      "owner": "publish_committed_changes",
+      "conditions": [],
+      "call": "asyncio.create_task(asyncio.wait_for(bump_namespaces('world', 'world-catalog', 'ssr-world'), timeout=15))",
+      "symbol": "asyncio.create_task"
     },
     {
       "path": "scripts/audit-public-language.py",
@@ -32130,8 +32148,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 384,
-      "end_line": 386,
+      "line": 385,
+      "end_line": 387,
       "owner": "<module>",
       "conditions": [],
       "name": "_WORLD_COUNTRIES_KEY_RE",
@@ -85475,8 +85493,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 46,
-      "end_line": 65,
+      "line": 47,
+      "end_line": 66,
       "owner": "<module>",
       "conditions": [],
       "name": "PUBLIC_SOURCE_RU",
@@ -85638,8 +85656,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 74,
-      "end_line": 93,
+      "line": 75,
+      "end_line": 94,
       "owner": "<module>",
       "conditions": [],
       "name": "_ADAPTER_MODULES",
@@ -85801,8 +85819,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 95,
-      "end_line": 108,
+      "line": 96,
+      "end_line": 109,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_ALIASES",
@@ -85916,8 +85934,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 110,
-      "end_line": 116,
+      "line": 111,
+      "end_line": 117,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_ADJ_RU",
@@ -85975,8 +85993,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 118,
-      "end_line": 118,
+      "line": 119,
+      "end_line": 119,
       "owner": "<module>",
       "conditions": [],
       "name": "_CODE_RE",
@@ -85992,8 +86010,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 890,
-      "end_line": 951,
+      "line": 950,
+      "end_line": 1011,
       "owner": "<module>",
       "conditions": [],
       "name": "_COUNTRY_DEFAULTS",
@@ -86091,8 +86109,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1073,
-      "end_line": 1075,
+      "line": 1133,
+      "end_line": 1135,
       "owner": "<module>",
       "conditions": [],
       "name": "NATIONAL_CORE_COUNTRIES",
@@ -86750,8 +86768,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 31,
-      "end_line": 35,
+      "line": 33,
+      "end_line": 37,
       "owner": "<module>",
       "conditions": [],
       "name": "ETL_TIMEOUT_BY_PARSER",
@@ -86785,8 +86803,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 427,
-      "end_line": 433,
+      "line": 454,
+      "end_line": 460,
       "owner": "<module>",
       "conditions": [],
       "name": "STALENESS_SLA_DAYS",
@@ -98013,8 +98031,22 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 278,
-      "end_line": 278,
+      "line": 603,
+      "end_line": 603,
+      "owner": "publish_committed_indicator_changes",
+      "conditions": [],
+      "operation": "create_task",
+      "receiver": "asyncio",
+      "symbol": "asyncio.create_task",
+      "expression": "asyncio.create_task(asyncio.wait_for(publish(), timeout=15))",
+      "expression_truncated": false,
+      "expression_chars": 60,
+      "ast_sha256": "c072f962cb746de40a36549ed44486802e8958ecefb856f22504254bc0fa199a"
+    },
+    {
+      "path": "backend/app/core/cache.py",
+      "line": 279,
+      "end_line": 279,
       "owner": "fresh_world_catalog_key",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98027,8 +98059,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 554,
+      "end_line": 554,
       "owner": "world_countries_build_lock",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98041,8 +98073,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 560,
-      "end_line": 560,
+      "line": 561,
+      "end_line": 561,
       "owner": "world_countries_build_lock",
       "conditions": [],
       "operation": "acquire",
@@ -98055,8 +98087,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 575,
-      "end_line": 575,
+      "line": 576,
+      "end_line": 576,
       "owner": "cache_invalidate_indicator",
       "conditions": [],
       "operation": "bump_namespaces",
@@ -98069,8 +98101,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 149,
-      "end_line": 149,
+      "line": 150,
+      "end_line": 150,
       "owner": "cache_get",
       "conditions": [],
       "operation": "get_redis",
@@ -98083,8 +98115,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 160,
-      "end_line": 160,
+      "line": 161,
+      "end_line": 161,
       "owner": "cache_set",
       "conditions": [],
       "operation": "get_redis",
@@ -98097,8 +98129,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 163,
+      "end_line": 163,
       "owner": "cache_set",
       "conditions": [],
       "operation": "set",
@@ -98111,8 +98143,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 212,
-      "end_line": 212,
+      "line": 213,
+      "end_line": 213,
       "owner": "ssr_cache_set",
       "conditions": [],
       "operation": "set",
@@ -98125,8 +98157,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 345,
+      "end_line": 345,
       "owner": "get_durable_world_countries",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98139,8 +98171,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 355,
-      "end_line": 355,
+      "line": 356,
+      "end_line": 356,
       "owner": "set_durable_world_countries",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98153,8 +98185,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 356,
-      "end_line": 360,
+      "line": 357,
+      "end_line": 361,
       "owner": "set_durable_world_countries",
       "conditions": [],
       "operation": "set",
@@ -98167,8 +98199,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 372,
-      "end_line": 372,
+      "line": 373,
+      "end_line": 373,
       "owner": "clear_durable_world_countries",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98181,8 +98213,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 470,
+      "end_line": 470,
       "owner": "get_versioned_durable_world_countries",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98195,8 +98227,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 508,
+      "end_line": 508,
       "owner": "set_versioned_durable_world_countries",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98209,8 +98241,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 508,
-      "end_line": 518,
+      "line": 509,
+      "end_line": 519,
       "owner": "set_versioned_durable_world_countries",
       "conditions": [],
       "operation": "eval",
@@ -98223,8 +98255,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 535,
+      "end_line": 535,
       "owner": "is_current_world_countries_key",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98237,8 +98269,22 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 603,
+      "end_line": 603,
+      "owner": "publish_committed_indicator_changes",
+      "conditions": [],
+      "operation": "publish",
+      "receiver": null,
+      "symbol": "app.core.cache.publish",
+      "expression": "publish()",
+      "expression_truncated": false,
+      "expression_chars": 9,
+      "ast_sha256": "89a91cd1a8b04fbac36515d295a87b9f84867aaeceafa3edab951d430510f5a3"
+    },
+    {
+      "path": "backend/app/core/cache.py",
+      "line": 250,
+      "end_line": 250,
       "owner": "_ns_version",
       "conditions": [],
       "operation": "get_state_redis",
@@ -98251,8 +98297,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 250,
+      "end_line": 250,
       "owner": "_ns_version",
       "conditions": [],
       "operation": "get_redis",
@@ -98265,8 +98311,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 288,
-      "end_line": 288,
+      "line": 289,
+      "end_line": 289,
       "owner": "bump_namespaces",
       "conditions": [
         "cache_namespaces"
@@ -98281,8 +98327,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 376,
+      "end_line": 376,
       "owner": "clear_durable_world_countries",
       "conditions": [
         "keys"
@@ -98297,8 +98343,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 568,
-      "end_line": 568,
+      "line": 569,
+      "end_line": 569,
       "owner": "world_countries_build_lock",
       "conditions": [],
       "operation": "release",
@@ -98311,8 +98357,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 291,
-      "end_line": 291,
+      "line": 292,
+      "end_line": 292,
       "owner": "bump_namespaces",
       "conditions": [
         "cache_namespaces"
@@ -98327,8 +98373,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 293,
+      "end_line": 293,
       "owner": "bump_namespaces",
       "conditions": [
         "cache_namespaces"
@@ -98343,8 +98389,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 300,
+      "end_line": 300,
       "owner": "bump_namespaces",
       "conditions": [
         "'world-catalog' in namespaces"
@@ -98359,8 +98405,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 300,
-      "end_line": 308,
+      "line": 301,
+      "end_line": 309,
       "owner": "bump_namespaces",
       "conditions": [
         "'world-catalog' in namespaces"
@@ -101886,8 +101932,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 237,
+      "end_line": 237,
       "owner": "BaseParser.run",
       "conditions": [],
       "operation": "commit",
@@ -101900,8 +101946,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 246,
+      "end_line": 246,
       "owner": "BaseParser.run",
       "conditions": [],
       "operation": "add",
@@ -101914,8 +101960,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 174,
+      "end_line": 174,
       "owner": "BaseParser.run",
       "conditions": [
         "not points"
@@ -101930,8 +101976,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 242,
+      "end_line": 242,
       "owner": "BaseParser.run",
       "conditions": [],
       "operation": "rollback",
@@ -101944,8 +101990,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 231,
-      "end_line": 231,
+      "line": 247,
+      "end_line": 247,
       "owner": "BaseParser.run",
       "conditions": [],
       "operation": "commit",
@@ -104546,8 +104592,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "line": 636,
-      "end_line": 640,
+      "line": 637,
+      "end_line": 641,
       "owner": "MinfinBudgetParser._fetch_and_parse",
       "conditions": [],
       "operation": "execute",
@@ -105586,8 +105632,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 840,
-      "end_line": 842,
+      "line": 852,
+      "end_line": 854,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "operation": "execute",
@@ -105628,8 +105674,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 782,
-      "end_line": 782,
+      "line": 788,
+      "end_line": 788,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "operation": "commit",
@@ -105642,8 +105688,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 790,
-      "end_line": 790,
+      "line": 797,
+      "end_line": 797,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "operation": "add",
@@ -105656,8 +105702,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 847,
-      "end_line": 852,
+      "line": 859,
+      "end_line": 864,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "operation": "execute",
@@ -105670,8 +105716,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 855,
-      "end_line": 855,
+      "line": 867,
+      "end_line": 867,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [
         "seg_id is None"
@@ -105686,8 +105732,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 857,
-      "end_line": 859,
+      "line": 869,
+      "end_line": 871,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "operation": "execute",
@@ -105700,8 +105746,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 885,
-      "end_line": 890,
+      "line": 897,
+      "end_line": 902,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "operation": "execute",
@@ -105746,8 +105792,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 786,
-      "end_line": 786,
+      "line": 793,
+      "end_line": 793,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "operation": "rollback",
@@ -105760,8 +105806,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 791,
-      "end_line": 791,
+      "line": 798,
+      "end_line": 798,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "operation": "commit",
@@ -105774,12 +105820,12 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 757,
-      "end_line": 757,
+      "line": 761,
+      "end_line": 761,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [
         "not (points)",
-        "not any((segment_snapshot.get(s) for s in WEEKLY_SEGMENT_CODES))"
+        "not any(((segment_snapshot or {}).get(s) for s in WEEKLY_SEGMENT_CODES))"
       ],
       "operation": "commit",
       "receiver": "db",
@@ -110918,8 +110964,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 531,
-      "end_line": 531,
+      "line": 532,
+      "end_line": 532,
       "owner": "ensure_country",
       "conditions": [],
       "operation": "add",
@@ -110932,8 +110978,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 546,
-      "end_line": 546,
+      "line": 562,
+      "end_line": 562,
       "owner": "reconcile_points",
       "conditions": [],
       "operation": "set",
@@ -110946,8 +110992,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 532,
-      "end_line": 532,
+      "line": 533,
+      "end_line": 533,
       "owner": "ensure_country",
       "conditions": [],
       "operation": "flush",
@@ -110960,8 +111006,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 771,
-      "end_line": 771,
+      "line": 806,
+      "end_line": 806,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "operation": "flush",
@@ -110974,8 +111020,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 789,
-      "end_line": 789,
+      "line": 824,
+      "end_line": 824,
       "owner": "touch_dataset_state",
       "conditions": [
         "state is None"
@@ -110990,8 +111036,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 800,
-      "end_line": 800,
+      "line": 835,
+      "end_line": 835,
       "owner": "touch_dataset_state",
       "conditions": [],
       "operation": "flush",
@@ -111004,8 +111050,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1093,
-      "end_line": 1093,
+      "line": 1153,
+      "end_line": 1153,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "operation": "add",
@@ -111018,8 +111064,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 304,
+      "end_line": 304,
       "owner": "load_national_core_yaml",
       "conditions": [],
       "operation": "set",
@@ -111032,8 +111078,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 559,
-      "end_line": 559,
+      "line": 575,
+      "end_line": 575,
       "owner": "reconcile_points",
       "conditions": [],
       "operation": "execute",
@@ -111046,8 +111092,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 573,
-      "end_line": 578,
+      "line": 594,
+      "end_line": 599,
       "owner": "reconcile_points",
       "conditions": [],
       "operation": "execute",
@@ -111060,8 +111106,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 709,
-      "end_line": 709,
+      "line": 730,
+      "end_line": 730,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing is None",
@@ -111077,8 +111123,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1094,
-      "end_line": 1094,
+      "line": 1154,
+      "end_line": 1154,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "operation": "commit",
@@ -111091,8 +111137,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1158,
-      "end_line": 1158,
+      "line": 1218,
+      "end_line": 1218,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "operation": "commit",
@@ -111105,8 +111151,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 511,
+      "end_line": 511,
       "owner": "ensure_country",
       "conditions": [],
       "operation": "execute",
@@ -111119,8 +111165,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 518,
+      "end_line": 518,
       "owner": "ensure_country",
       "conditions": [],
       "operation": "execute",
@@ -111133,8 +111179,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 585,
-      "end_line": 591,
+      "line": 606,
+      "end_line": 612,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "operation": "execute",
@@ -111147,8 +111193,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 657,
-      "end_line": 664,
+      "line": 678,
+      "end_line": 685,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "operation": "execute",
@@ -111161,8 +111207,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 710,
-      "end_line": 710,
+      "line": 731,
+      "end_line": 731,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing is None",
@@ -111178,8 +111224,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1138,
-      "end_line": 1138,
+      "line": 1198,
+      "end_line": 1198,
       "owner": "run_national_core_ingest",
       "conditions": [
         "points_touched or points_removed or metadata_changed"
@@ -111194,8 +111240,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 691,
+      "end_line": 691,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing is None"
@@ -111210,8 +111256,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 719,
-      "end_line": 719,
+      "line": 754,
+      "end_line": 754,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing.code != code"
@@ -111226,8 +111272,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 728,
-      "end_line": 728,
+      "line": 763,
+      "end_line": 763,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing.code != code",
@@ -111244,22 +111290,22 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 563,
-      "end_line": 567,
+      "line": 582,
+      "end_line": 588,
       "owner": "reconcile_points",
       "conditions": [],
       "operation": "execute",
       "receiver": "db",
       "symbol": "app.services.world_national_ingest.db.execute",
-      "expression": "db.execute(select(WorldDataPoint.date).where(WorldDataPoint.indicator_id == indicator_id))",
+      "expression": "db.execute(select(WorldDataPoint.date).where(WorldDataPoint.indicator_id == indicator_id, WorldDataPoint.date >= replacement_start, WorldDataPoint.date <= replacement_end))",
       "expression_truncated": false,
-      "expression_chars": 90,
-      "ast_sha256": "290b57150ae5aaee34c3283fef54a1ebd945eb8e1887c12dbef6f3e3c894f59d"
+      "expression_chars": 172,
+      "ast_sha256": "1c7c91278081cca13259f725f71d8276361d9bda6db687760d314f21b912e46d"
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 595,
+      "end_line": 595,
       "owner": "reconcile_points",
       "conditions": [],
       "operation": "delete",
@@ -111272,8 +111318,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1131,
-      "end_line": 1131,
+      "line": 1191,
+      "end_line": 1191,
       "owner": "run_national_core_ingest",
       "conditions": [
         "run is not None"
@@ -112876,8 +112922,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 43,
-      "end_line": 43,
+      "line": 45,
+      "end_line": 45,
       "owner": "<module>",
       "conditions": [],
       "operation": "set",
@@ -112890,8 +112936,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 53,
-      "end_line": 53,
+      "line": 55,
+      "end_line": 55,
       "owner": "_updated_source_codes",
       "conditions": [
         "'inflation-weekly' in expanded"
@@ -112906,8 +112952,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 98,
-      "end_line": 98,
+      "line": 126,
+      "end_line": 126,
       "owner": "run_etl_for_indicator_status",
       "conditions": [],
       "operation": "add",
@@ -112920,8 +112966,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 249,
-      "end_line": 251,
+      "line": 277,
+      "end_line": 279,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "operation": "execute",
@@ -112934,8 +112980,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 110,
+      "end_line": 110,
       "owner": "run_etl_for_indicator_status",
       "conditions": [],
       "operation": "execute",
@@ -112948,8 +112994,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 99,
-      "end_line": 99,
+      "line": 127,
+      "end_line": 127,
       "owner": "run_etl_for_indicator_status",
       "conditions": [],
       "operation": "commit",
@@ -112962,8 +113008,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 135,
-      "end_line": 137,
+      "line": 165,
+      "end_line": 167,
       "owner": "daily_update_job",
       "conditions": [],
       "operation": "execute",
@@ -112976,8 +113022,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 164,
-      "end_line": 164,
+      "line": 194,
+      "end_line": 194,
       "owner": "daily_update_job",
       "conditions": [],
       "operation": "add",
@@ -112990,8 +113036,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 295,
-      "end_line": 300,
+      "line": 324,
+      "end_line": 329,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "operation": "execute",
@@ -113004,8 +113050,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 312,
-      "end_line": 314,
+      "line": 341,
+      "end_line": 343,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "operation": "execute",
@@ -113018,8 +113064,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 351,
+      "end_line": 351,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "operation": "add",
@@ -113032,8 +113078,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 459,
-      "end_line": 464,
+      "line": 486,
+      "end_line": 491,
       "owner": "staleness_check_job",
       "conditions": [],
       "operation": "execute",
@@ -113046,8 +113092,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 552,
-      "end_line": 559,
+      "line": 579,
+      "end_line": 586,
       "owner": "_promote_past_events",
       "conditions": [],
       "operation": "execute",
@@ -113060,8 +113106,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 560,
-      "end_line": 560,
+      "line": 587,
+      "end_line": 587,
       "owner": "_promote_past_events",
       "conditions": [],
       "operation": "commit",
@@ -113074,8 +113120,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 273,
-      "end_line": 273,
+      "line": 302,
+      "end_line": 302,
       "owner": "_catch_up_empty_forecasts_safe",
       "conditions": [],
       "operation": "commit",
@@ -113088,8 +113134,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 118,
-      "end_line": 118,
+      "line": 148,
+      "end_line": 148,
       "owner": "run_etl_for_indicator_status",
       "conditions": [
         "fetch_log.status not in ('failed', 'timeout')"
@@ -113104,11 +113150,11 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 127,
-      "end_line": 127,
+      "line": 157,
+      "end_line": 157,
       "owner": "run_etl_for_indicator_status",
       "conditions": [
-        "fetch_log.status not in ('failed', 'timeout')"
+        "not storage_committed(fetch_log) and fetch_log.status not in ('failed', 'timeout')"
       ],
       "operation": "add",
       "receiver": "db",
@@ -113120,8 +113166,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 221,
+      "end_line": 221,
       "owner": "daily_update_job",
       "conditions": [
         "updated_codes"
@@ -113136,8 +113182,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 287,
+      "end_line": 287,
       "owner": "_retrain_recalculated_derived",
       "conditions": [
         "steps > 0 and strategy"
@@ -113152,8 +113198,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 374,
+      "end_line": 374,
       "owner": "run_etl_for_parser_type",
       "conditions": [
         "updated_codes"
@@ -113168,8 +113214,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 113,
-      "end_line": 113,
+      "line": 143,
+      "end_line": 143,
       "owner": "run_etl_for_indicator_status",
       "conditions": [
         "fetch_log.status not in ('failed', 'timeout')"
@@ -113184,8 +113230,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 119,
-      "end_line": 119,
+      "line": 149,
+      "end_line": 149,
       "owner": "run_etl_for_indicator_status",
       "conditions": [
         "fetch_log.status not in ('failed', 'timeout')"
@@ -113200,11 +113246,11 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 123,
-      "end_line": 123,
+      "line": 153,
+      "end_line": 153,
       "owner": "run_etl_for_indicator_status",
       "conditions": [
-        "fetch_log.status not in ('failed', 'timeout')"
+        "not storage_committed(fetch_log) and fetch_log.status not in ('failed', 'timeout')"
       ],
       "operation": "rollback",
       "receiver": "db",
@@ -113216,11 +113262,11 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 128,
-      "end_line": 128,
+      "line": 158,
+      "end_line": 158,
       "owner": "run_etl_for_indicator_status",
       "conditions": [
-        "fetch_log.status not in ('failed', 'timeout')"
+        "not storage_committed(fetch_log) and fetch_log.status not in ('failed', 'timeout')"
       ],
       "operation": "commit",
       "receiver": "db",
@@ -113232,8 +113278,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 262,
-      "end_line": 262,
+      "line": 291,
+      "end_line": 291,
       "owner": "_retrain_recalculated_derived",
       "conditions": [
         "steps > 0 and strategy"
@@ -113248,8 +113294,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 580,
+      "end_line": 580,
       "owner": "_promote_past_events",
       "conditions": [],
       "operation": "update",
@@ -114586,8 +114632,22 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 246,
-      "end_line": 251,
+      "line": 107,
+      "end_line": 109,
+      "owner": "publish_committed_changes",
+      "conditions": [],
+      "operation": "create_task",
+      "receiver": "asyncio",
+      "symbol": "asyncio.create_task",
+      "expression": "asyncio.create_task(asyncio.wait_for(bump_namespaces('world', 'world-catalog', 'ssr-world'), timeout=15))",
+      "expression_truncated": false,
+      "expression_chars": 105,
+      "ast_sha256": "829efd554774f2a0de94fa6f8f96313376f77449a9b2bce6d3c1eca841f1f849"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
+      "line": 278,
+      "end_line": 283,
       "owner": "reconcile_points",
       "conditions": [],
       "operation": "execute",
@@ -114600,8 +114660,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 414,
-      "end_line": 414,
+      "line": 446,
+      "end_line": 446,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "operation": "flush",
@@ -114614,9 +114674,9 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 622,
-      "end_line": 622,
-      "owner": "run",
+      "line": 108,
+      "end_line": 108,
+      "owner": "publish_committed_changes",
       "conditions": [],
       "operation": "bump_namespaces",
       "receiver": null,
@@ -114628,8 +114688,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 240,
+      "end_line": 240,
       "owner": "ensure_countries",
       "conditions": [],
       "operation": "commit",
@@ -114642,8 +114702,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 275,
+      "end_line": 275,
       "owner": "reconcile_points",
       "conditions": [],
       "operation": "execute",
@@ -114656,8 +114716,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 419,
+      "end_line": 419,
       "owner": "upsert_indicator_meta",
       "conditions": [
         "existing is None",
@@ -114673,8 +114733,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 526,
-      "end_line": 526,
+      "line": 564,
+      "end_line": 564,
       "owner": "apply_remaps",
       "conditions": [],
       "operation": "commit",
@@ -114687,8 +114747,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 543,
-      "end_line": 543,
+      "line": 583,
+      "end_line": 583,
       "owner": "run",
       "conditions": [],
       "operation": "set",
@@ -114701,8 +114761,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 258,
-      "end_line": 264,
+      "line": 290,
+      "end_line": 296,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "operation": "execute",
@@ -114715,8 +114775,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 344,
-      "end_line": 351,
+      "line": 376,
+      "end_line": 383,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "operation": "execute",
@@ -114729,8 +114789,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 420,
+      "end_line": 420,
       "owner": "upsert_indicator_meta",
       "conditions": [
         "existing is None",
@@ -114746,8 +114806,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 201,
-      "end_line": 209,
+      "line": 228,
+      "end_line": 236,
       "owner": "ensure_countries",
       "conditions": [
         "not (existing)",
@@ -114763,8 +114823,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 279,
+      "end_line": 279,
       "owner": "reconcile_points",
       "conditions": [],
       "operation": "delete",
@@ -114777,8 +114837,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 356,
-      "end_line": 356,
+      "line": 388,
+      "end_line": 388,
       "owner": "upsert_indicator_meta",
       "conditions": [
         "existing is None"
@@ -114793,8 +114853,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 486,
-      "end_line": 496,
+      "line": 522,
+      "end_line": 532,
       "owner": "check_structure",
       "conditions": [],
       "operation": "execute",
@@ -114807,8 +114867,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 602,
-      "end_line": 602,
+      "line": 642,
+      "end_line": 642,
       "owner": "run",
       "conditions": [],
       "operation": "set",
@@ -114821,8 +114881,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 602,
-      "end_line": 602,
+      "line": 642,
+      "end_line": 642,
       "owner": "run",
       "conditions": [],
       "operation": "set",
@@ -114835,8 +114895,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 605,
-      "end_line": 605,
+      "line": 645,
+      "end_line": 645,
       "owner": "run",
       "conditions": [
         "missing"
@@ -114851,8 +114911,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 627,
-      "end_line": 629,
+      "line": 665,
+      "end_line": 667,
       "owner": "run",
       "conditions": [],
       "operation": "execute",
@@ -114865,8 +114925,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 631,
-      "end_line": 631,
+      "line": 669,
+      "end_line": 669,
       "owner": "run",
       "conditions": [],
       "operation": "execute",
@@ -114879,8 +114939,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 632,
-      "end_line": 632,
+      "line": 670,
+      "end_line": 670,
       "owner": "run",
       "conditions": [],
       "operation": "execute",
@@ -114893,8 +114953,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 204,
+      "end_line": 204,
       "owner": "ensure_countries",
       "conditions": [],
       "operation": "execute",
@@ -114907,8 +114967,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 506,
-      "end_line": 510,
+      "line": 542,
+      "end_line": 546,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -114923,8 +114983,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 150,
-      "end_line": 150,
+      "line": 176,
+      "end_line": 176,
       "owner": "select_datasets",
       "conditions": [],
       "operation": "execute",
@@ -114937,8 +114997,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 219,
+      "end_line": 219,
       "owner": "ensure_countries",
       "conditions": [
         "not (existing)"
@@ -114953,8 +115013,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 212,
-      "end_line": 212,
+      "line": 244,
+      "end_line": 244,
       "owner": "ensure_countries",
       "conditions": [],
       "operation": "execute",
@@ -114967,8 +115027,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 545,
-      "end_line": 545,
+      "line": 585,
+      "end_line": 585,
       "owner": "run",
       "conditions": [],
       "operation": "execute",
@@ -114981,8 +115041,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 448,
-      "end_line": 450,
+      "line": 480,
+      "end_line": 482,
       "owner": "persist_result",
       "conditions": [
         "cid is None"
@@ -115900,22 +115960,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 206,
-      "end_line": 206,
-      "owner": "retrain_and_invalidate",
-      "conditions": [],
-      "operation": "bump_namespaces",
-      "receiver": null,
-      "symbol": "app.core.cache.bump_namespaces",
-      "expression": "bump_namespaces('indicators', 'dashboard')",
-      "expression_truncated": false,
-      "expression_chars": 42,
-      "ast_sha256": "1679a433e0db68978375e669f560a1fe310ba8228dedd2e14e489dd08a9f49e7"
-    },
-    {
-      "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 259,
+      "end_line": 259,
       "owner": "rollback",
       "conditions": [],
       "operation": "commit",
@@ -115973,8 +116019,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 202,
-      "end_line": 202,
+      "line": 198,
+      "end_line": 198,
       "owner": "retrain_and_invalidate",
       "conditions": [],
       "operation": "commit",
@@ -115987,8 +116033,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 238,
+      "end_line": 238,
       "owner": "run",
       "conditions": [],
       "operation": "commit",
@@ -116001,8 +116047,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 259,
-      "end_line": 261,
+      "line": 254,
+      "end_line": 256,
       "owner": "rollback",
       "conditions": [],
       "operation": "execute",
@@ -116043,8 +116089,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 213,
-      "end_line": 213,
+      "line": 208,
+      "end_line": 208,
       "owner": "run",
       "conditions": [
         "args.rollback_from"
@@ -116059,8 +116105,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 222,
+      "end_line": 222,
       "owner": "run",
       "conditions": [
         "not args.apply"
@@ -116075,8 +116121,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 254,
+      "end_line": 254,
       "owner": "rollback",
       "conditions": [],
       "operation": "delete",
@@ -116388,8 +116434,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5497,
-      "end_line": 5497,
+      "line": 5499,
+      "end_line": 5499,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -116402,8 +116448,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5516,
-      "end_line": 5516,
+      "line": 5518,
+      "end_line": 5518,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -116416,8 +116462,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5543,
-      "end_line": 5545,
+      "line": 5547,
+      "end_line": 5549,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "execute",
@@ -116614,8 +116660,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5537,
-      "end_line": 5537,
+      "line": 5539,
+      "end_line": 5539,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "commit",
@@ -116628,8 +116674,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5550,
-      "end_line": 5550,
+      "line": 5554,
+      "end_line": 5554,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "commit",
@@ -116656,8 +116702,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5484,
-      "end_line": 5484,
+      "line": 5486,
+      "end_line": 5486,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "rollback",
@@ -116670,8 +116716,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5512,
-      "end_line": 5512,
+      "line": 5514,
+      "end_line": 5514,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -116684,8 +116730,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5540,
-      "end_line": 5540,
+      "line": 5544,
+      "end_line": 5544,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "rollback",
@@ -119028,8 +119074,8 @@
     },
     {
       "path": "scripts/insert-gdp-q1-2026-estimate.py",
-      "line": 72,
-      "end_line": 72,
+      "line": 74,
+      "end_line": 74,
       "owner": "main",
       "conditions": [],
       "operation": "commit",
@@ -119568,8 +119614,8 @@
     },
     {
       "path": "scripts/verify-derived-incremental.py",
-      "line": 107,
-      "end_line": 107,
+      "line": 94,
+      "end_line": 94,
       "owner": "main",
       "conditions": [],
       "operation": "set",
@@ -119627,8 +119673,8 @@
     },
     {
       "path": "scripts/verify-derived-incremental.py",
-      "line": 93,
-      "end_line": 93,
+      "line": 82,
+      "end_line": 82,
       "owner": "_scenario_incremental",
       "conditions": [],
       "operation": "flush",
@@ -119641,8 +119687,8 @@
     },
     {
       "path": "scripts/verify-derived-incremental.py",
-      "line": 95,
-      "end_line": 95,
+      "line": 84,
+      "end_line": 84,
       "owner": "_scenario_incremental",
       "conditions": [],
       "operation": "rollback",
@@ -149817,8 +149863,26 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 91,
-      "end_line": 91,
+      "line": 92,
+      "end_line": 92,
+      "owner": "storage_committed",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/services/base_parser.py",
+      "line": 97,
+      "end_line": 97,
+      "owner": "mark_storage_committed",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/services/base_parser.py",
+      "line": 102,
+      "end_line": 102,
       "owner": "mark_expected_empty",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149826,8 +149890,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 101,
-      "end_line": 101,
+      "line": 112,
+      "end_line": 112,
       "owner": "mark_fallback_used",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149835,8 +149899,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 110,
-      "end_line": 110,
+      "line": 121,
+      "end_line": 121,
       "owner": "expected_empty_reason",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149844,8 +149908,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 114,
-      "end_line": 114,
+      "line": 125,
+      "end_line": 125,
       "owner": "fallback_reason",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149853,8 +149917,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 137,
-      "end_line": 137,
+      "line": 148,
+      "end_line": 148,
       "owner": "BaseParser.run",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -149862,8 +149926,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 137,
-      "end_line": 137,
+      "line": 148,
+      "end_line": 148,
       "owner": "BaseParser.run",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149871,8 +149935,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 233,
-      "end_line": 233,
+      "line": 255,
+      "end_line": 255,
       "owner": "BaseParser._zero_parse_expected",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -149880,8 +149944,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 264,
+      "end_line": 264,
       "owner": "BaseParser._resolve_zero_parse_status",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -149889,8 +149953,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 264,
+      "end_line": 264,
       "owner": "BaseParser._resolve_zero_parse_status",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149898,8 +149962,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 281,
+      "end_line": 281,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -149907,8 +149971,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 318,
+      "end_line": 318,
       "owner": "BaseParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -149916,8 +149980,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 320,
+      "end_line": 320,
       "owner": "BaseParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149925,8 +149989,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 328,
-      "end_line": 328,
+      "line": 350,
+      "end_line": 350,
       "owner": "BaseParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -149934,8 +149998,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 352,
+      "end_line": 352,
       "owner": "BaseParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149943,8 +150007,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 363,
+      "end_line": 363,
       "owner": "BaseParser._after_storage",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -149952,8 +150016,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 365,
+      "end_line": 365,
       "owner": "BaseParser._after_storage",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -149961,8 +150025,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 353,
-      "end_line": 353,
+      "line": 375,
+      "end_line": 375,
       "owner": "BaseParser._handle_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -149970,8 +150034,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 278,
-      "end_line": 278,
+      "line": 300,
+      "end_line": 300,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -149979,8 +150043,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 278,
-      "end_line": 278,
+      "line": 300,
+      "end_line": 300,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -149988,8 +150052,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 299,
+      "end_line": 299,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -149997,8 +150061,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 299,
+      "end_line": 299,
       "owner": "BaseParser._alert_zero_parse_if_regression",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -156042,8 +156106,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 627,
+      "end_line": 627,
       "owner": "MinfinBudgetParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -156051,8 +156115,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "line": 628,
-      "end_line": 628,
+      "line": 629,
+      "end_line": 629,
       "owner": "MinfinBudgetParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -156060,8 +156124,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "line": 638,
-      "end_line": 638,
+      "line": 639,
+      "end_line": 639,
       "owner": "MinfinBudgetParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -156069,8 +156133,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "line": 638,
-      "end_line": 638,
+      "line": 639,
+      "end_line": 639,
       "owner": "MinfinBudgetParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -156078,8 +156142,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 638,
+      "end_line": 638,
       "owner": "MinfinBudgetParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -156087,8 +156151,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 638,
+      "end_line": 638,
       "owner": "MinfinBudgetParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -159310,8 +159374,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 723,
-      "end_line": 723,
+      "line": 724,
+      "end_line": 724,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159319,8 +159383,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 723,
-      "end_line": 723,
+      "line": 724,
+      "end_line": 724,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -159328,8 +159392,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 793,
-      "end_line": 793,
+      "line": 805,
+      "end_line": 805,
       "owner": "RosstatWeeklyCpiParser._zero_parse_expected",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159337,8 +159401,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 801,
-      "end_line": 801,
+      "line": 813,
+      "end_line": 813,
       "owner": "RosstatWeeklyCpiParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159346,8 +159410,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 803,
-      "end_line": 803,
+      "line": 815,
+      "end_line": 815,
       "owner": "RosstatWeeklyCpiParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -159355,8 +159419,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 866,
-      "end_line": 866,
+      "line": 878,
+      "end_line": 878,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159364,8 +159428,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 868,
-      "end_line": 868,
+      "line": 880,
+      "end_line": 880,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -159373,8 +159437,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 841,
-      "end_line": 841,
+      "line": 853,
+      "end_line": 853,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -159382,8 +159446,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 841,
-      "end_line": 841,
+      "line": 853,
+      "end_line": 853,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -159391,8 +159455,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 841,
-      "end_line": 841,
+      "line": 853,
+      "end_line": 853,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -159400,8 +159464,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 849,
-      "end_line": 849,
+      "line": 861,
+      "end_line": 861,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -159409,8 +159473,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 850,
-      "end_line": 850,
+      "line": 862,
+      "end_line": 862,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -159418,8 +159482,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 858,
-      "end_line": 858,
+      "line": 870,
+      "end_line": 870,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -159427,8 +159491,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 887,
-      "end_line": 887,
+      "line": 899,
+      "end_line": 899,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -159436,8 +159500,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 900,
+      "end_line": 900,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -159445,8 +159509,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 841,
-      "end_line": 841,
+      "line": 853,
+      "end_line": 853,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -159454,8 +159518,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 848,
-      "end_line": 848,
+      "line": 860,
+      "end_line": 860,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -159463,8 +159527,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 849,
-      "end_line": 849,
+      "line": 861,
+      "end_line": 861,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159472,8 +159536,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 850,
-      "end_line": 850,
+      "line": 862,
+      "end_line": 862,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -159481,8 +159545,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 858,
-      "end_line": 858,
+      "line": 870,
+      "end_line": 870,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -159490,8 +159554,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 858,
-      "end_line": 858,
+      "line": 870,
+      "end_line": 870,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -159499,8 +159563,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 886,
-      "end_line": 886,
+      "line": 898,
+      "end_line": 898,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159508,8 +159572,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 887,
-      "end_line": 887,
+      "line": 899,
+      "end_line": 899,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159517,8 +159581,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 900,
+      "end_line": 900,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -159526,8 +159590,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 848,
-      "end_line": 848,
+      "line": 860,
+      "end_line": 860,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159535,8 +159599,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 850,
-      "end_line": 850,
+      "line": 862,
+      "end_line": 862,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -159544,8 +159608,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 858,
-      "end_line": 858,
+      "line": 870,
+      "end_line": 870,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -159553,8 +159617,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 900,
+      "end_line": 900,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -182559,8 +182623,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 506,
-      "end_line": 506,
+      "line": 507,
+      "end_line": 507,
       "owner": "ensure_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182568,8 +182632,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 523,
+      "end_line": 523,
       "owner": "ensure_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182577,8 +182641,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 624,
-      "end_line": 624,
+      "line": 645,
+      "end_line": 645,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182586,8 +182650,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 818,
-      "end_line": 818,
+      "line": 853,
+      "end_line": 853,
       "owner": "ingest_series",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182595,8 +182659,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1005,
-      "end_line": 1005,
+      "line": 1065,
+      "end_line": 1065,
       "owner": "_ingest_country_series",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182604,8 +182668,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 558,
-      "end_line": 558,
+      "line": 574,
+      "end_line": 574,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.id",
@@ -182613,8 +182677,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 593,
-      "end_line": 593,
+      "line": 614,
+      "end_line": 614,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -182622,8 +182686,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 786,
-      "end_line": 786,
+      "line": 821,
+      "end_line": 821,
       "owner": "touch_dataset_state",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState",
@@ -182631,8 +182695,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 788,
-      "end_line": 788,
+      "line": 823,
+      "end_line": 823,
       "owner": "touch_dataset_state",
       "conditions": [
         "state is None"
@@ -182642,8 +182706,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1092,
-      "end_line": 1092,
+      "line": 1152,
+      "end_line": 1152,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -182651,8 +182715,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 558,
-      "end_line": 558,
+      "line": 574,
+      "end_line": 574,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -182660,8 +182724,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 704,
+      "end_line": 704,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing is None",
@@ -182672,8 +182736,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1147,
-      "end_line": 1147,
+      "line": 1207,
+      "end_line": 1207,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -182681,8 +182745,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 569,
+      "end_line": 569,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -182690,8 +182754,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 595,
+      "end_line": 595,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.delete().where",
@@ -182699,8 +182763,17 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 575,
-      "end_line": 575,
+      "line": 899,
+      "end_line": 899,
+      "owner": "ingest_series",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 596,
+      "end_line": 596,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -182708,8 +182781,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 576,
-      "end_line": 576,
+      "line": 597,
+      "end_line": 597,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date.in_",
@@ -182717,8 +182790,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 511,
+      "end_line": 511,
       "owner": "ensure_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry.code",
@@ -182726,8 +182799,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 518,
+      "end_line": 518,
       "owner": "ensure_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -182735,8 +182808,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 557,
-      "end_line": 557,
+      "line": 573,
+      "end_line": 573,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.c.value.is_distinct_from",
@@ -182744,8 +182817,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 595,
+      "end_line": 595,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.delete",
@@ -182753,8 +182826,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 575,
-      "end_line": 575,
+      "line": 596,
+      "end_line": 596,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -182762,8 +182835,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 576,
-      "end_line": 576,
+      "line": 597,
+      "end_line": 597,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -182771,8 +182844,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 611,
+      "end_line": 611,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -182780,8 +182853,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 659,
-      "end_line": 659,
+      "line": 680,
+      "end_line": 680,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.provider",
@@ -182789,8 +182862,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 660,
-      "end_line": 660,
+      "line": 681,
+      "end_line": 681,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -182798,8 +182871,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 661,
-      "end_line": 661,
+      "line": 682,
+      "end_line": 682,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
@@ -182807,8 +182880,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 662,
-      "end_line": 662,
+      "line": 683,
+      "end_line": 683,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.slice_hash",
@@ -182816,8 +182889,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1128,
-      "end_line": 1128,
+      "line": 1188,
+      "end_line": 1188,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -182825,8 +182898,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 511,
+      "end_line": 511,
       "owner": "ensure_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182834,8 +182907,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 511,
+      "end_line": 511,
       "owner": "ensure_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182843,8 +182916,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 518,
+      "end_line": 518,
       "owner": "ensure_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182852,8 +182925,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 518,
+      "end_line": 518,
       "owner": "ensure_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -182861,8 +182934,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 557,
-      "end_line": 557,
+      "line": 573,
+      "end_line": 573,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.c.value",
@@ -182870,8 +182943,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 595,
+      "end_line": 595,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__",
@@ -182879,8 +182952,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 576,
-      "end_line": 576,
+      "line": 597,
+      "end_line": 597,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -182888,8 +182961,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 611,
+      "end_line": 611,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -182897,8 +182970,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 679,
+      "end_line": 679,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -182906,8 +182979,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 659,
-      "end_line": 659,
+      "line": 680,
+      "end_line": 680,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -182915,8 +182988,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 660,
-      "end_line": 660,
+      "line": 681,
+      "end_line": 681,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -182924,8 +182997,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 661,
-      "end_line": 661,
+      "line": 682,
+      "end_line": 682,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -182933,8 +183006,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 662,
-      "end_line": 662,
+      "line": 683,
+      "end_line": 683,
       "owner": "upsert_national_indicator",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -182942,8 +183015,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 691,
+      "end_line": 691,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing is None"
@@ -182953,8 +183026,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 719,
-      "end_line": 719,
+      "line": 754,
+      "end_line": 754,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing.code != code"
@@ -182964,8 +183037,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 557,
-      "end_line": 557,
+      "line": 573,
+      "end_line": 573,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.c",
@@ -182973,8 +183046,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 565,
-      "end_line": 565,
+      "line": 584,
+      "end_line": 584,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -182982,8 +183055,26 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 585,
+      "end_line": 585,
+      "owner": "reconcile_points",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 586,
+      "end_line": 586,
+      "owner": "reconcile_points",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 595,
+      "end_line": 595,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -182991,8 +183082,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 587,
-      "end_line": 587,
+      "line": 608,
+      "end_line": 608,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.id",
@@ -183000,8 +183091,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 588,
-      "end_line": 588,
+      "line": 609,
+      "end_line": 609,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -183009,8 +183100,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 589,
-      "end_line": 589,
+      "line": 610,
+      "end_line": 610,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -183018,8 +183109,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 691,
+      "end_line": 691,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing is None"
@@ -183029,8 +183120,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 691,
+      "end_line": 691,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing is None"
@@ -183040,8 +183131,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 719,
-      "end_line": 719,
+      "line": 754,
+      "end_line": 754,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing.code != code"
@@ -183051,8 +183142,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 719,
-      "end_line": 719,
+      "line": 754,
+      "end_line": 754,
       "owner": "upsert_national_indicator",
       "conditions": [
         "existing.code != code"
@@ -183062,8 +183153,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 557,
-      "end_line": 557,
+      "line": 573,
+      "end_line": 573,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__",
@@ -183071,8 +183162,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 564,
-      "end_line": 564,
+      "line": 583,
+      "end_line": 583,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -183080,8 +183171,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 565,
-      "end_line": 565,
+      "line": 584,
+      "end_line": 584,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -183089,35 +183180,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 587,
-      "end_line": 587,
-      "owner": "refresh_indicator_extent",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/world_national_ingest.py",
-      "line": 588,
-      "end_line": 588,
-      "owner": "refresh_indicator_extent",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/world_national_ingest.py",
-      "line": 589,
-      "end_line": 589,
-      "owner": "refresh_indicator_extent",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/world_national_ingest.py",
-      "line": 557,
-      "end_line": 557,
+      "line": 585,
+      "end_line": 585,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -183125,8 +183189,53 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 564,
-      "end_line": 564,
+      "line": 586,
+      "end_line": 586,
+      "owner": "reconcile_points",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 608,
+      "end_line": 608,
+      "owner": "refresh_indicator_extent",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 609,
+      "end_line": 609,
+      "owner": "refresh_indicator_extent",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 610,
+      "end_line": 610,
+      "owner": "refresh_indicator_extent",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 573,
+      "end_line": 573,
+      "owner": "reconcile_points",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 583,
+      "end_line": 583,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -187004,8 +187113,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 65,
+      "end_line": 65,
       "owner": "_fetch_changed",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -187013,8 +187122,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 125,
+      "end_line": 125,
       "owner": "run_etl_for_indicator_status",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -187022,8 +187131,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 166,
+      "end_line": 166,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -187031,8 +187140,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 278,
+      "end_line": 278,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -187040,8 +187149,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 328,
+      "end_line": 328,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -187049,8 +187158,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 463,
-      "end_line": 463,
+      "line": 490,
+      "end_line": 490,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -187058,8 +187167,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 110,
+      "end_line": 110,
       "owner": "run_etl_for_indicator_status",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -187067,8 +187176,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 166,
+      "end_line": 166,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187076,8 +187185,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 278,
+      "end_line": 278,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187085,8 +187194,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 278,
+      "end_line": 278,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -187094,8 +187203,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 328,
+      "end_line": 328,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187103,8 +187212,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 342,
+      "end_line": 342,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -187112,8 +187221,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 463,
-      "end_line": 463,
+      "line": 490,
+      "end_line": 490,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187121,8 +187230,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 110,
+      "end_line": 110,
       "owner": "run_etl_for_indicator_status",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187130,8 +187239,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 110,
+      "end_line": 110,
       "owner": "run_etl_for_indicator_status",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187139,8 +187248,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 278,
+      "end_line": 278,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187148,8 +187257,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 342,
+      "end_line": 342,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -187157,8 +187266,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 342,
+      "end_line": 342,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.parser_type",
@@ -187166,8 +187275,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 342,
+      "end_line": 342,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -187175,8 +187284,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 503,
+      "end_line": 503,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok.is_",
@@ -187184,8 +187293,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 166,
+      "end_line": 166,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -187193,8 +187302,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 326,
+      "end_line": 326,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -187202,8 +187311,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 327,
+      "end_line": 327,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.parser_type",
@@ -187211,8 +187320,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 342,
+      "end_line": 342,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187220,8 +187329,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 342,
+      "end_line": 342,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187229,8 +187338,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 342,
+      "end_line": 342,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187238,8 +187347,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 489,
+      "end_line": 489,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -187247,8 +187356,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 503,
+      "end_line": 503,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok",
@@ -187256,8 +187365,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 555,
-      "end_line": 555,
+      "line": 582,
+      "end_line": 582,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.status",
@@ -187265,8 +187374,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 556,
-      "end_line": 556,
+      "line": 583,
+      "end_line": 583,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.actual_value.is_",
@@ -187274,8 +187383,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 166,
+      "end_line": 166,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187283,8 +187392,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 166,
+      "end_line": 166,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -187292,8 +187401,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 325,
+      "end_line": 325,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187301,8 +187410,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 326,
+      "end_line": 326,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -187310,8 +187419,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 327,
+      "end_line": 327,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187319,8 +187428,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 488,
+      "end_line": 488,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -187328,8 +187437,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 489,
+      "end_line": 489,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -187337,8 +187446,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 502,
+      "end_line": 502,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.sent_at",
@@ -187346,8 +187455,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 503,
+      "end_line": 503,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -187355,8 +187464,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 580,
+      "end_line": 580,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -187364,8 +187473,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 555,
-      "end_line": 555,
+      "line": 582,
+      "end_line": 582,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -187373,8 +187482,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 556,
-      "end_line": 556,
+      "line": 583,
+      "end_line": 583,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.actual_value",
@@ -187382,8 +187491,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 166,
+      "end_line": 166,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187391,8 +187500,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 326,
+      "end_line": 326,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187400,8 +187509,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 488,
+      "end_line": 488,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -187409,8 +187518,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 488,
+      "end_line": 488,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -187418,8 +187527,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 489,
+      "end_line": 489,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187427,8 +187536,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 502,
+      "end_line": 502,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -187436,8 +187545,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 556,
-      "end_line": 556,
+      "line": 583,
+      "end_line": 583,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -187445,8 +187554,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 487,
+      "end_line": 487,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -187454,8 +187563,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 487,
+      "end_line": 487,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.frequency",
@@ -187463,8 +187572,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 488,
+      "end_line": 488,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -187472,8 +187581,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 488,
+      "end_line": 488,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187481,8 +187590,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 487,
+      "end_line": 487,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187490,8 +187599,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 487,
+      "end_line": 487,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -187499,8 +187608,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 487,
+      "end_line": 487,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -187508,8 +187617,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 487,
+      "end_line": 487,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -188673,8 +188782,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 274,
+      "end_line": 274,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.id",
@@ -188682,8 +188791,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 266,
-      "end_line": 266,
+      "line": 298,
+      "end_line": 298,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -188691,8 +188800,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 274,
+      "end_line": 274,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -188700,8 +188809,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 279,
+      "end_line": 279,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.delete().where",
@@ -188709,8 +188818,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 393,
+      "end_line": 393,
       "owner": "upsert_indicator_meta",
       "conditions": [
         "existing is None",
@@ -188721,8 +188830,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 237,
-      "end_line": 237,
+      "line": 269,
+      "end_line": 269,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -188730,8 +188839,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 280,
+      "end_line": 280,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -188739,8 +188848,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 281,
+      "end_line": 281,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date.not_in",
@@ -188748,8 +188857,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 559,
+      "end_line": 559,
       "owner": "apply_remaps",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -188757,8 +188866,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 279,
+      "end_line": 279,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.delete",
@@ -188766,8 +188875,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 280,
+      "end_line": 280,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -188775,8 +188884,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 281,
+      "end_line": 281,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -188784,8 +188893,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 228,
+      "end_line": 228,
       "owner": "ensure_countries",
       "conditions": [
         "not (existing)",
@@ -188796,8 +188905,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 273,
+      "end_line": 273,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.c.value.is_distinct_from",
@@ -188805,8 +188914,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 279,
+      "end_line": 279,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__",
@@ -188814,8 +188923,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 281,
+      "end_line": 281,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -188823,8 +188932,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 263,
-      "end_line": 263,
+      "line": 295,
+      "end_line": 295,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -188832,8 +188941,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 378,
+      "end_line": 378,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.provider",
@@ -188841,8 +188950,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 379,
+      "end_line": 379,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -188850,8 +188959,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 380,
+      "end_line": 380,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
@@ -188859,8 +188968,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 349,
-      "end_line": 349,
+      "line": 381,
+      "end_line": 381,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.slice_hash",
@@ -188868,8 +188977,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 273,
+      "end_line": 273,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.c.value",
@@ -188877,8 +188986,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 279,
+      "end_line": 279,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -188886,8 +188995,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 263,
-      "end_line": 263,
+      "line": 295,
+      "end_line": 295,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -188895,8 +189004,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 377,
+      "end_line": 377,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -188904,8 +189013,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 378,
+      "end_line": 378,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -188913,8 +189022,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 379,
+      "end_line": 379,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -188922,8 +189031,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 380,
+      "end_line": 380,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -188931,8 +189040,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 349,
-      "end_line": 349,
+      "line": 381,
+      "end_line": 381,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -188940,8 +189049,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 356,
-      "end_line": 356,
+      "line": 388,
+      "end_line": 388,
       "owner": "upsert_indicator_meta",
       "conditions": [
         "existing is None"
@@ -188951,8 +189060,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 529,
+      "end_line": 529,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.provider",
@@ -188960,8 +189069,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 494,
-      "end_line": 494,
+      "line": 530,
+      "end_line": 530,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
@@ -188969,8 +189078,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 545,
+      "end_line": 545,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -188980,8 +189089,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 545,
+      "end_line": 545,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -188991,8 +189100,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 204,
+      "end_line": 204,
       "owner": "ensure_countries",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -189000,8 +189109,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 212,
-      "end_line": 212,
+      "line": 244,
+      "end_line": 244,
       "owner": "ensure_countries",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -189009,8 +189118,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 273,
+      "end_line": 273,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__.c",
@@ -189018,8 +189127,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 292,
+      "end_line": 292,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.id",
@@ -189027,8 +189136,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 261,
-      "end_line": 261,
+      "line": 293,
+      "end_line": 293,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -189036,8 +189145,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 262,
-      "end_line": 262,
+      "line": 294,
+      "end_line": 294,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -189045,8 +189154,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 356,
-      "end_line": 356,
+      "line": 388,
+      "end_line": 388,
       "owner": "upsert_indicator_meta",
       "conditions": [
         "existing is None"
@@ -189056,8 +189165,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 356,
-      "end_line": 356,
+      "line": 388,
+      "end_line": 388,
       "owner": "upsert_indicator_meta",
       "conditions": [
         "existing is None"
@@ -189067,8 +189176,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 527,
+      "end_line": 527,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -189076,8 +189185,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 529,
+      "end_line": 529,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -189085,8 +189194,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 494,
-      "end_line": 494,
+      "line": 530,
+      "end_line": 530,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -189094,19 +189203,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 509,
-      "end_line": 509,
-      "owner": "check_structure",
-      "conditions": [
-        "missing_ids"
-      ],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/scripts/load-world-eurostat.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 545,
+      "end_line": 545,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189118,6 +189216,17 @@
       "path": "backend/scripts/load-world-eurostat.py",
       "line": 545,
       "end_line": 545,
+      "owner": "check_structure",
+      "conditions": [
+        "missing_ids"
+      ],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
+      "line": 585,
+      "end_line": 585,
       "owner": "run",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -189125,8 +189234,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 204,
+      "end_line": 204,
       "owner": "ensure_countries",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -189134,8 +189243,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 204,
+      "end_line": 204,
       "owner": "ensure_countries",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -189143,8 +189252,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 219,
+      "end_line": 219,
       "owner": "ensure_countries",
       "conditions": [
         "not (existing)"
@@ -189154,8 +189263,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 273,
+      "end_line": 273,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.__table__",
@@ -189163,8 +189272,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 292,
+      "end_line": 292,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -189172,8 +189281,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 261,
-      "end_line": 261,
+      "line": 293,
+      "end_line": 293,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -189181,8 +189290,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 262,
-      "end_line": 262,
+      "line": 294,
+      "end_line": 294,
       "owner": "refresh_indicator_extent",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -189190,8 +189299,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 527,
+      "end_line": 527,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -189199,8 +189308,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 527,
+      "end_line": 527,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -189208,8 +189317,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 219,
+      "end_line": 219,
       "owner": "ensure_countries",
       "conditions": [
         "not (existing)"
@@ -189219,8 +189328,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 219,
+      "end_line": 219,
       "owner": "ensure_countries",
       "conditions": [
         "not (existing)"
@@ -189230,8 +189339,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 273,
+      "end_line": 273,
       "owner": "reconcile_points",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -189239,8 +189348,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 481,
+      "end_line": 481,
       "owner": "persist_result",
       "conditions": [
         "cid is None"
@@ -189250,8 +189359,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 524,
+      "end_line": 524,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.id",
@@ -189259,8 +189368,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 524,
+      "end_line": 524,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldCountry.code",
@@ -189268,8 +189377,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 524,
+      "end_line": 524,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.slice_json",
@@ -189277,8 +189386,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 525,
+      "end_line": 525,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.slice_hash",
@@ -189286,8 +189395,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 525,
+      "end_line": 525,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -189295,8 +189404,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 527,
+      "end_line": 527,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -189304,8 +189413,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 527,
+      "end_line": 527,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -189313,8 +189422,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 544,
+      "end_line": 544,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189324,8 +189433,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 481,
+      "end_line": 481,
       "owner": "persist_result",
       "conditions": [
         "cid is None"
@@ -189335,8 +189444,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 481,
+      "end_line": 481,
       "owner": "persist_result",
       "conditions": [
         "cid is None"
@@ -189346,8 +189455,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 524,
+      "end_line": 524,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -189355,8 +189464,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 524,
+      "end_line": 524,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -189364,8 +189473,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 524,
+      "end_line": 524,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -189373,8 +189482,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 525,
+      "end_line": 525,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -189382,8 +189491,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 525,
+      "end_line": 525,
       "owner": "check_structure",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -189391,8 +189500,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 543,
+      "end_line": 543,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189402,8 +189511,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 543,
+      "end_line": 543,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189413,8 +189522,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 543,
+      "end_line": 543,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189424,8 +189533,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 544,
+      "end_line": 544,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189435,8 +189544,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 543,
+      "end_line": 543,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189446,8 +189555,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 543,
+      "end_line": 543,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189457,8 +189566,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 543,
+      "end_line": 543,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -189468,8 +189577,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 544,
+      "end_line": 544,
       "owner": "check_structure",
       "conditions": [
         "missing_ids"
@@ -190454,8 +190563,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 255,
+      "end_line": 255,
       "owner": "rollback",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -190463,8 +190572,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 255,
+      "end_line": 255,
       "owner": "rollback",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date.not_in",
@@ -190490,8 +190599,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 254,
+      "end_line": 254,
       "owner": "rollback",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -190499,8 +190608,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 255,
+      "end_line": 255,
       "owner": "rollback",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -190508,8 +190617,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 255,
+      "end_line": 255,
       "owner": "rollback",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -190535,8 +190644,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 255,
+      "end_line": 255,
       "owner": "rollback",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -190942,8 +191051,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5497,
-      "end_line": 5497,
+      "line": 5499,
+      "end_line": 5499,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -190951,8 +191060,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5544,
-      "end_line": 5544,
+      "line": 5548,
+      "end_line": 5548,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -190987,8 +191096,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5497,
-      "end_line": 5497,
+      "line": 5499,
+      "end_line": 5499,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -190996,8 +191105,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5497,
-      "end_line": 5497,
+      "line": 5499,
+      "end_line": 5499,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -191005,8 +191114,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5544,
-      "end_line": 5544,
+      "line": 5548,
+      "end_line": 5548,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -191014,8 +191123,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5544,
-      "end_line": 5544,
+      "line": 5548,
+      "end_line": 5548,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -191086,8 +191195,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5544,
-      "end_line": 5544,
+      "line": 5548,
+      "end_line": 5548,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -191230,8 +191339,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5509,
-      "end_line": 5509,
+      "line": 5511,
+      "end_line": 5511,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -195158,8 +195267,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 628,
-      "end_line": 628,
+      "line": 666,
+      "end_line": 666,
       "owner": "run",
       "conditions": [],
       "literal": "SELECT COUNT(*) FROM world_countries WHERE is_active",
@@ -195168,8 +195277,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 631,
-      "end_line": 631,
+      "line": 669,
+      "end_line": 669,
       "owner": "run",
       "conditions": [],
       "literal": "SELECT COUNT(*) FROM world_indicators",
@@ -195178,8 +195287,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 632,
-      "end_line": 632,
+      "line": 670,
+      "end_line": 670,
       "owner": "run",
       "conditions": [],
       "literal": "SELECT COUNT(*) FROM world_data_points",
@@ -195188,8 +195297,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 150,
-      "end_line": 150,
+      "line": 176,
+      "end_line": 176,
       "owner": "select_datasets",
       "conditions": [],
       "literal": null,
@@ -199582,8 +199691,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 26,
-      "end_line": 37,
+      "line": 27,
+      "end_line": 38,
       "owner": "<module>",
       "conditions": [],
       "name": "get_redis",
@@ -199591,8 +199700,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 40,
-      "end_line": 51,
+      "line": 41,
+      "end_line": 52,
       "owner": "<module>",
       "conditions": [],
       "name": "get_redis_bin",
@@ -199600,8 +199709,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 54,
-      "end_line": 70,
+      "line": 55,
+      "end_line": 71,
       "owner": "<module>",
       "conditions": [],
       "name": "_state_redis_url",
@@ -199609,8 +199718,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 73,
-      "end_line": 85,
+      "line": 74,
+      "end_line": 86,
       "owner": "<module>",
       "conditions": [],
       "name": "get_state_redis",
@@ -199618,8 +199727,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 91,
-      "end_line": 108,
+      "line": 92,
+      "end_line": 109,
       "owner": "<module>",
       "conditions": [],
       "name": "get_state_redis_sync",
@@ -199627,8 +199736,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 111,
-      "end_line": 127,
+      "line": 112,
+      "end_line": 128,
       "owner": "<module>",
       "conditions": [],
       "name": "close_redis",
@@ -199636,8 +199745,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 136,
-      "end_line": 144,
+      "line": 137,
+      "end_line": 145,
       "owner": "<module>",
       "conditions": [],
       "name": "_note_cache_failure",
@@ -199645,8 +199754,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 147,
-      "end_line": 155,
+      "line": 148,
+      "end_line": 156,
       "owner": "<module>",
       "conditions": [],
       "name": "cache_get",
@@ -199654,8 +199763,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 158,
-      "end_line": 164,
+      "line": 159,
+      "end_line": 165,
       "owner": "<module>",
       "conditions": [],
       "name": "cache_set",
@@ -199663,8 +199772,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 179,
-      "end_line": 180,
+      "line": 180,
+      "end_line": 181,
       "owner": "<module>",
       "conditions": [],
       "name": "encode_ssr_html",
@@ -199672,8 +199781,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 183,
-      "end_line": 190,
+      "line": 184,
+      "end_line": 191,
       "owner": "<module>",
       "conditions": [],
       "name": "decode_ssr_value",
@@ -199681,8 +199790,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 193,
-      "end_line": 200,
+      "line": 194,
+      "end_line": 201,
       "owner": "<module>",
       "conditions": [],
       "name": "ssr_cache_get",
@@ -199690,8 +199799,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 203,
-      "end_line": 214,
+      "line": 204,
+      "end_line": 215,
       "owner": "<module>",
       "conditions": [],
       "name": "ssr_cache_set",
@@ -199699,8 +199808,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 236,
-      "end_line": 237,
+      "line": 237,
+      "end_line": 238,
       "owner": "<module>",
       "conditions": [],
       "name": "WorldCatalogInvalidationError",
@@ -199708,8 +199817,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 240,
-      "end_line": 258,
+      "line": 241,
+      "end_line": 259,
       "owner": "<module>",
       "conditions": [],
       "name": "_ns_version",
@@ -199717,8 +199826,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 261,
-      "end_line": 267,
+      "line": 262,
+      "end_line": 268,
       "owner": "<module>",
       "conditions": [],
       "name": "versioned_key",
@@ -199726,8 +199835,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 270,
-      "end_line": 280,
+      "line": 271,
+      "end_line": 281,
       "owner": "<module>",
       "conditions": [],
       "name": "fresh_world_catalog_key",
@@ -199735,8 +199844,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 283,
-      "end_line": 324,
+      "line": 284,
+      "end_line": 325,
       "owner": "<module>",
       "conditions": [],
       "name": "bump_namespaces",
@@ -199744,8 +199853,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 338,
-      "end_line": 339,
+      "line": 339,
+      "end_line": 340,
       "owner": "<module>",
       "conditions": [],
       "name": "durable_world_countries_key",
@@ -199753,8 +199862,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 342,
-      "end_line": 350,
+      "line": 343,
+      "end_line": 351,
       "owner": "<module>",
       "conditions": [],
       "name": "get_durable_world_countries",
@@ -199762,8 +199871,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 353,
-      "end_line": 362,
+      "line": 354,
+      "end_line": 363,
       "owner": "<module>",
       "conditions": [],
       "name": "set_durable_world_countries",
@@ -199771,8 +199880,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 365,
-      "end_line": 377,
+      "line": 366,
+      "end_line": 378,
       "owner": "<module>",
       "conditions": [],
       "name": "clear_durable_world_countries",
@@ -199780,8 +199889,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 422,
-      "end_line": 426,
+      "line": 423,
+      "end_line": 427,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_countries_key_parts",
@@ -199789,8 +199898,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 429,
-      "end_line": 432,
+      "line": 430,
+      "end_line": 433,
       "owner": "<module>",
       "conditions": [],
       "name": "_versioned_durable_world_countries_key",
@@ -199798,8 +199907,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 435,
-      "end_line": 436,
+      "line": 436,
+      "end_line": 437,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_countries_pointer_key",
@@ -199807,8 +199916,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 439,
-      "end_line": 440,
+      "line": 440,
+      "end_line": 441,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_countries_stale_key",
@@ -199816,8 +199925,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 443,
-      "end_line": 453,
+      "line": 444,
+      "end_line": 454,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_countries_payload",
@@ -199825,8 +199934,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 456,
-      "end_line": 498,
+      "line": 457,
+      "end_line": 499,
       "owner": "<module>",
       "conditions": [],
       "name": "get_versioned_durable_world_countries",
@@ -199834,8 +199943,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 501,
-      "end_line": 522,
+      "line": 502,
+      "end_line": 523,
       "owner": "<module>",
       "conditions": [],
       "name": "set_versioned_durable_world_countries",
@@ -199843,8 +199952,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 525,
-      "end_line": 538,
+      "line": 526,
+      "end_line": 539,
       "owner": "<module>",
       "conditions": [],
       "name": "is_current_world_countries_key",
@@ -199852,8 +199961,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 542,
-      "end_line": 570,
+      "line": 543,
+      "end_line": 571,
       "owner": "<module>",
       "conditions": [],
       "name": "world_countries_build_lock",
@@ -199861,11 +199970,29 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 572,
-      "end_line": 575,
+      "line": 573,
+      "end_line": 576,
       "owner": "<module>",
       "conditions": [],
       "name": "cache_invalidate_indicator",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/core/cache.py",
+      "line": 579,
+      "end_line": 615,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "publish_committed_indicator_changes",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/core/cache.py",
+      "line": 596,
+      "end_line": 601,
+      "owner": "publish_committed_indicator_changes",
+      "conditions": [],
+      "name": "publish",
       "kind": "AsyncFunctionDef"
     },
     {
@@ -204676,8 +204803,26 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 91,
-      "end_line": 98,
+      "line": 92,
+      "end_line": 94,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "storage_committed",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/base_parser.py",
+      "line": 97,
+      "end_line": 99,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "mark_storage_committed",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/base_parser.py",
+      "line": 102,
+      "end_line": 109,
       "owner": "<module>",
       "conditions": [],
       "name": "mark_expected_empty",
@@ -204685,8 +204830,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 101,
-      "end_line": 107,
+      "line": 112,
+      "end_line": 118,
       "owner": "<module>",
       "conditions": [],
       "name": "mark_fallback_used",
@@ -204694,8 +204839,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 110,
-      "end_line": 111,
+      "line": 121,
+      "end_line": 122,
       "owner": "<module>",
       "conditions": [],
       "name": "expected_empty_reason",
@@ -204703,8 +204848,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 114,
-      "end_line": 115,
+      "line": 125,
+      "end_line": 126,
       "owner": "<module>",
       "conditions": [],
       "name": "fallback_reason",
@@ -204712,8 +204857,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 118,
-      "end_line": 119,
+      "line": 129,
+      "end_line": 130,
       "owner": "<module>",
       "conditions": [],
       "name": "_utcnow_naive",
@@ -204721,8 +204866,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 122,
-      "end_line": 123,
+      "line": 133,
+      "end_line": 134,
       "owner": "<module>",
       "conditions": [],
       "name": "_point_date",
@@ -204730,8 +204875,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 126,
-      "end_line": 369,
+      "line": 137,
+      "end_line": 391,
       "owner": "<module>",
       "conditions": [],
       "name": "BaseParser",
@@ -204739,8 +204884,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 137,
-      "end_line": 231,
+      "line": 148,
+      "end_line": 253,
       "owner": "BaseParser",
       "conditions": [],
       "name": "run",
@@ -204748,8 +204893,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 233,
-      "end_line": 239,
+      "line": 255,
+      "end_line": 261,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_zero_parse_expected",
@@ -204757,8 +204902,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 241,
-      "end_line": 256,
+      "line": 263,
+      "end_line": 278,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_resolve_zero_parse_status",
@@ -204766,8 +204911,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 258,
-      "end_line": 290,
+      "line": 280,
+      "end_line": 312,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_alert_zero_parse_if_regression",
@@ -204775,8 +204920,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 293,
-      "end_line": 312,
+      "line": 315,
+      "end_line": 334,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -204784,8 +204929,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 314,
-      "end_line": 323,
+      "line": 336,
+      "end_line": 345,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_validate",
@@ -204793,8 +204938,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 325,
-      "end_line": 336,
+      "line": 347,
+      "end_line": 358,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_post_upsert",
@@ -204802,8 +204947,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 338,
-      "end_line": 348,
+      "line": 360,
+      "end_line": 370,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_after_storage",
@@ -204811,8 +204956,8 @@
     },
     {
       "path": "backend/app/services/base_parser.py",
-      "line": 350,
-      "end_line": 369,
+      "line": 372,
+      "end_line": 391,
       "owner": "BaseParser",
       "conditions": [],
       "name": "_handle_forecasts",
@@ -210491,7 +210636,7 @@
     {
       "path": "backend/app/services/minfin_budget_parser.py",
       "line": 583,
-      "end_line": 668,
+      "end_line": 669,
       "owner": "<module>",
       "conditions": [],
       "name": "MinfinBudgetParser",
@@ -210500,7 +210645,7 @@
     {
       "path": "backend/app/services/minfin_budget_parser.py",
       "line": 602,
-      "end_line": 621,
+      "end_line": 622,
       "owner": "MinfinBudgetParser",
       "conditions": [],
       "name": "_after_storage",
@@ -210508,8 +210653,8 @@
     },
     {
       "path": "backend/app/services/minfin_budget_parser.py",
-      "line": 623,
-      "end_line": 668,
+      "line": 624,
+      "end_line": 669,
       "owner": "MinfinBudgetParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -212282,7 +212427,7 @@
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
       "line": 208,
-      "end_line": 282,
+      "end_line": 283,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatIndParser",
@@ -212318,7 +212463,7 @@
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
       "line": 263,
-      "end_line": 282,
+      "end_line": 283,
       "owner": "RosstatIndParser",
       "conditions": [],
       "name": "_after_storage",
@@ -213038,7 +213183,7 @@
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
       "line": 717,
-      "end_line": 912,
+      "end_line": 924,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatWeeklyCpiParser",
@@ -213056,7 +213201,7 @@
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
       "line": 720,
-      "end_line": 721,
+      "end_line": 722,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "__init__",
@@ -213064,8 +213209,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 723,
-      "end_line": 791,
+      "line": 724,
+      "end_line": 803,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "run",
@@ -213073,8 +213218,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 793,
-      "end_line": 796,
+      "line": 805,
+      "end_line": 808,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "_zero_parse_expected",
@@ -213082,8 +213227,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 798,
-      "end_line": 833,
+      "line": 810,
+      "end_line": 845,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -213091,8 +213236,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 835,
-      "end_line": 861,
+      "line": 847,
+      "end_line": 873,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "_load_existing_dates",
@@ -213100,8 +213245,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 863,
-      "end_line": 912,
+      "line": 875,
+      "end_line": 924,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "_post_upsert",
@@ -222496,8 +222641,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 122,
-      "end_line": 123,
+      "line": 123,
+      "end_line": 124,
       "owner": "<module>",
       "conditions": [],
       "name": "AdapterUnavailable",
@@ -222505,8 +222650,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 127,
-      "end_line": 150,
+      "line": 128,
+      "end_line": 151,
       "owner": "<module>",
       "conditions": [],
       "name": "NationalSeriesSpec",
@@ -222514,8 +222659,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 154,
-      "end_line": 157,
+      "line": 155,
+      "end_line": 158,
       "owner": "<module>",
       "conditions": [],
       "name": "NationalCoreManifest",
@@ -222523,8 +222668,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 161,
-      "end_line": 171,
+      "line": 162,
+      "end_line": 172,
       "owner": "<module>",
       "conditions": [],
       "name": "SeriesIngestResult",
@@ -222532,8 +222677,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 175,
-      "end_line": 183,
+      "line": 176,
+      "end_line": 184,
       "owner": "<module>",
       "conditions": [],
       "name": "CountryIngestStats",
@@ -222541,8 +222686,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 186,
-      "end_line": 190,
+      "line": 187,
+      "end_line": 191,
       "owner": "<module>",
       "conditions": [],
       "name": "normalize_national_frequency",
@@ -222550,8 +222695,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 193,
-      "end_line": 205,
+      "line": 194,
+      "end_line": 206,
       "owner": "<module>",
       "conditions": [],
       "name": "build_indicator_code",
@@ -222559,8 +222704,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 208,
-      "end_line": 211,
+      "line": 209,
+      "end_line": 212,
       "owner": "<module>",
       "conditions": [],
       "name": "core_yaml_path",
@@ -222568,8 +222713,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 214,
-      "end_line": 218,
+      "line": 215,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "_collapse_ws",
@@ -222577,8 +222722,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 221,
-      "end_line": 226,
+      "line": 222,
+      "end_line": 227,
       "owner": "<module>",
       "conditions": [],
       "name": "_as_str_map",
@@ -222586,8 +222731,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 229,
-      "end_line": 273,
+      "line": 230,
+      "end_line": 274,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_series_row",
@@ -222595,8 +222740,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 276,
-      "end_line": 310,
+      "line": 277,
+      "end_line": 311,
       "owner": "<module>",
       "conditions": [],
       "name": "load_national_core_yaml",
@@ -222604,8 +222749,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 313,
-      "end_line": 328,
+      "line": 314,
+      "end_line": 329,
       "owner": "<module>",
       "conditions": [],
       "name": "series_ref_from_spec",
@@ -222613,8 +222758,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 331,
-      "end_line": 340,
+      "line": 332,
+      "end_line": 341,
       "owner": "<module>",
       "conditions": [],
       "name": "public_source_for_provider",
@@ -222622,8 +222767,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 343,
-      "end_line": 362,
+      "line": 344,
+      "end_line": 363,
       "owner": "<module>",
       "conditions": [],
       "name": "default_description",
@@ -222631,8 +222776,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 365,
-      "end_line": 377,
+      "line": 366,
+      "end_line": 378,
       "owner": "<module>",
       "conditions": [],
       "name": "default_methodology",
@@ -222640,8 +222785,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 380,
-      "end_line": 409,
+      "line": 381,
+      "end_line": 410,
       "owner": "<module>",
       "conditions": [],
       "name": "_statcan_cubes_from_specs",
@@ -222649,8 +222794,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 412,
-      "end_line": 439,
+      "line": 413,
+      "end_line": 440,
       "owner": "<module>",
       "conditions": [],
       "name": "_instantiate_adapter",
@@ -222658,8 +222803,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 442,
-      "end_line": 495,
+      "line": 443,
+      "end_line": 496,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_adapter",
@@ -222667,8 +222812,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 498,
-      "end_line": 533,
+      "line": 499,
+      "end_line": 534,
       "owner": "<module>",
       "conditions": [],
       "name": "ensure_country",
@@ -222676,8 +222821,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 536,
-      "end_line": 580,
+      "line": 537,
+      "end_line": 601,
       "owner": "<module>",
       "conditions": [],
       "name": "reconcile_points",
@@ -222685,8 +222830,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 583,
-      "end_line": 597,
+      "line": 604,
+      "end_line": 618,
       "owner": "<module>",
       "conditions": [],
       "name": "refresh_indicator_extent",
@@ -222694,8 +222839,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 600,
-      "end_line": 604,
+      "line": 621,
+      "end_line": 625,
       "owner": "<module>",
       "conditions": [],
       "name": "_slice_json",
@@ -222703,8 +222848,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 607,
-      "end_line": 618,
+      "line": 628,
+      "end_line": 639,
       "owner": "<module>",
       "conditions": [],
       "name": "_seo_bundle",
@@ -222712,8 +222857,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 621,
-      "end_line": 772,
+      "line": 642,
+      "end_line": 807,
       "owner": "<module>",
       "conditions": [],
       "name": "upsert_national_indicator",
@@ -222721,8 +222866,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 775,
-      "end_line": 800,
+      "line": 810,
+      "end_line": 835,
       "owner": "<module>",
       "conditions": [],
       "name": "touch_dataset_state",
@@ -222730,8 +222875,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 803,
-      "end_line": 812,
+      "line": 838,
+      "end_line": 847,
       "owner": "<module>",
       "conditions": [],
       "name": "observations_to_points",
@@ -222739,8 +222884,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 815,
-      "end_line": 887,
+      "line": 850,
+      "end_line": 947,
       "owner": "<module>",
       "conditions": [],
       "name": "ingest_series",
@@ -222748,8 +222893,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 954,
-      "end_line": 999,
+      "line": 1014,
+      "end_line": 1059,
       "owner": "<module>",
       "conditions": [],
       "name": "ingest_country",
@@ -222757,8 +222902,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1002,
-      "end_line": 1070,
+      "line": 1062,
+      "end_line": 1130,
       "owner": "<module>",
       "conditions": [],
       "name": "_ingest_country_series",
@@ -222766,8 +222911,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1078,
-      "end_line": 1199,
+      "line": 1138,
+      "end_line": 1259,
       "owner": "<module>",
       "conditions": [],
       "name": "run_national_core_ingest",
@@ -223216,8 +223361,17 @@
     },
     {
       "path": "backend/app/services/world_source_adapter.py",
-      "line": 69,
-      "end_line": 75,
+      "line": 68,
+      "end_line": 95,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "validate_complete_coverage",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_source_adapter.py",
+      "line": 99,
+      "end_line": 124,
       "owner": "<module>",
       "conditions": [],
       "name": "WorldSeriesPayload",
@@ -223225,8 +223379,8 @@
     },
     {
       "path": "backend/app/services/world_source_adapter.py",
-      "line": 78,
-      "end_line": 100,
+      "line": 127,
+      "end_line": 149,
       "owner": "<module>",
       "conditions": [],
       "name": "WorldSourceAdapter",
@@ -223243,8 +223397,17 @@
     },
     {
       "path": "backend/app/services/world_source_adapter.py",
-      "line": 84,
-      "end_line": 86,
+      "line": 118,
+      "end_line": 124,
+      "owner": "WorldSeriesPayload",
+      "conditions": [],
+      "name": "__post_init__",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_source_adapter.py",
+      "line": 133,
+      "end_line": 135,
       "owner": "WorldSourceAdapter",
       "conditions": [],
       "name": "list_datasets",
@@ -223252,8 +223415,8 @@
     },
     {
       "path": "backend/app/services/world_source_adapter.py",
-      "line": 88,
-      "end_line": 90,
+      "line": 137,
+      "end_line": 139,
       "owner": "WorldSourceAdapter",
       "conditions": [],
       "name": "list_series",
@@ -223261,8 +223424,8 @@
     },
     {
       "path": "backend/app/services/world_source_adapter.py",
-      "line": 92,
-      "end_line": 100,
+      "line": 141,
+      "end_line": 149,
       "owner": "WorldSourceAdapter",
       "conditions": [],
       "name": "fetch_series",
@@ -224512,8 +224675,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 40,
-      "end_line": 41,
+      "line": 42,
+      "end_line": 43,
       "owner": "<module>",
       "conditions": [],
       "name": "etl_timeout_for",
@@ -224521,8 +224684,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 47,
-      "end_line": 54,
+      "line": 49,
+      "end_line": 56,
       "owner": "<module>",
       "conditions": [],
       "name": "_updated_source_codes",
@@ -224530,8 +224693,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 57,
-      "end_line": 60,
+      "line": 59,
+      "end_line": 62,
       "owner": "<module>",
       "conditions": [],
       "name": "run_etl_for_indicator",
@@ -224539,8 +224702,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 63,
-      "end_line": 73,
+      "line": 65,
+      "end_line": 75,
       "owner": "<module>",
       "conditions": [],
       "name": "_fetch_changed",
@@ -224548,8 +224711,26 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 76,
-      "end_line": 129,
+      "line": 78,
+      "end_line": 84,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_CommittedETLCancelled",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 87,
+      "end_line": 100,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_run_etl_with_timeout",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 103,
+      "end_line": 159,
       "owner": "<module>",
       "conditions": [],
       "name": "run_etl_for_indicator_status",
@@ -224557,8 +224738,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 132,
-      "end_line": 229,
+      "line": 162,
+      "end_line": 257,
       "owner": "<module>",
       "conditions": [],
       "name": "daily_update_job",
@@ -224566,8 +224747,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 232,
-      "end_line": 265,
+      "line": 260,
+      "end_line": 294,
       "owner": "<module>",
       "conditions": [],
       "name": "_retrain_recalculated_derived",
@@ -224575,8 +224756,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 268,
-      "end_line": 284,
+      "line": 297,
+      "end_line": 313,
       "owner": "<module>",
       "conditions": [],
       "name": "_catch_up_empty_forecasts_safe",
@@ -224584,8 +224765,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 287,
-      "end_line": 378,
+      "line": 316,
+      "end_line": 405,
       "owner": "<module>",
       "conditions": [],
       "name": "run_etl_for_parser_type",
@@ -224593,8 +224774,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 381,
-      "end_line": 391,
+      "line": 408,
+      "end_line": 418,
       "owner": "<module>",
       "conditions": [],
       "name": "late_minfin_etl_job",
@@ -224602,8 +224783,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 394,
-      "end_line": 401,
+      "line": 421,
+      "end_line": 428,
       "owner": "<module>",
       "conditions": [],
       "name": "late_fred_etl_job",
@@ -224611,8 +224792,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 404,
-      "end_line": 414,
+      "line": 431,
+      "end_line": 441,
       "owner": "<module>",
       "conditions": [],
       "name": "emiss_regional_job",
@@ -224620,8 +224801,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 437,
-      "end_line": 453,
+      "line": 464,
+      "end_line": 480,
       "owner": "<module>",
       "conditions": [],
       "name": "find_stale",
@@ -224629,8 +224810,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 456,
-      "end_line": 546,
+      "line": 483,
+      "end_line": 573,
       "owner": "<module>",
       "conditions": [],
       "name": "staleness_check_job",
@@ -224638,12 +224819,21 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 549,
-      "end_line": 571,
+      "line": 576,
+      "end_line": 598,
       "owner": "<module>",
       "conditions": [],
       "name": "_promote_past_events",
       "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 81,
+      "end_line": 84,
+      "owner": "_CommittedETLCancelled",
+      "conditions": [],
+      "name": "__init__",
+      "kind": "FunctionDef"
     },
     {
       "path": "backend/app/tasks/ticker_worker.py",
@@ -225233,7 +225423,16 @@
     {
       "path": "backend/scripts/load-world-eurostat.py",
       "line": 100,
-      "end_line": 113,
+      "end_line": 123,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "publish_committed_changes",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/scripts/load-world-eurostat.py",
+      "line": 126,
+      "end_line": 139,
       "owner": "<module>",
       "conditions": [],
       "name": "_theme_sql",
@@ -225241,8 +225440,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 116,
-      "end_line": 121,
+      "line": 142,
+      "end_line": 147,
       "owner": "<module>",
       "conditions": [],
       "name": "_priority_rank",
@@ -225250,8 +225449,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 124,
-      "end_line": 156,
+      "line": 150,
+      "end_line": 182,
       "owner": "<module>",
       "conditions": [],
       "name": "select_datasets",
@@ -225259,8 +225458,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 159,
-      "end_line": 213,
+      "line": 185,
+      "end_line": 245,
       "owner": "<module>",
       "conditions": [],
       "name": "ensure_countries",
@@ -225268,8 +225467,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 216,
-      "end_line": 252,
+      "line": 248,
+      "end_line": 284,
       "owner": "<module>",
       "conditions": [],
       "name": "reconcile_points",
@@ -225277,8 +225476,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 255,
-      "end_line": 270,
+      "line": 287,
+      "end_line": 302,
       "owner": "<module>",
       "conditions": [],
       "name": "refresh_indicator_extent",
@@ -225286,8 +225485,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 273,
-      "end_line": 415,
+      "line": 305,
+      "end_line": 447,
       "owner": "<module>",
       "conditions": [],
       "name": "upsert_indicator_meta",
@@ -225295,8 +225494,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 418,
-      "end_line": 428,
+      "line": 450,
+      "end_line": 460,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_one",
@@ -225304,8 +225503,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 431,
-      "end_line": 472,
+      "line": 463,
+      "end_line": 508,
       "owner": "<module>",
       "conditions": [],
       "name": "persist_result",
@@ -225313,8 +225512,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 475,
-      "end_line": 512,
+      "line": 511,
+      "end_line": 548,
       "owner": "<module>",
       "conditions": [],
       "name": "check_structure",
@@ -225322,8 +225521,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 515,
-      "end_line": 526,
+      "line": 551,
+      "end_line": 566,
       "owner": "<module>",
       "conditions": [],
       "name": "apply_remaps",
@@ -225331,8 +225530,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 529,
-      "end_line": 656,
+      "line": 569,
+      "end_line": 694,
       "owner": "<module>",
       "conditions": [],
       "name": "run",
@@ -225340,8 +225539,8 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 659,
-      "end_line": 684,
+      "line": 697,
+      "end_line": 722,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -225647,16 +225846,7 @@
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
       "line": 177,
-      "end_line": 178,
-      "owner": "<module>",
-      "conditions": [],
-      "name": "_noop_invalidate",
-      "kind": "AsyncFunctionDef"
-    },
-    {
-      "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 181,
-      "end_line": 187,
+      "end_line": 183,
       "owner": "<module>",
       "conditions": [],
       "name": "apply_plan",
@@ -225664,8 +225854,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 190,
-      "end_line": 191,
+      "line": 186,
+      "end_line": 187,
       "owner": "<module>",
       "conditions": [],
       "name": "snapshot",
@@ -225673,8 +225863,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 194,
-      "end_line": 206,
+      "line": 190,
+      "end_line": 201,
       "owner": "<module>",
       "conditions": [],
       "name": "retrain_and_invalidate",
@@ -225682,8 +225872,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 209,
-      "end_line": 250,
+      "line": 204,
+      "end_line": 245,
       "owner": "<module>",
       "conditions": [],
       "name": "run",
@@ -225691,8 +225881,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 253,
-      "end_line": 269,
+      "line": 248,
+      "end_line": 265,
       "owner": "<module>",
       "conditions": [],
       "name": "rollback",
@@ -225700,8 +225890,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 272,
-      "end_line": 278,
+      "line": 268,
+      "end_line": 274,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -225782,7 +225972,7 @@
     {
       "path": "backend/seed_data.py",
       "line": 5299,
-      "end_line": 5520,
+      "end_line": 5522,
       "owner": "<module>",
       "conditions": [],
       "name": "_seed_full",
@@ -225790,8 +225980,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5523,
-      "end_line": 5551,
+      "line": 5525,
+      "end_line": 5555,
       "owner": "<module>",
       "conditions": [],
       "name": "generate_forecasts",
@@ -227663,7 +227853,7 @@
     {
       "path": "scripts/insert-gdp-q1-2026-estimate.py",
       "line": 44,
-      "end_line": 80,
+      "end_line": 81,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -228644,7 +228834,7 @@
     {
       "path": "scripts/verify-derived-incremental.py",
       "line": 76,
-      "end_line": 98,
+      "end_line": 85,
       "owner": "<module>",
       "conditions": [],
       "name": "_scenario_incremental",
@@ -228652,20 +228842,11 @@
     },
     {
       "path": "scripts/verify-derived-incremental.py",
-      "line": 101,
-      "end_line": 126,
+      "line": 88,
+      "end_line": 113,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
-      "kind": "AsyncFunctionDef"
-    },
-    {
-      "path": "scripts/verify-derived-incremental.py",
-      "line": 86,
-      "end_line": 87,
-      "owner": "_scenario_incremental",
-      "conditions": [],
-      "name": "_noop",
       "kind": "AsyncFunctionDef"
     }
   ],
@@ -234772,8 +234953,8 @@
     },
     {
       "path": "backend/app/core/cache.py",
-      "line": 423,
-      "end_line": 423,
+      "line": 424,
+      "end_line": 424,
       "owner": "_world_countries_key_parts",
       "conditions": [],
       "symbol": "app.core.cache._WORLD_COUNTRIES_KEY_RE"
@@ -241011,16 +241192,16 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 846,
-      "end_line": 846,
+      "line": 858,
+      "end_line": 858,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 880,
-      "end_line": 880,
+      "line": 892,
+      "end_line": 892,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES"
@@ -241043,16 +241224,6 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 775,
-      "end_line": 775,
-      "owner": "RosstatWeeklyCpiParser.run",
-      "conditions": [
-        "records_added > 0 or records_updated > 0"
-      ],
-      "symbol": "app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES"
-    },
-    {
-      "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
       "line": 404,
       "end_line": 404,
       "owner": "_find_bulletin_urls_central_news",
@@ -241069,8 +241240,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 749,
-      "end_line": 749,
+      "line": 753,
+      "end_line": 753,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [
         "not (points)"
@@ -243882,16 +244053,16 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 188,
-      "end_line": 188,
+      "line": 189,
+      "end_line": 189,
       "owner": "normalize_national_frequency",
       "conditions": [],
       "symbol": "app.services.world_national_ingest._FREQ_ALIASES"
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 189,
-      "end_line": 189,
+      "line": 190,
+      "end_line": 190,
       "owner": "normalize_national_frequency",
       "conditions": [
         "key in _FREQ_ALIASES"
@@ -243900,48 +244071,48 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 336,
+      "end_line": 336,
       "owner": "public_source_for_provider",
       "conditions": [],
       "symbol": "app.services.world_national_ingest.PUBLIC_SOURCE_RU"
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 371,
-      "end_line": 371,
+      "line": 372,
+      "end_line": 372,
       "owner": "default_methodology",
       "conditions": [],
       "symbol": "app.services.world_national_ingest._FREQ_ADJ_RU"
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 450,
+      "end_line": 450,
       "owner": "resolve_adapter",
       "conditions": [],
       "symbol": "app.services.world_national_ingest._ADAPTER_MODULES"
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 963,
-      "end_line": 963,
+      "line": 1023,
+      "end_line": 1023,
       "owner": "ingest_country",
       "conditions": [],
       "symbol": "app.services.world_national_ingest._COUNTRY_DEFAULTS"
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1090,
-      "end_line": 1090,
+      "line": 1150,
+      "end_line": 1150,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "symbol": "app.services.world_national_ingest.NATIONAL_CORE_COUNTRIES"
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 197,
-      "end_line": 197,
+      "line": 198,
+      "end_line": 198,
       "owner": "build_indicator_code",
       "conditions": [],
       "symbol": "app.services.world_national_ingest._CODE_RE"
@@ -244100,40 +244271,40 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 41,
-      "end_line": 41,
+      "line": 43,
+      "end_line": 43,
       "owner": "etl_timeout_for",
       "conditions": [],
       "symbol": "app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER"
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 154,
-      "end_line": 154,
+      "line": 184,
+      "end_line": 184,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.services.base_parser.DEGRADED_STATUSES"
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 331,
-      "end_line": 331,
+      "line": 357,
+      "end_line": 357,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.services.base_parser.DEGRADED_STATUSES"
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 476,
+      "end_line": 476,
       "owner": "find_stale",
       "conditions": [],
       "symbol": "app.tasks.scheduler.STALENESS_SLA_DAYS"
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 53,
-      "end_line": 53,
+      "line": 55,
+      "end_line": 55,
       "owner": "_updated_source_codes",
       "conditions": [
         "'inflation-weekly' in expanded"
@@ -244752,64 +244923,64 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 118,
-      "end_line": 118,
+      "line": 144,
+      "end_line": 144,
       "owner": "_priority_rank",
       "conditions": [],
       "symbol": "scripts.load-world-eurostat.PRIORITY_PREFIXES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 121,
-      "end_line": 121,
+      "line": 147,
+      "end_line": 147,
       "owner": "_priority_rank",
       "conditions": [],
       "symbol": "scripts.load-world-eurostat.PRIORITY_PREFIXES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 189,
+      "end_line": 189,
       "owner": "ensure_countries",
       "conditions": [],
       "symbol": "app.services.eurostat_parser.EXCLUDED_GEO_CODES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 342,
+      "end_line": 342,
       "owner": "upsert_indicator_meta",
       "conditions": [],
       "symbol": "app.data.eurostat_country_visibility.EUROSTAT_SUPPRESS_LISTED_CODES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 191,
+      "end_line": 191,
       "owner": "ensure_countries",
       "conditions": [],
       "symbol": "app.services.eurostat_parser.WORLD_COUNTRIES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 549,
-      "end_line": 549,
+      "line": 589,
+      "end_line": 589,
       "owner": "run",
       "conditions": [],
       "symbol": "app.services.eurostat_parser.WORLD_COUNTRIES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 543,
-      "end_line": 543,
+      "line": 583,
+      "end_line": 583,
       "owner": "run",
       "conditions": [],
       "symbol": "app.services.eurostat_parser.WORLD_COUNTRIES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 476,
+      "end_line": 476,
       "owner": "persist_result",
       "conditions": [
         "cid is None"
@@ -244818,24 +244989,24 @@
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 457,
-      "end_line": 457,
+      "line": 489,
+      "end_line": 489,
       "owner": "persist_result",
       "conditions": [],
       "symbol": "app.services.eurostat_parser.WORLD_COUNTRIES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 490,
+      "end_line": 490,
       "owner": "persist_result",
       "conditions": [],
       "symbol": "app.services.eurostat_parser.WORLD_COUNTRIES"
     },
     {
       "path": "backend/scripts/load-world-eurostat.py",
-      "line": 607,
-      "end_line": 607,
+      "line": 647,
+      "end_line": 647,
       "owner": "run",
       "conditions": [
         "missing"
@@ -244988,32 +245159,32 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 212,
+      "end_line": 212,
       "owner": "run",
       "conditions": [],
       "symbol": "scripts.repair_ppi_housing_2026.SOURCE_CODES"
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 248,
-      "end_line": 248,
+      "line": 243,
+      "end_line": 243,
       "owner": "run",
       "conditions": [],
       "symbol": "scripts.repair_ppi_housing_2026.SOURCE_CODES"
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 261,
+      "end_line": 261,
       "owner": "rollback",
       "conditions": [],
       "symbol": "scripts.repair_ppi_housing_2026.SOURCE_CODES"
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 266,
-      "end_line": 266,
+      "line": 262,
+      "end_line": 262,
       "owner": "rollback",
       "conditions": [],
       "symbol": "scripts.repair_ppi_housing_2026.SOURCE_CODES"
@@ -245030,8 +245201,8 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 232,
-      "end_line": 232,
+      "line": 226,
+      "end_line": 226,
       "owner": "run",
       "conditions": [
         "not args.apply"
@@ -245058,24 +245229,24 @@
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 216,
+      "end_line": 216,
       "owner": "run",
       "conditions": [],
       "symbol": "scripts.repair_ppi_housing_2026.SHOW_FROM"
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 242,
+      "end_line": 242,
       "owner": "run",
       "conditions": [],
       "symbol": "scripts.repair_ppi_housing_2026.SHOW_FROM"
     },
     {
       "path": "backend/scripts/repair_ppi_housing_2026.py",
-      "line": 231,
-      "end_line": 231,
+      "line": 225,
+      "end_line": 225,
       "owner": "run",
       "conditions": [
         "not args.apply"
@@ -245342,8 +245513,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5534,
-      "end_line": 5534,
+      "line": 5536,
+      "end_line": 5536,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.services.calculation_engine.DERIVED_SPECS"
@@ -246706,16 +246877,16 @@
     },
     {
       "path": "scripts/insert-gdp-q1-2026-estimate.py",
-      "line": 65,
-      "end_line": 65,
+      "line": 67,
+      "end_line": 67,
       "owner": "main",
       "conditions": [],
       "symbol": "scripts.insert-gdp-q1-2026-estimate.TARGET_DATE"
     },
     {
       "path": "scripts/insert-gdp-q1-2026-estimate.py",
-      "line": 65,
-      "end_line": 65,
+      "line": 67,
+      "end_line": 67,
       "owner": "main",
       "conditions": [],
       "symbol": "scripts.insert-gdp-q1-2026-estimate.BASE_DATE"
@@ -247324,24 +247495,24 @@
     },
     {
       "path": "scripts/verify-derived-incremental.py",
-      "line": 107,
-      "end_line": 107,
+      "line": 94,
+      "end_line": 94,
       "owner": "main",
       "conditions": [],
       "symbol": "app.services.calculation_engine.DERIVED_SPECS"
     },
     {
       "path": "scripts/verify-derived-incremental.py",
-      "line": 102,
-      "end_line": 102,
+      "line": 89,
+      "end_line": 89,
       "owner": "main",
       "conditions": [],
       "symbol": "app.services.calculation_engine.DERIVED_SPECS"
     },
     {
       "path": "scripts/verify-derived-incremental.py",
-      "line": 104,
-      "end_line": 104,
+      "line": 91,
+      "end_line": 91,
       "owner": "main",
       "conditions": [],
       "symbol": "app.services.calculation_engine.DERIVED_SPECS"

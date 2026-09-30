@@ -1,5 +1,35 @@
 # Контракты данных Forecast Economy
 
+## Защита истории и commit → публикация — 2026-09-30
+
+Текущий локальный пакет после `main 506122b` уточняет F01/F02/F04; старые
+наблюдения ниже сохраняются как история. Подробные проверки и пределы —
+[приёмка](code-review/history-publication-acceptance-2026-09-30.md).
+
+1. National `WorldSeriesPayload` имеет `is_complete=False` по умолчанию.
+   Отсутствующая дата не является удалением. Для replacement обязательны
+   `is_complete=True` и включительные `coverage_start/end`; удаление ограничено
+   этим интервалом. Empty complete, невалидное окно или точки вне него — error
+   до point writes. `ref` payload должен совпадать с запрошенной identity.
+   Обычные ревизии обновляют value, повтор без изменения идемпотентен. Extent
+   и автоматически построенный текст должны описывать сохранённую БД целиком,
+   а не только окно последнего ответа; curated description сохраняется.
+2. Федеральные source, weekly overrides и hooks пишут факт/derived/forecast
+   в SQL-транзакции. CalculationEngine возвращает changed codes; namespace
+   публикует владелец успешного commit. Rollback не публикуется. После commit
+   сбой кэша не теряет success/changed и дальнейший derived-каскад.
+3. Eurostat country metadata, remap и parsed slice публикуют world/catalog/SSR
+   после commit, перед закрытием сессии: metadata/remap при реальном изменении,
+   slice при наличии сохранённого индикатора, включая same-value retry.
+   Later failure не отменяет предыдущие коммиты, loader остаётся ошибочным,
+   applied TOC не продвигается. Ни dataset atomicity, ни общий PostgreSQL/Redis
+   commit не обещаны. Strict world-catalog failure виден; DB0 best-effort и
+   memo до пяти секунд сохранены.
+
+Эти изменения локальны. Outbox/reconciliation при падении процесса, полнота
+upstream всех федеральных replace/Eurostat и production acceptance остаются
+отдельными задачами.
+
 > **Актуализация 2026-09-30, `main 972579f`:** прежний снимок и история ниже сохранены. Новые backend-контракты сверены по прежнему полному source review и чтению изменённых блоков; подробности — [backend delta](code-review/backend-delta-2026-09-30.md). Это локальная кодовая сверка, не новая приёмка сервера.
 
 ## Актуальные уточнения контрактов — 2026-09-30

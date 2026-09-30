@@ -5476,6 +5476,8 @@ async def _seed_full():
             all_sources = sorted({c for spec in DERIVED_SPECS for c in spec.src_codes})
             updated = await calculation_engine.run_for_updated_sources(db, all_sources)
             await db.commit()
+            from app.core.cache import publish_committed_indicator_changes
+            await publish_committed_indicator_changes(updated)
             print(
                 f"  CalculationEngine: refreshed derived from {len(all_sources)} "
                 f"sources ({len(updated)} indicators changed)"
@@ -5533,8 +5535,10 @@ async def generate_forecasts():
     async with async_session() as db:
         all_sources = sorted({c for spec in DERIVED_SPECS for c in spec.src_codes})
         try:
-            await calculation_engine.run_for_updated_sources(db, all_sources)
+            updated = await calculation_engine.run_for_updated_sources(db, all_sources)
             await db.commit()
+            from app.core.cache import publish_committed_indicator_changes
+            await publish_committed_indicator_changes(updated)
             print(f"  CalculationEngine refreshed derived actuals from {len(all_sources)} sources")
         except Exception:
             await db.rollback()

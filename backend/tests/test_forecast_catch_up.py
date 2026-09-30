@@ -195,6 +195,8 @@ def test_retrain_recalculated_derived_covers_derived_from_source(monkeypatch):
         retrained.append(indicator.code)
 
     monkeypatch.setattr(scheduler, "retrain_indicator_forecast", _fake_retrain)
+    publish = AsyncMock()
+    monkeypatch.setattr(scheduler, "publish_committed_indicator_changes", publish)
 
     rows = [
         SimpleNamespace(
@@ -230,3 +232,4 @@ def test_retrain_recalculated_derived_covers_derived_from_source(monkeypatch):
     )
 
     assert retrained == ["gdp-qoq", "housing-affordability"]
+    assert [call.args[0] for call in publish.await_args_list] == [["gdp-qoq"], ["housing-affordability"]]

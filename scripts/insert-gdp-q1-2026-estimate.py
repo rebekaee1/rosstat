@@ -28,7 +28,7 @@ from datetime import date
 
 from sqlalchemy import select
 
-from app.core.cache import cache_invalidate_indicator, close_redis
+from app.core.cache import publish_committed_indicator_changes, close_redis
 from app.database import async_session
 from app.models import Indicator, IndicatorData
 from app.services.calculation_engine import calculation_engine
@@ -60,6 +60,8 @@ async def main() -> None:
         estimate = round(float(base) * Q1_2026_VOLUME_INDEX, 1)
         added, updated = await bulk_upsert(db, ind.id, [(TARGET_DATE, estimate)])
         await db.commit()
+        if added or updated:
+            await publish_committed_indicator_changes(["gdp-real"])
 
         print(
             f"gdp-real {TARGET_DATE}: base({BASE_DATE})={base} × "
@@ -70,12 +72,11 @@ async def main() -> None:
         # (ADR-0002: derived[t] всегда = текущее состояние source[t]).
         changed = await calculation_engine.run_for_updated_sources(db, ["gdp-real"])
         await db.commit()
+        await publish_committed_indicator_changes(changed)
         print("derived recomputed:", [c for c in changed if c.startswith("gdp-real")])
 
     # Инвалидация кэша через сам клиент приложения (Redis под AUTH —
     # внешний redis-cli FLUSHALL без пароля бесшумно не сработает).
-    for code in ("gdp-real", "gdp-real-yoy", "gdp-real-qoq", "gdp-real-annual"):
-        await cache_invalidate_indicator(code)
     await close_redis()
     print("cache invalidated")
 

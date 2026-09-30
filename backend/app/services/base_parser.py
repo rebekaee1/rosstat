@@ -49,7 +49,7 @@ from typing import ClassVar
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.cache import cache_invalidate_indicator
+from app.core.cache import cache_invalidate_indicator, publish_committed_indicator_changes
 from app.models import FetchLog, Indicator
 from app.services.forecast_pipeline import (
     retrain_indicator_forecast,
@@ -86,6 +86,17 @@ DEGRADED_STATUSES: tuple[str, ...] = (STATUS_PARSED_ZERO, STATUS_FALLBACK_USED)
 
 _EXPECTED_EMPTY_ATTR = "_etl_expected_empty_reason"
 _FALLBACK_ATTR = "_etl_fallback_reason"
+_COMMITTED_ATTR = "_etl_storage_committed"
+
+
+def storage_committed(fetch_log: FetchLog) -> bool:
+    """This run's final SQL commit succeeded (not the initial running-log commit)."""
+    return bool(getattr(fetch_log, _COMMITTED_ATTR, False))
+
+
+def mark_storage_committed(fetch_log: FetchLog, *, committed: bool = True) -> None:
+    """Keep the committed outcome across cancellation of later cache publication."""
+    setattr(fetch_log, _COMMITTED_ATTR, committed)
 
 
 def mark_expected_empty(fetch_log: FetchLog, reason: str) -> None:
@@ -137,6 +148,8 @@ class BaseParser(ABC):
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
         """Полный цикл ETL для одного индикатора. Не переопределяй — переопределяй `_fetch_and_parse`."""
         code = indicator.code
+        mark_storage_committed(fetch_log, committed=False)
+        publication_codes: list[str] = []
         try:
             cfg = indicator.model_config_json or {}
 
@@ -159,6 +172,7 @@ class BaseParser(ABC):
                     fetch_log.error_message = "Parser returned 0 data points"
                 fetch_log.completed_at = _utcnow_naive()
                 await db.commit()
+                mark_storage_committed(fetch_log)
                 return
 
             fb_reason = fallback_reason(fetch_log)
@@ -202,12 +216,13 @@ class BaseParser(ABC):
                 db, indicator, cfg, records_added, records_updated, pruned,
             )
 
-            await self._after_storage(
+            derived_codes = await self._after_storage(
                 db, indicator, cfg, fetch_log, pruned, records_added, records_updated,
             )
 
             if records_added > 0 or records_updated > 0 or pruned > 0:
-                await cache_invalidate_indicator(code)
+                publication_codes.append(code)
+            publication_codes.extend(derived_codes or [])
 
             if fb_reason:
                 fetch_log.status = STATUS_FALLBACK_USED
@@ -220,6 +235,7 @@ class BaseParser(ABC):
                 )
             fetch_log.completed_at = _utcnow_naive()
             await db.commit()
+            mark_storage_committed(fetch_log)
 
         except Exception as exc:
             logger.exception("ETL failed for '%s'", code)
@@ -229,6 +245,12 @@ class BaseParser(ABC):
             fetch_log.completed_at = _utcnow_naive()
             db.add(fetch_log)
             await db.commit()
+            return
+
+        # Keep public cache effects outside the SQL failure/rollback handler.
+        await publish_committed_indicator_changes(
+            publication_codes, invalidate=cache_invalidate_indicator,
+        )
 
     def _zero_parse_expected(self, indicator: Indicator, cfg: dict) -> bool:
         """Override: True, если пустой parse-результат для этого ряда легитимен.
@@ -344,8 +366,8 @@ class BaseParser(ABC):
         pruned: int,
         records_added: int,
         records_updated: int,
-    ) -> None:
-        """Hook после upsert/forecast, до commit. Override для каскада derived и т.п."""
+    ) -> list[str] | None:
+        """DB-only hook before commit; return changed dependent codes to publish later."""
 
     async def _handle_forecasts(
         self,

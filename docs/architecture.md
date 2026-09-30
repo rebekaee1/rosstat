@@ -1,5 +1,13 @@
 # Архитектура Forecast Economy: карта действующего кода
 
+**Локальное уточнение 30.09, после `main 506122b`:** национальный adapter
+явно задаёт полноту и окно ответа; merge сохраняет историю по умолчанию.
+CalculationEngine — SQL-only, публикация source/derived принадлежит commit
+owner. Eurostat публикует country/remap/slice после commit; отдельный slice
+атомарен, весь dataset — нет. [Контракты](data-contracts.md),
+[приёмка и границы](code-review/history-publication-acceptance-2026-09-30.md).
+Бюджет 4 vCPU и серверный снимок этим локальным исправлением не измерены заново.
+
 **Срез:** 2026-09-27, локальная ветка `main`. Точный базовый commit, SHA-256 файлов и незакрытые места приведены в [реестре содержательного разбора](code-review.md). Состояние сервера зафиксировано отдельно ниже и в [runtime-inventory.json](runtime-inventory.json). Важные исторические причины решений остаются в [CONTEXT](../CONTEXT.md), [ADR-0003](adr/0003-seo-single-source-server-rendered.md), [ADR-0006](adr/0006-indicator-card-unification.md), [ADR-0013](adr/0013-country-first-url-architecture.md) и [истории архитектуры](architecture-history.md). Для счётчиков URL используйте `/sitemap-stats.json` и `docs/site-inventory.json`, а не старые числа в документах.
 
 **Сквозные находки и приоритеты:** [итоги разбора](code-review-findings.md) связывают ограничения адаптеров с записью в БД, публичными страницами, аналитикой и ресурсами сервера. Найденный механизм отделён от воспроизведения и от наблюдения production.

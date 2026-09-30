@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import asynccontextmanager
+from collections.abc import Awaitable, Callable, Iterable
 import hashlib
 import json
 import logging
@@ -573,3 +574,42 @@ async def cache_invalidate_indicator(code: str):
     """После ETL/derived-апдейта: сам код (detail/data/SSR/embed живут в
     namespace кода), общий листинг и dashboard-спарклайны."""
     await bump_namespaces(code, "indicators", "dashboard")
+
+
+async def publish_committed_indicator_changes(
+    codes: Iterable[str], *,
+    invalidate: Callable[[str], Awaitable[None]] | None = None,
+) -> None:
+    """Publish *already committed* SQL changes; a cache error cannot undo them.
+
+    SQL transaction owners call this after commit, passing changed source and
+    derived codes. Ordinary Redis failures remain best effort (existing TTL is
+    the fallback), and each code is attempted independently. Cancellation waits
+    for the bounded publication attempt, then propagates to the owner; this is
+    not a distributed transaction or a durable retry queue.
+    """
+    changed = tuple(dict.fromkeys(codes))
+    if not changed:
+        return
+    publisher = invalidate or cache_invalidate_indicator
+
+    async def publish() -> None:
+        for code in changed:
+            try:
+                await publisher(code)
+            except Exception:
+                logger.exception("Committed indicator '%s': cache publication failed", code)
+
+    publication = asyncio.create_task(asyncio.wait_for(publish(), timeout=15))
+    cancelled = False
+    try:
+        while not publication.done():
+            try:
+                await asyncio.shield(publication)
+            except asyncio.CancelledError:
+                cancelled = True
+        publication.result()
+    except Exception:
+        logger.exception("Committed indicator changes: cache publication did not finish")
+    if cancelled:
+        raise asyncio.CancelledError

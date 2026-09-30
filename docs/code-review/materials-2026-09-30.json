@@ -55,7 +55,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1b090f7e6ef8a59c6cf3cffff511218abcca6fc980630a6ab899563b8d65e0b1",
@@ -100,7 +100,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6630f357781e67e96e18c43d1c5c48e82fe431cc332f07f736f01c56c48f03ac",
@@ -145,7 +145,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "dbdb6d6be860ab23c9400d8546e5516c98ab3d2f5ecae1dea1e9fba7fac7eec1",
@@ -190,7 +190,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8845a98240b7d1853df3acc545a4af0efac055c88c0bf3fcc43631863f5f683f",
@@ -235,7 +235,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "91f204a1c51f3d844f28cb8bcfc1dce360ff1a6c04f08e8b4bbdfd82e51181ab",
@@ -280,7 +280,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "69c49497f7143a331f71102794ef1057ff4431de3d882d6a914e713ce3450eaa",
@@ -321,7 +321,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "21958168590c94130cdfe8abf97dab39058f48c1f1e0a759f7e076df9a78fd38",
@@ -368,7 +368,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e10bd378004525f721adb7683171ebbc524733f91880ed94297607afa5eec27d",
@@ -421,7 +421,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8f997bfd8952cc057e4d3c5a3a3c60134b84867416956078e8609be95d273790",
@@ -466,7 +466,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "70153297639346d10d2d8cafaf08d70e6a9f567400f41b0b347154a1c0507f89",
@@ -507,7 +507,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "749b68755d24418863ffc2fd1218ce7e13dd6e4ff0b6dd990a1266dcc9829c37",
@@ -552,7 +552,7 @@
       "role": "agent entry",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "005df3857944478249a836f3dd8ea83a70d1f88c6031cc376cbb2b7f5dc3233c",
@@ -655,71 +655,25 @@
       "role": "domain glossary and dated invariants",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "589f8bfd4a23f2f85621aab9f36b92701e911474afb11bef253ae19a66531260",
-        "bytes": 188516
+        "sha256": "a6e5df6cd726c0143a00cb9ec8dfec15c84e344649e4ee5f8b0f48f6b192ed31",
+        "bytes": 189735
       },
-      "review_status": "full_current_body",
-      "body_reviewed_in_this_pass": true,
+      "review_status": "previous_full_read_plus_reviewed_delta",
+      "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "mode": "full_current_body",
-          "baseline_commit": "60d0b0ce954412ffafc81a46330365e68e91510b",
-          "baseline_sha256": "9963c2c01a33da5abdfd305c4f8a864d2663e987c33ca0bdd4c0b8f850e95630",
-          "baseline_matches_previous_review": true,
-          "delta_ranges": [
-            [
-              3,
-              3
-            ],
-            [
-              62,
-              101
-            ],
-            [
-              374,
-              389
-            ],
-            [
-              612,
-              617
-            ],
-            [
-              673,
-              684
-            ],
-            [
-              726,
-              738
-            ],
-            [
-              890,
-              891
-            ],
-            [
-              929,
-              930
-            ],
-            [
-              937,
-              938
-            ],
-            [
-              962,
-              985
-            ]
-          ],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass.",
-          "current_sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250",
-          "located_headings_rebuilt": "2026-09-30 after backend dated link; current headings and section end boundaries match source"
+          "mode": "previous_full_read_plus_reviewed_delta",
+          "base_commit": "506122b",
+          "previous_sha256": "589f8bfd4a23f2f85621aab9f36b92701e911474afb11bef253ae19a66531260",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "589f8bfd4a23f2f85621aab9f36b92701e911474afb11bef253ae19a66531260"
+        "sha256": "a6e5df6cd726c0143a00cb9ec8dfec15c84e344649e4ee5f8b0f48f6b192ed31"
       },
       "canonical_source": "CONTEXT.md",
       "linked_mechanisms": "domain glossary and dated invariants",
@@ -861,9 +815,149 @@
             "status_in_review": "reviewed",
             "sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "589f8bfd4a23f2f85621aab9f36b92701e911474afb11bef253ae19a66531260",
+            "bytes": 188516
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "60d0b0ce954412ffafc81a46330365e68e91510b",
+              "baseline_sha256": "9963c2c01a33da5abdfd305c4f8a864d2663e987c33ca0bdd4c0b8f850e95630",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  3,
+                  3
+                ],
+                [
+                  62,
+                  101
+                ],
+                [
+                  374,
+                  389
+                ],
+                [
+                  612,
+                  617
+                ],
+                [
+                  673,
+                  684
+                ],
+                [
+                  726,
+                  738
+                ],
+                [
+                  890,
+                  891
+                ],
+                [
+                  929,
+                  930
+                ],
+                [
+                  937,
+                  938
+                ],
+                [
+                  962,
+                  985
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass.",
+              "current_sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250",
+              "located_headings_rebuilt": "2026-09-30 after backend dated link; current headings and section end boundaries match source"
+            },
+            "status_in_review": "reviewed",
+            "sha256": "589f8bfd4a23f2f85621aab9f36b92701e911474afb11bef253ae19a66531260"
+          }
+        },
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "a6e5df6cd726c0143a00cb9ec8dfec15c84e344649e4ee5f8b0f48f6b192ed31",
+            "bytes": 189735
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "60d0b0ce954412ffafc81a46330365e68e91510b",
+              "baseline_sha256": "9963c2c01a33da5abdfd305c4f8a864d2663e987c33ca0bdd4c0b8f850e95630",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  3,
+                  3
+                ],
+                [
+                  62,
+                  101
+                ],
+                [
+                  374,
+                  389
+                ],
+                [
+                  612,
+                  617
+                ],
+                [
+                  673,
+                  684
+                ],
+                [
+                  726,
+                  738
+                ],
+                [
+                  890,
+                  891
+                ],
+                [
+                  929,
+                  930
+                ],
+                [
+                  937,
+                  938
+                ],
+                [
+                  962,
+                  985
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass.",
+              "current_sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250",
+              "located_headings_rebuilt": "2026-09-30 after backend dated link; current headings and section end boundaries match source"
+            },
+            "status_in_review": "reviewed",
+            "sha256": "589f8bfd4a23f2f85621aab9f36b92701e911474afb11bef253ae19a66531260"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "README.md",
@@ -873,54 +967,30 @@
       "role": "product overview",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e59b1f7a52eec8c6595afabbd564313915f76797389e69bafb67f990a456d588",
-        "bytes": 21111
+        "sha256": "3b21e60336c3b82e88bbb9fc580ac76244cb9763bafbb463a5f121f548809b24",
+        "bytes": 21570
       },
-      "review_status": "full_current_body",
-      "body_reviewed_in_this_pass": true,
+      "review_status": "previous_full_read_plus_reviewed_delta",
+      "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "mode": "full_current_body",
-          "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "baseline_sha256": "564883993c7fc8e5189c6e27ef906ed41350cd24f6b8334b6ebf0d4bf410d33e",
-          "baseline_matches_previous_review": true,
-          "delta_ranges": [
-            [
-              9,
-              10
-            ],
-            [
-              42,
-              47
-            ],
-            [
-              66,
-              66
-            ],
-            [
-              197,
-              197
-            ],
-            [
-              202,
-              202
-            ]
-          ],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+          "mode": "previous_full_read_plus_reviewed_delta",
+          "base_commit": "506122b",
+          "previous_sha256": "e59b1f7a52eec8c6595afabbd564313915f76797389e69bafb67f990a456d588",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "e59b1f7a52eec8c6595afabbd564313915f76797389e69bafb67f990a456d588"
+        "sha256": "3b21e60336c3b82e88bbb9fc580ac76244cb9763bafbb463a5f121f548809b24"
       },
       "canonical_source": "README.md",
       "linked_mechanisms": "product overview",
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": true,
       "prior_version_evidence": [
         {
           "source_version": {
@@ -969,6 +1039,102 @@
             "status_in_review": "reviewed",
             "sha256": "01c58f42d7bbbad74214aec9ac148f434bedfce5f5560b605e2446df70a83a41"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "e59b1f7a52eec8c6595afabbd564313915f76797389e69bafb67f990a456d588",
+            "bytes": 21111
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "baseline_sha256": "564883993c7fc8e5189c6e27ef906ed41350cd24f6b8334b6ebf0d4bf410d33e",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  9,
+                  10
+                ],
+                [
+                  42,
+                  47
+                ],
+                [
+                  66,
+                  66
+                ],
+                [
+                  197,
+                  197
+                ],
+                [
+                  202,
+                  202
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "e59b1f7a52eec8c6595afabbd564313915f76797389e69bafb67f990a456d588"
+          }
+        },
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "3b21e60336c3b82e88bbb9fc580ac76244cb9763bafbb463a5f121f548809b24",
+            "bytes": 21570
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "baseline_sha256": "564883993c7fc8e5189c6e27ef906ed41350cd24f6b8334b6ebf0d4bf410d33e",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  9,
+                  10
+                ],
+                [
+                  42,
+                  47
+                ],
+                [
+                  66,
+                  66
+                ],
+                [
+                  197,
+                  197
+                ],
+                [
+                  202,
+                  202
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "e59b1f7a52eec8c6595afabbd564313915f76797389e69bafb67f990a456d588"
+          }
         }
       ]
     },
@@ -980,7 +1146,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "27926cf6444bcbecd31c8b4f59e0ce72d11651feaa0a01d6d8a578abd5ed5ec1",
@@ -1027,7 +1193,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "94caef989a8de916e6e166b242f33fe9bf62ce35207384655d727442016b857b",
@@ -1074,7 +1240,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "47c85e7d4da7247a0e14c9b9e0734f0b3e7d072790fa13fd050f3bfbc0f61b1a",
@@ -1121,7 +1287,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "250c2ccd8ea186f520034268829b895dadc91e1166a53856752f6962fabb5e98",
@@ -1168,7 +1334,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "64b7c1734f95f25ed454456a0ef629774a3920db53b9fc0ce59a13d58e1dba98",
@@ -1215,7 +1381,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c59ffc214e32a31bdd2cb38fab11a99d5276628844c5de2155f06505866141b4",
@@ -1262,7 +1428,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ad384f9ef890eb5173bd6a089c019484fd26994b3f5802c18b9a351aa142ded2",
@@ -1313,7 +1479,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7b58b236f22f68cf00287b7d5b3ddc49eef9f20c9e6d240830bb6e42880a709d",
@@ -1360,7 +1526,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "38013b5084c00db1bc1f82a7d4ff62e72252a8b733f01642250e2a00a6d19332",
@@ -1415,102 +1581,233 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547",
-        "bytes": 294606
+        "sha256": "2493178b8e78013f02af7180630fc6f6a89dca53caa795206e06033af29988f0",
+        "bytes": 294892
       },
-      "review_status": "exact_version_review_in_ledger",
+      "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/backend-delta-reviews-2026-09-30.jsonl",
+        "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "kind": "manual_delta_plus_immutable_prior",
-          "current_commit": "972579f",
-          "prior_commit": "bb84eaab67f1400ad61578ac25084a73db14492f",
-          "prior_sha256": "8ea3cd97c526abce3483e775d9e71b607ee3382c39e41fa74426727d1971d543",
-          "prior_read_ranges": [
-            [
-              1,
-              5562
+          "mode": "previous_full_read_plus_reviewed_delta",
+          "previous_sha256": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547",
+          "reviewer": "owning F01/F02 specialist; root integration; independent reconciliation_review",
+          "method": {
+            "prior_sha256": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547",
+            "prior_row_path": "docs/code-review/reviews.jsonl",
+            "current_review": "manual F02 changed-body and commit-owner/caller reading",
+            "verification": "F02 2026-09-30: parent main 506122b; manually reviewed changed body/caller paths; focused exact-current pytest 7 files = 902 passed, including 19 real SQL/API/fakeredis publication cases; git diff --check clean. SQLite adapts only PG conflict syntax; PG/real-Redis cross-dialect evidence is a separate F01-owned acceptance.",
+            "new_or_changed_definitions": [
+              "_seed_full",
+              "generate_forecasts"
             ]
-          ],
-          "changed_read_ranges": [
-            [
-              909,
-              915
-            ],
-            [
-              1183,
-              1189
-            ],
-            [
-              1214,
-              1220
-            ],
-            [
-              1262,
-              1268
-            ],
-            [
-              1310,
-              1316
-            ],
-            [
-              1358,
-              1364
-            ],
-            [
-              1406,
-              1412
-            ],
-            [
-              2959,
-              2965
-            ],
-            [
-              3081,
-              3087
-            ],
-            [
-              3114,
-              3120
-            ],
-            [
-              5051,
-              5059
-            ],
-            [
-              5174,
-              5180
-            ]
-          ],
-          "new_definitions_read_ranges": [],
-          "provenance": "Existing docs/code-review/reviews.jsonl full review retained; matching Git blob found and identical to f8e239a. Changed hunks and new bodies read by opus_contract_reconciliation on 2026-09-30.",
-          "unchanged_ast_sha256": {
-            "_sibling_texts": "61012009bdbb0771a8299ced1e6df33dad42f8b2d783931225f423ba24f5b105",
-            "compute_seed_hash": "27ce2cdcd1223922d12fac6830201ada50fe30ae7ffc589b90a6b6387a598ed1",
-            "compute_seed_hash._canon": "83676626ec6149e56158e92528911e74733ad57b7689ce7b3695ce09ac096c8a",
-            "_stored_seed_hash": "c307610708f4e130b10ec124b1d04782becdd52b52a4ba6a00cd742cd486d97d",
-            "_retire_orphan_siblings": "f50b7f4b8b7d4fd50f840d1af08b4bd62377b5ad616cca52517ef3e7615f04a6",
-            "_store_seed_hash": "1b7a69c42fd1393dc848f8e71f8019947445166f43db78dd621e3eb6f4b8491d",
-            "seed": "01ceea056bd955851c0751a0d68e720eb4526320e4f709bf0054633ac7e89712",
-            "_seed_full": "3efdf2bc2946ea12d59471eda22737234b20ea481d8eb029874cdba4f04697fc",
-            "generate_forecasts": "1315e350de6ab12a65b0a8fa75ab587be695416b86fd0d0b0fec2395f35a48bc"
           },
-          "limitations": [
-            "Static source/fixture review; no server calls, runtime fixes or tests executed in this pass.",
-            "AST equality preserves the reviewed implementation, not deployed state, transitive dependency behavior or comprehension proof."
-          ]
+          "original_proposal": ".artifacts/f02-review-delta.jsonl"
         },
         "status_in_review": "reviewed",
-        "sha256": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547"
+        "sha256": "2493178b8e78013f02af7180630fc6f6a89dca53caa795206e06033af29988f0"
       },
       "canonical_source": "backend/seed_data.py",
       "linked_mechanisms": null,
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true,
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547",
+            "bytes": 294606
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/backend-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "kind": "manual_delta_plus_immutable_prior",
+              "current_commit": "972579f",
+              "prior_commit": "bb84eaab67f1400ad61578ac25084a73db14492f",
+              "prior_sha256": "8ea3cd97c526abce3483e775d9e71b607ee3382c39e41fa74426727d1971d543",
+              "prior_read_ranges": [
+                [
+                  1,
+                  5562
+                ]
+              ],
+              "changed_read_ranges": [
+                [
+                  909,
+                  915
+                ],
+                [
+                  1183,
+                  1189
+                ],
+                [
+                  1214,
+                  1220
+                ],
+                [
+                  1262,
+                  1268
+                ],
+                [
+                  1310,
+                  1316
+                ],
+                [
+                  1358,
+                  1364
+                ],
+                [
+                  1406,
+                  1412
+                ],
+                [
+                  2959,
+                  2965
+                ],
+                [
+                  3081,
+                  3087
+                ],
+                [
+                  3114,
+                  3120
+                ],
+                [
+                  5051,
+                  5059
+                ],
+                [
+                  5174,
+                  5180
+                ]
+              ],
+              "new_definitions_read_ranges": [],
+              "provenance": "Existing docs/code-review/reviews.jsonl full review retained; matching Git blob found and identical to f8e239a. Changed hunks and new bodies read by opus_contract_reconciliation on 2026-09-30.",
+              "unchanged_ast_sha256": {
+                "_sibling_texts": "61012009bdbb0771a8299ced1e6df33dad42f8b2d783931225f423ba24f5b105",
+                "compute_seed_hash": "27ce2cdcd1223922d12fac6830201ada50fe30ae7ffc589b90a6b6387a598ed1",
+                "compute_seed_hash._canon": "83676626ec6149e56158e92528911e74733ad57b7689ce7b3695ce09ac096c8a",
+                "_stored_seed_hash": "c307610708f4e130b10ec124b1d04782becdd52b52a4ba6a00cd742cd486d97d",
+                "_retire_orphan_siblings": "f50b7f4b8b7d4fd50f840d1af08b4bd62377b5ad616cca52517ef3e7615f04a6",
+                "_store_seed_hash": "1b7a69c42fd1393dc848f8e71f8019947445166f43db78dd621e3eb6f4b8491d",
+                "seed": "01ceea056bd955851c0751a0d68e720eb4526320e4f709bf0054633ac7e89712",
+                "_seed_full": "3efdf2bc2946ea12d59471eda22737234b20ea481d8eb029874cdba4f04697fc",
+                "generate_forecasts": "1315e350de6ab12a65b0a8fa75ab587be695416b86fd0d0b0fec2395f35a48bc"
+              },
+              "limitations": [
+                "Static source/fixture review; no server calls, runtime fixes or tests executed in this pass.",
+                "AST equality preserves the reviewed implementation, not deployed state, transitive dependency behavior or comprehension proof."
+              ]
+            },
+            "status_in_review": "reviewed",
+            "sha256": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547"
+          }
+        },
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "2493178b8e78013f02af7180630fc6f6a89dca53caa795206e06033af29988f0",
+            "bytes": 294892
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/backend-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "kind": "manual_delta_plus_immutable_prior",
+              "current_commit": "972579f",
+              "prior_commit": "bb84eaab67f1400ad61578ac25084a73db14492f",
+              "prior_sha256": "8ea3cd97c526abce3483e775d9e71b607ee3382c39e41fa74426727d1971d543",
+              "prior_read_ranges": [
+                [
+                  1,
+                  5562
+                ]
+              ],
+              "changed_read_ranges": [
+                [
+                  909,
+                  915
+                ],
+                [
+                  1183,
+                  1189
+                ],
+                [
+                  1214,
+                  1220
+                ],
+                [
+                  1262,
+                  1268
+                ],
+                [
+                  1310,
+                  1316
+                ],
+                [
+                  1358,
+                  1364
+                ],
+                [
+                  1406,
+                  1412
+                ],
+                [
+                  2959,
+                  2965
+                ],
+                [
+                  3081,
+                  3087
+                ],
+                [
+                  3114,
+                  3120
+                ],
+                [
+                  5051,
+                  5059
+                ],
+                [
+                  5174,
+                  5180
+                ]
+              ],
+              "new_definitions_read_ranges": [],
+              "provenance": "Existing docs/code-review/reviews.jsonl full review retained; matching Git blob found and identical to f8e239a. Changed hunks and new bodies read by opus_contract_reconciliation on 2026-09-30.",
+              "unchanged_ast_sha256": {
+                "_sibling_texts": "61012009bdbb0771a8299ced1e6df33dad42f8b2d783931225f423ba24f5b105",
+                "compute_seed_hash": "27ce2cdcd1223922d12fac6830201ada50fe30ae7ffc589b90a6b6387a598ed1",
+                "compute_seed_hash._canon": "83676626ec6149e56158e92528911e74733ad57b7689ce7b3695ce09ac096c8a",
+                "_stored_seed_hash": "c307610708f4e130b10ec124b1d04782becdd52b52a4ba6a00cd742cd486d97d",
+                "_retire_orphan_siblings": "f50b7f4b8b7d4fd50f840d1af08b4bd62377b5ad616cca52517ef3e7615f04a6",
+                "_store_seed_hash": "1b7a69c42fd1393dc848f8e71f8019947445166f43db78dd621e3eb6f4b8491d",
+                "seed": "01ceea056bd955851c0751a0d68e720eb4526320e4f709bf0054633ac7e89712",
+                "_seed_full": "3efdf2bc2946ea12d59471eda22737234b20ea481d8eb029874cdba4f04697fc",
+                "generate_forecasts": "1315e350de6ab12a65b0a8fa75ab587be695416b86fd0d0b0fec2395f35a48bc"
+              },
+              "limitations": [
+                "Static source/fixture review; no server calls, runtime fixes or tests executed in this pass.",
+                "AST equality preserves the reviewed implementation, not deployed state, transitive dependency behavior or comprehension proof."
+              ]
+            },
+            "status_in_review": "reviewed",
+            "sha256": "5fca50e144a3e14f08b68e1700ee3086501511db8dc09078f9290fea60ce9547"
+          }
+        }
+      ]
     },
     {
       "id": "docs/.DS_Store",
@@ -1520,7 +1817,7 @@
       "role": "Finder filesystem metadata",
       "classification": "excluded",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "551e0ca138ecd241327cb8145e914719df88a00a622ca3cefa408c80f72b00b7",
@@ -1541,19 +1838,25 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "c4b75545a979c5b75fb588fd17b4be02361653b1fb4c31990026bf539b5c3650",
-        "bytes": 20131
+        "sha256": "9162d486eb7855105951ac04a901a00924889ea74f80ac31d38277ca226f9f35",
+        "bytes": 21518
       },
-      "review_status": "exact_version_review_in_ledger",
+      "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": null,
+        "review_provenance": {
+          "mode": "previous_full_read_plus_reviewed_delta",
+          "base_commit": "506122b",
+          "previous_sha256": "c4b75545a979c5b75fb588fd17b4be02361653b1fb4c31990026bf539b5c3650",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
+        },
         "status_in_review": "reviewed",
-        "sha256": "c4b75545a979c5b75fb588fd17b4be02361653b1fb4c31990026bf539b5c3650"
+        "sha256": "9162d486eb7855105951ac04a901a00924889ea74f80ac31d38277ca226f9f35"
       },
       "canonical_source": "docs/adr/0001-derived-indicators-engine-shape.md",
       "linked_mechanisms": null,
@@ -1576,9 +1879,45 @@
             "status": "reviewed",
             "limitation": "Ledger content is prior review evidence; not a new full content read by this agent."
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "c4b75545a979c5b75fb588fd17b4be02361653b1fb4c31990026bf539b5c3650",
+            "bytes": 20131
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": null,
+            "status_in_review": "reviewed",
+            "sha256": "c4b75545a979c5b75fb588fd17b4be02361653b1fb4c31990026bf539b5c3650"
+          }
+        },
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "9162d486eb7855105951ac04a901a00924889ea74f80ac31d38277ca226f9f35",
+            "bytes": 21518
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": null,
+            "status_in_review": "reviewed",
+            "sha256": "c4b75545a979c5b75fb588fd17b4be02361653b1fb4c31990026bf539b5c3650"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "docs/adr/0002-derived-always-reflects-source.md",
@@ -1588,7 +1927,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "477aecee55c0a5ed9ef663dc6901eeb8d3f593c450449b53395e4a951310587b",
@@ -1635,7 +1974,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8f4db34bca0bd97866baaf0475a1d6ba01cccd1c9ae6117f6ad0ccd23a837f38",
@@ -1682,7 +2021,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "352a14ac814e321fec149d3ca292c9dd3bf0d2532aa943256b950f9b3e436edc",
@@ -1729,7 +2068,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "11e9af1b5cf850645cdfd0d1b2447c93f82e50f2c9bae1bc8bc0f17cc3431e0f",
@@ -1776,7 +2115,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "08026a6d29ec4b0cb9436176d6cc84c0fe4ef0ed9c4f499ce37f13735f1937a3",
@@ -1823,7 +2162,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8f60df542b612f0c420b7ed8d62abb9828472111272cbf53ebc3ae105e9be682",
@@ -1870,7 +2209,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1adea7b934d5e479f9a24f533e3196c82dae13f297c74e827db579a9e3d0a546",
@@ -1917,7 +2256,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "478ce5d6e2bf48ca9c392229b3a65405749340e1e29075e5c69dabf7245be7b2",
@@ -1964,7 +2303,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fed16f1e09c1c211dce9120205fcd8920335ae8c9f57d55a0b85deb4c52dffeb",
@@ -2020,37 +2359,25 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "f3bd67e0dd76cd00790b216f1a5f4eb918ed55ff81995531421f830c32ae22c4",
-        "bytes": 25113
+        "sha256": "e51947a43aafec5a8c977cbebdf14c97f9b3e30c9829860636247929a7b8d96d",
+        "bytes": 26329
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
+        "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
           "mode": "previous_full_read_plus_reviewed_delta",
-          "baseline_commit": "70379ccd31ac863d3d032e45060f4b336a12cb56",
-          "baseline_sha256": "0b13e8201d01490f4a253d6e238e64c7174aaf2211b6a22486e28eeca0e7caeb",
-          "baseline_matches_previous_review": true,
-          "delta_ranges": [
-            [
-              5,
-              5
-            ],
-            [
-              249,
-              272
-            ]
-          ],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+          "base_commit": "506122b",
+          "previous_sha256": "f3bd67e0dd76cd00790b216f1a5f4eb918ed55ff81995531421f830c32ae22c4",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "f3bd67e0dd76cd00790b216f1a5f4eb918ed55ff81995531421f830c32ae22c4"
+        "sha256": "e51947a43aafec5a8c977cbebdf14c97f9b3e30c9829860636247929a7b8d96d"
       },
       "canonical_source": "docs/adr/0011-world-eurostat-data-plane.md",
       "linked_mechanisms": "Dated ADR addition replaces perpetual structure-change quarantine with verified-slice reconciliation and preserves immutable public card code; previous quarantine rationale remains historical.",
@@ -2074,7 +2401,45 @@
           ]
         ],
         "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
-      }
+      },
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "f3bd67e0dd76cd00790b216f1a5f4eb918ed55ff81995531421f830c32ae22c4",
+            "bytes": 25113
+          },
+          "review_status": "previous_full_read_plus_reviewed_delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": true,
+          "review_basis": {
+            "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "previous_full_read_plus_reviewed_delta",
+              "baseline_commit": "70379ccd31ac863d3d032e45060f4b336a12cb56",
+              "baseline_sha256": "0b13e8201d01490f4a253d6e238e64c7174aaf2211b6a22486e28eeca0e7caeb",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  5,
+                  5
+                ],
+                [
+                  249,
+                  272
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "f3bd67e0dd76cd00790b216f1a5f4eb918ed55ff81995531421f830c32ae22c4"
+          }
+        }
+      ]
     },
     {
       "id": "docs/adr/0012-world-multi-provider-official-first-forecasts.md",
@@ -2084,19 +2449,25 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "216069cac210c9dd09690e4b8973ccf2b734533709713944bb7ac46b856973ad",
-        "bytes": 16801
+        "sha256": "510371dbc67c71b913edf422b12c79d308ccf2c9241c7b5bbd3288499d109bac",
+        "bytes": 18360
       },
-      "review_status": "exact_version_review_in_ledger",
+      "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": null,
+        "review_provenance": {
+          "mode": "previous_full_read_plus_reviewed_delta",
+          "base_commit": "506122b",
+          "previous_sha256": "216069cac210c9dd09690e4b8973ccf2b734533709713944bb7ac46b856973ad",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
+        },
         "status_in_review": "reviewed",
-        "sha256": "216069cac210c9dd09690e4b8973ccf2b734533709713944bb7ac46b856973ad"
+        "sha256": "510371dbc67c71b913edf422b12c79d308ccf2c9241c7b5bbd3288499d109bac"
       },
       "canonical_source": "docs/adr/0012-world-multi-provider-official-first-forecasts.md",
       "linked_mechanisms": null,
@@ -2119,9 +2490,45 @@
             "status": "reviewed",
             "limitation": "Ledger content is prior review evidence; not a new full content read by this agent."
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "216069cac210c9dd09690e4b8973ccf2b734533709713944bb7ac46b856973ad",
+            "bytes": 16801
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": null,
+            "status_in_review": "reviewed",
+            "sha256": "216069cac210c9dd09690e4b8973ccf2b734533709713944bb7ac46b856973ad"
+          }
+        },
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "510371dbc67c71b913edf422b12c79d308ccf2c9241c7b5bbd3288499d109bac",
+            "bytes": 18360
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": null,
+            "status_in_review": "reviewed",
+            "sha256": "216069cac210c9dd09690e4b8973ccf2b734533709713944bb7ac46b856973ad"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "docs/adr/0013-country-first-url-architecture.md",
@@ -2131,7 +2538,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8f1e7da130fe1b654231f25b07f7e28d08d4a156e730c8abb5ac047988d872c",
@@ -2178,7 +2585,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e182c6b4e122c6a469c063d62f594e1f830900df9770896b93c90cf7708f4eb5",
@@ -2225,7 +2632,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3ceeebe2443bbb269359a95e03c5f71d2dd1fbffb07eafb87cab521212e66372",
@@ -2272,7 +2679,7 @@
       "role": "owner indicator/category recipes",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ca094bf94a7d7fafd4d17b203c5d298e8bc981e2bc22be3bf988bce837bda9df",
@@ -2321,7 +2728,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "84ab1c65d322d74091ea9348af00b46c2afad9abdf2ebe6dd256a11f58a4f9a2",
@@ -2368,7 +2775,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1c8d360014ee0a17e1379eedb14822e200875debbe60d6e27d2f9295a37532f1",
@@ -2415,7 +2822,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "644130253a2fa24ea0e54c765eae9c2ba81f9658c9f7d144dadf2da2f6230bb0",
@@ -2462,7 +2869,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "77649635b4d753b3e1e286730c4728048565c584114a47f9a4310d3ef9f8dfe0",
@@ -2509,7 +2916,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "704672067d5cc9dcd2e5786b48ff8c0a29f7572546386c9f084dc06173ece084",
@@ -2556,7 +2963,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "76671fa70b5e781e3ea5d813f24aae2df290c6917825a9bd1437fdcd505ddc0e",
@@ -2603,7 +3010,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41716999dfd14d8c268ef9289111bf6e50fe35d675b265e613506704348e50a1",
@@ -2650,46 +3057,30 @@
       "role": "history/recovery index",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "873653925235036f6d5650b32f239cdf57371f03095c32b1f1ad9291fda5edec",
-        "bytes": 26674
+        "sha256": "c3569ba768471b28c3a3c2a5a5ef250266d7c303474fb18e2897100f4841bdba",
+        "bytes": 27671
       },
-      "review_status": "full_current_body",
-      "body_reviewed_in_this_pass": true,
+      "review_status": "previous_full_read_plus_reviewed_delta",
+      "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "mode": "full_current_body",
-          "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "baseline_sha256": "036c81c7ff2949207fd1d0c2a38ce03b7798e4a137a093aec7b32894ef378cdc",
-          "baseline_matches_previous_review": true,
-          "delta_ranges": [
-            [
-              15,
-              16
-            ],
-            [
-              19,
-              19
-            ],
-            [
-              53,
-              75
-            ]
-          ],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+          "mode": "previous_full_read_plus_reviewed_delta",
+          "base_commit": "506122b",
+          "previous_sha256": "873653925235036f6d5650b32f239cdf57371f03095c32b1f1ad9291fda5edec",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "873653925235036f6d5650b32f239cdf57371f03095c32b1f1ad9291fda5edec"
+        "sha256": "c3569ba768471b28c3a3c2a5a5ef250266d7c303474fb18e2897100f4841bdba"
       },
       "canonical_source": "docs/architecture-history.md",
       "linked_mechanisms": "history/recovery index",
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": true,
       "prior_version_evidence": [
         {
           "source_version": {
@@ -2730,6 +3121,86 @@
             "status_in_review": "reviewed",
             "sha256": "2c418a9bda538703623e7974a18fe494b5ed80b83dd82a1190efd4cf14a1a391"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "873653925235036f6d5650b32f239cdf57371f03095c32b1f1ad9291fda5edec",
+            "bytes": 26674
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "baseline_sha256": "036c81c7ff2949207fd1d0c2a38ce03b7798e4a137a093aec7b32894ef378cdc",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  15,
+                  16
+                ],
+                [
+                  19,
+                  19
+                ],
+                [
+                  53,
+                  75
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "873653925235036f6d5650b32f239cdf57371f03095c32b1f1ad9291fda5edec"
+          }
+        },
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "c3569ba768471b28c3a3c2a5a5ef250266d7c303474fb18e2897100f4841bdba",
+            "bytes": 27671
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "baseline_sha256": "036c81c7ff2949207fd1d0c2a38ce03b7798e4a137a093aec7b32894ef378cdc",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  15,
+                  16
+                ],
+                [
+                  19,
+                  19
+                ],
+                [
+                  53,
+                  75
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "873653925235036f6d5650b32f239cdf57371f03095c32b1f1ad9291fda5edec"
+          }
         }
       ]
     },
@@ -2741,7 +3212,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "86587255fded212e1a67835787614a9bd9c2b64ce583c57da2d64088dd5dbc2c",
@@ -2788,27 +3259,25 @@
       "role": "system topology/scenarios",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "f9fbf9af55d247a661fa90ffe8db0b6f7a1e48c9769c82507660b9afa450c5e1",
-        "bytes": 58351
+        "sha256": "e432dada22db048b7bb1c7a470131343243c08d9349127d0e3a3325e48e42ee4",
+        "bytes": 59112
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date_msk": "2026-09-30",
-          "reviewer": "root",
           "mode": "previous_full_read_plus_reviewed_delta",
-          "previous_sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6",
-          "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-          "scope": "local main/index; historical evidence preserved; no prod release claim",
-          "method": "previous exact full-body review plus complete authored/verified delta"
+          "base_commit": "506122b",
+          "previous_sha256": "f9fbf9af55d247a661fa90ffe8db0b6f7a1e48c9769c82507660b9afa450c5e1",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "f9fbf9af55d247a661fa90ffe8db0b6f7a1e48c9769c82507660b9afa450c5e1"
+        "sha256": "e432dada22db048b7bb1c7a470131343243c08d9349127d0e3a3325e48e42ee4"
       },
       "canonical_source": "docs/architecture.md",
       "linked_mechanisms": "system topology/scenarios",
@@ -2862,6 +3331,32 @@
             "status_in_review": "reviewed",
             "sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "f9fbf9af55d247a661fa90ffe8db0b6f7a1e48c9769c82507660b9afa450c5e1",
+            "bytes": 58351
+          },
+          "review_status": "previous_full_read_plus_reviewed_delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": true,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root",
+              "mode": "previous_full_read_plus_reviewed_delta",
+              "previous_sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6",
+              "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+              "scope": "local main/index; historical evidence preserved; no prod release claim",
+              "method": "previous exact full-body review plus complete authored/verified delta"
+            },
+            "status_in_review": "reviewed",
+            "sha256": "f9fbf9af55d247a661fa90ffe8db0b6f7a1e48c9769c82507660b9afa450c5e1"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": true
@@ -2874,33 +3369,25 @@
       "role": "one execution backlog",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "91e47585e92daf11dbcd8ff3e9ee78954672fd909c30e80e3e1513467acadb1b",
-        "bytes": 360927
+        "sha256": "eeab54ca9e4b67c6eb4294f9f5ce854176fa2b29fc47c05748df715c0b74f02c",
+        "bytes": 361988
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
           "mode": "previous_full_read_plus_reviewed_delta",
-          "baseline_commit": "7d289931b5625f208152bd0c762df2cf0091a108",
-          "baseline_sha256": "31b2d84e1e03d0fab64b88d4cff0c0953b76ba2682d7c8c90987675aeb4e1f10",
-          "baseline_matches_previous_review": true,
-          "delta_ranges": [
-            [
-              3,
-              41
-            ]
-          ],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+          "base_commit": "506122b",
+          "previous_sha256": "91e47585e92daf11dbcd8ff3e9ee78954672fd909c30e80e3e1513467acadb1b",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "91e47585e92daf11dbcd8ff3e9ee78954672fd909c30e80e3e1513467acadb1b"
+        "sha256": "eeab54ca9e4b67c6eb4294f9f5ce854176fa2b29fc47c05748df715c0b74f02c"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
@@ -2984,6 +3471,38 @@
             "status_in_review": "reviewed",
             "sha256": "10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "91e47585e92daf11dbcd8ff3e9ee78954672fd909c30e80e3e1513467acadb1b",
+            "bytes": 360927
+          },
+          "review_status": "previous_full_read_plus_reviewed_delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": true,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "previous_full_read_plus_reviewed_delta",
+              "baseline_commit": "7d289931b5625f208152bd0c762df2cf0091a108",
+              "baseline_sha256": "31b2d84e1e03d0fab64b88d4cff0c0953b76ba2682d7c8c90987675aeb4e1f10",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  3,
+                  41
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "91e47585e92daf11dbcd8ff3e9ee78954672fd909c30e80e3e1513467acadb1b"
+          }
         }
       ]
     },
@@ -3005,7 +3524,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3a520452ef43eaa68933666d74014a174bb05e95253a539f3195fe6a6dfb3d90",
@@ -3031,7 +3550,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b3cee839d2d658b11d8340459b5a6c2488b933346dce5ee694d1ed86bb59dc33",
@@ -3047,31 +3566,82 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "6da47b8837781ecdedba7ded718b894a98cd4742c31ea8149ba6dfb0faa0f252",
-        "bytes": 28564
+        "sha256": "418ad3418f8d152747fb9d8762f30118999e3587459112739558613c88095107",
+        "bytes": 29355
       },
-      "review_status": "prior full/delta source review plus current authored delta",
+      "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
+        "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date_msk": "2026-09-30",
-          "reviewer": "root plus domain reviewer",
-          "mode": "prior full/delta source review plus current authored delta",
-          "previous_sha256": "9f7663d3b05c0799defe240c5e02818e368687216142a8801410829df3885192",
-          "prior_review_basis": null,
-          "current_read_scope": "Dated blocks and changed location/definition lines; unchanged prior full review retained. Ticker full current source/Settings/scheduler read."
+          "mode": "previous_full_read_plus_reviewed_delta",
+          "base_commit": "506122b",
+          "previous_sha256": "6da47b8837781ecdedba7ded718b894a98cd4742c31ea8149ba6dfb0faa0f252",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "6da47b8837781ecdedba7ded718b894a98cd4742c31ea8149ba6dfb0faa0f252"
+        "sha256": "418ad3418f8d152747fb9d8762f30118999e3587459112739558613c88095107"
       },
       "canonical_source": "docs/code-review-findings.md",
       "linked_mechanisms": null,
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true,
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "6da47b8837781ecdedba7ded718b894a98cd4742c31ea8149ba6dfb0faa0f252",
+            "bytes": 28564
+          },
+          "review_status": "prior full/delta source review plus current authored delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root plus domain reviewer",
+              "mode": "prior full/delta source review plus current authored delta",
+              "previous_sha256": "9f7663d3b05c0799defe240c5e02818e368687216142a8801410829df3885192",
+              "prior_review_basis": null,
+              "current_read_scope": "Dated blocks and changed location/definition lines; unchanged prior full review retained. Ticker full current source/Settings/scheduler read."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "6da47b8837781ecdedba7ded718b894a98cd4742c31ea8149ba6dfb0faa0f252"
+          }
+        },
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "418ad3418f8d152747fb9d8762f30118999e3587459112739558613c88095107",
+            "bytes": 29355
+          },
+          "review_status": "prior full/delta source review plus current authored delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root plus domain reviewer",
+              "mode": "prior full/delta source review plus current authored delta",
+              "previous_sha256": "9f7663d3b05c0799defe240c5e02818e368687216142a8801410829df3885192",
+              "prior_review_basis": null,
+              "current_read_scope": "Dated blocks and changed location/definition lines; unchanged prior full review retained. Ticker full current source/Settings/scheduler read."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "6da47b8837781ecdedba7ded718b894a98cd4742c31ea8149ba6dfb0faa0f252"
+          }
+        }
+      ]
     },
     {
       "id": "docs/code-review.md",
@@ -3102,7 +3672,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c4c18f163265729a58dbb9f4fb6a0957e9d37c715f1bcf64020e4e9ce0e07ed5",
@@ -3160,7 +3730,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2ccadda31c0850e1ec9479c707805a9302324b336379a443e29e112d21607dd5",
@@ -3190,7 +3760,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6137d4de5bc294b86d46ceaf440b2a0cade95129ee7f2f848ec157ab8f6c2c9b",
@@ -3206,7 +3776,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3a77673afc8037819e16331e6e5ca18563855aa0e2eb119894f2061f6cd24299",
@@ -3236,7 +3806,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b29d972461a4cc5ae9b739426de0cf6784485ca19d22eec5c56b0cb02db9c36c",
@@ -3280,7 +3850,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4e2122391dbc38693b281b02cb0ada730b3f486f4691377dcbd2780fb542eae5",
@@ -3353,7 +3923,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3291dde1df9827b1bd085aa0dc41c1b5a4c941d610d18c89797762f62a0234ff",
@@ -3444,7 +4014,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "68c42025a2e95c770272c64b3901575dd3e7a152ad8c1527e57001506899e9db",
@@ -3473,7 +4043,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "045ecb543ee82140cf299ad63e6f35d91c15279793102067c2d911ee34af0a1b",
@@ -3501,7 +4071,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bddd4016dfa3c0029403ce1b647e84efd491fb5ff4f74b2754262096037346cd",
@@ -3517,7 +4087,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7c3e36c9797aaae26248bf4b328b96ed83000499a1354711bd36df76b4337e61",
@@ -3562,7 +4132,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53adbd9f59a10e9a20d594663a5a10d32434f4ddcbf2d580ef0308893a67bc6c",
@@ -3592,7 +4162,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1e66cef556bb2f0faa9f9dec7dd8f2fb576280dff112500270baec37df7b4241",
@@ -3613,7 +4183,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "87289cca5a34b71fa6f74d4d6e5caaca14734a81a2f524f4e35bb9dfcb16f99e",
@@ -3634,7 +4204,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2f3cbf945373c548b86d850781f4e6d06290d9c3f31e9a3baca5750f6491f137",
@@ -3655,7 +4225,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4d628f315709eee124d5ab99e3f64593b3a0cd49fd8cc585cf0b6d83c0a977d6",
@@ -3676,7 +4246,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bff42d02ab7f2fcdae179d74efcaffa36674d678ee92467b253e13bcc89d9075",
@@ -3697,7 +4267,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "312228d991f4764f8c40ca8f2af9e98452654fc1ce0388bd38481cdebfcb3913",
@@ -3731,7 +4301,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "be8f5018dabfc39fa53477ab4e691fa86a7900b3f082d810a525727a9a9b84a7",
@@ -3782,7 +4352,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "23d875961fbfebd0ffd71676470ea5c825436be3df1cddfef084254514fed47b",
@@ -3812,7 +4382,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "839838b807644a6a11df6eaf0fc627628c978818157484b819651eeb25f9ed92",
@@ -3842,7 +4412,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3d349e1c78b4e22a16a320841957a29149948864d55c4af93200459c7dc7fead",
@@ -3870,7 +4440,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "34415c55bbed16287f5aa19a2cd4c76f35368de3343a7f0da526c558b1f07552",
@@ -3899,7 +4469,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a45c17d50b8cb96493bc49b1d1695fb2ef6c2c1519671f09c636e28309d1defe",
@@ -4031,7 +4601,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "78c0fed9e41bc2cb035a573ec4ef112f037eb2ac8a79961c5c8fe2adadd9bb98",
@@ -4133,17 +4703,17 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "89aca9b6f20b5f9fdf0a539c0b4cca86f0cf52e089b9e8586c88f9c4849c665c",
-        "bytes": 500873
+        "sha256": "dbba05fa6614f2ded7658b9e4b9dbbb81df64f13c7bf075f119d69985b1f822f",
+        "bytes": 502563
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "89aca9b6f20b5f9fdf0a539c0b4cca86f0cf52e089b9e8586c88f9c4849c665c",
+        "sha256": "dbba05fa6614f2ded7658b9e4b9dbbb81df64f13c7bf075f119d69985b1f822f",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -4281,6 +4851,23 @@
             "sha256": "286c85579e9f36749512c483e2d008613aa02104696a61af872fc91c2ac561d3",
             "canonical_source": "scripts/audit-code-documentation.py"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "89aca9b6f20b5f9fdf0a539c0b4cca86f0cf52e089b9e8586c88f9c4849c665c",
+            "bytes": 500873
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "89aca9b6f20b5f9fdf0a539c0b4cca86f0cf52e089b9e8586c88f9c4849c665c",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -4306,7 +4893,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "46f005d6b3401ceac4fb458d2f0aca42386f92dc8d57f614b35cd6c935048588",
@@ -4358,7 +4945,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "25a19b7070db92aacd22ae74b72e3c6c064af58869ce9ef6ac5906d6d4ef632d",
@@ -4387,7 +4974,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c60873105f82599634b4b3663278441d5caced7492e1b642e561688418a97cf2",
@@ -4416,7 +5003,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "75a5fb156f99fbe4f31eb7a8899ee935f5b022cc48b1df0597a1d613f8ad8b86",
@@ -4432,7 +5019,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c3dd7018c30a5c3c96a298f58e2dfa52d208f2933edad03100b58507208fd2e3",
@@ -4480,7 +5067,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ed512ad288e0d2fcba89054ac59702f588b5d8fb09b4e830896a8eaa4007785f",
@@ -4523,26 +5110,26 @@
       "repository_path": "docs/code-review/graph-omission-classification-2026-09-30.json",
       "format": ".json",
       "role": "project material",
-      "classification": "current_task_evidence",
+      "classification": "generated",
       "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json",
       "linked_mechanisms": null,
       "review_status": "evidence_schema_and_asserted_outcomes_checked",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "sha256": "9333771a2d22181b57ccf5c73b2cb8ba1657d8910fdc66fd83a02057d47675f1",
+        "sha256": "4e1e27b4cf895ccdfd1678cab74d9eb5007464b014b87ee165eb00d0eb2beaa2",
         "review_status": "evidence_schema_and_asserted_outcomes_checked",
         "body_reviewed_in_this_pass": false,
-        "reviewer": "root and owning specialist",
-        "method": "Full raw omission reason/category count identity and current terrain SHA checked; original rows preserved, categories reviewed, no invented runtime endpoint.",
-        "classification": "current_task_evidence"
+        "reviewer": "root",
+        "method": "Root checked regenerated omission schema/counts and exact portable-terrain fingerprint, used classifier --check. Structural omissions do not imply runtime dead code.",
+        "classification": "generated"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "9333771a2d22181b57ccf5c73b2cb8ba1657d8910fdc66fd83a02057d47675f1",
-        "bytes": 5037674
+        "sha256": "4e1e27b4cf895ccdfd1678cab74d9eb5007464b014b87ee165eb00d0eb2beaa2",
+        "bytes": 5109677
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -4645,6 +5232,26 @@
             "method": "Full raw omission reason/category count identity and current terrain SHA checked; original rows preserved, categories reviewed, no invented runtime endpoint.",
             "classification": "current_task_evidence"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "9333771a2d22181b57ccf5c73b2cb8ba1657d8910fdc66fd83a02057d47675f1",
+            "bytes": 5037674
+          },
+          "review_status": "evidence_schema_and_asserted_outcomes_checked",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "sha256": "9333771a2d22181b57ccf5c73b2cb8ba1657d8910fdc66fd83a02057d47675f1",
+            "review_status": "evidence_schema_and_asserted_outcomes_checked",
+            "body_reviewed_in_this_pass": false,
+            "reviewer": "root and owning specialist",
+            "method": "Full raw omission reason/category count identity and current terrain SHA checked; original rows preserved, categories reviewed, no invented runtime endpoint.",
+            "classification": "current_task_evidence"
+          }
         }
       ]
     },
@@ -4669,7 +5276,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4cdc8c00bf8947c341140212e9eb7c86602140effbe1e834f7048b49e7a304f4",
@@ -4714,7 +5321,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7d20e372512460ab37f1a53d6cc075965573c62ea55c77ab4778f9aeb6df9763",
@@ -4743,7 +5350,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a60799f2d1ad73f125060a4bfaaf77a0cb748af493f5ed22692925290c57f7e4",
@@ -4773,13 +5380,64 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a3845ab30998f62e8ca9d0205a39e3e417e3f4fb3dd9f95a330dcee40bef2626",
         "bytes": 48110
       },
       "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/code-review/history-publication-acceptance-2026-09-30.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/code-review/history-publication-acceptance-2026-09-30.md",
+      "repository_path": "docs/code-review/history-publication-acceptance-2026-09-30.md",
+      "format": ".md",
+      "role": "project material",
+      "classification": "current_task_evidence",
+      "canonical_source": "docs/code-review/history-publication-acceptance-2026-09-30.md",
+      "linked_mechanisms": null,
+      "review_status": "owned_protocol_body_read",
+      "body_reviewed_in_this_pass": true,
+      "review_basis": {
+        "sha256": "7287b4b228298f9d4d7e104bb54d31ef685a8f9d45d3b330d63d75232d46f8c3",
+        "review_status": "owned_protocol_body_read",
+        "body_reviewed_in_this_pass": true,
+        "reviewer": "root and identified source/reconciliation specialists",
+        "method": "Root authored/read packet contract, actual RED/GREEN traces, opt-in real PG/Redis/API outcomes; independent source and documentation review. No production/capacity/durableoutbox inference.",
+        "classification": "current_task_evidence"
+      },
+      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "source_version": {
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+        "scope": "tracked/index",
+        "date": "2026-09-30",
+        "sha256": "7287b4b228298f9d4d7e104bb54d31ef685a8f9d45d3b330d63d75232d46f8c3",
+        "bytes": 8609
+      },
+      "current_delta_reviewed_in_this_pass": false,
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "e8f83eebcf51e5690746f5e50f7392aa6677c3d8e2bdef6db5e29b6f1189917a",
+            "bytes": 6008
+          },
+          "review_status": "owned_protocol_body_read",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "sha256": "e8f83eebcf51e5690746f5e50f7392aa6677c3d8e2bdef6db5e29b6f1189917a",
+            "review_status": "owned_protocol_body_read",
+            "body_reviewed_in_this_pass": true,
+            "reviewer": "root and identified source/reconciliation specialists",
+            "method": "Root authored/read packet contract, actual RED/GREEN traces, opt-in real PG/Redis/API outcomes; independent source and documentation review. No production/capacity/durableoutbox inference.",
+            "classification": "current_task_evidence"
+          }
+        }
+      ]
     },
     {
       "id": "docs/code-review/javascript-symbols.json",
@@ -4789,7 +5447,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b770c11dd172da0d3f9e84fbab2ad7bb967fa894433c914666e4abbcb800551b",
@@ -4861,7 +5519,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2073b2afe833e5c32fbc3f95486e9655206be2e24a1c2dabefd8d74e14183001",
@@ -4935,7 +5593,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5377d90ecb5fa84c2aa08938bf59fc3170c25412adb76175bd8fcdc287d5d257",
@@ -4963,7 +5621,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d3637ae305eaa2366ebc2d74381f373a6a044ad548d4181cda8c66577ec6f637",
@@ -4991,7 +5649,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f2849aaf74b18e219b6f071f97e383b5ba2764d1bcdd563ced83626051734836",
@@ -5040,7 +5698,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "892429678ca12073b1ce9abceb7e1c1f1f68203cc01ac810ecde7687279edd86",
@@ -5089,7 +5747,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f7bdf88a530cd1328284b55403cc455dd801b0c4c5373bf32f97e213e735c756",
@@ -5117,7 +5775,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4dcc0258e5345124503230a9bca89dce134d147cc27bad8772cc048f8db3764c",
@@ -5175,7 +5833,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c5af3ca8ca3ea3c3a795cdf8f096cd13c939ffe061a9c610632650a4e90636ed",
@@ -5233,7 +5891,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9392d611cf6db12a80af26fc4c40b91c58b4fb632a4567c3478bde4a358589e4",
@@ -5263,7 +5921,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7cf6afc720a657f4c5882a10a097907d9b0a6c7c0db6d304fd328e80bf3d3346",
@@ -5291,7 +5949,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "98ebf5d5313f2b2314731f5361a6852f260f3fd931e9b6e6c7f4eb4b94e8464a",
@@ -5307,7 +5965,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7ac778b2e76c2dd863ea1c60e195027d2b7d53475e1b39355a0027c043e6858",
@@ -5365,7 +6023,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "be16232583fcdb3df2ba3bf66ba9162499a1f1fb504296b29752398c367cf66e",
@@ -5395,7 +6053,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8ebf4116269d4b41379f5f2eafbb72d968a38e95294afa865f043edb97c930ae",
@@ -5411,7 +6069,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "091398f5aafb1130d3a6322fc9f2f338a9f7e6b7fc5c5a243094eadad22822e2",
@@ -5432,7 +6090,7 @@
       "role": "knowledge acceptance K01-K12",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0107fbd45c5be83b0a99805ca69807b32d11bb4f5f73caa38c5a6f184f6517d4",
@@ -5501,7 +6159,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5140e2dd7ac32b87d36709ca8f3bb616eddfbac234ecc2670b6a16662c2de86b",
@@ -5536,7 +6194,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "45f6dccc2d5ae3692b4f30aee5199df51b7b6585aa1251b55f1547d04cd017da",
@@ -5575,17 +6233,17 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "generated",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "658f0cfa9eea3e6cd04ac13282112f749d66ba13dfe44627377b95765ba50e9b",
-        "bytes": 9518265
+        "sha256": "6bc0b46f6f104f542ae41fbfff014cffe1fbe2df7c949843f4e0198efe239a3d",
+        "bytes": 9697674
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "658f0cfa9eea3e6cd04ac13282112f749d66ba13dfe44627377b95765ba50e9b",
+        "sha256": "6bc0b46f6f104f542ae41fbfff014cffe1fbe2df7c949843f4e0198efe239a3d",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -5723,6 +6381,23 @@
             "sha256": "33c2d25e5d59669003e73da0098587eead6deed668ecee49657c56056f6b25af",
             "canonical_source": "docs/code-review/reviews.jsonl"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "658f0cfa9eea3e6cd04ac13282112f749d66ba13dfe44627377b95765ba50e9b",
+            "bytes": 9518265
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "658f0cfa9eea3e6cd04ac13282112f749d66ba13dfe44627377b95765ba50e9b",
+            "canonical_source": "docs/code-review/reviews.jsonl"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -5735,7 +6410,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "eb8c0c1398c5c05336682bf808a6c2312aabc7dbcc752d418f7bf9467ae07acd",
@@ -5780,7 +6455,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ba22e1e7d1d6f30551b97f62ed9d84f1194e7157a19a7136ff25bfb0b450d899",
@@ -5801,7 +6476,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "044f0dd8632b0625620b6f8da7fe41063c66d7bd007da3c89e7322e739b623fd",
@@ -5831,7 +6506,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e3264c3e3619725e17020fed57785060c5efdb88881a233267523a1ae6e098e4",
@@ -5861,7 +6536,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e4b40aaa97d94d9b830afab85cf95e2765c07266fa67aac310312ed20bbeea54",
@@ -5891,7 +6566,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fde033ba9176d5005d3d1b577f5d4809d5adcd2a4765b24d5aff4f4e1e8a17e2",
@@ -5934,7 +6609,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7a596a0e66cea368e42f7b3c11bfceeef1bafce7d36aa96fe48cc6c411728ac",
@@ -5950,7 +6625,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5510eb83294c0e9016605ab79f20a9184e2540e3e7e0cf1164f0c08e424e5384",
@@ -5983,7 +6658,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f5ae0ec25b3ef8ff4933c34d753c86fa2b83ff7ea75adc1f32b4664ba7a76820",
@@ -5999,27 +6674,25 @@
       "role": "data and boundary contracts",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "39362e410fe784a19af7857131eb8ee01ecad35619b3358efc50775642fc2d29",
-        "bytes": 46069
+        "sha256": "147faf0f2d44e4468b5247fddbbd432a32730ede2ba18b0d346b2b8912bb5763",
+        "bytes": 48786
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date_msk": "2026-09-30",
-          "reviewer": "root",
           "mode": "previous_full_read_plus_reviewed_delta",
-          "previous_sha256": "be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67",
-          "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-          "scope": "local main/index; historical evidence preserved; no prod release claim",
-          "method": "previous exact full-body review plus complete authored/verified delta"
+          "base_commit": "506122b",
+          "previous_sha256": "39362e410fe784a19af7857131eb8ee01ecad35619b3358efc50775642fc2d29",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "39362e410fe784a19af7857131eb8ee01ecad35619b3358efc50775642fc2d29"
+        "sha256": "147faf0f2d44e4468b5247fddbbd432a32730ede2ba18b0d346b2b8912bb5763"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -6075,6 +6748,32 @@
             "status_in_review": "reviewed",
             "sha256": "be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "39362e410fe784a19af7857131eb8ee01ecad35619b3358efc50775642fc2d29",
+            "bytes": 46069
+          },
+          "review_status": "previous_full_read_plus_reviewed_delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": true,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root",
+              "mode": "previous_full_read_plus_reviewed_delta",
+              "previous_sha256": "be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67",
+              "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+              "scope": "local main/index; historical evidence preserved; no prod release claim",
+              "method": "previous exact full-body review plus complete authored/verified delta"
+            },
+            "status_in_review": "reviewed",
+            "sha256": "39362e410fe784a19af7857131eb8ee01ecad35619b3358efc50775642fc2d29"
+          }
         }
       ]
     },
@@ -6086,7 +6785,7 @@
       "role": "official source mappings",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "260c17baf3425c579a66ad999f5495adffd45e18a587e87ca2d4ccf568d14bab",
@@ -6150,7 +6849,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7ae98b477c438a71ab56a40763ece94d478a8d19c3505f559fe2bf0cce9eebe8",
@@ -6255,7 +6954,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5daa1323bfa4d3ddd6b88a34d9b59b86f92a34ddfbc0376bf0d4c8d86ba7a19e",
@@ -6302,7 +7001,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c02433608b474a744ff54c4d40ab95b09ec403dfae4137aaaa4ae0c6659d8b9c",
@@ -6349,7 +7048,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c9a2ace1e58bfa1d1a2cd29fdd147a238eb98ea4e3677a093dcc53c170a930da",
@@ -6396,7 +7095,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5046e2d30d5b20968f4b81fb3ae2e90452e817783003b44f62e3323bf34b67fd",
@@ -6443,7 +7142,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a8a8370b93e82538d9ee4a8e1381794bfd6b00188932b4a45417e77a9cf31a95",
@@ -6490,7 +7189,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "aa58aa5fe2ff11c835cfd06fef0c16dee1904659377125793b46434b5838a985",
@@ -6537,7 +7236,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "89916f0c5b9ef4042cfa9c2d92be8440fa0f4fb7673ba0286d41d94692793525",
@@ -6584,7 +7283,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "79d525d3a108c4b809a3393d0986f681413deb95c27917f0db9d8fc5067b4366",
@@ -6631,7 +7330,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cc6d2fa7998e6fa249e86653bc8a841e6b6ebd5ad125e3784a18636ae8e1bfa9",
@@ -6678,7 +7377,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3526d55d57b307d0a606fcfc85c1599f2f4668c7fb5351d15bbf149d75486160",
@@ -6725,7 +7424,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fa3b35325a6d08b67200ed515a7785b2bf537cf91f8a79f19a9975da2038bc2e",
@@ -6772,7 +7471,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c8adcfdf6b076d4fa1f539319b3da2c993cf8627b5c043e7e7cdb280997ce413",
@@ -6819,7 +7518,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "068984170ba573465354342144c5fa130852c07a6ba200ab3bfd19d06f964e07",
@@ -6866,7 +7565,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "88bcbaf32bc5730597dfe74317b09f651dbec5ea26f8f58dac0e4920917a5cbe",
@@ -6913,7 +7612,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2265d2e973c2a0496fd345e14eb145e34e06ca020ae4e6ace395ae176dbbeb0e",
@@ -6960,7 +7659,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9cd46dc60d1b6e353b07276c56638da3485bfcee54d9486488e5d1ae0b80f5ab",
@@ -7007,7 +7706,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0eeec3468f8d214605ab3de2d3ac23322ff7431a1b98a72f40bbe19985dd19e7",
@@ -7054,7 +7753,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "02cdf2ac7bbc5621463e13ee4975b9609111e5d214954fe7d477fe45ac2d8c88",
@@ -7101,7 +7800,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5f47a42592976ba922e6eda4c0c0fef1c2f473d1bf1263de073ec3352e9e2c2e",
@@ -7148,7 +7847,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d676691e283189edded954bc1e99e76e82e5fa787f70a224fe7692309944f317",
@@ -7195,7 +7894,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5fbc290c0d7ea36b1174c8f781c6b2b64548fd174c2e6810b14e282ea1c87a8c",
@@ -7242,7 +7941,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6b26acbc764cf16d7db013482a241a442acf51b62f0f52ae48893bfc9db55e46",
@@ -7289,7 +7988,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6de8820bc64e5a60f059413e5d84220c9f4a260626678a20385a04bb7d20e255",
@@ -7336,7 +8035,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6d8c001988b782810d4cb10b0ca22e5a868f7f86b5408e5c76a6bdffda032ed4",
@@ -7383,7 +8082,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c807812a963112736171c7376cd99fb3bc4dc9c96ae488eab7bf181751ca22d8",
@@ -7430,7 +8129,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8e577651dd732a798d1c007d75aca5b4cd9ad4fa2266b96ed22e77a42168902c",
@@ -7477,7 +8176,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "372c3d5dd0702967d8cd32cf50ea300d25e25b7cea9641a3703a17aced123368",
@@ -7524,7 +8223,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a0ed46edd4e049a17941783fa790ac68e38fe906e7aea4171915501ff6e31474",
@@ -7571,7 +8270,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e45fae4ad5036659c471142215c3aadc6d68be79a84ee012c8f8005b67d597d5",
@@ -7618,7 +8317,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1f7fddce1329353ccda316be38c278331b7f957d4412f9da421dcd064cf7c560",
@@ -7665,7 +8364,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ad031293827635dd61266f469f0540f2ade88492f0253a7dcd9b2a0db136d615",
@@ -7712,7 +8411,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "290e39cad4d9c57916c5d504702af518674b76ec327eda282bed317ee86d7498",
@@ -7759,7 +8458,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8022f4aa7b6221ce87227155b9d6c382cc8c4cfd666937b5404be86dbdab4d2e",
@@ -7806,7 +8505,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f84b8138719d58a594280e1f068fafd8aceaa62f30b7c64ba8878ccd920b39b5",
@@ -7853,7 +8552,7 @@
       "role": "operational acceptance and recovery",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4122da4c09d0ef0f537d5b32d69d6b96dbd2b9d5dee9344184b6b125f1de7b99",
@@ -7939,7 +8638,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339",
@@ -7986,7 +8685,7 @@
       "role": "view-mode domain recipe",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8c07a29ff4a5a68b323c4f10035cad8fb8af81fc10d9d1d4b36ca6ccb99a8186",
@@ -8033,17 +8732,17 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "b221fdb984912eaa6326dd019f0037aec2a3137202339c174f31dfdb7a356b44",
-        "bytes": 2446088
+        "sha256": "43020ab9576e226c848351c49ec959b2884d6c8c0be4fc9b6631aad439bfdd3f",
+        "bytes": 2446509
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "b221fdb984912eaa6326dd019f0037aec2a3137202339c174f31dfdb7a356b44",
+        "sha256": "43020ab9576e226c848351c49ec959b2884d6c8c0be4fc9b6631aad439bfdd3f",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -15315,6 +16014,23 @@
             "sha256": "c21ebff66b500fb4bb0c5ca2659511992c75732d2a01b20e4a29e41d7a9d869e",
             "canonical_source": "scripts/build-indicator-index.py"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "b221fdb984912eaa6326dd019f0037aec2a3137202339c174f31dfdb7a356b44",
+            "bytes": 2446088
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "b221fdb984912eaa6326dd019f0037aec2a3137202339c174f31dfdb7a356b44",
+            "canonical_source": "scripts/build-indicator-index.py"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -15327,7 +16043,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2f8ba37f647212e149e9e74a5ab8e359d8a6cb42542f510e587f26fe86f9b5c4",
@@ -15450,32 +16166,29 @@
       "classification": "current",
       "canonical_source": "docs/knowledge-unknowns.md",
       "linked_mechanisms": null,
-      "review_status": "full_current_body_read",
-      "body_reviewed_in_this_pass": true,
+      "review_status": "previous_full_read_plus_reviewed_delta",
+      "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date_msk": "2026-09-30",
-          "reviewer": "root",
-          "mode": "full_current_body_read",
-          "previous_sha256": null,
-          "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
-          "scope": "local main/index; historical evidence preserved; no prod release claim",
-          "final_delta": "Root reviewed complete independently reproduced fixes, scoped fixture updates and current artifact schema; prior exact-version proof retained.",
-          "method": "current full source authored/read with explicit element purposes"
+          "mode": "previous_full_read_plus_reviewed_delta",
+          "base_commit": "506122b",
+          "previous_sha256": "5d4a992f89e7282ba0892f6dfc98c55710c7a6a60b31cafc965422a8b5bc71c5",
+          "reviewer": "root; independent reconciliation_review",
+          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
         },
         "status_in_review": "reviewed",
-        "sha256": "5d4a992f89e7282ba0892f6dfc98c55710c7a6a60b31cafc965422a8b5bc71c5"
+        "sha256": "29cf418d789605b25a36c8bb5624621c4c301b9b5f9965dc3e435a2b56914675"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "5d4a992f89e7282ba0892f6dfc98c55710c7a6a60b31cafc965422a8b5bc71c5",
-        "bytes": 9741
+        "sha256": "29cf418d789605b25a36c8bb5624621c4c301b9b5f9965dc3e435a2b56914675",
+        "bytes": 10244
       },
-      "current_delta_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": true,
       "prior_version_evidence": [
         {
           "source_version": {
@@ -15530,6 +16243,60 @@
             "status_in_review": "reviewed",
             "sha256": "5db40f731636e701bfa96ac678c91bec9a6ad18f68a5dc6506ff59837f762108"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "5d4a992f89e7282ba0892f6dfc98c55710c7a6a60b31cafc965422a8b5bc71c5",
+            "bytes": 9741
+          },
+          "review_status": "full_current_body_read",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root",
+              "mode": "full_current_body_read",
+              "previous_sha256": null,
+              "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+              "scope": "local main/index; historical evidence preserved; no prod release claim",
+              "final_delta": "Root reviewed complete independently reproduced fixes, scoped fixture updates and current artifact schema; prior exact-version proof retained.",
+              "method": "current full source authored/read with explicit element purposes"
+            },
+            "status_in_review": "reviewed",
+            "sha256": "5d4a992f89e7282ba0892f6dfc98c55710c7a6a60b31cafc965422a8b5bc71c5"
+          }
+        },
+        {
+          "source_version": {
+            "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "29cf418d789605b25a36c8bb5624621c4c301b9b5f9965dc3e435a2b56914675",
+            "bytes": 10244
+          },
+          "review_status": "full_current_body_read",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root",
+              "mode": "full_current_body_read",
+              "previous_sha256": null,
+              "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+              "scope": "local main/index; historical evidence preserved; no prod release claim",
+              "final_delta": "Root reviewed complete independently reproduced fixes, scoped fixture updates and current artifact schema; prior exact-version proof retained.",
+              "method": "current full source authored/read with explicit element purposes"
+            },
+            "status_in_review": "reviewed",
+            "sha256": "5d4a992f89e7282ba0892f6dfc98c55710c7a6a60b31cafc965422a8b5bc71c5"
+          }
         }
       ]
     },
@@ -15541,7 +16308,7 @@
       "role": "obligatory knowledge lifecycle",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a",
@@ -15719,16 +16486,16 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "abf29662200b1745d2bb8a4599d518addcfe1e12d62f6730eb62201e5af2d867",
+        "sha256": "7694e93c048e6501becc725bb8cedbbab85105d1281df524a8b1927cc596e04a",
         "canonical_source": "docs/mechanism-inventory.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "abf29662200b1745d2bb8a4599d518addcfe1e12d62f6730eb62201e5af2d867",
-        "bytes": 8563280
+        "sha256": "7694e93c048e6501becc725bb8cedbbab85105d1281df524a8b1927cc596e04a",
+        "bytes": 8568463
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -15782,6 +16549,23 @@
             "sha256": "7687c54b746bb9f907c504d8ac566fdfbcabecd7d9d7d87646382ffe2663244e",
             "canonical_source": "docs/mechanism-inventory.json"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "abf29662200b1745d2bb8a4599d518addcfe1e12d62f6730eb62201e5af2d867",
+            "bytes": 8563280
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "abf29662200b1745d2bb8a4599d518addcfe1e12d62f6730eb62201e5af2d867",
+            "canonical_source": "docs/mechanism-inventory.json"
+          }
         }
       ]
     },
@@ -15798,15 +16582,15 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "3b50ff9805447ecbf60e0c9da40832645cde1d419d444ef458b7550ea4b9eb04",
+        "sha256": "b22312ef8686e6f6cf76dd257cea196e56a74c083c8734c6ace06a38e5bf311f",
         "canonical_source": "docs/mechanism-inventory.md"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "3b50ff9805447ecbf60e0c9da40832645cde1d419d444ef458b7550ea4b9eb04",
+        "sha256": "b22312ef8686e6f6cf76dd257cea196e56a74c083c8734c6ace06a38e5bf311f",
         "bytes": 431941
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -15844,6 +16628,23 @@
             "sha256": "d568a02d993289ff94bc3b72d29d13c98c2da3e0821cf03ae4da8c2a7da916e2",
             "canonical_source": "docs/mechanism-inventory.md"
           }
+        },
+        {
+          "source_version": {
+            "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "3b50ff9805447ecbf60e0c9da40832645cde1d419d444ef458b7550ea4b9eb04",
+            "bytes": 431941
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "3b50ff9805447ecbf60e0c9da40832645cde1d419d444ef458b7550ea4b9eb04",
+            "canonical_source": "docs/mechanism-inventory.md"
+          }
         }
       ]
     },
@@ -15855,7 +16656,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a",
@@ -15902,7 +16703,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c30d99d14b7d27abf99b029962459072fb8e0474f5d5aa71c3049974aed8e60a",
@@ -15958,7 +16759,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e3171d011b1acb532b8d62b4e03cde3e9b597926b6dfbbe1896e71fa91c99da2",
@@ -16114,7 +16915,7 @@
       "role": "Finder filesystem metadata",
       "classification": "excluded",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "0763966523de8b7b07936b56a28138b1b26b917f860b29a873e2c6a78b079991",
@@ -16135,7 +16936,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5026f5e2e163627a567c73b45b8868166cdef929d322b4c367e74d72de03b754",
@@ -16182,7 +16983,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d40796901993721dd1386e07783856e0c83a1b8b539c28badf9ee21b7ec41948",
@@ -16229,7 +17030,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "214c0da63da38517da57687a253996d088cf0c6c21127d623c3af89b20186bbb",
@@ -16276,7 +17077,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8551a3ccf372b24e98d8f5856e2666b2ae2f9f1a0f3040b885d368fc50601c00",
@@ -16323,7 +17124,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a68905d253959c4bd65e2a97acffbe4f59c9f1d7285440e89466b6c58648d98d",
@@ -16370,7 +17171,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d69ea8ce7a177029caec266724454160a0e2c849dbe1dd5573edba68a6384e5a",
@@ -16417,7 +17218,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b3d830741adfa2a4e00a4dc3dcfd52ff006d9aba40b5b93c1cefd770ed3cb294",
@@ -16464,7 +17265,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6e12c388f71c7be67df096ce4280e5a84e9ce28d98c3afd40b5894d43e7e7885",
@@ -16511,7 +17312,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "947c463e742672b79c4c077a324c383925ec0d412ed4b0695123a4bb95a36e51",
@@ -16558,7 +17359,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2bbafbbb61ae8eeb8c33ee7b8a61fe9ec36ea702447699bd8ca729d733d30a66",
@@ -16605,7 +17406,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "60d3e4ef6de5e0cd5d59b381aac838e248b12a2f5b51107d53958c1087cf579e",
@@ -16652,7 +17453,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "56b6b74c76b986237587e39f19ecb3fae62db5bf3170b7bd9546821a9623db6f",
@@ -16703,7 +17504,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41c72daa4fb9de204f37129c5e3d167bbb825a1740fec1ac3838afbbcfb60a8a",
@@ -16754,7 +17555,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a3f7bac69696435237687e0400d0359a2b3756be99417f12411d3adade24db60",
@@ -16805,7 +17606,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "860ccfb7c648f0b15b6cada449ef8caec271f56176de3d624d5409049dfb93cb",
@@ -16852,7 +17653,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "c2eec792d8c95c997a6c869c9b58d47806e36dff8fd957fedb9d5cf6d7e77ae5",
@@ -16873,7 +17674,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "040631e7adc32fd0ef6a6d8f7302e3d2778a7da4f50d8e773b3899c245d39f88",
@@ -16894,7 +17695,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "676e5056143282abdef2161ff457a8211d348a7961f93241134aa86d5f4a3833",
@@ -16915,7 +17716,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "05cd2f29a403fb267da3ca2d9b59751f5421f2cf7168b77fc6b2c2e1b05661a8",
@@ -16966,7 +17767,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ade56805105abc8a5ad1c1bd681f8d7e88a47478dc8041c3742e9e2936e000e9",
@@ -17017,7 +17818,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "12032f633fe04ec1ef0fdd2582008e17a55c42f3c16d3813ef6e17a121dc8863",
@@ -17068,7 +17869,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "317243ccf87fee465667636f231fc26e4879f725115a8ad31de7966cbb8672b4",
@@ -17130,7 +17931,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "14698ceb0bc1dffcf1784d9d30c6fa46adabe8660d71835b4253ab1b5a03bc7c",
@@ -17181,7 +17982,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a65fc039de33066dfeb4fbe0768b6b528daeb8a6b6170a5608efd082628966de",
@@ -17232,7 +18033,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41354109cb35c16a4effd5e8defe668265bfe62c9a4868477b60f25988a011bf",
@@ -17283,7 +18084,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b661aac648e124f3ee80e598a82148f005e2331bf3070eb0f148bc5fc55b746b",
@@ -17334,7 +18135,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf",
@@ -17385,7 +18186,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710",
@@ -17436,7 +18237,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "558bbb6d7e8fa913706955a511a68efadee0899a67c7d2580a44dac034cc45c4",
@@ -17508,7 +18309,7 @@
       "role": "project source/explanation",
       "classification": "generated",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c628cc19ea494dcec92f4b44f2bff1b9066fb7bae86606c151a595fc9be714fb",
@@ -17554,7 +18355,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b1108dda38345640549754179e7380483324d992bafa4dea90ffc549fc736af6",
@@ -17601,7 +18402,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e0548dcf2b4155648fe21c8924efa9752b0b174fb96160f89843db1a924c66d2",
@@ -17648,7 +18449,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "42181870d6129e325dcb37782a9ccd24f6a57186ec5e945564e80bcc5c366ebf",
@@ -17695,7 +18496,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "54e63895a8275fe3aafdd3dd6c5b673ebe1280a738ad82d06128f0958f5e8275",
@@ -17742,7 +18543,7 @@
       "role": "dev/release procedures",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1fad25cbdcc3bd788b1cbecab871eaf7b6e3e9ae77a7d7a0093c39c22a3f3fbf",
@@ -17815,7 +18616,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1f400ae86b24179fc34587c820a885061b176a0ebd2b4922aee989ba61b83e35",
@@ -17871,7 +18672,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "82f3f56c883ac36d61bc76ed99c6afef21fa60f77c6d6267bd2378142e5b9a2b",
@@ -17916,7 +18717,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "699caf5b7a8ad6f4bc7b770e1dc8cddee5f47241f6dd7110c0d532c1ff9f80f9",
@@ -17963,7 +18764,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "335eef2202576be354899af024d39732d4b595346642eee749425309988ea029",
@@ -18010,7 +18811,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1a82f4db7956825c4e84ab064a05973d31257918828cbadb6890773f6cb7ee54",
@@ -18055,7 +18856,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "93a1f02be37383700cb86c1ad4a21a5fa1f1de94a2b8681510f87ee3266d9f93",
@@ -18100,7 +18901,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8367dbb0ca6ac0cf2e3d73d17ae7cf0ba354a1e49c1ce8c0e39adf4b1efab3c",
@@ -18145,7 +18946,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fe401f0a54c499dee2d36ae1a4e929d0437021d1098ab0b4a1ebf312eb4df4d3",
@@ -18190,7 +18991,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a7e888dece908bb530ce1b59bbfed6ada4a8bbc2f1c226ad37e1daa0113ee5f6",
@@ -18235,7 +19036,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "07985b604b4f04bf2f46165095b92d55a0d71c4ad5b390d9257e1569b1d32f7b",
@@ -18280,7 +19081,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "15b9f131a96199fd810f17089d5529d580aece9f4ad296c93a211d2c69611d9a",
@@ -18325,7 +19126,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e92fab475ace4abb557ebc22f38c76ead9ad532d861ddca78feac9a97d69f619",
@@ -18370,7 +19171,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d046bbcb2399a6d03062de0f724138b69b020cce9c2f55c0e5b3b7655c2f89e6",
@@ -18415,7 +19216,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "92bb5c411f0b7009d9100b6d80372a391d9a83870feeb897a81c0ae986df275d",
@@ -18460,7 +19261,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f017c6e5407c0e4f632baa016bfbcd63934881cee854a5870995b0546a0bd275",
@@ -18505,7 +19306,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a37c9f3198c593a9d52dcfcda1eab8652097ed760d12df79fe5e9646e40bba23",
@@ -18550,7 +19351,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a70c45d18f3fba4d3a2c9ab18563ee3ac32f1a916e89ceac3624074d241e974e",
@@ -18595,7 +19396,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5d556119520e53221bcca38b970ef348cbe2e220bf56d39ce3b3bb6f033e8320",
@@ -18640,7 +19441,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "599c8b0a731cc0c2f403c678d57fc44a470393f277019803e5b3f4384220b3a7",
@@ -18685,7 +19486,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6021950642f7e96fb263ed7988e22167984fa34a94b8803e5ce23ab3558dbab0",
@@ -18730,7 +19531,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53d40500a285c3700174929e7052f302c36fed87d64e22bbcc12d692127ae922",
@@ -18775,7 +19576,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d4a46e61ff81210d876111437e99139632b25a3faa407b78cad6f48221879840",
@@ -18820,7 +19621,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ff4d9dbd6022897057207ba55db3a515170542aa1188df1689532ecc3d1ca411",
@@ -18865,7 +19666,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9ab0a89fe98a1668a1e363e0cf8ad12628d756274ef0bf8dd903c302086898da",
@@ -18910,7 +19711,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d9f8572cc878560fa900b86276fd2e301b6ef3519e3751ee4f4d16914e3b13ea",
@@ -18955,7 +19756,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "69aafa5d7858c9583f585bb51e5301c47b713a89d655bbdc6bce553c15ca2f50",
@@ -19000,7 +19801,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2ba59dcd3882fd75eb4341b82f0993fbaf2796fddccd7506b1105387f74598ca",
@@ -19045,7 +19846,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3ab095df112731eba07953496b22fd7122bb6dabcfda4d6efc838b7b09f4df56",
@@ -19090,7 +19891,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "584776bbf4ec5348b1b81a3de24850a6f4de7322fa84165823765df71c9285da",
@@ -19135,7 +19936,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ee71192a55fb93c56c39191c2e414b904e9f49aa921db30504ead84e058eb17d",
@@ -19180,7 +19981,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fcd0f14c8efc8498db86bc7107aadab622339999998fb5d8cca846119c7a3b96",
@@ -19225,7 +20026,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d1993c44fb809483230ddecfda6deaef46b98239f2d950af601ec82be5c282bb",
@@ -19270,7 +20071,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9b4070f54a4c69d9aea65cdc6bdd436aae1913a52b219af0ae1d9b1a1cae1f3f",
@@ -19315,7 +20116,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bf789376399bdbdb4dddebbd2a53cb78550e9077b3c552e8ad7e280db7a8d324",
@@ -19360,7 +20161,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0a194cd7217af2048f38cb3799487ae746c4b3c9a74dc989137830447f1f89d6",
@@ -19405,7 +20206,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "660bc618011937b4fdf2abc8ae90d5208a9748bc4d2d13b451cd92ebf1ffd79d",
@@ -19450,7 +20251,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "97dbbfe0d8619fae01158f95c10ebcfebbe4dd8f6852828475790bfc90881aa3",
@@ -19495,7 +20296,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d78cca8e9a83c03ba4725bf0119b1f523a3d0732a45087675a2774e725aa31cd",
@@ -19540,7 +20341,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "57a8fdf945bf73d760f296382bb6613a15220bd4f6a588d80c4f16ede068a328",
@@ -19585,7 +20386,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "302ecc8948731f828f18df639235f42c4b45e110b43f78c40d3c90d82cd06555",
@@ -19630,7 +20431,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6074899d86f98cf1d862f4a0315ae668a590ded214cc378afca2fffa5d16dafb",
@@ -19675,7 +20476,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d6a309fcfb963d329a93baf9df66fa5f3c23a4be2b5f67edf24d6cafecde12ac",
@@ -19722,7 +20523,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fd3d58f3db64bfba66da3139de3b30230bbd925ac56d9ec5abfd9a134c5777f9",
@@ -19842,7 +20643,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4d40536f27e1cffd2bf4f8d4e97727c3ea57b77299d1c7289e2aaa9c78fade6c",
@@ -19887,7 +20688,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7fb94b640b3a19b81439f0bb8ece783628f7de7ddd90cb2c9eab7db069333ce2",
@@ -19932,7 +20733,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4d40536f27e1cffd2bf4f8d4e97727c3ea57b77299d1c7289e2aaa9c78fade6c",
@@ -19977,7 +20778,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a5993d437214e57cc3c91828ded4c2026b81af40cf87174305426bdb3ffb8250",
@@ -20024,7 +20825,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "06507fb38a9065ecb50cff41cd9eec654c1ad86af3df14bd4d70baac763e26cb",
@@ -20069,7 +20870,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e1df127a752f4044aba92258cc8165ee3821ee68f9ad26d442c6f59afcd611eb",
@@ -20114,7 +20915,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53ee75ed6ab7e7452c8f160293877e6dd7e2a7283ad6126550290d03f973388a",
@@ -20161,7 +20962,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "591346bf090109cdb260996c7fb284d7dd157d2fe2415dfee241c12c7e26c43d",
@@ -20208,7 +21009,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "35ef61ed53b323ae94a16a8ec659b3d0af3880698791133f23b084085ab1c2e5",
@@ -20253,7 +21054,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "83b531b870be333c861eb73b67ec980a8ebe5f373a0d1c5a47fe80eae6128fc2",
@@ -20300,7 +21101,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8a40e40e40a56dbe29a3073344135149614fb3fad6d5ddf22df096e3eb0a7e89",
@@ -20347,7 +21148,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7bc9053c135dfd274c3756716c7cb284a2cab497ccd6943fc02cdce5debb8a7",
@@ -20394,7 +21195,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d679f5e80bb3089c9ed9e29f2a0743c3739d485dcaa0356ab712a047c15f995e",
@@ -20441,7 +21242,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "84befc3cb36300701c99cf4c568ed1e8f3b838d8034768787ed1d7b6f857893c",
@@ -20488,7 +21289,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2721b050b4ee09931cb4b234e43378ac8b8c4c3ad6bd274dbc30647d058a0ec1",
@@ -20525,7 +21326,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6e9f5dec0570a89a6023410c723e57849d66dc63a75d2b7cfd423203782eb4d8",
@@ -20572,7 +21373,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7152a39b43bcac5e257ef3f73164a3a8c46ee6d965d6a2d9a81968abc76566a2",
@@ -20619,7 +21420,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "118a54fd3262db2741d8cd55e9abddfeccc5934181d6c44538097f4857815e51",
@@ -20731,7 +21532,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e88fd20e070c1058901a75e96a34a196c4e786a827ce1c32238084ee2413e8a6",
@@ -20778,7 +21579,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9810cdded44129a186f032c0e854d91da96e434c673de614c2576f359ccbfe83",
@@ -20825,7 +21626,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9c977d2ff47c0b322eb7f40d62fad7c6e8a0f230b5f5376c18ab04e5255ab021",
@@ -20872,7 +21673,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8a73314e26d0cdedc5ff531980158ec5caa62935156bc66270ddba60e6feff3f",
@@ -20919,7 +21720,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "36e5d3e0f9dedd9ef18ef52b17706952b09f29699cd5c59d51eac8776be4cd79",
@@ -20966,7 +21767,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "026ffbf0377be8b70a6c7d671c6c1d2c3d217d50f551008010c06297fc957938",
@@ -21046,7 +21847,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a180c1bbe9b7de73ab8ca107ee4ca663b1f8efa8717bbf946cf69d0e77be050d",
@@ -21093,7 +21894,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "39199315521f14009c0bb80538b04296b03e3cf9b95520ffe2fd707508540d56",
@@ -21140,7 +21941,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "22e2284a44edc61ad74551fe47657019c3a847a40da901e662e71f1bafd4fbef",
@@ -21187,7 +21988,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cbedbe02e33512a2ea0234a5aefe6bfc7807336a6336b0a5c9416a682b0df85b",
@@ -21243,7 +22044,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5a6b28a864b64bbb9ec2430e924268146277693228e1f7c6b053d042bd299f78",
@@ -21290,7 +22091,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d32ca7bbbe22f9b7f26f400cf5f789712602db5749a4e39f0df255f869102952",
@@ -21337,7 +22138,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "31eea758556714b3f27257c09af03076bb4802fd5186460af5014a6da31bfd95",
@@ -21409,7 +22210,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8537824c2655a7b2f67f08a96ff8da8c07dcd6632b22cfcc9c3f5851e85d3882",
@@ -21456,7 +22257,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "86e1b37b582132f9876bc253add4d1677f028bba0fc9a1ea267376a45f2a341e",
@@ -21503,7 +22304,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "main": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8c787342f45fb9761897a0a8bc86166a8aae90f4239e6e38b23ff8ee9904a3e",
@@ -37881,10 +38682,10 @@
     }
   ],
   "metadata_refresh": {
-    "at_utc": "2026-09-30T17:07:58.118122+00:00",
-    "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+    "at_utc": "2026-09-30T18:05:41.046680+00:00",
+    "head": "506122b5bf8b79be9f39952a4ad2703d9eeadd62",
     "collector": "docs/code-review/refresh-materials-2026-09-30.py",
-    "tracked_docs_required": 177,
+    "tracked_docs_required": 178,
     "excluded_hash_paths": [
       "docs/code-review.md",
       "docs/code-review/materials-2026-09-30.json",

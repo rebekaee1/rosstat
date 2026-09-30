@@ -1,5 +1,20 @@
 # Forecast Economy — Project Context
 
+## Защита истории и публикация после commit — 2026-09-30
+
+Локальное исправление F01/F02/F04 после `main 506122b`:
+national partial response означает merge, не удаление отсутствующих дат.
+Replacement требует явно полного включительного окна; extent/автотекст
+берутся из сохранённой БД. Федеральный CalculationEngine пишет SQL и возвращает
+changed codes; commit owner публикует source/derived после успешной записи.
+Eurostat сохраняет отдельные country/remap/slice транзакции и публикует каждую
+после commit. Partial loader failure не продвигает applied TOC.
+
+[Действующие контракты](docs/data-contracts.md),
+[регрессии и пределы](docs/code-review/history-publication-acceptance-2026-09-30.md).
+До отдельного выпуска это не поведение production. PostgreSQL/Redis outbox,
+unknown commit outcome, DB0 outage и 4-vCPU capacity остаются отдельной работой.
+
 **Last updated:** 2026-09-30 (содержательная сверка frontend/docs на `main 972579f`; цикл знаний, валютные canonical, ticker и РСЯ; production этим проходом не опрашивался). Ранее 2026-09-27 (ночной I/O stall при ротации nginx-лога, `fe:ver:*` под `allkeys-lru` — operational traps ниже; текущий статус и границы доказательства — [backlog](docs/backlog.md#2026-09-27--проверка-выпуска-3-web-worker--scheduler)). Ранее 2026-09-25 (sitemap: потолок 50 000 URL, lastmod по содержанию, шард без полной пересборки — `CONTEXT.md::Sitemap protocol trap`).
 
 > **Историческая хроника:** следующий абзац сохраняет решения на указанные даты. Поздние дополнения ADR и текущий код могут их уточнять или отменять; указатель сверок — [architecture-history](docs/architecture-history.md).

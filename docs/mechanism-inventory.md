@@ -14,9 +14,9 @@
 - Jobs: **39**
 - Middleware: **5**
 - Registry declarations: **843**
-- Registry references: **1601**
+- Registry references: **1600**
 - Migration operations: **348**
-- Candidate effects: **1886**
+- Candidate effects: **1888**
 - Unresolved syntax: **0**
 - MCP tools: **7**
 
@@ -1568,7 +1568,7 @@ Relationships: `[]`
 | app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:644](../backend/app/api/world.py#L644) |
 | app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:651](../backend/app/api/world.py#L651) |
 | app.api.world._AGGREGATION_SOURCE_TO_TARGET | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/api/world.py:713](../backend/app/api/world.py#L713) |
-| app.core.cache._WORLD_COUNTRIES_KEY_RE | Call | computed source expression | [backend/app/core/cache.py:384](../backend/app/core/cache.py#L384) |
+| app.core.cache._WORLD_COUNTRIES_KEY_RE | Call | computed source expression | [backend/app/core/cache.py:385](../backend/app/core/cache.py#L385) |
 | app.data.bi_targets.NORTH_STAR_MILESTONES | List | sequence/source expression | [backend/app/data/bi_targets.py:12](../backend/app/data/bi_targets.py#L12) |
 | app.data.bi_targets.TARGETS | Dict | 'visits_per_day', 'acquisition_search_share', 'engagement_rate', 'micro_conversion_rate', 'macro_conversion_rate', 'retention_7d' | [backend/app/data/bi_targets.py:14](../backend/app/data/bi_targets.py#L14) |
 | app.data.cpi_provenance.CPI_YOY_CODES | Call | computed source expression | [backend/app/data/cpi_provenance.py:2](../backend/app/data/cpi_provenance.py#L2) |
@@ -2209,13 +2209,13 @@ Relationships: `[]`
 | app.services.world_forecast_pipeline.WORLD_FORECAST_CACHE_NAMESPACES | Tuple | sequence/source expression | [backend/app/services/world_forecast_pipeline.py:48](../backend/app/services/world_forecast_pipeline.py#L48) |
 | app.services.world_forecast_pipeline._FREQ_RANK | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_forecast_pipeline.py:52](../backend/app/services/world_forecast_pipeline.py#L52) |
 | app.services.world_forecaster.PUBLISHED_GATE_STATUSES | Call | computed source expression | [backend/app/services/world_forecaster.py:22](../backend/app/services/world_forecaster.py#L22) |
-| app.services.world_national_ingest.PUBLIC_SOURCE_RU | Dict | 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi' | [backend/app/services/world_national_ingest.py:46](../backend/app/services/world_national_ingest.py#L46) |
-| app.services.world_national_ingest._ADAPTER_MODULES | Dict | 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi' | [backend/app/services/world_national_ingest.py:74](../backend/app/services/world_national_ingest.py#L74) |
-| app.services.world_national_ingest._FREQ_ALIASES | Dict | 'm', 'q', 'a', 'y', 'yearly', 'd', 'w', 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/world_national_ingest.py:95](../backend/app/services/world_national_ingest.py#L95) |
-| app.services.world_national_ingest._FREQ_ADJ_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/world_national_ingest.py:110](../backend/app/services/world_national_ingest.py#L110) |
-| app.services.world_national_ingest._CODE_RE | Call | computed source expression | [backend/app/services/world_national_ingest.py:118](../backend/app/services/world_national_ingest.py#L118) |
-| app.services.world_national_ingest._COUNTRY_DEFAULTS | Dict | 'CA', 'AU', 'UK', 'US', 'JP', 'KR', 'BR', 'MX', 'CN', 'IN' | [backend/app/services/world_national_ingest.py:890](../backend/app/services/world_national_ingest.py#L890) |
-| app.services.world_national_ingest.NATIONAL_CORE_COUNTRIES | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1073](../backend/app/services/world_national_ingest.py#L1073) |
+| app.services.world_national_ingest.PUBLIC_SOURCE_RU | Dict | 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi' | [backend/app/services/world_national_ingest.py:47](../backend/app/services/world_national_ingest.py#L47) |
+| app.services.world_national_ingest._ADAPTER_MODULES | Dict | 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi' | [backend/app/services/world_national_ingest.py:75](../backend/app/services/world_national_ingest.py#L75) |
+| app.services.world_national_ingest._FREQ_ALIASES | Dict | 'm', 'q', 'a', 'y', 'yearly', 'd', 'w', 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/world_national_ingest.py:96](../backend/app/services/world_national_ingest.py#L96) |
+| app.services.world_national_ingest._FREQ_ADJ_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/world_national_ingest.py:111](../backend/app/services/world_national_ingest.py#L111) |
+| app.services.world_national_ingest._CODE_RE | Call | computed source expression | [backend/app/services/world_national_ingest.py:119](../backend/app/services/world_national_ingest.py#L119) |
+| app.services.world_national_ingest._COUNTRY_DEFAULTS | Dict | 'CA', 'AU', 'UK', 'US', 'JP', 'KR', 'BR', 'MX', 'CN', 'IN' | [backend/app/services/world_national_ingest.py:950](../backend/app/services/world_national_ingest.py#L950) |
+| app.services.world_national_ingest.NATIONAL_CORE_COUNTRIES | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1133](../backend/app/services/world_national_ingest.py#L1133) |
 | app.services.world_rank_values._FORCE_YOY_CONCEPTS | Call | computed source expression | [backend/app/services/world_rank_values.py:48](../backend/app/services/world_rank_values.py#L48) |
 | app.services.world_rank_values._FLOW_RANK_CONCEPTS | Call | computed source expression | [backend/app/services/world_rank_values.py:57](../backend/app/services/world_rank_values.py#L57) |
 | app.services.world_rank_values.WORLD_RATING_QUERY_NAMES | Dict | 'hicp-index', 'unemployment-rate', 'budget-balance-gdp', 'government-debt-gdp', 'population', 'long-term-interest-rate', 'activity-rate', 'gdp-per-capita-eu', 'gdp-usd', 'gdp-per-capita-usd' | [backend/app/services/world_rank_values.py:236](../backend/app/services/world_rank_values.py#L236) |
@@ -2230,8 +2230,8 @@ Relationships: `[]`
 | app.tasks.analytics_rollups._SESSION_EVENT_TYPES | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:49](../backend/app/tasks/analytics_rollups.py#L49) |
 | app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:53](../backend/app/tasks/analytics_rollups.py#L53) |
 | app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:60](../backend/app/tasks/analytics_rollups.py#L60) |
-| app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:31](../backend/app/tasks/scheduler.py#L31) |
-| app.tasks.scheduler.STALENESS_SLA_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/tasks/scheduler.py:427](../backend/app/tasks/scheduler.py#L427) |
+| app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:33](../backend/app/tasks/scheduler.py#L33) |
+| app.tasks.scheduler.STALENESS_SLA_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/tasks/scheduler.py:454](../backend/app/tasks/scheduler.py#L454) |
 | app.tasks.ticker_worker._SERIES_TICKER_SPECS | Tuple | sequence/source expression | [backend/app/tasks/ticker_worker.py:43](../backend/app/tasks/ticker_worker.py#L43) |
 | scripts.audit-groups-submodes.ACTIVE | SetComp | computed source expression | [backend/scripts/audit-groups-submodes.py:25](../backend/scripts/audit-groups-submodes.py#L25) |
 | scripts.audit-groups-submodes.NAME | DictComp | computed source expression | [backend/scripts/audit-groups-submodes.py:26](../backend/scripts/audit-groups-submodes.py#L26) |

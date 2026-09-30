@@ -130,7 +130,7 @@ def _load_loader():
     return module
 
 
-def test_loader_remaps_renamed_slice_and_keeps_card_url(tmp_path):
+def test_loader_remaps_renamed_slice_and_keeps_card_url(tmp_path, monkeypatch):
     import asyncio
 
     from sqlalchemy import create_engine
@@ -140,6 +140,9 @@ def test_loader_remaps_renamed_slice_and_keeps_card_url(tmp_path):
     from app.services.eurostat_parser import DatasetParseResult, slice_hash
 
     loader = _load_loader()
+    async def publish(*namespaces):
+        pass
+    monkeypatch.setattr(loader, "bump_namespaces", publish)
     db_path = tmp_path / "world.db"
     sync_engine = create_engine(f"sqlite:///{db_path}")
     Base.metadata.create_all(sync_engine)

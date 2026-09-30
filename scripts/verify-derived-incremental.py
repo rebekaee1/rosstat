@@ -75,27 +75,14 @@ async def _scenario_full() -> dict[str, str]:
 
 async def _scenario_incremental() -> dict[str, str]:
     all_sources = sorted({c for spec in DERIVED_SPECS for c in spec.src_codes})
-    # cache_invalidate внутри run_for_updated_sources безвреден (кэш и так
-    # переживёт), Redis может быть недоступен с хоста — глушим ошибки movement
-    # через сам engine (он ловит исключения per-code, но invalidate вне try) —
-    # поэтому подменяем на no-op на время прогона.
-    import app.services.calculation_engine as ce
-
-    orig = ce.cache_invalidate_indicator
-
-    async def _noop(_code):
-        return None
-
-    ce.cache_invalidate_indicator = _noop
-    try:
-        async with async_session() as db:
-            await calculation_engine.run_for_updated_sources(db, all_sources)
-            await db.flush()
-            snap = await _snapshot_derived(db)
-            await db.rollback()
-            return snap
-    finally:
-        ce.cache_invalidate_indicator = orig
+    # CalculationEngine is DB-only: this preview owns rollback and publishes
+    # no cache effects, so it needs no global cache monkeypatch.
+    async with async_session() as db:
+        await calculation_engine.run_for_updated_sources(db, all_sources)
+        await db.flush()
+        snap = await _snapshot_derived(db)
+        await db.rollback()
+        return snap
 
 
 async def main() -> int:

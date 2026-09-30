@@ -6,7 +6,8 @@ source codes, pure operation from `derived_ops`). A generic executor loads the
 source series, calls the operation, and upserts the result via
 `bulk_upsert`. After ETL the engine dispatches recomputation only for derived
 indicators whose source list intersects the freshly-updated indicators, and
-invalidates their Redis cache when a value actually changed.
+returns the actually changed codes to the SQL transaction owner. That owner
+publishes their cache generations only after a successful commit.
 
 This module owns the seam between **the formula** (pure, in `derived_ops`) and
 **the storage** (this file). To add a derived indicator:
@@ -36,7 +37,6 @@ from typing import Awaitable, Callable
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.cache import cache_invalidate_indicator
 from app.data.view_model_families import iter_derived_specs as _iter_vmf_specs
 from app.data.wages_historical import ANNUAL_NOMINAL_WAGES_RUB as _ANNUAL_NOMINAL_WAGES_RUB
 from app.models import Indicator, IndicatorData
@@ -416,8 +416,9 @@ class CalculationEngine:
           (escape hatch) и seed-refresh (там source_codes = все источники,
           замыкание совпадает с полным реестром).
 
-        Returns the list of derived codes whose stored values actually changed
-        (and thus whose Redis cache was invalidated).
+        Returns the list of derived codes whose stored values actually changed.
+        This method neither commits nor publishes cache generations: the caller
+        must publish these codes after its SQL commit, or discard on rollback.
         """
         if not source_codes:
             return []
@@ -432,7 +433,6 @@ class CalculationEngine:
             try:
                 n = await fn(db)
                 if n > 0:
-                    await cache_invalidate_indicator(code)
                     updated.append(code)
                 logger.info("CalculationEngine: %s → %d changes", code, n)
             except Exception:

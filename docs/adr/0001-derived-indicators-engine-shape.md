@@ -140,3 +140,19 @@ backend/app/services/calculation_engine.py
 3. Run `pytest backend/tests/test_calculation_engine.py` — must pass with same set of registered codes. ✅
 4. Pull production snapshot: for each of 23 derived, GET `/api/v1/indicators/{code}/data?range=all` before/after refactor — diff must be 0 rows. ✅ (`verify_refactor.py` подтвердил bit-identical паритет; см. историю проекта 2026-05-05.)
 5. Manual smoke: trigger one parent ETL (e.g. `cpi`), verify all dependent derived recompute and store identical values. ✅
+
+## 2026-09-30 — SQL-only engine, публикация у владельца commit
+
+Уточнение Decision выше: run_for_updated_sources/run_for_direct_dependents
+больше не инвалидируют Redis внутри незавершённой SQL-транзакции. Они
+возвращают изменившиеся dst codes. BaseParser/hooks, weekly override, daily/late
+scheduler, seed и пишущие CLI публикуют source/derived после своего успешного
+commit. Rollback-only preview не меняет cache generations и не требует
+глобального monkeypatch. Формулы, DSL и порядок зависимости этим не меняются.
+
+Причина — F02: отдельный reader кешировал прежний DBvalue под новой namespace
+до commit. Cachefailure после commit не должен стирать success/changed;
+per-parser deadline после commit сохраняет исход для downstream batch,
+внешняя отмена остаётся отменой. Это best-effort publication без durableoutbox.
+[Локальная приёмка](../code-review/history-publication-acceptance-2026-09-30.md),
+пакет не выложен на production. Старый DSL/операции/счётчики выше исторические.

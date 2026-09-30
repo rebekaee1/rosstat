@@ -6,6 +6,11 @@
 
 ## Подтверждённые механизмы, требующие отдельного исправления
 
+**Текущий локальный статус F01/F02/F04, 30.09:** реализован пакет защиты истории
+и публикации после commit; [контракт и приёмка](code-review/history-publication-acceptance-2026-09-30.md).
+Таблица сохраняет исходные воспроизведённые дефекты. Пакет не выложен на сервер;
+crash-durability, DB0 cache outage и unknown commit outcome не закрыты.
+
 | ID | Что известно | Следующая проверка/действие |
 |---|---|---|
 | F01 | Непустой частичный national response удаляет сохранённые даты вне ответа; empty response сохраняет историю | Явный complete/partial scope и merge/replace, затем реальные fixture/upstream cases. Actual body probe воспроизводит удаление 2 из 3 дат; потеря на production не доказана. |

@@ -14,6 +14,7 @@ from datetime import date, datetime, timezone
 from sqlalchemy import func, select, update
 
 from app.database import async_session
+from app.core.cache import publish_committed_indicator_changes
 from app.models import Indicator, IndicatorData, FetchLog, EconomicEvent
 from app.services.rosstat_cpi_parser import get_parser
 from app.services.rosstat_weekly_inflation_parser import WEEKLY_SEGMENT_CODES
@@ -24,6 +25,7 @@ from app.services.base_parser import (
     DEGRADED_STATUSES,
     STATUS_FALLBACK_USED,
     STATUS_SUCCESS,
+    storage_committed,
 )
 
 ETL_TIMEOUT_SECONDS = 300
@@ -73,6 +75,31 @@ def _fetch_changed(fetch_log: FetchLog) -> bool:
     return False
 
 
+class _CommittedETLCancelled(asyncio.CancelledError):
+    """Propagate cancellation while retaining a successfully committed outcome."""
+
+    def __init__(self, changed: bool, status: str | None):
+        super().__init__("ETL cancelled after SQL commit")
+        self.changed = changed
+        self.status = status
+
+
+async def _run_etl_with_timeout(code: str, timeout: float) -> tuple[bool, str | None]:
+    """A per-indicator deadline must not hide a commit from the derived batch.
+
+    wait_for translates child cancellation into TimeoutError with its cause.
+    External cancellation of this caller still propagates as CancelledError.
+    """
+    try:
+        return await asyncio.wait_for(run_etl_for_indicator_status(code), timeout=timeout)
+    except asyncio.TimeoutError as exc:
+        if isinstance(exc.__cause__, _CommittedETLCancelled):
+            outcome = exc.__cause__
+            logger.warning("ETL '%s': deadline reached after SQL commit; retaining changed outcome", code)
+            return outcome.changed, outcome.status
+        raise
+
+
 async def run_etl_for_indicator_status(indicator_code: str) -> tuple[bool, str | None]:
     """Как `run_etl_for_indicator`, но возвращает ещё и итоговый fetch_log.status.
 
@@ -92,6 +119,7 @@ async def run_etl_for_indicator_status(indicator_code: str) -> tuple[bool, str |
             return False, None
 
         indicator_id = indicator.id
+        parser_type = indicator.parser_type  # rollback expires ORM attributes.
 
         started_at = datetime.now(timezone.utc).replace(tzinfo=None)
         fetch_log = FetchLog(indicator_id=indicator_id, status="running", started_at=started_at)
@@ -109,17 +137,19 @@ async def run_etl_for_indicator_status(indicator_code: str) -> tuple[bool, str |
             # её зависимые остались бы stale.
             return _fetch_changed(fetch_log), fetch_log.status
         except asyncio.CancelledError:
+            if storage_committed(fetch_log):
+                raise _CommittedETLCancelled(_fetch_changed(fetch_log), fetch_log.status) from None
             if fetch_log.status not in ("failed", "timeout"):
                 await db.rollback()
                 fetch_log.status = "timeout"
                 fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                to = etl_timeout_for(indicator.parser_type)
+                to = etl_timeout_for(parser_type)
                 fetch_log.error_message = f"ETL cancelled/timed out after {to}s"
                 db.add(fetch_log)
                 await db.commit()
             raise
         except Exception as e:
-            if fetch_log.status not in ("failed", "timeout"):
+            if not storage_committed(fetch_log) and fetch_log.status not in ("failed", "timeout"):
                 await db.rollback()
                 fetch_log.status = "failed"
                 fetch_log.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
@@ -165,10 +195,7 @@ async def daily_update_job():
         parser_type = task["parser_type"]
         timeout = etl_timeout_for(parser_type)
         try:
-            had_new, status = await asyncio.wait_for(
-                run_etl_for_indicator_status(code),
-                timeout=timeout,
-            )
+            had_new, status = await _run_etl_with_timeout(code, timeout)
             if had_new:
                 updated_codes.append(code)
             if status in degraded:
@@ -192,6 +219,7 @@ async def daily_update_job():
             try:
                 derived = await calculation_engine.run_for_updated_sources(db, source_codes)
                 await db.commit()
+                await publish_committed_indicator_changes(derived)
                 if derived:
                     logger.info("CalculationEngine updated derived indicators: %s", derived)
                     ping_codes.extend(derived)
@@ -257,6 +285,7 @@ async def _retrain_recalculated_derived(db, derived_codes: list[str]) -> None:
             try:
                 await retrain_indicator_forecast(db, ind)
                 await db.commit()
+                await publish_committed_indicator_changes([ind.code])
                 logger.info("Retrained derived forecast after recalc: %s", ind.code)
             except Exception as e:
                 await db.rollback()
@@ -322,10 +351,7 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
             _running_locks.add(code)
         timeout = etl_timeout_for(parser_by_code.get(code, ""))
         try:
-            had_new, status = await asyncio.wait_for(
-                run_etl_for_indicator_status(code),
-                timeout=timeout,
-            )
+            had_new, status = await _run_etl_with_timeout(code, timeout)
             if had_new:
                 updated_codes.append(code)
             if status in DEGRADED_STATUSES:
@@ -346,6 +372,7 @@ async def run_etl_for_parser_type(parser_type: str) -> dict[str, int]:
             try:
                 derived = await calculation_engine.run_for_updated_sources(db, source_codes)
                 await db.commit()
+                await publish_committed_indicator_changes(derived)
                 if derived:
                     logger.info(
                         "Late ETL pass updated derived indicators: %s", derived

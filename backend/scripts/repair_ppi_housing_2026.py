@@ -57,9 +57,9 @@ for _candidate in (_HERE.parent, Path("/app")):
 from sqlalchemy import delete, select  # noqa: E402
 
 from app.config import settings  # noqa: E402
+from app.core.cache import publish_committed_indicator_changes  # noqa: E402
 from app.database import async_session  # noqa: E402
 from app.models import Indicator, IndicatorData  # noqa: E402
-from app.services import calculation_engine as ce_module  # noqa: E402
 from app.services.calculation_engine import calculation_engine  # noqa: E402
 from app.services.rosstat_housing_parser import (  # noqa: E402
     extract_pdf_text as housing_pdf_text,
@@ -174,10 +174,6 @@ async def build_plan(db, pdf_dir: Path | None) -> dict[str, list[tuple[date, flo
 
 # ---------------------------------------------------------------- execution ---
 
-async def _noop_invalidate(code: str) -> None:
-    return None
-
-
 async def apply_plan(db, plan) -> list[str]:
     for code, points in plan.items():
         ind = await _indicator(db, code)
@@ -192,7 +188,7 @@ async def snapshot(db, codes: list[str]) -> dict[str, dict[date, float]]:
 
 
 async def retrain_and_invalidate(db, codes_source: list[str], codes_derived: list[str]) -> None:
-    from app.core.cache import bump_namespaces, cache_invalidate_indicator
+    from app.core.cache import publish_committed_indicator_changes
     from app.services.forecast_pipeline import retrain_indicator_forecast
     from app.tasks.scheduler import _retrain_recalculated_derived
 
@@ -200,10 +196,9 @@ async def retrain_and_invalidate(db, codes_source: list[str], codes_derived: lis
         ind = await _indicator(db, code)
         await retrain_indicator_forecast(db, ind)
         await db.commit()
+        await publish_committed_indicator_changes([code])
     await _retrain_recalculated_derived(db, codes_derived)
-    for code in [*codes_source, *codes_derived]:
-        await cache_invalidate_indicator(code)
-    await bump_namespaces("indicators", "dashboard")
+    await publish_committed_indicator_changes([*codes_source, *codes_derived])
 
 
 async def run(args) -> int:
@@ -222,7 +217,6 @@ async def run(args) -> int:
 
         if not args.apply:
             # DRY-RUN: движок пишет в текущую транзакцию, кэш не трогаем, ROLLBACK.
-            ce_module.cache_invalidate_indicator = _noop_invalidate
             await apply_plan(db, plan)
             after = await snapshot(db, codes)
             await db.rollback()
@@ -242,6 +236,7 @@ async def run(args) -> int:
 
         await apply_plan(db, plan)
         await db.commit()
+        await publish_committed_indicator_changes(codes)
         after = await snapshot(db, codes)
         for c in codes:
             _print_diff(c, before[c], {d: v for d, v in after[c].items() if d >= SHOW_FROM})
@@ -262,6 +257,7 @@ async def rollback(db, path: Path) -> int:
         if points:
             await bulk_upsert(db, ind.id, points)
     await db.commit()
+    await publish_committed_indicator_changes(backup)
     sources = [c for c in backup if c in SOURCE_CODES]
     derived = [c for c in backup if c not in SOURCE_CODES]
     await retrain_and_invalidate(db, sources, derived)

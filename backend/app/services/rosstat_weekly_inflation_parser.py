@@ -50,9 +50,9 @@ import requests
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.cache import cache_invalidate_indicator
+from app.core.cache import cache_invalidate_indicator, publish_committed_indicator_changes
 from app.models import FetchLog, Indicator, IndicatorData
-from app.services.base_parser import BaseParser, _utcnow_naive
+from app.services.base_parser import BaseParser, _utcnow_naive, mark_storage_committed
 from app.services.forecast_pipeline import retrain_indicator_forecast
 from app.services.http_client import create_session
 from app.services.upsert import bulk_upsert
@@ -719,6 +719,7 @@ class RosstatWeeklyCpiParser(BaseParser):
 
     def __init__(self) -> None:
         self._segment_points: dict[str, list[WeeklyPoint]] | None = None
+        self._changed_segment_codes: list[str] = []
 
     async def run(self, db: AsyncSession, indicator: Indicator, fetch_log: FetchLog) -> None:
         """Primary `inflation-weekly` must upsert segment siblings even when `all` has 0 new points."""
@@ -727,6 +728,9 @@ class RosstatWeeklyCpiParser(BaseParser):
             return await super().run(db, indicator, fetch_log)
 
         code = indicator.code
+        mark_storage_committed(fetch_log, committed=False)
+        self._changed_segment_codes = []
+        publication_codes: list[str] = []
         try:
             cfg = indicator.model_config_json or {}
             points, source_url = await self._fetch_and_parse(db, indicator, cfg, fetch_log)
@@ -746,7 +750,7 @@ class RosstatWeeklyCpiParser(BaseParser):
                 )
                 fetch_log.records_added = records_added
                 fetch_log.records_updated = records_updated
-            elif not any(segment_snapshot.get(s) for s in WEEKLY_SEGMENT_CODES):
+            elif not any((segment_snapshot or {}).get(s) for s in WEEKLY_SEGMENT_CODES):
                 logger.warning("No data points parsed for %s", code)
                 fetch_log.status = await self._resolve_zero_parse_status(
                     db, indicator, fetch_log,
@@ -755,6 +759,7 @@ class RosstatWeeklyCpiParser(BaseParser):
                     fetch_log.error_message = "Parser returned 0 data points"
                 fetch_log.completed_at = _utcnow_naive()
                 await db.commit()
+                mark_storage_committed(fetch_log)
                 return
 
             if segment_snapshot:
@@ -770,16 +775,18 @@ class RosstatWeeklyCpiParser(BaseParser):
 
             await self._handle_forecasts(db, indicator, cfg, records_added, records_updated)
 
-            if records_added > 0 or records_updated > 0:
-                await cache_invalidate_indicator(code)
-                for seg_code in WEEKLY_SEGMENT_CODES.values():
-                    await cache_invalidate_indicator(seg_code)
+            # Aggregate sibling changes also trigger the primary forecast hook.
+            # Preserve the primary generation even if its facts did not change.
+            if records_added or records_updated:
+                publication_codes.append(code)
+            publication_codes.extend(self._changed_segment_codes)
 
             fetch_log.status = (
                 "success" if (records_added > 0 or records_updated > 0) else "no_new_data"
             )
             fetch_log.completed_at = _utcnow_naive()
             await db.commit()
+            mark_storage_committed(fetch_log)
 
         except Exception as exc:
             logger.exception("ETL failed for '%s'", code)
@@ -789,6 +796,11 @@ class RosstatWeeklyCpiParser(BaseParser):
             fetch_log.completed_at = _utcnow_naive()
             db.add(fetch_log)
             await db.commit()
+            return
+
+        await publish_committed_indicator_changes(
+            publication_codes, invalidate=cache_invalidate_indicator,
+        )
 
     def _zero_parse_expected(self, indicator: Indicator, cfg: dict) -> bool:
         # Сегментные ряды пусты by design — их наполняет primary-прогон;
@@ -896,7 +908,7 @@ class RosstatWeeklyCpiParser(BaseParser):
             extra_added += added
             extra_updated += updated
             if added or updated:
-                await cache_invalidate_indicator(seg_code)
+                self._changed_segment_codes.append(seg_code)
                 # Сегмент пишется обходом собственного ETL-прогона — его
                 # _handle_forecasts не срабатывает, и прогноз (generic_ols)
                 # остаётся stale поверх свежего факта (инцидент 2026-08-05).

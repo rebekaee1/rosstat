@@ -269,7 +269,7 @@ class RosstatIndParser(BaseParser):
         pruned: int,
         records_added: int,
         records_updated: int,
-    ) -> None:
+    ) -> list[str] | None:
         if not cfg.get("quarterly_flow"):
             return
         if records_added <= 0 and records_updated <= 0:
@@ -280,3 +280,4 @@ class RosstatIndParser(BaseParser):
                 "CalculationEngine (quarterly_flow): %s → %s",
                 indicator.code, derived,
             )
+        return derived

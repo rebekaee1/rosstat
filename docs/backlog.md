@@ -1,5 +1,17 @@
 # Backlog — текущие правки в работе
 
+## 2026-09-30 — защита истории и публикация после commit
+
+Первый runtime-пакет после завершения досье, база `main 506122b`.
+**Локально реализовано:** F01 — merge national history и explicit bounded
+replacement; F02 — федеральный commit owner публикует source/derived после
+commit; F04 — Eurostat публикует country/remap/slice до следующей транзакции.
+Исторические свидетельства сохранены; [приёмка и проверки](code-review/history-publication-acceptance-2026-09-30.md).
+
+Сервер и основной локальный runtime не изменены. Остальные F остаются открытыми;
+durable publication/reconciliation при падении процесса, работа с региональными
+writers, аналитические окна/курсор/lease и измеренная capacity — следующие пакеты.
+
 <a id="knowledge-collection-acceptance-2026-09-30"></a>
 
 ## 2026-09-30 — завершение сбора и проверка досье

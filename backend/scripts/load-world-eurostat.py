@@ -97,6 +97,32 @@ EXIT_STRUCTURE_BLOCKED = 3
 STRUCTURE_VERDICT_PREFIX = "STRUCTURE_VERDICT "
 
 
+async def publish_committed_changes() -> None:
+    """Publish one committed unit before a later slice can fail.
+
+    Finish a bounded Redis attempt on cooperative cancellation, then propagate
+    cancellation. A killed process still needs reconciliation; this is not an
+    atomic transaction between PostgreSQL and Redis.
+    """
+    publication = asyncio.create_task(asyncio.wait_for(
+        bump_namespaces("world", "world-catalog", "ssr-world"), timeout=15,
+    ))
+    cancelled = False
+    try:
+        while not publication.done():
+            try:
+                await asyncio.shield(publication)
+            except asyncio.CancelledError:
+                cancelled = True
+        publication.result()
+    except Exception:
+        if not cancelled:
+            raise
+        log.exception("Eurostat committed data: cache publication failed during cancellation")
+    if cancelled:
+        raise asyncio.CancelledError
+
+
 def _theme_sql(themes: list[str]) -> tuple[str, dict]:
     """Build OR of prefix matches for dataset_id."""
     clauses = []
@@ -171,6 +197,7 @@ async def ensure_countries(geos: set[str]) -> dict[str, int]:
             by_slug[slug] = (geo, meta)
 
     async with async_session() as db:
+        changed = False
         for slug, (geo, meta) in by_slug.items():
             _slug, name_ru, name_en, region_ru, sort_order = meta
             existing = (
@@ -207,7 +234,12 @@ async def ensure_countries(geos: set[str]) -> dict[str, int]:
                         sort_order=sort_order,
                         is_active=True,
                     ))
+            # Later SELECTs can autoflush earlier changes, so accumulate while
+            # each country's new/dirty state is still visible in the session.
+            changed = changed or bool(db.new) or any(db.is_modified(row) for row in db.dirty)
         await db.commit()
+        if changed:
+            await publish_committed_changes()
 
         rows = (await db.execute(select(WorldCountry))).scalars().all()
         return {c.code: c.id for c in rows}
@@ -469,6 +501,10 @@ async def persist_result(
                 await refresh_indicator_extent(db, iid)
                 n_ind += 1
                 n_pts += touched
+        if n_ind:
+            # Publish before session.close can be cancelled; metadata may
+            # change even when every point has the same value.
+            await publish_committed_changes()
     return n_ind, n_pts
 
 
@@ -518,12 +554,16 @@ async def apply_remaps(verdict: StructureVerdict, session_factory=None) -> None:
         return
     session_factory = session_factory or async_session
     async with session_factory() as db:
+        changed = False
         for iid, (new_slice, new_hash) in verdict.remapped.items():
             ind = await db.get(WorldIndicator, iid)
             if ind is not None:
                 ind.slice_json = new_slice
                 ind.slice_hash = new_hash
+                changed = changed or db.is_modified(ind)
         await db.commit()
+        if changed:
+            await publish_committed_changes()
 
 
 async def run(args: argparse.Namespace) -> int:
@@ -618,8 +658,6 @@ async def run(args: argparse.Namespace) -> int:
                 done, len(datasets), ds_id, len(results),
                 geos, n_ind_total, n_pts_total, elapsed,
             )
-
-    await bump_namespaces("world", "world-catalog", "ssr-world")
 
     # summary counts from DB
     async with async_session() as db:

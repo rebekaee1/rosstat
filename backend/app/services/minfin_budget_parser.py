@@ -608,7 +608,7 @@ class MinfinBudgetParser(BaseParser):
         pruned: int,
         records_added: int,
         records_updated: int,
-    ) -> None:
+    ) -> list[str] | None:
         if not (pruned or records_added or records_updated):
             return
         derived = await calculation_engine.run_for_direct_dependents(
@@ -619,6 +619,7 @@ class MinfinBudgetParser(BaseParser):
                 "Minfin budget '%s': refreshed %d view-mode sibling(s): %s",
                 indicator.code, len(derived), ", ".join(derived[:8]),
             )
+        return derived
 
     async def _fetch_and_parse(
         self,

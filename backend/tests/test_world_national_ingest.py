@@ -466,7 +466,9 @@ def test_ingest_series_applies_value_scale(auth_env, monkeypatch):
     )
     from app.services.world_source_adapter import WorldObservation
 
-    async def _sqlite_reconcile(db, indicator_id, points):
+    async def _sqlite_reconcile(
+        db, indicator_id, points, *, is_complete=False, coverage_start=None, coverage_end=None,
+    ):
         from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
         for d, v in points:
