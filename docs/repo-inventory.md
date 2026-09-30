@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-30
 
-**Файлов:** 1184  ·  **Строк:** 573 525  ·  **Токенов (≈):** 5 770 620
+**Файлов:** 1184  ·  **Строк:** 573 537  ·  **Токенов (≈):** 5 771 126
 
 ## По верхним папкам
 
@@ -16,7 +16,7 @@
 | `backend` | 603 | 228 987 | 2 476 978 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 10 | 553 | 6 734 |
-| `docs` | 88 | 240 750 | 2 157 988 |
+| `docs` | 88 | 240 762 | 2 158 494 |
 | `frontend` | 387 | 82 682 | 864 267 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 79 | 17 613 | 200 467 |
@@ -34,7 +34,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `backend/app/data/indicator_seo.py` | 9 073 | 116 019 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
-| `docs/backlog.md` | 1 717 | 60 430 |
+| `docs/backlog.md` | 1 729 | 60 936 |
 | `backend/seed_data.py` | 5 562 | 57 382 |
 | `backend/app/data/regional/indicators.json` | 6 440 | 56 948 |
 | `docs/runtime-inventory.json` | 6 776 | 52 887 |
