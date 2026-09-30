@@ -245,7 +245,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                   conceptSlug={concept}
                   rankingItems={ranking}
                   benchmark={benchmark}
-                  ratingHref={fullRatingHref && activeYear ? `${fullRatingHref}/${activeYear}` : fullRatingHref}
+                  ratingHref={fullRatingHref && activeYear ? `${fullRatingHref}?year=${activeYear}` : fullRatingHref}
                   onSelect={onSelectCountry}
                 />
               </Suspense>

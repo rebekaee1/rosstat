@@ -4,7 +4,7 @@
 
 **Сгенерировано:** 2026-09-30
 
-**Файлов:** 1180  ·  **Строк:** 572 219  ·  **Токенов (≈):** 5 751 821
+**Файлов:** 1180  ·  **Строк:** 572 219  ·  **Токенов (≈):** 5 751 825
 
 ## По верхним папкам
 
@@ -16,8 +16,8 @@
 | `backend` | 603 | 228 987 | 2 476 978 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 10 | 553 | 6 734 |
-| `docs` | 88 | 240 521 | 2 153 452 |
-| `frontend` | 383 | 81 605 | 850 004 |
+| `docs` | 88 | 240 521 | 2 153 453 |
+| `frontend` | 383 | 81 605 | 850 007 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 79 | 17 613 | 200 467 |
 
@@ -306,7 +306,7 @@
 | `backend/tests/test_calculation_engine.py` | 343 | 3 127 |
 | `backend/tests/test_rosstat_gdp.py` | 308 | 3 121 |
 | `backend/app/api/export.py` | 349 | 3 118 |
-| `frontend/src/components/home/HomeWorkbench.component.test.jsx` | 330 | 3 101 |
+| `frontend/src/components/home/HomeWorkbench.component.test.jsx` | 330 | 3 103 |
 | `docs/adr/0002-derived-always-reflects-source.md` | 136 | 3 094 |
 | `backend/tests/test_world_statcan_adapter.py` | 393 | 3 086 |
 | `backend/tests/test_og_glass.py` | 220 | 3 081 |
@@ -318,8 +318,8 @@
 | `backend/app/data/world_national_core/au.yaml` | 292 | 3 000 |
 | `backend/app/services/rosstat_labor_parser.py` | 329 | 2 990 |
 | `docs/design/local-acceptance/baseline-world-rating-target/browser.json` | 460 | 2 970 |
+| `docs/planet-view.md` | 176 | 2 968 |
 | `backend/app/services/rosstat_sdds_fetcher.py` | 320 | 2 967 |
-| `docs/planet-view.md` | 176 | 2 967 |
 | `backend/app/api/admin_bi.py` | 318 | 2 958 |
 | `backend/app/services/rosstat_weekly_price_parser.py` | 323 | 2 956 |
 | `scripts/audit-world-eurostat-source.py` | 338 | 2 946 |
@@ -402,7 +402,7 @@
 | `frontend/src/pages/WorldRegionsHome.component.test.jsx` | 242 | 2 337 |
 | `frontend/src/pages/CategoryPage.jsx` | 242 | 2 323 |
 | `backend/tests/test_parser_fixtures.py` | 283 | 2 304 |
-| `frontend/src/components/home/HomeWorkbench.jsx` | 257 | 2 301 |
+| `frontend/src/components/home/HomeWorkbench.jsx` | 257 | 2 302 |
 | `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 263 | 2 287 |
 | `backend/tests/test_world_boc_valet_adapter.py` | 292 | 2 250 |
 | `scripts/audit-public-language.py` | 256 | 2 250 |

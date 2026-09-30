@@ -103,7 +103,7 @@ describe('HomeWorkbench', () => {
     await waitFor(async () => {
       expect(await planetProps()).toMatchObject({
         years: [2024, 2025], year: 2025, conceptSlug: 'unemployment-rate',
-        ratingHref: '/world/rating/unemployment-rate/2025',
+        ratingHref: '/world/rating/unemployment-rate?year=2025',
         rankingItems: [{ country_code: 'DE', value: 3.1 }],
       });
     });
@@ -299,7 +299,7 @@ describe('HomeWorkbench', () => {
     act(() => changeYear(2024));
     await waitFor(async () => expect((await planetProps())?.year).toBe(2024));
     const props = await planetProps();
-    expect(props.ratingHref).toBe('/world/rating/unemployment-rate/2024');
+    expect(props.ratingHref).toBe('/world/rating/unemployment-rate?year=2024');
     expect(props.countries.some((country) => country.code === 'RU')).toBe(true);
     expect(props.rankingItems).toMatchObject([{ country_code: 'DE', value: 3.1 }]);
     expect(props.valuesByCode.has('RU')).toBe(false);
