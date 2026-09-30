@@ -1687,3 +1687,18 @@ Scope approved by owner: repair, commit, GitHub push, production deploy and live
 - Historical SEO: no unconditional forecast promise for daily gold/FX; nearby year links preserved for old pages, Dataset coverage ends at the last actual observation. A 20-URL baseline/acceptance manifest lives in the local modern-strategy research artifacts.
 
 Remaining product/research decisions: design reference selection, commercial offer/pricing, password recovery/email verification, official direct YoY series if a complete source is established. Search-engine LOW_QUALITY and 10,000 real daily users are outcomes to measure, not guaranteed by this release. Device-clock freshness is a potential edge case; no affected real session established in the audit.
+
+
+## История — 2026-09-30: светлая и быстрая планета
+
+**ID:** PLANET-20260930. **Приоритет:** высокий. **Статус:** выполнено локально, код `0bc8e56`; без push и деплоя.
+
+**Результат:** светлая реалистичная поверхность, постоянные двухтоновые границы и бирюзовый выбор поверх облаков. Первому кадру нужен day 2048 (263 130 байт), полный набор текстур — 449 556 вместо 2 248 543 байт desktop. 50m загружается после первого кадра, 10m — для малых или отсутствующих стран. Общий external-store shim отделён от charts: статическое дерево сцены уменьшилось приблизительно на 120 000 байт gzip. Отменённые запросы не повторяются; быстрый snapshot до полной истории сохранён.
+
+**Путь пользователя:** видимые подписи поиска, года и представления; выбранная страна остаётся в поле поиска; понятная пара сравнения, поиск второй страны, удаление и пояснение лимита. Внутренние ссылки используют SPA и сохраняют кэш. После снятия выбора клавиатурный фокус возвращается к списку стран.
+
+**Затронуты:** PlanetScene, PlanetView и CSS, planetShaders/Geometry/Navigation, RU/EN planet-тексты, api/worldApi, vite manualChunks, packed texture и manifest, их тесты и служебные карты. Устройство и проверенные сценарии — [planet-view](planet-view.md).
+
+**Проверки:** 3062 backend passed / 9 skipped, 1003 frontend passed, ESLint, build и guards после регенерации карты. Финальная frontend-проверка повторена после focus fix. IAB/Vite preview: прямой клик по Франции, Германия 2025→2024, Земля/Данные/обзор и сравнение без дополнительных world API-запросов; optional texture failure, SVG fallback и Retry с сохранением Мальты. CSS 360×844/coarse pointer: без горизонтального overflow, input 16px, переключение touch-action. Общий тикер и аналитика страницы имеют свои запросы и не входят в это утверждение о планете.
+
+**Осталось проверить на устройствах:** реальные iPhone/Safari и Android/Chrome, FPS, GPU-память, нагрев, батарея и длительные жесты. Уменьшение байтов подтверждено; время первого кадра на мобильной сети не измерено. Production/nginx-приёмка не выполнялась.
