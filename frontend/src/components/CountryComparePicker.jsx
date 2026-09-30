@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GitCompare, X, Search, Check } from 'lucide-react';
 import useSearchTracking from '../lib/useSearchTracking';
-import { countryMatchesQuery } from '../lib/worldCompareSearch';
+import { filterSearchCountries } from '../lib/worldCompareSearch';
 import { useT } from '../i18n';
 import { MAX_COMPARISONS, COMPARISON_COLORS } from '../lib/useCountryComparison';
 
@@ -16,7 +16,7 @@ export function CountryComparePicker({
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const selected = new Set(selectedIds);
-  const filtered = options.filter((option) => countryMatchesQuery(option, query));
+  const filtered = filterSearchCountries(options, query);
   useSearchTracking('world-chart-countries', open ? query : '', filtered.length);
   return (
     <div className="relative min-w-0 flex-1">

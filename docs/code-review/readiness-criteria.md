@@ -245,3 +245,22 @@
 После этого на изолированных сценариях проверяются подтверждённые риски; результаты определяют исправления внутри существующей системы. Архитектурный эксперимент берёт одно семейство и измеряет альтернативы по одинаковой нагрузке. Выбор общей архитектуры оформляется ADR по результатам. Новые страны, валютные представления, новости и форум входят в инвентари, контракты и сценарии как новые возможности; реестр SEO-страниц один не описывает всю платформу.
 
 Настоящая сверка связывает исследования и уточняет их статусы. Она не подтверждает выполнение полного досье, успешный restore, полную runtime-проверку, принятие новой SEO-политики или реализацию v2.
+
+## Дополнение 30.09.2026 — поиск как отдельная подсистема
+
+Новый поиск входит в проверяемый состав. Его локальные свидетельства —
+[контракт](../search.md), [ADR-0016](../adr/0016-federated-public-search.md),
+[датированная проверка](../research/search-acceptance-2026-09-30.md).
+Они не меняют критерии принятия остальной платформы.
+
+| Критерий | Отдельное основание и граница поиска |
+|---|---|
+| K02–K03 | Инвентарь всех обнаруженных полей в search.md; router, shared matcher и table matcher; reviews/AST и 225 сценариев. Матрица сценариев не доказывает полный перебор данных или браузерную приёмку каждой комбинации |
+| K04–K06 | Input → debounce/query → `/search` → четыре data planes → fact eligibility → canonical/mode → SPA/document. Телеметрия и retained history рассмотрены отдельно; нет новых jobs/storage/model calls |
+| K07 | API q/limit, locale header, candidate budgets, client debounce/cache/retry и действующие subnational passports. Локальный read-only harness явно отделён от effective production |
+| K08 | Локальные query times, batching и regression SQL budget; production mixed load, планы индексов и capacity не измерены |
+| K09 | Query/select/abandon, version/interaction/returned keys; pending/error не считаются нулевым спросом. Returned candidates не являются viewport impressions; исторических keystrokes нет |
+
+Агент без истории чата проследил добавление annual regional indicator;
+обнаруженные frequency markers и устаревший ADR ingest pointer исправлены.
+Это узкая проверка понимания новой подсистемы, не закрытие всех K01–K12.

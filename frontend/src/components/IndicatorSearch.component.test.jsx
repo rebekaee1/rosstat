@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
 import { beforeEach, afterEach, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import IndicatorSearch from './IndicatorSearch';
 const localeState = vi.hoisted(() => ({ value: 'ru' }));
+const searchState = vi.hoisted(() => ({ data: { results: [], version: 'v2' }, isPending: false, isDebouncing: false, isError: false }));
+vi.mock('../lib/useGlobalSearch', () => ({ default: vi.fn(() => searchState) }));
 vi.mock('../lib/hooks', () => ({ useIndicators: () => ({ data: [] }) }));
 vi.mock('../lib/worldApi', () => ({
   useWorldSearch: () => ({ data: null, isPending: false }),
@@ -20,6 +22,7 @@ vi.mock('../lib/track', () => ({ track: vi.fn(), events: {} }));
 vi.mock('../i18n', () => ({ useT: () => key => key, useLocale: () => ({ locale: localeState.value }) }));
 beforeEach(() => {
   localeState.value = 'ru';
+  Object.assign(searchState, { data: { results: [], version: 'v2' }, isPending: false, isDebouncing: false, isError: false });
   HTMLElement.prototype.scrollIntoView = vi.fn();
   // jsdom has no layout. Simulate actual browser rects, including hidden parents.
   vi.spyOn(HTMLElement.prototype, 'getClientRects').mockImplementation(function () {
@@ -73,4 +76,94 @@ it('starts an empty English search with US indicators and no Russian default res
   fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
   expect(screen.getAllByRole('option')).toHaveLength(1);
   expect(screen.getByRole('option').textContent).toContain('United States');
+});
+
+it('passes the complete country query to the shared server search and renders its geography', async () => {
+  const { default: useGlobalSearch } = await import('../lib/useGlobalSearch');
+  searchState.data.results = [{ key: 'de:cpi', kind: 'world', code: 'de-cpi', name: 'Инфляция', country_name: 'Германия', path: '/germany/indicator/de-cpi' }];
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'инфляция Германии' } });
+  expect(useGlobalSearch).toHaveBeenLastCalledWith('инфляция Германии', expect.objectContaining({ enabled: true }));
+  expect(screen.getByRole('option').textContent).toContain('Германия');
+  expect(screen.getByRole('combobox').getAttribute('aria-activedescendant')).toBe(screen.getByRole('option').id);
+});
+
+it.each(['isPending', 'isDebouncing'])('does not expose stale clickable results or a zero-result message while %s', (flag) => {
+  searchState[flag] = true;
+  searchState.data.results = [{ key: 'old', name: 'Old result', path: '/russia' }];
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'новый запрос' } });
+  expect(screen.queryByRole('option')).toBeNull();
+  expect(screen.getByText('search.loading')).toBeTruthy();
+  expect(screen.queryByText('search.nothingFound')).toBeNull();
+});
+
+it('distinguishes request failure from an empty catalogue match', () => {
+  searchState.isError = true;
+  searchState.refetch = vi.fn();
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'ВВП' } });
+  expect(screen.getByText('search.error')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'common.retry' }));
+  expect(searchState.refetch).toHaveBeenCalledOnce();
+});
+
+it('restores focus to the trigger and wraps keyboard focus within the dialog', () => {
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  const trigger = screen.getByRole('button', { name: 'search.openAria' });
+  trigger.focus();
+  fireEvent.click(trigger);
+  const input = screen.getByRole('combobox');
+  input.focus();
+  fireEvent.keyDown(input, { key: 'Tab', shiftKey: true });
+  expect(document.activeElement).toBe(screen.getAllByRole('button', { name: 'common.close' })[1]);
+  fireEvent.keyDown(document.activeElement, { key: 'Tab' });
+  expect(document.activeElement).toBe(input);
+  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(document.activeElement).toBe(trigger);
+});
+
+it('review: composition confirms text without selecting or closing', async () => {
+  const { track } = await import('../lib/track'); track.mockClear();
+  searchState.data = { results: [{key:'de:cpi',name:'Inflation',path:'/germany/indicator/de-cpi'}], version:'v2' };
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button',{name:'search.openAria'}));
+  const input=screen.getByRole('combobox');
+  fireEvent.change(input,{target:{value:'inflation'}});
+  fireEvent.keyDown(input,{key:'Enter',isComposing:true,keyCode:229});
+  expect(screen.getByRole('dialog')).toBeTruthy();
+  expect(track).not.toHaveBeenCalled();
+  fireEvent.keyDown(document,{key:'Escape',isComposing:true,keyCode:229});
+  expect(screen.getByRole('dialog')).toBeTruthy();
+  fireEvent.keyDown(input,{key:'Enter'});
+  expect(screen.queryByRole('dialog')).toBeNull();
+});
+
+it('review: same-query replacement clamps highlight for aria and Enter', () => {
+  searchState.data = {results:[0,1,2].map(i=>({key:'r'+i,name:'Result '+i,path:'/russia/indicator/result-'+i})),version:'v2'};
+  const view=render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button',{name:'search.openAria'}));
+  const input=screen.getByRole('combobox');
+  fireEvent.change(input,{target:{value:'result'}});
+  fireEvent.keyDown(input,{key:'ArrowDown'});
+  fireEvent.keyDown(input,{key:'ArrowDown'});
+  expect(input.getAttribute('aria-activedescendant')).toBe(screen.getAllByRole('option')[2].id);
+  searchState.data={results:[{key:'remaining',name:'Remaining',path:'/russia/indicator/remaining'}],version:'v2'};
+  view.rerender(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  expect(screen.getByRole('combobox').getAttribute('aria-activedescendant')).toBe(screen.getByRole('option').id);
+  fireEvent.keyDown(screen.getByRole('combobox'),{key:'Enter'});
+  expect(screen.queryByRole('dialog')).toBeNull();
+});
+
+it('review: query telemetry retains all 100 candidate keys', async () => {
+  const { track }=await import('../lib/track'); track.mockClear();
+  const results=Array.from({length:100},(_,i)=>({key:'result-'+i,name:'Result '+i,path:'/russia/indicator/result-'+i}));
+  searchState.data={results,version:'v2',has_more:true};
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button',{name:'search.openAria'}));
+  fireEvent.change(screen.getByRole('combobox'),{target:{value:'result'}});
+  await waitFor(()=>expect(track).toHaveBeenCalledWith(undefined,expect.objectContaining({keys:results.map(x=>x.key),returned_count:100,has_more:true})),{timeout:2000});
 });

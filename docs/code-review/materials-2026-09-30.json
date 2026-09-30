@@ -553,16 +553,42 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "f86e8a2b305b0e8fe265161235d8a3d79ece97b054f7e1a08d9c8c42bb24ad8f",
-        "bytes": 8180
+        "sha256": "bdf06de37c310280c4aaa977fbad5dc90bff2c8cc6657b4b88959f1ff74068bf",
+        "bytes": 8608,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "current complete source plus authored changes reviewed",
+      "review_status": "prior_review_plus_dated_semantic_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 19,
+        "status_in_review": "reviewed",
+        "sha256": "bdf06de37c310280c4aaa977fbad5dc90bff2c8cc6657b4b88959f1ff74068bf",
+        "summary": "Complete current short AGENTS read; new search task route points to search primary contract, ADR0016, historical demand and durable225synthetic matrix; current-code/data-plane eligibility and canonical/mode must be verified separately. Start/state/knowledge/commit/deploy and historical archive rules unchanged.",
+        "baseline_sha256": "f86e8a2b305b0e8fe265161235d8a3d79ece97b054f7e1a08d9c8c42bb24ad8f",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            25,
+            31
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            77
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": {
           "date_msk": "2026-09-30",
           "reviewer": "root",
           "mode": "current complete source plus authored changes reviewed",
@@ -570,12 +596,19 @@
           "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
           "scope": "local main source and owned index changes; no app runtime acceptance"
         },
-        "status_in_review": "reviewed",
-        "sha256": "f86e8a2b305b0e8fe265161235d8a3d79ece97b054f7e1a08d9c8c42bb24ad8f"
+        "contracts": [
+          "Agent fast paths, canonical indicator/category mechanisms, protected legacy redirects, owner recipe and long dated implementation chronology. Historic numbers are not live counters.",
+          "Search changes follow docs/search.md and ADR0016 while distinguishing real history from synthetic fixtures and local code from release.",
+          "Existing knowledge workflow and explicit production push/deploy authority remain unchanged."
+        ],
+        "recorded_tests": [
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "AGENTS.md",
       "linked_mechanisms": "agent entry",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -592,9 +625,34 @@
             "method": "Actual complete current source read 2026-09-30",
             "sha256": "f86e8a2b305b0e8fe265161235d8a3d79ece97b054f7e1a08d9c8c42bb24ad8f"
           }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "f86e8a2b305b0e8fe265161235d8a3d79ece97b054f7e1a08d9c8c42bb24ad8f",
+            "bytes": 8180
+          },
+          "review_status": "current complete source plus authored changes reviewed",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root",
+              "mode": "current complete source plus authored changes reviewed",
+              "previous_sha256": "e4b40aaa97d94d9b830afab85cf95e2765c07266fa67aac310312ed20bbeea54",
+              "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "scope": "local main source and owned index changes; no app runtime acceptance"
+            },
+            "status_in_review": "reviewed",
+            "sha256": "f86e8a2b305b0e8fe265161235d8a3d79ece97b054f7e1a08d9c8c42bb24ad8f"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "CONTEXT.md",
@@ -605,16 +663,53 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250",
-        "bytes": 187661
+        "sha256": "ccbd6094db262e7cd49ee0d67b2bdf0de5708c1967f778a338198bad078e8166",
+        "bytes": 191587,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "full_current_body",
-      "body_reviewed_in_this_pass": true,
+      "review_status": "prior_review_plus_dated_semantic_delta",
+      "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 20,
+        "status_in_review": "reviewed",
+        "sha256": "ccbd6094db262e7cd49ee0d67b2bdf0de5708c1967f778a338198bad078e8166",
+        "summary": "Adds SearchIntent/SearchCandidate/SearchScope glossary and ADR0016; explicit data-plane boundaries, finite fact/geo/period semantics, returned-count clipping and evidence limits. Prior complete semantic review SHA e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250 exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit. Final search_paths/mode/frequency/native-level/issuer delta read and reflected; API score and availability are separate where documented.",
+        "baseline_sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            17,
+            23
+          ],
+          [
+            36,
+            42
+          ],
+          [
+            99,
+            108
+          ],
+          [
+            383,
+            418
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            1063
+          ]
+        ],
+        "ledger_review_provenance": {
           "date": "2026-09-30",
           "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
           "mode": "full_current_body",
@@ -667,12 +762,28 @@
           "current_sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250",
           "located_headings_rebuilt": "2026-09-30 after backend dated link; current headings and section end boundaries match source"
         },
-        "status_in_review": "reviewed",
-        "sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250"
+        "ledger_review_basis": null,
+        "contracts": [
+          "Full glossary/history read and preserved; September30 dated amendments establish knowledge cycle, currency/comparison contracts, exact ticker TTL/source/locale behavior, shared SSR/SPA floor ads and cancellation of obsolete pure-revision/login/delete interpretations. Backend dated link states annual=1 only on changed paths, distinct Python/SQL/CH populations, and separate Eurostat remap/facts/bump boundaries; server retraining is not inferred.",
+          "Local source/static review does not establish deployed SHA, live data, visual acceptance or full K01-K12 completion.",
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "CONTEXT.md",
       "linked_mechanisms": "domain glossary and dated invariants",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -740,9 +851,79 @@
             },
             "sha256": "e36db5be37b0c68bb0fc85bc1c56eb84727656488a8e49de368b1a868ce93ba8"
           }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250",
+            "bytes": 187661
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "60d0b0ce954412ffafc81a46330365e68e91510b",
+              "baseline_sha256": "9963c2c01a33da5abdfd305c4f8a864d2663e987c33ca0bdd4c0b8f850e95630",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  3,
+                  3
+                ],
+                [
+                  62,
+                  101
+                ],
+                [
+                  374,
+                  389
+                ],
+                [
+                  612,
+                  617
+                ],
+                [
+                  673,
+                  684
+                ],
+                [
+                  726,
+                  738
+                ],
+                [
+                  890,
+                  891
+                ],
+                [
+                  929,
+                  930
+                ],
+                [
+                  937,
+                  938
+                ],
+                [
+                  962,
+                  985
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass.",
+              "current_sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250",
+              "located_headings_rebuilt": "2026-09-30 after backend dated link; current headings and section end boundaries match source"
+            },
+            "status_in_review": "reviewed",
+            "sha256": "e53e719c1920de10eabc5a33bcf5fc64f870aa16f42a716380a337d042880250"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "README.md",
@@ -753,16 +934,45 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "01c58f42d7bbbad74214aec9ac148f434bedfce5f5560b605e2446df70a83a41",
-        "bytes": 20777
+        "sha256": "f59d2fb3bd4e4b129f3d7249091834d364a9acc05ee056dad3a6d4c78c53dfb0",
+        "bytes": 21499,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "full_current_body",
-      "body_reviewed_in_this_pass": true,
+      "review_status": "prior_review_plus_dated_semantic_delta",
+      "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 22,
+        "status_in_review": "reviewed",
+        "sha256": "f59d2fb3bd4e4b129f3d7249091834d364a9acc05ee056dad3a6d4c78c53dfb0",
+        "summary": "Adds search subsystem entry and public /search endpoint; existing platform/runtime history remains dated. Prior complete semantic review SHA 01c58f42d7bbbad74214aec9ac148f434bedfce5f5560b605e2446df70a83a41 exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit.",
+        "baseline_sha256": "01c58f42d7bbbad74214aec9ac148f434bedfce5f5560b605e2446df70a83a41",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            10,
+            21
+          ],
+          [
+            131,
+            137
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            249
+          ]
+        ],
+        "ledger_review_provenance": {
           "date": "2026-09-30",
           "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
           "mode": "full_current_body",
@@ -793,13 +1003,79 @@
           ],
           "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
         },
-        "status_in_review": "reviewed",
-        "sha256": "01c58f42d7bbbad74214aec9ac148f434bedfce5f5560b605e2446df70a83a41"
+        "ledger_review_basis": null,
+        "contracts": [
+          "Overview now points to obligatory knowledge workflow and preserved recipes, explains the currency exception and current SSR routing, and removes nonexistent sshscript wording without claiming new runtime acceptance.",
+          "Local source/static review does not establish deployed SHA, live data, visual acceptance or full K01-K12 completion.",
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "README.md",
       "linked_mechanisms": "product overview",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": false
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
+      "current_delta_reviewed_in_this_pass": true,
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "01c58f42d7bbbad74214aec9ac148f434bedfce5f5560b605e2446df70a83a41",
+            "bytes": 20777
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "baseline_sha256": "564883993c7fc8e5189c6e27ef906ed41350cd24f6b8334b6ebf0d4bf410d33e",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  9,
+                  10
+                ],
+                [
+                  42,
+                  47
+                ],
+                [
+                  66,
+                  66
+                ],
+                [
+                  197,
+                  197
+                ],
+                [
+                  202,
+                  202
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "01c58f42d7bbbad74214aec9ac148f434bedfce5f5560b605e2446df70a83a41"
+          }
+        }
+      ]
     },
     {
       "id": "backend/app/data/i18n/__init__.py",
@@ -1700,22 +1976,66 @@
       "classification": "current_with_history",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "1adea7b934d5e479f9a24f533e3196c82dae13f297c74e827db579a9e3d0a546",
-        "bytes": 10859
+        "sha256": "47976b1bc85c72b1080b963cd0eeda16c1d4457bdffa771f29655e343ef09f5a",
+        "bytes": 12643,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "exact_version_review_in_ledger",
+      "review_status": "prior_review_plus_dated_semantic_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": null,
+        "ledger_line": 682,
         "status_in_review": "reviewed",
-        "sha256": "1adea7b934d5e479f9a24f533e3196c82dae13f297c74e827db579a9e3d0a546"
+        "sha256": "47976b1bc85c72b1080b963cd0eeda16c1d4457bdffa771f29655e343ef09f5a",
+        "summary": "Preserves original artifact/ETL/storage/frequency/forecast reasons; dated subsequent addition supersedes only regional exclusion from global discovery. Prior complete semantic review SHA 1adea7b934d5e479f9a24f533e3196c82dae13f297c74e827db579a9e3d0a546 exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit.",
+        "baseline_sha256": "1adea7b934d5e479f9a24f533e3196c82dae13f297c74e827db579a9e3d0a546",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            74,
+            81
+          ],
+          [
+            118,
+            136
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            136
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": null,
+        "contracts": [
+          "Russian region bounded context with artifact seed and later monthly layer; avoid ad hoc regional endpoint reuse.",
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "docs/adr/0008-regional-bounded-context.md",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -1734,9 +2054,27 @@
             "status": "reviewed",
             "limitation": "Ledger content is prior review evidence; not a new full content read by this agent."
           }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "1adea7b934d5e479f9a24f533e3196c82dae13f297c74e827db579a9e3d0a546",
+            "bytes": 10859
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": null,
+            "status_in_review": "reviewed",
+            "sha256": "1adea7b934d5e479f9a24f533e3196c82dae13f297c74e827db579a9e3d0a546"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "docs/adr/0009-behavior-stream-first-party.md",
@@ -2008,22 +2346,64 @@
       "classification": "current_with_history",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e182c6b4e122c6a469c063d62f594e1f830900df9770896b93c90cf7708f4eb5",
-        "bytes": 8169
+        "sha256": "d3697501fd51554ca1fec638e4b6cea89a532ab83d7a9028f8bd747d6b50da09",
+        "bytes": 10556,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "exact_version_review_in_ledger",
+      "review_status": "prior_review_plus_dated_semantic_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": null,
+        "ledger_line": 688,
         "status_in_review": "reviewed",
-        "sha256": "e182c6b4e122c6a469c063d62f594e1f830900df9770896b93c90cf7708f4eb5"
+        "sha256": "d3697501fd51554ca1fec638e4b6cea89a532ab83d7a9028f8bd747d6b50da09",
+        "summary": "Full ADR0014 body read; preserves separate subnational schema/official-source/frequency/forecast reasons. Dated correction from fresh-agent finding: actual CLI backend/scripts/load-world-subnational.py; main CronTrigger daily, defaults03:40MSK/enabledtrue; effective production execution/freshness remains unverified.",
+        "baseline_sha256": "e182c6b4e122c6a469c063d62f594e1f830900df9770896b93c90cf7708f4eb5",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            3,
+            10
+          ],
+          [
+            64,
+            72
+          ],
+          [
+            75,
+            103
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            127
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": null,
+        "contracts": [
+          "Generic subnational context outside Russia; country/region boundaries and fast-page additions.",
+          "Actual repository CLI path differs from backend-relative/container script path.",
+          "CronTrigger without weekday is daily; config defaults are not effective production settings.",
+          "Correction preserves original dated weekly plan and underlying bounded context; no ingest/scheduled job executed."
+        ],
+        "recorded_tests": [
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "docs/adr/0014-subnational-regions-generic.md",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -2042,9 +2422,27 @@
             "status": "reviewed",
             "limitation": "Ledger content is prior review evidence; not a new full content read by this agent."
           }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "e182c6b4e122c6a469c063d62f594e1f830900df9770896b93c90cf7708f4eb5",
+            "bytes": 8169
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": null,
+            "status_in_review": "reviewed",
+            "sha256": "e182c6b4e122c6a469c063d62f594e1f830900df9770896b93c90cf7708f4eb5"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "docs/adr/0015-us-bea-regional-catalog.md",
@@ -2092,6 +2490,72 @@
         }
       ],
       "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/adr/0016-federated-public-search.md",
+      "location": "/Users/iprofi/.codex/worktrees/3278/rosstat/docs/adr/0016-federated-public-search.md",
+      "repository_path": "docs/adr/0016-federated-public-search.md",
+      "format": ".md",
+      "role": "project source/explanation",
+      "classification": "current",
+      "canonical_source": "docs/adr/0016-federated-public-search.md",
+      "linked_mechanisms": null,
+      "review_status": "authored_current_review_evidence",
+      "body_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": false,
+      "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 690,
+        "status_in_review": "reviewed",
+        "sha256": "6434292d9183897b806bb4433515856724afcf4a06ea64d4852fa3b7cfa40618",
+        "summary": "Accepted local federation decision: expand discovery across existing bounded contexts while preserving sources/schema/frequency/eligibility; explicit intent gates and deterministic first version, budgets and release limitations. Complete new document body reviewed against current backend/frontend and retained manifest; no prior review inheritance. Final search_paths/mode/frequency/native-level/issuer delta read and reflected; API score and availability are separate where documented.",
+        "baseline_sha256": null,
+        "baseline_commit": null,
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [
+          [
+            1,
+            78
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            78
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": null,
+        "contracts": [
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
+      },
+      "source_version": {
+        "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "scope": "tracked/index",
+        "date": "2026-09-30",
+        "sha256": "6434292d9183897b806bb4433515856724afcf4a06ea64d4852fa3b7cfa40618",
+        "bytes": 7216,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+      },
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis."
     },
     {
       "id": "docs/agent-recipes.md",
@@ -2198,22 +2662,66 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "1c8d360014ee0a17e1379eedb14822e200875debbe60d6e27d2f9295a37532f1",
-        "bytes": 21002
+        "sha256": "2246ffc76ca7537169b7e9db9d0dd91b29a52882cac3f1cf01b0bd1e2310565d",
+        "bytes": 25120,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "exact_version_review_in_ledger",
+      "review_status": "prior_review_plus_dated_semantic_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": null,
+        "ledger_line": 693,
         "status_in_review": "reviewed",
-        "sha256": "1c8d360014ee0a17e1379eedb14822e200875debbe60d6e27d2f9295a37532f1"
+        "sha256": "2246ffc76ca7537169b7e9db9d0dd91b29a52882cac3f1cf01b0bd1e2310565d",
+        "summary": "Adds actual new global256/interaction/returned100 contract, unchanged local60/table channels, no typing capture, sendBeacon/noack/optout limits; zero count is not proven catalog absence. Prior complete semantic review SHA 1c8d360014ee0a17e1379eedb14822e200875debbe60d6e27d2f9295a37532f1 exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit.",
+        "baseline_sha256": "1c8d360014ee0a17e1379eedb14822e200875debbe60d6e27d2f9295a37532f1",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            2,
+            46
+          ],
+          [
+            182,
+            195
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            318
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": null,
+        "contracts": [
+          "Frontend analytics event taxonomy, consent/attribution and warehouse bridge; dated implementation inventory.",
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "docs/analytics_api_inventory/frontend_instrumentation.md",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -2232,9 +2740,27 @@
             "status": "reviewed",
             "limitation": "Ledger content is prior review evidence; not a new full content read by this agent."
           }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "1c8d360014ee0a17e1379eedb14822e200875debbe60d6e27d2f9295a37532f1",
+            "bytes": 21002
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": null,
+            "status_in_review": "reviewed",
+            "sha256": "1c8d360014ee0a17e1379eedb14822e200875debbe60d6e27d2f9295a37532f1"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "docs/analytics_api_inventory/google_search_console.md",
@@ -2480,16 +3006,41 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "2c418a9bda538703623e7974a18fe494b5ed80b83dd82a1190efd4cf14a1a391",
-        "bytes": 25092
+        "sha256": "ec3877aa9064fbaf2e2fd77418245ec9706bf4038deda62dd142c4a7007bc2fe",
+        "bytes": 27475,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "full_current_body",
-      "body_reviewed_in_this_pass": true,
+      "review_status": "prior_review_plus_dated_semantic_delta",
+      "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 699,
+        "status_in_review": "reviewed",
+        "sha256": "ec3877aa9064fbaf2e2fd77418245ec9706bf4038deda62dd142c4a7007bc2fe",
+        "summary": "Preserves original D1/ADR0008 reasons and records dated federation supersession of discovery-only exclusion; distinguishes real history, synthetic fixtures and trained/runtime claims. Prior complete semantic review SHA 2c418a9bda538703623e7974a18fe494b5ed80b83dd82a1190efd4cf14a1a391 exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit.",
+        "baseline_sha256": "2c418a9bda538703623e7974a18fe494b5ed80b83dd82a1190efd4cf14a1a391",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            73,
+            101
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            101
+          ]
+        ],
+        "ledger_review_provenance": {
           "date": "2026-09-30",
           "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
           "mode": "full_current_body",
@@ -2512,13 +3063,71 @@
           ],
           "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
         },
-        "status_in_review": "reviewed",
-        "sha256": "2c418a9bda538703623e7974a18fe494b5ed80b83dd82a1190efd4cf14a1a391"
+        "ledger_review_basis": null,
+        "contracts": [
+          "Original b684290 table and deleted-document recovery routes preserved; added dated frontend/docs delta, recipe/archive relocation, currency/shared-base/RSYA boundaries and explicit external-material review limits.",
+          "Local source/static review does not establish deployed SHA, live data, visual acceptance or full K01-K12 completion.",
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "docs/architecture-history.md",
       "linked_mechanisms": "history/recovery index",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": false
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
+      "current_delta_reviewed_in_this_pass": true,
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "2c418a9bda538703623e7974a18fe494b5ed80b83dd82a1190efd4cf14a1a391",
+            "bytes": 25092
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "baseline_sha256": "036c81c7ff2949207fd1d0c2a38ce03b7798e4a137a093aec7b32894ef378cdc",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  15,
+                  16
+                ],
+                [
+                  19,
+                  19
+                ],
+                [
+                  53,
+                  75
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "2c418a9bda538703623e7974a18fe494b5ed80b83dd82a1190efd4cf14a1a391"
+          }
+        }
+      ]
     },
     {
       "id": "docs/architecture-knowledge.json",
@@ -2576,22 +3185,70 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6",
-        "bytes": 54757
+        "sha256": "5dfefcede3c23ec0e1a793dd9d41db11db3001e523b745532aa6dfeada00710e",
+        "bytes": 58154,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "exact_version_review_in_ledger",
+      "review_status": "prior_review_plus_dated_semantic_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/ops-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": null,
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 701,
         "status_in_review": "reviewed",
-        "sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6"
+        "sha256": "5dfefcede3c23ec0e1a793dd9d41db11db3001e523b745532aa6dfeada00710e",
+        "summary": "Adds source-backed global search producer/consumer path and local matcher/table boundaries; PG read only, no new jobs/cache/storage; telemetry not viewport impression. Prior complete semantic review SHA 4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6 exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit. Final search_paths/mode/frequency/native-level/issuer delta read and reflected; API score and availability are separate where documented.",
+        "baseline_sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            179,
+            185
+          ],
+          [
+            223,
+            262
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            308
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": null,
+        "contracts": [
+          "Source-backed C4 and journeys distinguish code from dated runtime; historical68file semantic map is not current full audit",
+          "Server27.09 full inventory preserved;30.09 resources/revision/readiness/selected config are a narrower repeat snapshot",
+          "Fresh isolated schema/data restore observed; application/capacity/failover not implied",
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "Linked JSON parses; original27.09 runtime SHA preserved; backup acceptance evidence and limits cross-checked",
+          "git diff --check",
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "docs/architecture.md",
       "linked_mechanisms": "system topology/scenarios",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -2605,9 +3262,27 @@
           "body_reviewed_in_this_pass": false,
           "current_delta_reviewed_in_this_pass": null,
           "review_basis": null
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6",
+            "bytes": 54757
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/ops-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": null,
+            "status_in_review": "reviewed",
+            "sha256": "4914978478717b311d1eee5581464932ea66f22fbc430ff7de103296cfec1ec6"
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "docs/backlog.md",
@@ -2618,36 +3293,79 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c",
-        "bytes": 358608
+        "sha256": "654f8f3dea45d31d8bc6297ceed0c5c3dc766afc16042789acfd9e437435b3a5",
+        "bytes": 363796,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "previous_full_read_plus_reviewed_delta",
+      "review_status": "prior_review_plus_dated_semantic_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "mode": "previous_full_read_plus_reviewed_delta",
-          "baseline_commit": "7d289931b5625f208152bd0c762df2cf0091a108",
-          "baseline_sha256": "31b2d84e1e03d0fab64b88d4cff0c0953b76ba2682d7c8c90987675aeb4e1f10",
-          "baseline_matches_previous_review": true,
-          "delta_ranges": [
-            [
-              3,
-              41
-            ]
-          ],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
-        },
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 702,
         "status_in_review": "reviewed",
-        "sha256": "10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c"
+        "sha256": "654f8f3dea45d31d8bc6297ceed0c5c3dc766afc16042789acfd9e437435b3a5",
+        "summary": "Records local search/history scope, successful read-only retained export, 919/150 journeys, focused19 regressions and open matrix/browser/release/ML gates; root final evidence remains separate. Prior complete semantic review SHA 10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit. Final search_paths/mode/frequency/native-level/issuer delta read and reflected; API score and availability are separate where documented.",
+        "baseline_sha256": "10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [
+          [
+            1,
+            70
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            1775
+          ]
+        ],
+        "ledger_review_provenance": {
+          "method": "Prior full reviewed body plus final search checks delta read; historical context preserved.",
+          "prior_review_sha256": "0649f2e90c311d29421e3bcef69e913de144bc13ea11f1aea236823b19fe1e1c",
+          "current_tests": [
+            "Backend3133passed9skipped,73warnings",
+            "Frontend958passed,0linterrors3existingwarnings,productionbuild",
+            "Indicator947identities/datafieldsunchanged,163consumerrefsupdated",
+            "Doccounters/pagemeta/publiclanguageguardsallpassed"
+          ]
+        },
+        "ledger_review_basis": {
+          "date_msk": "2026-09-30",
+          "reviewer": "root plus domain reviewer",
+          "mode": "prior full/delta source review plus current authored delta",
+          "previous_sha256": "c8e944aeb4fe3234fb3500ed2fa864cfd5d86744c073b206bcadf9edaad6c63a",
+          "prior_review_basis": null,
+          "current_read_scope": "Dated blocks and changed location/definition lines; unchanged prior full review retained. Ticker full current source/Settings/scheduler read."
+        },
+        "contracts": [
+          "Delta preserves Opus reconciliation as completed local documentation and subsequent tasks as open; September29 floor-ad release and source/scheduler incidents retain dated runtime boundaries.",
+          "Local source/static review does not establish deployed SHA, live data, visual acceptance or full K01-K12 completion.",
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "current_delta_reviewed_in_this_pass": true,
       "inherited_full_read_basis": {
         "date": "2026-09-30",
@@ -2694,6 +3412,118 @@
               "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
             },
             "sha256": "c8e944aeb4fe3234fb3500ed2fa864cfd5d86744c073b206bcadf9edaad6c63a"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c",
+            "bytes": 358608
+          },
+          "review_status": "previous_full_read_plus_reviewed_delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": true,
+          "review_basis": {
+            "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "previous_full_read_plus_reviewed_delta",
+              "baseline_commit": "7d289931b5625f208152bd0c762df2cf0091a108",
+              "baseline_sha256": "31b2d84e1e03d0fab64b88d4cff0c0953b76ba2682d7c8c90987675aeb4e1f10",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  3,
+                  41
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "branch": "codex/search-v2-20260930",
+            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "0649f2e90c311d29421e3bcef69e913de144bc13ea11f1aea236823b19fe1e1c",
+            "bytes": 363560,
+            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+          },
+          "review_status": "prior_review_plus_dated_semantic_delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": true,
+          "review_basis": {
+            "date_msk": "2026-09-30",
+            "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+            "proposal": "docs/code-review/reviews.jsonl",
+            "ledger_line": 702,
+            "status_in_review": "reviewed",
+            "sha256": "0649f2e90c311d29421e3bcef69e913de144bc13ea11f1aea236823b19fe1e1c",
+            "summary": "Records local search/history scope, successful read-only retained export, 919/150 journeys, focused19 regressions and open matrix/browser/release/ML gates; root final evidence remains separate. Prior complete semantic review SHA 10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit. Final search_paths/mode/frequency/native-level/issuer delta read and reflected; API score and availability are separate where documented.",
+            "baseline_sha256": "10c97755394b79c51a84d857fd2416427c656d4e38b4a40d12d3cc278593a15c",
+            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "baseline_matches_previous_material": true,
+            "changed_ranges_read": [
+              [
+                1,
+                57
+              ]
+            ],
+            "read_ranges_in_ledger": [
+              [
+                1,
+                1772
+              ]
+            ],
+            "ledger_review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "previous_full_read_plus_reviewed_delta",
+              "baseline_commit": "7d289931b5625f208152bd0c762df2cf0091a108",
+              "baseline_sha256": "31b2d84e1e03d0fab64b88d4cff0c0953b76ba2682d7c8c90987675aeb4e1f10",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  3,
+                  41
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "ledger_review_basis": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root plus domain reviewer",
+              "mode": "prior full/delta source review plus current authored delta",
+              "previous_sha256": "c8e944aeb4fe3234fb3500ed2fa864cfd5d86744c073b206bcadf9edaad6c63a",
+              "prior_review_basis": null,
+              "current_read_scope": "Dated blocks and changed location/definition lines; unchanged prior full review retained. Ticker full current source/Settings/scheduler read."
+            },
+            "contracts": [
+              "Delta preserves Opus reconciliation as completed local documentation and subsequent tasks as open; September29 floor-ad release and source/scheduler incidents retain dated runtime boundaries.",
+              "Local source/static review does not establish deployed SHA, live data, visual acceptance or full K01-K12 completion.",
+              "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+              "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+              "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+              "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+              "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+              "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+              "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+            ],
+            "recorded_tests": [
+              "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+              "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+              "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+            ],
+            "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
           }
         }
       ]
@@ -3096,21 +3926,26 @@
       "classification": "generated",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "208df94da7ef235eb0909887e4b1ef6915b5989fcf565c52b7f9b0578118e8d3",
-        "bytes": 496354
+        "sha256": "33e3b1da97b1a217f2ec4b2f22b4177e210508cdf276e64a15fa37c4ac79b70c",
+        "bytes": 503492,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "208df94da7ef235eb0909887e4b1ef6915b5989fcf565c52b7f9b0578118e8d3",
+        "date_msk": "2026-09-30",
+        "sha256": "33e3b1da97b1a217f2ec4b2f22b4177e210508cdf276e64a15fa37c4ac79b70c",
+        "method": "Generated artifact identity refreshed; no body/value review assigned",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -3139,6 +3974,67 @@
           "review_basis": {
             "method": "Current generated artifact bytes recorded; no new body/value review",
             "sha256": "f9c4de6802acb221823c5cc85fea3f50fd8462926d2329cb51505118e5f90beb",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "208df94da7ef235eb0909887e4b1ef6915b5989fcf565c52b7f9b0578118e8d3",
+            "bytes": 496354
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "208df94da7ef235eb0909887e4b1ef6915b5989fcf565c52b7f9b0578118e8d3",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "branch": "codex/search-v2-20260930",
+            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "0e22ff7730ddd6f4971c4aa28ee983c6d13da20417ef7815247f6b0a299ed9ab",
+            "bytes": 503496,
+            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "date_msk": "2026-09-30",
+            "sha256": "0e22ff7730ddd6f4971c4aa28ee983c6d13da20417ef7815247f6b0a299ed9ab",
+            "method": "Generated artifact identity refreshed; no body/value review assigned",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "branch": "codex/search-v2-20260930",
+            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "a2f937e97edc41254a118c2c2a7a146b2c2fdb1300ee2ee09ee8c57c1b754f77",
+            "bytes": 503492,
+            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "date_msk": "2026-09-30",
+            "sha256": "a2f937e97edc41254a118c2c2a7a146b2c2fdb1300ee2ee09ee8c57c1b754f77",
+            "method": "Generated artifact identity refreshed; no body/value review assigned",
             "canonical_source": "scripts/audit-code-documentation.py"
           }
         }
@@ -3247,21 +4143,26 @@
       "classification": "generated",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "2e64d4ccbeabf951a49cd928804d51c4fa00ceb5197aff77ffeee93ef2761925",
-        "bytes": 524215
+        "sha256": "bea6284923e504f6f965e20e4362db7d6aabb623489344dcef528e185945c299",
+        "bytes": 531119,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "2e64d4ccbeabf951a49cd928804d51c4fa00ceb5197aff77ffeee93ef2761925",
+        "date_msk": "2026-09-30",
+        "sha256": "bea6284923e504f6f965e20e4362db7d6aabb623489344dcef528e185945c299",
+        "method": "Generated artifact identity refreshed; no body/value review assigned",
         "canonical_source": "scripts/code-review-symbols.mjs"
       },
       "canonical_source": "scripts/code-review-symbols.mjs",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -3275,6 +4176,23 @@
           "body_reviewed_in_this_pass": false,
           "current_delta_reviewed_in_this_pass": null,
           "review_basis": null
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "2e64d4ccbeabf951a49cd928804d51c4fa00ceb5197aff77ffeee93ef2761925",
+            "bytes": 524215
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "2e64d4ccbeabf951a49cd928804d51c4fa00ceb5197aff77ffeee93ef2761925",
+            "canonical_source": "scripts/code-review-symbols.mjs"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -3505,19 +4423,56 @@
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "4e9cc40639e40af3ceae0ff46726e073a4235a46a885d44ace8a7be77954a416",
-        "bytes": 67871
+        "sha256": "683471251b70250e1bcc3364722f4897fb1b0535910152199e02f9d3c58963bf",
+        "bytes": 70071,
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "contents": "Tracked working-tree dated search supplement; not yet committed."
       },
-      "review_status": "prior_full_read_plus_root_dated_amendment",
+      "review_status": "prior_full_read_plus_search_dated_amendment",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "sha256": "4e9cc40639e40af3ceae0ff46726e073a4235a46a885d44ace8a7be77954a416",
-        "review_status": "prior_full_read_plus_root_dated_amendment",
-        "body_reviewed_in_this_pass": false,
-        "method": "Root retains previous full document reading and read/authored current dated paragraph; no new complete body reading is asserted by metadata collector.",
+        "method": "Preserved prior full reading plus current appended delta; no new complete body reading claimed.",
+        "sha256": "683471251b70250e1bcc3364722f4897fb1b0535910152199e02f9d3c58963bf",
         "date": "2026-09-30",
-        "classification": "current_task_evidence",
-        "version_confirmation": "Exact current bytes after root final freeze 2026-09-30; body claim remains the stated reviewer provenance, not SHA inference."
+        "changed_ranges_read": [
+          [
+            249,
+            266
+          ]
+        ],
+        "review_provenance": {
+          "method": "Preserved prior full reading plus current appended delta; no new complete body reading claimed.",
+          "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+          "baseline_sha256": "4e9cc40639e40af3ceae0ff46726e073a4235a46a885d44ace8a7be77954a416",
+          "prior_material_review_status": "prior_full_read_plus_root_dated_amendment",
+          "prior_material_review_basis": {
+            "sha256": "4e9cc40639e40af3ceae0ff46726e073a4235a46a885d44ace8a7be77954a416",
+            "review_status": "prior_full_read_plus_root_dated_amendment",
+            "body_reviewed_in_this_pass": false,
+            "method": "Root retains previous full document reading and read/authored current dated paragraph; no new complete body reading is asserted by metadata collector.",
+            "date": "2026-09-30",
+            "classification": "current_task_evidence",
+            "version_confirmation": "Exact current bytes after root final freeze 2026-09-30; body claim remains the stated reviewer provenance, not SHA inference."
+          },
+          "prior_review_matches_baseline": true,
+          "changed_ranges": [
+            [
+              249,
+              266
+            ]
+          ]
+        },
+        "summary": "Preserved project knowledge acceptance criteria with a dated narrow K02-K09 search scope supplement, explicitly retaining production/capacity/whole-platform unknowns.",
+        "contracts": [
+          "Existing criteria/old architecture reconciliation preserved byte-for-byte; no claim of whole-platform completion.",
+          "Search surface/canonical/fact/telemetry inventory and localized read-only evidence are linked;225synthetic cases are not exhaustive runtime acceptance."
+        ],
+        "tests": [
+          "Existing criterion body exactbaseline SHA verified; append-only supplement read against actual searchcode/recorded acceptance."
+        ],
+        "limits": "Only current appended supplement read in this pass; prior full-body evidence preserved. Evidence-directory source is excluded from primary code ledger by audit policy."
       },
       "canonical_source": "docs/code-review/readiness-criteria.md",
       "linked_mechanisms": "knowledge acceptance K01-K12",
@@ -3538,9 +4493,30 @@
             "method": "K01-K12/all-format requirements read; prior targeted section9 document review",
             "sha256": "8857dcfde173811321562dc9159992393f86c587628b6f72890c07ec7437785a"
           }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "4e9cc40639e40af3ceae0ff46726e073a4235a46a885d44ace8a7be77954a416",
+            "bytes": 67871
+          },
+          "review_status": "prior_full_read_plus_root_dated_amendment",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "sha256": "4e9cc40639e40af3ceae0ff46726e073a4235a46a885d44ace8a7be77954a416",
+            "review_status": "prior_full_read_plus_root_dated_amendment",
+            "body_reviewed_in_this_pass": false,
+            "method": "Root retains previous full document reading and read/authored current dated paragraph; no new complete body reading is asserted by metadata collector.",
+            "date": "2026-09-30",
+            "classification": "current_task_evidence",
+            "version_confirmation": "Exact current bytes after root final freeze 2026-09-30; body claim remains the stated reviewer provenance, not SHA inference."
+          }
         }
       ],
-      "current_delta_reviewed_in_this_pass": false
+      "current_delta_reviewed_in_this_pass": true
     },
     {
       "id": "docs/code-review/reconciliation-2026-09-30.json",
@@ -3602,21 +4578,27 @@
       "classification": "generated",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "a331c95e8961e400648b00ff4e13dfe23102beaa875ffa8612adabcf38493a8f",
-        "bytes": 9135072
+        "sha256": "33fbbdbaa76f003a4a7d78133fb64db21143f7a1f5b687d51ce344347521bf37",
+        "bytes": 9307283,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "generated_snapshot",
+      "review_status": "authored_review_ledger_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "a331c95e8961e400648b00ff4e13dfe23102beaa875ffa8612adabcf38493a8f",
-        "canonical_source": "docs/code-review/reviews.jsonl"
+        "date_msk": "2026-09-30",
+        "sha256": "33fbbdbaa76f003a4a7d78133fb64db21143f7a1f5b687d51ce344347521bf37",
+        "method": "Final ledger bytes recorded; individual reviewer rows remain authored evidence",
+        "canonical_source": "docs/code-review/reviews.jsonl",
+        "limits": "Snapshot identity does not establish body review of every ledger entry or its referenced source"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -3646,6 +4628,69 @@
             "method": "Current generated artifact bytes recorded; no new body/value review",
             "sha256": "7d68f12aea85869a91f588191dcf1dcd5fc02f44a3f2eaf7a5a81f4d16261bee",
             "canonical_source": "docs/code-review/reviews.jsonl"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "a331c95e8961e400648b00ff4e13dfe23102beaa875ffa8612adabcf38493a8f",
+            "bytes": 9135072
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "a331c95e8961e400648b00ff4e13dfe23102beaa875ffa8612adabcf38493a8f",
+            "canonical_source": "docs/code-review/reviews.jsonl"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "branch": "codex/search-v2-20260930",
+            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "023842d756469559a2e70860371909e36aa501be27e52deeab2028dd5958cb07",
+            "bytes": 9305151,
+            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+          },
+          "review_status": "authored_review_ledger_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "date_msk": "2026-09-30",
+            "sha256": "023842d756469559a2e70860371909e36aa501be27e52deeab2028dd5958cb07",
+            "method": "Final ledger bytes recorded; individual reviewer rows remain authored evidence",
+            "canonical_source": "docs/code-review/reviews.jsonl",
+            "limits": "Snapshot identity does not establish body review of every ledger entry or its referenced source"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "branch": "codex/search-v2-20260930",
+            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "f1d0d063b44beeddd8647cb27c34782d9acf05b90e3d7f490f7d4a78b32b907b",
+            "bytes": 9307189,
+            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+          },
+          "review_status": "authored_review_ledger_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "date_msk": "2026-09-30",
+            "sha256": "f1d0d063b44beeddd8647cb27c34782d9acf05b90e3d7f490f7d4a78b32b907b",
+            "method": "Final ledger bytes recorded; individual reviewer rows remain authored evidence",
+            "canonical_source": "docs/code-review/reviews.jsonl",
+            "limits": "Snapshot identity does not establish body review of every ledger entry or its referenced source"
           }
         }
       ],
@@ -3867,16 +4912,46 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67",
-        "bytes": 41043
+        "sha256": "8192828361dfc6991b1cf6b626d549e9897c2c9d2006201095a8f2fbe18cbcdf",
+        "bytes": 44803,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "prior full/delta source review plus current authored delta",
+      "review_status": "prior_review_plus_dated_semantic_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 704,
+        "status_in_review": "reviewed",
+        "sha256": "8192828361dfc6991b1cf6b626d549e9897c2c9d2006201095a8f2fbe18cbcdf",
+        "summary": "Updates old include_unlisted palette consumer history and adds actual /search input/output/kind/count/error/fact/period/canonical contract without production inference. Prior complete semantic review SHA be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67 exactly verified against Git 05302ff1c4dbe104850116e6206d168ec4fa91d3; complete current changed ranges read/authored and dependencies cross-checked. Unchanged sections inherit the dated baseline review, not a new runtime audit. Final search_paths/mode/frequency/native-level/issuer delta read and reflected; API score and availability are separate where documented.",
+        "baseline_sha256": "be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "baseline_matches_previous_material": true,
+        "changed_ranges_read": [
+          [
+            43,
+            49
+          ],
+          [
+            87,
+            130
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            159
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": {
           "date_msk": "2026-09-30",
           "reviewer": "root plus domain reviewer",
           "mode": "prior full/delta source review plus current authored delta",
@@ -3884,13 +4959,54 @@
           "prior_review_basis": null,
           "current_read_scope": "Dated blocks and changed location/definition lines; unchanged prior full review retained. Ticker full current source/Settings/scheduler read."
         },
-        "status_in_review": "reviewed",
-        "sha256": "be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67"
+        "contracts": [
+          "Ownership/transaction/cache contracts for fact→derived→forecast, regions, world, calendar, identity and analytics; lists unverified races.",
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": false
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
+      "current_delta_reviewed_in_this_pass": true,
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67",
+            "bytes": 41043
+          },
+          "review_status": "prior full/delta source review plus current authored delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/root-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date_msk": "2026-09-30",
+              "reviewer": "root plus domain reviewer",
+              "mode": "prior full/delta source review plus current authored delta",
+              "previous_sha256": "7ef1e2560cfa406e8d808efe5a7801aca1f74413375211e58e56792bb2cd4c93",
+              "prior_review_basis": null,
+              "current_read_scope": "Dated blocks and changed location/definition lines; unchanged prior full review retained. Ticker full current source/Settings/scheduler read."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "be9dc2e93592b3510e4d8f6fa2764a329cd2c80e19b67b6585d5b5c9bec93f67"
+          }
+        }
+      ]
     },
     {
       "id": "docs/data_sources.md",
@@ -5804,21 +6920,26 @@
       "classification": "generated",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "71e3542781fb212d5d65033f04212962d32b0922ff25b8df957d300d33da3fdb",
-        "bytes": 1974108
+        "sha256": "246780965ea75e364591309fcb8229d2cefb999787ab86924ab26460d0bceaf5",
+        "bytes": 2032173,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "71e3542781fb212d5d65033f04212962d32b0922ff25b8df957d300d33da3fdb",
+        "date_msk": "2026-09-30",
+        "sha256": "246780965ea75e364591309fcb8229d2cefb999787ab86924ab26460d0bceaf5",
+        "method": "Generated artifact identity refreshed; no body/value review assigned",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
       "linked_mechanisms": "Generated map schema and semantic delta inspected: 194 annual forecast horizons shrink 2 to1; remaining changes are file reference membership/line shifts. Individual observations are outside this artifact.",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -13051,6 +14172,45 @@
             },
             "sha256": "4edf76f19341a2ada0b2a5984106422fc2fd394dc8e6387a85556da4540c9df5"
           }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "71e3542781fb212d5d65033f04212962d32b0922ff25b8df957d300d33da3fdb",
+            "bytes": 1974108
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "71e3542781fb212d5d65033f04212962d32b0922ff25b8df957d300d33da3fdb",
+            "canonical_source": "scripts/build-indicator-index.py"
+          }
+        },
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "branch": "codex/search-v2-20260930",
+            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "b397c1f03bf2e4ada1be54927834b2a6beb57e684b3c18ae754f1df0233ce279",
+            "bytes": 2032173,
+            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "date_msk": "2026-09-30",
+            "sha256": "b397c1f03bf2e4ada1be54927834b2a6beb57e684b3c18ae754f1df0233ce279",
+            "method": "Generated artifact identity refreshed; no body/value review assigned",
+            "canonical_source": "scripts/build-indicator-index.py"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -14449,6 +15609,369 @@
       "current_delta_reviewed_in_this_pass": false
     },
     {
+      "id": "docs/research/search-acceptance-2026-09-30.md",
+      "location": "/Users/iprofi/.codex/worktrees/3278/rosstat/docs/research/search-acceptance-2026-09-30.md",
+      "repository_path": "docs/research/search-acceptance-2026-09-30.md",
+      "format": ".md",
+      "role": "authored search evidence",
+      "classification": "current_task_evidence",
+      "canonical_source": "docs/research/search-acceptance-2026-09-30.md",
+      "linked_mechanisms": null,
+      "review_status": "authored_review_evidence",
+      "body_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": false,
+      "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 770,
+        "status_in_review": "reviewed",
+        "sha256": "f2a0275947ea8d57f9402c54462e2cdf40148ebe4d83901a194c9045f0d0b646",
+        "summary": "Dated local search acceptance evidence: retained history, strict development replay, browser destinations and independent handoff review; no production release claim.",
+        "baseline_sha256": null,
+        "baseline_commit": null,
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [
+          [
+            1,
+            148
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            148
+          ]
+        ],
+        "ledger_review_provenance": {
+          "method": "Prior full reviewed body plus final search checks delta read; historical context preserved.",
+          "prior_review_sha256": "bff3571810ab2b8ab0823bb9ec8e6a71ea9a8e626e1bd9cfb93596271922248f",
+          "current_tests": [
+            "Backend3133passed9skipped,73warnings",
+            "Frontend958passed,0linterrors3existingwarnings,productionbuild",
+            "Indicator947identities/datafieldsunchanged,163consumerrefsupdated",
+            "Doccounters/pagemeta/publiclanguageguardsallpassed"
+          ]
+        },
+        "ledger_review_basis": null,
+        "contracts": [
+          "201 API queries are distinct from225synthetic scenarios and150real retained journeys.",
+          "197expectedcanonicaltargets with4verified sourceavailability deviations; no fabricated facts or adjusted strict expectedpaths.",
+          "Read-only harness/resource measurements do not establish deployed frontend/nginx or mixed production capacity."
+        ],
+        "recorded_tests": [
+          "Recorded local API197/201,0errors and browser RU/EN/389px/mode/country/region/annualSSR observations."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
+      },
+      "source_version": {
+        "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "scope": "tracked/index",
+        "date": "2026-09-30",
+        "sha256": "f2a0275947ea8d57f9402c54462e2cdf40148ebe4d83901a194c9045f0d0b646",
+        "bytes": 12574,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+      },
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "branch": "codex/search-v2-20260930",
+            "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "bff3571810ab2b8ab0823bb9ec8e6a71ea9a8e626e1bd9cfb93596271922248f",
+            "bytes": 11219,
+            "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+          },
+          "review_status": "authored_review_evidence",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "date_msk": "2026-09-30",
+            "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+            "proposal": "docs/code-review/reviews.jsonl",
+            "ledger_line": 770,
+            "status_in_review": "reviewed",
+            "sha256": "bff3571810ab2b8ab0823bb9ec8e6a71ea9a8e626e1bd9cfb93596271922248f",
+            "summary": "Dated local search acceptance evidence: retained history, strict development replay, browser destinations and independent handoff review; no production release claim.",
+            "baseline_sha256": null,
+            "baseline_commit": null,
+            "baseline_matches_previous_material": false,
+            "changed_ranges_read": [
+              [
+                1,
+                130
+              ]
+            ],
+            "read_ranges_in_ledger": [
+              [
+                1,
+                130
+              ]
+            ],
+            "ledger_review_provenance": {
+              "method": "Preserved prior current-body evidence plus actual current narrow delta read.",
+              "prior_review_sha256": "7199a149af0cd9d0d1baa8f0b86832b1be9bea1b5861ee689e20e57b42f4b72b",
+              "current_changed_subjects": [
+                "FinalAPI197/201errors0,p50490,p951276",
+                "Marketstorage/explicit-facet exception and display geography",
+                "Intrinsic average housing measure regression + source/report links"
+              ]
+            },
+            "ledger_review_basis": null,
+            "contracts": [
+              "201 API queries are distinct from225synthetic scenarios and150real retained journeys.",
+              "197expectedcanonicaltargets with4verified sourceavailability deviations; no fabricated facts or adjusted strict expectedpaths.",
+              "Read-only harness/resource measurements do not establish deployed frontend/nginx or mixed production capacity."
+            ],
+            "recorded_tests": [
+              "Recorded local API197/201,0errors and browser RU/EN/389px/mode/country/region/annualSSR observations."
+            ],
+            "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
+          }
+        }
+      ]
+    },
+    {
+      "id": "docs/research/search-history-2026-09-30.md",
+      "location": "/Users/iprofi/.codex/worktrees/3278/rosstat/docs/research/search-history-2026-09-30.md",
+      "repository_path": "docs/research/search-history-2026-09-30.md",
+      "format": ".md",
+      "role": "authored search evidence",
+      "classification": "current_task_evidence",
+      "canonical_source": "docs/research/search-history-2026-09-30.md",
+      "linked_mechanisms": null,
+      "review_status": "authored_review_evidence",
+      "body_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": false,
+      "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 771,
+        "status_in_review": "reviewed",
+        "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a",
+        "summary": "Dated aggregate-only public report: retained search coverage, 150 actual technical client paths, missing typing history and ML evidence limits.",
+        "baseline_sha256": null,
+        "baseline_commit": null,
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            231
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": null,
+        "contracts": [
+          "All historical queries means all actually retained rows in verified stores, not all keys ever typed.",
+          "Client session, server session, visitor and person remain distinct.",
+          "Raw query text and pseudonymous identifiers stay in ignored analytics/; public report contains aggregates and selected nonpersonal economic examples."
+        ],
+        "recorded_tests": [
+          "2026-09-30: successful read-only production snapshot and private filesystem permissions; gzip row counts/checksums independently reread.",
+          "2026-09-30: CH unique-id/event/params reconciliation and all 15 retained nginx rotations inspected.",
+          "2026-09-30: offline analysis all 919 sessions; 150 actual human_supported paths plus condensed sequence review; no synthetic substitute.",
+          "Python AST/syntax parsed; generated SQL contains READ ONLY and no data/schema mutation keywords."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
+      },
+      "source_version": {
+        "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "scope": "tracked/index",
+        "date": "2026-09-30",
+        "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a",
+        "bytes": 21234,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+      },
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis."
+    },
+    {
+      "id": "docs/research/search-matrix-2026-09-30.json",
+      "location": "/Users/iprofi/.codex/worktrees/3278/rosstat/docs/research/search-matrix-2026-09-30.json",
+      "repository_path": "docs/research/search-matrix-2026-09-30.json",
+      "format": ".json",
+      "role": "authored search evidence",
+      "classification": "current_task_evidence",
+      "canonical_source": "docs/research/search-matrix-2026-09-30.json",
+      "linked_mechanisms": null,
+      "review_status": "data_schema_reviewed",
+      "body_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": false,
+      "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 772,
+        "status_in_review": "data_schema_reviewed",
+        "sha256": "8aec2bb6bd24e6c6bc8d49dcfbb90dc9175e70bcf4f145d70294d50384df3e3e",
+        "summary": "Public synthetic regression corpus of 225 unique journeys across 22 surfaces and 16 coverage axes, derived from public source/catalogue contracts without any real-user history or identifiers.",
+        "baseline_sha256": null,
+        "baseline_commit": null,
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            7211
+          ]
+        ],
+        "ledger_review_provenance": {
+          "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+          "baseline_sha256": null,
+          "prior_review_matches_baseline": false,
+          "changed_source_reviewed": true,
+          "local_validation": "Frontend targeted 109/109; owned ESLint; backend regional/subnational 33/33; diff check. No commit/push/deploy."
+        },
+        "ledger_review_basis": null,
+        "contracts": [
+          "225 unique synthetic journeys, 22 explicit existing search surfaces, 16 coverage axes; IDs S001-S225 identify fixtures only.",
+          "Canonical fixture keys: id/query/locale/surface/start_path/journey/expected/transforms/coverage/current_analysis/source. expected distinguishes URL/target/mode/frequency/availability/negative exclusion.",
+          "Only public source-derived synthetic queries and canonical targets; no server/user/session/event identifiers or real history.",
+          "201 catalogue/entity/negative rows require separate current API replay and 24 contextual rows require component/browser checks; current_analysis.live_verified remains false. The corpus itself proves neither API acceptance nor deployed state."
+        ],
+        "recorded_tests": [
+          "JSON parse; count225; unique ids225; distinct meaningful scenario tuples225; RU/EN locale only; absolute start_path; live_verified false; expected canonical schema reviewed; same108 static baseline73→94 top5/88→95found with source caveats"
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance",
+        "schema_review": {
+          "schema_version": 1,
+          "count": 225,
+          "surfaces": 22,
+          "coverage_axes": [
+            "surface",
+            "host_locale",
+            "country",
+            "region",
+            "entity_kind",
+            "category",
+            "native_frequency",
+            "family_mode",
+            "variant",
+            "derived",
+            "listed_unlisted",
+            "official_provider",
+            "deep_slice",
+            "transformation",
+            "keyboard_and_mobile",
+            "empty_and_ambiguous"
+          ],
+          "row_keys": [
+            "id",
+            "query",
+            "locale",
+            "surface",
+            "start_path",
+            "journey",
+            "expected",
+            "transforms",
+            "coverage",
+            "current_analysis",
+            "source"
+          ],
+          "expected_keys": [
+            "acceptable_urls",
+            "availability",
+            "code",
+            "concept_slug",
+            "country_slug",
+            "date_contains",
+            "frequency",
+            "is_listed",
+            "kind",
+            "mode",
+            "must_exclude_codes",
+            "parent_code",
+            "period",
+            "region_slug",
+            "target",
+            "top_k",
+            "unit",
+            "url",
+            "value"
+          ],
+          "private_data": false,
+          "current_runtime_availability_required": true
+        }
+      },
+      "source_version": {
+        "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "scope": "tracked/index",
+        "date": "2026-09-30",
+        "sha256": "8aec2bb6bd24e6c6bc8d49dcfbb90dc9175e70bcf4f145d70294d50384df3e3e",
+        "bytes": 258812,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+      },
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis."
+    },
+    {
+      "id": "docs/research/search-methods-2026-09-30.md",
+      "location": "/Users/iprofi/.codex/worktrees/3278/rosstat/docs/research/search-methods-2026-09-30.md",
+      "repository_path": "docs/research/search-methods-2026-09-30.md",
+      "format": ".md",
+      "role": "authored search evidence",
+      "classification": "current_task_evidence",
+      "canonical_source": "docs/research/search-methods-2026-09-30.md",
+      "linked_mechanisms": null,
+      "review_status": "authored_review_evidence",
+      "body_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": false,
+      "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 773,
+        "status_in_review": "reviewed",
+        "sha256": "c61d8dd05ad713425e5c595bb145aabf78457cbc6cd75c95ec9840382ef53cc5",
+        "summary": "Primary-source methods research dated to the baseline plus current local lexical implementation; separates proposals, prerequisites, synthetic tests and measured deployment evidence.",
+        "baseline_sha256": null,
+        "baseline_commit": null,
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            350
+          ]
+        ],
+        "ledger_review_provenance": null,
+        "ledger_review_basis": null,
+        "contracts": [
+          "No new persistence/external model calls; no production deployment implied.",
+          "Baseline findings, proposals and current implementation are dated and separated."
+        ],
+        "recorded_tests": [
+          "67 passed: /Users/iprofi/tradingeconomics/rosstat/backend/.venv/bin/python -m pytest tests/test_search_federated.py -q --tb=short (cwd=backend; 2026-09-30; hermetic SQLite/fakeredis; includes native housing mean-price regression)."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
+      },
+      "source_version": {
+        "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "scope": "tracked/index",
+        "date": "2026-09-30",
+        "sha256": "c61d8dd05ad713425e5c595bb145aabf78457cbc6cd75c95ec9840382ef53cc5",
+        "bytes": 38591,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+      },
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis."
+    },
+    {
       "id": "docs/research/south-korea-official-sources.xlsx",
       "location": "/Users/iprofi/tradingeconomics/rosstat/docs/research/south-korea-official-sources.xlsx",
       "repository_path": "docs/research/south-korea-official-sources.xlsx",
@@ -14654,6 +16177,80 @@
       "linked_mechanisms": null,
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/search.md",
+      "location": "/Users/iprofi/.codex/worktrees/3278/rosstat/docs/search.md",
+      "repository_path": "docs/search.md",
+      "format": ".md",
+      "role": "project source/explanation",
+      "classification": "current",
+      "canonical_source": "docs/search.md",
+      "linked_mechanisms": null,
+      "review_status": "authored_current_review_evidence",
+      "body_reviewed_in_this_pass": false,
+      "current_delta_reviewed_in_this_pass": false,
+      "review_basis": {
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 779,
+        "status_in_review": "reviewed",
+        "sha256": "7a94fb070888129cbdbfecb71daaa8f3b19ad1a17c12fc5dabf52103a829597a",
+        "summary": "Primary full search contract: federated public API, eligible data-backed planes, bounded deterministic retrieval, complete discovered surface inventory, state/navigation/table/telemetry, historical and verification limits. Complete new document body reviewed against current backend/frontend and retained manifest; no prior review inheritance. Final search_paths/mode/frequency/native-level/issuer delta read and reflected; API score and availability are separate where documented.",
+        "baseline_sha256": null,
+        "baseline_commit": null,
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [
+          [
+            1,
+            275
+          ]
+        ],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            275
+          ]
+        ],
+        "ledger_review_provenance": {
+          "method": "Preserved prior current-body evidence plus actual current narrow delta read.",
+          "prior_review_sha256": "1cc1a6bb969e0e7e7daf528c97a253039868627ec085326ed5470d3911573392",
+          "current_changed_subjects": [
+            "FinalAPI197/201errors0,p50490,p951276",
+            "Marketstorage/explicit-facet exception and display geography",
+            "Intrinsic average housing measure regression + source/report links"
+          ]
+        },
+        "ledger_review_basis": null,
+        "contracts": [
+          "Global discovery reads existing four data planes; no new tables, jobs, server cache, external calls or learned-model claims.",
+          "Explicit geography, concept groups and supported period constrain facts before budgets; candidate counts/returned keys are not exhaustive totals or viewport exposure.",
+          "Shared browser matching preserves supplied eligible pool; tables search loaded formatted/raw date/value rows with one UI/telemetry predicate.",
+          "Read-only retained history and150 actual technical paths do not restore missing keystrokes, establish person identity, relevance or causal improvement.",
+          "Local implementation/tests and synthetic scenario inventory remain distinct from production release/all-surface browser acceptance.",
+          "Final search delta: batch world paths, hard annual/frequency facts before LIMIT, fail-closed hidden document periods, native measure level and narrow DXY/US10Y issuer exceptions preserve existing data planes.",
+          "Strict API replay corpus197/201 is immutable; data availability/native absence/validKRCPIalternative explained separately, no browser/production claim."
+        ],
+        "recorded_tests": [
+          "2026-09-30: current retained IndicatorSearch16/useGlobalSearch3 tests passed (19/19); IME229, same-query replacement highlight and all100 candidate keys.",
+          "Current code and manifest schema/count/date/SHA contracts cross-checked; no missing relative link targets in these10 docs; git diff --check passed.",
+          "2026-09-30: final source/diff reviewed, relative file targets checked and git diff --check; no ingest/deploy during documentation work."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
+      },
+      "source_version": {
+        "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "scope": "tracked/index",
+        "date": "2026-09-30",
+        "sha256": "7a94fb070888129cbdbfecb71daaa8f3b19ad1a17c12fc5dabf52103a829597a",
+        "bytes": 26662,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
+      },
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis."
     },
     {
       "id": "docs/site-inventory.json",
@@ -17598,33 +19195,107 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "2721b050b4ee09931cb4b234e43378ac8b8c4c3ad6bd274dbc30647d058a0ec1",
-        "bytes": 108446
+        "sha256": "8eb77a70c0a334568549f92d6e40460533fc8015ba1d582b59b0943adaa8c518",
+        "bytes": 108843,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "full_current_body",
-      "body_reviewed_in_this_pass": true,
+      "review_status": "exact_version_review_in_ledger",
+      "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "mode": "full_current_body",
-          "baseline_commit": null,
-          "baseline_sha256": null,
-          "baseline_matches_previous_review": false,
-          "delta_ranges": [],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass.",
-          "limitation": "Previous review SHA did not match any Git version; replaced by full current source read at lines1-1972, no inherited body claim."
-        },
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 990,
         "status_in_review": "reviewed",
-        "sha256": "2721b050b4ee09931cb4b234e43378ac8b8c4c3ad6bd274dbc30647d058a0ec1"
+        "sha256": "8eb77a70c0a334568549f92d6e40460533fc8015ba1d582b59b0943adaa8c518",
+        "summary": "English public messages for generalized site-wide entity search and explicit loading/error/period/geography states.",
+        "baseline_sha256": null,
+        "baseline_commit": null,
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            1978
+          ]
+        ],
+        "ledger_review_provenance": {
+          "method": "Prior full body review plus current content delta and dependencies; changed mechanisms read in full.",
+          "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+          "baseline_sha256": "2721b050b4ee09931cb4b234e43378ac8b8c4c3ad6bd274dbc30647d058a0ec1",
+          "prior_review_sha256": "2721b050b4ee09931cb4b234e43378ac8b8c4c3ad6bd274dbc30647d058a0ec1",
+          "prior_review_matches_baseline": true,
+          "changed_ranges": [
+            [
+              220,
+              220
+            ],
+            [
+              324,
+              327
+            ],
+            [
+              329,
+              329
+            ],
+            [
+              1454,
+              1461
+            ],
+            [
+              1658,
+              1658
+            ]
+          ]
+        },
+        "ledger_review_basis": null,
+        "contracts": [
+          "RU/EN key and interpolation parity; category triggers describe federated scope."
+        ],
+        "recorded_tests": [
+          "frontend npm run test:958passed before final dependency-only palette update; retained targeted cases."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "frontend/src/i18n/messages.en.js",
       "linked_mechanisms": "English UI dictionary fully read: navigation, data/forecast states, comparison controls, auth/consent, calculators, country/region surfaces and methodology. New shared-base, official-cadence and loading wording matches changed consumers.",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": false
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
+      "current_delta_reviewed_in_this_pass": false,
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "2721b050b4ee09931cb4b234e43378ac8b8c4c3ad6bd274dbc30647d058a0ec1",
+            "bytes": 108446
+          },
+          "review_status": "full_current_body",
+          "body_reviewed_in_this_pass": true,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "full_current_body",
+              "baseline_commit": null,
+              "baseline_sha256": null,
+              "baseline_matches_previous_review": false,
+              "delta_ranges": [],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass.",
+              "limitation": "Previous review SHA did not match any Git version; replaced by full current source read at lines1-1972, no inherited body claim."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "2721b050b4ee09931cb4b234e43378ac8b8c4c3ad6bd274dbc30647d058a0ec1"
+          }
+        }
+      ]
     },
     {
       "id": "frontend/src/i18n/messages.js",
@@ -17729,65 +19400,77 @@
       "classification": "current",
       "source_version": {
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+        "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+        "branch": "codex/search-v2-20260930",
+        "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "118a54fd3262db2741d8cd55e9abddfeccc5934181d6c44538097f4857815e51",
-        "bytes": 158680
+        "sha256": "05644489138354cd215fd28ac16df7cc15e93ba928307278aab97c999c0d4da5",
+        "bytes": 159210,
+        "contents": "working-tree bytes of tracked/index paths; not a claim that changes are committed"
       },
-      "review_status": "previous_full_read_plus_reviewed_delta",
+      "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
-        "review_provenance": {
-          "date": "2026-09-30",
-          "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-          "mode": "previous_full_read_plus_reviewed_delta",
-          "baseline_commit": "cf7daf1f954f3c04187fe2decc20b59ad7241bab",
-          "baseline_sha256": "2ba0b2b5004f1c68f31d77b507b0b90952fe65a2ac9c5e139f78c58e922b8a88",
-          "baseline_matches_previous_review": true,
-          "delta_ranges": [
-            [
-              189,
-              189
-            ],
-            [
-              371,
-              371
-            ],
-            [
-              387,
-              387
-            ],
-            [
-              394,
-              394
-            ],
-            [
-              402,
-              403
-            ],
-            [
-              938,
-              940
-            ],
-            [
-              1008,
-              1009
-            ],
-            [
-              1457,
-              1457
-            ]
-          ],
-          "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
-        },
+        "date_msk": "2026-09-30",
+        "method": "Exact current reviewer ledger plus its authored semantic basis; helper assigns no body-read claim",
+        "proposal": "docs/code-review/reviews.jsonl",
+        "ledger_line": 993,
         "status_in_review": "reviewed",
-        "sha256": "118a54fd3262db2741d8cd55e9abddfeccc5934181d6c44538097f4857815e51"
+        "sha256": "05644489138354cd215fd28ac16df7cc15e93ba928307278aab97c999c0d4da5",
+        "summary": "Russian public messages: site-wide entity search labels, transport/empty/period/geography states and refinement.",
+        "baseline_sha256": null,
+        "baseline_commit": null,
+        "baseline_matches_previous_material": false,
+        "changed_ranges_read": [],
+        "read_ranges_in_ledger": [
+          [
+            1,
+            1987
+          ]
+        ],
+        "ledger_review_provenance": {
+          "method": "Prior full body review plus current content delta and dependencies; changed mechanisms read in full.",
+          "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+          "baseline_sha256": "118a54fd3262db2741d8cd55e9abddfeccc5934181d6c44538097f4857815e51",
+          "prior_review_sha256": "118a54fd3262db2741d8cd55e9abddfeccc5934181d6c44538097f4857815e51",
+          "prior_review_matches_baseline": true,
+          "changed_ranges": [
+            [
+              220,
+              220
+            ],
+            [
+              324,
+              327
+            ],
+            [
+              329,
+              329
+            ],
+            [
+              1456,
+              1463
+            ],
+            [
+              1660,
+              1660
+            ]
+          ]
+        },
+        "ledger_review_basis": null,
+        "contracts": [
+          "RU/EN key and interpolation parity; category triggers describe federated scope."
+        ],
+        "recorded_tests": [
+          "frontend npm run test:958passed before final dependency-only palette update; retained targeted cases."
+        ],
+        "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
       },
       "canonical_source": "frontend/src/i18n/messages.ru.js",
       "linked_mechanisms": "Russian UI delta updates Russia-only regional scope and comparison shared-date/official-frequency/HICP/empty/loading explanations alongside English keys.",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
-      "current_delta_reviewed_in_this_pass": true,
+      "update_action": "Keep exact reviewer evidence, generated identity and runtime acceptance separate; prior_version_evidence preserves the former version and reading basis.",
+      "current_delta_reviewed_in_this_pass": false,
       "inherited_full_read_basis": {
         "date": "2026-09-30",
         "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
@@ -17830,7 +19513,69 @@
           ]
         ],
         "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
-      }
+      },
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "118a54fd3262db2741d8cd55e9abddfeccc5934181d6c44538097f4857815e51",
+            "bytes": 158680
+          },
+          "review_status": "previous_full_read_plus_reviewed_delta",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": true,
+          "review_basis": {
+            "proposal": "docs/code-review/frontend-docs-delta-reviews-2026-09-30.jsonl",
+            "review_provenance": {
+              "date": "2026-09-30",
+              "main": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
+              "mode": "previous_full_read_plus_reviewed_delta",
+              "baseline_commit": "cf7daf1f954f3c04187fe2decc20b59ad7241bab",
+              "baseline_sha256": "2ba0b2b5004f1c68f31d77b507b0b90952fe65a2ac9c5e139f78c58e922b8a88",
+              "baseline_matches_previous_review": true,
+              "delta_ranges": [
+                [
+                  189,
+                  189
+                ],
+                [
+                  371,
+                  371
+                ],
+                [
+                  387,
+                  387
+                ],
+                [
+                  394,
+                  394
+                ],
+                [
+                  402,
+                  403
+                ],
+                [
+                  938,
+                  940
+                ],
+                [
+                  1008,
+                  1009
+                ],
+                [
+                  1457,
+                  1457
+                ]
+              ],
+              "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "118a54fd3262db2741d8cd55e9abddfeccc5934181d6c44538097f4857815e51"
+          }
+        }
+      ]
     },
     {
       "id": "frontend/src/i18n/resolveViewModeCopy.js",
@@ -34889,10 +36634,13 @@
     }
   ],
   "metadata_refresh": {
-    "at_utc": "2026-09-30T14:40:04.052007+00:00",
-    "head": "972579f0b95b70d0ac8d4293331cd8d18c2521fe",
-    "collector": "docs/code-review/refresh-materials-2026-09-30.py",
-    "tracked_docs_required": 137,
+    "at_utc": "2026-09-30T17:21:53.802205+00:00",
+    "head": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+    "branch": "codex/search-v2-20260930",
+    "baseline_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
+    "collector": "analytics/search-audit/2026-09-30/refresh_materials.py",
+    "tracked_docs_required": 143,
+    "required_materials": 157,
     "excluded_hash_paths": [
       "docs/code-review.md",
       "docs/code-review/materials-2026-09-30.json",
@@ -34902,6 +36650,6 @@
       "docs/project-terrain.md",
       "docs/repo-inventory.md"
     ],
-    "limit": "SHA refresh does not promote review; external discovery and foreign untracked observations are unchanged."
+    "limit": "SHA never promotes body review; exact authored ledger/date/delta evidence is separate from generated snapshots; unchanged/external/untracked prior observations retained"
   }
 }

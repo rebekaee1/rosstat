@@ -1,5 +1,60 @@
 # Backlog — текущие правки в работе
 
+<a id="search-v2-2026-09-30"></a>
+
+## 2026-09-30 — поиск: история, все поверхности и федеративная версия
+
+**Основа:** задача владельца исправить поиск на всех страницах и по всей
+матрице покрытия, сначала визуально проверить текущий поиск и разобрать
+не менее 150 клиентских путей. Работа начата от `05302ff1c4dbe`;
+реализация локальная, push/deploy не выполнялись. Основной документ —
+[search.md](search.md), решение — [ADR-0016](adr/0016-federated-public-search.md).
+
+- **История выгружена read-only:** одна PG REPEATABLE READ / READ ONLY
+  транзакция 30.09 15:04 UTC сохранила 3 905 поисковых событий и связанный
+  клиентский/серверный контекст за весь фактический срок хранения; внешние
+  поисковые фразы Метрики/Webmaster выгружены отдельно. GSC/hits таблицы
+  в данном снимке пусты. CH копия сверена по id/event/params, 15 удержанных
+  nginx security rotations прочитаны, IP хэширован на сервере. Raw/manifest
+  игнорируются Git; [публичный отчёт](research/search-history-2026-09-30.md).
+- **Реальные пути:** проанализированы все 919 технических сессий, подробно
+  отобраны и просмотрены 150 human_supported путей; bot/internal/unknown
+  различены. Это наблюдаемая история и продуктовые критерии, не доказанные
+  люди/релевантность и не synthetic подмена. Все клавиши между debounce
+  исторически не сохранены; новая typing capture не добавлялась.
+- **Локальная реализация:** один `/search` объединяет discovery четырёх
+  существующих контуров, сохраняет географию/понятие/период/finite facts,
+  hidden physical slices и canonical представления. Локальные selectors
+  используют общий bounded matcher внутри eligible pool. Табличный
+  predicate одинаков для UI и telemetry, понимает отображаемую/ISO/quarter
+  дату и decimal comma/thousands. Обученной ML-модели нет.
+  Последующая кодовая сверка: `search_paths` разрешает world canonical
+  пакетами, regional annual/frequency facts ограничивают набор до LIMIT,
+  hidden document periods закрыты без SSR listed права; native level и
+  market issuer exceptions DXY/US10Y не меняют исходный data plane.
+- **UI/телеметрия:** loading/error/empty разделены, старые query hits скрыты,
+  composition и изменившийся highlight проверены retained regressions;
+  19 focused global component/hook tests прошли. Передаются все до 100
+  returned candidate keys с interaction_id; viewport impression не доказан.
+  Полные suites: backend 3 133 passed / 9 skipped, frontend 958 passed;
+  lint 0 errors / 3 прежних warnings, build выполнен. Строгий local API replay
+  197/201, 0 HTTP errors; четыре native availability отклонения сохранены.
+  Фактические RU/EN/389px, regional/mode/annual document переходы и границы
+  checks — в [протоколе](research/search-acceptance-2026-09-30.md).
+- **Остаток и release gate:** месячные региональные period destinations
+  не поддерживаются; exhaustive full-catalog ranking ограничен budgets.
+  All-surface RU/EN/mobile/desktop и полный перечень matrix сочетаний требуют
+  отдельной приёмки. 225 synthetic путей нельзя объявить 225 browser checks.
+  До production — утверждённый SHA/релизный workflow, план SQL/resource
+  измерений и живые переходы SPA/document. Для learned ranking нужны ручные
+  judgments, независимый holdout и надёжный exposure/outcome contract;
+  causal улучшение пока не измерено.
+
+**Поправка после проверки агента без истории чата:** [ADR-0014](adr/0014-subnational-regions-generic.md)
+сохраняет первоначальные основания, но dated addition исправляет weekly на
+daily по CronTrigger и CLI путь на `backend/scripts/load-world-subnational.py`.
+Scheduled job/CLI при этой документальной сверке не запускались.
+
 <a id="knowledge-workflow-2026-09-30"></a>
 
 ## 2026-09-30 — выполнение: сохранность и рабочий цикл знаний

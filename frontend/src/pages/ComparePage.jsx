@@ -27,6 +27,8 @@ import { getPageSeo } from '../lib/pageMeta';
 import { ChartSkeleton } from '../components/Skeleton';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchOptions } from '../lib/searchSynonyms';
+import { filterSearchCountries } from '../lib/worldCompareSearch';
 import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
@@ -313,14 +315,17 @@ function ComboSelect({
   }, [groups, value]);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const searchKind = trackContext === 'compare-region' || trackContext === 'compare-world-region' ? 'region' : undefined;
     return groups
       .map((g) => ({
         label: g.label,
-        items: q ? g.items.filter((it) => it.label.toLowerCase().includes(q)) : g.items,
+        items: filterSearchOptions(g.items, query, {
+          searchKind,
+          getSearchItem: (item) => ({ ...item, section_name: g.label }),
+        }),
       }))
       .filter((g) => g.items.length);
-  }, [groups, query]);
+  }, [groups, query, trackContext]);
 
   const total = filtered.reduce((n, g) => n + g.items.length, 0);
 
@@ -415,7 +420,7 @@ function AddRegionSeries({
   const regionGroups = useMemo(() => {
     if (!landing.data) return [{ label: '', items: [] }];
     const items = landing.data.districts
-      .flatMap((d) => d.regions.map((r) => ({ value: r.slug, label: r.name })))
+      .flatMap((d) => d.regions.map((r) => ({ ...r, value: r.slug, label: r.name })))
       .sort((a, b) => a.label.localeCompare(b.label, 'ru'));
     return [{ label: '', items }];
   }, [landing.data]);
@@ -428,7 +433,7 @@ function AddRegionSeries({
         .filter((indicator) => !regionSlug
           || !compatibilityFor
           || compatibilityFor(`r:${regionSlug}:${indicator.code}`).allowed)
-        .map((i) => ({ value: i.code, label: i.name })),
+        .map((i) => ({ ...i, value: i.code, label: i.name })),
     })).filter((section) => section.items.length);
   }, [catalog.data, compatibilityFor, regionSlug]);
 
@@ -511,6 +516,7 @@ function AddSubnationalSeries({
   const regionGroups = useMemo(() => {
     const items = (hub.data?.regions || [])
       .map((r) => ({
+        ...r,
         value: r.slug,
         label: locale === 'en' ? (r.name_en || r.name) : r.name,
       }))
@@ -527,7 +533,7 @@ function AddSubnationalSeries({
           .filter((indicator) => !regionSlug
             || !compatibilityFor
             || compatibilityFor(`s:${countrySlug}:${regionSlug}:${indicator.code}`).allowed)
-          .map((i) => ({ value: i.code, label: i.name })),
+          .map((i) => ({ ...i, value: i.code, label: i.name })),
       })).filter((section) => section.items.length);
     }
     return [{
@@ -536,7 +542,7 @@ function AddSubnationalSeries({
         .filter((indicator) => !regionSlug
           || !compatibilityFor
           || compatibilityFor(`s:${countrySlug}:${regionSlug}:${indicator.code}`).allowed)
-        .map((i) => ({ value: i.code, label: i.name })),
+        .map((i) => ({ ...i, value: i.code, label: i.name })),
     }].filter((section) => section.items.length);
   }, [hub.data, compatibilityFor, countrySlug, regionSlug]);
 
@@ -639,14 +645,11 @@ function AddIndicator({
   // приходит из API и попадает сюда автоматически. Поиск идёт и по
   // seo_keywords (синонимы/корни), как в основном поиске.
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
     const pool = (indicators || []).filter((i) =>
       !selected.includes(i.code)
       && (!compatibilityFor || compatibilityFor(i.code).allowed));
-    if (!q) return pool;
-    return pool.filter((i) => {
-      const hay = `${i.name || ''} ${i.name_en || ''} ${i.category || ''} ${i.code || ''} ${i.seo_keywords || ''}`.toLowerCase();
-      return hay.includes(q);
+    return filterSearchOptions(pool, query, {
+      getSearchItem: (item) => ({ ...item, country_slug: 'russia' }),
     });
   }, [indicators, selected, query, compatibilityFor]);
 
@@ -732,6 +735,7 @@ function AddWorldCountrySeries({
           ? t('compare.freq.quarterShort')
           : t('compare.freq.yearShort');
       map.set(item.concept_slug, {
+        ...item,
         value: item.concept_slug,
         label: item.concept_name,
         hint: freq,
@@ -839,6 +843,9 @@ function CompareSeriesPicker({
       if (!item.country_slug || map.has(item.country_slug)) continue;
       map.set(item.country_slug, {
         key: item.country_slug,
+        country_slug: item.country_slug,
+        country_name: item.country_name,
+        country_name_en: item.country_name_en,
         label: locale === 'en'
           ? (item.country_name_en || item.country_name)
           : item.country_name,
@@ -849,12 +856,12 @@ function CompareSeriesPicker({
 
   const filteredCountries = useMemo(() => {
     const q = countryQuery.trim().toLowerCase();
-    const russia = { key: 'russia', label: t('compare.russia') };
+    const russia = { key: 'russia', country_slug: 'russia', label: t('compare.russia') };
     const rest = (q
-      ? countries.filter((c) => c.label.toLowerCase().includes(q))
+      ? filterSearchCountries(countries, q)
       : countries
     ).filter((c) => c.key !== 'russia');
-    const showRussia = !q || 'россия'.includes(q) || 'russia'.includes(q) || russia.label.toLowerCase().includes(q);
+    const showRussia = !q || filterSearchCountries([russia], q).length > 0;
     if (q) return showRussia ? [russia, ...rest] : rest;
     if (locale === 'en') {
       const all = [...rest, ...(showRussia ? [russia] : [])]

@@ -2,6 +2,45 @@
 
 **Last verified:** 2026-07-02 (атрибуция аудитории: `authed`/`user_id` в `frontend_events` + `ym userParams/setUserID`; приём событий развязан с `analytics_enabled`).
 
+## Дополнение 2026-09-30: поисковые состояния и границы истории
+
+Исходная таксономия ниже сохраняет историю goals. **Локальная новая версия**
+глобального `IndicatorSearch` использует `/search` и уточняет параметры:
+
+| Событие | Когда / текущие параметры |
+|---|---|
+| `search_query` | Loaded query ≥2 символов после 900 мс; q до 256, results, context=global, version, interaction_id, keys всех до 100 returned rows, returned_count, has_more |
+| `search_select` | Выбран доступный relative path; q до 256, code, scope(kind), country, optional region, path, context=global, version, interaction_id, optional 1-based position |
+| `search_abandon` | Диалог закрыт без выбора с q≥2; q до 256, results (null при pending/error), context=global, interaction_id |
+| Локальный `search_query` | `useSearchTracking`: 900 мс, minLen=2, q до 60, results, context соответствующего поля; общего interaction/candidate-контракта пока нет |
+| `table_search` | DataTable 250 мс: query, results по тому же `tableRowMatches`, который фильтрует UI; только загруженные наблюдения |
+
+Новый interaction_id создаётся при открытии палитры; один и тот же q внутри
+открытия дедуплицируется. `keys` описывает возвращённые и отрисованные строки,
+**не** гарантирует попадание каждой в viewport, внимание или relevance.
+Pending/error не записывается как нулевая завершённая глобальная выдача.
+Старые параметры historical rows не дополнены задним числом; старые select/
+abandon могут не иметь context/interaction, count может отсутствовать.
+Ноль означает записанную пустоту в тогдашнем scope; сам по себе он не
+доказывает пробел каталога или неудовлетворённого человека.
+
+`track()` отсекает automation, вызывает `reachGoal` только при наличии ym и
+отправляет first-party событие через beacon/fetch; durable клиентской очереди,
+ack/retry и гарантии приёма нет. Beacon false не повторяется через fetch.
+Backend `/analytics/events` управляется `frontend_events_enabled`, noise UA
+guard и existing schema; `analytics_enabled` не выключает этот collector.
+Наблюдённая граница: собственный `track()` не проверяет explicit consent
+opt-out так, как это делает behavior stream. Этот контракт здесь не изменён;
+наличие consent gating для внешнего ym не равно отключению first-party track.
+
+Текст каждого изменения input/textarea/contenteditable не снимается
+`behavior.js` и не добавлялся в эту версию. Полный retained search экспорт
+и ограничения доступности старой истории — [аудит](../research/search-history-2026-09-30.md),
+все поля/contexts и retrieval — [search.md](../search.md). Raw q и visitor
+hashes остаются в ignored локальном архиве; публичный отчёт — агрегаты.
+Возвращённые keys улучшат проверку действия, но без viewport/relevance/outcome
+labels не являются готовой обучающей выборкой ranking.
+
 ## Атрибуция аудитории (2026-07-02)
 
 Разрез «гость vs зарегистрированный» — на двух уровнях:
@@ -143,14 +182,14 @@ ym(107136069, 'init', {
 | Goal | Site | Surface | Параметры |
 |---|---|---|---|
 | `compare_add` | `ComparePage` | добавление индикатора в сравнение | `code`, `count` |
-| `compare_search` | `ComparePage` | поиск в сравнении (debounce) | `q`, `results` (0 = пробел каталога) |
+| `compare_search` | `ComparePage` | поиск в сравнении (debounce) | `q`, `results` (0 = записанная пустота; причина требует проверки) |
 | `compare_image_download` | `ComparePage` | скачивание картинки сравнения | `count`, `scale` |
 | `compare_image_blocked` | `ComparePage` | гость уперся в гейт картинки | `count` |
 | `compare_limit_hit` | `ComparePage` | гость уперся в лимит 2 рядов | `cap` |
 | `chart_image_download` | `IndicatorChartSection` | скачивание графика картинкой | `indicator`, `mode`, `withForecast` |
 | `chart_image_blocked` | `IndicatorChartSection` | гость уперся в гейт картинки | `indicator` |
 | `download_limit` | `excel.js`/`IndicatorChartSection` | гость уперся в стену выгрузки данных | `indicator` |
-| `search_query` | `IndicatorSearch` | основной поиск ⌘K (debounce) | `q`, `results` (0 = пробел каталога) |
+| `search_query` | `IndicatorSearch` и локальные hooks | поиск (debounce; новая global схема выше) | `q`, `results`, context; 0 не доказывает пробел каталога |
 | `search_select` | `IndicatorSearch` | выбор индикатора из поиска | `q`, `code` |
 | `search_abandon` | `IndicatorSearch` | закрыли поиск без выбора | `q`, `results` |
 | `register_nudge_view` / `register_nudge_expand` / `register_nudge_cta` | глобально | плашка «регистрация» | — |

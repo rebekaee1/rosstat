@@ -4,6 +4,8 @@ import {
   damerauLevenshtein,
   expandSearchQuery,
   filterSearchIndicators,
+  filterSearchOptions,
+  correctSearchKeyboardLayout,
   normalizeSearchQuery,
   resolveSynonymTargets,
 } from './searchSynonyms';
@@ -42,6 +44,89 @@ describe('normalizeSearchQuery', () => {
     expect(normalizeSearchQuery('  ИПЦ  ')).toBe('ипц');
     expect(normalizeSearchQuery('Жильё   ЦБ')).toBe('жилье цб');
     expect(normalizeSearchQuery('Oil')).toBe('oil');
+  });
+});
+
+describe('shared scoped ranking and required qualifiers', () => {
+  const scoped = [
+    { code: 'cpi', name: 'Индекс потребительских цен', country_slug: 'russia', frequency: 'monthly' },
+    { code: 'de-cpi', name: 'Индекс потребительских цен', country_slug: 'germany', frequency: 'monthly' },
+    { code: 'us-cpi', name: 'Consumer Price Index', country_slug: 'united-states', frequency: 'monthly' },
+    { code: 'wages-nominal', name: 'Средняя заработная плата', country_slug: 'russia' },
+    { code: 'minimum-wage', name: 'Минимальный размер оплаты труда', country_slug: 'russia' },
+    { code: 'deposit-rate-avg-quarter', name: 'Ставка по вкладам', country_slug: 'russia', frequency: 'quarterly' },
+    { code: 'key-rate', name: 'Ключевая ставка', country_slug: 'russia', frequency: 'daily' },
+  ];
+
+  it('retains the country qualifier after resolving an economic alias', () => {
+    expect(filterSearchOptions(scoped, 'инфляция Германия').map((item) => item.code)).toEqual(['de-cpi']);
+    expect(filterSearchOptions(scoped, 'cpi USA').map((item) => item.code)).toEqual(['us-cpi']);
+    expect(filterSearchOptions(scoped, 'инфляция Марс')).toEqual([]);
+  });
+
+  it('keeps frequency and deposit qualifiers instead of selecting the key rate', () => {
+    expect(filterSearchOptions(scoped, 'средняя ставка по вкладам по кварталам').map((item) => item.code))
+      .toEqual(['deposit-rate-avg-quarter']);
+    expect(filterSearchOptions(scoped, 'ставка по вкладам ежедневно')).toEqual([]);
+  });
+
+  it.each(['МРОТ', 'минимальная зарплата', 'minimum wage'])('does not substitute average pay for %s', (q) => {
+    expect(filterSearchOptions(scoped, q).map((item) => item.code)).toEqual(['minimum-wage']);
+    expect(filterSearchOptions(scoped.filter((item) => item.code !== 'minimum-wage'), q)).toEqual([]);
+  });
+
+  it('corrects layout only after literal matching fails', () => {
+    expect(correctSearchKeyboardLayout('byakzwbz')).toBe('инфляция');
+    expect(filterSearchOptions(scoped, 'byakzwbz')[0].code).toBe('cpi');
+    const literal = { code: 'byakzwbz', name: 'Source identifier' };
+    expect(filterSearchOptions([literal, ...scoped], 'byakzwbz')).toEqual([literal]);
+  });
+
+  it('matches count vocabulary and bounded Russian inflection without dropping the subject', () => {
+    const students = { code: 'students', name: 'Численность студентов' };
+    const roads = { code: 'roads', name: 'Протяженность автомобильных дорог' };
+    expect(filterSearchOptions([students, roads], 'количество студентов')).toEqual([students]);
+    expect(filterSearchOptions([students, roads], 'дороги')).toEqual([roads]);
+    expect(filterSearchOptions([students, roads], 'численность дорог')).toEqual([]);
+  });
+
+  it('retains all options and original object identity without inventing a result cap', () => {
+    const items = Array.from({ length: 701 }, (_unused, i) => ({ value: String(i), label: `Запас топлива ${i}` }));
+    expect(filterSearchOptions(items, '')).toBe(items);
+    expect(filterSearchOptions(items, 'топлива')).toHaveLength(701);
+    expect(filterSearchOptions(items, 'топлива')[0]).toBe(items[0]);
+    expect(filterSearchOptions(items, 'топлива', { limit: 25 })).toHaveLength(25);
+  });
+
+  it('uses actual country/region identity for convenience aliases', () => {
+    const spb = { value: 'sankt-peterburg', label: 'г. Санкт-Петербург' };
+    const metric = { value: 'housing', label: 'Стоимость жилья в Санкт-Петербурге' };
+    expect(filterSearchOptions([spb], 'СПб', { searchKind: 'region' })).toEqual([spb]);
+    expect(filterSearchOptions([metric], 'СПб')).toEqual([]);
+    expect(filterSearchOptions([spb], 'СПб Москва', { searchKind: 'region' })).toEqual([]);
+  });
+
+  it('preserves literal numeric percentages and actual percentage units', () => {
+    const items = [
+      { code: 'base-1000', name: 'Индекс базовый 1000', unit: '%' },
+      { code: 'base-100', name: 'Индекс базовый 100', unit: 'баллы' },
+      { code: 'percent-100', name: 'Индекс базовый 100 %', unit: '%' },
+      { code: 'cpi', name: 'Инфляция', unit: '%', country_slug: 'russia' },
+      { code: 'gdp', name: 'Валовой выпуск', unit: 'рубли', country_slug: 'russia' },
+    ];
+    expect(filterSearchOptions(items, '100%')).toEqual([items[2]]);
+    expect(filterSearchOptions(items, 'инфляция %')).toEqual([items[3]]);
+    expect(filterSearchOptions(items, 'ВВП %')).toEqual([]);
+    expect(filterSearchOptions(items, '100% Germany')).toEqual([]);
+  });
+
+  it('does not discard a meaningful residual token after a longest intent phrase', () => {
+    const items = [
+      { code: 'gdp-real', name: 'Реальный выпуск', country_slug: 'germany' },
+      { code: 'gdp-per-capita-usd', name: 'Выпуск на человека', country_slug: 'germany' },
+    ];
+    expect(filterSearchOptions(items, 'ввп на душу Германии').map((item) => item.code)).toEqual(['gdp-per-capita-usd']);
+    expect(filterSearchOptions(items, 'ввп на душу Германии женщины')).toEqual([]);
   });
 });
 

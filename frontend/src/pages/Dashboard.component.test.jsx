@@ -95,7 +95,7 @@ describe('Dashboard', () => {
       'Официальные макроэкономические индикаторы в одной рабочей среде',
     );
     expect(screen.getByText('Бесплатная аналитическая платформа экономических данных')).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Открыть поиск индикаторов' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Открыть поиск' })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
   });
 });

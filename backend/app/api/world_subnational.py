@@ -61,6 +61,28 @@ def _section(ind: SubnationalIndicator) -> str:
     return ind.section_en if _en() else ind.section_ru
 
 
+def _indicator_search_fields(ind: SubnationalIndicator) -> dict[str, str]:
+    """Bilingual search metadata; locale-facing name/unit remain unchanged."""
+    return {
+        "name_ru": ind.name_ru,
+        "name_en": ind.name_en,
+        "unit_ru": ind.unit_ru or ind.unit,
+        "unit_en": ind.unit_en or ind.unit,
+        "section_ru": ind.section_ru,
+        "section_en": ind.section_en,
+    }
+
+
+def _section_payload(num: int, name: str, indicators: list[dict]) -> dict:
+    first = indicators[0] if indicators else {}
+    return {
+        "num": num, "name": name,
+        "name_ru": first.get("section_ru") or name,
+        "name_en": first.get("section_en") or name,
+        "indicators": indicators,
+    }
+
+
 async def _country(db: AsyncSession, slug: str) -> WorldCountry:
     row = (
         await db.execute(
@@ -169,7 +191,7 @@ async def _rank_for_period(
 
 @router.get("")
 async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"subnat:hub:v2:{country_slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"subnat:hub:v3:{country_slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -199,7 +221,7 @@ async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
         item = {
             "code": ind.code,
             "name": _iname(ind),
-            "name_en": ind.name_en,
+            **_indicator_search_fields(ind),
             "unit": _iunit(ind),
             "frequency": ind.frequency,
             "section": _section(ind),
@@ -213,6 +235,7 @@ async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
             "slug": country.slug,
             "name": country.name_en if _en() else country.name_ru,
             "name_en": country.name_en,
+            "name_ru": country.name_ru,
         },
         "kind_label": labels["kind"],
         "kind_label_plural": labels["kind_plural"],
@@ -224,6 +247,7 @@ async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
                 "slug": r.slug,
                 "name": _rname(r),
                 "name_en": r.name_en,
+                "name_ru": r.name_ru,
                 "kind": r.kind,
                 "geo_code": r.geo_code,
             }
@@ -231,7 +255,7 @@ async def list_regions(country_slug: str, db: AsyncSession = Depends(get_db)):
         ],
         "indicators": indicator_payload,
         "sections": [
-            {"num": idx, "name": name, "indicators": items}
+            _section_payload(idx, name, items)
             for idx, (name, items) in enumerate(sections.items(), 1)
         ],
         "totals": {
@@ -343,7 +367,7 @@ async def map_values(
 
 @router.get("/region/{slug}")
 async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("world", f"subnat:profile:v2:{country_slug}:{slug}:{get_locale()}")
+    cache_key = await versioned_key("world", f"subnat:profile:v3:{country_slug}:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -389,6 +413,7 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
         items.append({
             "code": ind.code,
             "name": _iname(ind),
+            **_indicator_search_fields(ind),
             "label": _iname(ind),
             "unit": _iunit(ind),
             "frequency": ind.frequency,
@@ -413,11 +438,13 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
             "slug": country.slug,
             "name": country.name_en if _en() else country.name_ru,
             "name_en": country.name_en,
+            "name_ru": country.name_ru,
         },
         "region": {
             "slug": region.slug,
             "name": _rname(region),
             "name_en": region.name_en,
+            "name_ru": region.name_ru,
             "kind": region.kind,
             "geo_code": region.geo_code,
         },
@@ -425,11 +452,11 @@ async def region_profile(country_slug: str, slug: str, db: AsyncSession = Depend
         "kind_label_plural": labels["kind_plural"],
         "featured_indicator_codes": list(load_subnational_passport(country.code.lower()).featured_indicators),
         "comparison_regions": [
-            {"slug": other.slug, "name": _rname(other)} for other in comparison_regions
+            {"slug": other.slug, "name": _rname(other), "name_ru": other.name_ru, "name_en": other.name_en} for other in comparison_regions
         ] if region.kind == "state" else [],
         "indicators": items,
         "sections": [
-            {"num": idx, "name": name, "indicators": inds}
+            _section_payload(idx, name, inds)
             for idx, (name, inds) in enumerate(sections.items(), 1)
         ],
         "catalog_total": len(items),

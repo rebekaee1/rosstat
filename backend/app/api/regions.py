@@ -85,6 +85,29 @@ def _icopy(ind: RegionIndicator) -> dict[str, str | None]:
     )
 
 
+def _indicator_search_fields(ind: RegionIndicator) -> dict[str, str | None]:
+    """Add both source languages without replacing locale-facing display copy."""
+    english = region_indicator_copy(
+        ind.code, name_ru=ind.name, unit_ru=ind.unit or "",
+        section_ru=ind.section_name, locale="en",
+    )
+    return {
+        "name_ru": ind.name,
+        "name_en": english["name"],
+        "unit_ru": ind.unit or "",
+        "unit_en": english["unit"],
+        "section_ru": ind.section_name,
+        "section_en": english["section"],
+    }
+
+
+def _region_search_fields(region: Region) -> dict[str, str]:
+    return {
+        "name_ru": region.name,
+        "name_en": region_display_name(region.slug, region.name, locale="en"),
+    }
+
+
 def _headline_label(table_code: str) -> str:
     if get_locale() == "en":
         return HEADLINE_TABLES_EN.get(table_code) or HEADLINE_TABLES[table_code]
@@ -130,7 +153,7 @@ async def _latest_values(db: AsyncSession, indicator_ids: list[int],
 
 @router.get("")
 async def regions_landing(db: AsyncSession = Depends(get_db)):
-    cache_key = f"fe:regions:landing:{get_locale()}"
+    cache_key = f"fe:regions:landing:search-v2:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -155,7 +178,7 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
     district_map = {}
     for r in regions:
         if r.kind == "district":
-            entry = {"slug": r.slug, "name": _rname(r.slug, r.name), "regions": []}
+            entry = {"slug": r.slug, "name": _rname(r.slug, r.name), **_region_search_fields(r), "regions": []}
             districts.append(entry)
             district_map[r.slug] = entry
 
@@ -182,7 +205,7 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
         if entry is None:
             continue
         entry["regions"].append({
-            "slug": r.slug, "name": _rname(r.slug, r.name), "stats": stats_for(r),
+            "slug": r.slug, "name": _rname(r.slug, r.name), **_region_search_fields(r), "stats": stats_for(r),
         })
 
     country = next((r for r in regions if r.kind == "country"), None)
@@ -191,6 +214,7 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
         "russia": {
             "slug": "russia",
             "name": _rname("russia", "Российская Федерация"),
+            **_region_search_fields(country),
             "stats": stats_for(country),
         } if country else None,
         "totals": {
@@ -206,7 +230,7 @@ async def regions_landing(db: AsyncSession = Depends(get_db)):
 @router.get("/catalog")
 async def regions_catalog(db: AsyncSession = Depends(get_db)):
     """Каталог показателей по разделам — одинаков для всех регионов."""
-    cache_key = f"fe:regions:catalog:{get_locale()}"
+    cache_key = f"fe:regions:catalog:search-v2:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -220,13 +244,17 @@ async def regions_catalog(db: AsyncSession = Depends(get_db)):
     sections: dict[int, dict] = {}
     for i in inds:
         copy = _icopy(i)
+        search_fields = _indicator_search_fields(i)
         sec = sections.setdefault(i.section_num, {
             "num": i.section_num,
             "name": copy["section"] or i.section_name,
+            "name_ru": search_fields["section_ru"],
+            "name_en": search_fields["section_en"],
             "indicators": [],
         })
         sec["indicators"].append({
             "code": i.code, "name": copy["name"], "unit": copy["unit"],
+            **search_fields,
             "year_min": i.year_min, "year_max": i.year_max,
             # мост в макроблок: код общероссийского индикатора-аналога
             "macro_code": MACRO_BY_TABLE.get(i.table_code or ""),
@@ -362,7 +390,7 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
 
 @router.get("/{slug}")
 async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = f"fe:regions:profile:{slug}:{get_locale()}"
+    cache_key = f"fe:regions:profile:search-v2:{slug}:{get_locale()}"
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -421,6 +449,7 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         copy = _icopy(i)
         item = {
             "code": i.code, "name": copy["name"], "unit": copy["unit"],
+            **_indicator_search_fields(i),
             "year": year, "value": _fmt(value),
             "prev_year": p[0] if p else None,
             "prev_value": _fmt(p[1]) if p else None,
@@ -428,6 +457,8 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         sec = sections.setdefault(i.section_num, {
             "num": i.section_num,
             "name": copy["section"] or i.section_name,
+            "name_ru": item["section_ru"],
+            "name_en": item["section_en"],
             "indicators": [],
         })
         sec["indicators"].append(item)
@@ -447,6 +478,7 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         "region": {
             "slug": region.slug,
             "name": _rname(region.slug, region.name),
+            **_region_search_fields(region),
             "kind": region.kind,
             "district_slug": region.district_slug,
             "district_name": district_name,

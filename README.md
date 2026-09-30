@@ -10,8 +10,12 @@
 **Содержательная дельта frontend/docs 30 сентября:** [`отчёт`](docs/code-review/frontend-docs-delta-2026-09-30.md): локальный код, история и ограничения полноты.
 **Рабочий процесс, локальный dev, прод-деплой:** [`docs/workflow.md`](docs/workflow.md).
 **Источники данных:** [`docs/data_sources.md`](docs/data_sources.md) (per-indicator карта `URL/endpoint/sheet/row`); parser internals — в docstrings `backend/app/services/*_parser.py`.
-**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0015).
+**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0016).
 **Backlog работ:** [`docs/backlog.md`](docs/backlog.md).
+**Поиск по всем контурам:** [`docs/search.md`](docs/search.md): глобальная
+палитра стран/регионов/рядов, локальные селекторы, таблицы и телеметрия.
+Новая версия 30.09 реализована локально; исторический read-only экспорт
+и 150 реальных клиентских путей — [отчёт](docs/research/search-history-2026-09-30.md).
 
 ## Архитектура
 
@@ -127,6 +131,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 | Группа | Что отдаёт |
 |--------|------------|
 | `/indicators/*` | список / детали / точки / статистика / прогноз / накопленная инфляция (CPI) |
+| `/search` | public read-only discovery стран, территорий и доступных рядов; q до 256, limit до 100, has_more и explicit empty reasons; локальная версия — [контракт](docs/search.md) |
 | `/calendar/*` | публикации в диапазоне, ближайшие, iCal-фид (источник: ADR-0005) |
 | `/ticker/live` | live снимок USD/EUR/CNY/BTC/Brent из Redis (TTL 90с, MOEX + Binance + CBR fallback) |
 | `/embed/*` | spark/card/badge SVG-виджеты + impression-pixel |

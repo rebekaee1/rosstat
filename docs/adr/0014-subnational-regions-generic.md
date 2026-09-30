@@ -3,6 +3,8 @@
 - **Status:** Accepted
 - **Date:** 2026-09-20
 - **Last verified:** 2026-09-20
+  (исходное решение; путь ingest и ежедневный CronTrigger уточнены по коду
+  2026-09-30 в дополнении ниже, без production schedule acceptance).
 - **Part of:** [`AGENTS.md`](../../AGENTS.md), [`CONTEXT.md`](../../CONTEXT.md), [`ADR-0008`](0008-regional-bounded-context.md), [`ADR-0012`](0012-world-multi-provider-official-first-forecasts.md), [`ADR-0013`](0013-country-first-url-architecture.md)
 
 ---
@@ -62,6 +64,9 @@ Ingest: `scripts/load-world-subnational.py`, еженедельный job под
 отмечаются ошибками, а отсутствующие серии — пропусками. Ошибки выпуска
 завершают job с исключением, чтобы listener планировщика отправил алерт.
 
+Формулировка пути/weekly выше сохраняет исходный план 20.09; действующий
+репозиторный путь и daily schedule заменяют её по дополнению 30.09 ниже.
+
 ## Последствия
 
 - Российский regional (таблицы, сидер, API, UI `/russia/region`) не меняется
@@ -69,6 +74,29 @@ Ingest: `scripts/load-world-subnational.py`, еженедельный job под
 - Новая страна = новый YAML + геометрия карты, без правок ядра.
 
 ## Subsequent additions
+
+### 2026-09-30 — действующие путь загрузчика и ежедневный schedule
+
+Проверка агента без истории чата выявила два устаревших указателя в исходном
+описании ingest. Действующий CLI находится в
+[`backend/scripts/load-world-subnational.py`](../../backend/scripts/load-world-subnational.py):
+из `backend/` его относительный путь `scripts/load-world-subnational.py`,
+в контейнере `/app/scripts/load-world-subnational.py`. Он читает тот же
+YAML-паспорт и вызывает `ingest_country`; это уточнение расположения, не
+новый pipeline или замена официальных источников.
+
+В [`main.py`](../../backend/app/main.py) job `world_subnational_ingest`
+зарегистрирован `CronTrigger(hour=..., minute=..., timezone="Europe/Moscow")`
+без ограничения weekday — **ежедневно**, не еженедельно.
+[`config.py`](../../backend/app/config.py) задаёт defaults enabled=true,
+hour=3, minute=40; effective env может их переопределить. Отдельный scheduler
+вызывает [`world_subnational_ingest_job`](../../backend/app/services/world_subnational_ingest.py),
+описанный как daily refresh всех паспортов. Реальное исполнение, свежесть
+каждой серии и расписание production этим чтением не подтверждены.
+
+Причины отдельного bounded context, `period date` с собственной частотой,
+источники, idempotent upsert и quality gate прогнозов сохраняются. Ни CLI,
+ни scheduled ingest при этой документальной поправке не запускались.
 
 ### 2026-09-20 — OG-картинки субнациональных страниц
 

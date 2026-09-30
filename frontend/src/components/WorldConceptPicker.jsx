@@ -4,6 +4,7 @@ import { ChevronDown, Search } from 'lucide-react';
 import { homeConceptLabel } from '../lib/homeWorkbench';
 import { useT } from '../i18n';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchOptions } from '../lib/searchSynonyms';
 
 /** Выше порога — свёрнутый триггер + панель с поиском (рост до 20+). */
 const COLLAPSE_AT = 12;
@@ -19,25 +20,6 @@ function chipClass(active) {
 
 function labelFor(slug, conceptsBySlug, t) {
   return homeConceptLabel(slug, t, conceptsBySlug.get(slug)?.name || slug);
-}
-
-function normalize(text) {
-  return (text || '')
-    .toLowerCase()
-    .replace(/ё/g, 'е')
-    .replace(/[^а-яa-z0-9 ]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/**
- * Поисковая база показателя: подпись, код и синонимы из реестра понятий
- * (`keywords` приходит с API). Благодаря синонимам «дефицит бюджета» находит
- * сальдо бюджета, а «цены» — инфляцию.
- */
-function haystack(concept, slug, conceptsBySlug, t) {
-  const keywords = Array.isArray(concept?.keywords) ? concept.keywords.join(' ') : '';
-  return normalize(`${labelFor(slug, conceptsBySlug, t)} ${concept?.name || ''} ${slug} ${keywords}`);
 }
 
 function ConceptChip({
@@ -99,10 +81,12 @@ export default function WorldConceptPicker({
     [list],
   );
   const collapsed = searchable && list.length > COLLAPSE_AT;
-  const q = searchable ? normalize(query) : '';
+  const q = searchable ? query.trim() : '';
   const matches = useMemo(() => {
     if (!q) return list;
-    return list.filter((item) => haystack(item, item.slug, conceptsBySlug, t).includes(q));
+    return filterSearchOptions(list, q, {
+      getSearchItem: (item) => ({ ...item, concept_slug: item.slug, search_label: labelFor(item.slug, conceptsBySlug, t) }),
+    });
   }, [list, conceptsBySlug, q, t]);
   // Поле видимо всегда в развёрнутом режиме; в свёртке — только при open.
   useSearchTracking(

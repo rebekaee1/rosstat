@@ -179,6 +179,7 @@ Root cron сервера запускает `scripts/pg-backup.sh` в **04:00 UT
 | Данные | `frontend/src/lib/api.js` задаёт API transport, locale/CSRF и retry; `lib/hooks.js` задаёт query keys/stale time. Возвращаемые API payloads читаются страницами, а не копируются в отдельную browser-БД. |
 | Карточка РФ | `pages/IndicatorDetail.jsx` выбирает generic либо существующий bespoke стек; `lib/viewModeEngine.js` читает generated-конфиг, `components/GenericIndicatorView.jsx` и `lib/useGenericViewModeData.js` собирают активный ряд. |
 | Мир и регионы | `pages/WorldCountry.jsx`, `WorldIndicatorPage.jsx`, `WorldRegionProfile.jsx`, `RegionProfile.jsx` разделяют национальные, субнациональные и российские сценарии; API routes различны (`api/world.py`, `world_subnational.py`, `regions.py`). |
+| Поиск, локальная версия 30.09 | `IndicatorSearch` → `useGlobalSearch` → `/search`; `searchSynonyms` ранжирует локальные eligible pools, `tableSearch` фильтрует загруженные точки. Data planes остаются раздельными; [основной контракт](search.md). |
 | Identity/BI/analytics | `context/AuthProvider.jsx` держит `/auth/me` в QueryClient, `pages/AdminBI.jsx` требует `is_admin`, `lib/behavior.js` и `lib/track.js` отправляют first-party события. Серверная проверка доступа остаётся в FastAPI. |
 
 ## Сквозные сценарии и контракты
@@ -221,6 +222,40 @@ SPA-маршруты России находятся под `/russia`, друг�
 ### 5. Аналитика и данные для решений
 
 Браузерный `behavior.js` пакетирует события и отправляет `/api/v1/analytics/behavior`; сервер нормализует/пишет их в Postgres (`api/analytics.py`). Scheduler регистрирует `analytics_rollups` и `clickhouse_sync`; `analytics_marts.py` — читаемые витрины, а ClickHouse — производный OLAP-слой для срезов (`backend/app/main.py`, `tasks/analytics_rollups.py`, `services/clickhouse_sync.py`). Следовательно, аналитические цифры нельзя смешивать без определения единицы: событие, сессия и визит Метрики проходят разными контурами. Границы и принятые определения — [CONTEXT](../CONTEXT.md) и [ADR-0010](adr/0010-analytics-contour-identity-goals-marts-olap.md).
+
+### 6. Федеративное обнаружение данных (локальная версия 2026-09-30)
+
+`IndicatorSearch.jsx` → `useGlobalSearch.js` → `api/search.py` →
+`services/search_intent.py` и `services/search.py` → существующие модели
+России/world/регионов/subnational → `search_paths` и `site_paths` →
+SPA либо period document. Намерение и fact/geography/period constraints
+и supported frequency constraints предшествуют ограничению больших SQL наборов; finite value не равен
+ненулевому signal (последний дополнительно требуется только world).
+Глобальная выдача включает территории, но не объединяет таблицы или ETL.
+World sibling/merge destinations читаются одной metadata SELECT на ranked
+порцию; eligibility территорий проверяется пакетами, не per-row SQL.
+Annual региональный период требует annual факта, hidden world period
+закрыт без listed SSR eligibility. Native world level — сохранённая мера
+(включая rate), не обязательно индекс; география DXY/US10Y допускает США
+по действующему market issuer registry общего Indicator контура.
+
+Браузер ждёт settled query 200 мс, cache key включает locale/query/limit,
+старые строки скрыты при смене query; ошибки допускают retry и не считаются
+пустым ответом. Shared local matcher действует внутри допустимого pool
+каждой страницы/сравнения/калькулятора/виджета; таблица имеет отдельный
+predicate дат/значений. Новых search jobs/таблиц/серверного cache и
+внешних ML-вызовов нет. Query telemetry идёт прежним `track()` collector
+в `frontend_events`; candidate keys означают returned/rendered rows,
+не viewport impressions. Исторические клавиши между debounce отсутствуют.
+
+[ADR-0016](adr/0016-federated-public-search.md) уточняет первоначальный
+discovery запрет ADR-0008, сохраняя storage/частоты/прогнозные основания.
+[search.md](search.md) содержит endpoint schema, полный инвентарь полей,
+candidate budgets, unsupported периоды, матрицу и локальные проверки;
+[исторический аудит](research/search-history-2026-09-30.md) — отдельно
+фактический read-only экспорт и 150 реальные пути. Production release,
+exhaustive matrix acceptance и trained ranking этим кодовым потоком не
+подтверждаются.
 
 ## Контрольные точки и риски изменений
 

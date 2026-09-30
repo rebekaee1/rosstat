@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { formatDate, formatValue, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
+import { tableRowMatches } from '../lib/tableSearch';
 
 const PAGE_SIZE = 20;
 
@@ -34,35 +35,28 @@ export default function DataTable({
       setSearch(searchInput);
       setPage(0);
       if (searchInput) {
-        const q = searchInput.toLowerCase();
-        const results = (data || []).filter((r) => (
-          formatDate(r.date, dateFormat).toLowerCase().includes(q)
-          || String(r.value).includes(q)
-        )).length;
+        const results = (data || []).filter(r => tableRowMatches(r, searchInput, { dateFormat, unit, valueDigits })).length;
         track(events.TABLE_SEARCH, { query: searchInput, results });
       }
     }, 250);
     return () => clearTimeout(timer);
-  }, [searchInput, data, dateFormat]);
+  }, [searchInput, data, dateFormat, unit, valueDigits]);
 
   const filtered = useMemo(() => {
     let rows = [...(data || [])];
     if (search) {
-      const q = search.toLowerCase();
-      rows = rows.filter(r =>
-        formatDate(r.date, dateFormat).toLowerCase().includes(q) ||
-        String(r.value).includes(q)
-      );
+      rows = rows.filter(r => tableRowMatches(r, search, { dateFormat, unit, valueDigits }));
     }
     rows.sort((a, b) => sortAsc
       ? new Date(a.date) - new Date(b.date)
       : new Date(b.date) - new Date(a.date)
     );
     return rows;
-  }, [data, search, sortAsc, dateFormat]);
+  }, [data, search, sortAsc, dateFormat, unit, valueDigits]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-  const pageData = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const visiblePage = Math.min(page, Math.max(0, totalPages - 1));
+  const pageData = filtered.slice(visiblePage * PAGE_SIZE, (visiblePage + 1) * PAGE_SIZE);
   const tableUnit = unitSuffix(unit);
 
   return (
@@ -79,6 +73,7 @@ export default function DataTable({
           <input
             type="text"
             placeholder={t('table.searchPlaceholder')}
+            aria-label={t('table.searchPlaceholder')}
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             className="pl-8 pr-3 py-1.5 text-sm bg-obsidian-lighter border border-border-subtle rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-champagne/30 w-40"
@@ -141,18 +136,18 @@ export default function DataTable({
       {totalPages > 1 && (
         <div className="p-4 border-t border-border-subtle flex items-center justify-between">
           <button
-            onClick={() => { setPage(p => Math.max(0, p - 1)); track(events.TABLE_PAGE, { direction: 'prev' }); }}
-            disabled={page === 0}
+            onClick={() => { setPage(Math.max(0, visiblePage - 1)); track(events.TABLE_PAGE, { direction: 'prev' }); }}
+            disabled={visiblePage === 0}
             className="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary disabled:text-text-tertiary disabled:cursor-not-allowed rounded-lg bg-obsidian-lighter border border-border-subtle transition-colors magnetic-btn"
           >
             {t('table.prev')}
           </button>
           <span className="text-xs text-text-tertiary font-mono">
-            {page + 1} / {totalPages}
+            {visiblePage + 1} / {totalPages}
           </span>
           <button
-            onClick={() => { setPage(p => Math.min(totalPages - 1, p + 1)); track(events.TABLE_PAGE, { direction: 'next' }); }}
-            disabled={page >= totalPages - 1}
+            onClick={() => { setPage(Math.min(totalPages - 1, visiblePage + 1)); track(events.TABLE_PAGE, { direction: 'next' }); }}
+            disabled={visiblePage >= totalPages - 1}
             className="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary disabled:text-text-tertiary disabled:cursor-not-allowed rounded-lg bg-obsidian-lighter border border-border-subtle transition-colors magnetic-btn"
           >
             {t('table.next')}

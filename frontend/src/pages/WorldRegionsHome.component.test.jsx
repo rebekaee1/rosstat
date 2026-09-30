@@ -150,6 +150,28 @@ function mockWorld(extra = []) {
 }
 
 describe('WorldRegionsHome', () => {
+  it('keeps all matching map metrics reachable beyond the first result page', async () => {
+    const indicators = Array.from({ length: 65 }, (_unused, index) => ({
+      code: `custom-${index}`, name: `Доходы ${index}`, section: 'Доходы', unit: 'млн $',
+    }));
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      ['/world/united-states/regions', { ...HUB, indicators }],
+      [/\/world\/united-states\/regions\/map\//, MAP],
+    ]);
+    renderPage(<WorldRegionsHome />, {
+      path: '/:countrySlug/region/map/:code', route: '/united-states/region/map/unemployment-rate',
+    });
+    const input = await screen.findByRole('combobox', { name: 'Найти показатель для карты' });
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'Доходы' } });
+    expect(await screen.findByRole('button', { name: /Показать ещё показатели: 50 \/ 65/ })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /^Доходы 64 / })).toBeNull();
+    fireEvent.mouseDown(screen.getByRole('button', { name: /Показать ещё показатели/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Показать ещё показатели/ }));
+    expect(screen.getByRole('button', { name: /^Доходы 64 / })).toBeTruthy();
+  });
+
   it('список штатов в том же каркасе, что регионы России: поиск и вкладка карта', async () => {
     mockWorld();
     renderPage(<WorldRegionsHome />, {
@@ -199,6 +221,22 @@ describe('WorldRegionsHome', () => {
 });
 
 describe('WorldRegionProfile', () => {
+  it('does not erase another state qualifier when resolving an economic alias', async () => {
+    mockWorld();
+    renderPage(<WorldRegionProfile />, {
+      path: '/:countrySlug/region/:slug', route: '/united-states/region/california',
+    });
+    await screen.findByRole('heading', { name: 'Калифорния' });
+    const input = screen.getByRole('searchbox');
+    fireEvent.change(input, { target: { value: 'безработица California' } });
+    expect((await screen.findAllByRole('link', { name: /Безработица/ })).length).toBeGreaterThan(0);
+    expect(await screen.findByRole('heading', { name: 'Труд' })).toBeTruthy();
+    fireEvent.change(input, { target: { value: 'безработица Texas' } });
+    await screen.findByText(/По запросу/);
+    // The profile headline remains, but no matched section row for Texas is fabricated.
+    expect(screen.queryByRole('heading', { name: 'Труд' })).toBeNull();
+  });
+
   it('темы слева и строки показателей как у региона РФ', async () => {
     const get = mockWorld();
     renderPage(<WorldRegionProfile />, {

@@ -43,7 +43,7 @@
 
 **Derived и кэш.** `DerivedSpec(dst_code, src_codes, op)` задаёт чистое преобразование; `run_for_updated_sources` пересчитывает транзитивное замыкание в топологическом порядке, включая in-place ревизии источника через `records_updated`. Изменившиеся derived инвалидируют namespace кода. При исключении отдельного derived код логирует ошибку и продолжает остальные; итоговый caller должен проверять completeness, а не считать факт обновления гарантией всего каскада. [Spec](../backend/app/services/calculation_engine.py#L52-L66), [dispatch](../backend/app/services/calculation_engine.py#L401-L440), [scheduler](../backend/app/tasks/scheduler.py#L188-L203). Полный ручной пересчёт — `scripts/rebuild-all-derived.py`; корневой `scripts/` не копируется в backend image, поэтому в контейнер передавать файл через stdin (см. workflow).
 
-**Публичный ответ.** `/indicators/{code}` отдаёт `IndicatorDetail`: `source_url`, `methodology`, `first_date`, `last_date` могут быть `null`; `world_compare=null` означает отсутствие честной связки. `/indicators/{code}/data` отдаёт `{"indicator": code, "count": N, "data": [{"date", "value"}]}`; пустой **существующий** ряд — 200 с `count=0,data=[]`, неизвестный код — 404. Без диапазона API берёт до 10 000 последних точек и разворачивает в прямой порядок; `from/to` включительны. [Схемы](../backend/app/schemas.py#L51-L90), [реализация](../backend/app/api/indicators.py#L409-L453). `is_listed=false` исключает обычный листинг, но глобальный поиск запрашивает `include_unlisted=true`; детализация остаётся доступна по коду. [API](../backend/app/api/indicators.py#L149-L164), [consumer](../frontend/src/components/IndicatorSearch.jsx#L59-L64).
+**Публичный ответ.** `/indicators/{code}` отдаёт `IndicatorDetail`: `source_url`, `methodology`, `first_date`, `last_date` могут быть `null`; `world_compare=null` означает отсутствие честной связки. `/indicators/{code}/data` отдаёт `{"indicator": code, "count": N, "data": [{"date", "value"}]}`; пустой **существующий** ряд — 200 с `count=0,data=[]`, неизвестный код — 404. Без диапазона API берёт до 10 000 последних точек и разворачивает в прямой порядок; `from/to` включительны. [Схемы](../backend/app/schemas.py#L51-L90), [реализация](../backend/app/api/indicators.py#L409-L453). `is_listed=false` исключает обычный листинг; детализация остаётся доступна по коду. [API](../backend/app/api/indicators.py#L149-L164). До новой версии глобальная палитра использовала `include_unlisted=true`; локальный `/search` 30.09 читает active data-backed российские ряды напрямую, включая unlisted и их canonical resolver. Контракт — [ниже](#7-поиск-и-допустимая-область-локальная-версия-2026-09-30).
 
 **Прогноз.** Российский forecast хранится отдельно в `Forecast/ForecastValue`; `forecast=null` в ответе — допустимое состояние. Startup scheduler и плановый/late ETL запускают gap-fill для рядов с `forecast_steps>0` без текущего прогноза, но сам вызов retrain не доказывает наличие результата. [Схема](../backend/app/schemas.py#L93-L116), [gap-fill](../backend/app/services/forecast_pipeline.py#L472-L508), [startup](../backend/app/main.py#L417-L429).
 
@@ -86,6 +86,44 @@ Public guard требует `official_explicit` либо `official_rule` **то�
 **Семантика BI.** Клиентская сессия/уникальный visitor, серверная 30-минутная сессия и визит Метрики — разные измерения. `Period` задаёт полуинтервал UTC и календарные даты МСК; North Star BI считает `ServerSession` без ботов и внутренней активности, `visitors` — distinct `visitor_id_hash`, Метрика остаётся сверкой. Сессионизация и rollups запускаются отдельными короткими `analytics_session` фазами; ClickHouse — асинхронная производная копия. [Period](../backend/app/services/analytics_period.py#L1-L85), [North Star](../backend/app/services/analytics_marts.py#L318-L349), [rollups](../backend/app/tasks/analytics_rollups.py#L592-L610), [CH](../backend/app/services/clickhouse_sync.py#L1-L18).
 
 **Контракт админ-ответа.** BI-проверка администратора идёт короткой public DB-сессией, тяжёлая сборка — фоновой analytics-сессией; cold miss возвращает `202 {status:"building"}`, успешный/stale снимок содержит `cache_meta.{age_sec,stale,refreshing}`, ошибка — 503. Внутрипроцессный `_INFLIGHT` не доказывает координацию между несколькими web-воркерами; отсутствие такой гонки/перегрузки **не проверялось** в этом docs-аудите. [API](../backend/app/api/admin_bi.py#L53-L145), [route](../backend/app/api/admin_bi.py#L193-L272).
+
+## 7. Поиск и допустимая область (локальная версия 2026-09-30)
+
+`GET /search` публичен: `q` 1–256 символов, `limit` 1–100 (default 50),
+локаль действующего API; валидация входа — 422. Ответ содержит `results`,
+`total` (returned count), `has_more` (включая candidate clipping),
+`version=federated-v1`, `intent.{countries,regions,year,month}`; при пустоте
+может содержать reason `unsupported_query`/`unsupported_period`/
+`ambiguous_geography`/`no_coverage`, при исправлении — `corrected_query`.
+Метаданные кандидата имеют `key`, `kind`, локализованные имена, path/score и
+соответствующие типу code/географию/частоту/единицу. [API](../backend/app/api/search.py),
+[service](../backend/app/services/search.py), полный [контракт](search.md).
+
+Общий Indicator контур: active ряд с конечным фактом, unlisted допускается
+через `russia_search_path`; DXY/US10Y и materialized siblings могут иметь
+US issuer по действующему market registry при прежнем storage/URL.
+World: активная страна и конечный ненулевой факт, включая доступные hidden
+slices; регионы: listed определения с фактом нужной территории и частоты.
+Явная география/период/frequency ограничивают выбор до LIMIT; regional
+annual intent требует annual факта, месячный ряд не подменяет его.
+Native world level означает сохранённую меру (включая rate), не только индекс.
+Всего может быть больше
+совпадений, чем извлечённый budget; total не является full catalog count.
+Разные slice keys не склеиваются по одному URL. Период открывается document
+navigation только при поддерживаемом route/факте; mode не отбрасывается
+молча. Hidden world row не выдаётся document period без listed SSR права.
+`world_search_paths` читает sibling/merge metadata одной SELECT на ranked
+порцию по тем же card/merge/rank определениям canonical resolver.
+Месячные региональные period destination пока отсутствуют.
+
+Поиск read-only, не имеет commit/cache invalidation/jobs. Локальные поля
+меняют matching/ranking внутри исходного eligibility pool, таблица —
+даты/значения уже загруженных точек. UI loading/error/empty различимы и
+pending не записывается как ноль результатов. Глобальная telemetry содержит
+interaction_id и весь returned candidate set до 100 keys; это не measured
+viewport exposure. Исторические параметры старых событий не мигрируются;
+каждый input edit не собирается. [Instrumentation](analytics_api_inventory/frontend_instrumentation.md),
+[ADR-0016](adr/0016-federated-public-search.md), [история](research/search-history-2026-09-30.md).
 
 ## Транзакции, кэш и проверка при изменении контракта
 
