@@ -31,6 +31,10 @@
   var KEY = 'fe:consent:v1';
   var CURRENT_V = '2026-06-16';
   var COUNTER = 107136069;
+  // Local browser acceptance must not create real Metrika visits or ad requests.
+  // Attribution/consent and our same-origin collectors remain available.
+  var localHostname = (window.location.hostname || '').toLowerCase();
+  var LOCAL_DEVELOPMENT = localHostname === 'localhost' || localHostname === '127.0.0.1' || localHostname === '[::1]' || localHostname === '::1';
 
   // --- URL hygiene: выполняется всегда, до любых хитов ---
   // Официальные метки Метрики (from, Openstat) нельзя вырезать до первого hit:
@@ -214,6 +218,7 @@
   }
 
   function injectMetrikaScript() {
+    if (LOCAL_DEVELOPMENT) return;
     for (var j = 0; j < document.scripts.length; j++) {
       if (document.scripts[j].src === METRIKA_SRC) return;
     }
@@ -246,6 +251,7 @@
   }
 
   function loadMetrika(immediate) {
+    if (LOCAL_DEVELOPMENT) return;
     if (loaded.analytics) return;
     loaded.analytics = true;
     installMetrikaStub();
@@ -269,6 +275,7 @@
   }
 
   function loadAds() {
+    if (LOCAL_DEVELOPMENT) return;
     if (loaded.ads) return;
     loaded.ads = true;
     // Очередь yaContextCb наполняется компонентом YandexRSY.jsx независимо
@@ -286,6 +293,7 @@
   window.__feAdsGate = { requested: false, armed: false, robot: false, signal: null };
 
   function armAdsGate(explicitHuman) {
+    if (LOCAL_DEVELOPMENT) return;
     if (loaded.ads) return;
     // Клик по баннеру согласия — уже доверенный ввод: ждать второго жеста
     // незачем.

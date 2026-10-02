@@ -74,6 +74,8 @@ function boot({ ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/145', web
 }
 
 beforeEach(() => {
+  // Existing cases exercise the production bootstrap rather than jsdom's localhost.
+  globalThis.jsdom.reconfigure({ url: 'https://ru.forecasteconomy.com/' });
   document.head.innerHTML = '';
   document.body.innerHTML = '';
   window.localStorage.clear();
@@ -87,6 +89,30 @@ beforeEach(() => {
   delete window.yaContextCb;
   delete window.requestIdleCallback;
   idleQueue = [];
+});
+
+describe('local browser acceptance excludes third-party traffic', () => {
+  it.each(['localhost', '127.0.0.1', '[::1]'])('does not load Metrika/ads on %s, even after explicit consent', (hostname) => {
+    globalThis.jsdom.reconfigure({ url: `http://${hostname}:5184/russia/indicator/cpi?utm_source=local-test` });
+    boot();
+    humanGesture();
+    window.__feApplyConsent({ analytics: true, ads: true }, { explicit: true });
+    flushIdle();
+    expect(metrikaRequested()).toBe(false);
+    expect(adsRequested()).toBe(false);
+    expect(window.ym).toBeUndefined();
+    // The shared attribution/consent bootstrap still runs for our local collector.
+    expect(window.__feAttr.utm_source).toBe('local-test');
+    expect(window.__feApplyConsent).toBeTypeOf('function');
+  });
+
+  it('keeps normal production measurement and explicit ad loading enabled', () => {
+    boot();
+    window.__feApplyConsent({ analytics: true, ads: true }, { explicit: true });
+    flushIdle();
+    expect(metrikaRequested()).toBe(true);
+    expect(adsRequested()).toBe(true);
+  });
 });
 
 afterEach(() => {

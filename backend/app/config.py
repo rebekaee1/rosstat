@@ -308,6 +308,13 @@ class Settings(BaseSettings):
     pulse_report_cron_minute: int = 5
     # LLM-фильтр отчёта через OpenRouter; пустой ключ = детерминированный fallback.
     openrouter_api_key: str = ""
+    # Every captured session gets an evidence report; model enrichment is optional.
+    session_analysis_enabled: bool = True
+    session_analysis_ai_enabled: bool = False
+    session_analysis_batch_size: int = 100
+    session_replay_enabled: bool = True
+    session_replay_retention_days: int = 14
+    session_replay_max_recording_bytes: int = 8_000_000
     openrouter_model: str = "anthropic/claude-sonnet-5"
     # 2026-07-08: прод-IP российский, OpenRouter/Anthropic режут его на границе
     # Cloudflare (гео/санкционный комплаенс, не репутация конкретного IP —

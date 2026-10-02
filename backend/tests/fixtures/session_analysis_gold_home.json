@@ -1,0 +1,470 @@
+{
+  "fixture_provenance": {
+    "source": "sanitized production event extract",
+    "date": "2026-09-30",
+    "event_count": 23,
+    "event_ids": "replaced with local sequential IDs",
+    "identifying_fields": "session/visitor/user hashes, IP, referrer and user agent omitted",
+    "pixel_review": "not included"
+  },
+  "session_id": "fixture-gold-home",
+  "portrait": {
+    "browser": "Chrome Mobile",
+    "os": "Android",
+    "device_type": "mobile"
+  },
+  "events": [
+    {
+      "id": 1,
+      "event_type": "pageview",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "vw": 339,
+        "vh": 500,
+        "dpr": 2,
+        "touch": 1
+      },
+      "occurred_at": "2026-09-30 13:44:20.413000",
+      "ingested_at": "2026-09-30 13:44:30.458962",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 2,
+      "event_type": "vital",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "TTFB",
+        "v": 500,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:44:20.493000",
+      "ingested_at": "2026-09-30 13:44:30.458962",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 3,
+      "event_type": "vital",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "FCP",
+        "v": 860,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:44:20.603000",
+      "ingested_at": "2026-09-30 13:44:30.458962",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 4,
+      "event_type": "click",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": "div#root > header.seo-topbar > div.seo-topbar-in > nav.seo-topnav > a:nth-of-type(1)",
+      "element_text": "Главная",
+      "x": 32,
+      "y": 1966,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "vx": 9,
+        "vy": 16
+      },
+      "occurred_at": "2026-09-30 13:44:53.884000",
+      "ingested_at": "2026-09-30 13:44:53.947285",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 5,
+      "event_type": "vital",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "LCP",
+        "v": 860,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:44:53.890000",
+      "ingested_at": "2026-09-30 13:44:53.947285",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 6,
+      "event_type": "dwell",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "ms": 33608,
+        "active_ms": 22857,
+        "visible_ms": 22960,
+        "attention_version": 2,
+        "scroll_pct": 14,
+        "clicks": 1,
+        "move_px": 1966
+      },
+      "occurred_at": "2026-09-30 13:44:53.928000",
+      "ingested_at": "2026-09-30 13:44:53.947285",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 7,
+      "event_type": "vital",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "INP",
+        "v": 48,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:44:53.933000",
+      "ingested_at": "2026-09-30 13:44:53.952194",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 8,
+      "event_type": "vital",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "CLS",
+        "v": 0,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:44:53.933000",
+      "ingested_at": "2026-09-30 13:44:53.952194",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 9,
+      "event_type": "dwell",
+      "page": "/russia/indicator/gold-price/2009",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "ms": 5,
+        "active_ms": 5,
+        "visible_ms": 5,
+        "attention_version": 2,
+        "scroll_pct": 14,
+        "clicks": 0,
+        "move_px": 0
+      },
+      "occurred_at": "2026-09-30 13:44:53.933000",
+      "ingested_at": "2026-09-30 13:44:53.952194",
+      "page_load_id": "gold-year"
+    },
+    {
+      "id": 10,
+      "event_type": "pageview",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "vw": 339,
+        "vh": 500,
+        "dpr": 2,
+        "touch": 1
+      },
+      "occurred_at": "2026-09-30 13:44:54.242000",
+      "ingested_at": "2026-09-30 13:45:04.267458",
+      "page_load_id": "home"
+    },
+    {
+      "id": 11,
+      "event_type": "vital",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "FCP",
+        "v": 128,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:44:54.277000",
+      "ingested_at": "2026-09-30 13:45:04.267458",
+      "page_load_id": "home"
+    },
+    {
+      "id": 12,
+      "event_type": "vital",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "TTFB",
+        "v": 34,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:44:54.277000",
+      "ingested_at": "2026-09-30 13:45:04.267458",
+      "page_load_id": "home"
+    },
+    {
+      "id": 13,
+      "event_type": "api_timing",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "u": "/api/v1/ticker/live",
+        "ms": 28,
+        "st": 200,
+        "ok": 1
+      },
+      "occurred_at": "2026-09-30 13:45:10.976000",
+      "ingested_at": "2026-09-30 13:45:14.263035",
+      "page_load_id": "home"
+    },
+    {
+      "id": 14,
+      "event_type": "api_timing",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "u": "/api/v1/ticker/live",
+        "ms": 27,
+        "st": 200,
+        "ok": 1
+      },
+      "occurred_at": "2026-09-30 13:45:31.147000",
+      "ingested_at": "2026-09-30 13:45:34.271152",
+      "page_load_id": "home"
+    },
+    {
+      "id": 15,
+      "event_type": "block_view",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "block": "home-hero",
+        "ms": 18542
+      },
+      "occurred_at": "2026-09-30 13:45:50.574000",
+      "ingested_at": "2026-09-30 13:45:50.597613",
+      "page_load_id": "home"
+    },
+    {
+      "id": 16,
+      "event_type": "block_view",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "block": "home-data-scope",
+        "ms": 20197
+      },
+      "occurred_at": "2026-09-30 13:45:50.574000",
+      "ingested_at": "2026-09-30 13:45:50.597613",
+      "page_load_id": "home"
+    },
+    {
+      "id": 17,
+      "event_type": "block_view",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "block": "home-map-controls",
+        "ms": 3099
+      },
+      "occurred_at": "2026-09-30 13:45:50.574000",
+      "ingested_at": "2026-09-30 13:45:50.597613",
+      "page_load_id": "home"
+    },
+    {
+      "id": 18,
+      "event_type": "block_view",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "block": "home-countries",
+        "ms": 3016
+      },
+      "occurred_at": "2026-09-30 13:45:50.574000",
+      "ingested_at": "2026-09-30 13:45:50.597613",
+      "page_load_id": "home"
+    },
+    {
+      "id": 19,
+      "event_type": "dwell",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "ms": 56332,
+        "active_ms": 48552,
+        "visible_ms": 48920,
+        "attention_version": 2,
+        "scroll_pct": 100,
+        "clicks": 0,
+        "move_px": 0
+      },
+      "occurred_at": "2026-09-30 13:45:50.574000",
+      "ingested_at": "2026-09-30 13:45:50.597613",
+      "page_load_id": "home"
+    },
+    {
+      "id": 20,
+      "event_type": "vital",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "INP",
+        "v": 3744,
+        "rating": "poor"
+      },
+      "occurred_at": "2026-09-30 13:45:50.579000",
+      "ingested_at": "2026-09-30 13:45:50.622601",
+      "page_load_id": "home"
+    },
+    {
+      "id": 21,
+      "event_type": "vital",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "CLS",
+        "v": 0,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:45:50.579000",
+      "ingested_at": "2026-09-30 13:45:50.622601",
+      "page_load_id": "home"
+    },
+    {
+      "id": 22,
+      "event_type": "vital",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "m": "LCP",
+        "v": 160,
+        "rating": "good"
+      },
+      "occurred_at": "2026-09-30 13:45:50.579000",
+      "ingested_at": "2026-09-30 13:45:50.622601",
+      "page_load_id": "home"
+    },
+    {
+      "id": 23,
+      "event_type": "dwell",
+      "page": "/",
+      "element_path": null,
+      "element_text": null,
+      "x": null,
+      "y": null,
+      "is_dead": false,
+      "is_rage": false,
+      "params_json": {
+        "ms": 5,
+        "active_ms": 5,
+        "visible_ms": 5,
+        "attention_version": 2,
+        "scroll_pct": 100,
+        "clicks": 0,
+        "move_px": 0
+      },
+      "occurred_at": "2026-09-30 13:45:50.579000",
+      "ingested_at": "2026-09-30 13:45:50.622601",
+      "page_load_id": "home"
+    }
+  ]
+}
