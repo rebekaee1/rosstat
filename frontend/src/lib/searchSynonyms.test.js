@@ -316,3 +316,25 @@ describe('intent ranking with noisy metadata and hidden siblings', () => {
     expect(filterSearchIndicators([...many, noisy[3]], 'инфляция', { limit: 0 })).toHaveLength(701);
   });
 });
+
+describe('measure synonyms reach rows without a federal code (2026-10-02)', () => {
+  // Real dead end: a region page shows an «Инфляция» tile, yet the scoped search
+  // for «инфляция» answered «не найдено» because regional CPI rows have their own codes.
+  const regional = [
+    { code: 'indeksy-potrebitelskih-tsen', name: 'Индексы потребительских цен' },
+    { code: 'indeksy-potrebitelskih-tsen-na-uslugi', name: 'Индексы потребительских цен (тарифов) на услуги' },
+    { code: 'indeksy-tsen-proizvoditeley', name: 'Индексы цен производителей промышленных товаров' },
+    { code: 'srednyaya-zarplata', name: 'Среднемесячная заработная плата' },
+  ];
+  it.each(['инфляция', 'ипц', 'инфл'])('finds consumer price rows for «%s» and nothing else', (query) => {
+    expect(filterSearchOptions(regional, query).map((item) => item.code)).toEqual([
+      'indeksy-potrebitelskih-tsen', 'indeksy-potrebitelskih-tsen-na-uslugi',
+    ]);
+  });
+  it('still requires every other word of the query', () => {
+    expect(filterSearchOptions(regional, 'инфляция услуги').map((item) => item.code)).toEqual([
+      'indeksy-potrebitelskih-tsen-na-uslugi',
+    ]);
+    expect(filterSearchOptions(regional, 'инфляция зарплата')).toEqual([]);
+  });
+});

@@ -25,7 +25,10 @@ function unique(list) {
  * Ключи нормализуются при сборке карты. Не копия seo_keywords — только ходовое.
  */
 const SYNONYM_GROUPS = [
-  { targets: ['cpi', 'inflation', 'hicp-index'], keys: ['ипц', 'cpi', 'ipc', 'инфляция', 'inflation', 'hicp', 'рост цен'] },
+  // `phrases` — как эта мера называется в заголовках рядов, у которых нет
+  // федерального кода: региональный ряд «Индексы потребительских цен…» должен
+  // находиться по слову «инфляция» так же, как карточка cpi.
+  { targets: ['cpi', 'inflation', 'hicp-index'], keys: ['ипц', 'cpi', 'ipc', 'инфляция', 'inflation', 'hicp', 'рост цен'], phrases: ['потребительских цен', 'consumer price', 'consumer prices'] },
   { targets: ['gdp', 'gdp-nominal', 'gdp-real', 'gdp-volume-quarterly', 'gdp-volume-annual'], keys: ['ввп', 'gdp', 'валовой продукт'] },
   { targets: ['valovoy-regionalnyy-produkt', 'real-gdp'], keys: ['врп', 'grp', 'gross regional product'] },
   { targets: ['gdp-per-capita', 'gdp-per-capita-usd', 'gdp-per-capita-eu', 'weo-gdp-per-capita-usd'], keys: ['ввп на душу', 'gdp per capita', 'per capita', 'на душу'] },
@@ -73,6 +76,19 @@ function buildSynonymMap(groups) {
 }
 
 export const SEARCH_SYNONYMS = buildSynonymMap(SYNONYM_GROUPS);
+
+/** alias → title phrases naming the same measure (see `phrases` above). */
+const SYNONYM_PHRASES = (() => {
+  const map = Object.create(null);
+  for (const { keys, phrases } of SYNONYM_GROUPS) {
+    if (!phrases?.length) continue;
+    for (const key of keys) {
+      const n = normalizeSearchQuery(key);
+      if (n) map[n] = unique([...(map[n] || []), ...phrases.map(normalizeSearchQuery)]);
+    }
+  }
+  return map;
+})();
 
 const SYNONYM_KEYS = Object.keys(SEARCH_SYNONYMS).sort((a, b) => b.length - a.length);
 
@@ -229,7 +245,7 @@ const COUNT_WORDS = new Set(['количество', 'численность', '
 // Longest intents consume their own words; remaining qualifiers are separate
 // required terms. "GDP per capita Germany" cannot fall back to any GDP row.
 function queryUnits(q) {
-  if (SEARCH_SYNONYMS[q]) return [{ text: q, targets: SEARCH_SYNONYMS[q] }];
+  if (SEARCH_SYNONYMS[q]) return [{ text: q, targets: SEARCH_SYNONYMS[q], phrases: SYNONYM_PHRASES[q] }];
   const words = tokenize(q);
   const consumed = new Set();
   const units = [];
@@ -244,7 +260,7 @@ function queryUnits(q) {
       const typo = parts.length === 1 && oneEdit(words[i], parts[0]);
       if (!exact && !partial && !typo && !inflection) continue;
       parts.forEach((_part, offset) => consumed.add(i + offset));
-      units.push({ text: words.slice(i, i + parts.length).join(' '), targets: SEARCH_SYNONYMS[alias], corrected: !exact });
+      units.push({ text: words.slice(i, i + parts.length).join(' '), targets: SEARCH_SYNONYMS[alias], phrases: SYNONYM_PHRASES[alias], corrected: !exact });
       break;
     }
   }
@@ -335,7 +351,10 @@ function scoreDocument(doc, q, units) {
     const target = unit.targets && codeMatchesTargets(doc.item, unit.targets)
       ? (doc.codes.some((code) => unit.targets.includes(code)) ? 160 : 120) - (unit.corrected ? 15 : 0)
       : -1;
-    const match = Math.max(lexical, target);
+    // The same measure under its native title, for rows without a federal code.
+    const titled = unit.phrases?.some((phrase) => doc.names.some((name) => hasPhrase(name, phrase)))
+      ? 110 - (unit.corrected ? 15 : 0) : -1;
+    const match = Math.max(lexical, target, titled);
     if (match < 0) return -1;
     score += match;
   }

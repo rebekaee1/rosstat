@@ -715,6 +715,7 @@ export default {
   'indicator.telemetry.obs': 'OBS: {count} PERIODS',
 
   'compare.nothingFound': 'No results',
+  'compare.indicatorMatches': 'No country with that name. Russian indicators matching your query — click to add:',
   'compare.addSeries': 'Add series',
   'compare.pickCountryFirst': 'Select a country, then an indicator',
   'compare.country': 'Country',

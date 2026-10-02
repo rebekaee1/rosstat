@@ -27,6 +27,7 @@ import { getPageSeo } from '../lib/pageMeta';
 import { ChartSkeleton } from '../components/Skeleton';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
+import useGlobalSearch from '../lib/useGlobalSearch';
 import { filterSearchOptions } from '../lib/searchSynonyms';
 import { filterSearchCountries } from '../lib/worldCompareSearch';
 import { exportNodeToPng } from '../lib/chartImage';
@@ -872,11 +873,29 @@ function CompareSeriesPicker({
     return showRussia ? [russia, ...rest] : rest;
   }, [countries, countryQuery, locale, t]);
 
+  // Человек часто вводит сюда сам показатель («дизель», «инфляция»), а не страну.
+  // Вместо тупика «Ничего не найдено» спрашиваем общий поиск и показываем
+  // подходящие российские ряды — их можно добавить сразу. Общий поиск знает и
+  // карточки вне витрины (дизель, АИ-95), которых нет в списке `indicators`.
+  const indicatorNeedle = !countryKey && filteredCountries.length === 0 ? countryQuery.trim() : '';
+  const indicatorSearch = useGlobalSearch(indicatorNeedle, { enabled: indicatorNeedle.length >= 2, limit: 30 });
+  const indicatorMatches = useMemo(() => {
+    if (indicatorNeedle.length < 2 || indicatorSearch.isDebouncing) return [];
+    return (indicatorSearch.data?.results || [])
+      // Базовая карточка показателя: производные режимы открываются уже на графике.
+      .filter((item) => item.kind === 'russia' && item.code && !String(item.path || '').includes('?'))
+      .filter((item) => !selected.includes(item.code)
+        && (!compatibilityFor || compatibilityFor(item.code).allowed))
+      .slice(0, 12);
+  }, [indicatorNeedle, indicatorSearch.data, indicatorSearch.isDebouncing, selected, compatibilityFor]);
+  const indicatorMatchesPending = indicatorNeedle.length >= 2
+    && (indicatorSearch.isDebouncing || indicatorSearch.isFetching);
+
   // Поиск страны в дереве сравнения — без клика по результату.
   useSearchTracking(
     'compare-country',
     countryKey ? '' : countryQuery,
-    filteredCountries.length,
+    filteredCountries.length + indicatorMatches.length,
   );
 
   const selectedCountry = countryKey === 'russia'
@@ -940,8 +959,32 @@ function CompareSeriesPicker({
             )}
           </div>
           <div className="max-h-80 overflow-auto rounded-xl border border-border-subtle bg-obsidian-light/45">
-            {filteredCountries.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-text-tertiary">{t('compare.nothingFound')}</div>
+            {filteredCountries.length === 0 && indicatorMatches.length > 0 ? (
+              <div data-testid="compare-indicator-matches">
+                <div className="border-b border-border-subtle/60 px-4 py-2 text-[11px] leading-snug text-text-tertiary">
+                  {t('compare.indicatorMatches')}
+                </div>
+                {indicatorMatches.map((ind) => (
+                  <button
+                    key={ind.code}
+                    type="button"
+                    disabled={atCap}
+                    title={atCap ? capHint : undefined}
+                    onClick={() => { onAdd(ind.code); setCountryQuery(''); }}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors border-b border-border-subtle/60 last:border-b-0 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <Landmark className="h-4 w-4 shrink-0 text-champagne" />
+                    <span className="min-w-0 flex-1 truncate text-sm text-text-primary">
+                      {locale === 'en' ? (ind.name_en || ind.name) : (ind.name_ru || ind.name)}
+                    </span>
+                    <span className="shrink-0 text-[11px] text-text-tertiary">{t('compare.russia')}</span>
+                  </button>
+                ))}
+              </div>
+            ) : filteredCountries.length === 0 ? (
+              <div className="px-4 py-3 text-sm text-text-tertiary" role="status">
+                {t(indicatorMatchesPending ? 'common.loading' : 'compare.nothingFound')}
+              </div>
             ) : (
               filteredCountries.map((c) => (
                 <button
@@ -1265,6 +1308,15 @@ export default function ComparePage() {
   useEffect(() => { setPanOffset(0); }, [codes]);
 
   const { data: indicators, isFetched: indicatorsFetched } = useIndicators();
+  // Карточки вне витрины (дизель, АИ-95 и подобные) приходят из общего поиска и
+  // по прямой ссылке. Полный список нужен только для них, поэтому запрашивается
+  // лишь когда выбранного кода нет в витрине.
+  const needsUnlisted = indicatorsFetched && codes.some((code) =>
+    !isWorldCode(code) && !isRegionCode(code) && !isSubnationalCode(code)
+    && !indicators?.some((item) => item.code === code));
+  const { data: unlistedIndicators, isFetched: unlistedFetched } = useIndicators({
+    includeUnlisted: true, enabled: needsUnlisted,
+  });
   const { data: worldCompareCatalog } = useWorldCompareCatalog();
   const hasWorldSeries = codes.some(isWorldCode);
   const dataSpacesCount = [
@@ -1373,8 +1425,9 @@ export default function ComparePage() {
         isSubnational: isSubnationalCode(code),
       };
     }
-    const ind = indicators?.find((x) => x.code === code);
-    if (!indicatorsFetched) {
+    const ind = indicators?.find((x) => x.code === code)
+      || unlistedIndicators?.find((x) => x.code === code);
+    if (!indicatorsFetched || (!ind && needsUnlisted && !unlistedFetched)) {
       return {
         code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),
         fetchCode: null, transform: null, unit: null, waitingCatalog: true,
@@ -1398,7 +1451,7 @@ export default function ComparePage() {
       fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform,
       unit: spec.unit, stepDeep: !!stepAlt,
     };
-  }), [codes, indicators, indicatorsFetched, repByCode, step, worldMetaByCode, t]);
+  }), [codes, indicators, indicatorsFetched, needsUnlisted, unlistedIndicators, unlistedFetched, repByCode, step, worldMetaByCode, t]);
 
   const results = useQueries({
     queries: resolved.map((r) => ({

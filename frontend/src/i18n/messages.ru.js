@@ -715,6 +715,7 @@ export default {
   'indicator.telemetry.obs': 'НАБЛ.: {count} ПЕРИОД.',
 
   'compare.nothingFound': 'Ничего не найдено',
+  'compare.indicatorMatches': 'Страны с таким названием нет. Показатели России по вашему запросу — нажмите, чтобы добавить:',
   'compare.addSeries': 'Добавить ряд',
   'compare.pickCountryFirst': 'Сначала выберите страну, затем показатель',
   'compare.country': 'Страна',
