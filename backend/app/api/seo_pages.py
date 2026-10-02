@@ -25,6 +25,7 @@ import asyncio
 import hashlib
 import re
 from datetime import date as _date
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -39,6 +40,7 @@ from app.core.cache import (
 from app.services import site_paths as paths
 from app.services.attribution_query import merge_attribution_query
 from app.services.locale import get_locale
+from app.services.search_paths import russia_period_data_code
 from app.data.legacy_redirects import (
     LEGACY_REGION_SLUG_PREFIXES,
     resolve_legacy_indicator,
@@ -504,6 +506,7 @@ async def seo_indicator_year(
     code: str,
     year: int,
     request: Request,
+    mode: str | None = None,
     db: AsyncSession = Depends(get_db),
 ):
     # History belongs to the source, not to an arbitrary modern-year cutoff.
@@ -513,22 +516,33 @@ async def seo_indicator_year(
     # Годовые landing легаси/sibling-кодов — 301 на годовую страницу канона.
     target = resolve_legacy_indicator(code) or resolve_unlisted_indicator(code)
     if target:
-        base_path = target.split("?")[0]
+        parsed = urlsplit(target)
         # Категория (снятый ряд) — без годового хвоста.
-        if "/category/" in base_path:
-            return _permanent_redirect(target.split("?")[0], request)
-        return _permanent_redirect(f"{base_path}/{year}", request)
+        if "/category/" in parsed.path:
+            return _permanent_redirect(parsed.path, request)
+        # The sibling's registered mode identifies its data, even if a caller
+        # supplied a conflicting mode on that legacy URL.
+        query = parsed.query or (urlencode({"mode": mode}) if mode else "")
+        return _permanent_redirect(
+            urlunsplit(("", "", f"{parsed.path}/{year}", query, "")), request
+        )
+    canonical = paths.russia_indicator_year(code, year)
+    if mode:
+        canonical += "?" + urlencode({"mode": mode})
     original_path = request.headers.get("x-original-uri", "").split("?", 1)[0]
     if paths.is_currency_indicator(code) and original_path.startswith("/russia/indicator/"):
-        return _permanent_redirect(paths.russia_indicator_year(code, year), request)
+        return _permanent_redirect(canonical, request)
     if not paths.is_currency_indicator(code) and original_path.startswith("/currencies/indicator/"):
-        return _permanent_redirect(paths.russia_indicator_year(code, year), request)
+        return _permanent_redirect(canonical, request)
     if request.headers.get("x-path-cut-legacy") == "1":
-        return _permanent_redirect(paths.russia_indicator_year(code, year), request)
+        return _permanent_redirect(canonical, request)
+    data_code = russia_period_data_code(code, mode)
+    if data_code is None:
+        return _html_response(404, "Not found", request)
     status, html = await _cached_html(
-        code, f"indicator-year:{code}:{year}:{get_locale()}",
+        data_code, f"indicator-year-mode-1:{code}:{year}:{mode or ''}:{get_locale()}",
         _year_ttl(year, _SSR_TTL_INDICATOR),
-        lambda: render_indicator_year_html(code, year, db),
+        lambda: render_indicator_year_html(code, year, db, mode=mode),
         db=db,
     )
     return _html_response(status, html, request)

@@ -12,6 +12,7 @@ import asyncio
 import json
 import re
 from datetime import date
+from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
@@ -207,10 +208,12 @@ def test_sitemap_years_match_ssr_200(year_landing_client, auth_env):
             assert "/russia/indicator/population/2010" not in paths
 
             for path in sorted(paths):
-                m = re.fullmatch(r"/russia/indicator/([a-z0-9-]+)/(\d{4})", path)
+                parsed = urlsplit(path)
+                m = re.fullmatch(r"/russia/indicator/([a-z0-9-]+)/(\d{4})", parsed.path)
                 assert m, path
                 code, year = m.group(1), int(m.group(2))
-                status, _html = await render_indicator_year_html(code, year, db)
+                mode = parse_qs(parsed.query).get("mode", [None])[0]
+                status, _html = await render_indicator_year_html(code, year, db, mode=mode)
                 assert status == 200, f"{path} in sitemap but SSR={status}"
 
             # Обратно: известный 200 не забыт в sitemap (listed only).

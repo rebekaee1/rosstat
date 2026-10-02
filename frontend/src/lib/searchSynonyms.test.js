@@ -82,6 +82,31 @@ describe('shared scoped ranking and required qualifiers', () => {
     expect(filterSearchOptions([literal, ...scoped], 'byakzwbz')).toEqual([literal]);
   });
 
+  it('corrects keyboard punctuation before tokenization within the eligible pool', () => {
+    const bread = { code: 'bread', name: 'Производство хлебных изделий', frequency: 'annual', country_slug: 'russia' };
+    const wages = { code: 'wages', name: 'Средняя зарплата', frequency: 'annual', country_slug: 'russia' };
+    expect(correctSearchKeyboardLayout('[kt,ys[')).toBe('хлебных');
+    expect(filterSearchOptions([bread, wages], '[kt,ys[')).toEqual([bread]);
+    expect(filterSearchOptions([wages], '[kt,ys[')).toEqual([]);
+    expect(filterSearchOptions([bread], '[kt,ys[ vtczwfv')).toEqual([]);
+    expect(filterSearchOptions([bread], '[kt,ys[ %')).toEqual([]);
+    const literal = { code: '[kt,ys[', name: 'Literal identifier' };
+    expect(filterSearchOptions([literal, bread], '[kt,ys[')).toEqual([literal]);
+    expect(filterSearchOptions([bread], '[]')).toEqual([]);
+  });
+
+  it('accepts an unfinished letter only for a long literal native title prefix', () => {
+    const roads = { code: 'road-density', name: 'Плотность автомобильных дорог общего пользования с твердым покрытием', country_slug: 'russia', frequency: 'annual', unit: 'км на 1000 км²' };
+    const railway = { code: 'rail-density', name: 'Плотность железных дорог общего пользования', country_slug: 'russia', frequency: 'annual', unit: 'км на 1000 км²' };
+    const q = 'Плотность автомобильных дорог общего пользования с твердым п';
+    expect(filterSearchOptions([roads, railway], q)).toEqual([roads]);
+    expect(filterSearchOptions([railway], q)).toEqual([]);
+    expect(filterSearchOptions([roads], `${q} %`)).toEqual([]);
+    expect(filterSearchOptions([roads], `${q} Германия`)).toEqual([]);
+    expect(filterSearchOptions([roads], `${q} monthly`)).toEqual([]);
+    expect(filterSearchOptions([roads], 'Плотность а')).toEqual([]);
+  });
+
   it('matches count vocabulary and bounded Russian inflection without dropping the subject', () => {
     const students = { code: 'students', name: 'Численность студентов' };
     const roads = { code: 'roads', name: 'Протяженность автомобильных дорог' };

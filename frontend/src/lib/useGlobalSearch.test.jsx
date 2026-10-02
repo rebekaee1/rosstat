@@ -50,3 +50,13 @@ it('isolates cached results by language and cancels an obsolete request', async 
   rerender({ q: 'GDP Germany' });
   await waitFor(() => expect(api.get).toHaveBeenCalledTimes(3));
 });
+
+it('does not reuse the previous client namespace when backend semantics change', async () => {
+  client.setQueryData(['catalog-search', 'v2', 'ru', 'население Калифорнии', 100], { results: [{ name: 'Old interpretation' }], version: 'federated-v1' });
+  api.get.mockResolvedValue({ data: { results: [{ name: 'Current interpretation' }], version: 'federated-v2' } });
+  const { result } = renderHook(() => useGlobalSearch('население Калифорнии'), { wrapper });
+  expect(result.current.data).toBeUndefined();
+  await waitFor(() => expect(result.current.data?.version).toBe('federated-v2'));
+  expect(result.current.data.results[0].name).toBe('Current interpretation');
+  expect(api.get).toHaveBeenCalledOnce();
+});

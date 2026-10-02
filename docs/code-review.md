@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `bdcee357c6e9708139d7978b0d0a5d88f1499a15`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `686c31d81917b814fdde7b9a409b3c24a9dba100`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1321 |
-| Код, шаблоны и стили | 1004 |
-| Актуальные рецензии без пропусков guard | 1321 |
-| Именованные определения Python/JS: с аннотацией / всего | 8543 / 8543 |
+| Файлы в явно определённом scope | 1348 |
+| Код, шаблоны и стили | 1030 |
+| Актуальные рецензии без пропусков guard | 1348 |
+| Именованные определения Python/JS: с аннотацией / всего | 8865 / 8865 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -342,9 +342,14 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/rosstat_weekly_inflation_parser.py](../backend/app/services/rosstat_weekly_inflation_parser.py) | reviewed | 25/25 | актуально |
 | [backend/app/services/rosstat_weekly_price_parser.py](../backend/app/services/rosstat_weekly_price_parser.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/scrape_guard.py](../backend/app/services/scrape_guard.py) | reviewed | 20/20 | актуально |
-| [backend/app/services/search.py](../backend/app/services/search.py) | reviewed | 24/24 | актуально |
-| [backend/app/services/search_intent.py](../backend/app/services/search_intent.py) | reviewed | 9/9 | актуально |
-| [backend/app/services/search_paths.py](../backend/app/services/search_paths.py) | reviewed | 7/7 | актуально |
+| [backend/app/services/search.py](../backend/app/services/search.py) | reviewed | 34/34 | актуально |
+| [backend/app/services/search_dimensions.py](../backend/app/services/search_dimensions.py) | reviewed | 19/19 | актуально |
+| [backend/app/services/search_intent.py](../backend/app/services/search_intent.py) | reviewed | 25/25 | актуально |
+| [backend/app/services/search_language.py](../backend/app/services/search_language.py) | reviewed | 6/6 | актуально |
+| [backend/app/services/search_language_sql.py](../backend/app/services/search_language_sql.py) | reviewed | 3/3 | актуально |
+| [backend/app/services/search_paths.py](../backend/app/services/search_paths.py) | reviewed | 10/10 | актуально |
+| [backend/app/services/search_units.py](../backend/app/services/search_units.py) | reviewed | 4/4 | актуально |
+| [backend/app/services/search_vocabulary.py](../backend/app/services/search_vocabulary.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/seo_calendar.py](../backend/app/services/seo_calendar.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/seo_content.py](../backend/app/services/seo_content.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/seo_crawler.py](../backend/app/services/seo_crawler.py) | reviewed | 10/10 | актуально |
@@ -629,10 +634,28 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_route_smoke.py](../backend/tests/test_route_smoke.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_ruonia_seo.py](../backend/tests/test_ruonia_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_russia_world_compare.py](../backend/tests/test_russia_world_compare.py) | reviewed | 9/9 | актуально |
+| [backend/tests/test_russia_year_modes.py](../backend/tests/test_russia_year_modes.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_scrape_access_policy.py](../backend/tests/test_scrape_access_policy.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_scrape_guard.py](../backend/tests/test_scrape_guard.py) | reviewed | 35/35 | актуально |
+| [backend/tests/test_search_context_roles.py](../backend/tests/test_search_context_roles.py) | reviewed | 16/16 | актуально |
+| [backend/tests/test_search_dimension_roles.py](../backend/tests/test_search_dimension_roles.py) | reviewed | 12/12 | актуально |
+| [backend/tests/test_search_dimensions.py](../backend/tests/test_search_dimensions.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_search_federated.py](../backend/tests/test_search_federated.py) | reviewed | 48/48 | актуально |
+| [backend/tests/test_search_geo_morphology.py](../backend/tests/test_search_geo_morphology.py) | reviewed | 15/15 | актуально |
+| [backend/tests/test_search_intent_candidate_roles.py](../backend/tests/test_search_intent_candidate_roles.py) | reviewed | 21/21 | актуально |
 | [backend/tests/test_search_intent_copy.py](../backend/tests/test_search_intent_copy.py) | reviewed | 2/2 | актуально |
+| [backend/tests/test_search_intent_literals.py](../backend/tests/test_search_intent_literals.py) | reviewed | 20/20 | актуально |
+| [backend/tests/test_search_intent_roles.py](../backend/tests/test_search_intent_roles.py) | reviewed | 21/21 | актуально |
+| [backend/tests/test_search_language.py](../backend/tests/test_search_language.py) | reviewed | 4/4 | актуально |
+| [backend/tests/test_search_language_calendar_units.py](../backend/tests/test_search_language_calendar_units.py) | reviewed | 21/21 | актуально |
+| [backend/tests/test_search_language_sql.py](../backend/tests/test_search_language_sql.py) | reviewed | 5/5 | актуально |
+| [backend/tests/test_search_native_facets.py](../backend/tests/test_search_native_facets.py) | reviewed | 11/11 | актуально |
+| [backend/tests/test_search_native_titles.py](../backend/tests/test_search_native_titles.py) | reviewed | 7/7 | актуально |
+| [backend/tests/test_search_quantity_facets.py](../backend/tests/test_search_quantity_facets.py) | reviewed | 7/7 | актуально |
+| [backend/tests/test_search_registered_semantics.py](../backend/tests/test_search_registered_semantics.py) | reviewed | 8/8 | актуально |
+| [backend/tests/test_search_relationship_roles.py](../backend/tests/test_search_relationship_roles.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_search_subject_roles.py](../backend/tests/test_search_subject_roles.py) | reviewed | 11/11 | актуально |
+| [backend/tests/test_search_vocabulary_roles.py](../backend/tests/test_search_vocabulary_roles.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_seed_hash.py](../backend/tests/test_seed_hash.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_seed_integrity.py](../backend/tests/test_seed_integrity.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_seo_growth_pages.py](../backend/tests/test_seo_growth_pages.py) | reviewed | 128/128 | актуально |
@@ -697,8 +720,9 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_subnational.py](../backend/tests/test_world_subnational.py) | reviewed | 43/43 | актуально |
 | [backend/tests/test_world_truthfulness.py](../backend/tests/test_world_truthfulness.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_world_us_bls_bea_adapters.py](../backend/tests/test_world_us_bls_bea_adapters.py) | reviewed | 7/7 | актуально |
-| [backend/tests/test_yandex_clean_param.py](../backend/tests/test_yandex_clean_param.py) | reviewed | 2/2 | актуально |
+| [backend/tests/test_yandex_clean_param.py](../backend/tests/test_yandex_clean_param.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_yandex_partner_stats.py](../backend/tests/test_yandex_partner_stats.py) | reviewed | 16/16 | актуально |
+| [backend/tests/test_year_mode_crawl_policy.py](../backend/tests/test_year_mode_crawl_policy.py) | reviewed | 7/7 | актуально |
 | [clickhouse/low-memory-users.xml](../clickhouse/low-memory-users.xml) | reviewed | 0/0 | актуально |
 | [clickhouse/low-memory.xml](../clickhouse/low-memory.xml) | reviewed | 0/0 | актуально |
 | [deploy/approved-shas.txt](../deploy/approved-shas.txt) | reviewed | 0/0 | актуально |
@@ -809,6 +833,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/russia-fpsr-official-sources.xlsx](../docs/research/russia-fpsr-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/search-acceptance-2026-09-30.md](../docs/research/search-acceptance-2026-09-30.md) | reviewed | 0/0 | актуально |
 | [docs/research/search-history-2026-09-30.md](../docs/research/search-history-2026-09-30.md) | reviewed | 0/0 | актуально |
+| [docs/research/search-history-replay-2026-09-30.md](../docs/research/search-history-replay-2026-09-30.md) | reviewed | 0/0 | актуально |
 | [docs/research/search-matrix-2026-09-30.json](../docs/research/search-matrix-2026-09-30.json) | data_schema_reviewed | 0/0 | актуально |
 | [docs/research/search-methods-2026-09-30.md](../docs/research/search-methods-2026-09-30.md) | reviewed | 0/0 | актуально |
 | [docs/research/search-monte-carlo-2026-09-30.md](../docs/research/search-monte-carlo-2026-09-30.md) | reviewed | 0/0 | актуально |
@@ -1229,6 +1254,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/DemographicsPage.jsx](../frontend/src/pages/DemographicsPage.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/pages/EmbedBuilder.component.test.jsx](../frontend/src/pages/EmbedBuilder.component.test.jsx) | reviewed | 0/0 | актуально |
 | [frontend/src/pages/EmbedBuilder.jsx](../frontend/src/pages/EmbedBuilder.jsx) | reviewed | 6/6 | актуально |
+| [frontend/src/pages/GlobalSearchHome.component.test.jsx](../frontend/src/pages/GlobalSearchHome.component.test.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/pages/IndicatorDetail.component.test.jsx](../frontend/src/pages/IndicatorDetail.component.test.jsx) | reviewed | 0/0 | актуально |
 | [frontend/src/pages/IndicatorDetail.jsx](../frontend/src/pages/IndicatorDetail.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/Login.jsx](../frontend/src/pages/Login.jsx) | reviewed | 2/2 | актуально |
@@ -1242,7 +1268,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/RegionRatingPage.component.test.jsx](../frontend/src/pages/RegionRatingPage.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/pages/RegionRatingPage.jsx](../frontend/src/pages/RegionRatingPage.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/pages/RegionRatingsHub.jsx](../frontend/src/pages/RegionRatingsHub.jsx) | reviewed | 1/1 | актуально |
-| [frontend/src/pages/RegionsHome.jsx](../frontend/src/pages/RegionsHome.jsx) | reviewed | 14/14 | актуально |
+| [frontend/src/pages/RegionsHome.component.test.jsx](../frontend/src/pages/RegionsHome.component.test.jsx) | reviewed | 3/3 | актуально |
+| [frontend/src/pages/RegionsHome.jsx](../frontend/src/pages/RegionsHome.jsx) | reviewed | 13/13 | актуально |
 | [frontend/src/pages/Register.component.test.jsx](../frontend/src/pages/Register.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/pages/Register.jsx](../frontend/src/pages/Register.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/RussiaHome.component.test.jsx](../frontend/src/pages/RussiaHome.component.test.jsx) | reviewed | 5/5 | актуально |

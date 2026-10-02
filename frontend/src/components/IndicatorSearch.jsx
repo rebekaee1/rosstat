@@ -36,6 +36,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   const [open, setOpen] = useState(false);
   const arm = useCallback(() => setShouldLoad(true), []);
   const [query, setQuery] = useState('');
+  const [isComposing, setIsComposing] = useState(false);
   const [hi, setHi] = useState(0); // highlighted result index
   const triggerRef = useRef(null);
   const inputRef = useRef(null);
@@ -51,11 +52,11 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
 
   const qTrim = query.trim();
   const { data: indicators = [], isPending: isRussiaPending, isError: isRussiaError, refetch: retryRussia } = useIndicators({ enabled: shouldLoad && !qTrim && locale === 'ru' });
-  const globalSearch = useGlobalSearch(qTrim, { enabled: shouldLoad && open });
+  const globalSearch = useGlobalSearch(qTrim, { enabled: shouldLoad && open && !isComposing });
   const { data: worldPreview, isPending: isPreviewPending, isError: isPreviewError, refetch: retryPreview } = useWorldCompareCatalog({
     enabled: locale === 'en' && shouldLoad && open && !qTrim,
   });
-  const isSearchPending = Boolean(qTrim) && (globalSearch.isDebouncing || globalSearch.isPending);
+  const isSearchPending = Boolean(qTrim) && (isComposing || globalSearch.isDebouncing || globalSearch.isPending);
   const isSearchError = qTrim ? !globalSearch.isDebouncing && globalSearch.isError
     : locale === 'en' ? isPreviewError : isRussiaError;
   const isLoading = isSearchPending || (!qTrim && (locale === 'en' ? isPreviewPending : isRussiaPending));
@@ -94,6 +95,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     }
     setOpen(false);
     setQuery('');
+    setIsComposing(false);
     setHi(0);
   }, []);
 
@@ -120,7 +122,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   // Cmd+K / Ctrl+K — открыть; Escape — закрыть; '/' — открыть (если не в инпуте)
   useEffect(() => {
     const onKey = (e) => {
-      if (e.defaultPrevented || e.isComposing || e.keyCode === 229) return;
+      if (e.defaultPrevented || isComposing || e.isComposing || e.keyCode === 229) return;
       // Every Navbar/inline instance is mounted, but only one visible trigger
       // may claim a global shortcut. Portals escape CSS-hidden parents.
       if (!open) {
@@ -152,7 +154,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, close, arm]);
+  }, [open, close, arm, isComposing]);
 
   // фокус при открытии + сброс состояния спрос-аналитики на новую сессию поиска
   useEffect(() => {
@@ -212,7 +214,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   }, [highlighted, open, results]);
 
   const handleListKey = (e) => {
-    if (e.isComposing || e.nativeEvent?.isComposing || e.keyCode === 229) return;
+    if (isComposing || e.isComposing || e.nativeEvent?.isComposing || e.keyCode === 229) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setHi(Math.min(highlighted + 1, Math.max(results.length - 1, 0)));
@@ -313,6 +315,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
           data-fe-search-dialog
           aria-modal="true"
           aria-label={t('search.dialogAria')}
+          aria-describedby={`${resultId}-help`}
           onKeyDown={(event) => {
             if (event.key !== 'Tab') return;
             const controls = [...event.currentTarget.querySelectorAll('input, button:not([tabindex="-1"])')].filter(el => !el.disabled);
@@ -337,6 +340,8 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                 type="search"
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
+                onCompositionStart={() => setIsComposing(true)}
+                onCompositionEnd={(e) => { onQueryChange(e.currentTarget.value); setIsComposing(false); }}
                 onKeyDown={handleListKey}
                 placeholder={t('search.placeholder')}
                 className="min-w-0 flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
@@ -346,6 +351,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                 aria-autocomplete="list"
                 aria-expanded="true"
                 aria-controls={`${resultId}-list`}
+                aria-describedby={`${resultId}-help`}
                 aria-activedescendant={results[highlighted] ? `${resultId}-result-${highlighted}` : undefined}
               />
               <button
@@ -358,6 +364,10 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
               </button>
             </div>
 
+            <p id={`${resultId}-help`} className="px-4 pt-3 pb-1 text-xs leading-relaxed text-text-tertiary">
+              {t('search.help')}
+            </p>
+
             {qTrim && !isLoading && globalSearch.data?.corrected_query && globalSearch.data.corrected_query !== qTrim && (
               <div className="px-4 py-2 text-xs text-text-tertiary" role="status">
                 {t('search.corrected', { query: globalSearch.data.corrected_query })}
@@ -366,9 +376,10 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
 
             <div ref={listRef} className="min-h-0 max-h-[60vh] overflow-y-auto py-2" role="listbox" id={`${resultId}-list`} aria-busy={isLoading}>
               {results.length === 0 ? (
-                <div className="px-4 py-6 text-sm text-text-tertiary">
+                <div className="px-4 py-6 text-sm text-text-tertiary" role="status" aria-live="polite">
                   {isLoading ? t('search.loading') : isSearchError ? t('search.error')
-                    : qTrim && globalSearch.data?.reason === 'unsupported_period' ? t('search.unsupportedPeriod')
+                    : qTrim && globalSearch.data?.reason === 'unsupported_query' ? t('search.unsupportedQuery')
+                      : qTrim && globalSearch.data?.reason === 'unsupported_period' ? t('search.unsupportedPeriod')
                       : qTrim && globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
                         : qTrim ? t('search.nothingFound', { query: qTrim }) : t('search.empty')}
                   {isSearchError && <button type="button" onClick={() => qTrim ? globalSearch.refetch() : locale === 'en' ? retryPreview() : retryRussia()} className={cn(FOCUS_RING, 'block mt-3 text-champagne')}>{t('common.retry')}</button>}

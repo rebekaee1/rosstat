@@ -207,7 +207,7 @@ flowchart LR
 
 ### 2. SSR, robots и видимая картинка
 
-`frontend/nginx.conf` проксирует indexable routes в `api/seo_pages.py`, где кэшируется HTML и вызывается `seo_renderer.py`; `build_document` собирает canonical, locale-dependent hreflang, JSON-LD, OG и видимое тело. Для индикатора и годовых landing рендерер добавляет `<figure class="seo-chart"><img>`, а `api/sitemap.py` отдаёт соответствующий PNG. `site_urls.py` и `index_policy.py` исключают редиректные URL и делают `?mode=` неканоничным. Источники: `frontend/nginx.conf` — строки 334–536; `backend/app/api/seo_pages.py` — SSR routes; `backend/app/services/seo_renderer.py::build_document/render_indicator_html/render_indicator_year_html`; `backend/app/services/site_urls.py`, `index_policy.py`.
+`frontend/nginx.conf` проксирует indexable routes в `api/seo_pages.py`, где кэшируется HTML и вызывается `seo_renderer.py`; `build_document` собирает canonical, locale-dependent hreflang, JSON-LD, OG и видимое тело. Для индикатора и годовых landing рендерер добавляет `<figure class="seo-chart"><img>`, а `api/sitemap.py` отдаёт соответствующий PNG. `site_urls.py` и `index_policy.py` исключают редиректные URL. Обычная карточка убирает `?mode=` из canonical; зарегистрированный годовой режим России сохраняет его при точном stored-series resolver и конечном факте года (дополнение ADR-0003 от01.10). Источники: `frontend/nginx.conf` — строки 334–536; `backend/app/api/seo_pages.py` — SSR routes; `backend/app/services/seo_renderer.py::build_document/render_indicator_html/render_indicator_year_html`; `backend/app/services/site_urls.py`, `index_policy.py`.
 
 **Граница терминов:** SPA использует `createRoot` (`frontend/src/main.jsx`), а SSR-тело скрывается после первого React commit (`frontend/src/SpaRoot.jsx`, `frontend/src/lib/spaReveal.js`). Это клиентский mount/замена, **не React `hydrateRoot`**. Чистые HTML landing работают с `include_app=False` и не требуют SPA. Историческая формулировка «hydration» в ADR/комментариях описывает пользовательский переход, но не API React.
 
@@ -228,10 +228,22 @@ SPA-маршруты России находятся под `/russia`, друг�
 `IndicatorSearch.jsx` → `useGlobalSearch.js` → `api/search.py` →
 `services/search_intent.py` и `services/search.py` → существующие модели
 России/world/регионов/subnational → `search_paths` и `site_paths` →
-SPA либо period document. Намерение и fact/geography/period constraints
-и supported frequency constraints предшествуют ограничению больших SQL наборов; finite value не равен
+SPA либо period document. Fact/geography/date и поддержанные explicit
+frequency constraints предшествуют ограничению больших SQL наборов.
+Но world hidden-year/month-frequency destination checks остаются после
+budget, canonical year+mode — после batch resolution; их eligibility
+не является гарантией полного retrieval. Finite value не равен
 ненулевому signal (последний дополнительно требуется только world).
 Глобальная выдача включает территории, но не объединяет таблицы или ETL.
+V2 добавляет `search_language`/`search_vocabulary` (предмет и роль),
+`search_units` (нативные quantity facets) и `search_language_sql` (общие
+типовые guards до LIMIT). `search_dimensions` проверяет реальные оси Eurostat
+по provider/slice_json и использует нормативные member labels. Подтверждённые
+native имена/коды защищаются от внутренних дат, географии и `%`; bounded
+preflight проверяет целый span, а внешние уточнения остаются обязательными.
+Агрегат-остаток имеет intent, но не новый delivery route.
+Составные понятия предшествуют typo отдельных слов. Небольшой title-IDF
+bonus работает только внутри уже доступного набора, не заменяет retrieval.
 World sibling/merge destinations читаются одной metadata SELECT на ranked
 порцию; eligibility территорий проверяется пакетами, не per-row SQL.
 Annual региональный период требует annual факта, hidden world period
@@ -240,7 +252,9 @@ Annual региональный период требует annual факта, h
 по действующему market issuer registry общего Indicator контура.
 
 Браузер ждёт settled query 200 мс, cache key включает locale/query/limit,
-старые строки скрыты при смене query; ошибки допускают retry и не считаются
+а также ревизию клиента `v3`; IME composition не отправляет промежуточный
+ввод, не выбирает результат через Enter и не логирует его как готовый query.
+Старые строки скрыты при смене query; ошибки допускают retry и не считаются
 пустым ответом. Shared local matcher действует внутри допустимого pool
 каждой страницы/сравнения/калькулятора/виджета; таблица имеет отдельный
 predicate дат/значений. Новых search jobs/таблиц/серверного cache и
@@ -306,3 +320,46 @@ exhaustive matrix acceptance и trained ranking этим кодовым пото
 ## Что эта карта не подтверждает
 
 Первоначальный кодовый проход 27.09 не запускал application browser/E2E, ETL, миграции или release smoke; браузерная проверка касалась навигатора рельефа. Флаги, схема и effective конфигурация **не отсутствуют**: они датированно зафиксированы в [полном снимке 27.09](code-review/runtime-inventory-2026-09-27.json) и [повторной ops-сверке 30.09](code-review/runtime-observation-2026-09-30.json). [Restore 30.09](code-review/backup-acceptance-2026-09-30.md) подтверждает читаемость и восстановление свежего dump, но не работу приложения на восстановленной БД. Не установлены текущие QPS/p95/p99/LCP/CLS, capacity при одновременном ETL/BI/SSR, актуальный полный live-инвентарь колонок, provider backup/SLA, полный failover/RTO/RPO, число индексируемых страниц и количество HTTP-запросов React в выбранном режиме. Для них нужны отдельные проверки, а не вывод из графа или healthy.
+
+
+### Уточнение поиска 01.10: единицы, срезы и годовой режим
+
+Проценты и процентные пункты — разные обязательные native facets. USD для
+общей подписи dollars допускается только при объявленной валюте US state
+producer; чужая валюта и отсутствующая unit не угадываются. Literal preflight
+сохраняет целое действительное название внутри rawquery вместе с его
+внутренними страной/датой/%; внешние слова, год, география и единицы остаются
+обязательными. Это исправляет прежнюю описанную границу internal-title.
+
+Eurostat slice qualifiers проверяют конкретную ось и её storedmember,
+до candidateLIMIT и в Python. Total другой оси, category/SEO и отсутствующий
+JSONmember не являются доказательством; ordinary bareall не снимается.
+Слова о ежедневном использовании внутри economicdefinition отделены от
+частоты наблюдений. Этот словарь конечен и не является обученной моделью.
+
+Годовой поиск России может вернуть parent/year?mode только если shared
+resolver рендерит тот же actualcode, для которого есть конечные факты года.
+SSR использует nativeданные/единицу/title этого режима; canonical/hreflang/
+соседние годы/graphlink сохраняютmode. Все supportedmode-year canonical
+входят в sitemap registry; обычная карточка canonicalбезmode. Подробности —
+[ADR-0003](adr/0003-seo-single-source-server-rendered.md) и [search replay](research/search-history-replay-2026-09-30.md).
+Worldmode-year и derivedmonth остаются unsupported, годы не отбрасываются.
+
+### Уточнение V5 01.10: источник частоты и пространство доказательств
+
+`search_intent` разделяет observation year и constant/chained monetary base year,
+source frequency и output frequency, end-of-period и average. Их typed facets
+проходят прежний producer → SQL candidate → Python guard → canonical маршрут.
+Source frequency и товарная price identity выводятся из настоящего FAMILIES;
+bespoke mode — из действующего canonical index. World end-of-period требует
+native title, source frequency world не выдумывается по observation frequency.
+
+`search_language` и SQL mirror проверяют monetary valuation в отдельных
+пространствах: полный title/code либо одна полная native unit подпись.
+Два неполных поля не соединяются в свидетельство. Native units сохраняются
+только в `AsyncSession.info` текущего запроса; публичный DTO и display unit
+не определяют identity. Расширенные exact Eurostat axes/member labels остаются
+проверяемыми native constraints до LIMIT. Ограниченные pure-token кеши служат
+повторным вычислениям словоформ; result/history cache и learned model не добавлены.
+Отрицательные blind оценки и inspected development результаты сохраняются в
+[replay](research/search-history-replay-2026-09-30.md).

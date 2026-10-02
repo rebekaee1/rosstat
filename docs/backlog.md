@@ -1792,3 +1792,172 @@ availability witnesses и отличия темы от меры. Старый 19
 закрытая выборка и строгий экономический oracle; этот набор сохранить
 как regression evidence. Поиск/данные/настройки во время audit не менялись;
 push/deploy/live acceptance не выполнялись.
+
+## 2026-09-30 — v2 после случайной проверки и полный replay истории
+
+**Реализовано локально:** compound subjects/question roles, native unit/frequency
+facets, shared SQL/Python measure guards до больших candidate budgets,
+literal code/native-title protection, реальные geo inflections и bounded
+title inverse-frequency. Главная остаётся глобальной по четырём контурам;
+raw question, IME, cache revision v3 и paired RU/EN feedback проверены.
+Scoped фильтры сохраняют eligibility, исправляют layout/punctuation и native
+unfinished prefixes. Новых таблиц, ETL, внешней модели и обученного ML нет.
+
+**Проверено:** 357 search tests на source60ac58; полный acceptance backend
+— 3 421 passed / 9 skipped; предыдущий source9167af — 3 286 / 9 skipped;
+frontend — 178 focused и 970 full tests. Реальный local browser проверил RU desktop cashM0
+и real wages, EN mobile California Population с переходами на настоящие
+карточки/графики. Это не all-surface production acceptance. Полный historical
+replay source60ac58 завершён: 109/110 strict top5 и 2 542/3 664 nonempty,
+HTTP ошибок нет. Knowledge/full script gates того снимка прошли;
+свидетельства — в [основном отчёте](research/search-history-replay-2026-09-30.md).
+
+**Ограничение уровня:** новая независимая стратифицированная выборка 80 дала
+22/80 top5 (27,5%), natural 1/40, при наличии фактов для всех целей. Первый
+unseen120 дал 52/120; его последующий developer replay не является blind.
+Это не универсальное понимание вопросов и не точность всей истории: у старых
+кликов и большинства q нет ручной правильной цели. Все первичные failures,
+strict gold и source snapshots сохранены. Остаток того этапа: unseen vocabulary/roles,
+literal-title internal geography, видимость
+phrase correction, ресурсы/latency и production acceptance. Последующий
+статус literal/facet/year-mode исправлений указан ниже. Push/deploy не
+выполнялись; итоговый локальный commit фиксируется после всех guards.
+
+Продолжение 01.10 MSK: общие economic-role guards устранили pension
+amount-vs-count и stock/rate/employment/benefit коллизии; parser различает
+обычные слова/дефисы, actual native denominator и валютную географию.
+Повтор уже изученного80 на source60ac58 — 38/80top5 (47,5%), natural13/40;
+это development, а не замена первичного22/80blind. Первый полный historical
+source9167af сохранён:109/110strict top5 и2615/3664nonempty. Завершённый
+acceptance source60ac58 сохраняет тот же 109/110 strict top5 и 2542/3664
+nonempty; corpus/gold не изменены.
+
+Fresh-agent knowledge audit без истории чата нашёл маршрут UI→API→fourplanes
+и границы метрик; contract исправлен для issuer country_slug и двух retryслоёв.
+Остаток fixture: homepage mocks используют legacy russia_indicator/world_indicator,
+canonical API выдаёт russia/world; wiring evidence не объявляется DTO integration.
+
+## 2026-10-01 — последующее общее исправление после blind40
+
+**Реализовано локально:** конечные economic/temporal roles, обязательные
+physical units, bounded whole-title preflight, точные Eurostat member facets
+до LIMIT и Russia year+registered-mode SSR/canonical/sitemap registry.
+Действующее поведение и границы сосредоточены в [search.md](search.md),
+основание годового mode — [ADR-0003](adr/0003-seo-single-source-server-rendered.md).
+Источники, хранилища и release workflow сохраняются.
+
+**Проверено:** frozen source manifest `31510ab9` (43 файла) дал 549 focused
+search checks за 13,31 с и 86 frontend checks в пяти файлах за 3,07 с.
+Это SQLite/fakeredis и mocked API проверки; PG replay проверяется отдельно.
+На том же source уже завершены development повторы изученных наборов:
+41/80 top5 и 21/40 top5, HTTP ошибок нет. Первичный
+blind40 на source60ac58 дал 5/40 top5 при фактах для всех целей; этот
+результат и последний завершённый historical acceptance 109/110 strict top5,
+2542/3664 nonempty остаются неизменными. Повторы уже изученных 40/80 —
+development. На момент этой записи полный historical acceptance/replay после
+исправлений ещё не был завершён; последующий статус V4 указан ниже.
+Эти два повтора не являются новой blind оценкой.
+
+**Открыто:** завершить и запечатать новый replay, проверить локальные реальные
+переходы и SQL/resource budget, обновить knowledge/review/maps и пройти
+релизные gates. World year+mode, derived month и месячные региональные
+destinations остаются unsupported. Production выпуск, публикация sitemap
+bytes и live acceptance требуют отдельной команды/проверки; этим этапом
+push/deploy не выполнялись. [Отчёт](research/search-history-replay-2026-09-30.md)
+сохраняет старые основания, raw/gold и отрицательные blind результаты.
+
+### Поиск: независимая проверка release3 01.10
+
+Новая frozen40 на неизменном source31510ab9 дала13/40top5 (32,5%),
+HTTPerrors0, все40целей finitefact-backed. Natural3/20; world1/10.
+Это отдельная новая слепая оценка, прежние inspected80/40 остаются development.
+Универсальное понимание новых формулировок не подтверждено. Сохранены gold,
+proof, source/input checks и все промахи; [полный отчёт](research/search-history-replay-2026-09-30.md)
+отделяет языковые/route границы от отсутствия фактов и от исторических метрик.
+
+### Поиск: V4 independent80 и последующий ремонт
+
+На source259cb677/51files новый frozen80 дал8/80top5 (10%),72empty,
+0HTTPerrors. После ответов установлены1invalidgold и3underspecifiedquery;
+первичные метрики и gold сохранены без пересчёта.68clear misses связаны
+с parser/mandatory-role/native-member механизмами при существующих фактах.
+Полный source31510ab9 historical replay завершён:108/110strict top5,
+2603/3664nonempty; исходный GDP-symbol regression сохранён как evidence.
+V4 полностью завершён и запечатан:1 915 main и736 nginx requests,
+109/110strict top5,2607/3664client nonempty и725/1106nginx nonempty,
+HTTP/transport errors0. Исходный GDPquestion снова rank1. Это
+историческая известная размеченная часть и coverage, не all-history correctness;
+nginx backend q может содержать старые frontend-expanded aliases.
+
+Последующий общий V5 ремонт интегрирован локально: observation frequency
+отделена от зарегистрированной source frequency; end-of-period требует
+terminal `period_last`; предмет price — реального native имени либо
+зарегистрированного commodity-price family с physical denominator.
+Constant/chained денежная база сохраняется отдельно от года наблюдений.
+Current/constant valuation подтверждает один полный native title/code либо
+один native unit label: `Current transfers` + `USD` не создают свидетельство.
+Unit не устанавливает посторонний предмет. Loan denomination versus output
+unit и general FX direction/physical denominator ещё остаются общими пробелами.
+
+17 официально проверенных Eurostat осей/34 global axis-member pairs из20
+payloads расширяют конечный registry до29 известных осей. Duration/worktime/
+c_birth/statinfo/sector/na_item и named totals проверяют реальный строковый
+member соответствующей оси до LIMIT и в Python; numeric JSON и TOTAL
+соседнего поля не подходят, AnyTotal нет. Исправлены смыслы ED02 и M_STS.
+Exact bespoke mode/canonical index остаётся живым consumer для поиска:
+перекрытая standalone UI-ветка не является основанием удалять legacy resolver.
+
+**Граница проверки V5:** предварительный inspected replay тех же80 на
+source `c9668f27` дал22/80top5,0HTTPerrors. Это development до последующих
+узких исправлений, не fresh blind accuracy; исходные V4 8/80 и semantic/route
+annotations сохранены без adjusted score. Грамматика, typed dictionaries
+и bounded title inverse-frequency детерминированны; обученного ML и внешних
+моделей нет. Финальные full-history metrics, sourcefreeze/replay guards,
+knowledge/review/maps и release gates V5 пока проверяются и здесь не закрыты.
+Production этим этапом не изменён; commit/push/deploy/live acceptance
+фиксируются отдельно.
+Свидетельства и ограничения — [основной отчёт](research/search-history-replay-2026-09-30.md).
+
+### Поиск: обнаруженные регрессии V5 и проверяемое продолжение
+
+Первичный main replay V5 source `9839569d` уже вернул 1 911 HTTP 200 и
+четыре HTTP 500 на неизменных 1 915 входах. В owned ASGI журнале все четыре
+ошибки — PostgreSQL statement timeout при международном candidate SELECT.
+Три известных коротких native prefix запроса утратили прежний rank 1:
+дополнительные словоформы ошибочно заменили исходное prefix matching.
+Ошибки и первые ответы сохранены; V5 полностью запечатан: nginx получил
+735/736 HTTP 200 и один сохранённый main HTTP 500, все 489 новых nginx
+вызовов успешны. Strict gold — 103/110 top1 и 107/110 top5;
+coverage — 2 532/3 664 client events и 695/1 106 nginx events.
+Следующий V6 ремонт проверяется отдельно; V5 source snapshot и seal
+`93771279` сохранены. Итоговые V6 метрики до завершения не заявляются.
+
+Полный V5 backend gate обнаружил один устаревший route mock: `fake_year`
+в `test_seo_og.py` не принимал новый необязательный `mode`. Mock теперь
+явно принимает keyword и проверяет отсутствие режима для обычного года;
+сам route не изменён. Этот тест прошёл отдельно за 2,20 с; полный gate
+предстоит повторить на окончательных исходниках.
+
+**Отдельный наблюдаемый дефект после перехода:** локальная главная по
+«инфляция Германии» правильно находит native `de-weo-pcpipch`, единица
+результата — «изменение за год, %». Но карточка `?mode=level-annual`, данные
+которой отдаёт существующий shared Compose API 8000, показывает
+«индекс 2015=100» при методологии «изменение за год, %». Сохранены реальные
+скриншоты и `v5-browser-acceptance.json`. В текущем исходнике mode endpoint
+`backend/app/api/world.py` использует `concept_public_unit(concept)` перед
+`mode_unit_for`; EN helper также принимает provider-specific membership
+за совместимость native единицы с единицей понятия. Независимый cold-data
+endpoint probe воспроизвёл это в RU/EN при неизменных raw points; частный
+двухфункциональный proposal исправляет единицу в памяти и сохранён отдельно,
+без применения к ROOT/контейнерам/кэшу. Для этого downstream исправления
+нужны отдельные endpoint controls, изменение cache namespace/version и
+проверка настоящей карточки. Search ranking не подтверждает правильность
+всех downstream подписей.
+
+**Оставшийся retrieval budget:** не вся world destination eligibility
+действует до LIMIT: hidden-year и annual/quarterly-for-month отбрасываются
+в `_world` после budget, canonical year+mode — после пакетного resolver.
+Код и эта граница сверены свежим агентом без истории чата. Поэтому clipped
+pool способен потерять подходящую цель даже при существующих фактах;
+`has_more` не доказывает полноту каталога. Перенос эквивалентных predicates
+до LIMIT и отдельная маршрутная приёмка остаются следующими проверками.
