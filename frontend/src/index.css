@@ -236,12 +236,14 @@
   line-height: 1.75;
 }
 .fe-dashboard [data-block="home-data-scope"],
-.fe-dashboard [data-block="home-map-controls"] {
+.fe-dashboard [data-block="home-workbench"] {
   background: var(--fe-glass);
   border: 1px solid var(--fe-glass-border);
   border-radius: 24px;
   box-shadow: var(--fe-shadow);
 }
+/* The indicator picker, country search and planet read as one working surface. */
+.fe-dashboard [data-block="home-workbench"] { padding: 24px; border-radius: 28px; }
 .fe-dashboard [data-block="home-data-scope"] { padding: 24px; }
 .fe-dashboard [data-block="home-data-scope"] .font-mono { font-family: var(--font-sans); }
 .fe-dashboard [data-block="home-data-scope"] dd {
@@ -250,7 +252,12 @@
   font-weight: 550;
   letter-spacing: -.035em;
 }
-.fe-dashboard [data-block="home-map-controls"] { padding: 22px 24px; }
+.fe-dashboard [data-block="home-map-controls"] {
+  margin-bottom: 18px;
+  padding: 0 2px 18px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.fe-dashboard [data-block="home-map-controls"] h2 { font-size: 20px; letter-spacing: -.02em; }
 .fe-category-card { min-height: 270px; transition: box-shadow 180ms, border-color 180ms, transform 180ms; }
 .fe-category-card:hover { box-shadow: 0 18px 44px -25px #26344E45; }
 .fe-category-card > :not(.fe-category-art) { position: relative; z-index: 1; }
@@ -283,7 +290,8 @@
   .fe-dashboard [data-block="home-hero"] { padding-top: 10px; margin-bottom: 18px; }
   .fe-dashboard [data-block="home-hero"]::before { display: none; }
   .fe-dashboard [data-block="home-data-scope"] { padding: 20px; }
-  .fe-dashboard [data-block="home-map-controls"] { padding: 18px; }
+  .fe-dashboard [data-block="home-workbench"] { padding: 14px; border-radius: 22px; }
+  .fe-dashboard [data-block="home-map-controls"] { padding: 4px 2px 14px; margin-bottom: 14px; }
   .fe-brand-compact { font-size: 18px; gap: 4px; }
   .fe-brand-compact svg { width: 23px; height: 28px; }
   .fe-brand-compact small { font-size: 4.5px; letter-spacing: .22em; margin-top: 5px; }

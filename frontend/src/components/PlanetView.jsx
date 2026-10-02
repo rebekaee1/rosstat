@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
-  ArrowUpRight, Check, ChevronDown, Globe2, GitCompare, Layers3,
+  ArrowUpRight, Check, ChevronDown, ChevronRight, Globe2, GitCompare, Layers3,
   LoaderCircle, Minus, Move, Plus, RotateCcw, Search, X,
 } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
@@ -73,6 +73,8 @@ export default function PlanetView({
   const [PlanetScene, setPlanetScene] = useState(() => lazy(() => import('./PlanetScene')));
   const [selectedCode, setSelectedCode] = useState(null);
   const [hoverCode, setHoverCode] = useState(null);
+  // Geography without a public country page: named on hover, never navigable.
+  const [hoverPlace, setHoverPlace] = useState(null);
   const [query, setQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeOption, setActiveOption] = useState(0);
@@ -149,9 +151,22 @@ export default function PlanetView({
     });
   }, [availableCountries, rankingItems, valueForCountry, colorDirection, locale]);
 
+  const handleHover = useCallback((code, place = null) => {
+    setHoverCode(code || null);
+    setHoverPlace(code ? null : place || null);
+  }, []);
+  // The pointer label follows the cursor through CSS variables: no React re-render per move.
+  const trackPointer = useCallback((event) => {
+    if (event.pointerType === 'touch') return;
+    const stage = event.currentTarget;
+    const box = stage.getBoundingClientRect();
+    stage.style.setProperty('--planet-pointer-x', Math.round(event.clientX - box.left) + 'px');
+    stage.style.setProperty('--planet-pointer-y', Math.round(event.clientY - box.top) + 'px');
+  }, []);
   const commandCamera = useCallback((type, countryCode, instant = false) => {
     commandId.current += 1;
     setHoverCode(null);
+    setHoverPlace(null);
     setCameraCommand({ id: commandId.current, type, countryCode, instant });
   }, []);
   const selectCountry = useCallback((code, moveFocus = false, instant = false) => {
@@ -161,10 +176,20 @@ export default function PlanetView({
     setSelectedCode(country.code); setSearchOpen(false); setQuery('');
     commandCamera('focus', country.code, instant);
   }, [commandCamera, countryByCode]);
+  // First press previews the country; pressing the same country again opens it.
+  const activateCountry = useCallback((code, moveFocus = false) => {
+    const country = countryByCode.get(code) || countryByCode.get(countryAlias(code));
+    if (!country) return;
+    if (country.code === selectedCode && country.slug && typeof onSelect === 'function') {
+      onSelect(country, collectionValue(detailsByCode, country.code) || null);
+      return;
+    }
+    selectCountry(country.code, moveFocus);
+  }, [countryByCode, selectedCode, onSelect, detailsByCode, selectCountry]);
   const handleReady = useCallback(() => setSceneStatus('ready'), []);
   const handleError = useCallback((error) => {
     console.warn('Planet rendering failed:', error);
-    setSceneStatus('error'); setHoverCode(null); setInteractiveTouch(false);
+    setSceneStatus('error'); setHoverCode(null); setHoverPlace(null); setInteractiveTouch(false);
   }, []);
   const selectedCountry = countryByCode.get(selectedCode) || null;
   useEffect(() => {
@@ -210,7 +235,7 @@ export default function PlanetView({
     setSceneGeneration((previous) => previous + 1); setSceneStatus('loading');
   }
   function clearSelection() {
-    setSelectedCode(null); setHoverCode(null); commandCamera('reset');
+    setSelectedCode(null); setHoverCode(null); setHoverPlace(null); commandCamera('reset');
     countryList.current?.focus({ preventScroll: true });
   }
   function toggleComparison() {
@@ -260,8 +285,8 @@ export default function PlanetView({
             </select>
           </label>}
           {hasMetric && !isMap && <div className="planet-layer-control"><span className="planet-control-label">{t('planet.viewLabel')}</span><div className="planet-layer-switch" role="group" aria-label={t('planet.layerLabel')}>
-              <button type="button" aria-pressed={mode === 'earth'} onClick={() => { setMode('earth'); setHoverCode(null); }}><Globe2 size={15} aria-hidden="true" />{t('planet.earth')}</button>
-              <button type="button" aria-pressed={mode === 'data'} onClick={() => { setMode('data'); setHoverCode(null); }}><Layers3 size={15} aria-hidden="true" />{t('planet.data')}</button>
+              <button type="button" aria-pressed={mode === 'earth'} onClick={() => { setMode('earth'); setHoverCode(null); setHoverPlace(null); }}><Globe2 size={15} aria-hidden="true" />{t('planet.earth')}</button>
+              <button type="button" aria-pressed={mode === 'data'} onClick={() => { setMode('data'); setHoverCode(null); setHoverPlace(null); }}><Layers3 size={15} aria-hidden="true" />{t('planet.data')}</button>
             </div></div>}
         </div>
       </div>
@@ -275,14 +300,14 @@ export default function PlanetView({
       </div>}
       <div className="planet-shell">
         <div className="planet-geography">
-          <div className={'planet-stage' + (isMap ? ' planet-stage--map' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode}>
+          <div className={'planet-stage' + (isMap ? ' planet-stage--map' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} onPointerMove={trackPointer}>
             {isMap ? <div className="planet-map-fallback">
               <div className="planet-fallback-message" role="status"><span>{t('planet.unavailable')}</span><button type="button" onClick={retryScene}>{t('planet.retry')}</button></div>
               <Suspense fallback={<div className="planet-loading">{t('planet.loading')}</div>}><WorldMap countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={unit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection} defaultScope={defaultScope} onSelect={(country) => selectCountry(country.code, true)} /></Suspense>
             </div> : <>
               <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
                 <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
-                  onHover={setHoverCode} onSelect={selectCountry} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
+                  onHover={handleHover} onSelect={activateCountry} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
                   interactive={!touchNavigation || interactiveTouch} touchNavigation={touchNavigation} />
               </Suspense></SceneBoundary>
               {sceneStatus === 'loading' && <div className="planet-loading" role="status"><LoaderCircle size={19} aria-hidden="true" />{t('planet.loading')}</div>}
@@ -295,7 +320,9 @@ export default function PlanetView({
               {touchNavigation && <button type="button" className={'planet-navigation-toggle' + (interactiveTouch ? ' is-active' : '')} aria-pressed={interactiveTouch} onClick={() => setInteractiveTouch((active) => !active)}>
                 {interactiveTouch ? <Check size={15} aria-hidden="true" /> : <Move size={15} aria-hidden="true" />}{t(interactiveTouch ? 'planet.doneRotating' : 'planet.rotate')}
               </button>}
-              {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? formatWorldValue(valueForCountry(hoveredCountry), undefined, locale) + ' ' + displayUnit : t('planet.noDataLegend')}</strong></div>}
+              {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? formatWorldValue(valueForCountry(hoveredCountry), undefined, locale) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
+                <small>{t(hoveredCountry.code === selectedCode ? 'planet.pressToOpen' : 'planet.pressToSelect')}</small></div>}
+              {!hoveredCountry && hoverPlace && <div className="planet-hover-label planet-hover-label--muted"><span>{hoverPlace}</span><small>{t('planet.notInCatalog')}</small></div>}
               {!touchNavigation && <p className="planet-stage-caption">{t('planet.gesture')}</p>}
             </>}
           </div>
@@ -324,8 +351,9 @@ export default function PlanetView({
           </div>
           <div className="planet-list-heading"><div><h4>{t('planet.countries')}</h4>{metricName && <p>{metricName}</p>}</div><span>{periodLabel}{displayUnit ? ', ' + displayUnit : ''}</span></div>
           <div ref={countryList} className="planet-country-list" role="group" tabIndex={-1} aria-label={t('planet.countries')}>
-            {rankedCountries.map(({ country, value, rank }) => <button key={country.code} type="button" className={selectedCode === country.code ? 'is-selected' : ''} aria-pressed={selectedCode === country.code} onClick={() => selectCountry(country.code, true)}>
-              <span className="planet-list-rank">{rank || '—'}</span><span className="planet-list-name">{countryName(country, locale)}</span><strong>{hasValue(value) ? formatWorldValue(value, undefined, locale) : t('planet.noDataLegend')}</strong>
+            {rankedCountries.map(({ country, value, rank }) => <button key={country.code} type="button" className={selectedCode === country.code ? 'is-selected' : ''} aria-pressed={selectedCode === country.code} onClick={() => activateCountry(country.code, true)}
+              title={selectedCode === country.code ? t('planet.pressToOpen') : undefined}>
+              <span className="planet-list-rank">{rank || '—'}</span><span className="planet-list-name">{countryName(country, locale)}</span><strong>{hasValue(value) ? formatWorldValue(value, undefined, locale) : t('planet.noDataLegend')}</strong><ChevronRight size={14} aria-hidden="true" />
             </button>)}
           </div>
           <div className="planet-list-footer">{hasValue(median) && hasMetric && <span>{benchmark?.label || t('planet.median')}: <strong>{formatWorldValue(median, undefined, locale)} {displayUnit}</strong></span>}{ratingHref && <PlanetLink href={ratingHref}>{t('planet.fullRating')}<ArrowUpRight size={13} aria-hidden="true" /></PlanetLink>}</div>

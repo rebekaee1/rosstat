@@ -65,6 +65,38 @@ describe('PlanetView interaction contract', () => {
     expect(onSelect).toHaveBeenCalledWith(countries[0], germanyDetail);
   });
 
+  it('opens the country on a second press of the same country, on the surface and in the list', async () => {
+    const onSelect = vi.fn();
+    render(<PlanetView countries={countries} detailsByCode={new Map([['DE', germanyDetail], ['MT', maltaDetail]])} valuesByCode={new Map([['DE', 3.2], ['MT', 1.7]])} metricName="Безработица" unit="%" onSelect={onSelect} />);
+    const surface = await screen.findByRole('button', { name: 'Pick Germany' });
+    fireEvent.click(surface);
+    expect(onSelect).not.toHaveBeenCalled();
+    fireEvent.click(surface);
+    expect(onSelect).toHaveBeenCalledWith(countries[0], germanyDetail);
+    // Another country is only previewed first, however many times the previous one was pressed.
+    selectListCountry('Мальта');
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    selectListCountry('Мальта');
+    expect(onSelect).toHaveBeenLastCalledWith(countries[1], maltaDetail);
+  });
+
+  it('names hovered land without a catalogue page and explains the next press for catalogue countries', async () => {
+    const { container } = render(<PlanetView countries={countries} detailsByCode={new Map([['DE', germanyDetail]])} valuesByCode={new Map([['DE', 3.2]])} metricName="Безработица" unit="%" onSelect={() => {}} />);
+    await screen.findByTestId('planet-scene');
+    act(() => scene.props.onHover(null, 'Чад'));
+    const muted = container.querySelector('.planet-hover-label--muted');
+    expect(muted.textContent).toContain('Чад');
+    expect(muted.textContent).toContain('planet.notInCatalog');
+    act(() => scene.props.onHover('DE'));
+    expect(container.querySelector('.planet-hover-label--muted')).toBeNull();
+    expect(container.querySelector('.planet-hover-label').textContent).toContain('planet.pressToSelect');
+    fireEvent.click(screen.getByRole('button', { name: 'Pick Germany' }));
+    act(() => scene.props.onHover('DE'));
+    expect(container.querySelector('.planet-hover-label').textContent).toContain('planet.pressToOpen');
+    act(() => scene.props.onHover(null));
+    expect(container.querySelector('.planet-hover-label')).toBeNull();
+  });
+
   it('selects from the ranking without navigation, preserves selection on overview and clears it explicitly', async () => {
     const onSelect = vi.fn();
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} detailsByCode={{ DE: germanyDetail }} onSelect={onSelect} />);

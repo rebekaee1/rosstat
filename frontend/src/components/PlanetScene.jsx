@@ -28,6 +28,10 @@ const DEFAULT_FOCUS = [25, 24];
 const MIN_DISTANCE = 1.45;
 const MAX_DISTANCE = 4.8;
 const INITIAL_DISTANCE = 3.35;
+const FLIGHT_SECONDS = 0.6;
+const INTRO_SECONDS = 1.4;
+// The first view arrives with a short turn from the west; it never repeats.
+const INTRO_OFFSET = [-42, 8];
 
 function valueFor(collection, code) {
   return collection instanceof Map ? collection.get(code) : collection?.[code];
@@ -142,7 +146,7 @@ function usePlanetTextures(budget, onError) {
   return textures;
 }
 
-function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, interactive, touchNavigation, onHover }) {
+function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, interactive, touchNavigation, onHover, surfaceReady }) {
   const { camera, gl, invalidate, size } = useThree();
   const controlsRef = useRef(null);
   const flightRef = useRef(null);
@@ -218,17 +222,49 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
         fromDistance: currentDistance,
         toDistance: target.length(),
         elapsed: 0,
+        duration: FLIGHT_SECONDS,
       };
     }
     invalidate();
   }, [cameraCommand, entries, camera, invalidate, reducedMotion, defaultScope, fitDistance, onHover]);
 
+  const introDone = useRef(false);
+  useEffect(() => {
+    if (!surfaceReady || introDone.current) return;
+    introDone.current = true;
+    if (cameraCommand) return;
+    // The canvas already opened at the offset view, so the turn starts without a jump.
+    const distance = camera.position.length();
+    const focus = defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS;
+    const to = new Vector3(...lonLatToSphere(focus, distance));
+    if (reducedMotion) {
+      camera.position.copy(to);
+      camera.lookAt(0, 0, 0);
+      controlsRef.current?.update();
+      invalidate();
+      return;
+    }
+    const start = camera.position.clone().normalize();
+    flightRef.current = {
+      start,
+      rotation: new Quaternion().setFromUnitVectors(start, to.clone().normalize()),
+      fromDistance: distance,
+      toDistance: distance,
+      elapsed: 0,
+      duration: INTRO_SECONDS,
+    };
+    invalidate();
+    // Only the first ready surface starts the turn; later commands own the camera.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [surfaceReady]);
+
   useFrame((_, delta) => {
     const flight = flightRef.current;
     if (flight) {
       flight.elapsed += Math.min(delta, 0.05);
-      const progress = Math.min(1, flight.elapsed / 0.25);
-      const ease = 1 - (1 - progress) ** 3;
+      const progress = Math.min(1, flight.elapsed / flight.duration);
+      // Ease in and out: the globe starts and settles softly instead of snapping.
+      const ease = progress < 0.5 ? 4 * progress ** 3 : 1 - ((-2 * progress + 2) ** 3) / 2;
       const rotation = new Quaternion().slerpQuaternions(new Quaternion(), flight.rotation, ease);
       camera.position.copy(flight.start).applyQuaternion(rotation)
         .multiplyScalar(flight.fromDistance + (flight.toDistance - flight.fromDistance) * ease);
@@ -341,11 +377,13 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, sh
     if (event.buttons || event.pointerType === 'touch') return;
     const entry = hit(event);
     const code = entry?.country ? entry.dataCode : null;
+    const key = code || (entry ? 'geo:' + entry.id : null);
     gl.domElement.style.setProperty('cursor', code ? 'pointer' : 'grab');
-    if (hoverCode.current !== code) {
-      hoverCode.current = code;
+    if (hoverCode.current !== key) {
+      hoverCode.current = key;
       setHover({ code, command: cameraCommand });
-      onHover(code);
+      // Land without a catalog route still names itself instead of ignoring the pointer.
+      onHover(code, code ? null : entry?.name || null);
     }
   };
   const pointerUp = (event) => {
@@ -462,7 +500,9 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
     preference.addEventListener('change', update);
     return () => preference.removeEventListener('change', update);
   }, []);
-  const initialPosition = lonLatToSphere(defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS, INITIAL_DISTANCE);
+  const [introOffset] = useState(() => (reducedMotion ? [0, 0] : INTRO_OFFSET));
+  const initialFocus = defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS;
+  const initialPosition = lonLatToSphere([initialFocus[0] + introOffset[0], initialFocus[1] + introOffset[1]], INITIAL_DISTANCE);
   return (
     <SceneBoundary onError={onError}>
       <Canvas
@@ -486,6 +526,7 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
             onError={onError}
             interactive={interactive}
             touchNavigation={touchNavigation}
+            surfaceReady={surfaceReady}
             {...props}
             onReady={handleReady}
           />

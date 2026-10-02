@@ -79,22 +79,24 @@ export default function HomeDataScope() {
 
         <dl className="mt-3.5 grid grid-cols-2 gap-x-3 gap-y-3.5">
           {scopeStats.map(({ key, icon: Icon }) => (
-            <div key={key} className="min-w-0">
-              <dt className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary sm:text-xs">
-                <Icon size={11} className="shrink-0 text-champagne/70" aria-hidden="true" />
-                <span className="line-clamp-2 leading-snug">{t(`home.scope.stat.${key}.label`)}</span>
+            // Число стоит над подписью: значения в строке выровнены, даже если
+            // соседняя подпись занимает две строки.
+            <div key={key} className="flex min-w-0 flex-col-reverse justify-end gap-1">
+              <dt className="flex items-start gap-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-text-tertiary sm:text-xs">
+                <Icon size={11} className="mt-[3px] shrink-0 text-champagne/70" aria-hidden="true" />
+                <span className="leading-snug [overflow-wrap:anywhere]">{t(`home.scope.stat.${key}.label`)}</span>
               </dt>
-              <dd className="mt-1 font-mono text-lg font-bold tabular-nums tracking-tight text-text-primary sm:text-xl">
+              <dd className="font-mono text-lg font-bold tabular-nums tracking-tight text-text-primary sm:text-xl">
                 {valueFor(key)}
               </dd>
             </div>
           ))}
-          <div className="col-span-2 min-w-0 border-t border-border-subtle pt-3">
-            <dt className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary sm:text-xs">
+          <div className="col-span-2 flex min-w-0 flex-col-reverse gap-1 border-t border-border-subtle pt-3">
+            <dt className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-text-tertiary sm:text-xs">
               <CalendarRange size={11} className="shrink-0 text-champagne/70" aria-hidden="true" />
               <span className="leading-snug">{t('home.scope.period.label')}</span>
             </dt>
-            <dd className="mt-1 font-mono text-lg font-bold tabular-nums tracking-tight text-text-primary sm:text-xl">
+            <dd className="font-mono text-lg font-bold tabular-nums tracking-tight text-text-primary sm:text-xl">
               {t('home.scope.period.value')}
             </dd>
           </div>

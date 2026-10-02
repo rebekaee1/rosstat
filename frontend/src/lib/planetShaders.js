@@ -32,11 +32,23 @@ export const PLANET_FRAGMENT = `
     vec3 sunDirection = normalize(normalize(cameraPosition) + vec3(-0.18, 0.24, 0.0));
     float sunlight = dot(terrainNormal, sunDirection);
     vec3 dayColor = texture2D(dayMap, vUv).rgb;
-    // Small neutral grading softens the archive's contrast without recoloring geography.
     float luminance = dot(dayColor, vec3(0.2126, 0.7152, 0.0722));
-    dayColor = mix(dayColor, vec3(luminance), 0.07);
-    dayColor *= vec3(1.025, 1.01, 0.99) * (0.82 + max(sunlight, 0.0) * 0.3);
-    vec3 color = dayColor;
+    // Water is recognised from the image itself (dark and blue-led), so the light
+    // grading works before and without the optional material map.
+    float blueLead = dayColor.b - max(dayColor.r, dayColor.g);
+    float water = smoothstep(0.004, 0.03, blueLead) * (1.0 - smoothstep(0.22, 0.42, luminance));
+    // Land keeps its real terrain; shadows are lifted so countries read on a light page.
+    vec3 land = mix(dayColor, vec3(luminance), 0.08);
+    land = pow(land, vec3(0.74)) * vec3(1.04, 1.015, 0.97);
+    // A calm porcelain sea replaces the archive's near-black navy. Depth survives
+    // as a small tonal variation; no highlight, halo or coloured rim is added.
+    vec3 sea = mix(vec3(0.47, 0.63, 0.73), vec3(0.63, 0.77, 0.84), smoothstep(0.0, 0.06, luminance));
+    vec3 surface = mix(land, sea, water);
+    surface *= 0.9 + max(sunlight, 0.0) * 0.16;
+    // Neutral limb shading gives the sphere volume without tinting its edge.
+    float facing = max(dot(normal, normalize(cameraPosition)), 0.0);
+    surface *= mix(0.80, 1.0, smoothstep(0.0, 0.5, facing));
+    vec3 color = surface;
     vec4 atlas = texture2D(atlasMap, vUv);
     color = mix(color, atlas.rgb, atlas.a);
     // Interaction remains a separate lightweight layer over the natural surface.
