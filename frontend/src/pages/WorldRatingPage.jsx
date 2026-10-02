@@ -37,8 +37,7 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import WorldConceptPicker from '../components/WorldConceptPicker';
 import WorldMapConceptNote from '../components/WorldMapConceptNote';
 import { useLocale, useT } from '../i18n';
-import WorldMap from '../components/WorldMap';
-import MapTimeline from '../components/MapTimeline';
+import PlanetView from '../components/PlanetView';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
@@ -561,13 +560,14 @@ export default function WorldRatingPage() {
             )}
           </section>
 
-          <section id="chart" className="mb-5 grid scroll-mt-24 gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(min(100%,24rem),0.85fr)]">
-            <div className="rounded-[1.5rem] border border-border-subtle bg-surface p-3 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
+          <section id="chart" className="mb-5 grid scroll-mt-24 gap-4">
+            <div className="min-w-0">
               {mapSeriesQ.isLoading ? (
                 <SkeletonBox className="aspect-[2/1] w-full rounded-2xl" />
               ) : (
                 <>
-                  <WorldMap
+                  <PlanetView
+                    initialMode="data"
                     countries={mapCountries}
                     valuesByCode={valuesByCode}
                     detailsByCode={detailsByCode}
@@ -577,16 +577,15 @@ export default function WorldRatingPage() {
                     colorMode={conceptColorMode(activeConcept)}
                     colorDirection={sortedColDir}
                     defaultScope="world"
+                    years={years}
+                    year={activeYear}
+                    onYearChange={setSelectedYear}
+                    conceptSlug={activeConcept}
+                    rankingItems={ranked}
+                    benchmark={mapSeriesQ.data?.benchmark_by_year?.[String(activeYear)]}
+                    ratingHref="#rating-table"
                     onSelect={openCountry}
                   />
-                  {years.length > 1 && activeYear && (
-                    <MapTimeline
-                      years={years}
-                      year={activeYear}
-                      onYearChange={setSelectedYear}
-                      metric={`world-rating:${activeConcept}`}
-                    />
-                  )}
                 </>
               )}
             </div>

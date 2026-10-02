@@ -21,6 +21,9 @@ const MANUAL_CHUNK_PACKAGES = {
   // Общие для recharts и d3-geo (карта): отдельный чанк, иначе Rollup
   // затягивает их в `charts` как зависимость ручного чанка.
   d3: ['d3-array', 'internmap'],
+  // Zustand/R3F и react-redux разделяют этот shim. Если оставить его
+  // внутри charts, сцена Земли скачивает Recharts ради одного хука.
+  'external-store': ['use-sync-external-store'],
   charts: [
     'recharts', 'victory-vendor', '@reduxjs/toolkit', 'react-redux', 'redux', 'redux-thunk',
     'immer', 'reselect', 'es-toolkit', 'decimal.js-light', 'eventemitter3', 'tiny-invariant',

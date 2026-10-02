@@ -36,6 +36,10 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const { config, response } = error;
+    // A replaced query is finished: cancellation must not enter transient retries.
+    if (axios.isCancel(error) || error.code === 'ERR_CANCELED' || config?.signal?.aborted) {
+      return Promise.reject(error);
+    }
     if (!config) return Promise.reject(error);
     // Не ретраим auth-эндпоинты: иначе при 429 повторно зашлём креды/мутации.
     const isAuth = (config.url || '').startsWith('/auth');
