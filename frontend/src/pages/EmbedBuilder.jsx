@@ -8,6 +8,7 @@ import { getPageSeo } from '../lib/pageMeta';
 import { PERIODS } from '../embed/useEmbedParams';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchOptions } from '../lib/searchSynonyms';
 import { SITE_ORIGIN } from '../lib/siteOrigin';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
@@ -49,11 +50,10 @@ function IndicatorCombobox({ indicators, value, onChange }) {
   }, []);
 
   const grouped = useMemo(() => {
-    const q = deferredSearch.toLowerCase();
-    const filtered = indicators?.filter(i =>
-      isIndicatorListed(i) &&
-      (i.name.toLowerCase().includes(q) || i.code.includes(q) || (i.name_en || '').toLowerCase().includes(q))
-    ) || [];
+    const pool = (indicators || []).filter(isIndicatorListed);
+    const filtered = filterSearchOptions(pool, deferredSearch, {
+      getSearchItem: (item) => ({ ...item, country_slug: 'russia' }),
+    });
     return CATEGORIES
       .map(cat => ({
         ...cat,

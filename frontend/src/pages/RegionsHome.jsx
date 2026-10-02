@@ -29,6 +29,7 @@ import {
 } from '../lib/regionsMapUrl';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchOptions, normalizeSearchQuery } from '../lib/searchSynonyms';
 import { useAuth } from '../context/authContext';
 import {
   regionHubPath,
@@ -64,29 +65,24 @@ const MAP_METRICS = [
 
 const PRESET_CODES = new Set(MAP_METRICS.map((m) => m.code));
 
-function normalize(s) {
-  return s.toLowerCase().replace(/ё/g, 'е').replace(/[^а-яa-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
-}
-
 function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const catalog = useRegionsCatalog();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const [resultLimit, setResultLimit] = useState(50);
 
   const results = useMemo(() => {
     const sections = catalog.data?.sections || [];
     const all = sections.flatMap((s) =>
-      s.indicators.map((i) => ({ code: i.code, name: i.name, section: s.name })));
-    const q = normalize(query);
-    if (!q) return all.slice(0, 50);
-    return all.filter((i) => normalize(i.name).includes(q)).slice(0, 50);
+      s.indicators.map((i) => ({ ...i, section: s.name })));
+    return filterSearchOptions(all, query);
   }, [catalog.data, query]);
 
   useSearchTracking('map-metric', open ? query : '', results.length);
 
   const isCustom = !!activeCode;
-  const openWith = (q) => { setOpen(true); setQuery(q); };
+  const openWith = (q) => { setOpen(true); setQuery(q); setResultLimit(50); };
 
   return (
     <div className="relative min-w-0 flex-1 sm:max-w-xs">
@@ -104,7 +100,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
           onFocus={() => openWith('')}
           onClick={() => { if (!open) openWith(''); }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
-          onChange={(e) => { if (!open) setOpen(true); setQuery(e.target.value); }}
+          onChange={(e) => { if (!open) setOpen(true); setQuery(e.target.value); setResultLimit(50); }}
           className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-text-tertiary"
           aria-label={t('regions.map.customAria')}
           role="combobox"
@@ -130,7 +126,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
               {t('regions.home.nothingFound', { query })}
             </div>
           ) : (
-            results.map((i) => (
+            results.slice(0, resultLimit).map((i) => (
               <button
                 key={i.code}
                 type="button"
@@ -141,6 +137,16 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
                 <div className="text-[11px] text-text-tertiary">{i.section}</div>
               </button>
             ))
+          )}
+          {results.length > resultLimit && (
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setResultLimit((current) => current + 50)}
+              className="w-full border-t border-border-subtle px-3.5 py-3 text-left text-sm text-champagne hover:bg-surface-hover"
+            >
+              {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}: {Math.min(resultLimit, results.length)} / {results.length}
+            </button>
           )}
         </div>
       )}
@@ -392,14 +398,14 @@ export default function RegionsHome() {
 
   const filtered = useMemo(() => {
     if (!data) return [];
-    const q = normalize(deferredQuery);
+    const q = normalizeSearchQuery(deferredQuery);
     const searching = q.length > 0;
     return data.districts
       .filter((d) => searching || !activeDistrict || d.slug === activeDistrict)
       .map((d) => ({
         ...d,
         regions: searching
-          ? d.regions.filter((r) => normalize(r.name).includes(q))
+          ? filterSearchOptions(d.regions, q, { searchKind: 'region', getSearchItem: (item) => ({ ...item, country_slug: 'russia' }) })
           : d.regions,
       }))
       .filter((d) => d.regions.length > 0);
@@ -570,7 +576,7 @@ export default function RegionsHome() {
           )}
 
           {!isLoading && (() => {
-            const searching = normalize(deferredQuery).length > 0;
+            const searching = normalizeSearchQuery(deferredQuery).length > 0;
             const districtNav = data?.districts || [];
             const resolvedDistrict = activeDistrict
               && districtNav.some((d) => d.slug === activeDistrict)

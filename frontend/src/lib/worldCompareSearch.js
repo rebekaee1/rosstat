@@ -1,14 +1,18 @@
+import { filterSearchOptions } from './searchSynonyms';
+
+export function filterSearchCountries(options, query) {
+  return filterSearchOptions(options, query, {
+    searchKind: 'country',
+    getSearchItem: (option) => ({
+      ...option,
+      name: option.country_name || option.name || option.label,
+      name_en: option.country_name_en || option.name_en,
+      slug: option.country_slug || option.slug || option.key,
+      code: option.country_code || option.code,
+    }),
+  });
+}
+
 export function countryMatchesQuery(option, query) {
-  const q = (query || '').trim().toLowerCase().replace(/ё/g, 'е');
-  if (!q) return true;
-  const hay = [
-    option.country_name,
-    option.country_slug,
-    option.country_code,
-  ].filter(Boolean).join(' ').toLowerCase().replace(/ё/g, 'е');
-  if (hay.includes(q)) return true;
-  if (option.country_slug === 'russia') {
-    return ['россия', 'russia', 'рф', 'rf'].some((alias) => alias.startsWith(q));
-  }
-  return false;
+  return filterSearchCountries([option], query).length > 0;
 }

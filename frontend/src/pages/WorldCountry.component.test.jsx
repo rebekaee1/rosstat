@@ -89,6 +89,17 @@ function renderCountry(slug, payload, locale) {
 }
 
 describe('WorldCountry market indicators', () => {
+  it('keeps country qualifiers and semantic matches inside the current catalogue', async () => {
+    renderCountry('germany', GERMANY);
+    await screen.findByRole('heading', { name: 'Рынок труда' });
+    const input = screen.getByRole('searchbox');
+    fireEvent.change(input, { target: { value: 'безработица Germany' } });
+    expect(await screen.findByRole('link', { name: /Уровень безработицы/ })).toBeTruthy();
+    fireEvent.change(input, { target: { value: 'безработица France' } });
+    await screen.findByText(/По запросу/);
+    expect(screen.queryByRole('link', { name: /Уровень безработицы/ })).toBeNull();
+  });
+
   it('показывает блок «Мировые рынки» со ссылками в общий каталог', async () => {
     renderCountry('united-states', US_COUNTRY);
 

@@ -324,6 +324,30 @@ def test_subnational_hub_and_map(subnational_client):
     assert by_slug["california"]["rank"] == 2
 
 
+@pytest.mark.parametrize("locale", ["ru", "en"])
+def test_subnational_bilingual_search_metadata_preserves_display_copy(subnational_client, locale):
+    headers = {"X-FE-Locale": locale}
+    hub = subnational_client.get("/api/v1/world/united-states/regions", headers=headers)
+    profile = subnational_client.get("/api/v1/world/united-states/regions/region/california", headers=headers)
+    assert hub.status_code == profile.status_code == 200
+    for body in [hub.json(), profile.json()]:
+        gdp = next(item for item in body["indicators"] if item["code"] == "real-gdp")
+        assert gdp["name_ru"] == "Реальный ВРП"
+        assert gdp["name_en"] == "Real GDP"
+        assert gdp["unit_ru"] == "млн долл. 2017"
+        assert gdp["unit_en"] == "mln 2017 USD"
+        assert gdp["name"] == gdp[f"name_{locale}"]
+        assert gdp["unit"] == gdp[f"unit_{locale}"]
+        section = next(section for section in body["sections"] if any(item["code"] == "real-gdp" for item in section["indicators"]))
+        assert section["name_ru"] == "Счета"
+        assert section["name_en"] == "Accounts"
+        assert section["name"] == section[f"name_{locale}"]
+    region = profile.json()["region"]
+    assert region["name_ru"] == "Калифорния"
+    assert region["name_en"] == "California"
+    assert region["name"] == region[f"name_{locale}"]
+
+
 def test_subnational_profile_and_series(subnational_client):
     p = subnational_client.get("/api/v1/world/united-states/regions/region/california")
     assert p.status_code == 200

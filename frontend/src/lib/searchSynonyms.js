@@ -1,6 +1,7 @@
 /**
- * Клиентский слой поиска ⌘K: нормализация, curated-синонимы, простой fuzzy.
- * Без внешних зависимостей — палитра фильтрует уже загруженный каталог.
+ * Общий deterministic ranking для уже допустимого набора результатов.
+ * Все значимые слова обязательны: alias не стирает страну, вариант или частоту.
+ * Веса exact/prefix/alias/edit-distance не требуют внешней модели/запроса.
  */
 
 const TOKEN_RE = /[^a-z0-9а-я]+/g;
@@ -10,6 +11,7 @@ export function normalizeSearchQuery(raw) {
   return String(raw || '')
     .trim()
     .toLowerCase()
+    .normalize('NFC')
     .replace(/ё/g, 'е')
     .replace(/\s+/g, ' ');
 }
@@ -24,15 +26,17 @@ function unique(list) {
  */
 const SYNONYM_GROUPS = [
   { targets: ['cpi', 'inflation', 'hicp-index'], keys: ['ипц', 'cpi', 'ipc', 'инфляция', 'inflation', 'hicp', 'рост цен'] },
-  { targets: ['gdp', 'gdp-volume-quarterly', 'gdp-volume-annual'], keys: ['ввп', 'gdp', 'валовой продукт'] },
-  { targets: ['gdp-per-capita', 'gdp-per-capita-usd', 'gdp-per-capita-eu'], keys: ['ввп на душу', 'gdp per capita', 'per capita', 'на душу'] },
+  { targets: ['gdp', 'gdp-nominal', 'gdp-real', 'gdp-volume-quarterly', 'gdp-volume-annual'], keys: ['ввп', 'gdp', 'валовой продукт'] },
+  { targets: ['valovoy-regionalnyy-produkt', 'real-gdp'], keys: ['врп', 'grp', 'gross regional product'] },
+  { targets: ['gdp-per-capita', 'gdp-per-capita-usd', 'gdp-per-capita-eu', 'weo-gdp-per-capita-usd'], keys: ['ввп на душу', 'gdp per capita', 'per capita', 'на душу'] },
   { targets: ['key-rate'], keys: ['ставка цб', 'ключевая ставка', 'ключевая', 'key rate', 'cbr rate', 'ставка'] },
   { targets: ['fuel'], keys: ['бензин', 'gasoline', 'petrol', 'топливо', 'аи'] },
   { targets: ['fuel-ai95'], keys: ['бензин 95', 'аи-95', 'аи95', 'ai95', 'ai-95'] },
   { targets: ['fuel-ai92'], keys: ['бензин 92', 'аи-92', 'аи92', 'ai92', 'ai-92'] },
   { targets: ['fuel-diesel'], keys: ['дизель', 'солярка', 'diesel'] },
-  { targets: ['unemployment', 'unemployment-rate'], keys: ['безработица', 'unemployment', 'безработ'] },
-  { targets: ['wages'], keys: ['зарплата', 'зпл', 'з/п', 'заработная', 'wages', 'salary', 'зп', 'мрот', 'минимальная зарплата', 'minimum wage'] },
+  { targets: ['unemployment', 'unemployment-rate', 'uroven-bezrabotitsy'], keys: ['безработица', 'unemployment', 'безработ'] },
+  { targets: ['wages', 'wages-nominal', 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy'], keys: ['зарплата', 'зпл', 'з/п', 'заработная', 'wages', 'salary', 'зп'] },
+  { targets: ['minimum-wage', 'mrot'], keys: ['мрот', 'минимальная зарплата', 'minimum wage'] },
   { targets: ['usd-rub'], keys: ['курс доллара', 'доллар', 'usd', 'dollar', 'usdrub'] },
   { targets: ['eur-rub'], keys: ['курс евро', 'евро', 'eur', 'euro'] },
   { targets: ['cny-rub'], keys: ['курс юаня', 'юань', 'cny', 'yuan', 'renminbi'] },
@@ -47,7 +51,7 @@ const SYNONYM_GROUPS = [
   { targets: ['imoex'], keys: ['мосбиржа', 'imoex', 'индекс мосбиржи', 'micex'] },
   { targets: ['population'], keys: ['население', 'population', 'демография'] },
   { targets: ['budget'], keys: ['бюджет', 'дефицит', 'budget', 'deficit'] },
-  { targets: ['government-debt', 'budget'], keys: ['госдолг', 'гос долг', 'government debt'] },
+  { targets: ['government-debt', 'weo-government-debt-gdp', 'budget'], keys: ['госдолг', 'гос долг', 'government debt'] },
   { targets: ['retail-trade'], keys: ['розница', 'розничная', 'retail'] },
   { targets: ['natural-gas'], keys: ['газ', 'природный газ', 'gas', 'henry hub'] },
   { targets: ['housing'], keys: ['жилье', 'недвижимость', 'housing', 'квартир'] },
@@ -127,27 +131,14 @@ export function damerauLevenshtein(a, b) {
   return dp[n][m];
 }
 
-function tokenize(text) {
-  return normalizeSearchQuery(text).split(TOKEN_RE).filter((t) => t.length >= 3);
-}
-
-function tokenFuzzy(queryToken, hayToken) {
-  if (hayToken.startsWith(queryToken) && queryToken.length >= 3) return true;
-  if (queryToken.startsWith(hayToken) && hayToken.length >= 3) return true;
-  if (queryToken.length >= 4 && hayToken.length >= 4) {
-    return damerauLevenshtein(queryToken, hayToken) <= 1;
-  }
-  return false;
-}
-
-function haystackOf(ind) {
-  return normalizeSearchQuery(
-    `${ind.name || ''} ${ind.name_en || ''} ${ind.category || ''} ${ind.category_ru || ''} ${ind.code || ''} ${ind.seo_keywords || ''} ${ind.concept_slug || ''}`,
-  );
-}
-
 function itemCodes(ind) {
-  return [ind.code, ind.concept_slug, ind.concept].filter(Boolean).map((c) => String(c).toLowerCase());
+  const raw = [ind.code, ind.concept_slug, ind.concept, ind.value, ind.slug, ...(Array.isArray(ind.search_codes) ? ind.search_codes : [])]
+    .filter((c) => typeof c === 'string').map(normalizeSearchQuery);
+  // National passports prefix the statistical code with a two-letter country
+  // code. Require supplied country identity before interpreting that prefix.
+  return ind.country_slug
+    ? unique([...raw, ...raw.filter((code) => /^[a-z]{2}-/.test(code)).map((code) => code.slice(3))])
+    : raw;
 }
 
 export function codeMatchesTargets(codeOrItem, targets) {
@@ -158,61 +149,243 @@ export function codeMatchesTargets(codeOrItem, targets) {
   return codes.some((c) => c && targets.some((t) => c === t || c.startsWith(`${t}-`)));
 }
 
-function fuzzyMatch(ind, q) {
-  const qTokens = tokenize(q);
-  if (!qTokens.length) return false;
-  const hayTokens = tokenize(haystackOf(ind));
-  if (!hayTokens.length) return false;
-  return qTokens.every((qt) => hayTokens.some((ht) => tokenFuzzy(qt, ht)));
+const STOP_WORDS = new Set(['в', 'во', 'на', 'по', 'к', 'и', 'с', 'со', 'за', 'для', 'the', 'of', 'in', 'on', 'at', 'and', 'a', 'an', 'to', 'for']);
+const FREQUENCY_TERMS = {
+  daily: 'daily day days ежедневно дневной день дням',
+  weekly: 'weekly week weeks еженедельно недельный неделя неделям',
+  monthly: 'monthly month months ежемесячно месячный месяц месяцам',
+  quarterly: 'quarterly quarter quarters квартально квартальный квартал кварталам',
+  annual: 'annual annually yearly year years ежегодно годовой год годам',
+};
+// Aliases extend identity fields only. A metric name mentioning a country is
+// not sufficient to claim that identity. Unknown countries still match their
+// own supplied bilingual labels/slugs without requiring this convenience map.
+const GEO_ALIASES = {
+  russia: 'Россия России Russian Federation РФ RF RU',
+  'united-states': 'United States United States of America USA US США Соединенные Штаты Америки',
+  'united-kingdom': 'United Kingdom UK GB Britain Великобритания Великобритании Британия Англия',
+  germany: 'Germany Deutschland Германия Германии DE',
+  france: 'France Франция Франции FR',
+  austria: 'Austria Австрия Австрии AT',
+  italy: 'Italy Италия Италии IT',
+  spain: 'Spain Испания Испании ES',
+  poland: 'Poland Польша Польши PL',
+  sweden: 'Sweden Швеция Швеции SE',
+  norway: 'Norway Норвегия Норвегии NO',
+  finland: 'Finland Финляндия Финляндии FI',
+  netherlands: 'Netherlands Holland Нидерланды Нидерландов Голландия NL',
+  belgium: 'Belgium Бельгия Бельгии BE',
+  switzerland: 'Switzerland Швейцария Швейцарии CH',
+  canada: 'Canada Канада Канады CA',
+  australia: 'Australia Австралия Австралии AU',
+  japan: 'Japan Япония Японии JP',
+  'south-korea': 'South Korea Южная Корея Южной Кореи KR',
+  brazil: 'Brazil Бразилия Бразилии BR',
+  mexico: 'Mexico Мексика Мексики MX',
+  china: 'China Китай Китая CN',
+  india: 'India Индия Индии IN',
+  moskva: 'Москва Москвы Moscow',
+  'sankt-peterburg': 'Санкт-Петербург Санкт-Петербурга СПб Петербург Saint Petersburg St Petersburg',
+  'respublika-tatarstan': 'Татарстан Татарстана Tatarstan',
+  'krasnodarskiy-kray': 'Краснодарский край Краснодарского края Krasnodar Krai',
+  california: 'California Калифорния Калифорнии CA',
+  'new-york': 'New York Нью-Йорк Нью-Йорка NY',
+  texas: 'Texas Техас Техаса TX',
+  florida: 'Florida Флорида Флориды FL',
+  'district-of-columbia': 'District of Columbia Washington DC Округ Колумбия Округа Колумбия',
+};
+const LAYOUT_LATIN = "qwertyuiop[]asdfghjkl;'zxcvbnm,.`";
+const LAYOUT_CYRILLIC = 'йцукенгшщзхъфывапролджэячсмитьбюе';
+
+export function correctSearchKeyboardLayout(raw) {
+  const text = normalizeSearchQuery(raw);
+  const from = /[а-я]/.test(text) ? LAYOUT_CYRILLIC : LAYOUT_LATIN;
+  const to = from === LAYOUT_LATIN ? LAYOUT_CYRILLIC : LAYOUT_LATIN;
+  return [...text].map((ch) => {
+    const index = from.indexOf(ch);
+    return index < 0 ? ch : to[index];
+  }).join('');
+}
+
+function tokenize(text) {
+  return normalizeSearchQuery(text).split(TOKEN_RE).filter(Boolean);
+}
+
+function oneEdit(a, b) {
+  return a.length >= 4 && b.length >= 4
+    && Math.abs(a.length - b.length) <= 1 && damerauLevenshtein(a, b) <= 1;
+}
+
+function russianStem(token) {
+  // Inflection only, no generic semantic substitutions. Keep at least five
+  // letters so short abbreviations and different statistical terms stay exact.
+  if (!/^[а-я]{6,}$/.test(token)) return token;
+  const stem = token.replace(/(?:иями|ями|ами|ого|ему|ому|иях|ах|ях|ов|ев|ий|ый|ая|яя|ое|ее|ые|ие|ам|ям|ом|ем|ой|ей|ы|и|а|я|у|ю|е)$/u, '');
+  return stem.length >= 5 ? stem : token;
+}
+
+const COUNT_WORDS = new Set(['количество', 'численность', 'число', 'count', 'number']);
+
+// Longest intents consume their own words; remaining qualifiers are separate
+// required terms. "GDP per capita Germany" cannot fall back to any GDP row.
+function queryUnits(q) {
+  if (SEARCH_SYNONYMS[q]) return [{ text: q, targets: SEARCH_SYNONYMS[q] }];
+  const words = tokenize(q);
+  const consumed = new Set();
+  const units = [];
+  for (const alias of SYNONYM_KEYS) {
+    const parts = tokenize(alias);
+    if (!parts.length) continue;
+    for (let i = 0; i <= words.length - parts.length; i += 1) {
+      if (parts.some((_part, offset) => consumed.has(i + offset))) continue;
+      const exact = parts.every((part, offset) => words[i + offset] === part);
+      const partial = parts.length === 1 && words.length === 1 && words[i].length >= 3 && parts[0].startsWith(words[i]);
+      const inflection = parts.length === 1 && russianStem(words[i]) === russianStem(parts[0]);
+      const typo = parts.length === 1 && oneEdit(words[i], parts[0]);
+      if (!exact && !partial && !typo && !inflection) continue;
+      parts.forEach((_part, offset) => consumed.add(i + offset));
+      units.push({ text: words.slice(i, i + parts.length).join(' '), targets: SEARCH_SYNONYMS[alias], corrected: !exact });
+      break;
+    }
+  }
+  words.forEach((word, index) => {
+    if (!consumed.has(index) && !STOP_WORDS.has(word)) units.push({ text: word });
+  });
+  return units;
+}
+
+function strings(values) {
+  return values.flatMap((value) => Array.isArray(value) ? value : [value])
+    .filter((value) => typeof value === 'string' || typeof value === 'number')
+    .map(normalizeSearchQuery).filter(Boolean);
+}
+
+function searchDocument(item, searchKind) {
+  const codes = itemCodes(item);
+  const names = strings([item.name, item.name_ru, item.name_en, item.label, item.search_label]);
+  const geoSlug = searchKind === 'country' || searchKind === 'region'
+    ? (item.slug || item.value || item.country_slug || item.region_slug)
+    : null;
+  const identities = [item.country_slug, item.region_slug, geoSlug];
+  const aliases = identities.map((identity) => GEO_ALIASES[identity]).filter(Boolean);
+  const metadata = strings([
+    item.category, item.category_ru, item.section, item.section_name, item.section_ru, item.section_en,
+    item.seo_keywords, item.keywords, item.search_aliases, item.search_context,
+    item.country_name, item.country_name_en, item.country_code,
+    item.region_name, item.region_name_en, item.region_code,
+    item.unit, item.unit_ru, item.unit_en, item.frequency, FREQUENCY_TERMS[item.frequency],
+    ...(Array.isArray(item.search_frequencies) ? item.search_frequencies : []).map((frequency) => FREQUENCY_TERMS[frequency] || frequency),
+    item.mode, item.group, item.hint, ...identities, ...aliases,
+  ]);
+  // Human vocabulary for materialized generic siblings; this describes the
+  // row's existing representation, never invents an unavailable aggregation.
+  if (codes.some((c) => /(?:^|-)avg(?:-|$)/.test(c))) metadata.push('средняя среднее average mean');
+  if (codes.some((c) => /(?:^|-)yoy(?:-|$)/.test(c))) metadata.push('год к году годовой рост year on year yoy');
+  return { item, codes, names, metadata, nameTokens: names.flatMap(tokenize), metaTokens: [...codes, ...metadata].flatMap(tokenize) };
+}
+
+function lexicalTermScore(term, doc) {
+  const words = tokenize(term);
+  if (!words.length) return -1;
+  const scoreToken = (word) => {
+    if (doc.nameTokens.includes(word) || doc.codes.includes(word)) return 100;
+    if (word.length >= 2 && doc.nameTokens.some((token) => token.startsWith(word))) return 82;
+    if (doc.metaTokens.includes(word)) return 65;
+    if (word.length >= 2 && doc.metaTokens.some((token) => token.startsWith(word))) return 52;
+    const stem = russianStem(word);
+    if (stem.length >= 5 && doc.nameTokens.some((token) => russianStem(token) === stem)) return 72;
+    if (stem.length >= 5 && doc.metaTokens.some((token) => russianStem(token) === stem)) return 45;
+    if (COUNT_WORDS.has(word) && doc.nameTokens.some((token) => COUNT_WORDS.has(token))) return 65;
+    if (doc.nameTokens.some((token) => oneEdit(word, token))) return 35;
+    if (doc.metaTokens.some((token) => oneEdit(word, token))) return 25;
+    return -1;
+  };
+  const scores = words.map(scoreToken);
+  return scores.some((score) => score < 0) ? -1 : scores.reduce((sum, score) => sum + score, 0) / scores.length;
+}
+
+function matchesPercentQualifier(doc, q) {
+  if (!q.includes('%')) return true;
+  const fields = [...doc.codes, ...doc.names, ...doc.metadata]
+    .map((field) => field.replace(/(\d)\s+%/g, '$1%'));
+  const amounts = q.match(/\d+(?:[.,]\d+)?\s*%/g) || [];
+  if (amounts.length) {
+    return amounts.every((amount) => fields.some((field) => hasPhrase(field, amount.replace(/\s/g, ''))));
+  }
+  return fields.some((field) => field.includes('%'));
+}
+
+function scoreDocument(doc, q, units) {
+  // A percentage is a literal qualifier. Tokenization must not turn 100% into
+  // a loose 100 prefix or silently drop a requested percentage unit.
+  if (!matchesPercentQualifier(doc, q)) return -1;
+  const exactCode = doc.codes.includes(q);
+  const exactName = doc.names.includes(q);
+  // Long literal titles can end with an unfinished word during typing (and
+  // legacy telemetry was truncated at 60 characters). Only the full native
+  // name prefix permits its final one-letter token; separate facets still
+  // pass the usual mandatory-token checks below.
+  const nativeTitlePrefix = q.length >= 24 && tokenize(q).length >= 4
+    && doc.names.some((name) => name.startsWith(q));
+  if (!units.length) return exactCode ? 10000 : exactName ? 9500 : -1;
+  let score = 0;
+  for (const unit of units) {
+    const lexical = nativeTitlePrefix && unit.text.length === 1 && q.endsWith(unit.text)
+      ? 82 : lexicalTermScore(unit.text, doc);
+    const target = unit.targets && codeMatchesTargets(doc.item, unit.targets)
+      ? (doc.codes.some((code) => unit.targets.includes(code)) ? 160 : 120) - (unit.corrected ? 15 : 0)
+      : -1;
+    const match = Math.max(lexical, target);
+    if (match < 0) return -1;
+    score += match;
+  }
+  if (exactCode) return 10000 + score;
+  if (exactName) return 9500 + score;
+  // Preserve canonical intent above merely matching noisy category/SEO fields.
+  return score + (doc.names.some((name) => name.startsWith(q)) ? 20 : 0);
+}
+
+/** Rank a supplied eligible pool; preserves objects, full results and stable ties. */
+export function filterSearchOptions(options, rawQuery, {
+  limit = 0, getSearchItem = (item) => item, searchKind,
+} = {}) {
+  const list = Array.isArray(options) ? options : [];
+  const q = normalizeSearchQuery(rawQuery);
+  if (!q) return limit > 0 ? list.slice(0, limit) : list;
+  const docs = list.map((item, index) => ({ original: item, index, ...searchDocument(getSearchItem(item) || {}, searchKind) }));
+  const units = queryUnits(q);
+  let ranked = docs.map((doc) => ({ ...doc, score: scoreDocument(doc, q, units) })).filter((doc) => doc.score >= 0);
+  // Layout correction is fallback only: valid short codes/names stay literal.
+  if (!ranked.length) {
+    const corrected = correctSearchKeyboardLayout(q);
+    // Latin keyboard punctuation can be Russian letters: [kt,ys[ → хлебных.
+    // Inspect the corrected text before tokenizing, while keeping short codes
+    // literal and applying every original qualifier to the same eligible pool.
+    if (corrected !== q && /[a-zа-я]{3}/.test(corrected)) {
+      const correctedUnits = queryUnits(corrected);
+      ranked = docs.map((doc) => ({ ...doc, score: scoreDocument(doc, corrected, correctedUnits) })).filter((doc) => doc.score >= 0);
+    }
+  }
+  ranked.sort((a, b) => b.score - a.score || a.index - b.index);
+  const result = ranked.map((doc) => doc.original);
+  return limit > 0 ? result.slice(0, limit) : result;
 }
 
 /**
  * Ранг: точное имя/код → canonical intent → имя → семейство → метаданные → fuzzy.
- * Fuzzy включается только если точных подстрочных совпадений нет.
+ * Ограниченный fuzzy имеет меньший вес; раскладка исправляется только при нуле результатов.
  */
 export function filterSearchIndicators(indicators, rawQuery, { limit = 600 } = {}) {
   const q = normalizeSearchQuery(rawQuery);
   if (!q) return [];
-  const list = Array.isArray(indicators) ? indicators : [];
-  const targets = resolveSynonymTargets(q);
-
-  // Stable ranking inside each tier preserves catalogue order without hiding
-  // derived/unlisted siblings. Exact metadata matches must not bury intent.
-  const tiers = [[], [], [], [], []];
-  let hasSubstring = false;
-  for (const ind of list) {
-    const codes = itemCodes(ind);
-    const names = [ind.name, ind.name_en].filter(Boolean).map(normalizeSearchQuery);
-    const substring = haystackOf(ind).includes(q);
-    const synonym = codeMatchesTargets(ind, targets);
-    hasSubstring ||= substring;
-    if (!substring && !synonym) continue;
-    const tier = codes.includes(q) || names.includes(q) ? 0
-      : codes.some(code => targets.includes(code)) ? 1
-        : names.some(name => name.includes(q)) ? 2
-          : synonym ? 3 : 4;
-    tiers[tier].push(ind);
-  }
-
   const seen = new Set();
-  const out = [];
-  const push = (ind) => {
-    const key = ind.code || ind.key || ind.concept_slug;
-    if (!key || seen.has(key)) return;
+  const results = filterSearchOptions(indicators, q).filter((item) => {
+    const key = item.key || item.code || item.concept_slug;
+    if (!key || seen.has(key)) return false;
     seen.add(key);
-    out.push(ind);
-  };
-  tiers.forEach(tier => tier.forEach(push));
-
-  if (!hasSubstring) {
-    for (const ind of list) {
-      const key = ind.code || ind.key || ind.concept_slug;
-      if (!key || seen.has(key)) continue;
-      if (fuzzyMatch(ind, q)) push(ind);
-    }
-  }
-
-  return limit > 0 ? out.slice(0, limit) : out;
+    return true;
+  });
+  return limit > 0 ? results.slice(0, limit) : results;
 }
 
 /** Для мирового /world/search: короткий синоним раскрываем в латинский код. */

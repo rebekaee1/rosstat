@@ -262,7 +262,7 @@ analytics batches, embed/identity и loading/error/empty. Численное com
 
 **Derived и кэш.** `DerivedSpec(dst_code, src_codes, op)` задаёт чистое преобразование; `run_for_updated_sources` пересчитывает транзитивное замыкание в топологическом порядке, включая in-place ревизии источника через `records_updated`. Изменившиеся derived инвалидируют namespace кода. При исключении отдельного derived код логирует ошибку и продолжает остальные; итоговый caller должен проверять completeness, а не считать факт обновления гарантией всего каскада. [Spec](../backend/app/services/calculation_engine.py#L52-L66), [dispatch](../backend/app/services/calculation_engine.py#L401-L440), [scheduler](../backend/app/tasks/scheduler.py#L188-L203). Полный ручной пересчёт — `scripts/rebuild-all-derived.py`; корневой `scripts/` не копируется в backend image, поэтому в контейнер передавать файл через stdin (см. workflow).
 
-**Публичный ответ.** `/indicators/{code}` отдаёт `IndicatorDetail`: `source_url`, `methodology`, `first_date`, `last_date` могут быть `null`; `world_compare=null` означает отсутствие честной связки. `/indicators/{code}/data` отдаёт `{"indicator": code, "count": N, "data": [{"date", "value"}]}`; пустой **существующий** ряд — 200 с `count=0,data=[]`, неизвестный код — 404. Без диапазона API берёт до 10 000 последних точек и разворачивает в прямой порядок; `from/to` включительны. [Схемы](../backend/app/schemas.py#L51-L90), [реализация](../backend/app/api/indicators.py#L409-L453). `is_listed=false` исключает обычный листинг, но глобальный поиск запрашивает `include_unlisted=true`; детализация остаётся доступна по коду. [API](../backend/app/api/indicators.py#L149-L164), [consumer](../frontend/src/components/IndicatorSearch.jsx#L59-L64).
+**Публичный ответ.** `/indicators/{code}` отдаёт `IndicatorDetail`: `source_url`, `methodology`, `first_date`, `last_date` могут быть `null`; `world_compare=null` означает отсутствие честной связки. `/indicators/{code}/data` отдаёт `{"indicator": code, "count": N, "data": [{"date", "value"}]}`; пустой **существующий** ряд — 200 с `count=0,data=[]`, неизвестный код — 404. Без диапазона API берёт до 10 000 последних точек и разворачивает в прямой порядок; `from/to` включительны. [Схемы](../backend/app/schemas.py#L51-L90), [реализация](../backend/app/api/indicators.py#L409-L453). `is_listed=false` исключает обычный листинг; детализация остаётся доступна по коду. [API](../backend/app/api/indicators.py#L149-L164). До новой версии глобальная палитра использовала `include_unlisted=true`; локальный `/search` 30.09 читает active data-backed российские ряды напрямую, включая unlisted и их canonical resolver. Контракт — [ниже](#7-поиск-и-допустимая-область-локальная-версия-2026-09-30).
 
 **Прогноз.** Российский forecast хранится отдельно в `Forecast/ForecastValue`; `forecast=null` в ответе — допустимое состояние. Startup scheduler и плановый/late ETL запускают gap-fill для рядов с `forecast_steps>0` без текущего прогноза, но сам вызов retrain не доказывает наличие результата. [Схема](../backend/app/schemas.py#L93-L116), [gap-fill](../backend/app/services/forecast_pipeline.py#L472-L508), [startup](../backend/app/main.py#L417-L429).
 
@@ -310,6 +310,62 @@ Public guard требует `official_explicit` либо `official_rule` **то�
 
 **Контракт админ-ответа.** BI-проверка администратора идёт короткой public DB-сессией, тяжёлая сборка — фоновой analytics-сессией; cold miss возвращает `202 {status:"building"}`, успешный/stale снимок содержит `cache_meta.{age_sec,stale,refreshing}`, ошибка — 503. Внутрипроцессный `_INFLIGHT` не доказывает координацию между несколькими web-воркерами; отсутствие такой гонки/перегрузки **не проверялось** в этом docs-аудите. [API](../backend/app/api/admin_bi.py#L53-L145), [route](../backend/app/api/admin_bi.py#L193-L272).
 
+## 7. Поиск и допустимая область (локальная версия 2026-09-30)
+
+`GET /search` публичен: `q` 1–256 символов, `limit` 1–100 (default 50),
+локаль действующего API; валидация входа — 422. Ответ содержит `results`,
+`total` (returned count), `has_more` (включая candidate clipping),
+`version=federated-v2`, `intent.{countries,regions,year,month}`; при пустоте
+может содержать reason `unsupported_query`/`unsupported_period`/
+`ambiguous_geography`/`no_coverage`, при исправлении — `corrected_query`.
+Метаданные кандидата имеют `key`, `kind`, локализованные имена, path/score и
+соответствующие типу code/географию/частоту/единицу. [API](../backend/app/api/search.py),
+[service](../backend/app/services/search.py), полный [контракт](search.md).
+
+V2 защищает подтверждённый code/native title до разбора даты; для покрытых typed
+concepts требует экономическую меру в имени/коде, а explicit quantity/frequency
+проверяет в metadata. Набор typed guards конечен и не покрывает все меры.
+SQL и Python используют общие guard definitions до и после bounded retrieval;
+unknown qualifiers не отбрасываются. Короткие autocomplete совпадают только
+с началом реального имени/кода компактного каталога. UI homepage отправляет
+raw query в тот же глобальный endpoint; локальные поля сохраняют свой pool.
+Обязательные native-denominator, валюта, масштаб и единица не конвертируются
+друг в друга. Для покрытых ролей количество получателей, денежная сумма,
+ставка, остаток, выдача и трудовой доход различаются shared measure guard.
+Обычные слова/дефисы не становятся guessed code или typo-control.
+Повтор всей сохранённой истории и отдельный relevance oracle описаны в
+[датированном отчёте](research/search-history-replay-2026-09-30.md).
+
+Общий Indicator контур: active ряд с конечным фактом, unlisted допускается
+через `russia_search_path`; DXY/US10Y и materialized siblings могут иметь
+US issuer по действующему market registry при прежнем storage/URL.
+World: активная страна и конечный ненулевой факт, включая доступные hidden
+slices; регионы: listed определения с фактом нужной территории и частоты.
+Явная география, fact-date и поддержанные explicit-frequency predicates
+ограничивают выбор до LIMIT; regional annual intent требует annual факта,
+месячный ряд не подменяет его. Дополнительная world destination eligibility
+(hidden year, несовместимая с month native frequency, canonical year+mode)
+пока отбрасывается после budget/batch resolution. Это ограничение recall,
+отдельное от обязательных native predicates; [подробности](search.md#намерение-кандидат-и-область).
+Native world level означает сохранённую меру (включая rate), не только индекс.
+Всего может быть больше
+совпадений, чем извлечённый budget; total не является full catalog count.
+Разные slice keys не склеиваются по одному URL. Период открывается document
+navigation только при поддерживаемом route/факте; mode не отбрасывается
+молча. Hidden world row не выдаётся document period без listed SSR права.
+`world_search_paths` читает sibling/merge metadata одной SELECT на ranked
+порцию по тем же card/merge/rank определениям canonical resolver.
+Месячные региональные period destination пока отсутствуют.
+
+Поиск read-only, не имеет commit/cache invalidation/jobs. Локальные поля
+меняют matching/ranking внутри исходного eligibility pool, таблица —
+даты/значения уже загруженных точек. UI loading/error/empty различимы и
+pending не записывается как ноль результатов. Глобальная telemetry содержит
+interaction_id и весь returned candidate set до 100 keys; это не measured
+viewport exposure. Исторические параметры старых событий не мигрируются;
+каждый input edit не собирается. [Instrumentation](analytics_api_inventory/frontend_instrumentation.md),
+[ADR-0016](adr/0016-federated-public-search.md), [история](research/search-history-2026-09-30.md).
+
 ## Транзакции, кэш и проверка при изменении контракта
 
 | Изменение | Точка commit / инвалидирование | Минимальная проверка |
@@ -342,3 +398,54 @@ Public guard требует `official_explicit` либо `official_rule` **то�
 ## Установленные границы реализации, 2026-09-27
 
 Контракты выше описывают устройство и требуемые инварианты. Содержательный проход выявил места, где реализация может их нарушать: partial source response → удаление отсутствующих дат в national ingest; cache bump до commit в BaseParser; сохранение старых derived при пустом результате; разные eligibility-условия sitemap и SSR; неодинаковые выборки и усечение в BI. Точные механизмы и доказательства — [code-review-findings](code-review-findings.md), все элементы — [реестр кода](code-review.md). Эти нарушения не объявляются исправленными обновлением документации.
+
+
+### Уточнение поиска 01.10: единицы, срезы и годовой режим
+
+Проценты и процентные пункты — разные обязательные native facets. USD для
+общей подписи dollars допускается только при объявленной валюте US state
+producer; чужая валюта и отсутствующая unit не угадываются. Literal preflight
+сохраняет целое действительное название внутри rawquery вместе с его
+внутренними страной/датой/%; внешние слова, год, география и единицы остаются
+обязательными. Это исправляет прежнюю описанную границу internal-title.
+
+Eurostat slice qualifiers проверяют конкретную ось и её storedmember,
+до candidateLIMIT и в Python. Total другой оси, category/SEO и отсутствующий
+JSONmember не являются доказательством; ordinary bareall не снимается.
+Слова о ежедневном использовании внутри economicdefinition отделены от
+частоты наблюдений. Этот словарь конечен и не является обученной моделью.
+
+Годовой поиск России может вернуть parent/year?mode только если shared
+resolver рендерит тот же actualcode, для которого есть конечные факты года.
+SSR использует nativeданные/единицу/title этого режима; canonical/hreflang/
+соседние годы/graphlink сохраняютmode. Все supportedmode-year canonical
+входят в sitemap registry; обычная карточка canonicalбезmode. Подробности —
+[ADR-0003](adr/0003-seo-single-source-server-rendered.md) и [search replay](research/search-history-replay-2026-09-30.md).
+Worldmode-year и derivedmonth остаются unsupported, годы не отбрасываются.
+
+Robots и Yandex Clean-param сохраняют identity годового mode; ограничения
+query и ответственности REP/SSR — в [основном контракте поиска](search.md#crawl-policy-годового-режима-0110).
+
+### Уточнение V5 01.10: независимые роли и нативные свидетельства
+
+Частота исходного ряда и частота сохранённого результата — разные ограничения.
+Source frequency берётся из объявленного native mode семейства; world frequency
+её не заменяет. End-of-period подтверждается только последней операцией
+`period_last` зарегистрированного pipeline либо полным native world названием.
+Предыдущий шаг `period_last` внутри расчёта YoY не задаёт end-of-period identity.
+
+Год базы постоянных/цепных цен не становится годом наблюдения. База и денежная
+оценка требуют полного свидетельства внутри одной native unit подписи или,
+для оценки в текущих/постоянных ценах, одного полного native title. Фрагменты
+title и unit, либо двух переводов unit, не соединяются в выдуманное условие.
+Чужая валюта/база/частота и неизвестное уточнение остаются обязательными.
+Доказательство price subject у зарегистрированного товарного семейства требует
+его категории и денежной единицы на физическое количество; одна currency unit
+не превращает GDP или доход в товарную цену. SQL до LIMIT и финальный Python
+guard проверяют эти условия на настоящих metadata, без подмены display label.
+
+Новые named slice members остаются provider/axis/member контрактом, включая
+string type JSON. TOTAL другой оси и `TOT_FTE` не равны универсальному total.
+Конечная грамматика и ограниченные кеши чистых словоформ не хранят запросы
+пользователей, выдачу или таблицу ответов. Проверки и границы переноса — в
+[replay](research/search-history-replay-2026-09-30.md).

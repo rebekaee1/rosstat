@@ -15,6 +15,7 @@ import MobileNavSelect from '../components/MobileNavSelect';
 import UsCatalogNav from '../components/UsCatalogNav';
 import { groupUsSections, shortUsIndicatorName } from '../lib/usCatalogTopics';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchOptions } from '../lib/searchSynonyms';
 import { worldSubnationalRegionTrail } from '../lib/breadcrumbs';
 import {
   RUSSIA,
@@ -146,9 +147,14 @@ export default function WorldRegionProfile() {
     const q = normalize(deferredQuery);
     if (!q) return sections;
     return sections
-      .map((s) => ({ ...s, indicators: s.indicators.filter((i) => normalize(i.name).includes(q)) }))
+      .map((s) => ({
+        ...s,
+        indicators: filterSearchOptions(s.indicators, q, {
+          getSearchItem: (item) => ({ ...item, section_name: s.name, country_slug: countrySlug, country_name: countryName, region_slug: slug, region_name: regionName }),
+        }),
+      }))
       .filter((s) => s.indicators.length > 0);
-  }, [sections, deferredQuery]);
+  }, [sections, deferredQuery, countrySlug, countryName, slug, regionName]);
 
   const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
   useSearchTracking('world-region-profile', deferredQuery, foundIndicators);

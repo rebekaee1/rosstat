@@ -97,6 +97,19 @@ describe('CountryComparePicker', () => {
     expect(spain?.disabled).toBe(true);
   });
 
+  it('finds an eligible localized country by English alias and rejects conflicting geography', () => {
+    const onToggle = vi.fn();
+    renderPicker(<CountryComparePicker options={OPTIONS} selectedIds={[]} onToggle={onToggle} onOpen={vi.fn()} />);
+    const input = screen.getByRole('searchbox');
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'Germany' } });
+    fireEvent.click(screen.getByText('Германия'));
+    expect(onToggle).toHaveBeenCalledWith('peer:germany:de-hicp');
+    fireEvent.change(input, { target: { value: 'Germany France' } });
+    expect(screen.queryByText('Германия')).toBeNull();
+    expect(screen.queryByText('Франция')).toBeNull();
+  });
+
   it('panel shows the compare heading', () => {
     renderPicker(
       <CountryComparePanel

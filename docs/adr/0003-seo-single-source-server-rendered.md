@@ -208,3 +208,37 @@ sitemap-индекс и canonical на apex. `?mode=` снимается с cano
 - Build-time inlined assets (Vite plugin) вместо runtime fetch `__spa-index.html` —
   устранит TTL и asset-hash trap, но ценой того, что backend и frontend нужно
   синхронно билдить даже в dev. Сейчас runtime fetch выбран как более гибкий.
+
+
+**2026-10-01 — годовой документ выбранного режима (локальная реализация).**
+`/{russia|currencies}/indicator/{parent}/{year}?mode={token}` читает точный
+materialized ряд по Family registry или существующей bespoke таблице.
+Неизвестный mode, отсутствующий/inactive sibling и год без конечных фактов
+дают404 без fallback на родителя. Native title/unit/value/frequency/Dataset
+и OG относятся к выбранному ряду. Canonical, RU/EN hreflang, переключатель
+языка, соседние годы и переход на график сохраняют mode. Legacy sibling/year
+перенаправляется на этот parent/year с его зарегистрированным mode.
+
+Это ограниченное исключение для самостоятельного годового документа.
+Обычная карточка по-прежнему имеет canonical без mode. `build_document`
+сохраняет query только после строгой валидации годового mode; произвольные
+query/месячные derived/world-mode документы этим не поддержаны.
+`site_urls._year_urls` включает все поддержанные mode-year canonical по
+конечным фактам actualcode/year и активному родителю; агрегирование и проверка
+родителей выполняются двумя SELECT без отдельного запроса на каждый год.
+Recrawl принимает только этот точный зарегистрированный query. Публикация
+нового static sitemap и production acceptance входят в будущий обычный релиз.
+Локально106focusedtests и реальный read-onlySSR переход проверили контракт;
+[поисковый отчёт](../research/search-history-replay-2026-09-30.md) сохраняет
+границы качества и состояния. Выпуска на сервер этим дополнением не заявлено.
+
+**2026-10-01 — согласование robots с годовым mode.** Глобальная очистка
+Yandex `mode` удалена: префиксный Clean-param не умеет исключить дочерние
+годовые документы, где mode меняет stored ряд. Ordinary card HTML canonical
+остаётся без mode. Для `*`/Googlebot конечные зарегистрированные mode
+разрешены только в Russia/currencies year shape с единственным query;
+месячные/вложенные paths и добавочные параметры остаются закрыты.
+REP не валидирует факты: окончательную identity определяет SSR resolver.
+Producer, три шаблона и тесты обновлены отдельным policy-срезом;
+158 focused tests и независимые30 033 REP решения прошли локально.
+Действующий контракт и источники — [search](../search.md#crawl-policy-годового-режима-0110).

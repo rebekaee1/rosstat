@@ -24,6 +24,7 @@ import MobileNavSelect from '../components/MobileNavSelect';
 import UsCatalogNav from '../components/UsCatalogNav';
 import { groupUsSections, shortUsIndicatorName } from '../lib/usCatalogTopics';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchOptions } from '../lib/searchSynonyms';
 import { CountrySilhouette } from '../components/WorldMap';
 import {
   breadcrumbJsonLd,
@@ -233,15 +234,21 @@ export default function WorldCountry() {
     return catalogCategories
       .map((cat) => ({
         ...cat,
-        indicators: cat.indicators.filter((i) =>
-          normalize(indicatorPublicName(i, locale)).includes(q)
-          || normalize(i.name).includes(q)
-          || normalize(i.name_en).includes(q)
-          || normalize(i.code).includes(q)),
+        indicators: filterSearchOptions(cat.indicators, q, {
+          getSearchItem: (item) => ({
+            ...item,
+            search_label: indicatorPublicName(item, locale),
+            category: cat.name,
+            country_slug: slug,
+            country_name: countryName,
+            search_codes: (item._freqMembers || []).map((member) => member.code).filter(Boolean),
+            search_frequencies: (item.frequencies || []).map((frequency) => typeof frequency === 'string' ? frequency : frequency.freq),
+          }),
+        }),
       }))
       .filter((cat) => cat.indicators.length > 0)
       .map((cat) => ({ ...cat, count: cat.indicators.length }));
-  }, [catalogCategories, deferredQuery, locale]);
+  }, [catalogCategories, deferredQuery, locale, slug, countryName]);
 
   const totalIndicators = useMemo(
     () => catalogCategories.reduce((n, cat) => n + cat.indicators.length, 0),

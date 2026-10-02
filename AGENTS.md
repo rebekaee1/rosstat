@@ -25,6 +25,7 @@
 | Любое изменение кода, настроек или документации | [Цикл сопровождения знаний](docs/knowledge-workflow.md): основной документ, рецензия, карты, проверки, завершение |
 | Индикатор, derived, частота, view-mode, variant, категория | [Рецепты владельца](docs/agent-recipes.md), [playbook](docs/indicator-family-playbook.md), `python scripts/locate-indicator.py CODE`, `docs/indicator-index.json`; источники — `docs/data_sources.md` и docstring парсера |
 | UI и языки | `frontend/src/`, `.cursor/rules/i18n-parity.mdc`, `.cursor/rules/indicator-data-delivery.mdc`; браузерная приёмка — [workflow](docs/workflow.md) |
+| Поиск, намерение, география, выдача и локальные фильтры | [Контракт поиска](docs/search.md), ADR-0016, [история спроса](docs/research/search-history-2026-09-30.md), [матрица сценариев](docs/research/search-matrix-2026-09-30.json); доступность фактов и canonical/mode проверяй по своему контуру |
 | URL, SSR, SPA, sitemap, OG, IndexNow | ADR-0003/0013, `site_paths.py`, `site_urls.py`, `seo_renderer.py`, frontend `sitePaths.js`, nginx; проверяй оба языка и видимую страницу |
 | Identity, аналитика, BI, Пульс, Telegram, MCP | ADR-0007/0009/0010, [аналитические контракты](docs/analytics_api_inventory/README.md), архитектура и contracts; проследи auth, retention, события, очереди и внешние запросы |
 | Dev, CI, release, настройки, ресурсы, backup/restore | [workflow](docs/workflow.md), [надёжность](docs/enterprise_resilience.md), [датированный runtime](docs/runtime-inventory.json), Compose/config/deploy; сверяй effective settings |

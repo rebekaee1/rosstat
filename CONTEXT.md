@@ -83,6 +83,7 @@ unknown commit outcome, DB0 outage и 4-vCPU capacity остаются отде�
 | [`AGENTS.md`](AGENTS.md) | Точка входа для AI-агента: с чего начать, как читать документацию, как её актуализировать |
 | [`README.md`](README.md) | Высокоуровневая карта стека, API, indicators, deploy |
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
+| [`docs/search.md`](docs/search.md) | Поисковое намерение, федеративное discovery, области локальных полей, покрытие, состояния и границы исторической телеметрии |
 | [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
 | [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 118 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
 | `backend/app/services/*_parser.py` docstrings | Parser internals (CBR / Минфин / Rosstat): source URL, лист, row/col mapping, `model_config_json` schema, traps. Канонично живёт рядом с кодом |
@@ -101,6 +102,7 @@ unknown commit outcome, DB0 outage и 4-vCPU capacity остаются отде�
 | [`docs/adr/0013`](docs/adr/0013-country-first-url-architecture.md) | Страна = первый сегмент URL; регионы внутри `/russia`; path-миграция на `.com`, затем path-identical переезд на `.ru` |
 | [`docs/adr/0014`](docs/adr/0014-subnational-regions-generic.md) | Субнациональные регионы (штаты США и далее) — generic bounded context страна × регион × показатель × период; Россия остаётся в ADR-0008 |
 | [`docs/adr/0015`](docs/adr/0015-us-bea-regional-catalog.md) | Массовый каталог официальных BEA-рядов по США и штатам: полная история, проверка охвата, еженедельные пересмотры |
+| [`docs/adr/0016`](docs/adr/0016-federated-public-search.md) | Глобальное discovery четырёх контуров без объединения хранилищ; явная география, понятие и период обязательны |
 | [`docs/indicator-family-playbook.md`](docs/indicator-family-playbook.md) | Семейство до продакшена: продуктовая модель, уровни UI A/B/C; эталоны **ИПЦ** (4×10) и **жильё** (2×3); фазы A–G |
 
 ---
@@ -173,7 +175,10 @@ ADR и истории, проверку producer/consumer и актуализа�
   EN сохраняет мировой охват и подпись штатов. Огромный каталог любой страны
   ограничивает начальный DOM и предлагает «Показать ещё»; список данных доступен
   через разделы и поиск, это не удаление рядов. Пустой EN-поиск начинает с
-  curated US-пула; при вводе подключаются другие страны.
+  curated US-пула; при вводе подключаются другие страны. **Позднее уточнение
+  30.09, локальная новая версия:** ввод использует единый `/search` для стран,
+  территорий и рядов всех четырёх контуров; empty suggestions сохраняются.
+  [Контракт и границы](docs/search.md), выпуск отдельно от реализации.
 - **Backend — датированная связь с новым разбором:** [backend-дельта](docs/code-review/backend-delta-2026-09-30.md)
   подтверждает `annual horizon=1` в изменённых seed/strategy/API/world/territory
   путях; допустимая поправка неполного годового факта сохраняется. Годовая
@@ -458,6 +463,44 @@ Eurostat — первый адаптер, а не универсальный и�
 - UI: `/regions` → `/region/{slug}` → `/region/{slug}/{code}`; SSR/sitemap/OG — по ADR-0003 (`seo_regional.py`).
 
 ---
+
+### Поисковое намерение и область (ADR-0016, локально 2026-09-30)
+
+**Search intent** — нормализованный текст плюс экономическое понятие, явная
+страна/регион и поддерживаемый период. **Search candidate** — конкретная
+доступная территория или ряд с bounded key, единицей, частотой и готовым
+canonical путём. **Search scope** — глобальное discovery либо supplied
+eligible pool локального инструмента; таблица ограничена загруженными точками.
+Общий matcher не меняет сопоставимость, права, listing или реальные факты.
+
+V2 разворачивает обычную формулировку в предмет, роль, явные quantity/frequency
+facets и geography. Нативные полные имена/коды защищены от внутренних дат;
+typed guards для покрытых понятий отличают число от доли, реальные от
+номинальных величин и предмет от слова в знаменателе; набор не исчерпывающий.
+Каталожные aliases и bounded title-IDF не
+являются обученной ML-моделью. Исторические click labels не устанавливают
+correctness: [replay и независимые проверки](docs/research/search-history-replay-2026-09-30.md).
+
+`/api/v1/search` федеративно читает российские, world, региональные и
+субнациональные модели; разделение ADR-0008/0011/0014 сохраняется. Явная
+география/период/frequency проверяются до candidate limit; все содержательные группы
+обязательны. `total` — число выданных строк, `has_more` — возможное усечение,
+не обещание exhaustive ranking. Семейства/варианты/режимы разрешаются через
+действующие canonical helpers. Неподдержанный период не заменяется другим.
+`search_paths` пакетно разрешает world destinations и сохраняет requested
+family group; annual региональная ссылка требует annual факта, hidden
+world document period закрыт без listed SSR eligibility. Native level
+может быть процентной мерой. DXY/US10Y из общего Indicator контура имеют
+US issuer exception по действующему registry, сохраняя storage и URL.
+
+Новая версия использует детерминированный lexical score, алиасы, ограниченные
+опечатки/раскладку и PostgreSQL word similarity. Обученной ML-модели нет.
+Исторический read-only экспорт сохранил 3 905 PG search events; анализ 919
+технических сессий и подробный разбор 150 реальных human_supported путей
+не восстанавливают все нажатия и не доказывают релевантность выбора.
+Возвращённые/отрисованные keys глобального поиска не доказывают viewport
+impression каждой строки. Основной источник — [search.md](docs/search.md),
+фактические числа/ограничения — [отчёт](docs/research/search-history-2026-09-30.md).
 
 ## Operational invariants and traps
 
@@ -1107,3 +1150,32 @@ for the default year). PNG font drawing normalizes Unicode space separators
 for both measurement and painting. Cached images/SSR use design version 6.
 Local preview is compose :3000. RU/EN preview does not change the live host
 cutover flag. No local test or sitemap submission proves index inclusion.
+
+
+### Уточнение поиска 01.10: единицы, срезы и годовой режим
+
+Намерение различает процент/процентный пункт, меру/частоту наблюдений и
+конкретные структурированные оси Eurostat. Их доказательство — реальные
+native unit, provider и slice_json; другая ось TOTAL или SEO не заменяют
+нужный член. Целое каталожное имя защищает внутренние даты/географию/%;
+внешние уточнения сохраняются. Это конечный разбор, без обученной ML-модели.
+Контракты, нормативные источники и границы — [поиск](docs/search.md).
+
+Годовой режим России разрешается shared resolver в точный materialized code,
+читает его конечные факты и сохраняет mode в standalone canonical, locale,
+графике и соседних годах. Такие canonical входят в sitemap; обычная карточка
+по-прежнему убирает mode. World year-mode и derived monthly document остаются
+неподдержанными. Основание — [ADR-0003](docs/adr/0003-seo-single-source-server-rendered.md).
+
+### Уточнение V5 01.10: частота источника, база цен и полный native witness
+
+Source/output frequency и observation/base year — независимые роли.
+Registered source mode и terminal pipeline определяют source/end-of-period
+identity; world observation frequency её не выдумывает. Monetary valuation
+доказывается одним полным title/code либо одной полной native unit подписью,
+без соединения частичных полей/переводов. Price subject у commodity family
+требует фактической денежной единицы на физическое количество. Новые exact
+named Eurostat members и axis-specific totals требуют строкового member JSON;
+TOTAL другой оси не заменяет intent. [Контракты](docs/data-contracts.md#уточнение-v5-0110-независимые-роли-и-нативные-свидетельства)
+и [измерения](docs/research/search-history-replay-2026-09-30.md) сохраняют
+отрицательные blind результаты; повтор после разбора является development.

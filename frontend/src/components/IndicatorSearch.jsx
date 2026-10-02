@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
@@ -12,60 +12,31 @@ import {
   indicatorPath,
 } from '../lib/sitePaths';
 import {
-  useWorldSearch,
   useWorldCompareCatalog,
-  WORLD_GLOBAL_SEARCH_LIMIT,
 } from '../lib/worldApi';
 import { useLocale, useT } from '../i18n';
-import {
-  expandSearchQuery,
-  filterSearchIndicators,
-} from '../lib/searchSynonyms';
+import useGlobalSearch from '../lib/useGlobalSearch';
 
-// Поиск — это директория: список скроллится (`max-h-[60vh] overflow-y-auto`) и
-// поддерживает клавиатурную навигацию. Жёсткого «топ-12» больше нет (звонок
-// 2026-06-25: «главное, чтобы можно было листать»).
-//
-// Две стадии (чтобы пустой запрос не вываливал ~900 авто-сиблингов режимов вида
-// `cpi-food-yoy`, `corp-bond-index-mom` — это выглядело бы как «сделано
-// студентом»):
-//   • пустой запрос → RU: листинговые индикаторы России; EN: курируемые
-//     национальные показатели США, без загрузки всего каталога страны;
-//   • введён запрос → Россия (включая скрытые срезы) + весь мир через
-//     /world/search; на EN международные результаты впереди российских.
-// MAX_RESULTS — страховка от патологического рендера на коротком запросе
-// (только российская часть; мир ограничен WORLD_GLOBAL_SEARCH_LIMIT).
-const MAX_RESULTS = 600;
+// The palette discovers every public data plane through /search. Empty-query
+// suggestions remain small, and typed results preserve geography and slices.
 const SEARCH_TRACK_DEBOUNCE_MS = 900;
 const SEARCH_MIN_LEN = 2;
 
-/**
- * Поиск по индикаторам (правка №1 из звонка 2026-05-21).
- *
- * UX — command-palette: маленькая кнопка с лупой в Navbar открывает modal
- * по центру экрана. Внутри modal — большой инпут + полный список совпадений
- * (скроллится) + клавиатурная навигация (стрелки, Enter, Esc). Хоткеи Cmd+K / Ctrl+K
- * открывают modal из любой точки приложения. На мобильных — full-screen
- * sheet (тот же компонент, breakpoint в стилях).
- *
- * Источники: React-Query `useIndicators()` (Россия) + `useWorldSearch`
- * (мир, при непустом запросе). Клик: Россия → `/russia/indicator/{code}`,
- * мир → `/{country}/indicator/{code}`.
- */
 export default function IndicatorSearch({ className, variant = 'icon', inlinePlaceholder }) {
   const t = useT();
   const { locale } = useLocale();
   const navigate = useNavigate();
+  const resultId = useId();
   // Каталог нужен только при открытии палитры. Раньше полный список
   // (include_unlisted, ~290 мс) тянулся на КАЖДОЙ странице, т.к. компонент
   // всегда смонтирован в Navbar — это утяжеляло первый рендер любой карточки.
   // Грузим лениво: при hover/focus кнопки или первом открытии. React-Query
   // кэширует на 5 мин, поэтому повторные открытия мгновенны.
   const [shouldLoad, setShouldLoad] = useState(false);
-  const { data: indicators = [] } = useIndicators({ includeUnlisted: true, enabled: shouldLoad });
   const [open, setOpen] = useState(false);
   const arm = useCallback(() => setShouldLoad(true), []);
   const [query, setQuery] = useState('');
+  const [isComposing, setIsComposing] = useState(false);
   const [hi, setHi] = useState(0); // highlighted result index
   const triggerRef = useRef(null);
   const inputRef = useRef(null);
@@ -77,112 +48,81 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   const queryRef = useRef('');        // последний введённый запрос
   const resultsCountRef = useRef(0);  // число результатов для него
   const selectedRef = useRef(false);  // был ли выбран результат (иначе abandon)
+  const interactionRef = useRef('');
 
   const qTrim = query.trim();
-  const worldNeedle = expandSearchQuery(qTrim);
-  const worldSearchQ = useWorldSearch(worldNeedle, {
-    limit: WORLD_GLOBAL_SEARCH_LIMIT,
-    enabled: shouldLoad && open && worldNeedle.length >= 1,
-  });
-  const { data: worldPreview, isPending: isPreviewPending } = useWorldCompareCatalog({
+  const { data: indicators = [], isPending: isRussiaPending, isError: isRussiaError, refetch: retryRussia } = useIndicators({ enabled: shouldLoad && !qTrim && locale === 'ru' });
+  const globalSearch = useGlobalSearch(qTrim, { enabled: shouldLoad && open && !isComposing });
+  const { data: worldPreview, isPending: isPreviewPending, isError: isPreviewError, refetch: retryPreview } = useWorldCompareCatalog({
     enabled: locale === 'en' && shouldLoad && open && !qTrim,
   });
-  const isSearchPending = locale === 'en' && Boolean(qTrim) && worldSearchQ.isPending;
+  const isSearchPending = Boolean(qTrim) && (isComposing || globalSearch.isDebouncing || globalSearch.isPending);
+  const isSearchError = qTrim ? !globalSearch.isDebouncing && globalSearch.isError
+    : locale === 'en' ? isPreviewError : isRussiaError;
+  const isLoading = isSearchPending || (!qTrim && (locale === 'en' ? isPreviewPending : isRussiaPending));
 
   const results = useMemo(() => {
-    if (!qTrim) {
-      if (locale === 'en') {
-        return (worldPreview?.items || [])
-          .filter((item) => item.country_slug === 'united-states' && item.indicator_code)
-          .map((item) => ({
-            kind: 'world',
-            key: `world:united-states:${item.indicator_code}`,
-            code: item.indicator_code,
-            name: item.concept_name,
-            name_en: item.concept_name_en,
-            country_slug: 'united-states',
-            country_name: item.country_name_en || item.country_name,
-          }));
-      }
-      // Витрина: только листинговые индикаторы России, листается целиком.
-      return indicators
-        .filter((ind) => ind.is_listed !== false)
-        .map((ind) => ({
-          kind: 'russia',
-          key: `ru:${ind.code}`,
-          code: ind.code,
-          name: ind.name,
-          name_en: ind.name_en,
-          category: ind.category,
-          category_ru: ind.category_ru,
-          seo_keywords: ind.seo_keywords,
+    if (qTrim) return isSearchPending || isSearchError ? [] : globalSearch.data?.results || [];
+    if (locale === 'en') {
+      return (worldPreview?.items || [])
+        .filter(item => item.country_slug === 'united-states' && item.indicator_code)
+        .map(item => ({
+          kind: 'world', key: `world:united-states:${item.indicator_code}`,
+          code: item.indicator_code, name: item.concept_name, name_en: item.concept_name_en,
+          country_slug: 'united-states', country_name: item.country_name_en || item.country_name,
+          path: indicatorPath('united-states', item.indicator_code),
         }));
     }
-
-    // Подстрока + синонимы + fuzzy (опечатки). seo_keywords по-прежнему
-    // в haystack: «зарплата» находит «Средняя заработная плата».
-    const russiaHits = filterSearchIndicators(indicators, qTrim, { limit: MAX_RESULTS })
-      .map((ind) => ({
-        kind: 'russia',
-        key: `ru:${ind.code}`,
-        code: ind.code,
-        name: ind.name,
-        name_en: ind.name_en,
-        category: ind.category,
-        category_ru: ind.category_ru,
-      }));
-
-    const worldHits = (worldSearchQ.data?.results || []).map((row) => ({
-      kind: 'world',
-      key: `world:${row.country_slug}:${row.code}`,
-      code: row.code,
-      name: row.name || row.name_ru,
-      name_en: row.name_en,
-      category: row.category,
-      country_slug: row.country_slug,
-      country_name: row.country_name,
+    return indicators.filter(ind => ind.is_listed !== false).map(ind => ({
+      ...ind, kind: 'russia', key: `ru:${ind.code}`, path: russiaIndicatorPath(ind.code),
     }));
-
-    return locale === 'en'
-      ? (isSearchPending ? [] : [...worldHits, ...russiaHits])
-      : [...russiaHits, ...worldHits];
-  }, [qTrim, indicators, worldSearchQ.data, worldPreview, locale, isSearchPending]);
+  }, [qTrim, isSearchPending, isSearchError, globalSearch.data, locale, worldPreview, indicators]);
+  const highlighted = Math.max(0, Math.min(hi, results.length - 1));
+  const repeatedNames = useMemo(() => {
+    const counts = new Map();
+    for (const item of results) {
+      const name = locale === 'en' && item.name_en ? item.name_en : item.name;
+      counts.set(name, (counts.get(name) || 0) + 1);
+    }
+    return new Set([...counts].filter(([, count]) => count > 1).map(([name]) => name));
+  }, [results, locale]);
 
   const close = useCallback(() => {
     // Брошенный запрос (закрыли без выбора) — сигнал спроса не хуже выбранного.
     const q = (queryRef.current || '').trim();
     if (q.length >= SEARCH_MIN_LEN && !selectedRef.current) {
-      track(events.SEARCH_ABANDON, { q: q.slice(0, 120), results: resultsCountRef.current });
+      track(events.SEARCH_ABANDON, { q: q.slice(0, 256), results: resultsCountRef.current, context: 'global', interaction_id: interactionRef.current });
     }
     setOpen(false);
     setQuery('');
+    setIsComposing(false);
     setHi(0);
   }, []);
 
   const go = useCallback((item, position = null) => {
-    if (!item?.code) return;
+    if (!item?.path?.startsWith('/') || item.path.startsWith('//') || item.path.includes('\\')) return;
     const q = (queryRef.current || '').trim();
     selectedRef.current = true;
     // position — номер строки в выдаче (1-based): клики по хвосту = сигнал,
     // что ранжирование каталога не совпадает со спросом.
     track(events.SEARCH_SELECT, {
-      q: q.slice(0, 120),
+      q: q.slice(0, 256),
       code: item.code,
-      ...(item.kind === 'world' ? { country: item.country_slug, scope: 'world' } : { scope: 'russia' }),
+      scope: item.kind, country: item.country_slug || 'russia',
+      ...(item.region_slug ? { region: item.region_slug } : {}),
+      path: item.path, context: 'global', version: globalSearch.data?.version || 'suggestions',
+      interaction_id: interactionRef.current,
       ...(position ? { position } : {}),
     });
     close();
-    if (item.kind === 'world' && item.country_slug) {
-      navigate(indicatorPath(item.country_slug, item.code));
-    } else {
-      navigate(russiaIndicatorPath(item.code));
-    }
-  }, [close, navigate]);
+    if (item.navigation === 'document') window.location.assign(item.path);
+    else navigate(item.path);
+  }, [close, navigate, globalSearch.data?.version]);
 
   // Cmd+K / Ctrl+K — открыть; Escape — закрыть; '/' — открыть (если не в инпуте)
   useEffect(() => {
     const onKey = (e) => {
-      if (e.defaultPrevented) return;
+      if (e.defaultPrevented || isComposing || e.isComposing || e.keyCode === 229) return;
       // Every Navbar/inline instance is mounted, but only one visible trigger
       // may claim a global shortcut. Portals escape CSS-hidden parents.
       if (!open) {
@@ -194,12 +134,13 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
       if (isMod && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
         arm();
-        setOpen((o) => !o);
+        if (open) close();
+        else setOpen(true);
         return;
       }
       if (e.key === '/' && !open) {
         const tag = document.activeElement?.tagName;
-        if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && !document.activeElement?.isContentEditable) {
           e.preventDefault();
           arm();
           setOpen(true);
@@ -213,27 +154,35 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, close, arm]);
+  }, [open, close, arm, isComposing]);
 
   // фокус при открытии + сброс состояния спрос-аналитики на новую сессию поиска
   useEffect(() => {
     if (!open) return;
     selectedRef.current = false;
     lastSentRef.current = '';
-    const t = setTimeout(() => inputRef.current?.focus(), 30);
-    return () => clearTimeout(t);
+    interactionRef.current = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const previousFocus = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const timer = setTimeout(() => inputRef.current?.focus(), 30);
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected && typeof previousFocus.focus === 'function') previousFocus.focus();
+    };
   }, [open]);
 
   // Актуальные запрос/число результатов — в refs (для обработчиков close/go).
   useEffect(() => {
     queryRef.current = query;
-    resultsCountRef.current = results.length;
+    resultsCountRef.current = isLoading || isSearchError ? null : results.length;
   });
 
   // Debounce-трекинг введённого запроса (введённое, но ещё не отправленное).
   // results.length в момент срабатывания соответствует текущему query.
   useEffect(() => {
-    if (!open) return undefined;
+    if (!open || isLoading || isSearchError) return undefined;
     const q = query.trim();
     if (q.length < SEARCH_MIN_LEN) return undefined;
     const count = results.length;
@@ -241,13 +190,16 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
       if (q === lastSentRef.current) return;
       lastSentRef.current = q;
       track(events.SEARCH_QUERY, {
-        q: q.slice(0, 120),
+        q: q.slice(0, 256),
         results: count,
-        context: 'global',
+        context: 'global', version: globalSearch.data?.version || 'v2',
+        interaction_id: interactionRef.current,
+        keys: results.map(item => item.key), returned_count: results.length,
+        has_more: Boolean(globalSearch.data?.has_more),
       });
     }, SEARCH_TRACK_DEBOUNCE_MS);
     return () => clearTimeout(t);
-  }, [query, open, results.length]);
+  }, [query, open, results, isLoading, isSearchError, globalSearch.data?.version, globalSearch.data?.has_more]);
 
   const onQueryChange = (v) => {
     setQuery(v);
@@ -257,20 +209,21 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   // прокрутка к выделенному элементу
   useEffect(() => {
     if (!open || !listRef.current) return;
-    const el = listRef.current.querySelector(`[data-row="${hi}"]`);
+    const el = listRef.current.querySelector(`[data-row="${highlighted}"]`);
     el?.scrollIntoView({ block: 'nearest' });
-  }, [hi, open]);
+  }, [highlighted, open, results]);
 
   const handleListKey = (e) => {
+    if (isComposing || e.isComposing || e.nativeEvent?.isComposing || e.keyCode === 229) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setHi((i) => Math.min(i + 1, Math.max(results.length - 1, 0)));
+      setHi(Math.min(highlighted + 1, Math.max(results.length - 1, 0)));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setHi((i) => Math.max(i - 1, 0));
-    } else if (e.key === 'Enter' && results[hi]) {
+      setHi(Math.max(highlighted - 1, 0));
+    } else if (e.key === 'Enter' && results[highlighted]) {
       e.preventDefault();
-      go(results[hi], hi + 1);
+      go(results[highlighted], highlighted + 1);
     }
   };
 
@@ -362,10 +315,20 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
           data-fe-search-dialog
           aria-modal="true"
           aria-label={t('search.dialogAria')}
+          aria-describedby={`${resultId}-help`}
+          onKeyDown={(event) => {
+            if (event.key !== 'Tab') return;
+            const controls = [...event.currentTarget.querySelectorAll('input, button:not([tabindex="-1"])')].filter(el => !el.disabled);
+            const first = controls[0];
+            const last = controls[controls.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+          }}
         >
           <button
             type="button"
             aria-label={t('common.close')}
+            tabIndex={-1}
             className="absolute inset-0 bg-text-primary/30 backdrop-blur-[2px]"
             onClick={close}
           />
@@ -377,10 +340,19 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                 type="search"
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
+                onCompositionStart={() => setIsComposing(true)}
+                onCompositionEnd={(e) => { onQueryChange(e.currentTarget.value); setIsComposing(false); }}
                 onKeyDown={handleListKey}
                 placeholder={t('search.placeholder')}
                 className="min-w-0 flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
                 aria-label={t('search.queryAria')}
+                maxLength={256}
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded="true"
+                aria-controls={`${resultId}-list`}
+                aria-describedby={`${resultId}-help`}
+                aria-activedescendant={results[highlighted] ? `${resultId}-result-${highlighted}` : undefined}
               />
               <button
                 type="button"
@@ -392,38 +364,46 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
               </button>
             </div>
 
-            <div ref={listRef} className="min-h-0 max-h-[60vh] overflow-y-auto py-2" role="listbox">
+            <p id={`${resultId}-help`} className="px-4 pt-3 pb-1 text-xs leading-relaxed text-text-tertiary">
+              {t('search.help')}
+            </p>
+
+            {qTrim && !isLoading && globalSearch.data?.corrected_query && globalSearch.data.corrected_query !== qTrim && (
+              <div className="px-4 py-2 text-xs text-text-tertiary" role="status">
+                {t('search.corrected', { query: globalSearch.data.corrected_query })}
+              </div>
+            )}
+
+            <div ref={listRef} className="min-h-0 max-h-[60vh] overflow-y-auto py-2" role="listbox" id={`${resultId}-list`} aria-busy={isLoading}>
               {results.length === 0 ? (
-                <div className="px-4 py-6 text-sm text-text-tertiary">
-                  {(isSearchPending || (locale === 'en' && !query.trim() && isPreviewPending))
-                    ? t('search.loading')
-                    : query.trim()
-                      ? t('search.nothingFound', { query: query.trim() })
-                      : t('search.empty')}
+                <div className="px-4 py-6 text-sm text-text-tertiary" role="status" aria-live="polite">
+                  {isLoading ? t('search.loading') : isSearchError ? t('search.error')
+                    : qTrim && globalSearch.data?.reason === 'unsupported_query' ? t('search.unsupportedQuery')
+                      : qTrim && globalSearch.data?.reason === 'unsupported_period' ? t('search.unsupportedPeriod')
+                      : qTrim && globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
+                        : qTrim ? t('search.nothingFound', { query: qTrim }) : t('search.empty')}
+                  {isSearchError && <button type="button" onClick={() => qTrim ? globalSearch.refetch() : locale === 'en' ? retryPreview() : retryRussia()} className={cn(FOCUS_RING, 'block mt-3 text-champagne')}>{t('common.retry')}</button>}
                 </div>
               ) : (
                 results.map((item, i) => {
-                  const isWorld = item.kind === 'world';
-                  const cat = !isWorld
-                    ? findCategoryByApiLabel(item.category_ru || item.category)
-                    : null;
-                  const active = i === hi;
+                  const isRussia = item.kind === 'russia' || item.kind === 'russia_indicator';
+                  const cat = isRussia ? findCategoryByApiLabel(item.category_ru || item.category) : null;
+                  const active = i === highlighted;
                   const displayName = locale === 'en' && item.name_en ? item.name_en : item.name;
-                  const secondaryName = isWorld
-                    ? null
-                    : (locale === 'en'
-                      ? (item.name_en ? item.name : null)
-                      : item.name_en);
-                  const rightLabel = isWorld
-                    ? (item.country_name || item.country_slug)
-                    : (locale === 'en'
-                      ? (cat?.nameEn || cat?.name)
-                      : cat?.name);
+                  const frequency = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'].includes(item.frequency)
+                    ? t(`world.freq.long.${item.frequency}`) : item.frequency;
+                  const detail = [
+                    item.region_name,
+                    item.country_name || (isRussia ? t('search.russia') : null),
+                    locale === 'en' ? cat?.nameEn || cat?.name || item.category : cat?.name || item.category,
+                    frequency, item.unit, repeatedNames.has(displayName) ? item.code : null,
+                  ].filter(Boolean).join(' / ');
                   return (
                     <button
                       key={item.key}
                       type="button"
                       data-row={i}
+                      id={`${resultId}-result-${i}`}
                       onMouseEnter={() => setHi(i)}
                       onClick={() => go(item, i + 1)}
                       className={cn(
@@ -431,26 +411,13 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                         active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
                       )}
                       role="option"
+                      tabIndex={-1}
                       aria-selected={active}
                     >
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm text-text-primary truncate">{displayName}</div>
-                        {secondaryName && (
-                          <div className="text-[11px] font-mono text-text-tertiary truncate">
-                            {secondaryName}
-                          </div>
-                        )}
-                        {isWorld && item.category && (
-                          <div className="text-[11px] text-text-tertiary truncate">
-                            {item.category}
-                          </div>
-                        )}
+                        <div className="text-sm text-text-primary whitespace-normal break-words">{displayName}</div>
+                        {detail && <div className="mt-1 text-xs text-text-tertiary whitespace-normal break-words">{detail}</div>}
                       </div>
-                      {rightLabel && (
-                        <span className="text-[10px] uppercase tracking-wider font-mono text-text-tertiary shrink-0">
-                          {rightLabel}
-                        </span>
-                      )}
                     </button>
                   );
                 })
@@ -458,6 +425,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             </div>
 
             <div className="px-4 py-2 border-t border-border-subtle flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono text-text-tertiary">
+              {globalSearch.data?.has_more && qTrim && !isLoading && <span className="w-full">{t('search.refine')}</span>}
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">↑</kbd> <kbd className="px-1 py-0.5 rounded border border-border-subtle">↓</kbd> {t('search.hint.nav')}</span>
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Enter</kbd> {t('search.hint.open')}</span>
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Esc</kbd> {t('search.hint.close')}</span>

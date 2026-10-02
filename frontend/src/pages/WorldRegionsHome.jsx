@@ -19,6 +19,7 @@ import { pluralRu } from '../lib/regionsApi';
 import { exportNodeToPng } from '../lib/chartImage';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchOptions } from '../lib/searchSynonyms';
 import { useAuth } from '../context/authContext';
 import {
   RUSSIA,
@@ -67,16 +68,17 @@ function lastPeriodOfYear(periods, year) {
 }
 
 function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [resultLimit, setResultLimit] = useState(12);
   const deferred = useDeferredValue(query);
   const results = useMemo(() => {
     const q = normalize(deferred);
     const list = indicators || [];
-    if (!q) return list.slice(0, 12);
-    return list.filter((i) => normalize(`${i.name} ${i.section} ${i.code}`).includes(q)).slice(0, 20);
+    return filterSearchOptions(list, q);
   }, [indicators, deferred]);
+  useSearchTracking('world-map-metric', open ? deferred : '', results.length);
   const isCustom = !!activeCode;
 
   return (
@@ -92,10 +94,10 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
           type="text"
           value={open ? query : (isCustom ? activeName : '')}
           placeholder={t('regions.map.customPlaceholder')}
-          onFocus={() => { setOpen(true); setQuery(''); }}
-          onClick={() => { if (!open) { setOpen(true); setQuery(''); } }}
+          onFocus={() => { setOpen(true); setQuery(''); setResultLimit(12); }}
+          onClick={() => { if (!open) { setOpen(true); setQuery(''); setResultLimit(12); } }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
-          onChange={(e) => { if (!open) setOpen(true); setQuery(e.target.value); }}
+          onChange={(e) => { if (!open) setOpen(true); setQuery(e.target.value); setResultLimit(50); }}
           className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-text-tertiary"
           aria-label={t('regions.map.customAria')}
           role="combobox"
@@ -118,7 +120,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
             <div className="px-3.5 py-3 text-[13px] text-text-tertiary">
               {t('regions.home.nothingFound', { query })}
             </div>
-          ) : results.map((i) => (
+          ) : results.slice(0, resultLimit).map((i) => (
             <button
               key={i.code}
               type="button"
@@ -129,6 +131,16 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
               <div className="text-[11px] text-text-tertiary">{i.section}</div>
             </button>
           ))}
+          {results.length > resultLimit && (
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setResultLimit((current) => current + 50)}
+              className="w-full border-t border-border-subtle px-3.5 py-3 text-left text-sm text-champagne hover:bg-surface-hover"
+            >
+              {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}: {Math.min(resultLimit, results.length)} / {results.length}
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -222,7 +234,7 @@ export default function WorldRegionsHome() {
 
   const geometry = MAPS[hub.data?.map_id] || usStatesMap;
   const periods = map.data?.periods || [];
-  const indicators = hub.data?.indicators || [];
+  const indicators = useMemo(() => hub.data?.indicators || [], [hub.data?.indicators]);
   const chipIndicators = useMemo(() => {
     const def = defaultCode && indicators.find((i) => i.code === defaultCode);
     const rest = indicators.filter((i) => i.code !== defaultCode);
@@ -279,12 +291,12 @@ export default function WorldRegionsHome() {
     if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: `world-regions-map:${activeCode || 'overview'}` });
   };
 
-  const regions = hub.data?.regions || [];
+  const regions = useMemo(() => hub.data?.regions || [], [hub.data?.regions]);
   const filteredRegions = useMemo(() => {
     const q = normalize(deferredQuery);
     if (!q) return regions;
-    return regions.filter((r) => normalize(`${r.name} ${r.name_en} ${r.slug}`).includes(q));
-  }, [regions, deferredQuery]);
+    return filterSearchOptions(regions, q, { searchKind: 'region', getSearchItem: (item) => ({ ...item, country_slug: countrySlug }) });
+  }, [regions, deferredQuery, countrySlug]);
   useSearchTracking('world-regions-hub', deferredQuery, filteredRegions.length);
 
   if (countrySlug === RUSSIA) {

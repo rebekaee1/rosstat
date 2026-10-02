@@ -14,6 +14,7 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchOptions } from '../lib/searchSynonyms';
 import { regionTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
 import { mountJsonLd } from '../lib/jsonLd';
 import {
@@ -126,9 +127,14 @@ export default function RegionProfile() {
     const q = normalize(deferredQuery);
     if (!q) return data.sections;
     return data.sections
-      .map((s) => ({ ...s, indicators: s.indicators.filter((i) => normalize(i.name).includes(q)) }))
+      .map((s) => ({
+        ...s,
+        indicators: filterSearchOptions(s.indicators, q, {
+          getSearchItem: (item) => ({ ...item, section_name: s.name, country_slug: 'russia', region_slug: slug, region_name: regionName }),
+        }),
+      }))
       .filter((s) => s.indicators.length > 0);
-  }, [data, deferredQuery]);
+  }, [data, deferredQuery, slug, regionName]);
 
   const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
   useSearchTracking('region-profile', deferredQuery, foundIndicators);

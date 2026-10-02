@@ -136,3 +136,78 @@ Pending YAML, старые frontend-only deploy/client XLSX/en-prefix/provider-�
 перечитан целиком: прежний hash не удалось связать ни с одной Git-версией файла.
 Метаданные XLSX, изображений, архивов и транскриптов не объявляют их содержание
 прочитанным. Новая cold-start приёмка и полное закрытие K01–K12 отдельны от этой сверки.
+
+## Дополнение 2026-09-30: поиск всех контуров
+
+Первоначальный D1 в [backlog](backlog.md#d1-поиск-по-индикаторам) проектировал
+frontend substring search небольшого российского JSON-каталога. Майское
+variant-решение и `include_unlisted=true` расширили доступность hidden rows;
+[ADR-0008](adr/0008-regional-bounded-context.md) первоначально исключал
+региональные показатели из `IndicatorSearch`, чтобы сохранить отдельные
+модели, частоты, артефакт и прогнозную политику. Эти причины и старые числа
+сохранены; они не описывают нынешний размер world-каталога.
+
+Новая задача владельца требует discovery всей матрицы и всех поисковых полей.
+[ADR-0016](adr/0016-federated-public-search.md) уточняет запрет регионального
+discovery, сохраняя data planes. Локальный `/search` возвращает страны,
+территории и доступные ряды с hard geography/period/term constraints и
+canonical путями; shared browser matcher обслуживает supplied eligible pools.
+DataTable остаётся фильтром дат/значений загруженных наблюдений. Основной
+источник нового устройства — [search.md](search.md), состояние —
+[backlog](backlog.md#search-v2-2026-09-30).
+
+Новая реализация основана на read-only выгрузке удержанных PG/CH/nginx слоёв,
+анализе 919 технических сессий и подробном разборе 150 реальных поддержанных
+поведенческими свидетельствами путей. [Аудит](research/search-history-2026-09-30.md)
+прямо фиксирует отсутствие старых keystrokes, exposure/relevance labels и
+разницу CH времени. 225 synthetic paths — отдельный тестовый инвентарь;
+trained ML, causal uplift и production release из этих чисел не следуют.
+
+## Дополнение 2026-09-30: разбор языка и повтор истории поиска
+
+Первый lexical baseline и его отрицательный Monte-Carlo результат сохранены.
+V2 добавляет защиту code/native-title identities, составные предметы и роли,
+нативные quantity facets до SQL LIMIT, географические падежи и shared guards.
+Малый title-IDF не считается обученным ML или corpus BM25. Главная использует
+общую глобальную палитру четырёх контуров; IME и scoped layout/prefix поведение
+проверяются отдельно. [Основной контракт](search.md) и
+[replay всей удержанной истории](research/search-history-replay-2026-09-30.md)
+сохраняют исходные промахи, строгий oracle, новые unseen ошибки и границы
+production/ретроспективной точности.
+
+## Дополнение 2026-10-01: явные facets и самостоятельный годовой mode
+
+После отрицательного blind40 результата общие исправления уточнили native
+unit/member evidence, относительные сравнения меры и защиту найденного
+целого названия. Россия получила годовой document для зарегистрированного
+mode с точными native данными и собственным сохраняющим mode canonical;
+ordinary card canonical продолжает прежнюю политику. Основной текущий
+контракт — [search.md](search.md), основания ограниченного исключения —
+[ADR-0003](adr/0003-seo-single-source-server-rendered.md) и
+[ADR-0016](adr/0016-federated-public-search.md). Причины разделения контуров
+и старые отрицательные испытания сохраняются; новый replay и production
+acceptance этим указателем не подтверждаются.
+
+## Дополнение 2026-10-01: V5 после новой отрицательной выборки 80
+
+Независимый V4 набор дал 8/80 top5; исходные gold и результаты сохранены,
+последующий разбор выделил одну ошибку эталона и три неоднозначные формулировки
+без пересчёта оценки. Общий V5 ремонт добавляет полные словоформы, независимые
+календарные/частотные роли, native денежную базу и проверенные named members.
+Unit и title не соединяются из частичных фрагментов для доказательства valuation.
+Registered families/canonical index остаются основанием identity; suffix кода,
+SEO/category и TOTAL посторонней оси не заменяют native evidence. Эти механизмы
+детерминированны; trained semantic retrieval остаётся отдельным последующим
+решением с ресурсной и независимой relevance приёмкой. Основной контракт —
+[search.md](search.md); измерения версий — [replay](research/search-history-replay-2026-09-30.md).
+
+## Дополнение 2026-10-01: V6 после полного отрицательного replay V5
+
+Полный V5 replay сохранён вместе с четырьмя SQL timeout и тремя потерянными
+native prefix целями. Последующее общее правило отделяет raw prefix от
+добавленных полных словоформ. Lexical discovery native member строит группы
+точных axis/member predicates вместо многократно повторённого label CASE
+pool; требование provider/string type и typed qualifiers остаётся прежним.
+Основание — [dated ADR addition](adr/0016-federated-public-search.md),
+контракт — [search.md](search.md). Ни положительные контролы, ни размер SQL
+не заменяют отдельный final replay; прежние ответы/gold остаются неизменными.

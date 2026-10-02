@@ -5,6 +5,7 @@ import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { RUSSIA_SLUG } from '../lib/inflationCalc';
 import { useT } from '../i18n';
 import useSearchTracking from '../lib/useSearchTracking';
+import { filterSearchCountries } from '../lib/worldCompareSearch';
 
 /**
  * Выбор страны в калькуляторе инфляции.
@@ -32,9 +33,7 @@ export default function CalcCountryPicker({
   const selected = options.find((c) => c.slug === value) || russia;
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return options;
-    return options.filter((c) => (c.name || '').toLowerCase().includes(q));
+    return filterSearchCountries(options, query);
   }, [options, query]);
 
   useSearchTracking('calc-country', open ? query : '', filtered.length);

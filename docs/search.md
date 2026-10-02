@@ -1,0 +1,548 @@
+# Поиск Forecast Economy
+
+**Состояние 01.10.2026:** V5 historical replay завершён и запечатан;
+выявленные prefix/SQL-budget регрессии исправляются отдельным локальным V6.
+Реализация использует существующие каталоги и факты. Production этим этапом
+не изменён; выпуск и live acceptance фиксируются отдельно.
+Основной документ подсистемы; решение — [ADR-0016](adr/0016-federated-public-search.md),
+исторический спрос и границы выгрузки — [аудит истории](research/search-history-2026-09-30.md),
+выбор методов — [исследование](research/search-methods-2026-09-30.md).
+
+## Намерение, кандидат и область
+
+Поисковое намерение содержит текст, экономическое понятие, явную страну или
+регион и поддерживаемый период. Кандидат — доступная публичная территория
+либо конкретный экономический ряд с `key`, частотой, единицей и готовым путём.
+Разные срезы могут вести на один canonical с различным режимом; нельзя
+склеивать их только по URL и терять выбранное представление.
+
+Глобальная палитра открывает страницы из всех четырёх контуров данных.
+Локальные поля ранжируют предоставленный им допустимый набор: выбор страны
+для сравнения сохраняет сопоставимость, калькулятор — свой набор стран,
+конструктор виджета — listed российские ряды. Поле таблицы ищет только среди
+уже загруженных наблюдений. Общая нормализация не расширяет права или
+покрытие конкретного инструмента.
+
+## Глобальный API
+
+`GET /api/v1/search?q=...&limit=...` публичен и только читает БД.
+`q`: 1–256 символов; `limit`: 1–100, по умолчанию 50. Локаль берётся из
+действующего API locale-контракта; браузер передаёт `X-FE-Locale` через `api.js`.
+Пустая нормализованная строка возвращает пустой результат; отсутствие `q`,
+слишком длинный текст или неверный limit дают FastAPI 422.
+
+```json
+{
+  "results": [{
+    "key": "ru:cpi", "kind": "russia", "code": "cpi",
+    "name": "...", "country_slug": "russia",
+    "frequency": "monthly", "unit": "...",
+    "path": "/russia/indicator/cpi", "navigation": "spa", "score": 1000
+  }],
+  "total": 1, "has_more": false, "version": "federated-v2",
+  "intent": {"countries": [], "regions": [], "year": null, "month": null}
+}
+```
+
+Пример показывает структуру, а не утверждает имя, единицу или score живого
+`cpi`. `total` — число возвращённых строк, **не** число всех совпадений.
+`has_more=true` также означает усечение промежуточного набора кандидатов;
+пагинации полного результата в этом контракте нет. Поля рядов/территорий
+различаются: `code`, `region_slug`, `region_name`, `country_name`, `category`,
+`frequency`, `unit`, `navigation` могут отсутствовать у соответствующего kind.
+`name_ru`/`name_en` сохраняют доступные имена; `name` предназначено для UI.
+У global market assets из общего `Indicator` поле `country_slug` следует
+разрешённой географии запроса либо зарегистрированному эмитенту; без issuer
+сохраняет общий контур. `kind=russia` и key `ru:*` отражают хранение,
+`country_name` показывает эмитента или «Мировой рынок». Это исключение registry, а не российская
+экономическая география актива; canonical path и key сохраняются.
+
+Kind: `country`, `region`, `subnational_region`, `russia`, `world`,
+`region_indicator`, `subnational_indicator`. Для неподдержанного запроса
+возвращается 200 с `results=[]` и `reason`: `unsupported_query`,
+`unsupported_period`, `ambiguous_geography` либо `no_coverage`. Исправленная
+раскладка может сопровождаться `corrected_query`. Ошибка транспорта/SQL
+отличается от завершённой пустой выдачи.
+
+Producer: [api/search.py](../backend/app/api/search.py) →
+[search.py](../backend/app/services/search.py) → существующие модели и
+`site_paths`/[search_paths.py](../backend/app/services/search_paths.py).
+Адаптер путей использует действующие family/card/merge identities и ranking
+canonical resolvers. Новых таблиц, миграций, jobs, серверного cache результатов
+поиска или внешних модельных запросов нет. Старый `/world/search`
+сохраняется для совместимости; глобальная палитра использует новый endpoint.
+
+## Покрытие и доступность
+
+| Контур | Источники и условия кандидата | Навигация / граница |
+|---|---|---|
+| Страна | Активная `WorldCountry` плюс Россия; у страны есть соответствующий доступный факт | Country-first профиль; Россия отдельно от world |
+| Общий `Indicator` контур | Активный ряд с конечным фактом; listed и unlisted физические ряды, российские и действующие рыночные assets | `russia_search_path`: family/mode и валютное исключение сохраняются; data plane/URL не подменяет экономическую географию asset |
+| Мир | `WorldIndicator` активной страны с конечным ненулевым фактом; listed и data-backed hidden slices | Country-first карточка; `world_search_paths` пакетно повторяет действующие card/frequency/merge правила; hidden допускаются в SPA, document periods требуют listed |
+| Регион России | `Region.kind` = region/district с годовым или месячным конечным фактом | Субъект/округ; РФ и агрегаты-остатки не выдаются отдельными региональными сущностями |
+| Региональный показатель России | Listed `RegionIndicator` × выбранная территория с фактом требуемой annual/monthly частоты до LIMIT | Без явной частоты обычная карточка предпочитает месячный слой; explicit year требует годового факта и не заменяется месячными точками |
+| Субнациональные территории/показатели | Только страны действующего `country_has_subnational`; listed определения и конечный факт нужной территории | Действующий country × region × indicator путь; отсутствующие страны не создаются |
+
+Явная география, конечные факты, обязательные lexical/native facets и
+поддержанные SQL-ограничения периода/частоты ограничивают набор **до** SQL
+limit. Но не вся destination eligibility перенесена до этого бюджета:
+world hidden rows для года и неподходящая месяцу native frequency
+отбрасываются после выборки, world canonical year+mode — после batch
+resolution. Это остаточная граница recall при clipped candidate pool;
+`has_more` не является доказательством исчерпывающей выдачи. При запросе
+`CPI USA` российский `cpi` не становится заменой отсутствующего американского
+ряда. Все содержательные группы обязательны; неизвестное уточнение не
+выбрасывается ради совпадения по популярному слову.
+
+Рыночные assets из общего `Indicator` контура имеют узкие действующие
+исключения географии: registry `COUNTRY_MARKET_INDICATOR_CODES` связывает
+США с DXY (`usd-index`) и US10Y (`ust-10y`) и их materialized siblings.
+Явное намерение USD/RUB вместе с США допускает соответствующее валютное
+семейство. Это не разрешает любой российский показатель при запросе США;
+код/понятие всё равно обязательны. Storage kind/key остаётся `russia`/`ru:*`,
+country label отражает economic issuer, path строится действующим helper.
+Основание — [global_market_indicators.py](../backend/app/data/global_market_indicators.py)
+и `_russia` поискового сервиса, без переноса рядов между хранилищами.
+
+`по годам`/annual, `по кварталам`/quarterly и `по месяцам`/monthly задают
+частоту, `уровень`/level, `год к году`, `к прошлому периоду`, `средняя`
+задают существующее представление. Общий `Indicator` контур использует
+реальные materialized family modes: один код может реализовать annual YoY
+и period-on-period, выбранная группа сохраняется в destination. World
+`level` означает исходную сохранённую меру, включая процент безработицы
+или ставку; это не обязательная единица «индекс» и не новый derived.
+YoY/period-on-period/average world распознаются только по имеющейся мере/
+метаданным. Противоречивые frequency qualifiers дают `unsupported_query`.
+Поддержанные отношения задают режим и частоту независимо: «к предыдущему
+месяцу» — PoP + monthly, «к предыдущему кварталу» — PoP + quarterly,
+«к тому же месяцу прошлого года» — YoY + monthly, «среднее за квартал» —
+average + quarterly. Само YoY не означает annual. Эти отношения описывают
+меру, а не запрос произвольной относительной календарной даты.
+
+Год 1000–2999 и месяц `YYYY-MM`/название месяца с годом распознаются отдельно
+от понятия. `2015=100` распознаётся как база индекса, не запрос года.
+Несколько лет наблюдений, день, конкретный квартальный период (`Q1 2024`), календарные
+«сегодня»/«вчера» и месяц без года дают
+`unsupported_period`. Годовые/квартальные ряды не превращаются в месячные.
+Для периода используется существующий document URL. В России поддержанный
+год + зарегистрированный mode ведёт на `/russia/indicator/{parent}/{year}?mode=…`
+(валюты сохраняют `/currencies/indicator`). Общий resolver обязан выбрать
+тот же физический code, для которого найдены конечные факты этого года;
+неизвестный mode, неактивный/отсутствующий sibling или пустой год не получают
+fallback на исходный ряд. SSR показывает значения, title, единицу и частоту
+выбранного ряда; canonical/hreflang, соседние годы и ссылка на график сохраняют
+mode. Эти самостоятельные годовые canonical входят в sitemap registry по
+фактам выбранного ряда. Обычная интерактивная карточка сохраняет canonical
+без mode; публикация новых sitemap bytes — отдельный релизный шаг.
+Без mode годовой документ сохраняет прежний контракт исходного ряда.
+World year+mode и derived month documents остаются неподдержанными: mode
+или год не отбрасываются ради другого destination. Основание —
+[ADR-0003](adr/0003-seo-single-source-server-rendered.md).
+Hidden world row с фактами может быть доступен в SPA/API, но не выдаётся
+как document period: действующий standalone SSR требует listed. Отсутствие
+такой ссылки возвращает пустоту, не путь с отброшенным mode/другим срезом.
+Месячные period URL регионов России и субнациональных регионов этой версией
+не поддерживаются. Поиск не синтезирует новую частоту или новые данные.
+
+Матрица представлений остаётся источником доступных family/variant/mode,
+а не перечнем искусственных поисковых документов. Проверка должна включать
+точные коды, hidden siblings, единицы, частоты, виды территории, оба языка,
+отсутствующие факты и недоступные периоды. Наличие тестового сценария не
+доказывает полный охват всех возможных сочетаний матрицы.
+
+## Методы и границы ранжирования
+
+[search_intent.py](../backend/app/services/search_intent.py) нормализует
+Unicode NFKC, регистр, пробелы и `ё/е`, выделяет токены, географические
+алиасы и ограниченный словарь эквивалентных понятий. Альтернативы одной
+группы соединены OR, содержательные группы — AND. МРОТ и средняя зарплата,
+депозитная и ключевая ставки — разные понятия. Раскладка исправляется только
+при распознавании известной географии/понятия; опечатки ограничены одной
+операцией вставки/удаления/замены/соседней перестановки и длиной токена.
+
+В v2 составной предмет разбирается до отдельных слов: «валовой внутренний
+продукт» не превращается через typo в продукты питания. Билингвальные
+`search_language`/`search_vocabulary` описывают предмет и его роль, нейтральную
+грамматику вопроса, реальные/номинальные, число/долю и частоту. Неизвестное
+уточнение остаётся обязательным. `search_units` кодирует масштаб/валюту/
+единицу по нативным metadata; world SQL проверяет эти признаки до LIMIT.
+Проценты и процентные пункты различаются; литр/тонна подтверждаются
+сохранённой единицей, включая её допустимое краткое обозначение, а не темой
+названия. Общая подпись dollars означает USD только при объявленной валюте
+US state producer; чужая валюта и отсутствующая unit не угадываются.
+Знаменатель «на 1 000 / 10 000 / 100 000 жителей» требует именно эту
+нативную меру; он не означает численность населения или тысячу человек
+как масштаб count. Символ ‰ устанавливает per-1000 только для демографической
+меры. Валютный демоним внутри «канадские доллары» не задаёт страну;
+явные единицы и неизвестные уточнения сохраняются. `search_language_sql` повторяет общие
+типовые ограничения меры в PostgreSQL, финальный Python guard проверяет DTO.
+
+Последующий V5 разбор различает запрошенную частоту результата и частоту
+источника: поддержанные полные clauses `from monthly source series` /
+`estimated from weekly observations` дают отдельный `search-source-freq-*`.
+Зарегистрированная native base frequency семейства подтверждает этот признак,
+частота выбранного materialized mode — обычный `search-freq-*`. World row
+без source-frequency контракта не получает его из своей observation frequency.
+Нейтральная грамматика и слова сравнения обрабатываются конечными правилами;
+содержательное неизвестное уточнение остаётся обязательным.
+
+`end of 2024` / «на конец 2024 года» сохраняет год наблюдений и требует annual
+end-of-period mode. В family metadata такой mode подтверждает только последняя
+операция зарегистрированного pipeline `period_last`: промежуточная операция
+перед YoY не делает темп уровнем на конец периода. Bespoke CPI/PPI modes берутся
+из действующего exact `_bespoke_mode_index`, не из догадки по суффиксу кода.
+Этот canonical consumer нужен даже при перекрытой standalone UI-ветке;
+view-mode флаги сами по себе не разрешают удалять legacy resolver.
+
+Предмет «цена» подтверждается полным ценовым словом настоящего native имени
+либо зарегистрированным товарным семейством с денежной ценой за физическую
+единицу. «В текущих ценах» у ВВП задаёт valuation basis и не делает ряд ценой
+товара. Complete `constant 2017 dollars` / `chained 2017 dollars` сохраняет
+обязательную базу 2017 в native unit, отдельно от запрошенного года наблюдений.
+Незавершённая или неизвестная числовая фраза не получает такого исключения.
+
+Текущие/постоянные цены имеют отдельные namespaces свидетельств: один полный
+native title/code label либо один полный native unit label. Название
+`Current transfers` вместе с unit `USD` не подтверждает current prices;
+части двух разных unit переводов тоже нельзя соединить в новую valuation.
+Unit не доказывает посторонний экономический предмет. SQL до LIMIT и финальный
+Python guard применяют эти же ограничения. Общий разбор loan denomination
+отдельно от output unit, валютного направления/знаменателя и масштаба physical
+denominator остаётся ограничением; конечные unit rules не объявляют эти роли
+исчерпывающе поддержанными.
+
+[search_dimensions.py](../backend/app/services/search_dimensions.py) требует
+точную ось и допустимый stored member в `provider=eurostat` / `slice_json`
+для поддержанных возраста, пола, гражданства, партнёров, домохозяйств,
+доходных групп, деятельности, образования, занятости и других slice facets.
+SQL применяет их до LIMIT, Python проверяет те же признаки. TOTAL другой оси,
+category/SEO, имя dataset или отсутствующий member не подтверждают условие;
+bare all и неизвестные уточнения остаются обязательными. Нормативные подписи
+известных реальных членов дают смысловое свидетельство, без вывода недостающей
+оси из `dataset_id`. Для других providers нужны собственные реальные поля.
+Ежедневное использование интернета и недоступность еженедельных личных
+расходов — характеристики меры, отдельные от частоты наблюдений; отрицание
+в определении депривации сохраняется. Словарь конечен.
+
+V5 расширяет конечный registry до 29 известных осей. Отдельное официальное
+свидетельство 20 Eurostat JSON payloads подтверждает 34 глобальные пары
+member × axis на 17 осях; это не lookup по выбранному indicator/dataset/query.
+Добавлены реальные duration/worktime/c_birth/statinfo/sector/na_item и другие
+поля. ED02 означает только pre-primary; M_STS — состав деятельности,
+предусмотренный STS regulation, а не весь сектор M. Human RU translations
+отделены от официальных EN labels в provenance.
+
+Named totals образования, страны рождения, миграционного статуса, рабочего
+времени и остальных поддержанных групп требуют своего axis/member. Full-time
+equivalent `TOT_FTE` не равен combined worktime `TOTAL`; общего AnyTotal нет.
+JSON type guard на PostgreSQL и SQLite требует строковый enum: число `0`,
+bool, массив, объект, null или тот же код соседней оси не становятся member.
+Aggregate labels не дают свободного слова Total. Неизвестные пары и providers
+остаются без придуманного semantic witness.
+
+География использует целые имена реального каталога, согласованные падежи
+административных названий, ограниченные формы собственных имён и English
+possessive. ISO/preposition collisions и вложенные имена разрешаются до
+содержательных токенов. `remainder` распознаётся только как намерение:
+карточек для него действующий региональный API не публикует; включающая
+территория не становится заменой. Это не универсальный морфологический NLP.
+
+Ограниченный preflight реального каталога на raw query защищает найденный
+целый native title span от разбора его внутренних географии, дат, частот
+и `%`. Это не обещает исчерпывающий поиск любого названия вне discovery budget.
+Подтверждённый каталогом code также защищён; обычное слово с дефисом не
+считается code. Короткое
+обычное слово не превращается одной опечаткой в экономический предмет. Длинный native prefix (24+ символа, 4+ слова)
+также защищён для незавершённого ввода и старого 60-символьного clamp.
+Внешние год, страна, `%`, частота и неизвестные suffix всё равно обязательны.
+Одиночные 1–2 символа autocomplete допускаются лишь в начале настоящего
+имени/кода компактных каталогов; world short-prefix scan ограничен.
+
+Ранжирование детерминированно: точный код/имя выше имени, метаданных,
+префикса и опечатки. Каталожные headline identities могут получить явный
+bonus; это не популярность, вычисленная по кликам. World SQL использует
+escaped ILIKE и PostgreSQL word similarity для допустимых длинных токенов.
+Промежуточный budget = `min(500, max(100, limit*4))` для больших контуров;
+финальная сортировка не является exhaustive ranking всего world-каталога.
+При равном score действует стабильный key и локализованный приоритет
+Россия/международный контур; без явного региона равные regional instances
+идут после национальных кандидатов.
+
+Для уже допустимого набора добавлен небольшой title-only inverse-frequency
+bonus: `6*log1p((N+1)/(df+1))` по лучшей альтернативе каждой группы и штраф
+до 16 за дополнительные semicolon slices. `df` считается один раз по
+ограниченному набору, с одинаковой нормализацией `ё/е`; exact score ≥900
+не изменяется. Это математический tie-breaker, не corpus BM25, learned score
+или вероятность релевантности. Он не восстанавливает отброшенный кандидат.
+
+`search_paths.world_search_paths` разрешает текущую ranked порцию одной
+metadata SELECT для sibling/merge групп вместо per-result resolver-запросов;
+availability территорий также проверяется пакетами. Сравнение с
+`resolve_world_frequency_sibling` закреплено отдельной регрессией.
+`test_search_query_count_is_bounded` устанавливает budget ≤12 SQL SELECT
+для fixtures `CPI Germany` (limit=100) и `Russia`. Это регрессионный критерий
+этих сценариев, не универсальная гарантия count/latency любого запроса.
+
+[searchSynonyms.js](../frontend/src/lib/searchSynonyms.js) даёт локальным
+полям единый `filterSearchOptions`: точный код/имя, эквивалентные понятия,
+токены, префиксы, ограниченная русская морфология и typo/layout fallback.
+Он сохраняет исходные объекты, stable ties и supplied eligibility pool;
+его веса и бюджет отличаются от серверного retrieval. Контракт понимания
+общий, один идентичный числовой score между сервером и браузером не обещан.
+
+Обученной ML-модели здесь нет. Corpus BM25/TF-IDF, learned ranking и embeddings —
+исследованные варианты; текущий inverse-frequency bonus описан выше. История
+содержит слабые click labels без полного exposure/релевантности; обучение
+требует ручных judgments, независимого holdout и hard gates географии,
+частоты и варианта. Подробности — в двух исследованиях выше.
+
+## Все обнаруженные поисковые поверхности
+
+| Поле / consumer | Набор / механизм | Context аналитики |
+|---|---|---|
+| Navbar desktop/mobile, Home hero/workbench, category/currencies triggers | Одна глобальная палитра → `/search` | global |
+| WorldCountry | Каталог выбранной страны и допустимых family/variant cards → `filterSearchOptions` | world-country-indicators |
+| RegionsHome: территории / метрика карты | Текущие территории / полный региональный metric catalog → общий matcher | regions-list / map-metric |
+| RegionProfile | Sections показателей текущего региона → общий matcher | region-profile |
+| WorldRegionsHome: территории / метрика карты | Текущий country region hub / его metrics → общий matcher | world-regions-hub / world-map-metric |
+| WorldRegionProfile | Sections текущей субнациональной территории → общий matcher | world-region-profile |
+| ComparePage: macro, страна, регион, показатель, world concept и world region | Supplied compatible/unselected groups, общий matcher и bounded world compare adapter | compare-macro, compare-country, compare-region, compare-region-indicator, compare-world-concept, compare-world-region, compare-world-region-indicator; возможен compare-combo |
+| Home map / WorldRating: WorldConceptPicker | Доступные concept options → общий matcher | world-concept-picker |
+| CountryComparePicker | Доказанные comparable страны → world compare matcher | world-chart-countries |
+| CalcCountryPicker | Страны текущего калькулятора → world compare matcher | calc-country |
+| EmbedBuilder | Listed российские ряды → общий matcher | embed-builder |
+| DataTable на разных карточках | Только загруженные точки → `tableRowMatches` | table_search, отдельное событие |
+
+Calendar, BI, account/login и статические страницы не получают новый
+catalog filter; где смонтирован SPA Navbar, доступна глобальная палитра.
+Чистые SSR document-страницы без SPA не имеют этой React-палитры. Старый
+`world-countries` context в docstring сам по себе не доказывает живое поле.
+
+## Состояния UI, клавиатура и таблицы
+
+Retry имеет два слоя: hook TanStack Query допускает один повтор; общий
+Axios transport дополнительно повторяет безопасные GET до трёх раз при
+network/429/503. API replay измеряет одну попытку, а не полное ожидание UI
+после всех retry. Компонентный homepage wiring fixture содержит legacy
+`russia_indicator`/`world_indicator`; canonical API kinds — `russia`/`world`.
+Этот mock проверяет переход/связь hook, а не полноту DTO integration.
+
+[useGlobalSearch.js](../frontend/src/lib/useGlobalSearch.js) применяет debounce
+200 мс, query key по версии клиента/локали/строке/limit, AbortSignal,
+staleTime 60 секунд, gcTime 5 минут и один retry. Во время нового запроса
+палитра скрывает старые строки и отличает loading, error с retry и loaded
+empty. Историческая нулевая выдача не выводится из pending состояния.
+
+Только один видимый trigger принимает Cmd/Ctrl+K или `/`. Диалог удерживает
+фокус/прокрутку страницы, возвращает прежний фокус, поддерживает стрелки,
+Enter и Escape; composition/229 не выбирает строку и не закрывает IME.
+Highlight ограничен новым размером результата. Вторичная строка показывает
+географию, частоту и единицу; при одинаковых именах также code среза.
+Переход разрешён только по относительному пути без `//` и обратной косой
+черты; period destination открывается document navigation.
+
+[tableSearch.js](../frontend/src/lib/tableSearch.js) сопоставляет видимую
+дату, ISO-дату, quarterly `YYYY-QN`, raw/formatted значение и значение с
+единицей. NFKC и десятичная запятая/точка, пробелы тысячных групп позволяют
+найти скопированное отображаемое число. Это буквальный фильтр строк, без
+синонимов экономических понятий или запроса новых фактов. Debounce 250 мс;
+UI и `table_search.results` используют один predicate. Видимая страница
+ограничена новым числом строк при замене входных данных.
+
+## Телеметрия и история
+
+Глобальный loaded query ≥2 символов после 900 мс пишет `search_query`:
+bounded `q` до 256, `results`, `context=global`, version, interaction_id,
+все возвращённые `keys` (до 100), returned_count и has_more. Returned/rendered
+keys не доказывают viewport impression каждой строки или её relevance. Select добавляет
+code/kind-country-region/path/position, abandon — последний count, включая
+`null` при pending/error. Новый interaction_id создаётся при открытии
+диалога; повтор того же q внутри открытия дедуплицируется.
+
+Локальные `useSearchTracking` пока сохраняют 900 мс, minLen=2 и q до 60;
+DataTable сохраняет отдельный `table_search{query,results}`. Общего
+interaction/exposure-контракта всех локальных полей пока нет. Изменения
+каждой буквы, удаления и вставки не записываются. `behavior.js` намеренно
+не снимает текст input/textarea/contenteditable; новая typing capture
+в эту версию не добавлялась. First-party отправка и consent-границы —
+[инвентарь](analytics_api_inventory/frontend_instrumentation.md).
+
+Read-only экспорт охватил все удержанные PG поисковые строки и связанный
+контекст, CH копию и все удержанные nginx security rotations. Проанализированы
+919 технических сессий и подробно отобраны/просмотрены 150 реальных путей
+с положительным свидетельством человеческого использования. Raw архив и
+псевдонимные идентификаторы лежат в игнорируемом `analytics/search-audit/2026-09-30/`;
+публичный [отчёт](research/search-history-2026-09-30.md) содержит агрегаты,
+критерии и ограничения. Это не восстановление всех клавиш за всю историю.
+
+## Проверка и следующий выпуск
+
+API intent/retrieval, shared matcher, table predicate и компонентные сценарии
+проверяются соответствующими `test_search_federated.py`,
+`test_regional_search_metadata.py`, `searchSynonyms.test.js`,
+`worldCompareSearch.test.js`, `tableSearch.test.js`, `useGlobalSearch.test.jsx`
+и компонентными tests. Fixtures и [225 synthetic сценариев](research/search-matrix-2026-09-30.json)
+отличать от 150 наблюдавшихся реальных путей и browser acceptance.
+Backend регрессии дополнительно проверяют batch canonical parity, annual/
+monthly fact gates, materialized modes, native rate level, asset issuer
+exceptions и отказ hidden period destination. Само наличие теста не
+объявляет успешный final run: результаты фиксируются по финальному evidence.
+
+**Датированный API replay 30.09:** неизменённый корпус expected canonical
+paths дал **197/201**, HTTP errors **0**, p50 **490 мс**, p95 **1 276 мс**
+при двух одновременных запросах к локальному API на восстановленной PG.
+Это replay запросов, не 201 browser journey или production latency.
+Исходный результат — локальный `analytics/search-audit/2026-09-30/api-evaluation.json`;
+итоговое свидетельство и browser границы — в
+[протоколе](research/search-acceptance-2026-09-30.md).
+
+Четыре несовпадения expected path оставлены в строгом счёте: native
+`cn-industrial-production`, `kr-cpi-all`, `kr-unemployment-rate`,
+`kr-gdp-real` отсутствуют в данном снимке БД. Три дают корректный
+`no_coverage`; Korean CPI возвращает доступную альтернативу
+`kr-prc_ipc_g20-i15` (monthly, 368 ненулевых фактов). Эта проверка доступности
+объясняет отклонения, не заменяет исходные expected targets и не повышает
+strict score. Отсутствие native ряда требует отдельной проверки ingest/
+источника; поиск его не создаёт.
+
+Финальные результаты команд, браузера и локальной PostgreSQL относятся
+к конкретному снимку кода и сохраняются в [backlog](backlog.md#search-v2-2026-09-30).
+Перед выпуском нужны утверждённый SHA, оба языка, mobile/desktop, все
+обнаруженные поля, wrong-geography/variant/frequency empty cases, переходы
+SPA/document и latency/resource budget на разрешённом окружении. Полная
+production приёмка и causal uplift текущим наличием тестов не установлены.
+
+## Новое случайное испытание 30.09: пределы подтверждённого качества
+
+После commit `bdcee357` поиск без изменений проверен на новом frozen
+Monte-Carlo корпусе: 1 000 global API запросов и 850 локальных matcher
+случаев. [Отчёт](research/search-monte-carlo-2026-09-30.md) сохраняет seed,
+отбор/gold, исходные доли и ошибки самого semantic oracle. Точные global
+названия/коды дали 301/400, случайные фрагменты — 170/200; эти числа не
+являются visitor accuracy. Десять независимо проверенных естественных
+вопросов дали пустоту при доступных через code query данных. Сильное
+понимание языка этим испытанием не подтверждено.
+
+Найдены реальные literal code/date, nested geography, ISO/preposition
+и layout preprocessing дефекты. Отсутствие wrong destination среди
+возвращённых rows не доказывает правильность intent, давшего пустоту.
+Source, aliases, данные и настройки во время проверки не менялись;
+исправление и повторная закрытая выборка — следующий отдельный этап.
+
+## Последующая версия v2 и повтор истории 30.09
+
+Описанная выше реализация `federated-v2` исправляет исходные literal/date,
+nested-geography, ISO/preposition и layout дефекты. Это следующий локальный
+этап после сохранённого отрицательного Monte-Carlo, не переписывание его
+первичного результата. [Новый отчёт](research/search-history-replay-2026-09-30.md)
+разделяет replay всех удержанных q, coverage, strict economic gold и новую
+независимую выборку. Первый закрытый прогон source 9167af дал 22/80 top5,
+1/40 natural. После чтения этих промахов внесены общие исправления; последующий
+повтор 80 является development и не заменяет первичный blind score.
+Незнакомые формулировки остаются границей доказанного уровня.
+
+Все homepage входы используют ту же глобальную палитру четырёх контуров,
+raw query и client cache revision `v3`. IME composition скрывает stale results,
+подавляет промежуточный запрос, клавиатурный выбор и settled-query telemetry;
+после завершения composition действует обычный debounce. Help/status/empty
+сообщения согласованы RU/EN, `unsupported_query` имеет отдельный текст.
+
+Typed guards конечны. Сумма пенсии отделена от числа пенсионеров; остаток
+кредитов — от ставки/новых выдач; исследовательский персонал — от организаций;
+доход/оплата труда — от рабочих мест и пособий; валютная пара — от индекса.
+Обязательный гектар площади не подменяется урожайностью. Эти роли проверены
+положительными и отрицательными сценариями, но не покрывают все темы каталога.
+На снимке source60ac58 native title с внутренней географией мог терять
+literal preflight, а внутренний `%` — ошибочно добавлять unit facet и
+исключать денежную меру. Это сохранённые дефекты того этапа, исправленные
+последующим bounded whole-title preflight 01.10; существование синтетического
+percent-title в production каталоге прежняя проверка не доказывала.
+Пустой `no_coverage` может быть ошибкой понимания при существующих фактах.
+Тесты, локальные реальные переходы и production состояние указаны отдельно
+в новом отчёте и backlog; universal semantic readiness из этих проверок не следует.
+
+
+### Последующее исправление 01.10 и граница доказательства
+
+После отрицательной blind40 проверки исправлены общие роли, относительные
+сравнения меры, physical units, Eurostat member facets и Russia year+mode
+destination, описанные в действующих разделах выше. Обученной ML-модели нет.
+549 focused checks прошли локально за 13,31 с; это регрессии кода, не оценка
+произвольного понимания языка или production runtime.
+
+Завершённый на том этапе historical acceptance source60ac58 сохраняет
+109/110 strict top5 и 2 542/3 664 nonempty; первичный blind40 — 5/40 top5.
+Корпус/gold и эти результаты не изменяются. На момент этой записи новый replay
+ещё ожидал завершения; его последующий статус V4 указан ниже. Повтор изученных
+40/80 является development.
+Полное датированное свидетельство — [replay report](research/search-history-replay-2026-09-30.md).
+
+### Crawl policy годового режима, 01.10
+
+Годовой документ выбранного режима содержит другой stored ряд. Поэтому
+`mode` исключён из глобального Yandex `Clean-param`; обычные карточки
+сообщают свой canonical без mode в HTML. Для `*` и `Googlebot` robots
+разрешает только Russia/currencies year shape с одним зарегистрированным
+mode и концом query (`$`). Более длинные правила закрывают месячные и
+вложенные пути; лишние параметры и неизвестные mode остаются закрыты.
+Сам REP pattern не проверяет существование родителя, даты или его mode:
+эти проверки выполняет SSR resolver с404 для неподдержанного документа.
+
+Три шаблона согласованы с producer `yandex_clean_param.py`. Проверены
+996 зарегистрированных parent/mode путей,158 focused tests и30 033
+решения независимого REP parser Protego без расхождений. Это отдельный
+локальный policy-срез; реальные robots обоих хостов, выпуск static sitemap
+и возможные GET-param настройки Вебмастера ещё требуют release acceptance.
+Основания: [Google REP](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec),
+[Yandex Allow/Disallow](https://yandex.com/support/webmaster/en/robot-workings/allow-disallow),
+[Yandex Clean-param](https://yandex.com/support/webmaster/en/robot-workings/clean-param).
+
+### Завершённый V4 и локальное продолжение V5, 01.10
+
+V4 source `259cb677` / 51 files полностью запечатан: выполнены 1 915 main и
+736 nginx запросов, HTTP/transport errors — 0. Неизменённый размеченный
+historical110 дал **109/110 strict top5**. По occurrences retained client q
+nonempty — **2 607/3 664**, отдельно nginx backend q — **725/1 106**.
+Это coverage и известная размеченная часть, не all-history correctness;
+nginx q может содержать прежние frontend-expanded aliases.
+
+Новая независимая V4 frozen80 дала **8/80 top5**, 72 empty, 0 HTTP errors.
+После раскрытия ответов отдельно аннотированы 1 invalid semantic gold,
+3 underspecified query и 2 preregistered route limits; первичные gold/score
+и печать не пересчитаны. Корпус теперь inspected development evidence.
+Повтор тех же80 на предварительном V5 source `c9668f27` дал **22/80 top5**;
+это проверка ремонта знакомых случаев, не свежая blind accuracy.
+
+На момент этой записи финальный V5 replay ещё ожидал завершения; последующий
+отрицательный результат и V6 исправление указаны ниже.
+
+### V5 регрессии и ограниченный V6 ремонт
+
+На неизменных 1 915 main входах V5 вернул четыре HTTP 500 из-за 8-секундного
+PostgreSQL statement timeout и потерял три известных native prefix цели.
+Strict gold: 103/110 top1, 107/110 top5; полный V5 snapshot/seal сохранён.
+Это результат конкретного исполняемого source `9839569d`, а не новая gold
+разметка. Результаты прежних версий и первичные blind оценки не заменены.
+
+V6 сохраняет исходный prefix/fuzzy role у сырого однословного терма.
+Добавленные полные словоформы требуют границ слов; уже разобранные nominal
+OR группы остаются complete-only. Это общее правило, без исключений для
+исторических запросов и без ослабления meaningful qualifiers.
+
+Lexical native labels перед LIMIT теперь выбирают конечные группы точных
+axis/member identity и один Boolean predicate на обязательный терм.
+Provider и JSON string type по-прежнему обязательны. Отдельные typed facet
+constraints и final Python guard сохраняются. Переводы из общего label pool
+не повторяются внутри каждого SQL alternative. Там, где нужен label text
+для measure/display witness, простой CASE извлекает один member на ось.
+Чистый статический registry cache ограничен 2 048 входами и не хранит ответы.
+
+Readonly EXPLAIN без ANALYZE для четырёх фактических ошибочных формулировок
+сократил SQL statements с 64–126 тысяч байт до 5,6–9,9 тысяч байт. Это размер конструкций,
+не заявленный процент ускорения; full first-response probes, повтор всей
+истории и свежая preregistered40 оцениваются отдельно на финальном source.
+Новые 40 gold/native targets не были использованы для этого ремонта.
+Детерминированные правила и bounded title inverse-frequency не являются
+обученной ML-моделью; внешние модели не использовались, production не изменён.
+Sealed metrics, source/gold identity и ограничения — в
+[основном отчёте](research/search-history-replay-2026-09-30.md).
