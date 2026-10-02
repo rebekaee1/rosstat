@@ -40,8 +40,10 @@ All devices use one shared set. The real 2048 × 1024 surface appears as soon as
 maps or optional geography refinement. A neutral one-pixel material supplies
 valid initial shader input.
 
-The day image is already cloud-free; geographical pixels remain unchanged.
-The shader uses restrained neutral/warm grading and broad camera-side lighting,
+The day image is already cloud-free; the file itself remains unchanged.
+Since 2026-10-02 the shader lightens it at render time: dark blue-led pixels are
+treated as water and drawn in a calm light slate tone, land shadows are lifted,
+and the limb is shaded neutrally for volume. Lighting stays broad and camera-side,
 without clouds, a colored rim, atmosphere halo or synthetic ocean highlights.
 
 After the day surface, `earth_material_cloudless_512_10eb5bd716c9.webp` supplies

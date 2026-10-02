@@ -18,6 +18,9 @@ from app.services.search_language import measure_matches, relevance_bonus, title
     ('Под какой процент банки дают деньги заемщикам', 'credit-rate'),
     ('How many residents live in the country', 'population'),
     ('Сколько зерна собрали с полей', 'grain-harvest'),
+    # Real visitor phrasing (2026-10-02): the price verb is a price question, not a title word.
+    ('сколько стоил бензин 95 в 2022', 'fuel-ai95'),
+    ('сколько стоит дизель', 'fuel-diesel'),
 ])
 def test_questions_keep_typed_economic_subject(query, expected):
     intent = parse_intent(query, [])

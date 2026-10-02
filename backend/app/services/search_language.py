@@ -40,7 +40,9 @@ observation observations during данных данным данными наб�
 # Longest alias wins in search_intent. First alternative is a typed identity and
 # supplies a stable ranking key; alternatives refer to the same economic measure.
 LANGUAGE_CONCEPTS = (
- (("price", "цена", "цену", "цене", "ценой"), ("search-subject-price",)),
+ # «Сколько стоил бензин» — тот же вопрос о цене; глагол не должен становиться
+ # обязательным словом названия и обнулять выдачу.
+ (("price", "цена", "цену", "цене", "ценой", "стоил", "стоила", "стоило", "стоили", "стоит", "стоят"), ("search-subject-price",)),
  (("звр", "золотовалютные резервы", "золотовалютных резервов"), ("reserves", "international reserves", "foreign exchange reserves", "международные резервы")),
  (("цена меди", "цены на медь", "copper price", "copper prices", "медь"), ("copper", "copper", "медь", "меди")),
  (("серебро", "silver", "цена серебра"), ("silver", "silver", "серебр")),
