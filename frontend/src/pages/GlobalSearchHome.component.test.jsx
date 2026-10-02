@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Dashboard from './Dashboard';
@@ -53,7 +53,8 @@ describe('Every homepage search entry uses global discovery', () => {
     for (const trigger of triggers) {
       fireEvent.click(trigger);
       expect(screen.getAllByRole('dialog')).toHaveLength(1);
-      const input = screen.getByRole('combobox');
+      // На главной есть и поиск страны на планете — берём поле именно из диалога.
+      const input = within(screen.getByRole('dialog')).getByRole('combobox');
       fireEvent.change(input, { target: { value: query } });
       await waitFor(() => expect(screen.getAllByRole('option')).toHaveLength(4));
       expect(get).toHaveBeenCalledWith('/search', expect.objectContaining({ params: { q: query, limit: 100 } }));
@@ -65,7 +66,7 @@ describe('Every homepage search entry uses global discovery', () => {
     // The same backend path is selected intact; the display plane does not
     // rewrite an international region result into a Russian destination.
     fireEvent.click(triggers[2]);
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: query } });
+    fireEvent.change(within(screen.getByRole('dialog')).getByRole('combobox'), { target: { value: query } });
     fireEvent.click((await screen.findAllByRole('option'))[3]);
     expect(screen.getByTestId('destination').textContent).toBe(hits[3].path);
     expect(track).toHaveBeenCalledWith(events.SEARCH_SELECT, expect.objectContaining({ path: hits[3].path, version: 'federated-v2', country: 'united-states' }));
