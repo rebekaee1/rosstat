@@ -36,6 +36,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from itertools import combinations
 from typing import Awaitable, Callable
+from urllib.parse import parse_qs, urlsplit
 
 from app.services.index_policy import (
     RUSSIA_YEAR_MIN_POINTS,
@@ -44,7 +45,7 @@ from app.services.index_policy import (
 )
 from app.services.display import today_msk
 
-from sqlalchemy import Integer, String, func, literal, select, tuple_, union_all
+from sqlalchemy import Integer, String, func, literal, literal_column, select, tuple_, union_all
 from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
@@ -296,7 +297,15 @@ def is_redirect_only_indicator(code: str) -> bool:
 def is_recrawl_eligible(path: str) -> bool:
     """Путь можно подавать в переобход Вебмастера (остаётся в поиске)."""
     if "?" in path:
-        return False
+        from app.services.search_paths import russia_period_data_code
+        parsed = urlsplit(path)
+        match = re.fullmatch(r"/(?:russia|currencies)/indicator/([^/]+)/(\d{4})", parsed.path)
+        query = parse_qs(parsed.query, keep_blank_values=True)
+        modes = query.get("mode", [])
+        return bool(match and set(query) == {"mode"} and len(modes) == 1
+            and modes[0] and paths.is_public_year(int(match[2]))
+            and not is_redirect_only_indicator(match[1])
+            and russia_period_data_code(match[1], modes[0]) is not None)
     if path.startswith("/__honeypot__") or path.endswith("/links-exchange"):
         return False
     for prefix in (f"/{paths.RUSSIA}/indicator/", "/indicator/"):
@@ -386,28 +395,42 @@ async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
 
 
 async def _year_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
+    from app.services.search_paths import russia_year_mode_paths
+
     year_expr = func.extract("year", IndicatorData.date)
     stmt = (
         select(Indicator.code, year_expr.label("y"), func.max(IndicatorData.date))
         .join(IndicatorData, IndicatorData.indicator_id == Indicator.id)
         .where(Indicator.is_active.is_(True),
+               # Numeric(12, 4) facts are strictly inside these bounds; this
+               # excludes PostgreSQL/SQLite NaN and infinities before GROUP BY.
+               IndicatorData.value > literal_column("-1e30"),
+               IndicatorData.value < literal_column("1e30"),
                IndicatorData.date >= date(paths.PUBLIC_YEAR_MIN, 1, 1),
                IndicatorData.date < date(paths.PUBLIC_YEAR_MAX + 1, 1, 1))
         .group_by(Indicator.code, year_expr)
         .order_by(year_expr.desc(), Indicator.code)
     )
+    actual_year_metadata = (await db.execute(stmt)).all()
+    active_parents = set((await db.execute(select(Indicator.code).where(
+        Indicator.is_active.is_(True)
+    ))).scalars())
     urls = []
-    for code, year, last_data in (await db.execute(stmt)).all():
-        if is_redirect_only_indicator(code):
-            continue
+    seen = set()
+    for code, year, last_data in actual_year_metadata:
         year = int(year)
         freq = "weekly" if year == today.year else "yearly"
-        urls.append(_u(
-            paths.russia_indicator_year(code, year),
-            _iso(last_data),
-            freq,
-            TIER2_PRIORITY if year < today.year else TIER1_PRIORITY,
-        ))
+        canonical_paths = []
+        if not is_redirect_only_indicator(code):
+            canonical_paths.append(paths.russia_indicator_year(code, year))
+        canonical_paths.extend(path for parent, path in russia_year_mode_paths(code, year)
+            if parent in active_parents and not is_redirect_only_indicator(parent))
+        for path in canonical_paths:
+            if path in seen:
+                continue
+            seen.add(path)
+            urls.append(_u(path, _iso(last_data), freq,
+                TIER2_PRIORITY if year < today.year else TIER1_PRIORITY))
     return urls
 
 

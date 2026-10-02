@@ -11,9 +11,10 @@ from datetime import date
 from dataclasses import replace
 from functools import lru_cache
 import re
+import string
 from urllib.parse import urlsplit, urlunsplit
 
-from sqlalchemy import and_, case, exists, literal, literal_column, or_, select, true
+from sqlalchemy import and_, case, exists, literal, literal_column, or_, select, true, union_all, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import load_only
 
@@ -30,9 +31,13 @@ from app.models import (
 from app.services import site_paths as paths
 from app.services.locale import get_locale
 from app.services.search_intent import (
-    SEARCH_VERSION, SearchIntent, geo_aliases, match_score, normalize, parse_intent, phrase,
+    SEARCH_VERSION, SearchIntent, complete_nominal_alternative, geo_aliases, literal_identifier, match_score, matching_alternatives, normalize, parse_intent, phrase, strip_geography,
 )
-from app.services.search_paths import russia_family_base, russia_search_path, world_search_paths
+from app.services.search_language import measure_matches, relevance_bonus, title_frequencies
+from app.services.search_language_sql import measure_constraints, _pattern_clause
+from app.services.search_units import UNIT_RULES, UNIT_EXCLUDES, DENOMINATOR_RULES, unit_metadata, denominator_metadata
+from app.services.search_dimensions import dimension_constraints, dimension_metadata, native_dimension_labels, native_dimension_match_clause, native_dimension_text
+from app.services.search_paths import russia_family_base, russia_search_path, russia_year_search_path, world_search_paths
 from app.services.seo_i18n import localize_category_name, public_indicator_fields, region_display_name, region_indicator_copy
 from app.services.world_subnational_ingest import country_has_subnational
 
@@ -47,10 +52,16 @@ _REGION_HEADLINES = {
     "wage": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
 }
 _RUSSIA_HEADLINES = {
-    "cpi": "cpi", "gdp": "gdp-nominal", "wage": "wages-nominal", "unemployment": "unemployment",
+    "housing": "housing-affordability-primary", "birth-count": "births", "cpi": "cpi", "gdp": "gdp-nominal", "wage": "wages-nominal", "unemployment": "unemployment",
     "key-rate": "key-rate", "fuel": "fuel", "fuel-ai95": "fuel-ai95", "fuel-ai92": "fuel-ai92",
-    "fuel-diesel": "fuel-diesel", "pension": "pensioners",
-    "exports": "exports", "imports": "imports",
+    "fuel-diesel": "fuel-diesel", "pensioners": "pensioners",
+    "exports": "exports", "imports": "imports", "gas-price": "natural-gas", "natural-gas": "natural-gas", "газ": "natural-gas",
+    "trade-balance": "trade-balance", "wages-real": "wages-real", "wages-nominal": "wages-nominal", "gdp-nominal": "gdp-nominal", "gdp-real": "gdp-real",
+    "mortgage-rate": "mortgage-rate", "credit-rate": "credit-rate", "cpi-food": "cpi-food",
+    "government-debt": "public-debt", "budget-balance": "budget-balance",
+    "reserves": "international-reserves", "mortality": "death-rate", "births": "birth-rate",
+    "copper": "copper", "silver": "silver",
+    "budget-expenditure": "budget-expenditure", "budget-revenue": "budget-revenue",
 }
 
 
@@ -63,8 +74,84 @@ def _family_metadata() -> dict[str, str]:
         for mode in family.modes:
             # Annual YoY and period-on-period can share the same annual series;
             # keep both valid intents instead of overwriting the first group.
-            metadata[mode.code] = metadata.get(mode.code, "") + f" {family.name} {mode.label} search-mode-{mode.group} search-freq-{mode.frequency}"
+            native = next((item for item in family.modes if item.code == family.base and item.is_native), None)
+            facets = f" {family.name} {mode.label} search-mode-{mode.group} search-freq-{mode.frequency}"
+            if native is not None:
+                facets += f" search-source-freq-{native.frequency}"
+            # Only the registered terminal period_last operation establishes
+            # end-of-period identity; a YoY pipeline may contain an earlier
+            # period_last step without itself being a level at period end.
+            if mode.pipeline and mode.pipeline[-1][0] == "period_last":
+                facets += " search-mode-eop"
+            if _family_price_evidence(family):
+                facets += " search-subject-price"
+            metadata[mode.code] = metadata.get(mode.code, "") + facets
     return metadata
+
+
+def _family_price_evidence(family) -> bool:
+    """Registered commodity price per physical quantity, never money alone."""
+    unit = normalize(family.unit)
+    monetary = re.search(r"(?:usd|eur|rub|руб|[$€])", unit)
+    physical = re.search(r"/\s*(?:т|тонна|тонны|тонн|tonne|kg|кг|г|грамм|баррель|barrel|унция|унции|унций|ounce|млн\s*бте|mmbtu|л|литр)(?:\W|$)", unit)
+    return family.category == "Товарные рынки" and bool(monetary and physical)
+
+
+@lru_cache(maxsize=1)
+def _registered_price_codes() -> frozenset[str]:
+    """Derive every admissible price series from its actual family contract."""
+    from app.data.view_model_families import FAMILIES
+    return frozenset(mode.code for family in FAMILIES if _family_price_evidence(family)
+        for mode in family.modes)
+
+
+@lru_cache(maxsize=1)
+def _bespoke_mode_metadata() -> dict[str, str]:
+    """Exact canonical mode mappings establish bespoke change identities."""
+    from app.data.legacy_redirects import _bespoke_mode_index
+    groups = {"yoy": "yoy", "yoy-annual": "yoy", "qoq": "pop", "mom": "pop"}
+    return {code: "search-mode-" + groups[mode] for (_parent, mode), code
+        in _bespoke_mode_index().items() if mode in groups}
+
+
+_NATIVE_PRICE_WORDS = ("price", "prices", "цена", "цены", "цен", "ценах", "ценам", "ценами")
+_PRICE_VALUATION_PHRASES = ("current prices", "constant prices", "chained prices", "текущие цены", "текущих ценах", "постоянные цены", "постоянных ценах", "цепные цены", "цепных ценах")
+_PRICE_SEPARATORS = string.punctuation + "—–≤≥‰€£¥№\t\n\r\v\f\u00a0\u202f"
+
+
+def _native_price_metadata(*names: str | None) -> str:
+    """A native price subject, distinct from GDP valuation at current prices."""
+    text = phrase(" ".join(name or "" for name in names))
+    for valuation in _PRICE_VALUATION_PHRASES:
+        text = text.replace(valuation, " ")
+    return "search-subject-price" if set(text.split()).intersection(_NATIVE_PRICE_WORDS) else ""
+
+
+def _native_name_text(*columns, postgres: bool):
+    """Fold bounded native name punctuation with parser-compatible word spans."""
+    text = literal("")
+    for column in columns:
+        text = text + literal(" ") + func.coalesce(column, "")
+    text = func.replace(func.lower(text), "ё", "е")
+    if postgres:
+        text = func.regexp_replace(text, r"[^a-zа-я0-9]+", " ", "g")
+    else:
+        for separator in _PRICE_SEPARATORS:
+            text = func.replace(text, separator, " ")
+        # Native name fields are bounded; ten halvings cover even a run of
+        # 1024 separator spaces and mirror Python's whitespace folding.
+        for _ in range(10):
+            text = func.replace(text, "  ", " ")
+    return literal(" ") + text + literal(" ")
+
+
+def _native_price_constraint(*columns, postgres: bool):
+    """Mirror complete price words in actual names before SQL candidate limits."""
+    text = _native_name_text(*columns, postgres=postgres)
+    for valuation in _PRICE_VALUATION_PHRASES:
+        text = func.replace(text, valuation, " ")
+    indexed = or_(*(column.ilike(pattern) for column in columns for pattern in ("%price%", "%цен%")))
+    return and_(indexed, or_(*(text.like("% " + word + " %") for word in _NATIVE_PRICE_WORDS)))
 
 
 def _intent_concept(intent: SearchIntent) -> str | None:
@@ -79,16 +166,16 @@ def _intent_frequency(intent: SearchIntent) -> str | None:
         if alt.startswith("search-freq-")), None)
 
 
-def _unit_metadata(*units) -> str:
+def _unit_metadata(*units, native_currency: str | None = None) -> str:
     """Explicit percent intent checks actual units, never SEO/name text."""
-    points = ("percentage point", "percent point", "процентных пункт", "процентные пункт", "п.п.")
-    if any(normalize(unit).upper() == "PC_PNT" or any(value in normalize(unit) for value in points) for unit in units):
-        return ""
+    facets = unit_metadata(*units, native_currency=native_currency)
+    if "search-unit-percentage-point" in facets:
+        return facets
     for unit in units:
         raw = normalize(unit)
         if "%" in raw or "percent" in raw or "процент" in raw or raw.upper() in _PERCENT_UNITS or (raw.upper().startswith("PC_") and raw.upper() != "PC_PNT"):
-            return "search-unit-percent"
-    return ""
+            return ("search-unit-percent " + facets).strip()
+    return facets
 
 
 def _world_preference(intent: SearchIntent):
@@ -184,10 +271,63 @@ def _escape_like(value: str) -> str:
 
 
 def _world_lexical(intent: SearchIntent, *, postgres: bool):
+    # An unknown unfinished alphabetic qualifier has no semantic identity.
+    # Scanning the large catalogue for its one/two-letter whole word can take
+    # seconds while fabricating matches. Preserve short whole-query prefixes,
+    # catalogue-supported literals, numeric denominators and typed aliases.
+    if not intent.literal and len(intent.terms) > 1 and any(
+        len(group) == 1 and re.fullmatch(r"[a-zа-я]{1,2}", group[0])
+        for group in intent.terms
+    ):
+        return [literal(False)]
     clauses = []
-    for alternatives in intent.terms:
+    for sourcegroup in intent.terms:
+        alternatives = matching_alternatives(sourcegroup, literal=intent.literal)
         term_clauses = []
+        native_alternatives = []
         for alternative in alternatives:
+            nominal = complete_nominal_alternative(sourcegroup, alternatives, alternative)
+            if alternative == "search-subject-price":
+                term_clauses.append(_native_price_constraint(WorldIndicator.name_ru, WorldIndicator.name_en, postgres=postgres))
+                continue
+            if alternative in {"current-prices", "constant-prices"}:
+                # A separate measure predicate uses actual names and native
+                # units. Display/SEO text cannot establish a valuation basis.
+                term_clauses.append(literal(True))
+                continue
+            if alternative.startswith("search-price-base-"):
+                from app.services.search_units import price_base_unit_pattern, PRICE_BASE_UNIT_SEPARATORS
+                year = alternative.removeprefix("search-price-base-")
+                if not re.fullmatch(r"[12]\d{3}", year):
+                    term_clauses.append(literal(False))
+                    continue
+                # A complete native unit label must establish the base by
+                # itself; fragments in two different translations cannot join
+                # into invented evidence ahead of the candidate budget.
+                base_clauses = []
+                for unit_column in (WorldIndicator.unit, WorldIndicator.unit_ru):
+                    units = func.lower(func.coalesce(unit_column, ""))
+                    for separator in PRICE_BASE_UNIT_SEPARATORS:
+                        units = func.replace(units, separator, " ")
+                    units = literal(" ") + units + literal(" ")
+                    base_clauses.append(_pattern_clause(units, price_base_unit_pattern(int(year)), postgres=postgres))
+                term_clauses.append(or_(*base_clauses))
+                continue
+            if alternative.startswith("search-dim-"):
+                # A separate shared named-axis predicate below is mandatory.
+                # The marker can never be satisfied by a title/code substring.
+                term_clauses.append(literal(True))
+                continue
+            if alternative in DENOMINATOR_RULES:
+                # The denominator belongs to the actual measure/unit, not SEO
+                # or the native scale of a count. Promille is a people rate
+                # only in controlled demographic measures, never every ratio.
+                measure_text = func.lower(func.coalesce(WorldIndicator.name_ru, "") + literal(" ") +
+                    func.coalesce(WorldIndicator.name_en, "") + literal(" ") +
+                    func.coalesce(WorldIndicator.unit, "") + literal(" ") + func.coalesce(WorldIndicator.unit_ru, ""))
+                measure_text = func.replace(func.replace(measure_text, "\u00a0", " "), "\u202f", " ")
+                term_clauses.append(_pattern_clause(measure_text, DENOMINATOR_RULES[alternative], postgres=postgres))
+                continue
             if alternative == "search-unit-percent":
                 percentage_points = or_(WorldIndicator.unit == "PC_PNT",
                     WorldIndicator.unit.ilike("%percentage point%"), WorldIndicator.unit.ilike("%percent point%"),
@@ -198,11 +338,42 @@ def _world_lexical(intent: SearchIntent, *, postgres: bool):
                     WorldIndicator.unit.contains("%"), WorldIndicator.unit_ru.contains("%"),
                     WorldIndicator.unit.ilike("%percent%"), WorldIndicator.unit_ru.ilike("%процент%"))))
                 continue
+            if alternative.startswith("search-unit-") and alternative.removeprefix("search-unit-") in UNIT_RULES:
+                unit_key = alternative.removeprefix("search-unit-")
+                unit_text = func.lower(func.coalesce(WorldIndicator.unit, "") + literal(" ") + func.coalesce(WorldIndicator.unit_ru, ""))
+                unit_clause = _pattern_clause(unit_text, UNIT_RULES[unit_key], postgres=postgres)
+                if unit_key == "percentage-point":
+                    unit_clause = or_(unit_clause, unit_text.contains("п.п."))
+                if unit_key in ("litre", "tonne"):
+                    symbols = ("l", "л") if unit_key == "litre" else ("t", "т")
+                    symbol_clauses = []
+                    for column in (WorldIndicator.unit, WorldIndicator.unit_ru):
+                        compact = func.lower(func.coalesce(column, ""))
+                        if postgres:
+                            compact = func.regexp_replace(compact, r"\s+", "", "g")
+                            symbol_clauses.append(compact.op("~")(r"/(?:" + "|".join(symbols) + r")(?:\W|$)"))
+                        else:
+                            for space in (" ", "\t", "\n", "\r", "\v", "\f", "\u00a0", "\u202f"):
+                                compact = func.replace(compact, space, "")
+                            padded = compact + literal(" ")
+                            symbol_clauses.append(or_(*(padded.contains("/" + symbol + end)
+                                for symbol in symbols for end in (" ", "/", ".", ",", ";", ")", "-"))))
+                        symbol_clauses.append(compact.in_(symbols))
+                    unit_clause = or_(unit_clause, *symbol_clauses)
+                if unit_key in UNIT_EXCLUDES:
+                    unit_clause = and_(unit_clause, ~_pattern_clause(unit_text, UNIT_EXCLUDES[unit_key], postgres=postgres))
+                term_clauses.append(unit_clause)
+                continue
             if alternative.startswith("search-freq-"):
                 frequency = alternative.removeprefix("search-freq-")
                 aliases = {"annual": ("annual", "yearly", "A"), "monthly": ("monthly", "M"), "quarterly": ("quarterly", "Q"),
                     "weekly": ("weekly", "W"), "daily": ("daily", "D")}.get(frequency, (frequency,))
                 term_clauses.append(WorldIndicator.frequency.in_(aliases))
+                continue
+            if alternative.startswith("search-source-freq-"):
+                # World rows have no registered derivation/source-frequency
+                # contract. An observation frequency cannot stand in for it.
+                term_clauses.append(literal(False))
                 continue
             if alternative.startswith("search-mode-"):
                 mode = alternative.removeprefix("search-mode-")
@@ -212,12 +383,27 @@ def _world_lexical(intent: SearchIntent, *, postgres: bool):
                     # metadata names/measure still constrain the economic topic.
                     term_clauses.append(literal(True))
                     continue
+                if mode == "eop":
+                    names = (WorldIndicator.name_ru, WorldIndicator.name_en)
+                    text = _native_name_text(*names, postgres=postgres)
+                    phrases = ("end of period", "end of year", "end of quarter", "end of month",
+                        "на конец года", "на конец квартала", "на конец месяца", "на конец периода")
+                    indexed = or_(*(column.ilike(pattern) for column in names for pattern in ("%end%", "%конец%")))
+                    term_clauses.append(and_(indexed, or_(*(text.like("% " + label + " %") for label in phrases))))
+                    continue
                 phrases = {"yoy": ("year-on-year", "annual rate of change", "изменение за год"),
                     "avg": ("average", "средн"), "pop": ("month-on-month", "quarter-on-quarter", "изменение за месяц"),
+                    "eop": ("end of period", "end of year", "end of quarter", "end of month", "на конец года", "на конец квартала", "на конец месяца", "на конец периода"),
                     "level": ("index", "индекс")}.get(mode, ())
                 term_clauses.extend(WorldIndicator.name_en.ilike(f"%{p}%") for p in phrases)
                 term_clauses.extend(WorldIndicator.name_ru.ilike(f"%{p}%") for p in phrases)
-                term_clauses.append(WorldIndicator.code.ilike(f"%-{mode}%"))
+                if mode != "eop":
+                    term_clauses.append(WorldIndicator.code.ilike(f"%-{mode}%"))
+                continue
+            if intent.literal and normalize(alternative) == intent.literal:
+                literal_pattern = "%" + "%".join(_escape_like(word) for word in phrase(alternative).split()) + "%"
+                term_clauses.append(or_(*(column.ilike(literal_pattern, escape="\\") for column in
+                    (WorldIndicator.code, WorldIndicator.name_ru, WorldIndicator.name_en))))
                 continue
             needle = _escape_like(normalize(alternative))
             # A short whole query stays a prefix lookup. A short term inside a
@@ -225,14 +411,37 @@ def _world_lexical(intent: SearchIntent, *, postgres: bool):
             # other required terms keep that candidate lookup bounded.
             prefix_only = len(needle) < 3 and len(intent.terms) == 1
             pattern = f"{needle}%" if prefix_only else f"%{needle}%"
+            if " " in alternative:
+                # SQL discovery accepts native separators (R&D, comma lists).
+                # The scorer then requires the normalized phrase/typed measure;
+                # this is not permission to drop a meaningful interior word.
+                pattern = "%" + "%".join(_escape_like(word) for word in phrase(alternative).split()) + "%"
             columns = (WorldIndicator.code, WorldIndicator.name_ru, WorldIndicator.name_en, WorldIndicator.seo_keywords)
+            native_alternatives.append((alternative, nominal))
             if "=" in alternative or (alternative.startswith("i") and alternative[1:].isdigit()):
                 columns += (WorldIndicator.unit, WorldIndicator.unit_ru)
             for column in columns:
-                term_clauses.append(column.ilike(pattern, escape="\\"))
-            if postgres and len(alternatives) == 1 and len(needle) >= 5 and " " not in needle:
+                if postgres and (nominal or (len(needle) < 3 and len(intent.terms) > 1 and len(alternatives) == 1)):
+                    # An unfinished one/two-letter qualifier cannot match an
+                    # interior syllable of hundreds of thousands of titles. The
+                    # scorer also requires a whole token for such short terms.
+                    term_clauses.append(column.op("~*")(r"(^|[^a-zа-я0-9])" + re.escape(needle) + r"([^a-zа-я0-9]|$)"))
+                elif nominal:
+                    # Hermetic SQLite has no regex operator. Mirror the exact
+                    # noun boundary on stored title/code separator punctuation.
+                    text = func.lower(func.coalesce(column, ""))
+                    for separator in "-,.()/;—_:":
+                        text = func.replace(text, separator, " ")
+                    text = literal(" ") + text + literal(" ")
+                    term_clauses.append(text.like("% " + needle + " %", escape="\\"))
+                else:
+                    term_clauses.append(column.ilike(pattern, escape="\\"))
+            raw_singleton = len(sourcegroup) == 1 and alternative == sourcegroup[0]
+            if postgres and (len(alternatives) == 1 or raw_singleton) and not nominal and len(needle) >= 5 and " " not in needle:
                 for column in (WorldIndicator.name_ru, WorldIndicator.name_en):
                     term_clauses.append(literal(needle).op("<%")(column))
+        term_clauses.append(native_dimension_match_clause(WorldIndicator.provider, WorldIndicator.slice_json,
+            tuple(native_alternatives)))
         clauses.append(or_(*term_clauses))
     return clauses
 
@@ -240,13 +449,16 @@ def _world_lexical(intent: SearchIntent, *, postgres: bool):
 def _world_mode_metadata(row) -> str:
     """Recognize official native measures without inferring a new derived row."""
     name = normalize(f"{row.name_ru} {row.name_en}")
-    metadata = f"search-mode-level search-freq-{normalize_frequency(row.frequency) or row.frequency}"
+    metadata = f"search-mode-level search-freq-{normalize_frequency(row.frequency) or row.frequency} {_native_price_metadata(row.name_ru, row.name_en)}"
     if any(label in name for label in ("year-on-year", "annual rate of change", "12-month accumulated", "изменение за год")) or "-yoy" in row.code:
         metadata += " search-mode-yoy"
     if any(label in name for label in ("month-on-month", "quarter-on-quarter", "изменение за месяц")):
         metadata += " search-mode-pop"
     if "average" in name or "средн" in name:
         metadata += " search-mode-avg"
+    if any(" " + label + " " in " " + phrase(name) + " " for label in ("end of period", "end of year", "end of quarter", "end of month",
+            "на конец года", "на конец квартала", "на конец месяца", "на конец периода")):
+        metadata += " search-mode-eop"
     return metadata
 
 
@@ -282,9 +494,9 @@ async def _geometry(db: AsyncSession) -> tuple[list[dict], dict[str, WorldCountr
         geometry.append({"key": f"country:{country.slug}", "kind": "country", "slug": country.slug,
             "name_ru": country.name_ru, "name_en": country.name_en,
             "country_slug": country.slug, "country_code": country.code, "id": country.id})
-    regions = list((await db.execute(select(Region).where(Region.kind.in_(("region", "district"))))).scalars())
+    regions = list((await db.execute(select(Region).where(Region.kind.in_(("region", "district", "remainder"))))).scalars())
     for region in regions:
-        geometry.append({"key": f"region:russia:{region.slug}", "kind": "region", "slug": region.slug,
+        geometry.append({"key": f"region:russia:{region.slug}", "kind": "unsupported_region" if region.kind == "remainder" else "region", "slug": region.slug,
             "name_ru": region.name, "name_en": region_display_name(region.slug, region.name, locale="en"),
             "country_slug": "russia", "country_code": "RU", "id": region.id})
     subnational = list((await db.execute(select(SubnationalRegion))).scalars())
@@ -364,8 +576,11 @@ async def _russia(db: AsyncSession, intent: SearchIntent, locale: str) -> list[d
     market_bases = {base for country in intent.countries for base in market_indicator_codes_for_country(country)}
     if "united-states" in intent.countries and any(term[0] == "usd-rub" for term in intent.terms):
         market_bases.add("usd-rub")
-    if intent.countries and "russia" not in intent.countries and not market_bases:
-        return []
+    origin_countries = []
+    if intent.countries and "russia" not in intent.countries:
+        origin_countries = list((await db.execute(select(WorldCountry).where(
+            WorldCountry.slug.in_(intent.countries), WorldCountry.is_active.is_(True)
+        ))).scalars())
     rows = list((await db.execute(select(Indicator).where(Indicator.is_active.is_(True),
         exists(select(1).where(IndicatorData.indicator_id == Indicator.id, _finite(IndicatorData.value),
             *_date_constraints(IndicatorData.date, intent)))))).scalars())
@@ -374,36 +589,60 @@ async def _russia(db: AsyncSession, intent: SearchIntent, locale: str) -> list[d
         market_country = None
         if intent.countries and "russia" not in intent.countries:
             if not any(row.code == base or row.code.startswith(base + "-") for base in market_bases):
-                continue
-            market_country = next(iter(sorted(intent.countries)))
+                # A registered global commodity may carry its origin in the
+                # actual native title. Country membership cannot come from SEO,
+                # storage in Russia, a code prefix or arbitrary category text.
+                if not is_global_market_indicator(row.code):
+                    continue
+                title = " " + phrase(f"{row.name} {row.name_en or ''}") + " "
+                origin = next((country for country in origin_countries if any(
+                    name and " " + phrase(name) + " " in title
+                    for name in (country.name_ru, country.name_en)
+                ) or (country.code and re.search(r"(?<![A-Za-z0-9])" + re.escape(country.code) + r"(?![A-Za-z0-9])", f"{row.name} {row.name_en or ''}"))), None)
+                if origin is None:
+                    continue
+                market_country = origin.slug
+            else:
+                market_country = next(iter(sorted(intent.countries)))
         en = public_indicator_fields(row.code, name_ru=row.name, name_en=row.name_en, unit_ru=row.unit, locale="en")
         ru = public_indicator_fields(row.code, name_ru=row.name, name_en=row.name_en, unit_ru=row.unit, locale="ru")
         score = match_score(intent, code=row.code, names=(row.name, row.name_en or "", en["name"] or ""),
             metadata=" ".join(filter(None, (row.category, row.seo_keywords, row.frequency, row.unit,
                 f"search-freq-{normalize_frequency(row.frequency) or row.frequency}",
-                _family_metadata().get(row.code) or "search-mode-level", _unit_metadata(row.unit)))))
-        if score is None:
+                _family_metadata().get(row.code) or "search-mode-level", _bespoke_mode_metadata().get(row.code), _native_price_metadata(row.name, row.name_en, en["name"]), _unit_metadata(row.unit, en["unit"]),
+                denominator_metadata(row.name, row.name_en, en["name"], row.unit, en["unit"])))))
+        price_names = ("price",) if row.code in _registered_price_codes() else ()
+        if score is None or not measure_matches(intent.terms, code=row.code, names=(row.name, row.name_en, en["name"]) + price_names, unit_names=(row.unit, en["unit"])):
             continue
         content_terms = [term for term in intent.terms if not term[0].startswith("search-")]
         if len(content_terms) == 1:
             headline = _RUSSIA_HEADLINES.get(content_terms[0][0])
-            if headline and (row.code == headline or russia_family_base(row.code) == headline):
+            parent = urlsplit(russia_search_path(row.code, intent)).path.rsplit("/", 1)[-1]
+            if headline and (row.code == headline or russia_family_base(row.code) == headline or parent == headline):
                 score += 180
         base = russia_search_path(row.code, intent)
-        if intent.year is not None and urlsplit(base).query:
+        if intent.month is not None and urlsplit(base).query:
             continue
         if intent.month is not None and row.frequency in ("annual", "yearly", "quarterly"):
             continue
-        path, navigation = _period_path(base, intent)
+        if intent.year is not None and intent.month is None:
+            path = russia_year_search_path(row.code, intent, intent.year)
+            if path is None:
+                continue
+            navigation = "document"
+        else:
+            path, navigation = _period_path(base, intent)
         market_issuer = next((country for country in COUNTRY_MARKET_INDICATOR_CODES
             if any(row.code == code or row.code.startswith(code + "-") for code in market_indicator_codes_for_country(country))), None)
         if is_global_market_indicator(row.code):
-            country_name = ("United States" if locale == "en" else "США") if market_country == "united-states" or market_issuer == "united-states" else ("Global markets" if locale == "en" else "Мировой рынок")
+            origin = next((country for country in origin_countries if country.slug == market_country), None)
+            country_name = (origin.name_en if locale == "en" else origin.name_ru) if origin else (("United States" if locale == "en" else "США") if market_issuer == "united-states" else ("Global markets" if locale == "en" else "Мировой рынок"))
         else:
             country_name = ("United States" if locale == "en" else "США") if market_country == "united-states" else ("Russia" if locale == "en" else "Россия")
+        db.info.setdefault("fe_search_native_units", {})[f"ru:{row.code}"] = (row.unit, en["unit"])
         output.append({"key": f"ru:{row.code}", "kind": "russia", "code": row.code,
             "name": (en if locale == "en" else ru)["name"], "name_ru": ru["name"], "name_en": en["name"],
-            "country_slug": market_country or "russia", "country_name": country_name,
+            "country_slug": market_country or market_issuer or "russia", "country_name": country_name,
             "category": localize_category_name(row.category, locale=locale), "frequency": row.frequency, "unit": (en if locale == "en" else ru)["unit"],
             "path": path, "navigation": navigation, "score": score + (2 if row.is_listed else 0)})
     return output
@@ -423,10 +662,14 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
         WorldIndicator.name_en, WorldIndicator.unit, WorldIndicator.unit_ru, WorldIndicator.frequency,
         WorldIndicator.category_ru, WorldIndicator.seo_keywords, WorldIndicator.is_listed, WorldIndicator.points_count)
     postgres = db.get_bind().dialect.name == "postgresql"
-    needle = _escape_like(intent.content)
+    needle = _escape_like(intent.literal or intent.content)
     # All explicit geography and fact constraints precede candidate LIMIT.
     stmt = select(WorldIndicator).options(load_only(*columns)).where(
-        WorldIndicator.country_id.in_(selected), _world_fact(intent), *_world_lexical(intent, postgres=postgres))
+        WorldIndicator.country_id.in_(selected), _world_fact(intent), *_world_lexical(intent, postgres=postgres),
+        *dimension_constraints(intent.terms, WorldIndicator.provider, WorldIndicator.slice_json),
+        *measure_constraints(intent.terms, WorldIndicator.code, (WorldIndicator.name_ru, WorldIndicator.name_en,
+            native_dimension_text(WorldIndicator.provider, WorldIndicator.slice_json, intent.terms)), postgres=postgres,
+            unit_columns=(WorldIndicator.unit, WorldIndicator.unit_ru)))
     stmt = stmt.order_by(case((WorldIndicator.code.ilike(_escape_like(intent.query), escape="\\"), 0),
         (WorldIndicator.code.ilike(needle, escape="\\"), 0),
         (WorldIndicator.name_ru.ilike(needle, escape="\\"), 1),
@@ -444,7 +687,9 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
         country = by_id[row.country_id]
         score = match_score(intent, code=row.code, names=(row.name_ru, row.name_en or ""),
             metadata=" ".join(filter(None, (row.category_ru, row.seo_keywords, row.frequency, row.unit, row.unit_ru,
-                _world_mode_metadata(row), _unit_metadata(row.unit, row.unit_ru)))))
+                _world_mode_metadata(row), _unit_metadata(row.unit, row.unit_ru),
+                dimension_metadata(row.provider, row.slice_json),
+                denominator_metadata(row.name_ru, row.name_en, row.unit, row.unit_ru)))))
         if score is None:
             continue
         if intent.year is not None and not row.is_listed:
@@ -457,6 +702,7 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
         if intent.month is not None and row.frequency in ("annual", "yearly", "quarterly", "A", "Q"):
             continue
         path, navigation = _period_path(base, intent, world=True)
+        db.info.setdefault("fe_search_native_units", {})[f"world:{country.slug}:{row.code}"] = (row.unit, row.unit_ru)
         output.append({"key": f"world:{country.slug}:{row.code}", "kind": "world", "code": row.code,
             "name": row.name_en or row.name_ru if locale == "en" else row.name_ru,
             "name_ru": row.name_ru, "name_en": row.name_en,
@@ -479,8 +725,8 @@ async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict],
     candidates, copies = {}, {}
     for row in definitions:
         en = region_indicator_copy(row.code, name_ru=row.name, unit_ru=row.unit, section_ru=row.section_name, locale="en")
-        score = match_score(definition_intent, code=row.code, names=(row.name, en["name"] or ""), metadata=f"{row.unit} {row.section_name} search-mode-level {_unit_metadata(row.unit, en['unit'])}")
-        if score is not None:
+        score = match_score(definition_intent, code=row.code, names=(row.name, en["name"] or ""), metadata=f"{row.unit} {en['unit']} {row.section_name} search-mode-level {_native_price_metadata(row.name, en['name'])} {_unit_metadata(row.unit, en['unit'])} {denominator_metadata(row.name, en['name'], row.unit, en['unit'])}")
+        if score is not None and measure_matches(intent.terms, code=row.code, names=(row.name, en["name"]), unit_names=(row.unit, en["unit"])):
             if len(intent.terms) == 1 and row.code == _REGION_HEADLINES.get(intent.terms[0][0]):
                 score += 160
             candidates[row.id], copies[row.id] = score, en
@@ -499,6 +745,7 @@ async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict],
         base = paths.region_indicator(region.slug, row.code)
         path, navigation = _period_path(base, intent, regional=True)
         name = en["name"] if locale == "en" else row.name
+        db.info.setdefault("fe_search_native_units", {})[f"region:{region.slug}:{row.code}"] = (row.unit, en["unit"])
         output.append({"key": f"region:{region.slug}:{row.code}", "kind": "region_indicator", "code": row.code,
             "name": name, "name_ru": row.name, "name_en": en["name"], "country_slug": "russia",
             "country_name": "Russia" if locale == "en" else "Россия", "region_slug": region.slug,
@@ -519,8 +766,8 @@ async def _subnational(db: AsyncSession, intent: SearchIntent, geometry: list[di
     candidates = {}
     for row in definitions:
         score = match_score(intent, code=row.code, names=(row.name_ru, row.name_en),
-            metadata=f"{row.unit} {row.unit_ru} {row.unit_en} {row.section_ru} {row.section_en} {row.frequency} search-mode-level search-freq-{normalize_frequency(row.frequency) or row.frequency} {_unit_metadata(row.unit, row.unit_ru, row.unit_en)}")
-        if score is not None:
+            metadata=f"{row.unit} {row.unit_ru} {row.unit_en} {row.section_ru} {row.section_en} {row.frequency} search-mode-level search-freq-{normalize_frequency(row.frequency) or row.frequency} {_native_price_metadata(row.name_ru, row.name_en)} {_unit_metadata(row.unit, row.unit_ru, row.unit_en, native_currency='USD' if row.country_code == 'US' else None)} {denominator_metadata(row.name_ru, row.name_en, row.unit, row.unit_ru, row.unit_en)}")
+        if score is not None and measure_matches(intent.terms, code=row.code, names=(row.name_ru, row.name_en), unit_names=(row.unit, row.unit_ru, row.unit_en)):
             candidates[row.id] = score
     if not candidates:
         return [], False
@@ -537,6 +784,7 @@ async def _subnational(db: AsyncSession, intent: SearchIntent, geometry: list[di
         geo = selected[region.id]
         base = paths.country_region_indicator(geo["country_slug"], region.slug, row.code)
         path, navigation = _period_path(base, intent, regional=True)
+        db.info.setdefault("fe_search_native_units", {})[f"subnational:{geo['country_slug']}:{region.slug}:{row.code}"] = (row.unit, row.unit_ru, row.unit_en)
         output.append({"key": f"subnational:{geo['country_slug']}:{region.slug}:{row.code}", "kind": "subnational_indicator", "code": row.code,
             "name": row.name_en if locale == "en" else row.name_ru, "name_ru": row.name_ru, "name_en": row.name_en,
             "country_slug": geo["country_slug"], "region_slug": region.slug,
@@ -548,6 +796,131 @@ async def _subnational(db: AsyncSession, intent: SearchIntent, geometry: list[di
     return output, len(rows) > budget
 
 
+def _native_title_span(raw: str, name: str) -> bool:
+    """Prove native words and economic symbols without erasing unit identity.
+
+    Commas, parentheses and ordinary title separators can differ. Percent,
+    currency, ratio and index-base symbols remain part of an atomic title.
+    """
+    pattern = r"[a-zа-я0-9]+|[%‰$€£¥/=≤≥]"
+    query_parts = re.findall(pattern, normalize(raw))
+    name_parts = re.findall(pattern, normalize(name))
+    return bool(name_parts) and any(query_parts[offset:offset + len(name_parts)] == name_parts
+        for offset in range(len(query_parts) - len(name_parts) + 1))
+
+
+async def _literal_title(db: AsyncSession, raw: str, geometry: list[dict]) -> str | None:
+    """One bounded preflight preserves exact native titles before facet parsing.
+
+    A title is protected only when its words and economic symbols occur in the query.
+    Explicit outside geography/periods/units/qualifiers still remain mandatory.
+    Technical identifiers are recognized by the parser; ordinary hyphenated
+    names are identities only when an actual catalogue code establishes them.
+    """
+    code_tokens = tuple(dict.fromkeys(re.findall(r"(?<![a-z0-9_])[a-z][a-z0-9_]*(?:-[a-z0-9_]+)+(?![a-z0-9_])", normalize(raw))))
+    if code_tokens:
+        models = (Indicator, WorldIndicator, RegionIndicator, SubnationalIndicator)
+        # Each exact-code predicate uses an indexed identity. One UNION read is
+        # bounded by input tokens and never scans names or guesses an answer.
+        bounded = [select(model.code.label("code")).where(model.code.in_(code_tokens)).limit(24).subquery()
+            for model in models]
+        rows = (await db.execute(union_all(*(select(part.c.code) for part in bounded)))).scalars().all()
+        codes = set(rows)
+        if len(codes) == 1:
+            return next(iter(codes))
+    if literal_identifier(raw, geometry):
+        return None
+    # Discover on the raw query first: geography, percent signs and dates may
+    # be part of an actual native title. Outside spans are parsed afterwards.
+    raw_phrase = phrase(raw)
+    raw_words = raw_phrase.split()
+    content = phrase(strip_geography(raw, geometry)[0])
+    variants = [content]
+    period_suffix = re.sub(r"(?:\s+(?:за|в|for|in))?\s+(?:1|2)\d{3}(?:\s+(?:год|года|году|year))?$", "", content)
+    if period_suffix != content:
+        variants.append(period_suffix)
+    prefixes = [variant for variant in variants if len(variant) >= 24 and len(variant.split()) >= 4]
+    from app.data.i18n.region_indicators_en import REGION_INDICATORS_EN
+    translated = [item.get("name", "") for item in REGION_INDICATORS_EN.values()]
+    translated_matches = [name for name in translated if name and len(phrase(name).split()) >= 2 and len(phrase(name)) >= 14
+        and _native_title_span(raw, name)]
+    if translated_matches:
+        return max(translated_matches, key=lambda value: len(phrase(value)))
+    # Anchored title prefixes give the catalogue's trigram indexes a bounded
+    # discovery predicate. A separate whole-token span test prevents an unknown
+    # qualifier from being erased by an approximate native-title match.
+    windows = list(dict.fromkeys(" ".join(raw_words[i:i + size])
+        for i in range(max(0, len(raw_words) - 1)) for size in (3, 4, 2)
+        if len(raw_words[i:i + size]) == size and len(" ".join(raw_words[i:i + size])) >= (16 if size == 2 else 12)))
+    windows = windows[:12] + [window for window in windows[-4:] if window not in windows[:12]]
+    def title_patterns(value):
+        # Keep the first word literal for trigram discovery. Explicit е/ё
+        # spellings preserve a real first-word index anchor; later positions
+        # may use one-character alternatives, followed by exact span proof.
+        words = value.split()
+        first = words[0]
+        variants = {first}
+        variants.update(first[:i] + "ё" + first[i + 1:] for i, char in enumerate(first) if char == "е")
+        suffix = "%" + "%".join(_escape_like(word).replace("е", "_") for word in words[1:]) + "%"
+        return [_escape_like(word) + suffix for word in sorted(variants)]
+    patterns = list(dict.fromkeys(pattern for value in (*windows, *prefixes) for pattern in title_patterns(value)))
+    if not patterns:
+        return None
+    tables = ((Indicator, Indicator.name, Indicator.name_en),
+        (WorldIndicator, WorldIndicator.name_ru, WorldIndicator.name_en),
+        (RegionIndicator, RegionIndicator.name, literal("")),
+        (SubnationalIndicator, SubnationalIndicator.name_ru, SubnationalIndicator.name_en))
+    queries = []
+    for model, ru, en in tables:
+        clauses = [or_(ru.ilike(pattern, escape="\\"), en.ilike(pattern, escape="\\")) for pattern in patterns]
+        stmt = select(ru.label("ru"), en.label("en")).where(or_(*clauses))
+        if model is Indicator:
+            stmt = stmt.where(Indicator.is_active.is_(True))
+        elif model is RegionIndicator:
+            stmt = stmt.where(RegionIndicator.is_listed.is_(True))
+        elif model is SubnationalIndicator:
+            stmt = stmt.where(SubnationalIndicator.is_listed.is_(True))
+        # LIMIT is inside the indexed discovery subquery. Only these bounded
+        # rows undergo Python whole-span normalisation; no reverse native-name
+        # predicate or per-name regex scans the entire world catalogue.
+        if model is WorldIndicator:
+            # A large OR of native-title windows can make PostgreSQL choose a
+            # full catalogue scan even with LIMIT. Keep each discovery probe
+            # independent so its literal trigram anchor remains indexable.
+            leading = [" ".join(raw_words[:size]) for size in (3, 2)
+                if len(raw_words[:size]) == size and len(" ".join(raw_words[:size])) >= (16 if size == 2 else 12)]
+            supplemental = sorted(windows, key=lambda value: (-len(value.split()[0]), -len(value), value))
+            probes = list(dict.fromkeys([*leading, *prefixes, *supplemental]))[:3]
+            for value in probes:
+                clauses = [or_(ru.ilike(pattern, escape="\\"), en.ilike(pattern, escape="\\"))
+                    for pattern in title_patterns(value)]
+                part = select(ru.label("ru"), en.label("en")).where(or_(*clauses)).limit(128).subquery()
+                queries.append(select(part.c.ru, part.c.en))
+        else:
+            bounded = stmt.limit(128).subquery()
+            queries.append(select(bounded.c.ru, bounded.c.en))
+    rows = (await db.execute(union_all(*queries))).all()
+    matches = [name for row in rows for name in row if name and len(phrase(name).split()) >= 2 and len(phrase(name)) >= 12
+        and _native_title_span(raw, name)]
+    matches.extend(prefix for row in rows for name in row if name for prefix in prefixes if phrase(name).startswith(prefix)
+        and (not re.search(r"[%‰$€£¥/=≤≥]", name) or _native_title_span(raw, name)))
+    return max(matches, key=lambda value: len(phrase(value)), default=None)
+
+
+def _result_measure_names(item: dict, world_rows: dict) -> tuple[str, ...]:
+    """Actual titles and exact official field labels establish a world measure.
+
+    Only request-local fetched rows can provide field evidence. Categories, SEO
+    and missing/unknown provider members cannot substitute for a measure.
+    """
+    names = (item.get("name_ru", ""), item.get("name_en", ""))
+    if item.get("kind") != "world":
+        return names + (("price",) if item.get("kind") == "russia"
+            and item.get("code") in _registered_price_codes() else ())
+    row = world_rows.get((item.get("country_slug"), item.get("code")))
+    return names + (native_dimension_labels(row.provider, row.slice_json) if row is not None else ())
+
+
 async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> dict:
     """One query contract with bounded SQL and truthful availability states."""
     empty = {"results": [], "total": 0, "has_more": False, "version": SEARCH_VERSION}
@@ -556,7 +929,8 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
     if not re.search(r"[a-zа-я]", normalize(raw)):
         return {**empty, "reason": "unsupported_query"}
     geometry, countries = await _geometry(db)
-    intent = parse_intent(raw, geometry)
+    literal_title = await _literal_title(db, raw, geometry)
+    intent = parse_intent(raw, geometry, literal_content=literal_title)
     fx_quoted_countries = {
         "usd-jpy": (frozenset(("united-states", "japan")), "japan"),
         "usd-rub": (frozenset(("united-states", "russia")), "russia"),
@@ -584,6 +958,17 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
     regional, regions_clipped = await _regions(db, intent, geometry, locale, budget)
     subnational, sub_clipped = await _subnational(db, intent, geometry, locale, budget)
     results = entities + russia + world + regional + subnational
+    world_rows = db.info.get("fe_search_world_rows", {})
+    results = [item for item in results if item["kind"] in ("country", "region", "subnational_region") or
+        measure_matches(intent.terms, code=item.get("code", ""), names=_result_measure_names(item, world_rows),
+            unit_names=db.info.get("fe_search_native_units", {}).get(item.get("key"), ()))]
+    # Exact identities dominate; subject-specific inverse-frequency evidence only
+    # breaks close lexical ties inside the already eligible candidate set.
+    frequencies = title_frequencies(intent.terms, results)
+    for item in results:
+        if item["score"] < 900:
+            item["score"] += relevance_bonus(intent.terms, names=(item.get("name_ru", ""), item.get("name_en", "")),
+                frequencies=frequencies, count=len(results))
     results.sort(key=lambda item: (-item["score"],
         1 if not intent.regions and item["kind"] in ("region_indicator", "subnational_indicator") else 0,
         0 if (locale == "ru" and item.get("country_slug") == "russia") or (locale == "en" and item.get("country_slug") != "russia") else 1,
@@ -596,7 +981,6 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
             unique.append(result)
             seen.add(result["key"])
     final, position = [], 0
-    world_rows = db.info.get("fe_search_world_rows", {})
     while position < len(unique) and len(final) <= limit:
         batch = unique[position:position + limit + 1 - len(final)]
         position += len(batch)

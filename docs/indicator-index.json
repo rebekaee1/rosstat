@@ -58,12 +58,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 674,
+          "line": 682,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 676,
+          "line": 684,
           "kind": "other"
         },
         {
@@ -114,6 +114,16 @@
         {
           "file": "backend/app/services/demand_router.py",
           "line": 52,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 261,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 117,
           "kind": "other"
         },
         {
@@ -604,6 +614,21 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 62,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 243,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 84,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 3591,
           "kind": "seed"
@@ -631,6 +656,16 @@
         {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 284,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 135,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 136,
           "kind": "tests"
         },
         {
@@ -894,6 +929,41 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 55,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search.py",
+          "line": 62,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 88,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 243,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 268,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 116,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 332,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 3549,
           "kind": "seed"
@@ -921,6 +991,56 @@
         {
           "file": "backend/tests/test_parser_fixtures.py",
           "line": 85,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 127,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 32,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 53,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 54,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 105,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 92,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 100,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 102,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 104,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 136,
           "kind": "tests"
         },
         {
@@ -975,7 +1095,7 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1619,
+          "line": 1621,
           "kind": "other"
         },
         {
@@ -1207,7 +1327,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 27,
+          "line": 33,
           "kind": "other"
         },
         {
@@ -1547,27 +1667,27 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 136,
+          "line": 161,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 145,
+          "line": 170,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 212,
+          "line": 237,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 213,
+          "line": 238,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 261,
+          "line": 286,
           "kind": "tests"
         },
         {
@@ -2110,7 +2230,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 35,
+          "line": 41,
           "kind": "other"
         },
         {
@@ -2300,7 +2420,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 217,
+          "line": 242,
           "kind": "tests"
         },
         {
@@ -2886,6 +3006,21 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 37,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 39,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 52,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_search_intent_copy.py",
           "line": 16,
           "kind": "tests"
@@ -2982,7 +3117,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 243,
+          "line": 268,
           "kind": "tests"
         },
         {
@@ -3243,6 +3378,21 @@
       },
       "files": [
         {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 36,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 39,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 51,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 699,
           "kind": "other"
@@ -3329,6 +3479,16 @@
         {
           "file": "backend/app/services/demand_router.py",
           "line": 63,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search.py",
+          "line": 64,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 108,
           "kind": "other"
         },
         {
@@ -3603,6 +3763,11 @@
       },
       "files": [
         {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 21,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 806,
           "kind": "other"
@@ -3727,6 +3892,26 @@
           "file": "backend/app/services/minfin_budget_parser.py",
           "line": 193,
           "kind": "parser"
+        },
+        {
+          "file": "backend/app/services/search.py",
+          "line": 64,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 109,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 241,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 113,
+          "kind": "other"
         },
         {
           "file": "backend/scripts/retrain-all-monthly-auto.py",
@@ -4213,7 +4398,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 687,
+          "line": 695,
           "kind": "other"
         },
         {
@@ -4667,6 +4852,16 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/search_language.py",
+          "line": 78,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 272,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/seo_regional.py",
           "line": 55,
           "kind": "other"
@@ -4805,7 +5000,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 924,
+          "line": 932,
           "kind": "other"
         },
         {
@@ -5055,12 +5250,22 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 563,
+          "line": 937,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 30,
+          "line": 36,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_intent.py",
+          "line": 90,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 221,
           "kind": "other"
         },
         {
@@ -5116,6 +5321,11 @@
         {
           "file": "backend/tests/test_search_federated.py",
           "line": 293,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 37,
           "kind": "tests"
         },
         {
@@ -5190,12 +5400,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1339,
+          "line": 1341,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1341,
+          "line": 1343,
           "kind": "other"
         },
         {
@@ -5672,7 +5882,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 647,
+          "line": 655,
           "kind": "other"
         },
         {
@@ -5857,7 +6067,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 57,
+          "line": 63,
           "kind": "other"
         },
         {
@@ -6237,6 +6447,11 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 107,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 3705,
           "kind": "seed"
@@ -6561,7 +6776,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 687,
+          "line": 695,
           "kind": "other"
         },
         {
@@ -6615,6 +6830,16 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/search_language.py",
+          "line": 99,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 283,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 1819,
           "kind": "seed"
@@ -6632,6 +6857,11 @@
         {
           "file": "backend/tests/test_household_finance_seo.py",
           "line": 41,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 115,
           "kind": "tests"
         },
         {
@@ -7014,7 +7244,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 647,
+          "line": 655,
           "kind": "other"
         },
         {
@@ -7075,6 +7305,16 @@
         {
           "file": "backend/app/services/og_image.py",
           "line": 511,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search.py",
+          "line": 63,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 45,
           "kind": "other"
         },
         {
@@ -7941,7 +8181,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 814,
+          "line": 822,
           "kind": "other"
         },
         {
@@ -7986,7 +8226,7 @@
         },
         {
           "file": "backend/app/api/seo_pages.py",
-          "line": 250,
+          "line": 252,
           "kind": "other"
         },
         {
@@ -8211,17 +8451,47 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 43,
+          "line": 48,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 50,
+          "line": 55,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 17,
+          "line": 23,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 63,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 64,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 151,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 204,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 257,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 102,
           "kind": "other"
         },
         {
@@ -8271,12 +8541,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1409,
+          "line": 1419,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1410,
+          "line": 1420,
           "kind": "seo"
         },
         {
@@ -8941,72 +9211,72 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 44,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_indicator_year_landing.py",
           "line": 45,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 74,
+          "line": 46,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 95,
+          "line": 75,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 101,
+          "line": 96,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 204,
+          "line": 102,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 206,
+          "line": 205,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 239,
+          "line": 207,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 243,
+          "line": 242,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 252,
+          "line": 246,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 260,
+          "line": 255,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 353,
+          "line": 263,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 377,
+          "line": 356,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 379,
+          "line": 380,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 382,
           "kind": "tests"
         },
         {
@@ -9480,6 +9750,46 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 36,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 11,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 13,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 34,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 39,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language_calendar_units.py",
+          "line": 215,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 15,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 33,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_seo_growth_pages.py",
           "line": 124,
           "kind": "tests"
@@ -9541,12 +9851,12 @@
         },
         {
           "file": "backend/tests/test_seo_growth_pages.py",
-          "line": 1340,
+          "line": 1344,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_growth_pages.py",
-          "line": 1401,
+          "line": 1405,
           "kind": "tests"
         },
         {
@@ -9656,52 +9966,52 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 704,
+          "line": 705,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 710,
+          "line": 711,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 741,
+          "line": 742,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 819,
+          "line": 820,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 853,
+          "line": 854,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 867,
+          "line": 868,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 891,
+          "line": 892,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 893,
+          "line": 894,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 896,
+          "line": 897,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1092,
+          "line": 1093,
           "kind": "tests"
         },
         {
@@ -10311,27 +10621,27 @@
         },
         {
           "file": "docs/research/search-methods-2026-09-30.md",
-          "line": 30,
+          "line": 34,
           "kind": "other"
         },
         {
           "file": "docs/search.md",
-          "line": 35,
+          "line": 37,
           "kind": "other"
         },
         {
           "file": "docs/search.md",
-          "line": 38,
+          "line": 40,
           "kind": "other"
         },
         {
           "file": "docs/search.md",
-          "line": 46,
+          "line": 48,
           "kind": "other"
         },
         {
           "file": "docs/search.md",
-          "line": 85,
+          "line": 93,
           "kind": "other"
         },
         {
@@ -10536,16 +10846,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1063,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1064,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
           "line": 1065,
           "kind": "other"
         },
@@ -10566,12 +10866,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1171,
+          "line": 1069,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1341,
+          "line": 1070,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1173,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1343,
           "kind": "other"
         },
         {
@@ -10596,16 +10906,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1063,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1064,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.ru.js",
           "line": 1065,
           "kind": "other"
         },
@@ -10626,12 +10926,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1172,
+          "line": 1069,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1343,
+          "line": 1070,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1174,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1345,
           "kind": "other"
         },
         {
@@ -11371,42 +11681,22 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 114,
+          "line": 139,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 144,
+          "line": 169,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 160,
+          "line": 185,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 209,
-          "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 223,
-          "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 224,
-          "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 228,
-          "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 229,
+          "line": 234,
           "kind": "tests"
         },
         {
@@ -11421,27 +11711,47 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 250,
+          "line": 253,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 260,
+          "line": 254,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 271,
+          "line": 273,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 276,
+          "line": 274,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 277,
+          "line": 275,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 285,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 296,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 301,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 302,
           "kind": "tests"
         },
         {
@@ -12126,8 +12436,18 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 60,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/search_intent.py",
-          "line": 53,
+          "line": 59,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 61,
           "kind": "other"
         },
         {
@@ -12178,6 +12498,26 @@
         {
           "file": "backend/tests/test_russia_world_compare.py",
           "line": 32,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 70,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 81,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 25,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 114,
           "kind": "tests"
         },
         {
@@ -12362,17 +12702,17 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 161,
-          "kind": "tests"
-        },
-        {
-          "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 224,
+          "line": 186,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
           "line": 249,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/searchSynonyms.test.js",
+          "line": 274,
           "kind": "tests"
         },
         {
@@ -12503,7 +12843,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1821,
+          "line": 1831,
           "kind": "seo"
         },
         {
@@ -12903,17 +13243,17 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 270,
+          "line": 295,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 277,
+          "line": 302,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 283,
+          "line": 308,
           "kind": "tests"
         }
       ]
@@ -13707,6 +14047,11 @@
         {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 130,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 64,
           "kind": "tests"
         },
         {
@@ -14706,17 +15051,17 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 343,
+          "line": 346,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 351,
+          "line": 354,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 352,
+          "line": 355,
           "kind": "tests"
         },
         {
@@ -17543,7 +17888,7 @@
         },
         {
           "file": "README.md",
-          "line": 166,
+          "line": 171,
           "kind": "other"
         },
         {
@@ -17644,6 +17989,16 @@
         {
           "file": "backend/app/services/forecaster.py",
           "line": 950,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 113,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 108,
           "kind": "other"
         },
         {
@@ -18112,7 +18467,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 987,
+          "line": 995,
           "kind": "other"
         },
         {
@@ -18305,6 +18660,21 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 62,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 244,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 85,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 3605,
           "kind": "seed"
@@ -18327,6 +18697,16 @@
         {
           "file": "backend/tests/test_parser_fixtures.py",
           "line": 86,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 137,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 138,
           "kind": "tests"
         },
         {
@@ -18570,6 +18950,16 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/search_language.py",
+          "line": 90,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 244,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 3570,
           "kind": "seed"
@@ -18587,6 +18977,11 @@
         {
           "file": "backend/tests/test_parser_fixtures.py",
           "line": 68,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 138,
           "kind": "tests"
         },
         {
@@ -18834,7 +19229,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 55,
+          "line": 61,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 103,
           "kind": "other"
         },
         {
@@ -18890,6 +19290,11 @@
         {
           "file": "backend/tests/test_search_federated.py",
           "line": 53,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language_sql.py",
+          "line": 31,
           "kind": "tests"
         },
         {
@@ -19189,7 +19594,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 894,
+          "line": 902,
           "kind": "other"
         },
         {
@@ -19619,7 +20024,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 894,
+          "line": 902,
           "kind": "other"
         },
         {
@@ -19649,7 +20054,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 43,
+          "line": 49,
           "kind": "other"
         },
         {
@@ -20214,7 +20619,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 685,
+          "line": 693,
           "kind": "other"
         },
         {
@@ -20649,7 +21054,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 685,
+          "line": 693,
           "kind": "other"
         },
         {
@@ -21397,12 +21802,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 938,
+          "line": 946,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 940,
+          "line": 948,
           "kind": "other"
         },
         {
@@ -21707,7 +22112,62 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 210,
+          "line": 381,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_dimensions.py",
+          "line": 147,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_dimensions.py",
+          "line": 165,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_dimensions.py",
+          "line": 203,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 81,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 145,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 148,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 232,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 97,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 122,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 338,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 340,
           "kind": "other"
         },
         {
@@ -21741,6 +22201,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_dimension_roles.py",
+          "line": 80,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_vocabulary_roles.py",
+          "line": 148,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md",
           "line": 127,
           "kind": "other"
@@ -21761,6 +22231,11 @@
           "kind": "other"
         },
         {
+          "file": "docs/backlog.md",
+          "line": 1827,
+          "kind": "other"
+        },
+        {
           "file": "docs/data_sources.md",
           "line": 297,
           "kind": "other"
@@ -21778,6 +22253,11 @@
         {
           "file": "docs/missed_data_audit.md",
           "line": 377,
+          "kind": "other"
+        },
+        {
+          "file": "docs/research/search-history-replay-2026-09-30.md",
+          "line": 420,
           "kind": "other"
         },
         {
@@ -21807,17 +22287,17 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1127,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
           "line": 1129,
           "kind": "other"
         },
         {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1131,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1130,
+          "line": 1132,
           "kind": "other"
         },
         {
@@ -22752,12 +23232,22 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 34,
+          "line": 40,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_intent.py",
+          "line": 90,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 222,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1413,
+          "line": 1423,
           "kind": "seo"
         },
         {
@@ -22872,12 +23362,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1338,
+          "line": 1340,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1340,
+          "line": 1342,
           "kind": "other"
         },
         {
@@ -23417,7 +23907,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 32,
+          "line": 38,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_intent.py",
+          "line": 90,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 223,
           "kind": "other"
         },
         {
@@ -23461,6 +23961,51 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 67,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 83,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 157,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 162,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 163,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 164,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 223,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 250,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 265,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_sitemap_static.py",
           "line": 332,
           "kind": "tests"
@@ -23478,6 +24023,31 @@
         {
           "file": "backend/tests/test_ticker_sources.py",
           "line": 196,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 92,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 95,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 106,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 107,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 125,
           "kind": "tests"
         },
         {
@@ -23674,6 +24244,16 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 68,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 84,
+          "kind": "tests"
+        },
         {
           "file": "frontend/src/lib/sitePaths.test.js",
           "line": 76,
@@ -24022,12 +24602,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 807,
+          "line": 815,
           "kind": "other"
         },
         {
           "file": "README.md",
-          "line": 166,
+          "line": 171,
           "kind": "other"
         },
         {
@@ -24242,17 +24822,42 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 53,
+          "line": 58,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 22,
+          "line": 28,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 110,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 183,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 184,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 262,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 114,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2953,
+          "line": 2987,
           "kind": "seo"
         },
         {
@@ -24416,6 +25021,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_language.py",
+          "line": 17,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0006-indicator-card-unification.md",
           "line": 13,
           "kind": "other"
@@ -24567,32 +25177,32 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 477,
+          "line": 479,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1088,
+          "line": 1090,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1092,
+          "line": 1094,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1209,
+          "line": 1211,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1088,
+          "line": 1090,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1092,
+          "line": 1094,
           "kind": "other"
         },
         {
@@ -24816,7 +25426,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 807,
+          "line": 815,
           "kind": "other"
         },
         {
@@ -24861,7 +25471,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2953,
+          "line": 2987,
           "kind": "seo"
         },
         {
@@ -25619,7 +26229,7 @@
         },
         {
           "file": "README.md",
-          "line": 166,
+          "line": 171,
           "kind": "other"
         },
         {
@@ -25663,6 +26273,16 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/search_language.py",
+          "line": 106,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 266,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 2832,
           "kind": "seed"
@@ -25675,6 +26295,11 @@
         {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 64,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 50,
           "kind": "tests"
         },
         {
@@ -26287,12 +26912,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 51,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 40,
+          "line": 46,
           "kind": "other"
         },
         {
@@ -26372,12 +26997,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1343,
+          "line": 1345,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1345,
+          "line": 1347,
           "kind": "other"
         },
         {
@@ -26397,7 +27022,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 167,
+          "line": 192,
           "kind": "tests"
         },
         {
@@ -26864,12 +27489,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 51,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 39,
+          "line": 45,
           "kind": "other"
         },
         {
@@ -26944,12 +27569,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1344,
+          "line": 1346,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1346,
+          "line": 1348,
           "kind": "other"
         },
         {
@@ -26969,7 +27594,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 167,
+          "line": 192,
           "kind": "tests"
         },
         {
@@ -27145,6 +27770,61 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 21,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 43,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 47,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 48,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 49,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 50,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 54,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 55,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 118,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 119,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 120,
+          "kind": "tests"
+        },
         {
           "file": "docs/research/search-monte-carlo-2026-09-30.md",
           "line": 134,
@@ -27441,12 +28121,12 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 52,
+          "line": 57,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 41,
+          "line": 47,
           "kind": "other"
         },
         {
@@ -27501,12 +28181,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1345,
+          "line": 1347,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1347,
+          "line": 1349,
           "kind": "other"
         },
         {
@@ -27526,7 +28206,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 167,
+          "line": 192,
           "kind": "tests"
         },
         {
@@ -28542,7 +29222,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 863,
+          "line": 871,
           "kind": "other"
         },
         {
@@ -28837,7 +29517,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 863,
+          "line": 871,
           "kind": "other"
         },
         {
@@ -29122,7 +29802,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 863,
+          "line": 871,
           "kind": "other"
         },
         {
@@ -29432,22 +30112,22 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 857,
+          "line": 865,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 859,
+          "line": 867,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 861,
+          "line": 869,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 863,
+          "line": 871,
           "kind": "other"
         },
         {
@@ -29582,7 +30262,22 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 50,
+          "line": 55,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search.py",
+          "line": 59,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 74,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 280,
           "kind": "other"
         },
         {
@@ -29597,7 +30292,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1415,
+          "line": 1425,
           "kind": "seo"
         },
         {
@@ -29781,6 +30476,136 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 27,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 63,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 79,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 99,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 110,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 112,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 113,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 114,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 136,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 137,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 138,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 139,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 150,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 151,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 152,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 220,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 228,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 229,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 240,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 241,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 46,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_native_titles.py",
+          "line": 29,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_native_titles.py",
+          "line": 41,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 16,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 24,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 23,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_seo_og.py",
           "line": 514,
           "kind": "tests"
@@ -29818,6 +30643,81 @@
         {
           "file": "backend/tests/test_world_russia_rank.py",
           "line": 260,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 90,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 94,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 96,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 97,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 98,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 99,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 100,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 101,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 102,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 103,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 104,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 105,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 113,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 123,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 124,
           "kind": "tests"
         },
         {
@@ -30585,6 +31485,21 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 59,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 73,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 282,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/world_adapters/estat_api.py",
           "line": 88,
           "kind": "other"
@@ -30705,6 +31620,16 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 17,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 24,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_seo_og.py",
           "line": 571,
           "kind": "tests"
@@ -30796,7 +31721,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 125,
+          "line": 150,
           "kind": "tests"
         },
         {
@@ -31266,7 +32191,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 861,
+          "line": 869,
           "kind": "other"
         },
         {
@@ -31372,6 +32297,46 @@
         {
           "file": "backend/tests/test_og_context.py",
           "line": 108,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 27,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 64,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 80,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 115,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 116,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 148,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 151,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 230,
           "kind": "tests"
         },
         {
@@ -31491,7 +32456,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 664,
+          "line": 672,
           "kind": "other"
         },
         {
@@ -31696,12 +32661,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1342,
+          "line": 1344,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1344,
+          "line": 1346,
           "kind": "other"
         },
         {
@@ -31726,17 +32691,17 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 218,
+          "line": 243,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 272,
+          "line": 297,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 280,
+          "line": 305,
           "kind": "tests"
         },
         {
@@ -32386,7 +33351,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 938,
+          "line": 946,
           "kind": "other"
         },
         {
@@ -32791,8 +33756,13 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 55,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/services/search_intent.py",
-          "line": 44,
+          "line": 50,
           "kind": "other"
         },
         {
@@ -33854,7 +34824,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 916,
+          "line": 924,
           "kind": "other"
         },
         {
@@ -33944,7 +34914,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 48,
+          "line": 54,
           "kind": "other"
         },
         {
@@ -34355,7 +35325,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 50,
+          "line": 56,
           "kind": "other"
         },
         {
@@ -34595,6 +35565,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 62,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
           "line": 123,
           "kind": "other"
@@ -34783,7 +35758,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1198,
+          "line": 1199,
           "kind": "tests"
         },
         {
@@ -35084,12 +36059,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1346,
+          "line": 1348,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1348,
+          "line": 1350,
           "kind": "other"
         },
         {
@@ -35593,7 +36568,7 @@
         },
         {
           "file": "README.md",
-          "line": 166,
+          "line": 171,
           "kind": "other"
         },
         {
@@ -35838,12 +36813,42 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 53,
+          "line": 58,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_dimensions.py",
+          "line": 49,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_dimensions.py",
+          "line": 223,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 23,
+          "line": 29,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 111,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 183,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 184,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 262,
           "kind": "other"
         },
         {
@@ -35932,6 +36937,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_language.py",
+          "line": 17,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0006-indicator-card-unification.md",
           "line": 113,
           "kind": "other"
@@ -35948,7 +36958,7 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 266,
+          "line": 280,
           "kind": "other"
         },
         {
@@ -36022,6 +37032,11 @@
           "kind": "other"
         },
         {
+          "file": "docs/research/search-history-replay-2026-09-30.md",
+          "line": 474,
+          "kind": "other"
+        },
+        {
           "file": "docs/research/search-matrix-2026-09-30.json",
           "line": 3292,
           "kind": "other"
@@ -36043,22 +37058,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1089,
+          "line": 1091,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1093,
+          "line": 1095,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1089,
+          "line": 1091,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1093,
+          "line": 1095,
           "kind": "other"
         },
         {
@@ -36883,8 +37898,13 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 61,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1199,
+          "line": 1200,
           "kind": "tests"
         },
         {
@@ -36914,7 +37934,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 162,
+          "line": 187,
           "kind": "tests"
         },
         {
@@ -37000,7 +38020,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1820,
+          "line": 1830,
           "kind": "seo"
         },
         {
@@ -37119,32 +38139,32 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 691,
+          "line": 699,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 703,
+          "line": 711,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 705,
+          "line": 713,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 814,
+          "line": 822,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 842,
+          "line": 850,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 878,
+          "line": 886,
           "kind": "other"
         },
         {
@@ -37913,7 +38933,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 928,
+          "line": 936,
           "kind": "other"
         },
         {
@@ -37985,6 +39005,11 @@
           "file": "backend/app/services/derived_ops.py",
           "line": 380,
           "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/search.py",
+          "line": 62,
+          "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
@@ -38590,7 +39615,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 25,
+          "line": 31,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 68,
           "kind": "other"
         },
         {
@@ -38765,16 +39795,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1075,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
-          "line": 1076,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
           "line": 1077,
           "kind": "other"
         },
@@ -38794,13 +39814,13 @@
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1075,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1081,
           "kind": "other"
         },
         {
-          "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1076,
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1082,
           "kind": "other"
         },
         {
@@ -38821,6 +39841,16 @@
         {
           "file": "frontend/src/i18n/messages.ru.js",
           "line": 1080,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1081,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.ru.js",
+          "line": 1082,
           "kind": "other"
         },
         {
@@ -38880,7 +39910,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 180,
+          "line": 205,
           "kind": "tests"
         },
         {
@@ -39500,7 +40530,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 52,
+          "line": 58,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 66,
           "kind": "other"
         },
         {
@@ -39540,7 +40575,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 182,
+          "line": 207,
           "kind": "tests"
         },
         {
@@ -39910,7 +40945,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 51,
+          "line": 57,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 67,
           "kind": "other"
         },
         {
@@ -40959,12 +41999,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 664,
+          "line": 672,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 875,
+          "line": 883,
           "kind": "other"
         },
         {
@@ -41139,12 +42179,17 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 51,
+          "line": 56,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 19,
+          "line": 25,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 101,
           "kind": "other"
         },
         {
@@ -41174,7 +42219,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1407,
+          "line": 1417,
           "kind": "seo"
         },
         {
@@ -41699,12 +42744,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1340,
+          "line": 1342,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1342,
+          "line": 1344,
           "kind": "other"
         },
         {
@@ -41774,7 +42819,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 146,
+          "line": 171,
           "kind": "tests"
         },
         {
@@ -42396,12 +43441,12 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 938,
+          "line": 946,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 940,
+          "line": 948,
           "kind": "other"
         },
         {
@@ -42799,7 +43844,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 685,
+          "line": 693,
           "kind": "other"
         },
         {
@@ -42844,7 +43889,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 54,
+          "line": 60,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 106,
           "kind": "other"
         },
         {
@@ -42889,12 +43939,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1123,
+          "line": 1125,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1124,
+          "line": 1126,
           "kind": "other"
         },
         {
@@ -42953,6 +44003,11 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 21,
+          "kind": "tests"
+        },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 8346,
@@ -43249,7 +44304,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 685,
+          "line": 693,
           "kind": "other"
         },
         {
@@ -43304,7 +44359,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 54,
+          "line": 60,
           "kind": "other"
         },
         {
@@ -43354,12 +44409,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1124,
+          "line": 1126,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1125,
+          "line": 1127,
           "kind": "other"
         },
         {
@@ -43719,7 +44774,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 685,
+          "line": 693,
           "kind": "other"
         },
         {
@@ -43829,7 +44884,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 54,
+          "line": 60,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 102,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 238,
           "kind": "other"
         },
         {
@@ -43839,7 +44904,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1411,
+          "line": 1421,
           "kind": "seo"
         },
         {
@@ -43994,12 +45059,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1125,
+          "line": 1127,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1126,
+          "line": 1128,
           "kind": "other"
         },
         {
@@ -45041,6 +46106,21 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 60,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 97,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 287,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 362,
           "kind": "seed"
@@ -45088,6 +46168,21 @@
         {
           "file": "backend/tests/test_mortgage_rate_seo.py",
           "line": 29,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 61,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 62,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language_sql.py",
+          "line": 30,
           "kind": "tests"
         },
         {
@@ -45545,6 +46640,16 @@
           "kind": "parser"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 58,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 116,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 4560,
           "kind": "seed"
@@ -45626,17 +46731,17 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 153,
+          "line": 178,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 232,
+          "line": 257,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 233,
+          "line": 258,
           "kind": "tests"
         },
         {
@@ -45779,6 +46884,11 @@
       },
       "files": [
         {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 22,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 9146,
           "kind": "other"
@@ -45902,6 +47012,26 @@
         "in_seed_no_ui_stack": false
       },
       "files": [
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 19,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 20,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 27,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 49,
+          "kind": "tests"
+        },
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 9106,
@@ -46058,6 +47188,11 @@
       },
       "files": [
         {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 21,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 9196,
           "kind": "other"
@@ -46173,7 +47308,22 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 52,
+          "line": 57,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 127,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 345,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 346,
           "kind": "other"
         },
         {
@@ -46190,6 +47340,26 @@
           "file": "backend/seed_data.py",
           "line": 5169,
           "kind": "seed"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 18,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 26,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 22,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 23,
+          "kind": "tests"
         },
         {
           "file": "docs/adr/0006-indicator-card-unification.md",
@@ -46776,7 +47946,7 @@
         },
         {
           "file": "README.md",
-          "line": 157,
+          "line": 162,
           "kind": "other"
         },
         {
@@ -48056,12 +49226,72 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 43,
+          "line": 48,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 24,
+          "line": 30,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_intent.py",
+          "line": 97,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_intent.py",
+          "line": 98,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 86,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 87,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 192,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 253,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_units.py",
+          "line": 66,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_units.py",
+          "line": 133,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 103,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 109,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 122,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 348,
           "kind": "other"
         },
         {
@@ -48281,47 +49511,42 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 34,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_indicator_year_landing.py",
           "line": 35,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 74,
+          "line": 36,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 90,
+          "line": 75,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 137,
+          "line": 91,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 174,
+          "line": 138,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 184,
+          "line": 175,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 187,
+          "line": 185,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 201,
+          "line": 188,
           "kind": "tests"
         },
         {
@@ -48331,17 +49556,17 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 207,
+          "line": 203,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 217,
+          "line": 208,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 219,
+          "line": 220,
           "kind": "tests"
         },
         {
@@ -48351,42 +49576,47 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 224,
+          "line": 225,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 282,
+          "line": 227,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 321,
+          "line": 285,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 325,
+          "line": 324,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 330,
+          "line": 328,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 331,
+          "line": 333,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 332,
+          "line": 334,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 392,
+          "line": 335,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_indicator_year_landing.py",
+          "line": 395,
           "kind": "tests"
         },
         {
@@ -48470,6 +49700,56 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 25,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 34,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 35,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 46,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 163,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 164,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 165,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_context_roles.py",
+          "line": 166,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_dimensions.py",
+          "line": 117,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_dimensions.py",
+          "line": 124,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_search_federated.py",
           "line": 27,
           "kind": "tests"
@@ -48532,6 +49812,241 @@
         {
           "file": "backend/tests/test_search_federated.py",
           "line": 374,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 67,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 78,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 86,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 93,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 94,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 135,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 143,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 144,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 156,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 158,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 159,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 169,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 171,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 172,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 182,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_geo_morphology.py",
+          "line": 185,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 32,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 70,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 122,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 127,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_literals.py",
+          "line": 157,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 51,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 58,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 86,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 94,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 106,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 147,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 158,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 170,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 173,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 174,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 181,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 189,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 194,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 19,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language_calendar_units.py",
+          "line": 170,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language_calendar_units.py",
+          "line": 243,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language_calendar_units.py",
+          "line": 269,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_native_titles.py",
+          "line": 79,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 14,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 76,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 77,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 78,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 91,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 100,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 102,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 104,
           "kind": "tests"
         },
         {
@@ -48865,6 +50380,11 @@
           "kind": "other"
         },
         {
+          "file": "docs/research/search-history-replay-2026-09-30.md",
+          "line": 372,
+          "kind": "other"
+        },
+        {
           "file": "docs/research/search-matrix-2026-09-30.json",
           "line": 465,
           "kind": "other"
@@ -49066,22 +50586,22 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 410,
+          "line": 330,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 877,
+          "line": 412,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 886,
+          "line": 879,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 889,
+          "line": 888,
           "kind": "other"
         },
         {
@@ -49091,37 +50611,42 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 920,
+          "line": 893,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1129,
+          "line": 922,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1282,
+          "line": 1131,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1351,
+          "line": 1284,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1408,
+          "line": 1353,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1741,
+          "line": 1410,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1742,
+          "line": 1743,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/i18n/messages.en.js",
+          "line": 1744,
           "kind": "other"
         },
         {
@@ -49136,27 +50661,27 @@
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 410,
+          "line": 412,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 877,
+          "line": 879,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1410,
+          "line": 1412,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1743,
+          "line": 1745,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1744,
+          "line": 1746,
           "kind": "other"
         },
         {
@@ -49380,6 +50905,16 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/pages/GlobalSearchHome.component.test.jsx",
+          "line": 26,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/GlobalSearchHome.component.test.jsx",
+          "line": 52,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/pages/RegionIndicatorPage.component.test.jsx",
           "line": 31,
           "kind": "other"
@@ -49391,7 +50926,7 @@
         },
         {
           "file": "frontend/src/pages/RegionsHome.jsx",
-          "line": 168,
+          "line": 163,
           "kind": "other"
         },
         {
@@ -50066,12 +51601,17 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 26,
+          "line": 32,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 65,
           "kind": "other"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2059,
+          "line": 2069,
           "kind": "seo"
         },
         {
@@ -50186,22 +51726,17 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1103,
+          "line": 1104,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1105,
+          "line": 1106,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1117,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_seo_og.py",
-          "line": 1131,
+          "line": 1118,
           "kind": "tests"
         },
         {
@@ -50216,17 +51751,22 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1148,
+          "line": 1134,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1203,
+          "line": 1149,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
           "line": 1204,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1205,
           "kind": "tests"
         },
         {
@@ -50386,12 +51926,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 624,
+          "line": 626,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 624,
+          "line": 626,
           "kind": "other"
         },
         {
@@ -50526,7 +52066,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 181,
+          "line": 206,
           "kind": "tests"
         },
         {
@@ -50848,7 +52388,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1198,
+          "line": 1199,
           "kind": "tests"
         },
         {
@@ -51030,12 +52570,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2015,
+          "line": 2025,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2059,
+          "line": 2069,
           "kind": "seo"
         },
         {
@@ -51060,17 +52600,17 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1103,
+          "line": 1104,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1122,
+          "line": 1123,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1198,
+          "line": 1199,
           "kind": "tests"
         },
         {
@@ -53034,7 +54574,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1408,
+          "line": 1418,
           "kind": "seo"
         },
         {
@@ -53134,32 +54674,32 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 981,
+          "line": 982,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1012,
+          "line": 1013,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1014,
+          "line": 1015,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1166,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_seo_og.py",
-          "line": 1180,
+          "line": 1167,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
           "line": 1181,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_seo_og.py",
+          "line": 1182,
           "kind": "tests"
         },
         {
@@ -53219,12 +54759,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 858,
+          "line": 860,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 858,
+          "line": 860,
           "kind": "other"
         },
         {
@@ -53667,12 +55207,12 @@
       "files": [
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 993,
+          "line": 994,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1170,
+          "line": 1171,
           "kind": "tests"
         },
         {
@@ -53760,6 +55300,11 @@
           "file": "backend/app/services/cbr_bop_parser.py",
           "line": 164,
           "kind": "parser"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 114,
+          "kind": "other"
         },
         {
           "file": "backend/seed_data.py",
@@ -55013,7 +56558,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 647,
+          "line": 655,
           "kind": "other"
         },
         {
@@ -55082,9 +56627,24 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 63,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 46,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 4530,
           "kind": "seed"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 50,
+          "kind": "tests"
         },
         {
           "file": "docs/data_sources.md",
@@ -55561,6 +57121,11 @@
           "file": "backend/app/data/view_model_families.py",
           "line": 738,
           "kind": "derived"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 48,
+          "kind": "other"
         },
         {
           "file": "backend/app/services/site_paths.py",
@@ -56071,7 +57636,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 647,
+          "line": 655,
           "kind": "other"
         },
         {
@@ -56367,6 +57932,16 @@
       },
       "files": [
         {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 48,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 53,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 11193,
           "kind": "other"
@@ -56444,7 +58019,7 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 59,
+          "line": 65,
           "kind": "other"
         },
         {
@@ -56474,37 +58049,37 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 185,
+          "line": 210,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 187,
+          "line": 212,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 194,
+          "line": 219,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 196,
+          "line": 221,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 200,
+          "line": 225,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 203,
+          "line": 228,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 253,
+          "line": 278,
           "kind": "tests"
         }
       ]
@@ -56695,12 +58270,12 @@
         },
         {
           "file": "README.md",
-          "line": 158,
+          "line": 163,
           "kind": "other"
         },
         {
           "file": "README.md",
-          "line": 166,
+          "line": 171,
           "kind": "other"
         },
         {
@@ -56814,6 +58389,16 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 59,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 112,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 1986,
           "kind": "seed"
@@ -56866,6 +58451,16 @@
         {
           "file": "backend/tests/test_legacy_redirects.py",
           "line": 61,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 16,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 17,
           "kind": "tests"
         },
         {
@@ -57535,7 +59130,7 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 987,
+          "line": 995,
           "kind": "other"
         },
         {
@@ -57580,7 +59175,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1199,
+          "line": 1200,
           "kind": "tests"
         },
         {
@@ -57719,12 +59314,12 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 961,
+          "line": 969,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 985,
+          "line": 993,
           "kind": "other"
         },
         {
@@ -58074,22 +59669,37 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 43,
+          "line": 48,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 50,
+          "line": 55,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 210,
+          "line": 381,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 21,
+          "line": 27,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 49,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 123,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_vocabulary.py",
+          "line": 344,
           "kind": "other"
         },
         {
@@ -58104,12 +59714,12 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 633,
+          "line": 634,
           "kind": "seo"
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1414,
+          "line": 1424,
           "kind": "seo"
         },
         {
@@ -58170,6 +59780,16 @@
         {
           "file": "backend/tests/test_russia_world_compare.py",
           "line": 20,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 29,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 54,
           "kind": "tests"
         },
         {
@@ -58444,11 +60064,6 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 120,
-          "kind": "other"
-        },
-        {
-          "file": "frontend/src/i18n/messages.en.js",
           "line": 255,
           "kind": "other"
         },
@@ -58459,37 +60074,37 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 409,
+          "line": 411,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 878,
+          "line": 880,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 886,
+          "line": 888,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 891,
+          "line": 893,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 920,
+          "line": 922,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 409,
+          "line": 411,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 878,
+          "line": 880,
           "kind": "other"
         },
         {
@@ -58689,12 +60304,12 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 170,
+          "line": 195,
           "kind": "tests"
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 171,
+          "line": 196,
           "kind": "tests"
         },
         {
@@ -58759,7 +60374,7 @@
         },
         {
           "file": "frontend/src/pages/RegionsHome.jsx",
-          "line": 164,
+          "line": 159,
           "kind": "other"
         },
         {
@@ -58865,7 +60480,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 987,
+          "line": 995,
           "kind": "other"
         },
         {
@@ -58911,6 +60526,16 @@
         {
           "file": "backend/tests/test_legacy_redirects.py",
           "line": 56,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 29,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 54,
           "kind": "tests"
         },
         {
@@ -59197,7 +60822,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 987,
+          "line": 995,
           "kind": "other"
         },
         {
@@ -59232,7 +60857,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 2059,
+          "line": 2069,
           "kind": "seo"
         },
         {
@@ -59257,7 +60882,7 @@
         },
         {
           "file": "backend/tests/test_seo_og.py",
-          "line": 1198,
+          "line": 1199,
           "kind": "tests"
         },
         {
@@ -60058,7 +61683,12 @@
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 33,
+          "line": 39,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_intent.py",
+          "line": 90,
           "kind": "other"
         },
         {
@@ -60083,22 +61713,22 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 55,
+          "line": 56,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 272,
+          "line": 275,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 276,
+          "line": 279,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 297,
+          "line": 300,
           "kind": "tests"
         },
         {
@@ -60114,6 +61744,26 @@
         {
           "file": "backend/tests/test_search_federated.py",
           "line": 381,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 207,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_intent_roles.py",
+          "line": 209,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_registered_semantics.py",
+          "line": 51,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 35,
           "kind": "tests"
         },
         {
@@ -60158,7 +61808,7 @@
         },
         {
           "file": "docs/search.md",
-          "line": 91,
+          "line": 99,
           "kind": "other"
         },
         {
@@ -60574,17 +62224,17 @@
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 65,
+          "line": 66,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 277,
+          "line": 280,
           "kind": "tests"
         },
         {
           "file": "backend/tests/test_indicator_year_landing.py",
-          "line": 278,
+          "line": 281,
           "kind": "tests"
         },
         {
@@ -60801,22 +62451,32 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 365,
+          "line": 577,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 366,
+          "line": 578,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 562,
+          "line": 936,
           "kind": "other"
         },
         {
           "file": "backend/app/services/search_intent.py",
-          "line": 29,
+          "line": 35,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_intent.py",
+          "line": 90,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 219,
           "kind": "other"
         },
         {
@@ -60826,7 +62486,7 @@
         },
         {
           "file": "backend/app/services/seo_renderer.py",
-          "line": 1412,
+          "line": 1422,
           "kind": "seo"
         },
         {
@@ -60880,6 +62540,31 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_search_language.py",
+          "line": 12,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 68,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 69,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_quantity_facets.py",
+          "line": 70,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_subject_roles.py",
+          "line": 35,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_seo_growth_pages.py",
           "line": 23,
           "kind": "tests"
@@ -60916,7 +62601,7 @@
         },
         {
           "file": "backend/tests/test_seo_growth_pages.py",
-          "line": 1293,
+          "line": 1297,
           "kind": "tests"
         },
         {
@@ -61076,12 +62761,12 @@
         },
         {
           "file": "frontend/src/i18n/messages.en.js",
-          "line": 1337,
+          "line": 1339,
           "kind": "other"
         },
         {
           "file": "frontend/src/i18n/messages.ru.js",
-          "line": 1339,
+          "line": 1341,
           "kind": "other"
         },
         {
@@ -61794,7 +63479,7 @@
         },
         {
           "file": "docs/search.md",
-          "line": 91,
+          "line": 99,
           "kind": "other"
         },
         {
@@ -62506,27 +64191,27 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 874,
+          "line": 882,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 904,
+          "line": 912,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 906,
+          "line": 914,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 950,
+          "line": 958,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 961,
+          "line": 969,
           "kind": "other"
         },
         {
@@ -62666,7 +64351,22 @@
         },
         {
           "file": "backend/app/services/search.py",
-          "line": 50,
+          "line": 55,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search.py",
+          "line": 59,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 52,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 274,
           "kind": "other"
         },
         {
@@ -62750,6 +64450,96 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 28,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 44,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 47,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 65,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 81,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 124,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 130,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 132,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 157,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 170,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 174,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 175,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 186,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 188,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 221,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 222,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_relationship_roles.py",
+          "line": 76,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_relationship_roles.py",
+          "line": 90,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_seo_og.py",
           "line": 571,
           "kind": "tests"
@@ -62762,6 +64552,16 @@
         {
           "file": "backend/tests/test_wages_nominal_seo.py",
           "line": 15,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 91,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_year_mode_crawl_policy.py",
+          "line": 93,
           "kind": "tests"
         },
         {
@@ -62821,12 +64621,12 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 278,
+          "line": 292,
           "kind": "other"
         },
         {
           "file": "docs/architecture.md",
-          "line": 294,
+          "line": 308,
           "kind": "other"
         },
         {
@@ -63041,7 +64841,7 @@
         },
         {
           "file": "frontend/src/lib/searchSynonyms.test.js",
-          "line": 175,
+          "line": 200,
           "kind": "tests"
         },
         {
@@ -63125,17 +64925,17 @@
         },
         {
           "file": "CONTEXT.md",
-          "line": 904,
+          "line": 912,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 906,
+          "line": 914,
           "kind": "other"
         },
         {
           "file": "CONTEXT.md",
-          "line": 950,
+          "line": 958,
           "kind": "other"
         },
         {
@@ -63244,6 +65044,46 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 28,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 44,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 66,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 82,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 129,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 187,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 203,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_russia_year_modes.py",
+          "line": 230,
+          "kind": "tests"
+        },
+        {
           "file": "docs/adr/0001-derived-indicators-engine-shape.md",
           "line": 5,
           "kind": "other"
@@ -63280,7 +65120,7 @@
         },
         {
           "file": "docs/architecture.md",
-          "line": 278,
+          "line": 292,
           "kind": "other"
         },
         {
@@ -63658,6 +65498,21 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/search.py",
+          "line": 59,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 51,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/services/search_language.py",
+          "line": 278,
+          "kind": "other"
+        },
+        {
           "file": "backend/seed_data.py",
           "line": 949,
           "kind": "seed"
@@ -63680,6 +65535,16 @@
         {
           "file": "backend/tests/test_forecast_policy.py",
           "line": 390,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 14,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_search_language.py",
+          "line": 15,
           "kind": "tests"
         },
         {
@@ -65296,7 +67161,7 @@
       "files": [
         {
           "file": "CONTEXT.md",
-          "line": 647,
+          "line": 655,
           "kind": "other"
         },
         {

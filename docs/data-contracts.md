@@ -92,20 +92,38 @@ Public guard требует `official_explicit` либо `official_rule` **то�
 `GET /search` публичен: `q` 1–256 символов, `limit` 1–100 (default 50),
 локаль действующего API; валидация входа — 422. Ответ содержит `results`,
 `total` (returned count), `has_more` (включая candidate clipping),
-`version=federated-v1`, `intent.{countries,regions,year,month}`; при пустоте
+`version=federated-v2`, `intent.{countries,regions,year,month}`; при пустоте
 может содержать reason `unsupported_query`/`unsupported_period`/
 `ambiguous_geography`/`no_coverage`, при исправлении — `corrected_query`.
 Метаданные кандидата имеют `key`, `kind`, локализованные имена, path/score и
 соответствующие типу code/географию/частоту/единицу. [API](../backend/app/api/search.py),
 [service](../backend/app/services/search.py), полный [контракт](search.md).
 
+V2 защищает подтверждённый code/native title до разбора даты; для покрытых typed
+concepts требует экономическую меру в имени/коде, а explicit quantity/frequency
+проверяет в metadata. Набор typed guards конечен и не покрывает все меры.
+SQL и Python используют общие guard definitions до и после bounded retrieval;
+unknown qualifiers не отбрасываются. Короткие autocomplete совпадают только
+с началом реального имени/кода компактного каталога. UI homepage отправляет
+raw query в тот же глобальный endpoint; локальные поля сохраняют свой pool.
+Обязательные native-denominator, валюта, масштаб и единица не конвертируются
+друг в друга. Для покрытых ролей количество получателей, денежная сумма,
+ставка, остаток, выдача и трудовой доход различаются shared measure guard.
+Обычные слова/дефисы не становятся guessed code или typo-control.
+Повтор всей сохранённой истории и отдельный relevance oracle описаны в
+[датированном отчёте](research/search-history-replay-2026-09-30.md).
+
 Общий Indicator контур: active ряд с конечным фактом, unlisted допускается
 через `russia_search_path`; DXY/US10Y и materialized siblings могут иметь
 US issuer по действующему market registry при прежнем storage/URL.
 World: активная страна и конечный ненулевой факт, включая доступные hidden
 slices; регионы: listed определения с фактом нужной территории и частоты.
-Явная география/период/frequency ограничивают выбор до LIMIT; regional
-annual intent требует annual факта, месячный ряд не подменяет его.
+Явная география, fact-date и поддержанные explicit-frequency predicates
+ограничивают выбор до LIMIT; regional annual intent требует annual факта,
+месячный ряд не подменяет его. Дополнительная world destination eligibility
+(hidden year, несовместимая с month native frequency, canonical year+mode)
+пока отбрасывается после budget/batch resolution. Это ограничение recall,
+отдельное от обязательных native predicates; [подробности](search.md#намерение-кандидат-и-область).
 Native world level означает сохранённую меру (включая rate), не только индекс.
 Всего может быть больше
 совпадений, чем извлечённый budget; total не является full catalog count.
@@ -157,3 +175,54 @@ viewport exposure. Исторические параметры старых со
 ## Установленные границы реализации, 2026-09-27
 
 Контракты выше описывают устройство и требуемые инварианты. Содержательный проход выявил места, где реализация может их нарушать: partial source response → удаление отсутствующих дат в national ingest; cache bump до commit в BaseParser; сохранение старых derived при пустом результате; разные eligibility-условия sitemap и SSR; неодинаковые выборки и усечение в BI. Точные механизмы и доказательства — [code-review-findings](code-review-findings.md), все элементы — [реестр кода](code-review.md). Эти нарушения не объявляются исправленными обновлением документации.
+
+
+### Уточнение поиска 01.10: единицы, срезы и годовой режим
+
+Проценты и процентные пункты — разные обязательные native facets. USD для
+общей подписи dollars допускается только при объявленной валюте US state
+producer; чужая валюта и отсутствующая unit не угадываются. Literal preflight
+сохраняет целое действительное название внутри rawquery вместе с его
+внутренними страной/датой/%; внешние слова, год, география и единицы остаются
+обязательными. Это исправляет прежнюю описанную границу internal-title.
+
+Eurostat slice qualifiers проверяют конкретную ось и её storedmember,
+до candidateLIMIT и в Python. Total другой оси, category/SEO и отсутствующий
+JSONmember не являются доказательством; ordinary bareall не снимается.
+Слова о ежедневном использовании внутри economicdefinition отделены от
+частоты наблюдений. Этот словарь конечен и не является обученной моделью.
+
+Годовой поиск России может вернуть parent/year?mode только если shared
+resolver рендерит тот же actualcode, для которого есть конечные факты года.
+SSR использует nativeданные/единицу/title этого режима; canonical/hreflang/
+соседние годы/graphlink сохраняютmode. Все supportedmode-year canonical
+входят в sitemap registry; обычная карточка canonicalбезmode. Подробности —
+[ADR-0003](adr/0003-seo-single-source-server-rendered.md) и [search replay](research/search-history-replay-2026-09-30.md).
+Worldmode-year и derivedmonth остаются unsupported, годы не отбрасываются.
+
+Robots и Yandex Clean-param сохраняют identity годового mode; ограничения
+query и ответственности REP/SSR — в [основном контракте поиска](search.md#crawl-policy-годового-режима-0110).
+
+### Уточнение V5 01.10: независимые роли и нативные свидетельства
+
+Частота исходного ряда и частота сохранённого результата — разные ограничения.
+Source frequency берётся из объявленного native mode семейства; world frequency
+её не заменяет. End-of-period подтверждается только последней операцией
+`period_last` зарегистрированного pipeline либо полным native world названием.
+Предыдущий шаг `period_last` внутри расчёта YoY не задаёт end-of-period identity.
+
+Год базы постоянных/цепных цен не становится годом наблюдения. База и денежная
+оценка требуют полного свидетельства внутри одной native unit подписи или,
+для оценки в текущих/постоянных ценах, одного полного native title. Фрагменты
+title и unit, либо двух переводов unit, не соединяются в выдуманное условие.
+Чужая валюта/база/частота и неизвестное уточнение остаются обязательными.
+Доказательство price subject у зарегистрированного товарного семейства требует
+его категории и денежной единицы на физическое количество; одна currency unit
+не превращает GDP или доход в товарную цену. SQL до LIMIT и финальный Python
+guard проверяют эти условия на настоящих metadata, без подмены display label.
+
+Новые named slice members остаются provider/axis/member контрактом, включая
+string type JSON. TOTAL другой оси и `TOT_FTE` не равны универсальному total.
+Конечная грамматика и ограниченные кеши чистых словоформ не хранят запросы
+пользователей, выдачу или таблицу ответов. Проверки и границы переноса — в
+[replay](research/search-history-replay-2026-09-30.md).

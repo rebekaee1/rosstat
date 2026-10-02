@@ -21,7 +21,11 @@ Baseline чтения: detached HEAD `05302ff1c4dbe104850116e6206d168ec4fa91d3`.
 Ранжировщик не восстановит ряд, который отрезали до ранжирования, и не создаст
 данные для несуществующего региона, режима или периода.
 
-## Что установлено в текущем коде
+## Что установлено в baseline коде до новой версии
+
+Следующая таблица и её воспроизведения относятся к исходному `05302ff1`.
+Действующий контракт последующих локальных версий — [search.md](../search.md);
+исторические причины выбора методов ниже сохраняются.
 
 | Механизм | Фактический контракт | Следствие |
 |---|---|---|
@@ -34,7 +38,7 @@ Baseline чтения: detached HEAD `05302ff1c4dbe104850116e6206d168ec4fa91d3`.
 | Ответ `search_world` | `total=len(results)` после limit | Это количество возвращённых строк, а не всех совпадений |
 | `worldCompareSearch.js` | Подстрока country name/slug/code, отдельные aliases России | Правило отличается от глобального поиска, нет общих aliases географии и раскладки |
 | `useSearchTracking.js` | Пауза 900 мс, minLen=2, q до 60 символов, results/context; зависит также от resultsCount | Нет каждого нажатия; одна строка может логироваться повторно после изменения числа результатов |
-| Global telemetry | q до 120 символов; query после 900 мс; select с code/scope/country/position; abandon | Нет явного общего request ID и полного списка показанных результатов; q не является уникальным ключом сессии |
+| Global telemetry, исходный срез до v2 | q до 120 символов; query после 900 мс; select с code/scope/country/position; abandon | Нет явного общего request ID и полного списка показанных результатов; q не является уникальным ключом сессии |
 
 Источники: [исходник синонимов](../../frontend/src/lib/searchSynonyms.js),
 [компонент](../../frontend/src/components/IndicatorSearch.jsx),
@@ -44,7 +48,7 @@ Baseline чтения: detached HEAD `05302ff1c4dbe104850116e6206d168ec4fa91d3`.
 не доказывают текущий runtime. ADR-0006 различает listing visibility и
 searchability; ADR-0009 прямо фиксирует отсутствие keystroke-сбора.
 
-Прямой запуск текущего `filterSearchIndicators` на синтетическом каталоге дал:
+Прямой запуск baseline `filterSearchIndicators` на синтетическом каталоге дал:
 
 | Запрос | Текущий результат | Требование новой версии |
 |---|---|---|
@@ -348,3 +352,93 @@ FX issuer distinction, сравнение batch canonical с authoritative resol
 ограничение числа SQL statements. PostgreSQL replay, reconstructed history и
 браузерная приёмка находятся в отдельных артефактах аудита; этот документ не
 подменяет их синтетическими тестами и не подтверждает выпуск в production.
+
+## Subsequent implementation: bounded v2, not trained semantic readiness
+
+V2 implements typed bilingual compound subjects/question roles, native-unit and
+frequency markers, literal-first code/title parsing and actual-catalogue geo
+inflection. Shared guards gate SQL before LIMIT and recheck returned identities.
+Candidate-title df is computed once and supplies a small `6*log1p((N+1)/(df+1))`
+bonus per strongest term alternative, with a capped semicolon-slice penalty.
+Exact scores≥900 are unchanged. This is bounded inverse-frequency evidence,
+not corpus BM25/TF-IDF, trained relevance probability or semantic entailment.
+
+The [history replay report](search-history-replay-2026-09-30.md) distinguishes
+all retained inputs, nonempty coverage, exact historical click recall and the
+manually frozen economic gold. A first unseen120 evaluation failed; broad
+grammar/quantity/geo repairs followed, so any later use of120 is development.
+The newly sealed80 on source9167af was the separate first generalization
+test:22/80top5 despite finite facts. After its failures were read, economic-role,
+denominator/currency and ordinary-word parser repairs followed. A replay on
+source60ac58 is development; it never replaces that independent negative score
+or establishes universal natural-query understanding. No gold/case deletions or post-hoc-equivalent substitutions
+raise the frozen primary score. The earlier learned/hybrid alternatives above
+remain research candidates; no external inference or model persistence was added.
+
+Continuation 2026-10-01: current v2 global UI telemetry retains q up to256
+characters; the old global120/local60 snapshots above describe historical
+capture, not the new global limit. No individual keystroke recording was added.
+
+## Последующая реализация 01.10: конечные facets и точный годовой destination
+
+После раскрытия отрицательного blind40 результата 5/40 внесены общие
+исправления экономических отношений, physical units и защиты целого native
+title span; относительное сравнение задаёт меру/частоту, не произвольную дату.
+Eurostat qualifiers требуют реальный member указанной оси до LIMIT и при
+проверке результата; отсутствующая ось не выводится из темы или dataset ID.
+Russia year+registered-mode использует точный materialized ряд, native SSR
+и сохраняющий mode canonical/sitemap контракт. Подробности сосредоточены в
+[основном документе](../search.md#методы-и-границы-ранжирования) и
+[ADR-0003](../adr/0003-seo-single-source-server-rendered.md).
+
+Это конечная детерминированная грамматика. Старые ML/hybrid предложения и
+требования независимых labels остаются исследовательским планом. Завершённый
+source60ac58 historical acceptance — 109/110 strict top5 и 2 542/3 664 nonempty;
+первичный blind40 не переписывается. На момент этой записи будущий replay
+ещё не был завершён; последующий статус V4 приведён ниже.
+[Датированный отчёт](search-history-replay-2026-09-30.md)
+разделяет эти метрики и development повторы, без заявления о production.
+
+## Последующее состояние 01.10: запечатанный V4 и общий ремонт V5
+
+V4 historical replay source `259cb677` / 51 files завершён полностью:
+1 915 main и 736 nginx requests, HTTP/transport errors — 0. Frozen economic
+historical110 сохраняет **109/110 strict top5**; retained client occurrences
+дали **2 607/3 664 nonempty**, nginx backend q — **725/1 106**. Coverage
+не означает semantic correctness всех q, nginx q не всегда равен raw visitor
+input. Историческая размеченная часть уже известна разработке.
+
+Отдельный независимый V4 corpus80 сохраняет первичный **8/80 top5**.
+Readonly post-outcome review аннотировал 1 invalid semantic gold,
+3 underspecified query и 2 preregistered route limits, без adjusted score,
+исключений или расширения допустимых физических целей. После чтения этот
+набор стал development. Предварительный V5 source `c9668f27` на тех же80
+дал **22/80 top5**, 0 HTTP errors; это не новая blind оценка и не итог
+финального полного V5 replay. Свидетельства — в
+[датированном отчёте](search-history-replay-2026-09-30.md).
+
+Общие V5 правила сохраняют независимые роли: запрошенная observation frequency
+и полная поддержанная source-methodology clause; зарегистрированный
+terminal `period_last` и промежуточная операция перед темпом; предмет price
+и valuation basis ВВП; денежная база `constant/chained 2017 dollars` и
+год искомого наблюдения. База подтверждается полной native unit, не числом
+в SEO. Свидетельства current/constant prices разделены по title/code labels
+и каждому native unit label: `Current transfers` + `USD` не дают новую
+valuation, несовместимые units/неизвестная source frequency не отбрасываются.
+Native currency/scale/physical denominator не подменяют экономический предмет.
+
+Официальные 20 Eurostat payloads дали 34 общих axis/member witnesses на
+17 осях; конечный registry содержит 29 известных осей. Поддержанные named
+totals, contract duration, worktime, country of birth, statistical information,
+sector и national-account item требуют настоящей строки member на нужной
+оси. TOTAL другого поля, numeric JSON, отсутствующая ось и dataset name
+не подтверждают роль. ED02 и M_STS получили точные официальные смыслы;
+общего AnyTotal или alias по case/native indicator code нет. Эти условия
+повторяются в SQL до LIMIT и Python metadata/финальном guard.
+
+Это конечная детерминированная грамматика, типовые словари и небольшой
+candidate-title inverse-frequency bonus. Обучения, learned reranker,
+embeddings и внешнего model API в реализации нет. Старые ML/hybrid варианты
+выше остаются планом сравнения после независимых labels. V5 интегрирован
+локально; финальные replay/gates ещё проверяются. Production не изменён,
+сильное произвольное понимание новых вопросов этим ремонтом не установлено.

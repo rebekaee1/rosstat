@@ -17,10 +17,11 @@ ROBOTS = (
 def test_clean_param_rules_match_templates_and_crawler():
     expected = clean_param_lines()
     names = clean_param_names()
-    assert {"ysclid", "yrclid", "openstat", "mode", "view", "codes"} <= names
+    assert {"ysclid", "yrclid", "openstat", "view", "codes"} <= names
     assert "preview_locale" not in names
     assert "year" not in names
-    assert names - {"mode", "view", "codes"} == TRACKING_PARAMS
+    assert "mode" not in names
+    assert names - {"view", "codes"} == TRACKING_PARAMS
     assert "Clean-param: codes /compare" in expected
     for path in ROBOTS:
         text = path.read_text(encoding="utf-8")
@@ -28,6 +29,15 @@ def test_clean_param_rules_match_templates_and_crawler():
         assert actual == expected, path
         assert not any(line.startswith("Host:") for line in text.splitlines()), path
         assert "Sitemap: __PUBLIC_ORIGIN__/sitemap.xml" in text, path
+
+
+def test_content_changing_mode_cannot_return_to_global_clean_param(monkeypatch):
+    import pytest
+    import app.services.yandex_clean_param as rules
+
+    monkeypatch.setattr(rules, "CLEAN_PARAM_RULES", (*rules.CLEAN_PARAM_RULES, "mode"))
+    with pytest.raises(ValueError, match="content-changing Clean-param names.*mode"):
+        rules.clean_param_names()
 
 
 def test_website_language_matches_html_language():

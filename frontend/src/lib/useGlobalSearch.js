@@ -14,7 +14,7 @@ export default function useGlobalSearch(query, { enabled = true, limit = 100 } =
   }, [needle]);
   const isDebouncing = needle !== settled;
   const request = useQuery({
-    queryKey: ['catalog-search', 'v2', locale, settled, limit],
+    queryKey: ['catalog-search', 'v3', locale, settled, limit],
     queryFn: ({ signal }) => api.get('/search', { params: { q: settled, limit }, signal }).then(r => r.data),
     enabled: enabled && Boolean(settled) && !isDebouncing,
     staleTime: 60_000,

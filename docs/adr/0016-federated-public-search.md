@@ -76,3 +76,93 @@ RU/EN/mobile/desktop и all-surface приёмка. Статус локальн�
 набор выполненных проверок и production gate ведутся в [backlog](../backlog.md#search-v2-2026-09-30).
 Сохранённые 225 synthetic paths не являются 225 browser проверками или
 реальными пользователями; полный исторический набор клавиш невосстановим.
+
+## Subsequent addition 2026-09-30: v2 and evidence of its limits
+
+Following the frozen Monte-Carlo failure, v2 protects catalogue literals, resolves
+compound subjects before typo expansion, and adds bounded RU/EN question roles,
+native quantity/frequency facets, catalogue geography inflections and shared
+SQL/Python typed measure guards. A small candidate-title inverse-frequency bonus
+uses the same ё/е normalization; exact identities still dominate. These are
+deterministic methods, not an already trained multilingual model. No migration,
+search job, external model call or production resource allocation is introduced.
+
+All homepage entries remain global across four data planes and send raw queries.
+IME intermediate input is suppressed; help/status copy is paired RU/EN. Local
+selectors retain eligibility and now preserve keyboard punctuation and supported
+long native prefixes. API fields remain stable, version is federated-v2; client
+cache revision v3 is separate.
+
+The full retained historical replay, independent relevance labels, unmodified
+first-pass failures and subsequent unseen80 evaluation are separately reported
+in [the dated replay report](../research/search-history-replay-2026-09-30.md).
+A high score on clear selected historical queries does not establish arbitrary
+question understanding. Empty results may reflect language/retrieval limits even
+when facts exist. A future learned semantic channel needs independent relevance
+acceptance and the4vCPU resource budget; it is not hidden behind the v2 label.
+
+## Subsequent addition 2026-10-01: typed-role repair and preserved blind evidence
+
+The untouched80 pass on source9167af exposed ordinary-word correction, hyphen
+identity, denominator/currency geography and economic-role failures. Its score
+remains preserved. The next local source60ac58 uses actual-catalogue code
+preflight, bounded long-word correction, exact native denominator matching and
+additional count/amount/stock/rate/income-role guards. Hectare area keeps its unit
+and is distinguished from per-hectare yield. The inspected80 replay is development;
+it cannot be presented as independent generalization after these repairs.
+All historical gold/corpus bytes remain fixed; a separate complete acceptance
+replay seals this source without replacing the previous full replay.
+
+
+### 2026-10-01: subsequent general repair after independent40
+
+The next untouched40 pass on60ac58 scored5/40top5 with finite facts for every
+target; this negative evidence is retained. General repair separates percent
+from percentage points, uses US state producer/native-unit USD evidence,
+protects whole native title spans before geography/period parsing, and retains
+actual name/code autocomplete separately from control-word typos. Structured
+Eurostat qualifiers require the named stored axis/value before LIMIT and during
+scoring; missing members and unknown qualifiers remain mandatory. Official
+member labels provide semantic evidence, never category/SEO-derived axes.
+
+Russia year+registered-mode now resolves the exact materialized series and
+provides a validated query-preserving standalone SSR canonical, reciprocal
+locale/graph/year links and native values. All such fact-backed canonicals
+enter the sitemap registry; ordinary card mode canonicals still strip query.
+See [ADR-0003 addition](0003-seo-single-source-server-rendered.md). World year
+modes and derived monthly documents remain unsupported. Inspected40/80 replays
+are development checks, not replacements for first blind results.
+
+### 2026-10-01: subsequent V5 repair after the independent V4 sample
+
+The untouched V4 sample scored8/80top5. Its later semantic audit found one
+invalid gold and three underspecified questions without rewriting the original
+score. General V5 rules add complete-word morphology, independent registered
+source/output frequencies, terminal end-of-period identity and monetary
+constant/chained base-year grammar. Verified Eurostat member evidence remains
+exact provider/axis/string-member evidence, including axis-specific totals.
+
+Current/constant valuation is proved within one native title/code or one native
+unit label. Partial fragments across fields never manufacture that identity.
+Commodity price subject may derive from an actual registered family with a
+monetary-per-physical unit; a currency label or code suffix alone is insufficient.
+These are finite deterministic rules and bounded pure-token caches, with no
+trained model, response/history cache or query-to-answer lookup. Replaying the
+inspected80 is development evidence. Source freezes, full retained-history
+metrics and remaining language limits are recorded in [the replay report](../research/search-history-replay-2026-09-30.md).
+
+### 2026-10-01: V6 retains native prefixes and groups lexical member predicates
+
+The completed V5 replay retained four statement timeouts and three native
+prefix regressions. Its source snapshot, first bodies and unchanged gold stay
+sealed. Added complete noun forms must not replace the raw singleton's existing
+prefix/fuzzy role; already parsed nominal groups still require complete words.
+
+For lexical native member discovery, a finite static label catalogue now selects
+exact axis/member groups and emits one Boolean identity predicate per required
+term. Provider, JSON string type and separately typed facets remain mandatory
+before LIMIT and in the final scorer. Where measure/display needs label text,
+simple CASE evaluates one member expression per axis. This changes SQL shape,
+not native identity, storage, query history or the eight-second test timeout.
+Plan construction and hermetic controls do not establish live latency; the final
+version requires a new full retained-history replay and preregistered sample.

@@ -1,4 +1,4 @@
-"""Search destination adapters for existing family/canonical path contracts.
+"""Search and period-document adapters for family/canonical path contracts.
 
 World resolution batches metadata reads while using the same key/rank/unit
 definitions as legacy_redirects. It does not widen public eligibility.
@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from functools import lru_cache
+from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 
 from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -51,6 +52,64 @@ def russia_family_base(code: str) -> str | None:
     """Family identity for catalogue-headline ranking, never prefix guessing."""
     family = _family_paths().get(code, ())
     return family[0][0] if family else None
+
+
+def russia_period_data_code(parent: str, mode: str | None) -> str | None:
+    """Exact stored series for a period document; an unknown mode has no fallback.
+
+    Without a mode, year documents retain their source-series contract. Explicit
+    generic modes use the shared Family resolver, including registered overrides;
+    bespoke modes are allowed only through the existing exact redirect table.
+    """
+    if not mode:
+        return parent
+    from app.data.legacy_redirects import bespoke_mode_data_code
+    from app.data.view_model_families import FAMILY_BY_BASE, resolve_view_mode
+
+    family = FAMILY_BY_BASE.get(parent)
+    if family and any(item.mode == mode for item in family.modes):
+        resolved = resolve_view_mode(parent, mode)
+        return resolved.code if resolved else None
+    return bespoke_mode_data_code(parent, mode)
+
+
+def russia_year_search_path(code: str, intent: SearchIntent, year: int) -> str | None:
+    """A year destination must render the same series that satisfied the search.
+
+    The caller checks finite observations for this code/year before using this
+    adapter. Retired aliases that now display a different series are unsupported.
+    """
+    if not paths.is_public_year(year):
+        return None
+    target = urlsplit(russia_search_path(code, intent))
+    if "/indicator/" not in target.path:
+        return None
+    parent = target.path.rsplit("/", 1)[-1]
+    modes = parse_qs(target.query).get("mode", [])
+    mode = modes[0] if len(modes) == 1 else None
+    if russia_period_data_code(parent, mode) != code:
+        return None
+    return urlunsplit(("", "", f"{target.path}/{year}", target.query, ""))
+
+
+def russia_year_mode_paths(code: str, year: int) -> tuple[tuple[str, str], ...]:
+    """(active-parent candidate, canonical year path) for one stored series.
+
+    Enumerate every registered mode alias, including native modes. Bespoke
+    series enter only through their existing exact canonical redirect. The URL
+    registry checks active parents and finite code/year coverage in batched SQL.
+    """
+    if not paths.is_public_year(year):
+        return ()
+    modes = {(base, mode) for base, _group, mode in _family_paths().get(code, ())}
+    target = resolve_unlisted_indicator(code)
+    if target:
+        parsed = urlsplit(target)
+        tokens = parse_qs(parsed.query).get("mode", [])
+        if "/indicator/" in parsed.path and len(tokens) == 1:
+            modes.add((parsed.path.rsplit("/", 1)[-1], tokens[0]))
+    return tuple((base, paths.russia_indicator_year(base, year) + "?" + urlencode({"mode": mode}))
+        for base, mode in sorted(modes) if russia_period_data_code(base, mode) == code)
 
 
 def _escape_like(value: str) -> str:

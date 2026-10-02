@@ -695,9 +695,10 @@ def test_ping_updated_indicators_queues_deduplicated_paths(monkeypatch):
 def test_universal_seo_indicator_year_route(client, monkeypatch):
     from app.api import seo_pages
 
-    async def fake_year(code, year, db):
+    async def fake_year(code, year, db, *, mode=None):
         assert code == "cpi"
         assert year == 2024
+        assert mode is None
         return 200, "<html><body><div id='root'><h1>ИПЦ в 2024 году</h1></div></body></html>"
 
     monkeypatch.setattr(seo_pages, "render_indicator_year_html", fake_year)

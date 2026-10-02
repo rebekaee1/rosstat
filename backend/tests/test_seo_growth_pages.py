@@ -1183,7 +1183,8 @@ def test_robots_noindex_pages_stay_crawlable():
     прочитал noindex. /assets/ и /index.html не закрываем. /embed/ закрыт:
     виджеты масштабируются каталогом. Неканонические query закрыты у * и
     Googlebot (своя секция не наследует *). У Яндекса тех же query нет:
-    склейка через Clean-param. ?year= — канон карты, открыт.
+    склейка через Clean-param, кроме mode: обычные карточки сообщают canonical
+    в HTML, а режим годового документа меняет ряд. ?year= — канон карты, открыт.
     """
     from pathlib import Path
 
@@ -1224,7 +1225,10 @@ def test_robots_noindex_pages_stay_crawlable():
         assert "Allow: /\n" in text
         assert "Clean-param: codes /compare\n" in text
         assert "Clean-param: view\n" in text
-        assert "&mode\n" in text
+        assert "mode" not in {
+            param for line in text.splitlines() if line.startswith("Clean-param:")
+            for param in line.split(":", 1)[1].strip().split(" ", 1)[0].split("&")
+        }
         assert "preview_locale" not in "\n".join(
             line for line in text.splitlines() if line.startswith("Clean-param:")
         )

@@ -26,6 +26,7 @@ import time
 from dataclasses import dataclass
 from datetime import date
 from html import escape
+from math import isfinite
 from typing import Iterable
 
 import httpx
@@ -937,11 +938,16 @@ def _locale_cluster(canonical_path: str) -> dict[str, str] | None:
         return None
 
     path = canonical_path if canonical_path.startswith("/") else f"/{canonical_path}"
-    path = path.split("?", 1)[0]
+    path, _, query = path.partition("?")
     if path != "/" and path.endswith("/"):
         path = path.rstrip("/")
     if not has_en_path(path):
         return None
+
+    # A validated Russia year mode is a distinct period document whose metadata
+    # describes the stored sibling. Its language twin must retain that mode too.
+    if query and re.fullmatch(r"/(?:russia|currencies)/indicator/[^/]+/\d{4}", path):
+        path += "?" + query
 
     en_href = public_page_url(en_public_origin(), path)
     ru_href = public_page_url(ru_public_origin(), path)
@@ -1206,17 +1212,21 @@ async def build_document(
     extra_head: str | None = None,
     og_image: str | None = None,
     include_app: bool = True,
+    preserve_mode_query: bool = False,
 ) -> str:
     """Полный SSR HTML-документ.
 
     og_image — per-page превью (индикаторы получают /og/{code}.png);
     include_app=False — чистая HTML-страница без React-bundle (годовые
     landing'и: у SPA-роутера нет такого маршрута, гидратация показала бы 404).
+    preserve_mode_query=True — только для проверенного годового режима,
+    чей самостоятельный документ описывает выбранный материализованный ряд.
     """
     from app.services.locale import get_locale, html_lang, is_preview_locale, og_locale
     from app.services.index_policy import robots_for_path, strip_mode_query
 
-    canonical_path = strip_mode_query(canonical_path)
+    if not preserve_mode_query:
+        canonical_path = strip_mode_query(canonical_path)
     if is_preview_locale():
         robots_content = "noindex, follow"
     else:
@@ -2291,7 +2301,7 @@ async def yearly_last_points(
     )
     by_year: dict[int, tuple[int, float, date]] = {}
     for dt, raw in result.all():
-        if dt is None or raw is None:
+        if dt is None or raw is None or not isfinite(float(raw)):
             continue
         by_year[int(dt.year)] = (int(dt.year), float(raw), dt)
     return [by_year[y] for y in sorted(by_year)]
@@ -2595,7 +2605,9 @@ def _year_page_title_desc(
     return title, desc
 
 
-async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> tuple[int, str]:
+async def render_indicator_year_html(
+    code: str, year: int, db: AsyncSession, *, mode: str | None = None,
+) -> tuple[int, str]:
     """Годовая landing-страница `/russia/indicator/{code}/{year}`.
 
     Чистый SSR без React-bundle (include_app=False): у SPA-роутера нет такого
@@ -2605,13 +2617,31 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
 
     Страница живая при ≥1 точке; sitemap включает каждый существующий
     канонический год без отдельного порога плотности наблюдений.
+    Явный зарегистрированный режим читает свой материализованный ряд без
+    fallback; его canonical, соседние годы и карточка сохраняют parent?mode.
     """
+    from urllib.parse import urlencode
+    from app.services.search_paths import russia_period_data_code
+
+    parent_code = code
+    data_code = russia_period_data_code(parent_code, mode)
+    if data_code is None:
+        return 404, "Not found"
     q = await db.execute(
         select(Indicator).where(Indicator.code == code, Indicator.is_active.is_(True))
     )
     indicator = q.scalar_one_or_none()
     if not indicator:
         return 404, "Not found"
+    if data_code != parent_code:
+        indicator = (await db.execute(select(Indicator).where(
+            Indicator.code == data_code, Indicator.is_active.is_(True)
+        ))).scalar_one_or_none()
+        if indicator is None:
+            return 404, "Not found"
+    # Display adapters, native name/unit/frequency and OG read the same series.
+    # Only public page/navigation paths continue to use the parent card identity.
+    code = data_code
 
     rows_q = await db.execute(
         select(IndicatorData)
@@ -2621,11 +2651,13 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         )
         .order_by(IndicatorData.date)
     )
-    rows = list(rows_q.scalars().all())
+    rows = [row for row in rows_q.scalars().all()
+            if row.value is not None and isfinite(float(row.value))]
     if not rows:
         return 404, "Not found"
 
-    years = await indicator_data_years(db, indicator.id)
+    series = await yearly_last_points(db, indicator.id)
+    years = [y for y, _v, _d in series]
     values = [float(r.value) for r in rows]
     first, last = rows[0], rows[-1]
     category = _category_for_api(indicator.category)
@@ -2706,10 +2738,9 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         summary_label=summary_label,
         summary_text=summary_text,
         source=source,
-        country_independent=paths.is_currency_indicator(code),
+        country_independent=paths.is_currency_indicator(parent_code),
     )
 
-    series = await yearly_last_points(db, indicator.id)
     series_by_year = {y: (v, d) for y, v, d in series}
     prev_year = year - 1 if (year - 1) in series_by_year else None
     prev_value = series_by_year[prev_year][0] if prev_year is not None else None
@@ -2853,38 +2884,40 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         ).format(name=name, year=year)
 
     year_link_tpl = yt("year_link") or "{name} в {year} году"
+    mode_query = "?" + urlencode({"mode": mode}) if mode else ""
+    card_path = paths.russia_indicator(parent_code) + mode_query
     # Keep adjacent historical years reachable from old landing pages too.
     # Taking the last twelve years globally sent a 2000 page straight to 2015+.
     nearby_years = sorted(sorted((y for y in years if y != year),
                                  key=lambda y: (abs(y - year), y))[:12])
     year_links = _links_list(tuple(
-        (paths.russia_indicator_year(code, y), year_link_tpl.format(name=name, year=y))
+        (paths.russia_indicator_year(parent_code, y) + mode_query, year_link_tpl.format(name=name, year=y))
         for y in nearby_years
     ))
-    canonical_path = paths.russia_indicator_year(code, year)
+    canonical_path = paths.russia_indicator_year(parent_code, year) + mode_query
     year_trail_fn = (
         crumbs.global_market_indicator_year_trail
-        if is_global_market_indicator(code)
+        if is_global_market_indicator(parent_code)
         else crumbs.russia_indicator_year_trail
     )
     year_trail = year_trail_fn(
         cat_name,
         paths.russia_category(category.slug) if category else None,
         name,
-        paths.russia_indicator(code),
+        card_path,
         year,
         canonical_path,
     )
     chart_h2 = yt("h2_chart") or "Полная история и график"
     other_h2 = yt("h2_other_years") or "Другие годы"
     chart_p_tpl = yt("chart_p") or "Полная история и интерактивный график — на странице {_link}."
-    chart_p = chart_p_tpl.format(_link=_link(paths.russia_indicator(code), name))
-    h1_text = title.split(" — ")[0]
+    chart_p = chart_p_tpl.format(_link=_link(card_path, name))
+    h1_text = title.rsplit(" — ", 1)[0]
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(year_trail)}
 {fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=desc)}
 {_cpi_provenance_note(code)}
-{_seo_chart_figure(paths.og_indicator(paths.RUSSIA, code, year), chart_alt, chart_caption, href=paths.russia_indicator(code))}
+{_seo_chart_figure(paths.og_indicator(paths.RUSSIA, code, year), chart_alt, chart_caption, href=card_path)}
 {data_section}
 <section><h2>{escape(chart_h2)}</h2><p>{chart_p}</p></section>
 <section><h2>{escape(other_h2)}</h2>{year_links}</section>
@@ -2940,6 +2973,7 @@ async def render_indicator_year_html(code: str, year: int, db: AsyncSession) -> 
         keywords=keywords,
         og_image=_absolute(paths.og_indicator(paths.RUSSIA, code, year)),
         include_app=False,
+        preserve_mode_query=bool(mode),
     )
     return 200, html
 

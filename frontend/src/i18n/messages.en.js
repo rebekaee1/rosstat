@@ -117,7 +117,7 @@ export default {
   'home.hero.title': 'Official macroeconomic indicators in one workspace',
   'home.hero.subtitle':
     'Macro indicators from national statistical offices and central banks: latest readings, cross-country comparison, and forecasts.',
-  'home.searchPlaceholder': 'Find an indicator — inflation, GDP, rates, unemployment…',
+  'home.searchPlaceholder': 'Inflation in Germany, pay in Moscow, GDP in 2024…',
   'home.pulse.eyebrow': 'Market pulse',
   'home.pulse.title': 'Global markets',
   'home.pulse.label.btc-usd': 'Bitcoin',
@@ -327,6 +327,8 @@ export default {
   'search.dialogAria': 'Search the site',
   'search.queryAria': 'Search query',
   'search.placeholder': 'Indicator, country or region…',
+  'search.help': 'Search in ordinary words: an indicator, a country or region and, if needed, a period. For example: “inflation in Germany” or “population in California in 2024”.',
+  'search.unsupportedQuery': 'Specify the query in ordinary words: an indicator, country or region. Keep the period and unit you need.',
 
   'compare.badge': 'Compare',
   'compare.title': 'Compare indicators',

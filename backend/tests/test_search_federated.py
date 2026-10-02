@@ -342,7 +342,7 @@ def test_limit_contract(search_client):
     body = get(search_client, 'cpi', limit=1)
     assert body['total'] == len(body['results']) == 1
     assert body['has_more'] is True
-    assert body['version'] == 'federated-v1'
+    assert body['version'] == 'federated-v2'
     for params in (dict(q='cpi', limit=101), dict(q='a'*257)):
         assert search_client.get('/api/v1/search', params=params).status_code == 422
 
@@ -372,8 +372,8 @@ def test_native_level_titles_and_percentage_points(search_client):
     assert get(search_client, 'Уровень инновационной активности')['results'][0]['code'] == 'innovation-activity'
     assert get(search_client, 'population California level')['results'][0]['code'] == 'state-population'
     assert get(search_client, 'population Moscow level')['results'][0]['code'] == 'population'
-    assert _unit_metadata('PC_PNT', 'процентных пунктов') == ''
-    assert _unit_metadata('Percentage points') == ''
+    assert _unit_metadata('PC_PNT', 'процентных пунктов') == 'search-unit-percentage-point'
+    assert _unit_metadata('Percentage points') == 'search-unit-percentage-point'
     assert _unit_metadata('PC_ACT') == 'search-unit-percent'
 
 @pytest.mark.parametrize('locale', ['ru', 'en'])

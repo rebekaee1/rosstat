@@ -29,7 +29,7 @@ import {
 } from '../lib/regionsMapUrl';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
-import { filterSearchOptions } from '../lib/searchSynonyms';
+import { filterSearchOptions, normalizeSearchQuery } from '../lib/searchSynonyms';
 import { useAuth } from '../context/authContext';
 import {
   regionHubPath,
@@ -65,10 +65,6 @@ const MAP_METRICS = [
 
 const PRESET_CODES = new Set(MAP_METRICS.map((m) => m.code));
 
-function normalize(s) {
-  return s.toLowerCase().replace(/ё/g, 'е').replace(/[^а-яa-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
-}
-
 function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
   const { t, locale } = useLocale();
   const catalog = useRegionsCatalog();
@@ -80,8 +76,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
     const sections = catalog.data?.sections || [];
     const all = sections.flatMap((s) =>
       s.indicators.map((i) => ({ ...i, section: s.name })));
-    const q = normalize(query);
-    return filterSearchOptions(all, q);
+    return filterSearchOptions(all, query);
   }, [catalog.data, query]);
 
   useSearchTracking('map-metric', open ? query : '', results.length);
@@ -403,7 +398,7 @@ export default function RegionsHome() {
 
   const filtered = useMemo(() => {
     if (!data) return [];
-    const q = normalize(deferredQuery);
+    const q = normalizeSearchQuery(deferredQuery);
     const searching = q.length > 0;
     return data.districts
       .filter((d) => searching || !activeDistrict || d.slug === activeDistrict)
@@ -581,7 +576,7 @@ export default function RegionsHome() {
           )}
 
           {!isLoading && (() => {
-            const searching = normalize(deferredQuery).length > 0;
+            const searching = normalizeSearchQuery(deferredQuery).length > 0;
             const districtNav = data?.districts || [];
             const resolvedDistrict = activeDistrict
               && districtNav.some((d) => d.slug === activeDistrict)

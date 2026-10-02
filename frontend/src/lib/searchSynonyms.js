@@ -321,10 +321,17 @@ function scoreDocument(doc, q, units) {
   if (!matchesPercentQualifier(doc, q)) return -1;
   const exactCode = doc.codes.includes(q);
   const exactName = doc.names.includes(q);
+  // Long literal titles can end with an unfinished word during typing (and
+  // legacy telemetry was truncated at 60 characters). Only the full native
+  // name prefix permits its final one-letter token; separate facets still
+  // pass the usual mandatory-token checks below.
+  const nativeTitlePrefix = q.length >= 24 && tokenize(q).length >= 4
+    && doc.names.some((name) => name.startsWith(q));
   if (!units.length) return exactCode ? 10000 : exactName ? 9500 : -1;
   let score = 0;
   for (const unit of units) {
-    const lexical = lexicalTermScore(unit.text, doc);
+    const lexical = nativeTitlePrefix && unit.text.length === 1 && q.endsWith(unit.text)
+      ? 82 : lexicalTermScore(unit.text, doc);
     const target = unit.targets && codeMatchesTargets(doc.item, unit.targets)
       ? (doc.codes.some((code) => unit.targets.includes(code)) ? 160 : 120) - (unit.corrected ? 15 : 0)
       : -1;
@@ -349,9 +356,12 @@ export function filterSearchOptions(options, rawQuery, {
   const units = queryUnits(q);
   let ranked = docs.map((doc) => ({ ...doc, score: scoreDocument(doc, q, units) })).filter((doc) => doc.score >= 0);
   // Layout correction is fallback only: valid short codes/names stay literal.
-  if (!ranked.length && /[a-zа-я]{3}/.test(q)) {
+  if (!ranked.length) {
     const corrected = correctSearchKeyboardLayout(q);
-    if (corrected !== q) {
+    // Latin keyboard punctuation can be Russian letters: [kt,ys[ → хлебных.
+    // Inspect the corrected text before tokenizing, while keeping short codes
+    // literal and applying every original qualifier to the same eligible pool.
+    if (corrected !== q && /[a-zа-я]{3}/.test(corrected)) {
       const correctedUnits = queryUnits(corrected);
       ranked = docs.map((doc) => ({ ...doc, score: scoreDocument(doc, corrected, correctedUnits) })).filter((doc) => doc.score >= 0);
     }

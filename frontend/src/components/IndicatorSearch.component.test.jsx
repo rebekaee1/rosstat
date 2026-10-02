@@ -142,6 +142,38 @@ it('review: composition confirms text without selecting or closing', async () =>
   expect(screen.queryByRole('dialog')).toBeNull();
 });
 
+it('suspends requests, selectable results and demand telemetry through the complete IME composition', async () => {
+  const { default: useGlobalSearch } = await import('../lib/useGlobalSearch');
+  const { track } = await import('../lib/track'); track.mockClear();
+  searchState.data = { results: [{ key: 'old', name: 'Old result', path: '/russia' }], version: 'federated-v2' };
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  const input = screen.getByRole('combobox');
+  fireEvent.compositionStart(input);
+  fireEvent.change(input, { target: { value: 'инфляция Германии' } });
+  expect(useGlobalSearch).toHaveBeenLastCalledWith('инфляция Германии', { enabled: false });
+  expect(screen.queryByRole('option')).toBeNull();
+  fireEvent.keyDown(input, { key: 'Enter' });
+  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(screen.getByRole('dialog')).toBeTruthy();
+  await new Promise(resolve => setTimeout(resolve, 950));
+  expect(track).not.toHaveBeenCalled();
+  fireEvent.compositionEnd(input, { data: 'Германии' });
+  expect(useGlobalSearch).toHaveBeenLastCalledWith('инфляция Германии', { enabled: true });
+  expect(input.value).toBe('инфляция Германии');
+});
+
+it('explains an unsupported query and associates natural-query help with the input', () => {
+  searchState.data = { results: [], reason: 'unsupported_query', version: 'federated-v2' };
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  const input = screen.getByRole('combobox');
+  fireEvent.change(input, { target: { value: '100%' } });
+  expect(document.getElementById(input.getAttribute('aria-describedby')).textContent).toBe('search.help');
+  expect(screen.getByText('search.unsupportedQuery').closest('[role="status"]').getAttribute('aria-live')).toBe('polite');
+  expect(screen.queryByText('search.nothingFound')).toBeNull();
+});
+
 it('review: same-query replacement clamps highlight for aria and Enter', () => {
   searchState.data = {results:[0,1,2].map(i=>({key:'r'+i,name:'Result '+i,path:'/russia/indicator/result-'+i})),version:'v2'};
   const view=render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
