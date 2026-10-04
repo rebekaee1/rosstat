@@ -152,7 +152,11 @@ services:
           memory: 2304M
           cpus: '3.0'
     environment: &backend_env
-      RUSTATS_DATABASE_URL: postgresql+asyncpg://rustats:${POSTGRES_PASSWORD:-rustats_dev}@postgres:5432/rustats
+      # F13: runtime-роль приложения. По умолчанию = bootstrap-роль `rustats` (как раньше); после
+      # scripts/db-roles.sh в .env задаются RUSTATS_APP_DB_USER=rustats_app и его пароль.
+      RUSTATS_DATABASE_URL: postgresql+asyncpg://${RUSTATS_APP_DB_USER:-rustats}:${RUSTATS_APP_DB_PASSWORD:-${POSTGRES_PASSWORD:-rustats_dev}}@postgres:5432/rustats
+      # Миграции (alembic при старте backend) и DDL — всегда владелец БД.
+      RUSTATS_MIGRATION_DATABASE_URL: postgresql+asyncpg://rustats:${POSTGRES_PASSWORD:-rustats_dev}@postgres:5432/rustats
       RUSTATS_REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379/0
       # П-16: дисковый кэш OG-картинок (переживает рестарт контейнера)
       OG_CACHE_DIR: /app/og-cache

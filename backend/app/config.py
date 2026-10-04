@@ -25,6 +25,10 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = "postgresql+asyncpg://rustats:rustats@localhost:5432/rustats"
+    # F13 (2026-10-04): runtime-приложение ходит под ролью без прав суперпользователя
+    # (`rustats_app`, scripts/db-roles.sql), а миграции/DDL — под владельцем БД. Пусто = миграции
+    # используют database_url (прежнее поведение, для dev и до разнесения ролей).
+    migration_database_url: str | None = None
     database_echo: bool = False
     # О-15: пул соединений per-process; бюджет см. комментарий в database.py.
     # 2026-09-26: 5+10 / 10s исчерпывался на холодном SSR-кэше под краулерами

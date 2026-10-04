@@ -1,0 +1,23 @@
+# /etc/systemd/system/tor-http-bridge.service — эталон после F10 (2026-10-04). Секреты — только в EnvironmentFile (0600).
+[Unit]
+Description=HTTP CONNECT bridge to local Tor SOCKS (rosstat LLM egress)
+After=network-online.target tor.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/tor-http-bridge.env
+ExecStart=/usr/bin/python3 /opt/tor-http-bridge/tor_http_bridge.py
+Restart=always
+RestartSec=5
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=-/run
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target

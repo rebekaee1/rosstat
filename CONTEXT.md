@@ -1173,7 +1173,7 @@ native unit, provider и slice_json; другая ось TOTAL или SEO не �
 
 Годовой режим России разрешается shared resolver в точный materialized code,
 читает его конечные факты и сохраняет mode в standalone canonical, locale,
-графике и соседних годах. Такие canonical входят в sitemap; обычная карточка
+графике и соседних годах. Такие canonical задуманы входящими в sitemap (**с 2026-10-04 публикация отложена**, реестр и robots как на сервере); обычная карточка
 по-прежнему убирает mode. World year-mode и derived monthly document остаются
 неподдержанными. Основание — [ADR-0003](docs/adr/0003-seo-single-source-server-rendered.md).
 

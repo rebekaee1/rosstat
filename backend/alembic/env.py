@@ -17,7 +17,7 @@ from app.models import Base
 from app.config import settings
 
 target_metadata = Base.metadata
-config.set_main_option("sqlalchemy.url", settings.database_url)
+config.set_main_option("sqlalchemy.url", settings.migration_database_url or settings.database_url)
 
 
 def run_migrations_offline() -> None:
