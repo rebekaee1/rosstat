@@ -18,12 +18,12 @@ function renderPicker(props) {
 }
 
 describe('WorldViewModePicker', () => {
-  it('speaks plainly: «Показать как», «Как часто», no «режим», «срез» or «уровень»', () => {
+  it('speaks plainly: «Показать как», «Детализация», no «режим», «срез» or «уровень»', () => {
     const { container } = renderPicker();
     expect(screen.getByText('Показать как')).toBeTruthy();
-    expect(screen.getByText('Как часто')).toBeTruthy();
+    expect(screen.getByText('Детализация')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Значения' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Изменение за год' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Год к году' })).toBeTruthy();
     expect(container.textContent).not.toMatch(/Режим|Срез|Уровень|нет официального ряда/);
   });
 
@@ -40,7 +40,7 @@ describe('WorldViewModePicker', () => {
     expect(screen.getByRole('button', { name: 'По годам' }).getAttribute('aria-pressed')).toBe('true');
     fireEvent.click(screen.getByRole('button', { name: 'По кварталам' }));
     expect(onChange).toHaveBeenCalledWith('level-quarterly');
-    fireEvent.click(screen.getByRole('button', { name: 'Изменение за год' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Год к году' }));
     expect(onChange).toHaveBeenLastCalledWith('yoy-annual');
   });
 

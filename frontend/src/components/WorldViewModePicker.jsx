@@ -44,7 +44,7 @@ export default function WorldViewModePicker({
     return raw.map((g) => ({
       ...g,
       rawLabel: g.label,
-      label: pickerLabel(g.label, locale),
+      label: locale !== 'en' && g.label === 'Уровень' ? 'Значения' : pickerLabel(g.label, locale),
       modes: g.modes?.map((m) => ({
         ...m,
         label: pickerLabel(m.label, locale),
