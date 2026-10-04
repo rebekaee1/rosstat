@@ -746,7 +746,8 @@ def render_indicator_og(
         else:
             draw.text((chart[0], chart[3]+16), x_labels[0], font=FG(15, 600), fill=muted)
             draw.text((chart[2], chart[3]+16), x_labels[1], anchor="ra", font=FG(15, 600), fill=muted)
-    draw.text((1128, 497), "forecasteconomy.com", anchor="ra", font=FG(15, 650), fill=CHAMPAGNE)
+    # Один водяной знак на картинке: домен стоит в подвале (справа внизу).
+    # Золотая копия внутри графика была второй, критик насчитал три (№7).
     draw.line((46, 556, 1154, 556), fill=(32,42,60,35), width=1)
     note = source_label or ("Source and methodology on the indicator page" if loc == "en" else "Источник и методология — в карточке показателя")
     draw.text((46, 577), note, font=FG(_fit_font_size(note, 16, 500, 735, 12),500), fill=muted)
@@ -823,7 +824,6 @@ def _render_indicator_portrait(*, code, name, value_text, date_text, values,
         else:
             draw.text((chart[0],1081),x_labels[0],font=FG(42,600),fill=muted)
             draw.text((chart[2],1081),x_labels[1],anchor="ra",font=FG(42,600),fill=muted)
-    draw.text((996,1162),"forecasteconomy.com",anchor="ra",font=FG(34,650),fill=CHAMPAGNE)
     note=source_label or ("Source and methodology on the page" if loc=="en" else "Источник и методология — на странице")
     draw.text((54,1251),note,font=FG(_fit_font_size(note,32,500,965,25),500),fill=muted)
     draw.text((54,1303),"forecasteconomy.com",font=FG(25,650),fill=TEXT_PRIMARY)

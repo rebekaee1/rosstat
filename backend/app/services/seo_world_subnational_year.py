@@ -17,6 +17,7 @@ from app.models import SubnationalDataPoint, SubnationalIndicator, SubnationalRe
 from app.services import site_paths as paths
 from app.services.display import format_number_ru
 from app.services.locale import get_locale
+from app.services import seo_year_ui as ui
 from app.services.seo_renderer import (
     _absolute, _breadcrumbs, _breadcrumbs_nav, _seo_chart_figure,
     build_document, fast_answer_block,
@@ -157,21 +158,27 @@ async def render_subnational_indicator_year_html(
         f'<li><a href="{escape(paths.country_region_indicator_year(country.slug, region.slug, code, y))}">{y}</a></li>'
         for y in other_years
     )
-    observations = "".join(
-        f"<tr><td>{escape(period_label(day, indicator.frequency, get_locale()))}</td>"
-        f"<td>{escape(format_number_ru(v, locale=get_locale()))} {escape(unit)}</td></tr>"
+    obs_decimals = ui.common_decimals(v for _day, v in year_rows)
+    observation_rows = [
+        (
+            period_label(day, indicator.frequency, get_locale()),
+            ui.with_unit(ui.format_fixed(v, obs_decimals), ui.cell_unit(unit)),
+        )
         for day, v in year_rows
+    ]
+    unit_head = f"{'Value' if en else 'Значение'}, {unit}" if unit else ("Value" if en else "Значение")
+    observations_table = ui.year_values_table(
+        observation_rows, head_date="Period" if en else "Период", head_value=unit_head,
     )
     alt = (f"{name}, {region_name}, {year}: official series and latest value {value_text}"
            if en else f"{name} — {region_name}, {year}: график и последнее значение {value_text}")
     body = (
         fast_answer_block(eyebrow="Official statistics" if en else "Официальная статистика",
                           title=title, value=value_text, note=f"{period_text}. {coverage}")
-        + _seo_chart_figure(og_path, alt, description, href=card, loading="eager")
+        + _seo_chart_figure(og_path, alt, ui.chart_caption(year), href=card, loading="eager", brand=False)
         + f"<section><h2>{'Year-on-year and US comparison' if en else 'Сравнение с прошлым годом и США'}</h2>{compare}{national}</section>"
-        + f"<section><h2>{'Published observations' if en else 'Опубликованные значения'}</h2><table>"
-          f"<thead><tr><th>{'Period' if en else 'Период'}</th><th>{'Value' if en else 'Значение'}</th></tr></thead>"
-          f"<tbody>{observations}</tbody></table></section>"
+        + f"<section><h2>{'Published observations' if en else 'Опубликованные значения'}</h2>"
+          f"{observations_table}</section>"
         + f"<section><h2>{'Other years' if en else 'Другие годы'}</h2><ul>{years_html}</ul></section>"
         + (f"<section><h2>{'Compare states' if en else 'Сравнить со штатами'}</h2><ul>{peer_links}</ul></section>" if peer_links else "")
         + f'<p><a href="{escape(card)}">{"Full history" if en else "Вся история ряда"}</a></p>'

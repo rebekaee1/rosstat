@@ -27,6 +27,7 @@ from app.services.display import (
     localize_unit,
     today_msk,
 )
+from app.services import seo_year_ui as ui
 from app.services.seo_renderer import (
     _absolute,
     _breadcrumbs,
@@ -168,7 +169,7 @@ def _title_desc(
         )
         desc = (
             f"{name} в {year} году{period_note}: {label_out} — {summary_bit}. "
-            f"Сравнение с прошлым годом и положение в истории ряда. "
+            f"Сравнение с прошлым годом и положение в истории показателя. "
             f"Официальные данные — {source}."
         )
         return title, desc
@@ -364,35 +365,22 @@ async def render_world_indicator_year_html(
             code=None,
             unit=shown_unit,
         )
-        context_items = "".join(
-            f"<li>{escape(line)}</li>" for line in (change_lines + history_lines)
-        )
-        context_items += (
-            f"<li>{escape((yt('li_value_date') or 'Дата значения: {date}').format(date=_format_date(last_date)))}</li>"
-            f"<li>{escape((yt('li_source') or 'Источник: {source}').format(source=source))}</li>"
-        )
-        neighbor_rows = "".join(
-            (
-                f"<tr><td><strong>{y}</strong></td>"
-                f"<td><strong>{escape(format_number_ru(v))}</strong></td></tr>"
-                if y == year
-                else f"<tr><td>{y}</td><td>{escape(format_number_ru(v))}</td></tr>"
-            )
-            for y, v, _d in neighbors
-        )
+        facts = [
+            *change_lines[1:],
+            *history_lines,
+            (yt("li_value_date") or "Дата значения: {date}").format(date=_format_date(last_date)),
+        ]
+        n_dec = ui.common_decimals(v for _y, v, _d in neighbors)
+        neighbor_rows = [
+            (str(y), ui.format_fixed(v, n_dec), y == year) for y, v, _d in neighbors
+        ]
         neighbors_h2 = yt("h2_neighbors") or "Динамика соседних лет"
         th_year = yt("th_year") or "Год"
-        data_section = f"""<section><h2>{escape(totals_head)}</h2>
-<ul>
-{context_items}
-</ul></section>
-<section><h2>{escape(neighbors_h2)}</h2>
-<table><thead><tr><th>{escape(th_year)}</th><th>{escape(value_head)}</th></tr></thead>
-<tbody>{neighbor_rows}</tbody></table></section>"""
-        chart_caption = (
-            yt("chart_caption_single")
-            or "{name} в {year} году — значение в контексте соседних лет. Источник: {source}. forecasteconomy.com"
-        ).format(name=display, year=year, source=source)
+        totals_section = f"<section><h2>{escape(totals_head)}</h2>{ui.year_facts(facts)}</section>"
+        table_section = (
+            f"<section><h2>{escape(neighbors_h2)}</h2>"
+            f"{ui.year_values_table(neighbor_rows, head_date=th_year, head_value=value_head)}</section>"
+        )
         chart_alt = (
             yt("chart_alt_single")
             or "{name} в {year} году — график соседних лет, {summary_label} {summary_text}, источник {source}"
@@ -416,42 +404,34 @@ async def render_world_indicator_year_html(
                 f"Published observations in {year}" if en
                 else f"Опубликованные наблюдения за {year} год"
             )
-        range_label = yt("range_minmax") or "Минимум и максимум"
         vmin, vmax = min(values), max(values)
-        data_rows = "".join(
-            f"<tr><td>{escape(_format_date(d))}</td>"
-            f"<td>{escape(format_number_ru(v))}</td></tr>"
-            for d, v in year_rows
+        (low_date, _low), (high_date, _high) = ui.extreme_dates(year_rows)
+        n_dec = max(ui.common_decimals(values), ui.decimals_in(summary_text))
+        cell_u = ui.cell_unit(shown_unit)
+
+        def _num(value: float) -> str:
+            return ui.format_fixed(value, n_dec)
+
+        totals_section = (
+            f"<section><h2>{escape(totals_head)}</h2>"
+            + ui.year_tiles((
+                ("First value" if en else "Первое значение",
+                 _num(first_value), shown_unit, _format_date(first_date)),
+                ("Latest value" if en else "Последнее значение",
+                 _num(last_value), shown_unit, _format_date(last_date)),
+                ("Lowest" if en else "Минимум", _num(vmin), shown_unit, _format_date(low_date)),
+                ("Highest" if en else "Максимум", _num(vmax), shown_unit, _format_date(high_date)),
+            ))
+            + "</section>"
         )
-        li_start = (
-            "First observation: {value} ({date})" if en
-            else "Первое наблюдение: {value} ({date})"
-        ).format(
-            value=display_value_text(None, first_value, shown_unit),
-            date=_format_date(first_date),
-        )
-        li_end = (
-            "Last observation: {value} ({date})" if en
-            else "Последнее наблюдение: {value} ({date})"
-        ).format(
-            value=display_value_text(None, last_value, shown_unit),
-            date=_format_date(last_date),
-        )
+        table_rows = [
+            (_format_date(d), ui.with_unit(_num(v), cell_u)) for d, v in year_rows
+        ]
         all_h2 = (yt("h2_all_values") or "Все значения за {year} год").format(year=year)
-        data_section = f"""<section><h2>{escape(totals_head)}</h2>
-<ul>
-<li>{escape(summary_label)}: {escape(summary_text)}</li>
-<li>{escape(li_start)}</li>
-<li>{escape(li_end)}</li>
-<li>{escape(range_label)}: {escape(format_number_ru(vmin))} … {escape(format_number_ru(vmax))}{escape(unit_sfx)}</li>
-<li>{escape((yt('li_obs') or 'Количество наблюдений: {n}').format(n=n_rows))}</li>
-<li>{escape((yt('li_source') or 'Источник: {source}').format(source=source))}</li>
-</ul></section>
-<section><h2>{escape(all_h2)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>"""
-        chart_caption = (
-            yt("chart_caption_multi")
-            or "{name} в {year} году — график динамики. Источник: {source}. forecasteconomy.com"
-        ).format(name=display, year=year, source=source)
+        table_section = (
+            f"<section><h2>{escape(all_h2)}</h2>"
+            f"{ui.year_values_table(table_rows, head_date=th_date, head_value=value_head)}</section>"
+        )
         chart_alt = (
             yt("chart_alt_multi")
             or "{name} в {year} году — график, {summary_label} {summary_text}, источник {source}"
@@ -495,13 +475,22 @@ async def render_world_indicator_year_html(
         last_crumb = f"{display} {year}"
     trail.append((canonical_path, last_crumb))
 
+    year_lead_text = ui.year_lead(
+        n_rows=n_rows,
+        year=year,
+        source=source,
+        current_year=current_year,
+        last_date_text=_format_date(last_date),
+        annual=frequency == "annual",
+    )
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(trail)}
 {f'<p>{escape("Архивный ряд ГИПЦ: Евростат прекратил выпуск этого набора; показана сохранённая история." if not en else "Archived HICP series: Eurostat discontinued this dataset; its published history is retained.")}</p>' if is_retired_world_hicp(slug, code) else ''}
-{fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=desc)}
-{f'<p>{escape(coverage_note)}</p>' if coverage_note else ''}
-{_seo_chart_figure(og_path, chart_alt, chart_caption, href=card_path, loading="eager")}
-{data_section}
+{fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=year_lead_text)}
+{ui.collapsible_note("About data coverage" if en else "О полноте данных", coverage_note)}
+{totals_section}
+{_seo_chart_figure(og_path, chart_alt, ui.chart_caption(year), href=card_path, loading="eager", brand=False)}
+{table_section}
 <section><h2>{escape(card_h2)}</h2><p>{card_p}</p></section>
 <section><h2>{escape(other_years_h2)}</h2>{year_links_html}</section>
 </main>"""

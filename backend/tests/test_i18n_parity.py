@@ -967,9 +967,9 @@ def test_ssr_chrome_locale_en():
         assert 'href="/russia/region"' in deep
 
         nf = render_not_found_html()
-        assert "Page not found" in nf
+        assert "This page does not exist" in nf
         assert ">Home<" in nf
-        assert "Страница не найдена" not in nf
+        assert "Такой страницы нет" not in nf
 
         spa = asyncio.run(
             build_document(
@@ -1007,7 +1007,7 @@ def test_ssr_chrome_locale_en():
         assert "Россия</a>" in _ssr_chrome_header()
         assert "Разделы платформы" in _ssr_platform_deep_links()
         assert "Индикаторы России</a>" in _ssr_platform_deep_links()
-        assert "Страница не найдена" in render_not_found_html()
+        assert "Такой страницы нет" in render_not_found_html()
     finally:
         reset_locale(token_ru)
 

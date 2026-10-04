@@ -767,7 +767,7 @@ def test_ssr_chrome_topnav_keeps_hub_deep_links():
         _ssr_platform_deep_links,
     )
 
-    m = re.search(r'<nav class="seo-topnav">(.*?)</nav>', _SSR_CHROME_HEADER, re.S)
+    m = re.search(r'<nav class="seo-topnav"[^>]*>(.*?)</nav>', _SSR_CHROME_HEADER, re.S)
     assert m, "seo-topnav отсутствует в _SSR_CHROME_HEADER"
     topnav = m.group(1)
     for href in ("/russia", "/russia/region", "/russia/today", "/#countries", "/russia/calendar"):
