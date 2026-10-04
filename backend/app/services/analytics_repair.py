@@ -4,6 +4,7 @@ from datetime import date, datetime, time, timedelta
 from sqlalchemy import select, update
 
 from app.models import BehaviorSession, ServerSession
+from app.services import session_change_log
 from app.services.bot_score import is_known_bot_ua
 
 
@@ -32,8 +33,11 @@ async def reclassify_known_crawlers_day(db, day: date, *, apply: bool = False) -
         raise RuntimeError("day exceeds bounded repair limit; inspect before applying")
     if apply:
         for offset in range(0, len(ids), 1000):
-            await db.execute(update(ServerSession).where(ServerSession.id.in_(ids[offset:offset + 1000]))
+            chunk = ids[offset:offset + 1000]
+            await db.execute(update(ServerSession).where(ServerSession.id.in_(chunk))
                              .values(is_bot=True, bot_score=100))
+            # F05b: правка старого дня должна доехать до ClickHouse (та же транзакция).
+            await session_change_log.mark_session_ids_changed(db, chunk)
         await db.commit()
     else:
         await db.rollback()

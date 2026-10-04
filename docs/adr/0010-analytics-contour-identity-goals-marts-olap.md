@@ -235,7 +235,15 @@ query-level exact-distinct RAM и полного recovery подтверждаю
 Marker требует сохранного state Redis и не заменяет межпроцессный fencing
 или cross-store crash recovery.
 
-**Не закрыто F05b:** replacing session insert не передаёт delete старого
+**F05b — Subsequent addition 2026-10-04 (локально, не выпущено).** Принят
+вариант durable журнала: таблица `server_session_changes` пишется в транзакции
+изменения `server_sessions`, синк CH применяет replace/`ALTER DELETE` по текущему
+состоянию PG и подтверждает по `rev`. Tombstone/`is_deleted` отвергнут: нужна
+смена engine и монотонная версия строки. Контракт:
+[data-contracts](../data-contracts.md#f05b-session-копия-и-журнал-изменений).
+Следующий абзац — исходная постановка.
+
+**Не закрыто F05b (до 2026-10-04):** replacing session insert не передаёт delete старого
 logical key, двухсуточный cutoff пропускает старое carry. FINAL и один resync
 не исправляют будущую рассинхронизацию. Для следующего решения нужны PG durable
 mutation/deletion в session commit и versioned tombstones либо согласованный

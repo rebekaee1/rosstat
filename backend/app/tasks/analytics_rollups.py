@@ -40,6 +40,7 @@ from app.models import (
     RawMetrikaVisit,
     ServerSession,
 )
+from app.services import session_change_log
 from app.services.analytics_period import msk_day, msk_day_expr
 from app.services.goal_taxonomy import TIER_MACRO, TIER_MICRO, is_conversion, tier_for_event
 from app.services.traffic_channel import classify_channel
@@ -315,6 +316,8 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
     Existing admin identity sets are separate allocations, not covered by this
     batch bound. Left-owner rows are repaired atomically with this window;
     their day remains the original MSK start day.
+    F05b: при RUSTATS_CLICKHOUSE_ENABLED исчезнувшие/новые/изменённые ключи
+    сессий пишутся в `server_session_changes` в той же транзакции.
     """
     from app.services.analytics_marts import admin_identity
     stop = until or _utcnow()
@@ -324,8 +327,14 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
                   *(Column(c.name, c.type, nullable=c.nullable) for c in ServerSession.__table__.columns if c.name != "id"),
                   prefixes=["TEMPORARY"], postgresql_on_commit="DROP")
     temporary = [stage]
+    # F05b: «как было» нужно только для журнала изменений CH-копии.
+    track = session_change_log.enabled()
+    previous = session_change_log.snapshot_table("sessionize_prev_" + uuid4().hex) if track else None
     try:
         await db.execute(CreateTable(stage))
+        if track:
+            temporary.append(previous)
+            await db.execute(CreateTable(previous))
         history = await _prepare_session_history(db, since, stop, temporary)
         admin_users, admin_visitors = await admin_identity(db)
         result = await db.stream(_session_source_query(db, since, stop, history).execution_options(yield_per=_STREAM_BATCH))
@@ -364,16 +373,23 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
         carried = select(stage.c.visitor_id_hash, func.min(stage.c.started_at).label("first_start")).where(
             stage.c.started_at < since,
         ).group_by(stage.c.visitor_id_hash).subquery()
-        await db.execute(delete(ServerSession).where(
-            ServerSession.started_at >= since, ServerSession.started_at < stop,
-        ))
+        in_window = and_(ServerSession.started_at >= since, ServerSession.started_at < stop)
         matches = and_(ServerSession.visitor_id_hash == carried.c.visitor_id_hash,
                        ServerSession.started_at >= carried.c.first_start)
         if db.bind.dialect.name == "sqlite":
             matches = select(carried.c.visitor_id_hash).where(matches).exists()
-        await db.execute(delete(ServerSession).where(ServerSession.started_at < since, matches))
+        left_owner = and_(ServerSession.started_at < since, matches)
+        if track:
+            # Два отдельных INSERT…SELECT: у left_owner неявный FROM carried (PG).
+            await session_change_log.snapshot(db, previous, in_window)
+            await session_change_log.snapshot(db, previous, left_owner)
+        await db.execute(delete(ServerSession).where(in_window))
+        await db.execute(delete(ServerSession).where(left_owner))
         columns = [c.name for c in stage.columns]
         await db.execute(ServerSession.__table__.insert().from_select(columns, select(*stage.columns)))
+        if track:
+            # F05b: исчезнувшие/новые/изменённые ключи — в ту же транзакцию.
+            await session_change_log.record_window_changes(db, previous, stage)
         # asyncpg retains the exhausted server portal until transaction end.
         # PostgreSQL closes it before ON COMMIT DROP; explicit DROP of the
         # streamed history table would fail with ObjectInUseError here.

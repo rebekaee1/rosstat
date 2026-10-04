@@ -1248,6 +1248,29 @@ class ServerSession(Base):
     computed_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
+class ServerSessionChange(Base):
+    """Durable журнал «грязных» ключей server_sessions для репликации в ClickHouse (F05b).
+
+    Строка = «ключ (visitor, started_at) создан, изменён или исчез». Пишется в
+    ТОЙ ЖЕ транзакции, что и изменение server_sessions (sessionize,
+    reclassify-known-crawlers), поэтому не может ни потеряться, ни опередить
+    данные. Синк CH читает пачку, сверяется с текущим состоянием PG (строка есть →
+    replacing insert, строки нет → ALTER DELETE) и удаляет из журнала только
+    те записи, чей `rev` не изменился. Ключ уникален: повторная правка того же
+    сеанса увеличивает `rev`, журнал ограничен числом различных ключей.
+    Пишется только при RUSTATS_CLICKHOUSE_ENABLED=true.
+    """
+    __tablename__ = "server_session_changes"
+    __table_args__ = (
+        Index("ix_server_session_changes_changed", "changed_at"),
+    )
+
+    visitor_id_hash: Mapped[str] = mapped_column(String(80), primary_key=True)
+    started_at: Mapped[datetime] = mapped_column(DateTime, primary_key=True)
+    rev: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    changed_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+
 class DailyTraffic(Base):
     """Rollup: день × канал × устройство × новизна (визиты Метрики).
     Витрины BI читают агрегат вместо полного скана raw_metrika_visits."""
