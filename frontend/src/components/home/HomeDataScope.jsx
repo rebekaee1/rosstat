@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { homeScopeCountriesCount } from '../../lib/homeWorkbench';
 import { compactIndicatorCount, startYear } from '../../lib/homeStats';
-import { pluralRu, useWorldCountries } from '../../lib/worldApi';
+import { useWorldCountries } from '../../lib/worldApi';
 import { useLocale, useT } from '../../i18n';
 import AnimatedCount from './AnimatedCount';
 import '../../styles/shell.css';
@@ -14,7 +14,7 @@ const groupDigits = (locale) => {
 const plainYear = (n) => String(Math.round(n));
 
 function Stat({ label, children }) {
-  // Число стоит над подписью: значения в ряду выровнены, даже если подпись соседа занимает две строки.
+  // Подпись — короткое слово в одну строку над числом: три колонки равны по ширине, числа стоят на одной линии.
   return (
     <div className="fe-scope-stat">
       <dt className="fe-scope-stat__label">{label}</dt>
@@ -55,12 +55,6 @@ export default function HomeDataScope() {
   const usIndicators = Number(data?.us_state_indicators_count);
   const usStates = Number(data?.us_states_count);
 
-  const countryWord = locale === 'en'
-    ? t('world.unit.country_many')
-    : pluralRu(countriesCount || 0, [
-      t('world.unit.country_one'), t('world.unit.country_few'), t('world.unit.country_many'),
-    ]);
-
   const dash = <span aria-label={t('homehero.stat.unknown')}>—</span>;
   const skeleton = <span className="fe-stat-skeleton skeleton" aria-hidden="true" />;
 
@@ -78,7 +72,7 @@ export default function HomeDataScope() {
         </h2>
 
         <dl className="fe-scope-stats">
-          <Stat label={t('homehero.stat.indicators.label')}>
+          <Stat label={t('shell3.stat.indicators')}>
             {pending ? skeleton : indicators ? (
               <>
                 <AnimatedCount value={indicators.value} format={numberFormat} />
@@ -88,20 +82,15 @@ export default function HomeDataScope() {
               </>
             ) : dash}
           </Stat>
-          <Stat label={countryWord}>
+          <Stat label={t('shell3.stat.countries')}>
             {pending ? skeleton : countriesCount != null
               ? <AnimatedCount value={countriesCount} format={numberFormat} />
               : dash}
           </Stat>
-          <Stat label={t('homehero.stat.history.label')}>
-            {since ? (
-              <>
-                {t('homehero.stat.since') ? (
-                  <span className="fe-stat-unit fe-stat-unit--lead">{t('homehero.stat.since')}</span>
-                ) : null}
-                <AnimatedCount value={since} from={endYear} format={plainYear} duration={1100} />
-              </>
-            ) : dash}
+          <Stat label={t('shell3.stat.since')}>
+            {since
+              ? <AnimatedCount value={since} from={endYear} format={plainYear} duration={1100} />
+              : dash}
           </Stat>
         </dl>
 

@@ -58,7 +58,7 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, children }) {
       </h3>
       <div id={panelId} className="fe-foot-panel" data-open={expanded} inert={!expanded}>
         <div className="fe-foot-panel__inner">
-          <ul className="space-y-2 text-sm text-text-secondary pointer-coarse:space-y-0">
+          <ul className="fe-foot-list space-y-2 text-sm pointer-coarse:space-y-0">
             {!desktop && hubTo && hubLabel ? (
               <li>
                 <Link to={hubTo} className={footLink}>{hubLabel}</Link>
@@ -243,6 +243,7 @@ export default function Footer() {
               <details className="fe-foot-requisites">
                 <summary className={cn(FOCUS_RING, 'fe-foot-requisites__summary')}>
                   {t('shell.footer.requisites')}
+                  <ChevronDown size={16} aria-hidden="true" className="fe-foot-requisites__chevron" />
                 </summary>
                 <p>{t('footer.operator')}</p>
               </details>

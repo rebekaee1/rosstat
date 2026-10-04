@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
@@ -103,7 +103,8 @@ function TickerCell({ snapshot, nowMs }) {
   const fetchedMs = snapshot.fetched_at ? new Date(snapshot.fetched_at).getTime() : null;
   const isStale = isIntraday && fetchedMs !== null && nowMs - fetchedMs > 15 * 60 * 1000;
   const asOfRaw = !isIntraday ? resolveAsOfRaw(snapshot) : null;
-  const asOfHuman = formatAsOfHuman(asOfRaw, locale);
+  // Выходной день не делает дневной курс «устаревшим»: дату пишем, только когда значению больше четырёх суток.
+  const asOfHuman = formatAsOfHuman(asOfRaw, locale, new Date(), { minAgeDays: 4 });
   const sourceKind = tickerSourceKind(snapshot.source);
   const asOfTitle = formatAsOfTitle(asOfRaw, locale);
   const asOfClock = fetchedMs !== null
@@ -153,7 +154,7 @@ function TickerCell({ snapshot, nowMs }) {
       {asOfHuman ? (
         <span className="text-xs text-text-secondary">{t('shell.ticker.asOf', { date: asOfHuman })}</span>
       ) : null}
-      {pct !== null && pct !== undefined ? (
+      {pct !== null && pct !== undefined && Math.abs(pct) >= 0.005 ? (
         <DeltaBadge delta={pct} className="hidden text-xs xl:inline-flex">
           {formatPct(pct, locale)}
         </DeltaBadge>
@@ -222,6 +223,50 @@ function useHideOnScroll() {
   }, []);
 }
 
+/**
+ * Лента курсов шире экрана: у края, где есть что показать, проявляется затухание, а при первом показе лента
+ * один раз чуть сдвигается и возвращается — намёк «листается». Любое касание или колесо отменяет подсказку.
+ */
+function useEdgeFade(dep) {
+  const ref = useRef(null);
+  const [edges, setEdges] = useState({ start: false, end: false });
+  const measure = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const overflow = el.scrollWidth - el.clientWidth;
+    const next = { start: overflow > 4 && el.scrollLeft > 4, end: overflow > 4 && el.scrollLeft < overflow - 4 };
+    setEdges((prev) => (prev.start === next.start && prev.end === next.end ? prev : next));
+  }, []);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const frame = window.requestAnimationFrame(measure);
+    window.addEventListener('resize', measure);
+    let hintTimer = 0;
+    let backTimer = 0;
+    let cancelled = false;
+    const cancel = () => { cancelled = true; window.clearTimeout(hintTimer); window.clearTimeout(backTimer); };
+    const reduce = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce && typeof el.scrollTo === 'function') {
+      hintTimer = window.setTimeout(() => {
+        if (cancelled || el.scrollWidth - el.clientWidth < 24 || el.scrollLeft > 0) return;
+        el.scrollTo({ left: 56, behavior: 'smooth' });
+        backTimer = window.setTimeout(() => { if (!cancelled) el.scrollTo({ left: 0, behavior: 'smooth' }); }, 900);
+      }, 1400);
+    }
+    el.addEventListener('pointerdown', cancel, { passive: true });
+    el.addEventListener('wheel', cancel, { passive: true });
+    return () => {
+      cancel();
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('resize', measure);
+      el.removeEventListener('pointerdown', cancel);
+      el.removeEventListener('wheel', cancel);
+    };
+  }, [measure, dep]);
+  return { ref, edges, measure };
+}
+
 export default function LiveTicker() {
   useHideOnScroll();
   const t = useT();
@@ -238,6 +283,7 @@ export default function LiveTicker() {
   });
 
   const snapshots = data?.snapshots || [];
+  const { ref: scrollerRef, edges, measure } = useEdgeFade(snapshots.length);
   if (snapshots.length === 0) {
     return (
       <div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface border-b border-champagne/15" />
@@ -249,16 +295,22 @@ export default function LiveTicker() {
       className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface border-b border-champagne/15 shadow-sm pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
     >
       <div className="mx-auto h-full max-w-7xl">
-        <div
-          className="fe-fade-x scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
-          role="group"
-          aria-label={t('ticker.quotes')}
-        >
-          <div className="flex h-full w-max min-w-full">
-            <div className="mx-auto flex h-full items-center gap-0.5 pl-3 pr-8 sm:gap-1 sm:px-3 md:gap-1.5 md:px-4 xl:gap-3">
-              {snapshots.map((s) => (
-                <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
-              ))}
+        <div className="fe-ticker__scroller">
+          <span className="fe-ticker__fade fe-ticker__fade--l" data-on={edges.start} aria-hidden="true" />
+          <span className="fe-ticker__fade fe-ticker__fade--r" data-on={edges.end} aria-hidden="true" />
+          <div
+            ref={scrollerRef}
+            onScroll={measure}
+            className="scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
+            role="group"
+            aria-label={t('ticker.quotes')}
+          >
+            <div className="flex h-full w-max min-w-full">
+              <div className="mx-auto flex h-full items-center gap-0.5 pl-3 pr-8 sm:gap-1 sm:px-3 md:gap-1.5 md:px-4 xl:gap-3">
+                {snapshots.map((s) => (
+                  <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
+                ))}
+              </div>
             </div>
           </div>
         </div>

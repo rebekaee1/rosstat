@@ -44,21 +44,25 @@
 .fe-scope-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px 10px;
-  margin: 12px 0 0;
+  gap: 0;
+  margin: 14px -10px 0;
 }
+/* Три равные колонки с тонкими разделителями; подпись над числом в одну строку, числа на одной линии. */
 .fe-scope-stat {
   display: flex;
-  flex-direction: column-reverse;
-  justify-content: flex-end;
-  gap: 4px;
+  flex-direction: column;
+  gap: 6px;
   min-width: 0;
+  padding-inline: 10px;
 }
+.fe-scope-stat + .fe-scope-stat { border-left: 1px solid var(--color-border-subtle); }
 .fe-scope-stat__label {
+  overflow: hidden;
   font-size: 12px;
   line-height: 1.3;
   color: var(--color-text-secondary);
-  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num {
   display: flex;
@@ -87,7 +91,6 @@
   letter-spacing: 0;
   color: var(--color-text-secondary);
 }
-.fe-stat-unit--lead { margin-right: 1px; }
 .fe-stat-skeleton { display: inline-block; width: 3.2ch; height: 0.9em; border-radius: 8px; }
 
 /* «Только официальные источники» — одна строка-раскрывашка, без отдельного абзаца. */
@@ -302,3 +305,279 @@ html .fe-navbar {
   transition-property: transform, opacity, background-color, box-shadow, border-color, top;
 }
 html[data-fe-ticker='hidden'] .fe-navbar { top: 0.5rem; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Волна 3 (X3): единый вертикальный ритм, каталог стран, меню, cookie, шапка, тикер.
+   Правила index.css не слоистые, поэтому здесь специфичность чуть выше, а не !important.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Вертикальный ритм: 40 px на телефоне, 48 px от 768 px ─────────────────────
+   Причина «пустых полос» 150–250 px: у страниц внизу pb-24 (96 px) + mb-12 последнего блока (48 px) +
+   поле плашки регистрации (24 px). Теперь последний блок страницы заканчивается ритмом секции, а плашка
+   и подвал садятся сразу за ним. */
+:root { --fe-gap-section: 40px; }
+@media (min-width: 768px) { :root { --fe-gap-section: 48px; } }
+main#main-content > :last-child { padding-bottom: var(--fe-gap-section); }
+main#main-content > :last-child > :last-child { margin-bottom: 0; }
+
+/* Главная: hero отделён от карточки с планетой тем же ритмом, а не 32 + 28 + 18 px подряд. */
+.fe-page-shell.fe-dashboard [data-block='home-hero'] {
+  margin-bottom: var(--fe-gap-section);
+  padding-bottom: 0;
+}
+/* Верх: main уже сдвинут на 36 px под бегущую строку, поэтому от шапки до hero остаётся ~24 px, а не 56 (пустое поле над hero). */
+.fe-page-shell.fe-dashboard { padding-top: 72px; }
+@media (min-width: 640px) { .fe-page-shell.fe-dashboard { padding-top: 80px; } }
+/* Страница, оставленная на время подгрузки (SSR-снимок): тот же верхний отступ, что у живой главной,
+   а не 36 + 88 + 32 px, из-за которых английский hero начинался на 110 px ниже. */
+main#main-content .fe-ssr-hold { padding-top: 2.75rem; }
+
+/* ── Выбор показателя на главной: лента в один ряд, выбранный — тёмный ──────── */
+.fe-dashboard [data-block='home-map-controls'] .fe-chip.is-active,
+.fe-dashboard .fe-country-regions .fe-chip.is-active {
+  border-color: var(--color-text-primary);
+  background: var(--color-text-primary);
+  color: var(--color-surface);
+}
+
+/* ── Каталог стран: поиск, регионы без счётчиков, компактные строки ────────── */
+.fe-country-tools { display: grid; gap: 10px; margin-bottom: 12px; }
+@media (min-width: 640px) {
+  .fe-country-tools { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); align-items: center; gap: 16px; }
+}
+.fe-country-search { position: relative; display: block; min-width: 0; }
+.fe-country-search__icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.fe-country-search__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px 0 42px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  outline: none;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.fe-country-search__input::placeholder { color: var(--color-text-tertiary); }
+.fe-country-search__input:focus-visible {
+  border-color: var(--color-champagne-ink);
+  box-shadow: 0 0 0 3px rgba(173, 138, 72, 0.2);
+}
+@media (min-width: 640px) {
+  .fe-country-regions.fe-chip-row--nowrap { flex-wrap: wrap; overflow: visible; }
+}
+.fe-country-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 640px) { .fe-country-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+@media (min-width: 1024px) { .fe-country-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fe-country-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 8px 14px 8px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--color-surface);
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.fe-country-row:hover { border-color: var(--color-border-champagne); box-shadow: 0 10px 22px -18px #26344e88; }
+.fe-country-row__flag {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 9999px;
+  background: rgba(173, 138, 72, 0.08);
+  font-size: 20px;
+  line-height: 1;
+}
+.fe-country-row__name {
+  display: block;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fe-country-row:hover .fe-country-row__name { color: var(--color-champagne-ink); }
+.fe-country-row__meta { display: block; font-size: 12px; line-height: 1.3; color: var(--color-text-secondary); }
+.fe-country-row__chevron { flex: none; color: var(--color-text-tertiary); transition: transform 0.15s ease, color 0.15s ease; }
+.fe-country-row:hover .fe-country-row__chevron { color: var(--color-champagne-ink); transform: translateX(2px); }
+.fe-country-more {
+  min-height: 48px;
+  padding: 0 24px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 12px;
+  background: var(--fe-glass-soft);
+  color: var(--color-champagne-ink);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fe-country-empty {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  border: 1px dashed var(--color-border-subtle);
+  border-radius: 16px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  text-align: center;
+}
+.fe-country-empty p { margin: 0; }
+
+/* ── Меню телефона: кнопки входа закреплены внизу, список прокручивается ───── */
+@media (max-width: 1023px) {
+  .fe-navbar-mobile-menu {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+}
+.fe-mnav-scroll { min-height: 0; flex: 1; padding: 12px 12px 8px; overflow-y: auto; overscroll-behavior: contain; }
+.fe-mnav-foot { flex: none; padding: 10px 12px 12px; border-top: 1px solid var(--color-border-subtle); background: var(--color-surface); }
+.fe-navbar-mobile-menu .fe-mnav-link { transition: background-color 0.15s ease, color 0.15s ease; }
+.fe-navbar-mobile-menu .fe-mnav-link:active { background: rgba(173, 138, 72, 0.12); }
+@keyframes fe-mnav-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+.fe-navbar-mobile-menu .fe-mnav-group { animation: fe-mnav-in 0.22s var(--fe-ease-out) both; }
+.fe-navbar-mobile-menu .fe-mnav-group:nth-child(2) { animation-delay: 0.04s; }
+.fe-navbar-mobile-menu .fe-mnav-group:nth-child(3) { animation-delay: 0.08s; }
+.fe-navbar-mobile-menu .fe-mnav-group:nth-child(4) { animation-delay: 0.12s; }
+
+/* ── Шапка: после прокрутки капсула непрозрачная, текст страницы не просвечивает ── */
+nav.fe-navbar.glass-surface {
+  background: color-mix(in srgb, var(--color-surface) 86%, var(--color-obsidian));
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+/* ── Диалог поиска: рамка фокуса по всему полю, а не по голому input ──────── */
+.fe-search-panel [role='combobox']:focus-visible { outline: none; }
+.fe-search-field { border-bottom: 2px solid transparent; transition: border-color 0.15s ease; }
+.fe-search-field:focus-within { border-bottom-color: var(--color-champagne-ink); }
+.fe-search-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: calc(100% - 32px);
+  min-height: 44px;
+  margin: 6px 16px 4px;
+  border: 1px dashed var(--color-border-champagne);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--color-champagne-ink);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Cookie: короткая панель, два переключателя понятными словами ──────────── */
+.fe-cookie-switch {
+  position: relative;
+  flex: none;
+  width: 46px;
+  height: 28px;
+  margin: 0;
+  border-radius: 9999px;
+  background: var(--color-obsidian-lighter);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+.fe-cookie-switch::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(26, 34, 52, 0.3);
+  transition: transform 0.18s var(--fe-ease-out);
+}
+.fe-cookie-switch:checked { background: var(--color-champagne-ink); }
+.fe-cookie-switch:checked::before { transform: translateX(18px); }
+.fe-cookie-switch:focus-visible { outline: 2px solid var(--color-champagne-ink); outline-offset: 3px; }
+.fe-cookie-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.fe-cookie-row:hover { border-color: var(--color-border-champagne); }
+
+/* ── Плашка регистрации: значок на одной линии с заголовком, без пустой полосы перед ней ── */
+aside.fe-nudge-m { align-items: start; margin: 0 16px 24px; }
+aside.fe-nudge-m .fe-nudge-m__icon,
+aside.fe-nudge-m .fe-nudge-m__close { align-self: start; }
+aside.fe-nudge-m .fe-nudge-m__title { padding-top: 2px; }
+aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
+
+/* ── Тикер: затухание по краям и лёгкая подсказка прокрутки ─────────────────── */
+.fe-ticker__scroller { position: relative; height: 100%; }
+.fe-ticker__fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 36px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, var(--color-warn-surface), transparent); }
+.fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, var(--color-warn-surface), transparent); }
+.fe-ticker__fade[data-on='true'] { opacity: 1; }
+
+/* ── Подвал: ссылки темнее, «Реквизиты» того же размера и со стрелкой ──────── */
+.fe-foot-list { color: color-mix(in srgb, var(--color-text-primary) 78%, var(--color-text-secondary)); }
+.fe-foot-list a:hover, .fe-foot-list button:hover { color: var(--color-text-primary); }
+.fe-foot-requisites__summary {
+  gap: 6px;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--color-text-primary) 78%, var(--color-text-secondary));
+  list-style: none;
+}
+.fe-foot-requisites__summary::-webkit-details-marker { display: none; }
+.fe-foot-requisites__chevron { flex: none; transition: transform 0.2s var(--fe-ease-out); }
+.fe-foot-requisites[open] .fe-foot-requisites__chevron { transform: rotate(180deg); }
+.fe-foot-requisites p { font-size: 13px; line-height: 1.5; }
+
+/* ── Заглушка загрузки маршрута: видна сразу, по форме карточек ─────────────── */
+.fe-route-skel { animation: fe-reveal 0.2s ease-out both; }
+.fe-route-skel__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 768px) { .fe-route-skel__tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

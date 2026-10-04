@@ -12,6 +12,7 @@ import { useT } from '../i18n';
 import { authLink, prepareAuthReturn } from '../lib/authReturn';
 import Button from './Button';
 import '../styles/indicator-russia.css';
+import '../styles/shell.css';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
 // Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».
@@ -30,6 +31,9 @@ const REGISTER_VARIANT = {
     { icon: Bell, textKey: 'nudge.register.benefit.mail' },
   ],
   noteKey: 'nudge.register.note',
+  // Плашка на телефоне: заголовок про выгоду и одна короткая фраза, без «рассылки» как преимущества.
+  mobileTitleKey: 'shell3.nudge.register.title',
+  mobileSubKey: 'shell3.nudge.register.sub',
   ctaKey: 'nudge.register.cta',
   ctaTo: '/register',
   ev: {
@@ -49,6 +53,8 @@ const FEEDBACK_VARIANT = {
     { icon: Lightbulb, textKey: 'nudge.feedback.benefit.idea' },
   ],
   noteKey: 'nudge.feedback.note',
+  mobileTitleKey: 'nudge.feedback.pill',
+  mobileSubKey: 'shell3.nudge.feedback.sub',
   ctaKey: 'nudge.feedback.cta',
   ctaTo: '/account#feedback',
   ev: {
@@ -111,8 +117,8 @@ export default function RegisterNudge() {
     <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-m sm:hidden print:hidden" aria-label={pill}>
       <span className="fe-nudge-m__icon" aria-hidden="true"><Sparkles className="h-5 w-5" /></span>
       <div className="fe-nudge-m__text">
-        <p className="fe-nudge-m__title">{pill}</p>
-        <p className="fe-nudge-m__sub">{t(variant.noteKey)}</p>
+        <p className="fe-nudge-m__title">{t(variant.mobileTitleKey)}</p>
+        <p className="fe-nudge-m__sub">{t(variant.mobileSubKey)}</p>
       </div>
       <button type="button" onClick={dismiss} aria-label={t('common.close')} className={cn(FOCUS_RING, 'fe-press fe-nudge-m__close')}><X className="w-4 h-4" aria-hidden="true" /></button>
       <Button

@@ -8,6 +8,7 @@ import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
 import { dedupeSearchRows, describeSearchResult, searchExamples } from '../lib/searchExamples';
+import { friendlySearchName, splitSearchRows } from '../lib/searchGroups';
 import Chip from './Chip';
 import '../styles/shell.css';
 
@@ -87,7 +88,7 @@ export default function IndicatorSearch({
     [locale],
   );
   const detailOf = useCallback((item) => describeSearchResult(item, t), [t]);
-  const rows = useMemo(() => {
+  const allRows = useMemo(() => {
     if (!qTrim) {
       return popular.map((text, i) => ({
         kind: 'suggestion', key: `suggest:${i}`, name: text, query: text,
@@ -95,6 +96,12 @@ export default function IndicatorSearch({
     }
     return dedupeSearchRows(results, nameOf, detailOf);
   }, [qTrim, popular, results, nameOf, detailOf]);
+  // Вариации одного показателя сворачиваются в «Ещё варианты»: сначала человек видит самое подходящее.
+  const grouped = useMemo(() => (qTrim ? splitSearchRows(allRows, nameOf) : null), [qTrim, allRows, nameOf]);
+  const [moreFor, setMoreFor] = useState('');
+  const showMore = Boolean(qTrim) && moreFor === qTrim;
+  const rows = grouped && !showMore ? grouped.primary : allRows;
+  const hiddenCount = grouped ? grouped.more.length : 0;
   const highlighted = Math.max(0, Math.min(hi, rows.length - 1));
 
   const close = useCallback(() => {
@@ -368,7 +375,7 @@ export default function IndicatorSearch({
             onClick={close}
           />
           <div className="fe-dialog-panel fe-search-panel relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col rounded-2xl border border-border-subtle bg-surface shadow-2xl overflow-hidden sm:max-h-[calc(90dvh-1rem)]">
-            <div className="relative flex shrink-0 items-center gap-3 px-4 py-2 border-b border-border-subtle">
+            <div className="fe-search-field relative flex shrink-0 items-center gap-3 px-4 py-2 border-b border-border-subtle">
               {isLoading && qTrim
                 ? <span className="fe-search-spinner shrink-0" aria-hidden="true" data-testid="search-spinner" />
                 : <Search className="w-5 h-5 text-text-tertiary shrink-0" aria-hidden="true" />}
@@ -487,7 +494,7 @@ export default function IndicatorSearch({
                       index={i}
                       id={`${resultId}-result-${i}`}
                       active={i === highlighted}
-                      name={nameOf(item)}
+                      name={friendlySearchName(item, nameOf(item), t)}
                       detail={detailOf(item)}
                       onHover={setHi}
                       onPick={go}
@@ -499,6 +506,17 @@ export default function IndicatorSearch({
                 </>
               )}
             </div>
+
+            {qTrim && hiddenCount > 0 && !isLoading ? (
+              <button
+                type="button"
+                className={cn(FOCUS_RING, 'fe-search-more fe-press shrink-0')}
+                aria-expanded={showMore}
+                onClick={() => setMoreFor(showMore ? '' : qTrim)}
+              >
+                {showMore ? t('shell3.search.fewerVariants') : t('shell3.search.moreVariants', { n: hiddenCount })}
+              </button>
+            ) : null}
 
             <div className="fe-search-kbd px-4 py-2 border-t border-border-subtle flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary [@media(pointer:coarse)]:hidden">
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">↑</kbd> <kbd className="px-1 py-0.5 rounded border border-border-subtle">↓</kbd> {t('search.hint.nav')}</span>

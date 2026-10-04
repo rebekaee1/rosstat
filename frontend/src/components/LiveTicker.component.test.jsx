@@ -102,6 +102,32 @@ describe('LiveTicker: единые знаки, источник и челове�
     expect(screen.getAllByText('shell.ticker.asOf')).toHaveLength(1);
   });
 
+  it('курс за вчера или выходные не подписывается датой («as of Oct 2» убрано), нулевое изменение не показывается', async () => {
+    const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toLocaleDateString('en-CA', { timeZone: 'UTC' });
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        snapshots: [
+          { code: 'eur-usd', price: 1.12, change_pct: -0.65, market_open: false, fetched_at: new Date().toISOString(), as_of_date: twoDaysAgo, source: 'ECB' },
+          { code: 'usd-rub-live', price: 84.41, change_pct: 0, market_open: true, fetched_at: new Date().toISOString(), source: 'MOEX' },
+        ],
+      }),
+    }));
+    renderTicker({ locale: 'en', route: '/' });
+    await screen.findByText('1.12');
+    expect(screen.queryByText('shell.ticker.asOf')).toBeNull();
+    expect(document.body.textContent).not.toContain('0,00%');
+    expect(document.body.textContent).not.toMatch(/\b0\.00%/);
+  });
+
+  it('лента курсов получает затухание по краям: два слоя-индикатора вместо маски на прокручиваемом блоке', async () => {
+    mockSnapshots();
+    renderTicker({ locale: 'ru', route: '/' });
+    await screen.findByText('84,41');
+    expect(document.querySelectorAll('.fe-ticker__fade')).toHaveLength(2);
+    expect(document.querySelector('[role="group"]').className).not.toContain('fe-fade-x');
+  });
+
   it('при прокрутке вниз строка уходит, при прокрутке вверх возвращается', async () => {
     mockSnapshots();
     renderTicker({ locale: 'ru', route: '/' });

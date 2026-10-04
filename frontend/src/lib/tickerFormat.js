@@ -11,14 +11,17 @@ function calendarDay(isoDate, locale = 'ru') {
 }
 
 /**
- * Дата значения человеческим языком: «3 окт.». Пустая строка, если значение сегодняшнее —
+ * Дата значения человеческим языком: «3 окт.». Пустая строка, если значение сегодняшнее (или моложе `minAgeDays`) —
  * тогда подпись только шумит. Нужна, чтобы устаревший дневной ряд не выглядел как свежая котировка.
  */
-export function formatAsOfHuman(isoDate, locale = 'ru', now = new Date()) {
+export function formatAsOfHuman(isoDate, locale = 'ru', now = new Date(), { minAgeDays = 0 } = {}) {
   const day = calendarDay(isoDate, locale);
   if (!day) return '';
   const today = now.toLocaleDateString('en-CA', { timeZone: tzFor(locale) });
   if (day === today) return '';
+  // Свежий дневной курс (вчера, выходные) не подписываем: подпись нужна, только когда значение действительно давнее.
+  const ageDays = (Date.parse(`${today}T12:00:00Z`) - Date.parse(`${day}T12:00:00Z`)) / 86400000;
+  if (minAgeDays > 0 && ageDays < minAgeDays) return '';
   const d = new Date(`${day}T12:00:00Z`);
   return d.toLocaleDateString(locale === 'en' ? 'en-US' : 'ru-RU', {
     day: 'numeric', month: 'short', timeZone: 'UTC',

@@ -13,6 +13,7 @@ import {
   saveConsent,
 } from '../lib/consent';
 import { useT } from '../i18n';
+import '../styles/shell.css';
 
 /**
  * Cookie-баннер (152-ФЗ): информирование о подразумеваемом согласии.
@@ -26,23 +27,10 @@ import { useT } from '../i18n';
  * политики) показывает баннер заново.
  */
 
+// Два переключателя обычными словами вместо названий сервисов. «Необходимые» — не переключатель, а строка текста.
 const CATEGORY_DEFS = [
-  {
-    id: 'necessary',
-    nameKey: 'cookie.cat.necessary',
-    descKey: 'cookie.cat.necessaryDesc',
-    locked: true,
-  },
-  {
-    id: 'analytics',
-    nameKey: 'cookie.cat.analytics',
-    descKey: 'cookie.cat.analyticsDesc',
-  },
-  {
-    id: 'ads',
-    nameKey: 'cookie.cat.ads',
-    descKey: 'cookie.cat.adsDesc',
-  },
+  { id: 'analytics', nameKey: 'shell3.cookie.analytics', descKey: 'shell3.cookie.analyticsDesc' },
+  { id: 'ads', nameKey: 'shell3.cookie.ads', descKey: 'shell3.cookie.adsDesc' },
 ];
 
 // Кнопки баннера делят ширину поровну и переносят подпись на узком экране.
@@ -139,7 +127,7 @@ export default function CookieConsent() {
         data-analytics-overlay="cookie-consent"
         data-fe-attention-occluder="cookie-consent"
         data-fe-interaction="consent-dialog"
-        className="pointer-events-auto mx-auto sm:mx-0 sm:max-w-md flex max-h-[calc(100dvh-1.5rem)] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
+        className="pointer-events-auto mx-auto sm:mx-0 sm:max-w-md flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
       >
         <div className="flex shrink-0 items-start gap-1 px-3 pt-3 pb-1">
           <div className="min-w-0 flex-1 self-center">
@@ -167,49 +155,28 @@ export default function CookieConsent() {
 
         {expanded && (
           <div data-consent-scroll-body className="min-h-0 overflow-y-auto overscroll-contain px-3 pb-3">
-            <p className="mb-3 text-xs text-text-secondary leading-relaxed">
-              {t('cookie.bodyBefore')}{' '}
+            <p className="mb-3 text-[13px] text-text-secondary leading-snug">
+              {t('shell3.cookie.intro')}{' '}
               <Link to="/privacy" className="text-champagne-ink hover:underline">
-                {t('cookie.privacyLink')}
+                {t('cookie.privacyShort')}
               </Link>
-              .
             </p>
             <div className="space-y-2">
-              {CATEGORY_DEFS.map((cat) => {
-                const checked = cat.locked ? true : choices[cat.id];
-                return (
-                  <label
-                    key={cat.id}
-                    className={cn(
-                      'flex min-h-11 items-start gap-3 rounded-xl border border-border-subtle px-3 py-2.5',
-                      cat.locked ? 'opacity-70' : 'cursor-pointer hover:border-border-champagne transition-colors'
-                    )}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      disabled={cat.locked}
-                      onChange={(e) =>
-                        setChoices((prev) => ({ ...prev, [cat.id]: e.target.checked }))
-                      }
-                      className="mt-0.5 accent-champagne w-4 h-4 shrink-0"
-                    />
-                    <span className="flex-1">
-                      <span className="block text-xs font-semibold text-text-primary">
-                        {t(cat.nameKey)}
-                        {cat.locked && (
-                          <span className="ml-2 text-[10px] uppercase tracking-wider text-text-tertiary font-medium">
-                            {t('cookie.alwaysOn')}
-                          </span>
-                        )}
-                      </span>
-                      <span className="block text-xs text-text-tertiary leading-relaxed mt-0.5">
-                        {t(cat.descKey)}
-                      </span>
-                    </span>
-                  </label>
-                );
-              })}
+              {CATEGORY_DEFS.map((cat) => (
+                <label key={cat.id} className="fe-cookie-row">
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-sm font-semibold text-text-primary">{t(cat.nameKey)}</span>
+                    <span className="mt-0.5 block text-[13px] leading-snug text-text-secondary">{t(cat.descKey)}</span>
+                  </span>
+                  <input
+                    type="checkbox"
+                    role="switch"
+                    checked={choices[cat.id]}
+                    onChange={(e) => setChoices((prev) => ({ ...prev, [cat.id]: e.target.checked }))}
+                    className="fe-cookie-switch"
+                  />
+                </label>
+              ))}
             </div>
           </div>
         )}

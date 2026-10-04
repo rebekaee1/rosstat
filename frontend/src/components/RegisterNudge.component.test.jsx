@@ -25,6 +25,18 @@ describe('RegisterNudge (карточка на телефоне)', () => {
     expect(cta).toBeTruthy();
   });
 
+  it('заголовок про выгоду и одна короткая фраза, без «рассылки» как преимущества', async () => {
+    renderNudge(null);
+    const card = await waitFor(() => {
+      const el = document.querySelector('aside.fe-nudge-m');
+      expect(el).toBeTruthy();
+      return el;
+    });
+    expect(card.querySelector('.fe-nudge-m__title').textContent).toBe('Скачивайте данные бесплатно');
+    expect(card.querySelector('.fe-nudge-m__sub').textContent).toBe('Зарегистрируйтесь — это займёт минуту.');
+    expect(card.textContent).not.toMatch(/рассылк/i);
+  });
+
   it('закрытие запоминается и карточка исчезает', async () => {
     renderNudge(null);
     const card = await waitFor(() => {
