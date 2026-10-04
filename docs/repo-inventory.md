@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1320  ·  **Строк:** 1 004 390  ·  **Токенов (≈):** 9 494 489
+**Файлов:** 1320  ·  **Строк:** 1 004 392  ·  **Токенов (≈):** 9 494 558
 
 ## По верхним папкам
 
@@ -19,8 +19,8 @@
 | `backend` | 675 | 247 819 | 2 723 678 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 775 | 9 056 |
-| `docs` | 113 | 645 929 | 5 546 599 |
-| `frontend` | 405 | 86 825 | 919 558 |
+| `docs` | 113 | 645 929 | 5 546 622 |
+| `frontend` | 405 | 86 827 | 919 604 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 97 | 20 094 | 238 206 |
 
@@ -137,7 +137,7 @@
 | `backend/tests/test_world_cards.py` | 834 | 7 525 |
 | `backend/app/services/world_subnational_ingest.py` | 779 | 7 476 |
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 646 | 7 453 |
-| `docs/planet-view.md` | 427 | 7 441 |
+| `docs/planet-view.md` | 427 | 7 451 |
 | `frontend/src/pages/WorldCountry.jsx` | 646 | 7 303 |
 | `backend/app/services/seo_content.py` | 613 | 7 300 |
 | `scripts/e2e/liquid-glass-acceptance.mjs` | 351 | 7 284 |
@@ -172,7 +172,7 @@
 | `docs/research/_fpsr_raw/agent03.json` | 503 | 6 238 |
 | `backend/app/services/minfin_budget_parser.py` | 669 | 6 225 |
 | `backend/app/data/eurostat_listing.py` | 704 | 6 156 |
-| `frontend/src/components/PlanetScene.jsx` | 580 | 6 133 |
+| `frontend/src/components/PlanetScene.jsx` | 580 | 6 138 |
 | `frontend/src/lib/useIndicatorViewModeData.js` | 653 | 6 092 |
 | `backend/app/services/world_adapters/mospi_api.py` | 655 | 6 008 |
 | `backend/scripts/export_seo_demand_quarter.py` | 554 | 5 996 |
@@ -182,7 +182,7 @@
 | `docs/enterprise_resilience.md` | 115 | 5 785 |
 | `frontend/src/components/IndicatorSearch.jsx` | 464 | 5 747 |
 | `backend/app/api/world_subnational.py` | 648 | 5 712 |
-| `frontend/src/components/PlanetView.css` | 200 | 5 607 |
+| `frontend/src/components/PlanetView.css` | 202 | 5 648 |
 | `frontend/src/pages/WorldRegionsHome.jsx` | 528 | 5 599 |
 | `backend/tests/test_derived_ops.py` | 633 | 5 574 |
 | `docs/research/_fpsr_raw/agent05.json` | 541 | 5 566 |
@@ -904,12 +904,12 @@
 | `backend/app/services/yandex_metrika_reporting.py` | 98 | 831 |
 | `backend/tests/test_derived_specs_execution.py` | 98 | 831 |
 | `backend/tests/test_world_bank_pink_sheet_parser.py` | 115 | 830 |
+| `docs/research/ui-review-2026-10-04.md` | 39 | 830 |
 | `frontend/src/lib/housingViewModeResolve.js` | 82 | 830 |
 | `backend/app/data/eurostat_headline.py` | 99 | 825 |
 | `docs/analytics_api_inventory/metrika_reporting.md` | 47 | 823 |
 | `frontend/src/i18n/viewModeContent.en.test.js` | 93 | 823 |
 | `backend/app/services/ua_parser.py` | 93 | 822 |
-| `docs/research/ui-review-2026-10-04.md` | 39 | 817 |
 | `backend/tests/test_breadcrumbs.py` | 91 | 816 |
 | `scripts/test_frontend_asset_archive.py` | 71 | 814 |
 | `backend/app/services/oauth/yandex.py` | 82 | 813 |

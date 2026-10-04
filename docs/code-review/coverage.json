@@ -10072,7 +10072,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "2471b22f9d349fe389c1e1d79208e7d25f9f27a480cf6d71dfe46c5bdd65a383",
+      "sha256": "c679102493095e1767b209a1490e60c28c66e574a5b2d08fe9e3484391d76c1c",
       "bytes": 3232470,
       "lines": 110509,
       "code": false,
@@ -10722,8 +10722,8 @@
     },
     {
       "path": "docs/planet-view.md",
-      "sha256": "fb84ddacf3b2472d6ce23ef6ca8d2f007a0f3f91d21139bb9eb94c4f064a191a",
-      "bytes": 47514,
+      "sha256": "9317b6ee7a609e658b4c80b24510c8433d8ee8c9681c249db5eb38ce98f3dee6",
+      "bytes": 47582,
       "lines": 427,
       "code": false,
       "status": "reviewed",
@@ -11203,8 +11203,8 @@
     },
     {
       "path": "docs/research/ui-review-2026-10-04.md",
-      "sha256": "26583fc26364203d542ff5e4dfddd5b8ef40e55eef45cfec9179fad3c25d34c1",
-      "bytes": 5445,
+      "sha256": "11fdb17535e5acc8baf776359cda94f16a1c33552770ed3f26f94d4ab3620cb3",
+      "bytes": 5535,
       "lines": 39,
       "code": false,
       "status": "reviewed",
@@ -13426,8 +13426,8 @@
     },
     {
       "path": "frontend/src/components/PlanetScene.jsx",
-      "sha256": "5ad13dc1d96938ddcd97fc475c7b5f55d7042a70246fca47f5107579c733d360",
-      "bytes": 24535,
+      "sha256": "db5b8e242e81297bb63f2ebcab455fb4ac02e1daf9b81a2734cce44bf8aafb0c",
+      "bytes": 24555,
       "lines": 580,
       "code": true,
       "status": "reviewed",
@@ -13452,9 +13452,9 @@
     },
     {
       "path": "frontend/src/components/PlanetView.css",
-      "sha256": "a8ddac03ceab26c433008686bad983a0968357970bc8d69953959ada7f7f9d74",
-      "bytes": 22430,
-      "lines": 200,
+      "sha256": "aafabe465600a1ac64e45d699c396b46c519625f236b3010fbd0ccfb100d0775",
+      "bytes": 22595,
+      "lines": 202,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -18964,13 +18964,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "2f83c3ec2789a4f342abcfae04121188721b8afc08b89d0f19efd75054ddd9a4",
-  "javascript_inventory_sha256": "2ecd62315518b6263dd1ad8cbe11f0a8f54a05106bf95bc33b5c953ef7425c4b",
-  "baseline_commit": "b884a47189bd8e55470292aec50926d3f16ae730",
+  "ledger_sha256": "9efc7a8c7100c65b426cce6c67aa1d7b9cd7d48cbedd136d304b3e3a96704ce8",
+  "javascript_inventory_sha256": "463fe6b58d5e679904bd61939d0525fbc606360d8792dec60ed830040c229917",
+  "baseline_commit": "7107daad2637d6498f30bcce665af17c44ed1f5f",
   "branch": "integration/all-20261002",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json"
+    "docs/client-mechanism-inventory.json"
   ]
 }

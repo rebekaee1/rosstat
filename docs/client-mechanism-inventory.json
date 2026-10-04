@@ -18369,7 +18369,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/PlanetScene.jsx": {
-      "sha256": "5ad13dc1d96938ddcd97fc475c7b5f55d7042a70246fca47f5107579c733d360",
+      "sha256": "db5b8e242e81297bb63f2ebcab455fb4ac02e1daf9b81a2734cce44bf8aafb0c",
       "imports": [
         {
           "line": 1,
