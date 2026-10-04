@@ -20,7 +20,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from app.config import settings
-from app.database import analytics_session
+from app.database import analytics_session, set_local_statement_timeout
 from app.services.display import today_msk
 from app.services.index_policy import is_noindex_path
 from app.services.site_urls import (
@@ -31,6 +31,9 @@ from app.services.site_urls import (
 )
 
 logger = logging.getLogger(__name__)
+# statement_timeout для SQL секций sitemap (мс): больше штатных 60 с analytics-пула.
+_SECTION_STATEMENT_TIMEOUT_MS = 300_000
+
 STATS_NAME = "sitemap-stats.json"
 _GENERATION = re.compile(r"^[0-9a-f]{32}$")
 _SECTION = re.compile(r"^[a-z0-9-]+$")
@@ -338,6 +341,10 @@ async def build_static_sitemaps() -> dict:
         section_changed: dict[str, str] = {}
         try:
             async with analytics_session() as db:
+                # Ночной билд — пакетная задача: чанк US-штатов на хосте с 2 vCPU (тестовый
+                # сервер, 2026-10-04) не укладывался в 60 с analytics-пула. Транзакция одна на
+                # весь билд, SET LOCAL действует до её конца; соединение вернётся в пул штатным.
+                await set_local_statement_timeout(db, _SECTION_STATEMENT_TIMEOUT_MS)
                 async for name, urls in iter_url_sections(db):
                     if not _SECTION.fullmatch(name):
                         raise ValueError(f"Invalid sitemap section: {name}")

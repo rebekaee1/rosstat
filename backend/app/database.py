@@ -76,7 +76,8 @@ async def set_local_statement_timeout(db: AsyncSession, ms: int) -> None:
     лимита пула (30 с). Соединение возвращается в пул со штатным лимитом.
     Не-Postgres (SQLite в тестах) — no-op.
     """
-    if db.bind is None or db.bind.dialect.name != "postgresql":
+    bind = getattr(db, "bind", None)
+    if bind is None or bind.dialect.name != "postgresql":
         return
     await db.execute(
         text("SELECT set_config('statement_timeout', :v, true)"), {"v": str(int(ms))}
