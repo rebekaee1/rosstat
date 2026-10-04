@@ -284,8 +284,11 @@ describe('PlanetView interaction contract', () => {
     const onYearChange = vi.fn();
     const onSelect = vi.fn();
     render(<PlanetView countries={countries} years={[2024, 2025, 2026]} year={2026} onYearChange={onYearChange} onSelect={onSelect} />);
-    fireEvent.change(screen.getByRole('combobox', { name: 'map.timeline.yearOnMap' }), { target: { value: '2025' } });
+    fireEvent.click(screen.getByRole('button', { name: 'map.timeline.yearOnMap: 2026' }));
+    expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual(['2026', '2025', '2024']);
+    fireEvent.click(screen.getByRole('option', { name: '2025' }));
     expect(onYearChange).toHaveBeenCalledWith(2025);
+    expect(screen.queryByRole('listbox')).toBeNull();
     expect(onSelect).not.toHaveBeenCalled();
   });
 
@@ -508,5 +511,39 @@ describe('PlanetView interaction contract', () => {
     expect(scrollIntoView).toHaveBeenCalledWith(expect.objectContaining({ block: 'start' }));
     expect(scrollIntoView.mock.instances[0]).toBe(container.querySelector('.planet-stage'));
     delete Element.prototype.scrollIntoView;
+  });
+
+  it('after a tap on the planet, a phone scrolls just enough to show the country card under it, never past the planet top', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
+      matches: query.includes('max-width: 700px'), media: query, addEventListener: vi.fn(), removeEventListener: vi.fn(),
+    }));
+    window.scrollBy = vi.fn();
+    Object.defineProperty(window, 'innerHeight', { value: 800, configurable: true });
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
+    vi.spyOn(container.querySelector('.planet-stage'), 'getBoundingClientRect').mockReturnValue({ top: 300, bottom: 740 });
+    vi.spyOn(container.querySelector('.planet-country-card'), 'getBoundingClientRect').mockReturnValue({ top: 520, bottom: 1000 });
+    fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
+    expect(window.scrollBy).toHaveBeenCalledWith({ top: 214, behavior: 'smooth' });
+    // The planet top may not slide under the sticky header: room = 300 - 76 = 224, so a taller card is capped.
+    window.scrollBy.mockClear();
+    container.querySelector('.planet-country-card').getBoundingClientRect.mockReturnValue({ top: 520, bottom: 1300 });
+    fireEvent.click(screen.getByRole('button', { name: 'planet.clearSelection' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Pick Germany' }));
+    expect(window.scrollBy).toHaveBeenCalledWith({ top: 224, behavior: 'smooth' });
+    delete window.scrollBy;
+  });
+
+  it('explains the colour order when the rating direction is known, and can hide the phone list', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" initialMode="data" colorDirection="asc" hideListOnPhone />);
+    await screen.findByTestId('planet-scene');
+    expect(container.querySelector('.planet-key-order').textContent).toBe('x1.planet.keyLowerFirst');
+    expect(container.querySelector('.planet-view--no-phone-list')).toBeTruthy();
+  });
+
+  it('keeps every country name off the globe until one is selected or hovered', async () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    expect(scene.props.selectedCode).toBeNull();
+    expect(scene.props.mode).toBe('earth');
   });
 });

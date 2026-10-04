@@ -43,6 +43,7 @@ import Button from '../components/Button';
 import Chip from '../components/Chip';
 import CountryFlag from '../components/CountryFlag';
 import WorldCountUp from '../components/WorldCountUp';
+import YearPicker from '../components/YearPicker';
 import '../styles/world.css';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
@@ -517,7 +518,7 @@ export default function WorldRatingPage() {
   }, [ranked]);
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6">
       <Breadcrumbs
         items={worldRatingTrail(shortName || concept.name || t('crumb.rating'), activeConcept)}
       />
@@ -530,9 +531,11 @@ export default function WorldRatingPage() {
         <h1 className="max-w-4xl font-display text-2xl font-bold leading-tight text-text-primary sm:text-3xl lg:text-4xl">
           {pageTitle}
         </h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-text-secondary">
-          {t('world.rating.intro')}
-        </p>
+        {/* Пояснение не стоит между заголовком и планетой: планета должна быть видна на первом экране. */}
+        <details className="w2-details w2-details--tight">
+          <summary>{t('x1.rating.details')}</summary>
+          <p className="max-w-3xl leading-6">{t('world.rating.intro')}</p>
+        </details>
       </header>
 
       {error && (
@@ -602,6 +605,7 @@ export default function WorldRatingPage() {
                     rankingItems={ranked}
                     benchmark={mapSeriesQ.data?.benchmark_by_year?.[String(activeYear)]}
                     ratingHref="#rating-table"
+                    hideListOnPhone
                     onSelect={openCountry}
                   />
                 </>
@@ -689,21 +693,20 @@ export default function WorldRatingPage() {
                 {t('world.rating.allWithData', { n: ranked.length })}
               </h2>
               <div className="flex min-w-0 flex-wrap items-end gap-2.5">
-                <label className="block min-w-[7.5rem]">
+                <div className="block min-w-[7.5rem]">
                   <span className="mb-1 block text-xs text-text-secondary">
                     {t('common.year')}
                   </span>
-                  <select
-                    value={activeYear || ''}
-                    onChange={(event) => setSelectedYear(Number(event.target.value))}
+                  <YearPicker
+                    years={years}
+                    value={activeYear || null}
+                    onChange={setSelectedYear}
+                    label={t('common.year')}
                     disabled={!years.length}
-                    className="h-10 w-full rounded-xl border border-border-subtle bg-surface px-2.5 text-sm font-medium text-text-primary outline-none transition-colors focus:border-border-champagne pointer-coarse:h-11 pointer-coarse:text-base"
-                  >
-                    {years.map((year) => (
-                      <option key={year} value={year}>{year}</option>
-                    ))}
-                  </select>
-                </label>
+                    align="start"
+                    className="w-32 [--fe-year-h:40px] pointer-coarse:[--fe-year-h:44px]"
+                  />
+                </div>
                 <div className="min-w-0">
                   <p className="mb-1 text-xs text-text-secondary">
                     {t('world.rating.sortOrder')}

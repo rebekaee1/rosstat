@@ -96,7 +96,7 @@ describe('HomeDataScope — три живых числа платформы', ()
     expect(screen.getByText('K')).toBeTruthy();
     expect(screen.getByText('official indicators')).toBeTruthy();
     expect(screen.getByText('countries')).toBeTruthy();
-    expect(screen.getByText('years of history')).toBeTruthy();
+    expect(screen.getByText('first year of data')).toBeTruthy();
     expect(screen.queryByText(/Russian macro indicators/)).toBeNull();
     expect(screen.queryByText('495')).toBeNull();
     expect(screen.getByText(
