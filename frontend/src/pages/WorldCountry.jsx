@@ -18,6 +18,8 @@ import {
 } from '../lib/worldViewModes';
 import { formatChange, formatDate } from '../lib/format';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Button from '../components/Button';
+import Chip from '../components/Chip';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
@@ -59,7 +61,7 @@ function CompactChange({ change }) {
   }
   const n = Number(change);
   return (
-    <span className={`font-mono text-[10px] tabular-nums ${n > 0 ? 'text-positive' : 'text-negative'}`}>
+    <span className={`font-mono text-xs tabular-nums ${n > 0 ? 'text-positive' : 'text-negative'}`}>
       {formatChange(n)}
     </span>
   );
@@ -126,7 +128,7 @@ function IndicatorRow({ item, slug, to, sectionName }) {
         <div className="break-words text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
           {name}
         </div>
-        <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-text-tertiary sm:mt-1.5">
+        <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-text-tertiary sm:mt-1.5">
           <FreqBadges item={item} t={t} />
           {unit && <span className="min-w-0 break-words">{unit}</span>}
         </div>
@@ -137,7 +139,7 @@ function IndicatorRow({ item, slug, to, sectionName }) {
         </div>
         <div className="flex items-center gap-1.5">
           <CompactChange change={item.change} />
-          <span className="font-mono text-[10px] text-text-tertiary">
+          <span className="font-mono text-xs text-text-tertiary">
             {formatIndicatorDate(item.last_date, item.frequency, locale)}
           </span>
         </div>
@@ -337,15 +339,15 @@ export default function WorldCountry() {
             {t('world.country.notFoundBody', { slug })}
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm">
-            <Link to="/#countries" className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
+            <Button as={Link} to="/#countries">
               {t('world.country.allCountries')}
-            </Link>
-            <Link to={regionHubPath()} className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
+            </Button>
+            <Button as={Link} variant="secondary" to={regionHubPath()}>
               {t('world.country.russiaRegions')}
-            </Link>
-            <Link to="/" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
+            </Button>
+            <Button as={Link} variant="secondary" to="/">
               {t('world.country.home')}
-            </Link>
+            </Button>
           </div>
         </div>
       )}
@@ -405,16 +407,17 @@ export default function WorldCountry() {
                   area={data.area}
                   population={data.population}
                 />
-                <Link
+                <Button
+                  as={Link}
                   to={data.overview?.[0]
                     ? `/compare?codes=w:${slug}:${data.overview[0].concept_slug}`
                     : '/compare'}
-                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5"
+                  className="mt-3 flex w-full"
                 >
-                  <BarChart3 size={15} />
+                  <BarChart3 size={15} aria-hidden="true" />
                   {t('world.country.compareCta')}
-                  <ArrowUpRight size={14} />
-                </Link>
+                  <ArrowUpRight size={14} aria-hidden="true" />
+                </Button>
               </div>
             </div>
 
@@ -431,7 +434,7 @@ export default function WorldCountry() {
                   <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
                     {formatWorldValue(item.value, undefined, locale)}
                   </div>
-                  <div className="mt-1.5 font-mono text-[11px] text-text-tertiary">
+                  <div className="mt-1.5 font-mono text-xs text-text-tertiary">
                     {formatIndicatorDate(item.date, item.frequency, locale)}
                   </div>
                 </Link>
@@ -460,7 +463,7 @@ export default function WorldCountry() {
                   {t('world.regions.cardBody')}
                 </p>
               </div>
-              <span className="shrink-0 rounded-full bg-champagne/15 px-3 py-1.5 text-sm text-champagne">
+              <span className="shrink-0 rounded-full bg-champagne/15 px-3 py-1.5 text-sm text-champagne-ink">
                 {t('world.regions.open')}
               </span>
             </Link>
@@ -512,15 +515,15 @@ export default function WorldCountry() {
                 <>
                   {t('world.country.emptySearch', { query })}
                   {' '}
-                  <button type="button" onClick={() => { setQuery(''); setSearchLimit(120); }} className="text-champagne hover:underline">
+                  <Button variant="ghost" size="sm" onClick={() => { setQuery(''); setSearchLimit(120); }} className="px-2">
                     {t('world.country.emptySearchReset')}
-                  </button>
+                  </Button>
                 </>
               ) : (
                 <>
                   {t('world.country.emptyCatalog')}
                   {' '}
-                  <Link to="/#countries" className="text-champagne hover:underline">
+                  <Link to="/#countries" className="inline-flex items-center text-champagne-ink hover:underline pointer-coarse:min-h-11">
                     {t('world.country.toCountries')}
                   </Link>
                 </>
@@ -565,9 +568,9 @@ export default function WorldCountry() {
                 </div>
                 <div className="flex flex-col gap-2">
                   {filteredCategories.map((cat) => (
-                    <button
+                    <Chip
                       key={cat.name}
-                      type="button"
+                      active={resolvedActiveCategory === cat.name}
                       onClick={() => {
                         selectCategory(cat.name);
                         document.querySelectorAll('[data-world-country-category]')
@@ -578,16 +581,11 @@ export default function WorldCountry() {
                           });
                       }}
                       aria-current={resolvedActiveCategory === cat.name ? 'true' : undefined}
-                      className={[
-                        'flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
-                        resolvedActiveCategory === cat.name
-                          ? 'bg-champagne/12 font-medium text-champagne'
-                          : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
-                      ].join(' ')}
+                      className="w-full justify-between! gap-4 px-3.5 py-2.5 text-left text-sm!"
                     >
                       <span className="min-w-0 truncate">{localizedDisplay(locale, cat.name, cat.name_en)}</span>
-                      <span className="shrink-0 font-mono text-[10px] opacity-60">{cat.indicators.length}</span>
-                    </button>
+                      <span className="shrink-0 font-mono text-xs opacity-70">{cat.indicators.length}</span>
+                    </Chip>
                   ))}
                 </div>
               </aside>
@@ -611,33 +609,33 @@ export default function WorldCountry() {
                     ))}
                   </div>
                   {!searching && (isMobileSingle || denseCatalog) && cat.count > cat.indicators.length && (
-                    <button
-                      type="button"
+                    <Button
+                      variant="secondary"
                       onClick={() => setCatalogLimits((current) => ({
                         ...current,
                         [`${slug}:${cat.name}`]: (current[`${slug}:${cat.name}`] || initialCategoryLimit) + 120,
                       }))}
-                      className="mt-4 rounded-full border border-border-subtle bg-surface px-5 py-2.5 text-sm text-text-secondary hover:border-border-champagne hover:text-text-primary"
+                      className="mt-4 rounded-full! px-5"
                     >
                       {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}
                       {locale === 'en' ? ' of ' : ' из '}
                       {cat.indicators.length} / {cat.count}
-                    </button>
+                    </Button>
                   )}
                 </section>
               ))}
             </div>
           </div>
           {(isUsCatalog || denseCatalog) && searching && matchCount > searchLimit && (
-            <button
-              type="button"
+            <Button
+              variant="secondary"
               onClick={() => setSearchLimit((current) => current + 120)}
-              className="mt-5 rounded-full border border-border-subtle bg-surface px-5 py-2.5 text-sm text-text-secondary hover:border-border-champagne hover:text-text-primary"
+              className="mt-5 rounded-full! px-5"
             >
               {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}
               {locale === 'en' ? ' of ' : ' из '}
               {Math.min(searchLimit, matchCount)} / {matchCount}
-            </button>
+            </Button>
           )}
         </>
       )}

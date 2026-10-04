@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
+import Button from './Button';
 
 const STEP_MS = 900;
 
@@ -69,15 +70,14 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
 
   return (
     <div className="mt-1 flex items-center gap-3">
-      <button
-        type="button"
+      <Button
         onClick={togglePlay}
         aria-label={playing ? t('map.timeline.pause') : t('map.timeline.play')}
         title={playing ? t('map.timeline.pause') : t('map.timeline.play')}
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-champagne text-white shadow-sm transition-colors hover:bg-champagne-muted"
+        className="h-10 w-10 shrink-0 rounded-full! px-0! pointer-coarse:h-11 pointer-coarse:w-11"
       >
-        {playing ? <Pause size={15} /> : atEnd ? <RotateCcw size={14} /> : <Play size={15} className="translate-x-[1px]" />}
-      </button>
+        {playing ? <Pause size={15} aria-hidden="true" /> : atEnd ? <RotateCcw size={14} aria-hidden="true" /> : <Play size={15} className="translate-x-[1px]" aria-hidden="true" />}
+      </Button>
 
       <div className="min-w-0 flex-1">
         <input
@@ -93,15 +93,15 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
             background: `linear-gradient(to right, var(--color-champagne) 0%, var(--color-champagne) ${pct}%, var(--color-border-subtle) ${pct}%, var(--color-border-subtle) 100%)`,
           }}
         />
-        <div className="mt-1 flex justify-between font-mono text-[10px] tabular-nums text-text-tertiary">
+        <div className="mt-1 flex justify-between font-mono text-[11px] tabular-nums text-text-tertiary">
           <span>{min}</span>
           <span>{max}</span>
         </div>
       </div>
 
       <div className="w-16 shrink-0 text-right">
-        <span className="font-mono text-lg font-bold tabular-nums text-champagne">{year}</span>
-        <span className="-mt-0.5 block text-[10px] text-text-tertiary">{t('common.year').toLowerCase()}</span>
+        <span className="font-mono text-lg font-bold tabular-nums text-champagne-ink">{year}</span>
+        <span className="-mt-0.5 block text-xs text-text-tertiary">{t('common.year').toLowerCase()}</span>
       </div>
     </div>
   );

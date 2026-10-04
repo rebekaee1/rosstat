@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
+import Button from '../Button';
+import Chip from '../Chip';
 import { track, events as trackEvents } from '../../lib/track';
 import { useT } from '../../i18n';
 
@@ -74,44 +76,40 @@ export default function CalendarGrid({
   return (
     <div className="fe-panel rounded-2xl border border-border-subtle bg-surface overflow-hidden mb-6">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
-        <button
-          type="button" onClick={() => { onPrev(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'prev' }); }}
-          className={cn(FOCUS_RING_SURFACE, 'flex min-h-11 min-w-11 items-center justify-center p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
+        <Button
+          variant="ghost"
+          onClick={() => { onPrev(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'prev' }); }}
+          className="min-h-11 min-w-11 px-0!"
           aria-label={t('calendar.prevMonth')}
         >
-          <ChevronLeft className="w-5 h-5 text-text-secondary" />
-        </button>
+          <ChevronLeft className="w-5 h-5 text-text-secondary" aria-hidden="true" />
+        </Button>
 
         <h2 className="text-base font-semibold text-text-primary select-none">
           {t(`calendar.month.${month}`)} {year}
         </h2>
 
-        <button
-          type="button" onClick={() => { onNext(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'next' }); }}
-          className={cn(FOCUS_RING_SURFACE, 'flex min-h-11 min-w-11 items-center justify-center p-1.5 rounded-lg hover:bg-surface-hover transition-colors')}
+        <Button
+          variant="ghost"
+          onClick={() => { onNext(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'next' }); }}
+          className="min-h-11 min-w-11 px-0!"
           aria-label={t('calendar.nextMonth')}
         >
-          <ChevronRight className="w-5 h-5 text-text-secondary" />
-        </button>
+          <ChevronRight className="w-5 h-5 text-text-secondary" aria-hidden="true" />
+        </Button>
       </div>
 
-      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-border-subtle bg-obsidian/40">
+      <div className="flex flex-wrap items-center gap-1.5 px-4 py-2.5 border-b border-border-subtle bg-obsidian/40">
         {sourceButtons.map((sb) => (
-          <button
+          <Chip
             key={sb.value}
-            type="button"
+            active={source === sb.value}
             onClick={() => { onSourceChange(sb.value); track(trackEvents.CALENDAR_SOURCE_FILTER, { source: sb.value || 'all' }); }}
-            className={cn(
-              FOCUS_RING_SURFACE,
-              'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all',
-              source === sb.value
-                ? 'bg-champagne/10 text-champagne border border-champagne/20'
-                : 'text-text-secondary hover:text-text-primary border border-transparent',
-            )}
+            className="gap-1.5"
           >
-            {sb.dot && <span className={cn('w-2 h-2 rounded-full', sb.dot)} />}
+            {sb.dot && <span className={cn('w-2 h-2 rounded-full', sb.dot)} aria-hidden="true" />}
             {sb.label}
-          </button>
+          </Chip>
         ))}
       </div>
 
@@ -155,9 +153,9 @@ export default function CalendarGrid({
             >
               <span className={cn(
                 'w-7 h-7 flex items-center justify-center rounded-full text-sm tabular-nums leading-none',
-                isToday && !isSelected && 'bg-champagne text-white font-bold',
-                isToday && isSelected && 'bg-champagne text-white font-bold',
-                !isToday && isSelected && 'bg-champagne/15 text-champagne font-semibold',
+                isToday && !isSelected && 'bg-champagne-ink text-white font-bold',
+                isToday && isSelected && 'bg-champagne-ink text-white font-bold',
+                !isToday && isSelected && 'bg-champagne/15 text-champagne-ink font-semibold',
                 !isToday && !isSelected && hasHigh && 'font-semibold text-text-primary',
                 !isToday && !isSelected && !hasHigh && 'text-text-secondary',
               )}>
@@ -173,14 +171,14 @@ export default function CalendarGrid({
               )}
 
               {dayEvents.length > 1 && (
-                <span className="text-[9px] text-text-tertiary leading-none">{dayEvents.length}</span>
+                <span className="text-xs text-text-tertiary leading-none">{dayEvents.length}</span>
               )}
             </button>
           );
         })}
       </div>
 
-      <div className="flex items-center justify-between px-4 py-2 text-[11px] text-text-tertiary border-t border-border-subtle">
+      <div className="flex items-center justify-between px-4 py-2 text-xs text-text-tertiary border-t border-border-subtle">
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500" /> {t('calendar.source.cbr')}</span>
           <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> {t('calendar.source.rosstat')}</span>

@@ -38,6 +38,8 @@ import WorldConceptPicker from '../components/WorldConceptPicker';
 import WorldMapConceptNote from '../components/WorldMapConceptNote';
 import { useLocale, useT } from '../i18n';
 import PlanetView from '../components/PlanetView';
+import Button from '../components/Button';
+import Chip from '../components/Chip';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
@@ -52,15 +54,6 @@ const RATING_EXTRA_MAX_GUEST = 1;
 
 /** Спец-код базовой колонки «Значение» в сортировке по заголовкам. */
 const SORT_BASE_COLUMN = '__base__';
-
-function ButtonClass(active) {
-  return [
-    'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-    active
-      ? 'bg-champagne/15 text-champagne'
-      : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-  ].join(' ');
-}
 
 /**
  * Шапка сортируемой колонки: подпись со стрелкой направления.
@@ -87,7 +80,7 @@ function SortableTh({
           onClick={onClick}
           aria-label={typeof label === 'string' ? label : undefined}
           className={[
-            'inline-flex min-w-0 items-center gap-1 rounded-lg transition-colors hover:text-champagne',
+            'inline-flex min-w-0 items-center gap-1 rounded-lg transition-colors hover:text-champagne pointer-coarse:min-h-11',
             active ? 'text-champagne' : '',
           ].join(' ')}
         >
@@ -97,7 +90,7 @@ function SortableTh({
         {onRemove && (
           <button
             type="button"
-            className="shrink-0 rounded-lg p-0.5 text-text-tertiary transition-colors hover:text-champagne"
+            className="fe-press inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-text-tertiary transition-colors hover:text-champagne pointer-coarse:h-11 pointer-coarse:w-11"
             aria-label={onRemove.label}
             onClick={onRemove.onClick}
           >
@@ -247,9 +240,13 @@ export default function WorldRatingPage() {
   const extraSeries2 = useWorldMapSeries(extraSlugs[2]);
   const extraSeries3 = useWorldMapSeries(extraSlugs[3]);
 
-  useEffect(() => {
+  // Смена концепта сбрасывает сортировку: корректируем состояние во время
+  // рендера (паттерн React «adjust state on prop change»), не в эффекте.
+  const [sortConcept, setSortConcept] = useState(activeConcept);
+  if (sortConcept !== activeConcept) {
+    setSortConcept(activeConcept);
     setSortOverride(null);
-  }, [activeConcept]);
+  }
 
   // Смысловые направления («лучшие сверху») — из дефолта рейтинга концепта.
   const baseDirection = useMemo(
@@ -494,10 +491,8 @@ export default function WorldRatingPage() {
   const maxShift = TABLE_SHIFT_BY_COLUMN_COUNT[
     Math.min(columnCount, TABLE_SHIFT_BY_COLUMN_COUNT.length - 1)
   ] || 0;
-  const [tableShift, setTableShift] = useState(0);
-  useEffect(() => {
-    setTableShift((current) => Math.min(current, maxShift));
-  }, [maxShift]);
+  const [tableShiftRaw, setTableShift] = useState(0);
+  const tableShift = Math.min(tableShiftRaw, maxShift);
   const tableStyle = maxShift > 0 && tableShift > 0
     ? { transform: `translateX(-${tableShift * 15}%)` }
     : undefined;
@@ -522,7 +517,7 @@ export default function WorldRatingPage() {
       </header>
 
       {error && (
-        <ApiRetryBanner onRetry={retry} retrying={countriesQ.isFetching || catalogQ.isFetching || mapSeriesQ.isFetching} className="mb-6">
+        <ApiRetryBanner onRetry={retry} isFetching={countriesQ.isFetching || catalogQ.isFetching || mapSeriesQ.isFetching} className="mb-6">
           {t('world.rating.loadError')}
         </ApiRetryBanner>
       )}
@@ -533,9 +528,9 @@ export default function WorldRatingPage() {
           <p className="mt-2 text-sm text-text-secondary">
             {t('world.rating.notFoundBody')}
           </p>
-          <Link to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} className="mt-4 inline-flex rounded-xl bg-champagne px-4 py-2.5 text-sm font-semibold text-white">
+          <Button as={Link} to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} className="mt-4">
             {t('world.rating.openUnemployment')}
-          </Link>
+          </Button>
         </div>
       )}
 
@@ -618,29 +613,37 @@ export default function WorldRatingPage() {
                     {t('world.rating.russiaRegions')}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <Link
+                    <Button
+                      as={Link}
+                      variant="ghost"
+                      size="sm"
                       to={russiaLinks.countryHref}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-champagne/15 px-3 py-2 text-xs font-medium text-champagne"
+                      className="gap-1.5 bg-champagne/15!"
                     >
-                      <Globe2 size={13} />
+                      <Globe2 size={13} aria-hidden="true" />
                       {russiaIndicatorCode
                         ? t('world.rating.russiaIndicator')
                         : t('world.rating.russiaSection')}
-                    </Link>
-                    <Link
+                    </Button>
+                    <Button
+                      as={Link}
+                      variant="secondary"
+                      size="sm"
                       to={russiaLinks.regionsHref}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-obsidian-lighter px-3 py-2 text-xs font-medium text-text-secondary hover:text-champagne"
+                      className="gap-1.5"
                     >
-                      <MapPinned size={13} />
+                      <MapPinned size={13} aria-hidden="true" />
                       {t('world.rating.russiaRegionsLink')}
-                    </Link>
+                    </Button>
                     {russiaLinks.regionRatingHref && (
-                      <Link
+                      <Button
+                        as={Link}
+                        variant="secondary"
+                        size="sm"
                         to={russiaLinks.regionRatingHref}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-obsidian-lighter px-3 py-2 text-xs font-medium text-text-secondary hover:text-champagne"
                       >
                         {t('world.rating.regionRatingLink')}
-                      </Link>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -680,29 +683,26 @@ export default function WorldRatingPage() {
                     {t('world.rating.sortOrder')}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
-                    <button
-                      type="button"
-                      className={ButtonClass(sortedColDir === 'desc')}
+                    <Chip
+                      active={sortedColDir === 'desc'}
                       onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'desc' })}
                     >
                       {t('world.rating.sortDesc')}
-                    </button>
-                    <button
-                      type="button"
-                      className={ButtonClass(sortedColDir === 'asc')}
+                    </Chip>
+                    <Chip
+                      active={sortedColDir === 'asc'}
                       onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'asc' })}
                     >
                       {t('world.rating.sortAsc')}
-                    </button>
+                    </Chip>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className={`${ButtonClass(addOpen)} h-9`}
+                <Chip
+                  active={addOpen}
                   onClick={() => setAddOpen((prev) => !prev)}
                 >
                   {t('world.rating.addColumn')}
-                </button>
+                </Chip>
               </div>
             </div>
             {addOpen && (
@@ -716,18 +716,12 @@ export default function WorldRatingPage() {
                       {t('world.rating.matrix.guestCap')}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <Link
-                        to="/register"
-                        className="rounded-xl bg-champagne px-3 py-2 text-xs font-semibold text-white hover:bg-champagne-muted"
-                      >
+                      <Button as={Link} size="sm" to="/register">
                         {t('world.rating.register')}
-                      </Link>
-                      <Link
-                        to="/login"
-                        className="rounded-xl border border-border-subtle px-3 py-2 text-xs font-medium text-text-primary hover:border-champagne/40"
-                      >
+                      </Button>
+                      <Button as={Link} variant="secondary" size="sm" to="/login">
                         {t('world.rating.login')}
-                      </Link>
+                      </Button>
                     </div>
                   </>
                 )}
@@ -741,14 +735,12 @@ export default function WorldRatingPage() {
                     {addableConcepts
                       .slice(0, isAuthed ? undefined : extraMax)
                       .map((item) => (
-                        <button
+                        <Chip
                           key={item.slug}
-                          type="button"
-                          className={ButtonClass(false)}
                           onClick={() => addExtra(item.slug)}
                         >
                           {homeConceptLabel(item.slug, t, item.name)}
-                        </button>
+                        </Chip>
                       ))}
                   </div>
                 )}
@@ -828,24 +820,24 @@ export default function WorldRatingPage() {
             </div>
             {maxShift > 0 && (
               <div className="mt-2 flex items-center justify-end gap-1.5" data-testid="table-shift">
-                <button
-                  type="button"
+                <Button
+                  variant="secondary"
                   aria-label={t('world.rating.slideLeft')}
                   disabled={tableShift <= 0}
-                  onClick={() => setTableShift((current) => Math.max(0, current - 1))}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-subtle bg-obsidian-light text-text-secondary transition-colors hover:text-champagne disabled:opacity-35"
+                  onClick={() => setTableShift(Math.max(0, tableShift - 1))}
+                  className="w-10 px-0! pointer-coarse:w-11"
                 >
-                  <ChevronLeft size={15} />
-                </button>
-                <button
-                  type="button"
+                  <ChevronLeft size={15} aria-hidden="true" />
+                </Button>
+                <Button
+                  variant="secondary"
                   aria-label={t('world.rating.slideRight')}
                   disabled={tableShift >= maxShift}
-                  onClick={() => setTableShift((current) => Math.min(maxShift, current + 1))}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-subtle bg-obsidian-light text-text-secondary transition-colors hover:text-champagne disabled:opacity-35"
+                  onClick={() => setTableShift(Math.min(maxShift, tableShift + 1))}
+                  className="w-10 px-0! pointer-coarse:w-11"
                 >
-                  <ChevronRight size={15} />
-                </button>
+                  <ChevronRight size={15} aria-hidden="true" />
+                </Button>
               </div>
             )}
           </section>
@@ -863,13 +855,15 @@ export default function WorldRatingPage() {
             {withoutData.length > 0 ? (
               <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto pr-1">
                 {withoutData.map((country) => (
-                  <Link
+                  <Button
+                    as={Link}
                     key={country.slug}
+                    variant="secondary"
+                    size="sm"
                     to={country.code === 'RU' ? russiaLinks.countryHref : countryPath(country.slug)}
-                    className="rounded-xl bg-obsidian-light px-3 py-2 text-xs text-text-secondary transition-colors hover:text-champagne"
                   >
                     {countryPublicName(country, locale)}
-                  </Link>
+                  </Button>
                 ))}
               </div>
             ) : (
