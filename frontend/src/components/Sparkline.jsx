@@ -8,9 +8,10 @@ const COLOR_CHAMPAGNE = CHART_THEME.champagne;
 const COLOR_FLAT = '#9CA3AF';
 
 function resolveColor(trend, sentiment) {
-  if (trend === 'flat') return COLOR_FLAT;
-
+  // Смысл неизвестен — золото, без оценки «хорошо/плохо»; серым остаётся только «ровно» с известным смыслом.
   if (sentiment === 'neutral') return COLOR_CHAMPAGNE;
+
+  if (trend === 'flat') return COLOR_FLAT;
 
   const isUp = trend === 'up';
   if (sentiment === 'inverse') return isUp ? COLOR_NEGATIVE : COLOR_POSITIVE;
@@ -132,9 +133,11 @@ export default function Sparkline({
   const computePoints = (w) => {
     const drawW = w - pad * 2;
     const drawH = height - pad * 2;
+    // Ровный ряд (все значения одинаковы) рисуем посередине, а не по нижнему краю — иначе линия сливается с границей.
+    const flatSeries = max === min;
     return values.map((v, i) => ({
       x: pad + (i / (values.length - 1)) * drawW,
-      y: pad + drawH - ((v - min) / range) * drawH,
+      y: flatSeries ? pad + drawH / 2 : pad + drawH - ((v - min) / range) * drawH,
     }));
   };
 

@@ -6,7 +6,7 @@ import { TODAY_CODES, TODAY_SPECS } from '../lib/todaySpecs';
 import { formatValue, formatDate, resolveDateFormat, unitDigits, unitSuffix } from '../lib/format';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { formatDeltaWithUnit } from '../lib/deltaText';
-import { periodPhrase } from '../lib/periodPhrase';
+import { glueDate, periodPhrase } from '../lib/periodPhrase';
 import DeltaBadge from '../components/DeltaBadge';
 import Sparkline, { SparklineSkeleton } from '../components/Sparkline';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -21,6 +21,7 @@ import {
 import { useLocale, useT } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 
 function todayLabel(code, t) {
   const key = `today.spec.${code}`;
@@ -62,7 +63,7 @@ function TodayCard({ code, index }) {
   const polarity = indicatorPolarity(query, indicator?.name, indicator?.code);
   const delta = change != null ? formatDeltaWithUnit(change, unit, { locale }) : null;
   const dateFmt = resolveDateFormat({ frequency: indicator?.frequency });
-  const dateText = last ? formatDate(last.date, dateFmt, locale) : '';
+  const dateText = last ? glueDate(formatDate(last.date, dateFmt, locale)) : '';
   const meta = !last ? null : (CBR_RATE_CODES.has(code)
     ? t('w3.today.cbrRate', { date: dateText })
     : periodPhrase(t, last.date, dateFmt, locale));
@@ -70,9 +71,8 @@ function TodayCard({ code, index }) {
     ? `w3.tile.per.${indicator.frequency}`
     : 'w3.tele.delta.prevValue';
   const sparkValues = series.map((row) => Number(row.value)).filter(Number.isFinite);
-  const trend = sparkValues.length > 1
-    ? (sparkValues[sparkValues.length - 1] > sparkValues[0] ? 'up' : sparkValues[sparkValues.length - 1] < sparkValues[0] ? 'down' : 'flat')
-    : 'flat';
+  // Цвет графика — по тому же изменению, что показывает значок рядом: зелёный график при красной дельте сбивает с толку.
+  const trend = change == null || Math.abs(change) < 1e-12 ? 'flat' : change > 0 ? 'up' : 'down';
   const sentiment = polarity === 'up-good' ? 'positive' : polarity === 'up-bad' ? 'inverse' : 'neutral';
 
   if (isError && !last) {
@@ -108,7 +108,7 @@ function TodayCard({ code, index }) {
       ) : (
         <>
           <p className="fe-today-card__value">
-            <span className="fe-today-card__num">{formatValue(last.value, unitDigits(unit))}</span>
+            <span className="fe-today-card__num">{formatValue(last.value, unitDigits(unit), locale)}</span>
             {unitSuffix(unit) ? <span className="fe-today-card__unit">{unitSuffix(unit)}</span> : null}
           </p>
           {delta && (
@@ -123,10 +123,17 @@ function TodayCard({ code, index }) {
               )}
             </p>
           )}
-          {sparkValues.length > 1 && (
+          {sparkValues.length > 1 ? (
             <div className="fe-today-card__spark">
               <Sparkline points={sparkValues} trend={trend} sentiment={sentiment} height={36} staggerMs={Math.min(index, 5) * 80} />
             </div>
+          ) : (
+            <div
+              className="fe-today-card__spark fe-today-card__spark--empty"
+              role="img"
+              aria-label={t('x2.today.noChart')}
+              title={t('x2.today.noChart')}
+            />
           )}
           {meta && <p className="fe-today-card__meta">{meta}</p>}
         </>

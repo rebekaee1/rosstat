@@ -15,6 +15,7 @@ import { useCountryComparison } from '../lib/useCountryComparison';
 import CountryComparePanel from './CountryComparePicker';
 import Button from './Button';
 import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -302,12 +303,12 @@ export default function IndicatorChartSection({
           />
           <Link
             to="/methodology"
-            aria-label={t('chart.methodologyAria')}
             title={t('chart.methodologyHint')}
             onClick={() => track(events.METHODOLOGY_CLICK, { indicator: code, indicatorCategory: indicator?.category })}
             className="fe-help-link"
           >
-            <HelpCircle className="h-4 w-4" aria-hidden="true" />
+            <HelpCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{t('x2.chart.methodLink')}</span>
           </Link>
         </div>
       </div>

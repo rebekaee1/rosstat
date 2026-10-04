@@ -28,6 +28,7 @@ import {
   worldVariantsToPickerGroup,
 } from '../lib/worldViewModes';
 import { formatDate, formatChange, chartValueDigits, resolveDateFormat } from '../lib/format';
+import { glueDate } from '../lib/periodPhrase';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { splitUnit } from '../lib/countryFlag';
 import { downloadCSV, downloadExcel } from '../lib/excel';
@@ -46,6 +47,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import Button from '../components/Button';
 import '../styles/platform-pages.css';
 import '../styles/world.css';
+import '../styles/x2-indicator.css';
 import { worldIndicatorTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
@@ -563,15 +565,15 @@ export default function WorldIndicatorPage() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
+                <div className="fe-substat-grid grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
                   <StatTile
                     index={0}
                     label={t('w2.ind.now')}
-                    note={telemetry?.currentDate ? formatDate(telemetry.currentDate, dateFormat, locale) : undefined}
+                    note={telemetry?.currentDate ? glueDate(formatDate(telemetry.currentDate, dateFormat, locale)) : undefined}
                     tone={telemetry?.change != null && telemetry.change !== 0 ? (
                       <p className="w2-stat-delta">
                         <DeltaBadge delta={telemetry.change} polarity={polarity}>
-                          {formatChange(telemetry.change)}
+                          {formatChange(telemetry.change, locale)}
                         </DeltaBadge>
                         <span>{deltaSuffix}</span>
                       </p>
@@ -583,7 +585,7 @@ export default function WorldIndicatorPage() {
                   <StatTile
                     index={1}
                     label={previousLabel}
-                    note={telemetry?.previousDate ? formatDate(telemetry.previousDate, dateFormat, locale) : undefined}
+                    note={telemetry?.previousDate ? glueDate(formatDate(telemetry.previousDate, dateFormat, locale)) : undefined}
                   >
                     {telemetry?.previousValue != null ? statFormat(telemetry.previousValue) : '—'}
                     {unitParts.short && telemetry?.previousValue != null && <small>{unitParts.short}</small>}
@@ -592,7 +594,7 @@ export default function WorldIndicatorPage() {
                     <StatTile
                       index={2}
                       label={t('w2.ind.max')}
-                      note={formatDate(telemetry.highest.date, dateFormat, locale)}
+                      note={glueDate(formatDate(telemetry.highest.date, dateFormat, locale))}
                     >
                       {statFormat(telemetry.highest.value)}
                       {unitParts.short && <small>{unitParts.short}</small>}

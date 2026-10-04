@@ -17,7 +17,7 @@ import {
 import {
   collapseCountryIndicators, indicatorPublicName, localizedDisplay,
 } from '../lib/worldViewModes';
-import { formatChange, formatDate } from '../lib/format';
+import { formatChange, formatCount, formatDate } from '../lib/format';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { splitUnit } from '../lib/countryFlag';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -50,6 +50,7 @@ import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { countryPublicName } from '../lib/homeWorkbench';
 import '../styles/world.css';
+import '../styles/x2-indicator.css';
 
 /** Главные темы идут первыми: человек ждёт «Экономику» и «Население», а не алфавитный «Бизнес». */
 const TOPIC_PRIORITY = [
@@ -72,7 +73,7 @@ function formatIndicatorDate(dateStr, frequency, locale) {
   return formatDate(dateStr, 'full', locale);
 }
 
-function CompactChange({ change, label }) {
+function CompactChange({ change, label, locale }) {
   if (change == null || !Number.isFinite(Number(change)) || Math.abs(Number(change)) < 1e-12) {
     return null;
   }
@@ -80,7 +81,7 @@ function CompactChange({ change, label }) {
   // Цвет по смыслу показателя: рост безработицы или инфляции не «зелёный», неизвестный смысл — нейтрально.
   return (
     <DeltaBadge delta={n} polarity={indicatorPolarity(label)} className="text-xs">
-      {formatChange(n)}
+      {formatChange(n, locale)}
     </DeltaBadge>
   );
 }
@@ -198,7 +199,7 @@ function IndicatorRow({ item, slug, to, sectionName }) {
           {formatWorldValue(item.last_value, undefined, locale)}
         </div>
         <div className="flex items-center gap-1.5">
-          <CompactChange change={item.change} label={indicatorPublicName(item, locale)} />
+          <CompactChange change={item.change} label={indicatorPublicName(item, locale)} locale={locale} />
           <span className="text-xs text-text-tertiary">
             {formatIndicatorDate(item.last_date, item.frequency, locale)}
           </span>
@@ -453,7 +454,7 @@ export default function WorldCountry() {
               />
             </div>
 
-            <div id="chart" className="mt-6 grid scroll-mt-28 grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            <div id="chart" className="fe-kpi-grid mt-6 scroll-mt-28">
               {(data.overview || []).slice(0, 3).map((item, index) => (
                 <CountryKpiCard key={item.concept_slug} item={item} slug={slug} hero={index === 0} locale={locale} />
               ))}
@@ -554,7 +555,7 @@ export default function WorldCountry() {
               options={filteredCategories.map((cat) => ({
                 value: cat.name,
                 label: localizedDisplay(locale, cat.name, cat.name_en),
-                count: cat.indicators.length,
+                count: formatCount(cat.indicators.length, locale),
               }))}
             />
           )}
@@ -599,7 +600,7 @@ export default function WorldCountry() {
                       className="w-full justify-between! gap-4 px-3.5 py-2.5 text-left text-sm!"
                     >
                       <span className="min-w-0 truncate">{localizedDisplay(locale, cat.name, cat.name_en)}</span>
-                      <span className="shrink-0 text-xs tabular-nums opacity-70">{cat.indicators.length}</span>
+                      <span className="shrink-0 text-xs tabular-nums opacity-70">{formatCount(cat.indicators.length, locale)}</span>
                     </Chip>
                   ))}
                 </div>
@@ -618,7 +619,7 @@ export default function WorldCountry() {
                       )}
                       <h2 className="font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{localizedDisplay(locale, cat.name, cat.name_en)}</h2>
                     </div>
-                    <span className="shrink-0 text-sm tabular-nums text-text-tertiary">{cat.count ?? cat.indicators.length}</span>
+                    <span className="shrink-0 text-sm tabular-nums text-text-tertiary">{formatCount(cat.count ?? cat.indicators.length, locale)}</span>
                   </div>
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {cat.indicators.map((ind) => (

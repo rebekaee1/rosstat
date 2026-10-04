@@ -4,6 +4,8 @@ import {
   ChevronDown, Download, FileSpreadsheet, FileText, HelpCircle, Image as ImageIcon, LineChart, Lock,
 } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
+import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
@@ -231,16 +233,16 @@ export default function WorldChartSection({
           </div>
           <Link
             to="/methodology"
-            aria-label={t('chart.methodologyAria')}
             title={t('chart.methodologyHint')}
             onClick={() => track(events.METHODOLOGY_CLICK, {
               indicator: code,
               indicatorCategory: indicator?.category,
               world: true,
             })}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-text-tertiary transition-colors hover:text-champagne pointer-coarse:h-11 pointer-coarse:w-11"
+            className="fe-help-link"
           >
-            <HelpCircle className="h-4 w-4" aria-hidden="true" />
+            <HelpCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{t('x2.chart.methodLink')}</span>
           </Link>
           <DownloadMenu
             onCsv={onDownloadCsv}

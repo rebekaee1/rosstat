@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { useIndicatorData } from '../lib/hooks';
+import Sparkline from './Sparkline';
 import { ArrowRight } from 'lucide-react';
 import { formatValue, resolveDateFormat, cn, isCpiIndex } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
@@ -11,18 +13,29 @@ import { formatDeltaWithUnit } from '../lib/deltaText';
 import { periodPhrase } from '../lib/periodPhrase';
 import DeltaBadge from './DeltaBadge';
 import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 
 /**
- * Listing-карточка индикатора. Используется и на главной (где это
- * `home_indicator_click`), и на /russia/category/:slug (где это `category_tile_click`).
- * `surface` различает источник клика — нужен для funnel-анализа в Метрике
- * (Webvisor показывает category→indicator как отдельную ось, без surface
- * мы потеряем контекст).
- *
- * Для человека: название, число с единицей, изменение со смыслом и подписью периода («+0,24 руб. за день»),
- * дата словами. На странице категории подпись категории не повторяется на каждой плитке.
+ * Мини-график последних значений для плитки списка. Цвет — по тому же изменению, что и значок рядом;
+ * смысл показателя неизвестен — золото без оценки. Нет двух точек — ничего не рисуем.
  */
-export default function IndicatorTile({ indicator, delay = 0, displayOverride, surface = 'home' }) {
+function TileSpark({ code, polarity, index }) {
+  const { data } = useIndicatorData(code, { limit: 30 });
+  const values = (data?.data || []).map((row) => Number(row.value)).filter(Number.isFinite);
+  if (values.length < 2) return null;
+  const delta = values[values.length - 1] - values[values.length - 2];
+  const trend = Math.abs(delta) < 1e-12 ? 'flat' : delta > 0 ? 'up' : 'down';
+  const sentiment = polarity === 'up-good' ? 'positive' : polarity === 'up-bad' ? 'inverse' : 'neutral';
+  return (
+    <div className="fe-tile__spark" aria-hidden="true">
+      <Sparkline points={values} trend={trend} sentiment={sentiment} height={40} staggerMs={Math.min(index, 5) * 80} />
+    </div>
+  );
+}
+
+export default function IndicatorTile({
+  indicator, delay = 0, displayOverride, surface = 'home', commonPhrase = null, spark = false,
+}) {
   const t = useT();
   const { locale } = useLocale();
 
@@ -53,14 +66,17 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
     ? findCategoryByApiLabel(indicator.category_ru || indicator.category)?.nameEn
     : null) || indicator.category || t('tile.metric');
 
+  // Единица стоит рядом с числом; в изменении её не повторяем («84,41 USD, +0,12 USD»). Для процентов остаётся «п. п.».
   const change = changeNum != null && Number.isFinite(changeNum)
-    ? formatDeltaWithUnit(changeNum, displayUnit, { locale })
+    ? formatDeltaWithUnit(changeNum, displayUnit === '%' ? displayUnit : '', { locale })
     : null;
   const periodKey = hasHero ? 'year' : indicator.frequency;
   const perText = ['daily', 'weekly', 'monthly', 'quarterly', 'annual', 'year'].includes(periodKey)
     ? t(`w3.tile.per.${periodKey}`)
     : t('w3.tele.delta.prevValue');
-  const date = periodPhrase(t, indicator.current_date, dateFmt, locale);
+  const phrase = periodPhrase(t, indicator.current_date, dateFmt, locale);
+  // Дата, общая для списка, вынесена в подпись над ним; на плитке остаётся только отличающаяся.
+  const date = commonPhrase && phrase === commonPhrase ? undefined : phrase;
 
   const handleClick = () => {
     if (!isActive) return;
@@ -98,27 +114,30 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
         )}
       </div>
 
-      <div className="fe-tile__body">
-        <p className="fe-tile__value">
-          <span className={String(formatValue(displayVal)).length > 12 ? 'fe-tile__num fe-tile__num--long' : 'fe-tile__num'}>
-            {formatValue(displayVal)}
-          </span>
-          {displayUnit ? <span className="fe-tile__unit">{displayUnit}</span> : null}
-        </p>
+      <div className={cn('fe-tile__body', spark && isActive && 'fe-tile__body--spark')}>
+        <div className="fe-tile__main">
+          <p className="fe-tile__value">
+            <span className={String(formatValue(displayVal, undefined, locale)).length > 12 ? 'fe-tile__num fe-tile__num--long' : 'fe-tile__num'}>
+              {formatValue(displayVal, undefined, locale)}
+            </span>
+            {displayUnit ? <span className="fe-tile__unit">{displayUnit}</span> : null}
+          </p>
 
-        <div className="fe-tile__foot">
-          {change && (
-            change.flat ? (
-              <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
-            ) : (
-              <span className="fe-tile__delta">
-                <DeltaBadge delta={changeNum} polarity={polarity}>{change.text}</DeltaBadge>
-                <span className="fe-tile__vs">{perText}</span>
-              </span>
-            )
-          )}
-          {date && <span className="fe-tile__date">{date}</span>}
+          <div className="fe-tile__foot">
+            {change && (
+              change.flat ? (
+                <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
+              ) : (
+                <span className="fe-tile__delta">
+                  <DeltaBadge delta={changeNum} polarity={polarity}>{change.text}</DeltaBadge>
+                  <span className="fe-tile__vs">{perText}</span>
+                </span>
+              )
+            )}
+            {date && <span className="fe-tile__date">{date}</span>}
+          </div>
         </div>
+        {spark && isActive ? <TileSpark code={indicator.code} polarity={polarity} index={delay} /> : null}
       </div>
     </Link>
   );

@@ -1,5 +1,5 @@
 import Chip from './Chip';
-import ChipGroup from './ChipGroup';
+import { OverflowChipGroup } from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import { pickerLabel } from '../lib/pickerLabels';
@@ -23,8 +23,12 @@ export default function ViewModePicker({
   return (
     <PickerCard>
       <PickerLabel>{pickerLabel(sectionTitle, locale) || sectionTitle}</PickerLabel>
-      <ChipGroup label={pickerLabel(sectionTitle, locale) || sectionTitle} grid>
-        {modes.map((item) => (
+      <OverflowChipGroup
+        label={pickerLabel(sectionTitle, locale) || sectionTitle}
+        grid
+        items={modes}
+        isActive={(item) => currentMode === item.mode}
+        renderChip={(item) => (
           <Chip
             key={item.mode}
             active={currentMode === item.mode}
@@ -39,8 +43,8 @@ export default function ViewModePicker({
           >
             {pickerLabel(item.label, locale)}
           </Chip>
-        ))}
-      </ChipGroup>
+        )}
+      />
     </PickerCard>
   );
 }

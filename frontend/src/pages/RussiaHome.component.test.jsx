@@ -217,7 +217,7 @@ describe('RussiaHome ошибки и пустые состояния', () => {
       expect(sections.length).toBeGreaterThanOrEqual(3);
       const tile = screen.getByRole('link', { name: /Средняя номинальная заработная плата/ });
       expect(tile.textContent).toContain('105');
-      expect(tile.textContent).toContain('июнь 2026');
+      expect(tile.textContent.replace(/\u00A0/g, ' ')).toContain('июнь 2026');
       // Пустой ряд тоже отрендерен: вместо значения — прочерк, изменения нет.
       const emptyTile = within(
         sections.find((s) => s.textContent.includes('Численность населения')),

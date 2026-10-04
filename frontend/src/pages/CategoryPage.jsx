@@ -4,6 +4,7 @@ import { Users, ArrowRight } from 'lucide-react';
 import { useIndicators, useInflation } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import IndicatorTile from '../components/IndicatorTile';
+import { commonTilePhrase } from '../lib/tileDates';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { TileSkeleton } from '../components/Skeleton';
 import {
@@ -18,6 +19,7 @@ import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
 import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
   breadcrumbJsonLd,
@@ -130,6 +132,7 @@ export default function CategoryPage({ fixedSlug }) {
     (i) => (i.category_ru || i.category) === cat.apiCategory,
   );
   const filtered = allIndicators.filter(isIndicatorListed);
+  const commonPhrase = commonTilePhrase(filtered, t, locale);
 
   return (
     <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
@@ -191,9 +194,15 @@ export default function CategoryPage({ fixedSlug }) {
         ) : isError ? null : filtered.length === 0 ? (
           <p className="text-text-secondary">{t('category.empty')}</p>
         ) : (
-          <div className="fe-cat-grid">
+          <>
+            {commonPhrase && (
+              <p className="fe-cat-asof">{t('x2.cat.asOf', { phrase: commonPhrase })}</p>
+            )}
+            <div className="fe-cat-grid">
             {filtered.map((ind, i) => (
               <IndicatorTile
+                commonPhrase={commonPhrase}
+                spark={ind.frequency === 'daily' && filtered.length <= 14}
                 key={ind.code}
                 indicator={ind}
                 delay={i}
@@ -201,7 +210,8 @@ export default function CategoryPage({ fixedSlug }) {
                 surface="category"
               />
             ))}
-          </div>
+            </div>
+          </>
         )}
       </section>
 

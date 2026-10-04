@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, ChevronDown } from 'lucide-react';
-import { cn } from '../lib/format';
+import { cn, formatCount } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { useT } from '../i18n';
 import '../styles/platform-pages.css';
@@ -11,7 +11,7 @@ function CountPill({ count }) {
   if (count == null) return null;
   return (
     <span className="fe-num ml-2 shrink-0 rounded-full bg-obsidian-lighter px-2 py-0.5 text-xs font-medium text-text-secondary">
-      {count}
+      {typeof count === 'number' ? formatCount(count) : count}
     </span>
   );
 }

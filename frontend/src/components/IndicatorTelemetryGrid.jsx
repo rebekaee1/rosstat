@@ -8,6 +8,7 @@ import { useLocale, useT } from '../i18n';
 import TelemetryCard from './TelemetryCard';
 import { SkeletonBox } from './Skeleton';
 import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 
 /**
  * Сетка из 4 телеметрических карточек на странице индикатора:

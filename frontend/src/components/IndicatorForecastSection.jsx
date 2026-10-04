@@ -5,6 +5,7 @@ import ForecastTable from './ForecastTable';
 import Button from './Button';
 import { russiaCategoriesPath } from '../lib/sitePaths';
 import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
