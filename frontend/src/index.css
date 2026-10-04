@@ -638,6 +638,9 @@ nav.glass-surface-soft {
 .fe-reveal {
   animation: fe-reveal var(--fe-duration, 0.55s) cubic-bezier(0.22, 0.7, 0.2, 1) var(--fe-delay, 0s) both;
 }
+/* SSR-страница, оставленная на экране на время подгрузки чанка маршрута. */
+.fe-ssr-hold { padding-top: 5.5rem; }
+.fe-ssr-hold .seo-page { margin-inline: auto; }
 @keyframes fe-spin { to { transform: rotate(360deg); } }
 .fe-spinner {
   display: inline-block;

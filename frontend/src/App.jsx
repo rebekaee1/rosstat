@@ -16,7 +16,7 @@ import ScrollToAnchor from './components/ScrollToAnchor';
 import ErrorBoundary from './components/ErrorBoundary';
 import RegisterNudge from './components/RegisterNudge';
 import DownloadLimitModal from './components/DownloadLimitModal';
-import RouteFallback from './components/RouteFallback';
+import RouteFallback, { SsrHandoffDone } from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
 import useDocumentMeta from './lib/useMeta';
@@ -353,7 +353,8 @@ function AppRoutes() {
 
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Suspense>
+          <SsrHandoffDone />
+          </Suspense>
         </ErrorBoundary>
       </main>
       <RegisterNudge />
