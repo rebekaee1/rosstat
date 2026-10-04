@@ -1,6 +1,7 @@
 import { trackFile, track, events } from './track';
 import { exportTable } from './api';
 import { rememberExport, clearPendingExport } from './authReturn';
+import { trackBusy } from './chunkRecovery';
 
 // Генерация файла перенесена на бэкенд (гейт лимита + минус ~430 КБ xlsx из
 // бандла). Здесь — только подготовка точек/подписи и сохранение ответа-blob.
@@ -67,7 +68,7 @@ function handleLimit(err, indicatorCode, payload) {
   return false;
 }
 
-export async function downloadExcel(chartData, mode, indicatorCode, range, meta = {}) {
+async function downloadExcelImpl(chartData, mode, indicatorCode, range, meta = {}) {
   const modeLabel = CPI_MODE_LABELS[mode] || mode || 'data';
   const filename = `${indicatorCode}_${modeLabel}_${range}.xlsx`;
   const payload = {
@@ -89,7 +90,7 @@ export async function downloadExcel(chartData, mode, indicatorCode, range, meta 
   }
 }
 
-export async function downloadCSV(chartData, mode, indicatorCode, range, meta = {}) {
+async function downloadCSVImpl(chartData, mode, indicatorCode, range, meta = {}) {
   const filename = `${indicatorCode}_${mode || 'data'}_${range}.csv`;
   const payload = {
       format: 'csv',
@@ -111,10 +112,15 @@ export async function downloadCSV(chartData, mode, indicatorCode, range, meta = 
 }
 
 // Explicit user click after auth; replay the exact selected data, not a new default view.
-export async function resumeExport(payload) {
+async function resumeExportImpl(payload) {
   const { blob, remaining } = await exportTable(payload);
   saveBlob(blob, payload.filename);
   emitDownloaded(remaining);
   clearPendingExport();
   track(payload.format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { resumed_after_auth: true });
 }
+
+// Идущая выгрузка не должна обрываться автоперезагрузкой после релиза (chunkRecovery).
+export const downloadExcel = (...args) => trackBusy(downloadExcelImpl(...args));
+export const downloadCSV = (...args) => trackBusy(downloadCSVImpl(...args));
+export const resumeExport = (...args) => trackBusy(resumeExportImpl(...args));

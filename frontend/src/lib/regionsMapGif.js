@@ -6,6 +6,7 @@ import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 import mapData from './regionsMap.json';
 import { colorsBySlug, valueExtent, MAP_SCALE, MAP_NO_DATA } from './regionsMapColors';
 import { formatRegionValue } from './regionsApi';
+import { trackBusy } from './chunkRecovery';
 
 export const GIF_FRAME_MS = 650;
 
@@ -178,7 +179,7 @@ function drawLegend(ctx, { extent, unit, width: W, height: H, bottomH, pad }) {
  * @param {{ frameMs?: number, onProgress?: (i: number, n: number) => void }} [opts]
  * @returns {Promise<Blob>}
  */
-export async function buildRegionsMapGif(series, { frameMs = GIF_FRAME_MS, onProgress } = {}) {
+async function buildRegionsMapGifImpl(series, { frameMs = GIF_FRAME_MS, onProgress } = {}) {
   const years = series?.years || [];
   if (years.length < 2) throw new Error('need_at_least_two_years');
 
@@ -242,3 +243,6 @@ export function downloadBlob(blob, filename) {
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 100);
 }
+
+// Сборка GIF идёт секунды: автоперезагрузка после релиза её не прерывает (chunkRecovery).
+export const buildRegionsMapGif = (...args) => trackBusy(buildRegionsMapGifImpl(...args));

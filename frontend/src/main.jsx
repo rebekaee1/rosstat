@@ -3,26 +3,15 @@ import { QueryClient } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
 import SpaRoot from './SpaRoot.jsx';
 import { seedQueryClientFromHomeBootstrap } from './lib/homeBootstrap';
-import { createChunkRecovery } from './lib/chunkRecovery';
+import { installChunkRecovery } from './lib/chunkRecovery';
 import { mountWhenCssReady } from './lib/mountWhenCssReady';
 import './index.css';
 import './styles/data-visuals.css';
 
-// The entry URL contains Vite's content hash, including local builds without
-// a release ID. Never reset the guard on successful startup or by a timer.
-const reloadForMissingChunk = createChunkRecovery({
-  release: import.meta.url,
-  getStorage: () => window.sessionStorage,
-  reload: () => window.location.reload(),
-});
-
-window.addEventListener('vite:preloadError', reloadForMissingChunk);
-window.addEventListener('unhandledrejection', (event) => {
-  const msg = String(event.reason?.message || event.reason || '');
-  if (/ChunkLoadError|Failed to fetch dynamically imported module|Loading chunk/i.test(msg)) {
-    reloadForMissingChunk(event);
-  }
-});
+// После релиза у открытой вкладки пропадают старые хэшированные чанки: одна
+// перезагрузка за новым index.html (не чаще раза в 5 минут, не при вводе текста
+// и не во время загрузки файла). Иначе — обычный экран ошибки.
+installChunkRecovery(window);
 
 if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
