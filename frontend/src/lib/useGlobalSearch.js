@@ -9,7 +9,7 @@ export default function useGlobalSearch(query, { enabled = true, limit = 100 } =
   const needle = String(query || '').trim();
   const [settled, setSettled] = useState(needle);
   useEffect(() => {
-    const timer = setTimeout(() => setSettled(needle), 200);
+    const timer = setTimeout(() => setSettled(needle), 300);
     return () => clearTimeout(timer);
   }, [needle]);
   const isDebouncing = needle !== settled;

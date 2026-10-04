@@ -17,6 +17,7 @@ from urllib.parse import urlsplit, urlunsplit
 from sqlalchemy import and_, case, exists, literal, literal_column, or_, select, true, union_all, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import load_only
+from sqlalchemy.sql.elements import False_
 
 from app.data.global_market_indicators import COUNTRY_MARKET_INDICATOR_CODES, is_global_market_indicator, market_indicator_codes_for_country
 from app.data.world_concept_national import national_codes_for_concept
@@ -119,6 +120,7 @@ _PRICE_VALUATION_PHRASES = ("current prices", "constant prices", "chained prices
 _PRICE_SEPARATORS = string.punctuation + "—–≤≥‰€£¥№\t\n\r\v\f\u00a0\u202f"
 
 
+@lru_cache(maxsize=65536)
 def _native_price_metadata(*names: str | None) -> str:
     """A native price subject, distinct from GDP valuation at current prices."""
     text = phrase(" ".join(name or "" for name in names))
@@ -166,6 +168,7 @@ def _intent_frequency(intent: SearchIntent) -> str | None:
         if alt.startswith("search-freq-")), None)
 
 
+@lru_cache(maxsize=65536)
 def _unit_metadata(*units, native_currency: str | None = None) -> str:
     """Explicit percent intent checks actual units, never SEO/name text."""
     facets = unit_metadata(*units, native_currency=native_currency)
@@ -260,6 +263,10 @@ def _monthly_fact(intent: SearchIntent):
     return exists(select(1).where(*conditions))
 
 
+# 2**3 candidate queries at most; beyond that the single combined predicate is kept.
+_MAX_DIMENSION_TERMS = 3
+
+
 def _world_fact(intent: SearchIntent):
     return exists(select(1).where(WorldDataPoint.indicator_id == WorldIndicator.id,
         WorldDataPoint.value != literal_column("0"), _finite(WorldDataPoint.value),
@@ -271,6 +278,19 @@ def _escape_like(value: str) -> str:
 
 
 def _world_lexical(intent: SearchIntent, *, postgres: bool):
+    """One combined predicate per required term (lexical OR native dimension)."""
+    return [or_(lexical, dimension) if dimension is not None else lexical
+            for lexical, dimension in _world_lexical_terms(intent, postgres=postgres)]
+
+
+def _world_lexical_terms(intent: SearchIntent, *, postgres: bool):
+    """Per required term: (lexical predicate, native-dimension predicate or None).
+
+    The lexical part is trigram-indexable (code/name/SEO ILIKE). The dimension
+    part reads JSON slice members and cannot use that index; one such branch
+    inside an OR forces a scan of the whole catalogue. They are kept apart so
+    `_world` can run indexable candidate queries and merge them.
+    """
     # An unknown unfinished alphabetic qualifier has no semantic identity.
     # Scanning the large catalogue for its one/two-letter whole word can take
     # seconds while fabricating matches. Preserve short whole-query prefixes,
@@ -279,7 +299,7 @@ def _world_lexical(intent: SearchIntent, *, postgres: bool):
         len(group) == 1 and re.fullmatch(r"[a-zа-я]{1,2}", group[0])
         for group in intent.terms
     ):
-        return [literal(False)]
+        return [(literal(False), None)]
     clauses = []
     for sourcegroup in intent.terms:
         alternatives = matching_alternatives(sourcegroup, literal=intent.literal)
@@ -440,9 +460,10 @@ def _world_lexical(intent: SearchIntent, *, postgres: bool):
             if postgres and (len(alternatives) == 1 or raw_singleton) and not nominal and len(needle) >= 5 and " " not in needle:
                 for column in (WorldIndicator.name_ru, WorldIndicator.name_en):
                     term_clauses.append(literal(needle).op("<%")(column))
-        term_clauses.append(native_dimension_match_clause(WorldIndicator.provider, WorldIndicator.slice_json,
-            tuple(native_alternatives)))
-        clauses.append(or_(*term_clauses))
+        dimension = native_dimension_match_clause(WorldIndicator.provider, WorldIndicator.slice_json,
+            tuple(native_alternatives))
+        lexical = or_(*term_clauses) if term_clauses else literal(False)
+        clauses.append((lexical, None if isinstance(dimension, False_) else dimension))
     return clauses
 
 
@@ -663,20 +684,41 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
         WorldIndicator.category_ru, WorldIndicator.seo_keywords, WorldIndicator.is_listed, WorldIndicator.points_count)
     postgres = db.get_bind().dialect.name == "postgresql"
     needle = _escape_like(intent.literal or intent.content)
-    # All explicit geography and fact constraints precede candidate LIMIT.
-    stmt = select(WorldIndicator).options(load_only(*columns)).where(
-        WorldIndicator.country_id.in_(selected), _world_fact(intent), *_world_lexical(intent, postgres=postgres),
-        *dimension_constraints(intent.terms, WorldIndicator.provider, WorldIndicator.slice_json),
-        *measure_constraints(intent.terms, WorldIndicator.code, (WorldIndicator.name_ru, WorldIndicator.name_en,
-            native_dimension_text(WorldIndicator.provider, WorldIndicator.slice_json, intent.terms)), postgres=postgres,
-            unit_columns=(WorldIndicator.unit, WorldIndicator.unit_ru)))
-    stmt = stmt.order_by(case((WorldIndicator.code.ilike(_escape_like(intent.query), escape="\\"), 0),
+    rank = case((WorldIndicator.code.ilike(_escape_like(intent.query), escape="\\"), 0),
         (WorldIndicator.code.ilike(needle, escape="\\"), 0),
         (WorldIndicator.name_ru.ilike(needle, escape="\\"), 1),
         (WorldIndicator.name_en.ilike(needle, escape="\\"), 1),
-        (_world_preference(intent), 2), else_=3),
-        WorldIndicator.is_listed.desc(), WorldIndicator.code).limit(budget + 1)
-    rows = list((await db.execute(stmt)).scalars())
+        (_world_preference(intent), 2), else_=3)
+
+    def candidates(term_clauses):
+        # All explicit geography and fact constraints precede candidate LIMIT.
+        return select(WorldIndicator, rank.label("fe_rank")).options(load_only(*columns)).where(
+            WorldIndicator.country_id.in_(selected), _world_fact(intent), *term_clauses,
+            *dimension_constraints(intent.terms, WorldIndicator.provider, WorldIndicator.slice_json),
+            *measure_constraints(intent.terms, WorldIndicator.code, (WorldIndicator.name_ru, WorldIndicator.name_en,
+                native_dimension_text(WorldIndicator.provider, WorldIndicator.slice_json, intent.terms)), postgres=postgres,
+                unit_columns=(WorldIndicator.unit, WorldIndicator.unit_ru))
+        ).order_by(rank, WorldIndicator.is_listed.desc(), WorldIndicator.code).limit(budget + 1)
+
+    terms = _world_lexical_terms(intent, postgres=postgres)
+    dimension_terms = [index for index, (_lexical, dimension) in enumerate(terms) if dimension is not None]
+    if not postgres or not dimension_terms or len(dimension_terms) > _MAX_DIMENSION_TERMS:
+        statements = [candidates(_world_lexical(intent, postgres=postgres))]
+    else:
+        # A term holds through its lexical or its dimension predicate. Every
+        # combination is its own AND query, so each can use the trigram index;
+        # the union of the per-query top candidates contains the overall top.
+        statements = []
+        for mask in range(1 << len(dimension_terms)):
+            use_dimension = {dimension_terms[bit] for bit in range(len(dimension_terms)) if mask >> bit & 1}
+            statements.append(candidates([dimension if index in use_dimension else lexical
+                for index, (lexical, dimension) in enumerate(terms)]))
+    merged: dict[int, tuple[int, WorldIndicator]] = {}
+    for statement in statements:
+        for row, row_rank in (await db.execute(statement)).all():
+            merged.setdefault(row.id, (row_rank, row))
+    ordered = sorted(merged.values(), key=lambda item: (item[0], 0 if item[1].is_listed else 1, item[1].code))
+    rows = [row for _rank, row in ordered[:budget + 1]]
     clipped = len(rows) > budget
     by_id = {country.id: country for country in countries.values()}
     output = []

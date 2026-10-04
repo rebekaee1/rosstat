@@ -142,18 +142,38 @@ MONTHS = (
 )
 
 
+# The three text helpers below are pure functions of a string and are called
+# hundreds of thousands of times per search over the same catalogue titles.
+# Memoizing them (per process) removes most of the scoring CPU without changing
+# any result.
+@lru_cache(maxsize=131072)
+def _normalize_text(text: str) -> str:
+    return " ".join(unicodedata.normalize("NFKC", text).casefold().replace("ё", "е").split())
+
+
 def normalize(value: object) -> str:
-    return " ".join(unicodedata.normalize("NFKC", str(value or "")).casefold().replace("ё", "е").split())
+    return _normalize_text(value if isinstance(value, str) else str(value or ""))
+
+
+@lru_cache(maxsize=131072)
+def _tokens_of_normalized(text: str) -> tuple[str, ...]:
+    return tuple(TOKEN_RE.findall(text))
 
 
 def tokens(value: object) -> tuple[str, ...]:
-    return tuple(TOKEN_RE.findall(normalize(value)))
+    return _tokens_of_normalized(normalize(value))
+
+
+@lru_cache(maxsize=131072)
+def _phrase_of_normalized(text: str) -> str:
+    return " ".join(_tokens_of_normalized(text))
 
 
 def phrase(value: object) -> str:
-    return " ".join(tokens(value))
+    return _phrase_of_normalized(normalize(value))
 
 
+@lru_cache(maxsize=262144)
 def edit_distance_one(left: str, right: str) -> bool:
     """At most one insertion/deletion/substitution/adjacent transposition."""
     if left == right:
@@ -820,6 +840,22 @@ def complete_nominal_alternative(source_group: tuple[str, ...], alternatives: tu
         and (len(source_group) > 1 or alternative != source_group[0]))
 
 
+@lru_cache(maxsize=4096)
+def _alternative_plan(source_group: tuple[str, ...], literal: str | None):
+    """Per-term data that depends on the query only, never on the scored row."""
+    alternatives = matching_alternatives(source_group, literal=literal)
+    plan = []
+    for alternative in alternatives:
+        nominal_group = complete_nominal_alternative(source_group, alternatives, alternative)
+        alt = normalize(alternative)
+        p = phrase(alt)
+        unresolved = alternatives not in CONCEPTS_ALTERNATIVES and literal != alt
+        control_neighbour = unresolved and " " not in p and _control_neighbour(p)
+        bounded = re.compile(r"(?<![a-zа-я0-9])" + re.escape(p) + r"(?![a-zа-я0-9])")
+        plan.append((alt, p, nominal_group, unresolved, control_neighbour, bounded))
+    return tuple(plan)
+
+
 def match_score(intent: SearchIntent, *, code: str = "", names: tuple[str, ...] = (), metadata: str = "") -> int | None:
     """Every content term is required; names/code outrank metadata and edits."""
     if not intent.terms:
@@ -833,32 +869,25 @@ def match_score(intent: SearchIntent, *, code: str = "", names: tuple[str, ...] 
     identity_tokens = tokens(" ".join((code, *names)))
     score = 0
     for source_group in intent.terms:
-        alternatives = matching_alternatives(source_group, literal=intent.literal)
         best = None
-        for alternative in alternatives:
-            nominal_group = complete_nominal_alternative(source_group, alternatives, alternative)
-            alt = normalize(alternative)
-            p = phrase(alt)
-            unresolved = alternatives not in CONCEPTS_ALTERNATIVES and intent.literal != alt
-            control_neighbour = unresolved and " " not in p and _control_neighbour(p)
-            bounded_pattern = r"(?<![a-zа-я0-9])" + re.escape(p) + r"(?![a-zа-я0-9])"
+        for alt, p, nominal_group, unresolved, control_neighbour, bounded in _alternative_plan(source_group, intent.literal):
             if len(p) < 3 and len(intent.terms) == 1 and not intent.literal and (phrase(code).startswith(p) or any(phrase(name).startswith(p) for name in name_norms)):
                 # A short autocomplete prefix is anchored to a real identity or
                 # title; it never matches an interior syllable/SEO keyword.
                 value = 35
             elif intent.literal == alt and len(p) >= 24 and len(p.split()) >= 4 and any(phrase(name).startswith(p) for name in name_norms):
                 value = 70
-            elif re.search(bounded_pattern, phrase(code)):
+            elif bounded.search(phrase(code)):
                 # Whole-token identity only: sport cannot match transport.
                 value = 100 if code_norm == alt else 80
-            elif any(re.search(bounded_pattern, phrase(name)) for name in name_norms):
+            elif any(bounded.search(phrase(name)) for name in name_norms):
                 value = 70
             elif not nominal_group and len(p) >= 3 and " " not in p and any(t.startswith(p) for t in identity_tokens):
                 # A real title/code token is evidence for an autocomplete prefix,
                 # even if that unfinished token resembles a control word. Unit
                 # markers and fuzzy metadata matches do not establish identity.
                 value = 15
-            elif re.search(bounded_pattern, hay):
+            elif bounded.search(hay):
                 value = 20
             elif not nominal_group and not control_neighbour and len(p) >= 3 and " " not in p and any(t.startswith(p) for t in hay_tokens):
                 value = 15
