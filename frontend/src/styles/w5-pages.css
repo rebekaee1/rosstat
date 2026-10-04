@@ -342,3 +342,72 @@
   .w5-success__ring, .w5-success__tick, .w5-success__svg { animation: none; }
   .w5-more-inline > summary::after, .w5-toc > summary::after { transition: none; }
 }
+
+/* ── Волна 3 (X4): «О проекте» и «Методология» — короткий лид и карточки-разделы ───────── */
+.x4-lead { max-width: 58ch; margin: 0 0 24px; font-size: 16px; line-height: 1.65; color: var(--color-text-secondary); }
+@media (min-width: 768px) { .x4-lead { font-size: 17px; } }
+
+.x4-cards { display: grid; gap: 14px; margin-bottom: 20px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .x4-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
+.x4-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
+  scroll-margin-top: 116px;
+}
+@media (min-width: 768px) { .x4-card { padding: 24px; } }
+.x4-card--wide { grid-column: 1 / -1; }
+.x4-card__head { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.x4-card__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(173, 138, 72, 0.12);
+  color: var(--color-champagne-ink);
+}
+.x4-card__title { margin: 0; font-family: var(--font-display); font-size: 19px; font-weight: 700; line-height: 1.25; color: var(--color-text-primary); }
+.x4-card__body { min-width: 0; font-size: 15px; line-height: 1.6; color: var(--color-text-secondary); }
+.x4-card__body > p { margin: 0 0 8px; }
+.x4-card__body > p:last-child { margin-bottom: 0; }
+.x4-card__body a:not(.fe-btn) { color: var(--color-champagne-ink); text-decoration: underline; text-underline-offset: 3px; }
+.x4-card__body .w5-more-inline > div p { max-width: none; }
+.x4-card__body .w5-more-inline > div { margin-top: 6px; }
+.x4-card__body .w5-more-inline > div > * + * { margin-top: 10px; }
+
+/* Короткие шаги внутри карточки «Как мы считаем». */
+.x4-mini-steps { display: grid; gap: 10px; margin: 0 0 6px; padding: 0; list-style: none; counter-reset: x4s; }
+.x4-mini-steps li { position: relative; padding-left: 34px; min-height: 24px; counter-increment: x4s; }
+.x4-mini-steps li::before {
+  content: counter(x4s);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: rgba(173, 138, 72, 0.14);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-champagne-ink);
+}
+.x4-mini-steps strong { display: block; font-weight: 700; color: var(--color-text-primary); }
+
+/* Мелкая строка в конце страницы (благодарности). */
+.x4-credits { margin: 8px 0 24px; font-size: 13px; color: var(--color-text-secondary); }
+.x4-credits > summary { cursor: pointer; list-style: none; display: inline-flex; min-height: 36px; align-items: center; font-weight: 600; color: var(--color-text-secondary); }
+.x4-credits > summary::-webkit-details-marker { display: none; }
+.x4-credits p { margin: 4px 0 0; max-width: 62ch; line-height: 1.6; }
+.x4-credits a { color: var(--color-champagne-ink); text-decoration: underline; text-underline-offset: 3px; }
+@media (pointer: coarse) { .x4-credits > summary { min-height: 44px; } }

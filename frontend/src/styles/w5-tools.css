@@ -167,8 +167,17 @@
   gap: 10px;
   margin-bottom: 24px;
 }
-@media (min-width: 640px) { .w5-embed-types { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .w5-embed-types { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+/* Нечётная последняя плитка занимает ряд целиком: без дыры справа. */
+@media (max-width: 639px) { .w5-embed-types > :last-child:nth-child(odd) { grid-column: 1 / -1; } }
+@media (min-width: 640px) {
+  .w5-embed-types { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .w5-embed-types > * { grid-column: span 2; }
+  .w5-embed-types > :nth-child(n + 4) { grid-column: span 3; }
+}
+@media (min-width: 1024px) {
+  .w5-embed-types { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .w5-embed-types > *, .w5-embed-types > :nth-child(n + 4) { grid-column: auto; }
+}
 .w5-embed-type {
   display: flex;
   flex-direction: column;
@@ -222,7 +231,7 @@
   height: 22px;
   margin: 0;
   border-radius: 7px;
-  border: 1.5px solid var(--color-border-champagne);
+  border: 2px solid color-mix(in srgb, var(--color-champagne-ink) 65%, transparent);
   background: var(--color-surface);
   display: grid;
   place-content: center;

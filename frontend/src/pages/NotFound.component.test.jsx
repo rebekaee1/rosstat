@@ -21,7 +21,7 @@ describe('NotFound', () => {
       expect(screen.getByRole('link', { name: new RegExp(`^${name}`) }).getAttribute('href')).toBeTruthy();
     }
     expect(screen.getByRole('link', { name: 'На главную' }).getAttribute('href')).toBe('/');
-    expect(document.title).toContain('Страница не найдена');
+    expect(document.title).toContain('Такой страницы нет');
     // Дружелюбный текст и подсказки у разделов.
     expect(screen.getByText('Популярные разделы')).toBeTruthy();
   });

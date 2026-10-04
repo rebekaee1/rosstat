@@ -132,7 +132,7 @@ export default function WorldRegionProfile() {
   }
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs items={worldSubnationalRegionTrail(countryName, countrySlug, kindPlural, regionName, slug)} />
       {profile.isError && (
         <ApiRetryBanner onRetry={profile.refetch} isFetching={profile.isFetching} className="mb-6">
@@ -148,7 +148,7 @@ export default function WorldRegionProfile() {
             {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[92px] rounded-xl" />)}
           </div>
           <SkeletonBox className="mb-6 h-[46px] w-full rounded-xl" />
-          <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
             {Array.from({ length: 6 }).map((_, i) => <SkeletonBox key={i} className="h-[110px] rounded-xl sm:h-[84px]" />)}
           </div>
         </div>
@@ -292,7 +292,7 @@ export default function WorldRegionProfile() {
                     title={sec.name}
                     count={sec.indicators.length}
                   />
-                  <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {sec.indicators.map((item) => (
                       <RegionIndicatorRow
                         key={item.code}

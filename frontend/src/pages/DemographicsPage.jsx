@@ -222,7 +222,7 @@ export default function DemographicsPage() {
     : null;
 
   return (
-    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
+    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-12 sm:pb-16">
       <Breadcrumbs items={demographicsTrail()} className="mb-8" />
 
       <header className="mb-8 max-w-3xl">

@@ -32,6 +32,12 @@ describe('format', () => {
     expect(formatDate('2024-01-15', 'full', 'ru')).toContain('январ');
   });
 
+  it('formatDate fullGen puts the month in genitive (RU) for "с января 2016", "до августа 2026"', () => {
+    expect(formatDate('2016-01-01', 'fullGen', 'ru')).toBe('января 2016');
+    expect(formatDate('2026-08-01', 'fullGen', 'ru')).toBe('августа 2026');
+    expect(formatDate('2026-08-01', 'fullGen', 'en')).toBe('August 2026');
+  });
+
   it('formatDate full month in English', () => {
     expect(formatDate('2020-01-15', 'full', 'en')).toBe('January 2020');
     expect(formatDate('2024-03-01', 'full', 'en')).toBe('March 2024');

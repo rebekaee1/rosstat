@@ -472,7 +472,7 @@ export default function RegionsHome() {
   const gifAvailable = !!(activeMapCode && paint.hasHistory && series.data);
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs items={regionsTrail()} className="mb-6" />
       <div className="mb-6">
         <div className="mb-2 inline-flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
@@ -588,7 +588,7 @@ export default function RegionsHome() {
           )}
 
           {isLoading && (
-            <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5" role="status" aria-busy="true" aria-label={t('common.loading')}>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5" role="status" aria-busy="true" aria-label={t('common.loading')}>
               {Array.from({ length: 10 }).map((_, i) => <SkeletonBox key={i} className="h-[98px] rounded-xl sm:h-[78px]" />)}
             </div>
           )}
@@ -684,7 +684,7 @@ export default function RegionsHome() {
                           title={d.name}
                           count={d.regions.length}
                         />
-                        <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5">
                           {d.regions.map((r) => <RegionCard key={r.slug} region={r} />)}
                         </div>
                       </section>

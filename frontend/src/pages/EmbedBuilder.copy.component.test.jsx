@@ -62,7 +62,7 @@ describe('EmbedBuilder: превью и копирование', () => {
   it('форматы названы по-человечески, а не iframe / SVG / Badge', async () => {
     setup();
     await screen.findByRole('button', { name: /Копировать код/ });
-    for (const name of ['Живой виджет', 'Картинка', 'Markdown', 'Значок']) {
+    for (const name of ['Живой виджет', 'Картинка', 'Для блога', 'Мини-значок']) {
       expect(screen.getByRole('button', { name })).toBeTruthy();
     }
     fireEvent.click(screen.getByRole('button', { name: 'Картинка' }));

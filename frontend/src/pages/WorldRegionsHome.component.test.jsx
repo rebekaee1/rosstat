@@ -274,9 +274,11 @@ describe('WorldRegionIndicatorPage', () => {
     expect(screen.getByTestId('chart-stub')).toBeTruthy();
     expect(screen.getByLabelText('Сравнить с другой территорией')).toBeTruthy();
     expect(screen.getByRole('button', { name: /США/ })).toBeTruthy();
-    expect(screen.getByLabelText('Скачать CSV')).toBeTruthy();
-    expect(screen.getByLabelText('Скачать Excel')).toBeTruthy();
-    expect(screen.getByLabelText('Скачать график картинкой')).toBeTruthy();
+    // Три выгрузки собраны в одно меню «Скачать» (в ряд они переносились 3+2).
+    fireEvent.click(screen.getByRole('button', { name: /Скачать/ }));
+    expect(screen.getByRole('menuitem', { name: /CSV/ })).toBeTruthy();
+    expect(screen.getByRole('menuitem', { name: /Excel/ })).toBeTruthy();
+    expect(screen.getByRole('menuitem', { name: /Картинка/ })).toBeTruthy();
     expect(screen.getByText('Таблица значений по годам')).toBeTruthy();
     expect(document.querySelector('a[href^="/united-states/region/california/unemployment-rate/"]')).toBeNull();
     expect(document.querySelector('a[href^="/united-states/indicator/us-unemployment-rate/"]')).toBeNull();

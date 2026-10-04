@@ -199,7 +199,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     : (isCurrentMonth && allEvents.length > 0 && !source ? 'emptyUpcoming' : 'emptyMonth');
 
   return (
-    <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-24">
+    <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-12 sm:pb-16">
       <Breadcrumbs
         items={seoPath
           ? calendarMonthTrail(`${monthLabel} ${year}`, year, month + 1)

@@ -12,7 +12,7 @@ import {
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import useInflationCalc from '../lib/useInflationCalc';
-import { formatDate, formatAxisTick, cn } from '../lib/format';
+import { formatDate, formatAxisTick, pickChartAxisTicks, cn } from '../lib/format';
 import { formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import { mountJsonLd } from '../lib/jsonLd';
@@ -188,7 +188,7 @@ function CategoryBars({ result }) {
   );
 }
 
-function YearlyBreakdownTable({ breakdown, withRuble = true }) {
+function YearlyBreakdownTable({ breakdown, withRuble = true, partial = null }) {
   const t = useT();
   const [expanded, setExpanded] = useState(false);
   if (!breakdown?.length) return null;
@@ -223,6 +223,9 @@ function YearlyBreakdownTable({ breakdown, withRuble = true }) {
                   <td className="py-2 px-1 text-text-primary tabular-nums">
                     {row.year}
                     {row.isPeak && <Flame className="w-3 h-3 text-champagne inline ml-1 -mt-0.5" />}
+                    {partial && partial.year === row.year && (
+                      <span className="block text-xs leading-tight text-text-secondary">{partial.text}</span>
+                    )}
                   </td>
                   <td className="py-2 px-1">
                     <div className="flex items-center gap-2">
@@ -351,7 +354,7 @@ export default function CalculatorPage() {
 
   const lastDateFormatted = useMemo(() => {
     if (!lastAvailableDate) return null;
-    return formatDate(lastAvailableDate, 'full');
+    return formatDate(lastAvailableDate, 'fullGen');
   }, [lastAvailableDate]);
 
   const calcSeo = getPageSeo('calculator', locale);
@@ -475,6 +478,12 @@ export default function CalculatorPage() {
     return { yDomain: [niceMin, niceMax], yTicks: ticks, yWidth: w };
   }, [chartData, amount, chartMode, isRussia]);
 
+  // Подписи оси X — через равные годовые промежутки (а не «2016, 2019, 2026»).
+  const xTicks = useMemo(
+    () => pickChartAxisTicks(chartData, chartWidth > 0 && chartWidth < 560 ? 4 : 6, { cadence: 'annual' }),
+    [chartData, chartWidth],
+  );
+
   const visibleMilestones = useMemo(() => (
     isRussia
       ? MILESTONES.filter((m) => m.year > fromYear && m.year < toYear)
@@ -489,6 +498,14 @@ export default function CalculatorPage() {
   }, [fromYear, toYear, effectiveMin, effectiveMax]);
 
   const extremeInflation = result && result.totalInflation > 200;
+
+  // Последний год периода неполный (например, январь–август): таблица честно это помечает.
+  const partialYear = useMemo(() => {
+    const end = result?.periodTo ? new Date(result.periodTo) : null;
+    if (!end || Number.isNaN(end.getTime()) || end.getUTCMonth() === 11) return null;
+    const month = formatDate(result.periodTo, 'short').split(' ')[0];
+    return { year: end.getUTCFullYear(), text: t('x4.calc.partialYear', { month }) };
+  }, [result, t]);
 
   /* ── Insights ── */
   const insights = useMemo(() => {
@@ -596,7 +613,7 @@ export default function CalculatorPage() {
   /* ─── Render ─── */
 
   return (
-    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
+    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 sm:pb-16">
 
       <div style={revealStyle(0)} className="fe-reveal mb-8">
         <Breadcrumbs items={toolTrail(t('calc.inflation.title'), '/calculator')} />
@@ -666,33 +683,33 @@ export default function CalculatorPage() {
           <CalcSlider
             label={t('calc.inflation.fromYear')} ariaLabel={t('calc.inflation.fromYearAria')}
             value={sliderFrom} min={effectiveMin} max={Math.max(effectiveMin, effectiveMax - 1)}
-            onChange={handleFromYear}
+            onChange={handleFromYear} stacked
           />
           <CalcSlider
             label={t('calc.inflation.toYear')} ariaLabel={t('calc.inflation.toYearAria')}
             value={sliderTo} min={Math.min(effectiveMin + 1, effectiveMax)} max={effectiveMax}
-            onChange={handleToYear}
+            onChange={handleToYear} stacked
           />
         </div>
 
         {/* Presets */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center [&>*:last-child:nth-child(odd)]:col-span-2 sm:[&>*:last-child:nth-child(odd)]:col-auto">
           {PRESETS.map((p) => (
             <Chip
               key={t(p.labelKey)}
               active={isActivePreset(p)}
               onClick={() => handlePreset(p)}
-              className="rounded-full"
+              className="w-full justify-center rounded-full sm:w-auto"
             >
               {t(p.labelKey)}
             </Chip>
           ))}
-          {lastDateFormatted && (
-            <span className="ml-auto text-xs text-text-secondary">
-              {t('calc.inflation.dataUntil', { date: lastDateFormatted })}
-            </span>
-          )}
         </div>
+        {lastDateFormatted && (
+          <p className="mt-3 text-xs text-text-secondary">
+            {t('calc.inflation.dataUntil', { date: lastDateFormatted })}
+          </p>
+        )}
       </section>
 
       {/* Loading: тот же размер, что у карточки результата — без прыжка высоты */}
@@ -752,7 +769,7 @@ export default function CalculatorPage() {
             {result.periodFrom && result.periodTo && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
                 {t('calc.inflation.periodLabel', {
-                  from: formatDate(result.periodFrom, 'full'),
+                  from: formatDate(result.periodFrom, 'fullGen'),
                   to: formatDate(result.periodTo, 'full'),
                 })}
               </p>
@@ -795,12 +812,12 @@ export default function CalculatorPage() {
             </CalcStatGrid>
 
             {/* Share */}
-            <div className="flex flex-wrap gap-2">
-              <Button variant="secondary" size="sm" onClick={handleShare}>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <Button variant="secondary" size="sm" onClick={handleShare} className="w-full">
                 {copied ? <Check className="w-3.5 h-3.5" aria-hidden="true" /> : <Share2 className="w-3.5 h-3.5" aria-hidden="true" />}
                 {copied ? t('calc.inflation.shareCopied') : t('calc.inflation.shareLink')}
               </Button>
-              <Button variant="secondary" size="sm" onClick={handleCopyText}>
+              <Button variant="secondary" size="sm" onClick={handleCopyText} className="w-full">
                 <Copy className="w-3.5 h-3.5" aria-hidden="true" />
                 {t('calc.inflation.copyText')}
               </Button>
@@ -860,7 +877,7 @@ export default function CalculatorPage() {
 
               <div ref={chartBoxRef} onPointerDownCapture={(event) => { touchTip.onPointerDownCapture(event); touchHint.dismiss(); }}>
                 <ResponsiveContainer width="100%" height={chartWidth > 0 && chartWidth < 560 ? 280 : 320}>
-                  <AreaChart data={chartData} margin={{ top: 8, right: 12, bottom: 5, left: 4 }}>
+                  <AreaChart data={chartData} margin={{ top: 16, right: 16, bottom: 5, left: 4 }}>
                     <defs>
                       <linearGradient id="calcGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor={CHART_THEME.champagne} stopOpacity={0.18} />
@@ -870,7 +887,7 @@ export default function CalculatorPage() {
                     <CartesianGrid {...GRID_PROPS} />
                     <XAxis dataKey="date" tickFormatter={d => formatDate(d, 'annual')}
                       stroke={CHART_THEME.axisLine} tick={axisTick()}
-                      tickLine={false} interval="preserveStartEnd" minTickGap={50}
+                      tickLine={false} ticks={xTicks} interval={0}
                     />
                     <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
                       tickLine={false} axisLine={false} domain={yDomain} ticks={yTicks}
@@ -937,7 +954,7 @@ export default function CalculatorPage() {
               <h3 className="text-base font-semibold text-text-primary mb-5">
                 {t('calc.inflation.yearsTitle')}
               </h3>
-              <YearlyBreakdownTable breakdown={result.yearlyBreakdown} withRuble={withRuble} />
+              <YearlyBreakdownTable breakdown={result.yearlyBreakdown} withRuble={withRuble} partial={partialYear} />
             </section>
           )}
         </>

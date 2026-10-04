@@ -78,3 +78,32 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
 
 /* Выбор страны: флаг-эмодзи в кружке одного размера. */
 .fe-flag { display: inline-flex; width: 28px; height: 28px; flex: none; align-items: center; justify-content: center; font-size: 20px; line-height: 1; }
+
+/* ── Волна 3 (X4) ─────────────────────────────────────────────────────── */
+
+/* Хлебные крошки в одну строку: на телефоне — только «родитель › текущая», остальное в DOM остаётся. */
+@media (max-width: 639px) {
+  .fe-crumbs--oneline .fe-crumbs__list { flex-wrap: nowrap; overflow: hidden; }
+  .fe-crumbs--oneline .fe-crumbs__item:not(:nth-last-child(-n + 2)) { display: none; }
+  .fe-crumbs--oneline .fe-crumbs__item { flex: 0 1 auto; }
+  .fe-crumbs--oneline .fe-crumbs__item--last { flex: 1 1 0; min-width: 0; }
+}
+
+/* Заголовки: длинные русские слова переносятся с дефисом, а не рвутся посреди буквы. */
+.fe-title-wrap { overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; text-wrap: balance; }
+
+/* Меню «Скачать» (вместо ряда CSV / Excel / PNG). */
+.fe-dl { position: relative; display: inline-flex; }
+.fe-dl__menu {
+  position: absolute; left: 0; top: calc(100% + 6px); z-index: 40;
+  display: flex; flex-direction: column; gap: 2px;
+  width: max-content; min-width: 13rem; max-width: calc(100vw - 2rem);
+  padding: 6px; border-radius: 16px;
+  background: var(--color-surface); border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 18px 40px -18px rgba(32, 42, 60, 0.45);
+}
+.fe-dl__item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  min-height: 44px; padding: 8px 10px; border-radius: 12px; text-align: left;
+}
+.fe-dl__item:hover { background: var(--color-surface-hover); }

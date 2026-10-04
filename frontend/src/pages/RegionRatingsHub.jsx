@@ -134,7 +134,7 @@ export default function RegionRatingsHub() {
   });
 
   return (
-    <div className="fe-data-page mx-auto max-w-5xl px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto max-w-5xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs items={crumbs} className="mb-6" />
       <header className="mb-6 max-w-3xl">
         <h1 className="font-display text-3xl font-bold text-text-primary sm:text-4xl">
@@ -208,7 +208,7 @@ export default function RegionRatingsHub() {
             <h2 id="rating-popular" className="mb-3 font-display text-xl font-bold text-text-primary">
               {t('w4.rating.popular')}
             </h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {POPULAR.map((m, i) => <PopularCard key={m.code} metric={m} index={i} />)}
             </div>
           </section>

@@ -113,7 +113,7 @@ export default function CompoundCalculatorPage() {
   }, [initial, monthly, rate, years, inflation]);
 
   return (
-    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
+    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 sm:pb-16">
       <div style={revealStyle(0)} className="fe-reveal mb-8">
         <Breadcrumbs items={toolTrail(t('calc.compound.title'), '/calculator/compound')} />
       </div>
