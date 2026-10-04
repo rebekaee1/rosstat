@@ -5271,6 +5271,105 @@ async def _store_seed_hash(db, value: str) -> None:
     await db.commit()
 
 
+_SEO_SNAPSHOT_KEY = "seo_seed_written"
+_SEO_FIELDS = ("seo_title", "seo_description", "seo_keywords", "seo_blocks")
+
+
+def _seo_fp(value) -> str:
+    """Короткий отпечаток значения SEO-поля (строка или JSON-блоки)."""
+    blob = json.dumps(value, sort_keys=True, ensure_ascii=False, default=str)
+    return hashlib.sha256(blob.encode()).hexdigest()[:16]
+
+
+def _seo_empty(value) -> bool:
+    return value is None or value == "" or value == []
+
+
+def _seo_decide(current, desired, last_fp, *, first_run: bool, force: bool) -> tuple[bool, bool]:
+    """(писать ли desired, оставлено ли чужое значение).
+
+    Контракт DB override (ADR-0003, F12): сид владеет SEO-полем, пока в БД лежит
+    то, что сид сам записал в прошлый раз (отпечаток в `seed_state`). Значение,
+    отличное от записанного сидом, — ручная правка/админка: сид его не трогает.
+      - поле пустое → пишем;
+      - значение == desired → ничего не пишем (отпечаток обновим);
+      - отпечаток есть и совпал с БД → БД ещё «сидовая», обновляем до нового desired;
+      - отпечатка нет, но снимок уже существует → сид это поле не писал → чужое, оставляем;
+      - снимка нет вообще (первый прогон после введения контракта) → усыновляем
+        текущее состояние: прежнее поведение (перезапись), дальше правки защищены;
+      - force (FORCE_SEED_SEO=1) → перезаписать всё, сбросив overrides.
+    """
+    if _seo_empty(desired):
+        return False, False
+    if force or _seo_empty(current):
+        return True, False
+    if current == desired:
+        return False, False
+    if last_fp is not None and _seo_fp(current) == last_fp:
+        return True, False
+    if first_run:
+        return True, False
+    return False, True
+
+
+async def _apply_seo_preserving_overrides(db, desired: dict[str, dict], *, force: bool = False) -> dict:
+    """Пишет SEO-поля из сида, не затирая значения, правленные в БД вручную.
+
+    `desired` — {code: {seo_title|seo_description|seo_keywords|seo_blocks: value}}.
+    Отпечатки последних записанных сидом значений лежат одним JSON в
+    `seed_state[seo_seed_written]` (без новой миграции). Не коммитит — вызывающий
+    коммитит вместе с остальным сидом.
+    """
+    snap_row = await db.get(SeedState, _SEO_SNAPSHOT_KEY)
+    first_run = snap_row is None
+    try:
+        snapshot = json.loads(snap_row.value) if snap_row else {}
+    except ValueError:
+        snapshot, first_run = {}, True
+    if not isinstance(snapshot, dict):
+        snapshot, first_run = {}, True
+
+    rows = (await db.execute(
+        select(Indicator.code, Indicator.seo_title, Indicator.seo_description,
+               Indicator.seo_keywords, Indicator.seo_blocks)
+    )).all()
+    stats = {"written": 0, "preserved": 0, "preserved_codes": []}
+    new_snapshot = {code: dict(fields) for code, fields in snapshot.items()}
+    for code, *current_values in rows:
+        wanted = desired.get(code)
+        if not wanted:
+            continue
+        current = dict(zip(_SEO_FIELDS, current_values))
+        updates = {}
+        for field in _SEO_FIELDS:
+            if field not in wanted:
+                continue
+            write, kept = _seo_decide(
+                current[field], wanted[field], (snapshot.get(code) or {}).get(field),
+                first_run=first_run, force=force,
+            )
+            if write:
+                updates[field] = wanted[field]
+                new_snapshot.setdefault(code, {})[field] = _seo_fp(wanted[field])
+            elif kept:
+                stats["preserved"] += 1
+                stats["preserved_codes"].append(f"{code}.{field}")
+            elif not _seo_empty(wanted[field]) and current[field] == wanted[field]:
+                new_snapshot.setdefault(code, {})[field] = _seo_fp(wanted[field])
+        if updates:
+            await db.execute(update(Indicator).where(Indicator.code == code).values(**updates))
+            stats["written"] += len(updates)
+
+    value = json.dumps(new_snapshot, sort_keys=True, separators=(",", ":"))
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    if snap_row is None:
+        db.add(SeedState(key=_SEO_SNAPSHOT_KEY, value=value, updated_at=now))
+    else:
+        snap_row.value = value
+        snap_row.updated_at = now
+    return stats
+
+
 async def seed():
     desired_hash = compute_seed_hash()
     force = os.environ.get("FORCE_SEED", "") == "1"
@@ -5391,37 +5490,32 @@ async def _seed_full():
         # (single source of truth — DB columns indicators.seo_title/.seo_description
         # /.seo_keywords/.seo_blocks/.is_listed; this block makes the seed file
         # authoritative).
-        seo_count = 0
+        # F12 (2026-10-04): значения, правленные в БД вручную/через админку, сид
+        # не затирает — см. _apply_seo_preserving_overrides. FORCE_SEED_SEO=1
+        # сбрасывает все override к сиду.
+        # seo_keywords: для каждого индикатора либо ручной override из
+        # INDICATOR_SEO_KEYWORDS, либо генерация из (name + category + source)
+        # по только что записанным upsert-ом name/category/source.
+        desired_seo: dict[str, dict] = {}
         for code, vals in INDICATOR_SEO.items():
-            await db.execute(
-                update(Indicator)
-                .where(Indicator.code == code)
-                .values(
-                    seo_title=vals["seo_title"],
-                    seo_description=vals["seo_description"],
-                )
+            desired_seo.setdefault(code, {}).update(
+                seo_title=vals["seo_title"], seo_description=vals["seo_description"],
             )
-            seo_count += 1
-        # seo_keywords: для каждого активного индикатора либо ручной override
-        # из INDICATOR_SEO_KEYWORDS, либо генерация из (name + category + source).
-        # Делаем после upsert, чтобы видеть актуальные name/category/source
-        # из только что записанных строк.
         result = await db.execute(
             select(Indicator.code, Indicator.name, Indicator.category, Indicator.source)
         )
         kw_count = 0
         for code, name, category, source in result.all():
-            kw = INDICATOR_SEO_KEYWORDS.get(code) or default_keywords(name, category, source)
-            await db.execute(
-                update(Indicator).where(Indicator.code == code).values(seo_keywords=kw)
+            desired_seo.setdefault(code, {})["seo_keywords"] = (
+                INDICATOR_SEO_KEYWORDS.get(code) or default_keywords(name, category, source)
             )
             kw_count += 1
         for code, blocks in INDICATOR_SEO_BLOCKS.items():
-            await db.execute(
-                update(Indicator)
-                .where(Indicator.code == code)
-                .values(seo_blocks=blocks)
-            )
+            desired_seo.setdefault(code, {})["seo_blocks"] = blocks
+        seo_stats = await _apply_seo_preserving_overrides(
+            db, desired_seo, force=os.environ.get("FORCE_SEED_SEO", "") == "1",
+        )
+        seo_count = len(INDICATOR_SEO)
         # Reset is_listed to true everywhere first, then mark hidden codes false.
         await db.execute(update(Indicator).values(is_listed=True))
         for code in INDICATOR_HIDDEN_FROM_LISTING:
@@ -5434,7 +5528,8 @@ async def _seed_full():
         await db.commit()
         print(
             f"  SEO metadata applied: {seo_count} titles/descriptions, "
-            f"{kw_count} keywords sets, "
+            f"{kw_count} keywords sets, {seo_stats['written']} fields written, "
+            f"{seo_stats['preserved']} DB overrides preserved, "
             f"{len(INDICATOR_SEO_BLOCKS)} block sets, "
             f"{len(INDICATOR_HIDDEN_FROM_LISTING)} hidden from listing, "
             f"{retired} orphan siblings retired"

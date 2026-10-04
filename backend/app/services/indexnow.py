@@ -20,6 +20,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import uuid
 from datetime import date, datetime, time, timedelta, timezone
 from math import ceil
 from urllib.parse import urlparse
@@ -39,6 +40,20 @@ _QUEUE_BATCH = 800
 _DEBOUNCE_TTL = 24 * 3600
 _QUEUE_PREFIX = "in:queue:"
 _DEBOUNCE_PREFIX = "in:sent:"
+# Надёжная очередь (F12, 2026-10-04): партия не «снимается» SPOP-ом, а атомарно
+# переносится SMOVE в processing-set `in:proc:{host}:{batch_id}`; её id и время
+# взятия лежат в zset `in:proc-idx:{host}`. ACK (после успешного ping или
+# возврата в очередь) удаляет оба. Партии, зависшие дольше таймаута (процесс
+# упал между взятием и ACK), следующий drain возвращает в очередь.
+_PROCESSING_PREFIX = "in:proc:"
+_PROCESSING_INDEX_PREFIX = "in:proc-idx:"
+# Drain идёт раз в 10 минут (max_instances=1); ping_urls — до 30 с на POST плюс
+# пауза 429 до 60 с. 30 минут с запасом: повторная доставка безопасна
+# (IndexNow идемпотентен, debounce-ключи отсекают уже отправленное).
+_PROCESSING_TIMEOUT = 30 * 60
+# Страховочный TTL содержимого партии: возврат идёт каждые 10 минут, так что до
+# него дело доходит только если очередь не обслуживалась неделю (URL устарели).
+_PROCESSING_TTL = 7 * 24 * 3600
 _HISTORY_CURSOR_KEY = "in:history:cursor"
 _HISTORY_LOCK_KEY = "in:history:lock"
 # v3 stores an independent (phase, section, offset) cursor per sitemap family.
@@ -655,6 +670,71 @@ async def enqueue_history_urls(db) -> dict:
     return stats
 
 
+def _processing_key(ping_host: str, batch_id: str) -> str:
+    return f"{_PROCESSING_PREFIX}{ping_host}:{batch_id}"
+
+
+def _as_text(items) -> list[str]:
+    if isinstance(items, (bytes, str)):
+        items = [items]
+    return [p.decode() if isinstance(p, bytes) else p for p in (items or [])]
+
+
+async def _claim_batch(redis, ping_host: str, count: int) -> tuple[str | None, list[str]]:
+    """Атомарно перенести до `count` URL из очереди в processing (MULTI/EXEC).
+
+    В отличие от SPOP, падение процесса после взятия не теряет партию: она
+    остаётся в `in:proc:*` и вернётся в очередь через `_recover_stale_batches`.
+    """
+    queue_key = f"{_QUEUE_PREFIX}{ping_host}"
+    members = _as_text(await redis.srandmember(queue_key, count))
+    if not members:
+        return None, []
+    batch_id = uuid.uuid4().hex
+    proc_key = _processing_key(ping_host, batch_id)
+    index_key = f"{_PROCESSING_INDEX_PREFIX}{ping_host}"
+    pipe = redis.pipeline(transaction=True)
+    pipe.zadd(index_key, {batch_id: _utc_now().timestamp()})
+    for member in members:
+        pipe.smove(queue_key, proc_key, member)
+    pipe.expire(proc_key, _PROCESSING_TTL)
+    results = await pipe.execute()
+    # Параллельный drain мог забрать часть URL раньше: в партии только перенесённые.
+    moved = [member for member, ok in zip(members, results[1:1 + len(members)]) if ok]
+    if not moved:
+        await redis.zrem(index_key, batch_id)
+        return None, []
+    return batch_id, moved
+
+
+async def _ack_batch(redis, ping_host: str, batch_id: str, *, requeue=()) -> None:
+    """Снять партию с учёта; `requeue` (не отправленные) — вернуть в очередь в той же транзакции."""
+    pipe = redis.pipeline(transaction=True)
+    if requeue:
+        pipe.sadd(f"{_QUEUE_PREFIX}{ping_host}", *requeue)
+    pipe.delete(_processing_key(ping_host, batch_id))
+    pipe.zrem(f"{_PROCESSING_INDEX_PREFIX}{ping_host}", batch_id)
+    await pipe.execute()
+
+
+async def _recover_stale_batches(redis, ping_host: str) -> int:
+    """Вернуть в очередь партии, зависшие в processing дольше таймаута."""
+    index_key = f"{_PROCESSING_INDEX_PREFIX}{ping_host}"
+    cutoff = _utc_now().timestamp() - _PROCESSING_TIMEOUT
+    stale = _as_text(await redis.zrangebyscore(index_key, "-inf", cutoff))
+    returned = 0
+    for batch_id in stale:
+        proc_key = _processing_key(ping_host, batch_id)
+        members = _as_text(await redis.smembers(proc_key))
+        await _ack_batch(redis, ping_host, batch_id, requeue=members)
+        returned += len(members)
+        logger.warning(
+            "IndexNow drain: returned stale batch %s (%d URL(s)) to %s%s",
+            batch_id, len(members), _QUEUE_PREFIX, ping_host,
+        )
+    return returned
+
+
 async def drain_indexnow_queue(*, limit: int = _QUEUE_BATCH) -> int:
     """Снять батч из очереди каждого известного хоста и пингануть."""
     from app.core.cache import get_state_redis
@@ -667,6 +747,13 @@ async def drain_indexnow_queue(*, limit: int = _QUEUE_BATCH) -> int:
         ru_host = "ru.forecasteconomy.com"
         hosts.append(ru_host)
         origins[ru_host] = ru_public_origin()
+    # Партии, зависшие после падения процесса между взятием и ACK, — обратно в очередь
+    # до расчёта размеров (при старте scheduler это первый же drain).
+    for ping_host in hosts:
+        try:
+            await _recover_stale_batches(redis, ping_host)
+        except Exception as exc:  # noqa: BLE001 — возврат подождёт следующего drain
+            logger.warning("IndexNow drain: stale batch recovery failed host=%s: %s", ping_host, exc)
     daily_remaining = await daily_send_remaining(hosts[0], redis=redis)
     queue_sizes = {
         host: int(await redis.scard(f"{_QUEUE_PREFIX}{host}"))
@@ -682,12 +769,9 @@ async def drain_indexnow_queue(*, limit: int = _QUEUE_BATCH) -> int:
                 logger.info("IndexNow drain: global daily send cap reached")
             continue
         queue_key = f"{_QUEUE_PREFIX}{ping_host}"
-        batch = await redis.spop(queue_key, host_budget)
-        if not batch:
+        batch_id, batch = await _claim_batch(redis, ping_host, host_budget)
+        if not batch_id:
             continue
-        if isinstance(batch, (bytes, str)):
-            batch = [batch]
-        batch = [p.decode() if isinstance(p, bytes) else p for p in batch]
         try:
             # Один round-trip на весь батч: 800 последовательных EXISTS
             # каждые 10 минут — 800 шансов поймать таймаут state-Redis.
@@ -697,6 +781,7 @@ async def drain_indexnow_queue(*, limit: int = _QUEUE_BATCH) -> int:
             seen = await pipe.execute()
             fresh = [path for path, hit in zip(batch, seen) if not hit]
             if not fresh:
+                await _ack_batch(redis, ping_host, batch_id)
                 continue
             ok = await ping_urls(fresh, origin=origins.get(ping_host), host=ping_host)
             if ok:
@@ -708,17 +793,21 @@ async def drain_indexnow_queue(*, limit: int = _QUEUE_BATCH) -> int:
                         ex=_DEBOUNCE_TTL,
                     )
                 await pipe.execute()
+                # ACK после debounce: падение между ними даёт повторную доставку,
+                # которую debounce-ключи отсекают; обратного порядка (потеря) нет.
+                await _ack_batch(redis, ping_host, batch_id)
                 sent += len(fresh)
             else:
-                await redis.sadd(queue_key, *fresh)
+                await _ack_batch(redis, ping_host, batch_id, requeue=fresh)
         except Exception:
-            # SPOP уже снял батч: без возврата сбой посреди drain терял URL.
+            # Партия лежит в processing: возвращаем сразу, а если и это не вышло —
+            # её вернёт _recover_stale_batches после таймаута.
             try:
-                await redis.sadd(queue_key, *batch)
+                await _ack_batch(redis, ping_host, batch_id, requeue=batch)
             except Exception:
                 logger.warning(
-                    "IndexNow drain: could not return %d URL(s) to %s",
-                    len(batch), queue_key,
+                    "IndexNow drain: %d URL(s) stay in processing batch %s of %s until timeout",
+                    len(batch), batch_id, queue_key,
                 )
             raise
     return sent

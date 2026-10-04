@@ -168,6 +168,16 @@ SSR-страницы (`behavior-standalone`) не затронуты. Не пр�
 данных»; `PlanetView`/`WorldMap` не трогали, там работает ветка
 `codex/realistic-planet`.
 
+## 2026-10-04 — F11 политика повторов, F12 SEO-override и надёжная очередь IndexNow
+
+**Статус: исправлено локально, не выпущено** (тесты ниже; commit/push/deploy не выполнялись).
+
+**F11 (frontend).** Было: интерсептор Axios (`frontend/src/lib/api.js`) повторял 429/503 для всех не-`/auth` методов, включая POST/PUT/PATCH/DELETE (обратная связь, выгрузка, подписка, профиль) — повтор мог задвоить действие; `Retry-After` усекался локальным backoff. Стало: политика описана комментарием в `api.js`. Автоповтор — только GET/HEAD, либо запрос явно объявлен идемпотентным (`{ idempotent: true }` или заголовок `Idempotency-Key`); `/auth*` не повторяется никогда; потолок — 3 повтора; `Retry-After` (секунды или HTTP-date) соблюдается как минимальная пауза, значение выше 10 с — повтор не делается. Сеть/таймаут для изменяющих — не повторяется. Аналитика: доставка батчей уже подтверждённая (`behavior.js`: батч с неизменным `batch_id` и телом хранится в памяти до ack/срока жизни, ретраи 4 попытки, `Retry-After`; сервер `analytics.py::_claim_behavior_batch` дедуплицирует по `batch_id` через Redis `done`-маркер, тесты `behavior.transport.test.js`, `test_analytics_batch_delivery.py`) — не менялась. Добавлено: `api_timing` теперь измеряет и XHR (Axios), раньше — только `fetch`. Остаток: дедуп батча живёт в Redis (1 ч) — при потере Redis возможен дубль, не ложное подтверждение; постоянные батчи не переживают закрытие вкладки (память, без localStorage — осознанно, privacy).
+
+**F12 (backend).** (а) Сид (`backend/seed_data.py::_seed_full`) при каждом полном прогоне перезаписывал `seo_title/seo_description/seo_keywords/seo_blocks`, вопреки ADR-0003 (правки в БД без деплоя). Контракт без миграции: отпечатки последних записанных сидом значений лежат в `seed_state[seo_seed_written]`; сид пишет поле, только если оно пусто или в БД ещё лежит значение сида; иное значение — override, сохраняется. Первый прогон без снимка усыновляет текущее состояние (прежнее поведение, дальше защита). `FORCE_SEED_SEO=1` сбрасывает override к сиду; `FORCE_SEED=1` override не сбрасывает. `is_listed` по-прежнему пересчитывается сидом целиком (вне объёма). (б) Очередь IndexNow: SPOP заменён на атомарный перенос партии (MULTI/SMOVE) в `in:proc:{host}:{batch_id}` + реестр `in:proc-idx:{host}`; ACK (после debounce-ключей) удаляет партию, неотправленные возвращаются в очередь; партии старше 30 минут возвращает следующий drain.
+
+**Проверено локально:** vitest `api.test.js` (17), `behavior.apitiming.test.js`, весь `src/lib/behavior*`; pytest `test_seed_seo_override.py`, `test_indexnow_reliable_queue.py`, `test_seo_growth_pages.py`, `test_analytics_batch_delivery.py`. Не проверено: PostgreSQL-прогон сида на копии прод-БД, реальный Redis, production acceptance. После выката: формат `in:queue:*` не менялся — накопленные очереди читает новый drain; в логе сида строка `DB overrides preserved`.
+
 <a id="integration-2026-10-02"></a>
 
 ## 2026-10-02 — сведение веток поиска, сессий и планеты (локально)

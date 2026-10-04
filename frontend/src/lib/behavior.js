@@ -776,39 +776,74 @@ function setupErrorCapture() {
   });
 }
 
-/** Латентность API глазами клиента: обёртка fetch, сэмпл 1 из N, только /api/. */
+function apiTimingUrl(url) {
+  return String(url).replace(/^https?:\/\/[^/]+/, '').split('?')[0].slice(0, 200);
+}
+
+function isApiTimingUrl(url) {
+  return Boolean(url) && url.indexOf('/api/') !== -1 && url.indexOf('/analytics/') === -1;
+}
+
+/** Латентность API глазами клиента: обёртки fetch и XMLHttpRequest (Axios ходит через XHR),
+ *  сэмпл 1 из N, только /api/. Измерение пассивно: ответ и ошибки не меняются. */
 function setupApiTiming() {
   const orig = window.fetch;
-  if (typeof orig !== 'function') return;
-  // Сигнатура (input, init) сохраняется через arguments — init не читаем.
-  window.fetch = function feFetch(input) {
-    let url = null;
-    try { url = typeof input === 'string' ? input : (input && input.url) || null; } catch { /* ignore */ }
-    const isApi = url && url.indexOf('/api/') !== -1 && url.indexOf('/analytics/') === -1;
-    if (!isApi) return orig.apply(this, arguments);
-    _apiCallCounter += 1;
-    if (_apiCallCounter % API_TIMING_SAMPLE !== 0) return orig.apply(this, arguments);
-    const t0 = performance.now();
-    return orig.apply(this, arguments).then((resp) => {
-      push('api_timing', {
-        u: String(url).replace(/^https?:\/\/[^/]+/, '').split('?')[0].slice(0, 200),
-        ms: Math.round(performance.now() - t0),
-        st: resp.status,
-        ok: resp.ok ? 1 : 0,
+  const restores = [];
+  if (typeof orig === 'function') {
+    // Сигнатура (input, init) сохраняется через arguments — init не читаем.
+    window.fetch = function feFetch(input) {
+      let url = null;
+      try { url = typeof input === 'string' ? input : (input && input.url) || null; } catch { /* ignore */ }
+      if (!isApiTimingUrl(url)) return orig.apply(this, arguments);
+      _apiCallCounter += 1;
+      if (_apiCallCounter % API_TIMING_SAMPLE !== 0) return orig.apply(this, arguments);
+      const t0 = performance.now();
+      return orig.apply(this, arguments).then((resp) => {
+        push('api_timing', { u: apiTimingUrl(url), ms: Math.round(performance.now() - t0), st: resp.status, ok: resp.ok ? 1 : 0 });
+        return resp;
+      }, (err) => {
+        push('api_timing', { u: apiTimingUrl(url), ms: Math.round(performance.now() - t0), st: 0, ok: 0 });
+        throw err;
       });
-      return resp;
-    }, (err) => {
-      push('api_timing', {
-        u: String(url).replace(/^https?:\/\/[^/]+/, '').split('?')[0].slice(0, 200),
-        ms: Math.round(performance.now() - t0),
-        st: 0,
-        ok: 0,
-      });
-      throw err;
+    };
+    const wrapper = window.fetch;
+    restores.push(() => { if (window.fetch === wrapper) window.fetch = orig; });
+  }
+
+  const XHR = typeof window.XMLHttpRequest === 'function' ? window.XMLHttpRequest : null;
+  const proto = XHR && XHR.prototype;
+  if (proto && typeof proto.open === 'function' && typeof proto.send === 'function') {
+    const origOpen = proto.open;
+    const origSend = proto.send;
+    proto.open = function feXhrOpen(method, url) {
+      try { this.__feTimingUrl = typeof url === 'string' ? url : (url && String(url)) || null; } catch { /* ignore */ }
+      return origOpen.apply(this, arguments);
+    };
+    proto.send = function feXhrSend() {
+      try {
+        const url = this.__feTimingUrl;
+        if (isApiTimingUrl(url)) {
+          _apiCallCounter += 1;
+          if (_apiCallCounter % API_TIMING_SAMPLE === 0) {
+            const t0 = performance.now();
+            // loadend срабатывает и при успехе, и при ошибке/таймауте/abort.
+            this.addEventListener('loadend', () => {
+              const st = this.status || 0;
+              push('api_timing', { u: apiTimingUrl(url), ms: Math.round(performance.now() - t0), st, ok: st >= 200 && st < 300 ? 1 : 0 });
+            }, { once: true });
+          }
+        }
+      } catch { /* телеметрия никогда не ломает UX */ }
+      return origSend.apply(this, arguments);
+    };
+    const openWrapper = proto.open;
+    const sendWrapper = proto.send;
+    restores.push(() => {
+      if (proto.open === openWrapper) proto.open = origOpen;
+      if (proto.send === sendWrapper) proto.send = origSend;
     });
-  };
-  const wrapper = window.fetch;
-  _restoreFetch = () => { if (window.fetch === wrapper) window.fetch = orig; };
+  }
+  if (restores.length) _restoreFetch = () => { for (const restore of restores) restore(); };
 }
 
 /** Воронка форм без снятия текста: первый фокус в форме и submit. */
