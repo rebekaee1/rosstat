@@ -1,0 +1,275 @@
+/* Калькуляторы и конструктор виджетов (волна 2, область W5, 2026-10-04).
+   Токены — из index.css; радиусы: карточки 24 px, контролы и плитки 12 px. */
+
+/* Надбровка: короткая (до двух слов), капсом с разрядкой — остальное пишется обычным регистром. */
+.w5-eyebrow {
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-champagne-ink);
+}
+
+/* ── Итоговые плитки: одинаковая ширина, 2 в ряд ─────────────────────────── */
+.w5-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .w5-tiles--wide { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .w5-tiles--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+/* Нечётная последняя плитка занимает весь ряд — без дыры справа (на узком экране). */
+.w5-tiles > .w5-tile:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (min-width: 640px) {
+  .w5-tiles--wide > .w5-tile:last-child:nth-child(odd),
+  .w5-tiles--three > .w5-tile:last-child:nth-child(odd) { grid-column: auto; }
+}
+.w5-tile {
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--color-obsidian);
+  border: 1px solid var(--color-border-subtle);
+}
+.w5-tile__label {
+  margin: 0 0 2px;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--color-text-secondary);
+}
+.w5-tile__value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(16px, 4.8vw, 20px);
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+.w5-tile--accent .w5-tile__value { color: var(--color-champagne-ink); }
+
+/* ── Ключевая ставка: пилюля под заголовком ─────────────────────────────── */
+.w5-keyrate {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  margin-top: 16px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-champagne);
+  background: var(--fe-glass-soft);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+.w5-keyrate:hover { border-color: var(--color-champagne); }
+.w5-keyrate__dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--color-champagne); }
+@media (pointer: coarse) { .w5-keyrate { min-height: 44px; } }
+
+/* ── «Как считаем»: раскрывающийся блок простыми словами ────────────────── */
+.w5-method {
+  margin-bottom: 32px;
+  border-radius: 24px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-obsidian-light);
+}
+.w5-method__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 0 24px;
+  list-style: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  border-radius: 24px;
+}
+.w5-method__summary::-webkit-details-marker { display: none; }
+.w5-method__chev { width: 18px; height: 18px; color: var(--color-text-secondary); transition: transform 0.2s ease; }
+.w5-method[open] .w5-method__chev { transform: rotate(180deg); }
+.w5-method__body {
+  display: grid;
+  gap: 12px;
+  padding: 0 24px 24px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+.w5-method__body p { margin: 0; }
+.w5-method__body a { color: var(--color-champagne-ink); text-decoration: underline; text-underline-offset: 3px; }
+
+/* «Ещё N выводов»: свёрнутые дополнительные карточки. */
+.w5-more__summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--fe-glass-soft);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-champagne-ink);
+  cursor: pointer;
+  list-style: none;
+}
+.w5-more__summary::-webkit-details-marker { display: none; }
+.w5-more[open] > .w5-more__summary { margin-bottom: 0; }
+@media (pointer: coarse) { .w5-more__summary { min-height: 44px; } }
+
+/* ── Подсказка про касание графика и легенда ────────────────────────────── */
+.w5-touch-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(173, 138, 72, 0.1);
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-primary);
+  animation: w5-hint-in 0.3s var(--fe-ease-out, ease-out) both;
+}
+.w5-touch-hint__icon { width: 16px; height: 16px; flex: none; color: var(--color-champagne-ink); }
+@keyframes w5-hint-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.w5-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.w5-legend__item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--color-text-secondary); }
+.w5-legend__swatch { width: 18px; height: 0; border-top: 3px solid var(--w5-swatch, currentColor); border-radius: 2px; }
+.w5-legend__swatch--dashed { border-top-style: dashed; border-top-width: 2px; }
+
+/* Метки событий на графике инфляции вынесены из графика в легенду под ним. */
+.w5-legend__year { font-weight: 600; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+
+/* ── Конструктор виджетов ───────────────────────────────────────────────── */
+.w5-embed { min-width: 0; }
+.w5-embed * { min-width: 0; }
+.w5-embed-types {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+@media (min-width: 640px) { .w5-embed-types { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .w5-embed-types { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.w5-embed-type {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 88px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+.w5-embed-type:hover { border-color: var(--color-champagne); }
+.w5-embed-type.is-active {
+  border-color: rgba(173, 138, 72, 0.6);
+  background: rgba(173, 138, 72, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(173, 138, 72, 0.25);
+}
+.w5-embed-type__icon { width: 20px; height: 20px; color: var(--color-champagne-ink); }
+.w5-embed-type__name { font-size: 15px; font-weight: 700; line-height: 1.2; }
+.w5-embed-type__hint { font-size: 12px; line-height: 1.35; color: var(--color-text-secondary); }
+
+.w5-embed-grid { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) { .w5-embed-grid { grid-template-columns: 340px minmax(0, 1fr); } }
+
+.w5-embed-field { display: grid; gap: 8px; }
+.w5-embed-label { font-size: 13px; font-weight: 600; color: var(--color-text-primary); }
+.w5-embed-seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
+.w5-embed-seg--wrap { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.w5-embed-seg .fe-chip { width: 100%; padding-inline: 6px; }
+
+.w5-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+.w5-check input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border-radius: 7px;
+  border: 1.5px solid var(--color-border-champagne);
+  background: var(--color-surface);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.w5-check input::after {
+  content: '';
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) scale(0);
+  margin-top: -2px;
+  transition: transform 0.15s var(--fe-ease-out, ease-out);
+}
+.w5-check input:checked { background: var(--color-accent-solid); border-color: var(--color-accent-solid); }
+.w5-check input:checked::after { transform: rotate(-45deg) scale(1); }
+.w5-check input:focus-visible { outline: 2px solid var(--color-champagne-ink); outline-offset: 2px; }
+
+.w5-embed-preview {
+  border-radius: 24px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+.w5-embed-preview__stage { display: flex; justify-content: center; padding: 16px; overflow-x: auto; }
+.w5-embed-preview__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--color-border-subtle); }
+.w5-embed-code {
+  border-radius: 24px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+.w5-embed-code__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; }
+.w5-embed-code__pre {
+  margin: 0;
+  padding: 14px 16px;
+  border-top: 1px solid var(--color-border-subtle);
+  background: var(--color-obsidian);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 260px;
+  overflow: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .w5-touch-hint { animation: none; }
+  .w5-method__chev { transition: none; }
+}
