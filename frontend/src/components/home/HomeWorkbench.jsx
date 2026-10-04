@@ -227,7 +227,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
 
         <div className="relative min-w-0">
             {!mapMounted || mapDataPending ? (
-              <SkeletonBox className="h-[36rem] w-full rounded-2xl sm:h-[32rem]" />
+              <SkeletonBox className="h-[58rem] w-full rounded-2xl sm:h-[39rem]" />
             ) : (
               <ErrorBoundary fallback={(
                 <div className="flex h-[22rem] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-border-subtle bg-surface-hover px-6 text-center text-sm text-text-secondary" role="alert">
@@ -236,7 +236,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                 </div>
               )}
               >
-              <Suspense fallback={<SkeletonBox className="h-[36rem] w-full rounded-2xl sm:h-[32rem]" />}>
+              <Suspense fallback={<SkeletonBox className="h-[58rem] w-full rounded-2xl sm:h-[39rem]" />}>
                 <PlanetView
                   countries={mapCountries}
                   valuesByCode={valuesByCode}
