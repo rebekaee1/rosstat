@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1317  ·  **Строк:** 1 003 577  ·  **Токенов (≈):** 9 477 003
+**Файлов:** 1317  ·  **Строк:** 1 003 579  ·  **Токенов (≈):** 9 477 260
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 675 | 247 819 | 2 723 678 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 775 | 9 056 |
-| `docs` | 110 | 645 280 | 5 531 375 |
+| `docs` | 110 | 645 282 | 5 531 632 |
 | `frontend` | 405 | 86 661 | 917 296 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 97 | 20 094 | 238 206 |
@@ -40,7 +40,7 @@
 | `backend/app/data/indicator_seo.py` | 9 073 | 116 019 |
 | `docs/mechanism-inventory.md` | 2 570 | 114 103 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
-| `docs/backlog.md` | 2 384 | 74 440 |
+| `docs/backlog.md` | 2 386 | 74 697 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `backend/seed_data.py` | 5 661 | 58 541 |
 | `backend/app/data/regional/indicators.json` | 6 440 | 56 948 |

@@ -10059,9 +10059,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "ec0674f4b39b6663badffd6b5f50cfb31aef3106bee77657e4214d905a1aa8ee",
-      "bytes": 439353,
-      "lines": 2384,
+      "sha256": "57a1e059a3dfdb187fff600a1d639d092a7705bdbc1ddb373a465107c8fe2cce",
+      "bytes": 441065,
+      "lines": 2386,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10631,7 +10631,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "0405a02116465b275b0cdda29633b8eabf9c16fc38ccbbcdef5455436f7ebda3",
+      "sha256": "92717c5509aa8ebcd0617103acf8a3a11ec91c236c0ae028a929d034a4298644",
       "bytes": 2599342,
       "lines": 93438,
       "code": false,
@@ -18925,11 +18925,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "033baa2b17a21470712ff04d85c008bd877f507577daed0608b08379633897f3",
+  "ledger_sha256": "de8ebc4c642299411b4ba8b9e3c777e57400b7e1cc1a7ed2eecc3dbb33c480b2",
   "javascript_inventory_sha256": "0e845fa2112735358187c4e6eaefdeb4004be085d68990c51353522db98c0632",
-  "baseline_commit": "d6aae01446020112d806505b1aed688e0694e9b7",
+  "baseline_commit": "d35f579e75b40e266294232bbc9277644fb9c541",
   "branch": "integration/all-20261002",
   "unstaged_at_capture": [
+    "docs/backlog.md",
     "docs/indicator-index.json"
   ]
 }
