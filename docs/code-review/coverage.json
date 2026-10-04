@@ -19,14 +19,14 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 1451,
+    "files": 1452,
     "code_files": 1107,
-    "current_reviews": 1451,
+    "current_reviews": 1452,
     "statuses": {
       "artifact_schema_reviewed": 82,
       "asset_metadata_reviewed": 99,
       "data_schema_reviewed": 5,
-      "reviewed": 1265
+      "reviewed": 1266
     },
     "definitions": 10121,
     "annotated_definitions": 10121,
@@ -9902,6 +9902,19 @@
       "missing_definitions": []
     },
     {
+      "path": "docs/adr/0017-platform-growth-boundaries.md",
+      "sha256": "14da8adac2f7e57b7b48bc86b996795a85a9b86d3da39a48e9dd69898c51c086",
+      "bytes": 6386,
+      "lines": 68,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "docs/agent-recipes.md",
       "sha256": "ca094bf94a7d7fafd4d17b203c5d298e8bc981e2bc22be3bf988bce837bda9df",
       "bytes": 24901,
@@ -17989,9 +18002,9 @@
     },
     {
       "path": "scripts/db-roles.sh",
-      "sha256": "8607e74c0fa688843ac2f92f885171f5a352181cb72c4e30729c11e28f45880b",
-      "bytes": 3213,
-      "lines": 45,
+      "sha256": "16656b82d1f8d84213e83ce54d43056d1b64cf519b8a952de26755abe7af9d63",
+      "bytes": 3419,
+      "lines": 48,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -18899,29 +18912,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "257ed76c66e2711d448abba3297ce176e3b7c2362c30da2c81338098464fb663",
+  "ledger_sha256": "80df08812200f73ff9500359f6d4ebfd3f00da8ad017fd3264bd70035d0f888e",
   "javascript_inventory_sha256": "0e845fa2112735358187c4e6eaefdeb4004be085d68990c51353522db98c0632",
-  "baseline_commit": "a1e6c8f53532df85d83dd141d07f4e411cd9286b",
+  "baseline_commit": "2bba3f4add06e31950280c1e39091d75174e376d",
   "branch": "integration/all-20261002",
-  "unstaged_at_capture": [
-    ".env.example",
-    "CONTEXT.md",
-    "README.md",
-    "deploy/tor-http-bridge/tor-http-bridge.service",
-    "docs/backlog.md",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/data-contracts.md",
-    "docs/dead-code-report.md",
-    "docs/enterprise_resilience.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/planet-view.md",
-    "docs/research/session-replay-review-2026-10-04.md",
-    "docs/runtime-inventory.json",
-    "docs/search.md",
-    "docs/workflow.md"
-  ]
+  "unstaged_at_capture": []
 }

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `a1e6c8f53532df85d83dd141d07f4e411cd9286b`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `2bba3f4add06e31950280c1e39091d75174e376d`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1451 |
+| Файлы в явно определённом scope | 1452 |
 | Код, шаблоны и стили | 1107 |
-| Актуальные рецензии без пропусков guard | 1451 |
+| Актуальные рецензии без пропусков guard | 1452 |
 | Именованные определения Python/JS: с аннотацией / всего | 10121 / 10121 |
 | Файлы, требующие внимания | 0 |
 
@@ -797,6 +797,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0014-subnational-regions-generic.md](../docs/adr/0014-subnational-regions-generic.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0015-us-bea-regional-catalog.md](../docs/adr/0015-us-bea-regional-catalog.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0016-federated-public-search.md](../docs/adr/0016-federated-public-search.md) | reviewed | 0/0 | актуально |
+| [docs/adr/0017-platform-growth-boundaries.md](../docs/adr/0017-platform-growth-boundaries.md) | reviewed | 0/0 | актуально |
 | [docs/agent-recipes.md](../docs/agent-recipes.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/README.md](../docs/analytics_api_inventory/README.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/frontend_instrumentation.md](../docs/analytics_api_inventory/frontend_instrumentation.md) | reviewed | 0/0 | актуально |
