@@ -223,9 +223,10 @@ materialized ряд по Family registry или существующей bespoke
 Обычная карточка по-прежнему имеет canonical без mode. `build_document`
 сохраняет query только после строгой валидации годового mode; произвольные
 query/месячные derived/world-mode документы этим не поддержаны.
-`site_urls._year_urls` включает все поддержанные mode-year canonical по
-конечным фактам actualcode/year и активному родителю; агрегирование и проверка
-родителей выполняются двумя SELECT без отдельного запроса на каждый год.
+`site_urls._year_urls` включал бы все поддержанные mode-year canonical по
+конечным фактам actualcode/year и активному родителю (два SELECT без запроса на каждый год).
+
+**Статус на 2026-10-04 (решение владельца 2026-10-02):** публикация mode-year в sitemap и открытие `?mode=` для роботов отложены. Реестр sitemap (`site_urls._year_urls`, `is_recrawl_eligible`), `robots.txt` (оба шаблона + `frontend/public/robots.txt`) и Clean-param возвращены к серверному поведению: 3 448 обычных годовых URL, без 22 544 mode-year. Страницы mode-year рендерятся SSR и доступны людям; тесты будущей политики (`test_year_mode_crawl_policy.py`, два теста в `test_russia_year_modes.py`) пропущены с указанием причины.
 Recrawl принимает только этот точный зарегистрированный query. Публикация
 нового static sitemap и production acceptance входят в будущий обычный релиз.
 Локально106focusedtests и реальный read-onlySSR переход проверили контракт;

@@ -127,8 +127,9 @@ member labels provide semantic evidence, never category/SEO-derived axes.
 
 Russia year+registered-mode now resolves the exact materialized series and
 provides a validated query-preserving standalone SSR canonical, reciprocal
-locale/graph/year links and native values. All such fact-backed canonicals
+locale/graph/year links and native values. Such fact-backed canonicals were designed to
 enter the sitemap registry; ordinary card mode canonicals still strip query.
+**Status 2026-10-04:** sitemap/robots/Clean-param publication of year-document modes is deferred by the owner and restored to the server behaviour (see ADR-0003 status note).
 See [ADR-0003 addition](0003-seo-single-source-server-rendered.md). World year
 modes and derived monthly documents remain unsupported. Inspected40/80 replays
 are development checks, not replacements for first blind results.

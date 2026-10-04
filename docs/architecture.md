@@ -412,7 +412,7 @@ JSONmember не являются доказательством; ordinary bareal
 resolver рендерит тот же actualcode, для которого есть конечные факты года.
 SSR использует nativeданные/единицу/title этого режима; canonical/hreflang/
 соседние годы/graphlink сохраняютmode. Все supportedmode-year canonical
-входят в sitemap registry; обычная карточка canonicalбезmode. Подробности —
+по замыслу входят в sitemap registry (**с 2026-10-04 публикация отложена**, см. статус в ADR-0003); обычная карточка canonicalбезmode. Подробности —
 [ADR-0003](adr/0003-seo-single-source-server-rendered.md) и [search replay](research/search-history-replay-2026-09-30.md).
 Worldmode-year и derivedmonth остаются unsupported, годы не отбрасываются.
 
