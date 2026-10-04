@@ -856,6 +856,14 @@ Goal в Метрике: `rsy_floor_render` — успешный непустой
 `RUSTATS_ANALYTICS_SCHEDULER_ENABLED=true`. Ошибка job должна доходить до
 APScheduler `EVENT_JOB_ERROR`, иначе штатный алерт не сработает.
 
+**Блокировки job'ов (F07, 2026-10-04).** `locked_job` держит lease в state-Redis:
+ключ `sched:lock:{группа или job_id}`, значение — токен владельца, heartbeat раз
+в TTL/3, снятие только владельцем. Потеря lease отменяет задачу и бросает
+`JobLeaseLostError` (алерт через `EVENT_JOB_ERROR`). `daily_etl`, `evening_etl`,
+`late_minfin_etl`, `late_fred_etl` делят один ключ `sched:lock:etl`
+(`JOB_LOCK_GROUPS` в `services/job_lease.py`). Долгий синхронный код в `to_thread`
+отмена не прерывает.
+
 ### Live ticker: MOEX-приоритет с CBR-fallback для FX
 
 **Текущая сверка 2026-09-30:** старое описание ниже сохраняет происхождение
