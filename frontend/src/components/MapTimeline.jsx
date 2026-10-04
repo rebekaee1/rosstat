@@ -6,6 +6,7 @@ import { Play, Pause, RotateCcw } from 'lucide-react';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import Button from './Button';
+import '../styles/regions-w4.css';
 
 const STEP_MS = 900;
 
@@ -69,7 +70,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
   const pct = max === min ? 100 : ((year - min) / (max - min)) * 100;
 
   return (
-    <div className="mt-1 flex items-center gap-3">
+    <div className="mt-3 flex items-center gap-3">
       <Button
         onClick={togglePlay}
         aria-label={playing ? t('map.timeline.pause') : t('map.timeline.play')}
@@ -93,15 +94,15 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
             background: `linear-gradient(to right, var(--color-champagne) 0%, var(--color-champagne) ${pct}%, var(--color-border-subtle) ${pct}%, var(--color-border-subtle) 100%)`,
           }}
         />
-        <div className="mt-1 flex justify-between font-mono text-[11px] tabular-nums text-text-tertiary">
+        <div className="fe-num mt-1 flex justify-between text-xs text-text-secondary">
           <span>{min}</span>
           <span>{max}</span>
         </div>
       </div>
 
       <div className="w-16 shrink-0 text-right">
-        <span className="font-mono text-lg font-bold tabular-nums text-champagne-ink">{year}</span>
-        <span className="-mt-0.5 block text-xs text-text-tertiary">{t('common.year').toLowerCase()}</span>
+        <span key={year} className="fe-year-pop fe-num text-xl font-bold text-champagne-ink">{year}</span>
+        <span className="-mt-0.5 block text-xs text-text-secondary">{t('common.year').toLowerCase()}</span>
       </div>
     </div>
   );

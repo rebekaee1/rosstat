@@ -199,7 +199,7 @@ describe('ComparePage', () => {
     const picker = document.querySelector('[data-block="compare-add"]');
     await waitFor(() => {
       const countryOrder = [...picker.querySelectorAll('button')]
-        .map((button) => button.textContent.trim())
+        .map((button) => button.textContent.replace(/[\u{1F1E6}-\u{1F1FF}]/gu, '').trim())
         .filter((label) => ['United States', 'Canada', 'Russia'].includes(label));
       expect(countryOrder).toEqual(['United States', 'Canada', 'Russia']);
     });
@@ -262,7 +262,7 @@ describe('ComparePage', () => {
       route: '/compare?codes=us-unemployment-rate',
     });
     const empty = await screen.findByTestId('compare-empty');
-    expect(empty.textContent).toMatch(/Не удалось загрузить выбранные ряды/);
+    expect(empty.textContent).toMatch(/Не получилось загрузить данные/);
     expect(screen.queryByTestId('compare-chart-skeleton')).toBeNull();
     await waitFor(() => {
       const urls = spy.mock.calls.map((call) => String(call[0]));

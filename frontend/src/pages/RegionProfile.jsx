@@ -1,18 +1,19 @@
 // Страница региона: /russia/region/{slug}
 // Как у стран: темы слева, сетка показателей справа.
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import {
-  ChevronRight, Search, MapPin, TrendingUp, TrendingDown, Minus,
-} from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { MapPin, SearchX } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
-import {
-  useRegionProfile, formatRegionValue, shortUnit, yearDelta, pluralRu,
-} from '../lib/regionsApi';
+import { useRegionProfile } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
+import Button from '../components/Button';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
+import {
+  RegionHeadlineCard, RegionIndicatorRow, RegionSectionHeading, RegionSearchField,
+} from '../components/regions/RegionParts';
+import { prioritizeIndicators } from '../lib/regionUi';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchOptions } from '../lib/searchSynonyms';
 import { regionTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
@@ -23,87 +24,14 @@ import {
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
+import '../styles/regions-w4.css';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
 }
 
-function DeltaBadge({ value, prevValue }) {
-  const { locale } = useLocale();
-  const d = yearDelta(value, prevValue);
-  if (!d) return null;
-  const Icon = d.up ? TrendingUp : d.down ? TrendingDown : Minus;
-  const cls = d.up ? 'fe-ink-pos' : d.down ? 'fe-ink-neg' : 'text-text-secondary';
-  const dec = locale === 'en' ? '.' : ',';
-  return (
-    <span className={`inline-flex items-center gap-0.5 font-mono text-xs tabular-nums ${cls}`}>
-      <Icon size={10} />
-      {Math.abs(d.pct) >= 0.1
-        ? `${Math.abs(d.pct).toFixed(1).replace('.', dec)}%`
-        : `<0${dec}1%`}
-    </span>
-  );
-}
-
-function HeadlineCard({ item, slug }) {
-  return (
-    <Link
-      to={regionIndicatorPath(slug, item.code)}
-      className="fe-panel fe-summary-card group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
-    >
-      <div className="text-[11px] uppercase tracking-wide text-text-secondary">{item.label}</div>
-      <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
-        {formatRegionValue(item.value)}
-        <span className="ml-1 text-xs font-normal text-text-secondary">{shortUnit(item.unit)}</span>
-      </div>
-      <div className="mt-1.5 flex items-center justify-between gap-2">
-        <span className="font-mono text-xs text-text-secondary">{item.year}</span>
-        <DeltaBadge value={item.value} prevValue={item.prev_value} />
-      </div>
-    </Link>
-  );
-}
-
-function IndicatorRow({ item, slug }) {
-  return (
-    <Link
-      to={regionIndicatorPath(slug, item.code)}
-      className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
-    >
-      <div className="min-w-0 flex-1">
-        <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink sm:text-[14px]">
-          {item.name}
-        </div>
-        <div className="mt-1 text-xs text-text-secondary sm:mt-1.5">
-          {shortUnit(item.unit) || item.unit}
-        </div>
-      </div>
-      <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.25rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">
-        <div className="font-mono text-[15px] font-semibold tabular-nums text-text-primary sm:text-[14px] sm:font-medium">
-          {formatRegionValue(item.value)}
-        </div>
-        <div className="flex items-center gap-1.5">
-          <DeltaBadge value={item.value} prevValue={item.prev_value} />
-          <span className="font-mono text-xs text-text-secondary">{item.year}</span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-function indicatorWord(n, t, locale) {
-  if (locale === 'en') {
-    return n === 1 ? t('regions.profile.indicator_one') : t('regions.profile.indicator_many');
-  }
-  return pluralRu(n, [
-    t('regions.profile.indicator_one'),
-    t('regions.profile.indicator_few'),
-    t('regions.profile.indicator_many'),
-  ]);
-}
-
 export default function RegionProfile() {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
   const { slug } = useParams();
   const { data, isLoading, isError, refetch, isFetching } = useRegionProfile(slug);
   const [query, setQuery] = useState('');
@@ -123,11 +51,16 @@ export default function RegionProfile() {
     return mountJsonLd(breadcrumbJsonLd(regionTrail(regionName, slug)));
   }, [regionName, slug]);
 
+  const sections = useMemo(
+    () => (data?.sections || []).map((s) => ({ ...s, indicators: prioritizeIndicators(s.indicators) })),
+    [data],
+  );
+
   const filteredSections = useMemo(() => {
     if (!data) return [];
     const q = normalize(deferredQuery);
-    if (!q) return data.sections;
-    return data.sections
+    if (!q) return sections;
+    return sections
       .map((s) => ({
         ...s,
         indicators: filterSearchOptions(s.indicators, q, {
@@ -135,7 +68,7 @@ export default function RegionProfile() {
         }),
       }))
       .filter((s) => s.indicators.length > 0);
-  }, [data, deferredQuery, slug, regionName]);
+  }, [data, sections, deferredQuery, slug, regionName]);
 
   const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
   useSearchTracking('region-profile', deferredQuery, foundIndicators);
@@ -163,86 +96,65 @@ export default function RegionProfile() {
       )}
       {isLoading && (
         <div role="status" aria-busy="true" aria-label={t('common.loading')}>
-          <SkeletonBox className="mb-2 mt-6 h-4 w-40" />
-          <SkeletonBox className="h-[2.6rem] w-72 max-w-full sm:h-10" />
-          <SkeletonBox className="mt-3 h-5 w-full max-w-2xl" />
-          <div className="mb-8 mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[92px] rounded-xl" />)}
+          <SkeletonBox className="mb-6 mt-6 h-[148px] rounded-3xl" />
+          <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[112px] rounded-2xl" />)}
           </div>
-          <SkeletonBox className="mb-6 h-[46px] w-full rounded-xl" />
+          <SkeletonBox className="mb-6 h-12 w-full rounded-xl" />
           <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
-            {Array.from({ length: 6 }).map((_, i) => <SkeletonBox key={i} className="h-[110px] rounded-xl sm:h-[84px]" />)}
+            {Array.from({ length: 6 }).map((_, i) => <SkeletonBox key={i} className="h-[110px] rounded-2xl sm:h-[84px]" />)}
           </div>
         </div>
       )}
 
       {data && (
         <>
-          <div className="fe-data-header">
+          <div className="fe-data-header fe-reveal">
             {data.region.district_name && (
-              <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne-ink">
-                <MapPin size={13} />
+              <div className="mb-2 flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
+                <MapPin size={15} aria-hidden="true" />
                 {data.region.district_name}
               </div>
             )}
             <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
               {data.region.name}
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-text-secondary">
-              {(() => {
-                const catalog = data.catalog_total ?? data.sections.reduce((acc, s) => acc + s.indicators.length, 0);
-                const available = data.available_total ?? catalog;
-                const catalogWord = indicatorWord(catalog, t, locale);
-                const availableWord = indicatorWord(available, t, locale);
-                if (available < catalog) {
-                  return t('regions.profile.introPartial', {
-                    catalog,
-                    catalogWord,
-                    available,
-                    availableWord,
-                    sections: data.sections.length,
-                  });
-                }
-                return t('regions.profile.introFull', {
-                  catalog,
-                  catalogWord,
-                  sections: data.sections.length,
-                });
-              })()}
+            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
+              {t('w4.regions.profile.intro', { sections: data.sections.length })}
             </p>
           </div>
 
           {headline.length > 0 && (
-            <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {headline.map((h) => <HeadlineCard key={h.code} item={h} slug={slug} />)}
+            <div className="mb-8 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+              {headline.map((h, i) => (
+                <RegionHeadlineCard key={h.code} item={h} index={i} to={regionIndicatorPath(slug, h.code)} />
+              ))}
             </div>
           )}
 
-          <div className="relative mb-6">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t('regions.profileSearchPlaceholder')}
-              className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
-              aria-label={t('regions.profileSearchAria')}
-            />
-          </div>
+          <RegionSearchField
+            className="mb-6"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t('regions.profileSearchPlaceholder')}
+            ariaLabel={t('regions.profileSearchAria')}
+          />
 
           {!searching && filteredSections.length === 0 && (
-            <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
               {t('pgui.regions.profileEmpty')}
             </div>
           )}
 
           {searching && filteredSections.length === 0 && (
-            <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+              <SearchX size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
               {t('regions.profile.nothingFound', { query })}
-              {' '}
-              <button type="button" onClick={() => setQuery('')} className="fe-tap-inline text-champagne-ink hover:underline">
-                {t('regions.profile.resetSearch')}
-              </button>
+              <div className="mt-3">
+                <Button variant="secondary" size="sm" onClick={() => setQuery('')}>
+                  {t('regions.profile.resetSearch')}
+                </Button>
+              </div>
             </div>
           )}
 
@@ -265,7 +177,7 @@ export default function RegionProfile() {
           >
             {!searching && (
               <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
-                <div className="mb-2 px-2 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
+                <div className="mb-2 px-2 text-sm font-medium text-text-secondary">
                   {t('regions.profile.themes')}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -275,14 +187,14 @@ export default function RegionProfile() {
                       type="button"
                       onClick={() => setActiveSection(sec.num)}
                       className={[
-                        'fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                        'fe-tap fe-press flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
                         resolvedActive === sec.num
                           ? 'bg-champagne/12 font-medium text-champagne-ink'
                           : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                       ].join(' ')}
                     >
                       <span className="min-w-0 truncate">{sec.name}</span>
-                      <span className="shrink-0 font-mono text-xs">{sec.indicators.length}</span>
+                      <span className="fe-num shrink-0 text-xs">{sec.indicators.length}</span>
                     </button>
                   ))}
                 </div>
@@ -292,18 +204,14 @@ export default function RegionProfile() {
             <div id="chart" className="min-w-0 space-y-8 scroll-mt-28">
               {visibleSections.map((sec) => (
                 <section key={sec.num} data-block={`region-section-${sec.num}`}>
-                  <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
-                    <div className="min-w-0">
-                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne-ink">
-                        {searching ? t('regions.searchResults') : t('regions.indicators')}
-                      </div>
-                      <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{sec.name}</h2>
-                    </div>
-                    <span className="shrink-0 font-mono text-xs text-text-secondary">{sec.indicators.length}</span>
-                  </div>
+                  <RegionSectionHeading
+                    eyebrow={searching ? t('regions.searchResults') : null}
+                    title={sec.name}
+                    count={sec.indicators.length}
+                  />
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {sec.indicators.map((item) => (
-                      <IndicatorRow key={item.code} item={item} slug={slug} />
+                      <RegionIndicatorRow key={item.code} item={item} to={regionIndicatorPath(slug, item.code)} />
                     ))}
                   </div>
                 </section>

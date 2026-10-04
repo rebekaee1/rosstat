@@ -246,7 +246,7 @@ describe('WorldRegionProfile', () => {
 
     expect(await screen.findByRole('heading', { name: 'Калифорния' })).toBeTruthy();
     expect(screen.getAllByRole('button', { name: /ВВП и производство/ }).length).toBeGreaterThan(0);
-    expect(screen.getByText(/2 показателя в 2 разделах/)).toBeTruthy();
+    expect(screen.getByText(/Главные цифры и их история/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: /^Цены/ })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: /Труд и зарплаты/ }));
     expect(screen.getAllByRole('link', { name: /Безработица/ })[0].getAttribute('href'))

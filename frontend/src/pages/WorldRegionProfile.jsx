@@ -2,12 +2,14 @@
 // Эталон — RegionProfile (Россия): темы слева, HeadlineCard, IndicatorRow.
 import { useMemo, useState, useDeferredValue } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import {
-  ChevronRight, Search, MapPin, TrendingUp, TrendingDown, Minus,
-} from 'lucide-react';
+import { ChevronRight, MapPin, SearchX } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
-import { useWorldRegionProfile, formatSubnationalValue } from '../lib/worldSubnationalApi';
-import { shortUnit, yearDelta, pluralRu } from '../lib/regionsApi';
+import { useWorldRegionProfile } from '../lib/worldSubnationalApi';
+import Button from '../components/Button';
+import {
+  RegionHeadlineCard, RegionIndicatorRow, RegionSectionHeading, RegionSearchField,
+} from '../components/regions/RegionParts';
+import { prioritizeIndicators } from '../lib/regionUi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
@@ -26,87 +28,10 @@ import {
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
+import '../styles/regions-w4.css';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
-}
-
-function DeltaBadge({ value, prevValue }) {
-  const { locale } = useLocale();
-  const d = yearDelta(value, prevValue);
-  if (!d) return null;
-  const Icon = d.up ? TrendingUp : d.down ? TrendingDown : Minus;
-  const cls = d.up ? 'fe-ink-pos' : d.down ? 'fe-ink-neg' : 'text-text-secondary';
-  const dec = locale === 'en' ? '.' : ',';
-  return (
-    <span className={`inline-flex items-center gap-0.5 font-mono text-xs tabular-nums ${cls}`}>
-      <Icon size={10} />
-      {Math.abs(d.pct) >= 0.1
-        ? `${Math.abs(d.pct).toFixed(1).replace('.', dec)}%`
-        : `<0${dec}1%`}
-    </span>
-  );
-}
-
-function HeadlineCard({ item, countrySlug, slug }) {
-  const { locale } = useLocale();
-  const Card = item.value == null ? 'div' : Link;
-  return (
-    <Card
-      {...(item.value == null ? { 'aria-disabled': true } : { to: countryRegionIndicatorPath(countrySlug, slug, item.code) })}
-      className="fe-panel fe-summary-card group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
-    >
-      <div className="text-[11px] uppercase tracking-wide text-text-secondary">{item.label || item.name}</div>
-      <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
-        {formatSubnationalValue(item.value, locale)}
-        <span className="ml-1 text-xs font-normal text-text-secondary">{shortUnit(item.unit)}</span>
-      </div>
-      <div className="mt-1.5 flex items-center justify-between gap-2">
-        <span className="font-mono text-xs text-text-secondary">{item.period_label || item.year}</span>
-        <DeltaBadge value={item.value} prevValue={item.prev_value} />
-      </div>
-    </Card>
-  );
-}
-
-function IndicatorRow({ item, countrySlug, slug, sectionName }) {
-  const { locale } = useLocale();
-  const Card = item.value == null ? 'div' : Link;
-  return (
-    <Card
-      {...(item.value == null ? { 'aria-disabled': true } : { to: countryRegionIndicatorPath(countrySlug, slug, item.code) })}
-      className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
-    >
-      <div className="min-w-0 flex-1">
-        <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink sm:text-[14px]">
-          {shortUsIndicatorName(item.name, sectionName, locale)}
-        </div>
-        <div className="mt-1 text-xs text-text-secondary sm:mt-1.5">
-          {shortUnit(item.unit) || item.unit}
-        </div>
-      </div>
-      <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.25rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">
-        <div className="font-mono text-[15px] font-semibold tabular-nums text-text-primary sm:text-[14px] sm:font-medium">
-          {formatSubnationalValue(item.value, locale)}
-        </div>
-        <div className="flex items-center gap-1.5">
-          <DeltaBadge value={item.value} prevValue={item.prev_value} />
-          <span className="font-mono text-xs text-text-secondary">{item.period_label || item.year}</span>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-function indicatorWord(n, t, locale) {
-  if (locale === 'en') {
-    return n === 1 ? t('regions.profile.indicator_one') : t('regions.profile.indicator_many');
-  }
-  return pluralRu(n, [
-    t('regions.profile.indicator_one'),
-    t('regions.profile.indicator_few'),
-    t('regions.profile.indicator_many'),
-  ]);
 }
 
 export default function WorldRegionProfile() {
@@ -131,7 +56,10 @@ export default function WorldRegionProfile() {
 
   const isUsCatalog = countrySlug === 'united-states';
   const sections = useMemo(() => {
-    const all = profile.data?.sections || [];
+    const all = (profile.data?.sections || []).map((section) => ({
+      ...section,
+      indicators: prioritizeIndicators(section.indicators),
+    }));
     if (!isUsCatalog) return all;
     // BEA publishes a few blank lines for some states. Do not show empty cards
     // or count them as available indicators on the state profile.
@@ -227,44 +155,38 @@ export default function WorldRegionProfile() {
       )}
       {profile.data && (
         <>
-          <div className="fe-data-header">
-            <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne-ink">
-              <MapPin size={13} />
+          <div className="fe-data-header fe-reveal">
+            <div className="mb-2 flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
+              <MapPin size={15} aria-hidden="true" />
               {kind}
             </div>
             <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
               {regionName}
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-text-secondary">
-              {(() => {
-                const catalog = isUsCatalog
-                  ? (profile.data.available_total ?? sections.reduce((acc, s) => acc + s.indicators.length, 0))
-                  : (profile.data.catalog_total ?? sections.reduce((acc, s) => acc + s.indicators.length, 0));
-                const catalogWord = indicatorWord(catalog, t, locale);
-                return t('world.regions.profileIntro', {
-                  country: countryName,
-                  catalog,
-                  catalogWord,
-                  sections: isUsCatalog ? usTopics.length : sections.length,
-                });
-              })()}
+            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
+              {t('w4.regions.profile.intro')}
             </p>
           </div>
 
           {headline.length > 0 && (
-            <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {headline.map((h) => (
-                <HeadlineCard key={h.code} item={h} countrySlug={countrySlug} slug={slug} />
+            <div className="mb-8 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+              {headline.map((h, i) => (
+                <RegionHeadlineCard
+                  key={h.code}
+                  item={h}
+                  index={i}
+                  to={countryRegionIndicatorPath(countrySlug, slug, h.code)}
+                />
               ))}
             </div>
           )}
 
           {isUsCatalog && profile.data.comparison_regions?.length > 0 && (
-            <section className="mb-6 rounded-xl border border-border-subtle bg-surface p-4" aria-label={locale === 'en' ? 'Compare states' : 'Сравнить штаты'}>
+            <section className="mb-6 rounded-3xl border border-border-subtle bg-surface p-4" aria-label={locale === 'en' ? 'Compare states' : 'Сравнить штаты'}>
               <h2 className="mb-2 text-sm font-semibold text-text-primary">{locale === 'en' ? 'Compare with another state' : 'Сравнить с другим штатом'}</h2>
               <div className="flex flex-wrap gap-2">
                 {profile.data.comparison_regions.slice(0, 8).map((other) => (
-                  <a key={other.slug} href={countryRegionVsPath(countrySlug, slug, other.slug)} className="fe-tap-inline rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne-ink">{other.name}</a>
+                  <a key={other.slug} href={countryRegionVsPath(countrySlug, slug, other.slug)} className="fe-chip fe-press">{other.name}</a>
                 ))}
               </div>
               {profile.data.comparison_regions.length > 8 && (
@@ -272,7 +194,7 @@ export default function WorldRegionProfile() {
                   <summary className="fe-tap-inline cursor-pointer text-champagne-ink">{locale === 'en' ? 'All states' : 'Все штаты'}</summary>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {profile.data.comparison_regions.slice(8).map((other) => (
-                      <a key={other.slug} href={countryRegionVsPath(countrySlug, slug, other.slug)} className="fe-tap-inline rounded-full border border-border-subtle px-3 py-1 hover:border-border-champagne hover:text-champagne-ink">{other.name}</a>
+                      <a key={other.slug} href={countryRegionVsPath(countrySlug, slug, other.slug)} className="fe-chip fe-press">{other.name}</a>
                     ))}
                   </div>
                 </details>
@@ -280,31 +202,29 @@ export default function WorldRegionProfile() {
             </section>
           )}
 
-          <div className="relative mb-6">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => { setQuery(e.target.value); setSearchLimit(120); }}
-              placeholder={t('regions.profileSearchPlaceholder')}
-              className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
-              aria-label={t('regions.profileSearchAria')}
-            />
-          </div>
+          <RegionSearchField
+            className="mb-6"
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setSearchLimit(120); }}
+            placeholder={t('regions.profileSearchPlaceholder')}
+            ariaLabel={t('regions.profileSearchAria')}
+          />
 
           {!searching && filteredSections.length === 0 && (
-            <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
               {t('pgui.regions.profileEmpty')}
             </div>
           )}
 
           {searching && filteredSections.length === 0 && (
-            <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+              <SearchX size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
               {t('regions.profile.nothingFound', { query })}
-              {' '}
-              <button type="button" onClick={() => { setQuery(''); setSearchLimit(120); }} className="fe-tap-inline text-champagne-ink hover:underline">
-                {t('regions.profile.resetSearch')}
-              </button>
+              <div className="mt-3">
+                <Button variant="secondary" size="sm" onClick={() => { setQuery(''); setSearchLimit(120); }}>
+                  {t('regions.profile.resetSearch')}
+                </Button>
+              </div>
             </div>
           )}
 
@@ -340,7 +260,7 @@ export default function WorldRegionProfile() {
             )}
             {!searching && !isUsCatalog && (
               <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
-                <div className="mb-2 px-2 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
+                <div className="mb-2 px-2 text-sm font-medium text-text-secondary">
                   {t('regions.profile.themes')}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -350,14 +270,14 @@ export default function WorldRegionProfile() {
                       type="button"
                       onClick={() => setActiveSection(sec.num)}
                       className={[
-                        'fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                        'fe-tap fe-press flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
                         resolvedActive === sec.num
                           ? 'bg-champagne/12 font-medium text-champagne-ink'
                           : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                       ].join(' ')}
                     >
                       <span className="min-w-0 truncate">{sec.name}</span>
-                      <span className="shrink-0 font-mono text-xs">{sec.indicators.length}</span>
+                      <span className="fe-num shrink-0 text-xs">{sec.indicators.length}</span>
                     </button>
                   ))}
                 </div>
@@ -367,18 +287,19 @@ export default function WorldRegionProfile() {
             <div id="chart" className="min-w-0 space-y-8 scroll-mt-28">
               {visibleSections.map((sec) => (
                 <section key={sec.num} data-block={`world-region-section-${sec.num}`}>
-                  <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
-                    <div className="min-w-0">
-                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne-ink">
-                        {searching ? t('regions.searchResults') : t('regions.indicators')}
-                      </div>
-                      <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{sec.name}</h2>
-                    </div>
-                    <span className="shrink-0 font-mono text-xs text-text-secondary">{sec.indicators.length}</span>
-                  </div>
+                  <RegionSectionHeading
+                    eyebrow={searching ? t('regions.searchResults') : null}
+                    title={sec.name}
+                    count={sec.indicators.length}
+                  />
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {sec.indicators.map((item) => (
-                      <IndicatorRow key={item.code} item={item} countrySlug={countrySlug} slug={slug} sectionName={isUsCatalog && locale === 'ru' ? sec.name : undefined} />
+                      <RegionIndicatorRow
+                        key={item.code}
+                        item={item}
+                        to={countryRegionIndicatorPath(countrySlug, slug, item.code)}
+                        title={shortUsIndicatorName(item.name, isUsCatalog && locale === 'ru' ? sec.name : undefined, locale)}
+                      />
                     ))}
                   </div>
                 </section>

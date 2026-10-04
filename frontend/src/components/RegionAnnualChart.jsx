@@ -23,6 +23,12 @@ const DUAL_AXIS_RATIO = 3;
 
 const COMPARE_COLOR = CHART_THEME.blue;
 
+/** Линия «рисуется» один раз; у тех, кто просил меньше движения, сразу готовый график. */
+function chartMayAnimate() {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 // Подпись месяца для оси/тултипа: «май 2012» / «May 2012».
 function monthTickLabel(p, locale) {
   const loc = locale === 'en' ? 'en' : 'ru';
@@ -88,6 +94,7 @@ export default function RegionAnnualChart({
   const touchTip = useTouchTooltip(wrapRef);
   const setWrap = useCallback((node) => { wrapRef.current = node; setWidthNode(node); }, [setWidthNode]);
   const gradientId = `region-${useId().replaceAll(':', '')}`;
+  const animate = chartMayAnimate();
 
   const monthly = frequency === 'monthly';
   const quarterly = frequency === 'quarterly';
@@ -275,19 +282,21 @@ export default function RegionAnnualChart({
             />
             <Area
               yAxisId="region"
-              type="monotone"
+              type="linear"
               dataKey="value"
               stroke={CHART_THEME.ink}
               strokeWidth={2.2}
               fill={`url(#${gradientId})`}
               dot={false}
               activeDot={{ r: 4, fill: CHART_THEME.ink }}
-              isAnimationActive={false}
+              isAnimationActive={animate}
+              animationDuration={700}
+              animationEasing="ease-out"
             />
             {compareSeries?.length > 0 && (
               <Line
                 yAxisId="region"
-                type="monotone"
+                type="linear"
                 dataKey="compare"
                 stroke={COMPARE_COLOR}
                 strokeWidth={2}
@@ -299,7 +308,7 @@ export default function RegionAnnualChart({
             {showRussia && (
               <Line
                 yAxisId={dualAxis ? 'rf' : 'region'}
-                type="monotone"
+                type="linear"
                 dataKey="russia"
                 stroke={CHART_THEME.axis}
                 strokeWidth={1.6}
@@ -311,7 +320,7 @@ export default function RegionAnnualChart({
             {forecastSeries?.length > 0 && (
               <Line
                 yAxisId="region"
-                type="monotone"
+                type="linear"
                 dataKey="forecast"
                 stroke={CHART_THEME.champagne}
                 strokeWidth={2}
@@ -324,8 +333,20 @@ export default function RegionAnnualChart({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
+      {showRussia && !dualAxis && (
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-sm text-text-secondary">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block h-0.5 w-5 rounded bg-text-primary" />
+            {regionName}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block w-5 border-t-2 border-dashed" style={{ borderColor: CHART_THEME.axis }} />
+            {russiaLabel}
+          </span>
+        </div>
+      )}
       {dualAxis && (
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary px-1">
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-sm text-text-secondary">
           <span className="inline-flex items-center gap-1.5">
             <span className="inline-block w-4 h-0.5 rounded bg-text-primary" />
             {t('regions.ind.axisRegion', { region: regionName })}

@@ -31,7 +31,7 @@ export default function UsCatalogNav({
         />
       </div>
       <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
-        <div className="mb-2 px-2 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
+        <div className="mb-2 px-2 text-sm font-medium text-text-secondary">
           {themesLabel}
         </div>
         <div className="flex flex-col gap-1">
@@ -42,18 +42,18 @@ export default function UsCatalogNav({
               onClick={() => onTopic(topic.id)}
               aria-current={selected.id === topic.id ? 'true' : undefined}
               className={[
-                'fe-tap flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                'fe-tap fe-press flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
                 selected.id === topic.id
                   ? 'bg-champagne/12 font-medium text-champagne-ink'
                   : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
               ].join(' ')}
             >
               <span className="min-w-0 flex-1">{topic.label}</span>
-              <span className="shrink-0 font-mono text-xs">{topic.count}</span>
+              <span className="fe-num shrink-0 text-xs">{topic.count}</span>
             </button>
           ))}
         </div>
-        <div className="mb-2 mt-5 px-2 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
+        <div className="mb-2 mt-5 px-2 text-sm font-medium text-text-secondary">
           {detailLabel}
         </div>
         <div className="flex flex-col gap-1">
@@ -64,14 +64,14 @@ export default function UsCatalogNav({
               onClick={() => onSection(String(sectionKey(section)))}
               aria-current={String(activeSection) === String(sectionKey(section)) ? 'true' : undefined}
               className={[
-                'fe-tap flex items-center justify-between gap-2 rounded-xl px-3.5 py-2 text-left text-xs transition-colors',
+                'fe-tap fe-press flex items-center justify-between gap-2 rounded-xl px-3.5 py-2 text-left text-[13px] transition-colors',
                 String(activeSection) === String(sectionKey(section))
                   ? 'bg-champagne/10 font-medium text-champagne-ink'
                   : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
               ].join(' ')}
             >
               <span className="min-w-0 flex-1">{sectionLabel(section)}</span>
-              <span className="shrink-0 font-mono text-xs">{section.indicators.length}</span>
+              <span className="fe-num shrink-0 text-xs">{section.indicators.length}</span>
             </button>
           ))}
         </div>

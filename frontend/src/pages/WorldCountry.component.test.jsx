@@ -252,8 +252,8 @@ describe('WorldCountry category navigation', () => {
 
     expect(await screen.findByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Цены' })).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: /Рынок труда \(1\)/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Цены \(1\)/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Рынок труда\s*1\s*Сменить/ }));
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: /Цены/ }));
     expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Рынок труда' })).toBeNull();
   });
