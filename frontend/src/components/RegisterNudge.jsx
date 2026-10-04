@@ -9,9 +9,9 @@ import { track, events } from '../lib/track';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useT } from '../i18n';
-import '../styles/shell.css';
 import { authLink, prepareAuthReturn } from '../lib/authReturn';
 import Button from './Button';
+import '../styles/indicator-russia.css';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
 // Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».
@@ -23,7 +23,6 @@ const HIDDEN_PATHS = ['/', '/login', '/register', '/account'];
 const REGISTER_VARIANT = {
   storageKey: 'fe_nudge_dismissed',
   pillKey: 'nudge.register.pill',
-  lineKey: 'shell.nudge.register.line',
   titleKey: 'nudge.register.title',
   benefitKeys: [
     { icon: Download, textKey: 'nudge.register.benefit.download' },
@@ -43,7 +42,6 @@ const REGISTER_VARIANT = {
 const FEEDBACK_VARIANT = {
   storageKey: 'fe_feedback_nudge_dismissed',
   pillKey: 'nudge.feedback.pill',
-  lineKey: 'shell.nudge.feedback.line',
   titleKey: 'nudge.feedback.title',
   benefitKeys: [
     { icon: MessageSquare, textKey: 'nudge.feedback.benefit.missing' },
@@ -110,31 +108,18 @@ export default function RegisterNudge() {
 
   return (
     <>
-    <aside
-      className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-card sm:hidden print:hidden"
-      aria-label={t(variant.titleKey)}
-    >
-      <div className="flex items-start gap-3">
-        <span className="fe-nudge-card__icon" aria-hidden="true">
-          <Sparkles size={18} />
-        </span>
-        <p className="min-w-0 flex-1 self-center text-[15px] font-medium leading-snug text-text-primary">
-          {t(variant.lineKey)}
-        </p>
-        <button
-          type="button"
-          onClick={dismiss}
-          aria-label={t('common.close')}
-          className={cn(FOCUS_RING, 'fe-press -mr-2 -mt-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-tertiary hover:text-text-primary')}
-        >
-          <X className="w-4 h-4" aria-hidden="true" />
-        </button>
+    <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-m sm:hidden print:hidden" aria-label={pill}>
+      <span className="fe-nudge-m__icon" aria-hidden="true"><Sparkles className="h-5 w-5" /></span>
+      <div className="fe-nudge-m__text">
+        <p className="fe-nudge-m__title">{pill}</p>
+        <p className="fe-nudge-m__sub">{t(variant.noteKey)}</p>
       </div>
+      <button type="button" onClick={dismiss} aria-label={t('common.close')} className={cn(FOCUS_RING, 'fe-press fe-nudge-m__close')}><X className="w-4 h-4" aria-hidden="true" /></button>
       <Button
         as={Link}
         to={isAuthed ? variant.ctaTo : authLink('/register')}
         onClick={() => { prepareAuthReturn(); track(variant.ev.cta); }}
-        className="mt-1 w-full"
+        className="fe-nudge-m__cta"
       >
         {t(variant.ctaKey)}
       </Button>

@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { cn } from '../lib/format';
-import Chip from './Chip';
-import ChipGroup from './ChipGroup';
+import ModeGroupsPicker from './ModeGroupsPicker';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
-import { localizeViewModeLabel } from '../i18n/viewModeLabels';
+import { pickerLabel } from '../lib/pickerLabels';
 import {
   cpiTopGroupsForCode,
   defaultSubModeForGroup,
@@ -73,10 +71,11 @@ export default function CpiViewModePicker({
   const topGroups = useMemo(() => (
     cpiTopGroupsForCode(code).map((g) => ({
       ...g,
-      label: localizeViewModeLabel(g.label, locale),
+      rawLabel: g.label,
+      label: pickerLabel(g.label, locale),
       modes: g.modes?.map((m) => ({
         ...m,
-        label: localizeViewModeLabel(m.label, locale),
+        label: pickerLabel(m.label, locale),
       })),
     }))
   ), [code, locale]);
@@ -84,73 +83,27 @@ export default function CpiViewModePicker({
   const subModes = useMemo(
     () => (expanded?.modes ?? []).map((m) => ({
       ...m,
-      label: localizeViewModeLabel(m.label, locale),
+      label: pickerLabel(m.label, locale),
     })),
     [expanded, locale],
   );
   const activeTopGroup = highlightedTopGroup(expandedGroup, currentMode);
-  const expandedLabel = localizeViewModeLabel(expanded?.label, locale);
+  const expandedLabel = pickerLabel(expanded?.label, locale);
 
-  const body = (
-    <>
-      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {t('indicator.picker.inflation')}
-      </p>
-      <ChipGroup label={t('indicator.picker.inflation')}>
-        {topGroups.map((group) => {
-          const active = group.id === activeTopGroup;
-          return (
-            <Chip
-              key={group.id}
-              active={active}
-              onClick={() => onTopClick(group)}
-            >
-              {group.label}
-            </Chip>
-          );
-        })}
-      </ChipGroup>
-      {subModes.length > 0 && (
-        <ChipGroup
-          label={expandedLabel}
-          nowrap={compact}
-          className={cn('mt-3 border-t border-border-subtle pt-3', compact && '-mx-1 px-1')}
-        >
-          {!compact && (
-            <span aria-hidden="true" className="w-full text-[11px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
-              {expandedLabel}
-            </span>
-          )}
-          {subModes.map((item) => (
-            <Chip
-              key={`${expanded.id}-${item.mode}`}
-              active={!item.disabled && currentMode === item.mode}
-              disabled={item.disabled}
-              title={item.disabled ? item.hint : undefined}
-              onClick={() => onSubClick(expanded.id, item)}
-            >
-              {item.label}
-              {item.disabled && item.hint ? (
-                <span className="ml-1 font-normal">{item.hint}</span>
-              ) : null}
-            </Chip>
-          ))}
-        </ChipGroup>
-      )}
-    </>
+  const picker = (
+    <ModeGroupsPicker
+      title={t('w3.picker.showInflation')}
+      groups={topGroups}
+      activeGroupId={activeTopGroup}
+      onTopClick={onTopClick}
+      subModes={subModes}
+      subGroupLabel={expandedLabel}
+      currentMode={currentMode}
+      onSubClick={(item) => onSubClick(expanded?.id ?? expandedGroup, item)}
+      compact={compact}
+    />
   );
 
-  if (compact) {
-    return (
-      <div className="border-t border-border-subtle pt-4">
-        {body}
-      </div>
-    );
-  }
-
-  return (
-    <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-      {body}
-    </section>
-  );
+  if (compact) return <div className="fe-pick-embedded">{picker}</div>;
+  return picker;
 }

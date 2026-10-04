@@ -2,6 +2,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import ChipGroup, { ChipLink } from './ChipGroup';
 import { useT } from '../i18n';
 import MobileNavSelect from './MobileNavSelect';
+import { PickerCard, PickerLabel } from './PickerParts';
 
 /**
  * Внутрисемейный переключатель карточек («Все товары»/«Продовольственные»/...).
@@ -51,10 +52,8 @@ export default function VariantGroupPicker({
       ) : null}
 
       <div className={useMobileSelect ? 'hidden lg:block' : undefined}>
-        <p className="mb-2 text-[13px] font-semibold text-text-secondary">
-          {groupLabel}
-        </p>
-        <ChipGroup label={groupLabel}>
+        <PickerLabel>{groupLabel}</PickerLabel>
+        <ChipGroup label={groupLabel} grid>
           {codeOptions.map((item) => (
             <ChipLink
               key={item.code}
@@ -70,11 +69,5 @@ export default function VariantGroupPicker({
     </>
   );
 
-  if (embedded) return body;
-
-  return (
-    <section className="mb-6 min-w-0 rounded-[1.25rem] border border-border-subtle bg-surface p-3.5 shadow-sm sm:mb-8 sm:rounded-[1.5rem] sm:p-4">
-      {body}
-    </section>
-  );
+  return <PickerCard compact={embedded} className="min-w-0">{body}</PickerCard>;
 }

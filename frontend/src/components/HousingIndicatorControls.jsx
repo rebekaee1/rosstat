@@ -26,7 +26,7 @@ export default function HousingIndicatorControls({
 
   return (
     <>
-      <section className="mb-6 space-y-4 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm md:hidden">
+      <section className="fe-pick-card fe-pick-card--stack md:hidden">
         <VariantGroupPicker group={variantGroup} currentCode={currentCode} embedded />
         {modePicker}
       </section>

@@ -2,9 +2,12 @@ import { formatDate, resolveDateFormat, chartValueDigits } from '../lib/format';
 import { dataModeForUrlMode } from '../lib/cpiViewModeResolve';
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
-import { useT } from '../i18n';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { periodPhrase } from '../lib/periodPhrase';
+import { useLocale, useT } from '../i18n';
 import TelemetryCard from './TelemetryCard';
 import { SkeletonBox } from './Skeleton';
+import '../styles/indicator-russia.css';
 
 /**
  * Сетка из 4 телеметрических карточек на странице индикатора:
@@ -22,8 +25,11 @@ export default function IndicatorTelemetryGrid({
   cpiPrevDate,
   adj,
   loading,
+  firstDate,
 }) {
   const t = useT();
+  const { locale } = useLocale();
+  const polarity = indicatorPolarity(indicator?.name, indicator?.name_en, indicator?.code);
   const dateFmt = resolveDateFormat({
     chartMode,
     frequency: indicator?.frequency,
@@ -54,10 +60,10 @@ export default function IndicatorTelemetryGrid({
 
   if (loading) {
     return (
-      <section className="mb-6 md:mb-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+      <section className="fe-tele-section">
+        <div className="fe-tele-grid" aria-hidden="true">
           {[...Array(4)].map((_, i) => (
-            <SkeletonBox key={i} className="h-28 md:h-48 rounded-2xl md:rounded-[2rem]" />
+            <SkeletonBox key={i} className="fe-tele-skeleton" />
           ))}
         </div>
       </section>
@@ -67,15 +73,15 @@ export default function IndicatorTelemetryGrid({
   const heroOverride = indicator?.hero_value != null && safeViewMode === 'yoy';
 
   const currentLabel = heroOverride
-    ? (indicator.hero_label || t('indicator.telemetry.heroYoy'))
+    ? (indicator.hero_label || t('w3.tele.heroYoy'))
     : ['inflation', 'yoy', 'annual'].includes(dataMode) ? t('indicator.telemetry.yoy')
       : safeViewMode === 'yoy' || safeViewMode === 'annual' ? t('indicator.telemetry.yoy')
       : safeViewMode === 'mom' ? t('indicator.telemetry.mom')
         : safeViewMode === 'qoq' ? t('indicator.telemetry.qoq')
           : safeViewMode === 'period-monthly' ? t('indicator.telemetry.periodMonth')
             : safeViewMode === 'period-weekly' ? t('indicator.telemetry.periodWeek')
-              : safeViewMode === 'step-monthly' ? t('indicator.telemetry.stepMom')
-                : safeViewMode === 'step-weekly' ? t('indicator.telemetry.stepWow')
+              : safeViewMode === 'step-monthly' ? t('w3.tele.stepMom')
+                : safeViewMode === 'step-weekly' ? t('w3.tele.stepWow')
                   : dataMode === 'weekly' ? t('indicator.telemetry.weekInflation')
                     : dataMode === 'cpi' && isPriceCategory ? t('indicator.telemetry.monthGrowth')
                       : t('indicator.telemetry.current');
@@ -97,20 +103,20 @@ export default function IndicatorTelemetryGrid({
                 : isPriceCategory ? t('indicator.telemetry.prevMonth')
                   : t('indicator.telemetry.prev');
 
-  const deltaSuffix = safeViewMode === 'qoq' ? t('indicator.telemetry.delta.prevQuarter')
-    : safeViewMode === 'mom' ? t('indicator.telemetry.delta.prevMonth')
-      : safeViewMode === 'yoy' ? t('indicator.telemetry.delta.prevYear')
-        : safeViewMode === 'quarterly' ? t('indicator.telemetry.delta.prevQuarter')
-          : safeViewMode === 'annual' ? t('indicator.telemetry.delta.prevYear')
+  const deltaSuffix = safeViewMode === 'qoq' ? t('w3.tele.delta.prevQuarter')
+    : safeViewMode === 'mom' ? t('w3.tele.delta.prevMonth')
+      : safeViewMode === 'yoy' ? t('w3.tele.delta.prevYear')
+        : safeViewMode === 'quarterly' ? t('w3.tele.delta.prevQuarter')
+          : safeViewMode === 'annual' ? t('w3.tele.delta.prevYear')
             : dataMode === 'weekly' || safeViewMode === 'step-weekly'
-              ? t('indicator.telemetry.delta.prevWeek')
+              ? t('w3.tele.delta.prevWeek')
               : safeViewMode === 'period-weekly'
-                ? t('indicator.telemetry.delta.prevReport')
+                ? t('w3.tele.delta.prevReport')
                 : indicator?.frequency === 'quarterly'
-                  ? t('indicator.telemetry.delta.prevQuarter')
+                  ? t('w3.tele.delta.prevQuarter')
                   : isPriceCategory
-                    ? t('indicator.telemetry.delta.prevMonth')
-                    : t('indicator.telemetry.delta.prevValue');
+                    ? t('w3.tele.delta.prevMonth')
+                    : t('w3.tele.delta.prevValue');
 
   const currentValue = heroOverride ? indicator.hero_value
     : (s?.currentValue ?? adj(indicator?.current_value));
@@ -123,12 +129,13 @@ export default function IndicatorTelemetryGrid({
 
   const currentDate = s?.currentDate ?? indicator?.current_date;
   const currentMeta = dataMode === 'weekly' && Number(s?.currentValue) === 0
-    ? t('indicator.telemetry.dateFlat', { date: formatDate(currentDate, dateFmt) })
-    : t('indicator.telemetry.date', { date: formatDate(currentDate, dateFmt) });
+    ? t('w3.tele.flatPrices', { date: formatDate(currentDate, dateFmt, locale) })
+    : periodPhrase(t, currentDate, dateFmt, locale);
+  const firstYear = firstDate ? new Date(firstDate).getUTCFullYear() : null;
 
   return (
-    <section className="mb-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+    <section className="fe-tele-section">
+      <div className="fe-tele-grid">
         <TelemetryCard
           label={currentLabel}
           value={currentValue}
@@ -139,38 +146,35 @@ export default function IndicatorTelemetryGrid({
           meta={currentMeta}
           delay={0}
           deltaSuffix={deltaSuffix}
+          polarity={polarity}
         />
         <TelemetryCard
           label={previousLabel}
           value={s?.previousValue ?? adj(indicator?.previous_value)}
           unit={displayUnit}
           valueDigits={valueDigits}
-          meta={t('indicator.telemetry.date', {
-            date: formatDate(s?.previousDate ?? cpiPrevDate, dateFmt),
-          })}
+          meta={periodPhrase(t, s?.previousDate ?? cpiPrevDate, dateFmt, locale)}
           delay={1}
         />
         {(s?.highest || stats?.highest) && (
           <TelemetryCard
-            label={t('indicator.telemetry.max')}
+            label={t('w3.tele.max')}
             value={s?.highest?.value ?? adj(stats?.highest?.value)}
             unit={displayUnit}
             valueDigits={valueDigits}
-            meta={t('indicator.telemetry.peak', {
-              date: formatDate(s?.highest?.date ?? stats?.highest?.date, dateFmt),
-            })}
+            meta={periodPhrase(t, s?.highest?.date ?? stats?.highest?.date, dateFmt, locale)
+              ? t('w3.tele.peakOn', { date: formatDate(s?.highest?.date ?? stats?.highest?.date, dateFmt, locale) })
+              : undefined}
             delay={2}
           />
         )}
         {(s?.average != null || stats?.average != null) && (
           <TelemetryCard
-            label={t('indicator.telemetry.avg')}
+            label={t('w3.tele.avg')}
             value={s?.average ?? adj(stats?.average)}
             unit={displayUnit}
             valueDigits={valueDigits}
-            meta={t('indicator.telemetry.obs', {
-              count: s?.dataCount ?? stats?.data_count,
-            })}
+            meta={firstYear ? t('w3.tele.dataSince', { year: firstYear }) : undefined}
             delay={3}
           />
         )}

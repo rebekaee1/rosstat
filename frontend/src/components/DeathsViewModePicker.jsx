@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import Chip from './Chip';
-import ChipGroup from './ChipGroup';
+import ModeGroupsPicker from './ModeGroupsPicker';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import {
@@ -26,38 +25,16 @@ export default function DeathsViewModePicker({
 
   const activeTopGroup = highlightedTopGroup(null, currentMode);
 
-  const body = (
-    <>
-      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {t('indicator.picker.mode')}
-      </p>
-      <ChipGroup label={t('indicator.picker.mode')}>
-        {DEATHS_TOP_GROUPS.map((group) => {
-          const active = group.id === activeTopGroup;
-          return (
-            <Chip
-              key={group.id}
-              active={active}
-              onClick={() => {
-                onChange(group.leafMode);
-                trackMode(group.leafMode, group.id);
-              }}
-            >
-              {group.label}
-            </Chip>
-          );
-        })}
-      </ChipGroup>
-    </>
-  );
-
-  if (compact) {
-    return <div className="space-y-2">{body}</div>;
-  }
-
   return (
-    <section className="mb-6 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-      {body}
-    </section>
+    <ModeGroupsPicker
+      title={t('w3.picker.showAs')}
+      groups={DEATHS_TOP_GROUPS}
+      activeGroupId={activeTopGroup}
+      onTopClick={(group) => {
+        onChange(group.leafMode);
+        trackMode(group.leafMode, group.id);
+      }}
+      compact={compact}
+    />
   );
 }

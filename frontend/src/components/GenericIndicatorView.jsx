@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, GitCompare } from 'lucide-react';
 import { useIndicator } from '../lib/hooks';
 import useGenericViewModeData from '../lib/useGenericViewModeData';
 import { resolveViewMode } from '../lib/viewModeEngine';
@@ -13,12 +11,9 @@ import IndicatorMethodologyPanel from './IndicatorMethodologyPanel';
 import IndicatorForecastSection from './IndicatorForecastSection';
 import IndicatorDataTableSection from './IndicatorDataTableSection';
 import IndicatorSeoBlocks from './IndicatorSeoBlocks';
-import { relatedIndicatorCardCopy } from '../lib/indicatorVariants';
+import RelatedIndicators from './RelatedIndicators';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
-import {
-  russiaIndicatorPath,
-} from '../lib/sitePaths';
 import { useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';
 
@@ -155,6 +150,7 @@ export default function GenericIndicatorView({
         safeViewMode={safeMode}
         cpiPrevDate={null}
         adj={IDENTITY}
+        firstDate={dataPoints?.[0]?.date}
         loading={loadingInd || isLoading}
       />
 
@@ -195,7 +191,7 @@ export default function GenericIndicatorView({
         onNeedCompatibleMode={setViewMode}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+      <div className="fe-info-grid" data-forecast={forecastEnabled && showForecast && hasForecast ? 'on' : 'off'}>
         <IndicatorMethodologyPanel
           indicator={effectiveIndicator}
           content={methodologyContent}
@@ -222,53 +218,7 @@ export default function GenericIndicatorView({
 
       <IndicatorSeoBlocks blocks={indicator?.seo_blocks} indicatorCode={code} />
 
-      {relatedIndicators.length > 0 && (
-        <section data-block="related" className="mt-16">
-          <div className="flex items-center gap-4 mb-6 flex-wrap">
-            <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
-              {t('indicator.related')}
-            </h2>
-            <div className="h-[1px] flex-1 bg-border-subtle" />
-            <Link
-              to={`/compare?a=${code}`}
-              onClick={() => track(events.RELATED_LINK_CLICK, {
-                from: code, to: 'compare', surface: 'indicator-cta',
-              })}
-              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-champagne hover:text-champagne-muted transition-colors"
-            >
-              <GitCompare className="w-3.5 h-3.5" />
-              {t('common.compare')}
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-            {relatedIndicators.map((rel) => {
-              const card = relatedIndicatorCardCopy(rel.code, rel.name, rel.unit);
-              return (
-                <Link
-                  key={rel.code}
-                  to={russiaIndicatorPath(rel.code)}
-                  onClick={() => track(events.RELATED_INDICATOR_CLICK, {
-                    from: code, to: rel.code, indicatorCategory: indicator?.category, surface: 'indicator-related',
-                  })}
-                  className="group flex items-start gap-3 p-4 rounded-2xl border border-border-subtle bg-surface hover:border-champagne/30 transition-colors min-h-[4.75rem]"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-text-primary leading-snug line-clamp-2 group-hover:text-champagne transition-colors">
-                      {card.title}
-                    </p>
-                    {card.subtitle && (
-                      <p className="mt-1.5 text-[10px] font-mono uppercase tracking-widest text-text-tertiary leading-relaxed line-clamp-2">
-                        {card.subtitle}
-                      </p>
-                    )}
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-text-tertiary shrink-0 mt-0.5 group-hover:text-champagne group-hover:translate-x-0.5 transition-all" />
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-      )}
+      <RelatedIndicators code={code} category={indicator?.category} items={relatedIndicators} />
     </>
   );
 }

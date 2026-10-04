@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Terminal, Download, Lock, Image as ImageIcon, HelpCircle } from 'lucide-react';
+import { Lock, HelpCircle } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
@@ -13,6 +13,8 @@ import { resolveChartTitle } from '../i18n/resolveViewModeCopy';
 import { forecastTooltipLabel, levelTooltipLabel } from '../i18n/chartTooltipLabels';
 import { useCountryComparison } from '../lib/useCountryComparison';
 import CountryComparePanel from './CountryComparePicker';
+import Button from './Button';
+import '../styles/indicator-russia.css';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -38,11 +40,6 @@ function rangePresetFor({ chartMode, indicator }) {
   return 'default';
 }
 
-/**
- * Кнопка выгрузки (CSV/Excel) с гейтом лимита (ADR-0007 Phase 2).
- * Гость до лимита и любой авторизованный — активна. Гость после лимита —
- * тускнеет, на hover подсказка зовёт войти, клик ведёт на регистрацию.
- */
 function ruYears(n) {
   const mod100 = Math.abs(n) % 100;
   const mod10 = n % 10;
@@ -52,70 +49,68 @@ function ruYears(n) {
   return `${n} лет`;
 }
 
-function DownloadButton({ label, onDownload, blocked, hint }) {
+/**
+ * Скачивание данных и картинки одним блоком (ADR-0007 Phase 2).
+ * Авторизованный и гость до лимита видят три обычные кнопки: клик сам решает гейт (сервер отдаёт файл либо
+ * зовёт войти). Гость, исчерпавший лимит, видит один понятный элемент «Войдите, чтобы скачать» вместо трёх замков.
+ */
+function DownloadBar({
+  blocked, authed, hint, onCsv, onExcel, onPng,
+}) {
   const t = useT();
-  const handleClick = () => {
-    // Let the export API enforce the guest limit: excel.js then retains the
-    // exact payload for completion after auth, instead of losing the intent.
-    onDownload?.();
-  };
-  const tooltip = blocked ? t('download.dataBlocked') : hint;
-  return (
-    <div className="relative group/dl">
-      <button
-        onClick={handleClick}
-        aria-disabled={blocked}
-        className={cn(
-          'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors text-xs font-mono uppercase tracking-wider',
-          blocked
-            ? 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer'
-            : 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn',
-        )}
-        title={blocked ? t('download.dataBlocked') : t('download.downloadLabel', { label })}
+  if (blocked) {
+    return (
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={onCsv}
+        title={t('download.dataBlocked')}
+        data-no-export="true"
       >
-        {blocked ? <Lock className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
-        {label}
-      </button>
-      {tooltip && (
-        <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-[11px] normal-case tracking-normal text-text-secondary whitespace-nowrap opacity-0 group-hover/dl:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-          {tooltip}
-        </div>
-      )}
+        <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+        {t('w3.chart.loginToDownload')}
+      </Button>
+    );
+  }
+  return (
+    <div className="fe-dl" role="group" aria-label={t('w3.chart.download')} title={hint || undefined} data-no-export="true">
+      <span className="fe-dl__label" aria-hidden="true">{t('w3.chart.download')}</span>
+      <Button variant="secondary" size="sm" onClick={onCsv} aria-label={t('download.downloadLabel', { label: 'CSV' })}>CSV</Button>
+      <Button variant="secondary" size="sm" onClick={onExcel} aria-label={t('download.downloadLabel', { label: 'Excel' })}>Excel</Button>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={onPng}
+        title={authed ? t('download.chartPng') : t('download.chartBlocked')}
+        aria-label={authed ? t('download.chartPng') : t('download.chartBlocked')}
+      >
+        PNG
+        {authed ? null : <Lock className="h-3 w-3" aria-hidden="true" />}
+      </Button>
     </div>
   );
 }
 
-/**
- * Кнопка «скачать график картинкой». Гость видит замок и подсказку, клик ведёт
- * на регистрацию (через onDownload, который сам решает гейт). Авторизованный —
- * скачивает чистый PNG текущего вида (без водяного знака).
- */
-function ImageButton({ onDownload, authed }) {
+/** Переключатель прогноза: подписанная «таблетка», видна и в выключенном состоянии. */
+function ForecastSwitch({ enabled, on, onToggle }) {
   const t = useT();
-  const tooltip = authed
-    ? t('download.chartPng')
-    : t('download.chartBlocked');
+  const active = enabled && on;
   return (
-    <div className="relative group/img" data-no-export="true">
-      <button
-        type="button"
-        onClick={onDownload}
-        aria-disabled={!authed}
-        className={cn(
-          'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors text-xs font-mono uppercase tracking-wider',
-          authed
-            ? 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn'
-            : 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer',
-        )}
-        title={tooltip}
-      >
-        {authed ? <ImageIcon className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
-        PNG
-      </button>
-      <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-[11px] normal-case tracking-normal text-text-secondary whitespace-nowrap opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-        {tooltip}
-      </div>
-    </div>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={active}
+      aria-disabled={!enabled}
+      aria-label={t('chart.forecastAria')}
+      title={enabled ? undefined : t('chart.forecastUnavailable')}
+      onClick={enabled ? onToggle : undefined}
+      className={cn('fe-forecast-switch fe-press', active && 'is-on', !enabled && 'is-unavailable')}
+    >
+      <span className="fe-forecast-switch__track" aria-hidden="true">
+        <span className="fe-forecast-switch__thumb" />
+      </span>
+      <span>{enabled ? t('common.forecast') : t('w3.chart.forecastNone')}</span>
+    </button>
   );
 }
 
@@ -188,12 +183,6 @@ export default function IndicatorChartSection({
     isCbrTermSliceFamily, isUnemploymentFamily,
     indicator, safeViewMode,
   });
-  const chartSectionLabel = (isPriceCategory || isHousingFamily || isPpiFamily
-    || isCbrTermSliceFamily || isUnemploymentFamily
-    || chartMode !== 'cpi')
-    ? t('indicator.chartModeLabel')
-    : t('indicator.chartDynamicsLabel');
-
   // Скачивание графика картинкой. Единое правило по всему сайту (пересмотрено
   // 2026-07-08, созвон «На правки 13»): гость → гейт регистрации (скачать
   // нельзя вообще); зарегистрированный → чистый PNG текущего вида (режим +
@@ -296,79 +285,36 @@ export default function IndicatorChartSection({
     });
   };
 
-  const handleForecastKeyDown = (e) => {
-    if (forecastEnabled && (e.key === ' ' || e.key === 'Enter')) {
-      e.preventDefault();
-      handleForecastToggle();
-    }
-  };
-
   return (
-    <section id="chart" data-block="chart" className="mb-16 scroll-mt-24" aria-busy={chartLoading ? true : undefined}>
-      <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4 flex-wrap gap-3">
-        <div className="flex items-center gap-4">
-          <Terminal className="w-4 h-4 text-champagne" />
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">
-            {chartSectionLabel}
-          </span>
-        </div>
+    <section id="chart" data-block="chart" className="fe-chart-section" aria-busy={chartLoading ? true : undefined}>
+      <div className="fe-chart-head">
+        <h2 className="fe-chart-head__title">{t('indicator.chartDynamicsLabel')}</h2>
 
-        <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2 sm:gap-3">
-          <DownloadButton label="CSV" onDownload={onDownloadCsv} blocked={downloadBlocked} hint={guestHistoryHint} />
-          <DownloadButton label="Excel" onDownload={onDownloadExcel} blocked={downloadBlocked} hint={guestHistoryHint} />
-          <ImageButton onDownload={handleDownloadImage} authed={downloadAuthed} />
-
-          <div className="relative group/help">
-            <Link
-              to="/methodology"
-              aria-label={t('chart.methodologyAria')}
-              onClick={() => track(events.METHODOLOGY_CLICK, { indicator: code, indicatorCategory: indicator?.category })}
-              className="text-text-tertiary hover:text-champagne transition-colors"
-            >
-              <HelpCircle className="w-4 h-4" />
-            </Link>
-            <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover/help:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-              {t('chart.methodologyHint')}
-            </div>
-          </div>
-
-          <div className="relative group">
-            <label className={cn(
-              'flex items-center gap-3 select-none',
-              forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
-            )}>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary group-hover:text-text-secondary transition-colors">
-                {t('common.forecast')}
-              </span>
-              <div
-                role="switch"
-                aria-checked={forecastEnabled && showForecast}
-                aria-label={t('chart.forecastAria')}
-                tabIndex={forecastEnabled ? 0 : -1}
-                onClick={handleForecastToggle}
-                onKeyDown={handleForecastKeyDown}
-                className={cn(
-                  'relative w-10 h-5 rounded-full transition-colors duration-300',
-                  forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed',
-                  forecastEnabled && showForecast
-                    ? 'bg-champagne/30'
-                    : 'bg-obsidian-lighter border border-border-subtle',
-                )}
-              >
-                <div className={cn(
-                  'absolute top-[2px] left-[2px] w-4 h-4 rounded-full transition-transform duration-300',
-                  forecastEnabled && showForecast ? 'translate-x-5 bg-champagne' : 'translate-x-0 bg-text-tertiary',
-                )} />
-              </div>
-            </label>
-            {!forecastEnabled && (
-              <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-xs text-text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-                {t('chart.forecastUnavailable')}
-              </div>
-            )}
-          </div>
+        <div className="fe-chart-actions">
+          <ForecastSwitch enabled={forecastEnabled} on={showForecast} onToggle={handleForecastToggle} />
+          <DownloadBar
+            blocked={downloadBlocked}
+            authed={downloadAuthed}
+            hint={guestHistoryHint}
+            onCsv={onDownloadCsv}
+            onExcel={onDownloadExcel}
+            onPng={handleDownloadImage}
+          />
+          <Link
+            to="/methodology"
+            aria-label={t('chart.methodologyAria')}
+            title={t('chart.methodologyHint')}
+            onClick={() => track(events.METHODOLOGY_CLICK, { indicator: code, indicatorCategory: indicator?.category })}
+            className="fe-help-link"
+          >
+            <HelpCircle className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
       </div>
+
+      {guestHistoryHint && !downloadBlocked && (
+        <p className="fe-chart-hint">{guestHistoryHint}</p>
+      )}
 
       <CountryComparePanel
         pickerOptions={comparison.pickerOptions}
@@ -390,7 +336,7 @@ export default function IndicatorChartSection({
       {chartLoading ? (
         <ChartSectionSkeleton />
       ) : (
-        <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[2rem]">
+        <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem]">
           <IndicatorChart
             key={`${indicator?.code}-${chartMode}`}
             mode={

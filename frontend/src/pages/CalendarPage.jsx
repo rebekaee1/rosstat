@@ -19,6 +19,7 @@ import {
   calendarPath,
 } from '../lib/sitePaths';
 import { useT, useLocale } from '../i18n';
+import '../styles/indicator-russia.css';
 
 const WEEKDAY_KEYS = [
   'calendar.weekday.sun',
@@ -61,9 +62,9 @@ function CalendarSkeleton() {
   return (
     <div className="space-y-4" role="status" aria-busy="true">
       <span className="sr-only">{t('calendar.state.loading')}</span>
-      <SkeletonBox className="h-[22rem] w-full rounded-2xl" />
+      <SkeletonBox className="h-[22rem] w-full rounded-[1.5rem]" />
       <div className="space-y-3">
-        {[1, 2, 3].map((i) => <SkeletonBox key={i} className="h-24 w-full rounded-2xl" />)}
+        {[1, 2, 3].map((i) => <SkeletonBox key={i} className="h-24 w-full rounded-[1.5rem]" />)}
       </div>
     </div>
   );
@@ -153,8 +154,10 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   }), [dates, source]);
 
   const { data, isLoading, isError, refetch, isFetching } = useCalendarEvents(apiParams);
-  const { data: upcomingData } = useCalendarUpcoming({ limit: 1, importance_min: 2 });
-  const nextImportant = upcomingData?.events?.[0] || null;
+  // Ближайшее событие — самое важное из нескольких предстоящих, а не ежедневная ставка вроде RUONIA.
+  const { data: upcomingData } = useCalendarUpcoming({ limit: 8, importance_min: 2 });
+  const upcomingList = upcomingData?.events;
+  const nextImportant = upcomingList?.find((e) => e.importance === 3) || upcomingList?.[0] || null;
 
   const allEvents = useMemo(() => data?.events || [], [data]);
 
@@ -259,7 +262,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
             // При ошибке загрузки текст «нет событий» был бы неправдой — о причине уже говорит баннер выше.
             !isError && (
               <div
-                className="fe-reveal fe-reveal--free flex flex-col items-center rounded-2xl border border-dashed border-border-subtle bg-surface px-6 py-12 text-center"
+                className="fe-reveal fe-reveal--free flex flex-col items-center rounded-[1.5rem] border border-border-subtle bg-surface px-6 py-10 text-center"
                 role="status"
                 data-testid="calendar-empty"
               >
@@ -287,17 +290,14 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                 return (
                   <section key={group.dateStr}>
                     {!selectedDate && (
-                      <h3 className={cn(
-                        'text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2',
-                        group.isToday ? 'text-champagne' : 'text-text-tertiary',
-                      )}>
+                      <h3 className={cn('fe-cal-dayhead', group.isToday && 'is-today')}>
                         {group.label}
                         {group.isToday && (
-                          <span className="px-1.5 py-px rounded bg-champagne/10 text-champagne text-[11px] font-bold">
+                          <span className="px-1.5 py-px rounded bg-champagne/10 text-champagne-ink text-xs font-bold">
                             Сегодня
                           </span>
                         )}
-                        <span className="text-text-tertiary font-normal">
+                        <span className="fe-cal-dayhead__count">
                           — {group.events.length} {group.events.length === 1 ? 'событие' : group.events.length < 5 ? 'события' : 'событий'}
                         </span>
                       </h3>
@@ -345,7 +345,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
         </h2>
         <dl className="space-y-4">
           {FAQ_KEYS.map((item) => (
-            <div key={item.q} className="fe-panel rounded-2xl border border-border-subtle bg-surface p-5">
+            <div key={item.q} className="fe-panel rounded-[1.5rem] border border-border-subtle bg-surface p-5">
               <dt className="font-semibold text-text-primary text-sm mb-2">{t(item.q)}</dt>
               <dd className="text-sm text-text-secondary leading-relaxed">{t(item.a)}</dd>
             </div>

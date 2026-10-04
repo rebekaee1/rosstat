@@ -7,9 +7,10 @@ import {
 import { Activity, ZoomIn, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
 import {
   formatDate, formatAxisTick, formatValue,
-  chartValueDigits, unitSuffix, cn, pickChartAxisTicks, chartAxisTickBudget,
+  chartValueDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
 } from '../lib/format';
 import { track, events } from '../lib/track';
+import { valueWithUnit } from '../lib/valueText';
 import { buildForecastVisualSeries, mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 import { useT } from '../i18n';
 import { CHART_THEME } from '../lib/chartTheme';
@@ -105,7 +106,7 @@ function CustomTooltip({
 
   return (
     <div className={`glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl ${compactNumeric ? 'min-w-[118px]' : 'min-w-[200px]'}`}>
-      <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, dateFormat)}</p>
+      <p className="text-xs text-text-secondary mb-2">{formatDate(label, dateFormat)}</p>
 
       {/* Bridge-точка (последний факт, от которого тянется прогнозная линия)
           несёт оба значения — приоритет у факта, иначе последняя фактическая
@@ -123,7 +124,7 @@ function CustomTooltip({
           <span className="text-sm font-semibold tabular-nums text-text-primary">
             {numericTooltipOnly
               ? formatValue(actual.value, valueDigits)
-              : `${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
+              : valueWithUnit(actual.value, valueDigits, unit)}
           </span>
         </div>
       )}
@@ -134,8 +135,8 @@ function CustomTooltip({
             <span className="w-2 h-2 rounded-full" style={{ background: CHART_THEME.champagne }} />
             <span className="text-xs text-text-tertiary">{forecastLabel}</span>
           </div>
-          <span className="text-sm font-mono font-semibold text-champagne-muted">
-            {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
+          <span className="text-sm font-semibold tabular-nums text-champagne-muted">
+            {valueWithUnit(forecast.value, valueDigits, unit)}
           </span>
         </div>
       )}
@@ -150,10 +151,10 @@ function CustomTooltip({
               {series.label || t('chart.compareSeries')}
             </span>
           </div>
-          <span className="font-mono text-sm font-semibold" style={{ color: series.color }}>
+          <span className="text-sm font-semibold tabular-nums" style={{ color: series.color }}>
             {numericTooltipOnly
               ? formatValue(series.payload.value, valueDigits)
-              : `${formatValue(series.payload.value, valueDigits)}${unitSuffix(unit)}`}
+              : valueWithUnit(series.payload.value, valueDigits, unit)}
           </span>
         </div>
       ))}
@@ -533,7 +534,7 @@ export default function IndicatorChart({
   const plotAriaLabel = lastActualRow
     ? t('chart.plotAria', {
       title,
-      value: `${formatValue(lastActualRow.actual, digits)}${unitSuffix(unit)}`,
+      value: valueWithUnit(lastActualRow.actual, digits, unit),
       date: formatDate(lastActualRow.date, dateFormat),
     })
     : title;
@@ -551,7 +552,7 @@ export default function IndicatorChart({
 
   if (!dataLen) {
     return (
-      <div role="status" className="fe-chart-card fe-reveal border border-dashed border-border-subtle bg-surface p-8 md:p-10 shadow-sm min-h-[320px] flex flex-col items-center justify-center text-center gap-4" style={REVEAL_STYLE}>
+      <div role="status" className="fe-chart-card fe-reveal border border-border-subtle bg-surface p-8 md:p-10 shadow-sm min-h-[240px] flex flex-col items-center justify-center text-center gap-4" style={REVEAL_STYLE}>
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-obsidian-lighter border border-border-subtle">
           <Activity className="w-7 h-7 text-champagne/80" aria-hidden />
         </div>
@@ -599,7 +600,7 @@ export default function IndicatorChart({
             <Chip
               aria-pressed={undefined}
               onClick={() => { setWindowOverride(null); setOffset(0); track(events.CHART_ZOOM, { action: 'reset', indicator: indicatorCode, indicatorCategory }); }}
-              className="fe-chip--ghost font-mono uppercase tracking-wider"
+              className="fe-chip--ghost"
               title={t('chart.resetZoomTitle')}
             >
               {t('chart.resetZoom')}
@@ -631,7 +632,7 @@ export default function IndicatorChart({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         className={cn(
-          'fe-chart-plot rounded-xl relative',
+          'fe-chart-plot fe-chart-draw rounded-xl relative',
           isDragging ? 'cursor-grabbing select-none' : 'cursor-crosshair'
         )}
         style={{ touchAction: 'pan-y' }}
@@ -793,7 +794,7 @@ export default function IndicatorChart({
           <div className="mt-1 flex justify-end pr-3">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
               <ZoomIn className="w-3 h-3 text-text-tertiary" />
-              <span className="text-xs font-mono text-text-secondary">{t('chart.zoomHint')}</span>
+              <span className="text-xs text-text-secondary">{t('chart.zoomHint')}</span>
             </div>
           </div>
         )}
@@ -811,9 +812,9 @@ export default function IndicatorChart({
             aria-label={t('chart.windowAria')}
             className="fe-range"
           />
-          <div className="flex justify-between text-xs font-mono text-text-secondary">
-            <span>{visibleData[0] ? formatDate(visibleData[0].date, dateFormat) : ''}</span>
-            <span>{visibleData.length ? formatDate(visibleData[visibleData.length - 1].date, dateFormat) : ''}</span>
+          <div className="flex justify-between text-xs text-text-secondary" aria-hidden="true">
+            <span>{t('w3.chart.earlier')}</span>
+            <span>{t('w3.chart.later')}</span>
           </div>
         </div>
       )}

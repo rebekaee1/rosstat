@@ -26,6 +26,7 @@ import {
   russiaCategoryPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
+import { plural } from '../lib/calcFormat';
 
 const CATEGORY_ICONS = {
   TrendingUp,
@@ -67,6 +68,10 @@ export default function CategoryBlock({
   const hasData = category.apiCategory && indicatorCount > 0;
   const soon = category.apiCategory && indicatorCount === 0 && countsKnown;
   const title = locale === 'en' && category.nameEn ? category.nameEn : category.name;
+  const countText = (n) => {
+    const form = locale === 'en' ? (n === 1 ? 'one' : 'many') : plural(n, 'one', 'few', 'many');
+    return `${n} ${t(`w3.count.indicators.${form}`)}`;
+  };
   const description = locale === 'en' && category.descriptionEn
     ? category.descriptionEn
     : category.description;
@@ -120,15 +125,17 @@ export default function CategoryBlock({
           >
             {!countsKnown
               ? '—'
-              : hasData || soon
-                ? t('category.count', { n: indicatorCount })
-                : isPlanned
+              : hasData
+                ? countText(indicatorCount)
+                : soon
+                  ? t('common.soonCap')
+                  : isPlanned
                   ? t('common.soonCap')
                   : ''}
           </span>
         )}
         {isPlanned && (
-          <span className="text-xs font-mono text-champagne/80">{t('common.soonCap')}</span>
+          <span className="text-xs font-semibold text-champagne-ink">{t('common.soonCap')}</span>
         )}
       </div>
 

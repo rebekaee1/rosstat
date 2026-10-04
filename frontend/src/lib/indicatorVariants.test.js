@@ -64,6 +64,15 @@ describe('relatedIndicatorCardCopy', () => {
     expect(card.subtitle).toBe('Рынок жилья');
   });
 
+  it('term slices carry the group name: «До 1 года» alone is meaningless', () => {
+    const titles = ['credit-rate-corp-short', 'credit-rate-ind-short', 'deposit-rate']
+      .map((code) => relatedIndicatorCardCopy(code, 'x', '%').title);
+    expect(new Set(titles).size).toBe(3);
+    expect(titles[0]).toBe('Ставки по кредитам юридическим лицам, до 1 года');
+    expect(titles[1]).toBe('Ставки по кредитам физическим лицам, до 1 года');
+    expect(titles[2]).toBe('Ставки по вкладам физических лиц, до 1 года');
+  });
+
   it('housing primary ↔ secondary are variant siblings', () => {
     expect(isVariantSiblingNavigation(
       '/russia/indicator/housing-price-primary',

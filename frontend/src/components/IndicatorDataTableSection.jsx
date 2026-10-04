@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import DataTable from './DataTable';
 
 import { resolveDateFormat, chartValueDigits } from '../lib/format';
@@ -31,7 +32,10 @@ export default function IndicatorDataTableSection({
   periodWeeklyDataPoints,
 }) {
   const { locale } = useLocale();
-  const data = chartMode === 'inflation'
+  // Страница года (/…/indicator/{code}/2024): таблица показывает только этот год, а не всю историю.
+  const { year } = useParams();
+  const yearFilter = /^\d{4}$/.test(year || '') ? year : null;
+  const allData = chartMode === 'inflation'
     ? (inflationResp?.actuals || [])
     : chartSeriesForViewMode({
       chartMode,
@@ -46,17 +50,21 @@ export default function IndicatorDataTableSection({
       periodWeeklyDataPoints,
       periodMonthlyDataPoints,
     });
+  const data = yearFilter
+    ? (allData || []).filter((row) => String(row.date).startsWith(yearFilter))
+    : allData;
+  const tableTitle = resolveTableTitle(locale, {
+    chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
+    isCbrTermSliceFamily, isUnemploymentFamily,
+    indicator, safeViewMode,
+  });
 
   return (
     <section>
       <DataTable
         key={`${indicator?.code}-${chartMode}`}
         data={data}
-        title={resolveTableTitle(locale, {
-          chartMode, isPriceCategory, isHousingFamily, isPpiFamily,
-          isCbrTermSliceFamily, isUnemploymentFamily,
-          indicator, safeViewMode,
-        })}
+        title={yearFilter ? `${tableTitle}, ${yearFilter}` : tableTitle}
         dateFormat={resolveDateFormat({ chartMode, frequency: indicator?.frequency, safeViewMode })}
         unit={chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'))}
         valueDigits={chartValueDigits(

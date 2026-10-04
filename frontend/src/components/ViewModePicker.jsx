@@ -2,7 +2,8 @@ import Chip from './Chip';
 import ChipGroup from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
-import { localizeViewModeLabel } from '../i18n/viewModeLabels';
+import { pickerLabel } from '../lib/pickerLabels';
+import { PickerCard, PickerLabel } from './PickerParts';
 
 /**
  * Generic in-page view-mode switcher used on indicator pages where a
@@ -18,13 +19,11 @@ export default function ViewModePicker({
 }) {
   const t = useT();
   const { locale } = useLocale();
-  const sectionTitle = title || t('indicator.picker.mode');
+  const sectionTitle = title || t('w3.picker.showAs');
   return (
-    <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {localizeViewModeLabel(sectionTitle, locale) || sectionTitle}
-      </p>
-      <ChipGroup label={localizeViewModeLabel(sectionTitle, locale) || sectionTitle}>
+    <PickerCard>
+      <PickerLabel>{pickerLabel(sectionTitle, locale) || sectionTitle}</PickerLabel>
+      <ChipGroup label={pickerLabel(sectionTitle, locale) || sectionTitle} grid>
         {modes.map((item) => (
           <Chip
             key={item.mode}
@@ -38,10 +37,10 @@ export default function ViewModePicker({
               });
             }}
           >
-            {localizeViewModeLabel(item.label, locale)}
+            {pickerLabel(item.label, locale)}
           </Chip>
         ))}
       </ChipGroup>
-    </section>
+    </PickerCard>
   );
 }

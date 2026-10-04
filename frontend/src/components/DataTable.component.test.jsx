@@ -30,7 +30,8 @@ describe('DataTable', () => {
 
   it('по умолчанию сохраняет единицу у значения для существующих карточек', () => {
     renderTable(<DataTable data={data} unit="%" valueDigits={1} />);
-    expect(screen.getByText('1 234,5%')).toBeTruthy();
+    // Число и единица через пробел (в разметке неразрывный): «1 234,5 %», а не «1 234,5%».
+    expect(screen.getByText('1 234,5 %')).toBeTruthy();
   });
 
   it('не оставляет пустые скобки для единиц без короткого суффикса', () => {
@@ -43,7 +44,7 @@ describe('DataTable', () => {
     renderTable(<DataTable data={[{ date: '2024-12-01', value: 16.5 }, { date: '2023-12-01', value: 6.5 }]} />);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '16,5' } });
     await waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(2));
-    expect(screen.getByText('16,50%')).toBeTruthy();
+    expect(screen.getByText('16,50 %')).toBeTruthy();
     expect(track).toHaveBeenCalledWith(events.TABLE_SEARCH, { query: '16,5', results: 1 });
   });
 

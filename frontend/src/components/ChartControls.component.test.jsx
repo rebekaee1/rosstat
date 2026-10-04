@@ -126,7 +126,7 @@ describe('IndicatorChart', () => {
     const label = plot.getAttribute('aria-label');
     expect(label).toContain('Ключевая ставка');
     expect(label).toContain('Последнее значение');
-    expect(label).toContain('18,10%');
+    expect(label).toContain('18,10\u00A0%');
   });
 
   it('периоды и тип графика — группы Chip с aria-pressed', () => {

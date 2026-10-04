@@ -191,6 +191,20 @@ const GENERIC_VARIANT_MEMBER_LABELS = new Set([
   'Вклады физлицам',
 ]);
 
+function lowerFirst(text) {
+  return text ? text.charAt(0).toLowerCase() + text.slice(1) : text;
+}
+
+/** Подпись участника встречается более чем в одной группе (и потому неоднозначна без названия группы). */
+function isSharedMemberLabel(member) {
+  const key = member.labelKey || member.label;
+  let groups = 0;
+  for (const group of VARIANT_GROUPS) {
+    if (group.codes.some((item) => (item.labelKey || item.label) === key)) groups += 1;
+  }
+  return groups > 1;
+}
+
 /**
  * Короткая подпись для карточек «Похожие индикаторы» — без обрезки длинного name из БД.
  * Для variant-групп: короткий label из pills + контекст группы.
@@ -201,6 +215,14 @@ export function relatedIndicatorCardCopy(code, fallbackName, fallbackUnit) {
   if (member && group) {
     const groupLabel = group.labelKey ? t(group.labelKey) : group.label;
     const memberLabel = member.labelKey ? t(member.labelKey) : member.label;
+    // Подпись «До 1 года» повторяется в нескольких группах (кредиты юрлицам, физлицам, вклады):
+    // отдельно она ничего не говорит, поэтому название собираем из группы и подписи.
+    if (isSharedMemberLabel(member)) {
+      return {
+        title: `${groupLabel}, ${lowerFirst(memberLabel)}`,
+        subtitle: null,
+      };
+    }
     const groupContext =
       group.labelKey === 'variant.cpi.group'
         ? t('variant.cpi.context')

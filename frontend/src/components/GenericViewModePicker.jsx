@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Chip from './Chip';
-import ChipGroup from './ChipGroup';
+import ModeGroupsPicker from './ModeGroupsPicker';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
-import { localizeViewModeLabel } from '../i18n/viewModeLabels';
+import { pickerLabel } from '../lib/pickerLabels';
 import {
   buildViewModeGroups,
   defaultSubModeForGroup,
@@ -30,15 +29,16 @@ export default function GenericViewModePicker({
 }) {
   const t = useT();
   const { locale } = useLocale();
-  const sectionTitle = title || t('indicator.picker.generic');
+  const sectionTitle = title || t('w3.picker.showAs');
   const groups = useMemo(() => {
     const raw = buildViewModeGroups(family);
     return raw.map((g) => ({
       ...g,
-      label: localizeViewModeLabel(g.label, locale),
+      rawLabel: g.label,
+      label: pickerLabel(g.label, locale),
       modes: g.modes?.map((m) => ({
         ...m,
-        label: localizeViewModeLabel(m.label, locale),
+        label: pickerLabel(m.label, locale),
       })),
     }));
   }, [family, locale]);
@@ -89,43 +89,17 @@ export default function GenericViewModePicker({
 
   if (groups.length <= 1 && (groups[0]?.modes?.length ?? 0) <= 1) return null;
 
-  const body = (
-    <>
-      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {sectionTitle}
-      </p>
-      <ChipGroup label={sectionTitle}>
-        {groups.map((group) => (
-          <Chip
-            key={group.id}
-            active={group.id === activeTopGroup}
-            onClick={() => onTopClick(group)}
-          >
-            {group.label}
-          </Chip>
-        ))}
-      </ChipGroup>
-      {subModes.length > 1 && (
-        <ChipGroup label={expanded?.label} className="mt-3 border-t border-border-subtle pt-3">
-          {subModes.map((item) => (
-            <Chip
-              key={item.mode}
-              active={item.mode === currentMode}
-              onClick={() => onSubClick(expandedGroup, item)}
-            >
-              {item.label}
-            </Chip>
-          ))}
-        </ChipGroup>
-      )}
-    </>
-  );
-
-  if (compact) return body;
-
   return (
-    <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-      {body}
-    </section>
+    <ModeGroupsPicker
+      title={sectionTitle}
+      groups={groups}
+      activeGroupId={activeTopGroup}
+      onTopClick={onTopClick}
+      subModes={subModes}
+      subGroupLabel={expanded?.label}
+      currentMode={currentMode}
+      onSubClick={(item) => onSubClick(expandedGroup, item)}
+      compact={compact}
+    />
   );
 }

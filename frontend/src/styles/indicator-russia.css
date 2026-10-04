@@ -1,0 +1,746 @@
+/*
+ * Карточка индикатора, Россия, «Сегодня», календарь, демография (волна 2, 2026-10-04).
+ * Токены — из index.css; радиусы единые: карточки 24 px, контролы 12 px. Размер текста не меньше 12 px.
+ */
+
+/* ── Переключатели показа: ровная сетка вместо рваных рядов ───────────────── */
+.fe-pick-card {
+  min-width: 0;
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(32, 42, 60, 0.05);
+}
+.fe-pick-card--stack > * + * { margin-top: 16px; }
+.fe-pick-embedded { padding-top: 16px; border-top: 1px solid var(--color-border-subtle); }
+.fe-pick-label {
+  margin: 0 0 10px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.fe-pick-hint {
+  margin: 10px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.fe-pick-sub {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+/* Ячейки равной ширины: на телефоне две колонки (нечётная последняя на всю ширину), шире — до 224 px. */
+.fe-chip-row--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.fe-chip-row--grid > .fe-chip {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+}
+.fe-chip-row--grid > .fe-chip:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (min-width: 640px) {
+  .fe-chip-row--grid {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 14rem));
+    justify-content: start;
+  }
+  .fe-chip-row--grid > .fe-chip:last-child:nth-child(odd) { grid-column: auto; }
+  .fe-chip-row--grid > .fe-chip { min-height: 40px; }
+}
+@media (min-width: 640px) and (pointer: coarse) {
+  .fe-chip-row--grid > .fe-chip { min-height: 44px; }
+}
+/* Выбранный вариант заметнее: заливка плюс тёмная золотая рамка. */
+.fe-chip-row--grid > .fe-chip.is-active {
+  border-color: var(--color-champagne-ink);
+  background: rgba(173, 138, 72, 0.18);
+  color: var(--color-champagne-ink);
+}
+
+/* ── Плитки значений ────────────────────────────────────────────────────── */
+.fe-tele-section { margin-bottom: 24px; }
+.fe-tele-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 1024px) {
+  .fe-tele-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+}
+.fe-tele-skeleton { min-height: 112px; border-radius: 24px; }
+.fe-tele {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--fe-glass);
+  box-shadow: var(--fe-shadow);
+}
+@media (min-width: 640px) { .fe-tele { padding: 20px; } }
+.fe-tele__label {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.fe-tele__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  margin: 0;
+  min-width: 0;
+}
+.fe-tele__num {
+  color: var(--color-text-primary);
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.fe-tele__num--long { font-size: 20px; }
+@media (min-width: 640px) {
+  .fe-tele__num { font-size: 30px; }
+  .fe-tele__num--long { font-size: 24px; }
+}
+.fe-tele__unit {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+.fe-tele__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+.fe-tele__delta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  margin: 0;
+  font-size: 13px;
+}
+.fe-tele__vs { color: var(--color-text-secondary); font-size: 13px; }
+.fe-tele__meta {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* ── Секция графика: заголовок, прогноз, скачивание ─────────────────────── */
+.fe-chart-section { margin-bottom: 48px; scroll-margin-top: 96px; }
+.fe-chart-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.fe-chart-head__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.fe-chart-actions {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.fe-chart-hint { margin: -4px 0 16px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.45; }
+.fe-dl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.fe-dl__label { margin-right: 2px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
+.fe-help-link {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: var(--color-text-secondary);
+  transition: color 0.15s, background-color 0.15s;
+}
+.fe-help-link:hover { color: var(--color-champagne-ink); background: rgba(173, 138, 72, 0.1); }
+@media (pointer: coarse) { .fe-help-link { width: 44px; height: 44px; } }
+
+.fe-forecast-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 14px 0 8px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--fe-glass-soft);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.fe-forecast-switch__track {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: var(--color-obsidian-lighter);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.fe-forecast-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--color-text-tertiary);
+  transition: transform 0.2s var(--fe-ease-out), background-color 0.2s;
+}
+.fe-forecast-switch.is-on {
+  border-color: var(--color-champagne-ink);
+  background: rgba(173, 138, 72, 0.14);
+  color: var(--color-champagne-ink);
+}
+.fe-forecast-switch.is-on .fe-forecast-switch__track { border-color: var(--color-champagne-ink); background: var(--color-champagne); }
+.fe-forecast-switch.is-on .fe-forecast-switch__thumb { background: #fff; transform: translateX(14px); }
+.fe-forecast-switch.is-unavailable { cursor: default; opacity: 0.7; }
+@media (pointer: coarse) { .fe-forecast-switch { min-height: 44px; } }
+
+/* График «рисуется» слева направо один раз при появлении; после анимации ничего не держит. */
+@keyframes fe-chart-draw {
+  from { clip-path: inset(-4px 100% -4px 0); }
+  to { clip-path: inset(-4px -4px -4px 0); }
+}
+.fe-chart-draw { animation: fe-chart-draw 0.85s var(--fe-ease-out) 0.12s backwards; }
+@media (prefers-reduced-motion: reduce) { .fe-chart-draw { animation: none; } }
+
+/* ── Блок под графиком: методология и прогноз ───────────────────────────── */
+.fe-info-grid { display: grid; gap: 24px; margin-bottom: 48px; }
+@media (min-width: 1024px) {
+  .fe-info-grid[data-forecast='on'] { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: start; }
+}
+/* Нет прогноза: короткая плашка идёт первой, методология ниже — без пустой колонки. */
+.fe-info-grid[data-forecast='off'] > [data-block='forecast-empty'] { order: -1; }
+
+.fe-info-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(32, 42, 60, 0.05);
+}
+.fe-info-card__head { display: flex; align-items: center; gap: 10px; }
+.fe-info-card__title { margin: 0; color: var(--color-text-primary); font-size: 16px; font-weight: 650; }
+.fe-info-card__text { color: var(--color-text-secondary); font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
+.fe-info-card__text > * + * { margin-top: 12px; }
+.fe-info-card__foot { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--color-border-subtle); }
+.fe-info-card__source { width: 100%; justify-content: flex-start; min-width: 0; }
+.fe-info-card__source-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+.fe-more { border-radius: 12px; }
+.fe-more__summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  color: var(--color-champagne-ink);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (pointer: coarse) { .fe-more__summary { min-height: 44px; } }
+.fe-more__body {
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 2px solid var(--color-border-champagne);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Компактная доброжелательная плашка вместо пустой пунктирной карточки. */
+.fe-note-card {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 16px 20px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--color-champagne) 7%, var(--color-surface));
+}
+.fe-note-card__icon {
+  display: inline-flex;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(173, 138, 72, 0.14);
+  color: var(--color-champagne-ink);
+}
+.fe-note-card__body { min-width: 0; flex: 1 1 14rem; }
+.fe-note-card__title { margin: 0; color: var(--color-text-primary); font-size: 15px; font-weight: 650; }
+.fe-note-card__text { margin: 2px 0 0; color: var(--color-text-secondary); font-size: 14px; line-height: 1.5; }
+.fe-note-card__cta { flex: none; }
+
+/* ── Похожие индикаторы ─────────────────────────────────────────────────── */
+.fe-related { margin-top: 64px; }
+.fe-related__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+.fe-related__title { margin: 0; color: var(--color-text-primary); font-size: 20px; font-weight: 650; letter-spacing: -0.02em; }
+.fe-related__compare {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  color: var(--color-champagne-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+@media (pointer: coarse) { .fe-related__compare { min-height: 44px; } }
+.fe-related__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 640px) { .fe-related__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .fe-related__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fe-rel-card {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 84px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.fe-rel-card:hover { border-color: var(--color-border-champagne); box-shadow: 0 10px 28px -20px rgba(38, 52, 78, 0.45); }
+.fe-rel-card__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.fe-rel-card:hover .fe-rel-card__title { color: var(--color-champagne-ink); }
+.fe-rel-card__sub { margin: 2px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
+.fe-rel-card__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 8px 0 0; }
+.fe-rel-card__num { color: var(--color-text-primary); font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.fe-rel-card__date { color: var(--color-text-secondary); font-size: 13px; }
+.fe-rel-card__arrow {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  color: var(--color-text-tertiary);
+  transition: transform 0.2s, color 0.2s;
+}
+.fe-rel-card:hover .fe-rel-card__arrow { color: var(--color-champagne-ink); transform: translateX(2px); }
+
+/* ── Хлебные крошки: обычный регистр, шеврон у предыдущей крошки, текущая обрезается ───────────── */
+.fe-crumbs { color: var(--color-text-tertiary); font-size: 13px; line-height: 1.4; }
+@media (min-width: 640px) { .fe-crumbs { font-size: 14px; } }
+.fe-crumbs__list { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; margin: 0; padding: 0; list-style: none; }
+.fe-crumbs__item { display: inline-flex; min-width: 0; max-width: 100%; align-items: center; gap: 4px; }
+.fe-crumbs__link {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.fe-crumbs__link:hover { color: var(--color-champagne-ink); }
+@media (pointer: coarse) {
+  .fe-crumbs__link::before { content: ''; position: absolute; inset: -14px -4px; }
+}
+.fe-crumbs__sep { flex: none; width: 14px; height: 14px; opacity: 0.6; }
+.fe-crumbs__current {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Шапка карточки индикатора ──────────────────────────────────────────── */
+.fe-data-header.fe-indicator-header { border-radius: 24px; }
+.fe-ind-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 10px; }
+@media (min-width: 768px) { .fe-ind-meta { margin-bottom: 16px; } }
+.fe-ind-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: var(--color-obsidian-light);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+.fe-ind-cat { color: var(--color-text-secondary); font-size: 14px; }
+a.fe-ind-cat { text-decoration: none; transition: color 0.15s; }
+a.fe-ind-cat:hover { color: var(--color-champagne-ink); }
+
+/* ── Плитка показателя в каталоге ───────────────────────────────────────── */
+.fe-tile {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--fe-glass);
+  box-shadow: var(--fe-shadow);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+@media (min-width: 640px) { .fe-tile { padding: 20px; } }
+.fe-tile:not(.fe-tile--pending):hover { border-color: var(--color-border-champagne); }
+.fe-tile--pending { opacity: 0.55; pointer-events: none; cursor: default; }
+.fe-tile__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.fe-tile__cat { margin: 0 0 4px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.3; }
+.fe-tile__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  transition: color 0.2s;
+}
+.fe-tile:not(.fe-tile--pending):hover .fe-tile__title { color: var(--color-champagne-ink); }
+.fe-tile__go {
+  display: inline-flex;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: var(--color-obsidian-light);
+  color: var(--color-text-secondary);
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.fe-tile:hover .fe-tile__go { border-color: var(--color-border-champagne); background: rgba(173, 138, 72, 0.12); color: var(--color-champagne-ink); }
+.fe-tile__soon {
+  flex: none;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  background: var(--color-obsidian);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+.fe-tile__body { margin-top: auto; }
+.fe-tile__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; margin: 0; }
+.fe-tile__num {
+  color: var(--color-text-primary);
+  font-size: 26px;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.fe-tile__num--long { font-size: 20px; }
+.fe-tile__unit { color: var(--color-text-secondary); font-size: 14px; font-weight: 500; }
+.fe-tile__foot { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-top: 10px; font-size: 13px; }
+.fe-tile__delta { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; }
+.fe-tile__vs, .fe-tile__date { color: var(--color-text-secondary); font-size: 13px; }
+
+/* Каталог категории: один уровень карточек, без «рамки в рамке». */
+.fe-cat-list { margin-top: 8px; }
+.fe-cat-list__title { margin: 0 0 16px; color: var(--color-text-primary); font-size: 20px; font-weight: 650; letter-spacing: -0.02em; }
+.fe-cat-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 640px) { .fe-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
+@media (min-width: 1024px) { .fe-cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* ── Мобильная плашка «Зарегистрироваться»: не одинокая кнопка, а понятный блок с выгодой ──── */
+.fe-nudge-m {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 16px;
+  padding: 14px 8px 14px 14px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--color-champagne) 7%, var(--color-surface));
+}
+.fe-nudge-m__icon {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(173, 138, 72, 0.14);
+  color: var(--color-champagne-ink);
+}
+.fe-nudge-m__title { margin: 0; color: var(--color-text-primary); font-size: 15px; font-weight: 650; line-height: 1.3; }
+.fe-nudge-m__sub { margin: 2px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
+.fe-nudge-m__close {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: var(--color-text-tertiary);
+}
+.fe-nudge-m__cta { grid-column: 1 / -1; margin-right: 6px; }
+
+/* ── «Россия сегодня» ───────────────────────────────────────────────────── */
+.fe-today-eyebrow { margin: 0 0 8px; color: var(--color-champagne-ink); font-size: 14px; font-weight: 650; }
+.fe-today-note {
+  display: flex;
+  max-width: 42rem;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 32px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.fe-today-note > svg { margin-top: 2px; color: var(--color-champagne-ink); }
+.fe-today-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 768px) { .fe-today-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+.fe-today-card {
+  display: flex;
+  min-width: 0;
+  min-height: 188px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--fe-glass);
+  box-shadow: var(--fe-shadow);
+  transition: border-color 0.2s;
+}
+a.fe-today-card:hover { border-color: var(--color-border-champagne); }
+.fe-today-card--error { gap: 12px; }
+.fe-today-card__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.fe-today-card__label { margin: 0; color: var(--color-text-secondary); font-size: 14px; font-weight: 600; line-height: 1.3; }
+.fe-today-card__go { flex: none; width: 16px; height: 16px; color: var(--color-text-tertiary); transition: color 0.2s, transform 0.2s; }
+a.fe-today-card:hover .fe-today-card__go { color: var(--color-champagne-ink); transform: translate(1px, -1px); }
+.fe-today-card__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; margin: 0; }
+.fe-today-card__num {
+  color: var(--color-text-primary);
+  font-size: 26px;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.fe-today-card__unit { color: var(--color-text-secondary); font-size: 14px; font-weight: 500; }
+.fe-today-card__delta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; margin: 0; font-size: 13px; }
+.fe-today-card__vs { color: var(--color-text-secondary); font-size: 13px; }
+.fe-today-card__spark { margin-top: auto; }
+.fe-today-card__meta { margin: 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.35; }
+
+/* Страница «показатель на сегодня» */
+.fe-today-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+@media (min-width: 1024px) { .fe-today-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; } }
+.fe-today-stat {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--fe-glass);
+  box-shadow: var(--fe-shadow);
+}
+.fe-today-stat--main { grid-column: 1 / -1; }
+@media (min-width: 1024px) { .fe-today-stat--main { grid-column: auto; } }
+.fe-today-stat__label { margin: 0 0 6px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
+.fe-today-stat__num { margin: 0; color: var(--color-text-primary); font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.fe-today-stat__num--main { font-size: 30px; letter-spacing: -0.02em; }
+.fe-today-stat__unit { margin-left: 6px; color: var(--color-text-secondary); font-size: 15px; font-weight: 500; }
+.fe-today-stat__meta { margin: 6px 0 0; color: var(--color-text-secondary); font-size: 14px; }
+.fe-today-stat__delta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 10px 0 0; font-size: 14px; }
+.fe-today-stat__vs { color: var(--color-text-secondary); font-size: 13px; }
+.fe-today-chart { margin-bottom: 24px; padding: 16px; border: 1px solid var(--color-border-subtle); border-radius: 24px; background: var(--color-surface); }
+
+/* ── Календарь ──────────────────────────────────────────────────────────── */
+.fe-cal-day[data-heat='1'] { background: rgba(173, 138, 72, 0.07); }
+.fe-cal-day[data-heat='2'] { background: rgba(173, 138, 72, 0.14); }
+.fe-cal-day[data-heat='3'] { background: rgba(173, 138, 72, 0.22); }
+.fe-cal-day[aria-pressed='true'] { background: rgba(173, 138, 72, 0.26); box-shadow: inset 0 0 0 2px var(--color-champagne-ink); }
+.fe-cal-legend { padding: 10px 16px 12px; border-top: 1px solid var(--color-border-subtle); color: var(--color-text-secondary); font-size: 13px; }
+.fe-cal-legend__row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.fe-cal-legend__count { margin-left: auto; }
+.fe-cal-legend__hint { margin: 6px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
+.fe-cal-dayhead {
+  margin: 0 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 650;
+}
+.fe-cal-dayhead.is-today { color: var(--color-champagne-ink); }
+.fe-cal-dayhead__count { font-weight: 500; color: var(--color-text-secondary); }
+
+/* ── Демография ─────────────────────────────────────────────────────────── */
+.fe-demo-icon {
+  display: inline-flex;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(173, 138, 72, 0.14);
+  color: var(--color-champagne-ink);
+}
+.fe-demo-h2 { margin: 0; color: var(--color-text-primary); font-size: 18px; font-weight: 650; letter-spacing: -0.02em; }
+.fe-demo-legend { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 640px) { .fe-demo-legend { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } }
+.fe-demo-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'dot label num' 'dot label pct';
+  align-items: center;
+  gap: 0 10px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 16px;
+  background: var(--color-surface);
+  transition: border-color 0.2s;
+}
+.fe-demo-item:hover { border-color: var(--color-border-champagne); }
+.fe-demo-item__dot { grid-area: dot; width: 12px; height: 12px; border-radius: 9999px; align-self: start; margin-top: 4px; }
+.fe-demo-item__label { grid-area: label; color: var(--color-text-secondary); font-size: 14px; font-weight: 600; line-height: 1.3; }
+.fe-demo-item__num {
+  grid-area: num;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.fe-demo-item__unit { margin-left: 4px; color: var(--color-text-secondary); font-size: 13px; font-weight: 500; }
+.fe-demo-item__pct { grid-area: pct; color: var(--color-text-secondary); font-size: 13px; text-align: right; white-space: nowrap; }
+@media (min-width: 640px) {
+  .fe-demo-item {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'dot label' 'num num' 'pct pct';
+    row-gap: 4px;
+    padding: 16px;
+  }
+  .fe-demo-item__num { font-size: 26px; text-align: left; }
+  .fe-demo-item__pct { text-align: left; }
+}
+
+/* ── Страница «Россия» ──────────────────────────────────────────────────── */
+.fe-rus-chip {
+  display: block;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-obsidian-light) 65%, var(--color-surface));
+  transition: background-color 0.2s;
+}
+.fe-rus-chip:hover { background: rgba(173, 138, 72, 0.1); }
+.fe-rus-chip__name { color: var(--color-text-secondary); font-size: 14px; font-weight: 600; line-height: 1.3; }
+.fe-rus-chip__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; margin-top: 6px; }
+.fe-rus-chip__num { color: var(--color-text-primary); font-size: 24px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.fe-rus-chip__unit { color: var(--color-text-secondary); font-size: 14px; }
+.fe-rus-chip__date { margin-top: 2px; color: var(--color-text-secondary); font-size: 13px; }
+
+.fe-rus-tile {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.fe-rus-tile:hover { border-color: var(--color-border-champagne); box-shadow: 0 12px 30px -22px rgba(35, 30, 16, 0.35); }
+@media (min-width: 640px) {
+  .fe-rus-tile { min-height: 96px; flex-direction: row; align-items: center; gap: 16px; padding: 16px 20px; }
+}
+.fe-rus-tile__title { color: var(--color-text-primary); font-size: 15px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; transition: color 0.2s; }
+.fe-rus-tile:hover .fe-rus-tile__title { color: var(--color-champagne-ink); }
+.fe-rus-tile__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.fe-rus-tile__side {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+@media (min-width: 640px) {
+  .fe-rus-tile__side { width: 10rem; flex: none; flex-direction: column; align-items: flex-end; justify-content: center; padding-top: 0; border-top: 0; text-align: right; }
+}
+.fe-rus-tile__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; }
+.fe-rus-tile__num { color: var(--color-text-primary); font-size: 18px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.fe-rus-tile__unit { color: var(--color-text-secondary); font-size: 13px; }
+.fe-rus-tile__foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: flex-end; gap: 2px 8px; font-size: 13px; }
+.fe-rus-tile__date { color: var(--color-text-secondary); font-size: 13px; }

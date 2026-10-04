@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
-import { formatDate, formatValue, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
+import { formatDate, formatValue, unitSuffix, cn } from '../lib/format';
+import { valueWithUnit } from '../lib/valueText';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { tableRowMatches } from '../lib/tableSearch';
@@ -58,26 +59,23 @@ export default function DataTable({
 
   return (
     <div
-      className="fe-reveal rounded-[2rem] bg-surface border border-border-subtle overflow-hidden"
+      className="fe-reveal fe-datatable rounded-[1.5rem] bg-surface border border-border-subtle overflow-hidden"
       style={REVEAL_STYLE}
       aria-busy={loading || undefined}
     >
       <div className="p-5 flex items-center justify-between flex-wrap gap-3">
-        <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+        <h3 className="min-w-0 text-base font-semibold text-text-primary">
           {resolvedTitle}
-          <span className="ml-2 text-text-tertiary font-mono text-xs">
-            ({filtered.length})
-          </span>
         </h3>
-        <div className="relative">
+        <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-tertiary" />
           <input
             type="text"
-            placeholder={t('table.searchPlaceholder')}
-            aria-label={t('table.searchPlaceholder')}
+            placeholder={t('w3.table.search')}
+            aria-label={t('w3.table.search')}
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            className="pl-8 pr-3 py-2 text-base sm:text-sm bg-obsidian-lighter border border-border-subtle rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-champagne/30 w-40"
+            className="w-full pl-8 pr-3 py-2 text-base sm:text-sm bg-surface-hover border border-border-subtle rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-champagne/40"
           />
         </div>
       </div>
@@ -89,18 +87,18 @@ export default function DataTable({
               <th
                 scope="col"
                 aria-sort={sortAsc ? 'ascending' : 'descending'}
-                className="text-left px-5 py-1 text-xs font-medium text-text-secondary uppercase tracking-wider"
+                className="text-left px-5 py-1 text-[13px] font-semibold text-text-secondary"
               >
                 <button
                   type="button"
-                  className="inline-flex min-h-[44px] items-center gap-1 uppercase tracking-wider hover:text-text-primary transition-colors select-none"
+                  className="inline-flex min-h-[44px] items-center gap-1 hover:text-text-primary transition-colors select-none"
                   onClick={() => { const next = !sortAsc; setSortAsc(next); track(events.TABLE_SORT, { order: next ? 'asc' : 'desc' }); }}
                 >
                   {t('table.date')}
                   {sortAsc ? <ChevronUp className="w-3 h-3" aria-hidden="true" /> : <ChevronDown className="w-3 h-3" aria-hidden="true" />}
                 </button>
               </th>
-              <th scope="col" className="text-right px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
+              <th scope="col" className="text-right px-5 py-3 text-[13px] font-semibold text-text-secondary">
                 {tableUnit ? t('table.valueWithUnit', { unit: tableUnit }) : t('table.value')}
               </th>
             </tr>
@@ -130,12 +128,12 @@ export default function DataTable({
                     'hover:bg-surface-hover'
                   )}
                 >
-                  <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
+                  <td className="px-5 py-2.5 text-text-secondary text-sm tabular-nums">
                     {formatDate(row.date, dateFormat)}
                   </td>
-                  <td className="px-5 py-2.5 text-right font-mono text-sm font-medium text-text-primary">
+                  <td className="px-5 py-2.5 text-right text-sm font-semibold tabular-nums text-text-primary">
                     {showUnitInValues
-                      ? formatValueWithUnit(row.value, unit, valueDigits)
+                      ? valueWithUnit(row.value, valueDigits, unit)
                       : formatValue(row.value, valueDigits)}
                   </td>
                 </tr>
@@ -155,7 +153,7 @@ export default function DataTable({
           >
             {t('table.prev')}
           </Button>
-          <span className="text-xs text-text-secondary font-mono" aria-live="polite">
+          <span className="text-sm text-text-secondary tabular-nums" aria-live="polite">
             {visiblePage + 1} / {totalPages}
           </span>
           <Button
