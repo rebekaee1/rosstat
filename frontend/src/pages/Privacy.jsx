@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Settings2 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
@@ -8,6 +9,8 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useLocale } from '../i18n';
 import Breadcrumbs from '../components/Breadcrumbs';
+import LegalToc from '../components/LegalToc';
+import '../styles/w5-pages.css';
 import { toolTrail } from '../lib/breadcrumbs';
 import { PrivacyBodyEn } from '../i18n/legalPages.en';
 
@@ -40,6 +43,7 @@ function CookieRow({ name, purpose, consent }) {
 
 export default function Privacy() {
   const { locale, t } = useLocale();
+  const articleRef = useRef(null);
   const seo = getPageSeo('privacy', locale) || getPageSeo('privacy');
   useDocumentMeta({
     title: seo.title,
@@ -49,13 +53,14 @@ export default function Privacy() {
 
   return (
     <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
-      <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
-      <article className="fe-panel fe-reading prose prose-sm max-w-none p-5 sm:p-8">
+      <Breadcrumbs items={toolTrail(t('w5.legal.privacyCrumb'), seo.path)} className="mb-6" />
+      <LegalToc articleRef={articleRef} />
+      <article ref={articleRef} className="fe-panel fe-reading w5-legal prose prose-sm max-w-none p-5 sm:p-8">
         {locale === 'en' ? (
           <PrivacyBodyEn t={t} h1={seo.h1 || 'Privacy and personal data processing policy'} />
         ) : (
           <>
-        <p className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold mb-4">
+        <p className="w5-eyebrow mb-4">
           Правовая информация
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
