@@ -1,4 +1,5 @@
 import { toPng } from 'html-to-image';
+import { trackBusy } from './chunkRecovery';
 
 // Экспорт DOM-узла графика в PNG. Используется карточкой индикатора,
 // страницей сравнения и региональным блоком. Скачивание картинки везде по
@@ -77,7 +78,7 @@ function triggerDownload(blob, filename) {
  * Рендерит узел в PNG (опц. с watermark) и сохраняет файл.
  * @returns {Promise<boolean>} успех
  */
-export async function exportNodeToPng(node, { filename = 'chart.png', watermark = false, background } = {}) {
+async function exportNodeToPngImpl(node, { filename = 'chart.png', watermark = false, background } = {}) {
   if (!node) return false;
   const bg = background || resolveBackground(node);
   const dataUrl = await toPng(node, {
@@ -106,3 +107,6 @@ export async function exportNodeToPng(node, { filename = 'chart.png', watermark 
   triggerDownload(blob, filename);
   return true;
 }
+
+// Идущий экспорт не должен обрываться автоперезагрузкой после релиза (chunkRecovery).
+export const exportNodeToPng = (...args) => trackBusy(exportNodeToPngImpl(...args));

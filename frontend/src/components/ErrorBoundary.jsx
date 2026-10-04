@@ -2,11 +2,12 @@ import { Component } from 'react';
 import { track, events } from '../lib/track';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { translate } from '../i18n/messages';
+import { isChunkLoadError, recoverFromStaleChunk } from '../lib/chunkRecovery';
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, reloading: false };
   }
 
   static getDerivedStateFromError(error) {
@@ -15,6 +16,9 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, info) {
     console.error('React ErrorBoundary caught:', error, info);
+    // Устаревший чанк после релиза: одна перезагрузка вместо экрана ошибки.
+    // false (идёт ввод/загрузка файла, или уже перезагружались) — обычный экран.
+    if (isChunkLoadError(error) && recoverFromStaleChunk()) this.setState({ reloading: true });
     import('@sentry/react').then(Sentry => {
       Sentry.captureException(error, { extra: { componentStack: info?.componentStack } });
     }).catch(() => {});
@@ -22,6 +26,9 @@ class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
+      if (this.state.reloading) return null;
+      // fallback задан (в т.ч. null) — крошечный виджет не роняет страницу.
+      if (this.props.fallback !== undefined) return this.props.fallback;
       const locale = resolveBrowserLocale();
       const t = (key) => translate(key, undefined, locale);
       return (

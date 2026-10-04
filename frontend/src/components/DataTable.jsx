@@ -31,6 +31,10 @@ export default function DataTable({
   }, []);
 
   useEffect(() => {
+    // Дебаунс нужен только для смены текста поиска. Раньше эффект срабатывал и
+    // на новую ссылку `data` (родитель пересобрал массив, пришла загрузка), и
+    // через 250 мс сбрасывал страницу на первую — «Вперёд» «не реагировал».
+    if (searchInput === search) return undefined;
     const timer = setTimeout(() => {
       setSearch(searchInput);
       setPage(0);
@@ -40,7 +44,7 @@ export default function DataTable({
       }
     }, 250);
     return () => clearTimeout(timer);
-  }, [searchInput, data, dateFormat, unit, valueDigits]);
+  }, [searchInput, search, data, dateFormat, unit, valueDigits]);
 
   const filtered = useMemo(() => {
     let rows = [...(data || [])];

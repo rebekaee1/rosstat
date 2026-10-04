@@ -55,4 +55,36 @@ describe('DataTable', () => {
     expect(screen.getAllByRole('row')).toHaveLength(2);
     expect(screen.getByText('1 января 2024')).toBeTruthy();
   });
+
+  // Пульс 2026-10-04, /russia/indicator/imoex: «Вперёд» «не реагирует на первый клик».
+  // Родитель пересобирает массив data (тот же состав, новая ссылка) — раньше
+  // дебаунс-эффект поиска через 250 мс сбрасывал страницу на первую.
+  it('новая ссылка на те же данные не сбрасывает выбранную страницу и не шлёт лишний table_search', async () => {
+    const rows = Array.from({ length: 45 }, (_, index) => ({ date: `2024-02-${String(index + 1).padStart(2, '0')}`, value: index }));
+    const { rerender } = renderTable(<DataTable data={rows} dateFormat="day" />);
+    await new Promise((r) => setTimeout(r, 300)); // первичный дебаунс отработал
+    fireEvent.click(screen.getByRole('button', { name: 'Вперёд' }));
+    expect(screen.getByText('2 / 3')).toBeTruthy();
+    vi.mocked(track).mockClear();
+    rerender(<LocaleProvider><DataTable data={rows.map((r) => ({ ...r }))} dateFormat="day" /></LocaleProvider>);
+    await new Promise((r) => setTimeout(r, 400));
+    expect(screen.getByText('2 / 3')).toBeTruthy();
+    expect(track).not.toHaveBeenCalledWith(events.TABLE_SEARCH, expect.anything());
+  });
+
+  it('клик «Вперёд» сразу после монтирования не откатывается дебаунсом поиска', async () => {
+    const rows = Array.from({ length: 45 }, (_, index) => ({ date: `2024-02-${String(index + 1).padStart(2, '0')}`, value: index }));
+    renderTable(<DataTable data={rows} dateFormat="day" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Вперёд' }));
+    await new Promise((r) => setTimeout(r, 400));
+    expect(screen.getByText('2 / 3')).toBeTruthy();
+  });
+
+  it('поиск по-прежнему возвращает на первую страницу', async () => {
+    const rows = Array.from({ length: 45 }, (_, index) => ({ date: `2024-02-${String(index + 1).padStart(2, '0')}`, value: index }));
+    renderTable(<DataTable data={rows} dateFormat="day" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Вперёд' }));
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '2024' } });
+    await waitFor(() => expect(screen.getByText('1 / 3')).toBeTruthy());
+  });
 });
