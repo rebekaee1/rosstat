@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Read-only dated runtime observations. server/local retain full2026-09-27 snapshot; followup observations link30.09 resource/backup checks plus independent mechanism/config/full payload attestation and isolated bounded app/startup proof. No credentials/user rows/private keys. Capacity/full failover not inferred.",
+  "description": "Read-only dated runtime observations. server/local retain full2026-09-27 snapshot; followup observations link30.09 resource/backup checks plus independent mechanism/config/full payload attestation and isolated bounded app/startup proof. No credentials/user rows/private keys. A dated test-server record (id test-server-2026-10-04) is appended at the end of the list. Capacity/full failover not inferred.",
   "local_source_commit": "cf7daf1f954f3c04187fe2decc20b59ad7241bab",
   "server": {
     "observed_utc": "2026-09-27T12:24:17.446240+00:00",

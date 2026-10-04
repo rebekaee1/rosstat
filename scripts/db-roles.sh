@@ -12,7 +12,7 @@ pg() { dc exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d rustats -v ON_ERRO
 
 verify() {
   local pw
-  pw="$(grep -E '^RUSTATS_APP_DB_PASSWORD=' "$ENV_FILE" | head -1 | cut -d= -f2-)"
+  pw="$(grep -E '^RUSTATS_APP_DB_PASSWORD=' "$ENV_FILE" | head -1 | cut -d= -f2- || true)"
   [[ -n "$pw" ]] || { echo "RUSTATS_APP_DB_PASSWORD не задан в $ENV_FILE" >&2; return 1; }
   echo "== роль"
   pg -c "select rolname, rolsuper, rolcreatedb, rolcreaterole, rolreplication, rolbypassrls from pg_roles where rolname in ('rustats','rustats_app') order by 1"
@@ -25,7 +25,10 @@ select 'has_create_on_public', has_schema_privilege('rustats_app', 'public', 'CR
 select 'can_read_other_db_list', count(*) from pg_database;
 SQL
   echo "== запрещённое должно падать"
-  if dc exec -T -e PGPASSWORD="$pw" postgres psql -h 127.0.0.1 -U rustats_app -d rustats -At -c "create table _must_fail(x int)" 2>&1 | grep -q "permission denied"; then
+  # Вывод сначала в переменную: `| grep -q` под pipefail даёт ложный отказ (SIGPIPE у docker compose exec).
+  local denied
+  denied="$(dc exec -T -e PGPASSWORD="$pw" postgres psql -h 127.0.0.1 -U rustats_app -d rustats -At -c "create table _must_fail(x int)" 2>&1 || true)"
+  if grep -q "permission denied" <<<"$denied"; then
     echo "CREATE TABLE: permission denied (ожидаемо)"
   else
     echo "ОШИБКА: rustats_app смог создать таблицу" >&2; return 1

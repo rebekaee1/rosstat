@@ -27,7 +27,7 @@ national response и публикация кэша после commit. Контр
 **Содержательная дельта frontend/docs 30 сентября:** [`отчёт`](docs/code-review/frontend-docs-delta-2026-09-30.md): локальный код, история и ограничения полноты.
 **Рабочий процесс, локальный dev, прод-деплой:** [`docs/workflow.md`](docs/workflow.md).
 **Источники данных:** [`docs/data_sources.md`](docs/data_sources.md) (per-indicator карта `URL/endpoint/sheet/row`); parser internals — в docstrings `backend/app/services/*_parser.py`.
-**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0016).
+**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0017).
 **Backlog работ:** [`docs/backlog.md`](docs/backlog.md).
 **Поиск по всем контурам:** [`docs/search.md`](docs/search.md): глобальная
 палитра стран/регионов/рядов, локальные селекторы, таблицы и телеметрия.
@@ -160,7 +160,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 | `/dashboard/sparklines` | bundle sparkline'ов главной |
 | `/analytics/*` | Forecast Analytics OS (Yandex.* через MCP, требует токен) |
 | `/seo/*`, `/sitemap.xml`, `/og/*` | SSR-meta-bundle, sitemap, OpenGraph-картинки (источник: ADR-0003) |
-| `/health`, `/system/status` | liveness + сводка по ETL и расписанию |
+| `/health`, `/system/status` | liveness + сводка по ETL и расписанию (`/system/status` — по токену метрик) |
 
 ## Индикаторы
 
@@ -205,9 +205,9 @@ rosstat/
 │   │   │                   #   dashboard, demographics, analytics, system, seo, sitemap)
 │   │   ├── core/           # cache (Redis), deps, helpers
 │   │   ├── services/       # parsers, forecaster, calculation_engine,
-│   │   │                   #   derived_ops, calendar_seed, alerting, seo_renderer
+│   │   │                   #   derived_ops, calendar_seed, alerting, seo_renderer,
+│   │   │                   #   analytics_* (Forecast Analytics OS: ingestion, marts, alerts)
 │   │   ├── tasks/          # scheduler, analytics_scheduler
-│   │   ├── analytics/      # Forecast Analytics OS — Yandex clients, warehouse, MCP
 │   │   ├── config.py       # pydantic-settings
 │   │   ├── database.py     # async engine, sessionmaker
 │   │   ├── models.py       # ORM (Indicator, IndicatorData, Forecast, FetchLog, …)
@@ -232,7 +232,7 @@ rosstat/
 │   ├── seo-audit.py
 │   └── analytics-smoke.py
 ├── docs/
-│   ├── adr/                # архитектурные решения (ADR-0001..0015)
+│   ├── adr/                # архитектурные решения (ADR-0001..0017)
 │   ├── analytics_api_inventory/  # инвентарь Yandex API (Metrika, Webmaster, …)
 │   ├── data_sources.md     # карта «индикатор → файл/endpoint» (118 source)
 │   ├── missed_data_audit.md  # reference: ещё не извлечённые поля в source-файлах

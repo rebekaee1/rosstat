@@ -6,6 +6,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+# Не root: мосту нужен только сетевой доступ (EnvironmentFile читает systemd от root).
+DynamicUser=yes
 EnvironmentFile=/etc/tor-http-bridge.env
 ExecStart=/usr/bin/python3 /opt/tor-http-bridge/tor_http_bridge.py
 Restart=always

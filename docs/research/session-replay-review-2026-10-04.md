@@ -111,7 +111,7 @@
 | Удаление по требованию субъекта | Нет. Нет эндпоинта или скрипта удаления записи по `visitor_id`; `DELETE /auth/account` ([auth.py:442-455](../../backend/app/api/auth.py)) не трогает `identity_links`, события и записи. | auth.py:442-455 |
 
 Ежедневный дамп PostgreSQL ([pg-backup.sh](../../scripts/pg-backup.sh)):
-- `pg_dump -Fc` всей БД, строка 63; исключений таблиц нет, `session_replay_chunks` и `session_analysis_reports` попадают целиком;
+- `pg_dump -Fc` всей БД; **обновление 2026-10-04:** в `scripts/pg-backup.sh` добавлен `--exclude-table-data=session_replay_chunks` (схема остаётся), `session_analysis_reports` попадают целиком; ниже описано состояние до этой правки;
 - хранение на сервере `KEEP_DAYS=14` (строка 28, 99-100); pre-deploy дампы тоже подпадают под ту же маску `*.dump`;
 - `payload_gzip` уже сжат gzip, повторного сжатия в `-Fc` практически нет: дамп растёт 1:1 с таблицей;
 - S3/offsite не настроен (docs/code-review/backup-acceptance-2026-09-30.md:44; runtime-inventory.json:6140-6142).
