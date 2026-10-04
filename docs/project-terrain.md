@@ -6,7 +6,7 @@
 
 [Независимый backend-инвентарь](mechanism-inventory.md) · [Клиент/anonymous callbacks/MCP](client-mechanism-inventory.md) · [Приёмка и границы](project-knowledge-acceptance.md) · [Неизвестное](knowledge-unknowns.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `a1e6c8f53532`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `c1fa4bf51e94`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
 
 Input scope: `tracked`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.
 
@@ -14,11 +14,11 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 
 | Измерение | Число |
 |---|---:|
-| Файлы в инвентаризации | 1451 |
-| Переданы структурному экстрактору | 1247 |
-| Дали узлы графа | 1169 |
-| Узлы / связи между символами | 15934 / 49873 |
-| Связи между файлами (тип и уверенность сохраняются) | 10081 |
+| Файлы в инвентаризации | 1452 |
+| Переданы структурному экстрактору | 1248 |
+| Дали узлы графа | 1170 |
+| Узлы / связи между символами | 15941 / 49890 |
+| Связи между файлами (тип и уверенность сохраняются) | 10091 |
 
 Исходники, шаблоны и стили: **1107** файлов; узлы есть у **1096**, из них **74** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
 
@@ -43,7 +43,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | Операционные скрипты | 116 | 109 | 109 | 3 |
 | Инфраструктура и конфигурация | 41 | 8 | 9 | 1 |
 | Тесты и fixtures | 430 | 401 | 401 | 0 |
-| Документация и правила | 82 | 0 | 70 | 21 |
+| Документация и правила | 83 | 0 | 71 | 21 |
 | Исследования и артефакты | 60 | 1 | 1 | 0 |
 | Статические ресурсы | 107 | 5 | 1 | 0 |
 
@@ -51,8 +51,8 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 
 `EXTRACTED` и `INFERRED` — метки Graphify. Даже EXTRACTED означает статическую конструкцию, а не выполненный вызов. JSON сохраняет направление, тип, количество и примеры исходных строк. Внутрифайловые отношения остаются в полном Graphify-графе; внешние/неразрешённые endpoints не превращаются в выдуманные файлы. Отсутствие входящих связей не доказывает мёртвый код. Динамические реестры, HTTP, SQL, Redis и scheduler требуют контрактов из отдельных документов.
 
-Метки связей: `{"EXTRACTED": 45343, "INFERRED": 4530}`.
-Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2428, "missing_endpoint": 2969, "within_file": 21975}`.
+Метки связей: `{"EXTRACTED": 45358, "INFERRED": 4532}`.
+Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2428, "missing_endpoint": 2970, "within_file": 21981}`.
 
 ## Слои файлов
 
@@ -65,7 +65,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | `backend` | 705 | 620 |
 | `clickhouse` | 2 | 0 |
 | `deploy` | 13 | 5 |
-| `docs` | 124 | 65 |
+| `docs` | 125 | 66 |
 | `frontend` | 477 | 382 |
 | `mcp` | 4 | 3 |
 | `scripts` | 103 | 91 |
@@ -107,6 +107,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/adr/0014-subnational-regions-generic.md](../docs/adr/0014-subnational-regions-generic.md) | 127 | nodes |
 | [docs/adr/0015-us-bea-regional-catalog.md](../docs/adr/0015-us-bea-regional-catalog.md) | 67 | nodes |
 | [docs/adr/0016-federated-public-search.md](../docs/adr/0016-federated-public-search.md) | 169 | nodes |
+| [docs/adr/0017-platform-growth-boundaries.md](../docs/adr/0017-platform-growth-boundaries.md) | 68 | nodes |
 | [docs/agent-recipes.md](../docs/agent-recipes.md) | 220 | nodes |
 | [docs/analytics_api_inventory/README.md](../docs/analytics_api_inventory/README.md) | 79 | nodes |
 | [docs/analytics_api_inventory/frontend_instrumentation.md](../docs/analytics_api_inventory/frontend_instrumentation.md) | 318 | nodes |

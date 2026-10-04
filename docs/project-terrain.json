@@ -1,48 +1,27 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "a1e6c8f53532df85d83dd141d07f4e411cd9286b",
+  "baseline_commit": "c1fa4bf51e94b9513e17570f55c4b46552ce4bde",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    ".env.example",
-    "CONTEXT.md",
-    "README.md",
-    "deploy/tor-http-bridge/tor-http-bridge.service",
-    "docs/backlog.md",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/code-review/coverage.json",
-    "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/data-contracts.md",
-    "docs/dead-code-report.md",
-    "docs/enterprise_resilience.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/planet-view.md",
-    "docs/research/session-replay-review-2026-10-04.md",
-    "docs/runtime-inventory.json",
-    "docs/search.md",
-    "docs/workflow.md"
+    "docs/code-review/materials-2026-09-30.json"
   ],
   "untracked_at_capture": [],
   "stats": {
-    "files": 1451,
-    "attempted": 1247,
-    "files_with_nodes": 1169,
-    "nodes": 15934,
-    "symbol_edges": 49873,
-    "file_edges": 10081,
+    "files": 1452,
+    "attempted": 1248,
+    "files_with_nodes": 1170,
+    "nodes": 15941,
+    "symbol_edges": 49890,
+    "file_edges": 10091,
     "projection_omissions": {
       "external_or_unresolved_file": 2428,
-      "missing_endpoint": 2969,
-      "within_file": 21975
+      "missing_endpoint": 2970,
+      "within_file": 21981
     },
     "confidence": {
-      "EXTRACTED": 45343,
-      "INFERRED": 4530
+      "EXTRACTED": 45358,
+      "INFERRED": 4532
     }
   },
   "overview": {
@@ -168,9 +147,9 @@
       {
         "id": "docs",
         "label": "Документация и правила",
-        "files": 82,
+        "files": 83,
         "code": 0,
-        "with_nodes": 70,
+        "with_nodes": 71,
         "file_node_only": 0,
         "semantic_evidence": 21
       },
@@ -317,8 +296,8 @@
       {
         "source": "docs",
         "target": "docs",
-        "file_relations": 308,
-        "symbol_relations": 308
+        "file_relations": 316,
+        "symbol_relations": 316
       },
       {
         "source": "docs",
@@ -347,14 +326,14 @@
       {
         "source": "docs",
         "target": "registry",
-        "file_relations": 21,
-        "symbol_relations": 49
+        "file_relations": 22,
+        "symbol_relations": 50
       },
       {
         "source": "docs",
         "target": "services",
-        "file_relations": 224,
-        "symbol_relations": 512
+        "file_relations": 225,
+        "symbol_relations": 513
       },
       {
         "source": "docs",
@@ -1456,6 +1435,7 @@
     {"path": "docs/adr/0014-subnational-regions-generic.md", "kind": "document", "bytes": 10556, "lines": 127, "sha256": "d3697501fd51554ca1fec638e4b6cea89a532ab83d7a9028f8bd747d6b50da09", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/adr/0015-us-bea-regional-catalog.md", "kind": "document", "bytes": 6238, "lines": 67, "sha256": "3ceeebe2443bbb269359a95e03c5f71d2dd1fbffb07eafb87cab521212e66372", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/adr/0016-federated-public-search.md", "kind": "document", "bytes": 13149, "lines": 169, "sha256": "5c4f3a40c8021b19d1a16342231ee15ead3ce09e021e42a1d872c663cacbde1b", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/adr/0017-platform-growth-boundaries.md", "kind": "document", "bytes": 6386, "lines": 68, "sha256": "14da8adac2f7e57b7b48bc86b996795a85a9b86d3da39a48e9dd69898c51c086", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/agent-recipes.md", "kind": "document", "bytes": 24901, "lines": 220, "sha256": "ca094bf94a7d7fafd4d17b203c5d298e8bc981e2bc22be3bf988bce837bda9df", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/analytics_api_inventory/README.md", "kind": "document", "bytes": 6771, "lines": 79, "sha256": "537e5bf43de35436dded4caafac052f5c5d0982326a299725ddb8819648029c6", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/analytics_api_inventory/frontend_instrumentation.md", "kind": "document", "bytes": 25120, "lines": 318, "sha256": "2246ffc76ca7537169b7e9db9d0dd91b29a52882cac3f1cf01b0bd1e2310565d", "symlink": false, "nodes": 28, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -2078,7 +2058,7 @@
     {"path": "scripts/code-review-symbols.mjs", "kind": "code", "bytes": 4880, "lines": 97, "sha256": "c05185d826694eb8c1cd70c8d3b99aaf962dd4c44911ad334a4367c4c4fcb841", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/completeness.py", "kind": "code", "bytes": 22997, "lines": 453, "sha256": "15837dc7c19cae67fd0aa360a7efddb3976f44631bd5b2d1c0cde703c8c535fb", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/db-cleanup-perf-batch3.sh", "kind": "code", "bytes": 6400, "lines": 121, "sha256": "63d6e6c114818f1240caec6bfb099d8dd4fe18c601dff96825e53afddfe585c7", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
-    {"path": "scripts/db-roles.sh", "kind": "code", "bytes": 3213, "lines": 45, "sha256": "8607e74c0fa688843ac2f92f885171f5a352181cb72c4e30729c11e28f45880b", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
+    {"path": "scripts/db-roles.sh", "kind": "code", "bytes": 3419, "lines": 48, "sha256": "16656b82d1f8d84213e83ce54d43056d1b64cf519b8a952de26755abe7af9d63", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/db-roles.sql", "kind": "code", "bytes": 2636, "lines": 36, "sha256": "301fdabdf6772f8f7c0839271c2ae2075425c8ac09de35afe2ab43e8524db17a", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/deploy.sh", "kind": "code", "bytes": 37590, "lines": 684, "sha256": "2e69bcfcc54e9670de8ed80b10a236db8a8589a540bf8e9465063120bc9f4dcc", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "operations", "semantic_evidence": true, "semantic_current": false},
     {"path": "scripts/docker-cleanup.sh", "kind": "code", "bytes": 249, "lines": 8, "sha256": "c6e4d353407bbd4299fea72706673597ab7063ca437727ea60604ae0f6f4f862", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
@@ -7917,6 +7897,16 @@
     {"source": "docs/adr/0016-federated-public-search.md", "target": "docs/research/search-methods-2026-09-30.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0016-federated-public-search.md", "line": "L71", "source": "0016-federated-public-search.md", "target": "search-methods-2026-09-30.md"}]},
     {"source": "docs/adr/0016-federated-public-search.md", "target": "docs/search.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0016-federated-public-search.md", "line": "L8", "source": "0016-federated-public-search.md", "target": "search.md"}]},
     {"source": "docs/adr/0016-federated-public-search.md", "target": "frontend/src/components/IndicatorSearch.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/adr/0016-federated-public-search.md", "line": "L6", "source": "ADR-0016 — Федеративное обнаружение публичных данных", "target": "IndicatorSearch()"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "backend/app/data/view_model_families.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L37", "source": "Предлагаемое решение", "target": "FamilyDef"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "backend/app/services/world_national_ingest.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L33", "source": "Предлагаемое решение", "target": "DatasetRunTracker"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "docs/adr/0007-identity-user-accounts.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L43", "source": "0017-platform-growth-boundaries.md", "target": "0007-identity-user-accounts.md"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "docs/adr/0011-world-eurostat-data-plane.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L6", "source": "0017-platform-growth-boundaries.md", "target": "0011-world-eurostat-data-plane.md"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "docs/adr/0012-world-multi-provider-official-first-forecasts.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L6", "source": "0017-platform-growth-boundaries.md", "target": "0012-world-multi-provider-official-first-forecasts.md"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "docs/adr/0013-country-first-url-architecture.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L6", "source": "0017-platform-growth-boundaries.md", "target": "0013-country-first-url-architecture.md"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "docs/adr/0014-subnational-regions-generic.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L6", "source": "0017-platform-growth-boundaries.md", "target": "0014-subnational-regions-generic.md"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "docs/adr/0016-federated-public-search.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L6", "source": "0017-platform-growth-boundaries.md", "target": "0016-federated-public-search.md"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "docs/agent-recipes.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L35", "source": "0017-platform-growth-boundaries.md", "target": "agent-recipes.md"}]},
+    {"source": "docs/adr/0017-platform-growth-boundaries.md", "target": "docs/backlog.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/adr/0017-platform-growth-boundaries.md", "line": "L6", "source": "0017-platform-growth-boundaries.md", "target": "backlog.md"}]},
     {"source": "docs/agent-recipes.md", "target": "backend/app/api/sitemap.py", "relation": "references", "confidence": "EXTRACTED", "count": 2, "evidence": [{"file": "docs/agent-recipes.md", "line": "L181", "source": "Материалы для Яндекс.Алисы / Нейро (генерация — отдельным проходом)", "target": "og_image_indicator()"}]},
     {"source": "docs/agent-recipes.md", "target": "backend/app/data/indicator_seo.py", "relation": "references", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "docs/agent-recipes.md", "line": "L140", "source": "FAST-PATH — новый ИНДИКАТОР (канонический рецепт владельца)", "target": "_build_commodity_blocks()"}]},
     {"source": "docs/agent-recipes.md", "target": "backend/app/data/view_model_families.py", "relation": "references", "confidence": "INFERRED", "count": 3, "evidence": [{"file": "docs/agent-recipes.md", "line": "L99", "source": "FAST-PATH — новый ИНДИКАТОР (канонический рецепт владельца)", "target": "FamilyDef"}]},
