@@ -19,6 +19,16 @@ from app.services.webmaster_indexing_report import _http_breakdown, _report_host
 
 logger = logging.getLogger(__name__)
 
+# Вебмастер публикует данные за последние 1–2 суток неполными: относительные
+# сравнения (обход, «в поиске») делаем только по дням старше этого порога.
+COMPLETE_DAY_AFTER_DAYS = 3
+CRAWL_DROP_RATIO = 0.5
+CRAWL_DROP_DAYS = 3          # столько полных дней подряд ниже порога
+CRAWL_BASELINE_DAYS = 7      # окно среднего перед этими днями
+CRAWL_MIN_BASELINE_DAYS = 3
+CRAWL_MIN_AVG = 50
+IN_SEARCH_DROP_RATIO = 0.95
+
 
 
 def _host_label(host_id: str) -> str:
@@ -259,6 +269,44 @@ def sitemap_errors_alert_text(host: str, day, current: int | None, previous: int
     return f"{host}, Вебмастер: ошибок sitemap {current} за {day} (было {int(previous)})."
 
 
+def crawl_drop_avg(
+    rows: list[tuple[date, int | None, int | None]], last: date,
+) -> tuple[float, list[int]] | None:
+    """Обход 2xx: (среднее базы, значения последних дней), если CRAWL_DROP_DAYS полных
+    дней подряд ниже CRAWL_DROP_RATIO среднего предшествующей недели; иначе None.
+
+    rows — (день, in_search, crawled_2xx) только полных дней; last — последний полный
+    день (якорь, чтобы одно и то же окно не оценивалось повторно). Пропуск или NULL
+    в последних днях — «нет данных», а не ноль: алерта нет.
+    """
+    by_day = {d: crawled for d, _in_search, crawled in rows}
+    recent_days = [last - timedelta(days=i) for i in range(CRAWL_DROP_DAYS)]
+    recent = [by_day.get(d) for d in recent_days]
+    if any(v is None for v in recent):
+        return None
+    base_days = [last - timedelta(days=CRAWL_DROP_DAYS + i) for i in range(CRAWL_BASELINE_DAYS)]
+    base = [int(by_day[d]) for d in base_days if by_day.get(d) is not None]
+    if len(base) < CRAWL_MIN_BASELINE_DAYS:
+        return None
+    avg = sum(base) / len(base)
+    if avg < CRAWL_MIN_AVG or any(int(v) >= avg * CRAWL_DROP_RATIO for v in recent):
+        return None
+    return avg, [int(v) for v in recent]
+
+
+def in_search_drop(
+    rows: list[tuple[date, int | None, int | None]], last: date,
+) -> tuple[date, int, date, int] | None:
+    """Последний полный день (last) против предыдущего полного дня с наблюдением in_search."""
+    points = sorted(((d, v) for d, v, _c in rows if v is not None), reverse=True)
+    if len(points) < 2 or points[0][0] != last:
+        return None
+    (day, cur), (prev_day, prev) = points[0], points[1]
+    if prev > 0 and cur < prev * IN_SEARCH_DROP_RATIO:
+        return day, cur, prev_day, prev
+    return None
+
+
 async def _alert_host(day: date, host: str) -> None:
     from app.services.analytics_alerts import _alert
 
@@ -296,38 +344,34 @@ async def _alert_host(day: date, host: str) -> None:
         text = sitemap_errors_alert_text(host, day, row.sitemap_errors, prev_errors)
         if text:
             await _alert(f"webmaster_sitemap_errors:{host}", text)
-        prev = (await db.execute(
-            select(WebmasterIndexingDaily).where(
-                WebmasterIndexingDaily.host == row.host,
-                WebmasterIndexingDaily.day < day,
-                WebmasterIndexingDaily.in_search.isnot(None),
-            ).order_by(WebmasterIndexingDaily.day.desc()).limit(1)
-        )).scalar_one_or_none()
-        if (
-            prev and prev.in_search and row.in_search is not None
-            and prev.in_search > 0
-            and row.in_search < prev.in_search * 0.95
-        ):
+        # Относительные сравнения — только по полным дням (старше 3 суток).
+        cutoff = today_msk() - timedelta(days=COMPLETE_DAY_AFTER_DAYS)
+        complete = (await db.execute(
+            select(WebmasterIndexingDaily.day, WebmasterIndexingDaily.in_search,
+                   WebmasterIndexingDaily.crawled_2xx).where(
+                WebmasterIndexingDaily.host == host,
+                WebmasterIndexingDaily.day <= cutoff,
+                WebmasterIndexingDaily.day >= cutoff - timedelta(days=CRAWL_DROP_DAYS + CRAWL_BASELINE_DAYS + 4),
+            ).order_by(WebmasterIndexingDaily.day)
+        )).all()
+        rows = [(r[0], r[1], r[2]) for r in complete]
+        drop = in_search_drop(rows, cutoff)
+        if drop:
+            d, cur, prev_day, prev = drop
             await _alert(
                 f"webmaster_in_search_drop:{host}",
-                f"{host}: В поиске {row.in_search} против {prev.in_search} за {prev.day} "
-                f"({round(100 * row.in_search / prev.in_search)}%).",
+                f"{host}: В поиске {cur} за {d} против {prev} за {prev_day} "
+                f"({round(100 * cur / prev)}%).",
             )
-        week = (await db.execute(
-            select(WebmasterIndexingDaily.crawled_2xx).where(
-                WebmasterIndexingDaily.host == row.host,
-                WebmasterIndexingDaily.day >= day - timedelta(days=7),
-                WebmasterIndexingDaily.day < day,
+        crawl = crawl_drop_avg(rows, cutoff)
+        if crawl:
+            avg, recent = crawl
+            await _alert(
+                f"webmaster_crawl_drop:{host}",
+                f"{host}: Обход 2xx {', '.join(str(v) for v in reversed(recent))} за "
+                f"{CRAWL_DROP_DAYS} полных дня подряд (по {cutoff}) "
+                f"против среднего {round(avg)} за предыдущую неделю.",
             )
-        )).scalars().all()
-        vals = [int(v) for v in week if v is not None]
-        if vals and row.crawled_2xx is not None:
-            avg = sum(vals) / len(vals)
-            if avg >= 50 and row.crawled_2xx < avg * 0.5:
-                await _alert(
-                    f"webmaster_crawl_drop:{host}",
-                    f"{host}: Обход 2xx {row.crawled_2xx} против среднего {round(avg)} за неделю.",
-                )
 
 
 async def webmaster_indexing_daily_job() -> None:

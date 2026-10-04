@@ -49,8 +49,38 @@ def cgroup_memory() -> tuple[int, int]:
     return 0, 0
 
 
-def memory_pressure_ratio() -> float | None:
+def _inactive_file_bytes(stat_text: str) -> int:
+    """Неактивный файловый кэш из memory.stat (cgroup v2 / v1); ядро вернёт его первым."""
+    for line in stat_text.splitlines():
+        parts = line.split()
+        if len(parts) == 2 and parts[0] in ("inactive_file", "total_inactive_file"):
+            try:
+                return int(parts[1])
+            except ValueError:
+                return 0
+    return 0
+
+
+def cgroup_working_set() -> tuple[int, int]:
+    """(working_set_bytes, limit_bytes): usage минус неактивный page cache.
+
+    memory.current включает файловый кэш, который ядро освобождает без OOM;
+    алерт «память 94%» по сырому usage срабатывал на кэше, а не на утечке.
+    """
     usage, limit = cgroup_memory()
+    if usage <= 0 or limit <= 0:
+        return usage, limit
+    for stat_p in (Path("/sys/fs/cgroup/memory.stat"), Path("/sys/fs/cgroup/memory/memory.stat")):
+        if stat_p.is_file():
+            try:
+                return max(usage - _inactive_file_bytes(stat_p.read_text()), 0), limit
+            except OSError:
+                break
+    return usage, limit
+
+
+def memory_pressure_ratio() -> float | None:
+    usage, limit = cgroup_working_set()
     if usage <= 0 or limit <= 0:
         return None
     return usage / limit
