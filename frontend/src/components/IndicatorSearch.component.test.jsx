@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, afterEach, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import IndicatorSearch from './IndicatorSearch';
 const localeState = vi.hoisted(() => ({ value: 'ru' }));
@@ -70,12 +70,73 @@ it('a mounted hidden trigger cannot open a portal by keyboard', () => {
   fireEvent.keyDown(document, { key: '/' });
   expect(screen.queryAllByRole('dialog')).toHaveLength(0);
 });
-it('starts an empty English search with US indicators and no Russian default results', () => {
-  localeState.value = 'en';
+it.each([['ru', 'Инфляция в США'], ['en', 'Inflation in the US']])('starts with a titled group of plain-language examples instead of a raw catalogue (%s)', (locale, first) => {
+  localeState.value = locale;
   render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
   fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
-  expect(screen.getAllByRole('option')).toHaveLength(1);
-  expect(screen.getByRole('option').textContent).toContain('United States');
+  expect(screen.getByText('shell.search.popular')).toBeTruthy();
+  const options = screen.getAllByRole('option');
+  expect(options).toHaveLength(6);
+  expect(options[0].textContent).toBe(`shell.search.example.1`);
+  expect(first).toBeTruthy();
+  // Ни кодов рядов, ни категорий базы: только понятные фразы.
+  expect(options.map((row) => row.textContent).join(' ')).not.toMatch(/[a-z]+-[a-z]+_|\//);
+});
+
+it('a popular example fills the field and keeps the dialog open instead of navigating away', () => {
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.click(screen.getAllByRole('option')[2]);
+  expect(screen.getByRole('combobox').value).toBe('shell.search.example.3');
+  expect(screen.getByRole('dialog')).toBeTruthy();
+});
+
+it('keyboard hints are hidden on touch screens and the result rows are large targets', () => {
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  expect(document.querySelector('.fe-search-kbd').className).toContain('[@media(pointer:coarse)]:hidden');
+  expect(screen.getAllByRole('option')[0].className).toContain('min-h-14');
+});
+
+it('result rows show place, frequency and unit without internal codes and collapse duplicates', () => {
+  searchState.data = {
+    version: 'v2',
+    results: [
+      { key: 'a', kind: 'world', code: 'de-prc_hicp_minr-total-i15', name: 'Гармонизированный индекс потребительских цен', country_name: 'Германия', frequency: 'monthly', unit: 'индекс (2015 = 100)', path: '/germany/indicator/a' },
+      { key: 'b', kind: 'world', code: 'de-prc_hicp_midx-cp00-i15', name: 'Гармонизированный индекс потребительских цен', country_name: 'Германия', frequency: 'monthly', unit: 'индекс (2015 = 100)', path: '/germany/indicator/b' },
+      { key: 'c', kind: 'world', code: 'de-unemp', name: 'Безработица', country_name: 'Германия', frequency: 'annual', unit: '%', path: '/germany/indicator/c' },
+      { key: 'd', kind: 'country', code: 'DE', name: 'Германия', path: '/germany' },
+    ],
+  };
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'инфляция Германии' } });
+  const rows = screen.getAllByRole('option');
+  expect(rows).toHaveLength(3);
+  const text = rows.map((row) => row.textContent).join('|');
+  expect(text).toContain('Германия — shell.freq.monthly, индекс (2015 = 100)');
+  expect(text).toContain('Германия — shell.freq.annual, %');
+  expect(text).not.toMatch(/prc_hicp|de-unemp|\//);
+});
+
+it('nothing found: friendly empty state with tips and examples that refill the field', () => {
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'абвгд' } });
+  const empty = screen.getByTestId('search-nothing');
+  expect(empty.textContent).toContain('search.nothingFound');
+  expect(empty.textContent).toContain('shell.search.tip.spelling');
+  fireEvent.click(within(empty).getByRole('button', { name: 'shell.search.example.2' }));
+  expect(screen.getByRole('combobox').value).toBe('shell.search.example.2');
+});
+
+it('the inline field offers example chips that open the dialog with the query already typed', () => {
+  render(<MemoryRouter><IndicatorSearch variant="inline" examples={['Инфляция в США', 'ВВП Китая']} /></MemoryRouter>);
+  const chips = screen.getByRole('list', { name: 'shell.search.examplesAria' });
+  expect(within(chips).getAllByRole('button')).toHaveLength(2);
+  fireEvent.click(within(chips).getByRole('button', { name: 'ВВП Китая' }));
+  expect(screen.getByRole('dialog')).toBeTruthy();
+  expect(screen.getByRole('combobox').value).toBe('ВВП Китая');
 });
 
 it('passes the complete country query to the shared server search and renders its geography', async () => {

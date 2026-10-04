@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
+import DeltaBadge from './DeltaBadge';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneForLocale } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
+import { formatAsOfHuman, tickerSourceKind, tzFor } from '../lib/tickerFormat';
 import { useLocale, useT } from '../i18n';
+import '../styles/shell.css';
 import '../styles/platform-pages.css';
 
 /**
@@ -13,15 +16,16 @@ import '../styles/platform-pages.css';
  * Нет карточки → linkTo: null (не кликаем на чужой показатель).
  */
 const TICKER_META = {
-  'usd-rub-live':  { label: 'USD/RUB', linkTo: russiaIndicatorPath('usd-rub'), decimals: 4 },
-  'eur-rub-live':  { label: 'EUR/RUB', linkTo: russiaIndicatorPath('eur-rub'), decimals: 4 },
-  'cny-rub-live':  { label: 'CNY/RUB', linkTo: russiaIndicatorPath('cny-rub'), decimals: 4 },
-  'eur-usd':       { label: 'EUR/USD', linkTo: russiaIndicatorPath('eur-usd'), decimals: 4 },
-  'gbp-usd':       { label: 'GBP/USD', linkTo: russiaIndicatorPath('gbp-usd'), decimals: 4 },
-  'usd-cny':       { label: 'USD/CNY', linkTo: russiaIndicatorPath('usd-cny'), decimals: 4 },
+  // Единые знаки: курсы — два знака после запятой, биткоин и золото — целые.
+  'usd-rub-live':  { label: 'USD/RUB', linkTo: russiaIndicatorPath('usd-rub'), decimals: 2 },
+  'eur-rub-live':  { label: 'EUR/RUB', linkTo: russiaIndicatorPath('eur-rub'), decimals: 2 },
+  'cny-rub-live':  { label: 'CNY/RUB', linkTo: russiaIndicatorPath('cny-rub'), decimals: 2 },
+  'eur-usd':       { label: 'EUR/USD', linkTo: russiaIndicatorPath('eur-usd'), decimals: 2 },
+  'gbp-usd':       { label: 'GBP/USD', linkTo: russiaIndicatorPath('gbp-usd'), decimals: 2 },
+  'usd-cny':       { label: 'USD/CNY', linkTo: russiaIndicatorPath('usd-cny'), decimals: 2 },
   'btc-usd':       { label: 'BTC/USD', linkTo: russiaIndicatorPath('btc-usd'), decimals: 0 },
   'brent':         { label: 'Brent',   linkTo: russiaIndicatorPath('brent'),   decimals: 2 },
-  'gold-rub-live': { labelKey: 'ticker.gold', linkTo: russiaIndicatorPath('gold-price'), decimals: 1 },
+  'gold-rub-live': { labelKey: 'ticker.gold', linkTo: russiaIndicatorPath('gold-price'), decimals: 0 },
 };
 
 function formatPrice(value, decimals, locale = 'ru') {
@@ -42,32 +46,8 @@ function formatPct(pct, locale = 'ru') {
     maximumFractionDigits: 2,
   });
   // Keep explicit sign; toLocaleString may omit '+' for positives.
-  if (pct < 0) return `-${body}%`;
+  if (pct < 0) return `\u2212${body}%`;
   return `${sign}${body}%`;
-}
-
-/** Компактная дата значения для не-внутридневных элементов: «15.08». */
-// RU-витрина живёт по Москве, EN — международная, часы в UTC.
-const tzFor = (locale) => (locale === 'en' ? 'UTC' : 'Europe/Moscow');
-
-function formatAsOfShort(isoDate, locale = 'ru') {
-  if (!isoDate) return null;
-  const d = isoDate.includes('T')
-    ? new Date(isoDate)
-    : new Date(`${isoDate}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return null;
-  // Для ISO-даты ряда — календарный день как есть; для timestamp — МСК.
-  if (!isoDate.includes('T')) {
-    const dd = String(d.getDate()).padStart(2, '0');
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    return `${dd}.${mm}`;
-  }
-  const tag = locale === 'en' ? 'en-US' : 'ru-RU';
-  return d.toLocaleDateString(tag, {
-    day: '2-digit',
-    month: '2-digit',
-    timeZone: tzFor(locale),
-  });
 }
 
 function formatAsOfTitle(isoDate, locale = 'ru') {
@@ -118,14 +98,13 @@ function TickerCell({ snapshot, nowMs }) {
   if (!meta) return null;
 
   const pct = snapshot.change_pct;
-  const positive = pct !== null && pct !== undefined && pct > 0;
-  const negative = pct !== null && pct !== undefined && pct < 0;
   const hasPrice = snapshot.price > 0;
 
   const fetchedMs = snapshot.fetched_at ? new Date(snapshot.fetched_at).getTime() : null;
   const isStale = isIntraday && fetchedMs !== null && nowMs - fetchedMs > 15 * 60 * 1000;
   const asOfRaw = !isIntraday ? resolveAsOfRaw(snapshot) : null;
-  const asOfShort = formatAsOfShort(asOfRaw, locale);
+  const asOfHuman = formatAsOfHuman(asOfRaw, locale);
+  const sourceKind = tickerSourceKind(snapshot.source);
   const asOfTitle = formatAsOfTitle(asOfRaw, locale);
   const asOfClock = fetchedMs !== null
     ? new Date(fetchedMs).toLocaleTimeString(locale === 'en' ? 'en-US' : 'ru-RU', {
@@ -155,32 +134,30 @@ function TickerCell({ snapshot, nowMs }) {
     'transition-colors duration-200',
     meta.linkTo && 'hover:bg-champagne/10',
     'border border-transparent',
-    flash === 'up' && 'bg-positive/10 border-positive/30',
-    flash === 'down' && 'bg-negative/10 border-negative/30',
+    // Вспышка нового тика нейтральная: рост курса не «хорошо» и не «плохо», цвет не должен оценивать.
+    flash && 'bg-champagne/15 border-champagne/30',
     isStale && 'opacity-60',
   );
 
   const body = (
     <>
-      <span className="text-[11px] uppercase tracking-wide text-text-secondary font-medium">
+      <span className="text-xs font-medium text-text-secondary">
         {meta.labelKey ? t(meta.labelKey) : meta.label}
       </span>
-      <span className="text-xs font-semibold tabular-nums text-text-primary sm:text-sm">
+      <span className="text-sm font-semibold tabular-nums text-text-primary">
         {hasPrice ? formatPrice(snapshot.price, meta.decimals, locale) : '—'}
       </span>
-      {asOfShort ? (
-        <span className="text-xs font-mono tabular-nums text-text-secondary">
-          {asOfShort}
-        </span>
+      {sourceKind ? (
+        <span className="text-xs text-text-secondary">{t(`shell.ticker.source.${sourceKind}`)}</span>
       ) : null}
-      <span className={cn(
-        'hidden text-xs font-medium tabular-nums xl:inline',
-        positive && 'fe-ink-pos',
-        negative && 'fe-ink-neg',
-        !positive && !negative && 'text-text-secondary'
-      )}>
-        {formatPct(pct, locale)}
-      </span>
+      {asOfHuman ? (
+        <span className="text-xs text-text-secondary">{t('shell.ticker.asOf', { date: asOfHuman })}</span>
+      ) : null}
+      {pct !== null && pct !== undefined ? (
+        <DeltaBadge delta={pct} className="hidden text-xs xl:inline-flex">
+          {formatPct(pct, locale)}
+        </DeltaBadge>
+      ) : null}
     </>
   );
 
@@ -217,7 +194,36 @@ async function fetchLiveTicker(lane) {
   return r.json();
 }
 
+/**
+ * Две липкие плашки (бегущая строка и шапка) съедали ~110 px телефона. При прокрутке вниз строка уходит вверх,
+ * шапка поднимается на её место; при прокрутке вверх или у начала страницы всё возвращается.
+ * Состояние — атрибут на <html>, его читают стили в styles/shell.css.
+ */
+function useHideOnScroll() {
+  useEffect(() => {
+    const root = document.documentElement;
+    let lastY = window.scrollY;
+    let frame = 0;
+    const apply = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const delta = y - lastY;
+      if (y < 48 || delta < -6) root.dataset.feTicker = 'shown';
+      else if (delta > 6 && y > 96) root.dataset.feTicker = 'hidden';
+      if (Math.abs(delta) > 6) lastY = y;
+    };
+    const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(apply); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.cancelAnimationFrame(frame);
+      delete root.dataset.feTicker;
+    };
+  }, []);
+}
+
 export default function LiveTicker() {
+  useHideOnScroll();
   const t = useT();
   const { locale } = useLocale();
   const lane = tickerLaneForLocale(locale);
@@ -244,11 +250,12 @@ export default function LiveTicker() {
     >
       <div className="mx-auto h-full max-w-7xl">
         <div
-          className="scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
+          className="fe-fade-x scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
+          role="group"
           aria-label={t('ticker.quotes')}
         >
           <div className="flex h-full w-max min-w-full">
-            <div className="mx-auto flex h-full items-center gap-0.5 px-3 sm:gap-1 sm:px-3 md:gap-1.5 md:px-4 xl:gap-3">
+            <div className="mx-auto flex h-full items-center gap-0.5 pl-3 pr-8 sm:gap-1 sm:px-3 md:gap-1.5 md:px-4 xl:gap-3">
               {snapshots.map((s) => (
                 <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
               ))}

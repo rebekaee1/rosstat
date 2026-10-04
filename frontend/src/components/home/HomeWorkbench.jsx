@@ -27,10 +27,9 @@ import {
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
 import ErrorBoundary from '../ErrorBoundary';
-import IndicatorSearch from '../IndicatorSearch';
 import WorldConceptPicker from '../WorldConceptPicker';
 import WorldMapConceptNote from '../WorldMapConceptNote';
-import HomeDataScope from './HomeDataScope';
+import HomeHero from './HomeHero';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
 
@@ -149,26 +148,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
 
   return (
     <>
-      <header data-block="home-hero" className="relative z-20 mb-4 md:mb-5">
-        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:gap-8">
-          <div className="min-w-0">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-champagne">
-              {t('home.hero.eyebrow')}
-            </p>
-            <h1 className="max-w-3xl text-2xl font-semibold leading-[1.2] tracking-tight text-text-primary md:text-3xl lg:text-[2rem]">
-              {t('home.hero.title')}
-            </h1>
-            <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
-              {t('home.hero.subtitle')}
-            </p>
-            <div className="mt-5 max-w-xl">
-              <IndicatorSearch variant="inline" />
-            </div>
-          </div>
-
-          <HomeDataScope />
-        </div>
-      </header>
+      <HomeHero />
 
       <section
         data-block="home-workbench"
@@ -201,10 +181,10 @@ export default function HomeWorkbench({ ratingConcepts }) {
                 <Link
                   to={fullRatingHref}
                   onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
-                  className="inline-flex items-center gap-1 text-[11px] text-text-tertiary transition-colors hover:text-champagne"
+                  className="inline-flex min-h-8 items-center gap-1 text-xs text-text-secondary transition-colors hover:text-champagne-ink"
                 >
                   {t('home.map.moreMetrics')}
-                  <ArrowRight size={11} />
+                  <ArrowRight size={12} aria-hidden="true" />
                 </Link>
               ) : null}
             />

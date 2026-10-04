@@ -52,6 +52,18 @@ describe('HomeCountryList — каталог стран', () => {
     expect(within(catalog).queryByRole('link', { name: /Япония/ })).toBeNull();
   });
 
+  it('карточка страны: флаг вместо кода, без английского названия и без слова «ряд»', async () => {
+    renderCatalog();
+
+    fireEvent.click(await screen.findByRole('button', { name: /Европа/ }));
+    const card = screen.getByRole('link', { name: /Германия/ });
+    expect(card.textContent).toContain('\u{1F1E9}\u{1F1EA}');
+    expect(card.textContent).not.toMatch(/Germany|\bDE\b/);
+    expect(card.textContent).toContain('12 показателей');
+    expect(card.textContent).not.toMatch(/ряд/);
+    expect(screen.getByText(/2 страны в каталоге/)).toBeTruthy();
+  });
+
   it('раскрывает регион по клику', async () => {
     renderCatalog();
 

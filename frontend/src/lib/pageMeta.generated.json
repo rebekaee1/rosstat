@@ -255,7 +255,7 @@
       },
       "home": {
         "description": "Official macroeconomic indicators from national statistical offices, central banks, Eurostat, and the IMF: charts, tables, comparisons, and forecasts.",
-        "h1": "Official macroeconomic indicators in one place",
+        "h1": "Country economies in one place",
         "intro": "Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, Eurostat, and the IMF. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.",
         "path": "/",
         "slug": "home",
@@ -377,7 +377,7 @@
     },
     "home": {
       "description": "Официальные макроэкономические индикаторы по странам, России и её регионам: графики, таблицы, сравнения и статистические прогнозы по данным ведомств статистики и центральных банков.",
-      "h1": "Официальные макроэкономические индикаторы в одной рабочей среде",
+      "h1": "Экономика стран — в одном месте",
       "intro": "Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков, Евростата и МВФ. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. По России покрытие особенно глубокое. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.",
       "path": "/",
       "slug": "home",

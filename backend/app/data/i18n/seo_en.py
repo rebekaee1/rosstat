@@ -275,7 +275,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
             "central banks, Eurostat, and the IMF: charts, tables, comparisons, "
             "and forecasts."
         ),
-        h1="Official macroeconomic indicators in one place",
+        h1="Country economies in one place",
         intro=(
             "Forecast Economy collects macroeconomic indicators for countries from "
             "national statistical agencies, central banks, Eurostat, and the IMF. "

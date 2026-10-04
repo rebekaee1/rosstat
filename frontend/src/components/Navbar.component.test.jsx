@@ -6,6 +6,7 @@ import { resolveActiveNavId } from '../lib/navItems';
 import Footer from './Footer';
 import { renderPage, mockApiGet } from '../test/renderPage';
 import {
+  calendarPath,
   demographicsPath,
   regionHubPath,
   regionRatingHubPath,
@@ -65,13 +66,12 @@ describe('Navbar H-4 menu', () => {
     expect(within(nav).getByRole('button', { name: /Калькуляторы/i })).toBeTruthy();
   });
 
-  it('мобильное меню синхронизировано с десктопом: те же primary-пункты, без демографии', () => {
+  it('мобильное меню: те же разделы, что в шапке без JS, сгруппированные; без демографии', () => {
     renderShell();
 
     fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
 
     const nav = screen.getByRole('navigation');
-    expect(within(nav).queryByRole('link', { name: /Регионы/i })).toBeNull();
     expect(within(nav).queryByText('Категории')).toBeNull();
     expect(within(nav).queryByRole('link', { name: 'Демография' })).toBeNull();
 
@@ -84,10 +84,31 @@ describe('Navbar H-4 menu', () => {
     expect(ratingLinks.every((a) => a.getAttribute('href') === '/world/rating/gdp-usd')).toBe(true);
     expect(within(nav).getAllByRole('link', { name: /Сравнение/ }).length).toBe(2);
 
+    // Раздел «Россия»: Сегодня, Регионы, Календарь — раньше их в меню телефона не было вовсе.
+    expect(within(nav).getByText('Россия', { selector: 'p' })).toBeTruthy();
+    expect(within(nav).getByRole('link', { name: 'Сегодня' }).getAttribute('href')).toBe(todayPath());
+    expect(within(nav).getByRole('link', { name: 'Регионы' }).getAttribute('href')).toBe(regionHubPath());
+    expect(within(nav).getByRole('link', { name: 'Календарь' }).getAttribute('href')).toBe(calendarPath());
+    // Каталог стран — ядро платформы — доступен из меню.
+    expect(within(nav).getByRole('link', { name: 'Страны' }).getAttribute('href')).toBe('/#countries');
+
     expect(within(nav).getByRole('link', { name: 'Калькулятор инфляции' })).toBeTruthy();
     expect(within(nav).getByRole('link', { name: 'Ипотечный калькулятор' })).toBeTruthy();
     expect(within(nav).getByRole('link', { name: 'Сложные проценты' })).toBeTruthy();
     expect(within(nav).getByRole('link', { name: 'О проекте' })).toBeTruthy();
+  });
+
+  it('EN: в меню телефона тот же набор разделов, раздел Russia без пункта «Россия» в шапке', () => {
+    renderShell('/', 'en');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
+
+    const nav = screen.getByRole('navigation');
+    expect(within(nav).getByText('Russia', { selector: 'p' })).toBeTruthy();
+    expect(within(nav).getByRole('link', { name: 'Today' })).toBeTruthy();
+    expect(within(nav).getByRole('link', { name: 'Regions' })).toBeTruthy();
+    expect(within(nav).getByRole('link', { name: 'Calendar' })).toBeTruthy();
+    expect(within(nav).getByRole('link', { name: 'Countries' }).getAttribute('href')).toBe('/#countries');
   });
 
   it('раздел /regions не осиротел: ссылка есть в футере', () => {

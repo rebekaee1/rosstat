@@ -178,6 +178,28 @@ describe('cookie choices remain usable when measurement fails', () => {
     }
   });
 
+  it('collapsed banner is compact: one short text and two buttons, no title row', () => {
+    renderConsent();
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).queryByText(translate('cookie.title', undefined, 'ru'))).toBeNull();
+    expect(within(dialog).getAllByRole('button').map((b) => b.textContent.trim()).filter(Boolean)).toEqual(['Хорошо', 'Настроить']);
+    expect(translate('cookie.summary', undefined, 'ru').length).toBeLessThan(90);
+    // Сами категории и длинный текст — только после «Настроить».
+    expect(within(dialog).queryAllByRole('checkbox')).toHaveLength(0);
+  });
+
+  it('settings offer a direct refusal: only necessary cookies', () => {
+    renderConsent();
+    fireEvent.click(screen.getByRole('button', { name: 'Настроить' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Только необходимые' }));
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(getConsent()).toMatchObject({ analytics: false, ads: false });
+    expect(track).toHaveBeenCalledExactlyOnceWith('consent_update', {
+      action: 'necessary_only', analytics: 0, ads: 0, policy_version: CONSENT_VERSION,
+    });
+  });
+
   it('keeps the dialog absent on admin pages', () => {
     renderConsent('ru', '/admin/bi');
     expect(screen.queryByRole('dialog')).toBeNull();
