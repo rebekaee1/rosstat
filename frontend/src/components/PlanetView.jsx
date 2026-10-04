@@ -3,8 +3,8 @@ import {
 } from 'react';
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
-  ArrowUpRight, Check, ChevronDown, ChevronRight, Globe2, GitCompare, Layers3,
-  Minus, Move, Plus, RotateCcw, Search, X,
+  ArrowUpRight, Check, ChevronDown, ChevronRight, Globe2, GitCompare, Hand, Layers3,
+  Minus, Plus, RotateCcw, Search, X,
 } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
@@ -15,8 +15,11 @@ import { comparePath, countryPath } from '../lib/sitePaths';
 import {
   formatWorldPeriod, resolveWorldPeriodFormat, worldPeriodDates,
 } from '../lib/worldMapPeriod';
+import { splitUnit, uniformDigits } from '../lib/countryFlag';
+import CountryFlag from './CountryFlag';
 import SourceLink from './SourceLink';
 import Spinner from './Spinner';
+import WorldCountUp from './WorldCountUp';
 import './PlanetView.css';
 
 const WorldMap = lazy(() => import('./WorldMap'));
@@ -41,6 +44,9 @@ function countryName(country, locale) {
 function hasValue(value) {
   return value != null && value !== '' && Number.isFinite(Number(value));
 }
+
+/** Список на телефоне показывает первые строки, остальное — по кнопке: без вложенной прокрутки, которая «ест» свайп страницы. */
+const COMPACT_LIST_ROWS = 7;
 
 function legendBinRange(bin, locale) {
   const format = (value) => formatWorldValue(value, undefined, locale);
@@ -83,7 +89,9 @@ export default function PlanetView({
   const [comparisonCodes, setComparisonCodes] = useState([]);
   const [touchNavigation, setTouchNavigation] = useState(() => window.matchMedia?.('(pointer: coarse)').matches || false);
   const [interactiveTouch, setInteractiveTouch] = useState(false);
+  const [listExpanded, setListExpanded] = useState(false);
   const commandId = useRef(0);
+  const stageRef = useRef(null);
   const searchInput = useRef(null);
   const searchResults = useRef(null);
   const countryCard = useRef(null);
@@ -133,6 +141,9 @@ export default function PlanetView({
   }, [valuesByCode, availableCountries, valueForCountry]);
   const colorModel = useMemo(() => buildWorldColorModel(displayValues, { mode: colorMode, direction: colorDirection }), [displayValues, colorMode, colorDirection]);
   const extent = useMemo(() => valueExtent(displayValues), [displayValues]);
+  // Одна точность на весь экран: карточка, список, подсказки и подписи на шаре показывают число одинаково.
+  const digits = useMemo(() => uniformDigits(displayValues.values()), [displayValues]);
+  const fmt = useCallback((value) => formatWorldValue(value, digits, locale), [digits, locale]);
   const mapDetails = useMemo(() => detailsByCode instanceof Map ? detailsByCode : new Map(Object.entries(detailsByCode || {})), [detailsByCode]);
   const periodFormat = useMemo(() => resolveWorldPeriodFormat(worldPeriodDates(detailsByCode)), [detailsByCode]);
   const rankedCountries = useMemo(() => {
@@ -194,26 +205,31 @@ export default function PlanetView({
   }, []);
   const selectedCountry = countryByCode.get(selectedCode) || null;
   useEffect(() => {
-    if (focusCountryCard.current && selectedCountry && countryCard.current) {
-      focusCountryCard.current = false;
-      countryCard.current.focus({ preventScroll: true });
-      // On a phone the card sits above the globe; a pick made in the list below would otherwise change it off-screen.
-      if (typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches) {
-        const box = countryCard.current.getBoundingClientRect();
-        if (box.top < 0 || box.bottom > window.innerHeight) {
-          const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          countryCard.current.scrollIntoView?.({ block: 'start', behavior: calm ? 'auto' : 'smooth' });
-        }
+    if (!focusCountryCard.current || !selectedCountry) return;
+    focusCountryCard.current = false;
+    countryCard.current?.focus({ preventScroll: true });
+    // Строку выбрали в списке под планетой: на телефоне возвращаем к ПЛАНЕТЕ (она повернулась, под ней карточка),
+    // а не к карточке-заголовку или таблице.
+    if (typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches) {
+      const box = stageRef.current?.getBoundingClientRect();
+      if (box && (box.top < 64 || box.bottom > window.innerHeight)) {
+        const quiet = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        stageRef.current.scrollIntoView?.({ block: 'start', behavior: quiet ? 'auto' : 'smooth' });
       }
     }
   }, [selectedCountry, cameraCommand]);
+  const selectedRank = selectedCountry ? rankedCountries.find((entry) => entry.country.code === selectedCountry.code)?.rank || null : null;
+  const rankTotal = rankedCountries.filter((entry) => entry.rank).length;
   const selectedDetail = selectedCountry ? collectionValue(detailsByCode, selectedCountry.code) || null : null;
   const selectedValue = selectedCountry ? valueForCountry(selectedCountry) : null;
   const selectedPeriod = formatWorldPeriod(selectedDetail?.date, periodFormat) || periodLabel;
   const hoveredCountry = countryByCode.get(hoverCode) || countryByCode.get(countryAlias(hoverCode));
   const displayUnit = localizeWorldUnit(unit, locale);
+  // В строках — только короткая единица; длинное пояснение («% экономически активного населения») стоит над списком.
+  const rowUnit = splitUnit(displayUnit).short;
   const hasMetric = Boolean(metricName || valuesByCode != null);
   const isMap = sceneStatus === 'error';
+  const showKey = !isMap && mode === 'data' && hasMetric;
   const activeCountry = searchCountries[Math.min(activeOption, searchCountries.length - 1)];
   const optionId = (code) => 'planet-' + id + '-country-' + code;
   const comparisonCountries = comparisonCodes.map((code) => countryByCode.get(code)).filter(Boolean);
@@ -223,6 +239,10 @@ export default function PlanetView({
   const canPin = selectedPinned || (selectedCountry?.slug && conceptSlug && hasValue(selectedValue) && comparisonCodes.length < 2);
   const comparisonFull = comparisonCodes.length === 2 && !selectedPinned && hasValue(selectedValue);
   const median = benchmark?.value ?? colorModel.median;
+  // Слово «медиана» человеку ничего не говорит: середина списка называется «в середине рейтинга».
+  const footerLabel = benchmark?.label && !/медиан|median/i.test(benchmark.label) ? benchmark.label : t('w2.planet.middle');
+  const keyGradient = 'linear-gradient(90deg, ' + colorModel.bins.map((bin) => bin.color).join(', ') + ')';
+  const compactList = !listExpanded && rankedCountries.length > COMPACT_LIST_ROWS + 1;
 
   function handleSearchKey(event) {
     if (event.key === 'Escape') { setSearchOpen(false); return; }
@@ -281,8 +301,8 @@ export default function PlanetView({
             {searchCountries.length ? <div ref={searchResults} id={'planet-' + id + '-results'} role="listbox" aria-label={t('planet.searchResults')}>
               {searchCountries.map((country, index) => <button key={country.code} id={optionId(country.code)} type="button" role="option" tabIndex={-1} aria-selected={index === activeOption}
                 onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setActiveOption(index)} onClick={() => selectCountry(country.code, true)}>
-                <span>{countryName(country, locale)}<small>{country.code}</small></span>
-                <strong>{hasValue(valueForCountry(country)) ? formatWorldValue(valueForCountry(country), undefined, locale) : t('planet.noDataLegend')}</strong>
+                <span className="planet-option-name"><CountryFlag code={country.code} />{countryName(country, locale)}</span>
+                <strong>{hasValue(valueForCountry(country)) ? <>{fmt(valueForCountry(country))}{rowUnit && <small>{rowUnit}</small>}</> : <em>{t('planet.noDataLegend')}</em>}</strong>
               </button>)}
             </div> : <p role="status">{t('planet.noMatches')}</p>}
           </div>}
@@ -307,49 +327,63 @@ export default function PlanetView({
         </div>
         {compareReady ? <PlanetLink href={comparisonHref}>{t('planet.showComparison')}<ArrowUpRight size={15} aria-hidden="true" /></PlanetLink> : comparisonCountries.length === 2 && <span role="status">{t('planet.noData')}</span>}
       </div>}
-      <div className="planet-shell">
+      <div className={'planet-shell' + (showKey ? ' has-key' : '')}>
         <div className="planet-geography">
-          <div className={'planet-stage' + (isMap ? ' planet-stage--map' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} onPointerMove={trackPointer}>
+          <div ref={stageRef} className={'planet-stage' + (isMap ? ' planet-stage--map' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} onPointerMove={trackPointer}>
             {isMap ? <div className="planet-map-fallback">
               <div className="planet-fallback-message" role="status"><span>{t('planet.unavailable')}</span><button type="button" onClick={retryScene}>{t('planet.retry')}</button></div>
               <Suspense fallback={<div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div>}><WorldMap countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={unit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection} defaultScope={defaultScope} onSelect={(country) => selectCountry(country.code, true)} /></Suspense>
             </div> : <>
               <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
                 <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
-                  onHover={handleHover} onSelect={activateCountry} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
+                  valueDigits={digits} onHover={handleHover} onSelect={activateCountry} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
                   interactive={!touchNavigation || interactiveTouch} touchNavigation={touchNavigation} />
               </Suspense></SceneBoundary>
-              {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div>}
+              <div className="planet-orb" aria-hidden="true" />
+              {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('planet.loading')}</div>}
               {!selectedCountry && sceneStatus === 'ready' && <p className="planet-select-hint">{t('planet.subtitle')}</p>}
-              <div className="planet-camera-controls">
-                <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')}><Plus size={18} aria-hidden="true" /></button>
-                <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={t('planet.zoomOut')} title={t('planet.zoomOut')}><Minus size={18} aria-hidden="true" /></button>
-                <button type="button" onClick={() => commandCamera('reset')} aria-label={t('planet.reset')} title={t('planet.reset')}><RotateCcw size={16} aria-hidden="true" /></button>
-              </div>
-              {touchNavigation && <button type="button" className={'planet-navigation-toggle' + (interactiveTouch ? ' is-active' : '')} aria-pressed={interactiveTouch} onClick={() => setInteractiveTouch((active) => !active)}>
-                {interactiveTouch ? <Check size={15} aria-hidden="true" /> : <Move size={15} aria-hidden="true" />}{t(interactiveTouch ? 'planet.doneRotating' : 'planet.rotate')}
-              </button>}
-              {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? formatWorldValue(valueForCountry(hoveredCountry), undefined, locale) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
+              {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? fmt(valueForCountry(hoveredCountry)) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
                 <small>{t(hoveredCountry.code === selectedCode ? 'planet.pressToOpen' : 'planet.pressToSelect')}</small></div>}
               {!hoveredCountry && hoverPlace && <div className="planet-hover-label planet-hover-label--muted"><span>{hoverPlace}</span><small>{t('planet.notInCatalog')}</small></div>}
               {!touchNavigation && <p className="planet-stage-caption">{t('planet.gesture')}</p>}
             </>}
           </div>
-          {!isMap && mode === 'data' && hasMetric && <details className="planet-scale">
-            <summary>{t('planet.legend')}{extent && <span>{formatWorldValue(extent.min, undefined, locale)}–{formatWorldValue(extent.max, undefined, locale)} {displayUnit}</span>}<ChevronDown size={14} aria-hidden="true" /></summary>
-            <div className="planet-legend" aria-label={t('planet.legend')}>
-              <p>{t(colorModel.kind === 'diverging' ? 'world.map.scaleZero' : 'world.map.scaleMedian')}</p>
-              <div className="planet-legend-bins">{colorModel.bins.map((bin, index) => <div key={index}><i style={{ backgroundColor: bin.color }} aria-hidden="true" /><span>{t(bin.labelKey)}</span><strong>{legendBinRange(bin, locale)} {displayUnit}</strong></div>)}</div>
-              <small><i aria-hidden="true" />{t('planet.noDataLegend')}</small>
+          {!isMap && <div className="planet-controls">
+            {touchNavigation && <p className="planet-controls-hint">{t(interactiveTouch ? 'w2.planet.dragHint' : 'w2.planet.tapHint')}</p>}
+            {touchNavigation && <button type="button" className={'planet-navigation-toggle' + (interactiveTouch ? ' is-active' : '')} aria-pressed={interactiveTouch} onClick={() => setInteractiveTouch((active) => !active)}>
+              {interactiveTouch ? <Check size={16} aria-hidden="true" /> : <Hand size={16} aria-hidden="true" />}{t(interactiveTouch ? 'planet.doneRotating' : 'planet.rotate')}
+            </button>}
+            <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
+              <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')}><Plus size={18} aria-hidden="true" /></button>
+              <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={t('planet.zoomOut')} title={t('planet.zoomOut')}><Minus size={18} aria-hidden="true" /></button>
+              <button type="button" onClick={() => commandCamera('reset')} aria-label={t('planet.reset')} title={t('planet.reset')}><RotateCcw size={16} aria-hidden="true" /></button>
             </div>
-          </details>}
+          </div>}
+          {showKey && <div className="planet-key">
+            <div className="planet-key-title"><strong>{metricName}</strong>{periodLabel && <span>{periodLabel}</span>}</div>
+            <div className="planet-key-bar" style={{ backgroundImage: keyGradient }} aria-hidden="true" />
+            {extent && <div className="planet-key-ends">
+              <span><small>{t('w2.planet.keyLow')}</small>{fmt(extent.min)} {rowUnit || displayUnit}</span>
+              <span><small>{t('w2.planet.keyHigh')}</small>{fmt(extent.max)} {rowUnit || displayUnit}</span>
+            </div>}
+            <p className="planet-key-note"><i aria-hidden="true" />{t('w2.planet.keyNoData')}</p>
+            <details className="planet-scale">
+              <summary>{t('planet.legend')}<ChevronDown size={14} aria-hidden="true" /></summary>
+              <div className="planet-legend" aria-label={t('planet.legend')}>
+                <p>{t(colorModel.kind === 'diverging' ? 'world.map.scaleZero' : 'world.map.scaleMedian')}</p>
+                <div className="planet-legend-bins">{colorModel.bins.map((bin, index) => <div key={index}><i style={{ backgroundColor: bin.color }} aria-hidden="true" /><span>{t(bin.labelKey)}</span><strong>{legendBinRange(bin, locale)} {displayUnit}</strong></div>)}</div>
+                <small><i aria-hidden="true" />{t('planet.noDataLegend')}</small>
+              </div>
+            </details>
+          </div>}
         </div>
         <aside className="planet-info" aria-label={t('planet.country')}>
           <div ref={countryCard} className={'planet-country-card' + (selectedCountry ? ' is-selected' : '')} tabIndex={-1} aria-live="polite" data-selected-country={selectedCountry?.code || ''}>
             {selectedCountry && <>
-              <div className="planet-country-heading"><div><span>{selectedCountry.code}</span><h3>{countryName(selectedCountry, locale)}</h3></div><button type="button" onClick={clearSelection} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
+              <div className="planet-country-heading"><div><CountryFlag code={selectedCountry.code} className="planet-flag-lg" /><h3>{countryName(selectedCountry, locale)}</h3></div><button type="button" onClick={clearSelection} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
               <div className="planet-country-observation"><span>{metricName}</span><span>{selectedPeriod}</span></div>
-              {hasMetric && (hasValue(selectedValue) ? <div className="planet-value-line"><strong aria-label={t('planet.value')}>{formatWorldValue(selectedValue, undefined, locale)}</strong><span>{displayUnit}</span></div> : <p className="planet-no-data">{t('planet.noData')}</p>)}
+              {hasMetric && (hasValue(selectedValue) ? <div className="planet-value-line"><strong><WorldCountUp value={selectedValue} format={fmt} label={t('planet.value')} className="planet-value-number" /></strong><span>{displayUnit}</span></div> : <p className="planet-no-data">{t('planet.noData')}</p>)}
+              {hasMetric && selectedRank && rankTotal > 1 && <p className="planet-rank">{t('w2.planet.rank', { rank: selectedRank, total: rankTotal })}</p>}
               {selectedDetail?.source && <div className="planet-source"><SourceLink href={selectedDetail.source_url}>{localizeSource(selectedDetail.source, locale)}</SourceLink></div>}
               <div className="planet-country-actions"><button type="button" className="planet-open-country" disabled={!selectedCountry.slug || typeof onSelect !== 'function'} onClick={() => onSelect?.(selectedCountry, selectedDetail)}>{t(selectedDetail?.indicator_code ? 'planet.openIndicator' : 'planet.openCountry')}<ArrowUpRight size={15} aria-hidden="true" /></button>
                 {conceptSlug && <button type="button" className="planet-pin-country" aria-pressed={selectedPinned} disabled={!canPin} onClick={toggleComparison} title={t(selectedPinned ? 'planet.removeComparison' : 'planet.addComparison', { country: countryName(selectedCountry, locale) })} aria-describedby={comparisonFull ? 'planet-' + id + '-comparison-full' : undefined}>{selectedPinned ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}{t(selectedPinned ? 'planet.inComparison' : 'planet.addComparison')}</button>}
@@ -358,14 +392,18 @@ export default function PlanetView({
               {selectedCountry.slug && <PlanetLink className="planet-all-indicators" href={countryPath(selectedCountry.slug)}>{t('planet.allIndicators')}<ArrowUpRight size={12} aria-hidden="true" /></PlanetLink>}
             </>}
           </div>
-          <div className="planet-list-heading"><div><h4>{t('planet.countries')}</h4>{metricName && <p>{metricName}</p>}</div><span>{periodLabel}{displayUnit ? ', ' + displayUnit : ''}</span></div>
-          <div ref={countryList} className="planet-country-list" role="group" tabIndex={-1} aria-label={t('planet.countries')}>
+          <div className="planet-list-heading"><div><h4>{t('planet.countries')}</h4>{metricName && <p>{metricName}{displayUnit && !rowUnit ? ', ' + displayUnit : ''}</p>}</div><span>{periodLabel}</span></div>
+          <div ref={countryList} className={'planet-country-list' + (compactList ? ' is-compact' : '')} role="group" tabIndex={-1} aria-label={t('planet.countries')}>
             {rankedCountries.map(({ country, value, rank }) => <button key={country.code} type="button" className={selectedCode === country.code ? 'is-selected' : ''} aria-pressed={selectedCode === country.code} onClick={() => activateCountry(country.code, true)}
               title={selectedCode === country.code ? t('planet.pressToOpen') : undefined}>
-              <span className="planet-list-rank">{rank || '—'}</span><span className="planet-list-name">{countryName(country, locale)}</span><strong>{hasValue(value) ? formatWorldValue(value, undefined, locale) : t('planet.noDataLegend')}</strong><ChevronRight size={14} aria-hidden="true" />
+              <span className="planet-list-rank">{rank || '—'}</span><span className="planet-list-name"><CountryFlag code={country.code} />{countryName(country, locale)}</span>
+              <strong>{hasValue(value) ? <>{fmt(value)}{rowUnit && <small>{rowUnit}</small>}</> : <em>{t('planet.noDataLegend')}</em>}</strong><ChevronRight size={14} aria-hidden="true" />
             </button>)}
           </div>
-          <div className="planet-list-footer">{hasValue(median) && hasMetric && <span>{benchmark?.label || t('planet.median')}: <strong>{formatWorldValue(median, undefined, locale)} {displayUnit}</strong></span>}{ratingHref && <PlanetLink href={ratingHref}>{t('planet.fullRating')}<ArrowUpRight size={13} aria-hidden="true" /></PlanetLink>}</div>
+          {rankedCountries.length > COMPACT_LIST_ROWS + 1 && <button type="button" className="planet-list-more" aria-expanded={listExpanded} onClick={() => setListExpanded((open) => !open)}>
+            {listExpanded ? t('w2.planet.showLess') : t('w2.planet.showAll', { count: rankedCountries.length })}<ChevronDown size={14} aria-hidden="true" />
+          </button>}
+          <div className="planet-list-footer">{hasValue(median) && hasMetric && <span>{footerLabel}: <strong>{fmt(median)} {rowUnit || displayUnit}</strong></span>}{ratingHref && <PlanetLink href={ratingHref}>{t('planet.fullRating')}<ArrowUpRight size={13} aria-hidden="true" /></PlanetLink>}</div>
         </aside>
       </div>
     </section>

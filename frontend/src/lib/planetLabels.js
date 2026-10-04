@@ -20,7 +20,7 @@ function finiteMetricValue(value) {
 }
 
 /** One geographic name per country, including countries absent from the API. */
-export function buildPlanetLabels(entries = [], { locale = 'ru', valuesByCode = null, unit = '' } = {}) {
+export function buildPlanetLabels(entries = [], { locale = 'ru', valuesByCode = null, unit = '', digits } = {}) {
   const names = typeof Intl.DisplayNames === 'function'
     ? new Intl.DisplayNames([locale === 'en' ? 'en' : 'ru'], { type: 'region', fallback: 'none' })
     : null;
@@ -40,7 +40,7 @@ export function buildPlanetLabels(entries = [], { locale = 'ru', valuesByCode = 
     const rawValue = metricValue(valuesByCode, entry, code);
     const hasValue = finiteMetricValue(rawValue);
     const value = hasValue ? rawValue : null;
-    const numberText = hasValue ? formatWorldValue(value, undefined, locale) : '';
+    const numberText = hasValue ? formatWorldValue(value, digits, locale) : '';
     const valueText = hasValue
       ? numberText + (displayUnit ? `\u00a0${displayUnit}` : '')
       : '';
@@ -162,6 +162,8 @@ function intersects(a, b, gap) {
 export function layoutPlanetLabels(candidates, {
   width, height, cameraDistance = 3.35, selectedCode, hoverCode,
   maxVisible = 24, padding = 6, collisionGap = 5, anchorGap = 12, globe = null, valuesOnly = false,
+  // «Данные»: на шаре подписана только выбранная или наведённая страна, а не случайные крупные.
+  selectionOnly = false,
 } = {}) {
   if (!(width > 0 && height > 0)) return [];
   const selected = normalizePlanetCountryCode(selectedCode);
@@ -172,6 +174,7 @@ export function layoutPlanetLabels(candidates, {
     return candidate.facing > 0.2 && candidate.depth >= -1 && candidate.depth <= 1
       && candidate.width > 0 && candidate.height > 0
       && (!valuesOnly || candidate.hasValue || priority(candidate) > 0)
+      && (!selectionOnly || priority(candidate) > 0)
       && (priority(candidate) > 0 || candidate.area >= minimumArea(cameraDistance));
   }).sort((a, b) => priority(b) - priority(a)
     || Number(Boolean(b.hasValue)) - Number(Boolean(a.hasValue))

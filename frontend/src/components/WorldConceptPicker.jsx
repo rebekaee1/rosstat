@@ -60,6 +60,8 @@ export default function WorldConceptPicker({
   trailing = null,
   /** Одна горизонтальная полоса без переноса (главная / мобилка). */
   nowrap = false,
+  /** Только на узком экране: одна прокручиваемая лента с затуханием по краям; активный показатель выводится в центр. */
+  mobileScroll = false,
 }) {
   const t = useT();
   const sectionLabel = label || t('home.map.metricFallback');
@@ -88,6 +90,14 @@ export default function WorldConceptPicker({
   const activeLabel = labelFor(value, conceptsBySlug, t);
 
   useEffect(() => {
+    if (!mobileScroll) return;
+    const row = rootRef.current?.querySelector('.fe-chip-row--mscroll');
+    const active = row?.querySelector('[aria-current="page"], [aria-pressed="true"]');
+    if (!row || !active || row.scrollWidth <= row.clientWidth) return;
+    row.scrollLeft = Math.max(0, active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2);
+  }, [mobileScroll, value, matches.length]);
+
+  useEffect(() => {
     if (!open) return undefined;
     const onDoc = (event) => {
       if (!rootRef.current?.contains(event.target)) setOpen(false);
@@ -97,7 +107,7 @@ export default function WorldConceptPicker({
   }, [open]);
 
   const chipStream = (
-    <ChipGroup label={sectionLabel} nowrap={nowrap}>
+    <ChipGroup label={sectionLabel} nowrap={nowrap} className={mobileScroll ? 'fe-chip-row--mscroll' : undefined}>
       {matches.map((item) => (
         <ConceptChip
           key={item.slug}
@@ -140,7 +150,7 @@ export default function WorldConceptPicker({
       <div ref={rootRef} className="relative min-w-0">
         <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
-            <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            <p className="text-[13px] font-semibold text-text-secondary">
               {sectionLabel}
             </p>
             {trailing}
@@ -172,7 +182,7 @@ export default function WorldConceptPicker({
   return (
     <div ref={rootRef} className="min-w-0">
       <div className="mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+        <p className="text-[13px] font-semibold text-text-secondary">
           {sectionLabel}
         </p>
         {trailing}

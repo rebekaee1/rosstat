@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { GitCompare, X, Search, Check } from 'lucide-react';
+import { GitCompare, Globe2, X, Search, Check } from 'lucide-react';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchCountries } from '../lib/worldCompareSearch';
 import { useT } from '../i18n';
@@ -8,6 +8,7 @@ import { MAX_COMPARISONS, COMPARISON_COLORS } from '../lib/useCountryComparison'
 import Button from './Button';
 import Chip from './Chip';
 import Spinner from './Spinner';
+import CountryFlag from './CountryFlag';
 
 export function CountryComparePicker({
   options,
@@ -39,7 +40,7 @@ export function CountryComparePicker({
         }}
         placeholder={selectedIds.length ? t('world.chart.addCountry') : t('world.findCountry')}
         aria-label={t('world.chart.searchCompareAria')}
-        className="w-full rounded-xl border border-border-subtle bg-obsidian-light py-2.5 pl-9 pr-3 text-xs text-text-primary pointer-coarse:min-h-11 outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
+        className="w-full rounded-xl border border-border-subtle bg-surface py-2.5 pl-9 pr-3 text-sm text-text-primary pointer-coarse:min-h-11 pointer-coarse:text-base outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
       />
       {open && (
         <div className="fe-dialog-panel absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
@@ -56,9 +57,14 @@ export function CountryComparePicker({
                   onToggle(option.code);
                   setQuery('');
                 }}
-                className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-xs text-text-secondary transition-colors hover:bg-obsidian-light hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-35"
+                className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-sm text-text-secondary transition-colors hover:bg-obsidian-light hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-35"
               >
-                <span className="truncate">{option.country_name}</span>
+                <span className="flex min-w-0 items-center gap-2.5">
+                  {option.country_code
+                    ? <CountryFlag code={option.country_code} />
+                    : <Globe2 size={16} className="shrink-0 text-text-tertiary" aria-hidden="true" />}
+                  <span className="truncate">{option.country_name}</span>
+                </span>
                 <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${checked ? 'border-champagne-ink bg-champagne-ink text-white' : 'border-border-subtle'}`}>
                   {checked && <Check size={12} />}
                 </span>
@@ -92,14 +98,14 @@ export default function CountryComparePanel({
   const t = useT();
   if (!pickerOptions.length) return null;
   return (
-    <div className="mb-4 rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
+    <div className="mb-4 rounded-3xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <div className="min-w-0 sm:min-w-[11rem]">
-          <div className="flex items-center gap-2 text-xs font-medium text-text-primary">
-            <GitCompare size={14} className="text-champagne" />
+          <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+            <GitCompare size={15} className="text-champagne" aria-hidden="true" />
             {t('world.chart.compare')}
           </div>
-          <div className="mt-1 text-xs text-text-tertiary">
+          <div className="mt-1 text-xs text-text-secondary">
             {t('world.chart.compareLimit', { n: MAX_COMPARISONS })}
           </div>
         </div>

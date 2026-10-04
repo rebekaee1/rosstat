@@ -26,6 +26,7 @@ import { useLocale, useT } from '../i18n';
 import { t as translateStandalone } from '../i18n/messages';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { localizeSource } from '../i18n/viewModeLabels';
+import '../styles/world.css';
 import SourceLink from './SourceLink';
 import Chip from './Chip';
 import '../styles/platform-pages.css';
@@ -644,13 +645,15 @@ function useCountryOutline(code) {
   }, [atlases.fine, detailed, id, needsFine]);
 }
 
+/**
+ * Карточка территории на странице страны: светлая, в общем стиле сайта. Контур, площадь и население;
+ * ни кодов страны, ни диапазонов лет, ни частот: это справка для эксперта, а не для человека, пришедшего за фактом.
+ * `historyStart`, `historyEnd` и `frequencies` принимаются ради совместимости и не показываются.
+ */
 export function CountrySilhouette({
   code,
   name,
   region = '',
-  historyStart = '',
-  historyEnd = '',
-  frequencies = [],
   area = null,
   population = null,
   slug = '',
@@ -658,30 +661,12 @@ export function CountrySilhouette({
   const t = useT();
   const { locale } = useLocale();
   const geometry = useCountryOutline(code);
-  const hasFacts = area?.value != null || population?.value != null;
   const countryPath = useMemo(() => {
     if (!geometry) return null;
-    // С блоком фактов силуэт уходит в правую часть: слева остаётся колонка
-    // под площадь, население и источники, чтобы текст не ложился на контур.
-    const extent = hasFacts ? [[152, 26], [344, 212]] : [[24, 24], [336, 216]];
-    const projection = geoMercator().fitExtent(extent, geometry);
+    const projection = geoMercator().fitExtent([[20, 16], [340, 184]], geometry);
     return geoPath(projection)(geometry);
-  }, [geometry, hasFacts]);
+  }, [geometry]);
   if (!countryPath) return null;
-  const history = historyStart
-    ? `${String(historyStart).slice(0, 4)}–${String(historyEnd || historyStart).slice(0, 4)}`
-    : '';
-  // Одна метка вместо перечисления: самая короткая доступная частота —
-  // «день» покрывает и «неделю», и «месяц» читателя (более мелкая шагает чаще).
-  const FREQUENCY_PRIORITY = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'];
-  const topFrequency = FREQUENCY_PRIORITY.find((f) => frequencies.includes(f));
-  const frequencyLabel = topFrequency
-    ? (() => {
-      const key = `world.freq.long.${topFrequency}`;
-      const label = t(key);
-      return label !== key ? label : topFrequency;
-    })()
-    : '';
   const areaUnitRaw = (area?.unit || '').trim();
   const areaUnit = (!areaUnitRaw || areaUnitRaw === 'км²' || areaUnitRaw === 'km²' || areaUnitRaw === 'км2')
     ? t('world.unit.km2')
@@ -699,8 +684,12 @@ export function CountrySilhouette({
   )
     ? t('world.unit.people')
     : popUnitRaw;
+  // Девять-десять цифр человеку ничего не говорят: «83,4 млн человек» читается сразу.
+  const populationNumber = Number(population?.value);
   const populationValue = population?.value != null
-    ? `${formatValue(population.value, 0)} ${popUnit}`
+    ? (Number.isFinite(populationNumber) && populationNumber >= 1e6
+      ? `${formatValue(populationNumber / 1e6, populationNumber >= 1e7 ? 0 : 1)} ${t('w2.country.million')} ${popUnit}`
+      : `${formatValue(population.value, 0)} ${popUnit}`)
     : '';
   const populationYear = population?.year
     || (population?.date ? String(population.date).slice(0, 4) : '');
@@ -728,98 +717,53 @@ export function CountrySilhouette({
     });
   }
   return (
-    <div
-      className="relative min-h-[270px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
-      aria-label={t('world.map.outlineAria', { name })}
-    >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(207,180,95,0.2),transparent_47%)]" />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
-      {hasFacts && (
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-[5] w-[52%] bg-gradient-to-r from-[#191A20] via-[#191A20]/92 to-transparent" />
-      )}
-      <div className="absolute left-4 top-3 z-10 max-w-[52%] pr-2">
-        <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-white/70">
-          {t('world.territory.profile')}
-        </div>
-        {region && <div className="mt-1 text-xs text-[#d8c58b]">{region}</div>}
-        {(areaValue || populationValue) && (
-          <div className="mt-2 space-y-1 sm:space-y-1.5">
-            {areaValue && (
-              <div>
-                <div className="text-[11px] font-mono uppercase tracking-[0.16em] text-white/70">
-                  {t('world.territory.area')}
-                </div>
-                <div className="mt-0.5 text-xs font-medium text-white/90">
-                  {areaValue}
-                  {areaYear ? (
-                    <span className="ml-1.5 font-mono text-xs font-normal text-white/70">
-                      {areaYear}
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-            )}
-            {populationValue && (
-              <div>
-                <div className="text-[11px] font-mono uppercase tracking-[0.16em] text-white/70">
-                  {t('world.territory.population')}
-                </div>
-                <div className="mt-0.5 text-xs font-medium text-white/90">
-                  {populationValue}
-                  {populationYear ? (
-                    <span className="ml-1.5 font-mono text-xs font-normal text-white/70">
-                      {populationYear}
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-            )}
-            {sources.length > 0 && (
-              <div className="space-y-0.5 pt-0.5 text-xs text-white/70">
-                {sources.map((item) => (
-                  <div key={`${item.kind}-${item.label}`}>
-                    {t('common.source')}:{' '}
-                    <SourceLink
-                      href={item.url}
-                      fallbackTo={fallbackHref}
-                      className="text-[#d8c58b] underline-offset-2 hover:underline"
-                    >
-                      {item.label}
-                    </SourceLink>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+    <section className="w2-profile" aria-label={t('world.map.outlineAria', { name })}>
+      <div className="w2-profile-head">
+        <h2 className="w2-profile-title">{t('world.territory.profile')}</h2>
+        {region && <span className="w2-profile-region">{region}</span>}
       </div>
-      <svg viewBox="0 0 360 240" className="relative block h-auto w-full" role="img" aria-label={t('world.map.countryMapAria', { name })}>
+      <svg viewBox="0 0 360 200" className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
         <path
           d={countryPath}
-          fill="#D8C177"
-          stroke="rgba(255,243,197,0.78)"
-          strokeWidth="1.2"
+          className="w2-profile-shape"
           vectorEffect="non-scaling-stroke"
-          style={{ filter: 'drop-shadow(0 12px 18px rgba(0,0,0,0.28))' }}
         />
       </svg>
-      <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 border-t border-white/10 pt-3 sm:items-end sm:gap-3">
-        <div className="min-w-0">
-          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/70">{code}</div>
-          <div className="mt-0.5 max-w-[11rem] truncate text-xs font-medium text-white/90">{name}</div>
-        </div>
-        <div className="flex flex-wrap justify-end gap-1.5 text-xs font-mono text-white/75">
-          {history && <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1">{history}</span>}
-          {frequencyLabel && <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1">{frequencyLabel}</span>}
-        </div>
-      </div>
-    </div>
+      {(areaValue || populationValue) && (
+        <dl className="w2-profile-facts">
+          {areaValue && (
+            <div>
+              <dt>{t('world.territory.area')}</dt>
+              <dd>
+                {areaValue}
+                {areaYear ? <small>{areaYear}</small> : null}
+              </dd>
+            </div>
+          )}
+          {populationValue && (
+            <div>
+              <dt>{t('world.territory.population')}</dt>
+              <dd>
+                {populationValue}
+                {populationYear ? <small>{populationYear}</small> : null}
+              </dd>
+            </div>
+          )}
+        </dl>
+      )}
+      {sources.length > 0 && (
+        <p className="w2-profile-source">
+          {t('common.source')}:{' '}
+          {sources.map((item, index) => (
+            <span key={`${item.kind}-${item.label}`}>
+              {index > 0 ? ', ' : ''}
+              <SourceLink href={item.url} fallbackTo={fallbackHref}>
+                {item.label}
+              </SourceLink>
+            </span>
+          ))}
+        </p>
+      )}
+    </section>
   );
 }

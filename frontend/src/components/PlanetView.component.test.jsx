@@ -205,8 +205,11 @@ describe('PlanetView interaction contract', () => {
     expect(layers.getAllByRole('button').map((button) => button.textContent)).toEqual(['planet.earth', 'planet.data']);
     expect(screen.queryByRole('button', { name: 'planet.map' })).toBeNull();
 
+    // The range is always visible as a colour strip with its own unit; intervals stay behind the disclosure.
+    const ends = container.querySelector('.planet-key-ends').textContent;
+    expect(ends).toContain('-5,0 %');
+    expect(ends).toContain('10,0 %');
     const summary = container.querySelector('details summary');
-    expect(summary.textContent).toContain('-5,00–10,00 %');
     fireEvent.click(summary);
     expect(summary.parentElement.open).toBe(true);
     const legend = within(screen.getByLabelText('planet.legend'));
@@ -239,7 +242,7 @@ describe('PlanetView interaction contract', () => {
     expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
     expect(screen.getByText('июль 2026')).toBeTruthy();
     expect(screen.queryByText('июнь 2026')).toBeNull();
-    expect(screen.getByLabelText('planet.value').textContent).toBe('5,10');
+    expect(screen.getByLabelText('planet.value').textContent).toBe('5,1');
     expect(scene.props.valuesByCode.get('DE')).toBe(5.1);
 
     fireEvent.click(screen.getByRole('button', { name: 'planet.data' }));
@@ -440,5 +443,70 @@ describe('PlanetView interaction contract', () => {
     await screen.findByTestId('planet-scene');
     await waitFor(() => expect(container.querySelector('[data-scene-ready="true"]')).toBeTruthy());
     expect(scene.props.selectedCode).toBe('DE');
+  });
+
+  it('shows flags instead of ISO codes, and a unit beside every number', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    const rows = countryList().getAllByRole('button');
+    expect(rows[0].querySelector('.fe-flag').textContent).toBe('\u{1F1E9}\u{1F1EA}');
+    expect(rows[0].textContent).not.toMatch(/\bDE\b/);
+    expect(rows[0].textContent).toContain('%');
+    fireEvent.focus(screen.getByRole('combobox'));
+    const option = screen.getAllByRole('option')[0];
+    expect(option.querySelector('.fe-flag')).toBeTruthy();
+    expect(option.textContent).not.toMatch(/\bDE\b/);
+    expect(container.querySelector('.planet-country-heading')).toBeNull();
+  });
+
+  it('says where the country stands and counts the value up inside the card', async () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" colorDirection="desc" />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
+    expect(screen.getByText('w2.planet.rank')).toBeTruthy();
+    expect(screen.getByLabelText('planet.value').textContent).toBe('3,20');
+  });
+
+  it('keeps technical wording off the screen: «median» becomes «middle of the ranking»', () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} unit="%" benchmark={{ value: 2.5, label: 'Медиана по 55 странам с данными' }} />);
+    expect(screen.queryByText(/Медиана по/)).toBeNull();
+    expect(screen.getByText(/w2.planet.middle:/)).toBeTruthy();
+  });
+
+  it('draws a colour strip with both ends and a unit in data mode, and none in Earth mode', async () => {
+    const { container, rerender } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" initialMode="data" periodLabel="2025" />);
+    await screen.findByTestId('planet-scene');
+    expect(container.querySelector('.planet-key-bar')).toBeTruthy();
+    expect(container.querySelector('.planet-key-title').textContent).toContain('Безработица');
+    expect(container.querySelector('.planet-key-title').textContent).toContain('2025');
+    expect(container.querySelector('.planet-key-ends').textContent).toContain('1,70 %');
+    expect(container.querySelector('.planet-key-ends').textContent).toContain('3,20 %');
+    expect(scene.props.valueDigits).toBe(2);
+    rerender(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" initialMode="earth" periodLabel="2025" />);
+  });
+
+  it('collapses a long list for phones and expands it on request without a nested scroll', () => {
+    const many = Array.from({ length: 20 }, (_, index) => ({ code: `Y${index}`, slug: `y-${index}`, name: `Страна ${index}` }));
+    const { container } = render(<PlanetView countries={many} valuesByCode={Object.fromEntries(many.map((country, index) => [country.code, index]))} />);
+    expect(container.querySelector('.planet-country-list').classList.contains('is-compact')).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: /w2.planet.showAll/ }));
+    expect(container.querySelector('.planet-country-list').classList.contains('is-compact')).toBe(false);
+    expect(screen.getByRole('button', { name: /w2.planet.showLess/ }).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('picks the list row on the planet itself: the camera turns to the country and the stage is scrolled into view on a phone', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
+      matches: query.includes('max-width: 700px'), media: query, addEventListener: vi.fn(), removeEventListener: vi.fn(),
+    }));
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    vi.spyOn(container.querySelector('.planet-stage'), 'getBoundingClientRect').mockReturnValue({ top: -400, bottom: -100 });
+    selectListCountry('Германия');
+    expect(scene.props.selectedCode).toBe('DE');
+    expect(scene.props.cameraCommand).toMatchObject({ type: 'focus', countryCode: 'DE' });
+    expect(scrollIntoView).toHaveBeenCalledWith(expect.objectContaining({ block: 'start' }));
+    expect(scrollIntoView.mock.instances[0]).toBe(container.querySelector('.planet-stage'));
+    delete Element.prototype.scrollIntoView;
   });
 });

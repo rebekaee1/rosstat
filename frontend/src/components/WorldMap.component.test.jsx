@@ -41,31 +41,22 @@ describe('CountrySilhouette', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('подписывает частоты по-русски', () => {
+  it('не показывает человеку технику: код страны, диапазон лет и частоту', () => {
     renderMap(
       <CountrySilhouette
         code="AT"
         name="Австрия"
+        region="Европа"
         historyStart="1996-01-01"
         historyEnd="2026-06-01"
         frequencies={['monthly', 'annual']}
       />,
     );
-    // Одна метка вместо перечисления: самая мелкая доступная частота.
-    expect(screen.getByText('месяц')).toBeTruthy();
-    expect(screen.queryByText(/,/)).toBeNull();
-    expect(screen.getByText('1996–2026')).toBeTruthy();
-  });
-
-  it('выбирает частоту по приоритету daily → annual', () => {
-    renderMap(
-      <CountrySilhouette
-        code="AT"
-        name="Австрия"
-        frequencies={['annual', 'quarterly', 'weekly']}
-      />,
-    );
-    expect(screen.getByText('неделя')).toBeTruthy();
+    const panel = screen.getByLabelText('Контур территории: Австрия');
+    expect(panel.textContent).not.toMatch(/AT\b/);
+    expect(panel.textContent).not.toContain('1996');
+    expect(screen.queryByText('месяц')).toBeNull();
+    expect(screen.getByText('Европа')).toBeTruthy();
   });
 
   it('показывает площадь и население с русской типографикой', () => {
@@ -95,7 +86,7 @@ describe('CountrySilhouette', () => {
     const panel = screen.getByLabelText('Контур территории: Австрия');
     const normalized = panel.textContent.replace(/\u00A0/g, ' ');
     expect(normalized).toContain('83 882 км²');
-    expect(normalized).toContain('9 197 213 человек');
+    expect(normalized).toContain('9,2 млн человек');
     expect(normalized).toContain('2026');
     expect(normalized).toContain('2025');
     const source = screen.getByRole('link', { name: 'Евростат' });

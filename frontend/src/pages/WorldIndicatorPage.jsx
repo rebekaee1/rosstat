@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
-  ArrowLeft, ArrowUpRight, Activity,
+  ArrowUpRight, Activity,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getSiteOrigin } from '../lib/siteOrigin';
@@ -11,7 +11,7 @@ import { completeDataset } from '../lib/datasetJsonLd';
 import { mountJsonLd } from '../lib/jsonLd';
 import {
   useWorldIndicator, useWorldIndicatorData, useWorldCountry, formatWorldValue,
-  localizeWorldUnit,
+  localizeWorldUnit, pluralRu,
 } from '../lib/worldApi';
 import {
   adaptWorldModes,
@@ -27,7 +27,9 @@ import {
   worldModeToLegacyDataToken,
   worldVariantsToPickerGroup,
 } from '../lib/worldViewModes';
-import { formatDate, chartValueDigits, resolveDateFormat } from '../lib/format';
+import { formatDate, formatChange, chartValueDigits, resolveDateFormat } from '../lib/format';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { splitUnit } from '../lib/countryFlag';
 import { downloadCSV, downloadExcel } from '../lib/excel';
 import { track, events } from '../lib/track';
 import WorldViewModePicker from '../components/WorldViewModePicker';
@@ -37,11 +39,13 @@ import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import SourceLink from '../components/SourceLink';
 import DataTable from '../components/DataTable';
 import ApiRetryBanner from '../components/ApiRetryBanner';
-import TelemetryCard from '../components/TelemetryCard';
+import DeltaBadge from '../components/DeltaBadge';
+import WorldCountUp from '../components/WorldCountUp';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import Button from '../components/Button';
 import '../styles/platform-pages.css';
+import '../styles/world.css';
 import { worldIndicatorTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
@@ -79,6 +83,40 @@ function computeWorldTelemetry(points) {
     average: n ? sum / n : null,
     dataCount: points.length,
   };
+}
+
+/** Длинное название в крошках не должно занимать две строки: режем по слову и ставим многоточие. */
+function shortCrumb(text, limit = 40) {
+  const value = String(text || '').trim();
+  if (value.length <= limit) return value;
+  const cut = value.slice(0, limit);
+  const space = cut.lastIndexOf(' ');
+  return `${(space > limit * 0.6 ? cut.slice(0, space) : cut).replace(/[\s,.;:—-]+$/, '')}…`;
+}
+
+/** «Данные за 12 лет» вместо «НАБЛ.: 12 ПЕРИОД.»: сколько лет охватывает ряд, считая по частоте. */
+function dataSpan(count, frequency) {
+  const n = Number(count);
+  if (!Number.isFinite(n) || n < 1) return null;
+  const perYear = { annual: 1, quarterly: 4, monthly: 12, weekly: 52, daily: 365 }[frequency] || 1;
+  const years = Math.round(n / perYear);
+  if (years >= 1) return { value: years, unit: 'years' };
+  return { value: n, unit: frequency === 'daily' ? 'days' : frequency === 'weekly' ? 'weeks' : 'months' };
+}
+
+/** Плитка одного числа: подпись, значение с единицей, пояснение. Без капса и моно. */
+function StatTile({ label, children, note, tone = null, index = 0 }) {
+  return (
+    <div
+      className="w2-stat fe-reveal"
+      style={{ '--fe-delay': `${Math.min(index, 4) * 40}ms`, '--fe-duration': '0.4s', '--fe-rise': '10px' }}
+    >
+      <p className="w2-stat-label">{label}</p>
+      <p className="w2-stat-value">{children}</p>
+      {tone}
+      {note && <p className="w2-stat-note">{note}</p>}
+    </div>
+  );
 }
 
 export default function WorldIndicatorPage() {
@@ -268,7 +306,21 @@ export default function WorldIndicatorPage() {
   const activeFreq = dataQ.data?.frequency || modeParsed?.freq || indicator?.frequency;
   const aggregated = Boolean(dataQ.data?.aggregated)
     || (modeMeta && modeMeta.official === false);
-  const valueDigits = chartValueDigits(rawUnit || displayUnit);
+  // Знаков после запятой ровно столько, сколько есть в самих данных: «1 815 983», «3,1», а не «1 815 983,00» и «3,10».
+  const valueDigits = points.length > 0
+    ? Math.min(2, Math.max(...points.map((point) => {
+      const value = Number(point.value);
+      return Number.isFinite(value) ? (String(Math.abs(value)).split('.')[1] || '').length : 0;
+    })))
+    : chartValueDigits(rawUnit || displayUnit);
+  const unitParts = splitUnit(displayUnit);
+  const span = dataSpan(telemetry?.dataCount, activeFreq);
+  const spanWord = (unit, n) => (locale === 'en'
+    ? t(`w2.span.${unit}.${n === 1 ? 'one' : 'many'}`)
+    : pluralRu(n, [t(`w2.span.${unit}.one`), t(`w2.span.${unit}.few`), t(`w2.span.${unit}.many`)]));
+  const spanText = span ? t('w2.span.text', { n: span.value, word: spanWord(span.unit, span.value) }) : undefined;
+  const polarity = indicatorPolarity(displayName);
+  const statFormat = (value) => formatWorldValue(value, valueDigits, locale);
   const deltaSuffix = activeFreq === 'quarterly' ? t('indicator.telemetry.delta.prevQuarter')
     : activeFreq === 'annual' ? t('indicator.telemetry.delta.prevYear')
       : activeFreq === 'weekly' ? t('indicator.telemetry.delta.prevWeek')
@@ -349,7 +401,14 @@ export default function WorldIndicatorPage() {
   const methodologyContent = useMemo(() => {
     const description = indicator?.description;
     const methodology = indicator?.methodology;
-    if (locale !== 'en') return { description, methodology };
+    if (locale !== 'en') {
+      return {
+        description,
+        methodology: typeof methodology === 'string'
+          ? methodology.replace(/\s*На графике показан наиболее общий доступный срез показателя\.?/g, '').trim()
+          : methodology,
+      };
+    }
     const hideRu = (text) => (
       text && /[А-Яа-яЁё]/.test(text) ? undefined : text
     );
@@ -382,9 +441,7 @@ export default function WorldIndicatorPage() {
   // отдельной строкой, но только если он отличается от отображаемого имени.
   const originalTitle = (indicator?.name_en || '').trim();
   const showOriginalTitle = Boolean(originalTitle) && originalTitle !== displayName;
-  const originalTitleLabel = t('world.indicator.field.originalTitle', locale === 'en'
-    ? 'Original series title'
-    : 'Оригинальное название ряда');
+
 
   const downloadMeta = useMemo(() => ({
     name: displayName,
@@ -421,10 +478,10 @@ export default function WorldIndicatorPage() {
         items={worldIndicatorTrail(
           countryName || country?.name || '…',
           slug,
-          displayName || '…',
+          shortCrumb(displayName) || '…',
           code,
         )}
-        variant="mono"
+        className="flex-nowrap! overflow-hidden [&>span:last-child]:min-w-0 [&>span:last-child>span]:block [&>span:last-child>span]:truncate"
       />
 
       {notFound && (
@@ -469,20 +526,20 @@ export default function WorldIndicatorPage() {
         <>
           <header className="fe-data-header">
             <div className="mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-4">
-              <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest text-text-secondary sm:px-3">
-                <Activity className="h-3 w-3 text-champagne-ink" />
+              <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-3 py-1 text-[13px] font-medium text-text-secondary">
+                <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
                 {freqLabel}
               </span>
               {countryName && (
                 <Link
                   to={countryPath(slug)}
-                  className="hidden font-mono text-xs text-text-secondary transition-colors hover:text-champagne-ink sm:inline"
+                  className="hidden text-sm text-text-secondary transition-colors hover:text-champagne-ink sm:inline"
                 >
                   {countryName}
                 </Link>
               )}
               {categoryLabel && (
-                <span className="hidden font-mono text-xs text-text-secondary sm:inline">
+                <span className="hidden text-sm text-text-secondary sm:inline">
                   {categoryLabel}
                 </span>
               )}
@@ -491,64 +548,67 @@ export default function WorldIndicatorPage() {
               {displayName}
             </h1>
             {metaQ.data._fromMock && (
-              <p className="mt-2 font-mono text-[12px] text-text-secondary">
+              <p className="mt-2 text-xs text-text-secondary">
                 {t('world.mockData')}
               </p>
             )}
           </header>
 
-          <section className="mb-6 md:mb-12">
+          <section className="mb-6 md:mb-10">
             {dataQ.isLoading && !telemetry ? (
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-6">
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
                 {[0, 1, 2, 3].map((i) => (
-                  <SkeletonBox key={i} className="h-28 rounded-2xl md:h-48 md:rounded-[2rem]" />
+                  <SkeletonBox key={i} className="h-32 rounded-3xl" />
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-6">
-                <TelemetryCard
-                  label={t('indicator.telemetry.current')}
-                  value={telemetry?.currentValue}
-                  unit={displayUnit}
-                  valueDigits={valueDigits}
-                  change={telemetry?.change}
-                  meta={telemetry?.currentDate
-                    ? t('indicator.telemetry.date', { date: formatDate(telemetry.currentDate, dateFormat, locale) })
-                    : undefined}
-                  delay={0}
-                  deltaSuffix={deltaSuffix}
-                />
-                <TelemetryCard
-                  label={previousLabel}
-                  value={telemetry?.previousValue}
-                  unit={displayUnit}
-                  valueDigits={valueDigits}
-                  meta={telemetry?.previousDate
-                    ? t('indicator.telemetry.date', { date: formatDate(telemetry.previousDate, dateFormat, locale) })
-                    : undefined}
-                  delay={1}
-                />
-                {telemetry?.highest && (
-                  <TelemetryCard
-                    label={t('indicator.telemetry.max')}
-                    value={telemetry.highest.value}
-                    unit={displayUnit}
-                    valueDigits={valueDigits}
-                    meta={t('indicator.telemetry.peak', { date: formatDate(telemetry.highest.date, dateFormat, locale) })}
-                    delay={2}
-                  />
+              <>
+                <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
+                  <StatTile
+                    index={0}
+                    label={t('w2.ind.now')}
+                    note={telemetry?.currentDate ? formatDate(telemetry.currentDate, dateFormat, locale) : undefined}
+                    tone={telemetry?.change != null && telemetry.change !== 0 ? (
+                      <p className="w2-stat-delta">
+                        <DeltaBadge delta={telemetry.change} polarity={polarity}>
+                          {formatChange(telemetry.change)}
+                        </DeltaBadge>
+                        <span>{deltaSuffix}</span>
+                      </p>
+                    ) : null}
+                  >
+                    <WorldCountUp value={telemetry?.currentValue} format={statFormat} />
+                    {unitParts.short && <small>{unitParts.short}</small>}
+                  </StatTile>
+                  <StatTile
+                    index={1}
+                    label={previousLabel}
+                    note={telemetry?.previousDate ? formatDate(telemetry.previousDate, dateFormat, locale) : undefined}
+                  >
+                    {telemetry?.previousValue != null ? statFormat(telemetry.previousValue) : '—'}
+                    {unitParts.short && telemetry?.previousValue != null && <small>{unitParts.short}</small>}
+                  </StatTile>
+                  {telemetry?.highest && (
+                    <StatTile
+                      index={2}
+                      label={t('w2.ind.max')}
+                      note={formatDate(telemetry.highest.date, dateFormat, locale)}
+                    >
+                      {statFormat(telemetry.highest.value)}
+                      {unitParts.short && <small>{unitParts.short}</small>}
+                    </StatTile>
+                  )}
+                  {telemetry?.average != null && (
+                    <StatTile index={3} label={t('w2.ind.avg')} note={spanText}>
+                      {statFormat(telemetry.average)}
+                      {unitParts.short && <small>{unitParts.short}</small>}
+                    </StatTile>
+                  )}
+                </div>
+                {unitParts.long && unitParts.long !== unitParts.short && (
+                  <p className="mt-3 text-sm text-text-secondary">{t('w2.ind.unitNote', { unit: unitParts.long })}</p>
                 )}
-                {telemetry?.average != null && (
-                  <TelemetryCard
-                    label={t('indicator.telemetry.avg')}
-                    value={telemetry.average}
-                    unit={displayUnit}
-                    valueDigits={valueDigits}
-                    meta={t('indicator.telemetry.obs', { count: telemetry.dataCount })}
-                    delay={3}
-                  />
-                )}
-              </div>
+              </>
             )}
           </section>
 
@@ -605,16 +665,18 @@ export default function WorldIndicatorPage() {
           />
 
           {dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
-            <section className="mb-8 rounded-xl border border-border-subtle bg-surface px-4 py-3 text-xs leading-relaxed text-text-secondary" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>
-              <strong className="text-champagne-ink">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
-              {' — '}{dataQ.data.forecast.model_name}
-              {' — '}MASE {Number(dataQ.data.forecast.quality.mase).toFixed(2)}
-              <p className="mt-1">
+            <details className="w2-details w2-details--card" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>
+              <summary>{locale === 'en' ? 'How our forecast is checked' : 'Как мы проверяем наш прогноз'}</summary>
+              <p>
                 {locale === 'en'
                   ? 'We test the full forecast horizon on rolling historical windows against a seasonal-naive benchmark. Our forecast is published only when MASE is below 1 and the error is at least 2% lower.'
                   : 'Мы проверяем весь горизонт прогноза на последовательных исторических отрезках и сравниваем с сезонной наивной моделью. Наш прогноз публикуется только при MASE ниже 1 и ошибке минимум на 2% меньше ориентира.'}
               </p>
-            </section>
+              <p className="mt-2 text-sm">
+                {dataQ.data.forecast.model_name}
+                {' — '}MASE {Number(dataQ.data.forecast.quality.mase).toFixed(2)}
+              </p>
+            </details>
           )}
 
           <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -623,38 +685,32 @@ export default function WorldIndicatorPage() {
               content={methodologyContent}
               sourcePath={indicator.source_url || indicatorPath(slug, code)}
             />
-            <div className="rounded-[1.5rem] border border-border-subtle bg-obsidian-light p-5 sm:rounded-[2rem] sm:p-8 lg:col-span-2">
-              <h3 className="mb-4 text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">
+            <div className="rounded-3xl border border-border-subtle bg-obsidian-light p-5 sm:p-8 lg:col-span-2">
+              <h3 className="mb-4 text-base font-semibold text-text-primary">
                 {t('world.indicator.aboutSeries')}
               </h3>
               <dl className="grid gap-4 text-sm sm:grid-cols-2">
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('world.indicator.field.freq')}</dt>
-                  <dd className="font-mono text-text-primary">
+                  <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.freq')}</dt>
+                  <dd className="text-text-primary">
                     {freqLabel}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('world.indicator.field.unit')}</dt>
-                  <dd className="font-mono text-text-primary">{displayUnit || '—'}</dd>
+                  <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.unit')}</dt>
+                  <dd className="text-text-primary">{displayUnit || '—'}</dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('world.indicator.field.history')}</dt>
-                  <dd className="font-mono text-text-primary">
+                  <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.history')}</dt>
+                  <dd className="text-text-primary">
                     {indicator.history_start && indicator.history_end
                       ? `${formatDate(indicator.history_start, 'annual', locale)}–${formatDate(indicator.history_end, 'annual', locale)}`
                       : '—'}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('world.indicator.field.points')}</dt>
-                  <dd className="font-mono text-text-primary">
-                    {dataQ.data?.count ?? indicator.points_count ?? '—'}
-                  </dd>
-                </div>
-                <div className="sm:col-span-2">
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('common.source')}</dt>
-                  <dd className="text-[13px] leading-5 text-text-secondary">
+                  <dt className="mb-1 text-xs text-text-secondary">{t('common.source')}</dt>
+                  <dd className="text-[15px] leading-5 text-text-secondary">
                     <SourceLink
                       href={indicator.source_url}
                       className="text-champagne-ink underline-offset-2 hover:underline"
@@ -664,31 +720,42 @@ export default function WorldIndicatorPage() {
                     </SourceLink>
                   </dd>
                 </div>
-                {showOriginalTitle && (
-                  <div className="sm:col-span-2">
-                    <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">
-                      {originalTitleLabel}
-                    </dt>
-                    <dd className="text-[13px] leading-5 text-text-secondary">
-                      {originalTitle}
+              </dl>
+              <details className="w2-details">
+                <summary>{t('w2.ind.more')}</summary>
+                <dl className="mt-2 grid gap-4 text-sm sm:grid-cols-2">
+                  <div>
+                    <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.points')}</dt>
+                    <dd className="text-text-primary">
+                      {dataQ.data?.count ?? indicator.points_count ?? '—'}
                     </dd>
                   </div>
-                )}
-              </dl>
+                  {showOriginalTitle && (
+                    <div className="sm:col-span-2">
+                      <dt className="mb-1 text-xs text-text-secondary">
+                        {t('world.indicator.field.sourceName')}
+                      </dt>
+                      <dd className="leading-5 text-text-secondary">
+                        {originalTitle}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              </details>
               <div className="mt-6 flex flex-wrap gap-2 border-t border-border-subtle pt-4">
                 <Link
                   to={countryPath(slug)}
                   className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
                 >
                   {t('world.indicator.allOfCountry', { country: countryName || country?.name || '' })}
-                  <ArrowUpRight size={12} />
+                  <ArrowUpRight size={12} aria-hidden="true" />
                 </Link>
                 <Link
                   to="/#countries"
                   className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
                 >
                   {t('world.indicator.allCountries')}
-                  <ArrowUpRight size={12} />
+                  <ArrowUpRight size={12} aria-hidden="true" />
                 </Link>
               </div>
             </div>

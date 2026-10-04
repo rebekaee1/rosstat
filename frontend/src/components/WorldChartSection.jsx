@@ -1,7 +1,7 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Terminal, Download, Lock, Image as ImageIcon, HelpCircle,
+  ChevronDown, Download, FileSpreadsheet, FileText, HelpCircle, Image as ImageIcon, LineChart, Lock,
 } from 'lucide-react';
 import { resolveDateFormat, cn } from '../lib/format';
 import { track, events } from '../lib/track';
@@ -9,7 +9,8 @@ import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
 import ChartSectionSkeleton from './ChartSectionSkeleton';
-import { worldChartTitle, worldRangePreset } from '../lib/worldViewModes';
+import Button from './Button';
+import { indicatorPublicName, worldRangePreset } from '../lib/worldViewModes';
 import { useLocale, useT } from '../i18n';
 import { useCountryComparison } from '../lib/useCountryComparison';
 import CountryComparePanel from './CountryComparePicker';
@@ -19,65 +20,71 @@ import CountryComparePanel from './CountryComparePicker';
  * Переиспользует IndicatorChart; прогноз — только после проверки на
  * исторических данных и по явному переключателю пользователя.
  */
-function DownloadButton({ label, onDownload, blocked, hint }) {
-  const t = useT();
-  const handleClick = () => {
-    // Let the export API enforce the guest limit: excel.js then retains the
-    // exact payload for completion after auth, instead of losing the intent.
-    onDownload?.();
-  };
-  const tooltip = blocked ? t('download.dataBlocked') : hint;
-  return (
-    <div className="relative group/dl">
-      <button
-        type="button"
-        onClick={handleClick}
-        aria-disabled={blocked}
-        className={cn(
-          'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors text-xs font-mono uppercase tracking-wider',
-          blocked
-            ? 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer'
-            : 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn',
-        )}
-        title={blocked ? t('download.dataBlocked') : t('download.downloadLabel', { label })}
-      >
-        {blocked ? <Lock className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
-        {label}
-      </button>
-      {tooltip && (
-        <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-[11px] normal-case tracking-normal text-text-secondary whitespace-nowrap opacity-0 group-hover/dl:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-          {tooltip}
-        </div>
-      )}
-    </div>
-  );
+
+const MODE_TITLE_KEY = {
+  step: 'w2.mode.step', yoy: 'w2.mode.yoy', yoyabs: 'w2.mode.yoy', index: 'w2.mode.index',
+};
+
+/** Заголовок графика для человека: имя показателя и, если это не просто значения, что именно показано. Без «(по годам)» и «Уровень». */
+function humanChartTitle(indicator, modeMeta, locale, t) {
+  const name = indicatorPublicName(indicator, locale) || (locale === 'en' ? 'Indicator' : 'Показатель');
+  const key = MODE_TITLE_KEY[modeMeta?.type];
+  return key ? `${name}, ${t(key).toLowerCase()}` : name;
 }
 
-function ImageButton({ onDownload, authed }) {
+/** Одна кнопка «Скачать» вместо трёх слипшихся кнопок с замками. Гостю вход предлагает сам экспорт. */
+function DownloadMenu({ onCsv, onExcel, onPng, dataBlocked, imageBlocked }) {
   const t = useT();
-  const tooltip = authed
-    ? t('download.chartPng')
-    : t('download.chartBlocked');
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDown = (event) => { if (!rootRef.current?.contains(event.target)) setOpen(false); };
+    const onKey = (event) => { if (event.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+  const items = [
+    { id: 'csv', label: t('w2.dl.csv'), Icon: FileText, run: onCsv, blocked: dataBlocked, hint: dataBlocked ? t('download.dataBlocked') : undefined },
+    { id: 'excel', label: t('w2.dl.excel'), Icon: FileSpreadsheet, run: onExcel, blocked: dataBlocked, hint: dataBlocked ? t('download.dataBlocked') : undefined },
+    { id: 'png', label: t('w2.dl.png'), Icon: ImageIcon, run: onPng, blocked: imageBlocked, hint: imageBlocked ? t('download.chartBlocked') : t('download.chartPng') },
+  ];
   return (
-    <div className="relative group/img" data-no-export="true">
-      <button
-        type="button"
-        onClick={onDownload}
-        aria-disabled={!authed}
-        className={cn(
-          'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors text-xs font-mono uppercase tracking-wider',
-          authed
-            ? 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30 magnetic-btn'
-            : 'border-border-subtle/60 text-text-tertiary/50 cursor-pointer',
-        )}
-        title={tooltip}
+    <div ref={rootRef} className="relative" data-no-export="true">
+      <Button
+        variant="secondary"
+        size="sm"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onClick={() => setOpen((value) => !value)}
+        className="gap-1.5"
       >
-        {authed ? <ImageIcon className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
-        PNG
-      </button>
-      <div className="absolute top-full right-0 mt-2 px-3 py-2 rounded-xl bg-obsidian border border-border-subtle text-[11px] normal-case tracking-normal text-text-secondary whitespace-nowrap opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 pointer-events-none shadow-xl z-50">
-        {tooltip}
-      </div>
+        <Download size={14} aria-hidden="true" />
+        {t('w2.dl.title')}
+        <ChevronDown size={13} aria-hidden="true" className={cn('transition-transform', open && 'rotate-180')} />
+      </Button>
+      {open && (
+        <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
+          {items.map(({ id, label, Icon, run, blocked, hint }) => (
+            <button
+              key={id}
+              type="button"
+              role="menuitem"
+              title={hint}
+              onClick={() => { setOpen(false); run?.(); }}
+              className="flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 text-left text-sm text-text-primary transition-colors hover:bg-obsidian-light"
+            >
+              <Icon size={16} className="shrink-0 text-text-secondary" aria-hidden="true" />
+              <span className="min-w-0 flex-1">{label}</span>
+              {blocked && <Lock size={14} className="shrink-0 text-text-tertiary" aria-label={hint} />}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -112,7 +119,7 @@ export default function WorldChartSection({
   const chartRef = useRef(null);
   const unit = unitOverride || modeMeta?.unit || indicator?.unit || '';
   const activeFreq = frequency || modeMeta?.freq || indicator?.frequency;
-  const title = worldChartTitle(indicator, modeMeta, activeFreq, locale);
+  const title = humanChartTitle(indicator, modeMeta, locale, t);
   const priceIndexLevel = conceptSlug === 'hicp-index'
     && modeMeta?.type === 'level'
     && /индекс|index/i.test(indicator?.unit || '');
@@ -184,39 +191,20 @@ export default function WorldChartSection({
   return (
     <section id="chart" data-block="chart" className="mb-10 sm:mb-16 scroll-mt-24" aria-busy={chartLoading ? true : undefined}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-3 sm:mb-6 sm:pb-4">
-        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-          <Terminal className="h-4 w-4 shrink-0 text-champagne" />
-          <span className="min-w-0 break-words text-xs leading-snug text-text-secondary line-clamp-3 sm:font-mono sm:text-[11px] sm:uppercase sm:tracking-widest sm:text-text-tertiary sm:line-clamp-2">
+        <div className="flex min-w-0 items-center gap-3">
+          <LineChart className="h-4 w-4 shrink-0 text-champagne" aria-hidden="true" />
+          <h2 className="min-w-0 break-words text-sm font-semibold leading-snug text-text-primary line-clamp-3 sm:text-base">
             {title}
-          </span>
+          </h2>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3" data-no-export="true">
-          <div className="relative group/help">
-            <Link
-              to="/methodology"
-              aria-label={t('chart.methodologyAria')}
-              onClick={() => track(events.METHODOLOGY_CLICK, {
-                indicator: code,
-                indicatorCategory: indicator?.category,
-                world: true,
-              })}
-              className="text-text-tertiary transition-colors hover:text-champagne"
-            >
-              <HelpCircle className="h-4 w-4" />
-            </Link>
-            <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-xl border border-border-subtle bg-obsidian px-3 py-2 text-xs text-text-secondary opacity-0 shadow-xl transition-opacity group-hover/help:opacity-100">
-              {t('chart.methodologyHint')}
-            </div>
-          </div>
+        <div className="flex flex-wrap items-center gap-3" data-no-export="true">
           <div className="relative group/forecast">
             <label className={cn(
-              'flex select-none items-center gap-2.5',
-              forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-45',
+              'flex select-none items-center gap-2.5 text-sm text-text-secondary',
+              forecastEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-60',
             )}>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-text-tertiary">
-                {t('common.forecast')}
-              </span>
+              <span>{t('common.forecast')}</span>
               <button
                 type="button"
                 role="switch"
@@ -225,14 +213,14 @@ export default function WorldChartSection({
                 disabled={!forecastEnabled}
                 onClick={onToggleForecast}
                 className={cn(
-                  'relative h-5 w-10 rounded-full border transition-colors',
+                  'relative h-6 w-11 rounded-full border transition-colors',
                   effectiveShowForecast
                     ? 'border-champagne/30 bg-champagne/30'
                     : 'border-border-subtle bg-obsidian-lighter',
                 )}
               >
                 <span className={cn(
-                  'absolute left-[2px] top-[2px] h-3.5 w-3.5 rounded-full transition-transform',
+                  'absolute left-[2px] top-[2px] h-4 w-4 rounded-full transition-transform',
                   effectiveShowForecast
                     ? 'translate-x-5 bg-champagne'
                     : 'translate-x-0 bg-text-tertiary',
@@ -240,15 +228,27 @@ export default function WorldChartSection({
                 />
               </button>
             </label>
-            {!forecastEnabled && (
-              <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border-subtle bg-obsidian px-3 py-2 text-[11px] leading-4 text-text-secondary opacity-0 shadow-xl transition-opacity group-hover/forecast:opacity-100">
-                {forecastNote}
-              </div>
-            )}
           </div>
-          <DownloadButton label="CSV" onDownload={onDownloadCsv} blocked={downloadBlocked} />
-          <DownloadButton label="Excel" onDownload={onDownloadExcel} blocked={downloadBlocked} />
-          <ImageButton onDownload={handleDownloadImage} authed={downloadAuthed} />
+          <Link
+            to="/methodology"
+            aria-label={t('chart.methodologyAria')}
+            title={t('chart.methodologyHint')}
+            onClick={() => track(events.METHODOLOGY_CLICK, {
+              indicator: code,
+              indicatorCategory: indicator?.category,
+              world: true,
+            })}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-text-tertiary transition-colors hover:text-champagne pointer-coarse:h-11 pointer-coarse:w-11"
+          >
+            <HelpCircle className="h-4 w-4" aria-hidden="true" />
+          </Link>
+          <DownloadMenu
+            onCsv={onDownloadCsv}
+            onExcel={onDownloadExcel}
+            onPng={handleDownloadImage}
+            dataBlocked={downloadBlocked}
+            imageBlocked={!downloadAuthed}
+          />
         </div>
       </div>
 
@@ -310,7 +310,7 @@ export default function WorldChartSection({
       </p>
 
       {showForecast && forecastEnabled && !rebased && (
-        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
+        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-tertiary">
           <span>
             {t('world.chart.forecastStarts')}
           </span>
@@ -320,12 +320,12 @@ export default function WorldChartSection({
         </div>
       )}
       {showForecast && forecastEnabled && !chartLoading && forecastData.length === 0 && (
-        <p className="mb-3 text-[11px] text-text-tertiary">
+        <p className="mb-3 text-xs text-text-tertiary">
           {t('world.chart.forecastIncomplete')}
         </p>
       )}
       {showForecast && rebased && (
-        <p className="mb-3 text-[11px] text-text-tertiary">
+        <p className="mb-3 text-xs text-text-tertiary">
           {t('world.chart.forecastHiddenRebase')}
         </p>
       )}
@@ -333,7 +333,7 @@ export default function WorldChartSection({
       {chartLoading ? (
         <ChartSectionSkeleton />
       ) : (
-        <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[2rem]">
+        <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-3xl">
           <IndicatorChart
             key={`${code}-${modeMeta?.id}-${activeFreq}`}
             mode="cpi"

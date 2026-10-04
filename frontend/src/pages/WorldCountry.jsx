@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  ChevronRight, Search, Globe2, BarChart3, ArrowUpRight,
+  Search, BarChart3, ArrowUpRight,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -11,15 +11,21 @@ import {
   worldCountryTitle,
 } from '../lib/pageMeta';
 import {
-  useWorldCountry, formatWorldValue, pluralRu, localizeWorldUnit,
+  useWorldCountry, useWorldIndicatorData, formatWorldValue, localizeWorldUnit,
 } from '../lib/worldApi';
 import {
   collapseCountryIndicators, indicatorPublicName, localizedDisplay,
 } from '../lib/worldViewModes';
 import { formatChange, formatDate } from '../lib/format';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { splitUnit } from '../lib/countryFlag';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Button from '../components/Button';
 import Chip from '../components/Chip';
+import CountryFlag from '../components/CountryFlag';
+import DeltaBadge from '../components/DeltaBadge';
+import Sparkline, { SparklineSkeleton } from '../components/Sparkline';
+import WorldCountUp from '../components/WorldCountUp';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
@@ -43,6 +49,17 @@ import {
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { countryPublicName } from '../lib/homeWorkbench';
+import '../styles/world.css';
+
+/** Главные темы идут первыми: человек ждёт «Экономику» и «Население», а не алфавитный «Бизнес». */
+const TOPIC_PRIORITY = [
+  'Национальные счета', 'Цены', 'Рынок труда', 'Население', 'Государственные финансы',
+  'Внешняя торговля', 'Бизнес и инвестиции',
+];
+function topicRank(category) {
+  const index = TOPIC_PRIORITY.indexOf(category?.name_ru || category?.name);
+  return index === -1 ? TOPIC_PRIORITY.length : index;
+}
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -55,15 +72,56 @@ function formatIndicatorDate(dateStr, frequency, locale) {
   return formatDate(dateStr, 'full', locale);
 }
 
-function CompactChange({ change }) {
+function CompactChange({ change, label }) {
   if (change == null || !Number.isFinite(Number(change)) || Math.abs(Number(change)) < 1e-12) {
     return null;
   }
   const n = Number(change);
+  // Цвет по смыслу показателя: рост безработицы или инфляции не «зелёный», неизвестный смысл — нейтрально.
   return (
-    <span className={`font-mono text-xs tabular-nums ${n > 0 ? 'text-positive' : 'text-negative'}`}>
+    <DeltaBadge delta={n} polarity={indicatorPolarity(label)} className="text-xs">
       {formatChange(n)}
-    </span>
+    </DeltaBadge>
+  );
+}
+
+/** Единицу и период человек видит рядом с числом: «2,9 % — август 2026», а не голая цифра. */
+function kpiDigits(value) {
+  const abs = Math.abs(Number(value));
+  if (abs >= 1000) return 0;
+  return abs >= 1 ? 1 : 2;
+}
+
+function CountryKpiCard({ item, slug, hero, locale }) {
+  const mode = `${item.concept_slug === 'hicp-index' ? 'yoy' : 'level'}-${item.frequency || 'annual'}`;
+  const seriesQ = useWorldIndicatorData(slug, item.indicator_code, mode);
+  const spark = useMemo(
+    () => (seriesQ.data?.points || []).map((point) => Number(point.value)).filter(Number.isFinite).slice(-36),
+    [seriesQ.data],
+  );
+  const unit = splitUnit(localizeWorldUnit(item.unit, locale));
+  const digits = kpiDigits(item.value);
+  const format = (value) => formatWorldValue(value, digits, locale);
+  return (
+    <Link
+      to={indicatorPath(slug, item.indicator_code)}
+      className={`w2-kpi fe-press group${hero ? ' w2-kpi--hero' : ''}`}
+    >
+      <span className="w2-kpi-name">{localizedDisplay(locale, item.name, item.name_en)}</span>
+      <span className="w2-kpi-value">
+        <WorldCountUp value={item.value} format={format} />
+        {unit.short && <small>{unit.short}</small>}
+      </span>
+      <span className="w2-kpi-period">
+        {formatIndicatorDate(item.date, item.frequency, locale)}
+        {unit.long && unit.long !== unit.short ? `, ${unit.long}` : ''}
+      </span>
+      <span className="w2-kpi-spark" aria-hidden="true">
+        {seriesQ.isLoading
+          ? <SparklineSkeleton height={hero ? 52 : 40} />
+          : (spark.length > 1 && <Sparkline points={spark} trend="flat" sentiment="neutral" height={hero ? 52 : 40} />)}
+      </span>
+    </Link>
   );
 }
 
@@ -94,6 +152,8 @@ function FreqBadges({ item, t }) {
   if (!shown.length) return null;
   const primary = shown[0];
   const primaryIsAggregated = !officialFreqs.includes(primary);
+  // Официальный годовой ряд: дата «2025» и так говорит «раз в год»; лишний чип «год» только рвёт строку.
+  if (primary === 'annual' && !primaryIsAggregated) return null;
   const restLabels = shown.slice(1).map(
     (f) => `${officialFreqs.includes(f) ? '' : '~'}${toLabel(f)}`,
   );
@@ -105,7 +165,7 @@ function FreqBadges({ item, t }) {
     <span
       title={title}
       className={
-        'cursor-help rounded-full bg-obsidian-light px-2 py-0.5 font-mono'
+        'cursor-help rounded-full bg-obsidian-light px-2 py-0.5'
         + (primaryIsAggregated ? ' opacity-60' : '')
       }
     >
@@ -134,12 +194,12 @@ function IndicatorRow({ item, slug, to, sectionName }) {
         </div>
       </div>
       <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">
-        <div className="font-mono text-[15px] font-semibold tabular-nums text-text-primary sm:text-[14px] sm:font-medium">
+        <div className="text-[15px] font-semibold tabular-nums text-text-primary sm:text-[14px] sm:font-medium">
           {formatWorldValue(item.last_value, undefined, locale)}
         </div>
         <div className="flex items-center gap-1.5">
-          <CompactChange change={item.change} />
-          <span className="font-mono text-xs text-text-tertiary">
+          <CompactChange change={item.change} label={indicatorPublicName(item, locale)} />
+          <span className="text-xs text-text-tertiary">
             {formatIndicatorDate(item.last_date, item.frequency, locale)}
           </span>
         </div>
@@ -221,14 +281,20 @@ export default function WorldCountry() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  const catalogCategories = useMemo(() => (data?.categories || []).map((cat) => {
-    const indicators = collapseCountryIndicators(cat.indicators || []);
-    return {
-      ...cat,
-      indicators,
-      count: indicators.length,
-    };
-  }), [data]);
+  const catalogCategories = useMemo(() => {
+    const mapped = (data?.categories || []).map((cat) => {
+      const indicators = collapseCountryIndicators(cat.indicators || []);
+      return {
+        ...cat,
+        indicators,
+        count: indicators.length,
+      };
+    });
+    // Каталог США своей навигацией по темам; остальные страны — главные темы первыми, остальное по алфавиту.
+    return slug === 'united-states'
+      ? mapped
+      : [...mapped].sort((a, b) => topicRank(a) - topicRank(b));
+  }, [data, slug]);
 
   const filteredCategories = useMemo(() => {
     const q = normalize(deferredQuery);
@@ -359,18 +425,24 @@ export default function WorldCountry() {
       )}
 
       {isLoading && (
-        <div className="min-h-screen space-y-4">
-          <SkeletonBox className="h-9 w-64 max-w-full" />
-          <SkeletonBox className="h-10 w-full rounded-xl" />
-          <SkeletonBox className="h-40 rounded-xl" />
+        <div className="space-y-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="h-4 w-28" />
+          <SkeletonBox className="h-10 w-3/4 max-w-md" />
+          <SkeletonBox className="h-4 w-full max-w-xl" />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            <SkeletonBox className="col-span-2 h-40 rounded-3xl sm:col-span-1" />
+            <SkeletonBox className="h-36 rounded-3xl" />
+            <SkeletonBox className="h-36 rounded-3xl" />
+          </div>
+          <SkeletonBox className="h-12 w-full rounded-xl" />
         </div>
       )}
 
       {data && (
         <>
           <div className="fe-data-header">
-            <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne">
-              <Globe2 size={13} />
+            <div className="w2-kicker mb-2 flex items-center gap-2">
+              <CountryFlag code={data.country.code} className="w2-kicker-flag" />
               {localizedDisplay(locale, data.country.region, data.country.region_en)}
             </div>
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)] lg:items-start lg:gap-7">
@@ -378,69 +450,36 @@ export default function WorldCountry() {
                 <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
                   {countryMeta?.h1 || countryName}
                 </h1>
-                {data.country.name_en && data.country.name_en !== countryName && (
-                  <div className="mt-1 text-xs text-text-tertiary">{data.country.name_en}</div>
-                )}
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary">
-                  {t('world.country.coverage', {
-                    indicators: `${totalIndicators} ${locale === 'en'
-                      ? (totalIndicators === 1 ? t('world.unit.indicator_one') : t('world.unit.indicator_many'))
-                      : pluralRu(totalIndicators, [t('world.unit.indicator_one'), t('world.unit.indicator_few'), t('world.unit.indicator_many')])}`,
-                    sections: `${isUsCatalog ? usTopics.length : data.categories.length} ${locale === 'en'
-                      ? ((isUsCatalog ? usTopics.length : data.categories.length) === 1 ? t('world.unit.section_one') : t('world.unit.section_many'))
-                      : pluralRu(isUsCatalog ? usTopics.length : data.categories.length, [t('world.unit.section_one'), t('world.unit.section_few'), t('world.unit.section_many')])}`,
-                    history: data.coverage?.history_start
-                      ? t('world.country.historyFrom', { year: formatDate(data.coverage.history_start, 'annual', locale) })
-                      : '.',
-                  })}
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:text-base">
+                  {t('w2.country.lead', { country: countryName })}
                 </p>
-              </div>
-              <div>
-                <CountrySilhouette
-                  code={data.country.code}
-                  name={countryName}
-                  slug={slug}
-                  region={data.country.region}
-                  historyStart={data.coverage?.history_start}
-                  historyEnd={data.coverage?.history_end}
-                  frequencies={data.coverage?.frequencies}
-                  area={data.area}
-                  population={data.population}
-                />
                 <Button
                   as={Link}
                   to={data.overview?.[0]
                     ? `/compare?codes=w:${slug}:${data.overview[0].concept_slug}`
                     : '/compare'}
-                  className="mt-3 flex w-full"
+                  className="mt-4 w-full sm:w-auto"
                 >
                   <BarChart3 size={15} aria-hidden="true" />
                   {t('world.country.compareCta')}
                   <ArrowUpRight size={14} aria-hidden="true" />
                 </Button>
               </div>
+              <CountrySilhouette
+                code={data.country.code}
+                name={countryName}
+                slug={slug}
+                area={data.area}
+                population={data.population}
+              />
             </div>
 
-            <div id="chart" className="mt-7 grid scroll-mt-28 gap-2 sm:grid-cols-3 sm:gap-4">
-              {(data.overview || []).slice(0, 3).map((item) => (
-                <Link
-                  key={item.concept_slug}
-                  to={indicatorPath(slug, item.indicator_code)}
-                  className="fe-panel fe-summary-card group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
-                >
-                  <div className="text-[11px] uppercase tracking-wide text-text-tertiary">
-                    {localizedDisplay(locale, item.name, item.name_en)}
-                  </div>
-                  <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
-                    {formatWorldValue(item.value, undefined, locale)}
-                  </div>
-                  <div className="mt-1.5 font-mono text-xs text-text-tertiary">
-                    {formatIndicatorDate(item.date, item.frequency, locale)}
-                  </div>
-                </Link>
+            <div id="chart" className="mt-6 grid scroll-mt-28 grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+              {(data.overview || []).slice(0, 3).map((item, index) => (
+                <CountryKpiCard key={item.concept_slug} item={item} slug={slug} hero={index === 0} locale={locale} />
               ))}
               {!data.overview?.length && (
-                <div className="text-xs text-text-tertiary sm:col-span-3">
+                <div className="col-span-2 text-sm text-text-secondary sm:col-span-3">
                   {t('world.country.coverageAlt')}
                 </div>
               )}
@@ -453,7 +492,7 @@ export default function WorldCountry() {
               className="fe-panel mb-8 flex items-center justify-between gap-4 rounded-xl border border-border-subtle bg-surface px-5 py-4 transition-colors hover:border-border-champagne"
             >
               <div>
-                <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+                <div className="w2-kicker">
                   {t('world.regions.cardKicker')}
                 </div>
                 <div className="mt-1 font-display text-xl font-bold text-text-primary">
@@ -485,14 +524,11 @@ export default function WorldCountry() {
             <section className="mb-8" data-testid="country-market-indicators">
               <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                 <div className="min-w-0">
-                  <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
-                    {t('world.country.markets')}
-                  </div>
-                  <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
+                  <h2 className="font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
                     {t('world.country.markets')}
                   </h2>
                 </div>
-                <span className="shrink-0 font-mono text-xs text-text-tertiary">
+                <span className="shrink-0 text-sm text-text-tertiary">
                   {data.market_indicators.length}
                 </span>
               </div>
@@ -563,7 +599,7 @@ export default function WorldCountry() {
             )}
             {!searching && !isUsCatalog && (
               <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
-                <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+                <div className="mb-2 px-2 text-[13px] font-semibold text-text-secondary">
                   {t('world.country.themes')}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -584,7 +620,7 @@ export default function WorldCountry() {
                       className="w-full justify-between! gap-4 px-3.5 py-2.5 text-left text-sm!"
                     >
                       <span className="min-w-0 truncate">{localizedDisplay(locale, cat.name, cat.name_en)}</span>
-                      <span className="shrink-0 font-mono text-xs opacity-70">{cat.indicators.length}</span>
+                      <span className="shrink-0 text-xs tabular-nums opacity-70">{cat.indicators.length}</span>
                     </Chip>
                   ))}
                 </div>
@@ -596,12 +632,14 @@ export default function WorldCountry() {
                 <section key={cat.name} className="scroll-mt-24" data-world-country-category={cat.name}>
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                     <div className="min-w-0">
-                      <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
-                        {searching ? t('regions.searchResults') : t('world.country.indicators')}
-                      </div>
-                      <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{localizedDisplay(locale, cat.name, cat.name_en)}</h2>
+                      {searching && (
+                        <div className="w2-kicker">
+                          {t('regions.searchResults')}
+                        </div>
+                      )}
+                      <h2 className="font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{localizedDisplay(locale, cat.name, cat.name_en)}</h2>
                     </div>
-                    <span className="shrink-0 font-mono text-xs text-text-tertiary">{cat.count ?? cat.indicators.length}</span>
+                    <span className="shrink-0 text-sm tabular-nums text-text-tertiary">{cat.count ?? cat.indicators.length}</span>
                   </div>
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {cat.indicators.map((ind) => (

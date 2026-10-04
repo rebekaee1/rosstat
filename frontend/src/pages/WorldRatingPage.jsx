@@ -3,8 +3,8 @@ import {
   Link, useLocation, useNavigate, useParams, useSearchParams,
 } from 'react-router-dom';
 import {
-  ArrowDown, ArrowUp, ArrowUpDown, BarChart3, ChevronLeft, ChevronRight, Globe2,
-  MapPinned, SlidersHorizontal, Table2, X,
+  ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Globe2,
+  MapPinned, Plus, X,
 } from 'lucide-react';
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
@@ -12,7 +12,6 @@ import { track, events } from '../lib/track';
 import {
   formatWorldValue,
   localizeWorldUnit,
-  pluralRu,
   useWorldCountries,
   useWorldMapSeries,
   useWorldRatingConcepts,
@@ -31,6 +30,8 @@ import {
   worldYearItems,
 } from '../lib/homeWorkbench';
 import { formatDate } from '../lib/format';
+import { splitUnit, uniformDigits } from '../lib/countryFlag';
+import useMatchMedia from '../lib/useMatchMedia';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -40,6 +41,9 @@ import { useLocale, useT } from '../i18n';
 import PlanetView from '../components/PlanetView';
 import Button from '../components/Button';
 import Chip from '../components/Chip';
+import CountryFlag from '../components/CountryFlag';
+import WorldCountUp from '../components/WorldCountUp';
+import '../styles/world.css';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
@@ -160,13 +164,6 @@ function rowHref(item, { conceptSlug, russiaIndicatorCode } = {}) {
     { indicator_code: item?.indicator_code },
     { conceptSlug, russiaIndicatorCode },
   ) || '/';
-}
-
-function pluralUnit(n, base, t, locale) {
-  if (locale === 'en') {
-    return n === 1 ? t(`${base}_one`) : t(`${base}_many`);
-  }
-  return pluralRu(n, [t(`${base}_one`), t(`${base}_few`), t(`${base}_many`)]);
 }
 
 /** Горизонтальный сдвиг шкалы карты при 5+ колонках: колонки 0-4 — без сдвига. */
@@ -403,7 +400,6 @@ export default function WorldRatingPage() {
     if (href) navigate(href);
   };
 
-  const countryWord = (n) => pluralUnit(n, 'world.unit.country', t, locale);
 
   // Сортировка по заголовкам. Кликом управляется одна колонка; направление
   // первого клика — смысловое («лучшие сверху»), второго — обратное.
@@ -497,6 +493,29 @@ export default function WorldRatingPage() {
     ? { transform: `translateX(-${tableShift * 15}%)` }
     : undefined;
 
+  // На телефоне вместо широкой таблицы — карточки: место, флаг, страна, значение: значение всегда на одном экране со страной.
+  const narrow = useMatchMedia('(max-width: 639px)');
+  const digits = useMemo(() => uniformDigits(ranked.map((item) => item.value)), [ranked]);
+  const fmtValue = useCallback((value) => formatWorldValue(value, digits, locale), [digits, locale]);
+  const shortUnitOf = (text) => splitUnit(text).short;
+  const cardUnit = (item) => (sharedUnit
+    ? shortUnitOf(sharedUnit)
+    : shortUnitOf(localizeWorldUnit(item.unit || concept.unit, locale)));
+  const first = ranked[0] || null;
+  const last = ranked.length > 1 ? ranked[ranked.length - 1] : null;
+  const factUnit = sharedUnit || localizeWorldUnit(first?.unit || concept.unit, locale);
+  const barMax = useMemo(() => {
+    let max = 0;
+    let positive = true;
+    for (const item of ranked) {
+      const value = Number(item.value);
+      if (!Number.isFinite(value)) continue;
+      if (value < 0) positive = false;
+      if (value > max) max = value;
+    }
+    return { max, positive };
+  }, [ranked]);
+
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs
@@ -504,14 +523,14 @@ export default function WorldRatingPage() {
       />
 
       <header className="mb-4">
-        <div className="mb-2 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
-          <Globe2 size={14} />
+        <div className="w2-kicker mb-2 flex items-center gap-2">
+          <Globe2 size={14} aria-hidden="true" />
           {t('nav.worldRating')}
         </div>
         <h1 className="max-w-4xl font-display text-2xl font-bold leading-tight text-text-primary sm:text-3xl lg:text-4xl">
           {pageTitle}
         </h1>
-        <p className="mt-2 max-w-3xl text-xs leading-5 text-text-secondary sm:text-sm sm:leading-6">
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-text-secondary">
           {t('world.rating.intro')}
         </p>
       </header>
@@ -523,7 +542,7 @@ export default function WorldRatingPage() {
       )}
 
       {unknownConcept && (
-        <div className="mb-8 rounded-2xl border border-border-subtle bg-surface p-6">
+        <div className="mb-8 rounded-3xl border border-border-subtle bg-surface p-6">
           <h2 className="font-display text-xl font-semibold text-text-primary">{t('world.rating.notFoundTitle')}</h2>
           <p className="mt-2 text-sm text-text-secondary">
             {t('world.rating.notFoundBody')}
@@ -536,7 +555,7 @@ export default function WorldRatingPage() {
 
       {!unknownConcept && (
         <>
-          <section className="mb-4 rounded-2xl border border-border-subtle bg-surface px-3.5 py-3 shadow-sm sm:px-4">
+          <section className="mb-4 rounded-3xl border border-border-subtle bg-surface px-3.5 py-3 shadow-sm sm:px-4">
             <WorldConceptPicker
               concepts={concepts}
               value={activeConcept}
@@ -544,6 +563,7 @@ export default function WorldRatingPage() {
               linkForSlug={(slug) => worldRatingPath(slug)}
               label={t('world.rating.conceptLabel')}
               searchable={false}
+              mobileScroll
               trailing={<WorldMapConceptNote conceptSlug={activeConcept} />}
             />
             {loading && concepts.length === 0 && (
@@ -558,7 +578,10 @@ export default function WorldRatingPage() {
           <section id="chart" className="mb-5 grid scroll-mt-24 gap-4">
             <div className="min-w-0">
               {mapSeriesQ.isLoading ? (
-                <SkeletonBox className="aspect-[2/1] w-full rounded-2xl" />
+                <div className="w2-planet-skeleton" role="status" aria-label={t('planet.loading')}>
+                  <SkeletonBox className="h-12 w-full rounded-xl" />
+                  <div className="w2-planet-skeleton-orb" aria-hidden="true" />
+                </div>
               ) : (
                 <>
                   <PlanetView
@@ -585,93 +608,96 @@ export default function WorldRatingPage() {
               )}
             </div>
 
-            <aside className="rounded-[1.5rem] border border-border-subtle bg-surface p-5">
-              <div className="mb-4 flex items-start gap-3">
-                <BarChart3 size={18} className="mt-1 shrink-0 text-champagne" />
-                <div>
-                  <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">{t('world.rating.summary')}</p>
-                  <h2 className="mt-1 font-display text-xl font-semibold text-text-primary">
-                    {shortName}{activeYear ? `, ${activeYear}` : ''}
-                  </h2>
+            {ranked.length > 0 && (
+              <aside className="w2-facts fe-reveal" aria-label={t('world.rating.summary')}>
+                <div className="w2-facts-grid">
+                  {[
+                    [first, t('w2.rating.first')],
+                    [last, t('w2.rating.last')],
+                  ].filter(([item]) => item).map(([item, label]) => (
+                    <Link
+                      key={item.country_code}
+                      to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })}
+                      className="w2-fact fe-press"
+                    >
+                      <span className="w2-fact-label">{label}</span>
+                      <span className="w2-fact-name">
+                        <CountryFlag code={item.country_code} />
+                        <span className="min-w-0">{ratingCountryName(item)}</span>
+                      </span>
+                      <span className="w2-fact-value">
+                        <WorldCountUp value={item.value} format={fmtValue} />
+                        {factUnit && <small>{factUnit}</small>}
+                      </span>
+                    </Link>
+                  ))}
                 </div>
-              </div>
-              <p className="text-sm leading-6 text-text-secondary">
-                {t('world.rating.summaryBody', {
-                  ranked: ranked.length,
-                  countryWord: countryWord(ranked.length),
-                  total: countries.length,
-                })}
-              </p>
-              <div className="mt-4 rounded-xl bg-obsidian-light px-3.5 py-3 text-xs leading-5 text-text-secondary">
-                {activeConcept === 'hicp-index' || mapSeriesQ.data?.concept?.value_mode === 'yoy'
-                  ? t('world.rating.noteYoy')
-                  : t('world.rating.noteDefault')}
-              </div>
-              {locale === 'ru' && (
-                <div className="mt-4 space-y-2 border-t border-border-subtle pt-4">
-                  <p className="text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
-                    {t('world.rating.russiaRegions')}
+                <details className="w2-details">
+                  <summary>{t('w2.rating.howTitle')}</summary>
+                  <p>
+                    {activeConcept === 'hicp-index' || mapSeriesQ.data?.concept?.value_mode === 'yoy'
+                      ? t('world.rating.noteYoy')
+                      : t('world.rating.noteDefault')}
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      as={Link}
-                      variant="ghost"
-                      size="sm"
-                      to={russiaLinks.countryHref}
-                      className="gap-1.5 bg-champagne/15!"
-                    >
-                      <Globe2 size={13} aria-hidden="true" />
-                      {russiaIndicatorCode
-                        ? t('world.rating.russiaIndicator')
-                        : t('world.rating.russiaSection')}
-                    </Button>
-                    <Button
-                      as={Link}
-                      variant="secondary"
-                      size="sm"
-                      to={russiaLinks.regionsHref}
-                      className="gap-1.5"
-                    >
-                      <MapPinned size={13} aria-hidden="true" />
-                      {t('world.rating.russiaRegionsLink')}
-                    </Button>
-                    {russiaLinks.regionRatingHref && (
+                </details>
+                {locale === 'ru' && (
+                  <div className="w2-facts-russia">
+                    <p className="w2-facts-label">{t('world.rating.russiaRegions')}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        as={Link}
+                        variant="ghost"
+                        size="sm"
+                        to={russiaLinks.countryHref}
+                        className="gap-1.5 bg-champagne/15!"
+                      >
+                        <Globe2 size={13} aria-hidden="true" />
+                        {russiaIndicatorCode
+                          ? t('world.rating.russiaIndicator')
+                          : t('world.rating.russiaSection')}
+                      </Button>
                       <Button
                         as={Link}
                         variant="secondary"
                         size="sm"
-                        to={russiaLinks.regionRatingHref}
+                        to={russiaLinks.regionsHref}
+                        className="gap-1.5"
                       >
-                        {t('world.rating.regionRatingLink')}
+                        <MapPinned size={13} aria-hidden="true" />
+                        {t('world.rating.russiaRegionsLink')}
                       </Button>
-                    )}
+                      {russiaLinks.regionRatingHref && (
+                        <Button
+                          as={Link}
+                          variant="secondary"
+                          size="sm"
+                          to={russiaLinks.regionRatingHref}
+                        >
+                          {t('world.rating.regionRatingLink')}
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-            </aside>
+                )}
+              </aside>
+            )}
           </section>
 
           <section id="rating-table" className="mb-5 scroll-mt-24">
             <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-                  {t('world.rating.fullTable')}
-                </p>
-                <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">
-                  {t('world.rating.allWithData', { n: ranked.length })}
-                </h2>
-              </div>
+              <h2 className="font-display text-2xl font-bold text-text-primary">
+                {t('world.rating.allWithData', { n: ranked.length })}
+              </h2>
               <div className="flex min-w-0 flex-wrap items-end gap-2.5">
                 <label className="block min-w-[7.5rem]">
-                  <span className="mb-1 flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
-                    <SlidersHorizontal size={11} className="text-champagne" />
+                  <span className="mb-1 block text-xs text-text-secondary">
                     {t('common.year')}
                   </span>
                   <select
                     value={activeYear || ''}
                     onChange={(event) => setSelectedYear(Number(event.target.value))}
                     disabled={!years.length}
-                    className="h-9 w-full rounded-xl border border-border-subtle bg-obsidian-light px-2.5 text-sm font-medium text-text-primary outline-none transition-colors focus:border-border-champagne"
+                    className="h-10 w-full rounded-xl border border-border-subtle bg-surface px-2.5 text-sm font-medium text-text-primary outline-none transition-colors focus:border-border-champagne pointer-coarse:h-11 pointer-coarse:text-base"
                   >
                     {years.map((year) => (
                       <option key={year} value={year}>{year}</option>
@@ -679,7 +705,7 @@ export default function WorldRatingPage() {
                   </select>
                 </label>
                 <div className="min-w-0">
-                  <p className="mb-1 text-[10px] font-mono uppercase tracking-[0.16em] text-text-tertiary">
+                  <p className="mb-1 text-xs text-text-secondary">
                     {t('world.rating.sortOrder')}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
@@ -697,16 +723,20 @@ export default function WorldRatingPage() {
                     </Chip>
                   </div>
                 </div>
-                <Chip
-                  active={addOpen}
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  aria-expanded={addOpen}
                   onClick={() => setAddOpen((prev) => !prev)}
+                  className="gap-1.5"
                 >
+                  <Plus size={14} aria-hidden="true" />
                   {t('world.rating.addColumn')}
-                </Chip>
+                </Button>
               </div>
             </div>
             {addOpen && (
-              <div className="mb-3 max-w-lg rounded-2xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
+              <div className="mb-3 max-w-lg rounded-3xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
                 {!isAuthed && (
                   <>
                     <h3 className="text-sm font-semibold text-text-primary">
@@ -746,79 +776,128 @@ export default function WorldRatingPage() {
                 )}
               </div>
             )}
-            <div className="overflow-x-auto rounded-2xl border border-border-subtle bg-surface">
-              <div style={tableStyle} className="transition-transform duration-200">
-                <table className="w-full min-w-[52rem] text-sm">
-                <thead className="sticky top-0 z-10 bg-obsidian-light/95 backdrop-blur-sm">
-                  <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
-                    <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
-                    <th className="px-4 py-3 font-medium">{t('world.rating.col.country')}</th>
-                    <SortableTh
-                      label={valueHeader}
-                      active={sortedColSlug === SORT_BASE_COLUMN}
-                      dir={sortedColDir}
-                      onClick={() => handleSortClick(SORT_BASE_COLUMN)}
-                    />
-                    {extraColumns.map((col) => (
-                      <SortableTh
-                        key={col.slug}
-                        minWidth
-                        label={extraHeaderLabel(col)}
-                        active={sortedColSlug === col.slug}
-                        dir={sortedColDir}
-                        onClick={() => handleSortClick(col.slug)}
-                        onRemove={{
-                          label: t('world.rating.extraRemove'),
-                          onClick: () => removeExtra(col.slug),
-                        }}
-                      />
-                    ))}
-                    {!sharedUnit && <th className="px-4 py-3 font-medium">{t('world.rating.col.unit')}</th>}
-                    <th className="px-4 py-3 font-medium">{t('common.period')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayRows.map((item) => (
-                    <tr key={item.country_code} className="border-t border-border-subtle transition-colors hover:bg-surface-hover">
-                      <td className="px-4 py-3 font-mono text-text-tertiary">{item.rank}</td>
-                      <td className="px-4 py-3">
-                        <Link to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })} className="font-medium text-text-primary transition-colors hover:text-champagne">
-                          {ratingCountryName(item)}
-                        </Link>
-                      </td>
-                      <td className="px-4 py-3 text-right font-mono font-semibold tabular-nums text-text-primary">
-                        {formatWorldValue(item.value)}
-                      </td>
-                      {extraColumns.map((col) => (
-                        <td
-                          key={col.slug}
-                          className="px-4 py-3 text-right font-mono tabular-nums text-text-primary"
+
+            {narrow ? (
+              <>
+                <p className="mb-2 text-xs text-text-secondary">
+                  {valueHeader}
+                  {activeYear ? `, ${activeYear}` : ''}
+                </p>
+                <ol className="w2-rank-list">
+                  {displayRows.map((item) => {
+                    const share = barMax.positive && barMax.max > 0 && Number.isFinite(Number(item.value))
+                      ? Math.max(2, Math.min(100, (Number(item.value) / barMax.max) * 100)) : 0;
+                    return (
+                      <li key={item.country_code} className="w2-rank-item">
+                        <Link
+                          to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })}
+                          className="w2-rank-row fe-press"
                         >
-                          {formatWorldValue(lookupExtraValue(col.seriesData, activeYear, item)?.value)}
-                        </td>
-                      ))}
-                      {!sharedUnit && (
-                        <td className="px-4 py-3 text-xs text-text-secondary">
-                          {item.unit ? localizeWorldUnit(item.unit, locale) : (concept.unit ? localizeWorldUnit(concept.unit, locale) : t('world.rating.fallbackUnit'))}
-                        </td>
-                      )}
-                      <td className="px-4 py-3 font-mono text-xs text-text-tertiary">
-                        {item.date ? formatDate(item.date, periodGranularity, locale) : '—'}
-                      </td>
-                    </tr>
-                  ))}
+                          <span className="w2-rank-pos">{item.rank}</span>
+                          <span className="w2-rank-flag"><CountryFlag code={item.country_code} /></span>
+                          <span className="w2-rank-name">{ratingCountryName(item)}</span>
+                          <span className="w2-rank-value">
+                            <strong>{fmtValue(item.value)}</strong>
+                            {cardUnit(item) && <small>{cardUnit(item)}</small>}
+                          </span>
+                          {share > 0 && <span className="w2-rank-bar" style={{ '--w2-share': `${share}%` }} aria-hidden="true" />}
+                        </Link>
+                        {extraColumns.length > 0 && (
+                          <dl className="w2-rank-extra">
+                            {extraColumns.map((col) => (
+                              <div key={col.slug}>
+                                <dt>{col.label}</dt>
+                                <dd>{formatWorldValue(lookupExtraValue(col.seriesData, activeYear, item)?.value, undefined, locale)}</dd>
+                              </div>
+                            ))}
+                          </dl>
+                        )}
+                      </li>
+                    );
+                  })}
                   {!loading && displayRows.length === 0 && (
-                    <tr>
-                      <td colSpan={colCount} className="px-4 py-8 text-center text-text-secondary">
-                        {t('world.rating.emptyYear')}
-                      </td>
-                    </tr>
+                    <li className="px-4 py-8 text-center text-sm text-text-secondary">
+                      {t('world.rating.emptyYear')}
+                    </li>
                   )}
-                </tbody>
-              </table>
+                </ol>
+              </>
+            ) : (
+              <div className="overflow-x-auto rounded-3xl border border-border-subtle bg-surface">
+                <div style={tableStyle} className="transition-transform duration-200">
+                  <table className="w-full min-w-[34rem] text-sm">
+                    <thead className="sticky top-0 z-10 bg-obsidian-light/95 backdrop-blur-sm">
+                      <tr className="text-left text-xs text-text-secondary">
+                        <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
+                        <th className="px-4 py-3 font-medium">{t('world.rating.col.country')}</th>
+                        <SortableTh
+                          label={valueHeader}
+                          active={sortedColSlug === SORT_BASE_COLUMN}
+                          dir={sortedColDir}
+                          onClick={() => handleSortClick(SORT_BASE_COLUMN)}
+                        />
+                        {extraColumns.map((col) => (
+                          <SortableTh
+                            key={col.slug}
+                            minWidth
+                            label={extraHeaderLabel(col)}
+                            active={sortedColSlug === col.slug}
+                            dir={sortedColDir}
+                            onClick={() => handleSortClick(col.slug)}
+                            onRemove={{
+                              label: t('world.rating.extraRemove'),
+                              onClick: () => removeExtra(col.slug),
+                            }}
+                          />
+                        ))}
+                        {!sharedUnit && <th className="px-4 py-3 font-medium">{t('world.rating.col.unit')}</th>}
+                        <th className="px-4 py-3 font-medium">{t('common.period')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {displayRows.map((item) => (
+                        <tr key={item.country_code} className="border-t border-border-subtle transition-colors hover:bg-surface-hover">
+                          <td className="px-4 py-3 tabular-nums text-text-tertiary">{item.rank}</td>
+                          <td className="px-4 py-3">
+                            <Link to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })} className="inline-flex items-center gap-2.5 font-medium text-text-primary transition-colors hover:text-champagne">
+                              <CountryFlag code={item.country_code} />
+                              {ratingCountryName(item)}
+                            </Link>
+                          </td>
+                          <td className="px-4 py-3 text-right font-semibold tabular-nums text-text-primary">
+                            {fmtValue(item.value)}
+                          </td>
+                          {extraColumns.map((col) => (
+                            <td
+                              key={col.slug}
+                              className="px-4 py-3 text-right tabular-nums text-text-primary"
+                            >
+                              {formatWorldValue(lookupExtraValue(col.seriesData, activeYear, item)?.value, undefined, locale)}
+                            </td>
+                          ))}
+                          {!sharedUnit && (
+                            <td className="px-4 py-3 text-xs text-text-secondary">
+                              {item.unit ? localizeWorldUnit(item.unit, locale) : (concept.unit ? localizeWorldUnit(concept.unit, locale) : t('world.rating.fallbackUnit'))}
+                            </td>
+                          )}
+                          <td className="px-4 py-3 text-xs text-text-tertiary">
+                            {item.date ? formatDate(item.date, periodGranularity, locale) : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                      {!loading && displayRows.length === 0 && (
+                        <tr>
+                          <td colSpan={colCount} className="px-4 py-8 text-center text-text-secondary">
+                            {t('world.rating.emptyYear')}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-            {maxShift > 0 && (
+            )}
+            {!narrow && maxShift > 0 && (
               <div className="mt-2 flex items-center justify-end gap-1.5" data-testid="table-shift">
                 <Button
                   variant="secondary"
@@ -842,18 +921,15 @@ export default function WorldRatingPage() {
             )}
           </section>
 
-          <section className="rounded-[1.5rem] border border-border-subtle bg-surface p-5">
-            <div className="mb-3 flex items-center gap-2">
-              <Table2 size={17} className="text-champagne" />
-              <h2 className="font-display text-xl font-semibold text-text-primary">
+          {withoutData.length > 0 && (
+            <details className="w2-details w2-details--card">
+              <summary>
                 {t('world.rating.withoutDataTitle', {
                   year: activeYear || t('world.rating.selectedYear'),
                   n: withoutData.length,
                 })}
-              </h2>
-            </div>
-            {withoutData.length > 0 ? (
-              <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto pr-1">
+              </summary>
+              <div className="mt-3 flex max-h-48 flex-wrap gap-2 overflow-y-auto pr-1">
                 {withoutData.map((country) => (
                   <Button
                     as={Link}
@@ -862,16 +938,13 @@ export default function WorldRatingPage() {
                     size="sm"
                     to={country.code === 'RU' ? russiaLinks.countryHref : countryPath(country.slug)}
                   >
+                    <CountryFlag code={country.code} />
                     {countryPublicName(country, locale)}
                   </Button>
                 ))}
               </div>
-            ) : (
-              <p className="text-sm text-text-secondary">
-                {t('world.rating.allHaveData')}
-              </p>
-            )}
-          </section>
+            </details>
+          )}
         </>
       )}
     </div>

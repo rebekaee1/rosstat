@@ -15,6 +15,7 @@ export const PLANET_FRAGMENT = `
   uniform sampler2D atlasMap;
   uniform sampler2D highlightMap;
   uniform float surfaceTexel;
+  uniform float dataWash;
   varying vec2 vUv;
   varying vec3 vWorldNormal;
 
@@ -47,6 +48,11 @@ export const PLANET_FRAGMENT = `
     vec3 sea = mix(vec3(0.43, 0.61, 0.73), vec3(0.60, 0.75, 0.84), smoothstep(0.0, 0.06, luminance));
     vec3 surface = mix(land, sea, water);
     surface *= 0.9 + max(sunlight, 0.0) * 0.16;
+    // «Данные»: подложка уходит в спокойный светлый тон, чтобы раскраска стран читалась как шкала,
+    // а не терялась в бежевой пустыне. Рельеф остаётся лёгкой тенью.
+    float gray = dot(surface, vec3(0.2126, 0.7152, 0.0722));
+    vec3 pale = vec3(0.86, 0.885, 0.91) + (gray - 0.5) * 0.14;
+    surface = mix(surface, mix(pale, sea, water), dataWash * 0.82);
     // Neutral limb shading gives the sphere volume without tinting its edge.
     float facing = max(dot(normal, normalize(cameraPosition)), 0.0);
     surface *= mix(0.72, 1.0, smoothstep(0.0, 0.55, facing));

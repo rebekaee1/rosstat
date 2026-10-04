@@ -51,7 +51,7 @@ export default function VariantGroupPicker({
       ) : null}
 
       <div className={useMobileSelect ? 'hidden lg:block' : undefined}>
-        <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+        <p className="mb-2 text-[13px] font-semibold text-text-secondary">
           {groupLabel}
         </p>
         <ChipGroup label={groupLabel}>
