@@ -198,9 +198,12 @@
 
 .w5-embed-field { display: grid; gap: 8px; }
 .w5-embed-label { font-size: 13px; font-weight: 600; color: var(--color-text-primary); }
-.w5-embed-seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
-.w5-embed-seg--wrap { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.w5-embed-seg .fe-chip { width: 100%; padding-inline: 6px; }
+/* Сегментированный выбор: равные по ширине кнопки, переносятся целыми рядами (без «рваных» пилюль). */
+.w5-embed-seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.w5-embed-seg--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.w5-embed-seg--fmt { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 640px) { .w5-embed-seg--fmt { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.w5-embed-seg .fe-chip { width: 100%; padding-inline: 8px; white-space: normal; text-align: center; }
 
 .w5-check {
   display: flex;

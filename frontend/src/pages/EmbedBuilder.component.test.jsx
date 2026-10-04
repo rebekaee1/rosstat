@@ -21,7 +21,7 @@ describe('EmbedBuilder', () => {
       [/^\/indicators/, INDICATORS],
     ]);
     renderPage(<EmbedBuilder />, { path: '/embed-builder', route: '/embed-builder' });
-    for (const label of ['График', 'Карточка', 'Таблица', 'Тикер', 'Сравнение']) {
+    for (const label of ['График', 'Карточка', 'Таблица', 'Бегущая строка', 'Сравнение']) {
       expect((await screen.findAllByText(label)).length).toBeGreaterThan(0);
     }
     // Код для вставки содержит embed-URL с индикатором.

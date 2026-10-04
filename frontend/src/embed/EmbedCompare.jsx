@@ -18,19 +18,19 @@ function CompareTooltip({ active, payload, label, unitA, unitB, nameA, nameB, co
   const a = payload.find(p => p.dataKey === 'a');
   const b = payload.find(p => p.dataKey === 'b');
   return (
-    <div style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 8, padding: '8px 12px', fontSize: 11, fontFamily: 'system-ui', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-      <div style={{ fontSize: 10, color: colors.textTertiary, marginBottom: 4, fontFamily: 'ui-monospace, monospace' }}>{formatDate(label)}</div>
+    <div style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 8, padding: '8px 12px', fontSize: 12, fontFamily: 'system-ui', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+      <div style={{ fontSize: 12, color: colors.textTertiary, marginBottom: 4 }}>{formatDate(label)}</div>
       {a?.value != null && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
           <span style={{ width: 8, height: 2, background: COLOR_A, borderRadius: 1 }} />
-          <span style={{ color: colors.textSecondary, fontSize: 10 }}>{nameA}</span>
+          <span style={{ color: colors.textSecondary, fontSize: 12 }}>{nameA}</span>
           <span style={{ fontWeight: 600, color: COLOR_A, fontFamily: 'ui-monospace, monospace', marginLeft: 'auto' }}>{formatValueWithUnit(a.value, unitA)}</span>
         </div>
       )}
       {b?.value != null && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{ width: 8, height: 2, background: COLOR_B, borderRadius: 1 }} />
-          <span style={{ color: colors.textSecondary, fontSize: 10 }}>{nameB}</span>
+          <span style={{ color: colors.textSecondary, fontSize: 12 }}>{nameB}</span>
           <span style={{ fontWeight: 600, color: COLOR_B, fontFamily: 'ui-monospace, monospace', marginLeft: 'auto' }}>{formatValueWithUnit(b.value, unitB)}</span>
         </div>
       )}
@@ -141,7 +141,7 @@ export default function EmbedCompare() {
           <div style={{ display: 'flex', gap: 2 }}>
             {PERIODS.map(p => (
               <button key={p.key} onClick={() => setPeriod(p.key)}
-                style={{ border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 500, fontFamily: 'system-ui', padding: '3px 8px', borderRadius: 6, background: period === p.key ? 'rgba(173,138,72,0.12)' : 'transparent', color: period === p.key ? '#AD8A48' : colors.textTertiary }}>
+                style={{ border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 500, fontFamily: 'system-ui', padding: '5px 8px', borderRadius: 8, background: period === p.key ? 'rgba(173,138,72,0.12)' : 'transparent', color: period === p.key ? '#AD8A48' : colors.textTertiary }}>
                 {t(p.labelKey)}
               </button>
             ))}
