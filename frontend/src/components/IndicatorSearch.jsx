@@ -515,9 +515,11 @@ export default function IndicatorSearch({
 
 /** Одна строка выдачи: значок вида, название, подпись «где и как часто», крупная цель нажатия. */
 function SearchRow({ item, index, id, active, name, detail, onHover, onPick }) {
-  const Icon = item.kind === 'suggestion' ? Search : KIND_ICON[item.kind] || TrendingUp;
+  const isSuggestion = item.kind === 'suggestion';
+  const Icon = isSuggestion ? Search : KIND_ICON[item.kind] || TrendingUp;
   return (
     <button
+      style={isSuggestion ? { '--fe-delay': `${Math.min(index, 5) * 0.03}s`, '--fe-duration': '0.2s', '--fe-rise': '6px' } : undefined}
       type="button"
       data-row={index}
       id={id}
@@ -525,6 +527,7 @@ function SearchRow({ item, index, id, active, name, detail, onHover, onPick }) {
       onClick={() => onPick(item, index + 1)}
       className={cn(
         'fe-search-row w-full min-h-14 text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
+        isSuggestion && 'fe-reveal',
         active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
       )}
       role="option"

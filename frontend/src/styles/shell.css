@@ -24,6 +24,12 @@
 }
 
 /* Три числа платформы. Селекторы длиннее правил index.css для dd: те задают 26px для старой карточки. */
+.fe-scope {
+  border: 1px solid var(--fe-glass-border);
+  border-radius: 24px;
+  background: var(--fe-glass);
+  box-shadow: var(--fe-shadow);
+}
 .fe-dashboard [data-block='home-data-scope'].fe-scope { padding: 18px; border-radius: 24px; }
 @media (min-width: 640px) {
   .fe-dashboard [data-block='home-data-scope'].fe-scope { padding: 24px; }
