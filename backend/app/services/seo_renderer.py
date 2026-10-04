@@ -1716,20 +1716,18 @@ async def render_home_html(db: AsyncSession) -> str:
             )
             if locale == "en":
                 about = (
-                    f"The platform currently offers {fmt(world_count)} country indicators, "
-                    f"{fmt(ru_count)} Russian macroeconomic indicators, and "
-                    f"{fmt(regional_count)} regional indicators for Russia and the United States "
-                    f"(including {fmt(us_count)} for U.S. states and the District of Columbia). "
-                    "Cards show history, view modes, tables, and comparable series; "
-                    "forecasts appear only where the model has passed a quality check."
+                    f"{fmt(world_count)} indicators for countries around the world, "
+                    f"{fmt(ru_count)} for Russia and {fmt(regional_count)} for regions of Russia and the "
+                    f"United States (including {fmt(us_count)} for U.S. states and the District of Columbia). "
+                    "Every indicator comes with a chart, a table and its history; "
+                    "a forecast is shown only where it is reliable."
                 )
             else:
                 about = (
-                    f"На платформе доступны ряды по странам: {fmt(world_count)}; "
-                    f"макроэкономические ряды России: {fmt(ru_count)}; "
-                    f"региональные ряды России: {fmt(ru_regional_count)}. "
-                    "Карточки показывают историю, режимы представления, таблицы и сопоставимые ряды; "
-                    "прогноз публикуется только там, где модель прошла проверку качества."
+                    f"{fmt(world_count)} показателей по странам мира, {fmt(ru_count)} по России "
+                    f"и {fmt(ru_regional_count)} по её регионам. "
+                    "К каждому показателю — график, таблица и вся история; "
+                    "прогноз показываем только там, где ему можно доверять."
                 )
             page_blocks = (
                 SeoBlock(page_blocks[0].title, about),
