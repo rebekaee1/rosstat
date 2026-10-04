@@ -10,6 +10,7 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useT } from '../i18n';
 import { authLink, prepareAuthReturn } from '../lib/authReturn';
+import Button from './Button';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
 // Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».
@@ -106,32 +107,27 @@ export default function RegisterNudge() {
 
   return (
     <>
-    <aside className="sm:hidden mx-4 my-6 flex items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 py-3 print:hidden">
+    <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] sm:hidden mx-4 my-6 flex items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 py-3 print:hidden">
       <Link to={isAuthed ? variant.ctaTo : authLink('/register')}
         onClick={() => { prepareAuthReturn(); track(variant.ev.cta); }}
-        className={cn(FOCUS_RING, 'flex-1 text-sm text-champagne')}>{t(variant.ctaKey)}</Link>
-      <button type="button" onClick={dismiss} aria-label={t('common.close')} className={cn(FOCUS_RING, 'p-2 text-text-tertiary')}><X className="w-4 h-4" /></button>
+        className={cn(FOCUS_RING, 'flex min-h-11 flex-1 items-center text-sm text-champagne-ink')}>{t(variant.ctaKey)}</Link>
+      <button type="button" onClick={dismiss} aria-label={t('common.close')} className={cn(FOCUS_RING, 'fe-press flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-text-tertiary')}><X className="w-4 h-4" aria-hidden="true" /></button>
     </aside>
     <div className="hidden sm:block fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] print:hidden">
       {!expanded ? (
-        <button
-          type="button"
-          onClick={expand}
-          aria-label={pill}
-          className={cn(
-            FOCUS_RING,
-            'flex items-center gap-2 rounded-full shadow-xl',
-            'bg-champagne text-white font-medium text-sm hover:bg-champagne-muted transition-colors',
-            'pl-3.5 pr-4 py-3 sm:gap-2.5 sm:pl-4 sm:pr-5',
-          )}
-        >
-          <Sparkles className="w-4 h-4 shrink-0" />
-          <span className="sm:hidden">{t('common.register')}</span>
-          <span className="hidden sm:inline">{pill}</span>
-          <ChevronUp className="w-4 h-4 shrink-0 opacity-80" />
-        </button>
+        <div className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px]">
+          <Button
+            onClick={expand}
+            aria-label={pill}
+            className="gap-2.5 rounded-full! py-3 pl-4 pr-5 shadow-xl"
+          >
+            <Sparkles className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span className="hidden sm:inline">{pill}</span>
+            <ChevronUp className="w-4 h-4 shrink-0 opacity-80" aria-hidden="true" />
+          </Button>
+        </div>
       ) : (
-        <div className="w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 overflow-hidden">
+        <div className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 overflow-hidden">
           <div className="flex items-start justify-between gap-3 px-5 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-champagne" />
@@ -140,10 +136,10 @@ export default function RegisterNudge() {
             <button
               type="button"
               onClick={() => setExpanded(false)}
-              className={cn(FOCUS_RING, 'rounded-md p-1 text-text-tertiary hover:text-text-primary')}
+              className={cn(FOCUS_RING, 'fe-press flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-text-tertiary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11')}
               aria-label={t('nudge.register.collapse')}
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
           <ul className="px-5 py-2 space-y-2.5">
@@ -159,17 +155,18 @@ export default function RegisterNudge() {
           </ul>
           <p className="px-5 pb-3 text-xs text-text-tertiary">{t(variant.noteKey)}</p>
           <div className="flex items-center gap-3 px-5 py-3 border-t border-border-subtle bg-obsidian-lighter/30">
-            <Link
+            <Button
+              as={Link}
               to={isAuthed ? variant.ctaTo : authLink('/register')}
               onClick={() => { prepareAuthReturn(); track(variant.ev.cta); }}
-              className={cn(FOCUS_RING, 'flex-1 text-center rounded-xl bg-champagne text-white text-sm font-semibold py-2 hover:bg-champagne-muted transition-colors')}
+              className="flex-1"
             >
               {t(variant.ctaKey)}
-            </Link>
+            </Button>
             <button
               type="button"
               onClick={dismiss}
-              className={cn(FOCUS_RING, 'text-xs text-text-tertiary hover:text-text-secondary whitespace-nowrap')}
+              className={cn(FOCUS_RING, 'fe-press rounded-md px-2 text-xs text-text-tertiary hover:text-text-secondary whitespace-nowrap min-h-8 pointer-coarse:min-h-11')}
             >
               {t('nudge.register.dismiss')}
             </button>

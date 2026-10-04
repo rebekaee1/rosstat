@@ -1,7 +1,7 @@
-import { FOCUS_RING } from '../lib/uiTokens';
 import { cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
+import Button from './Button';
 
 /**
  * Единый блок «данные не пришли» — непрозрачный фон, контрастная кнопка (не сливается с баннером).
@@ -17,17 +17,13 @@ export default function ApiRetryBanner({ children, onRetry, isFetching, classNam
       role="alert"
     >
       <p className="min-w-0 text-[0.9375rem] leading-relaxed text-text-primary">{children}</p>
-      <button
-        type="button"
+      <Button
         onClick={() => { track(events.API_RETRY); onRetry(); }}
-        disabled={isFetching}
-        className={cn(
-          FOCUS_RING,
-          'shrink-0 rounded-xl bg-champagne px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-[opacity,transform] hover:opacity-95 active:scale-[0.98] disabled:opacity-60'
-        )}
+        loading={Boolean(isFetching)}
+        className="shrink-0 px-5"
       >
         {isFetching ? t('common.loading') : t('common.retry')}
-      </button>
+      </Button>
     </div>
   );
 }

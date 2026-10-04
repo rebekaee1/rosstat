@@ -8,6 +8,8 @@ import OAuthButtons from '../components/OAuthButtons';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { safeReturnTo, authLink } from '../lib/authReturn';
+import { cn } from '../lib/format';
+import Button from '../components/Button';
 
 export default function Login() {
   const t = useT();
@@ -45,6 +47,12 @@ export default function Login() {
     }
   };
 
+  const credentialsInvalid = error === t('auth.login.errorCredentials');
+  const fieldClass = (invalid) => cn(
+    'fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border text-text-primary focus:outline-none',
+    invalid ? 'border-negative focus:border-negative' : 'border-border-subtle focus:border-champagne/50',
+  );
+
   return (
     <div className="fe-data-page max-w-md mx-auto px-4 pt-28 pb-24">
       <div className="fe-panel fe-auth-card p-5 sm:p-8">
@@ -59,7 +67,9 @@ export default function Login() {
           <input
             id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            className="fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
+            aria-invalid={credentialsInvalid || undefined}
+            aria-describedby={error ? 'login-error' : undefined}
+            className={fieldClass(credentialsInvalid)}
           />
         </div>
         <div>
@@ -67,22 +77,22 @@ export default function Login() {
           <input
             id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
-            className="fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
+            aria-invalid={credentialsInvalid || undefined}
+            aria-describedby={error ? 'login-error' : undefined}
+            className={fieldClass(credentialsInvalid)}
           />
         </div>
 
-        {error && <div className="text-sm text-negative">{error}</div>}
+        <div id="login-error" role="alert" className="text-sm text-negative empty:hidden">{error}</div>
+        <span role="status" className="sr-only">{busy ? t('auth.login.busy') : ''}</span>
 
-        <button
-          type="submit" disabled={busy}
-          className="fe-button-primary w-full py-2.5 rounded-xl font-semibold disabled:opacity-50"
-        >
+        <Button type="submit" loading={busy} className="w-full font-semibold">
           {busy ? t('auth.login.busy') : t('auth.login.submit')}
-        </button>
+        </Button>
       </form>
 
       <div className="flex items-center justify-between mt-6 text-sm">
-        <Link to={authLink('/register', next)} className="fe-link">{t('auth.login.createAccount')}</Link>
+        <Link to={authLink('/register', next)} className="fe-link inline-flex items-center pointer-coarse:min-h-11">{t('auth.login.createAccount')}</Link>
         <span className="text-text-tertiary cursor-not-allowed" title={t('auth.login.forgotSoon')}>{t('auth.login.forgot')}</span>
       </div>
       </div>

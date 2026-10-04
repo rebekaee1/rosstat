@@ -5,6 +5,9 @@ import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchCountries } from '../lib/worldCompareSearch';
 import { useT } from '../i18n';
 import { MAX_COMPARISONS, COMPARISON_COLORS } from '../lib/useCountryComparison';
+import Button from './Button';
+import Chip from './Chip';
+import Spinner from './Spinner';
 
 export function CountryComparePicker({
   options,
@@ -36,7 +39,7 @@ export function CountryComparePicker({
         }}
         placeholder={selectedIds.length ? t('world.chart.addCountry') : t('world.findCountry')}
         aria-label={t('world.chart.searchCompareAria')}
-        className="w-full rounded-xl border border-border-subtle bg-obsidian-light py-2.5 pl-9 pr-3 text-xs text-text-primary outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
+        className="w-full rounded-xl border border-border-subtle bg-obsidian-light py-2.5 pl-9 pr-3 text-xs text-text-primary pointer-coarse:min-h-11 outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
       />
       {open && (
         <div className="fe-dialog-panel absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
@@ -56,7 +59,7 @@ export function CountryComparePicker({
                 className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-xs text-text-secondary transition-colors hover:bg-obsidian-light hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-35"
               >
                 <span className="truncate">{option.country_name}</span>
-                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${checked ? 'border-champagne bg-champagne text-white' : 'border-border-subtle'}`}>
+                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${checked ? 'border-champagne-ink bg-champagne-ink text-white' : 'border-border-subtle'}`}>
                   {checked && <Check size={12} />}
                 </span>
               </button>
@@ -96,7 +99,7 @@ export default function CountryComparePanel({
             <GitCompare size={14} className="text-champagne" />
             {t('world.chart.compare')}
           </div>
-          <div className="mt-1 text-[10px] text-text-tertiary">
+          <div className="mt-1 text-xs text-text-tertiary">
             {t('world.chart.compareLimit', { n: MAX_COMPARISONS })}
           </div>
         </div>
@@ -107,26 +110,25 @@ export default function CountryComparePanel({
           onOpen={onOpen}
         />
         {activeComparisonIds.length > 0 && (
-          <div className="inline-flex shrink-0 rounded-lg bg-obsidian-light p-0.5">
+          <div className="inline-flex shrink-0 gap-1" role="group" aria-label={t('world.chart.compare')}>
             {[
               ['values', t('world.chart.scaleValues')],
               ['index', t('world.chart.scaleIndex')],
             ].map(([id, label]) => (
-              <button
+              <Chip
                 key={id}
-                type="button"
+                active={comparisonScale === id}
                 onClick={() => onScale(id)}
-                className={`rounded-md px-2.5 py-1.5 text-[10px] transition-colors ${comparisonScale === id ? 'bg-white text-text-primary shadow-sm' : 'text-text-tertiary hover:text-text-primary'}`}
               >
                 {label}
-              </button>
+              </Chip>
             ))}
           </div>
         )}
       </div>
 
       {hint && (
-        <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
+        <p className="mt-3 text-xs leading-4 text-text-tertiary">
           {hint}
         </p>
       )}
@@ -134,22 +136,23 @@ export default function CountryComparePanel({
       {activeComparisonIds.length > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border-subtle pt-3">
           {selectedComparisons.map((item, index) => (
-            <button
+            <Button
               key={item.id}
-              type="button"
+              variant="secondary"
+              size="sm"
               onClick={() => onToggle(item.id)}
-              className="inline-flex max-w-full items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1.5 text-[11px] text-text-secondary transition-colors hover:border-border-champagne hover:text-text-primary"
+              className="max-w-full gap-2 rounded-full! px-2.5 text-text-secondary"
               title={t('world.chart.removeSeries')}
             >
-              <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: COMPARISON_COLORS[index] }} />
-              <span className="truncate">{item.label}</span>
-              {comparisonQueries[index]?.isLoading && <span className="text-text-tertiary">…</span>}
-              {comparisonQueries[index]?.isError && <span className="text-danger">{t('common.noData')}</span>}
-              <X size={11} className="shrink-0 text-text-tertiary" />
-            </button>
+              <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: COMPARISON_COLORS[index] }} aria-hidden="true" />
+              <span className="min-w-0 truncate">{item.label}</span>
+              {comparisonQueries[index]?.isLoading && <Spinner size={11} label={t('common.loading')} />}
+              {comparisonQueries[index]?.isError && <span className="text-negative">{t('common.noData')}</span>}
+              <X size={12} className="shrink-0 text-text-tertiary" aria-hidden="true" />
+            </Button>
           ))}
           {conceptSlug === 'hicp-index' && compareCodes.length > 0 ? (
-            <Link to="/world/rating/hicp-index" className="ml-auto text-xs text-champagne hover:underline">
+            <Link to="/world/rating/hicp-index" className="ml-auto inline-flex min-h-8 items-center text-xs text-champagne-ink hover:underline pointer-coarse:min-h-11">
               {t('world.chart.compareInflationRates')}
             </Link>
           ) : conceptSlug && compareCodes.length > 0 && (
@@ -157,7 +160,7 @@ export default function CountryComparePanel({
               to={`/compare?codes=${encodeURIComponent(
                 [`w:${countrySlug}:${conceptSlug}`, ...compareCodes].join(','),
               )}`}
-              className="ml-auto text-xs text-champagne hover:underline"
+              className="ml-auto inline-flex min-h-8 items-center text-xs text-champagne-ink hover:underline pointer-coarse:min-h-11"
             >
               {t('world.chart.openFullCompare')}
             </Link>
@@ -166,12 +169,12 @@ export default function CountryComparePanel({
       )}
 
       {rebased && (
-        <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
+        <p className="mt-3 text-xs leading-4 text-text-tertiary">
           {t('world.chart.rebaseNote', { date: rebased.startDate })}
         </p>
       )}
       {comparisonScale === 'index' && loadedComparisonSeries.length > 0 && !rebased && (
-        <p className="mt-3 text-[10px] text-text-secondary">
+        <p className="mt-3 text-xs text-text-secondary">
           {t('world.chart.rebaseFail')}
         </p>
       )}

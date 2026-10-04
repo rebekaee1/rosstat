@@ -22,7 +22,9 @@ import { useT, useLocale } from '../i18n';
 
 const footLink = cn(
   FOCUS_RING,
-  'rounded-sm lift-hover inline-block hover:text-text-primary transition-colors'
+  'rounded-sm lift-hover inline-block hover:text-text-primary transition-colors',
+  // Сенсорный экран: строка ссылки не меньше 44 px, вид на компьютере не меняется.
+  'pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center'
 );
 
 export default function Footer() {
@@ -48,7 +50,7 @@ export default function Footer() {
             <h4 className="mt-5 text-xs uppercase tracking-wider text-text-tertiary mb-2 font-medium">
               {t('footer.sources')}
             </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
+            <ul className="space-y-2 text-sm text-text-secondary pointer-coarse:space-y-0">
               {sourceLinks.map((item) => (
                 <li key={item.key}>
                   <SourceLink href={item.href} className={footLink}>
@@ -66,7 +68,7 @@ export default function Footer() {
                   {t(catalog.headingKey)}
                 </Link>
               </h4>
-              <ul className="space-y-2 text-sm text-text-secondary">
+              <ul className="space-y-2 text-sm text-text-secondary pointer-coarse:space-y-0">
                 {catalog.links.map((item) => (
                   <li key={item.key}>
                     <Link to={item.to} className={footLink}>
@@ -83,7 +85,7 @@ export default function Footer() {
                   {t('footer.categories')}
                 </Link>
               </h4>
-              <ul className="space-y-2 text-sm text-text-secondary">
+              <ul className="space-y-2 text-sm text-text-secondary pointer-coarse:space-y-0">
                 {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
                   <li key={c.slug}>
                     <Link to={russiaCategoryPath(c.slug)} className={footLink}>
@@ -92,7 +94,7 @@ export default function Footer() {
                   </li>
                 ))}
                 {CATEGORIES.filter((c) => !c.apiCategory).map((c) => (
-                  <li key={c.slug} className="text-text-tertiary/80">
+                  <li key={c.slug} className="text-text-tertiary">
                     {categoryLabel(c)} <span className="text-[10px] uppercase">{t('common.soon')}</span>
                   </li>
                 ))}
@@ -104,7 +106,7 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
               {t('footer.section.world')}
             </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
+            <ul className="space-y-2 text-sm text-text-secondary pointer-coarse:space-y-0">
               {worldLinks.map((item) => (
                 <li key={item.key}>
                   <Link to={item.to} className={footLink}>
@@ -119,7 +121,7 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
               {t(homeCountry.sectionKey)}
             </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
+            <ul className="space-y-2 text-sm text-text-secondary pointer-coarse:space-y-0">
               {homeCountry.links.map((item) => (
                 <li key={item.key}>
                   <Link to={item.to} className={footLink}>
@@ -134,7 +136,7 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
               {t('footer.tools')}
             </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
+            <ul className="space-y-2 text-sm text-text-secondary pointer-coarse:space-y-0">
               <li>
                 <Link to={comparePath()} className={footLink}>
                   {t('footer.compare')}
@@ -162,7 +164,7 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-wider text-text-tertiary mb-3 font-medium">
               {t('footer.info')}
             </h4>
-            <ul className="space-y-2 text-sm text-text-secondary">
+            <ul className="space-y-2 text-sm text-text-secondary pointer-coarse:space-y-0">
               <li>
                 <Link to="/about" className={footLink}>
                   {t('footer.about')}

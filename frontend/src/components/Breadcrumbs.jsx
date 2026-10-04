@@ -66,7 +66,7 @@ export default function Breadcrumbs({
                   name: item.name,
                   position: index + 1,
                 })}
-                className="transition-colors hover:text-champagne"
+                className="relative transition-colors hover:text-champagne pointer-coarse:before:absolute pointer-coarse:before:-inset-x-1.5 pointer-coarse:before:-inset-y-3.5 pointer-coarse:before:content-['']"
               >
                 {item.name}
               </Link>

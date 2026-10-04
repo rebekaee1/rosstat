@@ -5,11 +5,12 @@ import { track, events } from '../lib/track';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useLocale } from '../i18n';
+import Button from './Button';
 
 const PROVIDER_UI = {
   google: {
     labelKey: 'auth.oauth.google',
-    className: 'bg-white hover:bg-[#f5f5f5] text-[#1f1f1f] border border-[#dadce0]',
+    className: 'bg-white! hover:bg-[#f5f5f5]! text-[#1f1f1f]! border-[#dadce0]!',
     logo: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden="true">
         <path fill="#4285F4" d="M21.35 12.21c0-.71-.06-1.42-.18-2.11H12v3.99h5.25a4.5 4.5 0 0 1-1.95 2.95v2.45h3.16c1.85-1.71 2.89-4.23 2.89-7.28Z" />
@@ -21,7 +22,7 @@ const PROVIDER_UI = {
   },
   yandex: {
     labelKey: 'auth.oauth.yandex',
-    className: 'bg-[#FC3F1D] hover:bg-[#e5380f] text-white',
+    className: 'bg-[#FC3F1D]! hover:bg-[#e5380f]! text-white! border-transparent!',
     logo: (
       <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-[#FC3F1D] text-[13px] font-bold leading-none">
         Я
@@ -30,7 +31,7 @@ const PROVIDER_UI = {
   },
   vk: {
     labelKey: 'auth.oauth.vk',
-    className: 'bg-[#0077FF] hover:bg-[#0a6ae0] text-white',
+    className: 'bg-[#0077FF]! hover:bg-[#0a6ae0]! text-white! border-transparent!',
     logo: (
       <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
         <path d="M12.8 17.2c-5.5 0-8.9-3.8-9-10.1h2.8c.1 4.6 2.2 6.6 3.8 7V7.1h2.6v3.9c1.6-.2 3.3-2 3.9-3.9h2.6c-.45 2.35-2.2 4.1-3.45 4.85 1.25.6 3.25 2.15 4.05 5.25h-2.9c-.6-1.95-2.15-3.45-4.2-3.7v3.7h-1z" />
@@ -55,6 +56,7 @@ export default function OAuthButtons({
   const [pending, setPending] = useState(null); // id провайдера, ждущего согласия
   const [policy, setPolicy] = useState(false);
   const [newsletter, setNewsletter] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -73,8 +75,8 @@ export default function OAuthButtons({
 
   if (providers === null && !showGoogleEmailFallback) {
     return <div className="space-y-2.5" aria-hidden>
-      <div className="h-11 rounded-xl bg-obsidian-lighter/40 animate-pulse" />
-      <div className="h-11 rounded-xl bg-obsidian-lighter/40 animate-pulse" />
+      <div className="h-11 rounded-xl bg-obsidian-lighter/40 motion-safe:animate-pulse" />
+      <div className="h-11 rounded-xl bg-obsidian-lighter/40 motion-safe:animate-pulse" />
     </div>;
   }
   const order = locale === 'en' ? ['google', 'yandex', 'vk'] : ['yandex', 'vk', 'google'];
@@ -87,12 +89,14 @@ export default function OAuthButtons({
 
   const openConsent = (id) => {
     setPolicy(false);
+    setRedirecting(false);
     setNewsletter(id === 'google' && intent === 'login');
     setPending(id);
   };
 
   const proceed = () => {
-    if (!policy || !pending) return;
+    if (!policy || !pending || redirecting) return;
+    setRedirecting(true);
     track(events.OAUTH_START, { provider: pending, intent });
     if (newsletter) track(events.NEWSLETTER_OPT_IN, { channel: pending });
     // Полностраничный редирект: согласие пробрасываем параметром newsletter.
@@ -106,9 +110,9 @@ export default function OAuthButtons({
           const ui = PROVIDER_UI[id];
           if (!ui) return null;
           return (
-            <button
+            <Button
               key={id}
-              type="button"
+              variant="secondary"
               onClick={() => {
                 if (id === 'google' && showGoogleFallback) {
                   onGoogleEmailFallback?.();
@@ -116,15 +120,11 @@ export default function OAuthButtons({
                 }
                 openConsent(id);
               }}
-              className={cn(
-                FOCUS_RING,
-                'flex items-center justify-center gap-2.5 w-full py-2.5 rounded-xl font-medium transition-colors',
-                ui.className,
-              )}
+              className={cn('w-full gap-2.5 font-medium', ui.className)}
             >
               {ui.logo}
               {t(id === 'google' && showGoogleEmailFallback ? 'auth.oauth.googleRegister' : ui.labelKey)}
-            </button>
+            </Button>
           );
         })}
       </div>
@@ -139,14 +139,14 @@ export default function OAuthButtons({
 
       {pending && createPortal((
         <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm fe-reveal [--fe-duration:0.18s] [--fe-rise:0px]"
           onClick={() => setPending(null)}
           role="dialog"
           aria-modal="true"
           aria-label={t('auth.oauth.dialogAria')}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 p-6"
+            className="w-full max-w-md rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-display font-bold text-text-primary mb-1">
@@ -156,7 +156,7 @@ export default function OAuthButtons({
               {t(pending === 'google' ? 'auth.oauth.googleConsentIntro' : 'auth.oauth.consentIntro')}
             </p>
 
-            <label className="flex items-start gap-2.5 text-sm text-text-secondary cursor-pointer mb-3">
+            <label className="flex min-h-11 items-start gap-2.5 text-sm text-text-secondary cursor-pointer mb-1">
               <input
                 type="checkbox"
                 checked={policy}
@@ -165,14 +165,14 @@ export default function OAuthButtons({
               />
               <span>
                 {t('auth.oauth.policyBefore')}{' '}
-                <a href="/terms" target="_blank" rel="noreferrer" className="text-champagne hover:underline">{t('auth.oauth.terms')}</a>{' '}
+                <a href="/terms" target="_blank" rel="noreferrer" className="text-champagne-ink hover:underline">{t('auth.oauth.terms')}</a>{' '}
                 {t('auth.oauth.policyMid')}{' '}
-                <a href="/privacy" target="_blank" rel="noreferrer" className="text-champagne hover:underline">{t('auth.oauth.privacy')}</a>
+                <a href="/privacy" target="_blank" rel="noreferrer" className="text-champagne-ink hover:underline">{t('auth.oauth.privacy')}</a>
                 {t('auth.oauth.policyAfter')}
               </span>
             </label>
 
-            <label className="flex items-start gap-2.5 text-sm text-text-secondary cursor-pointer mb-6">
+            <label className="flex min-h-11 items-start gap-2.5 text-sm text-text-secondary cursor-pointer mb-5">
               <input
                 type="checkbox"
                 checked={newsletter}
@@ -183,26 +183,18 @@ export default function OAuthButtons({
             </label>
 
             <div className="flex items-center gap-3">
-              <button
-                type="button"
+              <Button
+                variant={PROVIDER_UI[pending] ? 'secondary' : 'primary'}
                 onClick={proceed}
                 disabled={!policy}
-                className={cn(
-                  FOCUS_RING,
-                  'flex-1 rounded-xl py-2.5 text-sm font-semibold transition-colors',
-                  PROVIDER_UI[pending]?.className || 'bg-champagne hover:bg-champagne-muted text-white',
-                  !policy && 'opacity-50 cursor-not-allowed',
-                )}
+                loading={redirecting}
+                className={cn('flex-1', PROVIDER_UI[pending]?.className)}
               >
                 {t('common.continue')}
-              </button>
-              <button
-                type="button"
-                onClick={() => setPending(null)}
-                className={cn(FOCUS_RING, 'rounded-xl px-4 py-2.5 text-sm font-medium text-text-secondary border border-border-subtle hover:border-champagne/40 transition-colors')}
-              >
+              </Button>
+              <Button variant="secondary" onClick={() => setPending(null)} disabled={redirecting}>
                 {t('common.cancel')}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
