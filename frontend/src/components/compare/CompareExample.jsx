@@ -137,13 +137,13 @@ export default function CompareExample({ onOpen }) {
         {geometry.ticks.map((tick) => (
           <g key={tick.v}>
             <line x1={PAD.left} x2={W - PAD.right} y1={tick.y} y2={tick.y} stroke={CHART_THEME.grid || 'rgba(68,87,115,0.14)'} strokeWidth="1" />
-            <text x={PAD.left - 6} y={tick.y + 3.5} textAnchor="end" fontSize="11" fill={CHART_THEME.axis}>
+            <text x={PAD.left - 6} y={tick.y + 3.5} textAnchor="end" fontSize="12" fill={CHART_THEME.axis}>
               {Math.round(tick.v * 10) / 10}
             </text>
           </g>
         ))}
-        <text x={PAD.left} y={H - 5} fontSize="11" fill={CHART_THEME.axis}>{geometry.fromYear}</text>
-        <text x={W - PAD.right} y={H - 5} fontSize="11" textAnchor="end" fill={CHART_THEME.axis}>{geometry.toYear}</text>
+        <text x={PAD.left} y={H - 5} fontSize="12" fill={CHART_THEME.axis}>{geometry.fromYear}</text>
+        <text x={W - PAD.right} y={H - 5} fontSize="12" textAnchor="end" fill={CHART_THEME.axis}>{geometry.toYear}</text>
         {lines.map((line, i) => (
           <path
             key={line.slug}

@@ -70,4 +70,26 @@ describe('RegionsMap', () => {
     expect(mapWrap?.contains(brand)).toBe(true);
     expect(container.textContent).toMatch(/42/);
   });
+
+  it('живая карта с полями: Чукотка и Камчатка не упираются в рамку', () => {
+    const { container } = renderMap();
+    expect(container.querySelector('svg').getAttribute('viewBox')).toBe('-8 -8 1016 554');
+  });
+
+  it('кнопки «+» и «−» стоят в строке под картой, а не поверх неё; водяной знак — там же, мелко', () => {
+    const { container } = renderMap({ brandMark: true });
+    const bar = container.querySelector('.fe-map-bar');
+    expect(bar.previousElementSibling.tagName.toLowerCase()).toBe('svg');
+    expect(bar.querySelectorAll('button').length).toBeGreaterThanOrEqual(2);
+    expect(bar.textContent).toContain('Forecast Economy');
+    expect(container.querySelector('.absolute')).toBeNull();
+  });
+
+  it('подпись шкалы не переносится: значения и единица одной строкой', () => {
+    const values = new Map(mapData.regions.slice(0, 4).map((r, i) => [r.slug, 40588 + i * 50000]));
+    const { container } = renderMap({ valuesBySlug: values, unit: 'рублей' });
+    const legend = container.querySelector('.fe-map-legend');
+    expect(legend.textContent).toContain('40\u00A0588');
+    expect(legend.textContent).toContain('\u00A0₽');
+  });
 });

@@ -489,6 +489,7 @@ export default function WorldRegionsHome() {
                 mapData={geometry}
                 ariaLabel={t('world.regions.mapAria', { country: countryName })}
                 valuesBySlug={activeCode ? valuesBySlug : null}
+                transitionMs={activeCode ? 650 : 150}
                 unit={map.data?.indicator?.unit || ''}
                 nameBySlug={nameBySlug}
                 colorDirection={map.data?.indicator?.better_is_low ? 'asc' : 'desc'}

@@ -136,7 +136,7 @@ export default function CompareCountryStep({
                 )}
               >
                 <Flag slug={c.key} />
-                <span className="min-w-0 flex-1 truncate text-[15px] text-text-primary">{c.label}</span>
+                <span className="min-w-0 flex-1 line-clamp-2 text-[15px] leading-snug text-text-primary">{c.label}</span>
               </button>
             ))}
           </div>

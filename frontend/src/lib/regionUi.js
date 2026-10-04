@@ -48,7 +48,7 @@ export function formatRegionWithUnit(value, unit, locale = 'ru') {
   const text = formatRegionNumber(value, unit, locale);
   if (text === '—') return text;
   const label = unitLabel(unit, locale);
-  return label ? `${text}${NBSP}${label}` : text;
+  return label ? `${text}${NBSP}${label.replace(/ /g, NBSP)}` : text;
 }
 
 /** Изменение в процентах для бейджа: «44,4 %», «меньше 0,1 %». */
@@ -94,11 +94,11 @@ export function formatRegionCompact(value, unit, locale = 'ru') {
     minimumFractionDigits: 0,
     maximumFractionDigits: Math.abs(scaled) >= 100 ? 0 : 1,
   });
-  return `${text}${NBSP}${hit[1]}`;
+  return `${text}${NBSP}${hit[1].replace(/ /g, NBSP)}`;
 }
 
 const NOISY_FIRST = /беженц|убежищ|вынужденн/i;
-const LEAD_NAME = /^(среднегодовая |постоянная )?численность (постоянного )?населения\b(?!.*(беженц|убежищ|лиц))/i;
+const LEAD_NAME = /^(среднегодовая |постоянная )?численность (постоянного )?населения(?![а-яё])(?!.*(беженц|убежищ|лиц))/i;
 
 /** В разделе сначала главное («Численность населения»), узкие и служебные строки — в конец; порядок остальных сохраняется. */
 export function prioritizeIndicators(indicators) {

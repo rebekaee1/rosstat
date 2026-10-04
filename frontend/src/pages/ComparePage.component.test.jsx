@@ -113,6 +113,14 @@ describe('ComparePage', () => {
     expect(screen.getByText('Ключевая ставка ЦБ')).toBeTruthy();
   });
 
+  it('фраза «Сначала выберите страну, затем показатель» на странице один раз', async () => {
+    mockCompareApis();
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    await screen.findByRole('heading', { level: 1 });
+    expect(screen.getAllByText(/Сначала выберите страну/i)).toHaveLength(1);
+    expect(document.body.textContent.match(/выберите страну, затем показатель/gi) || []).toHaveLength(1);
+  });
+
   it('показывает шаг выбора страны с Россией первой', async () => {
     mockCompareApis();
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });

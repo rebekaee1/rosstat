@@ -287,39 +287,39 @@ export default function RegionsMap({
               <span className="fe-map-mark" data-no-export="true" aria-hidden="true">Forecast Economy</span>
             )}
             {!compact && (
-          <div className="fe-map-tools" data-no-export="true">
-            <button
-              type="button"
-              onClick={() => zoomBy(ZOOM_STEP)}
-              disabled={k >= ZOOM_MAX}
-              aria-label={t('regions.zoomIn')}
-              title={t('regions.zoomIn')}
-              className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-40"
-            >
-              <Plus size={16} />
-            </button>
-            <button
-              type="button"
-              onClick={() => zoomBy(1 / ZOOM_STEP)}
-              disabled={k <= 1}
-              aria-label={t('regions.zoomOut')}
-              title={t('regions.zoomOut')}
-              className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-40"
-            >
-              <Minus size={16} />
-            </button>
-            {k > 1 && (
-              <button
-                type="button"
-                onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
-                aria-label={t('regions.zoomReset')}
-                title={t('regions.zoomReset')}
-                className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
-              >
-                <Maximize2 size={15} />
-              </button>
-            )}
-          </div>
+              <div className="fe-map-tools" data-no-export="true">
+                <button
+                  type="button"
+                  onClick={() => zoomBy(ZOOM_STEP)}
+                  disabled={k >= ZOOM_MAX}
+                  aria-label={t('regions.zoomIn')}
+                  title={t('regions.zoomIn')}
+                  className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-40"
+                >
+                  <Plus size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => zoomBy(1 / ZOOM_STEP)}
+                  disabled={k <= 1}
+                  aria-label={t('regions.zoomOut')}
+                  title={t('regions.zoomOut')}
+                  className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-40"
+                >
+                  <Minus size={16} />
+                </button>
+                {k > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
+                    aria-label={t('regions.zoomReset')}
+                    title={t('regions.zoomReset')}
+                    className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                  >
+                    <Maximize2 size={15} />
+                  </button>
+                )}
+              </div>
             )}
           </div>
         )}

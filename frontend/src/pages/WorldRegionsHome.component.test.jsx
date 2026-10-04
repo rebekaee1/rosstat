@@ -183,6 +183,12 @@ describe('WorldRegionsHome', () => {
     expect((await screen.findAllByRole('link', { name: /Калифорния/ }))[0].getAttribute('href'))
       .toBe('/united-states/region/california');
     expect(screen.getByPlaceholderText('Найти территорию…')).toBeTruthy();
+    // Строка списка читается как предложение: показатель, значение с единицей, место.
+    expect((await screen.findAllByText('Безработица:')).length).toBe(2);
+    expect(screen.getByText('4,2 %')).toBeTruthy();
+    expect(screen.getByText(/, 1-е место/)).toBeTruthy();
+    // Служебной строки «N показателей, N территорий» нет.
+    expect(document.body.textContent).not.toMatch(/2 показателя\s*2 территории/);
   });
 
   it('карта открывается с чипами показателя и графиком-хороплетом', async () => {

@@ -10,7 +10,7 @@
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  padding: 2px 16px 6px 2px;
+  padding: 2px 28px 6px 2px;
   margin-inline: -2px;
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
   mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
