@@ -11,6 +11,7 @@ import { FOCUS_RING } from '../lib/uiTokens';
 import { useT } from '../i18n';
 import { authLink, prepareAuthReturn } from '../lib/authReturn';
 import Button from './Button';
+import '../styles/indicator-russia.css';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
 // Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».
@@ -107,11 +108,21 @@ export default function RegisterNudge() {
 
   return (
     <>
-    <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] sm:hidden mx-4 my-6 flex items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 py-3 print:hidden">
-      <Link to={isAuthed ? variant.ctaTo : authLink('/register')}
+    <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-m sm:hidden print:hidden" aria-label={pill}>
+      <span className="fe-nudge-m__icon" aria-hidden="true"><Sparkles className="h-5 w-5" /></span>
+      <div className="fe-nudge-m__text">
+        <p className="fe-nudge-m__title">{pill}</p>
+        <p className="fe-nudge-m__sub">{t(variant.noteKey)}</p>
+      </div>
+      <button type="button" onClick={dismiss} aria-label={t('common.close')} className={cn(FOCUS_RING, 'fe-press fe-nudge-m__close')}><X className="w-4 h-4" aria-hidden="true" /></button>
+      <Button
+        as={Link}
+        to={isAuthed ? variant.ctaTo : authLink('/register')}
         onClick={() => { prepareAuthReturn(); track(variant.ev.cta); }}
-        className={cn(FOCUS_RING, 'flex min-h-11 flex-1 items-center text-sm text-champagne-ink')}>{t(variant.ctaKey)}</Link>
-      <button type="button" onClick={dismiss} aria-label={t('common.close')} className={cn(FOCUS_RING, 'fe-press flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-text-tertiary')}><X className="w-4 h-4" aria-hidden="true" /></button>
+        className="fe-nudge-m__cta"
+      >
+        {t(variant.ctaKey)}
+      </Button>
     </aside>
     <div className="hidden sm:block fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] print:hidden">
       {!expanded ? (

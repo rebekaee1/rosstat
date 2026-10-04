@@ -15,6 +15,7 @@ import { useLocale, useT } from '../i18n';
 import { russiaCategoriesTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
 import { mountJsonLd } from '../lib/jsonLd';
 import { russiaCategoriesPath } from '../lib/sitePaths';
+import '../styles/indicator-russia.css';
 
 export default function CategoriesHub() {
   const t = useT();
@@ -57,7 +58,7 @@ export default function CategoriesHub() {
       <div className="mb-8">
         <IndicatorSearch
           variant="inline"
-          inlinePlaceholder={t('russiaCategories.searchPlaceholder')}
+          inlinePlaceholder={t('w3.search.short')}
         />
       </div>
 

@@ -6,6 +6,7 @@ import Button from '../Button';
 import Chip from '../Chip';
 import { track, events as trackEvents } from '../../lib/track';
 import { useT } from '../../i18n';
+import '../../styles/indicator-russia.css';
 
 const SOURCE_DOT = {
   cbr: 'bg-blue-500',
@@ -74,7 +75,7 @@ export default function CalendarGrid({
   ];
 
   return (
-    <div className="fe-panel rounded-2xl border border-border-subtle bg-surface overflow-hidden mb-6">
+    <div className="fe-panel rounded-[1.5rem] border border-border-subtle bg-surface overflow-hidden mb-6">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
         <Button
           variant="ghost"
@@ -115,7 +116,7 @@ export default function CalendarGrid({
 
       <div className="grid grid-cols-7">
         {weekdays.map((wd) => (
-          <div key={wd} className="text-center text-[11px] font-medium text-text-tertiary uppercase tracking-wider py-2">
+          <div key={wd} className="text-center text-xs font-semibold text-text-secondary py-2">
             {wd}
           </div>
         ))}
@@ -133,6 +134,8 @@ export default function CalendarGrid({
           const isSelected = dateStr === selectedDate;
           const isPast = dateStr < todayStr;
           const hasHigh = dayEvents.some((e) => e.importance === 3);
+          // Плотность дня оттенком фона: чем больше событий, тем темнее. Число в ячейке не нужно.
+          const heat = dayEvents.length === 0 ? 0 : dayEvents.length < 3 ? 1 : dayEvents.length < 6 ? 2 : 3;
 
           const uniqueSources = [...new Set(dayEvents.map((e) => e.source))];
 
@@ -141,9 +144,12 @@ export default function CalendarGrid({
               key={dateStr}
               type="button"
               onClick={() => { onSelectDate(isSelected ? null : dateStr); if (!isSelected) track(trackEvents.CALENDAR_DAY_SELECT, { day: dateStr }); }}
+              data-heat={heat || undefined}
+              aria-pressed={isSelected}
+              aria-label={dayEvents.length ? t('w3.cal.dayLabel', { day, n: dayEvents.length }) : undefined}
               className={cn(
-                'relative min-h-[3.5rem] md:min-h-[4.5rem] border-b border-r border-border-subtle/50 transition-all',
-                'flex flex-col items-center pt-1.5 gap-0.5',
+                'fe-cal-day relative min-h-[3.5rem] md:min-h-[4.5rem] border-b border-r border-border-subtle/50 transition-all',
+                'flex flex-col items-center pt-1.5 gap-1',
                 FOCUS_RING_SURFACE,
                 isSelected && 'bg-champagne/8 ring-1 ring-inset ring-champagne/20',
                 !isSelected && dayEvents.length > 0 && 'hover:bg-surface-hover cursor-pointer',
@@ -165,26 +171,24 @@ export default function CalendarGrid({
               {uniqueSources.length > 0 && (
                 <div className="flex gap-0.5">
                   {uniqueSources.slice(0, 3).map((s) => (
-                    <span key={s} className={cn('w-1.5 h-1.5 rounded-full', SOURCE_DOT[s] || 'bg-text-tertiary')} />
+                    <span key={s} className={cn('w-2 h-2 rounded-full', SOURCE_DOT[s] || 'bg-text-tertiary')} />
                   ))}
                 </div>
               )}
 
-              {dayEvents.length > 1 && (
-                <span className="text-xs text-text-tertiary leading-none">{dayEvents.length}</span>
-              )}
             </button>
           );
         })}
       </div>
 
-      <div className="flex items-center justify-between px-4 py-2 text-xs text-text-tertiary border-t border-border-subtle">
-        <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500" /> {t('calendar.source.cbr')}</span>
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> {t('calendar.source.rosstat')}</span>
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" /> {t('calendar.source.minfin')}</span>
+      <div className="fe-cal-legend">
+        <div className="fe-cal-legend__row">
+          <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500" /> {t('calendar.source.cbr')}</span>
+          <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> {t('calendar.source.rosstat')}</span>
+          <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> {t('calendar.source.minfin')}</span>
+          <span className="fe-cal-legend__count">{t('calendar.eventsCount', { n: events.length })}</span>
         </div>
-        <span>{t('calendar.eventsCount', { n: events.length })}</span>
+        <p className="fe-cal-legend__hint">{t('w3.cal.legendHint')}</p>
       </div>
     </div>
   );

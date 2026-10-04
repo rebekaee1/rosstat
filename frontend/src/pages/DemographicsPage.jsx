@@ -15,6 +15,7 @@ import ChartBrandCaption from '../components/ChartBrandCaption';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick } from '../lib/chartTheme';
 import { usePrefersReducedMotion, useTouchTooltip } from '../lib/chartHooks';
 import Chip from '../components/Chip';
+import ChipGroup from '../components/ChipGroup';
 import Button from '../components/Button';
 import { demographicTotal, latestCompleteStructure, demographicChartRows } from '../lib/demographicStructure';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -25,6 +26,7 @@ import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
+import '../styles/indicator-russia.css';
 
 const GROUPS = [
   // В-30: границы трудоспособного возраста менялись (пенсионная реформа
@@ -66,11 +68,11 @@ function StructureTooltip({ active, payload, label }) {
         return (
           <div key={p.dataKey} className="flex items-center justify-between gap-3 mb-2">
             <div className="flex min-w-0 items-center gap-2">
-              <span className="w-2 h-2 shrink-0 rounded-full" style={{ background: g?.color }} />
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: g?.color }} />
               <span className="min-w-0 whitespace-normal text-xs leading-snug text-text-secondary">{g ? t(g.labelKey) : p.dataKey}</span>
             </div>
             <span className="shrink-0 whitespace-nowrap text-sm font-semibold tabular-nums text-text-primary">
-              {p.value?.toFixed(1).replace('.', ',')}
+              {p.value?.toFixed(1).replace('.', ',')} {t('demo.tooltip.mln')}
             </span>
           </div>
         );
@@ -96,7 +98,7 @@ function PercentTooltip({ active, payload, label }) {
         return (
           <div key={p.dataKey} className="flex items-center justify-between gap-3 mb-2">
             <div className="flex min-w-0 items-center gap-2">
-              <span className="w-2 h-2 shrink-0 rounded-full" style={{ background: g?.color }} />
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: g?.color }} />
               <span className="min-w-0 whitespace-normal text-xs leading-snug text-text-secondary">{g ? t(g.labelKey) : p.dataKey}</span>
             </div>
             <span className="shrink-0 whitespace-nowrap text-sm font-semibold tabular-nums text-text-primary">
@@ -117,7 +119,7 @@ function StructureBar({ latest }) {
 
   return (
     <div className="space-y-5">
-      <div className="flex rounded-xl overflow-hidden h-10 border border-border-subtle">
+      <div className="flex rounded-xl overflow-hidden h-10 border border-border-subtle" aria-hidden="true">
         {GROUPS.map((g, i) => {
           const pct = ((latest[g.key] || 0) / total) * 100;
           if (pct < 0.5) return null;
@@ -125,7 +127,7 @@ function StructureBar({ latest }) {
             <div
               key={g.key}
               className={cn(
-                'flex items-center justify-center text-[11px] font-mono font-semibold transition-all',
+                'flex items-center justify-center text-xs font-semibold transition-all',
                 i > 0 && 'border-l border-white/20',
               )}
               style={{
@@ -133,33 +135,30 @@ function StructureBar({ latest }) {
                 background: g.color,
               }}
             >
-              {pct > 10 && <span className="rounded bg-white/95 px-1.5 py-0.5 text-text-primary">{pct.toFixed(0)}%</span>}
+              {pct > 10 && <span className="rounded bg-white/95 px-1.5 py-0.5 text-text-primary tabular-nums">{pct.toFixed(0)}%</span>}
             </div>
           );
         })}
       </div>
-      <div className="grid grid-cols-3 gap-2 sm:gap-6">
+      <ul className="fe-demo-legend">
         {GROUPS.map((g) => {
           const val = latest[g.key] || 0;
           const pct = ((val / total) * 100).toFixed(1).replace('.', ',');
           return (
-            <Link
-              key={g.key}
-              to={russiaIndicatorPath(g.key)}
-              className="group text-center rounded-2xl px-1 py-4 sm:px-4 -m-1 hover:bg-obsidian-lighter/60 transition-colors"
-            >
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="w-2 h-2 rounded-full" style={{ background: g.color }} />
-                <span className="text-[11px] text-text-secondary uppercase tracking-wider">{t(g.shortKey)}</span>
-              </div>
-              <p className="text-2xl font-display font-bold text-text-primary tracking-tight">
-                {val.toFixed(1).replace('.', ',')}
-              </p>
-              <p className="text-xs text-text-tertiary font-mono mt-0.5">{t('demo.bar.mlnPct', { pct })}</p>
-            </Link>
+            <li key={g.key}>
+              <Link to={russiaIndicatorPath(g.key)} className="fe-demo-item fe-press">
+                <span className="fe-demo-item__dot" style={{ background: g.color }} aria-hidden="true" />
+                <span className="fe-demo-item__label">{t(g.labelKey)}</span>
+                <span className="fe-demo-item__num">
+                  {val.toFixed(1).replace('.', ',')}
+                  <span className="fe-demo-item__unit">{t('w3.demo.mln')}</span>
+                </span>
+                <span className="fe-demo-item__pct">{t('w3.demo.share', { pct })}</span>
+              </Link>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 }
@@ -209,6 +208,15 @@ export default function DemographicsPage() {
     path: demoSeo?.path,
   });
 
+  // Равные шаги по оси времени: годы, кратные 5 (а при короткой истории кратные 2).
+  const yearTicks = (() => {
+    const years = series.map((row) => row.year);
+    if (years.length < 2) return undefined;
+    const step = years.length > 12 ? 5 : 2;
+    const ticks = years.filter((y) => y % step === 0);
+    return ticks.length >= 2 ? ticks : undefined;
+  })();
+
   const totalLatest = latest
     ? GROUPS.reduce((s, g) => s + (latest[g.key] || 0), 0).toFixed(1).replace('.', ',')
     : null;
@@ -217,17 +225,21 @@ export default function DemographicsPage() {
     <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
       <Breadcrumbs items={demographicsTrail()} className="mb-8" />
 
-      <header className="mb-10 max-w-3xl">
-        <div className="flex items-center gap-3 mb-4">
-          <Users className="w-7 h-7 text-champagne" />
-          <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight">
+      <header className="mb-8 max-w-3xl">
+        <div className="flex items-start gap-3 mb-4">
+          <span className="fe-demo-icon" aria-hidden="true"><Users className="h-6 w-6" /></span>
+          <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight min-w-0">
             {t('demo.title')}
           </h1>
         </div>
-        <p className="text-text-secondary leading-relaxed">
-          {t('demo.intro')}
-          {firstYear && t('demo.sourceFrom', { year: firstYear })}
-        </p>
+        <p className="text-text-secondary leading-relaxed">{t('w3.demo.lead')}</p>
+        <details className="fe-more mt-2">
+          <summary className="fe-more__summary">{t('w3.demo.more')}</summary>
+          <p className="fe-more__body">
+            {t('demo.intro')}
+            {firstYear && t('demo.sourceFrom', { year: firstYear })}
+          </p>
+        </details>
       </header>
 
       {isError && (
@@ -263,10 +275,10 @@ export default function DemographicsPage() {
       {!isLoading && latest && (
         <section className="fe-panel p-4 md:p-8 mb-8">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-6">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
+            <h2 className="fe-demo-h2">
               {t('demo.structureYear', { year: latest.year })}
             </h2>
-            <span className="text-sm font-mono text-text-tertiary">
+            <span className="text-sm text-text-secondary tabular-nums">
               {t('demo.totalMln', { n: totalLatest })}
             </span>
           </div>
@@ -277,27 +289,29 @@ export default function DemographicsPage() {
 
       <section id="chart" className="fe-panel scroll-mt-28 p-4 md:p-8 mb-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
+          <h2 className="fe-demo-h2">
             {firstYear ? t('demo.dynamicsFrom', { year: firstYear }) : t('demo.dynamics')}
           </h2>
           <div className="flex flex-wrap items-center gap-2">
-            {['stacked', 'percent'].map((mode) => (
-              <Chip
-                key={mode}
-                active={chartType === mode}
-                onClick={() => { setChartType(mode); track(events.DEMOGRAPHICS_CHART_TYPE, { type: mode }); }}
-              >
-                {mode === 'stacked' ? t('demo.chartAbsolute') : t('demo.chartPercent')}
-              </Chip>
-            ))}
+            <ChipGroup label={t('w3.demo.showAs')} className="fe-chip-row--tight">
+              {['stacked', 'percent'].map((mode) => (
+                <Chip
+                  key={mode}
+                  active={chartType === mode}
+                  onClick={() => { setChartType(mode); track(events.DEMOGRAPHICS_CHART_TYPE, { type: mode }); }}
+                >
+                  {mode === 'stacked' ? t('w3.demo.modeAbs') : t('w3.demo.modePct')}
+                </Chip>
+              ))}
+            </ChipGroup>
             <Button
-              variant="ghost"
+              variant="secondary"
               size="sm"
               onClick={() => downloadStructureCSV(series, t)}
               title={t('demo.downloadCsv')}
             >
               <Download className="w-3.5 h-3.5" aria-hidden="true" />
-              CSV
+              {t('demo.downloadCsv')}
             </Button>
           </div>
         </div>
@@ -330,7 +344,8 @@ export default function DemographicsPage() {
                   tick={axisTick()}
                   axisLine={false}
                   tickLine={false}
-                  minTickGap={24}
+                  ticks={yearTicks}
+                  interval={0}
                 />
                 <YAxis
                   tick={axisTick()}
@@ -372,8 +387,8 @@ export default function DemographicsPage() {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 pt-3 border-t border-border-subtle">
             {GROUPS.map((g) => (
               <div key={g.key} className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: g.color }} />
-                <span className="text-xs text-text-secondary">{t(g.labelKey)}</span>
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: g.color }} aria-hidden="true" />
+                <span className="text-sm text-text-secondary">{t(g.labelKey)}</span>
               </div>
             ))}
           </div>

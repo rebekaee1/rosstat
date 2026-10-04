@@ -5,6 +5,7 @@ import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
+import { plural } from '../../lib/calcFormat';
 import '../../styles/ui-detail-nav-calendar.css';
 
 
@@ -14,7 +15,7 @@ function CountdownUnit({ value, label }) {
       <div className="text-2xl md:text-3xl font-display font-bold text-text-primary tabular-nums leading-none">
         {String(value).padStart(2, '0')}
       </div>
-      <div className="text-[11px] uppercase tracking-wider text-text-tertiary mt-1">{label}</div>
+      <div className="text-[13px] text-text-secondary mt-1">{label}</div>
     </div>
   );
 }
@@ -23,10 +24,9 @@ function Separator() {
   return <span className="text-xl text-text-tertiary/40 font-light self-start mt-1">:</span>;
 }
 
-function pluralDay(n, t) {
-  if (n === 1) return t('calendar.countdown.day_one');
-  if (n >= 2 && n <= 4) return t('calendar.countdown.day_few');
-  return t('calendar.countdown.day_many');
+function pluralUnit(n, unit, t, locale) {
+  const form = locale === 'en' ? (n === 1 ? 'one' : 'many') : plural(n, 'one', 'few', 'many');
+  return t(`w3.cal.unit.${unit}.${form}`);
 }
 
 export default function CalendarHero({ nextEvent }) {
@@ -61,7 +61,7 @@ export default function CalendarHero({ nextEvent }) {
   return (
     <div
       style={{ '--fe-duration': '0.4s', '--fe-rise': '12px' }}
-      className="fe-reveal fe-reveal--free fe-panel relative overflow-hidden rounded-[2rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6 md:p-8 mb-8"
+      className="fe-reveal fe-reveal--free fe-panel relative overflow-hidden rounded-[1.5rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6 md:p-8 mb-8"
     >
       <div className="absolute top-0 right-0 w-48 h-48 bg-champagne/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
 
@@ -69,7 +69,7 @@ export default function CalendarHero({ nextEvent }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-3">
             <CalendarIcon className="w-4 h-4 text-champagne" />
-            <span className="text-xs uppercase tracking-widest text-champagne font-semibold">
+            <span className="text-sm text-champagne-ink font-semibold">
               {t('calendar.hero.nextEvent')}
             </span>
           </div>
@@ -81,7 +81,7 @@ export default function CalendarHero({ nextEvent }) {
               weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
             })}
             {nextEvent.scheduled_time && (
-              <span className="ml-1 font-mono">{nextEvent.scheduled_time} {t('calendar.hero.msk')}</span>
+              <span className="ml-1 tabular-nums">{nextEvent.scheduled_time} {t('calendar.hero.msk')}</span>
             )}
           </p>
           {nextEvent.indicator_code && (
@@ -89,8 +89,8 @@ export default function CalendarHero({ nextEvent }) {
               to={russiaIndicatorPath(nextEvent.indicator_code)}
               className="inline-flex items-center gap-1 mt-2 text-sm text-champagne hover:text-champagne-muted transition-colors"
             >
-              {nextEvent.indicator_name || nextEvent.indicator_code}
-              <ArrowRight className="w-3.5 h-3.5" />
+              {t('w3.cal.openIndicator')}
+              <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
             </Link>
           )}
         </div>
@@ -98,17 +98,17 @@ export default function CalendarHero({ nextEvent }) {
         <div className="flex items-center gap-3 md:gap-4 shrink-0">
           {remaining.d > 0 && (
             <>
-              <CountdownUnit value={remaining.d} label={pluralDay(remaining.d, t)} />
+              <CountdownUnit value={remaining.d} label={pluralUnit(remaining.d, 'day', t, locale)} />
               <Separator />
             </>
           )}
-          <CountdownUnit value={remaining.h} label={t('calendar.countdown.hour')} />
+          <CountdownUnit value={remaining.h} label={pluralUnit(remaining.h, 'hour', t, locale)} />
           <Separator />
-          <CountdownUnit value={remaining.m} label={t('calendar.countdown.min')} />
+          <CountdownUnit value={remaining.m} label={pluralUnit(remaining.m, 'min', t, locale)} />
           {remaining.d === 0 && (
             <>
               <Separator />
-              <CountdownUnit value={remaining.s} label={t('calendar.countdown.sec')} />
+              <CountdownUnit value={remaining.s} label={pluralUnit(remaining.s, 'sec', t, locale)} />
             </>
           )}
         </div>

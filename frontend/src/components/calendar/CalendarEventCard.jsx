@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, Clock3, ExternalLink } from 'lucide-react';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import { isExternalHref } from '../../lib/sourceLink';
@@ -9,6 +9,7 @@ import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
 import { useT } from '../../i18n';
+import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
 import '../../styles/ui-detail-nav-calendar.css';
 
 const SOURCE_STYLES = {
@@ -35,27 +36,32 @@ const SOURCE_STYLES = {
   },
 };
 
-const IMPORTANCE_CONFIG = {
-  3: { dots: 3, labelKey: 'calendar.event.importance.high', color: 'text-red-500' },
-  2: { dots: 2, labelKey: 'calendar.event.importance.medium', color: 'text-champagne' },
-  1: { dots: 1, labelKey: 'calendar.event.importance.low', color: 'text-text-tertiary' },
-};
-
-function ImportanceDots({ level }) {
+/** Важное событие помечено словами: три одинаковых точки без расшифровки никому ничего не говорят. */
+function ImportanceBadge({ level }) {
   const t = useT();
-  const cfg = IMPORTANCE_CONFIG[level] || IMPORTANCE_CONFIG[2];
-  const levelLabel = t(cfg.labelKey);
+  if (level !== 3) return null;
   return (
-    <span className={cn('inline-flex gap-0.5', cfg.color)} title={t('calendar.event.importance', { level: levelLabel })}>
-      {[1, 2, 3].map((i) => (
-        <span
-          key={i}
-          className={cn(
-            'w-1.5 h-1.5 rounded-full',
-            i <= cfg.dots ? 'bg-current' : 'bg-current/20'
-          )}
-        />
-      ))}
+    <span
+      className="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-700"
+      title={t('calendar.event.importance', { level: t('calendar.event.importance.high').toLowerCase() })}
+    >
+      {t('w3.cal.important')}
+    </span>
+  );
+}
+
+/** Подтверждена ли дата: «Дата подтверждена» (объявлена источником) или «Ориентировочно» (по графику источника). */
+function DateStatus({ event }) {
+  const t = useT();
+  const tentative = event.date_confidence === 'official_rule' || event.status === 'awaiting_confirmation';
+  const Icon = tentative ? Clock3 : CheckCircle2;
+  return (
+    <span
+      className={cn('inline-flex items-center gap-1.5 text-xs', tentative ? 'text-text-secondary' : 'text-emerald-700')}
+      title={tentative ? t('w3.cal.tentativeHint') : t('w3.cal.confirmedHint')}
+    >
+      <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      {tentative ? t('w3.cal.tentative') : t('w3.cal.confirmed')}
     </span>
   );
 }
@@ -64,18 +70,18 @@ function ValueCell({ label, value, className }) {
   if (!value && value !== 0) return <div className={cn('text-center', className)}><span className="text-text-tertiary">—</span></div>;
   return (
     <div className={cn('text-center', className)}>
-      <div className="text-[11px] uppercase tracking-wider text-text-tertiary mb-0.5">{label}</div>
+      <div className="text-[13px] text-text-secondary mb-0.5">{label}</div>
       <div className="text-sm font-semibold text-text-primary tabular-nums">{value}</div>
     </div>
   );
 }
 
-function ActualValueCell({ value, previous, forecast }) {
+function ActualValueCell({ value, previous, forecast, polarity }) {
   const t = useT();
   if (!value && value !== 0) {
     return (
       <div className="text-center">
-        <div className="text-[11px] uppercase tracking-wider text-text-tertiary mb-0.5">{t('calendar.event.fact')}</div>
+        <div className="text-[13px] text-text-secondary mb-0.5">{t('calendar.event.fact')}</div>
         <div className="text-sm text-text-tertiary">—</div>
       </div>
     );
@@ -85,16 +91,20 @@ function ActualValueCell({ value, previous, forecast }) {
   const compareTo = forecast ?? previous;
   const numCompare = compareTo != null ? Number(compareTo) : null;
   let arrow = '';
-  let color = 'text-text-primary';
-  if (numCompare != null && isFinite(numVal) && isFinite(numCompare)) {
-    if (numVal > numCompare) { arrow = ' ↑'; color = 'text-positive'; }
-    else if (numVal < numCompare) { arrow = ' ↓'; color = 'text-negative'; }
+  let toneClass = 'text-text-primary';
+  if (numCompare != null && isFinite(numVal) && isFinite(numCompare) && numVal !== numCompare) {
+    const delta = numVal - numCompare;
+    arrow = delta > 0 ? ' ↑' : ' ↓';
+    // Цвет по смыслу показателя: рост безработицы не «зелёный», а у неизвестного смысла цвета нет.
+    const tone = deltaTone(delta, polarity);
+    if (tone === 'good') toneClass = 'fe-tone--good';
+    else if (tone === 'bad') toneClass = 'fe-tone--bad';
   }
 
   return (
     <div className="text-center">
-      <div className="text-[11px] uppercase tracking-wider text-text-tertiary mb-0.5">{t('calendar.event.fact')}</div>
-      <div className={cn('text-sm font-bold tabular-nums', color)}>
+      <div className="text-[13px] text-text-secondary mb-0.5">{t('calendar.event.fact')}</div>
+      <div className={cn('text-sm font-bold tabular-nums', toneClass)}>
         {value}{arrow}
       </div>
     </div>
@@ -139,7 +149,6 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
         {event.reference_period && (
           <span className="text-xs text-text-tertiary shrink-0 hidden sm:inline">{event.reference_period}</span>
         )}
-        <ImportanceDots level={1} />
         {linkedIndicators.length === 1 ? (
           <Link
             to={russiaIndicatorPath(linkedIndicators[0].code)}
@@ -161,7 +170,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
       style={revealStyle}
       className={cn(
         revealClass,
-        'fe-calendar-event group relative rounded-2xl border bg-surface transition-all duration-200',
+        'fe-calendar-event group relative rounded-[1.5rem] border bg-surface transition-all duration-200',
         'border-l-[3px]',
         src.border,
         isHigh ? 'border-border-subtle shadow-sm hover:shadow-md' : 'border-border-subtle',
@@ -173,14 +182,13 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex items-center gap-2 flex-wrap">
             <span className={cn(
-              'inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider',
+              'inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold',
               src.bg, src.text,
             )}>
               {sourceLabel}
             </span>
-            <ImportanceDots level={event.importance} />
-            <span className="text-xs text-text-tertiary">{t(event.date_confidence === 'official_rule' ? 'calendar.event.officialRule' : 'calendar.event.official')}
-              {event.status === 'awaiting_confirmation' && `; ${t('calendar.event.awaitingConfirmation')}`}</span>
+            <ImportanceBadge level={event.importance} />
+            <DateStatus event={event} />
           </div>
           {event.scheduled_time && (
             <span className="text-sm font-mono text-text-secondary shrink-0">
@@ -221,6 +229,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
               value={event.actual_value}
               previous={event.previous_value}
               forecast={event.forecast_value}
+              polarity={indicatorPolarity(event.title, event.indicator_name)}
             />
           </div>
         )}

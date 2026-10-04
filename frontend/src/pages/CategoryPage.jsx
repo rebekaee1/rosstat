@@ -17,6 +17,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
 import { track, events } from '../lib/track';
+import '../styles/indicator-russia.css';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
   breadcrumbJsonLd,
@@ -149,7 +150,7 @@ export default function CategoryPage({ fixedSlug }) {
         return (
           <Link
             to={feat.to}
-            className="group flex items-center gap-5 rounded-[2rem] border border-border-champagne bg-champagne/[0.04] p-6 md:p-8 mb-8 transition-colors hover:bg-champagne/[0.07]"
+            className="fe-press group flex items-center gap-5 rounded-[1.5rem] border border-border-champagne bg-champagne/[0.04] p-5 md:p-6 mb-8 transition-colors hover:bg-champagne/[0.07]"
           >
             <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-champagne/10">
               <Icon className="w-6 h-6 text-champagne-ink" />
@@ -164,11 +165,11 @@ export default function CategoryPage({ fixedSlug }) {
       })()}
 
       <div className="mb-8">
-        <IndicatorSearch variant="inline" inlinePlaceholder={t('category.searchPlaceholder')} />
+        <IndicatorSearch variant="inline" inlinePlaceholder={t('w3.search.short')} />
       </div>
 
-      <section data-block="category-list" className="rounded-[2rem] border border-border-subtle bg-surface p-3 shadow-md ring-1 ring-black/[0.06] sm:p-6 md:p-8">
-        <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-text-secondary">
+      <section data-block="category-list" className="fe-cat-list">
+        <h2 className="fe-cat-list__title">
           {t('category.indicatorsHeading')}
         </h2>
         {isError && (
@@ -182,15 +183,15 @@ export default function CategoryPage({ fixedSlug }) {
           </ApiRetryBanner>
         )}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[...Array(4)].map((_, i) => (
+          <div className="fe-cat-grid" role="status" aria-busy="true" aria-label={t('common.loading')}>
+            {[...Array(6)].map((_, i) => (
               <TileSkeleton key={i} />
             ))}
           </div>
         ) : isError ? null : filtered.length === 0 ? (
           <p className="text-text-secondary">{t('category.empty')}</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="fe-cat-grid">
             {filtered.map((ind, i) => (
               <IndicatorTile
                 key={ind.code}
@@ -207,7 +208,7 @@ export default function CategoryPage({ fixedSlug }) {
       {relatedCategories.length > 0 && (
         <section data-block="related-categories" className="mt-12">
           <div className="flex items-center gap-4 mb-6">
-            <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
+            <h2 className="fe-cat-list__title mb-0!">
               {t('category.related')}
             </h2>
             <div className="h-[1px] flex-1 bg-border-subtle" />
@@ -222,7 +223,7 @@ export default function CategoryPage({ fixedSlug }) {
                   to: rel.slug,
                   surface: 'category-related',
                 })}
-                className="group flex items-center justify-between gap-4 p-5 rounded-2xl border border-border-subtle bg-surface hover:border-champagne/30 transition-colors"
+                className="fe-press group flex items-center justify-between gap-4 p-5 rounded-[1.5rem] border border-border-subtle bg-surface hover:border-champagne/30 transition-colors"
               >
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-text-primary mb-1 truncate">

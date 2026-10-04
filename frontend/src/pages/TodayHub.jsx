@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowUpRight, Info } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useIndicator, useIndicatorData } from '../lib/hooks';
 import { TODAY_CODES, TODAY_SPECS } from '../lib/todaySpecs';
-import { formatValue, formatDate, formatChange } from '../lib/format';
+import { formatValue, formatDate, resolveDateFormat, unitDigits, unitSuffix } from '../lib/format';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { formatDeltaWithUnit } from '../lib/deltaText';
+import { periodPhrase } from '../lib/periodPhrase';
+import DeltaBadge from '../components/DeltaBadge';
+import Sparkline, { SparklineSkeleton } from '../components/Sparkline';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import Button from '../components/Button';
@@ -15,6 +20,7 @@ import {
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import '../styles/platform-pages.css';
+import '../styles/indicator-russia.css';
 
 function todayLabel(code, t) {
   const key = `today.spec.${code}`;
@@ -35,7 +41,9 @@ function formatTodayDate(d, locale) {
   }
 }
 
-function TodayCard({ code }) {
+const CBR_RATE_CODES = new Set(['usd-rub', 'eur-rub', 'cny-rub']);
+
+function TodayCard({ code, index }) {
   const t = useT();
   const { locale } = useLocale();
   const spec = TODAY_SPECS[code];
@@ -43,20 +51,35 @@ function TodayCard({ code }) {
   const { data: indicator } = useIndicator(seriesCode);
   const {
     data: rows, isLoading, isError, refetch, isFetching,
-  } = useIndicatorData(seriesCode, { limit: 2 });
+  } = useIndicatorData(seriesCode, { limit: 30 });
   const query = todayLabel(code, t);
 
-  const last = rows?.data?.[rows.data.length - 1];
-  const prev = rows?.data?.length > 1 ? rows.data[rows.data.length - 2] : null;
+  const series = rows?.data || [];
+  const last = series[series.length - 1];
+  const prev = series.length > 1 ? series[series.length - 2] : null;
   const change = last && prev ? last.value - prev.value : null;
+  const unit = indicator?.unit || '';
+  const polarity = indicatorPolarity(query, indicator?.name, indicator?.code);
+  const delta = change != null ? formatDeltaWithUnit(change, unit, { locale }) : null;
+  const dateFmt = resolveDateFormat({ frequency: indicator?.frequency });
+  const dateText = last ? formatDate(last.date, dateFmt, locale) : '';
+  const meta = !last ? null : (CBR_RATE_CODES.has(code)
+    ? t('w3.today.cbrRate', { date: dateText })
+    : periodPhrase(t, last.date, dateFmt, locale));
+  const perKey = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'].includes(indicator?.frequency)
+    ? `w3.tile.per.${indicator.frequency}`
+    : 'w3.tele.delta.prevValue';
+  const sparkValues = series.map((row) => Number(row.value)).filter(Number.isFinite);
+  const trend = sparkValues.length > 1
+    ? (sparkValues[sparkValues.length - 1] > sparkValues[0] ? 'up' : sparkValues[sparkValues.length - 1] < sparkValues[0] ? 'down' : 'flat')
+    : 'flat';
+  const sentiment = polarity === 'up-good' ? 'positive' : polarity === 'up-bad' ? 'inverse' : 'neutral';
 
   if (isError && !last) {
     return (
-      <div className="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" role="alert">
-        <div className="font-mono text-[11px] uppercase tracking-wide text-text-secondary">
-          {t('today.cardToday', { query })}
-        </div>
-        <span className="text-sm text-text-secondary">{t('pgui.today.cardError')}</span>
+      <div className="fe-today-card fe-today-card--error" role="alert">
+        <p className="fe-today-card__label">{t('today.cardToday', { query })}</p>
+        <p className="fe-today-card__meta">{t('pgui.today.cardError')}</p>
         <Button variant="secondary" size="sm" className="mt-auto self-start" loading={isFetching} onClick={() => refetch()}>
           {t('common.retry')}
         </Button>
@@ -67,45 +90,47 @@ function TodayCard({ code }) {
   return (
     <Link
       to={todayPath(code)}
-      className="fe-press group bg-surface border border-border-subtle rounded-xl p-4 hover:border-border-champagne hover:shadow-sm transition-all flex flex-col gap-2 min-h-[148px]"
+      style={{ '--i': Math.min(index, 5), '--fe-duration': '0.4s', '--fe-rise': '12px' }}
+      className="fe-reveal fe-reveal--free fe-reveal--stagger fe-today-card fe-press group"
     >
-      <div className="text-[11px] text-text-secondary uppercase tracking-wide font-mono">
-        {t('today.cardToday', { query })}
+      <div className="fe-today-card__top">
+        <p className="fe-today-card__label">{t('today.cardToday', { query })}</p>
+        <ArrowUpRight className="fe-today-card__go" aria-hidden="true" />
       </div>
       {isLoading ? (
         <>
-          <SkeletonBox className="h-6 w-32" />
+          <SkeletonBox className="h-7 w-28" />
           <SkeletonBox className="h-4 w-24" />
+          <SparklineSkeleton height={36} />
         </>
       ) : !last ? (
-        <span className="text-sm text-text-secondary">{t('common.noData')}</span>
+        <span className="fe-today-card__meta">{t('common.noData')}</span>
       ) : (
         <>
-          <div className="font-mono text-2xl font-bold text-text-primary leading-none">
-            {formatValue(last.value)}
-            <span className="ml-1.5 text-sm font-normal text-text-secondary">
-              {indicator?.unit || ''}
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
-            {change != null && Math.abs(change) >= 1e-12 && (
-              <span className={change > 0 ? 'fe-ink-pos' : 'fe-ink-neg'}>
-                {formatChange(change, indicator?.unit)}
-              </span>
-            )}
-            <span>
-              {formatDate(
-                last.date,
-                indicator?.frequency === 'daily' ? 'full' : 'monthly',
-                locale,
+          <p className="fe-today-card__value">
+            <span className="fe-today-card__num">{formatValue(last.value, unitDigits(unit))}</span>
+            {unitSuffix(unit) ? <span className="fe-today-card__unit">{unitSuffix(unit)}</span> : null}
+          </p>
+          {delta && (
+            <p className="fe-today-card__delta">
+              {delta.flat ? (
+                <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
+              ) : (
+                <>
+                  <DeltaBadge delta={change} polarity={polarity}>{delta.text}</DeltaBadge>
+                  <span className="fe-today-card__vs">{t(perKey)}</span>
+                </>
               )}
-            </span>
-          </div>
+            </p>
+          )}
+          {sparkValues.length > 1 && (
+            <div className="fe-today-card__spark">
+              <Sparkline points={sparkValues} trend={trend} sentiment={sentiment} height={36} staggerMs={Math.min(index, 5) * 80} />
+            </div>
+          )}
+          {meta && <p className="fe-today-card__meta">{meta}</p>}
         </>
       )}
-      <span className="fe-tap-inline text-xs text-champagne-ink group-hover:underline mt-auto gap-1">
-        {t('common.more')} <ArrowRight size={12} />
-      </span>
     </Link>
   );
 }
@@ -124,28 +149,32 @@ export default function TodayHub() {
     <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
       <Breadcrumbs items={todayTrail()} />
 
-      <p className="text-champagne-ink text-xs font-mono uppercase tracking-widest mb-2">
+      <p className="fe-today-eyebrow">
         {t('today.eyebrow', { date: today })}
       </p>
       <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary mb-3">
         {t('today.h1')}
       </h1>
-      <p className="text-text-secondary max-w-2xl mb-8">
+      <p className="text-text-secondary max-w-2xl mb-4">
         {t('today.intro')}
+      </p>
+      <p className="fe-today-note">
+        <Info className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <span>{t('w3.today.fxNote')}</span>
       </p>
 
       <section id="chart" className="mb-10 scroll-mt-28">
         <h2 className="font-display text-lg font-semibold text-text-primary mb-4">
           {t('today.sectionTitle')}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {TODAY_CODES.map((code) => (
-            <TodayCard key={code} code={code} />
+        <div className="fe-today-grid">
+          {TODAY_CODES.map((code, i) => (
+            <TodayCard key={code} code={code} index={i} />
           ))}
         </div>
       </section>
 
-      <section className="bg-surface border border-border-subtle rounded-xl p-5">
+      <section className="bg-surface border border-border-subtle rounded-[1.5rem] p-5">
         <h2 className="font-display text-base font-semibold text-text-primary mb-2">
           {t('today.moreTitle')}
         </h2>

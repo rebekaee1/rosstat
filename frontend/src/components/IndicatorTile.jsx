@@ -1,15 +1,16 @@
-import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
-import { formatValue, formatChange, formatDate, resolveDateFormat, cn, isCpiIndex, relativeTime } from '../lib/format';
+import { ArrowRight } from 'lucide-react';
+import { formatValue, resolveDateFormat, cn, isCpiIndex } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
-import {
-  russiaIndicatorPath,
-} from '../lib/sitePaths';
+import { russiaIndicatorPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { findCategoryByApiLabel } from '../lib/categories';
-import '../styles/ui-detail-nav-calendar.css';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { formatDeltaWithUnit } from '../lib/deltaText';
+import { periodPhrase } from '../lib/periodPhrase';
+import DeltaBadge from './DeltaBadge';
+import '../styles/indicator-russia.css';
 
 /**
  * Listing-карточка индикатора. Используется и на главной (где это
@@ -17,21 +18,13 @@ import '../styles/ui-detail-nav-calendar.css';
  * `surface` различает источник клика — нужен для funnel-анализа в Метрике
  * (Webvisor показывает category→indicator как отдельную ось, без surface
  * мы потеряем контекст).
+ *
+ * Для человека: название, число с единицей, изменение со смыслом и подписью периода («+0,24 руб. за день»),
+ * дата словами. На странице категории подпись категории не повторяется на каждой плитке.
  */
 export default function IndicatorTile({ indicator, delay = 0, displayOverride, surface = 'home' }) {
   const t = useT();
   const { locale } = useLocale();
-  const ref = useRef(null);
-  const glowRef = useRef(null);
-
-  const handleMouseMove = (e) => {
-    if (!glowRef.current || !indicator.is_active) return;
-    const rect = ref.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    glowRef.current.style.setProperty('--mouse-x', `${x}px`);
-    glowRef.current.style.setProperty('--mouse-y', `${y}px`);
-  };
 
   // Hero override от бэка: для индекс-индикаторов (ИПП, ИЦП, цены на жильё)
   // «первая цифра» карточки = изменение г/г %, а не уровень индекса. Так число
@@ -44,8 +37,6 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
     : hasHero ? indicator.hero_change
       : indicator.change;
   const changeNum = rawChange != null ? Number(rawChange) : null;
-  const isUp = changeNum != null && changeNum > 0;
-  const isDown = changeNum != null && changeNum < 0;
   const isActive = indicator.is_active;
   const displayVal = displayOverride
     ? displayOverride.value
@@ -54,8 +45,22 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
       : isCpiIndex(indicator.code)
         ? (indicator.current_value != null ? Number(indicator.current_value) - 100 : null)
         : indicator.current_value;
-  const displayUnit = hasHero ? (indicator.hero_unit || '%') : indicator.unit;
+  const displayUnit = hasHero || displayOverride ? (indicator.hero_unit || '%') : indicator.unit;
   const dateFmt = resolveDateFormat({ frequency: indicator.frequency });
+  const polarity = indicatorPolarity(indicator.name, indicator.name_en, indicator.code);
+  const title = locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name;
+  const categoryName = (locale === 'en'
+    ? findCategoryByApiLabel(indicator.category_ru || indicator.category)?.nameEn
+    : null) || indicator.category || t('tile.metric');
+
+  const change = changeNum != null && Number.isFinite(changeNum)
+    ? formatDeltaWithUnit(changeNum, displayUnit, { locale })
+    : null;
+  const periodKey = hasHero ? 'year' : indicator.frequency;
+  const perText = ['daily', 'weekly', 'monthly', 'quarterly', 'annual', 'year'].includes(periodKey)
+    ? t(`w3.tile.per.${periodKey}`)
+    : t('w3.tele.delta.prevValue');
+  const date = periodPhrase(t, indicator.current_date, dateFmt, locale);
 
   const handleClick = () => {
     if (!isActive) return;
@@ -69,100 +74,50 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
 
   return (
     <Link
-      ref={ref}
       style={isActive ? { '--i': Math.min(delay, 5), '--fe-duration': '0.4s', '--fe-rise': '12px' } : undefined}
       to={isActive ? russiaIndicatorPath(indicator.code) : '#'}
       onClick={handleClick}
-      onMouseMove={handleMouseMove}
+      aria-disabled={isActive ? undefined : true}
       className={cn(
         FOCUS_RING_SURFACE,
-        'group relative p-4 sm:p-6 rounded-[2rem] border transition-all duration-500 overflow-hidden',
-        'fe-panel bg-surface border-border-subtle',
+        'fe-tile group',
         isActive
-          ? 'fe-reveal fe-reveal--free fe-reveal--stagger hover:border-champagne/40 cursor-pointer lift-hover'
-          : 'opacity-40 cursor-default pointer-events-none grayscale'
+          ? 'fe-reveal fe-reveal--free fe-reveal--stagger fe-press'
+          : 'fe-tile--pending',
       )}
     >
-      {/* Dynamic Glow Effect on Hover */}
-      {isActive && (
-        <div
-          ref={glowRef}
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{
-            background: `radial-gradient(circle 300px at var(--mouse-x, 0) var(--mouse-y, 0), rgba(184, 148, 47, 0.06), transparent 80%)`,
-          }}
-        />
-      )}
-
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-5 sm:mb-8">
-          <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-text-tertiary">
-            {(locale === 'en' ? (findCategoryByApiLabel(indicator.category_ru || indicator.category)?.nameEn) : null) || indicator.category || t('tile.metric')}
-          </span>
-          {!isActive && (
-            <span className="text-[11px] uppercase tracking-widest px-2.5 py-1 rounded-full bg-obsidian border border-border-subtle text-text-tertiary font-medium">
-              {t('tile.pending')}
-            </span>
-          )}
-          {isActive && (
-            <div className="w-8 h-8 rounded-full border border-border-subtle flex items-center justify-center bg-obsidian-light group-hover:bg-champagne/10 group-hover:border-champagne/30 transition-colors duration-300">
-              <ArrowRight className="w-3.5 h-3.5 text-text-tertiary group-hover:text-champagne transition-colors" />
-            </div>
-          )}
+      <div className="fe-tile__top">
+        <div className="min-w-0">
+          {surface !== 'category' && <p className="fe-tile__cat">{categoryName}</p>}
+          <h3 className="fe-tile__title">{title}</h3>
         </div>
+        {isActive ? (
+          <span className="fe-tile__go" aria-hidden="true"><ArrowRight className="h-3.5 w-3.5" /></span>
+        ) : (
+          <span className="fe-tile__soon">{t('tile.pending')}</span>
+        )}
+      </div>
 
-        <div className="mt-auto">
-          <h3 className="text-sm font-semibold text-text-primary mb-1 group-hover:text-champagne transition-colors duration-300">
-            {locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name}
-          </h3>
-          {locale === 'en'
-            ? (indicator.name && indicator.name_en && (
-              <p className="text-xs text-text-tertiary mb-6 font-mono">{indicator.name}</p>
-            ))
-            : (indicator.name_en && (
-              <p className="text-xs text-text-tertiary mb-6 font-mono">{indicator.name_en}</p>
-            ))}
+      <div className="fe-tile__body">
+        <p className="fe-tile__value">
+          <span className={String(formatValue(displayVal)).length > 12 ? 'fe-tile__num fe-tile__num--long' : 'fe-tile__num'}>
+            {formatValue(displayVal)}
+          </span>
+          {displayUnit ? <span className="fe-tile__unit">{displayUnit}</span> : null}
+        </p>
 
-          <div className="flex items-end justify-between gap-x-3 gap-y-2 flex-wrap">
-            <div className="min-w-0">
-              <div className="flex items-baseline gap-1.5 mb-1">
-                <span className={cn(
-                  'font-semibold tracking-tight text-text-primary font-sans tabular-nums whitespace-nowrap',
-                  String(formatValue(displayVal)).length > 12 ? 'text-lg' : 'text-2xl'
-                )}>
-                  {formatValue(displayVal)}
-                </span>
-                <span className="text-xs font-medium text-text-tertiary whitespace-nowrap">{displayUnit}</span>
-              </div>
-              
-              {indicator.current_date && (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-[11px] uppercase tracking-widest text-text-tertiary font-mono">
-                    {formatDate(indicator.current_date, dateFmt, locale)}
-                    {hasHero ? ` ${t('tile.yoy')}` : ''}
-                  </p>
-                  {relativeTime(indicator.current_date, locale) && (
-                    <span className="text-xs text-text-tertiary font-mono">
-                      {relativeTime(indicator.current_date, locale)}
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {changeNum != null && (
-              <div className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border font-mono text-xs font-medium shrink-0',
-                isUp ? 'bg-positive/10 border-positive/20 fe-delta--up' : '',
-                isDown ? 'bg-negative/10 border-negative/20 fe-delta--down' : '',
-                !isUp && !isDown ? 'bg-obsidian border-border-subtle text-text-tertiary' : ''
-              )}>
-                {isUp && <TrendingUp className="w-3 h-3" />}
-                {isDown && <TrendingDown className="w-3 h-3" />}
-                <span>{formatChange(changeNum)}</span>
-              </div>
-            )}
-          </div>
+        <div className="fe-tile__foot">
+          {change && (
+            change.flat ? (
+              <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
+            ) : (
+              <span className="fe-tile__delta">
+                <DeltaBadge delta={changeNum} polarity={polarity}>{change.text}</DeltaBadge>
+                <span className="fe-tile__vs">{perText}</span>
+              </span>
+            )
+          )}
+          {date && <span className="fe-tile__date">{date}</span>}
         </div>
       </div>
     </Link>

@@ -3,20 +3,11 @@ import { dataModeForUrlMode } from '../lib/cpiViewModeResolve';
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
 import { indicatorPolarity } from '../lib/deltaTone';
+import { periodPhrase } from '../lib/periodPhrase';
 import { useLocale, useT } from '../i18n';
 import TelemetryCard from './TelemetryCard';
 import { SkeletonBox } from './Skeleton';
 import '../styles/indicator-russia.css';
-
-/** «на 15 октября 2026» для дневных рядов, «за август 2026» / «за I кв. 2026» / «за 2025 год» для остальных. */
-function periodPhrase(t, dateStr, dateFmt, locale) {
-  if (!dateStr) return undefined;
-  const date = formatDate(dateStr, dateFmt, locale);
-  if (date === '—') return undefined;
-  if (dateFmt === 'day' || dateFmt === 'weekly') return t('w3.tele.asOf', { date });
-  if (dateFmt === 'annual') return t('w3.tele.forYear', { date });
-  return t('w3.tele.forPeriod', { date });
-}
 
 /**
  * Сетка из 4 телеметрических карточек на странице индикатора:

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
-import { ArrowRight, TrendingUp, TrendingDown } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useIndicator, useIndicatorData } from '../lib/hooks';
 import { getTodaySpec, todaySeriesCode } from '../lib/todaySpecs';
@@ -9,7 +9,10 @@ import {
   formatTodayNumber,
   formatTodayRuDate,
 } from '../lib/todayFormat';
-import { formatChange, unitSuffix } from '../lib/format';
+import { unitSuffix } from '../lib/format';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { formatDeltaWithUnit } from '../lib/deltaText';
+import DeltaBadge from '../components/DeltaBadge';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import IndicatorChart from '../components/IndicatorChart';
@@ -23,6 +26,7 @@ import { useLocale, useT } from '../i18n';
 import SourceLink from '../components/SourceLink';
 import Button from '../components/Button';
 import '../styles/platform-pages.css';
+import '../styles/indicator-russia.css';
 
 function ruDateShort(iso) {
   if (!iso) return '';
@@ -68,6 +72,9 @@ export default function TodayIndicatorPage() {
   }, [points, last, prev]);
 
   const freq = indicator?.frequency || 'monthly';
+  const isCbrRate = ['usd-rub', 'eur-rub', 'cny-rub'].includes(code);
+  const polarity = indicatorPolarity(spec?.query, indicator?.name, indicator?.code);
+  const deltaInfo = stats?.change != null ? formatDeltaWithUnit(stats.change, indicator?.unit, { locale }) : null;
 
   // Мета только после полного набора данных — иначе «Источник — undefined»
   // и мигание title (ADR-0003: CSR не должен перетирать SSR промежуточным).
@@ -132,50 +139,57 @@ export default function TodayIndicatorPage() {
 
       {!isLoading && last && indicator && (
         <>
-          <p className="text-champagne-ink text-xs font-mono uppercase tracking-widest mb-2">
+          <p className="fe-today-eyebrow">
             {t('today.page.eyebrow')}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-4">
             {t('today.page.h1', { query: locale === 'en' ? (t(`today.spec.${code}`) || spec.query) : spec.query })}
           </h1>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-            <div className="bg-surface border border-border-subtle rounded-xl p-3.5 col-span-2 lg:col-span-1">
-              <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('today.page.now')}</div>
-              <div className="mt-1 font-mono text-2xl font-bold text-text-primary">
+          <div className="fe-today-stats">
+            <div className="fe-today-stat fe-today-stat--main">
+              <p className="fe-today-stat__label">{t('today.page.now')}</p>
+              <p className="fe-today-stat__num fe-today-stat__num--main">
                 {formatTodayNumber(last.value)}
-                <span className="ml-1 text-sm font-normal text-text-secondary">{unitSuffix(indicator.unit)}</span>
-              </div>
-              <div className="mt-1 text-xs text-text-secondary">{formatTodayRuDate(last.date)}</div>
+                {unitSuffix(indicator.unit) ? <span className="fe-today-stat__unit">{unitSuffix(indicator.unit)}</span> : null}
+              </p>
+              <p className="fe-today-stat__meta">
+                {isCbrRate ? t('w3.today.cbrRate', { date: formatTodayRuDate(last.date) }) : formatTodayRuDate(last.date)}
+              </p>
+              {deltaInfo && (
+                <p className="fe-today-stat__delta">
+                  {deltaInfo.flat ? (
+                    <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
+                  ) : (
+                    <>
+                      <DeltaBadge delta={stats.change} polarity={polarity}>{deltaInfo.text}</DeltaBadge>
+                      <span className="fe-today-stat__vs">{t('pgui.today.vsPrev')}</span>
+                    </>
+                  )}
+                </p>
+              )}
             </div>
             {prev && (
-              <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('today.page.prev')}</div>
-                <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(prev.value)}</div>
+              <div className="fe-today-stat">
+                <p className="fe-today-stat__label">{t('today.page.prev')}</p>
+                <p className="fe-today-stat__num">{formatTodayNumber(prev.value)}</p>
               </div>
             )}
             {stats && (
               <>
-                <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                  <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('today.page.min')}</div>
-                  <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(stats.min)}</div>
+                <div className="fe-today-stat">
+                  <p className="fe-today-stat__label">{t('today.page.min')}</p>
+                  <p className="fe-today-stat__num">{formatTodayNumber(stats.min)}</p>
                 </div>
-                <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                  <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('today.page.max')}</div>
-                  <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(stats.max)}</div>
+                <div className="fe-today-stat">
+                  <p className="fe-today-stat__label">{t('today.page.max')}</p>
+                  <p className="fe-today-stat__num">{formatTodayNumber(stats.max)}</p>
                 </div>
               </>
             )}
           </div>
 
-          {stats?.change != null && Math.abs(stats.change) >= 1e-12 && (
-            <div className={`inline-flex items-center gap-1.5 text-sm font-mono mb-4 ${stats.change > 0 ? 'fe-ink-pos' : 'fe-ink-neg'}`}>
-              {stats.change > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-              {formatChange(stats.change, indicator.unit)} {t('pgui.today.vsPrev')}
-            </div>
-          )}
-
-          <div className="bg-surface border border-border-subtle rounded-xl p-4 mb-6">
+          <div className="fe-today-chart">
             <IndicatorChart
               mode="cpi"
               cpiData={chartPoints}
@@ -190,7 +204,7 @@ export default function TodayIndicatorPage() {
                 query: locale === 'en' ? (t(`today.spec.${code}`) || spec.query) : spec.query,
               })}
             />
-            <p className="mt-2 text-xs text-text-secondary font-mono">
+            <p className="mt-2 text-sm text-text-secondary">
               {t('today.page.source', { source: '' }).replace(/\s*$/, '')}{' '}
               <SourceLink
                 href={indicator.source_url}
@@ -209,17 +223,17 @@ export default function TodayIndicatorPage() {
 
           <section className="mb-8">
             <h2 className="font-display text-lg font-semibold text-text-primary mb-3">{t('today.page.recent')}</h2>
-            <div className="overflow-x-auto rounded-xl border border-border-subtle">
+            <div className="overflow-x-auto rounded-[1.5rem] border border-border-subtle bg-surface">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-obsidian-light/50 text-left text-[11px] uppercase tracking-wide text-text-secondary">
-                    <th className="px-4 py-2.5 font-medium">{t('today.page.colDate')}</th>
-                    <th className="px-4 py-2.5 font-medium">{indicator.unit || t('today.page.colValue')}</th>
+                  <tr className="bg-obsidian-light/50 text-left text-[13px] text-text-secondary">
+                    <th className="px-4 py-2.5 font-semibold">{t('today.page.colDate')}</th>
+                    <th className="px-4 py-2.5 font-semibold">{indicator.unit || t('today.page.colValue')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[...points].reverse().slice(0, 15).map((row) => (
-                    <tr key={row.date} className="border-t border-border-subtle font-mono">
+                    <tr key={row.date} className="border-t border-border-subtle tabular-nums">
                       <td className="px-4 py-2 text-text-secondary">{ruDateShort(row.date)}</td>
                       <td className="px-4 py-2 text-text-primary">{formatTodayNumber(row.value)}</td>
                     </tr>
@@ -229,7 +243,7 @@ export default function TodayIndicatorPage() {
             </div>
           </section>
 
-          <section className="bg-surface border border-border-subtle rounded-xl p-5">
+          <section className="bg-surface border border-border-subtle rounded-[1.5rem] p-5">
             <h2 className="font-display text-base font-semibold text-text-primary mb-2">{t('today.page.fullHistoryTitle')}</h2>
             <p className="text-sm text-text-secondary">
               {t('today.page.fullHistoryBody')}
