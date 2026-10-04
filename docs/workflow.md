@@ -388,6 +388,24 @@ docker exec rosstat-postgres-1 sh -c 'pg_restore -L /tmp/product.list --no-owner
 
 ## Прод-деплой
 
+**Пачка 04.10.2026 (`integration/all-20261002`): две миграции — `20260930_session_reviews`, `20261004_session_changes`.** Первая строит четыре индекса `CREATE INDEX CONCURRENTLY`
+на `behavior_events` (1,45 ГБ) и `frontend_events` (266 МБ) **при старте backend**, пока API недоступен, а `deploy.sh` ждёт готовности 300 с — поэтому индексы строятся заранее, на работающем старом коде:
+
+```sql
+-- psql под владельцем БД, вне транзакции; свободное место ≥ 3 ГБ (диск боевого 77 ГБ, занято 79%)
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_behavior_session_event ON behavior_events (session_id_hash, id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_behavior_occurred      ON behavior_events (occurred_at);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_frontend_session_event ON frontend_events (session_id_hash, id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_frontend_occurred      ON frontend_events (occurred_at);
+-- проверка: все четыре valid и ready, иначе DROP INDEX CONCURRENTLY и повтор
+SELECT indexrelid::regclass, indisvalid AND indisready FROM pg_index WHERE indexrelid::regclass::text IN
+  ('ix_behavior_session_event','ix_behavior_occurred','ix_frontend_session_event','ix_frontend_occurred');
+```
+
+Миграция затем только проверяет и пропускает готовые индексы (`IF NOT EXISTS` + проверка `indisvalid`). Время построения на боевых таблицах **не измерялось** (на стенде таблицы пусты) — смотреть `pg_stat_progress_create_index`.
+Запись и анализ сессий в этом выпуске выключены (`RUSTATS_SESSION_*_ENABLED=false` — значения по умолчанию в коде и compose); `session_replay_chunks` не попадает в данные ежедневного дампа.
+Откат схемы — только по рецепту «Deploy-scope trap» ([CONTEXT.md](../CONTEXT.md)); репетиция downgrade обеих миграций проведена на стенде.
+
 **Текущее наблюдение 30.09:** серверный head уже `20260927_world_nonzero_idx`, checkout `367ff336`, выбранные `deploy.sh`/Compose/Caddy/nginx совпадают с main. Ниже сохраняется рецепт **первого** выпуска и инцидент 27.09: он не является инструкцией повторно выполнять уже применённую миграцию. Для любого нового выпуска заново проверять прод → цель и совместимость схемы.
 
 **Регламент 2026-09-20: `main` не означает разрешение на выкладку.** Нужна явная команда владельца «деплой до `<sha>`, включая всё, что он тянет» и полный целевой SHA в `deploy/approved-shas.txt`. Пустой/отсутствующий список = запрет. Эта документация не одобряет ни один SHA.
