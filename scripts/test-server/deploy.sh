@@ -26,17 +26,21 @@ echo "== сервер: ${REMOTE_SHA:0:9}  →  цель: ${SHA:0:9}"
 if [[ "$REMOTE_SHA" == "$SHA" && $BUILD -eq 0 ]]; then echo "Уже на этом SHA."; fi
 
 # 1. Код: инкрементальный bundle от SHA сервера (если он предок цели), иначе полный.
-BR=fe-test-deploy
-git branch -f "$BR" "$SHA" >/dev/null
-WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"; git branch -D "$BR" >/dev/null 2>&1 || true' EXIT
-if git cat-file -e "$REMOTE_SHA^{commit}" 2>/dev/null && git merge-base --is-ancestor "$REMOTE_SHA" "$SHA"; then
-  git bundle create "$WORK/fe.bundle" "$REMOTE_SHA..$BR" >/dev/null
+if [[ "$REMOTE_SHA" == "$SHA" ]]; then
+  echo "Код уже на сервере — пропускаю передачу, только сборка и перезапуск."
 else
-  echo "SHA сервера не предок цели — полный bundle"
-  git bundle create "$WORK/fe.bundle" "$BR" >/dev/null
+  BR=fe-test-deploy
+  git branch -f "$BR" "$SHA" >/dev/null
+  WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"; git branch -D "$BR" >/dev/null 2>&1 || true' EXIT
+  if git cat-file -e "$REMOTE_SHA^{commit}" 2>/dev/null && git merge-base --is-ancestor "$REMOTE_SHA" "$SHA"; then
+    git bundle create "$WORK/fe.bundle" "$REMOTE_SHA..$BR" >/dev/null
+  else
+    echo "SHA сервера не предок цели — полный bundle"
+    git bundle create "$WORK/fe.bundle" "$BR" >/dev/null
+  fi
+  "${SCP[@]}" "$WORK/fe.bundle" "$HOST:/root/fe-deploy.bundle"
+  "${SSH[@]}" "cd $APP_DIR && git fetch -q /root/fe-deploy.bundle $BR:refs/heads/$BR --force && git checkout -q --detach $SHA && git rev-parse --short HEAD"
 fi
-"${SCP[@]}" "$WORK/fe.bundle" "$HOST:/root/fe-deploy.bundle"
-"${SSH[@]}" "cd $APP_DIR && git fetch -q /root/fe-deploy.bundle $BR:refs/heads/$BR --force && git checkout -q --detach $SHA && git rev-parse --short HEAD"
 
 # 2. Образы (host-сеть задана в docker-compose.override.yml; без неё pip/npm таймаутят) и перезапуск.
 if [[ $BUILD -eq 1 ]]; then

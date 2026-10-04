@@ -857,8 +857,8 @@ body.seo-fast .seo-search button{min-height:48px;padding:0 1.25rem;border:1px so
 body.seo-fast .seo-search button:hover{border-color:#ad8a48}
 body.seo-fast .seo-404-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:.75rem 0 1.5rem;padding:0;list-style:none}
 @media(min-width:640px){body.seo-fast .seo-404-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-body.seo-fast .seo-404-grid li{margin:0}
-body.seo-fast .seo-404-grid a{display:block;height:100%;padding:1rem;border:1px solid #fff;border-radius:20px;background:linear-gradient(130deg,rgba(255,255,255,.85),rgba(255,255,255,.55));box-shadow:0 16px 45px -35px rgba(38,52,78,.35);color:#202a3c;text-decoration:none!important;transition:border-color .15s,transform .15s}
+body.seo-fast .seo-404-grid li{margin:0;display:flex}
+body.seo-fast .seo-404-grid a{display:block;flex:1;min-width:0;padding:1rem;border:1px solid #fff;border-radius:20px;background:linear-gradient(130deg,rgba(255,255,255,.85),rgba(255,255,255,.55));box-shadow:0 16px 45px -35px rgba(38,52,78,.35);color:#202a3c;text-decoration:none!important;transition:border-color .15s,transform .15s}
 body.seo-fast .seo-404-grid a:hover{border-color:#ad8a48;color:#202a3c}
 body.seo-fast .seo-404-grid a:active{transform:scale(.98)}
 body.seo-fast .seo-404-grid b{display:block;font-size:1rem;font-weight:650;line-height:1.3}
