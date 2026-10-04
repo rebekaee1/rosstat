@@ -819,10 +819,10 @@ body.seo-fast .seo-tile .seo-tile-unit{display:inline;margin:0;font-size:.8125re
 body.seo-fast .seo-tile .seo-tile-note{display:block;margin-top:.2rem;font-size:.8125rem;font-weight:500;letter-spacing:0;text-transform:none;color:#526074}
 body.seo-fast .seo-facts{display:grid;gap:.6rem;margin:0 0 1rem;padding:0;list-style:none}
 body.seo-fast .seo-facts li{margin:0;padding:.8rem 1rem;border:1px solid #fff;border-radius:16px;background:rgba(255,255,255,.62);color:#202a3c;line-height:1.5}
-body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child){display:flex;flex-wrap:wrap;gap:.5rem;padding:0;list-style:none}
-body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child) li{margin:0}
+body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):not(.seo-404-grid):has(> li > a:only-child){display:flex;flex-wrap:wrap;gap:.5rem;padding:0;list-style:none}
+body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):not(.seo-404-grid):has(> li > a:only-child) li{margin:0}
 body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):not(.seo-404-grid):has(> li > a:only-child) a{display:inline-flex;align-items:center;min-height:40px;padding:.35rem .95rem;border:1px solid rgba(68,87,115,.14);border-radius:999px;background:rgba(255,255,255,.7);color:#202a3c;font-size:.9rem;text-decoration:none}
-body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child) a:hover{border-color:#ad8a48;color:#80642f}
+body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):not(.seo-404-grid):has(> li > a:only-child) a:hover{border-color:#ad8a48;color:#80642f}
 body.seo-fast .seo-table-scroll table{min-width:0}
 body.seo-fast .seo-more{margin:.6rem 0}
 body.seo-fast .seo-more summary{display:flex;align-items:center;gap:.6rem;min-height:44px;padding:0 1rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font-size:.9rem;font-weight:650;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
