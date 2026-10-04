@@ -75,9 +75,10 @@ describe('Dashboard', () => {
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Сколько данных доступно' })).toBeNull();
     expect(screen.queryByText('Покрытие платформы')).toBeNull();
-    const europe = await screen.findByRole('button', { name: /Европа/ });
-    expect(europe.getAttribute('aria-expanded')).toBe('false');
-    expect(screen.getByRole('heading', { name: 'Страны' })).toBeTruthy();
+    // Каталог: единый список по алфавиту, регионы — пилюли-фильтры без счётчиков.
+    const europe = await screen.findByRole('button', { name: 'Европа' });
+    expect(europe.getAttribute('aria-pressed')).toBe('false');
+    expect(screen.getByRole('heading', { name: 'Все страны А–Я' })).toBeTruthy();
 
     // Блоки, снятые с главной по правкам 9 и 10: категории России и инструменты.
     expect(screen.queryByText('Категории России')).toBeNull();

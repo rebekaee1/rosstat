@@ -32,6 +32,8 @@ import WorldMapConceptNote from '../WorldMapConceptNote';
 import HomeHero from './HomeHero';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
+import '../../styles/world.css';
+import '../../styles/shell.css';
 
 const loadPlanetView = () => import('../PlanetView');
 const PlanetView = lazy(loadPlanetView);
@@ -175,7 +177,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
               }}
               label={t('home.map.metricLabel')}
               searchable={false}
-              nowrap={false}
+              mobileScroll
               trailing={<WorldMapConceptNote conceptSlug={concept} />}
               hint={fullRatingHref ? (
                 <Link

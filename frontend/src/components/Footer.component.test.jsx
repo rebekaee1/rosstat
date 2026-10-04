@@ -65,6 +65,13 @@ describe('Footer', () => {
     expect(summary.closest('details').open).toBe(false);
   });
 
+  it('телефон: у «Реквизитов» есть стрелка раскрытия, ссылки групп — в тёмном списке (контраст)', () => {
+    renderFooter();
+    const summary = screen.getByText('Реквизиты').closest('summary');
+    expect(summary.querySelector('svg.fe-foot-requisites__chevron')).toBeTruthy();
+    expect(document.querySelectorAll('ul.fe-foot-list').length).toBeGreaterThanOrEqual(6);
+  });
+
   it('компьютер: колонки с обычными заголовками, без кнопок-аккордеонов, реквизиты на виду', () => {
     asDesktop();
     renderFooter();

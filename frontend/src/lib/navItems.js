@@ -11,6 +11,7 @@ import {
   countryPath,
   homePath,
   regionHubPath,
+  russiaCategoryPath,
   russiaHomePath,
   todayPath,
   WORLD_RATING_DEFAULT_CONCEPT,
@@ -91,6 +92,7 @@ export function mobileNavGroups(locale) {
     { id: 'countries', icon: 'globe', to: '/#countries', match: '/#countries', labelKey: 'shell.nav.countries' },
     { id: 'world-rating', icon: 'chart', ...byId['world-rating'] },
     { id: 'compare', icon: 'compare', ...byId.compare },
+    { id: 'currencies', icon: 'coins', to: russiaCategoryPath('currencies'), match: russiaCategoryPath('currencies'), labelKey: 'shell3.nav.currencies' },
   ];
   if (byId['united-states']) {
     main.splice(2, 0, { id: 'united-states', icon: 'flag', ...byId['united-states'] });
@@ -100,7 +102,8 @@ export function mobileNavGroups(locale) {
     { id: 'regions', icon: 'map', to: regionHubPath(), match: regionHubPath(), labelKey: 'shell.nav.regions' },
     { id: 'calendar', icon: 'calendar', to: calendarPath(), match: calendarPath(), labelKey: 'shell.nav.calendar' },
   ];
-  if (byId.russia) russiaItems.unshift({ id: 'russia', icon: 'landmark', ...byId.russia });
+  // Заголовок группы уже «Россия», поэтому первый пункт — «Обзор», а не второе подряд «Россия».
+  if (byId.russia) russiaItems.unshift({ id: 'russia', icon: 'landmark', ...byId.russia, labelKey: 'shell3.nav.russiaOverview' });
   return [
     { id: 'main', titleKey: null, items: main },
     { id: 'russia', titleKey: 'shell.nav.groupRussia', items: russiaItems },

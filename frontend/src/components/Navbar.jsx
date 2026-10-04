@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
-  Menu, X, ChevronDown, BarChart3, CalendarDays, Calculator, Clock, Flag, GitCompare, Globe2, Home, Info, Landmark, Map as MapIcon,
+  Menu, X, ChevronDown, BarChart3, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2, Home, Info, Landmark,
+  Map as MapIcon, Percent, PiggyBank,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -36,7 +37,7 @@ function AuthCluster({ mobile = false, onNavigate }) {
         className={cn(
           FOCUS_RING,
           'fe-button-primary rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
-          mobile && 'w-full text-center',
+          mobile && 'w-full justify-center text-center',
         )}
       >
         {t('common.account')}
@@ -51,7 +52,7 @@ function AuthCluster({ mobile = false, onNavigate }) {
         className={cn(
           FOCUS_RING,
           'rounded-full px-3.5 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors',
-          mobile && 'flex-1 text-center border border-border-subtle',
+          mobile && 'flex-1 justify-center text-center border border-border-subtle',
         )}
       >
         {t('common.login')}
@@ -62,7 +63,7 @@ function AuthCluster({ mobile = false, onNavigate }) {
         className={cn(
           FOCUS_RING,
           'fe-button-primary rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
-          mobile ? 'flex-1 text-center' : 'whitespace-nowrap',
+          mobile ? 'flex-1 justify-center text-center' : 'whitespace-nowrap',
         )}
       >
         {t('common.register')}
@@ -81,12 +82,14 @@ const MOBILE_ICONS = {
   clock: Clock,
   map: MapIcon,
   calendar: CalendarDays,
+  coins: Coins,
 };
 
+// Три калькулятора — три разных значка: в меню телефона их различают с первого взгляда.
 const CALCULATOR_ITEMS = [
-  { to: '/calculator', labelKey: 'nav.calc.inflation' },
-  { to: '/calculator/mortgage', labelKey: 'nav.calc.mortgage' },
-  { to: '/calculator/compound', labelKey: 'nav.calc.compound' },
+  { to: '/calculator', labelKey: 'nav.calc.inflation', icon: Percent },
+  { to: '/calculator/mortgage', labelKey: 'nav.calc.mortgage', icon: Building2 },
+  { to: '/calculator/compound', labelKey: 'nav.calc.compound', icon: PiggyBank },
 ];
 
 export default function Navbar() {
@@ -191,7 +194,7 @@ export default function Navbar() {
     <>
       {menuOpen && (
         <div
-          className="fixed inset-0 z-[80] bg-text-primary/25 backdrop-blur-[2px] md:bg-text-primary/20"
+          className="fe-reveal fixed inset-0 z-[80] bg-text-primary/25 backdrop-blur-[2px] [--fe-duration:0.2s] [--fe-rise:0px] md:bg-text-primary/20"
           aria-hidden
           onClick={closeAll}
         />
@@ -301,48 +304,53 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,560px)] overflow-y-auto overscroll-contain rounded-2xl border border-border-subtle bg-surface p-3 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
-          <div className="flex flex-col gap-1">
-            {mobileGroups.map((group) => (
-              <div key={group.id} className="fe-mnav-group">
-                {group.titleKey ? <p className="fe-mnav-title">{t(group.titleKey)}</p> : null}
-                {group.items.map((item) => {
-                  const Icon = MOBILE_ICONS[item.icon];
-                  const isActive = mobileActiveId === item.id;
+        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,600px)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
+          <div className="fe-mnav-scroll">
+            <div className="flex flex-col gap-1">
+              {mobileGroups.map((group) => (
+                <div key={group.id} className="fe-mnav-group">
+                  {group.titleKey ? <p className="fe-mnav-title">{t(group.titleKey)}</p> : null}
+                  {group.items.map((item) => {
+                    const Icon = MOBILE_ICONS[item.icon];
+                    const isActive = mobileActiveId === item.id;
+                    return (
+                      <Link
+                        key={`m-${item.id}`}
+                        to={item.to}
+                        className={cn(navItemClass(isActive), 'fe-mnav-link')}
+                        onClick={closeAll}
+                        aria-current={isActive ? 'page' : undefined}
+                      >
+                        {Icon ? <Icon size={18} aria-hidden="true" className="fe-mnav-icon" /> : null}
+                        {t(item.labelKey)}
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
+              <div className="fe-mnav-group">
+                <p className="fe-mnav-title">{t('nav.calculators')}</p>
+                {CALCULATOR_ITEMS.map((c) => {
+                  const CalcIcon = c.icon;
                   return (
-                    <Link
-                      key={`m-${item.id}`}
-                      to={item.to}
-                      className={cn(navItemClass(isActive), 'fe-mnav-link')}
-                      onClick={closeAll}
-                      aria-current={isActive ? 'page' : undefined}
-                    >
-                      {Icon ? <Icon size={18} aria-hidden="true" className="fe-mnav-icon" /> : null}
-                      {t(item.labelKey)}
-                    </Link>
+                    <NavLink key={c.to} to={c.to} end className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
+                      <CalcIcon size={18} aria-hidden="true" className="fe-mnav-icon" />
+                      {t(c.labelKey)}
+                    </NavLink>
                   );
                 })}
               </div>
-            ))}
-            <div className="fe-mnav-group">
-              <p className="fe-mnav-title">{t('nav.calculators')}</p>
-              {CALCULATOR_ITEMS.map((c) => (
-                <NavLink key={c.to} to={c.to} end className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
-                  <Calculator size={18} aria-hidden="true" className="fe-mnav-icon" />
-                  {t(c.labelKey)}
+              <div className="fe-mnav-group">
+                <NavLink to="/about" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
+                  <Info size={18} aria-hidden="true" className="fe-mnav-icon" />
+                  {t('nav.about')}
                 </NavLink>
-              ))}
+              </div>
             </div>
-            <div className="fe-mnav-group">
-              <NavLink to="/about" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
-                <Info size={18} aria-hidden="true" className="fe-mnav-icon" />
-                {t('nav.about')}
-              </NavLink>
-            </div>
-            <div className="mx-2 my-1 h-px bg-border-subtle" />
-            <div className="px-1 pt-2">
-              <AuthCluster mobile onNavigate={closeAll} />
-            </div>
+          </div>
+          {/* Вход и регистрация закреплены внизу: видны сразу, не после прокрутки списка. */}
+          <div className="fe-mnav-foot">
+            <AuthCluster mobile onNavigate={closeAll} />
           </div>
         </div>
       )}

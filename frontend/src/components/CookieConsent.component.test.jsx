@@ -107,11 +107,16 @@ describe('cookie choices remain usable when measurement fails', () => {
     const dialog = screen.getByRole('dialog');
     const body = dialog.querySelector('[data-consent-scroll-body]');
     const actions = dialog.querySelector('[data-consent-actions]');
-    const [necessary, analytics, ads] = within(body).getAllByRole('checkbox');
-    expect(necessary.disabled).toBe(true);
-    expect(necessary.checked).toBe(true);
+    // Два переключателя понятными словами; «необходимые» — строка текста, а не отключаемый флажок.
+    const [analytics, ads] = within(body).getAllByRole('switch');
+    expect(within(body).getAllByRole('switch')).toHaveLength(2);
+    expect(within(body).queryAllByRole('checkbox')).toHaveLength(0);
+    expect(analytics.checked).toBe(true);
+    expect(ads.checked).toBe(true);
+    expect(within(body).getByText(translate('shell3.cookie.analytics', undefined, locale))).toBeTruthy();
+    expect(within(body).getByText(translate('shell3.cookie.ads', undefined, locale))).toBeTruthy();
     expect(body.contains(actions)).toBe(false);
-    expect(within(body).getByRole('link', { name: translate('cookie.privacyLink', undefined, locale) }).getAttribute('href')).toBe('/privacy');
+    expect(within(body).getByRole('link', { name: translate('cookie.privacyShort', undefined, locale) }).getAttribute('href')).toBe('/privacy');
     fireEvent.click(analytics);
     fireEvent.click(ads);
     fireEvent.click(within(actions).getByRole('button', { name: translate('cookie.save', undefined, locale) }));
@@ -129,14 +134,14 @@ describe('cookie choices remain usable when measurement fails', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
 
     act(() => window.dispatchEvent(new Event(CONSENT_OPEN_EVENT)));
-    const [, analytics, ads] = screen.getAllByRole('checkbox');
+    const [analytics, ads] = screen.getAllByRole('switch');
     expect(analytics.checked).toBe(false);
     expect(ads.checked).toBe(false);
     fireEvent.click(screen.getByRole('button', { name: 'Принять все' }));
     expect(screen.queryByRole('dialog')).toBeNull();
 
     act(() => window.dispatchEvent(new Event(CONSENT_OPEN_EVENT)));
-    expect(screen.getAllByRole('checkbox').every((checkbox) => checkbox.checked)).toBe(true);
+    expect(screen.getAllByRole('switch').every((toggle) => toggle.checked)).toBe(true);
     fireEvent.click(screen.getByRole('button', { name: 'Сохранить выбор' }));
     expect(track).toHaveBeenCalledTimes(2);
   });
@@ -145,7 +150,7 @@ describe('cookie choices remain usable when measurement fails', () => {
     window.localStorage.setItem(CONSENT_KEY, JSON.stringify({ v: CONSENT_VERSION, analytics: false, ads: false }));
     renderConsent();
     act(() => window.dispatchEvent(new Event(CONSENT_OPEN_EVENT)));
-    const [, analytics, ads] = screen.getAllByRole('checkbox');
+    const [analytics, ads] = screen.getAllByRole('switch');
     fireEvent.click(analytics);
     fireEvent.click(ads);
 
@@ -186,6 +191,19 @@ describe('cookie choices remain usable when measurement fails', () => {
     expect(translate('cookie.summary', undefined, 'ru').length).toBeLessThan(90);
     // Сами категории и длинный текст — только после «Настроить».
     expect(within(dialog).queryAllByRole('checkbox')).toHaveLength(0);
+  });
+
+  it('короткая панель настроек: без названий сервисов, предотмечено по прежнему решению (подразумеваемое согласие)', () => {
+    renderConsent();
+    fireEvent.click(screen.getByRole('button', { name: 'Настроить' }));
+    const dialog = screen.getByRole('dialog');
+    const text = dialog.textContent;
+    expect(text).toContain('Статистика посещаемости');
+    expect(text).toContain('Реклама');
+    expect(text).not.toMatch(/Яндекс|Метрик|РСЯ|Yandex/i);
+    expect(within(dialog).getAllByRole('switch').every((toggle) => toggle.checked)).toBe(true);
+    // Не на весь экран: высота ограничена, а прокручивается только тело.
+    expect(dialog.firstElementChild.className).toMatch(/max-h-\[min\(30rem/);
   });
 
   it('settings offer a direct refusal: only necessary cookies', () => {

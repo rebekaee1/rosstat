@@ -284,3 +284,39 @@ it('review: query telemetry retains all 100 candidate keys', async () => {
   fireEvent.change(screen.getByRole('combobox'),{target:{value:'result'}});
   await waitFor(()=>expect(track).toHaveBeenCalledWith(undefined,expect.objectContaining({keys:results.map(x=>x.key),returned_count:100,has_more:true})),{timeout:2000});
 });
+
+it('X3: вариации одного показателя свёрнуты в «Ещё варианты», разворачиваются по кнопке, первым остаётся главное', () => {
+  const hicp = (key, suffix) => ({
+    key, kind: 'world', code: `de-${key}`, name: `Гармонизированный индекс потребительских цен${suffix}`, country_slug: 'germany', country_name: 'Германия', frequency: 'monthly', unit: `ед. ${key}`, path: `/germany/indicator/${key}`,
+  });
+  searchState.data = {
+    version: 'v2',
+    results: [hicp('a', ''), hicp('b', ' (товары)'), hicp('c', ', услуги'), hicp('d', ' — энергия'), hicp('e', ' (еда)'),
+      { key: 'u', kind: 'world', code: 'de-u', name: 'Безработица', country_slug: 'germany', country_name: 'Германия', frequency: 'annual', unit: '%', path: '/germany/indicator/u' }],
+  };
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'germany inflation' } });
+
+  // Видны инфляция страны и безработица; четыре вариации спрятаны.
+  const rows = screen.getAllByRole('option');
+  expect(rows).toHaveLength(2);
+  expect(rows[0].textContent).toContain('shell3.search.inflation');
+  expect(rows[0].textContent).not.toMatch(/Гармонизированный/);
+  const more = screen.getByRole('button', { name: /shell3\.search\.moreVariants/ });
+  expect(more.getAttribute('aria-expanded')).toBe('false');
+
+  fireEvent.click(more);
+  expect(screen.getAllByRole('option')).toHaveLength(6);
+  expect(screen.getByRole('button', { name: 'shell3.search.fewerVariants' }).getAttribute('aria-expanded')).toBe('true');
+  fireEvent.click(screen.getByRole('button', { name: 'shell3.search.fewerVariants' }));
+  expect(screen.getAllByRole('option')).toHaveLength(2);
+});
+
+it('X3: фокус поля поиска рисуется на всей строке поля, а не на голом input', () => {
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  const input = screen.getByRole('combobox');
+  expect(input.closest('.fe-search-field')).toBeTruthy();
+  expect(input.closest('.fe-search-panel')).toBeTruthy();
+});

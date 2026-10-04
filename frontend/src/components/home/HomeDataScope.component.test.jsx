@@ -39,11 +39,15 @@ describe('HomeDataScope — три живых числа платформы', ()
     // Один раз «докручиваемое» число: без IntersectionObserver (тесты, печать) сразу итог.
     await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
     expect(screen.getByText('тыс.')).toBeTruthy();
-    expect(screen.getByText('официальных показателей')).toBeTruthy();
+    // Подписи — одно короткое слово над числом: три равные колонки, ни одна не переносится на вторую строку.
+    expect(screen.getByText('Показатели')).toBeTruthy();
     expect(screen.getByText('55')).toBeTruthy();
-    expect(screen.getByText('стран')).toBeTruthy();
+    expect(screen.getByText('Страны')).toBeTruthy();
     expect(screen.getByText('1897')).toBeTruthy();
-    expect(screen.getByText('история данных')).toBeTruthy();
+    expect(screen.getByText('Данные с')).toBeTruthy();
+    const labels = [...document.querySelectorAll('.fe-scope-stat__label')];
+    expect(labels).toHaveLength(3);
+    expect(labels.every((el) => el.textContent.trim().split(/\s+/).length <= 2)).toBe(true);
 
     // Российские 145 и 495 — только внутри раскрывашки, не в основной сетке.
     const details = screen.getByText('Данные — только из официальных источников').closest('details');
@@ -54,14 +58,10 @@ describe('HomeDataScope — три живых числа платформы', ()
     expect(screen.queryByText(/США:.*штатам/)).toBeNull();
   });
 
-  it('берёт число стран с API, а не устаревший фоллбэк, и склоняет подпись', async () => {
+  it('берёт число стран с API, а не устаревший фоллбэк', async () => {
     renderScope({ countries: COUNTRIES(57), total: 57 });
     await waitFor(() => expect(screen.getByText('57')).toBeTruthy());
-    expect(screen.getByText('стран')).toBeTruthy();
-
-    renderScope({ countries: COUNTRIES(51), total: 51 });
-    await waitFor(() => expect(screen.getByText('51')).toBeTruthy());
-    expect(screen.getByText('страна')).toBeTruthy();
+    expect(screen.getByText('Страны')).toBeTruthy();
   });
 
   it('если в каталоге нет чисел, вместо них — честный прочерк, а не выдуманное значение', async () => {
@@ -94,9 +94,12 @@ describe('HomeDataScope — три живых числа платформы', ()
     expect(screen.getByRole('heading', { name: 'The platform in numbers' })).toBeTruthy();
     await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
     expect(screen.getByText('K')).toBeTruthy();
-    expect(screen.getByText('official indicators')).toBeTruthy();
-    expect(screen.getByText('countries')).toBeTruthy();
-    expect(screen.getByText('years of history')).toBeTruthy();
+    expect(screen.getByText('Indicators')).toBeTruthy();
+    expect(screen.getByText('Countries')).toBeTruthy();
+    // «Data since 1897», а не «since 1897 years of history».
+    expect(screen.getByText('Data since')).toBeTruthy();
+    expect(screen.getByText('1897')).toBeTruthy();
+    expect(screen.queryByText(/years of history/)).toBeNull();
     expect(screen.queryByText(/Russian macro indicators/)).toBeNull();
     expect(screen.queryByText('495')).toBeNull();
     expect(screen.getByText(

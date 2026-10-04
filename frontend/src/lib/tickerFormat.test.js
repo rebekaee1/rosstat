@@ -20,6 +20,14 @@ describe('formatAsOfHuman', () => {
     expect(formatAsOfHuman('2026-10-04', 'en', lateUtc)).toMatch(/Oct 4/);
   });
 
+  it('свежий дневной курс (вчера, выходные) не подписывается, если задан порог давности', () => {
+    // 4 октября; значение за 2 октября — «as of Oct 2» над EUR/USD только шумит.
+    expect(formatAsOfHuman('2026-10-02', 'en', NOON_MSK, { minAgeDays: 4 })).toBe('');
+    expect(formatAsOfHuman('2026-10-02', 'ru', NOON_MSK, { minAgeDays: 4 })).toBe('');
+    // По-настоящему устаревшее значение подписывается по-прежнему.
+    expect(formatAsOfHuman('2026-09-20', 'en', NOON_MSK, { minAgeDays: 4 })).toBe('Sep 20');
+  });
+
   it('пустое и непонятное значение — без подписи', () => {
     expect(formatAsOfHuman(null)).toBe('');
     expect(formatAsOfHuman('вчера')).toBe('');

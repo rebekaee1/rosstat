@@ -76,10 +76,14 @@ describe('Navbar H-4 menu', () => {
     expect(within(nav).queryByRole('link', { name: 'Демография' })).toBeNull();
 
     // Desktop + mobile дубли в DOM (Tailwind hidden не режет a11y в jsdom).
-    for (const name of ['Главная', 'Россия', 'Рейтинг стран']) {
+    for (const name of ['Главная', 'Рейтинг стран']) {
       const links = within(nav).getAllByRole('link', { name });
       expect(links.length).toBe(2);
     }
+    // Заголовок группы «Россия» и пункт «Россия» подряд — дубль: в меню телефона пункт называется «Обзор».
+    expect(within(nav).getAllByRole('link', { name: 'Россия' })).toHaveLength(1);
+    expect(within(nav).getByRole('link', { name: 'Обзор' }).getAttribute('href')).toBe(russiaHomePath());
+    expect(within(nav).getByRole('link', { name: 'Валюты' }).getAttribute('href')).toBe('/currencies');
     const ratingLinks = within(nav).getAllByRole('link', { name: 'Рейтинг стран' });
     expect(ratingLinks.every((a) => a.getAttribute('href') === '/world/rating/gdp-usd')).toBe(true);
     expect(within(nav).getAllByRole('link', { name: /Сравнение/ }).length).toBe(2);

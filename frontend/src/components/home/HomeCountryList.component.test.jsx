@@ -5,72 +5,111 @@ import { renderPage, mockApiGet } from '../../test/renderPage';
 
 afterEach(() => vi.restoreAllMocks());
 
-function renderCatalog() {
+const COUNTRIES = [
+  { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', region: 'Европа', indicators_count: 12 },
+  { code: 'JP', slug: 'japan', name: 'Япония', name_en: 'Japan', region: 'Азия', indicators_count: 9 },
+  { code: 'ZA', slug: 'south-africa', name: 'ЮАР', name_en: 'South Africa', region: 'Африка', indicators_count: 5 },
+  { code: 'AT', slug: 'austria', name: 'Австрия', name_en: 'Austria', region: 'Европа', indicators_count: 8205 },
+];
+
+function renderCatalog(countries = COUNTRIES, locale) {
   mockApiGet([
     ['/auth/me', { user: null }],
-    ['/world/countries', {
-      countries: [
-        {
-          code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany',
-          region: 'Европа', indicators_count: 12,
-        },
-        {
-          code: 'JP', slug: 'japan', name: 'Япония', name_en: 'Japan',
-          region: 'Азия', indicators_count: 9,
-        },
-      ],
-      total: 2,
-    }],
+    ['/world/countries', { countries, total: countries.length }],
   ]);
-  return renderPage(<HomeCountryList russiaSeriesCount={8} />, { path: '/', route: '/' });
+  return renderPage(<HomeCountryList russiaSeriesCount={8} />, { path: '/', route: '/', locale });
 }
 
+const manyCountries = (n) => Array.from({ length: n }, (_, i) => ({
+  code: `E${i}`, slug: `eu-${i}`, name: `Страна ${String(i).padStart(2, '0')}`, name_en: `Country ${i}`, region: 'Европа', indicators_count: 3,
+}));
+
 describe('HomeCountryList — каталог стран', () => {
-  it('показывает кнопки регионов сразу, пока первый ответ стран загружается', () => {
+  it('пока ответ стран грузится, показывает поиск и каркас строк, а не пустое место', () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       ['/world/countries', () => new Promise(() => {})],
     ]);
     renderPage(<HomeCountryList />, { path: '/', route: '/' });
 
-    expect(screen.getByRole('button', { name: /Европа/ })).toBeTruthy();
-    expect(screen.getByRole('button', { name: /Азия/ })).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: /Европа/ }));
-    expect(screen.getByRole('button', { name: /Европа/ }).getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByRole('heading', { name: 'Все страны А–Я' })).toBeTruthy();
+    expect(screen.getByRole('searchbox', { name: 'Найти страну' })).toBeTruthy();
+    expect(document.querySelectorAll('.fe-country-grid .skeleton').length).toBeGreaterThan(0);
   });
 
-  it('по умолчанию все регионы свёрнуты', async () => {
+  it('один список по алфавиту, без заголовков регионов и без «1 страна»', async () => {
     renderCatalog();
 
-    const europe = await screen.findByRole('button', { name: /Европа/ });
-    const asia = screen.getByRole('button', { name: /Азия/ });
-    expect(europe.getAttribute('aria-expanded')).toBe('false');
-    expect(asia.getAttribute('aria-expanded')).toBe('false');
-
-    const catalog = screen.getByRole('heading', { name: 'Страны' }).closest('section');
-    expect(within(catalog).queryByRole('link', { name: /Германия/ })).toBeNull();
-    expect(within(catalog).queryByRole('link', { name: /Япония/ })).toBeNull();
+    const catalog = screen.getByRole('heading', { name: 'Все страны А–Я' }).closest('section');
+    const links = await within(catalog).findAllByRole('link');
+    const names = links.map((a) => a.querySelector('.fe-country-row__name').textContent);
+    expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b, 'ru')));
+    expect(names).toContain('Россия');
+    // Счётчиков по регионам нет: ни «Африка — 1 страна», ни «Азия — 5 стран».
+    expect(catalog.textContent).not.toMatch(/\d+\s+(страна|страны|стран)\b(?! с официальными)/);
+    expect(within(catalog).queryByRole('button', { expanded: false })).toBeNull();
   });
 
-  it('карточка страны: флаг вместо кода, без английского названия и без слова «ряд»', async () => {
+  it('строка страны: флаг вместо кода, регион подписью, без английского названия, слов «ряд» и счётчика показателей', async () => {
     renderCatalog();
 
-    fireEvent.click(await screen.findByRole('button', { name: /Европа/ }));
-    const card = screen.getByRole('link', { name: /Германия/ });
+    const card = await screen.findByRole('link', { name: /Германия/ });
     expect(card.textContent).toContain('\u{1F1E9}\u{1F1EA}');
-    expect(card.textContent).not.toMatch(/Germany|\bDE\b/);
-    expect(card.textContent).toContain('12 показателей');
-    expect(card.textContent).not.toMatch(/ряд/);
-    expect(screen.getByText(/2 страны в каталоге/)).toBeTruthy();
+    expect(card.textContent).toContain('Европа');
+    expect(card.textContent).not.toMatch(/Germany|\bDE\b|ряд|показател/);
+    expect(card.className).toContain('fe-country-row');
   });
 
-  it('раскрывает регион по клику', async () => {
+  it('поиск по названию (и по-английски) оставляет подходящие страны, пустой результат даёт «Сбросить»', async () => {
     renderCatalog();
+    const search = screen.getByRole('searchbox', { name: 'Найти страну' });
+    await screen.findByRole('link', { name: /Германия/ });
 
-    const europe = await screen.findByRole('button', { name: /Европа/ });
-    fireEvent.click(europe);
-    expect(europe.getAttribute('aria-expanded')).toBe('true');
+    fireEvent.change(search, { target: { value: 'япон' } });
+    expect(screen.getByRole('link', { name: /Япония/ })).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /Германия/ })).toBeNull();
+
+    fireEvent.change(search, { target: { value: 'germ' } });
     expect(screen.getByRole('link', { name: /Германия/ })).toBeTruthy();
-    expect(screen.queryByRole('link', { name: /Япония/ })).toBeNull();
+
+    fireEvent.change(search, { target: { value: 'zzz' } });
+    expect(screen.getByText(/Такой страны в каталоге нет/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Сбросить' }));
+    expect(screen.getByRole('link', { name: /Япония/ })).toBeTruthy();
+  });
+
+  it('регион — фильтр-пилюля без счётчика; малый регион показывает свою единственную страну', async () => {
+    renderCatalog();
+    await screen.findByRole('link', { name: /Германия/ });
+
+    const africa = screen.getByRole('button', { name: 'Африка' });
+    expect(africa.textContent).toBe('Африка');
+    fireEvent.click(africa);
+    expect(africa.getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('link', { name: /ЮАР/ })).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /Германия/ })).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Все' }));
+    expect(screen.getByRole('link', { name: /Германия/ })).toBeTruthy();
+  });
+
+  it('длинный список свёрнут до первых строк и раскрывается кнопкой «Показать все страны»', async () => {
+    renderCatalog(manyCountries(30));
+    await screen.findAllByRole('link');
+    // 30 стран + Россия, добавленная каркасом, — видно 12.
+    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(12);
+
+    const more = screen.getByRole('button', { name: /Показать все страны \(31\)/ });
+    fireEvent.click(more);
+    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(31);
+    fireEvent.click(screen.getByRole('button', { name: 'Свернуть список' }));
+    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(12);
+  });
+
+  it('EN: заголовок и поле по-английски, названия стран по-английски', async () => {
+    renderCatalog(COUNTRIES, 'en');
+    expect(screen.getByRole('heading', { name: 'All countries A–Z' })).toBeTruthy();
+    expect(await screen.findByRole('link', { name: /Germany/ })).toBeTruthy();
+    expect(screen.getByRole('searchbox', { name: 'Find a country' })).toBeTruthy();
   });
 });
