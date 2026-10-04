@@ -9,7 +9,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useIndicator, useIndicatorData, useForecast } from '../lib/hooks';
 import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 import { formatDate, formatAxisTick, formatValueWithUnit, formatChange, unitDigits, isCpiIndex } from '../lib/format';
-import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, PERIODS, THEME_COLORS } from './useEmbedParams';
+import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, embedChangeColor, PERIODS, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
 import EmbedSpinner from './EmbedSpinner';
 
@@ -125,7 +125,7 @@ export default function EmbedChart() {
             </div>
             {/* В-18: hero-значение без даты вводит в заблуждение на чужом сайте. */}
             {meta.current_date && (
-              <div style={{ fontSize: 10, color: colors.textTertiary, fontFamily: 'ui-monospace, monospace' }}>
+              <div style={{ fontSize: 12, color: colors.textTertiary }}>
                 {t('embed.asOf', { date: formatDate(meta.current_date) })}
               </div>
             )}
@@ -137,7 +137,7 @@ export default function EmbedChart() {
             {change != null && (
               <span style={{
                 fontSize: 12, fontWeight: 600, fontFamily: 'ui-monospace, monospace',
-                color: change > 0 ? '#16a34a' : change < 0 ? '#dc2626' : colors.textTertiary,
+                color: embedChangeColor(change, theme, colors, meta?.name, code),
                 display: 'inline-flex', alignItems: 'center', gap: 2,
               }}>
                 {change > 0 ? <TrendingUp size={12} /> : change < 0 ? <TrendingDown size={12} /> : null}
@@ -201,8 +201,8 @@ export default function EmbedChart() {
             {PERIODS.map(p => (
               <button key={p.key} onClick={() => setPeriod(p.key)}
                 style={{
-                  border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 500,
-                  fontFamily: 'system-ui', padding: '3px 8px', borderRadius: 6, transition: 'all 0.15s',
+                  border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 500,
+                  fontFamily: 'system-ui', padding: '5px 8px', borderRadius: 8, transition: 'all 0.15s',
                   background: period === p.key ? 'rgba(173,138,72,0.12)' : 'transparent',
                   color: period === p.key ? '#AD8A48' : colors.textTertiary,
                 }}>

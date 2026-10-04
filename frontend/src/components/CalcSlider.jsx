@@ -22,7 +22,7 @@ export default function CalcSlider({
       <div className="flex items-start justify-between gap-2 mb-2">
         <label
           htmlFor={id}
-          className="text-[11px] uppercase tracking-[0.12em] font-medium text-text-secondary leading-tight"
+          className="text-[13px] font-medium text-text-secondary leading-tight"
         >
           {label}
         </label>

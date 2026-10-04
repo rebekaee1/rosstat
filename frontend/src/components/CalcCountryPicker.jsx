@@ -9,7 +9,7 @@ import { filterSearchCountries } from '../lib/worldCompareSearch';
 
 /**
  * Выбор страны в калькуляторе инфляции.
- * Паттерн — ComparePage / WorldConceptPicker: подпись mono 10px, поле с поиском,
+ * Паттерн — ComparePage / WorldConceptPicker: подпись обычным регистром, поле с поиском,
  * Россия первой, остальные из API.
  */
 export default function CalcCountryPicker({
@@ -69,7 +69,7 @@ export default function CalcCountryPicker({
 
   return (
     <div ref={rootRef} className="relative mb-6">
-      <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-text-secondary">
+      <p className="mb-2 text-[13px] font-medium text-text-secondary">
         {t('calc.country')}
       </p>
       <button

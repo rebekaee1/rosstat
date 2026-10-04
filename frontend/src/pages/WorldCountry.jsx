@@ -1,5 +1,6 @@
 // Страница страны: /world/{slug}
 // Темы слева + сетка показателей; поиск не ломает сетку.
+import NotFound from './NotFound';
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
@@ -44,7 +45,6 @@ import {
   countryRegionsPath,
   indicatorPath,
   russiaIndicatorPath,
-  regionHubPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
@@ -263,11 +263,7 @@ export default function WorldCountry() {
     title: countryMeta.title,
     description: countryMeta.description,
     path: countryPath(slug),
-  } : (notFound ? {
-    title: t('world.country.notFoundTitle'),
-    description: t('world.country.notFoundMetaDesc'),
-    path: countryPath(slug),
-  } : null));
+  } : null);
 
   useEffect(() => {
     if (!countryName) return undefined;
@@ -394,29 +390,12 @@ export default function WorldCountry() {
     };
   }, [filteredCategories, searching, isMobileSingle, isUsCatalog, denseCatalog]);
 
+  // Несуществующий адрес страны — общая страница 404 (та же оболочка, поиск и популярные разделы).
+  if (notFound) return <NotFound />;
+
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={worldCountryTrail(countryName || '…', slug)} />
-
-      {notFound && (
-        <div className="mt-8 rounded-2xl border border-border-subtle bg-surface p-8 text-center">
-          <h1 className="mb-3 font-display text-2xl font-bold text-text-primary">{t('world.country.notFoundTitle')}</h1>
-          <p className="mb-6 text-text-secondary">
-            {t('world.country.notFoundBody', { slug })}
-          </p>
-          <div className="flex flex-wrap justify-center gap-3 text-sm">
-            <Button as={Link} to="/#countries">
-              {t('world.country.allCountries')}
-            </Button>
-            <Button as={Link} variant="secondary" to={regionHubPath()}>
-              {t('world.country.russiaRegions')}
-            </Button>
-            <Button as={Link} variant="secondary" to="/">
-              {t('world.country.home')}
-            </Button>
-          </div>
-        </div>
-      )}
 
       {isError && !notFound && (
         <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">

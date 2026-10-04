@@ -95,3 +95,13 @@ export function chartHeightForWidth(width) {
 
 /** Ширина, при которой график считается «узким»: подписи и оси ужимаются, лишние надписи прячутся. */
 export const NARROW_CHART_WIDTH = 420;
+
+/**
+ * Ширина оси Y под самую длинную подпись. Подпись прижата к правому краю оси, поэтому ширина
+ * считается по числу знаков (цифра ≈ 6,6 px при шрифте 11) плюс запас: подпись не режется слева,
+ * ось просто становится шире.
+ */
+export function axisWidthForLabels(labels, { min = 36, max = 110, perChar = 7, pad = 10 } = {}) {
+  const longest = (labels || []).reduce((n, label) => Math.max(n, String(label ?? '').length), 0);
+  return Math.max(min, Math.min(max, Math.round(longest * perChar) + pad));
+}

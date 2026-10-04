@@ -1,9 +1,12 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { track, events } from '../lib/track';
 import { useLocale } from '../i18n';
 import Breadcrumbs from '../components/Breadcrumbs';
+import LegalToc from '../components/LegalToc';
+import '../styles/w5-pages.css';
 import { toolTrail } from '../lib/breadcrumbs';
 import { TermsBodyEn } from '../i18n/legalPages.en';
 
@@ -21,6 +24,7 @@ const li = 'text-text-secondary leading-relaxed';
 
 export default function Terms() {
   const { locale, t } = useLocale();
+  const articleRef = useRef(null);
   const seo = getPageSeo('terms', locale) || getPageSeo('terms');
   useDocumentMeta({
     title: seo.title,
@@ -31,12 +35,13 @@ export default function Terms() {
   return (
     <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
       <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
-      <article className="fe-panel fe-reading prose prose-sm max-w-none p-5 sm:p-8">
+      <LegalToc articleRef={articleRef} />
+      <article ref={articleRef} className="fe-panel fe-reading w5-legal prose prose-sm max-w-none p-5 sm:p-8">
         {locale === 'en' ? (
           <TermsBodyEn t={t} h1={seo.h1 || 'Terms of use'} />
         ) : (
           <>
-        <p className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold mb-4">
+        <p className="w5-eyebrow mb-4">
           Правовая информация
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">

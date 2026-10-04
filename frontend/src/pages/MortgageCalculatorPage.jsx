@@ -9,9 +9,8 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
-import { cn } from '../lib/format';
-import { formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
-import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick } from '../lib/chartTheme';
+import { formatCompactTick } from '../lib/regionsApi';
+import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { revealStyle } from '../lib/calcUi';
 import { formatRubles, fmtPct, loanYearOrdinal, years as yearsPhrase } from '../lib/calcFormat';
@@ -24,6 +23,12 @@ import { toolTrail } from '../lib/breadcrumbs';
 import CalcSlider from '../components/CalcSlider';
 import CalcMoneyField from '../components/CalcMoneyField';
 import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
+import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
+import CalcMethod from '../components/CalcMethod';
+import CalcKeyRate from '../components/CalcKeyRate';
+import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
+import { useChartTouchHint } from '../lib/useChartTouchHint';
+import '../styles/w5-tools.css';
 import { useLocale, useT } from '../i18n';
 import {
   russiaIndicatorPath,
@@ -37,15 +42,6 @@ const FAQ_KEYS = [
   { q: 'calc.mortgage.faq.q5', a: 'calc.mortgage.faq.a5' },
 ];
 
-function StatPill({ label, value, accent }) {
-  return (
-    <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-      <p className="text-[11px] uppercase tracking-[0.15em] text-text-secondary font-medium mb-0.5">{label}</p>
-      <p className={cn('text-base font-mono font-bold tabular-nums', accent ? 'text-champagne-ink' : 'text-text-primary')}>{value}</p>
-    </div>
-  );
-}
-
 export default function MortgageCalculatorPage() {
   const t = useT();
   const { locale } = useLocale();
@@ -54,6 +50,7 @@ export default function MortgageCalculatorPage() {
   const pieBoxRef = useRef(null);
   const areaTouch = useTouchTooltip(areaBoxRef);
   const pieTouch = useTouchTooltip(pieBoxRef);
+  const touchHint = useChartTouchHint();
   const [setChartWidthNode, chartWidth] = useElementWidth();
   const yearsLabel = (n) => (locale === 'en' ? t('calc.years', { n }) : yearsPhrase(n));
   const [price, setPrice] = useState(8000000);
@@ -131,6 +128,8 @@ export default function MortgageCalculatorPage() {
     return { principal, payment, total, overpay, series, yearly, down: price - principal };
   }, [price, downPct, rate, years]);
 
+  const rubleTick = (v) => `${formatCompactTick(v)}\u00A0₽`;
+
   const yearCount = result?.yearly?.length || 1;
   const [selectedYear, setSelectedYear] = useState(1);
   // Клэмп инлайн, а не эффектом: срок могли сократить слайдером, старое
@@ -149,9 +148,7 @@ export default function MortgageCalculatorPage() {
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-champagne/10 border border-champagne/20">
             <Home className="w-5 h-5 text-champagne" />
           </div>
-          <span className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold">
-            {t('calc.mortgage.eyebrow')}{keyRate != null && ` — ${t('calc.mortgage.keyRate', { rate: keyRate })}`}
-          </span>
+          <span className="w5-eyebrow">{t('calc.mortgage.eyebrow')}</span>
         </div>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
           {t('calc.mortgage.title')}
@@ -159,6 +156,7 @@ export default function MortgageCalculatorPage() {
         <p className="text-base text-text-secondary leading-relaxed max-w-xl">
           {t('calc.mortgage.subtitle')}
         </p>
+        <CalcKeyRate rate={keyRate} />
       </header>
 
       <section style={revealStyle(2)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
@@ -194,12 +192,12 @@ export default function MortgageCalculatorPage() {
                   format={formatRubles}
                   className="block min-h-[1.2em] font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6"
                 />
-                <div className="flex flex-wrap gap-3">
-                  <StatPill label={t('calc.mortgage.principal')} value={formatRubles(result.principal)} />
-                  <StatPill label={t('calc.mortgage.overpay')} value={formatRubles(result.overpay)} accent />
-                  <StatPill label={t('calc.mortgage.total')} value={formatRubles(result.total)} />
-                  <StatPill label={t('calc.mortgage.overpayRatio')} value={fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)} />
-                </div>
+                <CalcStatGrid>
+                  <CalcStatTile index={0} label={t('calc.mortgage.principal')} value={formatRubles(result.principal)} />
+                  <CalcStatTile index={1} label={t('calc.mortgage.overpay')} value={formatRubles(result.overpay)} accent />
+                  <CalcStatTile index={2} label={t('calc.mortgage.total')} value={formatRubles(result.total)} />
+                  <CalcStatTile index={3} label={t('calc.mortgage.overpayRatio')} value={fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)} />
+                </CalcStatGrid>
               </div>
 
               <div className="flex flex-col items-center shrink-0 mx-auto lg:mx-0">
@@ -227,8 +225,8 @@ export default function MortgageCalculatorPage() {
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-[11px] uppercase tracking-wider text-text-secondary">{t('calc.mortgage.overpay')}</span>
-                    <span className="text-xl font-mono font-bold text-text-primary tabular-nums">
+                    <span className="text-xs text-text-secondary">{t('calc.mortgage.overpay')}</span>
+                    <span className="text-xl font-bold text-text-primary tabular-nums">
                       {fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)}
                     </span>
                   </div>
@@ -246,12 +244,12 @@ export default function MortgageCalculatorPage() {
           </section>
 
           <section ref={setChartWidthNode} style={revealStyle(4)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
-            <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-5">
+            <h3 className="text-base font-semibold text-text-primary mb-5">
               {t('calc.mortgage.chartTitle')}
             </h3>
-            <div ref={areaBoxRef} onPointerDownCapture={areaTouch.onPointerDownCapture}>
+            <div ref={areaBoxRef} onPointerDownCapture={(event) => { areaTouch.onPointerDownCapture(event); touchHint.dismiss(); }}>
               <ResponsiveContainer width="100%" height={chartWidth > 0 && chartWidth < 560 ? 260 : 300}>
-                <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
+                <AreaChart data={result.series} margin={{ top: 8, right: 12, bottom: 5, left: 4 }}>
                   <defs>
                     <linearGradient id="mortBal" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor={CHART_THEME.champagne} stopOpacity={0.2} />
@@ -263,10 +261,11 @@ export default function MortgageCalculatorPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid {...GRID_PROPS} />
-                  <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick()} tickLine={false} />
+                  <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick()} tickLine={false}
+                    tickFormatter={(y) => (y === 0 ? t('w5.calc.axisStart') : t('w5.calc.axisYear', { n: y }))} />
                   <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
-                    tickLine={false} axisLine={false} tickFormatter={formatCompactTick}
-                    width={compactTickAxisWidth(result.series.flatMap((p) => [p.balance, p.interest]), { narrow: chartWidth > 0 && chartWidth < 420 })} />
+                    tickLine={false} axisLine={false} tickFormatter={rubleTick}
+                    width={axisWidthForLabels(result.series.flatMap((p) => [rubleTick(p.balance), rubleTick(p.interest)]), { min: 56, perChar: 6.8, pad: 10 })} />
                   <Tooltip
                     {...TOOLTIP_STYLES}
                     {...areaTouch.tooltipProps}
@@ -278,16 +277,20 @@ export default function MortgageCalculatorPage() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-            <p className="mt-3 text-xs text-text-secondary">
-              {t('calc.mortgage.chartHint')}
-            </p>
+            <ChartLegend
+              items={[
+                { color: CHART_THEME.champagne, label: t('calc.mortgage.balance') },
+                { color: CHART_THEME.ink, label: t('calc.mortgage.interestAccum') },
+              ]}
+            />
+            <ChartTouchHint visible={touchHint.visible} />
           </section>
 
           {yearBreakdown && (
             <section style={revealStyle(5)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
               <div className="flex items-center gap-2 mb-1">
                 <PieIcon className="w-4 h-4 text-champagne" />
-                <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+                <h3 className="text-base font-semibold text-text-primary">
                   {t('calc.mortgage.yearBreakdownTitle')}
                 </h3>
               </div>
@@ -302,11 +305,11 @@ export default function MortgageCalculatorPage() {
                   total: yearCount,
                 })}
               />
-              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <StatPill label={t('calc.mortgage.interestYear')} value={formatRubles(yearBreakdown.interestPaid)} accent />
-                <StatPill label={t('calc.mortgage.principalYear')} value={formatRubles(yearBreakdown.principalPaid)} />
-                <StatPill label={t('calc.mortgage.balanceYearEnd')} value={formatRubles(yearBreakdown.balance)} />
-              </div>
+              <CalcStatGrid className="mt-5 w5-tiles--three">
+                <CalcStatTile index={0} label={t('calc.mortgage.interestYear')} value={formatRubles(yearBreakdown.interestPaid)} accent />
+                <CalcStatTile index={1} label={t('calc.mortgage.principalYear')} value={formatRubles(yearBreakdown.principalPaid)} />
+                <CalcStatTile index={2} label={t('calc.mortgage.balanceYearEnd')} value={formatRubles(yearBreakdown.balance)} />
+              </CalcStatGrid>
               <div className="mt-4 h-3 rounded-full overflow-hidden bg-obsidian border border-border-subtle flex">
                 <div
                   className="h-full transition-all duration-300"
@@ -355,21 +358,16 @@ export default function MortgageCalculatorPage() {
         </>
       )}
 
-      <section style={revealStyle(7)} className="fe-reveal rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
-        <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.methodologyHeading')}</h3>
-        <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
-          <p>
-            {t('calc.mortgage.method.p1')}
-          </p>
-          <p className="font-mono text-xs text-text-secondary border-l-2 border-champagne/30 pl-4">
-            {t('calc.mortgage.method.p2')}
-          </p>
+      <div style={revealStyle(7)} className="fe-reveal">
+        <CalcMethod
+          paragraphs={[t('w5.calc.mortgage.how.p1'), t('w5.calc.mortgage.how.p2')]}
+        >
           <p>
             {t('calc.mortgage.method.p3before')}{' '}
-            <Link to={russiaIndicatorPath('key-rate')} className="text-champagne hover:underline">{t('calc.mortgage.method.keyRateLink')}</Link>.
+            <Link to={russiaIndicatorPath('key-rate')}>{t('calc.mortgage.method.keyRateLink')}</Link>.
           </p>
-        </div>
-      </section>
+        </CalcMethod>
+      </div>
 
       <section style={revealStyle(8)} className="fe-reveal mb-8">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">{t('calc.faqHeading')}</h2>

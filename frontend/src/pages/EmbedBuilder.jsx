@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef, useCallback, useEffect, useDeferredValue } from 'react';
-import { Check, Copy, Code2, Image, ChevronDown, Search, BarChart3, CreditCard, Table2, ScrollText, GitCompare, Shield } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Check, Copy, ChevronDown, Search, BarChart3, CreditCard, Table2, ScrollText, GitCompare, X } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { CATEGORIES, isIndicatorListed } from '../lib/categories';
 import { cn } from '../lib/format';
@@ -18,13 +19,22 @@ import Chip from '../components/Chip';
 import Spinner from '../components/Spinner';
 import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/platform-pages.css';
+import '../styles/w5-tools.css';
 
 const WIDGET_TYPES = [
-  { key: 'chart', labelKey: 'embed.type.chart', descKey: 'embed.type.chartDesc', icon: BarChart3 },
-  { key: 'card', labelKey: 'embed.type.card', descKey: 'embed.type.cardDesc', icon: CreditCard },
-  { key: 'table', labelKey: 'embed.type.table', descKey: 'embed.type.tableDesc', icon: Table2 },
-  { key: 'ticker', labelKey: 'embed.type.ticker', descKey: 'embed.type.tickerDesc', icon: ScrollText },
-  { key: 'compare', labelKey: 'embed.type.compare', descKey: 'embed.type.compareDesc', icon: GitCompare },
+  { key: 'chart', labelKey: 'embed.type.chart', descKey: 'w5.embed.type.chartHint', icon: BarChart3 },
+  { key: 'card', labelKey: 'embed.type.card', descKey: 'w5.embed.type.cardHint', icon: CreditCard },
+  { key: 'table', labelKey: 'embed.type.table', descKey: 'w5.embed.type.tableHint', icon: Table2 },
+  { key: 'ticker', labelKey: 'w5.embed.type.ticker', descKey: 'w5.embed.type.tickerHint', icon: ScrollText },
+  { key: 'compare', labelKey: 'embed.type.compare', descKey: 'w5.embed.type.compareHint', icon: GitCompare },
+];
+
+// Как вставить: человеческие названия вместо iframe / SVG / Badge.
+const CODE_FORMATS = [
+  { key: 'iframe', labelKey: 'w5.embed.fmt.iframe', hintKey: 'w5.embed.fmt.iframeHint' },
+  { key: 'svg', labelKey: 'w5.embed.fmt.svg', hintKey: 'w5.embed.fmt.svgHint' },
+  { key: 'markdown', labelKey: 'w5.embed.fmt.markdown', hintKey: 'w5.embed.fmt.markdownHint' },
+  { key: 'badge', labelKey: 'w5.embed.fmt.badge', hintKey: 'w5.embed.fmt.badgeHint' },
 ];
 
 const SIZE_PRESETS = [
@@ -39,7 +49,7 @@ function escHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function IndicatorCombobox({ indicators, value, onChange }) {
+function IndicatorCombobox({ indicators, value, onChange, placeholder }) {
   const t = useT();
   const { locale } = useLocale();
   const [open, setOpen] = useState(false);
@@ -78,8 +88,8 @@ function IndicatorCombobox({ indicators, value, onChange }) {
     <div ref={ref} className="relative">
       <button type="button" onClick={() => setOpen(o => !o)}
         aria-haspopup="listbox" aria-expanded={open}
-        className="fe-tap fe-press w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-border-subtle bg-surface text-sm text-text-primary hover:border-champagne/40 transition-colors text-left">
-        <span className="truncate">{selected?.name || t('embed.pickIndicator')}</span>
+        className="fe-tap fe-press w-full min-h-11 flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-border-subtle bg-surface text-sm text-text-primary hover:border-champagne/40 transition-colors text-left">
+        <span className="truncate">{selected?.name || placeholder || t('embed.pickIndicator')}</span>
         <ChevronDown className={cn('w-4 h-4 text-text-secondary transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
@@ -95,7 +105,7 @@ function IndicatorCombobox({ indicators, value, onChange }) {
           <div className="overflow-y-auto" style={{ maxHeight: 280 }}>
             {grouped.map(cat => (
               <div key={cat.slug}>
-                <div className="px-3 py-1.5 text-[11px] uppercase tracking-widest text-text-secondary font-medium bg-obsidian/50 sticky top-0">
+                <div className="px-3 py-1.5 text-xs text-text-secondary font-semibold bg-surface-hover sticky top-0">
                   {locale === 'en' && cat.nameEn ? cat.nameEn : cat.name}
                 </div>
                 {cat.items.map(ind => (
@@ -144,10 +154,9 @@ function CopyButton({ text, onCopy }) {
 
   const copied = state === 'copied';
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-col items-start gap-2">
       <Button
-        variant="secondary"
-        size="sm"
+        variant={copied ? 'secondary' : 'primary'}
         onClick={handleCopy}
         className={copied ? 'fe-ink-pos' : undefined}
       >
@@ -184,7 +193,8 @@ export default function EmbedBuilder() {
   const [showTitle, setShowTitle] = useState(true);
   const [showForecast, setShowForecast] = useState(false);
   const [limit, setLimit] = useState(12);
-  const [tickerCodes, setTickerCodes] = useState('usd-rub,key-rate,cpi');
+  const [tickerList, setTickerList] = useState(['usd-rub', 'key-rate', 'cpi']);
+  const tickerCodes = tickerList.join(',');
   const [speed, setSpeed] = useState('normal');
   const [codeTab, setCodeTab] = useState('iframe');
 
@@ -348,101 +358,122 @@ export default function EmbedBuilder() {
     return () => clearTimeout(timer);
   }, [previewLoading, previewUrl]);
 
+  const activeFormat = CODE_FORMATS.find((f) => f.key === codeTab) || CODE_FORMATS[0];
+  const nameOf = (c) => indicators?.find((i) => i.code === c)?.name || c;
+  const stageBg = theme === 'dark' ? '#111' : '#f5f5f5';
+
   return (
-    <div className="fe-data-page max-w-7xl mx-auto px-4 pt-24 md:pt-28 pb-16">
+    <div className="fe-data-page w5-embed max-w-6xl mx-auto px-4 pt-24 md:pt-28 pb-16">
       <Breadcrumbs items={toolTrail(widgetsSeo.h1, widgetsSeo.path)} className="mb-6" />
-      <div className="text-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-3">
+      <header className="mb-8 max-w-2xl">
+        <h1 className="mb-3 font-display text-3xl font-bold text-text-primary md:text-4xl">
           {t('embed.constructor')}
         </h1>
-        <p className="text-text-secondary max-w-xl mx-auto">
-          {t('embed.intro')}</p>
-      </div>
+        <p className="text-text-secondary">{t('w5.embed.intro')}</p>
+      </header>
 
-      {/* Widget type tabs */}
-      <div className="flex gap-2 justify-center mb-8 flex-wrap">
-        {WIDGET_TYPES.map(wt => (
-          <Chip key={wt.key} active={type === wt.key} className="gap-2"
-            onClick={() => { setType(wt.key); track(events.EMBED_TYPE_CHANGE, { type: wt.key }); }}>
-            <wt.icon className="w-4 h-4" />
-            {t(wt.labelKey)}
-          </Chip>
+      {/* Шаг 1: что вставить */}
+      <h2 className="mb-3 text-base font-semibold text-text-primary">{t('w5.embed.step1')}</h2>
+      <div className="w5-embed-types" role="group" aria-label={t('w5.embed.step1')}>
+        {WIDGET_TYPES.map((wt) => (
+          <button
+            key={wt.key}
+            type="button"
+            aria-pressed={type === wt.key}
+            className={cn('w5-embed-type fe-press', type === wt.key && 'is-active')}
+            onClick={() => { setType(wt.key); track(events.EMBED_TYPE_CHANGE, { type: wt.key }); }}
+          >
+            <wt.icon className="w5-embed-type__icon" aria-hidden="true" />
+            <span className="w5-embed-type__name">{t(wt.labelKey)}</span>
+            <span className="w5-embed-type__hint">{t(wt.descKey)}</span>
+          </button>
         ))}
       </div>
 
-      <p className="-mt-6 mb-8 text-center text-sm text-text-secondary">
-        {t(WIDGET_TYPES.find((wt) => wt.key === type)?.descKey ?? 'embed.type.chartDesc')}
-      </p>
-
-      <div className="grid lg:grid-cols-[340px_1fr] gap-6">
-        {/* Settings panel */}
+      <div className="w5-embed-grid">
+        {/* Шаг 2: настройки */}
         <div className="space-y-5">
-          <div className="p-5 rounded-2xl bg-surface border border-border-subtle space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-text-secondary font-medium">{t('embed.settings')}</h2>
+          <div className="space-y-5 rounded-3xl border border-border-subtle bg-surface p-5">
+            <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.step2')}</h2>
 
-            {/* Indicator selector */}
             {needsIndicator && (
-              <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.indicator')}</label>
+              <div className="w5-embed-field">
+                <span className="w5-embed-label">{t('embed.indicator')}</span>
                 <IndicatorCombobox indicators={indicators} value={code} onChange={(c) => { setCode(c); track(events.EMBED_INDICATOR_SELECT, { code: c }); }} />
               </div>
             )}
 
-            {/* Second indicator for compare */}
             {needsSecondIndicator && (
-              <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.indicatorB')}</label>
+              <div className="w5-embed-field">
+                <span className="w5-embed-label">{t('embed.indicatorB')}</span>
                 <IndicatorCombobox indicators={indicators} value={codeB} onChange={(c) => { setCodeB(c); track(events.EMBED_INDICATOR_SELECT, { code: c, position: 'b' }); }} />
               </div>
             )}
 
-            {/* Ticker codes */}
             {needsTicker && (
-              <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.codesCsv')}</label>
-                <input type="text" value={tickerCodes} onChange={e => setTickerCodes(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono focus:ring-1 focus:ring-champagne/30 outline-none" />
-                <div className="flex gap-2 mt-2 flex-wrap">
-                  {['slow', 'normal', 'fast'].map(s => (
-                    <Chip key={s} active={speed === s} onClick={() => setSpeed(s)}>
-                      {s === 'slow' ? t('embed.speed.slow') : s === 'normal' ? t('embed.speed.normal') : t('embed.speed.fast')}
+              <div className="w5-embed-field">
+                <span className="w5-embed-label">{t('w5.embed.tickerItems')}</span>
+                {tickerList.length > 0 && (
+                  <ul className="flex flex-wrap gap-2">
+                    {tickerList.map((c) => (
+                      <li key={c}>
+                        <button
+                          type="button"
+                          onClick={() => setTickerList((list) => list.filter((x) => x !== c))}
+                          aria-label={t('w5.embed.tickerRemove', { name: nameOf(c) })}
+                          className="fe-chip fe-press is-active max-w-full gap-1.5"
+                        >
+                          <span className="truncate">{nameOf(c)}</span>
+                          <X className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <IndicatorCombobox
+                  indicators={indicators}
+                  value=""
+                  placeholder={t('w5.embed.tickerAdd')}
+                  onChange={(c) => { setTickerList((list) => (list.includes(c) ? list : [...list, c].slice(0, 12))); track(events.EMBED_INDICATOR_SELECT, { code: c, position: 'ticker' }); }}
+                />
+                <div className="w5-embed-seg">
+                  {['slow', 'normal', 'fast'].map((sp) => (
+                    <Chip key={sp} active={speed === sp} onClick={() => setSpeed(sp)}>
+                      {sp === 'slow' ? t('embed.speed.slow') : sp === 'normal' ? t('embed.speed.normal') : t('embed.speed.fast')}
                     </Chip>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Period */}
             {needsPeriod && (
-              <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.period')}</label>
-                <div className="flex gap-1 flex-wrap">
-                  {PERIODS.map(p => (
-                    <Chip key={p.key} active={period === p.key} onClick={() => { setPeriod(p.key); track(events.EMBED_PERIOD_CHANGE, { period: p.key }); }}>
-                      {t(p.labelKey)}
+              <div className="w5-embed-field">
+                <span className="w5-embed-label">{t('embed.period')}</span>
+                <div className="w5-embed-seg">
+                  {PERIODS.map((pr) => (
+                    <Chip key={pr.key} active={period === pr.key} onClick={() => { setPeriod(pr.key); track(events.EMBED_PERIOD_CHANGE, { period: pr.key }); }}>
+                      {t(pr.labelKey)}
                     </Chip>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Theme */}
-            <div>
-              <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.theme')}</label>
-              <div className="flex gap-2">
+            <div className="w5-embed-field">
+              <span className="w5-embed-label">{t('w5.embed.look')}</span>
+              <div className="w5-embed-seg">
                 {[['light', t('embed.theme.light')], ['dark', t('embed.theme.dark')], ['auto', t('embed.theme.auto')]].map(([k, l]) => (
-                  <Chip key={k} active={theme === k} className="flex-1" onClick={() => { setTheme(k); track(events.EMBED_THEME_CHANGE, { theme: k }); }}>
+                  <Chip key={k} active={theme === k} onClick={() => { setTheme(k); track(events.EMBED_THEME_CHANGE, { theme: k }); }}>
                     {l}
                   </Chip>
                 ))}
               </div>
             </div>
 
-            {/* Size */}
             {needsSize && (
-              <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.size')}</label>
-                <div className="flex gap-1 flex-wrap mb-2">
+              <div className="w5-embed-field">
+                <span className="w5-embed-label">{t('embed.size')}</span>
+                <div className="w5-embed-seg w5-embed-seg--4">
                   {SIZE_PRESETS.map((sp, i) => (
                     <Chip key={i} active={sizePreset === i} onClick={() => { setSizePreset(i); track(events.EMBED_SIZE_CHANGE, { size: SIZE_PRESETS[i].labelKey }); }}>
                       {t(sp.labelKey)}
@@ -454,67 +485,57 @@ export default function EmbedBuilder() {
                 </div>
                 {isCustom && (
                   <div className="flex items-center gap-2">
-                    <input type="number" value={customW} onChange={e => setCustomW(Math.max(200, +e.target.value))} min={200} max={1200}
-                      className="fe-tap w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
-                    <span className="text-text-secondary text-xs">×</span>
-                    <input type="number" value={customH} onChange={e => setCustomH(Math.max(100, +e.target.value))} min={100} max={800}
-                      className="fe-tap w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
-                    <span className="text-text-secondary text-xs">px</span>
+                    <input type="number" inputMode="numeric" value={customW} onChange={(e) => setCustomW(Math.max(200, +e.target.value))} min={200} max={1200}
+                      aria-label={t('w5.embed.width')}
+                      className="fe-tap w-24 rounded-xl border border-border-subtle bg-obsidian-lighter px-2 py-1 text-center text-sm text-text-primary outline-none focus:ring-1 focus:ring-champagne/30" />
+                    <span className="text-xs text-text-secondary" aria-hidden="true">×</span>
+                    <input type="number" inputMode="numeric" value={customH} onChange={(e) => setCustomH(Math.max(100, +e.target.value))} min={100} max={800}
+                      aria-label={t('w5.embed.height')}
+                      className="fe-tap w-24 rounded-xl border border-border-subtle bg-obsidian-lighter px-2 py-1 text-center text-sm text-text-primary outline-none focus:ring-1 focus:ring-champagne/30" />
+                    <span className="text-xs text-text-secondary">px</span>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Table limit */}
             {needsLimit && (
-              <div>
-                <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.rowCount')}</label>
-                <input type="number" value={limit} onChange={e => setLimit(Math.max(1, Math.min(50, +e.target.value)))} min={1} max={50}
-                  className="fe-tap w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
+              <div className="w5-embed-field">
+                <span className="w5-embed-label">{t('embed.rowCount')}</span>
+                <input type="number" inputMode="numeric" value={limit} onChange={(e) => setLimit(Math.max(1, Math.min(50, +e.target.value)))} min={1} max={50}
+                  aria-label={t('embed.rowCount')}
+                  className="fe-tap w-24 rounded-xl border border-border-subtle bg-obsidian-lighter px-2 py-1 text-center text-sm text-text-primary outline-none focus:ring-1 focus:ring-champagne/30" />
               </div>
             )}
 
-            {/* Toggles */}
-            <div className="space-y-2 pt-2 border-t border-border-subtle">
-              <label className="fe-tap flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={showTitle} onChange={e => { setShowTitle(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'title', value: e.target.checked }); }}
-                  className="w-4 h-4 rounded border-border-subtle text-champagne-ink focus:ring-champagne/30" />
-                <span className="text-xs text-text-secondary">{t('embed.showTitle')}</span>
+            <div className="space-y-1 border-t border-border-subtle pt-3">
+              <label className="w5-check">
+                <input type="checkbox" checked={showTitle} onChange={(e) => { setShowTitle(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'title', value: e.target.checked }); }} />
+                <span>{t('embed.showTitle')}</span>
               </label>
               {needsForecast && (
-                <label className="fe-tap flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={showForecast} onChange={e => { setShowForecast(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'forecast', value: e.target.checked }); }}
-                    className="w-4 h-4 rounded border-border-subtle text-champagne-ink focus:ring-champagne/30" />
-                  <span className="text-xs text-text-secondary">{t('embed.showForecast')}</span>
+                <label className="w5-check">
+                  <input type="checkbox" checked={showForecast} onChange={(e) => { setShowForecast(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'forecast', value: e.target.checked }); }} />
+                  <span>{t('embed.showForecast')}</span>
                 </label>
               )}
             </div>
           </div>
 
-          {/* Terms */}
-          <div className="p-4 rounded-xl bg-obsidian-lighter border border-border-subtle">
-            <p className="text-[11px] uppercase tracking-widest text-text-secondary font-medium mb-1">{t('embed.terms')}</p>
-            <p className="text-xs text-text-secondary leading-relaxed">
-              {t('embed.termsBody')} <a href="/about" className="text-champagne-ink hover:underline">{t('embed.termsAbout')}</a>.
+          <div className="rounded-2xl border border-border-subtle bg-obsidian-lighter p-4">
+            <p className="mb-1 text-sm font-semibold text-text-primary">{t('w5.embed.terms')}</p>
+            <p className="text-sm leading-relaxed text-text-secondary">
+              {t('embed.termsBody')} <Link to="/about" className="text-champagne-ink underline underline-offset-2">{t('embed.termsAbout')}</Link>.
             </p>
           </div>
         </div>
 
-        {/* Preview + Code panel */}
+        {/* Превью и код */}
         <div className="space-y-5">
-          {/* Preview */}
-          <div className="rounded-2xl bg-surface border border-border-subtle overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border-subtle bg-obsidian/30">
-              <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
-                <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
-                <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
-              </div>
-              <span className="text-xs font-mono text-text-secondary truncate ml-2">
-                {previewUrl.replace(window.location.origin, EMBED_ORIGIN)}
-              </span>
+          <section className="w5-embed-preview" aria-label={t('w5.embed.previewHeading')}>
+            <div className="w5-embed-preview__head">
+              <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.previewHeading')}</h2>
             </div>
-            <div className="p-4 flex justify-center" style={{ background: theme === 'dark' ? '#111' : '#f5f5f5' }}>
+            <div className="w5-embed-preview__stage" style={{ background: stageBg }}>
               <div className="relative" style={{ width: previewW, height: previewH, maxWidth: '100%' }}>
                 <iframe
                   key={previewUrl}
@@ -539,30 +560,35 @@ export default function EmbedBuilder() {
                 )}
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Code output */}
-          <div className="rounded-2xl bg-surface border border-border-subtle overflow-hidden">
-            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b border-border-subtle">
-              <div className="flex flex-wrap gap-1">
-                {[
-                  { key: 'iframe', label: 'iframe', icon: Code2 },
-                  { key: 'svg', label: 'SVG / IMG', icon: Image },
-                  { key: 'markdown', label: 'Markdown', icon: Code2 },
-                  { key: 'badge', label: 'Badge', icon: Shield },
-                ].map(tab => (
-                  <Chip key={tab.key} active={codeTab === tab.key} className="gap-1.5" onClick={() => { setCodeTab(tab.key); track(events.EMBED_CODE_TAB, { tab: tab.key }); }}>
-                    <tab.icon className="w-3 h-3" />
-                    {tab.label}
-                  </Chip>
-                ))}
+          <section className="w5-embed-code" aria-label={t('w5.embed.step3')}>
+            <div className="w5-embed-code__head">
+              <div>
+                <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.step3')}</h2>
+                <p className="mt-1 text-sm text-text-secondary">{t('w5.embed.step3Hint')}</p>
               </div>
               <CopyButton text={embedCode} onCopy={() => track(events.EMBED_CODE_COPY, { format: codeTab })} />
             </div>
-            <pre className="p-4 text-xs font-mono text-text-secondary leading-relaxed overflow-x-auto bg-ivory/[0.02] whitespace-pre-wrap break-all">
-              {embedCode}
-            </pre>
-          </div>
+            <div className="space-y-2 px-4 pb-4">
+              <span className="w5-embed-label">{t('w5.embed.fmt.title')}</span>
+              <div className="w5-embed-seg w5-embed-seg--fmt">
+                {CODE_FORMATS.map((f) => (
+                  <Chip key={f.key} active={codeTab === f.key} onClick={() => { setCodeTab(f.key); track(events.EMBED_CODE_TAB, { tab: f.key }); }}>
+                    {t(f.labelKey)}
+                  </Chip>
+                ))}
+              </div>
+              <p className="text-sm text-text-secondary">{t(activeFormat.hintKey)}</p>
+            </div>
+            <details className="border-t border-border-subtle">
+              <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-2 px-4 text-sm font-semibold text-champagne-ink">
+                {t('w5.embed.showCode')}
+                <ChevronDown className="h-4 w-4" aria-hidden="true" />
+              </summary>
+              <pre className="w5-embed-code__pre">{embedCode}</pre>
+            </details>
+          </section>
         </div>
       </div>
     </div>

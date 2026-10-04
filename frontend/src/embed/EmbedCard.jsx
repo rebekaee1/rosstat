@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useIndicator, useIndicatorData } from '../lib/hooks';
 import { formatValueWithUnit, formatChange, formatDate, isCpiIndex } from '../lib/format';
-import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, THEME_COLORS } from './useEmbedParams';
+import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, embedChangeColor, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
 import EmbedSpinner from './EmbedSpinner';
 
@@ -88,16 +88,16 @@ export default function EmbedCard() {
       fontFamily: 'Manrope, system-ui, sans-serif', overflow: 'hidden',
     }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 6, flexWrap: 'wrap' }}>
-        <div style={{ fontSize: 11, fontWeight: 500, color: colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '65%' }}>
+        <div style={{ fontSize: 12, fontWeight: 500, color: colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '65%' }}>
           {meta.name}
         </div>
         {change != null && (
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 3,
-            fontSize: 11, fontWeight: 600, fontFamily: 'ui-monospace, monospace',
+            fontSize: 12, fontWeight: 600, fontVariantNumeric: 'tabular-nums',
             padding: '2px 8px', borderRadius: 6,
-            background: isUp ? 'rgba(22,163,74,0.1)' : isDown ? 'rgba(220,38,38,0.1)' : colors.surface,
-            color: isUp ? '#16a34a' : isDown ? '#dc2626' : colors.textTertiary,
+            background: colors.surface,
+            color: embedChangeColor(change, theme, colors, meta.name, code),
           }}>
             {isUp ? <TrendingUp size={11} /> : isDown ? <TrendingDown size={11} /> : null}
             {formatChange(change)}
@@ -106,7 +106,7 @@ export default function EmbedCard() {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, flexWrap: 'wrap', overflow: 'hidden' }}>
-        <span style={{ fontSize: 28, fontWeight: 700, color: colors.text, fontFamily: 'ui-monospace, monospace', letterSpacing: '-0.02em' }}>
+        <span style={{ fontSize: 28, fontWeight: 700, color: colors.text, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>
           {formatValueWithUnit(displayVal, unit)}
         </span>
       </div>
@@ -117,7 +117,7 @@ export default function EmbedCard() {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: `1px solid ${colors.border}`, paddingTop: 6, marginTop: 2 }}>
         {meta.current_date && (
-          <span style={{ fontSize: 10, color: colors.textTertiary, fontFamily: 'ui-monospace, monospace' }}>
+          <span style={{ fontSize: 12, color: colors.textTertiary }}>
             {formatDate(meta.current_date, 'full')}
           </span>
         )}

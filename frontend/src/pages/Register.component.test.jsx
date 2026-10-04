@@ -24,6 +24,38 @@ function CurrentLocation() {
   return <output data-testid="location">{location.pathname}{location.search}{location.hash}</output>;
 }
 
+describe('экран радости после регистрации', () => {
+  it('показывает рисующуюся галочку и кнопку «Продолжить», затем ведёт на исходную страницу', async () => {
+    const { registerUser } = await import('../lib/api');
+    registerUser.mockResolvedValue({});
+    render(
+      <MemoryRouter initialEntries={['/register?next=%2Fworld%2Frating%2Fgdp-usd']}>
+        <CurrentLocation />
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/world/rating/gdp-usd" element={<span>destination</span>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    fireEvent.change(screen.getByLabelText('common.email'), { target: { value: 'a@b.co' } });
+    fireEvent.change(screen.getByLabelText('common.password'), { target: { value: 'longpassword' } });
+    fireEvent.click(screen.getAllByRole('checkbox')[0]);
+    fireEvent.submit(screen.getByLabelText('common.email').closest('form'));
+
+    expect(await screen.findByText('w5.auth.welcomeTitle')).toBeTruthy();
+    expect(document.querySelector('.w5-success__tick')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'w5.auth.welcomeContinue' }));
+    expect(await screen.findByText('destination')).toBeTruthy();
+  });
+
+  it('оба согласия оформлены одним стилем (золотой чекбокс сайта)', () => {
+    render(<MemoryRouter initialEntries={['/register']}><Routes><Route path="/register" element={<Register />} /></Routes></MemoryRouter>);
+    const boxes = screen.getAllByRole('checkbox');
+    expect(boxes).toHaveLength(2);
+    for (const box of boxes) expect(box.closest('label').className).toContain('w5-consent');
+  });
+});
+
 describe('email fallback from unavailable Google signup', () => {
   it('keeps next, explains the temporary fallback in English, and focuses email', async () => {
     render(

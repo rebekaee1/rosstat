@@ -1,5 +1,6 @@
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 
 const MQ = typeof window !== 'undefined'
   ? window.matchMedia('(prefers-color-scheme: dark)')
@@ -68,13 +69,25 @@ export function useEmbedAutoHeight() {
   }, []);
 }
 
+const TONE_COLORS = {
+  light: { good: '#15803d', bad: '#b91c1c' },
+  dark: { good: '#69D29C', bad: '#F18A8A' },
+};
+
+/** Цвет изменения по смыслу показателя: рост инфляции — не зелёный; без понятного смысла — нейтрально. */
+export function embedChangeColor(change, theme, colors, ...labels) {
+  const tone = deltaTone(change, indicatorPolarity(...labels));
+  if (tone === 'good' || tone === 'bad') return TONE_COLORS[theme][tone];
+  return colors.textSecondary;
+}
+
 export const PERIODS = [
-  { key: '1m', labelKey: 'embed.periodLabel.1m', months: 1 },
-  { key: '3m', labelKey: 'embed.periodLabel.3m', months: 3 },
-  { key: '6m', labelKey: 'embed.periodLabel.6m', months: 6 },
-  { key: '1y', labelKey: 'embed.periodLabel.1y', months: 12 },
-  { key: '5y', labelKey: 'embed.periodLabel.5y', months: 60 },
-  { key: 'max', labelKey: 'embed.periodLabel.max', months: null },
+  { key: '1m', labelKey: 'w5.embed.period.1m', months: 1 },
+  { key: '3m', labelKey: 'w5.embed.period.3m', months: 3 },
+  { key: '6m', labelKey: 'w5.embed.period.6m', months: 6 },
+  { key: '1y', labelKey: 'w5.embed.period.1y', months: 12 },
+  { key: '5y', labelKey: 'w5.embed.period.5y', months: 60 },
+  { key: 'max', labelKey: 'w5.embed.period.max', months: null },
 ];
 
 export const THEME_COLORS = {

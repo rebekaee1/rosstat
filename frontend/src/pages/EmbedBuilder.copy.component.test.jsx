@@ -44,6 +44,31 @@ describe('EmbedBuilder: превью и копирование', () => {
     expect(live?.textContent).toBe('Скопировано');
   });
 
+  it('выбор «что вставить» — карточки с подсказками; код спрятан под «Показать код»', async () => {
+    setup();
+    const ticker = await screen.findByRole('button', { name: /Бегущая строка/ });
+    expect(ticker.getAttribute('aria-pressed')).toBe('false');
+    expect(screen.getByRole('button', { name: /График/ }).getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(ticker);
+    expect(ticker.getAttribute('aria-pressed')).toBe('true');
+    // Код — внутри свёрнутого <details>, не на виду; превью с адресом и «светофором» нет.
+    const code = document.querySelector('.w5-embed-code details');
+    expect(code).toBeTruthy();
+    expect(code.hasAttribute('open')).toBe(false);
+    expect(screen.getByText('Показать код')).toBeTruthy();
+    expect(document.querySelector('.w5-embed-preview .rounded-full')).toBeNull();
+  });
+
+  it('форматы названы по-человечески, а не iframe / SVG / Badge', async () => {
+    setup();
+    await screen.findByRole('button', { name: /Копировать код/ });
+    for (const name of ['Живой виджет', 'Картинка', 'Markdown', 'Значок']) {
+      expect(screen.getByRole('button', { name })).toBeTruthy();
+    }
+    fireEvent.click(screen.getByRole('button', { name: 'Картинка' }));
+    expect(document.querySelector('.w5-embed-code pre').textContent).toContain('<img');
+  });
+
   it('если буфер недоступен, говорит об этом', async () => {
     vi.stubGlobal('navigator', { ...navigator, clipboard: undefined });
     setup();

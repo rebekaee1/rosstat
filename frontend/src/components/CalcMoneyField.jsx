@@ -81,7 +81,7 @@ export default function CalcMoneyField({
       <div className={cn('flex items-center justify-between gap-3', hideLabel ? 'sr-only' : 'mb-2')}>
         <label
           htmlFor={fieldId}
-          className="text-[11px] uppercase tracking-[0.16em] font-medium text-text-secondary"
+          className="text-[13px] font-medium text-text-secondary"
         >
           {label}
           {unitName && <span className="sr-only">, {unitName}</span>}

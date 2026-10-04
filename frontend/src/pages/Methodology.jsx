@@ -8,21 +8,34 @@ import { getPageSeo } from '../lib/pageMeta';
 import { russiaCategoryPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import Breadcrumbs from '../components/Breadcrumbs';
+import SectionNav from '../components/SectionNav';
+import Button from '../components/Button';
 import { toolTrail } from '../lib/breadcrumbs';
+import '../styles/w5-pages.css';
 
-const CARD = 'fe-panel rounded-2xl bg-surface border border-border-subtle p-5 md:p-6';
-const H2 = 'font-display text-2xl md:text-3xl font-bold text-text-primary mb-4 leading-tight';
-const P = 'text-text-secondary leading-relaxed';
-
-function Step({ n, title, children }) {
+/** Короткое изложение шага + «Подробнее» для тех, кому нужна статистическая деталь. */
+function Step({ n, title, summary, children, moreLabel }) {
   return (
-    <li className="relative pl-14 pb-8 last:pb-0">
-      <span className="absolute left-0 top-0 flex items-center justify-center w-10 h-10 rounded-full bg-champagne/10 border border-champagne/30 text-champagne-ink font-display font-bold">
-        {n}
-      </span>
-      <h3 className="text-base font-semibold text-text-primary mb-2">{title}</h3>
-      <p className={`${P} text-[15px]`}>{children}</p>
+    <li className="w5-step">
+      <span className="w5-step__n" aria-hidden="true">{n}</span>
+      <div>
+        <h3 className="w5-step__title">{title}</h3>
+        <p className="w5-step__sum">{summary}</p>
+        <details className="w5-more-inline">
+          <summary>{moreLabel}</summary>
+          <div><p>{children}</p></div>
+        </details>
+      </div>
     </li>
+  );
+}
+
+function More({ label, children }) {
+  return (
+    <details className="w5-more-inline">
+      <summary>{label}</summary>
+      <div>{children}</div>
+    </details>
   );
 }
 
@@ -36,6 +49,23 @@ export default function Methodology() {
     path: seo.path,
   });
 
+  const more = t('w5.meth.more');
+  const nav = [
+    { id: 'principles', label: t('meth.principlesTitle') },
+    { id: 'steps', label: t('w5.meth.nav.steps') },
+    { id: 'countries', label: t('w5.meth.nav.countries') },
+    { id: 'rating', label: t('w5.meth.nav.rating') },
+    { id: 'update', label: t('w5.meth.nav.update') },
+    { id: 'skip', label: t('meth.skipTitle') },
+    { id: 'read', label: t('w5.meth.nav.read') },
+    { id: 'limits', label: t('meth.disclaimerTitle') },
+  ];
+  const principles = [
+    [Database, 'meth.p.officialTitle', 'meth.p.officialBody'],
+    [Sigma, 'meth.p.reproTitle', 'meth.p.reproBody'],
+    [ShieldCheck, 'meth.p.uncertTitle', 'meth.p.uncertBody'],
+    [Ban, 'meth.p.limitsTitle', 'meth.p.limitsBody'],
+  ];
   const skipItems = [
     ['meth.skip.1title', 'meth.skip.1body'],
     ['meth.skip.2title', 'meth.skip.2body'],
@@ -43,153 +73,138 @@ export default function Methodology() {
   ];
 
   return (
-    <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
+    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
       <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
-      <p className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold mb-4">
-        {t('meth.eyebrow')}
-      </p>
-      <h1 className="font-display text-3xl md:text-5xl font-bold text-text-primary mb-6 leading-[1.1]">
-        {seo.h1}
-      </h1>
-      <p className="text-lg text-text-secondary leading-relaxed mb-4">
-        {t('meth.intro.p1')}
-      </p>
-      <p className={`${P} mb-4`}>
-        {t('meth.intro.p2')}
-      </p>
-      <p className={`${P} mb-12`}>
-        {t('meth.intro.p3')}
-      </p>
 
-      <section className="mb-16">
-        <h2 className={H2}>{t('meth.principlesTitle')}</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className={CARD}>
-            <Database className="w-6 h-6 text-champagne-ink mb-3" />
-            <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.p.officialTitle')}</h3>
-            <p className={`${P} text-[14px]`}>{t('meth.p.officialBody')}</p>
-          </div>
-          <div className={CARD}>
-            <Sigma className="w-6 h-6 text-champagne-ink mb-3" />
-            <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.p.reproTitle')}</h3>
-            <p className={`${P} text-[14px]`}>{t('meth.p.reproBody')}</p>
-          </div>
-          <div className={CARD}>
-            <ShieldCheck className="w-6 h-6 text-champagne-ink mb-3" />
-            <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.p.uncertTitle')}</h3>
-            <p className={`${P} text-[14px]`}>{t('meth.p.uncertBody')}</p>
-          </div>
-          <div className={CARD}>
-            <Ban className="w-6 h-6 text-champagne-ink mb-3" />
-            <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.p.limitsTitle')}</h3>
-            <p className={`${P} text-[14px]`}>{t('meth.p.limitsBody')}</p>
-          </div>
+      <header className="mb-6 fe-reveal">
+        <p className="w5-eyebrow mb-3">{t('meth.eyebrow')}</p>
+        <h1 className="mb-4 font-display text-3xl font-bold leading-[1.1] text-text-primary md:text-5xl">
+          {seo.h1}
+        </h1>
+        <p className="w5-lead" style={{ marginBottom: 0 }}>{t('meth.intro.p1')}</p>
+        <More label={t('w5.meth.moreApproach')}>
+          <p>{t('meth.intro.p2')}</p>
+          <p>{t('meth.intro.p3')}</p>
+        </More>
+      </header>
+
+      <SectionNav items={nav} />
+
+      <section id="principles" className="w5-section fe-panel">
+        <h2 className="w5-section__title">{t('meth.principlesTitle')}</h2>
+        <div className="w5-duo">
+          {principles.map(([Icon, titleKey, bodyKey]) => (
+            <div key={titleKey} className="w5-duo__item">
+              <Icon className="mb-2 h-5 w-5 text-champagne-ink" aria-hidden="true" />
+              <strong>{t(titleKey)}</strong>
+              <span>{t(bodyKey)}</span>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section className="mb-16">
-        <h2 className={H2}>{t('meth.stepsTitle')}</h2>
-        <p className={`${P} mb-8`}>{t('meth.stepsIntro')}</p>
-        <ol className="relative">
-          <Step n="1" title={t('meth.step.1title')}>{t('meth.step.1body')}</Step>
-          <Step n="2" title={t('meth.step.2title')}>{t('meth.step.2body')}</Step>
-          <Step n="3" title={t('meth.step.3title')}>{t('meth.step.3body')}</Step>
-          <Step n="4" title={t('meth.step.4title')}>{t('meth.step.4body')}</Step>
+      <section id="steps" className="w5-section fe-panel">
+        <h2 className="w5-section__title">{t('meth.stepsTitle')}</h2>
+        <p>{t('w5.meth.stepsLead')}</p>
+        <ol className="w5-steps mt-4">
+          <Step n="1" title={t('meth.step.1title')} summary={t('w5.meth.step.1sum')} moreLabel={more}>{t('meth.step.1body')}</Step>
+          <Step n="2" title={t('meth.step.2title')} summary={t('w5.meth.step.2sum')} moreLabel={more}>{t('meth.step.2body')}</Step>
+          <Step n="3" title={t('meth.step.3title')} summary={t('w5.meth.step.3sum')} moreLabel={more}>{t('meth.step.3body')}</Step>
+          <Step n="4" title={t('meth.step.4title')} summary={t('w5.meth.step.4sum')} moreLabel={more}>{t('meth.step.4body')}</Step>
         </ol>
       </section>
 
-      <section className="mb-16">
-        <h2 className={H2}>{t('meth.worldTitle')}</h2>
-        <p className={`${P} mb-4`}>{t('meth.world.p1')}</p>
-        <p className={`${P} mb-4`}>{t('meth.world.p2')}</p>
-        <p className={P}>{t('meth.world.p3')}</p>
+      <section id="countries" className="w5-section fe-panel">
+        <h2 className="w5-section__title">{t('meth.worldTitle')}</h2>
+        <p>{t('meth.world.p1')}</p>
+        <More label={more}>
+          <p>{t('meth.world.p2')}</p>
+          <p>{t('meth.world.p3')}</p>
+        </More>
       </section>
 
-      <section className="mb-16">
-        <h2 className={H2}>{t('meth.worldRankTitle')}</h2>
-        <div className={`${CARD} mb-4`}>
-          <Globe2 className="w-6 h-6 text-champagne-ink mb-3" />
-          <p className={`${P} mb-4`}>{t('meth.worldRank.p1')}</p>
-          <p className={`${P} mb-4`}>{t('meth.worldRank.p2')}</p>
+      <section id="rating" className="w5-section fe-panel">
+        <h2 className="w5-section__title">{t('meth.worldRankTitle')}</h2>
+        <p>
+          <Globe2 className="mr-2 inline h-5 w-5 align-text-bottom text-champagne-ink" aria-hidden="true" />
+          {t('meth.worldRank.p1')}
+        </p>
+        <More label={more}>
+          <p>{t('meth.worldRank.p2')}</p>
+        </More>
+        <p className="mt-3">
           <Link
             to={locale === 'en'
               ? worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)
               : russiaCategoryPath('gdp')}
-            className="text-sm font-medium text-champagne-ink hover:underline"
           >
             {t('meth.worldRank.link')}
           </Link>
+        </p>
+      </section>
+
+      <section id="update" className="w5-section fe-panel">
+        <h2 className="w5-section__title">{t('meth.updateTitle')}</h2>
+        <div className="w5-duo">
+          <div className="w5-duo__item">
+            <RefreshCw className="mb-2 h-5 w-5 text-champagne-ink" aria-hidden="true" />
+            <strong>{t('meth.update.modelTitle')}</strong>
+            <span>{t('meth.update.modelBody')}</span>
+          </div>
+          <div className="w5-duo__item">
+            <GitBranch className="mb-2 h-5 w-5 text-champagne-ink" aria-hidden="true" />
+            <strong>{t('meth.update.derivedTitle')}</strong>
+            <span>{t('meth.update.derivedBody')}</span>
+          </div>
         </div>
       </section>
 
-      <section className="mb-16">
-        <h2 className={H2}>{t('meth.updateTitle')}</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className={CARD}>
-            <RefreshCw className="w-6 h-6 text-champagne-ink mb-3" />
-            <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.update.modelTitle')}</h3>
-            <p className={`${P} text-[14px]`}>{t('meth.update.modelBody')}</p>
-          </div>
-          <div className={CARD}>
-            <GitBranch className="w-6 h-6 text-champagne-ink mb-3" />
-            <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.update.derivedTitle')}</h3>
-            <p className={`${P} text-[14px]`}>{t('meth.update.derivedBody')}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="mb-16">
-        <h2 className={H2}>{t('meth.skipTitle')}</h2>
-        <p className={`${P} mb-6`}>{t('meth.skipIntro')}</p>
-        <ul className="space-y-3">
+      <section id="skip" className="w5-section fe-panel">
+        <h2 className="w5-section__title">{t('meth.skipTitle')}</h2>
+        <p>{t('meth.skipIntro')}</p>
+        <ul className="mt-4 grid gap-3">
           {skipItems.map(([titleKey, bodyKey]) => (
-            <li key={titleKey} className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-4">
-              <Ban className="w-5 h-5 text-text-secondary shrink-0 mt-0.5" />
-              <span className="text-[14px] text-text-secondary leading-relaxed">
+            <li key={titleKey} className="w5-note">
+              <Ban className="mt-0.5 h-5 w-5 shrink-0 text-text-secondary" aria-hidden="true" />
+              <span>
                 <strong className="text-text-primary">{t(titleKey)}.</strong> {t(bodyKey)}
               </span>
             </li>
           ))}
         </ul>
-        <p className={`${P} mt-6 text-[14px]`}>{t('meth.skipOutro')}</p>
+        <p className="mt-4 text-sm">{t('meth.skipOutro')}</p>
       </section>
 
-      <section className="mb-16">
-        <h2 className={H2}>{t('meth.readTitle')}</h2>
-        <div className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-5 mb-4">
-          <Eye className="w-5 h-5 text-champagne-ink shrink-0 mt-0.5" />
-          <div className="text-[14px] text-text-secondary leading-relaxed space-y-2">
-            <p>{t('meth.read.p1')}</p>
-            <p>{t('meth.read.p2')}</p>
+      <section id="read" className="w5-section fe-panel">
+        <h2 className="w5-section__title">{t('meth.readTitle')}</h2>
+        <div className="w5-note">
+          <Eye className="mt-0.5 h-5 w-5 shrink-0 text-champagne-ink" aria-hidden="true" />
+          <div className="space-y-2">
+            <p style={{ margin: 0 }}>{t('meth.read.p1')}</p>
+            <p style={{ margin: 0 }}>{t('meth.read.p2')}</p>
           </div>
         </div>
       </section>
 
-      <section className="mb-12">
-        <h2 className={H2}>{t('meth.disclaimerTitle')}</h2>
-        <div className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-5">
-          <AlertTriangle className="w-5 h-5 text-champagne-ink shrink-0 mt-0.5" />
-          <div className="text-[15px] text-text-secondary leading-relaxed space-y-3">
-            <p>{t('meth.disclaimer.p1')}</p>
-            <p>{t('meth.disclaimer.p2')}</p>
+      <section id="limits" className="w5-section fe-panel">
+        <h2 className="w5-section__title">{t('meth.disclaimerTitle')}</h2>
+        <div className="w5-note">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-champagne-ink" aria-hidden="true" />
+          <div className="space-y-2">
+            <p style={{ margin: 0 }}>{t('meth.disclaimer.p1')}</p>
+            <p style={{ margin: 0 }}>{t('meth.disclaimer.p2')}</p>
           </div>
         </div>
       </section>
 
       <div className="flex flex-wrap gap-3">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-champagne text-obsidian font-semibold text-sm hover:bg-champagne/90 transition-colors"
-        >
-          <LineChart className="w-4 h-4" />
+        <Button as={Link} to="/">
+          <LineChart className="h-4 w-4" aria-hidden="true" />
           {t('meth.cta.indicators')}
-        </Link>
-        <Link
-          to="/about"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-text-secondary font-semibold text-sm hover:text-text-primary hover:border-champagne/40 transition-colors"
-        >
+        </Button>
+        <Button as={Link} to="/about" variant="secondary">
           {t('meth.cta.about')}
-        </Link>
+        </Button>
       </div>
     </div>
   );

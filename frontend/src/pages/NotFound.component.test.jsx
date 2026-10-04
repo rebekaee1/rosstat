@@ -14,13 +14,15 @@ describe('NotFound', () => {
     ]);
     renderPage(<NotFound />, { path: '*', route: '/net-takoy-stranitsy' });
 
-    expect(await screen.findByRole('heading', { level: 1, name: 'Страница не найдена' })).toBeTruthy();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Такой страницы нет' })).toBeTruthy();
     // Поиск: кнопка-триггер с подсказкой в тексте.
     expect(screen.getByText('Найти показатель, страну или регион')).toBeTruthy();
-    for (const name of ['Рейтинг стран', 'Сравнение показателей', 'Календарь публикаций статистики']) {
-      expect(screen.getByRole('link', { name }).getAttribute('href')).toBeTruthy();
+    for (const name of ['Рейтинг стран', 'Сравнение', 'Регионы России', 'Сегодня', 'Календарь', 'Калькуляторы']) {
+      expect(screen.getByRole('link', { name: new RegExp(`^${name}`) }).getAttribute('href')).toBeTruthy();
     }
     expect(screen.getByRole('link', { name: 'На главную' }).getAttribute('href')).toBe('/');
     expect(document.title).toContain('Страница не найдена');
+    // Дружелюбный текст и подсказки у разделов.
+    expect(screen.getByText('Популярные разделы')).toBeTruthy();
   });
 });

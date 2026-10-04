@@ -16,7 +16,7 @@ import { formatDate, formatAxisTick, cn } from '../lib/format';
 import { formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import { mountJsonLd } from '../lib/jsonLd';
-import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, refLabel } from '../lib/chartTheme';
+import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, refLabel, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { revealStyle } from '../lib/calcUi';
 import { SkeletonBox } from '../components/Skeleton';
@@ -32,6 +32,11 @@ import CalcSlider from '../components/CalcSlider';
 import CalcMoneyField from '../components/CalcMoneyField';
 import CalculatorSiblings from '../components/CalculatorSiblings';
 import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
+import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
+import CalcMethod from '../components/CalcMethod';
+import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
+import { useChartTouchHint } from '../lib/useChartTouchHint';
+import '../styles/w5-tools.css';
 import Chip from '../components/Chip';
 import Button from '../components/Button';
 import { localizeSource } from '../i18n/viewModeLabels';
@@ -160,7 +165,7 @@ function CategoryBars({ result }) {
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-xs text-text-secondary truncate">{c.label}</span>
                 <span className={cn(
-                  'text-sm font-mono font-bold tabular-nums',
+                  'text-sm font-bold tabular-nums',
                   isMax ? 'text-champagne-ink' : 'text-text-primary'
                 )}>
                   {fmtPct(c.rate, true)}
@@ -198,10 +203,10 @@ function YearlyBreakdownTable({ breakdown, withRuble = true }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border-subtle">
-              <th className="text-left text-[11px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 w-16">{t('calc.inflation.table.year')}</th>
-              <th className="text-left text-[11px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1">{t('calc.inflation.table.annual')}</th>
-              <th className="text-right text-[11px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 w-20">{t('calc.inflation.table.cum')}</th>
-              <th className="text-right text-[11px] uppercase tracking-wider text-text-tertiary font-medium py-2 px-1 hidden sm:table-cell">{t('calc.inflation.table.purchasing')}</th>
+              <th className="text-left text-xs text-text-secondary font-medium py-2 px-1 w-16">{t('calc.inflation.table.year')}</th>
+              <th className="text-left text-xs text-text-secondary font-medium py-2 px-1">{t('w5.calc.table.annual')}</th>
+              <th className="text-right text-xs text-text-secondary font-medium py-2 px-1 w-20">{t('w5.calc.table.total')}</th>
+              <th className="text-right text-xs text-text-secondary font-medium py-2 px-1 hidden sm:table-cell">{t('w5.calc.table.purchasing')}</th>
             </tr>
           </thead>
           <tbody>
@@ -215,7 +220,7 @@ function YearlyBreakdownTable({ breakdown, withRuble = true }) {
                     row.isPeak && 'bg-champagne/[0.04]'
                   )}
                 >
-                  <td className="py-2 px-1 font-mono text-text-primary tabular-nums">
+                  <td className="py-2 px-1 text-text-primary tabular-nums">
                     {row.year}
                     {row.isPeak && <Flame className="w-3 h-3 text-champagne inline ml-1 -mt-0.5" />}
                   </td>
@@ -228,17 +233,17 @@ function YearlyBreakdownTable({ breakdown, withRuble = true }) {
                         />
                       </div>
                       <span className={cn(
-                        'font-mono tabular-nums text-xs whitespace-nowrap',
+                        'tabular-nums text-xs whitespace-nowrap',
                         row.isPeak ? 'font-bold text-champagne-ink' : 'text-text-secondary'
                       )}>
                         {fmtPct(row.annualRate, true)}
                       </span>
                     </div>
                   </td>
-                  <td className="py-2 px-1 text-right font-mono text-xs text-text-tertiary tabular-nums">
+                  <td className="py-2 px-1 text-right text-xs text-text-secondary tabular-nums">
                     {fmtPct(row.cumulativeRate, true)}
                   </td>
-                  <td className="py-2 px-1 text-right font-mono text-xs text-text-secondary tabular-nums hidden sm:table-cell">
+                  <td className="py-2 px-1 text-right text-xs text-text-secondary tabular-nums hidden sm:table-cell">
                     {formatCalcAmount(row.purchasingPower, { withRuble })}
                   </td>
                 </tr>
@@ -294,6 +299,7 @@ export default function CalculatorPage() {
   const [chartMode, setChartMode] = useState('purchasing');
   const chartBoxRef = useRef(null);
   const touchTip = useTouchTooltip(chartBoxRef);
+  const touchHint = useChartTouchHint();
   const [setChartWidthNode, chartWidth] = useElementWidth();
   const [reversed, setReversed] = useState(false);
   const [periodTouched, setPeriodTouched] = useState(false);
@@ -464,10 +470,10 @@ export default function CalculatorPage() {
     const niceMax = Math.ceil(hi / step) * step;
     const ticks = [];
     for (let v = niceMin; v <= niceMax + step * 0.01; v += step) ticks.push(Math.round(v));
-    const sampleLabel = formatAxisTick(niceMax, 0);
-    const w = Math.max(50, Math.min(100, sampleLabel.length * 8 + 16));
+    const sampleLabel = `${formatAxisTick(niceMax, 0)}${isRussia ? ' ₽' : ''}`;
+    const w = axisWidthForLabels([sampleLabel], { min: 50, max: 110, perChar: 7.2, pad: 12 });
     return { yDomain: [niceMin, niceMax], yTicks: ticks, yWidth: w };
-  }, [chartData, amount, chartMode]);
+  }, [chartData, amount, chartMode, isRussia]);
 
   const visibleMilestones = useMemo(() => (
     isRussia
@@ -602,10 +608,8 @@ export default function CalculatorPage() {
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-champagne/10 border border-champagne/20">
             <Calculator className="w-5 h-5 text-champagne" />
           </div>
-          <span className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold">
-            {isRussia
-              ? t('calc.inflation.eyebrow')
-              : t('calc.inflation.eyebrowWorld', { country: countryName || '', source: sourceLabel })}
+          <span className="w5-eyebrow">
+            {t(isRussia ? 'w5.calc.inflation.eyebrow' : 'w5.calc.inflation.eyebrowWorld')}
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
@@ -714,7 +718,7 @@ export default function CalculatorPage() {
       {/* Error */}
       {isError && !isLoading && (
         <div className="rounded-[2rem] bg-warn-surface border border-champagne/35 p-6 mb-6 text-sm text-warn-text">
-          {t(isRussia ? 'calc.inflation.loadError' : 'calc.inflation.loadErrorWorld')}
+          {t(isRussia ? 'w5.calc.inflation.loadError' : 'calc.inflation.loadErrorWorld')}
         </div>
       )}
 
@@ -757,7 +761,7 @@ export default function CalculatorPage() {
             {(result.clamped || urlPeriodClamped) && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
                 {t(
-                  isRussia ? 'calc.inflation.clampedNote' : 'calc.inflation.shortSeries',
+                  isRussia ? 'w5.calc.inflation.clampedNote' : 'calc.inflation.shortSeries',
                   {
                     min: effectiveMin,
                     max: effectiveMax,
@@ -783,21 +787,12 @@ export default function CalculatorPage() {
               </p>
             )}
 
-            {/* Stat pills */}
-            <div className="flex flex-wrap gap-3 mb-6">
-              <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-                <p className="text-[11px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">{t('calc.inflation.statInflation')}</p>
-                <p className="text-base font-mono font-bold text-text-primary tabular-nums">{fmtPct(result.totalInflation, true)}</p>
-              </div>
-              <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-                <p className="text-[11px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">{t('calc.inflation.statAvgAnnual')}</p>
-                <p className="text-base font-mono font-bold text-text-primary tabular-nums">{fmtPct(result.avgAnnual)}</p>
-              </div>
-              <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-                <p className="text-[11px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">{t('calc.inflation.multiplier')}</p>
-                <p className="text-base font-mono font-bold text-text-primary tabular-nums">×{result.multiplier.toFixed(2).replace('.', ',')}</p>
-              </div>
-            </div>
+            {/* Итоговые плитки */}
+            <CalcStatGrid className="mb-6 w5-tiles--three">
+              <CalcStatTile index={0} label={t('w5.calc.inflation.statTotal')} value={fmtPct(result.totalInflation, true)} />
+              <CalcStatTile index={1} label={t('w5.calc.inflation.statAvg')} value={fmtPct(result.avgAnnual)} />
+              <CalcStatTile index={2} label={t('w5.calc.inflation.statMult')} value={`×${result.multiplier.toFixed(2).replace('.', ',')}`} accent />
+            </CalcStatGrid>
 
             {/* Share */}
             <div className="flex flex-wrap gap-2">
@@ -814,10 +809,25 @@ export default function CalculatorPage() {
 
           {/* ── Insights ── */}
           {insights.length > 0 && (
-            <section style={revealStyle(4)} className="fe-reveal grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-              {insights.map((ins, i) => (
-                <InsightCard key={i} icon={ins.icon}>{ins.text}</InsightCard>
-              ))}
+            <section style={revealStyle(4)} className="fe-reveal mb-6">
+              <div className="flex items-start gap-3 rounded-3xl border border-border-champagne bg-surface p-5">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-champagne/10">
+                  {(() => { const LeadIcon = insights[0].icon; return <LeadIcon className="h-4 w-4 text-champagne" aria-hidden="true" />; })()}
+                </div>
+                <p className="text-base font-semibold leading-snug text-text-primary">{insights[0].text}</p>
+              </div>
+              {insights.length > 1 && (
+                <details className="w5-more mt-3">
+                  <summary className="w5-more__summary">
+                    {t('w5.calc.inflation.moreInsights', { n: insights.length - 1 })}
+                  </summary>
+                  <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                    {insights.slice(1).map((ins, i) => (
+                      <InsightCard key={i} icon={ins.icon}>{ins.text}</InsightCard>
+                    ))}
+                  </div>
+                </details>
+              )}
             </section>
           )}
 
@@ -829,7 +839,7 @@ export default function CalculatorPage() {
               className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6"
             >
               <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-                <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+                <h3 className="text-base font-semibold text-text-primary">
                   {chartMode === 'purchasing' ? t('calc.inflation.chartPurchasing') : t('calc.inflation.chartEquivalent')}
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
@@ -848,9 +858,9 @@ export default function CalculatorPage() {
                 </div>
               </div>
 
-              <div ref={chartBoxRef} onPointerDownCapture={touchTip.onPointerDownCapture}>
+              <div ref={chartBoxRef} onPointerDownCapture={(event) => { touchTip.onPointerDownCapture(event); touchHint.dismiss(); }}>
                 <ResponsiveContainer width="100%" height={chartWidth > 0 && chartWidth < 560 ? 280 : 320}>
-                  <AreaChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: -5 }}>
+                  <AreaChart data={chartData} margin={{ top: 8, right: 12, bottom: 5, left: 4 }}>
                     <defs>
                       <linearGradient id="calcGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor={CHART_THEME.champagne} stopOpacity={0.18} />
@@ -864,7 +874,7 @@ export default function CalculatorPage() {
                     />
                     <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
                       tickLine={false} axisLine={false} domain={yDomain} ticks={yTicks}
-                      tickFormatter={v => formatAxisTick(v, 0)} width={yWidth}
+                      tickFormatter={v => `${formatAxisTick(v, 0)}${withRuble ? '\u00A0₽' : ''}`} width={yWidth}
                     />
                     <Tooltip
                       content={<ChartTooltip withRuble={withRuble} />}
@@ -877,13 +887,16 @@ export default function CalculatorPage() {
                       y={amount}
                       stroke={CHART_THEME.refLine}
                       strokeDasharray="6 4"
-                      label={refLabel(formatCalcAmount(amount, { withRuble }))}
+                      label={refLabel(
+                        formatCalcAmount(amount, { withRuble }),
+                        chartMode === 'purchasing' ? 'insideBottomRight' : 'insideTopLeft',
+                      )}
                     />
 
+                    {/* Подписи событий вынесены в легенду под графиком: на узком экране они слипались. */}
                     {visibleMilestones.map(m => (
                       <ReferenceLine key={m.year} x={`${m.year}-01-01`}
                         stroke={CHART_THEME.refLine} strokeDasharray="4 4"
-                        label={refLabel(t(m.labelKey))}
                       />
                     ))}
 
@@ -895,13 +908,23 @@ export default function CalculatorPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
+              {visibleMilestones.length > 0 && (
+                <ChartLegend
+                  items={visibleMilestones.map((m) => ({
+                    color: CHART_THEME.refLine,
+                    dashed: true,
+                    label: `${m.year} — ${t(m.labelKey)}`,
+                  }))}
+                />
+              )}
+              <ChartTouchHint visible={touchHint.visible} />
             </section>
           )}
 
           {/* ── Category Breakdown ── */}
           {isRussia && (
             <section style={revealStyle(6)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
-              <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
+              <h3 className="text-base font-semibold text-text-primary mb-5">
                 {t('calc.inflation.catsTitle')}
               </h3>
               <CategoryBars result={result} />
@@ -911,7 +934,7 @@ export default function CalculatorPage() {
           {/* ── Yearly Breakdown ── */}
           {result.yearlyBreakdown?.length > 1 && (
             <section style={revealStyle(7)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
-              <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-5">
+              <h3 className="text-base font-semibold text-text-primary mb-5">
                 {t('calc.inflation.yearsTitle')}
               </h3>
               <YearlyBreakdownTable breakdown={result.yearlyBreakdown} withRuble={withRuble} />
@@ -920,21 +943,17 @@ export default function CalculatorPage() {
         </>
       )}
 
-      {/* ── Methodology ── */}
-      <section style={revealStyle(8)} data-block="calc-methodology" className="fe-reveal rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
-        <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.methodologyHeading')}</h3>
-        <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
-          <p>
-            {t(isRussia ? 'calc.inflation.method.p1' : 'calc.inflation.method.world.p1')}
-          </p>
-          <p className="font-mono text-xs text-text-secondary border-l-2 border-champagne/30 pl-4">
-            {t(isRussia ? 'calc.inflation.method.p2' : 'calc.inflation.method.world.p2')}
-          </p>
-          <p>
-            {t(isRussia ? 'calc.inflation.method.p3' : 'calc.inflation.method.world.p3')}
-          </p>
-        </div>
-      </section>
+      {/* ── Как считаем (простыми словами; формулы на виду нет) ── */}
+      <div style={revealStyle(8)} className="fe-reveal">
+        <CalcMethod
+          dataBlock="calc-methodology"
+          paragraphs={[
+            t(isRussia ? 'w5.calc.inflation.how.p1' : 'w5.calc.inflation.how.world.p1'),
+            t(isRussia ? 'w5.calc.inflation.how.p2' : 'w5.calc.inflation.how.world.p2'),
+            t(isRussia ? 'w5.calc.inflation.how.p3' : 'calc.inflation.method.world.p3'),
+          ]}
+        />
+      </div>
 
       {/* ── FAQ ── */}
       <section style={revealStyle(9)} className="fe-reveal mb-8">

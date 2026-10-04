@@ -354,3 +354,25 @@ describe('watch more links (K5)', () => {
     expect(screen.getByRole('link', { name: 'Экономика России' }).getAttribute('href')).toBe('/russia');
   });
 });
+
+describe('plain-words method and result tiles (W5)', () => {
+  it('формула не на виду: «Как считаем» — свёрнутый блок простыми словами, ИПЦ расшифрован', async () => {
+    mockCalcApis();
+    renderPage(<CalculatorPage />, {
+      path: '/calculator',
+      route: '/calculator?amount=100000&from=2020&to=2021',
+    });
+
+    await waitFor(() => {
+      expect(collapseWs(document.body.textContent)).toMatch(/Как считаем/);
+    });
+    const details = document.querySelector('details.w5-method');
+    expect(details).toBeTruthy();
+    expect(details.hasAttribute('open')).toBe(false);
+    expect(details.textContent).toMatch(/индекс потребительских цен \(ИПЦ\)/);
+    expect(document.body.textContent).not.toMatch(/∏|CPI_i|Формула:/);
+    // Три итоговые плитки одной сетки, подписи обычным регистром.
+    await waitFor(() => expect(document.querySelectorAll('.w5-tiles .w5-tile').length).toBe(3));
+    expect(document.body.textContent).toMatch(/Рост цен за период/);
+  });
+});

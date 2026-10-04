@@ -3,12 +3,12 @@ import { useMemo } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { formatValueWithUnit, formatChange, isCpiIndex } from '../lib/format';
-import { useEmbedParams, useEmbedImpression, THEME_COLORS } from './useEmbedParams';
+import { useEmbedParams, useEmbedImpression, embedChangeColor, THEME_COLORS } from './useEmbedParams';
 import EmbedSpinner from './EmbedSpinner';
 
 const SPEED_MAP = { slow: 40, normal: 25, fast: 14 };
 
-function TickerItem({ ind, colors }) {
+function TickerItem({ ind, colors, theme }) {
   const displayVal = isCpiIndex(ind.code) && ind.current_value != null
     ? +(ind.current_value - 100).toFixed(2) : ind.current_value;
   const change = ind.change;
@@ -17,17 +17,17 @@ function TickerItem({ ind, colors }) {
 
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '0 20px', whiteSpace: 'nowrap' }}>
-      <span style={{ fontSize: 11, fontWeight: 500, color: colors.textSecondary }}>
+      <span style={{ fontSize: 12, fontWeight: 500, color: colors.textSecondary }}>
         {ind.name}
       </span>
-      <span style={{ fontSize: 12, fontWeight: 700, fontFamily: 'ui-monospace, monospace', color: colors.text }}>
+      <span style={{ fontSize: 13, fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: colors.text }}>
         {formatValueWithUnit(displayVal, ind.unit)}
       </span>
       {change != null && (
         <span style={{
-          fontSize: 10, fontWeight: 600, fontFamily: 'ui-monospace, monospace',
+          fontSize: 12, fontWeight: 600, fontVariantNumeric: 'tabular-nums',
           display: 'inline-flex', alignItems: 'center', gap: 2,
-          color: isUp ? '#16a34a' : isDown ? '#dc2626' : colors.textTertiary,
+          color: embedChangeColor(change, theme, colors, ind.name, ind.code),
         }}>
           {isUp ? <TrendingUp size={10} /> : isDown ? <TrendingDown size={10} /> : null}
           {formatChange(change)}
@@ -78,10 +78,10 @@ export default function EmbedTicker() {
       fontFamily: 'Manrope, system-ui, sans-serif',
     }}>
       <div className="ticker-track" style={{ display: 'flex', alignItems: 'center', height: '100%', whiteSpace: 'nowrap' }}>
-        {items.map(ind => <TickerItem key={ind.code} ind={ind} colors={colors} />)}
-        {items.map(ind => <TickerItem key={`dup-${ind.code}`} ind={ind} colors={colors} />)}
+        {items.map(ind => <TickerItem key={ind.code} ind={ind} colors={colors} theme={theme} />)}
+        {items.map(ind => <TickerItem key={`dup-${ind.code}`} ind={ind} colors={colors} theme={theme} />)}
         <a href="https://forecasteconomy.com" target="_blank" rel="noopener"
-          style={{ fontSize: 9, color: colors.textTertiary, padding: '0 16px', textDecoration: 'none' }}>
+          style={{ fontSize: 12, color: colors.textTertiary, padding: '0 16px', textDecoration: 'none' }}>
           forecasteconomy.com
         </a>
       </div>

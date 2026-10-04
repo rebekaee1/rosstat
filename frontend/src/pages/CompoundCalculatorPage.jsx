@@ -9,9 +9,8 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
-import { cn } from '../lib/format';
-import { formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
-import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick } from '../lib/chartTheme';
+import { formatCompactTick } from '../lib/regionsApi';
+import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { revealStyle } from '../lib/calcUi';
 import { formatRubles, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
@@ -24,6 +23,12 @@ import { toolTrail } from '../lib/breadcrumbs';
 import CalcSlider from '../components/CalcSlider';
 import CalcMoneyField from '../components/CalcMoneyField';
 import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
+import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
+import CalcMethod from '../components/CalcMethod';
+import CalcKeyRate from '../components/CalcKeyRate';
+import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
+import { useChartTouchHint } from '../lib/useChartTouchHint';
+import '../styles/w5-tools.css';
 import { useT, useLocale } from '../i18n';
 import {
   russiaIndicatorPath,
@@ -37,21 +42,13 @@ const FAQ_KEYS = [
   { q: 'calc.compound.faq.q5', a: 'calc.compound.faq.a5' },
 ];
 
-function StatPill({ label, value, accent }) {
-  return (
-    <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-      <p className="text-[11px] uppercase tracking-[0.15em] text-text-secondary font-medium mb-0.5">{label}</p>
-      <p className={cn('text-base font-mono font-bold tabular-nums', accent ? 'text-champagne-ink' : 'text-text-primary')}>{value}</p>
-    </div>
-  );
-}
-
 export default function CompoundCalculatorPage() {
   const t = useT();
   const { locale } = useLocale();
   const faqItems = FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) }));
   const chartBoxRef = useRef(null);
   const touchTip = useTouchTooltip(chartBoxRef);
+  const touchHint = useChartTouchHint();
   const [setChartWidthNode, chartWidth] = useElementWidth();
   const [initial, setInitial] = useState(100000);
   const [monthly, setMonthly] = useState(10000);
@@ -85,6 +82,8 @@ export default function CompoundCalculatorPage() {
     }, 1500);
     return () => clearTimeout(t);
   }, [initial, monthly, rate, years, inflation]);
+
+  const rubleTick = (v) => `${formatCompactTick(v)}\u00A0₽`;
 
   const result = useMemo(() => {
     const n = years * 12;
@@ -124,9 +123,7 @@ export default function CompoundCalculatorPage() {
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-champagne/10 border border-champagne/20">
             <TrendingUp className="w-5 h-5 text-champagne" />
           </div>
-          <span className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold">
-            {t('calc.compound.eyebrow')}{keyRate != null && ` — ${t('calc.mortgage.keyRate', { rate: keyRate })}`}
-          </span>
+          <span className="w5-eyebrow">{t('calc.compound.eyebrow')}</span>
         </div>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
           {t('calc.compound.title')}
@@ -134,6 +131,7 @@ export default function CompoundCalculatorPage() {
         <p className="text-base text-text-secondary leading-relaxed max-w-xl">
           {t('calc.compound.subtitle')}
         </p>
+        <CalcKeyRate rate={keyRate} />
       </header>
 
       <section style={revealStyle(2)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
@@ -166,23 +164,23 @@ export default function CompoundCalculatorPage() {
               format={formatRubles}
               className="block min-h-[1.2em] font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6"
             />
-            <div className="flex flex-wrap gap-3">
-              <StatPill label={t('calc.compound.invested')} value={formatRubles(result.invested)} />
-              <StatPill label={t('calc.compound.gain')} value={formatRubles(result.gain)} accent />
-              <StatPill label={t('calc.compound.real')} value={formatRubles(result.real)} />
+            <CalcStatGrid>
+              <CalcStatTile index={0} label={t('calc.compound.invested')} value={formatRubles(result.invested)} />
+              <CalcStatTile index={1} label={t('calc.compound.gain')} value={formatRubles(result.gain)} accent />
+              <CalcStatTile index={2} label={t('calc.compound.real')} value={formatRubles(result.real)} />
               {result.doubling && result.doubling < 100 && (
-                <StatPill label={t('calc.compound.doubling')} value={`≈ ${result.doubling.toFixed(1).replace('.', ',')} ${t('calc.compound.yearsUnit')}`} />
+                <CalcStatTile index={3} label={t('calc.compound.doubling')} value={`≈ ${result.doubling.toFixed(1).replace('.', ',')} ${t('calc.compound.yearsUnit')}`} />
               )}
-            </div>
+            </CalcStatGrid>
           </section>
 
           <section ref={setChartWidthNode} style={revealStyle(4)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
-            <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-5">
+            <h3 className="text-base font-semibold text-text-primary mb-5">
               {t('calc.compound.chartTitle')}
             </h3>
-            <div ref={chartBoxRef} onPointerDownCapture={touchTip.onPointerDownCapture}>
+            <div ref={chartBoxRef} onPointerDownCapture={(event) => { touchTip.onPointerDownCapture(event); touchHint.dismiss(); }}>
               <ResponsiveContainer width="100%" height={chartWidth > 0 && chartWidth < 560 ? 260 : 300}>
-                <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
+                <AreaChart data={result.series} margin={{ top: 8, right: 12, bottom: 5, left: 4 }}>
                   <defs>
                     <linearGradient id="cmpBal" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor={CHART_THEME.champagne} stopOpacity={0.2} />
@@ -190,10 +188,11 @@ export default function CompoundCalculatorPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid {...GRID_PROPS} />
-                  <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick()} tickLine={false} />
+                  <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick()} tickLine={false}
+                    tickFormatter={(y) => (y === 0 ? t('w5.calc.axisStart') : t('w5.calc.axisYear', { n: y }))} />
                   <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
-                    tickLine={false} axisLine={false} tickFormatter={formatCompactTick}
-                    width={compactTickAxisWidth(result.series.map((p) => p.balance), { narrow: chartWidth > 0 && chartWidth < 420 })} />
+                    tickLine={false} axisLine={false} tickFormatter={rubleTick}
+                    width={axisWidthForLabels(result.series.flatMap((p) => [rubleTick(p.balance), rubleTick(0)]), { min: 56, perChar: 6.8, pad: 10 })} />
                   <Tooltip
                     {...TOOLTIP_STYLES}
                     {...touchTip.tooltipProps}
@@ -210,9 +209,14 @@ export default function CompoundCalculatorPage() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-            <p className="mt-3 text-xs text-text-secondary">
-              {t('calc.compound.chartHint', { rate: fmtPct(inflation) })}
-            </p>
+            <ChartLegend
+              items={[
+                { color: CHART_THEME.champagne, label: t('calc.compound.capital') },
+                { color: CHART_THEME.ink, label: t('calc.compound.invested'), dashed: true },
+                { color: CHART_THEME.blue, label: t('w5.calc.compound.legendReal', { rate: fmtPct(inflation) }) },
+              ]}
+            />
+            <ChartTouchHint visible={touchHint.visible} />
           </section>
 
           <section style={revealStyle(5)} className="fe-reveal grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
@@ -238,24 +242,19 @@ export default function CompoundCalculatorPage() {
         </>
       )}
 
-      <section style={revealStyle(6)} className="fe-reveal rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
-        <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.methodologyHeading')}</h3>
-        <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
-          <p>
-            {t('calc.compound.method.p1')}
-          </p>
-          <p className="font-mono text-xs text-text-secondary border-l-2 border-champagne/30 pl-4">
-            {t('calc.compound.method.p2')}
-          </p>
+      <div style={revealStyle(6)} className="fe-reveal">
+        <CalcMethod
+          paragraphs={[t('w5.calc.compound.how.p1'), t('w5.calc.compound.how.p2')]}
+        >
           <p>
             {t('calc.compound.method.refsBefore')}{' '}
-            <Link to={russiaIndicatorPath('key-rate')} className="text-champagne hover:underline">{t('calc.compound.method.keyRate')}</Link>,{' '}
-            <Link to={russiaIndicatorPath('ruonia')} className="text-champagne hover:underline">{t('calc.compound.method.ruonia')}</Link>
+            <Link to={russiaIndicatorPath('key-rate')}>{t('calc.compound.method.keyRate')}</Link>,{' '}
+            <Link to={russiaIndicatorPath('ruonia')}>{t('calc.compound.method.ruonia')}</Link>
             ; {t('calc.compound.method.inflationBefore')}{' '}
-            <Link to="/calculator" className="text-champagne hover:underline">{t('calc.compound.method.inflationLink')}</Link>.
+            <Link to="/calculator">{t('calc.compound.method.inflationLink')}</Link>.
           </p>
-        </div>
-      </section>
+        </CalcMethod>
+      </div>
 
       <section style={revealStyle(7)} className="fe-reveal mb-8">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">{t('calc.faqHeading')}</h2>

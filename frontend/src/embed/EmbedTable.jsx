@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useIndicator, useIndicatorData } from '../lib/hooks';
 import { formatValueWithUnit, formatDate, formatChange, isCpiIndex } from '../lib/format';
-import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, THEME_COLORS } from './useEmbedParams';
+import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, embedChangeColor, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
 import EmbedSpinner from './EmbedSpinner';
 
@@ -59,13 +59,13 @@ export default function EmbedTable() {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${colors.border}` }}>
-              <th style={{ padding: '6px 16px', textAlign: 'left', fontWeight: 500, color: colors.textTertiary, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <th style={{ padding: '6px 16px', textAlign: 'left', fontWeight: 500, color: colors.textTertiary, fontSize: 12 }}>
                 {t('embed.date')}
               </th>
-              <th style={{ padding: '6px 16px', textAlign: 'right', fontWeight: 500, color: colors.textTertiary, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <th style={{ padding: '6px 16px', textAlign: 'right', fontWeight: 500, color: colors.textTertiary, fontSize: 12 }}>
                 {t('embed.value')}
               </th>
-              <th style={{ padding: '6px 16px', textAlign: 'right', fontWeight: 500, color: colors.textTertiary, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <th style={{ padding: '6px 16px', textAlign: 'right', fontWeight: 500, color: colors.textTertiary, fontSize: 12 }}>
                 {t('embed.change')}
               </th>
             </tr>
@@ -79,13 +79,13 @@ export default function EmbedTable() {
                   borderBottom: i < rows.length - 1 ? `1px solid ${colors.border}` : 'none',
                   transition: 'background 0.15s',
                 }}>
-                  <td style={{ padding: '8px 16px', fontFamily: mono, color: colors.textSecondary, fontSize: 11 }}>
+                  <td style={{ padding: '8px 16px', fontFamily: mono, color: colors.textSecondary, fontSize: 12 }}>
                     {formatDate(r.date, 'full')}
                   </td>
                   <td style={{ padding: '8px 16px', textAlign: 'right', fontFamily: mono, fontWeight: 600, color: colors.text }}>
                     {formatValueWithUnit(displayVal, unit)}
                   </td>
-                  <td style={{ padding: '8px 16px', textAlign: 'right', fontFamily: mono, fontWeight: 500, fontSize: 11, color: chg > 0 ? '#16a34a' : chg < 0 ? '#dc2626' : colors.textTertiary }}>
+                  <td style={{ padding: '8px 16px', textAlign: 'right', fontFamily: mono, fontWeight: 500, fontSize: 12, color: embedChangeColor(chg, theme, colors, meta?.name, code) }}>
                     {chg != null ? formatChange(chg) : '—'}
                   </td>
                 </tr>
