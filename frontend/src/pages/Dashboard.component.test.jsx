@@ -62,15 +62,15 @@ describe('Dashboard', () => {
     renderPage(<Dashboard />, { path: '/', route: '/' });
 
     const h1 = await screen.findByRole('heading', { level: 1 });
-    expect(h1.textContent).toBe(
-      'Официальные макроэкономические индикаторы в одной рабочей среде',
-    );
+    expect(h1.textContent).toBe('Экономика стран — в одном месте');
+    expect(h1.textContent).not.toMatch(/рабочей среде/);
     // Карта России снята с hero (переехала на /russia). Поиск — inline под заголовком.
     expect(screen.queryByLabelText('Россия')).toBeNull();
-    // Блок состава платформы.
-    expect(screen.getByRole('heading', { name: 'Что внутри платформы' })).toBeTruthy();
+    // Блок чисел платформы; Россия — не на первом плане, а в раскрывашке «Подробнее».
+    expect(screen.getByRole('heading', { name: 'Платформа в цифрах' })).toBeTruthy();
     await waitFor(() => expect(screen.getByText('495')).toBeTruthy());
     expect(screen.getByText(/региональных показателей России/)).toBeTruthy();
+    expect(screen.getByText('495').closest('details')).toBeTruthy();
     expect(screen.queryByText(/42\s*075/)).toBeNull();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Сколько данных доступно' })).toBeNull();
@@ -91,11 +91,13 @@ describe('Dashboard', () => {
 
     renderPage(<Dashboard />, { path: '/', route: '/' });
 
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
-      'Официальные макроэкономические индикаторы в одной рабочей среде',
-    );
-    expect(screen.getByText('Бесплатная аналитическая платформа экономических данных')).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Экономика стран — в одном месте');
+    expect(screen.getByText('Бесплатная платформа')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Открыть поиск' })).toBeTruthy();
+    // Примеры запросов под полем: одно касание до выдачи.
+    const examples = screen.getByRole('list', { name: 'Примеры запросов' });
+    expect(examples.textContent).toContain('Инфляция в США');
+    expect(examples.textContent).toContain('ВВП Китая');
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
   });
 });

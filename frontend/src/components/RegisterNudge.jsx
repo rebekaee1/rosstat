@@ -9,6 +9,7 @@ import { track, events } from '../lib/track';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useT } from '../i18n';
+import '../styles/shell.css';
 import { authLink, prepareAuthReturn } from '../lib/authReturn';
 import Button from './Button';
 
@@ -22,6 +23,7 @@ const HIDDEN_PATHS = ['/', '/login', '/register', '/account'];
 const REGISTER_VARIANT = {
   storageKey: 'fe_nudge_dismissed',
   pillKey: 'nudge.register.pill',
+  lineKey: 'shell.nudge.register.line',
   titleKey: 'nudge.register.title',
   benefitKeys: [
     { icon: Download, textKey: 'nudge.register.benefit.download' },
@@ -41,6 +43,7 @@ const REGISTER_VARIANT = {
 const FEEDBACK_VARIANT = {
   storageKey: 'fe_feedback_nudge_dismissed',
   pillKey: 'nudge.feedback.pill',
+  lineKey: 'shell.nudge.feedback.line',
   titleKey: 'nudge.feedback.title',
   benefitKeys: [
     { icon: MessageSquare, textKey: 'nudge.feedback.benefit.missing' },
@@ -107,11 +110,34 @@ export default function RegisterNudge() {
 
   return (
     <>
-    <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] sm:hidden mx-4 my-6 flex items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 py-3 print:hidden">
-      <Link to={isAuthed ? variant.ctaTo : authLink('/register')}
+    <aside
+      className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-card sm:hidden print:hidden"
+      aria-label={t(variant.titleKey)}
+    >
+      <div className="flex items-start gap-3">
+        <span className="fe-nudge-card__icon" aria-hidden="true">
+          <Sparkles size={18} />
+        </span>
+        <p className="min-w-0 flex-1 self-center text-[15px] font-medium leading-snug text-text-primary">
+          {t(variant.lineKey)}
+        </p>
+        <button
+          type="button"
+          onClick={dismiss}
+          aria-label={t('common.close')}
+          className={cn(FOCUS_RING, 'fe-press -mr-2 -mt-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-tertiary hover:text-text-primary')}
+        >
+          <X className="w-4 h-4" aria-hidden="true" />
+        </button>
+      </div>
+      <Button
+        as={Link}
+        to={isAuthed ? variant.ctaTo : authLink('/register')}
         onClick={() => { prepareAuthReturn(); track(variant.ev.cta); }}
-        className={cn(FOCUS_RING, 'flex min-h-11 flex-1 items-center text-sm text-champagne-ink')}>{t(variant.ctaKey)}</Link>
-      <button type="button" onClick={dismiss} aria-label={t('common.close')} className={cn(FOCUS_RING, 'fe-press flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-text-tertiary')}><X className="w-4 h-4" aria-hidden="true" /></button>
+        className="mt-1 w-full"
+      >
+        {t(variant.ctaKey)}
+      </Button>
     </aside>
     <div className="hidden sm:block fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] print:hidden">
       {!expanded ? (

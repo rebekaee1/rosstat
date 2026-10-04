@@ -133,7 +133,7 @@ export default function CookieConsent() {
       role="dialog"
       aria-modal="false"
       aria-label={t('cookie.aria')}
-      className="fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-3 sm:p-4"
+      className="fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-3 [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))] sm:p-4"
     >
       <div
         data-analytics-overlay="cookie-consent"
@@ -141,11 +141,11 @@ export default function CookieConsent() {
         data-fe-interaction="consent-dialog"
         className="pointer-events-auto mx-auto sm:mx-0 sm:max-w-md flex max-h-[calc(100dvh-1.5rem)] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
       >
-        <div className="flex shrink-0 items-start gap-2 p-3 pb-1">
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-text-primary mb-1">{t('cookie.title')}</p>
+        <div className="flex shrink-0 items-start gap-1 px-3 pt-3 pb-1">
+          <div className="min-w-0 flex-1 self-center">
+            {expanded && <p className="text-sm font-semibold text-text-primary mb-1">{t('cookie.title')}</p>}
             {!expanded && (
-              <p className="text-xs text-text-secondary leading-relaxed">
+              <p className="text-[13px] text-text-secondary leading-snug">
                 {t('cookie.summary')}{' '}
                 <Link to="/privacy" className="text-champagne-ink hover:underline">
                   {t('cookie.privacyShort')}
@@ -159,7 +159,7 @@ export default function CookieConsent() {
             data-analytics-action="consent-dismiss"
             data-fe-interaction-action="dismiss"
             onClick={dismiss}
-            className={cn(FOCUS_RING, 'fe-press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-tertiary hover:text-text-primary transition-colors')}
+            className={cn(FOCUS_RING, 'fe-press -mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-tertiary hover:text-text-primary transition-colors')}
           >
             <X className="w-4 h-4" aria-hidden="true" />
           </button>
@@ -214,7 +214,7 @@ export default function CookieConsent() {
           </div>
         )}
 
-        <div data-consent-actions className="grid shrink-0 grid-cols-2 gap-2 p-3 pt-1">
+        <div data-consent-actions className="grid shrink-0 grid-cols-2 gap-2 px-3 pb-3 pt-1">
           {expanded ? (
             <>
               <Button
@@ -233,6 +233,15 @@ export default function CookieConsent() {
                 className={cn(btnBase, 'flex-1')}
               >
                 {t('cookie.acceptAll')}
+              </Button>
+              <Button
+                variant="ghost"
+                data-analytics-action="consent-necessary-only"
+                data-fe-interaction-action="necessary-only"
+                onClick={() => commit(false, false, 'necessary_only')}
+                className={cn(btnBase, 'col-span-2')}
+              >
+                {t('shell.cookie.necessaryOnly')}
               </Button>
             </>
           ) : (

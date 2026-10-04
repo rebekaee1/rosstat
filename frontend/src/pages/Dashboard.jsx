@@ -37,7 +37,7 @@ export default function Dashboard() {
 
   // Hero (H1, eyebrow, поиск) — из i18n, без ожидания indicators / world API.
   return (
-    <div className="fe-page-shell fe-dashboard overflow-x-clip pb-28 pt-24">
+    <div className="fe-page-shell fe-dashboard overflow-x-clip pb-12 pt-24 md:pb-16">
       {/* Hero (поиск + пикер) и карта — один HomeWorkbench, общая сетка. */}
       <div className="relative">
         <HomeWorkbench ratingConcepts={ratingConcepts} />

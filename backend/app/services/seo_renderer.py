@@ -741,7 +741,8 @@ body.seo-fast .seo-brand{display:flex;align-items:center;gap:.65rem;font-size:1.
 body.seo-fast .seo-brand svg{width:31px;height:35px;flex-shrink:0}
 body.seo-fast .seo-brand-light{font-weight:400}
 body.seo-fast .seo-brand small{display:block;font-size:7px;font-weight:600;letter-spacing:.16em;color:#ad8a48;margin-top:6px}
-body.seo-fast .seo-topnav{gap:1.1rem;font-size:.78rem;max-width:100%;padding:.4rem 0}
+body.seo-fast .seo-topnav{gap:.1rem 1.1rem;font-size:.78rem;max-width:100%;padding:.4rem 0;flex-wrap:wrap;overflow:visible}
+body.seo-fast .seo-topnav a{padding:.3rem 0}
 body.seo-fast .seo-topnav a{color:#526074}
 body.seo-fast .seo-topnav a:hover,body.seo-fast .seo-page a:hover{color:#ad8a48}
 body.seo-fast .seo-eyebrow{color:#ad8a48;letter-spacing:.13em;font-size:.65rem}
@@ -763,7 +764,7 @@ body.seo-fast .seo-cta-in{max-width:69rem;background:#202a3c;border:0;border-rad
 body.seo-fast .seo-cta p,body.seo-fast .seo-cta strong{color:#f3f5f8}
 body.seo-fast .seo-cta a.seo-btn{background:#f6f3ec;color:#263044;border:1px solid #d3c4a3}
 body.seo-fast .seo-cta a.seo-btn:hover{background:#fff;color:#263044}
-@media(max-width:640px){body.seo-fast .seo-page{padding:1rem .8rem 2rem}body.seo-fast .seo-topbar-in{padding:.85rem 1rem;gap:.75rem}body.seo-fast .seo-answer{padding:1.2rem;border-radius:20px}body.seo-fast .seo-hero-value{font-size:2.8rem}body.seo-fast .seo-chart{border-radius:18px}body.seo-fast .seo-chart figcaption{font-size:.75rem;padding:.75rem}body.seo-fast .seo-chart img{border-radius:0}body.seo-fast .seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}body.seo-fast .seo-foot{font-size:.75rem}}
+@media(max-width:640px){body.seo-fast .seo-topbar{position:static}body.seo-fast .seo-page{padding:1rem .8rem 2rem}body.seo-fast .seo-topbar-in{padding:.85rem 1rem;gap:.75rem}body.seo-fast .seo-answer{padding:1.2rem;border-radius:20px}body.seo-fast .seo-hero-value{font-size:2.8rem}body.seo-fast .seo-chart{border-radius:18px}body.seo-fast .seo-chart figcaption{font-size:.75rem;padding:.75rem}body.seo-fast .seo-chart img{border-radius:0}body.seo-fast .seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}body.seo-fast .seo-foot{font-size:.75rem}}
 @media(max-width:640px){.seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}}
 
 </style>"""

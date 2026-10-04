@@ -1,37 +1,48 @@
 import { useState, useEffect, useMemo, useRef, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { Search, X } from 'lucide-react';
-import { useIndicators } from '../lib/hooks';
-import { findCategoryByApiLabel } from '../lib/categories';
+import { Landmark, MapPin, Search, SearchX, TrendingUp, X } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
-import {
-  russiaIndicatorPath,
-  indicatorPath,
-} from '../lib/sitePaths';
-import {
-  useWorldCompareCatalog,
-} from '../lib/worldApi';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
+import { dedupeSearchRows, describeSearchResult, searchExamples } from '../lib/searchExamples';
+import Chip from './Chip';
+import '../styles/shell.css';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
 const SEARCH_TRACK_DEBOUNCE_MS = 900;
 const SEARCH_MIN_LEN = 2;
 
-export default function IndicatorSearch({ className, variant = 'icon', inlinePlaceholder }) {
+const KIND_ICON = { country: Landmark, region: MapPin, subnational_region: MapPin };
+
+/** Подсказка в поле на главной: «Например: Инфляция в США», примеры плавно сменяют друг друга. */
+function RotatingHint({ lead, items }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (items.length < 2) return undefined;
+    if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = setInterval(() => setIndex((i) => (i + 1) % items.length), 3200);
+    return () => clearInterval(timer);
+  }, [items.length]);
+  return (
+    <span className="flex-1 min-w-0 truncate text-sm text-text-tertiary">
+      {lead}{' '}
+      <span key={index} className="fe-rotate-in text-text-secondary">{items[index % items.length]}</span>
+    </span>
+  );
+}
+
+export default function IndicatorSearch({
+  className, variant = 'icon', inlinePlaceholder, examples,
+}) {
   const t = useT();
   const { locale } = useLocale();
   const navigate = useNavigate();
   const resultId = useId();
-  // Каталог нужен только при открытии палитры. Раньше полный список
-  // (include_unlisted, ~290 мс) тянулся на КАЖДОЙ странице, т.к. компонент
-  // всегда смонтирован в Navbar — это утяжеляло первый рендер любой карточки.
-  // Грузим лениво: при hover/focus кнопки или первом открытии. React-Query
-  // кэширует на 5 мин, поэтому повторные открытия мгновенны.
+  // Поиск грузится лениво: при hover/focus кнопки или первом открытии (кэш React-Query — 5 мин).
   const [shouldLoad, setShouldLoad] = useState(false);
   const [open, setOpen] = useState(false);
   const arm = useCallback(() => setShouldLoad(true), []);
@@ -51,15 +62,11 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   const interactionRef = useRef('');
 
   const qTrim = query.trim();
-  const { data: indicators = [], isPending: isRussiaPending, isError: isRussiaError, refetch: retryRussia } = useIndicators({ enabled: shouldLoad && !qTrim && locale === 'ru' });
   const globalSearch = useGlobalSearch(qTrim, { enabled: shouldLoad && open && !isComposing });
-  const { data: worldPreview, isPending: isPreviewPending, isError: isPreviewError, refetch: retryPreview } = useWorldCompareCatalog({
-    enabled: locale === 'en' && shouldLoad && open && !qTrim,
-  });
   const isSearchPending = Boolean(qTrim) && (isComposing || globalSearch.isDebouncing || globalSearch.isPending);
-  const isSearchError = qTrim ? !globalSearch.isDebouncing && globalSearch.isError
-    : locale === 'en' ? isPreviewError : isRussiaError;
-  const isLoading = isSearchPending || (!qTrim && (locale === 'en' ? isPreviewPending : isRussiaPending));
+  const isSearchError = Boolean(qTrim) && !globalSearch.isDebouncing && globalSearch.isError;
+  const isLoading = isSearchPending;
+  const popular = useMemo(() => searchExamples(t), [t]);
 
   // «Долго»: отметка ставится таймером для конкретной фразы и гаснет сама, когда фраза или состояние меняются.
   const [slowFor, setSlowFor] = useState('');
@@ -70,31 +77,25 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   }, [isLoading, qTrim]);
   const slow = isLoading && Boolean(qTrim) && slowFor === qTrim;
 
-  const results = useMemo(() => {
-    if (qTrim) return isSearchPending || isSearchError ? [] : globalSearch.data?.results || [];
-    if (locale === 'en') {
-      return (worldPreview?.items || [])
-        .filter(item => item.country_slug === 'united-states' && item.indicator_code)
-        .map(item => ({
-          kind: 'world', key: `world:united-states:${item.indicator_code}`,
-          code: item.indicator_code, name: item.concept_name, name_en: item.concept_name_en,
-          country_slug: 'united-states', country_name: item.country_name_en || item.country_name,
-          path: indicatorPath('united-states', item.indicator_code),
-        }));
+  // Выдача сервера целиком (для телеметрии спроса) и то, что видит человек: без дублей и без внутренних кодов.
+  const results = useMemo(
+    () => (qTrim && !isSearchPending && !isSearchError ? globalSearch.data?.results || [] : []),
+    [qTrim, isSearchPending, isSearchError, globalSearch.data],
+  );
+  const nameOf = useCallback(
+    (item) => (locale === 'en' && item.name_en ? item.name_en : item.name),
+    [locale],
+  );
+  const detailOf = useCallback((item) => describeSearchResult(item, t), [t]);
+  const rows = useMemo(() => {
+    if (!qTrim) {
+      return popular.map((text, i) => ({
+        kind: 'suggestion', key: `suggest:${i}`, name: text, query: text,
+      }));
     }
-    return indicators.filter(ind => ind.is_listed !== false).map(ind => ({
-      ...ind, kind: 'russia', key: `ru:${ind.code}`, path: russiaIndicatorPath(ind.code),
-    }));
-  }, [qTrim, isSearchPending, isSearchError, globalSearch.data, locale, worldPreview, indicators]);
-  const highlighted = Math.max(0, Math.min(hi, results.length - 1));
-  const repeatedNames = useMemo(() => {
-    const counts = new Map();
-    for (const item of results) {
-      const name = locale === 'en' && item.name_en ? item.name_en : item.name;
-      counts.set(name, (counts.get(name) || 0) + 1);
-    }
-    return new Set([...counts].filter(([, count]) => count > 1).map(([name]) => name));
-  }, [results, locale]);
+    return dedupeSearchRows(results, nameOf, detailOf);
+  }, [qTrim, popular, results, nameOf, detailOf]);
+  const highlighted = Math.max(0, Math.min(hi, rows.length - 1));
 
   const close = useCallback(() => {
     // Брошенный запрос (закрыли без выбора) — сигнал спроса не хуже выбранного.
@@ -109,6 +110,13 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
   }, []);
 
   const go = useCallback((item, position = null) => {
+    if (item?.kind === 'suggestion') {
+      // Подсказка не уводит со страницы: подставляет запрос, поиск показывает результаты.
+      setQuery(item.query);
+      setHi(0);
+      inputRef.current?.focus();
+      return;
+    }
     if (!item?.path?.startsWith('/') || item.path.startsWith('//') || item.path.includes('\\')) return;
     const q = (queryRef.current || '').trim();
     selectedRef.current = true;
@@ -220,19 +228,19 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     if (!open || !listRef.current) return;
     const el = listRef.current.querySelector(`[data-row="${highlighted}"]`);
     el?.scrollIntoView({ block: 'nearest' });
-  }, [highlighted, open, results]);
+  }, [highlighted, open, rows]);
 
   const handleListKey = (e) => {
     if (isComposing || e.isComposing || e.nativeEvent?.isComposing || e.keyCode === 229) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setHi(Math.min(highlighted + 1, Math.max(results.length - 1, 0)));
+      setHi(Math.min(highlighted + 1, Math.max(rows.length - 1, 0)));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setHi(Math.max(highlighted - 1, 0));
-    } else if (e.key === 'Enter' && results[highlighted]) {
+    } else if (e.key === 'Enter' && rows[highlighted]) {
       e.preventDefault();
-      go(results[highlighted], highlighted + 1);
+      go(rows[highlighted], highlighted + 1);
     }
   };
 
@@ -278,26 +286,44 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
           <span className="text-sm font-medium hidden xl:inline">{t('common.search')}</span>
         </button>
       ) : variant === 'inline' ? (
-        <button
-          ref={triggerRef}
-          type="button"
-          onClick={() => { arm(); setOpen(true); }}
-          onMouseEnter={arm}
-          onFocus={arm}
-          className={cn(
-            FOCUS_RING,
-            'group w-full flex items-center gap-3 rounded-2xl border border-border-subtle bg-surface px-4 py-3.5 text-left',
-            'shadow-sm hover:border-champagne/40 transition-colors',
-            className,
-          )}
-          aria-label={t('search.openAria')}
-        >
-          <Search className="w-4 h-4 text-text-tertiary shrink-0 group-hover:text-champagne transition-colors" aria-hidden="true" />
-          <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>
-          <kbd className="hidden sm:inline text-[10px] font-mono text-text-tertiary border border-border-subtle rounded px-1.5 py-0.5">
-            {isAppleModKey ? '⌘K' : 'Ctrl+K'}
-          </kbd>
-        </button>
+        <>
+          <button
+            ref={triggerRef}
+            type="button"
+            onClick={() => { arm(); setOpen(true); }}
+            onMouseEnter={arm}
+            onFocus={arm}
+            className={cn(
+              FOCUS_RING,
+              'group w-full flex min-h-14 items-center gap-3 rounded-2xl border border-border-subtle bg-surface px-4 py-3.5 text-left fe-press',
+              'shadow-sm hover:border-champagne/40 transition-colors',
+              className,
+            )}
+            aria-label={t('search.openAria')}
+          >
+            <Search className="w-5 h-5 text-text-tertiary shrink-0 group-hover:text-champagne transition-colors" aria-hidden="true" />
+            {examples?.length
+              ? <RotatingHint lead={t('shell.search.hintLead')} items={examples} />
+              : <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>}
+            <kbd className="hidden sm:inline text-xs font-sans text-text-tertiary border border-border-subtle rounded px-1.5 py-0.5">
+              {isAppleModKey ? '⌘K' : 'Ctrl+K'}
+            </kbd>
+          </button>
+          {examples?.length ? (
+            <ul className="fe-search-examples fe-fade-x scrollbar-hide" aria-label={t('shell.search.examplesAria')}>
+              {examples.map((example) => (
+                <li key={example}>
+                  <Chip
+                    onClick={() => { arm(); setQuery(example); setHi(0); setOpen(true); }}
+                    aria-pressed={undefined}
+                  >
+                    {example}
+                  </Chip>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </>
       ) : (
         <button
           ref={triggerRef}
@@ -319,7 +345,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
 
       {open && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4"
+          className="fixed inset-0 z-[200] flex items-start justify-center px-3 pt-3 sm:px-4 sm:pt-[10vh]"
           role="dialog"
           data-fe-search-dialog
           aria-modal="true"
@@ -341,11 +367,11 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             className="absolute inset-0 bg-text-primary/30 backdrop-blur-[2px]"
             onClick={close}
           />
-          <div className="fe-dialog-panel relative flex max-h-[calc(90dvh-1rem)] w-full max-w-2xl flex-col rounded-2xl border border-border-subtle bg-surface shadow-2xl overflow-hidden">
-            <div className="relative flex shrink-0 items-center gap-3 px-4 py-3 border-b border-border-subtle">
+          <div className="fe-dialog-panel fe-search-panel relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col rounded-2xl border border-border-subtle bg-surface shadow-2xl overflow-hidden sm:max-h-[calc(90dvh-1rem)]">
+            <div className="relative flex shrink-0 items-center gap-3 px-4 py-2 border-b border-border-subtle">
               {isLoading && qTrim
                 ? <span className="fe-search-spinner shrink-0" aria-hidden="true" data-testid="search-spinner" />
-                : <Search className="w-4 h-4 text-text-tertiary shrink-0" aria-hidden="true" />}
+                : <Search className="w-5 h-5 text-text-tertiary shrink-0" aria-hidden="true" />}
               <input
                 ref={inputRef}
                 type="search"
@@ -355,7 +381,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                 onCompositionEnd={(e) => { onQueryChange(e.currentTarget.value); setIsComposing(false); }}
                 onKeyDown={handleListKey}
                 placeholder={t('search.placeholder')}
-                className="min-w-0 flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
+                className="min-h-12 min-w-0 flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
                 aria-label={t('search.queryAria')}
                 maxLength={256}
                 role="combobox"
@@ -363,94 +389,118 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                 aria-expanded="true"
                 aria-controls={`${resultId}-list`}
                 aria-describedby={`${resultId}-help`}
-                aria-activedescendant={results[highlighted] ? `${resultId}-result-${highlighted}` : undefined}
+                aria-activedescendant={rows[highlighted] ? `${resultId}-result-${highlighted}` : undefined}
               />
               <button
                 type="button"
                 onClick={close}
-                className={cn(FOCUS_RING, 'flex min-h-11 min-w-11 items-center justify-center rounded-lg p-1 text-text-tertiary hover:text-text-primary')}
+                className={cn(FOCUS_RING, 'fe-press flex min-h-11 min-w-11 items-center justify-center rounded-xl p-1 text-text-tertiary hover:text-text-primary')}
                 aria-label={t('common.close')}
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
               <span className="fe-search-progress" data-active={isLoading && qTrim ? 'true' : 'false'} aria-hidden="true" />
             </div>
 
-            <p id={`${resultId}-help`} className="px-4 pt-3 pb-1 text-xs leading-relaxed text-text-tertiary [@media(pointer:coarse)]:sr-only">
+            <p id={`${resultId}-help`} className="px-4 pt-3 pb-1 text-xs leading-relaxed text-text-secondary [@media(pointer:coarse)]:sr-only">
               {t('search.help')}
             </p>
 
             {qTrim && !isLoading && globalSearch.data?.corrected_query && globalSearch.data.corrected_query !== qTrim && (
-              <div className="px-4 py-2 text-xs text-text-tertiary" role="status">
+              <div className="px-4 py-2 text-sm text-text-secondary" role="status">
                 {t('search.corrected', { query: globalSearch.data.corrected_query })}
               </div>
             )}
 
-            <div ref={listRef} className="min-h-0 max-h-[60vh] overflow-y-auto py-2" role="listbox" id={`${resultId}-list`} aria-busy={isLoading}>
-              {results.length === 0 ? (
-                <div className="px-4 py-6 text-sm text-text-tertiary" role="status" aria-live="polite">
-                  {isLoading && qTrim && (
+            <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2 sm:max-h-[60vh]" role="listbox" id={`${resultId}-list`} aria-busy={isLoading}>
+              {!qTrim ? (
+                <div role="group" aria-labelledby={`${resultId}-popular`}>
+                  <p id={`${resultId}-popular`} className="px-4 pb-1 pt-1 text-sm font-semibold text-text-secondary">
+                    {t('shell.search.popular')}
+                  </p>
+                  {rows.map((item, i) => (
+                    <SearchRow
+                      key={item.key}
+                      item={item}
+                      index={i}
+                      id={`${resultId}-result-${i}`}
+                      active={i === highlighted}
+                      name={item.name}
+                      detail=""
+                      onHover={setHi}
+                      onPick={go}
+                    />
+                  ))}
+                </div>
+              ) : rows.length === 0 ? (
+                <div className="px-5 py-6 text-sm text-text-secondary" role="status" aria-live="polite">
+                  {isLoading && (
                     <div className="mb-4 space-y-3" aria-hidden="true" data-testid="search-skeleton">
                       {[72, 58, 66].map((width) => (
                         <div key={width} className="flex items-center gap-3">
-                          <span className="skeleton h-8 w-8 shrink-0 rounded-lg" />
+                          <span className="skeleton h-10 w-10 shrink-0 rounded-xl" />
                           <span className="flex-1 space-y-1.5">
-                            <span className="skeleton block h-3 rounded" style={{ width: `${width}%` }} />
-                            <span className="skeleton block h-2.5 w-2/5 rounded" />
+                            <span className="skeleton block h-3.5 rounded" style={{ width: `${width}%` }} />
+                            <span className="skeleton block h-3 w-2/5 rounded" />
                           </span>
                         </div>
                       ))}
                     </div>
                   )}
-                  {isLoading ? <><span className="fe-search-loading-text">{String(t('search.loading')).replace(/[….]+$/, '')}</span>{slow && <span className="mt-1 block text-xs" data-testid="search-slow">{t('search.slow')}</span>}</> : isSearchError ? t('search.error')
-                    : qTrim && globalSearch.data?.reason === 'unsupported_query' ? t('search.unsupportedQuery')
-                      : qTrim && globalSearch.data?.reason === 'unsupported_period' ? t('search.unsupportedPeriod')
-                      : qTrim && globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
-                        : qTrim ? t('search.nothingFound', { query: qTrim }) : t('search.empty')}
-                  {isSearchError && <button type="button" onClick={() => qTrim ? globalSearch.refetch() : locale === 'en' ? retryPreview() : retryRussia()} className={cn(FOCUS_RING, 'block mt-3 text-champagne')}>{t('common.retry')}</button>}
+                  {isLoading ? <><span className="fe-search-loading-text">{String(t('search.loading')).replace(/[….]+$/, '')}</span>{slow && <span className="mt-1 block text-xs" data-testid="search-slow">{t('search.slow')}</span>}</>
+                    : isSearchError ? (
+                      <>
+                        {t('search.error')}
+                        <button type="button" onClick={() => globalSearch.refetch()} className={cn(FOCUS_RING, 'block mt-3 min-h-11 text-champagne-ink font-medium')}>{t('common.retry')}</button>
+                      </>
+                    ) : globalSearch.data?.reason === 'unsupported_query' ? t('search.unsupportedQuery')
+                      : globalSearch.data?.reason === 'unsupported_period' ? t('search.unsupportedPeriod')
+                        : globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
+                          : (
+                            <div className="text-center" data-testid="search-nothing">
+                              <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-champagne/10 text-champagne-ink" aria-hidden="true">
+                                <SearchX size={22} />
+                              </span>
+                              <p className="mt-3 text-base font-semibold text-text-primary">{t('search.nothingFound', { query: qTrim })}</p>
+                              <ul className="mx-auto mt-3 max-w-sm space-y-1 text-left text-sm text-text-secondary">
+                                <li>{t('shell.search.tip.spelling')}</li>
+                                <li>{t('shell.search.tip.short')}</li>
+                                <li>{t('shell.search.tip.place')}</li>
+                              </ul>
+                              <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
+                              <ul className="mt-2 flex flex-wrap justify-center gap-2">
+                                {popular.slice(0, 4).map((example) => (
+                                  <li key={example}>
+                                    <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                 </div>
               ) : (
-                results.map((item, i) => {
-                  const isRussia = item.kind === 'russia' || item.kind === 'russia_indicator';
-                  const cat = isRussia ? findCategoryByApiLabel(item.category_ru || item.category) : null;
-                  const active = i === highlighted;
-                  const displayName = locale === 'en' && item.name_en ? item.name_en : item.name;
-                  const frequency = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'].includes(item.frequency)
-                    ? t(`world.freq.long.${item.frequency}`) : item.frequency;
-                  const detail = [
-                    item.region_name,
-                    item.country_name || (isRussia ? t('search.russia') : null),
-                    locale === 'en' ? cat?.nameEn || cat?.name || item.category : cat?.name || item.category,
-                    frequency, item.unit, repeatedNames.has(displayName) ? item.code : null,
-                  ].filter(Boolean).join(' / ');
-                  return (
-                    <button
+                <>
+                  {rows.map((item, i) => (
+                    <SearchRow
                       key={item.key}
-                      type="button"
-                      data-row={i}
+                      item={item}
+                      index={i}
                       id={`${resultId}-result-${i}`}
-                      onMouseEnter={() => setHi(i)}
-                      onClick={() => go(item, i + 1)}
-                      className={cn(
-                        'w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
-                        active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
-                      )}
-                      role="option"
-                      tabIndex={-1}
-                      aria-selected={active}
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm text-text-primary whitespace-normal break-words">{displayName}</div>
-                        {detail && <div className="mt-1 text-xs text-text-tertiary whitespace-normal break-words">{detail}</div>}
-                      </div>
-                    </button>
-                  );
-                })
+                      active={i === highlighted}
+                      name={nameOf(item)}
+                      detail={detailOf(item)}
+                      onHover={setHi}
+                      onPick={go}
+                    />
+                  ))}
+                  {globalSearch.data?.has_more && !isLoading && (
+                    <p className="px-4 pb-2 pt-3 text-sm text-text-secondary">{t('search.refine')}</p>
+                  )}
+                </>
               )}
             </div>
 
-            <div className="px-4 py-2 border-t border-border-subtle flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono text-text-tertiary">
-              {globalSearch.data?.has_more && qTrim && !isLoading && <span className="w-full">{t('search.refine')}</span>}
+            <div className="fe-search-kbd px-4 py-2 border-t border-border-subtle flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary [@media(pointer:coarse)]:hidden">
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">↑</kbd> <kbd className="px-1 py-0.5 rounded border border-border-subtle">↓</kbd> {t('search.hint.nav')}</span>
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Enter</kbd> {t('search.hint.open')}</span>
               <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Esc</kbd> {t('search.hint.close')}</span>
@@ -460,5 +510,37 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
         document.body,
       )}
     </>
+  );
+}
+
+/** Одна строка выдачи: значок вида, название, подпись «где и как часто», крупная цель нажатия. */
+function SearchRow({ item, index, id, active, name, detail, onHover, onPick }) {
+  const isSuggestion = item.kind === 'suggestion';
+  const Icon = isSuggestion ? Search : KIND_ICON[item.kind] || TrendingUp;
+  return (
+    <button
+      style={isSuggestion ? { '--fe-delay': `${Math.min(index, 5) * 0.03}s`, '--fe-duration': '0.2s', '--fe-rise': '6px' } : undefined}
+      type="button"
+      data-row={index}
+      id={id}
+      onMouseEnter={() => onHover(index)}
+      onClick={() => onPick(item, index + 1)}
+      className={cn(
+        'fe-search-row w-full min-h-14 text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
+        isSuggestion && 'fe-reveal',
+        active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
+      )}
+      role="option"
+      tabIndex={-1}
+      aria-selected={active}
+    >
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-champagne/10 text-champagne-ink" aria-hidden="true">
+        <Icon size={18} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[15px] font-medium leading-snug text-text-primary whitespace-normal break-words">{name}</span>
+        {detail ? <span className="mt-0.5 block text-[13px] leading-snug text-text-secondary whitespace-normal break-words">{detail}</span> : null}
+      </span>
+    </button>
   );
 }

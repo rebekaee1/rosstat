@@ -6,10 +6,13 @@
  */
 
 import {
+  calendarPath,
   comparePath,
   countryPath,
   homePath,
+  regionHubPath,
   russiaHomePath,
+  todayPath,
   WORLD_RATING_DEFAULT_CONCEPT,
   worldRatingPath,
 } from './sitePaths';
@@ -73,4 +76,33 @@ export function resolveActiveNavId(pathname, items = PRIMARY_NAV) {
     }
   }
   return bestId;
+}
+
+/**
+ * Меню телефона: те же разделы, что в шапке без JS и на статических страницах (Сегодня, Регионы, Страны,
+ * Календарь), но сгруппированные. Десктопная пилюля всех не вмещает, поэтому длинный список живёт только здесь.
+ * `icon` — имя значка (Navbar сопоставляет его с lucide), `to` с хешем ведёт к каталогу стран на главной.
+ */
+export function mobileNavGroups(locale) {
+  const primary = primaryNav(locale);
+  const byId = Object.fromEntries(primary.map((item) => [item.id, item]));
+  const main = [
+    { id: 'home', icon: 'home', ...byId.home },
+    { id: 'countries', icon: 'globe', to: '/#countries', match: '/#countries', labelKey: 'shell.nav.countries' },
+    { id: 'world-rating', icon: 'chart', ...byId['world-rating'] },
+    { id: 'compare', icon: 'compare', ...byId.compare },
+  ];
+  if (byId['united-states']) {
+    main.splice(2, 0, { id: 'united-states', icon: 'flag', ...byId['united-states'] });
+  }
+  const russiaItems = [
+    { id: 'today', icon: 'clock', to: todayPath(), match: todayPath(), labelKey: 'shell.nav.today' },
+    { id: 'regions', icon: 'map', to: regionHubPath(), match: regionHubPath(), labelKey: 'shell.nav.regions' },
+    { id: 'calendar', icon: 'calendar', to: calendarPath(), match: calendarPath(), labelKey: 'shell.nav.calendar' },
+  ];
+  if (byId.russia) russiaItems.unshift({ id: 'russia', icon: 'landmark', ...byId.russia });
+  return [
+    { id: 'main', titleKey: null, items: main },
+    { id: 'russia', titleKey: 'shell.nav.groupRussia', items: russiaItems },
+  ];
 }

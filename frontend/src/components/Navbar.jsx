@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import {
+  Menu, X, ChevronDown, BarChart3, CalendarDays, Calculator, Clock, Flag, GitCompare, Globe2, Home, Info, Landmark, Map as MapIcon,
+} from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
@@ -8,9 +10,10 @@ import IndicatorSearch from './IndicatorSearch';
 import LocaleSwitcher from './LocaleSwitcher';
 import Brand from './Brand';
 import { useAuth } from '../context/authContext';
-import { PRIMARY_NAV, primaryNav, resolveActiveNavId } from '../lib/navItems';
+import { PRIMARY_NAV, mobileNavGroups, primaryNav, resolveActiveNavId } from '../lib/navItems';
 import { useLocale, useT } from '../i18n';
 import '../styles/ui-detail-nav-calendar.css';
+import '../styles/shell.css';
 
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();
@@ -68,6 +71,18 @@ function AuthCluster({ mobile = false, onNavigate }) {
   );
 }
 
+const MOBILE_ICONS = {
+  home: Home,
+  globe: Globe2,
+  chart: BarChart3,
+  compare: GitCompare,
+  flag: Flag,
+  landmark: Landmark,
+  clock: Clock,
+  map: MapIcon,
+  calendar: CalendarDays,
+};
+
 const CALCULATOR_ITEMS = [
   { to: '/calculator', labelKey: 'nav.calc.inflation' },
   { to: '/calculator/mortgage', labelKey: 'nav.calc.mortgage' },
@@ -91,6 +106,8 @@ export default function Navbar() {
   const isAdmin = pathname.startsWith('/admin');
   const activeNavId = resolveActiveNavId(pathname);
   const primaryItems = primaryNav(locale);
+  const mobileGroups = mobileNavGroups(locale);
+  const mobileActiveId = resolveActiveNavId(pathname, mobileGroups.flatMap((group) => group.items));
 
   const closeAll = () => {
     setMobileOpen(false);
@@ -284,22 +301,46 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
+        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,560px)] overflow-y-auto overscroll-contain rounded-2xl border border-border-subtle bg-surface p-3 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="flex flex-col gap-1">
-            {primaryItems.map((item) => renderPrimaryLink(item))}
-            <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">
-              {t('nav.calculators')}
-            </p>
-            {CALCULATOR_ITEMS.map((c) => (
-              <NavLink key={c.to} to={c.to} end className={({ isActive }) => navItemClass(isActive)} onClick={closeAll}>
-                {t(c.labelKey)}
-              </NavLink>
+            {mobileGroups.map((group) => (
+              <div key={group.id} className="fe-mnav-group">
+                {group.titleKey ? <p className="fe-mnav-title">{t(group.titleKey)}</p> : null}
+                {group.items.map((item) => {
+                  const Icon = MOBILE_ICONS[item.icon];
+                  const isActive = mobileActiveId === item.id;
+                  return (
+                    <Link
+                      key={`m-${item.id}`}
+                      to={item.to}
+                      className={cn(navItemClass(isActive), 'fe-mnav-link')}
+                      onClick={closeAll}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {Icon ? <Icon size={18} aria-hidden="true" className="fe-mnav-icon" /> : null}
+                      {t(item.labelKey)}
+                    </Link>
+                  );
+                })}
+              </div>
             ))}
-            <NavLink to="/about" className={({ isActive }) => navItemClass(isActive)} onClick={closeAll}>
-              {t('nav.about')}
-            </NavLink>
+            <div className="fe-mnav-group">
+              <p className="fe-mnav-title">{t('nav.calculators')}</p>
+              {CALCULATOR_ITEMS.map((c) => (
+                <NavLink key={c.to} to={c.to} end className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
+                  <Calculator size={18} aria-hidden="true" className="fe-mnav-icon" />
+                  {t(c.labelKey)}
+                </NavLink>
+              ))}
+            </div>
+            <div className="fe-mnav-group">
+              <NavLink to="/about" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
+                <Info size={18} aria-hidden="true" className="fe-mnav-icon" />
+                {t('nav.about')}
+              </NavLink>
+            </div>
             <div className="mx-2 my-1 h-px bg-border-subtle" />
-            <div className="px-2 pt-2">
+            <div className="px-1 pt-2">
               <AuthCluster mobile onNavigate={closeAll} />
             </div>
           </div>

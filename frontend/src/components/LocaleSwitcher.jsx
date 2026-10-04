@@ -110,6 +110,8 @@ export default function LocaleSwitcher() {
         aria-haspopup="menu"
       >
         <LocaleFlag locale={current.code} />
+        {/* Подпись RU/EN: флаг — это страна, а не язык. На самых узких экранах шапке не хватает ширины. */}
+        <span className="hidden text-xs font-semibold uppercase min-[400px]:inline">{current.code}</span>
         <ChevronDown className={cn('h-3 w-3 transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
