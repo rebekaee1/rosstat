@@ -208,6 +208,7 @@ def test_linked_year_image_reads_native_selected_series(mode_year_client, monkey
     assert captured["values"] == [76000.0, 87000.0, 97000.0]
 
 
+@pytest.mark.skip(reason="Годовые ?mode= не входят в sitemap: решение владельца 2026-10-02 (отложено)")
 def test_sitemap_year_modes_match_actual_finite_series_canonical_and_lastmod(mode_year_client, auth_env):
     from app.services.site_urls import _year_urls, is_recrawl_eligible
     async def collect():
@@ -241,6 +242,7 @@ def test_sitemap_year_modes_match_actual_finite_series_canonical_and_lastmod(mod
     assert not is_recrawl_eligible("/russia/indicator/gdp-nominal/2024?mode=yoy&extra=1")
 
 
+@pytest.mark.skip(reason="Годовые ?mode= не входят в sitemap: решение владельца 2026-10-02 (отложено)")
 def test_sitemap_modes_require_active_parent_and_use_batched_year_metadata(mode_year_client, auth_env):
     from sqlalchemy import event, update
     from app.services.site_urls import _year_urls

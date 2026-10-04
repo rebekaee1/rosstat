@@ -1,11 +1,8 @@
 """Public Yandex Clean-param rules, mirrored in both robots.txt templates.
 
 Only parameters that cannot change the canonical document belong here. The
-``codes`` filter is scoped to /compare; ``view`` selects a client view whose
-canonical URL is the unparameterized page. ``mode`` can select a different
-stored series in a year document, so it must never be removed globally.
-Ordinary card modes are consolidated through their HTML canonical instead.
-``preview_locale`` is
+``codes`` filter is scoped to /compare; ``view`` and ``mode`` select client
+views whose canonical URL is the unparameterized page. ``preview_locale`` is
 excluded because it changes the language before cutover and redirects after.
 Yandex limits each rule to 500 characters and treats names as case-sensitive.
 Reference: https://yandex.ru/support/webmaster/ru/robot-workings/clean-param
@@ -20,14 +17,14 @@ CLEAN_PARAM_RULES: tuple[str, ...] = (
     "ysclid&yrclid&yclid&yadclid&yadordid&gclid&gbraid&wbraid&fbclid"
     "&msclkid&ttclid&twclid&srsltid",
     "etext&ybaip&_openstat&openstat&clid&yandex_referrer&erid&from&ref"
-    "&ref_src&source&mc_cid&mc_eid&igshid&_ga",
+    "&ref_src&source&mc_cid&mc_eid&igshid&_ga&mode",
     "codes /compare",
     "view",
 )
 
 CONTENT_PARAMS = frozenset({
     "preview_locale", "year", "amount", "to", "country", "y", "m",
-    "period", "size", "portrait", "mode",
+    "period", "size", "portrait",
 })
 
 

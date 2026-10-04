@@ -27,8 +27,7 @@ RUSSIA_YEAR_MIN_POINTS = 1
 TIER1_PRIORITY = "0.8"
 TIER2_PRIORITY = "0.4"
 
-# Обычная карточка канонична без `?mode=`. Годовой документ с проверенным
-# materialized mode имеет свой title/data и явный opt-in в seo_renderer.
+# `?mode=` никогда не каноничен: в view_model_families нет per-mode seo-title.
 MODE_CANONICAL = False
 
 _HONEYPOT_PATH = "/__honeypot__/trap"

@@ -12,6 +12,9 @@ from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
+DEFERRED_MODE_POLICY = "Открытие годовых ?mode= роботам отложено владельцем (2026-10-02): robots/Clean-param/sitemap оставлены как на сервере; тест описывает будущую политику, docs/backlog.md#integration-2026-10-02"
+pytestmark = pytest.mark.skip(reason=DEFERRED_MODE_POLICY)
+
 ROOT = Path(__file__).resolve().parents[2]
 ROBOTS = (
     ROOT / "backend/app/data/seo_static/robots.txt",
