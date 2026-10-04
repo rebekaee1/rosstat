@@ -183,6 +183,60 @@ class CountryIngestStats:
     points_removed: int = 0
     results: list[SeriesIngestResult] = field(default_factory=list)
 
+    @property
+    def failed_series(self) -> list[tuple[str, str]]:
+        """(код ряда, причина) для рядов прогона, которые не загрузились."""
+        return [(r.code, r.error) for r in self.results if r.error]
+
+
+_DATASET_ERROR_LIMIT = 2000
+
+
+class DatasetRunTracker:
+    """Исходы рядов внутри одного прогона, сгруппированные по (provider, dataset).
+
+    ``world_dataset_state`` хранит ОДНУ строку на набор, а у набора может быть
+    много рядов (Китай ``hgyd``: десятки рядов одного набора). Без накопления
+    ошибка одного ряда затиралась успехом соседа, обработанного позже. Итоговый
+    статус набора = худший из статусов рядов прогона (``error`` > ``ok``).
+    Последний исход ряда перекрывает предыдущий (ряд, упавший и затем
+    загрузившийся при повторе в том же прогоне, ошибкой не считается).
+    """
+
+    def __init__(self) -> None:
+        self._outcomes: dict[tuple[str, str], dict[str, str | None]] = {}
+
+    def record(self, provider: str, dataset_id: str, code: str, error: str | None) -> None:
+        self._outcomes.setdefault((provider, dataset_id), {})[code] = error or None
+
+    def errors(self, provider: str, dataset_id: str) -> dict[str, str]:
+        outcomes = self._outcomes.get((provider, dataset_id), {})
+        return {code: err for code, err in outcomes.items() if err}
+
+    def total(self, provider: str, dataset_id: str) -> int:
+        return len(self._outcomes.get((provider, dataset_id), {}))
+
+    def status(self, provider: str, dataset_id: str) -> str:
+        return "error" if self.errors(provider, dataset_id) else "ok"
+
+    def error_text(self, provider: str, dataset_id: str) -> str | None:
+        """Число ошибок и список проблемных рядов для ``last_error`` (≤2000 символов)."""
+        errors = self.errors(provider, dataset_id)
+        if not errors:
+            return None
+        total = self.total(provider, dataset_id)
+        head = f"Ошибок рядов: {len(errors)} из {total}. "
+        parts: list[str] = []
+        used = len(head)
+        for code, err in errors.items():
+            chunk = f"{code}: {err}"[:300]
+            if used + len(chunk) + 2 > _DATASET_ERROR_LIMIT:
+                parts.append(f"…и ещё {len(errors) - len(parts)}")
+                break
+            parts.append(chunk)
+            used += len(chunk) + 2
+        return head + "; ".join(parts)
+
 
 def normalize_national_frequency(raw: str | None) -> str:
     key = (raw or "").strip().lower()
@@ -816,22 +870,43 @@ async def touch_dataset_state(
     slice_hash: str | None = None,
     error: str | None = None,
     data_updated_at: date | None = None,
+    tracker: DatasetRunTracker | None = None,
+    series_code: str | None = None,
 ) -> None:
+    """Записать состояние набора.
+
+    С ``tracker`` исход ряда копится в рамках прогона: статус набора — худший
+    из рядов, ``last_error`` — число ошибок и проблемные ряды, поэтому успех
+    соседнего ряда ошибку не затирает. ``last_success_at`` отмечает любой
+    успешно загруженный ряд набора (набор отдавал данные), а не «все ряды ок».
+    """
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     state = await db.get(WorldDatasetState, (provider, dataset_id))
     if state is None:
         state = WorldDatasetState(provider=provider, dataset_id=dataset_id)
         db.add(state)
+    if tracker is not None and series_code is not None:
+        tracker.record(
+            provider, dataset_id, series_code, None if status == "ok" else (error or "error"),
+        )
+        status = tracker.status(provider, dataset_id)
+        error = tracker.error_text(provider, dataset_id)
+        series_ok = tracker.total(provider, dataset_id) > len(
+            tracker.errors(provider, dataset_id)
+        )
+    else:
+        series_ok = status == "ok"
     state.status = status
     if slice_hash is not None:
         state.last_slice_hash = slice_hash
     if data_updated_at is not None:
         state.last_update_of_data = data_updated_at
-    if status == "ok":
+    if series_ok:
         state.last_success_at = now
+    if status == "ok":
         state.last_error = None
     else:
-        state.last_error = (error or "")[:2000] or None
+        state.last_error = (error or "")[:_DATASET_ERROR_LIMIT] or None
     await db.flush()
 
 
@@ -854,6 +929,7 @@ async def ingest_series(
     spec: NationalSeriesSpec,
     adapter: WorldSourceAdapter | None = None,
     dry_run: bool = False,
+    tracker: DatasetRunTracker | None = None,
 ) -> SeriesIngestResult:
     code = build_indicator_code(country.code, spec.code_suffix)
     ref = series_ref_from_spec(spec, country_code=country.code)
@@ -919,6 +995,8 @@ async def ingest_series(
                 status="ok",
                 slice_hash=ref.slice_hash,
                 data_updated_at=indicator.history_end,
+                tracker=tracker,
+                series_code=code,
             )
             result.indicator_id = iid
             result.created = created
@@ -937,6 +1015,8 @@ async def ingest_series(
                     status="error",
                     slice_hash=ref.slice_hash,
                     error=result.error,
+                    tracker=tracker,
+                    series_code=code,
                 )
             except Exception:  # noqa: BLE001
                 logger.exception(
@@ -1043,6 +1123,8 @@ async def ingest_country(
     # Cache adapters per provider within one country run.
     adapters: dict[str, WorldSourceAdapter | None] = {}
     adapter_errors: dict[str, str] = {}
+    # Ошибки рядов набора копятся на весь прогон страны (см. DatasetRunTracker).
+    tracker = DatasetRunTracker()
 
     try:
         return await _ingest_country_series(
@@ -1053,6 +1135,7 @@ async def ingest_country(
             adapter_errors=adapter_errors,
             stats=stats,
             dry_run=dry_run,
+            tracker=tracker,
         )
     finally:
         for adapter in adapters.values():
@@ -1068,6 +1151,7 @@ async def _ingest_country_series(
     adapter_errors: dict[str, str],
     stats: CountryIngestStats,
     dry_run: bool,
+    tracker: DatasetRunTracker | None = None,
 ) -> CountryIngestStats:
     for spec in selected:
         if spec.provider not in adapters and spec.provider not in adapter_errors:
@@ -1098,6 +1182,8 @@ async def _ingest_country_series(
                 dataset_id=spec.dataset_id,
                 status="error",
                 error=err,
+                tracker=tracker,
+                series_code=res.code,
             )
             continue
 
@@ -1107,6 +1193,7 @@ async def _ingest_country_series(
             spec=spec,
             adapter=adapter,
             dry_run=dry_run,
+            tracker=tracker,
         )
         stats.results.append(res)
         if res.error:
@@ -1128,6 +1215,27 @@ async def _ingest_country_series(
                 res.created,
             )
     return stats
+
+
+def format_failed_series(
+    failed: Mapping[str, Sequence[tuple[str, str]]], *, limit: int = 12,
+) -> str:
+    """«cn: cn-industrial-production, … (ещё 2)» — страны и проблемные ряды сводки."""
+    parts: list[str] = []
+    shown = 0
+    hidden = 0
+    for cc, series in failed.items():
+        if not series:
+            continue
+        take = series[: max(0, limit - shown)]
+        shown += len(take)
+        hidden += len(series) - len(take)
+        if take:
+            parts.append(f"{cc}: " + ", ".join(code for code, _ in take))
+    text = "; ".join(parts)
+    if hidden:
+        text += f" (ещё {hidden})"
+    return text
 
 
 NATIONAL_CORE_COUNTRIES: tuple[str, ...] = (
@@ -1160,6 +1268,7 @@ async def run_national_core_ingest(
     points_touched = 0
     points_removed = 0
     failures: list[str] = []
+    failed_series: dict[str, list[tuple[str, str]]] = {}
     per_country: dict[str, dict[str, int]] = {}
     for cc in countries:
         try:
@@ -1180,6 +1289,7 @@ async def run_national_core_ingest(
             points_removed += stats.points_removed
             if stats.series_err:
                 failures.append(cc)
+                failed_series[cc] = stats.failed_series
         except Exception as exc:  # noqa: BLE001
             failures.append(cc)
             logger.exception("national-core ingest failed for %s", cc)
@@ -1203,11 +1313,20 @@ async def run_national_core_ingest(
             f"{type(exc).__name__}"
         )
 
+    series_failed_total = sum(len(v) for v in failed_series.values())
+    series_failed_text = format_failed_series(failed_series, limit=30)
+    country_level_failures = [c for c in failures if c not in failed_series]
     async with async_session() as db:
         run = await db.get(WorldIngestRun, run_id)
         assert run is not None
         run.datasets_succeeded = sum(1 for c in countries if c not in failures)
         run.datasets_failed = len(failures)
+        if series_failed_text:
+            # Проблемные ряды остаются в журнале прогона, а не только в сводке.
+            note = f"series errors ({series_failed_total}): {series_failed_text}"
+            run.error_message = (
+                f"{run.error_message}; {note}" if run.error_message else note
+            )[:2000]
         run.status = "ok" if not failures and not cache_invalidation_error else "partial"
         if cache_invalidation_error:
             run.error_message = (
@@ -1235,7 +1354,8 @@ async def run_national_core_ingest(
         status="partial" if failures or cache_invalidation_error else "ok",
         checked=len(countries),
         changed=points_touched + points_removed + metadata_changed,
-        failed=len(failures) + int(cache_invalidation_error is not None),
+        failed=series_failed_total + len(country_level_failures)
+        + int(cache_invalidation_error is not None),
         checked_label="Проверено стран",
         changed_label="Изменено точек/карточек",
         details=(
@@ -1248,7 +1368,13 @@ async def run_national_core_ingest(
                 f"изменённых точек {per_country['us'].get('points', 0)}. "
                 if 'us' in per_country else ""
             )
-            + (f"Ошибки: {', '.join(failures[:15])}. " if failures else "")
+            + (
+                f"Ошибки: {series_failed_text}. " if series_failed_text else ""
+            )
+            + (
+                "Страны с общим сбоем: " + ", ".join(country_level_failures) + ". "
+                if country_level_failures else ""
+            )
             + (
                 "Сбой обновления кэша каталога после записи данных: "
                 "публичный список стран может быть устаревшим."

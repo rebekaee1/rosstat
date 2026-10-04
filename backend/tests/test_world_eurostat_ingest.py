@@ -261,3 +261,73 @@ def test_unchanged_structure_runs_plain_loader(monkeypatch):
     asyncio.run(ingest.world_eurostat_ingest_job(shadow=False, include_imf=False))
     assert calls == [{}]
     assert recorded[0]["status"] == "ok"
+
+
+def test_dataset_list_names_datasets_with_reasons():
+    text = ingest.format_dataset_list(
+        "Разлом структуры, оставлено в карантине",
+        [("nrg_stk_oem", "88 из 120 публичных карточек не нашли срез"), ("une_rt_m", "")],
+    )
+    assert text == (
+        "Разлом структуры, оставлено в карантине: 2 — "
+        "nrg_stk_oem (88 из 120 публичных карточек не нашли срез); une_rt_m. "
+    )
+    assert ingest.format_dataset_list("x", []) == ""
+
+
+def test_dataset_list_truncates_long_tail_and_reasons():
+    items = [(f"ds_{n}", "причина " * 40) for n in range(15)]
+    text = ingest.format_dataset_list("Пропущено", items, limit=3, reason_chars=20)
+    assert text.count("ds_") == 3
+    assert "…ещё 12" in text
+    assert "причина " * 5 not in text  # причина обрезана до одной строки
+
+
+def test_summary_names_quarantined_and_skipped_datasets(monkeypatch):
+    """Сводка называет наборы поимённо, чтобы разбирать их по одному."""
+    entries = [
+        TocEntry("nrg_stk_oem", date(2026, 9, 28), date(2026, 9, 25)),
+        TocEntry("ert_bil_eur_m", date(2026, 9, 28), date(2026, 9, 25)),
+    ]
+    verdict = (
+        '{"dataset_id": "nrg_stk_oem", "accept": false, "kept": 3, "remapped": 0, '
+        '"orphans": 9, "orphans_listed": 8, '
+        '"reason": "8 из 10 публичных карточек не нашли срез в новой структуре"}'
+    )
+
+    async def fake_select(_toc):
+        return entries
+
+    async def fake_loader(entry, **_kwargs):
+        if entry.dataset_id == "nrg_stk_oem":
+            return False, "STRUCTURE_VERDICT " + verdict
+        return False, "ERROR ValueError: JSON-stat missing geo/time dims: ['freq']"
+
+    recorded, alerts, _calls = _job_env(monkeypatch, (True, ""))
+    monkeypatch.setattr(ingest, "select_changed_datasets", fake_select)
+    monkeypatch.setattr(ingest, "_run_one_loader", fake_loader)
+
+    result = asyncio.run(ingest.world_eurostat_ingest_job(shadow=False, include_imf=False))
+    assert result["structure_blocked"] == 1 and result["skipped"] == 1
+    details = alerts[0]["details"]
+    assert "Разлом структуры, оставлено в карантине: 1 — nrg_stk_oem (8 из 10 публичных" in details
+    assert "Без разреза по странам (пропущено): 1 — ert_bil_eur_m (" in details
+    assert alerts[0]["failed"] == 1
+
+
+def test_world_summary_details_limit_fits_named_lists(monkeypatch):
+    """Поимённые списки не режутся прежним лимитом 1000 символов."""
+    import app.services.alerting as alerting
+
+    sent = []
+
+    async def fake_send(message, **kwargs):
+        sent.append(message)
+        return True
+
+    monkeypatch.setattr(alerting, "send_telegram", fake_send)
+    asyncio.run(alerting.alert_world_ingest_summary(
+        "Европа: Eurostat", status="partial", checked=1, changed=0, failed=1,
+        details="x" * 1800,
+    ))
+    assert "x" * 1800 in sent[0]
