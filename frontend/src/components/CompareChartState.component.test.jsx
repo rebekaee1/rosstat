@@ -20,7 +20,7 @@ describe('CompareChartState', () => {
     const box = screen.getByTestId('compare-chart-skeleton');
     expect(box.getAttribute('aria-busy')).toBe('true');
     expect(box.getAttribute('role')).toBe('status');
-    expect(box.textContent).toMatch(/Загружаем ряды/);
+    expect(box.textContent).toMatch(/Загружаем данные/);
     const plot = box.querySelector('.skeleton[style]');
     expect(plot.style.height).toBe('280px');
   });

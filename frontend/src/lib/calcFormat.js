@@ -55,3 +55,16 @@ export function fmtPct(v, sign = false) {
   const s = sign && v > 0 ? '+' : '';
   return `${s}${v.toFixed(1).replace('.', ',')}%`;
 }
+
+/**
+ * Подписи оси «годы» через равные промежутки: 0, 5, 10, 15, 20 (а не 1, 3, 5, 7, 9, 11, 14, 17, 20).
+ * Значения совпадают с годами в данных графика.
+ */
+export function evenYearTicks(maxYear) {
+  const max = Math.floor(Number(maxYear));
+  if (!Number.isFinite(max) || max <= 0) return [0];
+  const step = max <= 6 ? 1 : max <= 12 ? 2 : max <= 30 ? 5 : 10;
+  const ticks = [];
+  for (let y = 0; y <= max; y += step) ticks.push(y);
+  return ticks;
+}

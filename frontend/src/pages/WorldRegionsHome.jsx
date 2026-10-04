@@ -310,7 +310,7 @@ export default function WorldRegionsHome() {
   const chipCls = (active) => `fe-chip fe-press ${active ? 'is-active' : ''}`;
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs items={worldSubnationalHubTrail(countryName, countrySlug, kindPlural)} />
       {hub.isError && (
         <ApiRetryBanner onRetry={hub.refetch} isFetching={hub.isFetching} className="mb-6">
@@ -319,10 +319,6 @@ export default function WorldRegionsHome() {
       )}
 
       <div className="mb-6">
-        <div className="mb-2 inline-flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
-          <MapPin size={15} aria-hidden="true" />
-          {kindPlural}
-        </div>
         <h1 className="font-display text-[1.75rem] font-bold leading-tight text-text-primary sm:text-4xl">
           {title}
         </h1>
@@ -359,7 +355,7 @@ export default function WorldRegionsHome() {
       {hub.isLoading && (
         <div className="mt-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
           <SkeletonBox className="mb-6 h-[46px] w-full rounded-xl" />
-          <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5">
             {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[98px] rounded-xl sm:h-[78px]" />)}
           </div>
         </div>
@@ -380,7 +376,7 @@ export default function WorldRegionsHome() {
               title={kindPlural}
               count={filteredRegions.length}
             />
-            <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5">
               {filteredRegions.map((r) => (
                 <RegionCard
                   key={r.slug}
@@ -407,7 +403,7 @@ export default function WorldRegionsHome() {
       {hub.data && view === 'map' && (
         <div className="mt-4">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="fe-scroll-row w-full min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
+            <div className="fe-chip-row--grid w-full min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
               <button
                 type="button"
                 role="tab"

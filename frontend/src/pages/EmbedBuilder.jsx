@@ -4,6 +4,7 @@ import { Check, Copy, ChevronDown, Search, BarChart3, CreditCard, Table2, Scroll
 import { useIndicators } from '../lib/hooks';
 import { CATEGORIES, isIndicatorListed } from '../lib/categories';
 import { cn } from '../lib/format';
+import { useElementWidth } from '../lib/chartHooks';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { PERIODS } from '../embed/useEmbedParams';
@@ -348,7 +349,17 @@ export default function EmbedBuilder() {
   const needsForecast = type === 'chart';
   const needsIndicator = type !== 'ticker';
   const previewH = type === 'ticker' ? 40 : type === 'card' ? 200 : h;
-  const previewW = type === 'ticker' ? '100%' : Math.min(w, 760);
+  const previewBoxW = type === 'ticker' ? '100%' : Math.min(w, 760);
+  // Превью целиком вписывается в ширину экрана: виджет рисуется в «настоящей» ширине
+  // (не уже 360 px) и масштабируется, а не обрезается справа.
+  const [setStageNode, stageWidth] = useElementWidth();
+  const availW = Math.max(0, stageWidth);
+  const fitsAsIs = typeof previewBoxW === 'string' || availW === 0 || previewBoxW <= availW;
+  const renderW = typeof previewBoxW === 'string'
+    ? previewBoxW
+    : (fitsAsIs ? previewBoxW : Math.min(previewBoxW, Math.max(360, availW)));
+  const previewScale = typeof renderW === 'number' && availW > 0 && renderW > availW ? availW / renderW : 1;
+  const previewW = renderW;
   // Превью грузится в iframe: пока он не сообщил о загрузке, показываем кольцо ожидания.
   const [loadedUrl, setLoadedUrl] = useState('');
   const previewLoading = loadedUrl !== previewUrl;
@@ -363,7 +374,7 @@ export default function EmbedBuilder() {
   const stageBg = theme === 'dark' ? '#111' : '#f5f5f5';
 
   return (
-    <div className="fe-data-page w5-embed max-w-6xl mx-auto px-4 pt-24 md:pt-28 pb-16">
+    <div className="fe-data-page w5-embed max-w-6xl mx-auto px-4 pt-24 md:pt-28 pb-12 sm:pb-16">
       <Breadcrumbs items={toolTrail(widgetsSeo.h1, widgetsSeo.path)} className="mb-6" />
       <header className="mb-8 max-w-2xl">
         <h1 className="mb-3 font-display text-3xl font-bold text-text-primary md:text-4xl">
@@ -535,8 +546,19 @@ export default function EmbedBuilder() {
             <div className="w5-embed-preview__head">
               <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.previewHeading')}</h2>
             </div>
-            <div className="w5-embed-preview__stage" style={{ background: stageBg }}>
-              <div className="relative" style={{ width: previewW, height: previewH, maxWidth: '100%' }}>
+            <div ref={setStageNode} className="w5-embed-preview__stage" style={{ background: stageBg }}>
+              <div
+                className="relative"
+                style={previewScale < 1
+                  ? { width: previewW * previewScale, height: previewH * previewScale }
+                  : { width: previewW, height: previewH, maxWidth: '100%' }}
+              >
+                <div
+                  className="absolute left-0 top-0"
+                  style={previewScale < 1
+                    ? { width: previewW, height: previewH, transform: `scale(${previewScale})`, transformOrigin: 'top left' }
+                    : { width: '100%', height: '100%' }}
+                >
                 <iframe
                   key={previewUrl}
                   src={previewUrl}
@@ -548,6 +570,7 @@ export default function EmbedBuilder() {
                   loading="lazy"
                   onLoad={() => setLoadedUrl(previewUrl)}
                 />
+                </div>
                 {previewLoading && (
                   <div
                     className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl text-xs"

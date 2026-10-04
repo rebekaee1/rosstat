@@ -16,6 +16,7 @@ import DeltaBadge from '../components/DeltaBadge';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
+import DownloadMenu from '../components/regions/DownloadMenu';
 import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -257,11 +258,12 @@ export default function WorldRegionIndicatorPage() {
   } : null;
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs
         items={worldSubnationalIndicatorTrail(
           countryName, countrySlug, kindPlural, regionName, slug, indName, code,
         )}
+        className="fe-crumbs--oneline"
       />
 
       {data.isError && !payload && (
@@ -290,15 +292,15 @@ export default function WorldRegionIndicatorPage() {
       {payload && (
         <>
           <div className="fe-data-header">
-            <div className="mb-2 text-sm font-medium text-champagne-ink">
-              {payload.indicator.section}
+            <div className="mb-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
+              <span className="font-medium text-champagne-ink">{regionName}</span>
+              {payload.indicator.section && (
+                <span className="min-w-0 border-l border-border-subtle pl-2 text-text-secondary">{payload.indicator.section}</span>
+              )}
             </div>
-            <div className="mb-5 flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-              <h1 className="min-w-0 flex-1 font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
-                {indName}
-              </h1>
-              <span className="shrink-0 pt-0.5 text-sm text-text-secondary sm:pt-1.5">{regionName}</span>
-            </div>
+            <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
+              {indName}
+            </h1>
 
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="fe-num whitespace-nowrap text-3xl font-bold text-text-primary">
@@ -330,7 +332,7 @@ export default function WorldRegionIndicatorPage() {
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
-                  className={`fe-tap inline-flex max-w-full min-w-0 items-center gap-1.5 rounded-xl border px-3 py-1 text-sm transition-colors ${
+                  className={`fe-tap inline-flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-xl border px-3 py-1 text-sm transition-colors sm:w-auto ${
                     compareSlug
                       ? 'border-[#5B7DA8] text-[#5B7DA8]'
                       : 'border-border-subtle text-text-secondary hover:text-text-secondary'
@@ -368,36 +370,14 @@ export default function WorldRegionIndicatorPage() {
                     {t('w4.ind.yoyBtn')}
                   </Chip>
                 )}
-                <button
-                  type="button"
-                  onClick={() => handleExportTable('csv')}
+                <DownloadMenu
                   disabled={exporting}
-                  title={t('regions.ind.downloadCsv')}
-                  aria-label={t('regions.ind.downloadCsv')}
-                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
-                >
-                  <Download size={12} /> CSV
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleExportTable('xlsx')}
-                  disabled={exporting}
-                  title={t('regions.ind.downloadExcel')}
-                  aria-label={t('regions.ind.downloadExcel')}
-                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
-                >
-                  <Download size={12} /> Excel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleExportPng}
-                  disabled={exporting}
-                  title={t('regions.ind.downloadPng')}
-                  aria-label={t('regions.ind.downloadPng')}
-                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
-                >
-                  <ImageIcon size={12} /> PNG
-                </button>
+                  items={[
+                    { key: 'csv', label: 'CSV', hint: t('x4.download.csvHint'), icon: Download, onSelect: () => handleExportTable('csv') },
+                    { key: 'xlsx', label: 'Excel', hint: t('x4.download.xlsxHint'), icon: Download, onSelect: () => handleExportTable('xlsx') },
+                    { key: 'png', label: t('x4.download.png'), hint: t('x4.download.pngHint'), icon: ImageIcon, onSelect: handleExportPng },
+                  ]}
+                />
               </div>
             </div>
             <RegionAnnualChart

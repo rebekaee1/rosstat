@@ -6,7 +6,7 @@ import {
   Tooltip, CartesianGrid,
 } from 'recharts';
 import {
-  ArrowLeft, Activity, GitCompare, Search, X, Plus, ImageDown, Sparkles,
+  ArrowLeft, Activity, Search, X, Plus, ImageDown, Sparkles,
   Landmark, MapPin, Check, ChevronDown, Globe2,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
@@ -27,6 +27,7 @@ import { getPageSeo } from '../lib/pageMeta';
 import CompareChartState from '../components/CompareChartState';
 import Chip from '../components/Chip';
 import Button from '../components/Button';
+import { formatValueSplit } from '../lib/compareUnitSplit';
 import CompareCountryStep from '../components/compare/CompareCountryStep';
 import CompareExample from '../components/compare/CompareExample';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
@@ -288,6 +289,9 @@ async function fetchWorldSeries(code, { signal }) {
 
 // Единый стиль «поля-поиска» для макро- и регионального выбора — чтобы они
 // выглядели одинаково (требование: макро и регион не должны расходиться).
+/** Ось Y по данным, а не от нуля: линия не прибита к верху пустого графика. */
+const AXIS_DOMAIN = ['auto', 'auto'];
+
 const FIELD_CLS =
   'flex items-center gap-2 rounded-lg border bg-obsidian-light px-3 py-2 transition-colors';
 
@@ -401,12 +405,13 @@ function ComboSelect({
                     key={it.value}
                     type="button"
                     onMouseDown={(e) => { e.preventDefault(); onChange(it.value); setQuery(''); setOpen(false); }}
-                    className="fe-tap flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
+                    title={it.label}
+                    className="fe-tap flex w-full items-start justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
                   >
-                    <span className="truncate text-sm text-text-primary">{it.label}</span>
+                    <span className="line-clamp-2 min-w-0 break-words text-sm leading-snug text-text-primary">{it.label}</span>
                     {it.value === value
-                      ? <Check className="h-3.5 w-3.5 shrink-0 text-champagne" />
-                      : it.hint && <span className="shrink-0 text-xs text-text-secondary">{it.hint}</span>}
+                      ? <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-champagne" />
+                      : it.hint && <span className="mt-0.5 shrink-0 text-xs text-text-secondary">{it.hint}</span>}
                   </button>
                 ))}
               </div>
@@ -702,10 +707,11 @@ function AddIndicator({
               key={ind.code}
               type="button"
               onMouseDown={(e) => { e.preventDefault(); onAdd(ind.code); setQuery(''); }}
-              className="fe-tap flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
+              title={ind.name}
+              className="fe-tap flex w-full items-start justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
             >
-              <span className="text-sm text-text-primary truncate">{ind.name}</span>
-              <span className="flex items-center gap-2 shrink-0">
+              <span className="line-clamp-2 min-w-0 break-words text-sm leading-snug text-text-primary">{ind.name}</span>
+              <span className="mt-0.5 flex items-center gap-2 shrink-0">
                 <span className="text-xs text-text-secondary">{unitSuffix(ind.unit)}</span>
                 <Plus className="w-3.5 h-3.5 text-champagne" />
               </span>
@@ -1679,18 +1685,11 @@ export default function ComparePage() {
     : t('compare.title');
 
   return (
-    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
+    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 md:pb-16">
       <UpsellModal open={upsellOpen} onClose={() => setUpsellOpen(false)} />
 
       <div className="mb-10 md:mb-12 max-w-4xl">
         <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-6" />
-
-        <div className="flex items-center gap-3 mb-4">
-          <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-3 py-1 text-sm font-medium text-text-secondary">
-            <GitCompare className="w-3 h-3 text-champagne" />
-            {t('compare.badge')}
-          </span>
-        </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
           {t('compare.title')}
@@ -1717,16 +1716,19 @@ export default function ComparePage() {
           </div>
         )}
 
-        <div className="mt-3 flex items-center text-xs text-text-tertiary">
+        <p className="mt-3 text-[13px] leading-snug text-text-secondary">
           {isAuthed
             ? t('compare.selectedAuthed', { n: codes.length, max: USER_MAX })
-            : `${t('compare.selectedGuest', { n: codes.length, max: GUEST_MAX })} `}
+            : t('compare.selectedGuest', { n: codes.length, max: GUEST_MAX })}
           {!isAuthed && (
-            <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="ml-1 text-champagne hover:underline">
-              {t('compare.wantMore')}
-            </button>
+            <>
+              {' '}
+              <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="font-medium text-champagne-ink hover:underline">
+                {t('compare.wantMore')}
+              </button>
+            </>
           )}
-        </div>
+        </p>
 
         {codes.length > 0 && (
           <div className="mt-4 flex flex-col gap-2">
@@ -1853,17 +1855,18 @@ export default function ComparePage() {
             </div>
           </div>
 
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleExport}
-            disabled={!hasData}
-            className="w-full sm:ml-auto sm:w-auto"
-            title={t('compare.downloadChart')}
-          >
-            <ImageDown className="h-3.5 w-3.5" aria-hidden="true" />
-            {t('compare.imageButton')}
-          </Button>
+          {hasData && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleExport}
+              className="w-full sm:ml-auto sm:w-auto"
+              title={t('compare.downloadChart')}
+            >
+              <ImageDown className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('compare.imageButton')}
+            </Button>
+          )}
         </div>
 
         {forceIndex && (
@@ -1961,7 +1964,7 @@ export default function ComparePage() {
                 <div
                   aria-hidden="true"
                   data-no-export="true"
-                  className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-6 select-none whitespace-nowrap text-3xl font-display font-bold tracking-[0.18em] text-text-primary opacity-[0.055] md:text-5xl"
+                  className="pointer-events-none absolute bottom-1 right-2 z-10 select-none whitespace-nowrap text-[11px] font-medium text-text-primary opacity-30"
                 >
                   forecasteconomy.com
                 </div>
@@ -1969,7 +1972,7 @@ export default function ComparePage() {
               <ResponsiveContainer width="100%" height={chartHeight}>
                 <ComposedChart
                   data={chartRows}
-                  margin={{ top: 10, right: narrow ? 6 : 20, bottom: narrow ? 26 : 44, left: 0 }}
+                  margin={{ top: 10, right: narrow ? 18 : 28, bottom: narrow ? 26 : 44, left: 0 }}
                 >
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis
@@ -1986,6 +1989,7 @@ export default function ComparePage() {
                   />
                   <YAxis
                     yAxisId="left"
+                    domain={AXIS_DOMAIN}
                     tick={axisTick()}
                     axisLine={false}
                     tickLine={false}
@@ -1996,6 +2000,7 @@ export default function ComparePage() {
                     <YAxis
                       yAxisId="right"
                       orientation="right"
+                      domain={AXIS_DOMAIN}
                       tick={axisTick()}
                       axisLine={false}
                       tickLine={false}
@@ -2077,6 +2082,11 @@ export default function ComparePage() {
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {analysisSummary.metrics.filter((metric) => metric.last).map((metric) => {
               const displayUnit = indexed ? t('compare.points') : (metric.item.unit || '%');
+              const lastValue = formatValueSplit(metric.last.value, displayUnit);
+              const changeValue = formatValueSplit(
+                metric.change,
+                compareDifferenceUnit(metric.item.unit || '%', { indexed, locale }),
+              );
               return (
                 <div key={metric.item.code} className="rounded-2xl border border-border-subtle bg-obsidian-light p-4">
                   <div className="flex items-start gap-2">
@@ -2088,21 +2098,29 @@ export default function ComparePage() {
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     <div>
                       <div className="text-xs font-medium text-text-secondary">{t('compare.analysis.last')}</div>
-                      <div className="fe-num mt-1 text-lg font-semibold text-text-primary">
-                        {formatValueWithUnit(metric.last.value, displayUnit)}
+                      <div className="fe-num mt-1 text-lg font-semibold leading-tight text-text-primary">
+                        {lastValue.main}
                       </div>
                     </div>
                     <div>
                       <div className="text-xs font-medium text-text-secondary">{t('compare.analysis.change')}</div>
                       <div className={cn(
-                        'fe-num mt-1 text-lg font-semibold',
+                        'fe-num mt-1 text-lg font-semibold leading-tight',
                         `fe-tone--${deltaTone(metric.change, indicatorPolarity(metric.item.ind?.name, metric.item.code))}`,
                       )}>
                         {metric.change > 0 ? '+' : ''}
-                        {formatValueWithUnit(metric.change, compareDifferenceUnit(metric.item.unit || '%', { indexed, locale }))}
+                        {changeValue.main}
                       </div>
                     </div>
                   </div>
+                  {(lastValue.tail || changeValue.tail) && (
+                    <p className="mt-2 text-xs leading-snug text-text-secondary">
+                      {lastValue.tail || changeValue.tail}
+                    </p>
+                  )}
+                  {/п\.\s?п\.|p\.p\./.test(changeValue.unitShort || '') && (
+                    <p className="mt-1 text-xs leading-snug text-text-tertiary">{t('x4.compare.ppHint')}</p>
+                  )}
                   <div className="mt-3 border-t border-border-subtle pt-2.5 text-xs text-text-secondary">
                     {formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}
                   </div>

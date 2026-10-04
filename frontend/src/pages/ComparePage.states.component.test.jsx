@@ -50,7 +50,7 @@ describe('ComparePage: состояния графика', () => {
     renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=cpi' });
     const skeleton = await screen.findByTestId('compare-chart-skeleton');
     expect(skeleton.getAttribute('aria-busy')).toBe('true');
-    expect(skeleton.textContent).toMatch(/Загружаем ряды/);
+    expect(skeleton.textContent).toMatch(/Загружаем данные/);
     expect(skeleton.querySelector('.skeleton[style]').style.height).toMatch(/^\d+px$/);
     expect(screen.queryByTestId('compare-empty')).toBeNull();
   });

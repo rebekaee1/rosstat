@@ -7,7 +7,7 @@ import { ArrowRight, RefreshCw } from 'lucide-react';
 import Button from '../Button';
 import { SkeletonBox } from '../Skeleton';
 import { fetchWorldCompareOrCard } from '../../lib/worldApi';
-import { formatValueWithUnit } from '../../lib/format';
+import { formatValueSplit } from '../../lib/compareUnitSplit';
 import { CHART_THEME } from '../../lib/chartTheme';
 import { flagForSlug } from '../../lib/slugFlags';
 import { useLocale } from '../../i18n';
@@ -88,6 +88,7 @@ export default function CompareExample({ onOpen }) {
   }, [lines]);
 
   const title = t('w4.compare.example.title');
+  const unitNote = lines[0] ? formatValueSplit(0, lines[0].unit).tail : '';
 
   if (loading) {
     return (
@@ -159,19 +160,21 @@ export default function CompareExample({ onOpen }) {
         ))}
       </svg>
 
-      <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5">
+      <ul className="mt-2 grid gap-y-1.5">
         {lines.map((line) => {
           const last = line.points[line.points.length - 1];
+          const shown = formatValueSplit(last.v, line.unit);
           return (
-            <li key={line.slug} className="flex items-center gap-2 text-sm text-text-primary">
+            <li key={line.slug} className="flex min-w-0 items-center gap-2 text-sm text-text-primary">
               <span className="h-[3px] w-4 shrink-0 rounded-full" style={{ backgroundColor: line.color }} aria-hidden="true" />
               <span aria-hidden="true">{flagForSlug(line.slug)}</span>
-              <span>{line.name}</span>
-              <span className="fe-num whitespace-nowrap font-semibold">{formatValueWithUnit(last.v, line.unit)}</span>
+              <span className="min-w-0 flex-1 truncate">{line.name}</span>
+              <span className="fe-num shrink-0 whitespace-nowrap font-semibold">{shown.main}</span>
             </li>
           );
         })}
       </ul>
+      {unitNote && <p className="mt-1.5 text-xs leading-snug text-text-secondary">{unitNote}</p>}
 
       <Button variant="primary" className="mt-4 w-full sm:w-auto" onClick={() => onOpen(EXAMPLE_CODES)}>
         {t('w4.compare.example.open')}

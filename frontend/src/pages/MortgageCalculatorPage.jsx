@@ -13,7 +13,7 @@ import { formatCompactTick } from '../lib/regionsApi';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { revealStyle } from '../lib/calcUi';
-import { formatRubles, fmtPct, loanYearOrdinal, years as yearsPhrase } from '../lib/calcFormat';
+import { formatRubles, fmtPct, loanYearOrdinal, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
@@ -138,7 +138,7 @@ export default function MortgageCalculatorPage() {
   const yearBreakdown = result?.yearly?.[clampedYear - 1] || null;
 
   return (
-    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
+    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 sm:pb-16">
       <div style={revealStyle(0)} className="fe-reveal mb-8">
         <Breadcrumbs items={toolTrail(t('calc.mortgage.title'), '/calculator/mortgage')} />
       </div>
@@ -196,7 +196,6 @@ export default function MortgageCalculatorPage() {
                   <CalcStatTile index={0} label={t('calc.mortgage.principal')} value={formatRubles(result.principal)} />
                   <CalcStatTile index={1} label={t('calc.mortgage.overpay')} value={formatRubles(result.overpay)} accent />
                   <CalcStatTile index={2} label={t('calc.mortgage.total')} value={formatRubles(result.total)} />
-                  <CalcStatTile index={3} label={t('calc.mortgage.overpayRatio')} value={fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)} />
                 </CalcStatGrid>
               </div>
 
@@ -262,6 +261,7 @@ export default function MortgageCalculatorPage() {
                   </defs>
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick()} tickLine={false}
+                    ticks={evenYearTicks(result.series[result.series.length - 1]?.year)} interval={0}
                     tickFormatter={(y) => (y === 0 ? t('w5.calc.axisStart') : t('w5.calc.axisYear', { n: y }))} />
                   <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
                     tickLine={false} axisLine={false} tickFormatter={rubleTick}

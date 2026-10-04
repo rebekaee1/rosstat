@@ -321,7 +321,7 @@ describe('ComparePage', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'США' }));
     expect(await screen.findByRole('button', { name: /Макропоказатели/ })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Штаты/ }));
-    expect(screen.getAllByText('Добавить ряд территории').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Добавить показатель территории').length).toBeGreaterThan(0);
     expect(screen.getByPlaceholderText('Выберите или найдите территорию…')).toBeTruthy();
   });
 });

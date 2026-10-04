@@ -1,5 +1,11 @@
+import { useState } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import {
+  Database, Globe2, TrendingUp, Users, Gift, ShieldAlert, Mail,
+} from 'lucide-react';
 import SourceLink from '../components/SourceLink';
-import SectionNav from '../components/SectionNav';
+import Button from '../components/Button';
+import { InfoCard, InfoGrid } from '../components/InfoCard';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
@@ -9,10 +15,16 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/w5-pages.css';
 
-/** «О проекте»: короткие секции с якорями вместо одной стены текста. Тексты прежние, структура новая. */
+const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
+
+/**
+ * «О проекте»: короткий лид и карточки-разделы с иконками. Каждая карточка — одна мысль в 1–2
+ * предложениях; страница читается за полминуты, без жаргона.
+ */
 export default function About() {
   const { locale } = useLocale();
   const t = useT();
+  const location = useLocation();
   const seo = getPageSeo('about', locale);
   useDocumentMeta({
     title: seo.title,
@@ -20,107 +32,80 @@ export default function About() {
     path: seo.path,
   });
 
-  const nav = [
-    { id: 'what', label: t('w5.about.nav.what') },
-    { id: 'audience', label: t('w5.about.nav.audience') },
-    { id: 'different', label: t('about.diffTitle') },
-    { id: 'trust', label: t('w5.about.nav.trust') },
-    { id: 'credits', label: t('about.creditsTitle') },
-  ];
   const sources = footerSourceLinks(locale);
   const andWord = locale === 'en' ? 'and' : 'и';
+  // Ссылка из подвала (/about#credits) сразу раскрывает благодарности.
+  const [creditsOpen] = useState(() => location.hash === '#credits');
 
   return (
-    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
+    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 md:pb-16">
       <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
 
-      <header className="mb-6 fe-reveal">
-        <p className="w5-eyebrow mb-3">{t('about.eyebrow')}</p>
+      <header className="mb-8 fe-reveal">
         <h1 className="mb-4 font-display text-3xl font-bold leading-tight text-text-primary md:text-4xl">
           {seo.h1}
         </h1>
-        <p className="w5-lead" style={{ marginBottom: 0 }}>{t('about.intro.p1')}</p>
+        <p className="x4-lead" style={{ marginBottom: 0 }}>{t('x4.about.lead')}</p>
       </header>
 
-      <SectionNav items={nav} />
+      <InfoGrid>
+        <InfoCard icon={Database} title={t('x4.about.sources.title')} id="what">
+          <p>{t('x4.about.sources.body')}</p>
+          <p>
+            {sources.map((item, i) => {
+              const link = (
+                <SourceLink key={item.key} href={item.href}>
+                  {t(item.key)}
+                </SourceLink>
+              );
+              if (i === 0) return link;
+              if (i === sources.length - 1) return <span key={item.key}> {andWord} {link}</span>;
+              return <span key={item.key}>, {link}</span>;
+            })}
+            .
+          </p>
+        </InfoCard>
 
-      <section id="what" className="w5-section fe-panel">
-        <h2 className="w5-section__title">{t('w5.about.what.title')}</h2>
-        <p>
-          {t('about.intro.p2before')}
-          {' '}
-          {sources.map((item, i) => {
-            const link = (
-              <SourceLink key={item.key} href={item.href} className="text-champagne-ink hover:underline">
-                {t(item.key)}
-              </SourceLink>
-            );
-            if (i === 0) return link;
-            if (i === sources.length - 1) return <span key={item.key}> {andWord} {link}</span>;
-            return <span key={item.key}>, {link}</span>;
-          })}
-          {' '}
-          {t('about.intro.p2after')}
-          {' '}
-          <strong className="text-text-primary">{t('about.intro.forecast')}</strong>
-          {' '}
-          {t('about.intro.p2end')}
-        </p>
-      </section>
+        <InfoCard icon={Globe2} title={t('x4.about.inside.title')}>
+          <p>{t('x4.about.inside.body')}</p>
+        </InfoCard>
 
-      <section id="audience" className="w5-section fe-panel">
-        <h2 className="w5-section__title">{t('about.audienceTitle')}</h2>
-        <ul className="w5-ticks">
-          <li>{t('about.audience.1')}</li>
-          <li>{t('about.audience.2')}</li>
-          <li>{t('about.audience.3')}</li>
-          <li>{t('about.audience.4')}</li>
-          <li>
-            <span>
-              {t('about.audience.5before')}
-              {' '}
-              <strong className="text-text-primary">{t('about.audience.5strong')}</strong>
-              {t('about.audience.5after')}
-            </span>
-          </li>
-        </ul>
-      </section>
+        <InfoCard icon={TrendingUp} title={t('x4.about.forecast.title')} id="different">
+          <p>{t('x4.about.forecast.body')}</p>
+          <p><Link to="/methodology">{t('x4.about.forecast.link')}</Link></p>
+        </InfoCard>
 
-      <section id="different" className="w5-section fe-panel">
-        <h2 className="w5-section__title">{t('about.diffTitle')}</h2>
-        <div className="w5-duo">
-          <div className="w5-duo__item">
-            <strong>{t('about.diff.1strong')}</strong>
-            <span>{t('about.diff.1')}</span>
+        <InfoCard icon={Users} title={t('x4.about.audience.title')} id="audience">
+          <p>{t('x4.about.audience.body')}</p>
+        </InfoCard>
+
+        <InfoCard icon={Gift} title={t('x4.about.free.title')}>
+          <p>{t('x4.about.free.body')}</p>
+        </InfoCard>
+
+        <InfoCard icon={ShieldAlert} title={t('x4.about.limits.title')} id="trust">
+          <p>{t('x4.about.limits.body')}</p>
+        </InfoCard>
+
+        <InfoCard icon={Mail} title={t('x4.about.contact.title')} wide>
+          <p>{t('x4.about.contact.body')}</p>
+          <div className="pt-1">
+            <Button
+              as="a"
+              href={`mailto:${CONTACT_EMAIL}`}
+              variant="secondary"
+              onClick={() => track(events.CONTACT_EMAIL)}
+              aria-label={t('x4.about.contact.aria')}
+            >
+              <Mail className="h-4 w-4" aria-hidden="true" />
+              {t('x4.about.contact.cta')}
+            </Button>
           </div>
-          <div className="w5-duo__item">
-            <strong>{t('about.diff.2strong')}</strong>
-            <span>{t('about.diff.2')}</span>
-          </div>
-        </div>
-      </section>
+        </InfoCard>
+      </InfoGrid>
 
-      <section id="trust" className="w5-section fe-panel">
-        <h2 className="w5-section__title">{t('about.trustTitle')}</h2>
-        <p>
-          {t('about.trust.1before')}
-          {' '}
-          <strong className="text-text-primary">{t('about.trust.1strong')}</strong>
-          {' '}
-          {t('about.trust.1after')}
-        </p>
-        <p>
-          {t('about.trust.2')}
-          {' '}
-          <a href="mailto:rebeka.ee@yandex.ru" onClick={() => track(events.CONTACT_EMAIL)}>
-            rebeka.ee@yandex.ru
-          </a>
-          .
-        </p>
-      </section>
-
-      <section id="credits" className="w5-section fe-panel">
-        <h2 className="w5-section__title">{t('about.creditsTitle')}</h2>
+      <details id="credits" className="x4-credits" open={creditsOpen || undefined}>
+        <summary>{t('about.creditsTitle')}</summary>
         <p>
           {t('w5.about.credits.before')}
           {' '}
@@ -129,7 +114,7 @@ export default function About() {
           <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>
           .
         </p>
-      </section>
+      </details>
     </div>
   );
 }

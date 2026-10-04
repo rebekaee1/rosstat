@@ -20,6 +20,7 @@ import DeltaBadge from '../components/DeltaBadge';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { formatRegionNumber, formatRegionWithUnit, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
+import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
@@ -69,6 +70,11 @@ function StatCell({ label, children }) {
       </div>
     </div>
   );
+}
+
+// Максимум и минимум одного показателя — с одинаковой точностью (крупные величины целыми).
+function statValue(value, { max, min }) {
+  return Math.max(Math.abs(max), Math.abs(min)) >= 1000 ? Math.round(value) : value;
 }
 
 const MONTH_NAMES_RU = [
@@ -272,7 +278,7 @@ export default function RegionIndicatorPage() {
   const abortion = ABORTION_SIBLING[code];
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs
         items={regionIndicatorTrail(
           regionName || '…',
@@ -280,6 +286,7 @@ export default function RegionIndicatorPage() {
           indName || '…',
           code,
         )}
+        className="fe-crumbs--oneline"
       />
 
       {isError && !cardReady && (
@@ -308,15 +315,15 @@ export default function RegionIndicatorPage() {
       {cardReady && active && last && (
         <>
           <div className="fe-data-header">
-            <div className="mb-2 text-sm font-medium text-champagne-ink">
-              {active.indicator.section_name}
+            <div className="mb-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
+              <span className="font-medium text-champagne-ink">{regionName}</span>
+              {active.indicator.section_name && (
+                <span className="min-w-0 border-l border-border-subtle pl-2 text-text-secondary">{active.indicator.section_name}</span>
+              )}
             </div>
-            <div className="mb-5 flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-              <h1 className="min-w-0 flex-1 font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
-                {indName}
-              </h1>
-              <span className="shrink-0 pt-0.5 text-sm text-text-secondary sm:pt-1.5">{regionName}</span>
-            </div>
+            <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
+              {indName}
+            </h1>
             {abortion && (
               <p className="mt-1 text-xs text-text-secondary">
                 {t('regions.ind.abortionLead')}
@@ -359,7 +366,7 @@ export default function RegionIndicatorPage() {
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
-                  className={`fe-tap inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-xl border px-3 py-1 text-sm transition-colors ${
+                  className={`fe-tap inline-flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-xl border px-3 py-1 text-sm transition-colors sm:w-auto ${
                     compareSlug
                       ? 'border-[#5B7DA8] text-[#5B7DA8]'
                       : 'border-border-subtle text-text-secondary hover:text-text-secondary'
@@ -391,33 +398,14 @@ export default function RegionIndicatorPage() {
                     {t('w4.ind.yoyBtn')}
                   </Chip>
                 )}
-                <button
-                  onClick={() => handleExportTable('csv')}
+                <DownloadMenu
                   disabled={exporting}
-                  title={t('regions.ind.downloadCsv')}
-                  aria-label={t('regions.ind.downloadCsv')}
-                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
-                >
-                  <Download size={12} /> CSV
-                </button>
-                <button
-                  onClick={() => handleExportTable('xlsx')}
-                  disabled={exporting}
-                  title={t('regions.ind.downloadExcel')}
-                  aria-label={t('regions.ind.downloadExcel')}
-                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
-                >
-                  <Download size={12} /> Excel
-                </button>
-                <button
-                  onClick={handleExportPng}
-                  disabled={exporting}
-                  title={t('regions.ind.downloadPng')}
-                  aria-label={t('regions.ind.downloadPng')}
-                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
-                >
-                  <ImageIcon size={12} /> PNG
-                </button>
+                  items={[
+                    { key: 'csv', label: 'CSV', hint: t('x4.download.csvHint'), icon: Download, onSelect: () => handleExportTable('csv') },
+                    { key: 'xlsx', label: 'Excel', hint: t('x4.download.xlsxHint'), icon: Download, onSelect: () => handleExportTable('xlsx') },
+                    { key: 'png', label: t('x4.download.png'), hint: t('x4.download.pngHint'), icon: ImageIcon, onSelect: handleExportPng },
+                  ]}
+                />
               </div>
             </div>
             <RegionAnnualChart
@@ -496,10 +484,10 @@ export default function RegionIndicatorPage() {
             {stats && (
               <>
                 <StatCell label={t('regions.ind.max', { year: stats.maxAt })}>
-                  {formatRegionWithUnit(stats.max, active.indicator.unit, locale)}
+                  {formatRegionWithUnit(statValue(stats.max, stats), active.indicator.unit, locale)}
                 </StatCell>
                 <StatCell label={t('regions.ind.min', { year: stats.minAt })}>
-                  {formatRegionWithUnit(stats.min, active.indicator.unit, locale)}
+                  {formatRegionWithUnit(statValue(stats.min, stats), active.indicator.unit, locale)}
                 </StatCell>
               </>
             )}
@@ -529,7 +517,7 @@ export default function RegionIndicatorPage() {
                         <span className="fe-num w-4 shrink-0 text-right text-text-secondary">{i + 1}</span>
                         <span className={`truncate ${r.slug === slug ? 'text-champagne-ink font-medium' : 'text-text-primary'}`}>{r.name}</span>
                       </span>
-                      <span className="fe-num shrink-0 whitespace-nowrap text-text-secondary">{formatRegionNumber(r.value, active.indicator.unit, locale)}</span>
+                      <span className="fe-num shrink-0 whitespace-nowrap font-medium text-text-primary">{formatRegionNumber(r.value, active.indicator.unit, locale)}</span>
                     </Link>
                   </li>
                 ))}
@@ -546,7 +534,7 @@ export default function RegionIndicatorPage() {
                     <span className="fe-num w-4 text-right text-text-secondary">{active.rank.position}</span>
                     <span className="text-champagne-ink font-medium">{regionName}</span>
                   </span>
-                  <span className="fe-num text-text-secondary">{formatRegionNumber(last.value, active.indicator.unit, locale)}</span>
+                  <span className="fe-num font-medium text-text-primary">{formatRegionNumber(last.value, active.indicator.unit, locale)}</span>
                 </div>
               )}
             </div>

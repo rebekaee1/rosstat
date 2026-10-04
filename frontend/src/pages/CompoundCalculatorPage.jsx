@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
-  Tooltip, CartesianGrid, ReferenceLine,
+  Tooltip, CartesianGrid,
 } from 'recharts';
 import { TrendingUp, Flame, PiggyBank } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -13,7 +13,7 @@ import { formatCompactTick } from '../lib/regionsApi';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { revealStyle } from '../lib/calcUi';
-import { formatRubles, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
+import { formatRubles, fmtPct, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
@@ -113,7 +113,7 @@ export default function CompoundCalculatorPage() {
   }, [initial, monthly, rate, years, inflation]);
 
   return (
-    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
+    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 sm:pb-16">
       <div style={revealStyle(0)} className="fe-reveal mb-8">
         <Breadcrumbs items={toolTrail(t('calc.compound.title'), '/calculator/compound')} />
       </div>
@@ -189,6 +189,7 @@ export default function CompoundCalculatorPage() {
                   </defs>
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick()} tickLine={false}
+                    ticks={evenYearTicks(result.series[result.series.length - 1]?.year)} interval={0}
                     tickFormatter={(y) => (y === 0 ? t('w5.calc.axisStart') : t('w5.calc.axisYear', { n: y }))} />
                   <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
                     tickLine={false} axisLine={false} tickFormatter={rubleTick}
@@ -205,7 +206,6 @@ export default function CompoundCalculatorPage() {
                   <Area dataKey="balance" name="balance" stroke={CHART_THEME.champagne} strokeWidth={2} fill="url(#cmpBal)" dot={false} isAnimationActive={false} />
                   <Area dataKey="invested" name="invested" stroke={CHART_THEME.ink} strokeWidth={1.4} fill="none" strokeDasharray="6 4" dot={false} isAnimationActive={false} />
                   <Area dataKey="real" name="real" stroke={CHART_THEME.blue} strokeWidth={1.4} fill="none" dot={false} isAnimationActive={false} />
-                  <ReferenceLine y={result.invested} stroke={CHART_THEME.refLine} strokeDasharray="4 4" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

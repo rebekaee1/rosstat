@@ -288,6 +288,7 @@ export default function RegionsHome() {
     ? null
     : (urlIndicator || pathCode || DEFAULT_MAP_CODE);
   const isCustomMetric = !!(activeMapCode && !PRESET_CODES.has(activeMapCode));
+  const activePreset = activeMapCode ? MAP_METRICS.find((m) => m.code === activeMapCode) : null;
 
   const customName = useMemo(() => {
     if (!isCustomMetric || !activeMapCode) return '';
@@ -472,7 +473,7 @@ export default function RegionsHome() {
   const gifAvailable = !!(activeMapCode && paint.hasHistory && series.data);
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs items={regionsTrail()} className="mb-6" />
       <div className="mb-6">
         <div className="mb-2 inline-flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
@@ -485,11 +486,6 @@ export default function RegionsHome() {
         <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
           {t('regions.intro')}
         </p>
-        {data && (
-          <p className="mt-2 text-sm text-text-secondary">
-            {t('w4.regions.scope', { n: data.totals.regions })}
-          </p>
-        )}
         <section className="mt-5" aria-labelledby="regions-rankings-title">
           <h2 id="regions-rankings-title" className="text-base font-semibold text-text-primary">
             <Link to={regionRatingHubPath()} className="fe-tap-inline hover:text-champagne-ink">
@@ -499,7 +495,7 @@ export default function RegionsHome() {
           <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary">
             {t('regions.hub.ratingsLead')}
           </p>
-          <div className="fe-scroll-row mt-3">
+          <div className="fe-chip-row--grid mt-3">
             {MAP_METRICS.map((metric) => (
               <Link
                 key={metric.code}
@@ -588,7 +584,7 @@ export default function RegionsHome() {
           )}
 
           {isLoading && (
-            <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5" role="status" aria-busy="true" aria-label={t('common.loading')}>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5" role="status" aria-busy="true" aria-label={t('common.loading')}>
               {Array.from({ length: 10 }).map((_, i) => <SkeletonBox key={i} className="h-[98px] rounded-xl sm:h-[78px]" />)}
             </div>
           )}
@@ -684,7 +680,7 @@ export default function RegionsHome() {
                           title={d.name}
                           count={d.regions.length}
                         />
-                        <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5">
                           {d.regions.map((r) => <RegionCard key={r.slug} region={r} />)}
                         </div>
                       </section>
@@ -709,7 +705,7 @@ export default function RegionsHome() {
       {view === 'map' && (
         <div className="mt-4">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="fe-scroll-row min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
+            <div className="fe-chip-row--grid min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
               <button
                 type="button"
                 role="tab"
@@ -745,11 +741,19 @@ export default function RegionsHome() {
           </div>
 
           <div id="chart" data-block="regions-map" className="relative rounded-3xl border border-border-subtle bg-surface p-3 sm:p-5" ref={mapCardRef}>
-            <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 flex-1">
                 {activeMapCode && paint.indicator ? (
                   <>
-                    <div className="text-sm font-medium leading-snug text-text-primary">{paint.indicator.name}</div>
+                    {activePreset && (
+                      <div className="font-display text-lg font-bold leading-tight text-text-primary">{t(activePreset.labelKey)}</div>
+                    )}
+                    <div className={activePreset
+                      ? 'mt-0.5 line-clamp-2 text-xs leading-snug text-text-secondary'
+                      : 'text-sm font-medium leading-snug text-text-primary'}
+                    >
+                      {paint.indicator.name}
+                    </div>
                     <div className="mt-0.5 text-xs text-text-secondary">
                       {[
                         mapYear != null ? t('w4.map.yearLabel', { year: mapYear }) : null,

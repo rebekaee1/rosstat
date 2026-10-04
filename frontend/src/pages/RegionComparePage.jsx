@@ -61,7 +61,7 @@ export default function RegionComparePage() {
   }
 
   return (
-    <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-12 sm:pb-16">
       <Breadcrumbs
         items={regionVsTrail(
           data ? `${data.region_a.name} — ${data.region_b.name}` : t('regions.compareCrumb'),

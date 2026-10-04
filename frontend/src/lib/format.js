@@ -377,7 +377,7 @@ export function resolveDateFormat({ chartMode, frequency, safeViewMode } = {}) {
 
 /**
  * Locale-aware date label. Default locale = browser/preview (`resolveBrowserLocale`).
- * ru: «январь 2020», «15 января 2020», «I кв. 2020»
+ * ru: «январь 2020», «15 января 2020», «I кв. 2020»; формат 'fullGen' — «января 2020»
  * en: «January 2020», «15 January 2020», «Q1 2020» (no mid-dot)
  */
 export function formatDate(dateStr, format = 'short', locale) {
@@ -399,6 +399,8 @@ export function formatDate(dateStr, format = 'short', locale) {
     return `${day} ${MONTHS_DAY[loc][month]} ${year}`;
   }
   if (format === 'full') return `${MONTHS_FULL[loc][month]} ${year}`;
+  // «января 2016» — месяц в родительном падеже: «с января 2016 по август 2026», «до августа 2026».
+  if (format === 'fullGen') return `${MONTHS_DAY[loc][month]} ${year}`;
   return `${MONTHS_SHORT[loc][month]} ${year}`;
 }
 

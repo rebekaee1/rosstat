@@ -86,7 +86,7 @@ export default function RegionProfile() {
     : filteredSections.filter((s) => s.num === resolvedActive);
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs items={regionTrail(regionName || '…', slug)} />
 
       {isError && (
@@ -101,7 +101,7 @@ export default function RegionProfile() {
             {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[112px] rounded-2xl" />)}
           </div>
           <SkeletonBox className="mb-6 h-12 w-full rounded-xl" />
-          <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
             {Array.from({ length: 6 }).map((_, i) => <SkeletonBox key={i} className="h-[110px] rounded-2xl sm:h-[84px]" />)}
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function RegionProfile() {
                     title={sec.name}
                     count={sec.indicators.length}
                   />
-                  <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {sec.indicators.map((item) => (
                       <RegionIndicatorRow key={item.code} item={item} to={regionIndicatorPath(slug, item.code)} />
                     ))}

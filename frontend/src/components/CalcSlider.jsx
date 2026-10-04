@@ -11,7 +11,7 @@ import { useLocale } from '../i18n';
 import '../styles/calc-ui.css';
 
 export default function CalcSlider({
-  label, ariaLabel, value, display, onChange, min, max, step = 1, suffix = '', className = '',
+  label, ariaLabel, value, display, onChange, min, max, step = 1, suffix = '', className = '', stacked = false,
 }) {
   const id = useId();
   const { locale } = useLocale();
@@ -19,14 +19,17 @@ export default function CalcSlider({
   const shown = display ?? `${numeric}${suffix}`;
   return (
     <div className={`min-w-0 ${className}`}>
-      <div className="flex items-start justify-between gap-2 mb-2">
+      <div className={stacked ? 'mb-2 flex flex-col gap-0.5' : 'flex items-start justify-between gap-2 mb-2'}>
         <label
           htmlFor={id}
           className="text-[13px] font-medium text-text-secondary leading-tight"
         >
           {label}
         </label>
-        <span className="text-base font-sans font-bold text-text-primary tabular-nums whitespace-nowrap shrink-0 leading-tight">
+        <span className={stacked
+          ? 'font-display text-2xl font-bold leading-tight text-text-primary tabular-nums whitespace-nowrap'
+          : 'text-base font-sans font-bold text-text-primary tabular-nums whitespace-nowrap shrink-0 leading-tight'}
+        >
           {shown}
         </span>
       </div>

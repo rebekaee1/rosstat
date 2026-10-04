@@ -1,5 +1,5 @@
 import { useT } from '../i18n';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
@@ -44,8 +44,23 @@ function EmbedTooltip({ active, payload, label, unit, colors }) {
   );
 }
 
+const AXIS_FONT = 'Manrope, system-ui, sans-serif';
+
+/** Ширина окна встройки: на узких виджетах подпись «Данные: …» уходит на отдельную строку. */
+function useViewportWidth() {
+  const [width, setWidth] = useState(() => (typeof window === 'undefined' ? 600 : window.innerWidth));
+  useEffect(() => {
+    const onResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return width;
+}
+
 export default function EmbedChart() {
   const t = useT();
+  const viewportW = useViewportWidth();
+  const narrow = viewportW < 460;
   const { code } = useParams();
   const { theme, height, period: initPeriod, showTitle, showForecast } = useEmbedParams();
   const [period, setPeriod] = useState(initPeriod);
@@ -113,7 +128,7 @@ export default function EmbedChart() {
   const displayVal = isCpiIndex(code) && meta?.current_value != null
     ? +(meta.current_value - 100).toFixed(2) : meta?.current_value;
   const change = meta?.change;
-  const chartH = height - (showTitle ? 50 : 0) - 28;
+  const chartH = height - (showTitle ? 50 : 0) - (narrow ? 54 : 28);
 
   return (
     <div style={{ background: colors.bg, height, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -131,7 +146,7 @@ export default function EmbedChart() {
             )}
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexShrink: 0 }}>
-            <span style={{ fontSize: 20, fontWeight: 700, fontFamily: 'ui-monospace, monospace', color: colors.text }}>
+            <span style={{ fontSize: 20, fontWeight: 700, fontFamily: AXIS_FONT, fontVariantNumeric: 'tabular-nums', color: colors.text }}>
               {formatValueWithUnit(displayVal, unit)}
             </span>
             {change != null && (
@@ -163,7 +178,7 @@ export default function EmbedChart() {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={Math.max(120, chartH)}>
-            <ComposedChart data={chartData} margin={{ top: 8, right: 8, bottom: 4, left: -4 }}>
+            <ComposedChart data={chartData} margin={{ top: 8, right: 16, bottom: 4, left: -4 }}>
               <defs>
                 <linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#AD8A48" stopOpacity={0.15} />
@@ -173,11 +188,11 @@ export default function EmbedChart() {
               <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} vertical={false} />
               <XAxis
                 dataKey="date" tickFormatter={d => formatDate(d)}
-                stroke={colors.grid} tick={{ fill: colors.tick, fontSize: 10, fontFamily: 'ui-monospace, monospace' }}
-                tickLine={false} interval="preserveStartEnd" minTickGap={50}
+                stroke={colors.grid} tick={{ fill: colors.tick, fontSize: 11, fontFamily: AXIS_FONT }}
+                tickLine={false} interval="preserveStartEnd" minTickGap={narrow ? 70 : 50}
               />
               <YAxis
-                stroke={colors.grid} tick={{ fill: colors.tick, fontSize: 10, fontFamily: 'ui-monospace, monospace' }}
+                stroke={colors.grid} tick={{ fill: colors.tick, fontSize: 11, fontFamily: AXIS_FONT }}
                 tickLine={false} axisLine={false} domain={yDomain} ticks={yTicks}
                 tickFormatter={v => formatAxisTick(v, unitDigits(unit))} width={yWidth}
               />
@@ -195,14 +210,14 @@ export default function EmbedChart() {
         )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', flexShrink: 0 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', flexShrink: 0 }}>
         {height > 280 && (
           <div style={{ display: 'flex', gap: 2 }}>
             {PERIODS.map(p => (
               <button key={p.key} onClick={() => setPeriod(p.key)}
                 style={{
                   border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 500,
-                  fontFamily: 'system-ui', padding: '5px 8px', borderRadius: 8, transition: 'all 0.15s',
+                  fontFamily: AXIS_FONT, padding: '5px 8px', borderRadius: 8, transition: 'all 0.15s', whiteSpace: 'nowrap',
                   background: period === p.key ? 'rgba(173,138,72,0.12)' : 'transparent',
                   color: period === p.key ? '#AD8A48' : colors.textTertiary,
                 }}>

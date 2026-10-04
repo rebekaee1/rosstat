@@ -48,7 +48,7 @@ describe('Ипотечный калькулятор', () => {
     renderPage(<MortgageCalculatorPage />, { path: '/calculator/mortgage', route: '/calculator/mortgage' });
     expect(screen.getByText('20 лет')).toBeTruthy();
     expect(screen.getByText('18%')).toBeTruthy();
-    expect(screen.getByLabelText('Срок, лет').getAttribute('aria-valuetext')).toBe('20 лет');
+    expect(screen.getByLabelText('Срок кредита').getAttribute('aria-valuetext')).toBe('20 лет');
   });
 
   it('результат читается экранным дикторам один раз (анимируемая копия скрыта)', () => {

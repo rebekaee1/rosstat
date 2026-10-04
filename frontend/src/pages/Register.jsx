@@ -25,7 +25,8 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [consent, setConsent] = useState(false);
-  const [newsletter, setNewsletter] = useState(true);
+  // Рассылка — только по явному согласию: заранее отмеченная галочка вызывает недоверие.
+  const [newsletter, setNewsletter] = useState(false);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [welcome, setWelcome] = useState(false);

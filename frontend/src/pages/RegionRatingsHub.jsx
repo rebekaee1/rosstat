@@ -4,7 +4,7 @@
  */
 import { useMemo, useState, useDeferredValue } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronRight, SearchX, Trophy } from 'lucide-react';
+import { ChevronDown, SearchX, Trophy } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Button from '../components/Button';
@@ -47,12 +47,11 @@ function PopularCard({ metric, index }) {
       className="fe-panel fe-press fe-reveal group flex min-w-0 flex-col rounded-3xl border border-border-subtle bg-surface p-4 transition-colors hover:border-border-champagne"
       style={{ '--fe-delay': `${Math.min(index, 5) * 0.04}s`, '--fe-rise': '8px' }}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2">
         <span className="inline-flex items-center gap-2 font-display text-lg font-bold text-text-primary group-hover:text-champagne-ink">
           <Trophy size={16} className="text-champagne-ink" aria-hidden="true" />
           {t(metric.labelKey)}
         </span>
-        <ChevronRight size={16} className="text-text-secondary" aria-hidden="true" />
       </div>
       {isLoading && (
         <div className="mt-3 space-y-2" aria-hidden="true">
@@ -62,9 +61,9 @@ function PopularCard({ metric, index }) {
       {top.length > 0 && (
         <ol className="mt-3 space-y-1.5">
           {top.map((row, i) => (
-            <li key={row.slug} className="flex items-baseline gap-2 text-sm">
+            <li key={row.slug} className="flex items-start gap-2 text-sm leading-snug">
               <span className="fe-num w-4 shrink-0 text-text-secondary">{i + 1}</span>
-              <span className="min-w-0 flex-1 truncate text-text-primary">{row.name}</span>
+              <span className="min-w-0 flex-1 break-words text-text-primary">{row.name}</span>
               <span className="fe-num shrink-0 whitespace-nowrap font-medium text-text-primary">
                 {formatRegionCompact(row.raw ?? row.value, data.indicator.unit, locale)}
               </span>
@@ -134,7 +133,7 @@ export default function RegionRatingsHub() {
   });
 
   return (
-    <div className="fe-data-page mx-auto max-w-5xl px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page mx-auto max-w-5xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs items={crumbs} className="mb-6" />
       <header className="mb-6 max-w-3xl">
         <h1 className="font-display text-3xl font-bold text-text-primary sm:text-4xl">
@@ -208,7 +207,7 @@ export default function RegionRatingsHub() {
             <h2 id="rating-popular" className="mb-3 font-display text-xl font-bold text-text-primary">
               {t('w4.rating.popular')}
             </h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {POPULAR.map((m, i) => <PopularCard key={m.code} metric={m} index={i} />)}
             </div>
           </section>
