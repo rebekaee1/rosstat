@@ -176,6 +176,7 @@
   align-items: center;
   gap: 8px;
 }
+.fe-chart-hint { margin: -4px 0 16px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.45; }
 .fe-dl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .fe-dl__label { margin-right: 2px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
 .fe-help-link {

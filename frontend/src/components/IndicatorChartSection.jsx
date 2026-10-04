@@ -312,6 +312,10 @@ export default function IndicatorChartSection({
         </div>
       </div>
 
+      {guestHistoryHint && !downloadBlocked && (
+        <p className="fe-chart-hint">{guestHistoryHint}</p>
+      )}
+
       <CountryComparePanel
         pickerOptions={comparison.pickerOptions}
         activeComparisonIds={comparison.activeComparisonIds}

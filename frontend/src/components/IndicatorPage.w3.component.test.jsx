@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LocaleProvider } from '../i18n';
 import TelemetryCard from './TelemetryCard';
 import ModeGroupsPicker from './ModeGroupsPicker';
@@ -9,6 +9,7 @@ import IndicatorForecastSection from './IndicatorForecastSection';
 import Breadcrumbs from './Breadcrumbs';
 import RelatedIndicators from './RelatedIndicators';
 import GenericViewModePicker from './GenericViewModePicker';
+import IndicatorDataTableSection from './IndicatorDataTableSection';
 
 vi.mock('../lib/track', () => ({
   track: vi.fn(),
@@ -177,5 +178,47 @@ describe('RelatedIndicators', () => {
     expect(new Set(titles).size).toBe(3);
     expect(titles.every((t) => t !== 'До 1 года')).toBe(true);
     expect(screen.getByText('17,50%')).toBeTruthy();
+  });
+});
+
+describe('IndicatorDataTableSection на странице года', () => {
+  const points = [
+    { date: '2023-12-15', value: 16 },
+    { date: '2024-01-03', value: 16 },
+    { date: '2024-07-26', value: 18 },
+    { date: '2025-02-14', value: 21 },
+  ];
+
+  function renderAt(route) {
+    return render(
+      <LocaleProvider locale="ru">
+        <MemoryRouter initialEntries={[route]}>
+          <Routes>
+            <Route
+              path="/russia/indicator/:code/:year?"
+              element={(
+                <IndicatorDataTableSection
+                  indicator={{ code: 'key-rate', frequency: 'daily', unit: '%', name: 'Ключевая ставка' }}
+                  chartMode="cpi"
+                  safeViewMode="level"
+                  dataPoints={points}
+                />
+              )}
+            />
+          </Routes>
+        </MemoryRouter>
+      </LocaleProvider>,
+    );
+  }
+
+  it('показывает только строки выбранного года и называет год в заголовке', () => {
+    renderAt('/russia/indicator/key-rate/2024');
+    expect(screen.getByRole('heading', { level: 3 }).textContent).toMatch(/, 2024$/);
+    expect(screen.getAllByRole('row')).toHaveLength(3);
+  });
+
+  it('без года таблица показывает всю историю', () => {
+    renderAt('/russia/indicator/key-rate');
+    expect(screen.getAllByRole('row')).toHaveLength(5);
   });
 });
