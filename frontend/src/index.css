@@ -624,6 +624,12 @@ nav.glass-surface-soft {
   body { background: #fff !important; }
 }
 
+/* Смысловые цвета изменений (см. lib/deltaTone.js). */
+.fe-tone--good { color: #15803d; }
+.fe-tone--bad { color: #b91c1c; }
+.fe-tone--neutral, .fe-tone--flat { color: var(--color-text-secondary); }
+.fe-delta-badge { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
 /* ── Общие примитивы движения (2026-10-04) ─────────────────────────────────
    .fe-reveal   — появление блока средствами CSS: без JS, без вспышки «невидимо до старта твина»,
                   задержка через --fe-delay, смещение через --fe-rise.
