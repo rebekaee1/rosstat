@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
-import gsap from 'gsap';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
@@ -11,6 +10,7 @@ import Brand from './Brand';
 import { useAuth } from '../context/authContext';
 import { PRIMARY_NAV, primaryNav, resolveActiveNavId } from '../lib/navItems';
 import { useLocale, useT } from '../i18n';
+import '../styles/ui-detail-nav-calendar.css';
 
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();
@@ -82,6 +82,9 @@ export default function Navbar() {
   const [calcOpen, setCalcOpen] = useState(false);
   const navRef = useRef(null);
   const calcWrapRef = useRef(null);
+  const calcBtnRef = useRef(null);
+  const mobileBtnRef = useRef(null);
+  const mobileMenuRef = useRef(null);
   const { pathname } = useLocation();
   // Служебный раздел /admin/*: fixed-пилюля наезжала на карточки BI при
   // скролле (обход BI 2.1, этап 4а) — показываем шапку только вверху страницы.
@@ -106,31 +109,29 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!mobileOpen && !calcOpen) return;
+    // Тап/клик вне открытой панели закрывает её (pointerdown + mousedown: второй — для окружений без Pointer Events).
     const onDoc = (e) => {
-      if (calcOpen && calcWrapRef.current && !calcWrapRef.current.contains(e.target)) {
-        setCalcOpen(false);
-      }
+      const inCalc = calcWrapRef.current?.contains(e.target);
+      const inMobile = mobileMenuRef.current?.contains(e.target) || mobileBtnRef.current?.contains(e.target);
+      if (calcOpen && !inCalc) setCalcOpen(false);
+      if (mobileOpen && !inMobile) setMobileOpen(false);
     };
     const onKey = (e) => {
-      if (e.key === 'Escape') closeAll();
+      if (e.key !== 'Escape') return;
+      // Фокус — на кнопку, которая открыла панель: клавиатурный пользователь не теряет место.
+      const target = calcOpen ? calcBtnRef.current : mobileBtnRef.current;
+      closeAll();
+      target?.focus();
     };
+    document.addEventListener('pointerdown', onDoc);
     document.addEventListener('mousedown', onDoc);
     document.addEventListener('keydown', onKey);
     return () => {
+      document.removeEventListener('pointerdown', onDoc);
       document.removeEventListener('mousedown', onDoc);
       document.removeEventListener('keydown', onKey);
     };
   }, [mobileOpen, calcOpen]);
-
-  useEffect(() => {
-    if (!navRef.current) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const tween = gsap.fromTo(navRef.current,
-      { y: -20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.2 }
-    );
-    return () => tween.kill();
-  }, []);
 
   const navItemClass = (isActive) => cn(
     FOCUS_RING,
@@ -180,8 +181,10 @@ export default function Navbar() {
       )}
       <nav
         ref={navRef}
+        style={{ '--fe-duration': '0.3s', '--fe-rise': '-8px' }}
         className={cn(
-          'fe-navbar fixed top-9 inset-x-0 mx-auto z-[100]',
+          // .fe-reveal: шапка видна сразу (в SSR и без JS), лишь мягко опускается на 8px.
+          'fe-reveal fe-reveal--free fe-navbar fixed top-9 inset-x-0 mx-auto z-[100]',
           // Не transition-all: иначе transition тянет backdrop-filter и в
           // части движков blur на время/после смены soft↔surface пропадает.
           'transition-[transform,opacity,background-color,box-shadow,border-color] duration-500 ease-out',
@@ -190,9 +193,7 @@ export default function Navbar() {
           scrolled
             ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
             : 'glass-surface-soft border border-black/[0.04]',
-          // !opacity: GSAP-tween появления оставляет inline opacity:1 — без
-          // important класс не победит его.
-          isAdmin && scrolled && !menuOpen && '-translate-y-24 !opacity-0 pointer-events-none'
+          isAdmin && scrolled && !menuOpen && '-translate-y-24 opacity-0 pointer-events-none'
         )}
       >
       <Link
@@ -215,6 +216,7 @@ export default function Navbar() {
         {primaryItems.map((item) => renderPrimaryLink(item, { desktop: true }))}
         <div className="relative" ref={calcWrapRef}>
           <button
+            ref={calcBtnRef}
             type="button"
             onClick={() => { setCalcOpen((o) => !o); }}
             className={cn(
@@ -224,13 +226,15 @@ export default function Navbar() {
             )}
             aria-expanded={calcOpen}
             aria-haspopup="menu"
+            aria-controls={calcOpen ? 'fe-nav-calc-menu' : undefined}
           >
             {t('nav.calculators')}
             <ChevronDown className={cn('w-4 h-4 transition-transform', calcOpen && 'rotate-180')} />
           </button>
           {calcOpen && (
             <div
-              className="absolute right-0 top-full z-[110] mt-2 min-w-[240px] rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
+              id="fe-nav-calc-menu"
+              className="fe-reveal fe-reveal--free fe-reveal--panel absolute right-0 top-full z-[110] mt-2 min-w-[240px] rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
               role="menu"
             >
               {CALCULATOR_ITEMS.map((c) => (
@@ -264,6 +268,7 @@ export default function Navbar() {
         <IndicatorSearch className="!px-2 !py-1.5" />
         <LocaleSwitcher />
         <button
+          ref={mobileBtnRef}
           type="button"
           onClick={() => { setMobileOpen(!mobileOpen); track(events.NAV_MOBILE_TOGGLE); }}
           className={cn(
@@ -271,6 +276,7 @@ export default function Navbar() {
             'flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-text-secondary transition-colors hover:text-text-primary'
           )}
           aria-expanded={mobileOpen}
+          aria-controls={mobileOpen ? 'fe-nav-mobile-menu' : undefined}
           aria-label={mobileOpen ? t('nav.closeMenu') : t('nav.openMenu')}
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -278,7 +284,7 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
+        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80vh,520px)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="flex flex-col gap-1">
             {primaryItems.map((item) => renderPrimaryLink(item))}
             <p className="text-[10px] uppercase tracking-wider text-text-tertiary px-2 pt-3 pb-1">

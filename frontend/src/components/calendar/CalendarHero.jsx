@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar as CalendarIcon } from 'lucide-react';
-import gsap from 'gsap';
 import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
+import '../../styles/ui-detail-nav-calendar.css';
 
 
 function CountdownUnit({ value, label }) {
@@ -14,7 +14,7 @@ function CountdownUnit({ value, label }) {
       <div className="text-2xl md:text-3xl font-display font-bold text-text-primary tabular-nums leading-none">
         {String(value).padStart(2, '0')}
       </div>
-      <div className="text-[10px] uppercase tracking-wider text-text-tertiary mt-1">{label}</div>
+      <div className="text-[11px] uppercase tracking-wider text-text-tertiary mt-1">{label}</div>
     </div>
   );
 }
@@ -32,7 +32,6 @@ function pluralDay(n, t) {
 export default function CalendarHero({ nextEvent }) {
   const t = useT();
   const { locale } = useLocale();
-  const ref = useRef(null);
   const [remaining, setRemaining] = useState(null);
 
   useEffect(() => {
@@ -55,23 +54,14 @@ export default function CalendarHero({ nextEvent }) {
     return () => clearInterval(iv);
   }, [nextEvent]);
 
-  useEffect(() => {
-    if (!ref.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const tween = gsap.fromTo(ref.current,
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
-    );
-    return () => tween.kill();
-  }, []);
-
   if (!nextEvent || !remaining) return null;
 
   const dateLocale = locale === 'en' ? 'en-US' : 'ru-RU';
 
   return (
     <div
-      ref={ref}
-      className="fe-panel relative overflow-hidden rounded-[2rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6 md:p-8 mb-8"
+      style={{ '--fe-duration': '0.4s', '--fe-rise': '12px' }}
+      className="fe-reveal fe-reveal--free fe-panel relative overflow-hidden rounded-[2rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6 md:p-8 mb-8"
     >
       <div className="absolute top-0 right-0 w-48 h-48 bg-champagne/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
 

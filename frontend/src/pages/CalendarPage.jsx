@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { ChevronRight, Download, X } from 'lucide-react';
+import { CalendarX2, Download, X } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useCalendarEvents, useCalendarUpcoming } from '../lib/hooks';
@@ -57,8 +57,10 @@ function monthRange(year, month) {
 }
 
 function CalendarSkeleton() {
+  const t = useT();
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" role="status" aria-busy="true">
+      <span className="sr-only">{t('calendar.state.loading')}</span>
       <SkeletonBox className="h-[22rem] w-full rounded-2xl" />
       <div className="space-y-3">
         {[1, 2, 3].map((i) => <SkeletonBox key={i} className="h-24 w-full rounded-2xl" />)}
@@ -188,6 +190,11 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     }));
   }, [visibleEvents, todayStr, t]);
 
+  // Какое пустое состояние показать: день / в текущем месяце остались только прошедшие / месяц без событий.
+  const emptyKind = selectedDate
+    ? 'emptyDay'
+    : (isCurrentMonth && allEvents.length > 0 && !source ? 'emptyUpcoming' : 'emptyMonth');
+
   return (
     <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-24">
       <Breadcrumbs
@@ -211,8 +218,8 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
 
       {isError && (
         <ApiRetryBanner className="mb-6" onRetry={() => refetch()} isFetching={isFetching}>
-          <span className="font-semibold">Календарь временно недоступен.</span>{' '}
-          Попробуйте обновить через минуту.
+          <span className="font-semibold">{t('calendar.state.error.title')}</span>{' '}
+          {t('calendar.state.error.hint')}
         </ApiRetryBanner>
       )}
 
@@ -243,22 +250,36 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors"
               >
                 <X className="w-3 h-3" />
-                Показать весь месяц
+                {t('calendar.state.showMonth')}
               </button>
             </div>
           )}
 
           {grouped.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-text-secondary text-lg mb-2">
-                {selectedDate ? 'Нет событий в этот день' : 'Нет событий в этом месяце'}
-              </p>
-              <p className="text-text-tertiary text-sm">
-                {selectedDate
-                  ? 'Выберите другую дату или покажите весь месяц'
-                  : 'Попробуйте другой месяц или сбросьте фильтр источника'}
-              </p>
-            </div>
+            // При ошибке загрузки текст «нет событий» был бы неправдой — о причине уже говорит баннер выше.
+            !isError && (
+              <div
+                className="fe-reveal fe-reveal--free flex flex-col items-center rounded-2xl border border-dashed border-border-subtle bg-surface px-6 py-12 text-center"
+                role="status"
+                data-testid="calendar-empty"
+              >
+                <CalendarX2 className="mb-3 h-8 w-8 text-text-tertiary" aria-hidden="true" />
+                <p className="mb-2 text-lg text-text-secondary">{t(`calendar.state.${emptyKind}.title`)}</p>
+                <p className="text-sm text-text-tertiary">{t(`calendar.state.${emptyKind}.hint`)}</p>
+                {!selectedDate && source && (
+                  <button
+                    type="button"
+                    onClick={() => handleSourceChange('')}
+                    className={cn(
+                      FOCUS_RING_SURFACE,
+                      'mt-4 inline-flex min-h-11 items-center rounded-xl border border-border-subtle px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-champagne/30 hover:text-text-primary',
+                    )}
+                  >
+                    {t('calendar.state.resetFilter')}
+                  </button>
+                )}
+              </div>
+            )
           ) : (
             <div className="space-y-6">
               {grouped.map((group) => {
@@ -272,7 +293,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                       )}>
                         {group.label}
                         {group.isToday && (
-                          <span className="px-1.5 py-px rounded bg-champagne/10 text-champagne text-[10px] font-bold">
+                          <span className="px-1.5 py-px rounded bg-champagne/10 text-champagne text-[11px] font-bold">
                             Сегодня
                           </span>
                         )}

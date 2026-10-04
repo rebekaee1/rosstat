@@ -1,6 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import gsap from 'gsap';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import { formatValue, formatChange, formatDate, resolveDateFormat, cn, isCpiIndex, relativeTime } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
@@ -10,6 +9,7 @@ import {
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { findCategoryByApiLabel } from '../lib/categories';
+import '../styles/ui-detail-nav-calendar.css';
 
 /**
  * Listing-карточка индикатора. Используется и на главной (где это
@@ -23,16 +23,6 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
   const { locale } = useLocale();
   const ref = useRef(null);
   const glowRef = useRef(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const tween = gsap.fromTo(ref.current,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.2 + delay * 0.1 }
-    );
-    return () => tween.kill();
-  }, [delay]);
 
   const handleMouseMove = (e) => {
     if (!glowRef.current || !indicator.is_active) return;
@@ -80,6 +70,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
   return (
     <Link
       ref={ref}
+      style={isActive ? { '--i': Math.min(delay, 5), '--fe-duration': '0.4s', '--fe-rise': '12px' } : undefined}
       to={isActive ? russiaIndicatorPath(indicator.code) : '#'}
       onClick={handleClick}
       onMouseMove={handleMouseMove}
@@ -88,7 +79,7 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
         'group relative p-4 sm:p-6 rounded-[2rem] border transition-all duration-500 overflow-hidden',
         'fe-panel bg-surface border-border-subtle',
         isActive
-          ? 'hover:border-champagne/40 cursor-pointer lift-hover'
+          ? 'fe-reveal fe-reveal--free fe-reveal--stagger hover:border-champagne/40 cursor-pointer lift-hover'
           : 'opacity-40 cursor-default pointer-events-none grayscale'
       )}
     >
@@ -105,11 +96,11 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
 
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-5 sm:mb-8">
-          <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary">
+          <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-text-tertiary">
             {(locale === 'en' ? (findCategoryByApiLabel(indicator.category_ru || indicator.category)?.nameEn) : null) || indicator.category || t('tile.metric')}
           </span>
           {!isActive && (
-            <span className="text-[9px] uppercase tracking-widest px-2.5 py-1 rounded-full bg-obsidian border border-border-subtle text-text-tertiary font-medium">
+            <span className="text-[11px] uppercase tracking-widest px-2.5 py-1 rounded-full bg-obsidian border border-border-subtle text-text-tertiary font-medium">
               {t('tile.pending')}
             </span>
           )}
@@ -146,12 +137,12 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
               
               {indicator.current_date && (
                 <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-mono">
+                  <p className="text-[11px] uppercase tracking-widest text-text-tertiary font-mono">
                     {formatDate(indicator.current_date, dateFmt, locale)}
                     {hasHero ? ` ${t('tile.yoy')}` : ''}
                   </p>
                   {relativeTime(indicator.current_date, locale) && (
-                    <span className="text-[9px] text-text-tertiary/60 font-mono">
+                    <span className="text-xs text-text-tertiary font-mono">
                       {relativeTime(indicator.current_date, locale)}
                     </span>
                   )}
@@ -162,8 +153,8 @@ export default function IndicatorTile({ indicator, delay = 0, displayOverride, s
             {changeNum != null && (
               <div className={cn(
                 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border font-mono text-xs font-medium shrink-0',
-                isUp ? 'bg-positive/10 border-positive/20 text-positive' : '',
-                isDown ? 'bg-negative/10 border-negative/20 text-negative' : '',
+                isUp ? 'bg-positive/10 border-positive/20 fe-delta--up' : '',
+                isDown ? 'bg-negative/10 border-negative/20 fe-delta--down' : '',
                 !isUp && !isDown ? 'bg-obsidian border-border-subtle text-text-tertiary' : ''
               )}>
                 {isUp && <TrendingUp className="w-3 h-3" />}

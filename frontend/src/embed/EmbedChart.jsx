@@ -11,6 +11,7 @@ import { mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 import { formatDate, formatAxisTick, formatValueWithUnit, formatChange, unitDigits, isCpiIndex } from '../lib/format';
 import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, PERIODS, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
+import EmbedSpinner from './EmbedSpinner';
 
 function EmbedTooltip({ active, payload, label, unit, colors }) {
   const t = useT();
@@ -150,7 +151,7 @@ export default function EmbedChart() {
       <div style={{ flex: 1, minHeight: 0 }}>
         {isLoading ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="embed-spin" style={{ width: 24, height: 24, border: '2px solid', borderColor: `${colors.border} transparent`, borderRadius: '50%' }} />
+            <EmbedSpinner colors={colors} size={24} label={t('embed.loading')} />
           </div>
         ) : isError ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 13, fontFamily: 'system-ui' }}>
@@ -213,7 +214,6 @@ export default function EmbedChart() {
         <Attribution code={code} dark={theme === 'dark'} />
       </div>
 
-      <style>{`@keyframes espin{to{transform:rotate(360deg)}}.embed-spin{animation:espin 1s linear infinite}@media(prefers-reduced-motion:reduce){.embed-spin{animation:none;opacity:.4}}`}</style>
     </div>
   );
 }

@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import EChart from '../components/EChart';
 import SessionAnalysisTab from '../components/SessionAnalysisTab';
+import Spinner from '../components/Spinner';
 import api, { loginUser } from '../lib/api';
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
@@ -2917,7 +2918,7 @@ export default function AdminBI() {
           className="ml-auto flex items-center gap-1.5 text-[12px] text-text-tertiary hover:text-text-primary disabled:opacity-40"
           title={onIndependent ? 'Этот раздел загружает данные самостоятельно' : 'Пересчитать сейчас (в фоне)'}
         >
-          <RefreshCw size={13} className={isFetching || building || meta?.refreshing ? 'animate-spin' : ''} />
+          {isFetching || building || meta?.refreshing ? <Spinner size={13} /> : <RefreshCw size={13} />}
           {builtAt ? `снимок ${builtAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : ''}
           {meta?.refreshing
             ? <span className="hidden sm:inline"> — пересчитываем в фоне</span>

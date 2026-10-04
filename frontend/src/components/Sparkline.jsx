@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useId } from 'react';
 import { CHART_THEME } from '../lib/chartTheme';
+import { SkeletonBox } from './Skeleton';
 
 const COLOR_POSITIVE = '#16A34A';
 const COLOR_NEGATIVE = '#DC2626';
@@ -261,8 +262,7 @@ function SparklineResizer({ height, render }) {
   );
 }
 
-export function SparklineSkeleton({ height = 48 }) {
-  return (
-    <div className="skeleton w-full rounded-lg" style={{ height }} />
-  );
+/** Каркас спарклайна того же размера, что и сам график (`height` — px), чтобы строка не прыгала при подмене. */
+export function SparklineSkeleton({ height = 48, className }) {
+  return <SkeletonBox className={['w-full rounded-lg', className].filter(Boolean).join(' ')} style={{ height }} />;
 }

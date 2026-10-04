@@ -1,7 +1,5 @@
-import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ExternalLink } from 'lucide-react';
-import gsap from 'gsap';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import { isExternalHref } from '../../lib/sourceLink';
@@ -11,6 +9,7 @@ import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
 import { useT } from '../../i18n';
+import '../../styles/ui-detail-nav-calendar.css';
 
 const SOURCE_STYLES = {
   cbr: {
@@ -65,7 +64,7 @@ function ValueCell({ label, value, className }) {
   if (!value && value !== 0) return <div className={cn('text-center', className)}><span className="text-text-tertiary">—</span></div>;
   return (
     <div className={cn('text-center', className)}>
-      <div className="text-[10px] uppercase tracking-wider text-text-tertiary mb-0.5">{label}</div>
+      <div className="text-[11px] uppercase tracking-wider text-text-tertiary mb-0.5">{label}</div>
       <div className="text-sm font-semibold text-text-primary tabular-nums">{value}</div>
     </div>
   );
@@ -76,7 +75,7 @@ function ActualValueCell({ value, previous, forecast }) {
   if (!value && value !== 0) {
     return (
       <div className="text-center">
-        <div className="text-[10px] uppercase tracking-wider text-text-tertiary mb-0.5">{t('calendar.event.fact')}</div>
+        <div className="text-[11px] uppercase tracking-wider text-text-tertiary mb-0.5">{t('calendar.event.fact')}</div>
         <div className="text-sm text-text-tertiary">—</div>
       </div>
     );
@@ -94,7 +93,7 @@ function ActualValueCell({ value, previous, forecast }) {
 
   return (
     <div className="text-center">
-      <div className="text-[10px] uppercase tracking-wider text-text-tertiary mb-0.5">{t('calendar.event.fact')}</div>
+      <div className="text-[11px] uppercase tracking-wider text-text-tertiary mb-0.5">{t('calendar.event.fact')}</div>
       <div className={cn('text-sm font-bold tabular-nums', color)}>
         {value}{arrow}
       </div>
@@ -104,21 +103,15 @@ function ActualValueCell({ value, previous, forecast }) {
 
 export default function CalendarEventCard({ event, isPast, isToday, index = 0 }) {
   const t = useT();
-  const ref = useRef(null);
+  // Вход карточки средствами CSS, каскад ≤ 200 мс. Прошедшие события приглушены (opacity) — их не анимируем,
+  // иначе в конце входа прозрачность «щёлкнула» бы с 1 до 0.7.
+  const revealClass = isPast ? null : 'fe-reveal fe-reveal--free fe-reveal--stagger';
+  const revealStyle = isPast ? undefined : { '--i': Math.min(index, 5), '--fe-duration': '0.35s', '--fe-rise': '10px' };
   const src = SOURCE_STYLES[event.source] || SOURCE_STYLES.cbr;
   const sourceLabel = t(src.labelKey);
   const isHigh = event.importance === 3;
   const isLow = event.importance === 1;
   const hasValues = event.previous_value != null || event.forecast_value != null || event.actual_value != null;
-
-  useEffect(() => {
-    if (!ref.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const tween = gsap.fromTo(ref.current,
-      { y: 12, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out', delay: index * 0.04 }
-    );
-    return () => tween.kill();
-  }, [index]);
 
   const linkedIndicators = Array.isArray(event.indicators) && event.indicators.length > 0
     ? event.indicators
@@ -129,8 +122,9 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
   if (isLow && !isToday) {
     return (
       <div
-        ref={ref}
+        style={revealStyle}
         className={cn(
+          revealClass,
           'group flex items-center gap-3 px-4 py-2.5 rounded-xl',
           'border border-border-subtle bg-surface',
           'transition-colors hover:bg-surface-hover',
@@ -164,8 +158,9 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
 
   return (
     <div
-      ref={ref}
+      style={revealStyle}
       className={cn(
+        revealClass,
         'fe-calendar-event group relative rounded-2xl border bg-surface transition-all duration-200',
         'border-l-[3px]',
         src.border,
@@ -178,13 +173,13 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex items-center gap-2 flex-wrap">
             <span className={cn(
-              'inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider',
+              'inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider',
               src.bg, src.text,
             )}>
               {sourceLabel}
             </span>
             <ImportanceDots level={event.importance} />
-            <span className="text-[10px] text-text-tertiary">{t(event.date_confidence === 'official_rule' ? 'calendar.event.officialRule' : 'calendar.event.official')}
+            <span className="text-xs text-text-tertiary">{t(event.date_confidence === 'official_rule' ? 'calendar.event.officialRule' : 'calendar.event.official')}
               {event.status === 'awaiting_confirmation' && `; ${t('calendar.event.awaitingConfirmation')}`}</span>
           </div>
           {event.scheduled_time && (

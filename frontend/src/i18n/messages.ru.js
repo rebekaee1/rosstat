@@ -2040,4 +2040,16 @@ export default {
   'world.regions.mapHintZoom':
     'Кнопки «+»/«−» приближают карту, в приближении её можно перетаскивать.',
   'world.regions.mapClickTitle': 'Клик открывает карточку территории',
+  // ── calendar.state.* — видимые состояния календаря (загрузка / ошибка / пусто)
+  'calendar.state.loading': 'Загружаем календарь…',
+  'calendar.state.error.title': 'Календарь временно недоступен.',
+  'calendar.state.error.hint': 'Попробуйте обновить через минуту.',
+  'calendar.state.emptyMonth.title': 'Нет событий в этом месяце',
+  'calendar.state.emptyMonth.hint': 'Попробуйте другой месяц или сбросьте фильтр источника',
+  'calendar.state.emptyUpcoming.title': 'В этом месяце больше нет предстоящих событий',
+  'calendar.state.emptyUpcoming.hint': 'Выберите дату в сетке или перейдите к другому месяцу',
+  'calendar.state.emptyDay.title': 'Нет событий в этот день',
+  'calendar.state.emptyDay.hint': 'Выберите другую дату или покажите весь месяц',
+  'calendar.state.resetFilter': 'Сбросить фильтр источника',
+  'calendar.state.showMonth': 'Показать весь месяц',
 };

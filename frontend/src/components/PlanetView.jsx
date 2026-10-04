@@ -4,7 +4,7 @@ import {
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
   ArrowUpRight, Check, ChevronDown, ChevronRight, Globe2, GitCompare, Layers3,
-  LoaderCircle, Minus, Move, Plus, RotateCcw, Search, X,
+  Minus, Move, Plus, RotateCcw, Search, X,
 } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
@@ -16,6 +16,7 @@ import {
   formatWorldPeriod, resolveWorldPeriodFormat, worldPeriodDates,
 } from '../lib/worldMapPeriod';
 import SourceLink from './SourceLink';
+import Spinner from './Spinner';
 import './PlanetView.css';
 
 const WorldMap = lazy(() => import('./WorldMap'));
@@ -311,14 +312,14 @@ export default function PlanetView({
           <div className={'planet-stage' + (isMap ? ' planet-stage--map' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} onPointerMove={trackPointer}>
             {isMap ? <div className="planet-map-fallback">
               <div className="planet-fallback-message" role="status"><span>{t('planet.unavailable')}</span><button type="button" onClick={retryScene}>{t('planet.retry')}</button></div>
-              <Suspense fallback={<div className="planet-loading">{t('planet.loading')}</div>}><WorldMap countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={unit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection} defaultScope={defaultScope} onSelect={(country) => selectCountry(country.code, true)} /></Suspense>
+              <Suspense fallback={<div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div>}><WorldMap countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={unit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection} defaultScope={defaultScope} onSelect={(country) => selectCountry(country.code, true)} /></Suspense>
             </div> : <>
               <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
                 <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
                   onHover={handleHover} onSelect={activateCountry} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
                   interactive={!touchNavigation || interactiveTouch} touchNavigation={touchNavigation} />
               </Suspense></SceneBoundary>
-              {sceneStatus === 'loading' && <div className="planet-loading" role="status"><LoaderCircle size={19} aria-hidden="true" />{t('planet.loading')}</div>}
+              {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div>}
               {!selectedCountry && sceneStatus === 'ready' && <p className="planet-select-hint">{t('planet.subtitle')}</p>}
               <div className="planet-camera-controls">
                 <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')}><Plus size={18} aria-hidden="true" /></button>
