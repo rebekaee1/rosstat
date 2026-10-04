@@ -170,8 +170,8 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
   const controlsRef = useRef(null);
   const flightRef = useRef(null);
   const aspect = size.width / size.height;
-  // On a narrow phone stage the control column would sit on the sphere; leave it a margin.
-  const fitDistance = planetFitDistance({ fov: camera.fov, aspect, padding: aspect < 1 ? 1.2 : 1.08 });
+  // On a phone-width stage the control column would sit on the sphere; leave it a margin.
+  const fitDistance = planetFitDistance({ fov: camera.fov, aspect, padding: aspect < 1 || size.width < 520 ? 1.28 : 1.08 });
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
     controls.enabled = interactive;
