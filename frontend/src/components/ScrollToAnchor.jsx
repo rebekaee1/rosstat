@@ -9,14 +9,13 @@ export default function ScrollToAnchor() {
     let id;
     try { id = decodeURIComponent(hash.slice(1)); } catch { return undefined; }
     let observer;
-    let frame;
     let timer;
     const reveal = () => {
       const target = document.getElementById(id);
       if (!target) return false;
       observer?.disconnect();
       clearTimeout(timer);
-      frame = requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'auto' }));
+      requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'auto' }));
       return true;
     };
     if (!reveal()) {
@@ -26,7 +25,8 @@ export default function ScrollToAnchor() {
     }
     return () => {
       observer?.disconnect();
-      cancelAnimationFrame(frame);
+      // Кадр не отменяем: перерисовка соседей между поиском цели и кадром не должна терять прокрутку;
+      // для уже убранного из DOM элемента scrollIntoView ничего не делает.
       clearTimeout(timer);
     };
   }, [pathname, hash]);
