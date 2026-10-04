@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowDown, ArrowUp, Trophy } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
@@ -12,16 +12,9 @@ import {
   regionIndicatorPath,
   regionRatingPath,
 } from '../lib/sitePaths';
+import Chip from '../components/Chip';
 import { useT } from '../i18n';
-
-function ButtonClass(active) {
-  return [
-    'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-    active
-      ? 'bg-champagne/15 text-champagne'
-      : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-  ].join(' ');
-}
+import '../styles/platform-pages.css';
 
 export default function RegionRatingPage() {
   const t = useT();
@@ -31,12 +24,11 @@ export default function RegionRatingPage() {
   const achievement = Boolean(data?.rank_as_achievement);
   const serverSort = data?.default_sort === 'asc' ? 'asc' : 'desc';
   // null = ещё не трогали переключатель → берём направление с сервера.
-  const [sortOverride, setSortOverride] = useState(null);
+  // Выбор привязан к коду показателя, поэтому при смене показателя сбрасывается сам.
+  const [sortState, setSortState] = useState({ code, value: null });
+  const sortOverride = sortState.code === code ? sortState.value : null;
+  const setSortOverride = (value) => setSortState({ code, value });
   const sortDirection = sortOverride ?? serverSort;
-
-  useEffect(() => {
-    setSortOverride(null);
-  }, [code]);
 
   const ranked = useMemo(() => {
     if (!data?.values?.length) return [];
@@ -86,18 +78,31 @@ export default function RegionRatingPage() {
         )}
       />
 
-      {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
+      {isError && (
+        <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
+          {t('pgui.regions.ratingError')}
+        </ApiRetryBanner>
+      )}
 
       {isLoading && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-10 w-96 max-w-full" />
-          <SkeletonBox className="h-64 rounded-xl" />
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="mb-2 mt-6 h-4 w-48" />
+          <SkeletonBox className="mb-3 h-8 w-full max-w-xl sm:h-9" />
+          <SkeletonBox className="mb-4 h-12 w-full max-w-3xl" />
+          <SkeletonBox className="mb-6 h-9 w-72 max-w-full" />
+          <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <SkeletonBox className="h-[92px] rounded-xl" />
+            <SkeletonBox className="h-[92px] rounded-xl" />
+            <SkeletonBox className="h-[92px] rounded-xl" />
+          </div>
+          <SkeletonBox className="mb-8 aspect-[1000/538] w-full rounded-xl" />
+          <SkeletonBox className="h-[32rem] rounded-xl" />
         </div>
       )}
 
       {data && ranked.length >= 10 && (
         <>
-          <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
+          <p className="text-champagne-ink text-xs font-mono uppercase tracking-widest mb-2">
             {achievement ? t('regions.rating.eyebrowAchievement') : t('regions.rating.eyebrowNeutral')}
             {' — '}
             {data.year}
@@ -129,21 +134,21 @@ export default function RegionRatingPage() {
           </p>
 
           <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary mr-1">
+            <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-text-secondary mr-1">
               {t('regions.rating.sort')}
             </span>
-            <button type="button" className={ButtonClass(sortDirection === 'desc')} onClick={() => setSortOverride('desc')}>
+            <Chip active={sortDirection === 'desc'} onClick={() => setSortOverride('desc')}>
               {t('regions.rating.sortDesc')}
-            </button>
-            <button type="button" className={ButtonClass(sortDirection === 'asc')} onClick={() => setSortOverride('asc')}>
+            </Chip>
+            <Chip active={sortDirection === 'asc'} onClick={() => setSortOverride('asc')}>
               {t('regions.rating.sortAsc')}
-            </button>
+            </Chip>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-tertiary uppercase tracking-wide flex items-center gap-1">
-                {achievement && <Trophy size={12} className="text-champagne" />}
+              <div className="text-[11px] text-text-secondary uppercase tracking-wide flex items-center gap-1">
+                {achievement && <Trophy size={12} className="text-champagne-ink" />}
                 {bestLabel}
               </div>
               <div className="mt-1 font-semibold text-text-primary">{top.name}</div>
@@ -154,7 +159,7 @@ export default function RegionRatingPage() {
               </div>
             </div>
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{worstLabel}</div>
+              <div className="text-[11px] text-text-secondary uppercase tracking-wide">{worstLabel}</div>
               <div className="mt-1 font-semibold text-text-primary">{bottom.name}</div>
               <div className="font-mono text-sm text-text-secondary">
                 {formatRegionValue(bottom.raw ?? bottom.value)}
@@ -163,7 +168,7 @@ export default function RegionRatingPage() {
               </div>
             </div>
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('regions.rating.dataFor')}</div>
+              <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('regions.rating.dataFor')}</div>
               <div className="mt-1 font-mono font-semibold text-text-primary">
                 {data.year}
                 {' '}
@@ -189,7 +194,7 @@ export default function RegionRatingPage() {
             <div className="overflow-x-auto rounded-xl border border-border-subtle max-h-[32rem]">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-obsidian-light/95 backdrop-blur-sm z-10">
-                  <tr className="text-left text-[11px] uppercase tracking-wide text-text-tertiary">
+                  <tr className="text-left text-[11px] uppercase tracking-wide text-text-secondary">
                     <th className="px-4 py-2.5 font-medium w-16">{tableCol}</th>
                     <th className="px-4 py-2.5 font-medium">{t('regions.rating.colRegion')}</th>
                     <th
@@ -202,7 +207,7 @@ export default function RegionRatingPage() {
                         title={sortDirection === 'asc'
                           ? t('regions.rating.sortAsc')
                           : t('regions.rating.sortDesc')}
-                        className="inline-flex items-center gap-1 rounded-lg transition-colors hover:text-champagne"
+                        className="fe-tap-inline gap-1 rounded-lg transition-colors hover:text-champagne-ink"
                       >
                         {data.indicator.unit || t('regions.rating.colValue')}
                         {sortDirection === 'asc'
@@ -214,12 +219,12 @@ export default function RegionRatingPage() {
                 </thead>
                 <tbody>
                   {ranked.map((row) => (
-                    <tr key={row.slug} className="border-t border-border-subtle hover:bg-surface-hover">
-                      <td className="px-4 py-2 font-mono text-text-tertiary">{row.rank}</td>
+                    <tr key={row.slug} className="fe-row-link border-t border-border-subtle">
+                      <td className="px-4 py-2 font-mono text-text-secondary">{row.rank}</td>
                       <td className="px-4 py-2">
                         <Link
                           to={regionIndicatorPath(row.slug, code)}
-                          className="text-text-primary hover:text-champagne transition-colors"
+                          className="fe-row-link__a text-text-primary hover:text-champagne-ink transition-colors"
                         >
                           {row.name}
                         </Link>
@@ -248,7 +253,7 @@ export default function RegionRatingPage() {
         </>
       )}
 
-      {!isLoading && !isError && data && ranked.length < 10 && (
+      {!isLoading && !isError && (!data || ranked.length < 10) && (
         <p className="text-text-secondary">{t('regions.rating.empty')}</p>
       )}
     </div>

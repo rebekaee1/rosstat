@@ -5,6 +5,7 @@ import { Info } from 'lucide-react';
 import { isWeoMapConcept } from '../lib/homeWorkbench';
 import { russiaCategoryPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
+import '../styles/platform-pages.css';
 
 const TIP_WIDTH_PX = 352; // ~22rem
 const TIP_GAP_PX = 6;
@@ -111,14 +112,14 @@ export default function WorldMapConceptNote({ conceptSlug }) {
         <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1">
           <Link
             to="/methodology"
-            className="font-medium text-champagne hover:underline"
+            className="fe-tap-inline font-medium text-champagne-ink hover:underline"
           >
             {t('home.map.weoNote.methodology')}
           </Link>
           {locale !== 'en' && (
             <Link
               to={russiaCategoryPath('gdp')}
-              className="font-medium text-champagne hover:underline"
+              className="fe-tap-inline font-medium text-champagne-ink hover:underline"
             >
               {t('home.map.weoNote.russiaGdp')}
             </Link>
@@ -152,7 +153,7 @@ export default function WorldMapConceptNote({ conceptSlug }) {
           clearCloseTimer();
           setOpen(true);
         }}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-text-tertiary transition-colors hover:bg-champagne/10 hover:text-champagne focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne/40"
+        className="fe-map-btn fe-press h-7 w-7 rounded-lg text-text-secondary transition-colors hover:bg-champagne/10 hover:text-champagne-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne/40"
       >
         <Info size={14} strokeWidth={1.75} aria-hidden="true" />
       </button>

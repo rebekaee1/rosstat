@@ -34,7 +34,7 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
   return (
     <section data-block="methodology" className="lg:col-span-1 p-8 rounded-[2rem] bg-obsidian-light border border-border-subtle flex flex-col h-full">
       <div className="flex items-center gap-3 mb-6">
-        <Info className="w-4 h-4 text-champagne" />
+        <Info className="w-4 h-4 text-champagne-ink" />
         <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">
           {t('indicator.methodology')}
         </h3>
@@ -45,7 +45,7 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
           {description}
         </p>
         {methodology && (
-          <div className="text-text-tertiary border-l-2 border-champagne/40 pl-4 my-4 text-xs leading-relaxed">
+          <div className="text-text-secondary border-l-2 border-champagne/40 pl-4 my-4 text-xs leading-relaxed">
             {methodology}
           </div>
         )}
@@ -56,7 +56,7 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
           <SourceLink
             href={externalHref}
             fallbackTo={internalPath}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-champagne hover:bg-champagne/10 transition-colors lift-hover w-full justify-center"
+            className="fe-tap inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-champagne-ink hover:bg-champagne/10 transition-colors lift-hover w-full justify-center"
             textClassName="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-text-secondary w-full justify-center"
           >
             <Database className="w-3.5 h-3.5" />

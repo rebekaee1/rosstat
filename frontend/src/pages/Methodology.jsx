@@ -17,7 +17,7 @@ const P = 'text-text-secondary leading-relaxed';
 function Step({ n, title, children }) {
   return (
     <li className="relative pl-14 pb-8 last:pb-0">
-      <span className="absolute left-0 top-0 flex items-center justify-center w-10 h-10 rounded-full bg-champagne/10 border border-champagne/30 text-champagne font-display font-bold">
+      <span className="absolute left-0 top-0 flex items-center justify-center w-10 h-10 rounded-full bg-champagne/10 border border-champagne/30 text-champagne-ink font-display font-bold">
         {n}
       </span>
       <h3 className="text-base font-semibold text-text-primary mb-2">{title}</h3>
@@ -45,7 +45,7 @@ export default function Methodology() {
   return (
     <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
       <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
-      <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
+      <p className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold mb-4">
         {t('meth.eyebrow')}
       </p>
       <h1 className="font-display text-3xl md:text-5xl font-bold text-text-primary mb-6 leading-[1.1]">
@@ -65,22 +65,22 @@ export default function Methodology() {
         <h2 className={H2}>{t('meth.principlesTitle')}</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className={CARD}>
-            <Database className="w-6 h-6 text-champagne mb-3" />
+            <Database className="w-6 h-6 text-champagne-ink mb-3" />
             <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.p.officialTitle')}</h3>
             <p className={`${P} text-[14px]`}>{t('meth.p.officialBody')}</p>
           </div>
           <div className={CARD}>
-            <Sigma className="w-6 h-6 text-champagne mb-3" />
+            <Sigma className="w-6 h-6 text-champagne-ink mb-3" />
             <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.p.reproTitle')}</h3>
             <p className={`${P} text-[14px]`}>{t('meth.p.reproBody')}</p>
           </div>
           <div className={CARD}>
-            <ShieldCheck className="w-6 h-6 text-champagne mb-3" />
+            <ShieldCheck className="w-6 h-6 text-champagne-ink mb-3" />
             <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.p.uncertTitle')}</h3>
             <p className={`${P} text-[14px]`}>{t('meth.p.uncertBody')}</p>
           </div>
           <div className={CARD}>
-            <Ban className="w-6 h-6 text-champagne mb-3" />
+            <Ban className="w-6 h-6 text-champagne-ink mb-3" />
             <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.p.limitsTitle')}</h3>
             <p className={`${P} text-[14px]`}>{t('meth.p.limitsBody')}</p>
           </div>
@@ -108,14 +108,14 @@ export default function Methodology() {
       <section className="mb-16">
         <h2 className={H2}>{t('meth.worldRankTitle')}</h2>
         <div className={`${CARD} mb-4`}>
-          <Globe2 className="w-6 h-6 text-champagne mb-3" />
+          <Globe2 className="w-6 h-6 text-champagne-ink mb-3" />
           <p className={`${P} mb-4`}>{t('meth.worldRank.p1')}</p>
           <p className={`${P} mb-4`}>{t('meth.worldRank.p2')}</p>
           <Link
             to={locale === 'en'
               ? worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)
               : russiaCategoryPath('gdp')}
-            className="text-sm font-medium text-champagne hover:underline"
+            className="text-sm font-medium text-champagne-ink hover:underline"
           >
             {t('meth.worldRank.link')}
           </Link>
@@ -126,12 +126,12 @@ export default function Methodology() {
         <h2 className={H2}>{t('meth.updateTitle')}</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className={CARD}>
-            <RefreshCw className="w-6 h-6 text-champagne mb-3" />
+            <RefreshCw className="w-6 h-6 text-champagne-ink mb-3" />
             <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.update.modelTitle')}</h3>
             <p className={`${P} text-[14px]`}>{t('meth.update.modelBody')}</p>
           </div>
           <div className={CARD}>
-            <GitBranch className="w-6 h-6 text-champagne mb-3" />
+            <GitBranch className="w-6 h-6 text-champagne-ink mb-3" />
             <h3 className="font-semibold text-text-primary mb-1.5">{t('meth.update.derivedTitle')}</h3>
             <p className={`${P} text-[14px]`}>{t('meth.update.derivedBody')}</p>
           </div>
@@ -144,7 +144,7 @@ export default function Methodology() {
         <ul className="space-y-3">
           {skipItems.map(([titleKey, bodyKey]) => (
             <li key={titleKey} className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-4">
-              <Ban className="w-5 h-5 text-text-tertiary shrink-0 mt-0.5" />
+              <Ban className="w-5 h-5 text-text-secondary shrink-0 mt-0.5" />
               <span className="text-[14px] text-text-secondary leading-relaxed">
                 <strong className="text-text-primary">{t(titleKey)}.</strong> {t(bodyKey)}
               </span>
@@ -157,7 +157,7 @@ export default function Methodology() {
       <section className="mb-16">
         <h2 className={H2}>{t('meth.readTitle')}</h2>
         <div className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-5 mb-4">
-          <Eye className="w-5 h-5 text-champagne shrink-0 mt-0.5" />
+          <Eye className="w-5 h-5 text-champagne-ink shrink-0 mt-0.5" />
           <div className="text-[14px] text-text-secondary leading-relaxed space-y-2">
             <p>{t('meth.read.p1')}</p>
             <p>{t('meth.read.p2')}</p>
@@ -168,7 +168,7 @@ export default function Methodology() {
       <section className="mb-12">
         <h2 className={H2}>{t('meth.disclaimerTitle')}</h2>
         <div className="fe-panel flex gap-3 items-start rounded-2xl bg-surface border border-border-subtle p-5">
-          <AlertTriangle className="w-5 h-5 text-champagne shrink-0 mt-0.5" />
+          <AlertTriangle className="w-5 h-5 text-champagne-ink shrink-0 mt-0.5" />
           <div className="text-[15px] text-text-secondary leading-relaxed space-y-3">
             <p>{t('meth.disclaimer.p1')}</p>
             <p>{t('meth.disclaimer.p2')}</p>

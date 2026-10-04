@@ -21,6 +21,8 @@ import {
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import SourceLink from '../components/SourceLink';
+import Button from '../components/Button';
+import '../styles/platform-pages.css';
 
 function ruDateShort(iso) {
   if (!iso) return '';
@@ -99,18 +101,38 @@ export default function TodayIndicatorPage() {
     <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
       <Breadcrumbs items={todayIndicatorTrail(spec.query, code)} />
 
-      {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
+      {isError && (
+        <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
+          {t('pgui.today.loadError')}
+        </ApiRetryBanner>
+      )}
 
       {isLoading && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-10 w-80 max-w-full" />
-          <SkeletonBox className="h-72 rounded-xl" />
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="mb-2 mt-6 h-4 w-32" />
+          <SkeletonBox className="mb-4 h-8 w-80 max-w-full sm:h-9" />
+          <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <SkeletonBox className="col-span-2 h-[102px] rounded-xl lg:col-span-1" />
+            <SkeletonBox className="h-[102px] rounded-xl" />
+            <SkeletonBox className="h-[102px] rounded-xl" />
+            <SkeletonBox className="h-[102px] rounded-xl" />
+          </div>
+          <SkeletonBox className="mb-6 h-[26rem] rounded-xl sm:h-[30rem]" />
+        </div>
+      )}
+
+      {!isLoading && !isError && !(last && indicator) && (
+        <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+          {t('pgui.today.noData')}
+          <div className="mt-4 flex justify-center">
+            <Button as={Link} to={todayPath()} variant="secondary" size="sm">{t('today.sectionTitle')}</Button>
+          </div>
         </div>
       )}
 
       {!isLoading && last && indicator && (
         <>
-          <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
+          <p className="text-champagne-ink text-xs font-mono uppercase tracking-widest mb-2">
             {t('today.page.eyebrow')}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-4">
@@ -119,27 +141,27 @@ export default function TodayIndicatorPage() {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
             <div className="bg-surface border border-border-subtle rounded-xl p-3.5 col-span-2 lg:col-span-1">
-              <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('today.page.now')}</div>
+              <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('today.page.now')}</div>
               <div className="mt-1 font-mono text-2xl font-bold text-text-primary">
                 {formatTodayNumber(last.value)}
                 <span className="ml-1 text-sm font-normal text-text-secondary">{unitSuffix(indicator.unit)}</span>
               </div>
-              <div className="mt-1 text-[11px] text-text-tertiary">{formatTodayRuDate(last.date)}</div>
+              <div className="mt-1 text-xs text-text-secondary">{formatTodayRuDate(last.date)}</div>
             </div>
             {prev && (
               <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('today.page.prev')}</div>
+                <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('today.page.prev')}</div>
                 <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(prev.value)}</div>
               </div>
             )}
             {stats && (
               <>
                 <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                  <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('today.page.min')}</div>
+                  <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('today.page.min')}</div>
                   <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(stats.min)}</div>
                 </div>
                 <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-                  <div className="text-[11px] text-text-tertiary uppercase tracking-wide">{t('today.page.max')}</div>
+                  <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('today.page.max')}</div>
                   <div className="mt-1 font-mono font-semibold text-text-primary">{formatTodayNumber(stats.max)}</div>
                 </div>
               </>
@@ -147,9 +169,9 @@ export default function TodayIndicatorPage() {
           </div>
 
           {stats?.change != null && Math.abs(stats.change) >= 1e-12 && (
-            <div className={`inline-flex items-center gap-1.5 text-sm font-mono mb-4 ${stats.change > 0 ? 'text-positive' : 'text-negative'}`}>
+            <div className={`inline-flex items-center gap-1.5 text-sm font-mono mb-4 ${stats.change > 0 ? 'fe-ink-pos' : 'fe-ink-neg'}`}>
               {stats.change > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-              {formatChange(stats.change, indicator.unit)} к предыдущему значению
+              {formatChange(stats.change, indicator.unit)} {t('pgui.today.vsPrev')}
             </div>
           )}
 
@@ -168,11 +190,11 @@ export default function TodayIndicatorPage() {
                 query: locale === 'en' ? (t(`today.spec.${code}`) || spec.query) : spec.query,
               })}
             />
-            <p className="mt-2 text-[11px] text-text-tertiary font-mono">
+            <p className="mt-2 text-xs text-text-secondary font-mono">
               {t('today.page.source', { source: '' }).replace(/\s*$/, '')}{' '}
               <SourceLink
                 href={indicator.source_url}
-                className="text-champagne underline-offset-2 hover:underline"
+                className="text-champagne-ink underline-offset-2 hover:underline"
                 textClassName=""
               >
                 {indicator.source}
@@ -180,20 +202,17 @@ export default function TodayIndicatorPage() {
             </p>
           </div>
 
-          <Link
-            to={russiaIndicatorPath(spec.code)}
-            className="inline-flex items-center gap-2 mb-8 px-4 py-2.5 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors"
-          >
+          <Button as={Link} to={russiaIndicatorPath(spec.code)} variant="secondary" className="mb-8">
             {t('today.page.openCard')}
             <ArrowRight size={16} />
-          </Link>
+          </Button>
 
           <section className="mb-8">
             <h2 className="font-display text-lg font-semibold text-text-primary mb-3">{t('today.page.recent')}</h2>
             <div className="overflow-x-auto rounded-xl border border-border-subtle">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-obsidian-light/50 text-left text-[11px] uppercase tracking-wide text-text-tertiary">
+                  <tr className="bg-obsidian-light/50 text-left text-[11px] uppercase tracking-wide text-text-secondary">
                     <th className="px-4 py-2.5 font-medium">{t('today.page.colDate')}</th>
                     <th className="px-4 py-2.5 font-medium">{indicator.unit || t('today.page.colValue')}</th>
                   </tr>
@@ -215,7 +234,7 @@ export default function TodayIndicatorPage() {
             <p className="text-sm text-text-secondary">
               {t('today.page.fullHistoryBody')}
               {' '}
-              <Link to={russiaIndicatorPath(spec.code)} className="text-champagne hover:underline">
+              <Link to={russiaIndicatorPath(spec.code)} className="text-champagne-ink hover:underline">
                 {locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name}
               </Link>
               .

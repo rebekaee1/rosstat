@@ -42,7 +42,7 @@ export default function CategoriesHub() {
   }, [crumbs]);
 
   return (
-    <div className="mx-auto max-w-7xl overflow-x-clip px-4 pb-28 pt-24 md:px-8">
+    <div className="fe-data-page mx-auto max-w-7xl overflow-x-clip px-4 pb-28 pt-24 md:px-8">
       <Breadcrumbs items={crumbs} className="mb-8" />
 
       <header className="mb-10 max-w-3xl">
@@ -73,7 +73,7 @@ export default function CategoriesHub() {
       )}
 
       {isLoading ? (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" role="status" aria-busy="true" aria-label={t('common.loading')}>
           {[...Array(9)].map((_, i) => (
             <TileSkeleton key={i} />
           ))}

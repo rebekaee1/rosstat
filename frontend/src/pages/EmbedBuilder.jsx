@@ -13,7 +13,11 @@ import { SITE_ORIGIN } from '../lib/siteOrigin';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import Breadcrumbs from '../components/Breadcrumbs';
+import Button from '../components/Button';
+import Chip from '../components/Chip';
+import Spinner from '../components/Spinner';
 import { toolTrail } from '../lib/breadcrumbs';
+import '../styles/platform-pages.css';
 
 const WIDGET_TYPES = [
   { key: 'chart', labelKey: 'embed.type.chart', descKey: 'embed.type.chartDesc', icon: BarChart3 },
@@ -73,15 +77,16 @@ function IndicatorCombobox({ indicators, value, onChange }) {
   return (
     <div ref={ref} className="relative">
       <button type="button" onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-border-subtle bg-surface text-sm text-text-primary hover:border-champagne/40 transition-colors text-left">
+        aria-haspopup="listbox" aria-expanded={open}
+        className="fe-tap fe-press w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-border-subtle bg-surface text-sm text-text-primary hover:border-champagne/40 transition-colors text-left">
         <span className="truncate">{selected?.name || t('embed.pickIndicator')}</span>
-        <ChevronDown className={cn('w-4 h-4 text-text-tertiary transition-transform', open && 'rotate-180')} />
+        <ChevronDown className={cn('w-4 h-4 text-text-secondary transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
         <div className="absolute z-50 left-0 right-0 mt-1 bg-surface border border-border-subtle rounded-xl shadow-2xl overflow-hidden" style={{ maxHeight: 340 }}>
           <div className="p-2 border-b border-border-subtle">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-tertiary" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-secondary" />
               <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                 placeholder={t('embed.search')} autoFocus
                 className="w-full pl-8 pr-3 py-2 bg-obsidian-lighter rounded-lg text-sm text-text-primary placeholder:text-text-tertiary border-none outline-none focus:ring-1 focus:ring-champagne/30" />
@@ -90,24 +95,24 @@ function IndicatorCombobox({ indicators, value, onChange }) {
           <div className="overflow-y-auto" style={{ maxHeight: 280 }}>
             {grouped.map(cat => (
               <div key={cat.slug}>
-                <div className="px-3 py-1.5 text-[10px] uppercase tracking-widest text-text-tertiary font-medium bg-obsidian/50 sticky top-0">
+                <div className="px-3 py-1.5 text-[11px] uppercase tracking-widest text-text-secondary font-medium bg-obsidian/50 sticky top-0">
                   {locale === 'en' && cat.nameEn ? cat.nameEn : cat.name}
                 </div>
                 {cat.items.map(ind => (
                   <button key={ind.code} type="button"
                     onClick={() => { onChange(ind.code); setOpen(false); setSearch(''); }}
                     className={cn(
-                      'w-full text-left px-3 py-2 text-sm hover:bg-champagne/5 transition-colors flex items-center justify-between',
-                      ind.code === value && 'bg-champagne/10 text-champagne'
+                      'fe-tap w-full text-left px-3 py-2 text-sm hover:bg-champagne/5 transition-colors flex items-center justify-between',
+                      ind.code === value && 'bg-champagne/10 text-champagne-ink'
                     )}>
                     <span className="truncate">{ind.name}</span>
-                    {ind.code === value && <Check className="w-3.5 h-3.5 text-champagne flex-shrink-0" />}
+                    {ind.code === value && <Check className="w-3.5 h-3.5 text-champagne-ink flex-shrink-0" />}
                   </button>
                 ))}
               </div>
             ))}
             {grouped.length === 0 && (
-              <div className="px-3 py-6 text-center text-sm text-text-tertiary">{t('embed.nothingFound')}</div>
+              <div className="px-3 py-6 text-center text-sm text-text-secondary">{t('embed.nothingFound')}</div>
             )}
           </div>
         </div>
@@ -118,26 +123,41 @@ function IndicatorCombobox({ indicators, value, onChange }) {
 
 function CopyButton({ text, onCopy }) {
   const t = useT();
-  const [copied, setCopied] = useState(false);
+  // 'idle' | 'copied' | 'failed' — итог виден глазами и озвучивается через aria-live.
+  const [state, setState] = useState('idle');
+  const timerRef = useRef(null);
+  useEffect(() => () => clearTimeout(timerRef.current), []);
+  const settle = useCallback((next) => {
+    setState(next);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setState('idle'), next === 'copied' ? 2500 : 4000);
+  }, []);
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    const write = navigator.clipboard?.writeText
+      ? navigator.clipboard.writeText(text)
+      : Promise.reject(new Error('clipboard unavailable'));
+    write.then(() => {
+      settle('copied');
       onCopy?.();
-    }).catch(() => { /* clipboard API unavailable */ });
-  }, [text, onCopy]);
+    }).catch(() => settle('failed'));
+  }, [text, onCopy, settle]);
 
+  const copied = state === 'copied';
   return (
-    <button type="button" onClick={handleCopy}
-      className={cn(
-        'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all',
-        copied
-          ? 'bg-positive/10 text-positive'
-          : 'bg-champagne/10 text-champagne hover:bg-champagne/20'
-      )}>
-      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-      {copied ? t('embed.copied') : t('embed.copyCode')}
-    </button>
+    <div className="flex items-center gap-2">
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={handleCopy}
+        className={copied ? 'fe-ink-pos' : undefined}
+      >
+        {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+        {copied ? t('embed.copied') : t('embed.copyCode')}
+      </Button>
+      <span role="status" aria-live="polite" className={state === 'failed' ? 'max-w-[14rem] text-xs fe-ink-neg' : 'sr-only'}>
+        {state === 'failed' ? t('pgui.embed.copyFailed') : (copied ? t('embed.copied') : '')}
+      </span>
+    </div>
   );
 }
 
@@ -318,6 +338,15 @@ export default function EmbedBuilder() {
   const needsForecast = type === 'chart';
   const needsIndicator = type !== 'ticker';
   const previewH = type === 'ticker' ? 40 : type === 'card' ? 200 : h;
+  const previewW = type === 'ticker' ? '100%' : Math.min(w, 760);
+  // Превью грузится в iframe: пока он не сообщил о загрузке, показываем кольцо ожидания.
+  const [loadedUrl, setLoadedUrl] = useState('');
+  const previewLoading = loadedUrl !== previewUrl;
+  useEffect(() => {
+    if (!previewLoading) return undefined;
+    const timer = setTimeout(() => setLoadedUrl(previewUrl), 15000);
+    return () => clearTimeout(timer);
+  }, [previewLoading, previewUrl]);
 
   return (
     <div className="fe-data-page max-w-7xl mx-auto px-4 pt-24 md:pt-28 pb-16">
@@ -333,20 +362,15 @@ export default function EmbedBuilder() {
       {/* Widget type tabs */}
       <div className="flex gap-2 justify-center mb-8 flex-wrap">
         {WIDGET_TYPES.map(wt => (
-          <button key={wt.key} type="button" onClick={() => { setType(wt.key); track(events.EMBED_TYPE_CHANGE, { type: wt.key }); }}
-            className={cn(
-              'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all border',
-              type === wt.key
-                ? 'bg-champagne/10 border-champagne/30 text-champagne'
-                : 'bg-surface border-border-subtle text-text-secondary hover:border-champagne/20 hover:text-text-primary'
-            )}>
+          <Chip key={wt.key} active={type === wt.key} className="gap-2"
+            onClick={() => { setType(wt.key); track(events.EMBED_TYPE_CHANGE, { type: wt.key }); }}>
             <wt.icon className="w-4 h-4" />
             {t(wt.labelKey)}
-          </button>
+          </Chip>
         ))}
       </div>
 
-      <p className="-mt-6 mb-8 text-center text-sm text-text-tertiary">
+      <p className="-mt-6 mb-8 text-center text-sm text-text-secondary">
         {t(WIDGET_TYPES.find((wt) => wt.key === type)?.descKey ?? 'embed.type.chartDesc')}
       </p>
 
@@ -354,7 +378,7 @@ export default function EmbedBuilder() {
         {/* Settings panel */}
         <div className="space-y-5">
           <div className="p-5 rounded-2xl bg-surface border border-border-subtle space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-text-tertiary font-medium">{t('embed.settings')}</h2>
+            <h2 className="text-xs uppercase tracking-widest text-text-secondary font-medium">{t('embed.settings')}</h2>
 
             {/* Indicator selector */}
             {needsIndicator && (
@@ -380,10 +404,9 @@ export default function EmbedBuilder() {
                   className="w-full px-3 py-2 rounded-xl border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono focus:ring-1 focus:ring-champagne/30 outline-none" />
                 <div className="flex gap-2 mt-2 flex-wrap">
                   {['slow', 'normal', 'fast'].map(s => (
-                    <button key={s} type="button" onClick={() => setSpeed(s)}
-                      className={cn('px-3 py-1 rounded-lg text-xs font-medium transition-all', speed === s ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
+                    <Chip key={s} active={speed === s} onClick={() => setSpeed(s)}>
                       {s === 'slow' ? t('embed.speed.slow') : s === 'normal' ? t('embed.speed.normal') : t('embed.speed.fast')}
-                    </button>
+                    </Chip>
                   ))}
                 </div>
               </div>
@@ -395,10 +418,9 @@ export default function EmbedBuilder() {
                 <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.period')}</label>
                 <div className="flex gap-1 flex-wrap">
                   {PERIODS.map(p => (
-                    <button key={p.key} type="button" onClick={() => { setPeriod(p.key); track(events.EMBED_PERIOD_CHANGE, { period: p.key }); }}
-                      className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all', period === p.key ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
+                    <Chip key={p.key} active={period === p.key} onClick={() => { setPeriod(p.key); track(events.EMBED_PERIOD_CHANGE, { period: p.key }); }}>
                       {t(p.labelKey)}
-                    </button>
+                    </Chip>
                   ))}
                 </div>
               </div>
@@ -409,10 +431,9 @@ export default function EmbedBuilder() {
               <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.theme')}</label>
               <div className="flex gap-2">
                 {[['light', t('embed.theme.light')], ['dark', t('embed.theme.dark')], ['auto', t('embed.theme.auto')]].map(([k, l]) => (
-                  <button key={k} type="button" onClick={() => { setTheme(k); track(events.EMBED_THEME_CHANGE, { theme: k }); }}
-                    className={cn('flex-1 py-2 rounded-xl text-xs font-medium transition-all border', theme === k ? 'bg-champagne/10 border-champagne/30 text-champagne' : 'border-border-subtle text-text-tertiary hover:text-text-secondary')}>
+                  <Chip key={k} active={theme === k} className="flex-1" onClick={() => { setTheme(k); track(events.EMBED_THEME_CHANGE, { theme: k }); }}>
                     {l}
-                  </button>
+                  </Chip>
                 ))}
               </div>
             </div>
@@ -423,24 +444,22 @@ export default function EmbedBuilder() {
                 <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.size')}</label>
                 <div className="flex gap-1 flex-wrap mb-2">
                   {SIZE_PRESETS.map((sp, i) => (
-                    <button key={i} type="button" onClick={() => { setSizePreset(i); track(events.EMBED_SIZE_CHANGE, { size: SIZE_PRESETS[i].labelKey }); }}
-                      className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all', sizePreset === i ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
+                    <Chip key={i} active={sizePreset === i} onClick={() => { setSizePreset(i); track(events.EMBED_SIZE_CHANGE, { size: SIZE_PRESETS[i].labelKey }); }}>
                       {t(sp.labelKey)}
-                    </button>
+                    </Chip>
                   ))}
-                  <button type="button" onClick={() => { setSizePreset(-1); setCustomW(w); setCustomH(h); }}
-                    className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all', isCustom ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
+                  <Chip active={isCustom} onClick={() => { setSizePreset(-1); setCustomW(w); setCustomH(h); }}>
                     {t('embed.size.custom')}
-                  </button>
+                  </Chip>
                 </div>
                 {isCustom && (
                   <div className="flex items-center gap-2">
                     <input type="number" value={customW} onChange={e => setCustomW(Math.max(200, +e.target.value))} min={200} max={1200}
-                      className="w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
-                    <span className="text-text-tertiary text-xs">×</span>
+                      className="fe-tap w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
+                    <span className="text-text-secondary text-xs">×</span>
                     <input type="number" value={customH} onChange={e => setCustomH(Math.max(100, +e.target.value))} min={100} max={800}
-                      className="w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
-                    <span className="text-text-tertiary text-xs">px</span>
+                      className="fe-tap w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
+                    <span className="text-text-secondary text-xs">px</span>
                   </div>
                 )}
               </div>
@@ -451,21 +470,21 @@ export default function EmbedBuilder() {
               <div>
                 <label className="block text-xs text-text-secondary mb-1.5 font-medium">{t('embed.rowCount')}</label>
                 <input type="number" value={limit} onChange={e => setLimit(Math.max(1, Math.min(50, +e.target.value)))} min={1} max={50}
-                  className="w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
+                  className="fe-tap w-20 px-2 py-1 rounded-lg border border-border-subtle bg-obsidian-lighter text-sm text-text-primary font-mono text-center outline-none focus:ring-1 focus:ring-champagne/30" />
               </div>
             )}
 
             {/* Toggles */}
             <div className="space-y-2 pt-2 border-t border-border-subtle">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="fe-tap flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={showTitle} onChange={e => { setShowTitle(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'title', value: e.target.checked }); }}
-                  className="w-4 h-4 rounded border-border-subtle text-champagne focus:ring-champagne/30" />
+                  className="w-4 h-4 rounded border-border-subtle text-champagne-ink focus:ring-champagne/30" />
                 <span className="text-xs text-text-secondary">{t('embed.showTitle')}</span>
               </label>
               {needsForecast && (
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="fe-tap flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={showForecast} onChange={e => { setShowForecast(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'forecast', value: e.target.checked }); }}
-                    className="w-4 h-4 rounded border-border-subtle text-champagne focus:ring-champagne/30" />
+                    className="w-4 h-4 rounded border-border-subtle text-champagne-ink focus:ring-champagne/30" />
                   <span className="text-xs text-text-secondary">{t('embed.showForecast')}</span>
                 </label>
               )}
@@ -474,9 +493,9 @@ export default function EmbedBuilder() {
 
           {/* Terms */}
           <div className="p-4 rounded-xl bg-obsidian-lighter border border-border-subtle">
-            <p className="text-[10px] uppercase tracking-widest text-text-tertiary font-medium mb-1">{t('embed.terms')}</p>
+            <p className="text-[11px] uppercase tracking-widest text-text-secondary font-medium mb-1">{t('embed.terms')}</p>
             <p className="text-xs text-text-secondary leading-relaxed">
-              {t('embed.termsBody')} <a href="/about" className="text-champagne hover:underline">{t('embed.termsAbout')}</a>.
+              {t('embed.termsBody')} <a href="/about" className="text-champagne-ink hover:underline">{t('embed.termsAbout')}</a>.
             </p>
           </div>
         </div>
@@ -491,39 +510,51 @@ export default function EmbedBuilder() {
                 <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
                 <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
               </div>
-              <span className="text-[10px] font-mono text-text-tertiary truncate ml-2">
+              <span className="text-xs font-mono text-text-secondary truncate ml-2">
                 {previewUrl.replace(window.location.origin, EMBED_ORIGIN)}
               </span>
             </div>
             <div className="p-4 flex justify-center" style={{ background: theme === 'dark' ? '#111' : '#f5f5f5' }}>
-              <iframe
-                key={previewUrl}
-                src={previewUrl}
-                width={type === 'ticker' ? '100%' : Math.min(w, 760)}
-                height={previewH}
-                frameBorder="0"
-                style={{ border: 'none', borderRadius: 12, overflow: 'hidden', maxWidth: '100%' }}
-                title="Preview"
-                loading="lazy"
-              />
+              <div className="relative" style={{ width: previewW, height: previewH, maxWidth: '100%' }}>
+                <iframe
+                  key={previewUrl}
+                  src={previewUrl}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  style={{ border: 'none', borderRadius: 12, overflow: 'hidden', maxWidth: '100%' }}
+                  title={t('pgui.embed.previewTitle')}
+                  loading="lazy"
+                  onLoad={() => setLoadedUrl(previewUrl)}
+                />
+                {previewLoading && (
+                  <div
+                    className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl text-xs"
+                    style={{ background: theme === 'dark' ? 'rgba(17,17,17,0.82)' : 'rgba(245,245,245,0.86)', color: theme === 'dark' ? '#e5e7eb' : '#374151' }}
+                    role="status"
+                  >
+                    <Spinner size={20} />
+                    {t('pgui.embed.previewLoading')}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Code output */}
           <div className="rounded-2xl bg-surface border border-border-subtle overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-border-subtle">
-              <div className="flex gap-1">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b border-border-subtle">
+              <div className="flex flex-wrap gap-1">
                 {[
                   { key: 'iframe', label: 'iframe', icon: Code2 },
                   { key: 'svg', label: 'SVG / IMG', icon: Image },
                   { key: 'markdown', label: 'Markdown', icon: Code2 },
                   { key: 'badge', label: 'Badge', icon: Shield },
                 ].map(tab => (
-                  <button key={tab.key} type="button" onClick={() => { setCodeTab(tab.key); track(events.EMBED_CODE_TAB, { tab: tab.key }); }}
-                    className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', codeTab === tab.key ? 'bg-champagne/10 text-champagne' : 'text-text-tertiary hover:text-text-secondary')}>
+                  <Chip key={tab.key} active={codeTab === tab.key} className="gap-1.5" onClick={() => { setCodeTab(tab.key); track(events.EMBED_CODE_TAB, { tab: tab.key }); }}>
                     <tab.icon className="w-3 h-3" />
                     {tab.label}
-                  </button>
+                  </Chip>
                 ))}
               </div>
               <CopyButton text={embedCode} onCopy={() => track(events.EMBED_CODE_COPY, { format: codeTab })} />

@@ -33,7 +33,7 @@ function CookieRow({ name, purpose, consent }) {
     <div className="rounded-xl border border-border-subtle px-4 py-3 mb-2">
       <p className="text-sm font-semibold text-text-primary">{name}</p>
       <p className="text-sm text-text-secondary leading-relaxed mt-0.5">{purpose}</p>
-      <p className="text-xs text-text-tertiary mt-1">{consent}</p>
+      <p className="text-xs text-text-secondary mt-1">{consent}</p>
     </div>
   );
 }
@@ -55,13 +55,13 @@ export default function Privacy() {
           <PrivacyBodyEn t={t} h1={seo.h1 || 'Privacy and personal data processing policy'} />
         ) : (
           <>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold mb-4">
           Правовая информация
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
           Политика конфиденциальности и обработки персональных данных
         </h1>
-        <p className="text-sm text-text-tertiary mb-8">Редакция от 24 сентября 2026 г.</p>
+        <p className="text-sm text-text-secondary mb-8">Редакция от 24 сентября 2026 г.</p>
 
         <h2 className={h2}>1. Общие положения</h2>
         <p className={p}>
@@ -79,7 +79,7 @@ export default function Privacy() {
         <p className={p}>
           Используя Сайт, вы соглашаетесь с условиями настоящей политики. Порядок использования
           материалов Сайта описан в{' '}
-          <Link to="/terms" className="text-champagne hover:underline">
+          <Link to="/terms" className="text-champagne-ink hover:underline">
             пользовательском соглашении
           </Link>
           .
@@ -183,7 +183,7 @@ export default function Privacy() {
           onClick={openConsentSettings}
           className={cn(
             FOCUS_RING,
-            'inline-flex items-center gap-2 rounded-xl bg-champagne/10 text-champagne px-5 py-2.5 text-sm font-medium hover:bg-champagne/20 transition-colors mb-4'
+            'inline-flex items-center gap-2 rounded-xl bg-champagne/10 text-champagne-ink px-5 py-2.5 text-sm font-medium hover:bg-champagne/20 transition-colors mb-4'
           )}
         >
           <Settings2 className="w-4 h-4" aria-hidden="true" />
@@ -253,7 +253,7 @@ export default function Privacy() {
           <li className={li}>
             <a
               href="mailto:rebeka.ee@yandex.ru"
-              className="text-champagne hover:underline"
+              className="text-champagne-ink hover:underline"
               onClick={() => track(events.CONTACT_EMAIL)}
             >
               rebeka.ee@yandex.ru
@@ -262,7 +262,7 @@ export default function Privacy() {
           <li className={li}>
             <a
               href="mailto:rebeka.ee@aimpact.ru"
-              className="text-champagne hover:underline"
+              className="text-champagne-ink hover:underline"
               onClick={() => track(events.CONTACT_EMAIL)}
             >
               rebeka.ee@aimpact.ru

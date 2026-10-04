@@ -39,6 +39,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
 import { breadcrumbJsonLd, russiaHomeTrail } from '../lib/breadcrumbs';
 import { mountJsonLd } from '../lib/jsonLd';
+import '../styles/platform-pages.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 
@@ -71,7 +72,7 @@ function RussiaTerritoryCard() {
   return (
     <aside
       data-block="russia-territory-card"
-      className="relative min-h-[250px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
+      className="relative min-h-[270px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
       aria-label={t('russia.map.caption')}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(207,180,95,0.2),transparent_47%)]" />
@@ -85,10 +86,10 @@ function RussiaTerritoryCard() {
       />
 
       <div className="absolute left-4 top-3 z-10 max-w-[60%] pr-2">
-        <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/45">
+        <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-white/70">
           {t('world.territory.profile')}
         </div>
-        <div className="mt-1 text-[10px] text-[#d8c58b]">
+        <div className="mt-1 text-xs text-[#d8c58b]">
           {t('russia.map.eyebrow')}
         </div>
       </div>
@@ -107,12 +108,12 @@ function RussiaTerritoryCard() {
 
       <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 border-t border-white/10 pt-3 sm:items-end sm:gap-3">
         <div className="min-w-0">
-          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">RU</div>
+          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/70">RU</div>
           <div className="mt-0.5 max-w-[11rem] truncate text-xs font-medium text-white/90">
             {t('crumb.russia')}
           </div>
         </div>
-        <div className="max-w-[14rem] text-right text-[9px] leading-snug text-white/55">
+        <div className="max-w-[14rem] text-right text-xs leading-snug text-white/75">
           {t('russia.map.note')}
         </div>
       </div>
@@ -176,10 +177,10 @@ function RussiaIndicatorTile({ indicator }) {
       className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[92px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
-        <div className="break-words text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
+        <div className="break-words text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink sm:text-[14px]">
           {title}
         </div>
-        <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-text-tertiary sm:mt-1.5">
+        <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-text-secondary sm:mt-1.5">
           <FreqBadge item={indicator} t={t} />
           {indicator.unit && <span className="min-w-0 break-words">{indicator.unit}</span>}
         </div>
@@ -190,12 +191,12 @@ function RussiaIndicatorTile({ indicator }) {
         </div>
         <div className="flex items-center gap-1.5">
           {changeNum != null && (
-            <span className={`font-mono text-[10px] tabular-nums ${changeNum > 0 ? 'text-positive' : 'text-negative'}`}>
+            <span className={`font-mono text-xs tabular-nums ${changeNum > 0 ? 'fe-ink-pos' : 'fe-ink-neg'}`}>
               {formatChange(changeNum, locale)}
             </span>
           )}
           {indicator.current_date && (
-            <span className="font-mono text-[10px] text-text-tertiary">
+            <span className="font-mono text-xs text-text-secondary">
               {indicatorDate(indicator.current_date, indicator.frequency, locale)}
             </span>
           )}
@@ -269,7 +270,8 @@ export default function RussiaHome() {
   useEffect(() => {
     if (!hash.startsWith('#cat-')) return undefined;
     const timer = window.setTimeout(() => {
-      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const calm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
     }, 50);
     return () => window.clearTimeout(timer);
   }, [hash, indicators]);
@@ -285,7 +287,7 @@ export default function RussiaHome() {
         <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-champagne/10 blur-3xl" />
         <div className="relative grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] lg:items-center lg:gap-7">
           <div className="min-w-0">
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-champagne">
+            <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-champagne-ink">
               {t('russia.eyebrow')}
             </p>
             <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-text-primary md:text-5xl">
@@ -315,14 +317,14 @@ export default function RussiaHome() {
                     {chip.unit}
                   </span>
                 </div>
-                <TrendingUp size={13} className="mt-1 shrink-0 text-champagne" />
+                <TrendingUp size={13} className="mt-1 shrink-0 text-champagne-ink" />
               </div>
-              <div className="mt-1 line-clamp-1 text-[10px] text-text-secondary group-hover:text-text-primary">
+              <div className="mt-1 line-clamp-1 text-xs text-text-secondary group-hover:text-text-primary">
                 {locale === 'en' && chip.indicator.name_en
                   ? chip.indicator.name_en
                   : chip.indicator.name}
               </div>
-              <div className="mt-1 truncate font-mono text-[9px] text-text-tertiary">
+              <div className="mt-1 truncate font-mono text-xs text-text-secondary">
                 {indicatorDate(chip.indicator.current_date, chip.indicator.frequency, locale)}
               </div>
             </Link>
@@ -356,11 +358,11 @@ export default function RussiaHome() {
                 to={item.to}
                 className="group flex items-start gap-3 rounded-xl border border-border-subtle bg-surface px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-sm"
               >
-                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-champagne/10 text-champagne">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-champagne/10 text-champagne-ink">
                   <Icon size={15} />
                 </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-1 text-sm font-semibold text-text-primary group-hover:text-champagne">
+                  <div className="flex items-center gap-1 text-sm font-semibold text-text-primary group-hover:text-champagne-ink">
                     <span className="truncate">{t(item.titleKey)}</span>
                     <ArrowUpRight size={12} className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
                   </div>
@@ -386,10 +388,19 @@ export default function RussiaHome() {
       )}
 
       {isLoading && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-9 w-64 max-w-full" />
-          <SkeletonBox className="h-10 w-full rounded-xl" />
-          <SkeletonBox className="h-40 rounded-xl" />
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="mb-4 h-[78px] w-full rounded-xl lg:hidden" />
+          <div className="grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">
+            <div className="hidden space-y-2 lg:block">
+              {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-11 rounded-xl" />)}
+            </div>
+            <div className="min-w-0">
+              <SkeletonBox className="mb-4 h-[3.25rem] w-64 max-w-full" />
+              <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
+                {Array.from({ length: 6 }).map((_, i) => <SkeletonBox key={i} className="h-[110px] rounded-xl sm:h-[92px]" />)}
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -409,7 +420,7 @@ export default function RussiaHome() {
               />
               <Link
                 to={russiaCategoriesPath()}
-                className="mb-4 inline-block text-xs font-medium text-champagne hover:underline"
+                className="fe-tap-inline mb-2 text-xs font-medium text-champagne-ink hover:underline"
               >
                 {t('russia.categories.all')}
               </Link>
@@ -419,7 +430,7 @@ export default function RussiaHome() {
           <div className="grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">
             {grouped.length > 0 && (
               <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" data-testid="russia-aside">
-                <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+                <div className="mb-2 px-2 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
                   {t('russia.categories.title')}
                 </div>
                 <nav className="flex flex-col gap-2" aria-label={t('russia.categories.title')}>
@@ -427,16 +438,16 @@ export default function RussiaHome() {
                     <a
                       key={g.category.slug}
                       href={`#cat-${g.category.slug}`}
-                      className="flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary"
+                      className="fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary"
                     >
                       <span className="min-w-0 truncate">{categoryLabel(g.category, locale)}</span>
-                      <span className="shrink-0 font-mono text-[10px] opacity-60">{g.count}</span>
+                      <span className="shrink-0 font-mono text-xs">{g.count}</span>
                     </a>
                   ))}
                 </nav>
                 <Link
                   to={russiaCategoriesPath()}
-                  className="mt-3 block px-3.5 text-xs font-medium text-champagne hover:underline"
+                  className="fe-tap-inline mt-3 px-3.5 text-xs font-medium text-champagne-ink hover:underline"
                 >
                   {t('russia.categories.all')}
                 </Link>
@@ -454,14 +465,14 @@ export default function RussiaHome() {
                 <section key={g.category.slug} id={`cat-${g.category.slug}`} className="scroll-mt-24" data-testid="russia-section">
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                     <div className="min-w-0">
-                      <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne-ink">
                         {t('world.country.indicators')}
                       </div>
                       <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
                         {categoryLabel(g.category, locale)}
                       </h2>
                     </div>
-                    <span className="shrink-0 font-mono text-xs text-text-tertiary">{g.count}</span>
+                    <span className="shrink-0 font-mono text-xs text-text-secondary">{g.count}</span>
                   </div>
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {g.indicators.map((ind) => (

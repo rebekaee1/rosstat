@@ -20,6 +20,7 @@ import RegionAnnualChart from '../components/RegionAnnualChart';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
+import Chip from '../components/Chip';
 import { useAuth } from '../context/authContext';
 import { exportTable } from '../lib/api';
 import { exportNodeToPng } from '../lib/chartImage';
@@ -31,6 +32,7 @@ import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
+import '../styles/platform-pages.css';
 
 // Годовой ряд → изменения год к году, % (кнопка YoY / «% г/г»).
 function toYoYSeries(series) {
@@ -57,7 +59,7 @@ function isNegativeCapable(series) {
 function StatCell({ label, children }) {
   return (
     <div className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-3.5 min-w-0">
-      <div className="text-[10px] sm:text-[11px] text-text-tertiary uppercase tracking-wide truncate">{label}</div>
+      <div className="text-[11px] sm:text-[11px] text-text-secondary uppercase tracking-wide truncate">{label}</div>
       <div className="mt-1 font-mono font-semibold text-text-primary text-sm sm:text-[15px] leading-tight break-words">
         {children}
       </div>
@@ -191,7 +193,7 @@ export default function RegionIndicatorPage() {
     });
   }, [active?.indicator, slug, code]);
 
-  useDocumentMeta(active ? {
+  useDocumentMeta(active && last ? {
     title: t(isMonthly ? 'regions.ind.metaTitleMonthly' : 'regions.ind.metaTitle', {
       name: indName,
       region: regionName,
@@ -219,7 +221,7 @@ export default function RegionIndicatorPage() {
   } : null);
 
   useEffect(() => {
-    if (!active) return;
+    if (!active || !last) return;
     const jsonLd = completeDataset({
       '@context': 'https://schema.org',
       '@type': 'Dataset',
@@ -276,18 +278,33 @@ export default function RegionIndicatorPage() {
         )}
       />
 
-      {isError && !cardReady && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
-      {!cardReady && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-9 w-96 max-w-full" />
-          <SkeletonBox className="h-72 rounded-xl" />
+      {isError && !cardReady && (
+        <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
+          {t('pgui.regions.indError')}
+        </ApiRetryBanner>
+      )}
+      {!cardReady && !isError && (
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="mb-2 mt-6 h-4 w-40" />
+          <SkeletonBox className="mb-5 h-8 w-full max-w-2xl sm:h-9" />
+          <SkeletonBox className="mb-6 h-9 w-64 sm:h-10" />
+          <SkeletonBox className="mb-4 h-[392px] rounded-xl sm:h-[398px]" />
+          <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {[0, 1, 2, 3].map((i) => <SkeletonBox key={i} className="h-[64px] rounded-xl" />)}
+          </div>
         </div>
       )}
 
-      {cardReady && active && (
+      {cardReady && active && !last && (
+        <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+          {t('pgui.regions.indNoData')}
+        </div>
+      )}
+
+      {cardReady && active && last && (
         <>
           <div className="fe-data-header">
-            <div className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
+            <div className="text-champagne-ink text-xs font-mono uppercase tracking-widest mb-2">
               {active.indicator.section_name}
             </div>
             <div className="mb-5 flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
@@ -297,12 +314,12 @@ export default function RegionIndicatorPage() {
               <span className="shrink-0 pt-0.5 text-sm text-text-secondary sm:pt-1.5">{regionName}</span>
             </div>
             {abortion && (
-              <p className="mt-1 text-xs text-text-tertiary">
+              <p className="mt-1 text-xs text-text-secondary">
                 {t('regions.ind.abortionLead')}
                 {' '}
                 <Link
                   to={regionIndicatorPath(slug, abortion.code)}
-                  className="text-champagne hover:underline"
+                  className="text-champagne-ink hover:underline"
                 >
                   {t(abortion.labelKey)}
                 </Link>
@@ -315,9 +332,9 @@ export default function RegionIndicatorPage() {
                 {formatRegionValue(last.value)}
               </span>
               <span className="text-sm text-text-secondary">{active.indicator.unit}</span>
-              <span className="font-mono text-sm text-text-tertiary">{lastLabel}</span>
+              <span className="font-mono text-sm text-text-secondary">{lastLabel}</span>
               {delta && (
-                <span className={`font-mono text-sm ${delta.up ? 'text-positive' : delta.down ? 'text-negative' : 'text-text-tertiary'}`}>
+                <span className={`font-mono text-sm ${delta.up ? 'fe-ink-pos' : delta.down ? 'fe-ink-neg' : 'text-text-secondary'}`}>
                   {t(isMonthly ? 'regions.ind.deltaMoM' : 'regions.ind.deltaYoY', {
                     pct: `${delta.up ? '+' : ''}${delta.pct.toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
                   })}
@@ -328,17 +345,17 @@ export default function RegionIndicatorPage() {
 
           <div id="chart" data-block="region-chart" className="fe-panel bg-surface border border-border-subtle rounded-xl p-3 sm:p-4 mb-4 scroll-mt-24 w-full min-w-0 max-w-full" ref={chartRef}>
             <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-              <div className="text-xs text-text-tertiary font-mono">
+              <div className="text-xs text-text-secondary font-mono">
                 {isMonthly
                   ? `${first.year}–${last.year}, помесячно — ${active.indicator.unit}`
                   : `${first.year}–${last.year}, ${showYoY ? t('regions.ind.yoyUnit') : active.indicator.unit}`}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
-                  className={`inline-flex items-center gap-1.5 min-w-0 max-w-full rounded-full border px-2.5 py-1 transition-colors ${
+                  className={`fe-tap inline-flex items-center gap-1.5 min-w-0 max-w-full rounded-full border px-2.5 py-1 transition-colors ${
                     compareSlug
                       ? 'border-[#5B7DA8] text-[#5B7DA8]'
-                      : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
+                      : 'border-border-subtle text-text-secondary hover:text-text-secondary'
                   }`}
                 >
                   <GitCompare size={12} className="shrink-0 opacity-70" aria-hidden />
@@ -358,36 +375,21 @@ export default function RegionIndicatorPage() {
                   </select>
                 </label>
                 {active.russia_series?.length > 0 && (
-                  <button
-                    onClick={() => setShowRussia(v => !v)}
-                    className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-                      showRussia
-                        ? 'border-border-champagne text-champagne bg-champagne/5'
-                        : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
-                    }`}
-                  >
+                  <Chip active={showRussia} onClick={() => setShowRussia(v => !v)}>
                     {showRussia ? t('regions.ind.vsRussia') : t('regions.ind.addRussia')}
-                  </button>
+                  </Chip>
                 )}
                 {!isMonthly && data.series.length > 2 && !isNegativeCapable(data.series) && (
-                  <button
-                    onClick={() => setShowYoY(v => !v)}
-                    title={t('regions.ind.yoyTitle')}
-                    className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-                      showYoY
-                        ? 'border-border-champagne text-champagne bg-champagne/5'
-                        : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
-                    }`}
-                  >
+                  <Chip active={showYoY} onClick={() => setShowYoY(v => !v)} title={t('regions.ind.yoyTitle')}>
                     {t('regions.ind.yoyBtn')}
-                  </button>
+                  </Chip>
                 )}
                 <button
                   onClick={() => handleExportTable('csv')}
                   disabled={exporting}
                   title={t('regions.ind.downloadCsv')}
                   aria-label={t('regions.ind.downloadCsv')}
-                  className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
+                  className="fe-tap fe-press text-xs px-2.5 py-1 rounded-full border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
                 >
                   <Download size={12} /> CSV
                 </button>
@@ -396,7 +398,7 @@ export default function RegionIndicatorPage() {
                   disabled={exporting}
                   title={t('regions.ind.downloadExcel')}
                   aria-label={t('regions.ind.downloadExcel')}
-                  className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
+                  className="fe-tap fe-press text-xs px-2.5 py-1 rounded-full border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
                 >
                   <Download size={12} /> Excel
                 </button>
@@ -405,7 +407,7 @@ export default function RegionIndicatorPage() {
                   disabled={exporting}
                   title={t('regions.ind.downloadPng')}
                   aria-label={t('regions.ind.downloadPng')}
-                  className="text-xs px-2 py-1 rounded-full border border-border-subtle text-text-tertiary hover:text-champagne hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
+                  className="fe-tap fe-press text-xs px-2.5 py-1 rounded-full border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors inline-flex items-center gap-1 disabled:opacity-50"
                 >
                   <ImageIcon size={12} /> PNG
                 </button>
@@ -430,7 +432,7 @@ export default function RegionIndicatorPage() {
               height={300}
             />
             {compareSlug && isMonthly && compareMonthly.data && (
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary px-1" data-no-export="true">
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary px-1" data-no-export="true">
                 <span className="inline-flex items-center gap-1.5">
                   <span className="inline-block w-4 h-0.5 rounded bg-champagne" />
                   {regionName}
@@ -439,13 +441,13 @@ export default function RegionIndicatorPage() {
                   <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: '#5B7DA8' }} />
                   {compareMonthly.data.region.name}
                 </span>
-                <button onClick={() => setCompareSlug('')} className="text-text-tertiary underline hover:text-text-secondary">
+                <button onClick={() => setCompareSlug('')} className="fe-tap-inline text-text-secondary underline hover:text-text-primary">
                   {t('regions.ind.removeCompare')}
                 </button>
               </div>
             )}
             {compareSlug && !isMonthly && compare.data && (
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary px-1" data-no-export="true">
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary px-1" data-no-export="true">
                 <span className="inline-flex items-center gap-1.5">
                   <span className="inline-block w-4 h-0.5 rounded bg-champagne" />
                   {regionName}
@@ -454,7 +456,7 @@ export default function RegionIndicatorPage() {
                   <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: '#5B7DA8' }} />
                   {compare.data.region.name}
                 </span>
-                <button onClick={() => setCompareSlug('')} className="text-text-tertiary underline hover:text-text-secondary">
+                <button onClick={() => setCompareSlug('')} className="fe-tap-inline text-text-secondary underline hover:text-text-primary">
                   {t('regions.ind.removeCompare')}
                 </button>
               </div>
@@ -474,7 +476,7 @@ export default function RegionIndicatorPage() {
               >
                 <span className="inline-flex items-center gap-1.5">
                   {active.rank.rank_as_achievement && (
-                    <Trophy size={14} className="text-champagne" />
+                    <Trophy size={14} className="text-champagne-ink" />
                   )}
                   {active.rank.position}
                   {' '}
@@ -514,11 +516,11 @@ export default function RegionIndicatorPage() {
                   <li key={r.slug}>
                     <Link
                       to={regionIndicatorPath(r.slug, code)}
-                      className={`flex items-center justify-between gap-2 text-[13px] rounded-lg px-2 py-1.5 -mx-2 hover:bg-surface-hover transition-colors ${r.slug === slug ? 'bg-champagne/5' : ''}`}
+                      className={`fe-tap flex items-center justify-between gap-2 text-[13px] rounded-lg px-2 py-1.5 -mx-2 hover:bg-surface-hover transition-colors ${r.slug === slug ? 'bg-champagne/5' : ''}`}
                     >
                       <span className="flex items-center gap-2 min-w-0">
-                        <span className="font-mono text-text-tertiary w-4 text-right shrink-0">{i + 1}</span>
-                        <span className={`truncate ${r.slug === slug ? 'text-champagne font-medium' : 'text-text-primary'}`}>{r.name}</span>
+                        <span className="font-mono text-text-secondary w-4 text-right shrink-0">{i + 1}</span>
+                        <span className={`truncate ${r.slug === slug ? 'text-champagne-ink font-medium' : 'text-text-primary'}`}>{r.name}</span>
                       </span>
                       <span className="font-mono text-text-secondary shrink-0">{formatRegionValue(r.value)}</span>
                     </Link>
@@ -527,15 +529,15 @@ export default function RegionIndicatorPage() {
               </ol>
               <Link
                 to={regionRatingPath(code)}
-                className="mt-3 inline-block text-xs font-medium text-champagne hover:underline"
+                className="fe-tap-inline mt-3 text-xs font-medium text-champagne-ink hover:underline"
               >
                 {t('regions.ind.fullRanking')}
               </Link>
               {active.rank.position > 5 && (
                 <div className="mt-2 pt-2 border-t border-border-subtle flex items-center justify-between text-[13px] px-2">
                   <span className="flex items-center gap-2">
-                    <span className="font-mono text-text-tertiary w-4 text-right">{active.rank.position}</span>
-                    <span className="text-champagne font-medium">{regionName}</span>
+                    <span className="font-mono text-text-secondary w-4 text-right">{active.rank.position}</span>
+                    <span className="text-champagne-ink font-medium">{regionName}</span>
                   </span>
                   <span className="font-mono text-text-secondary">{formatRegionValue(last.value)}</span>
                 </div>
@@ -550,16 +552,16 @@ export default function RegionIndicatorPage() {
               aria-expanded={showTable}
             >
               <span className="flex items-center gap-2 text-sm font-medium text-text-primary">
-                <Table2 size={15} className="text-text-tertiary" />
+                <Table2 size={15} className="text-text-secondary" />
                 {t('regions.ind.tableToggle')}
               </span>
-              <ChevronDown size={16} className={`text-text-tertiary transition-transform ${showTable ? 'rotate-180' : ''}`} />
+              <ChevronDown size={16} className={`text-text-secondary transition-transform ${showTable ? 'rotate-180' : ''}`} />
             </button>
             {showTable && (
               <div className="max-h-96 overflow-auto border-t border-border-subtle">
                 <table className="w-full min-w-[18rem] text-[13px]">
                   <thead className="sticky top-0 bg-surface">
-                    <tr className="text-left text-text-tertiary">
+                    <tr className="text-left text-text-secondary">
                       <th className="px-3 py-2 font-medium sm:px-4">
                         {isMonthly ? t('regions.ind.colMonth') : t('regions.ind.colYear')}
                       </th>
@@ -580,7 +582,7 @@ export default function RegionIndicatorPage() {
                           </td>
                           <td className="px-3 py-1.5 text-right font-mono text-text-primary sm:px-4">{formatRegionValue(p.value)}</td>
                           {active.russia_series?.length > 0 && (
-                            <td className="px-3 py-1.5 text-right font-mono text-text-tertiary sm:px-4">
+                            <td className="px-3 py-1.5 text-right font-mono text-text-secondary sm:px-4">
                               {rf ? formatRegionValue(rf.value) : '—'}
                             </td>
                           )}
@@ -605,14 +607,14 @@ export default function RegionIndicatorPage() {
                 <Link
                   to={russiaIndicatorPath(active.indicator.macro_code)}
                   onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: active.indicator.macro_code })}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne text-[13px] font-medium hover:bg-champagne/20 transition-colors"
+                  className="fe-tap-inline gap-1 px-3 py-1.5 rounded-full bg-champagne/10 text-champagne-ink text-[13px] font-medium hover:bg-champagne/20 transition-colors"
                 >
                   {t('regions.ind.openRussia')} <ArrowUpRight size={13} />
                 </Link>
                 <Link
                   to={`/compare?codes=${active.indicator.macro_code},r:${slug}:${code}`}
                   onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: 'compare' })}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
+                  className="fe-tap-inline gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne-ink hover:border-border-champagne transition-colors"
                 >
                   <GitCompare size={13} /> {t('regions.ind.compareRussia')}
                 </Link>
@@ -630,7 +632,7 @@ export default function RegionIndicatorPage() {
                   <Link
                     key={s.code}
                     to={regionIndicatorPath(slug, s.code)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface border border-border-subtle text-[13px] text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors"
+                    className="fe-tap-inline gap-1 px-3 py-1.5 rounded-full bg-surface border border-border-subtle text-[13px] text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors"
                   >
                     {s.name.length > 60 ? `${s.name.slice(0, 57)}…` : s.name}
                     <ArrowUpRight size={12} />

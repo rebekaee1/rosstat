@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -10,6 +10,7 @@ import { FOCUS_RING } from '../lib/uiTokens';
  */
 export default function FaqAccordion({ items, onToggle }) {
   const [open, setOpen] = useState(null);
+  const baseId = useId();
 
   if (!Array.isArray(items) || items.length === 0) return null;
 
@@ -30,18 +31,20 @@ export default function FaqAccordion({ items, onToggle }) {
                 setOpen(next);
                 onToggle?.({ index: i, title, open: next === i });
               }}
-              className={cn(FOCUS_RING, 'w-full flex items-center justify-between gap-4 py-5 text-left rounded-sm')}
+              className={cn(FOCUS_RING, 'fe-tap w-full flex items-center justify-between gap-4 py-5 text-left rounded-sm')}
               aria-expanded={isOpen}
+              aria-controls={`${baseId}-${i}`}
             >
               <span className="text-sm font-medium text-text-primary">{title}</span>
               <ChevronDown
                 className={cn(
-                  'w-4 h-4 text-text-tertiary shrink-0 transition-transform duration-200',
+                  'w-4 h-4 text-text-secondary shrink-0 transition-transform duration-200',
                   isOpen && 'rotate-180',
                 )}
               />
             </button>
             <div
+              id={`${baseId}-${i}`}
               className={cn(
                 'grid transition-[grid-template-rows] duration-200 ease-out',
                 isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',

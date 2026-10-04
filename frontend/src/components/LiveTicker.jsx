@@ -6,6 +6,7 @@ import { russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneForLocale } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
 import { useLocale, useT } from '../i18n';
+import '../styles/platform-pages.css';
 
 /**
  * Мета ленты. linkTo — только если ведёт на ту же карточку/ряд, что и число.
@@ -149,7 +150,7 @@ function TickerCell({ snapshot, nowMs }) {
   }
 
   const cellClass = cn(
-    'flex shrink-0 items-center gap-1 px-1.5 py-1 rounded-md whitespace-nowrap',
+    'flex h-full min-h-7 shrink-0 items-center gap-1 px-1.5 rounded-md whitespace-nowrap',
     'sm:gap-1.5 sm:px-2.5 md:gap-2 md:px-3',
     'transition-colors duration-200',
     meta.linkTo && 'hover:bg-champagne/10',
@@ -161,21 +162,21 @@ function TickerCell({ snapshot, nowMs }) {
 
   const body = (
     <>
-      <span className="text-[9px] uppercase tracking-wide text-text-secondary font-medium sm:text-[11px]">
+      <span className="text-[11px] uppercase tracking-wide text-text-secondary font-medium">
         {meta.labelKey ? t(meta.labelKey) : meta.label}
       </span>
       <span className="text-xs font-semibold tabular-nums text-text-primary sm:text-sm">
         {hasPrice ? formatPrice(snapshot.price, meta.decimals, locale) : '—'}
       </span>
       {asOfShort ? (
-        <span className="text-[9px] font-mono tabular-nums text-text-tertiary sm:text-[10px]">
+        <span className="text-xs font-mono tabular-nums text-text-secondary">
           {asOfShort}
         </span>
       ) : null}
       <span className={cn(
-        'hidden text-[11px] font-medium tabular-nums xl:inline',
-        positive && 'text-positive',
-        negative && 'text-negative',
+        'hidden text-xs font-medium tabular-nums xl:inline',
+        positive && 'fe-ink-pos',
+        negative && 'fe-ink-neg',
         !positive && !negative && 'text-text-secondary'
       )}>
         {formatPct(pct, locale)}
@@ -233,13 +234,13 @@ export default function LiveTicker() {
   const snapshots = data?.snapshots || [];
   if (snapshots.length === 0) {
     return (
-      <div className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0] border-b border-champagne/15" />
+      <div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface border-b border-champagne/15" />
     );
   }
 
   return (
     <div
-      className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0] border-b border-champagne/15 shadow-sm pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
+      className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface border-b border-champagne/15 shadow-sm pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
     >
       <div className="mx-auto h-full max-w-7xl">
         <div

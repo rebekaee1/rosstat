@@ -40,6 +40,8 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import TelemetryCard from '../components/TelemetryCard';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
+import Button from '../components/Button';
+import '../styles/platform-pages.css';
 import { worldIndicatorTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
@@ -432,15 +434,15 @@ export default function WorldIndicatorPage() {
             {t('world.indicator.notFoundBody')}
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm">
-            <Link to={countryPath(slug)} className="rounded-xl bg-champagne/10 px-4 py-2 text-champagne transition-colors hover:bg-champagne/20">
+            <Button as={Link} to={countryPath(slug)} variant="primary">
               {t('world.indicator.backToCountry')}
-            </Link>
-            <Link to="/world" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
+            </Button>
+            <Button as={Link} to="/#countries" variant="secondary">
               {t('world.indicator.allCountries')}
-            </Link>
-            <Link to="/" className="rounded-xl border border-border-subtle px-4 py-2 text-text-secondary transition-colors hover:text-champagne">
+            </Button>
+            <Button as={Link} to="/" variant="secondary">
               {t('world.indicator.home')}
-            </Link>
+            </Button>
           </div>
         </div>
       )}
@@ -452,9 +454,9 @@ export default function WorldIndicatorPage() {
       )}
 
       {(metaQ.isLoading || redirecting) && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-4 w-24" />
-          <SkeletonBox className="h-14 w-3/4 max-w-full" />
+        <div className="space-y-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="h-6 w-28 rounded-full" />
+          <SkeletonBox className="h-8 w-3/4 max-w-full sm:h-10 md:h-14 lg:h-[4.5rem]" />
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-6">
             {[0, 1, 2, 3].map((i) => (
               <SkeletonBox key={i} className="h-28 rounded-2xl md:h-48 md:rounded-[2rem]" />
@@ -467,20 +469,20 @@ export default function WorldIndicatorPage() {
         <>
           <header className="fe-data-header">
             <div className="mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-4">
-              <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-text-secondary sm:px-3">
-                <Activity className="h-3 w-3 text-champagne" />
+              <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest text-text-secondary sm:px-3">
+                <Activity className="h-3 w-3 text-champagne-ink" />
                 {freqLabel}
               </span>
               {countryName && (
                 <Link
                   to={countryPath(slug)}
-                  className="hidden font-mono text-xs text-text-tertiary transition-colors hover:text-champagne sm:inline"
+                  className="hidden font-mono text-xs text-text-secondary transition-colors hover:text-champagne-ink sm:inline"
                 >
                   {countryName}
                 </Link>
               )}
               {categoryLabel && (
-                <span className="hidden font-mono text-xs text-text-tertiary sm:inline">
+                <span className="hidden font-mono text-xs text-text-secondary sm:inline">
                   {categoryLabel}
                 </span>
               )}
@@ -489,7 +491,7 @@ export default function WorldIndicatorPage() {
               {displayName}
             </h1>
             {metaQ.data._fromMock && (
-              <p className="mt-2 font-mono text-[12px] text-text-tertiary">
+              <p className="mt-2 font-mono text-[12px] text-text-secondary">
                 {t('world.mockData')}
               </p>
             )}
@@ -604,7 +606,7 @@ export default function WorldIndicatorPage() {
 
           {dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
             <section className="mb-8 rounded-xl border border-border-subtle bg-surface px-4 py-3 text-xs leading-relaxed text-text-secondary" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>
-              <strong className="text-champagne">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
+              <strong className="text-champagne-ink">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
               {' — '}{dataQ.data.forecast.model_name}
               {' — '}MASE {Number(dataQ.data.forecast.quality.mase).toFixed(2)}
               <p className="mt-1">
@@ -627,17 +629,17 @@ export default function WorldIndicatorPage() {
               </h3>
               <dl className="grid gap-4 text-sm sm:grid-cols-2">
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('world.indicator.field.freq')}</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('world.indicator.field.freq')}</dt>
                   <dd className="font-mono text-text-primary">
                     {freqLabel}
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('world.indicator.field.unit')}</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('world.indicator.field.unit')}</dt>
                   <dd className="font-mono text-text-primary">{displayUnit || '—'}</dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('world.indicator.field.history')}</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('world.indicator.field.history')}</dt>
                   <dd className="font-mono text-text-primary">
                     {indicator.history_start && indicator.history_end
                       ? `${formatDate(indicator.history_start, 'annual', locale)}–${formatDate(indicator.history_end, 'annual', locale)}`
@@ -645,17 +647,17 @@ export default function WorldIndicatorPage() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('world.indicator.field.points')}</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('world.indicator.field.points')}</dt>
                   <dd className="font-mono text-text-primary">
                     {dataQ.data?.count ?? indicator.points_count ?? '—'}
                   </dd>
                 </div>
                 <div className="sm:col-span-2">
-                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">{t('common.source')}</dt>
+                  <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">{t('common.source')}</dt>
                   <dd className="text-[13px] leading-5 text-text-secondary">
                     <SourceLink
                       href={indicator.source_url}
-                      className="text-champagne underline-offset-2 hover:underline"
+                      className="text-champagne-ink underline-offset-2 hover:underline"
                       textClassName=""
                     >
                       {sourceLabel}
@@ -664,7 +666,7 @@ export default function WorldIndicatorPage() {
                 </div>
                 {showOriginalTitle && (
                   <div className="sm:col-span-2">
-                    <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-tertiary">
+                    <dt className="mb-1 text-[11px] uppercase tracking-wide text-text-secondary">
                       {originalTitleLabel}
                     </dt>
                     <dd className="text-[13px] leading-5 text-text-secondary">
@@ -676,14 +678,14 @@ export default function WorldIndicatorPage() {
               <div className="mt-6 flex flex-wrap gap-2 border-t border-border-subtle pt-4">
                 <Link
                   to={countryPath(slug)}
-                  className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne"
+                  className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
                 >
                   {t('world.indicator.allOfCountry', { country: countryName || country?.name || '' })}
                   <ArrowUpRight size={12} />
                 </Link>
                 <Link
-                  to="/world"
-                  className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne"
+                  to="/#countries"
+                  className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
                 >
                   {t('world.indicator.allCountries')}
                   <ArrowUpRight size={12} />
