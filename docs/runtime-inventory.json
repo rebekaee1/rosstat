@@ -6794,6 +6794,74 @@
       "local_main_commit": "05302ff1c4dbe104850116e6206d168ec4fa91d3",
       "path": "code-review/ops-mechanism-acceptance-2026-09-30.json",
       "scope": "All160Settings and Compose services/env/activation; host loaded config/network/service/sysctl;402backendpayload SHA and264frontenddist; ownerACL+HTTP restored API/auth/nginx; clean emptyDBstartup; ownership cleanup."
+    },
+    {
+      "id": "test-server-2026-10-04",
+      "observed_utc": "2026-10-04T10:00:00+00:00",
+      "scope": "Тестовый (демо) сервер, не боевой. Read-only осмотр до выкладки и состояние после репетиции выпуска. Без паролей, токенов и пользовательских данных.",
+      "host": {
+        "address": "176.57.220.170",
+        "provider": "Timeweb (SPb)",
+        "os": "Ubuntu 26.04 LTS",
+        "vcpu": 2,
+        "ram_mib": 3910,
+        "swap_mib": 4095,
+        "disk_gb": 48,
+        "disk_used_before_gb": 23
+      },
+      "access": "SSH по ключу ~/.ssh/id_ed25519_fe_demo; парольный вход не используется и не фиксируется",
+      "ingress": {
+        "mode": "cloudflared quick tunnel, systemd fe-demo-tunnel -> 127.0.0.1:80",
+        "url_file": "/root/fe-demo-tunnel.url",
+        "url_is_ephemeral": true
+      },
+      "before": {
+        "git_commit": "a58cf294a1b9d99fc9743357fcdf9dbbf5dffddc",
+        "branch": "feat/pravki-19",
+        "alembic": "20260920_subnational",
+        "containers": [
+          "backend",
+          "frontend",
+          "postgres",
+          "redis",
+          "redis-state"
+        ],
+        "clickhouse": false,
+        "scheduler_service": false,
+        "backup_path": "/root/backups/demo-db-before-20261004.dump"
+      },
+      "after": {
+        "git_commit_note": "integration/all-20261002 (SHA фиксируется скриптом scripts/test-server/deploy.sh при каждой выкладке)",
+        "alembic": "20261004_session_changes",
+        "containers": [
+          "backend",
+          "scheduler",
+          "frontend",
+          "postgres",
+          "redis",
+          "redis-state"
+        ],
+        "memory_limits_mib": {
+          "postgres": 1100,
+          "backend": 900,
+          "scheduler": 700,
+          "frontend": 256,
+          "redis": 448
+        },
+        "uvicorn_workers": 1,
+        "data": "product-only восстановление дампа 2026-10-03 (ревизия 20260927_world_nonzero_idx): 24 продуктовые таблицы с данными, личные и аналитические — только структура"
+      },
+      "disabled_outbound": [
+        "telegram",
+        "pulse",
+        "indexnow",
+        "webmaster_recrawl",
+        "analytics_scheduler",
+        "clickhouse",
+        "eurostat_ingest",
+        "world_forecast"
+      ],
+      "limits": "Не измерялись: время построения индексов миграции на таблицах событий боевого размера (в стенде они пусты), производительность 4 vCPU, ClickHouse, исходящие уведомления."
     }
   ]
 }
