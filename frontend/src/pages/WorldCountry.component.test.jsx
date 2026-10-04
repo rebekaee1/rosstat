@@ -231,7 +231,7 @@ describe('WorldCountry category navigation', () => {
       return frames.length;
     });
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function rect() {
-      return { top: this.dataset.worldCountryCategory === 'Цены' ? 100 : -300 };
+      return { top: this.dataset.worldCountryCategory === 'Рынок труда' ? 100 : -300 };
     });
     renderCountry('germany', TWO_CATEGORIES);
     await screen.findByRole('heading', { name: 'Цены' });
@@ -240,7 +240,8 @@ describe('WorldCountry category navigation', () => {
     fireEvent.scroll(window);
     act(() => { frames.splice(0).forEach((cb) => cb()); });
     const sidebar = document.querySelector('aside');
-    expect(within(sidebar).getByRole('button', { name: /Цены/ }).getAttribute('aria-current')).toBe('true');
+    // Главные темы идут первыми: «Цены» стоят выше «Рынка труда», прокрутка дошла до второй.
+    expect(within(sidebar).getByRole('button', { name: /Рынок труда/ }).getAttribute('aria-current')).toBe('true');
   });
 
   it('на телефоне сохраняет выбор одной категории через мобильное меню', async () => {
@@ -250,12 +251,13 @@ describe('WorldCountry category navigation', () => {
     }));
     renderCountry('germany', TWO_CATEGORIES);
 
-    expect(await screen.findByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
-    expect(screen.queryByRole('heading', { name: 'Цены' })).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: /Рынок труда \(1\)/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Цены \(1\)/ }));
-    expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
+    // Главные темы идут первыми: сначала «Цены», а не категория, случайно первая по алфавиту.
+    expect(await screen.findByRole('heading', { name: 'Цены' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Рынок труда' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Цены \(1\)/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Рынок труда \(1\)/ }));
+    expect(screen.getByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Цены' })).toBeNull();
   });
 });
 
@@ -409,18 +411,65 @@ describe('WorldCountry coverage copy', () => {
 
     await screen.findByRole('heading', { name: 'Рынок труда' });
 
-    // Hero-абзац «{N} в {M} …» на странице один — strip его не дублирует.
-    // Скоуп по абзацам: кастомный матчер по textContent в testing-library
-    // проходит и по body-обёрткам, что даёт ложные совпадения.
+    // Счётчики базы («7964 показателя в 10 разделах») человеку не нужны: hero-абзаца с цифрами покрытия нет совсем.
     const heroParagraphs = Array.from(document.querySelectorAll('p'))
       .filter((node) => /\d+ \S+ в \d+/.test(node.textContent));
-    expect(heroParagraphs).toHaveLength(1);
+    expect(heroParagraphs).toHaveLength(0);
     // Пустой strip несёт альтернативную строку (ключ world.country.coverageAlt;
     // пока словарь параллельной правки не влит, t() отдаёт сырой ключ —
     // принимаем оба состояния, дублирование hero-текста не допускается ни в каком).
     const stripCopy = document.querySelector('div.sm\\:col-span-3')?.textContent || '';
     expect(stripCopy).not.toMatch(/\d+ \S+ в \d+/);
     expect(stripCopy.length).toBeGreaterThan(0);
+  });
+});
+
+describe('WorldCountry key figures', () => {
+  it('shows the unit and the period beside every number and never an indicator code', async () => {
+    renderCountry('germany', {
+      ...GERMANY,
+      overview: [
+        {
+          concept_slug: 'hicp-index', name: 'Изменение потребительских цен за год', name_en: 'Consumer prices, year over year',
+          unit: '%', indicator_code: 'de-prc_hicp_minr', frequency: 'monthly', date: '2026-08-01', value: 2.92,
+        },
+        {
+          concept_slug: 'unemployment-rate', name: 'Уровень безработицы', name_en: 'Unemployment rate',
+          unit: '% экономически активного населения', indicator_code: 'de-une', frequency: 'monthly', date: '2026-08-01', value: 4,
+        },
+      ],
+    });
+    await screen.findByRole('heading', { name: 'Рынок труда' });
+    const cards = document.querySelectorAll('.w2-kpi');
+    expect(cards).toHaveLength(2);
+    const first = cards[0].textContent.replace(/\u00A0/g, ' ');
+    expect(first).toContain('Изменение потребительских цен за год');
+    expect(first).toContain('2,9');
+    expect(first).not.toContain('2,92');
+    expect(first).toContain('%');
+    expect(first).toContain('август 2026');
+    expect(first).not.toContain('prc_hicp');
+    const second = cards[1].textContent.replace(/\u00A0/g, ' ');
+    expect(second).toContain('4,0');
+    expect(second).toContain('% экономически активного населения');
+    expect(document.body.textContent).not.toContain('\u00B7');
+  });
+
+  it('puts the main themes first and keeps the rest alphabetical', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
+      matches: media.includes('min-width'), media, addEventListener() {}, removeEventListener() {},
+    }));
+    renderCountry('germany', {
+      ...GERMANY,
+      categories: [
+        { name: 'Бизнес и инвестиции', indicators: [{ code: 'de-b', name: 'Инвестиции', frequency: 'annual', last_value: 1, last_date: '2025-01-01' }] },
+        { name: 'Население', indicators: [{ code: 'de-p', name: 'Население', frequency: 'annual', last_value: 1, last_date: '2025-01-01' }] },
+        { name: 'Национальные счета', indicators: [{ code: 'de-n', name: 'ВВП', frequency: 'annual', last_value: 1, last_date: '2025-01-01' }] },
+      ],
+    });
+    await screen.findByRole('heading', { name: 'Национальные счета' });
+    const order = Array.from(document.querySelectorAll('[data-world-country-category]')).map((node) => node.dataset.worldCountryCategory);
+    expect(order).toEqual(['Национальные счета', 'Население', 'Бизнес и инвестиции']);
   });
 });
 

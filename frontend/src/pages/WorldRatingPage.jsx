@@ -30,7 +30,7 @@ import {
   worldYearItems,
 } from '../lib/homeWorkbench';
 import { formatDate } from '../lib/format';
-import { uniformDigits } from '../lib/countryFlag';
+import { splitUnit, uniformDigits } from '../lib/countryFlag';
 import useMatchMedia from '../lib/useMatchMedia';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
@@ -497,12 +497,7 @@ export default function WorldRatingPage() {
   const narrow = useMatchMedia('(max-width: 639px)');
   const digits = useMemo(() => uniformDigits(ranked.map((item) => item.value)), [ranked]);
   const fmtValue = useCallback((value) => formatWorldValue(value, digits, locale), [digits, locale]);
-  const shortUnitOf = (text) => {
-    const unitText = String(text || '').trim();
-    if (!unitText) return '';
-    if (/^%|,\s*%$/.test(unitText)) return '%';
-    return unitText.length <= 12 ? unitText : '';
-  };
+  const shortUnitOf = (text) => splitUnit(text).short;
   const cardUnit = (item) => (sharedUnit
     ? shortUnitOf(sharedUnit)
     : shortUnitOf(localizeWorldUnit(item.unit || concept.unit, locale)));

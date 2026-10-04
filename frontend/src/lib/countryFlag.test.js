@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { countryFlag, uniformDigits } from './countryFlag';
+import { countryFlag, splitUnit, uniformDigits } from './countryFlag';
 
 describe('countryFlag', () => {
   it('builds regional indicator pairs', () => {
@@ -30,5 +30,20 @@ describe('uniformDigits', () => {
   it('ignores empty and non numeric entries', () => {
     expect(uniformDigits([null, '', 'x', 7])).toBe(1);
     expect(uniformDigits(undefined)).toBe(2);
+  });
+});
+
+describe('splitUnit', () => {
+  it('keeps percent and short money units beside the number', () => {
+    expect(splitUnit('%')).toEqual({ short: '%', long: '' });
+    expect(splitUnit('млрд $')).toEqual({ short: 'млрд $', long: '' });
+    expect(splitUnit('изменение за год, %')).toEqual({ short: '%', long: 'изменение за год, %' });
+    expect(splitUnit('% экономически активного населения')).toEqual({ short: '%', long: '% экономически активного населения' });
+  });
+
+  it('moves a long non-percent unit into the caption', () => {
+    expect(splitUnit('в текущих ценах, млн евро')).toEqual({ short: '', long: 'в текущих ценах, млн евро' });
+    expect(splitUnit('')).toEqual({ short: '', long: '' });
+    expect(splitUnit(null)).toEqual({ short: '', long: '' });
   });
 });

@@ -28,3 +28,16 @@ export function uniformDigits(values) {
   if (max >= 5) return 1;
   return 2;
 }
+
+/**
+ * Единица рядом с числом: короткая («%», «млрд $») стоит у самого числа,
+ * длинное пояснение («% экономически активного населения») уходит в подпись под ним.
+ * @returns {{ short: string, long: string }}
+ */
+export function splitUnit(unit) {
+  const text = String(unit ?? '').trim();
+  if (!text) return { short: '', long: '' };
+  if (/^%|,\s*%$/.test(text)) return { short: '%', long: text === '%' ? '' : text };
+  if (text.length <= 14) return { short: text, long: '' };
+  return { short: '', long: text };
+}

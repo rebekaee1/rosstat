@@ -91,14 +91,53 @@ describe('WorldIndicatorPage #chart anchor', () => {
   });
 });
 
+describe('WorldIndicatorPage plain language', () => {
+  it('stat tiles say what they are: no «НАБЛ.», «ПЕРИОД.», «ПИК», no capital letters with spacing', async () => {
+    renderCard('/germany/indicator/de-une');
+    await waitFor(() => expect(document.querySelectorAll('.w2-stat')).toHaveLength(4));
+    const text = document.body.textContent.replace(/\u00A0/g, ' ');
+    expect(text).toContain('Сейчас');
+    expect(text).toContain('Максимум за всё время');
+    expect(text).toContain('В среднем');
+    expect(text).not.toMatch(/НАБЛ|ПЕРИОД\.|ПИК|ДАТА:/);
+    // Плитка «Сейчас»: значение с единицей и датой, знаков после запятой ровно как в данных («3,1», а не «3,10»).
+    const now = document.querySelectorAll('.w2-stat')[0].textContent.replace(/\u00A0/g, ' ');
+    expect(now).toContain('3,1');
+    expect(now).not.toContain('3,10');
+    expect(now).toContain('%');
+  });
+
+  it('keeps breadcrumbs in one short line: a long indicator name is cut, not wrapped in capitals', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/world\/indicators\/germany\/de-une$/, {
+        ...META,
+        indicator: {
+          ...META.indicator,
+          name: 'Импорт и экспорт товаров и услуг, в текущих ценах, в миллионах евро по методике источника',
+        },
+      }],
+      [/^\/world\/indicators\/germany\/de-une\/data/, DATA],
+      [/^\/world\/countries\/germany$/, { country: META.country, categories: [], overview: [] }],
+    ]);
+    renderPage(<WorldIndicatorPage />, { path: '/:countrySlug/indicator/:code', route: '/germany/indicator/de-une' });
+    await waitFor(() => expect(document.querySelector('[data-testid="chart-stub"]')).toBeTruthy());
+    const nav = document.querySelector('nav[aria-label]');
+    const last = nav.querySelector('[aria-current="page"]');
+    expect(last.textContent.endsWith('…')).toBe(true);
+    expect(last.textContent.length).toBeLessThanOrEqual(41);
+    expect(nav.className).not.toMatch(/uppercase|font-mono/);
+  });
+});
+
 describe('WorldIndicatorPage about-series block', () => {
-  it('в блоке «О ряде» источник показывает издателя, оригинальный титул — отдельной строкой', async () => {
+  it('в блоке «О показателе» источник виден сразу, технические строки скрыты под «Подробнее»', async () => {
     renderCard('/germany/indicator/de-une');
 
     // Блок «О ряде» ждём после загрузки meta.
     const aboutHeading = await waitFor(() => {
       const h3 = [...document.querySelectorAll('h3')]
-        .find((el) => el.textContent === 'О ряде');
+        .find((el) => el.textContent === 'О показателе');
       expect(h3).toBeTruthy();
       return h3;
     });
@@ -108,9 +147,14 @@ describe('WorldIndicatorPage about-series block', () => {
     // (на EN было бы Eurostat; в RU-локали остаётся «Евростат»).
     expect(aboutBlock.textContent).toContain('Евростат');
 
-    // В META.indicator нет name_en — строки «Оригинальное название ряда»
-    // быть не должно.
-    expect(aboutBlock.textContent).not.toContain('Оригинальное название ряда');
+    // В META.indicator нет name_en — строки «Наименование в источнике» быть не должно.
+    expect(aboutBlock.textContent).not.toContain('Наименование в источнике');
+    // «Точек» и «ряд» человеку не нужны: число значений живёт под «Подробнее».
+    expect(aboutBlock.textContent).not.toContain('Точек');
+    const more = aboutBlock.querySelector('details');
+    expect(more).toBeTruthy();
+    expect(more.textContent).toContain('Всего значений');
+    expect(more.open).toBe(false);
   });
 
   it('показывает оригинальное название, когда оно отличается от имени ряда', async () => {
@@ -135,9 +179,13 @@ describe('WorldIndicatorPage about-series block', () => {
       route: '/germany/indicator/de-une',
     });
 
+    // Английское название оригинала — только под «Подробнее», закрытым по умолчанию.
     await waitFor(() => {
-      expect(document.body.textContent).toContain('Оригинальное название ряда');
-      expect(document.body.textContent).toContain(
+      const more = document.querySelector('details.w2-details');
+      expect(more).toBeTruthy();
+      expect(more.open).toBe(false);
+      expect(more.textContent).toContain('Наименование в источнике');
+      expect(more.textContent).toContain(
         'Unemployment rate from the Labour Force Survey (monthly)',
       );
     });

@@ -10,6 +10,15 @@ import {
   expandedGroupForWorldMode,
   groupModesFromApi,
 } from '../lib/worldViewModes';
+import '../styles/world.css';
+
+/** Названия групп режимов для человека: «Значения», «Изменение за год», а не «Уровень» и «К году». */
+const HUMAN_GROUP_KEY = {
+  'Уровень': 'w2.mode.level',
+  'К прошлому периоду': 'w2.mode.step',
+  'К году': 'w2.mode.yoy',
+  'Индекс': 'w2.mode.index',
+};
 
 function aggregatedModeHint(item, t) {
   if (item.disabled) return t('world.mode.hint.unavailable');
@@ -25,8 +34,9 @@ function aggregatedModeHint(item, t) {
 }
 
 /**
- * Двухуровневый переключатель мировой карточки.
- * Визуально = российские макрокарточки (не segmented-control «быстрых» страниц).
+ * Выбор вида показателя: «Показать как» (значения, изменение, индекс) и «Как часто» (по годам, кварталам, месяцам).
+ * Недоступные варианты («нет официального ряда») не показываются: они только занимали место.
+ * Один вариант выбора — нет и выбора: блок скрывается.
  */
 export default function WorldViewModePicker({
   modes,
@@ -38,12 +48,12 @@ export default function WorldViewModePicker({
 }) {
   const t = useT();
   const { locale } = useLocale();
-  const sectionTitle = title || t('indicator.picker.mode');
+  const sectionTitle = title || t('w2.mode.title');
   const groups = useMemo(() => {
     const raw = groupModesFromApi(modes);
     return raw.map((g) => ({
       ...g,
-      label: localizeViewModeLabel(g.label, locale),
+      label: HUMAN_GROUP_KEY[g.id] ? t(HUMAN_GROUP_KEY[g.id]) : localizeViewModeLabel(g.label, locale),
       modes: g.modes?.map((m) => ({
         ...m,
         label: localizeViewModeLabel(m.label, locale),
@@ -96,60 +106,56 @@ export default function WorldViewModePicker({
   };
 
   if (groups.length === 0) return null;
-  if (groups.length <= 1 && (groups[0]?.modes?.length ?? 0) <= 1) return null;
+  const availableCount = (group) => (group.modes || []).filter((item) => !item.disabled).length;
+  if (groups.length <= 1 && availableCount(groups[0]) <= 1) return null;
 
   const expanded = groups.find((g) => g.id === expandedGroup && !g.leafMode);
-  const subModes = expanded?.modes ?? [];
+  const subModes = (expanded?.modes ?? []).filter((item) => !item.disabled);
   const activeTopGroup = expandedGroupForWorldMode(groups, currentMode);
 
   const body = (
     <>
-      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {sectionTitle}
-      </p>
-      {/* Как CpiViewModePicker: wrap, не горизонтальный скролл —
-          иначе подпись «Уровень» (w-full) выталкивает частоты за край. */}
-      <ChipGroup label={sectionTitle}>
-        {groups.map((group) => (
-          <Chip
-            key={group.id}
-            className="fe-chip--wrap shrink-0"
-            active={group.id === activeTopGroup}
-            onClick={() => onTopClick(group)}
+      {groups.length > 1 && (
+        <>
+          <p className="w2-label">{sectionTitle}</p>
+          <ChipGroup label={sectionTitle} className="fe-chip-row--mscroll">
+            {groups.map((group) => (
+              <Chip
+                key={group.id}
+                className="fe-chip--wrap shrink-0"
+                active={group.id === activeTopGroup}
+                onClick={() => onTopClick(group)}
+              >
+                {group.label}
+              </Chip>
+            ))}
+          </ChipGroup>
+        </>
+      )}
+      {subModes.length > 1 && (
+        <div className={cn(groups.length > 1 && 'mt-3 border-t border-border-subtle pt-3')}>
+          <p className="w2-label">{t('w2.mode.period')}</p>
+          <ChipGroup
+            label={t('w2.mode.period')}
+            nowrap={compact}
+            className={cn('fe-chip-row--mscroll', compact && '-mx-1 px-1')}
           >
-            {group.label}
-          </Chip>
-        ))}
-      </ChipGroup>
-      {subModes.length > 0 && (
-        <ChipGroup
-          label={expanded?.label}
-          nowrap={compact}
-          className={cn('mt-3 border-t border-border-subtle pt-3', compact && '-mx-1 px-1')}
-        >
-          {!compact && (
-            <span aria-hidden="true" className="mb-0 w-full text-[11px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
-              {expanded.label}
-            </span>
-          )}
-          {subModes.map((item) => (
-            <Chip
-              key={`${expanded.id}-${item.mode}`}
-              className="fe-chip--wrap shrink-0"
-              active={!item.disabled && item.mode === currentMode}
-              disabled={item.disabled}
-              title={item.hint || undefined}
-              onClick={() => onSubClick(expanded.id, item)}
-            >
-              {item.label}
-              {item.disabled && item.hint ? (
-                <span className="ml-1 font-normal">{item.hint}</span>
-              ) : (!item.official && !item.disabled ? (
-                <span className="ml-1 font-normal">{t('world.mode.badge.derived')}</span>
-              ) : null)}
-            </Chip>
-          ))}
-        </ChipGroup>
+            {subModes.map((item) => (
+              <Chip
+                key={`${expanded.id}-${item.mode}`}
+                className="fe-chip--wrap shrink-0"
+                active={item.mode === currentMode}
+                title={item.hint || undefined}
+                onClick={() => onSubClick(expanded.id, item)}
+              >
+                {item.label}
+                {!item.official ? (
+                  <span className="ml-1 font-normal">{t('world.mode.badge.derived')}</span>
+                ) : null}
+              </Chip>
+            ))}
+          </ChipGroup>
+        </div>
       )}
     </>
   );
@@ -163,7 +169,7 @@ export default function WorldViewModePicker({
   }
 
   return (
-    <section className="mb-6 min-w-0 rounded-[1.25rem] border border-border-subtle bg-surface p-3.5 shadow-sm sm:mb-8 sm:rounded-[1.5rem] sm:p-5">
+    <section className="mb-6 min-w-0 rounded-3xl border border-border-subtle bg-surface p-4 shadow-sm sm:mb-8 sm:p-5">
       {body}
     </section>
   );

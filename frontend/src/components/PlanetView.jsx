@@ -15,7 +15,7 @@ import { comparePath, countryPath } from '../lib/sitePaths';
 import {
   formatWorldPeriod, resolveWorldPeriodFormat, worldPeriodDates,
 } from '../lib/worldMapPeriod';
-import { uniformDigits } from '../lib/countryFlag';
+import { splitUnit, uniformDigits } from '../lib/countryFlag';
 import CountryFlag from './CountryFlag';
 import SourceLink from './SourceLink';
 import Spinner from './Spinner';
@@ -226,7 +226,7 @@ export default function PlanetView({
   const hoveredCountry = countryByCode.get(hoverCode) || countryByCode.get(countryAlias(hoverCode));
   const displayUnit = localizeWorldUnit(unit, locale);
   // В строках — только короткая единица; длинное пояснение («% экономически активного населения») стоит над списком.
-  const rowUnit = /^%|,\s*%$/.test(displayUnit.trim()) ? '%' : (displayUnit.length <= 12 ? displayUnit : '');
+  const rowUnit = splitUnit(displayUnit).short;
   const hasMetric = Boolean(metricName || valuesByCode != null);
   const isMap = sceneStatus === 'error';
   const showKey = !isMap && mode === 'data' && hasMetric;
