@@ -674,7 +674,6 @@ export function CountrySilhouette({
   const areaValue = area?.value != null
     ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1)} ${areaUnit}`
     : '';
-  const areaYear = area?.year ? String(area.year) : '';
   const popUnitRaw = (population?.unit || '').trim();
   const popUnit = (
     !popUnitRaw
@@ -736,7 +735,6 @@ export function CountrySilhouette({
               <dt>{t('world.territory.area')}</dt>
               <dd>
                 {areaValue}
-                {areaYear ? <small>{areaYear}</small> : null}
               </dd>
             </div>
           )}
@@ -745,7 +743,7 @@ export function CountrySilhouette({
               <dt>{t('world.territory.population')}</dt>
               <dd>
                 {populationValue}
-                {populationYear ? <small>{populationYear}</small> : null}
+                {populationYear ? <small>{t('x2.country.asOfYear', { year: populationYear })}</small> : null}
               </dd>
             </div>
           )}

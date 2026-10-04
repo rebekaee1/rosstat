@@ -445,6 +445,14 @@ export function formatValue(val, digits = 2, locale) {
   return formatFixed(num, digits, locale);
 }
 
+/** Целое «2 197» с неразрывным пробелом тысяч — счётчики показателей и страниц одним правилом по всему сайту. */
+export function formatCount(val, locale) {
+  if (val == null) return '';
+  const num = Number(val);
+  if (!Number.isFinite(num)) return '';
+  return formatFixed(Math.round(num), 0, locale);
+}
+
 export function formatValueWithUnit(val, unit = '%', digits, locale) {
   if (val == null) return '—';
   const num = Number(val);

@@ -87,8 +87,9 @@ describe('CountrySilhouette', () => {
     const normalized = panel.textContent.replace(/\u00A0/g, ' ');
     expect(normalized).toContain('83 882 км²');
     expect(normalized).toContain('9,2 млн человек');
-    expect(normalized).toContain('2026');
-    expect(normalized).toContain('2025');
+    // Год площади не показываем (она почти не меняется); год населения — словами: «на 2025 г.».
+    expect(normalized).not.toContain('2026');
+    expect(normalized).toContain('на 2025 г.');
     const source = screen.getByRole('link', { name: 'Евростат' });
     expect(source.getAttribute('href')).toBe('https://ec.europa.eu/eurostat/databrowser/view/reg_area3');
     expect(source.getAttribute('target')).toBe('_blank');

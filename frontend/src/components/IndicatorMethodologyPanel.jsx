@@ -5,6 +5,7 @@ import { footerSourceLinks } from '../lib/footerNav';
 import { isExternalHref, pickExternalHref } from '../lib/sourceLink';
 import SourceLink from './SourceLink';
 import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 
 /**
  * Левая колонка под графиком: текст «Методология» + блок «Источник».

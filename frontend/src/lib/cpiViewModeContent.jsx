@@ -152,7 +152,7 @@ const ANNUAL_INFLATION_FORMULA = (
 
 function inflationFootnote(ipcFoot) {
   return (
-    <span className="block mt-2 text-text-tertiary normal-case tracking-normal text-[10px]">
+    <span className="block mt-2 text-text-tertiary normal-case tracking-normal text-xs">
       ИПЦ
       <sub>i</sub>
       {` — ${ipcFoot} за i-й месяц (% к предыдущему месяцу). `}
@@ -195,8 +195,8 @@ function buildInflation(code, period = null) {
   return {
     description:
       `Инфляция к соответствующему периоду предыдущего года: на сколько процентов ${s.prices} `
-      + 'изменились по сравнению с тем же месяцем прошлого года. Рассчитывается как произведение 12 '
-      + `последовательных ${s.ipcMonthly}, делённых на 100, минус 100%.`,
+      + `изменились по сравнению с тем же месяцем прошлого года. Берём ${s.ipcMonthlyNom} Росстата `
+      + 'за последние 12 месяцев; формула — под «Подробнее о расчёте».',
     methodology: (
       <>
         <span className="block mb-1">Формула:</span>
@@ -321,7 +321,7 @@ function buildYoy(code) {
       <>
         <span className="block mb-1">Формула (за календарный год, январь–декабрь):</span>
         {ANNUAL_INFLATION_FORMULA}
-        <span className="block mt-2 text-text-tertiary normal-case tracking-normal text-[10px]">
+        <span className="block mt-2 text-text-tertiary normal-case tracking-normal text-xs">
           ИПЦ
           <sub>i</sub>
           {` — ${s.ipcFoot} за i-й месяц года (% к предыдущему месяцу). `}
@@ -375,9 +375,9 @@ function buildIndex(code, bucket = null) {
   return {
     description:
       `${intro} За базу принят январь 2000 года `
-      + '(100 = уровень цен в январе 2000). Каждое значение получено цепным произведением '
-      + `${s.ipcMonthly} к этой базе. Кривая показывает, как с 1991 года изменились `
-      + `${s.prices}.`,
+      + '(100 = уровень цен в январе 2000). Мы последовательно накладываем на эту базу '
+      + `месячные изменения цен из ${s.ipcMonthly} (формула — под «Подробнее о расчёте»). `
+      + `Кривая показывает, как с 1991 года изменились ${s.prices}.`,
     methodology:
       `Формула: ИНДЕКСₜ = 100 × (ИПЦ₁/100) × (ИПЦ₂/100) × … × (ИПЦₜ/100), где `
       + `ИПЦᵢ — месячный ${s.ipcFoot} к предыдущему месяцу. История охватывает весь `

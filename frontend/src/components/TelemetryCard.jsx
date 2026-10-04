@@ -3,6 +3,7 @@ import { formatDeltaWithUnit } from '../lib/deltaText';
 import { useLocale, useT } from '../i18n';
 import DeltaBadge from './DeltaBadge';
 import '../styles/indicator-russia.css';
+import '../styles/x2-indicator.css';
 
 /**
  * Карточка одного значения на странице индикатора: подпись, число с единицей, изменение, дата.

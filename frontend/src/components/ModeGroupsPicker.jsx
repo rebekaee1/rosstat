@@ -1,5 +1,5 @@
 import Chip from './Chip';
-import ChipGroup from './ChipGroup';
+import ChipGroup, { OverflowChipGroup } from './ChipGroup';
 import { PickerCard, PickerLabel, PickerHint } from './PickerParts';
 import { useT } from '../i18n';
 import { pickerHintKey } from '../lib/pickerLabels';
@@ -47,8 +47,12 @@ export default function ModeGroupsPicker({
       {visibleSub.length > 1 && (
         <div className="fe-pick-sub">
           <PickerLabel>{t('w3.picker.detail')}</PickerLabel>
-          <ChipGroup label={subGroupLabel} grid>
-            {visibleSub.map((item) => (
+          <OverflowChipGroup
+            label={subGroupLabel}
+            dense
+            items={visibleSub}
+            isActive={(item) => currentMode === item.mode}
+            renderChip={(item) => (
               <Chip
                 key={item.mode}
                 active={currentMode === item.mode}
@@ -56,8 +60,8 @@ export default function ModeGroupsPicker({
               >
                 {item.label}
               </Chip>
-            ))}
-          </ChipGroup>
+            )}
+          />
         </div>
       )}
     </>

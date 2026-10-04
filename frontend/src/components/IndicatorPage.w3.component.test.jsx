@@ -76,7 +76,8 @@ describe('ModeGroupsPicker', () => {
         onSubClick={onSub}
       />,
     );
-    expect(container.querySelectorAll('.fe-chip-row--grid')).toHaveLength(2);
+    expect(container.querySelectorAll('.fe-chip-row--grid')).toHaveLength(1);
+    expect(container.querySelectorAll('.fe-chip-row--dense')).toHaveLength(1);
     expect(screen.getByRole('note').textContent).toMatch(/год назад/);
     expect(screen.getByText('Детализация')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'По кварталам' }));

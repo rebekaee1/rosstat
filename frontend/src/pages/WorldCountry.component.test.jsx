@@ -531,3 +531,31 @@ describe('WorldCountry EN overlay', () => {
     expect(document.body.textContent).not.toContain('Канада');
   });
 });
+
+describe('WorldCountry числа одним правилом (RU)', () => {
+  it('в списке тем запятая и неразрывный пробел тысяч, как на странице показателя', async () => {
+    const payload = {
+      ...GERMANY,
+      categories: [{
+        name: 'Цены',
+        indicators: [
+          {
+            code: 'de-hicp', name: 'Индекс цен', unit: 'индекс', frequency: 'monthly',
+            last_value: 132.5, change: 0.1, last_date: '2025-12-01',
+          },
+          {
+            code: 'de-pop', name: 'Население', unit: 'человек', frequency: 'annual',
+            last_value: 83400000, last_date: '2025-01-01',
+          },
+        ],
+      }],
+    };
+    renderCountry('germany', payload, 'ru');
+    const row = await screen.findByRole('link', { name: /Индекс цен/ });
+    expect(row.textContent).toContain('132,5');
+    expect(row.textContent).toContain('+0,10');
+    expect(row.textContent).not.toMatch(/\d\.\d/);
+    const big = screen.getByRole('link', { name: /Население/ });
+    expect(big.textContent).toContain('83 400 000');
+  });
+});

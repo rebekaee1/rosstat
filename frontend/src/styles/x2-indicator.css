@@ -1,0 +1,258 @@
+/*
+ * Волна 3, область X2 (карточки показателей, страна, валюты, «сегодня»), 2026-10-04.
+ * Правила здесь нарочно с удвоенным классом там, где им мешает порядок подключения CSS-файлов:
+ * `.fe-chip-row` из chart-controls.css (flex) и `.fe-chip-row--grid` из indicator-russia.css (grid)
+ * имеют одну специфичность, и при другом порядке чанков кнопки превращались в стопку на всю ширину.
+ */
+
+/* ── Переключатели показа: 1–2 строки вместо стопки кнопок ───────────────── */
+:root .fe-pick-card { margin-bottom: 16px; padding: 14px; }
+@media (min-width: 640px) { .fe-pick-card { margin-bottom: 24px; padding: 16px; } }
+:root .fe-pick-label { margin-bottom: 8px; }
+:root .fe-pick-hint { margin-top: 8px; }
+:root .fe-pick-sub { margin-top: 12px; padding-top: 12px; }
+
+/* Верхний ряд: сетка равных ячеек, на телефоне две колонки (нечётная последняя — на всю ширину). */
+:root .fe-chip-row.fe-chip-row--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+:root .fe-chip-row.fe-chip-row--grid > .fe-chip {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+}
+:root .fe-chip-row.fe-chip-row--grid > .fe-chip:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (pointer: coarse) {
+  :root .fe-chip-row.fe-chip-row--grid > .fe-chip { min-height: 44px; }
+}
+@media (min-width: 640px) {
+  :root .fe-chip-row.fe-chip-row--grid {
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 14rem));
+    justify-content: start;
+    gap: 8px;
+  }
+  :root .fe-chip-row.fe-chip-row--grid > .fe-chip:last-child:nth-child(odd) { grid-column: auto; }
+  :root .fe-chip-row.fe-chip-row--grid > .fe-chip { min-height: 38px; }
+}
+@media (min-width: 640px) and (pointer: coarse) {
+  :root .fe-chip-row.fe-chip-row--grid > .fe-chip { min-height: 44px; }
+}
+:root .fe-chip-row.fe-chip-row--grid > .fe-chip.is-active,
+:root .fe-chip-row.fe-chip-row--dense > .fe-chip.is-active {
+  border-color: var(--color-champagne-ink);
+  background: rgba(173, 138, 72, 0.18);
+  color: var(--color-champagne-ink);
+}
+
+/* Нижний ряд (детализация): короткие подписи по ширине текста, строка добита до края — без рваного хвоста. */
+:root .fe-chip-row.fe-chip-row--dense {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+:root .fe-chip-row.fe-chip-row--dense > .fe-chip {
+  flex: 1 1 auto;
+  min-width: 5.25rem;
+  min-height: 40px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+@media (pointer: coarse) {
+  :root .fe-chip-row.fe-chip-row--dense > .fe-chip { min-height: 44px; }
+}
+:root .fe-chip-row .fe-chip.fe-chip--more {
+  flex: 0 0 auto;
+  border: 1px dashed var(--color-border-champagne);
+  background: transparent;
+  color: var(--color-champagne-ink);
+}
+
+/* ── Плот графика: касание не рисует системную рамку; своя мягкая — только с клавиатуры ──────────── */
+:root .fe-chart-plot, :root .fe-chart-plot * { -webkit-tap-highlight-color: transparent; }
+:root .fe-chart-plot:focus,
+:root .fe-chart-plot *:focus,
+:root .fe-chart-plot *:focus-visible { outline: none; }
+:root .fe-chart-plot:focus-visible,
+:root .fe-chart-plot:has(:focus-visible) {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-champagne-ink, #80642f) 45%, transparent);
+}
+
+/* ── Плитки значений: подписи в 2–4 строки не сдвигают числа ───────────────── */
+@supports (grid-template-rows: subgrid) {
+  :root .fe-tele-grid { row-gap: 12px; }
+  :root .fe-tele {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    row-gap: 8px;
+    align-content: start;
+  }
+  :root .fe-tele__foot { margin-top: 0; align-self: stretch; }
+}
+:root .fe-tele__label { text-wrap: balance; }
+
+/* Те же плитки на странице показателя страны (.w2-stat): подпись, число, изменение, период — на общих линиях. */
+@supports (grid-template-rows: subgrid) {
+  :root .fe-substat-grid > .w2-stat {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    row-gap: 6px;
+    align-content: start;
+  }
+  :root .fe-substat-grid > .w2-stat > .w2-stat-label { grid-row: 1; }
+  :root .fe-substat-grid > .w2-stat > .w2-stat-value { grid-row: 2; }
+  :root .fe-substat-grid > .w2-stat > .w2-stat-delta { grid-row: 3; }
+  :root .fe-substat-grid > .w2-stat > .w2-stat-note { grid-row: 4; }
+}
+
+/* ── Пустой прогноз: компактная плашка ────────────────────────────────── */
+:root .fe-note-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 8px 12px;
+  padding: 14px 16px;
+}
+:root .fe-note-card__icon { width: 36px; height: 36px; }
+:root .fe-note-card__body { flex: initial; }
+:root .fe-note-card__title { text-wrap: balance; }
+:root .fe-note-card__text { margin-top: 4px; }
+:root .fe-note-card__cta { grid-column: 1 / -1; justify-self: start; }
+@media (min-width: 640px) {
+  :root .fe-note-card { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
+  :root .fe-note-card__cta { grid-column: auto; justify-self: end; }
+}
+
+/* ── «Как это считается» вместо одинокого «?» ─────────────────────────── */
+:root .fe-help-link {
+  width: auto;
+  height: 36px;
+  gap: 6px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+@media (pointer: coarse) { .fe-help-link { width: auto; height: 44px; } }
+
+/* ── Методология: формулы мелким шрифтом не оставляем ──────────────────── */
+:root .fe-more__body { font-size: 14px; }
+
+/* ── Плитки каталога: компактнее, общая подпись даты ──────────────────── */
+:root .fe-tile { gap: 10px; padding: 14px 16px; }
+@media (min-width: 640px) { .fe-tile { padding: 16px 18px; } }
+:root .fe-tile__top { align-items: center; }
+:root .fe-tile__foot { margin-top: 6px; }
+:root .fe-tile__date { white-space: nowrap; }
+:root .fe-cat-grid { gap: 10px; }
+@media (min-width: 640px) { .fe-cat-grid { gap: 14px; } }
+:root .fe-tile__body--spark { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+:root .fe-tile__main { min-width: 0; }
+:root .fe-tile__spark { flex: 0 0 38%; min-width: 84px; max-width: 150px; align-self: center; }
+:root .fe-cat-asof {
+  margin: -4px 0 14px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ── «Сегодня»: карточка без дыр и без висящего года ───────────────────── */
+:root .fe-today-card { min-height: 176px; }
+:root .fe-today-card__spark { min-height: 36px; }
+:root .fe-today-card__meta { text-wrap: balance; }
+:root .fe-today-card__spark--empty {
+  height: 36px;
+  background: linear-gradient(to right, var(--color-border-champagne) 55%, transparent 0) center / 10px 1.5px repeat-x;
+  opacity: 0.8;
+}
+
+/* ── Страница страны ───────────────────────────────────────────────────── */
+:root .fe-kpi-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+:root .fe-kpi-grid > .w2-kpi,
+:root .fe-kpi-grid > .w2-kpi.w2-kpi--hero {
+  display: grid;
+  grid-column: auto;
+  grid-template-columns: minmax(0, 1fr) minmax(88px, 38%);
+  grid-template-areas: 'name spark' 'value spark' 'period spark';
+  align-content: center;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 14px 16px;
+}
+:root .fe-kpi-grid > .w2-kpi > .w2-kpi-name { grid-area: name; }
+:root .fe-kpi-grid > .w2-kpi > .w2-kpi-value { grid-area: value; font-size: 28px; }
+:root .fe-kpi-grid > .w2-kpi > .w2-kpi-period { grid-area: period; }
+:root .fe-kpi-grid > .w2-kpi > .w2-kpi-spark { grid-area: spark; align-self: center; min-height: 0; margin-top: 0; }
+@media (min-width: 640px) {
+  :root .fe-kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  :root .fe-kpi-grid > .w2-kpi,
+  :root .fe-kpi-grid > .w2-kpi.w2-kpi--hero {
+    display: flex;
+    flex-direction: column;
+    align-content: normal;
+    gap: 4px;
+    padding: 18px;
+  }
+  :root .fe-kpi-grid > .w2-kpi > .w2-kpi-spark { align-self: stretch; min-height: 40px; margin-top: 8px; }
+}
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 640px) {
+    :root .fe-kpi-grid { row-gap: 0; }
+    :root .fe-kpi-grid > .w2-kpi,
+    :root .fe-kpi-grid > .w2-kpi.w2-kpi--hero {
+      display: grid;
+      grid-row: span 4;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: none;
+      grid-template-rows: subgrid;
+      row-gap: 4px;
+    }
+    :root .fe-kpi-grid > .w2-kpi > .w2-kpi-name { grid-area: auto; grid-row: 1; }
+    :root .fe-kpi-grid > .w2-kpi > .w2-kpi-value { grid-area: auto; grid-row: 2; align-self: end; }
+    :root .fe-kpi-grid > .w2-kpi > .w2-kpi-period { grid-area: auto; grid-row: 3; }
+    :root .fe-kpi-grid > .w2-kpi > .w2-kpi-spark { grid-area: auto; grid-row: 4; }
+  }
+}
+
+/* Профиль территории: на телефоне и планшете — полоска (силуэт слева, площадь и население справа), а не экран высотой в 1000 px. */
+@media (max-width: 1023px) {
+  :root .fe-data-header .w2-profile {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    grid-template-areas: 'map head' 'map facts' 'source source';
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 6px;
+    padding: 14px 16px;
+  }
+  :root .fe-data-header .w2-profile-head { grid-area: head; flex-wrap: wrap; align-self: end; }
+  :root .fe-data-header .w2-profile-map { grid-area: map; width: 104px; max-height: 84px; margin: 0; }
+  :root .fe-data-header .w2-profile-facts {
+    grid-area: facts;
+    align-self: start;
+    margin: 0;
+    padding-top: 0;
+    border-top: 0;
+    gap: 6px 12px;
+  }
+  :root .fe-data-header .w2-profile-source { grid-area: source; margin: 4px 0 0; }
+}
+
+/* Список показателей страны: число и дата — на одной базовой линии, не прыгают от длины названия. */
+:root .fe-ind-row__value { font-variant-numeric: tabular-nums; }

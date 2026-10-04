@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Chip from './Chip';
-import ChipGroup from './ChipGroup';
+import ChipGroup, { OverflowChipGroup } from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import { pickerLabel, pickerHintKey } from '../lib/pickerLabels';
@@ -125,21 +125,26 @@ export default function WorldViewModePicker({
       {visibleSub.length > 1 && (
         <div className="fe-pick-sub">
           <PickerLabel>{t('w3.picker.detail')}</PickerLabel>
-          <ChipGroup label={expanded?.label} grid>
-            {visibleSub.map((item) => (
+          <OverflowChipGroup
+            label={expanded?.label}
+            dense
+            items={visibleSub}
+            isActive={(item) => item.mode === currentMode}
+            renderChip={(item) => (
               <Chip
                 key={`${expanded.id}-${item.mode}`}
                 active={item.mode === currentMode}
                 title={item.hint || undefined}
                 onClick={() => onSubClick(expanded.id, item)}
               >
+                {!item.official ? <span aria-hidden="true" className="mr-1 font-normal">≈</span> : null}
                 {item.label}
-                {!item.official ? (
-                  <span className="ml-1 font-normal">{t('world.mode.badge.derived')}</span>
-                ) : null}
               </Chip>
-            ))}
-          </ChipGroup>
+            )}
+          />
+          {visibleSub.some((item) => !item.official) ? (
+            <PickerHint>{t('x2.picker.derivedNote')}</PickerHint>
+          ) : null}
         </div>
       )}
     </>
