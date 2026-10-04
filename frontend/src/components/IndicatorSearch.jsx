@@ -37,17 +37,19 @@ function RotatingHint({ lead, items }) {
 }
 
 export default function IndicatorSearch({
-  className, variant = 'icon', inlinePlaceholder, examples,
+  className, variant = 'icon', inlinePlaceholder, examples, initialQuery,
 }) {
   const t = useT();
   const { locale } = useLocale();
   const navigate = useNavigate();
   const resultId = useId();
   // Поиск грузится лениво: при hover/focus кнопки или первом открытии (кэш React-Query — 5 мин).
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [open, setOpen] = useState(false);
+  // Переход с серверной 404 или внешней ссылки: `/?q=инфляция` сразу открывает поиск с этим запросом.
+  const seed = String(initialQuery || '').trim();
+  const [shouldLoad, setShouldLoad] = useState(Boolean(seed));
+  const [open, setOpen] = useState(Boolean(seed));
   const arm = useCallback(() => setShouldLoad(true), []);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(seed);
   const [isComposing, setIsComposing] = useState(false);
   const [hi, setHi] = useState(0); // highlighted result index
   const triggerRef = useRef(null);

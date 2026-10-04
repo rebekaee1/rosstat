@@ -320,3 +320,8 @@ it('X3: фокус поля поиска рисуется на всей стро
   expect(input.closest('.fe-search-field')).toBeTruthy();
   expect(input.closest('.fe-search-panel')).toBeTruthy();
 });
+
+it('opens with the query from initialQuery (links like /?q=инфляция)', () => {
+  render(<MemoryRouter><IndicatorSearch variant="inline" initialQuery="инфляция" /></MemoryRouter>);
+  expect(screen.getByRole('combobox').value).toBe('инфляция');
+});

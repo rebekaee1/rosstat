@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import IndicatorSearch from '../IndicatorSearch';
 import HomeDataScope from './HomeDataScope';
 import HomePopularCountries from './HomePopularCountries';
@@ -13,6 +14,7 @@ import '../../styles/shell.css';
  */
 export default function HomeHero() {
   const t = useT();
+  const [params] = useSearchParams();
   const examples = useMemo(() => searchExamples(t, HOME_EXAMPLE_COUNT), [t]);
   return (
     <header
@@ -29,7 +31,7 @@ export default function HomeHero() {
             {t('home.hero.subtitle')}
           </p>
           <div className="relative z-20 mt-5 max-w-xl">
-            <IndicatorSearch variant="inline" examples={examples} />
+            <IndicatorSearch variant="inline" examples={examples} initialQuery={params.get('q')} />
           </div>
         </div>
 
