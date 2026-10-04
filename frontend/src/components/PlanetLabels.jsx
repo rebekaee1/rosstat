@@ -145,13 +145,13 @@ function createLabelResources(labels) {
  * Geographic labels share one texture and one draw call. This callback only runs
  * on the parent demand frames; it never requests another frame or sets state.
  */
-export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, unit = '', showValues = false, selectedCode, hoverCode, compact = false }) {
+export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, unit = '', valueDigits, showValues = false, selectedCode, hoverCode, compact = false, selectionOnly = false }) {
   const { camera, size, invalidate } = useThree();
   // The metric heading and country card retain the denominator of percentage
   // units; repeating it on every country would obscure the surface.
   const labels = useMemo(() => buildPlanetLabels(entries, {
-    locale, valuesByCode, unit: unit.trim().startsWith('%') ? '%' : unit,
-  }), [entries, locale, valuesByCode, unit]);
+    locale, valuesByCode, unit: unit.trim().startsWith('%') ? '%' : unit, digits: valueDigits,
+  }), [entries, locale, valuesByCode, unit, valueDigits]);
   const resources = useMemo(() => createLabelResources(labels), [labels]);
   const activeResources = useRef(null);
   const scratch = useMemo(() => ({
@@ -166,7 +166,7 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
   }, [resources, invalidate]);
   useEffect(() => {
     invalidate();
-  }, [selectedCode, hoverCode, compact, showValues, size.width, size.height, invalidate]);
+  }, [selectedCode, hoverCode, compact, showValues, selectionOnly, size.width, size.height, invalidate]);
   useEffect(() => () => {
     resources?.mesh.dispose();
     resources?.texture.dispose();
@@ -210,6 +210,7 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
       cameraDistance: camera.position.length(), selectedCode, hoverCode,
       maxVisible: compactLayout ? 8 : MAX_LABELS,
       valuesOnly: showValues,
+      selectionOnly,
       globe,
     });
     current.mesh.count = visible.length;

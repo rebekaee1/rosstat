@@ -57,7 +57,8 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel }) {
     const value = valueFor(valuesByCode, entry.dataCode);
     const hasValue = value != null && value !== '' && Number.isFinite(Number(value));
     if (mode === 'data') {
-      context.globalAlpha = hasValue ? 0.68 : 0.12;
+      // Страны с данными закрашены почти непрозрачно: шкала читается с первого взгляда, а не «просвечивает» рельефом.
+      context.globalAlpha = hasValue ? 0.9 : 0.14;
       context.fillStyle = hasValue ? colorModel.colorFor(value) : '#7f8c9b';
       context.fill();
     }
@@ -66,7 +67,7 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel }) {
     context.strokeStyle = '#fffaf0';
     context.lineWidth = 2.8;
     context.stroke();
-    context.globalAlpha = mode === 'data' ? 0.72 : 0.82;
+    context.globalAlpha = mode === 'data' ? 0.5 : 0.82;
     context.strokeStyle = '#202a3c';
     context.lineWidth = 1.15;
     context.stroke();
@@ -93,16 +94,16 @@ function paintHighlight(entries, selectedCode, hoveredCode) {
     for (const entry of entries.filter((item) => item.code === code)) {
       context.beginPath();
       path(entry.feature);
-      context.globalAlpha = isSelected ? 0.18 : 0.1;
+      context.globalAlpha = isSelected ? 0.24 : 0.12;
       context.fillStyle = '#ad8a48';
       context.fill();
       context.globalAlpha = 0.95;
       context.strokeStyle = '#fffaf0';
-      context.lineWidth = isSelected ? 4.1 : 3.1;
+      context.lineWidth = isSelected ? 5.2 : 3.1;
       context.stroke();
       context.globalAlpha = 1;
       context.strokeStyle = isSelected ? '#80642f' : '#ad8a48';
-      context.lineWidth = isSelected ? 2.3 : 1.7;
+      context.lineWidth = isSelected ? 2.8 : 1.7;
       context.stroke();
     }
   }
@@ -171,7 +172,8 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
   const flightRef = useRef(null);
   const aspect = size.width / size.height;
   // On a phone-width stage the control column would sit on the sphere; leave it a margin.
-  const fitDistance = planetFitDistance({ fov: camera.fov, aspect, padding: aspect < 1 || size.width < 520 ? 1.28 : 1.08 });
+  // Controls live outside the stage on a phone, so the sphere may fill nearly the whole square.
+  const fitDistance = planetFitDistance({ fov: camera.fov, aspect, padding: size.width < 520 ? 1.1 : aspect < 1 ? 1.14 : 1.08 });
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
     controls.enabled = interactive;
@@ -305,7 +307,7 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
   return null;
 }
 
-function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, showValues, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
+function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, valueDigits, showValues, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
   const { invalidate, gl } = useThree();
   const pointerState = useRef(createPlanetPointerState());
   const completedTap = useRef(null);
@@ -349,7 +351,9 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, sh
     atlasMap: { value: atlas },
     highlightMap: { value: highlight },
     surfaceTexel: { value: 1 / textures.surface.image.width },
-  }), [textures, atlas, highlight]);
+    // In «Data» the base surface calms down so country colours read as one scale.
+    dataWash: { value: mode === 'data' ? 1 : 0 },
+  }), [textures, atlas, highlight, mode]);
   useEffect(() => () => geometry.dispose(), [geometry]);
 
   useEffect(() => {
@@ -443,8 +447,8 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, sh
       >
         <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} />
       </mesh>
-      <PlanetLabels entries={entries} locale={locale} valuesByCode={valuesByCode} unit={unit} showValues={showValues} selectedCode={selectedCode}
-        hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} />
+      <PlanetLabels entries={entries} locale={locale} valuesByCode={valuesByCode} unit={unit} valueDigits={valueDigits} showValues={showValues} selectedCode={selectedCode}
+        hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} selectionOnly={mode === 'data'} />
       {markerPosition && (
         <mesh position={markerPosition} quaternion={markerRotation} raycast={() => null}>
           <ringGeometry args={[0.01, 0.016, 32]} />

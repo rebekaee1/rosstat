@@ -30,7 +30,7 @@ export default {
   "planet.zoomOut": "Отдалить Землю",
   "planet.gesture": "Потяните Землю, чтобы повернуть",
   "planet.coverage": "{count} стран в каталоге",
-  "planet.legend": "Цветовая шкала",
+  'planet.legend': 'Как читать цвета',
   "planet.noDataLegend": "Нет данных",
   "planet.layerLabel": "Слой",
   "planet.comparison": "Сравнение",
@@ -38,7 +38,7 @@ export default {
   "planet.showComparison": "Сравнить страны",
   "planet.chooseSecond": "Выберите вторую страну",
   "planet.doneRotating": "Готово",
-  "planet.rotate": "Вращать Землю",
+  'planet.rotate': 'Покрутить планету',
   "planet.addComparison": "В сравнение",
   "planet.inComparison": "В сравнении",
   "planet.allIndicators": "Все показатели страны",
@@ -310,10 +310,7 @@ export default {
   'world.rating.query.gdp-per-capita-eu': 'ВВП на душу относительно среднего по ЕС',
   'world.rating.query.gdp-usd': 'ВВП в текущих долларах США',
   'world.rating.query.gdp-per-capita-usd': 'ВВП на душу населения в текущих долларах США',
-  'world.rating.intro':
-    'Выберите показатель и год. Для цен на карте и в таблице — изменение за год '
-    + 'в процентах, а не уровень индекса. Карта показывает пространственный срез, '
-    + 'таблица ниже — все страны с опубликованным значением за выбранный год.',
+  'world.rating.intro': 'Выберите показатель и год: планета, список и таблица покажут, как страны выглядят друг рядом с другом.',
   'world.rating.loadError':
     'Не удалось загрузить рейтинг стран. Проверьте соединение и попробуйте снова.',
   'world.rating.notFoundTitle': 'Показатель не найден',
@@ -2098,4 +2095,17 @@ export default {
   'compare.emptyNoneTitle': 'Показатели не выбраны',
   'compare.errorTitle': 'Не удалось построить график',
   'compare.chartAria': 'График сравнения показателей. Коснитесь или наведите курсор, чтобы увидеть значения.',
+  'w2.planet.middle': 'В середине рейтинга',
+  'w2.planet.dragHint': 'Проведите пальцем по планете — она повернётся',
+  'w2.planet.tapHint': 'Нажмите на страну — увидите её данные',
+  'w2.planet.zoomGroup': 'Масштаб планеты',
+  'w2.planet.keyLow': 'Меньше',
+  'w2.planet.keyHigh': 'Больше',
+  'w2.planet.keyNoData': 'Серые страны — данных нет',
+  'w2.planet.rank': 'Место {rank} из {total}',
+  'w2.planet.showAll': 'Показать все страны ({count})',
+  'w2.planet.showLess': 'Свернуть список',
+  'w2.rating.first': 'Первое место',
+  'w2.rating.last': 'Последнее место',
+  'w2.rating.howTitle': 'Как считается рейтинг',
 };

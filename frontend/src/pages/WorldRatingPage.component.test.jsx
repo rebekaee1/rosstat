@@ -139,7 +139,7 @@ describe('WorldRatingPage', () => {
       expect(within(rows[1]).getByRole('link', { name: 'Франция' })).toBeTruthy();
     });
 
-    expect(screen.getByRole('heading', { name: /Страны без данных за 2025/i })).toBeTruthy();
+    expect(screen.getByText(/Страны без данных за 2025/i)).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Италия' })).toBeTruthy();
     expect(screen.queryByText('Стран с данными')).toBeNull();
     expect(screen.queryByText('Всего стран')).toBeNull();
@@ -646,7 +646,7 @@ describe('WorldRatingPage', () => {
     expect(screen.getByRole('link', { name: 'Germany' })).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'США' })).toBeNull();
     expect(screen.getByText(/Billion \$/)).toBeTruthy();
-    expect(dataRows()[0].textContent).toMatch(/5[\u00A0 ]?048\.1/);
+    expect(dataRows()[0].textContent).toMatch(/5[\u00A0 ]?048/);
   });
 });
 

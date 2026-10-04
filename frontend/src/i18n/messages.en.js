@@ -30,7 +30,7 @@ export default {
   "planet.zoomOut": "Zoom out from Earth",
   "planet.gesture": "Drag Earth to rotate",
   "planet.coverage": "{count} countries in the catalogue",
-  "planet.legend": "Colour scale",
+  'planet.legend': 'How to read the colours',
   "planet.noDataLegend": "No data",
   "planet.layerLabel": "Layer",
   "planet.comparison": "Comparison",
@@ -38,7 +38,7 @@ export default {
   "planet.showComparison": "Compare countries",
   "planet.chooseSecond": "Choose a second country",
   "planet.doneRotating": "Done",
-  "planet.rotate": "Rotate Earth",
+  'planet.rotate': 'Turn the planet',
   "planet.addComparison": "Compare",
   "planet.inComparison": "In comparison",
   "planet.allIndicators": "All country indicators",
@@ -310,10 +310,7 @@ export default {
   'world.rating.query.gdp-per-capita-eu': 'GDP per capita relative to the EU average',
   'world.rating.query.gdp-usd': 'GDP in current US dollars',
   'world.rating.query.gdp-per-capita-usd': 'GDP per capita in current US dollars',
-  'world.rating.intro':
-    'Choose an indicator and year. For prices on the map and in the table — year-over-year '
-    + 'change in percent, not the index level. The map shows the spatial slice; the table below '
-    + 'lists every country with a published value for the selected year.',
+  'world.rating.intro': 'Pick an indicator and a year: the planet, the list and the table show how countries compare.',
   'world.rating.loadError':
     'Could not load the country ranking. Check your connection and try again.',
   'world.rating.notFoundTitle': 'Indicator not found',
@@ -2089,4 +2086,17 @@ export default {
   'compare.emptyNoneTitle': 'No indicators selected',
   'compare.errorTitle': 'The chart could not be built',
   'compare.chartAria': 'Indicator comparison chart. Tap or hover to see the values.',
+  'w2.planet.middle': 'Middle of the ranking',
+  'w2.planet.dragHint': 'Drag across the planet to turn it',
+  'w2.planet.tapHint': 'Tap a country to see its data',
+  'w2.planet.zoomGroup': 'Planet zoom',
+  'w2.planet.keyLow': 'Lower',
+  'w2.planet.keyHigh': 'Higher',
+  'w2.planet.keyNoData': 'Grey countries have no data',
+  'w2.planet.rank': 'No. {rank} of {total}',
+  'w2.planet.showAll': 'Show all {count} countries',
+  'w2.planet.showLess': 'Show fewer',
+  'w2.rating.first': 'First place',
+  'w2.rating.last': 'Last place',
+  'w2.rating.howTitle': 'How the ranking works',
 };

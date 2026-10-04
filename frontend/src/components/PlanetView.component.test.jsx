@@ -205,8 +205,11 @@ describe('PlanetView interaction contract', () => {
     expect(layers.getAllByRole('button').map((button) => button.textContent)).toEqual(['planet.earth', 'planet.data']);
     expect(screen.queryByRole('button', { name: 'planet.map' })).toBeNull();
 
+    // The range is always visible as a colour strip with its own unit; intervals stay behind the disclosure.
+    const ends = container.querySelector('.planet-key-ends').textContent;
+    expect(ends).toContain('-5,0 %');
+    expect(ends).toContain('10,0 %');
     const summary = container.querySelector('details summary');
-    expect(summary.textContent).toContain('-5,00–10,00 %');
     fireEvent.click(summary);
     expect(summary.parentElement.open).toBe(true);
     const legend = within(screen.getByLabelText('planet.legend'));
@@ -239,7 +242,7 @@ describe('PlanetView interaction contract', () => {
     expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
     expect(screen.getByText('июль 2026')).toBeTruthy();
     expect(screen.queryByText('июнь 2026')).toBeNull();
-    expect(screen.getByLabelText('planet.value').textContent).toBe('5,10');
+    expect(screen.getByLabelText('planet.value').textContent).toBe('5,1');
     expect(scene.props.valuesByCode.get('DE')).toBe(5.1);
 
     fireEvent.click(screen.getByRole('button', { name: 'planet.data' }));
