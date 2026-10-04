@@ -310,6 +310,82 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 
 Если dev-сервер недоступен в среде — явно записать что проверено альтернативно (только unit-тесты / только snapshot-тесты / только curl-сверка SSR).
 
+## Тестовый сервер (демо-стенд за Cloudflare)
+
+**Датировано 2026-10-04.** Отдельный VPS для репетиции выпуска и показа владельцу. Это **не боевой** сервер:
+`scripts/test-server/deploy.sh` отказывается работать с адресом прода. Ничего, что требует боевых токенов, здесь не запускается.
+
+| | Тестовый | Боевой |
+|---|---|---|
+| Хост | `176.57.220.170` (Timeweb, Санкт-Петербург), Ubuntu 26.04, каталог `/opt/rosstat` | `201.51.11.170` |
+| Ресурсы | 2 vCPU, 3,9 ГБ RAM + 4 ГБ swap, диск 48 ГБ | 4 vCPU, 8 ГБ RAM, 77 ГБ |
+| Доступ | SSH **по ключу** `~/.ssh/id_ed25519_fe_demo` (установлен давно; пароль не используется и нигде не хранится) | ключ `id_ed25519_fe_prod`, алиас `fe-prod` |
+| Наружу | `cloudflared` quick tunnel (systemd `fe-demo-tunnel`) → `127.0.0.1:80`. Адрес `*.trycloudflare.com` **меняется при каждом старте туннеля**; текущий — в `/root/fe-demo-tunnel.url` | Caddy, домены |
+| Данные | product-only восстановление из проверенного бэкапа (без пользователей и аналитики), см. ниже | живые |
+| Исходящие действия | выключены: Telegram (дайджест, алерты, опрос), Pulse, IndexNow, Вебмастер, Метрика/аналитический планировщик, ClickHouse, Eurostat-ингест, мировые прогнозы | включены |
+| Память (лимиты cgroup) | PostgreSQL 1,1 ГБ, backend 900 МБ (1 воркер), scheduler 700 МБ, frontend 256 МБ, Redis 448 МБ | 3 ГБ / 2,25 ГБ (3 воркера) / 1 ГБ / … |
+
+Файлы рядом с `docker-compose.yml` на сервере, не входящие в Git: `docker-compose.override.yml` (эталон —
+`scripts/test-server/docker-compose.override.yml`: урезанные лимиты, порт `127.0.0.1:80`, **`build.network: host`** — без него
+`pip`/`npm` из docker-сети таймаутят) и `.env` (добавки лимитов — `scripts/test-server/env.additions`; пароли и токены там свои).
+
+### Выкладка кода
+
+```bash
+scripts/test-server/deploy.sh            # текущий HEAD; REF и --no-build — по необходимости
+```
+
+Код едет без push: `git bundle` поверх SHA, который уже стоит на сервере (если он не предок цели — полный bundle), затем
+`git checkout --detach <SHA>`, `docker compose build backend frontend`, `docker compose up -d backend scheduler frontend`, ожидание
+`/api/v1/health/ready` и вывод адреса туннеля. Образ один на `backend` и `scheduler`. Обычный прогон — около минуты, со сборкой — 3–5.
+
+### Данные: product-only восстановление
+
+Полный дамп с пользователями на публичный стенд не заливаем. Из последнего **проверенного** бэкапа (`~/Backups/forecasteconomy/*.verified`)
+строится список восстановления без данных личных и аналитических таблиц (`users`, `email_credentials`, `oauth_identities`,
+`identity_links`, `auth_audit`, `consents`, `behavior_*`, `frontend_events`, `server_sessions`, `telegram_outbox`, `raw_metrika_*`, `metrika_*`,
+`gsc_*`, `webmaster_*`, `partner_revenue`, `daily_*`, `agent_*`, `analytics_*`, `hypotheses`, `experiments`, `direct_costs`, `fetch_log` остаётся):
+
+```bash
+# локально: dump внутрь контейнера postgres, список без данных личных таблиц, plain SQL в gzip
+docker cp ~/Backups/forecasteconomy/rustats_YYYYMMDD_040002.dump rosstat-postgres-1:/tmp/prod.dump
+docker exec rosstat-postgres-1 pg_restore -l /tmp/prod.dump > full.list        # строки "TABLE DATA public <table>" личных таблиц закомментировать «;»
+docker exec rosstat-postgres-1 sh -c 'pg_restore -L /tmp/product.list --no-owner --no-privileges -f - /tmp/prod.dump | gzip -3 > /tmp/product.sql.gz'
+# на сервере: остановить frontend/backend/scheduler, drop/create database rustats, gunzip | psql -v ON_ERROR_STOP=1
+```
+
+04.10.2026: дамп от 03.10 (ревизия `20260927_world_nonzero_idx`) → 215 МБ SQL, восстановление на 2 vCPU заняло ~3 минуты; в базе 24 продуктовые
+таблицы с данными, остальные — только структура. Прежний демо-дамп и конфигурация сохранены на сервере в `/root/backups/` (`demo-db-before-20261004.dump`,
+`env-before-20261004`, `override-before-20261004.yml`, `state-before-20261004.txt` — прежний SHA `a58cf29`).
+
+### Что проверено на стенде 04.10.2026 (репетиция выпуска)
+
+- Миграция `20260927_world_nonzero_idx → 20260930_session_reviews` прошла при старте backend; региональный сидер на данных боевого масштаба:
+  «сверено 961 494 годовых + 73 740 месячных точек, изменено 71 годовых, 0 новых месячных».
+- Все процессы healthy (PostgreSQL, Redis ×2, backend, scheduler, frontend); `/api/v1/health/ready` 200 и по туннелю.
+- Главная, планета, поиск с главной («сколько стоил бензин 95 в 2022» → АИ-95), страницы индикатора и страны, `robots.txt` (`?mode=` закрыт), sitemap.
+- Не воспроизводится на стенде: **время построения индексов миграции на боевых таблицах событий** (в product-only дампе `behavior_events`/`frontend_events` пусты),
+  производительность 4 vCPU, ClickHouse и аналитический планировщик (выключены), исходящие уведомления.
+
+### Репетиция отката (проведена 04.10.2026)
+
+Миграции пачки (`20260930_session_reviews`, `20261004_session_changes`) обратимы: на стенде остановлены frontend/scheduler/backend,
+`docker compose run --rm --no-deps -T --entrypoint python backend -m alembic downgrade 20260927_world_nonzero_idx` вернул ревизию за 3 с и удалил
+таблицы/индексы (`server_session_changes`, `session_replay_chunks`, `session_analysis_reports`, четыре индекса событий); `docker compose up -d backend scheduler frontend`
+накатил обе миграции повторно без ошибок. Рецепт при реальном сбое — «Deploy-scope trap» в [CONTEXT.md](../CONTEXT.md): автооткат кода при новой ревизии схемы **запрещён**,
+порядок — бэкап → `stop backend` → `alembic downgrade` образом нового кода → перетегировать образы на старый SHA → `up -d --force-recreate`.
+
+### Нагрузочная проверка
+
+`scripts/test-server/loadtest.py` (stdlib) запускается на самом стенде против `127.0.0.1`; результаты и оговорки (2 vCPU ≠ 4 vCPU боевого) —
+[docs/research/capacity-measurement-2026-10-04.md](research/capacity-measurement-2026-10-04.md).
+
+### Известные ограничения стенда
+
+- Хост медленнее ноутбука разработчика примерно в 2–3 раза: холодный поиск ~1–2,5 с против 0,5–1 с локально; ночной `sitemap_build` на 2 vCPU идёт заметно дольше боевых 15 минут (до правки 04.10 его чанк US-штатов упирался в 60 с analytics-пула).
+- Адрес туннеля эфемерен; при перезапуске `fe-demo-tunnel` или перезагрузке сервера нужно прочитать новый из `/root/fe-demo-tunnel.url`.
+- Данные — снимок боевой базы от 03.10; ежедневные ETL стенда выключены (`RUSTATS_SCHEDULER_*` задания работают по расписанию, исходящие уведомления и аналитика — нет).
+
 ## Прод-деплой
 
 **Текущее наблюдение 30.09:** серверный head уже `20260927_world_nonzero_idx`, checkout `367ff336`, выбранные `deploy.sh`/Compose/Caddy/nginx совпадают с main. Ниже сохраняется рецепт **первого** выпуска и инцидент 27.09: он не является инструкцией повторно выполнять уже применённую миграцию. Для любого нового выпуска заново проверять прод → цель и совместимость схемы.
