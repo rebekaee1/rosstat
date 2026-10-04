@@ -821,7 +821,7 @@ body.seo-fast .seo-facts{display:grid;gap:.6rem;margin:0 0 1rem;padding:0;list-s
 body.seo-fast .seo-facts li{margin:0;padding:.8rem 1rem;border:1px solid #fff;border-radius:16px;background:rgba(255,255,255,.62);color:#202a3c;line-height:1.5}
 body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child){display:flex;flex-wrap:wrap;gap:.5rem;padding:0;list-style:none}
 body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child) li{margin:0}
-body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child) a{display:inline-flex;align-items:center;min-height:40px;padding:.35rem .95rem;border:1px solid rgba(68,87,115,.14);border-radius:999px;background:rgba(255,255,255,.7);color:#202a3c;font-size:.9rem;text-decoration:none}
+body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):not(.seo-404-grid):has(> li > a:only-child) a{display:inline-flex;align-items:center;min-height:40px;padding:.35rem .95rem;border:1px solid rgba(68,87,115,.14);border-radius:999px;background:rgba(255,255,255,.7);color:#202a3c;font-size:.9rem;text-decoration:none}
 body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child) a:hover{border-color:#ad8a48;color:#80642f}
 body.seo-fast .seo-table-scroll table{min-width:0}
 body.seo-fast .seo-more{margin:.6rem 0}
