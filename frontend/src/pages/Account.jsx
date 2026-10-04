@@ -12,6 +12,7 @@ import { useT } from '../i18n';
 import { cn } from '../lib/format';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
+import '../styles/w5-pages.css';
 
 export default function Account() {
   const t = useT();
@@ -136,23 +137,31 @@ export default function Account() {
   const empty = t('account.empty');
   const fieldRow = (label, value) => (
     <div className="flex justify-between gap-4">
-      <dt className="text-text-tertiary">{label}</dt>
+      <dt className="text-text-secondary">{label}</dt>
       <dd className="text-text-primary text-right">{value || empty}</dd>
     </div>
   );
 
   return (
     <div className="fe-data-page max-w-2xl mx-auto px-4 pt-28 pb-24">
-      <h1 className="text-2xl font-display font-bold text-text-primary mb-2">{t('account.title')}</h1>
-      <p className="text-sm text-text-secondary mb-6">
+      <header className="fe-reveal mb-6 flex items-center gap-4">
+        <span className="w5-avatar" aria-hidden="true">
+          {(user.display_name || user.email || '?').trim().charAt(0).toUpperCase()}
+        </span>
+        <div className="min-w-0">
+          <h1 className="font-display text-2xl font-bold text-text-primary">{t('account.title')}</h1>
+          <p className="truncate text-sm text-text-secondary">{t('w5.account.signedInAs')} {user.email}</p>
+        </div>
+      </header>
+      <p className="mb-6 text-sm text-text-secondary">
         {t('account.intro')}
       </p>
 
-      <section className="fe-panel rounded-2xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm">
-        <h2 className="text-sm font-semibold text-text-secondary mb-3">{t('account.profile')}</h2>
+      <section className="fe-panel fe-reveal rounded-3xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm">
+        <h2 className="text-base font-semibold text-text-primary mb-3">{t('account.profile')}</h2>
         <dl className="text-sm space-y-1.5">
           <div className="flex justify-between items-center gap-4 min-h-[28px]">
-            <dt className="text-text-tertiary shrink-0">{t('account.name')}</dt>
+            <dt className="text-text-secondary shrink-0">{t('account.name')}</dt>
             <dd className="text-text-primary text-right flex-1 min-w-0">
               {editName ? (
                 <div className="flex items-center gap-2 justify-end">
@@ -200,9 +209,9 @@ export default function Account() {
       <section
         ref={feedbackRef}
         id="feedback"
-        className="fe-panel rounded-2xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm scroll-mt-28"
+        className="fe-panel fe-reveal rounded-3xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm scroll-mt-28"
       >
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-text-secondary mb-2">
+        <h2 className="flex items-center gap-2 text-base font-semibold text-text-primary mb-2">
           <MessageSquare className="w-4 h-4 text-champagne" />
           {t('account.feedback')}
         </h2>
@@ -259,8 +268,8 @@ export default function Account() {
       </section>
 
       {user.is_admin && (
-        <section className="fe-panel rounded-2xl bg-surface border border-border-champagne p-5 mb-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-text-secondary mb-2">{t('account.admin')}</h2>
+        <section className="fe-panel rounded-3xl bg-surface border border-border-champagne p-5 mb-5 shadow-sm">
+          <h2 className="text-base font-semibold text-text-primary mb-2">{t('account.admin')}</h2>
           <p className="text-sm text-text-secondary mb-3">
             {t('account.adminBody')}
           </p>

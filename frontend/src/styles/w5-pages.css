@@ -250,6 +250,20 @@
 .w5-pass__toggle:hover { color: var(--color-text-primary); }
 .w5-auth-alt { display: grid; gap: 10px; margin-top: 24px; text-align: center; }
 .w5-auth-note { font-size: 13px; line-height: 1.5; color: var(--color-text-secondary); }
+/* Ошибка формы: рамка и цвет, заметны без опоры только на цвет. Пустая — не занимает места. */
+.w5-auth-error:empty { display: none; }
+.w5-auth-error {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(185, 28, 28, 0.35);
+  background: rgba(185, 28, 28, 0.06);
+  font-size: 14px;
+  line-height: 1.45;
+  color: #b91c1c;
+}
+:root[data-theme='dark'] .w5-auth-error { color: var(--color-negative); background: rgba(241, 138, 138, 0.1); }
+/* Карточка входа задаёт свой размер чекбоксов (index.css) — наш стиль должен победить. */
+.fe-auth-card .w5-consent input[type='checkbox'] { width: 22px; height: 22px; }
 .w5-field-hint { margin: 6px 0 0; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }
 .w5-field-error { margin: 6px 0 0; font-size: 13px; line-height: 1.4; color: #b91c1c; }
 :root[data-theme='dark'] .w5-field-error { color: var(--color-negative); }

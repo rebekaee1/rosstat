@@ -5,11 +5,13 @@ import { useAuth } from '../context/authContext';
 import { loginUser } from '../lib/api';
 import { apiErrorMessage } from '../lib/apiErrorMessage';
 import OAuthButtons from '../components/OAuthButtons';
+import PasswordField from '../components/PasswordField';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { safeReturnTo, authLink } from '../lib/authReturn';
 import { cn } from '../lib/format';
 import Button from '../components/Button';
+import '../styles/w5-pages.css';
 
 export default function Login() {
   const t = useT();
@@ -55,7 +57,7 @@ export default function Login() {
 
   return (
     <div className="fe-data-page max-w-md mx-auto px-4 pt-28 pb-24">
-      <div className="fe-panel fe-auth-card p-5 sm:p-8">
+      <div className="fe-panel fe-auth-card fe-reveal p-5 sm:p-8">
       <h1 className="text-2xl font-display font-bold text-text-primary mb-1 text-center">{t('auth.login.title')}</h1>
       <p className="text-sm text-text-secondary mb-6 text-center">{t('auth.login.subtitle')}</p>
 
@@ -65,25 +67,27 @@ export default function Login() {
         <div>
           <label className="block text-sm text-text-secondary mb-1.5" htmlFor="email">{t('common.email')}</label>
           <input
-            id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+            id="email" name="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
+            inputMode="email"
+            placeholder={t('w5.auth.emailPlaceholder')}
             aria-invalid={credentialsInvalid || undefined}
             aria-describedby={error ? 'login-error' : undefined}
             className={fieldClass(credentialsInvalid)}
           />
         </div>
-        <div>
-          <label className="block text-sm text-text-secondary mb-1.5" htmlFor="password">{t('common.password')}</label>
-          <input
-            id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            aria-invalid={credentialsInvalid || undefined}
-            aria-describedby={error ? 'login-error' : undefined}
-            className={fieldClass(credentialsInvalid)}
-          />
-        </div>
+        <PasswordField
+          label={t('common.password')}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+          placeholder={t('w5.auth.passwordPlaceholder')}
+          invalid={credentialsInvalid}
+          describedBy={error ? 'login-error' : undefined}
+          className={fieldClass(credentialsInvalid)}
+        />
 
-        <div id="login-error" role="alert" className="text-sm text-negative empty:hidden">{error}</div>
+        <div id="login-error" role="alert" className="w5-auth-error">{error}</div>
         <span role="status" className="sr-only">{busy ? t('auth.login.busy') : ''}</span>
 
         <Button type="submit" loading={busy} className="w-full font-semibold">
@@ -91,9 +95,12 @@ export default function Login() {
         </Button>
       </form>
 
-      <div className="flex items-center justify-between mt-6 text-sm">
-        <Link to={authLink('/register', next)} className="fe-link inline-flex items-center pointer-coarse:min-h-11">{t('auth.login.createAccount')}</Link>
-        <span className="text-text-tertiary cursor-not-allowed" title={t('auth.login.forgotSoon')}>{t('auth.login.forgot')}</span>
+      <div className="w5-auth-alt">
+        <p className="w5-auth-note">{t('w5.auth.noAccount')}</p>
+        <Button as={Link} to={authLink('/register', next)} variant="secondary" className="w-full">
+          {t('auth.login.createAccount')}
+        </Button>
+        <p className="w5-auth-note">{t('w5.auth.forgotSoon')}</p>
       </div>
       </div>
     </div>

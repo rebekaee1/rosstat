@@ -21,7 +21,8 @@ describe('email and OAuth share selected return destination', () => {
       fireEvent.change(screen.getByLabelText('common.password'), { target: { value: 'testpassword' } });
       if (page === 'register') fireEvent.click(screen.getAllByRole('checkbox')[0]);
       fireEvent.submit(screen.getByLabelText('common.email').closest('form'));
-      await waitFor(() => expect(screen.getByTestId('destination').textContent).toBe(next));
+      // После регистрации — короткий экран приветствия (до 1,8 с), затем переход на исходную страницу.
+      await waitFor(() => expect(screen.getByTestId('destination').textContent).toBe(next), { timeout: 4000 });
     });
   }
 });

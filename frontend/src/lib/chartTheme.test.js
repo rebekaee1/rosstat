@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CHART_HEIGHTS, CHART_THEME, GRID_PROPS, axisTick, chartHeightForWidth,
+  CHART_HEIGHTS, CHART_THEME, GRID_PROPS, axisTick, axisWidthForLabels, chartHeightForWidth,
 } from './chartTheme';
 
 function channel(c) {
@@ -15,6 +15,22 @@ function contrast(a, b) {
   const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
   return (hi + 0.05) / (lo + 0.05);
 }
+
+describe('axisWidthForLabels', () => {
+  it('даёт ось шире для длинной подписи с единицей и не режет её слева', () => {
+    const short = axisWidthForLabels(['0', '700']);
+    const long = axisWidthForLabels(['0 ₽', '2,8 млн ₽']);
+    expect(long).toBeGreaterThan(short);
+    // «2,8 млн ₽» — 9 знаков: нужно не меньше ~6,6 px на знак.
+    expect(long).toBeGreaterThanOrEqual(9 * 6.6);
+  });
+
+  it('ограничена разумным диапазоном и переживает пустой ввод', () => {
+    expect(axisWidthForLabels([])).toBe(36);
+    expect(axisWidthForLabels(['x'.repeat(200)])).toBe(110);
+    expect(axisWidthForLabels([null, undefined])).toBeGreaterThanOrEqual(36);
+  });
+});
 
 describe('chartTheme', () => {
   it('axis labels reach 4.5:1 on the white chart card and on the page background', () => {
