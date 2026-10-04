@@ -368,7 +368,6 @@ export default function PlanetView({
           <div className="planet-list-footer">{hasValue(median) && hasMetric && <span>{benchmark?.label || t('planet.median')}: <strong>{formatWorldValue(median, undefined, locale)} {displayUnit}</strong></span>}{ratingHref && <PlanetLink href={ratingHref}>{t('planet.fullRating')}<ArrowUpRight size={13} aria-hidden="true" /></PlanetLink>}</div>
         </aside>
       </div>
-      <p className="planet-attribution">{t('planet.imageryCredit')} <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>. {t('planet.imageryAdapted')}</p>
     </section>
   );
 }

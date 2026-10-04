@@ -102,6 +102,17 @@ export default function About() {
           </a>
           .
         </p>
+
+        <h2 id="credits" className="mt-10 mb-3 scroll-mt-28 text-xl font-semibold text-text-primary">{t('about.creditsTitle')}</h2>
+        <p className="text-sm leading-relaxed text-text-secondary">
+          {t('about.creditsBody')}
+          {' '}
+          <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer" className="text-champagne-ink hover:underline">Solar System Scope</a>
+          {', '}
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="text-champagne-ink hover:underline">CC BY 4.0</a>
+          {'. '}
+          {t('about.creditsChanges')}
+        </p>
       </article>
     </div>
   );

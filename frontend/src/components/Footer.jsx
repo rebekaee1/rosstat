@@ -186,6 +186,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/about#credits" className={footLink}>
+                  {t('footer.credits')}
+                </Link>
+              </li>
+              <li>
                 <button type="button" onClick={openConsentSettings} className={cn(footLink, 'text-left')}>
                   {t('footer.cookies')}
                 </button>
