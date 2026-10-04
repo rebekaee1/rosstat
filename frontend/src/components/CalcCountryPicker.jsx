@@ -46,8 +46,19 @@ export default function CalcCountryPicker({
         setQuery('');
       }
     };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
+    const onKey = (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        setQuery('');
+      }
+    };
+    // pointerdown закрывает список и по касанию, и по мыши (mousedown на сенсоре приходит с задержкой).
+    document.addEventListener('pointerdown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
   }, [open]);
 
   const pick = (slug) => {
@@ -58,7 +69,7 @@ export default function CalcCountryPicker({
 
   return (
     <div ref={rootRef} className="relative mb-6">
-      <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+      <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-text-secondary">
         {t('calc.country')}
       </p>
       <button
@@ -93,22 +104,22 @@ export default function CalcCountryPicker({
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t('calc.country.search')}
               aria-label={t('calc.country.searchAria')}
-              className="min-w-0 flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary"
+              className="min-h-9 min-w-0 flex-1 bg-transparent text-base text-text-primary outline-none placeholder:text-text-tertiary md:text-sm"
             />
             {query && (
               <button
                 type="button"
                 aria-label={t('common.clear')}
                 onClick={() => setQuery('')}
-                className="shrink-0 text-text-tertiary hover:text-text-primary"
+                className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center text-text-tertiary hover:text-text-primary"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-4 w-4" />
               </button>
             )}
           </label>
           <div className="max-h-64 overflow-y-auto">
             {filtered.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-text-tertiary">
+              <div className="px-4 py-3 text-sm text-text-secondary" role="status">
                 {t('calc.country.notFound')}
               </div>
             ) : (
@@ -120,9 +131,9 @@ export default function CalcCountryPicker({
                   aria-selected={c.slug === selected.slug}
                   onClick={() => pick(c.slug)}
                   className={cn(
-                    'flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors border-b border-border-subtle/60 last:border-b-0',
+                    'flex min-h-11 w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors border-b border-border-subtle/60 last:border-b-0',
                     c.slug === selected.slug
-                      ? 'bg-champagne/10 text-champagne'
+                      ? 'bg-champagne/10 text-champagne-ink font-medium'
                       : 'text-text-primary hover:bg-obsidian-lighter',
                   )}
                 >

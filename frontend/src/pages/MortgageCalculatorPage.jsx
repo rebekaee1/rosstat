@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import gsap from 'gsap';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
   Tooltip, CartesianGrid, PieChart, Pie, Cell,
@@ -12,8 +11,10 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { cn } from '../lib/format';
 import { formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
-import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
-import { formatRubles, parseAmount, formatInput, fmtPct, loanYearOrdinal } from '../lib/calcFormat';
+import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick } from '../lib/chartTheme';
+import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
+import { revealStyle } from '../lib/calcUi';
+import { formatRubles, fmtPct, loanYearOrdinal, years as yearsPhrase } from '../lib/calcFormat';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
@@ -21,6 +22,8 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import CalculatorSiblings from '../components/CalculatorSiblings';
 import { toolTrail } from '../lib/breadcrumbs';
 import CalcSlider from '../components/CalcSlider';
+import CalcMoneyField from '../components/CalcMoneyField';
+import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
 import { useLocale, useT } from '../i18n';
 import {
   russiaIndicatorPath,
@@ -37,8 +40,8 @@ const FAQ_KEYS = [
 function StatPill({ label, value, accent }) {
   return (
     <div className="px-4 py-2.5 rounded-xl bg-obsidian border border-border-subtle">
-      <p className="text-[10px] uppercase tracking-[0.15em] text-text-tertiary font-medium mb-0.5">{label}</p>
-      <p className={cn('text-base font-mono font-bold tabular-nums', accent ? 'text-champagne' : 'text-text-primary')}>{value}</p>
+      <p className="text-[11px] uppercase tracking-[0.15em] text-text-secondary font-medium mb-0.5">{label}</p>
+      <p className={cn('text-base font-mono font-bold tabular-nums', accent ? 'text-champagne-ink' : 'text-text-primary')}>{value}</p>
     </div>
   );
 }
@@ -47,7 +50,12 @@ export default function MortgageCalculatorPage() {
   const t = useT();
   const { locale } = useLocale();
   const faqItems = FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) }));
-  const containerRef = useRef(null);
+  const areaBoxRef = useRef(null);
+  const pieBoxRef = useRef(null);
+  const areaTouch = useTouchTooltip(areaBoxRef);
+  const pieTouch = useTouchTooltip(pieBoxRef);
+  const [setChartWidthNode, chartWidth] = useElementWidth();
+  const yearsLabel = (n) => (locale === 'en' ? t('calc.years', { n }) : yearsPhrase(n));
   const [price, setPrice] = useState(8000000);
   const [downPct, setDownPct] = useState(20);
   const [rate, setRate] = useState(18);
@@ -70,15 +78,6 @@ export default function MortgageCalculatorPage() {
     staleTime: 60 * 60 * 1000,
     retry: 1,
   });
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const els = containerRef.current.querySelectorAll('[data-animate]');
-    if (!els.length) return;
-    const tween = gsap.fromTo(els, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.08 });
-    return () => tween.kill();
-  }, []);
 
   // Отчёт об использовании — с паузой, чтобы не спамить слайдерами.
   useEffect(() => {
@@ -140,17 +139,17 @@ export default function MortgageCalculatorPage() {
   const yearBreakdown = result?.yearly?.[clampedYear - 1] || null;
 
   return (
-    <div ref={containerRef} className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
-      <div data-animate className="mb-8">
+    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24">
+      <div style={revealStyle(0)} className="fe-reveal mb-8">
         <Breadcrumbs items={toolTrail(t('calc.mortgage.title'), '/calculator/mortgage')} />
       </div>
 
-      <header data-animate className="mb-10">
+      <header style={revealStyle(1)} className="fe-reveal mb-10">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-champagne/10 border border-champagne/20">
             <Home className="w-5 h-5 text-champagne" />
           </div>
-          <span className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold">
+          <span className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold">
             {t('calc.mortgage.eyebrow')}{keyRate != null && ` — ${t('calc.mortgage.keyRate', { rate: keyRate })}`}
           </span>
         </div>
@@ -162,27 +161,16 @@ export default function MortgageCalculatorPage() {
         </p>
       </header>
 
-      <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
-        <div>
-          <label htmlFor="mortgage-price" className="block text-[10px] uppercase tracking-[0.2em] font-medium text-text-tertiary mb-2">
-            {t('calc.mortgage.price')}
-          </label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-text-tertiary font-display pointer-events-none" aria-hidden>₽</span>
-            <input
-              id="mortgage-price"
-              type="text" inputMode="numeric" value={formatInput(price)}
-              onChange={(e) => setPrice(parseAmount(e.target.value))}
-              placeholder="8 000 000"
-              className={cn(
-                FOCUS_RING_SURFACE,
-                'w-full pl-10 pr-4 py-4 rounded-2xl bg-obsidian border border-border-subtle',
-                'text-2xl md:text-3xl font-display font-bold text-text-primary tabular-nums',
-                'placeholder:text-text-tertiary/40 placeholder:font-normal transition-colors hover:border-champagne/20',
-              )}
-            />
-          </div>
-        </div>
+      <section style={revealStyle(2)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
+        <CalcMoneyField
+          id="mortgage-price"
+          label={t('calc.mortgage.price')}
+          unitName={t('calc.ui.unitRubles')}
+          value={price}
+          onChange={setPrice}
+          prefix="₽"
+          placeholder="8 000 000"
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
           <CalcSlider
@@ -191,19 +179,21 @@ export default function MortgageCalculatorPage() {
             display={`${downPct}% — ${result ? formatCompactTick(result.down) : 0}\u00A0₽`}
           />
           <CalcSlider label={t('calc.mortgage.rate')} value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
-          <CalcSlider label={t('calc.mortgage.term')} value={years} onChange={setYears} min={1} max={30} />
+          <CalcSlider label={t('calc.mortgage.term')} value={years} onChange={setYears} min={1} max={30} display={yearsLabel(years)} />
         </div>
       </section>
 
       {result && (
         <>
-          <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6" aria-live="polite">
+          <section style={revealStyle(3)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6 min-h-[19rem]" aria-live="polite">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <p className="text-sm text-text-secondary mb-2">{t('calc.mortgage.payment')}</p>
-                <p className="font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6">
-                  {formatRubles(result.payment)}
-                </p>
+                <CalcAnimatedNumber
+                  value={result.payment}
+                  format={formatRubles}
+                  className="block min-h-[1.2em] font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6"
+                />
                 <div className="flex flex-wrap gap-3">
                   <StatPill label={t('calc.mortgage.principal')} value={formatRubles(result.principal)} />
                   <StatPill label={t('calc.mortgage.overpay')} value={formatRubles(result.overpay)} accent />
@@ -213,7 +203,7 @@ export default function MortgageCalculatorPage() {
               </div>
 
               <div className="flex flex-col items-center shrink-0 mx-auto lg:mx-0">
-                <div className="relative w-[168px] h-[168px]">
+                <div ref={pieBoxRef} onPointerDownCapture={pieTouch.onPointerDownCapture} className="relative w-[168px] h-[168px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -226,78 +216,82 @@ export default function MortgageCalculatorPage() {
                         paddingAngle={2} startAngle={90} endAngle={-270}
                         stroke="none" isAnimationActive={false}
                       >
-                        <Cell fill="#AD8A48" />
-                        <Cell fill="#202A3C" fillOpacity={0.85} />
+                        <Cell fill={CHART_THEME.champagne} />
+                        <Cell fill={CHART_THEME.ink} fillOpacity={0.85} />
                       </Pie>
                       <Tooltip
+                        {...TOOLTIP_STYLES}
+                        {...pieTouch.tooltipProps}
                         formatter={(v, name) => [formatRubles(v), name]}
-                        contentStyle={{ fontSize: 12 }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-[10px] uppercase tracking-wider text-text-tertiary">{t('calc.mortgage.overpay')}</span>
+                    <span className="text-[11px] uppercase tracking-wider text-text-secondary">{t('calc.mortgage.overpay')}</span>
                     <span className="text-xl font-mono font-bold text-text-primary tabular-nums">
                       {fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0)}
                     </span>
                   </div>
                 </div>
-                <div className="flex gap-4 mt-3 text-[11px]">
+                <div className="flex gap-4 mt-3 text-xs">
                   <span className="flex items-center gap-1.5 text-text-secondary">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#AD8A48' }} />{t('calc.mortgage.credit')}
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: CHART_THEME.champagne }} />{t('calc.mortgage.credit')}
                   </span>
                   <span className="flex items-center gap-1.5 text-text-secondary">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: '#202A3C', opacity: 0.85 }} />{t('calc.mortgage.overpay')}
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: CHART_THEME.ink, opacity: 0.85 }} />{t('calc.mortgage.overpay')}
                   </span>
                 </div>
               </div>
             </div>
           </section>
 
-          <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+          <section ref={setChartWidthNode} style={revealStyle(4)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
             <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-5">
               {t('calc.mortgage.chartTitle')}
             </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
-                <defs>
-                  <linearGradient id="mortBal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#AD8A48" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="#AD8A48" stopOpacity={0.01} />
-                  </linearGradient>
-                  <linearGradient id="mortInt" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#202A3C" stopOpacity={0.12} />
-                    <stop offset="100%" stopColor="#202A3C" stopOpacity={0.01} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
-                <XAxis dataKey="year" stroke="rgba(0,0,0,0.1)"
-                  tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }} tickLine={false} />
-                <YAxis stroke="rgba(0,0,0,0.1)" tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                  tickLine={false} axisLine={false} tickFormatter={formatCompactTick}
-                  width={compactTickAxisWidth(result.series.flatMap((p) => [p.balance, p.interest]))} />
-                <Tooltip
-                  formatter={(v, name) => [formatRubles(v), name === 'balance' ? t('calc.mortgage.balance') : t('calc.mortgage.interestAccum')]}
-                  labelFormatter={(v) => t('calc.yearN', { n: v })}
-                />
-                <Area dataKey="balance" name="balance" stroke="#AD8A48" strokeWidth={2} fill="url(#mortBal)" dot={false} isAnimationActive={false} />
-                <Area dataKey="interest" name="interest" stroke="#202A3C" strokeWidth={1.4} fill="url(#mortInt)" dot={false} isAnimationActive={false} />
-              </AreaChart>
-            </ResponsiveContainer>
-            <p className="mt-3 text-[12px] text-text-tertiary">
+            <div ref={areaBoxRef} onPointerDownCapture={areaTouch.onPointerDownCapture}>
+              <ResponsiveContainer width="100%" height={chartWidth > 0 && chartWidth < 560 ? 260 : 300}>
+                <AreaChart data={result.series} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
+                  <defs>
+                    <linearGradient id="mortBal" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={CHART_THEME.champagne} stopOpacity={0.2} />
+                      <stop offset="100%" stopColor={CHART_THEME.champagne} stopOpacity={0.01} />
+                    </linearGradient>
+                    <linearGradient id="mortInt" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.12} />
+                      <stop offset="100%" stopColor={CHART_THEME.ink} stopOpacity={0.01} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid {...GRID_PROPS} />
+                  <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick()} tickLine={false} />
+                  <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
+                    tickLine={false} axisLine={false} tickFormatter={formatCompactTick}
+                    width={compactTickAxisWidth(result.series.flatMap((p) => [p.balance, p.interest]), { narrow: chartWidth > 0 && chartWidth < 420 })} />
+                  <Tooltip
+                    {...TOOLTIP_STYLES}
+                    {...areaTouch.tooltipProps}
+                    formatter={(v, name) => [formatRubles(v), name === 'balance' ? t('calc.mortgage.balance') : t('calc.mortgage.interestAccum')]}
+                    labelFormatter={(v) => t('calc.yearN', { n: v })}
+                  />
+                  <Area dataKey="balance" name="balance" stroke={CHART_THEME.champagne} strokeWidth={2} fill="url(#mortBal)" dot={false} isAnimationActive={false} />
+                  <Area dataKey="interest" name="interest" stroke={CHART_THEME.ink} strokeWidth={1.4} fill="url(#mortInt)" dot={false} isAnimationActive={false} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="mt-3 text-xs text-text-secondary">
               {t('calc.mortgage.chartHint')}
             </p>
           </section>
 
           {yearBreakdown && (
-            <section data-animate className="fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+            <section style={revealStyle(5)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
               <div className="flex items-center gap-2 mb-1">
                 <PieIcon className="w-4 h-4 text-champagne" />
                 <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
                   {t('calc.mortgage.yearBreakdownTitle')}
                 </h3>
               </div>
-              <p className="text-[12px] text-text-tertiary mb-4">
+              <p className="text-xs text-text-secondary mb-4">
                 {t('calc.mortgage.yearBreakdownHint')}
               </p>
               <CalcSlider
@@ -318,24 +312,24 @@ export default function MortgageCalculatorPage() {
                   className="h-full transition-all duration-300"
                   style={{
                     width: `${(yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100}%`,
-                    backgroundColor: '#202A3C', opacity: 0.85,
+                    backgroundColor: CHART_THEME.ink, opacity: 0.85,
                   }}
                   title={t('calc.mortgage.interest')}
                 />
                 <div
                   className="h-full flex-1 transition-all duration-300"
-                  style={{ backgroundColor: '#AD8A48' }}
+                  style={{ backgroundColor: CHART_THEME.champagne }}
                   title={t('calc.mortgage.principalBody')}
                 />
               </div>
-              <div className="flex justify-between mt-1.5 text-[11px] text-text-tertiary">
+              <div className="flex justify-between gap-3 mt-1.5 text-xs text-text-secondary">
                 <span>{t('calc.mortgage.splitInterest', { pct: fmtPct((yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100) })}</span>
                 <span>{t('calc.mortgage.splitPrincipal', { pct: fmtPct((yearBreakdown.principalPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100) })}</span>
               </div>
             </section>
           )}
 
-          <section data-animate className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
+          <section style={revealStyle(6)} className="fe-reveal grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Percent className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
@@ -361,13 +355,13 @@ export default function MortgageCalculatorPage() {
         </>
       )}
 
-      <section data-animate className="rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
+      <section style={revealStyle(7)} className="fe-reveal rounded-[2rem] bg-obsidian-light border border-border-subtle p-6 md:p-8 mb-8">
         <h3 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-4">{t('calc.methodologyHeading')}</h3>
         <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
           <p>
             {t('calc.mortgage.method.p1')}
           </p>
-          <p className="font-mono text-[11px] text-text-tertiary border-l-2 border-champagne/30 pl-4">
+          <p className="font-mono text-xs text-text-secondary border-l-2 border-champagne/30 pl-4">
             {t('calc.mortgage.method.p2')}
           </p>
           <p>
@@ -377,7 +371,7 @@ export default function MortgageCalculatorPage() {
         </div>
       </section>
 
-      <section data-animate className="mb-8">
+      <section style={revealStyle(8)} className="fe-reveal mb-8">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">{t('calc.faqHeading')}</h2>
         <FaqAccordion
           items={faqItems}
@@ -385,7 +379,7 @@ export default function MortgageCalculatorPage() {
         />
       </section>
 
-      <div data-animate>
+      <div style={revealStyle(9)} className="fe-reveal">
         <CalculatorSiblings current="mortgage" />
       </div>
     </div>

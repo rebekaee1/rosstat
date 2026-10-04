@@ -1,0 +1,36 @@
+/* Денежные калькуляторы: ползунок с достаточной целью нажатия на сенсорных экранах.
+   Базовый вид `.calc-slider` задан в index.css (тонкий трек 4 px, бегунок 20 px);
+   здесь — только то, что нужно пальцу: высота элемента 44 px, бегунок 28 px, видимый трек прежний. */
+@media (pointer: coarse) {
+  .calc-slider {
+    height: 44px;
+    background: transparent;
+    touch-action: pan-y;
+  }
+  .calc-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 9999px;
+    background: linear-gradient(to right, var(--color-champagne) 0%, var(--color-border-subtle) 100%);
+  }
+  .calc-slider::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+    margin-top: -12px;
+  }
+  .calc-slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Поле суммы: не меньше 44 px по высоте. */
+.calc-field-input { min-height: 44px; }
+
+/* Значение результата не «дышит» шириной цифр при пересчёте. */
+.calc-result-number { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+
+/* Поле с ошибкой: рамка заметна без опоры на цвет (толщина + цвет) и сообщение под ним. */
+.calc-field-input[aria-invalid='true'] {
+  border-color: var(--color-negative);
+  box-shadow: 0 0 0 1px var(--color-negative);
+}
