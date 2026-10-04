@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '../lib/format';
+import Chip from './Chip';
+import ChipGroup from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
@@ -10,15 +12,6 @@ import {
   getTopGroup,
   highlightedTopGroup,
 } from '../lib/cpiViewModeGroups';
-
-const btnCls = (active) => cn(
-  'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-  active
-    ? 'bg-champagne/15 text-champagne'
-    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-);
-
-const btnDisabledCls = 'cursor-not-allowed opacity-45 hover:text-text-secondary';
 
 /**
  * ИПЦ: двухуровневый «Режим инфляции» (вариант A).
@@ -100,58 +93,49 @@ export default function CpiViewModePicker({
 
   const body = (
     <>
-      <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
         {t('indicator.picker.inflation')}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <ChipGroup label={t('indicator.picker.inflation')}>
         {topGroups.map((group) => {
           const active = group.id === activeTopGroup;
           return (
-            <button
+            <Chip
               key={group.id}
-              type="button"
+              active={active}
               onClick={() => onTopClick(group)}
-              className={btnCls(active)}
             >
               {group.label}
-            </button>
+            </Chip>
           );
         })}
-      </div>
+      </ChipGroup>
       {subModes.length > 0 && (
-        <div
-          className={cn(
-            'mt-3 gap-2 border-t border-border-subtle pt-3',
-            compact
-              ? 'flex overflow-x-auto pb-0.5 -mx-1 px-1 scrollbar-thin'
-              : 'flex flex-wrap',
-          )}
+        <ChipGroup
+          label={expandedLabel}
+          nowrap={compact}
+          className={cn('mt-3 border-t border-border-subtle pt-3', compact && '-mx-1 px-1')}
         >
           {!compact && (
-            <span className="w-full text-[10px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
+            <span aria-hidden="true" className="w-full text-[11px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
               {expandedLabel}
             </span>
           )}
           {subModes.map((item) => (
-            <button
+            <Chip
               key={`${expanded.id}-${item.mode}`}
-              type="button"
+              active={!item.disabled && currentMode === item.mode}
               disabled={item.disabled}
               title={item.disabled ? item.hint : undefined}
               onClick={() => onSubClick(expanded.id, item)}
-              className={cn(
-                btnCls(!item.disabled && currentMode === item.mode),
-                item.disabled && btnDisabledCls,
-                compact && 'shrink-0',
-              )}
             >
               {item.label}
               {item.disabled && item.hint ? (
-                <span className="ml-1 text-[10px] opacity-70">{item.hint}</span>
+                <span className="ml-1 font-normal">{item.hint}</span>
               ) : null}
-            </button>
+            </Chip>
           ))}
-        </div>
+        </ChipGroup>
       )}
     </>
   );

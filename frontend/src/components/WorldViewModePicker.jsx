@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn } from '../lib/format';
+import Chip from './Chip';
+import ChipGroup from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
@@ -21,16 +23,6 @@ function aggregatedModeHint(item, t) {
   if (policy === 'mean') return t('world.mode.hint.mean');
   return t('world.mode.hint.derived');
 }
-
-/** Эталон кнопок — CpiViewModePicker / GenericViewModePicker (Россия). */
-const btnCls = (active) => cn(
-  'max-w-full shrink-0 whitespace-normal rounded-xl px-3 py-2 text-center text-xs font-medium leading-snug transition-colors',
-  active
-    ? 'bg-champagne/15 text-champagne'
-    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-);
-
-const btnDisabledCls = 'cursor-not-allowed opacity-45 hover:text-text-secondary';
 
 /**
  * Двухуровневый переключатель мировой карточки.
@@ -112,59 +104,52 @@ export default function WorldViewModePicker({
 
   const body = (
     <>
-      <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
         {sectionTitle}
       </p>
       {/* Как CpiViewModePicker: wrap, не горизонтальный скролл —
           иначе подпись «Уровень» (w-full) выталкивает частоты за край. */}
-      <div className="flex flex-wrap gap-2">
+      <ChipGroup label={sectionTitle}>
         {groups.map((group) => (
-          <button
+          <Chip
             key={group.id}
-            type="button"
+            className="fe-chip--wrap shrink-0"
+            active={group.id === activeTopGroup}
             onClick={() => onTopClick(group)}
-            className={btnCls(group.id === activeTopGroup)}
           >
             {group.label}
-          </button>
+          </Chip>
         ))}
-      </div>
+      </ChipGroup>
       {subModes.length > 0 && (
-        <div
-          className={cn(
-            'mt-3 gap-2 border-t border-border-subtle pt-3',
-            compact
-              ? 'flex overflow-x-auto overscroll-x-contain pb-0.5 -mx-1 px-1 scrollbar-hide'
-              : 'flex flex-wrap',
-          )}
+        <ChipGroup
+          label={expanded?.label}
+          nowrap={compact}
+          className={cn('mt-3 border-t border-border-subtle pt-3', compact && '-mx-1 px-1')}
         >
           {!compact && (
-            <span className="mb-0 w-full text-[10px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
+            <span aria-hidden="true" className="mb-0 w-full text-[11px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
               {expanded.label}
             </span>
           )}
           {subModes.map((item) => (
-            <button
+            <Chip
               key={`${expanded.id}-${item.mode}`}
-              type="button"
+              className="fe-chip--wrap shrink-0"
+              active={!item.disabled && item.mode === currentMode}
               disabled={item.disabled}
               title={item.hint || undefined}
               onClick={() => onSubClick(expanded.id, item)}
-              className={cn(
-                btnCls(!item.disabled && item.mode === currentMode),
-                item.disabled && btnDisabledCls,
-                compact && 'shrink-0',
-              )}
             >
               {item.label}
               {item.disabled && item.hint ? (
-                <span className="ml-1 text-[10px] opacity-70">{item.hint}</span>
+                <span className="ml-1 font-normal">{item.hint}</span>
               ) : (!item.official && !item.disabled ? (
-                <span className="ml-1 text-[10px] opacity-70">{t('world.mode.badge.derived')}</span>
+                <span className="ml-1 font-normal">{t('world.mode.badge.derived')}</span>
               ) : null)}
-            </button>
+            </Chip>
           ))}
-        </div>
+        </ChipGroup>
       )}
     </>
   );

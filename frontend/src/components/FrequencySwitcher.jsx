@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { cn } from '../lib/format';
+import ChipGroup, { ChipLink } from './ChipGroup';
 import { track, events } from '../lib/track';
 import { buildFrequencyItems } from '../lib/frequencySwitcher';
 import {
@@ -42,15 +41,16 @@ export default function FrequencySwitcher({
 
   return (
     <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-      <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
         {t('indicator.picker.frequency')}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <ChipGroup label={t('indicator.picker.frequency')}>
         {items.map((item) => {
           const active = item.code === currentCode;
           return (
-            <Link
+            <ChipLink
               key={item.frequency}
+              active={active}
               to={russiaIndicatorPath(item.code)}
               onClick={() => {
                 if (active) return;
@@ -62,18 +62,12 @@ export default function FrequencySwitcher({
                   indicatorCategory,
                 });
               }}
-              className={cn(
-                'rounded-xl px-4 py-2 text-xs font-medium transition-colors',
-                active
-                  ? 'bg-champagne/15 text-champagne'
-                  : 'bg-obsidian-lighter text-text-secondary hover:text-champagne'
-              )}
             >
               {frequencyLabel(t, item.frequency, item.label)}
-            </Link>
+            </ChipLink>
           );
         })}
-      </div>
+      </ChipGroup>
     </section>
   );
 }

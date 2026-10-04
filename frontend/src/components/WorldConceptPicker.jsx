@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Chip from './Chip';
+import ChipGroup, { ChipLink } from './ChipGroup';
 import { ChevronDown, Search } from 'lucide-react';
 import { homeConceptLabel } from '../lib/homeWorkbench';
 import { useT } from '../i18n';
@@ -8,15 +9,6 @@ import { filterSearchOptions } from '../lib/searchSynonyms';
 
 /** Выше порога — свёрнутый триггер + панель с поиском (рост до 20+). */
 const COLLAPSE_AT = 12;
-
-function chipClass(active) {
-  return [
-    'rounded-xl px-2.5 py-1.5 text-xs font-medium leading-snug transition-colors whitespace-normal',
-    active
-      ? 'bg-champagne/15 text-champagne'
-      : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-  ].join(' ');
-}
 
 function labelFor(slug, conceptsBySlug, t) {
   return homeConceptLabel(slug, t, conceptsBySlug.get(slug)?.name || slug);
@@ -27,28 +19,27 @@ function ConceptChip({
 }) {
   if (mode === 'link' && linkForSlug) {
     return (
-      <Link
+      <ChipLink
         to={linkForSlug(slug)}
-        className={chipClass(active)}
-        aria-current={active ? 'page' : undefined}
+        className="fe-chip--wrap"
+        active={active}
         onClick={onPick}
       >
         {text}
-      </Link>
+      </ChipLink>
     );
   }
   return (
-    <button
-      type="button"
-      className={chipClass(active)}
-      aria-pressed={active}
+    <Chip
+      className="fe-chip--wrap"
+      active={active}
       onClick={() => {
         onChange?.(slug);
         onPick?.();
       }}
     >
       {text}
-    </button>
+    </Chip>
   );
 }
 
@@ -106,13 +97,7 @@ export default function WorldConceptPicker({
   }, [open]);
 
   const chipStream = (
-    <div
-      className={
-        nowrap
-          ? 'scrollbar-hide flex flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain pb-0.5'
-          : 'flex flex-wrap items-center gap-1.5'
-      }
-    >
+    <ChipGroup label={sectionLabel} nowrap={nowrap}>
       {matches.map((item) => (
         <ConceptChip
           key={item.slug}
@@ -126,11 +111,11 @@ export default function WorldConceptPicker({
         />
       ))}
       {matches.length === 0 && (
-        <span className="text-xs text-text-tertiary">
+        <span className="text-xs text-text-secondary">
           {q ? t('home.map.conceptNotFound', { query }) : t('common.noData')}
         </span>
       )}
-    </div>
+    </ChipGroup>
   );
 
   const searchField = (
@@ -155,7 +140,7 @@ export default function WorldConceptPicker({
       <div ref={rootRef} className="relative min-w-0">
         <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
               {sectionLabel}
             </p>
             {trailing}
@@ -187,7 +172,7 @@ export default function WorldConceptPicker({
   return (
     <div ref={rootRef} className="min-w-0">
       <div className="mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
           {sectionLabel}
         </p>
         {trailing}

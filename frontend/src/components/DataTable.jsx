@@ -1,34 +1,27 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
-import gsap from 'gsap';
+import { useState, useMemo, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { formatDate, formatValue, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { tableRowMatches } from '../lib/tableSearch';
+import Button from './Button';
+import Spinner from './Spinner';
+import '../styles/chart-controls.css';
 
 const PAGE_SIZE = 20;
+// Блок появляется средствами CSS сразу, без задержки (раньше gsap скрывал таблицу на ~1.3 с).
+const REVEAL_STYLE = { '--fe-duration': '0.28s', '--fe-rise': '8px' };
 
 export default function DataTable({
   data, title, dateFormat = 'full', unit = '%', valueDigits,
-  showUnitInValues = true,
+  showUnitInValues = true, loading = false,
 }) {
   const t = useT();
   const resolvedTitle = title ?? t('table.historicalDefault');
-  const ref = useRef(null);
   const [page, setPage] = useState(0);
   const [sortAsc, setSortAsc] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    if (!ref.current) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const tween = gsap.fromTo(ref.current,
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.7 }
-    );
-    return () => tween.kill();
-  }, []);
 
   useEffect(() => {
     // Дебаунс нужен только для смены текста поиска. Раньше эффект срабатывал и
@@ -64,7 +57,11 @@ export default function DataTable({
   const tableUnit = unitSuffix(unit);
 
   return (
-    <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">
+    <div
+      className="fe-reveal rounded-[2rem] bg-surface border border-border-subtle overflow-hidden"
+      style={REVEAL_STYLE}
+      aria-busy={loading || undefined}
+    >
       <div className="p-5 flex items-center justify-between flex-wrap gap-3">
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {resolvedTitle}
@@ -80,7 +77,7 @@ export default function DataTable({
             aria-label={t('table.searchPlaceholder')}
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            className="pl-8 pr-3 py-1.5 text-sm bg-obsidian-lighter border border-border-subtle rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-champagne/30 w-40"
+            className="pl-8 pr-3 py-2 text-base sm:text-sm bg-obsidian-lighter border border-border-subtle rounded-lg text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-champagne/30 w-40"
           />
         </div>
       </div>
@@ -90,15 +87,20 @@ export default function DataTable({
           <thead>
             <tr className="border-t border-border-subtle">
               <th
-                className="text-left px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider cursor-pointer hover:text-text-secondary transition-colors select-none"
-                onClick={() => { const next = !sortAsc; setSortAsc(next); track(events.TABLE_SORT, { order: next ? 'asc' : 'desc' }); }}
+                scope="col"
+                aria-sort={sortAsc ? 'ascending' : 'descending'}
+                className="text-left px-5 py-1 text-xs font-medium text-text-secondary uppercase tracking-wider"
               >
-                <span className="inline-flex items-center gap-1">
+                <button
+                  type="button"
+                  className="inline-flex min-h-[44px] items-center gap-1 uppercase tracking-wider hover:text-text-primary transition-colors select-none"
+                  onClick={() => { const next = !sortAsc; setSortAsc(next); track(events.TABLE_SORT, { order: next ? 'asc' : 'desc' }); }}
+                >
                   {t('table.date')}
-                  {sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                </span>
+                  {sortAsc ? <ChevronUp className="w-3 h-3" aria-hidden="true" /> : <ChevronDown className="w-3 h-3" aria-hidden="true" />}
+                </button>
               </th>
-              <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
+              <th scope="col" className="text-right px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {tableUnit ? t('table.valueWithUnit', { unit: tableUnit }) : t('table.value')}
               </th>
             </tr>
@@ -108,9 +110,15 @@ export default function DataTable({
               <tr>
                 <td
                   colSpan={2}
-                  className="px-5 py-12 text-center text-sm text-text-tertiary"
+                  role="status"
+                  className="px-5 py-12 text-center text-sm text-text-secondary"
                 >
-                  {t('table.empty')}
+                  {loading ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Spinner size={16} />
+                      {t('table.loading')}
+                    </span>
+                  ) : search ? t('table.emptySearch') : t('table.emptyPeriod')}
                 </td>
               </tr>
             ) : (
@@ -139,23 +147,25 @@ export default function DataTable({
 
       {totalPages > 1 && (
         <div className="p-4 border-t border-border-subtle flex items-center justify-between">
-          <button
+          <Button
+            variant="secondary"
+            className="fe-pager-btn"
             onClick={() => { setPage(Math.max(0, visiblePage - 1)); track(events.TABLE_PAGE, { direction: 'prev' }); }}
-            disabled={visiblePage === 0}
-            className="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary disabled:text-text-tertiary disabled:cursor-not-allowed rounded-lg bg-obsidian-lighter border border-border-subtle transition-colors magnetic-btn"
+            disabled={loading || visiblePage === 0}
           >
             {t('table.prev')}
-          </button>
-          <span className="text-xs text-text-tertiary font-mono">
+          </Button>
+          <span className="text-xs text-text-secondary font-mono" aria-live="polite">
             {visiblePage + 1} / {totalPages}
           </span>
-          <button
+          <Button
+            variant="secondary"
+            className="fe-pager-btn"
             onClick={() => { setPage(Math.min(totalPages - 1, visiblePage + 1)); track(events.TABLE_PAGE, { direction: 'next' }); }}
-            disabled={visiblePage >= totalPages - 1}
-            className="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary disabled:text-text-tertiary disabled:cursor-not-allowed rounded-lg bg-obsidian-lighter border border-border-subtle transition-colors magnetic-btn"
+            disabled={loading || visiblePage >= totalPages - 1}
           >
             {t('table.next')}
-          </button>
+          </Button>
         </div>
       )}
     </div>

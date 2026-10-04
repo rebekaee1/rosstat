@@ -1,21 +1,8 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
 import { formatDate, formatValueWithUnit, unitSuffix, chartValueDigits } from '../lib/format';
 import { useT } from '../i18n';
 
 export default function ForecastTable({ mode = 'inflation', inflation, forecastData, actualPoints, unit = '%', dateFormat = 'full' }) {
   const t = useT();
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const tween = gsap.fromTo(ref.current,
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.6 }
-    );
-    return () => tween.kill();
-  }, []);
 
   // Все режимы, кроме скользящей 12-месячной инфляции, получают прогноз
   // готовым рядом (forecastData); inflation — отдельный сводный endpoint.
@@ -56,7 +43,10 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
             : (suffix ? t('forecast.value.withUnit', { unit: suffix }) : t('forecast.value.generic'));
 
   return (
-    <div ref={ref} className="rounded-[2rem] bg-surface border border-border-subtle overflow-hidden">
+    <div
+      className="fe-reveal rounded-[2rem] bg-surface border border-border-subtle overflow-hidden"
+      style={{ '--fe-duration': '0.28s', '--fe-rise': '8px' }}
+    >
       <div className="p-5 flex items-center justify-between flex-wrap gap-3">
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {title}
@@ -67,10 +57,10 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
         <table className="w-full text-sm">
           <thead>
             <tr className="border-t border-border-subtle">
-              <th className="text-left px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
+              <th scope="col" className="text-left px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t('forecast.asOf')}
               </th>
-              <th className="text-right px-5 py-3 text-xs font-medium text-text-tertiary uppercase tracking-wider">
+              <th scope="col" className="text-right px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {valueLabel}
               </th>
             </tr>

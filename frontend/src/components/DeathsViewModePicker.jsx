@@ -1,18 +1,12 @@
 import { useCallback } from 'react';
-import { cn } from '../lib/format';
+import Chip from './Chip';
+import ChipGroup from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import {
   DEATHS_TOP_GROUPS,
   highlightedTopGroup,
 } from '../lib/deathsViewModeGroups';
-
-const btnCls = (active) => cn(
-  'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-  active
-    ? 'bg-champagne/15 text-champagne'
-    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-);
 
 export default function DeathsViewModePicker({
   currentMode,
@@ -34,27 +28,26 @@ export default function DeathsViewModePicker({
 
   const body = (
     <>
-      <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
         {t('indicator.picker.mode')}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <ChipGroup label={t('indicator.picker.mode')}>
         {DEATHS_TOP_GROUPS.map((group) => {
           const active = group.id === activeTopGroup;
           return (
-            <button
+            <Chip
               key={group.id}
-              type="button"
+              active={active}
               onClick={() => {
                 onChange(group.leafMode);
                 trackMode(group.leafMode, group.id);
               }}
-              className={btnCls(active)}
             >
               {group.label}
-            </button>
+            </Chip>
           );
         })}
-      </div>
+      </ChipGroup>
     </>
   );
 

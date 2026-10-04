@@ -1,4 +1,5 @@
-import { cn } from '../lib/format';
+import Chip from './Chip';
+import ChipGroup from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
@@ -20,14 +21,14 @@ export default function ViewModePicker({
   const sectionTitle = title || t('indicator.picker.mode');
   return (
     <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-      <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
         {localizeViewModeLabel(sectionTitle, locale) || sectionTitle}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <ChipGroup label={localizeViewModeLabel(sectionTitle, locale) || sectionTitle}>
         {modes.map((item) => (
-          <button
+          <Chip
             key={item.mode}
-            type="button"
+            active={currentMode === item.mode}
             onClick={() => {
               onChange(item.mode);
               track(events.CHART_MODE_CHANGE, {
@@ -36,17 +37,11 @@ export default function ViewModePicker({
                 indicatorCategory: trackContext?.category,
               });
             }}
-            className={cn(
-              'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-              currentMode === item.mode
-                ? 'bg-champagne/15 text-champagne'
-                : 'bg-obsidian-lighter text-text-secondary hover:text-champagne'
-            )}
           >
             {localizeViewModeLabel(item.label, locale)}
-          </button>
+          </Chip>
         ))}
-      </div>
+      </ChipGroup>
     </section>
   );
 }

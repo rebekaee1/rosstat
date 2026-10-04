@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { cn } from '../lib/format';
+import Chip from './Chip';
+import ChipGroup from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
@@ -9,13 +10,6 @@ import {
   getTopGroup,
   highlightedTopGroup,
 } from '../lib/cbrTermSliceRateGroups';
-
-const btnCls = (active) => cn(
-  'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-  active
-    ? 'bg-champagne/15 text-champagne'
-    : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-);
 
 export default function CbrTermSliceRateViewModePicker({
   currentMode,
@@ -62,36 +56,31 @@ export default function CbrTermSliceRateViewModePicker({
 
   const body = (
     <>
-      <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
         {t('indicator.picker.mode')}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <ChipGroup label={t('indicator.picker.mode')}>
         {topGroups.map((group) => {
           const active = group.id === activeTopGroup;
           return (
-            <button
+            <Chip
               key={group.id}
-              type="button"
+              active={active}
               onClick={() => onTopClick(group)}
-              className={btnCls(active)}
             >
               {group.label}
-            </button>
+            </Chip>
           );
         })}
-      </div>
+      </ChipGroup>
       {subModes.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2 border-t border-border-subtle pt-3">
+        <ChipGroup label={localizeViewModeLabel(expanded?.label, locale)} className="mt-3 border-t border-border-subtle pt-3">
           {subModes.map((item) => (
-            <button
-              key={item.mode}
-              type="button"
-              className={btnCls(item.mode === currentMode)}
-            >
+            <Chip key={item.mode} active={item.mode === currentMode}>
               {item.label}
-            </button>
+            </Chip>
           ))}
-        </div>
+        </ChipGroup>
       )}
     </>
   );
