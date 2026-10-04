@@ -99,7 +99,7 @@ def price_base_years(*units: str | None) -> tuple[int, ...]:
     return tuple(sorted(years))
 
 
-@lru_cache(maxsize=65536)
+@lru_cache(maxsize=2048)
 def unit_metadata(*units: str | None, native_currency: str | None = None) -> str:
     """Encode only facets supported by native stored/translatable unit labels."""
     text = " ".join(unit or "" for unit in units).casefold().replace("ё", "е")
@@ -131,7 +131,7 @@ def unit_metadata(*units: str | None, native_currency: str | None = None) -> str
     return " ".join(sorted(facets))
 
 
-@lru_cache(maxsize=65536)
+@lru_cache(maxsize=2048)
 def denominator_metadata(*labels: str | None) -> str:
     """Only actual title/unit wording establishes a population denominator."""
     text = " ".join(" ".join(label or "" for label in labels).casefold().replace("ё", "е").replace("-", " ").split())

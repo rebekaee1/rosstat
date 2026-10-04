@@ -142,11 +142,17 @@ MONTHS = (
 )
 
 
+# Bounded on purpose: regional scoring feeds ~35k distinct (region, indicator) strings per query,
+# and a 130k-entry cache grew every uvicorn worker by 500+ MB (measured 2026-10-04, 3 workers
+# in a 2.25 GB cgroup). Small caches keep the repeated alias/title strings and nothing more.
+_TEXT_CACHE_SIZE = 24576
+_EDIT_CACHE_SIZE = 32768
+
 # The three text helpers below are pure functions of a string and are called
 # hundreds of thousands of times per search over the same catalogue titles.
 # Memoizing them (per process) removes most of the scoring CPU without changing
 # any result.
-@lru_cache(maxsize=131072)
+@lru_cache(maxsize=_TEXT_CACHE_SIZE)
 def _normalize_text(text: str) -> str:
     return " ".join(unicodedata.normalize("NFKC", text).casefold().replace("ё", "е").split())
 
@@ -155,7 +161,7 @@ def normalize(value: object) -> str:
     return _normalize_text(value if isinstance(value, str) else str(value or ""))
 
 
-@lru_cache(maxsize=131072)
+@lru_cache(maxsize=_TEXT_CACHE_SIZE)
 def _tokens_of_normalized(text: str) -> tuple[str, ...]:
     return tuple(TOKEN_RE.findall(text))
 
@@ -164,7 +170,7 @@ def tokens(value: object) -> tuple[str, ...]:
     return _tokens_of_normalized(normalize(value))
 
 
-@lru_cache(maxsize=131072)
+@lru_cache(maxsize=_TEXT_CACHE_SIZE)
 def _phrase_of_normalized(text: str) -> str:
     return " ".join(_tokens_of_normalized(text))
 
@@ -173,7 +179,7 @@ def phrase(value: object) -> str:
     return _phrase_of_normalized(normalize(value))
 
 
-@lru_cache(maxsize=262144)
+@lru_cache(maxsize=_EDIT_CACHE_SIZE)
 def edit_distance_one(left: str, right: str) -> bool:
     """At most one insertion/deletion/substitution/adjacent transposition."""
     if left == right:

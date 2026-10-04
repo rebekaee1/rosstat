@@ -120,7 +120,7 @@ _PRICE_VALUATION_PHRASES = ("current prices", "constant prices", "chained prices
 _PRICE_SEPARATORS = string.punctuation + "—–≤≥‰€£¥№\t\n\r\v\f\u00a0\u202f"
 
 
-@lru_cache(maxsize=65536)
+@lru_cache(maxsize=2048)
 def _native_price_metadata(*names: str | None) -> str:
     """A native price subject, distinct from GDP valuation at current prices."""
     text = phrase(" ".join(name or "" for name in names))
@@ -168,7 +168,7 @@ def _intent_frequency(intent: SearchIntent) -> str | None:
         if alt.startswith("search-freq-")), None)
 
 
-@lru_cache(maxsize=65536)
+@lru_cache(maxsize=2048)
 def _unit_metadata(*units, native_currency: str | None = None) -> str:
     """Explicit percent intent checks actual units, never SEO/name text."""
     facets = unit_metadata(*units, native_currency=native_currency)
