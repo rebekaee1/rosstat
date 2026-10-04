@@ -6,7 +6,7 @@
 // одна общая ось прижимает линию региона к нулю и график перестаёт читаться.
 // В этом случае РФ автоматически уводится на правую ось (dual-axis), а под
 // графиком появляется подпись, какая линия к какой оси относится.
-import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { useCallback, useMemo, useRef, useId } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
   Tooltip, CartesianGrid,
@@ -14,7 +14,8 @@ import {
 import { formatRegionValue, formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
 import { pickChartAxisTicks, chartAxisTickBudget } from '../lib/format';
 import { useLocale } from '../i18n';
-import { CHART_THEME } from '../lib/chartTheme';
+import { CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick } from '../lib/chartTheme';
+import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import ChartBrandCaption from './ChartBrandCaption';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
@@ -40,34 +41,34 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
   const periodLabel = tickLabel ? tickLabel(label) : label;
   return (
-    <div className="bg-surface border border-border-subtle rounded-lg px-3 py-2 shadow-lg text-xs">
-      <div className="text-text-tertiary font-mono mb-1">{periodLabel}</div>
+    <div className="bg-surface border border-border-subtle rounded-xl px-3 py-2 shadow-lg text-xs max-w-[calc(100vw-48px)]">
+      <div className="text-text-secondary mb-1">{periodLabel}</div>
       {region && (
-        <div className="font-mono font-semibold text-champagne">
+        <div className="font-semibold tabular-nums text-champagne-ink">
           {regionName}: {formatRegionValue(region.value)}
         </div>
       )}
       {compare && (
-        <div className="font-mono font-semibold mt-0.5" style={{ color: COMPARE_COLOR }}>
+        <div className="font-semibold tabular-nums mt-0.5 text-text-primary">
           {compareName}: {formatRegionValue(compare.value)}
         </div>
       )}
       {russia && (
-        <div className="font-mono text-text-secondary mt-0.5">
+        <div className="tabular-nums text-text-secondary mt-0.5">
           {russiaLabel}: {formatRegionValue(russia.value)}
         </div>
       )}
       {forecast && (
-        <div className="font-mono text-champagne mt-0.5">
+        <div className="tabular-nums text-champagne-ink mt-0.5">
           {forecastLabel}: {formatRegionValue(forecast.value)}
         </div>
       )}
-      {unit ? <div className="mt-1 text-[10px] text-text-tertiary">{unit}</div> : null}
+      {unit ? <div className="mt-1 text-[11px] text-text-secondary">{unit}</div> : null}
     </div>
   );
 }
 
-const tickStyle = { fontSize: 11, fill: CHART_THEME.axis, fontFamily: CHART_THEME.font };
+const tickStyle = axisTick();
 
 export default function RegionAnnualChart({
   series,
@@ -83,19 +84,10 @@ export default function RegionAnnualChart({
 }) {
   const { t, locale } = useLocale();
   const wrapRef = useRef(null);
+  const [setWidthNode, plotWidth] = useElementWidth();
+  const touchTip = useTouchTooltip(wrapRef);
+  const setWrap = useCallback((node) => { wrapRef.current = node; setWidthNode(node); }, [setWidthNode]);
   const gradientId = `region-${useId().replaceAll(':', '')}`;
-  const [plotWidth, setPlotWidth] = useState(0);
-
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el || typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver((entries) => {
-      const w = entries[0]?.contentRect?.width;
-      if (w) setPlotWidth(w);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   const monthly = frequency === 'monthly';
   const quarterly = frequency === 'quarterly';
@@ -153,7 +145,7 @@ export default function RegionAnnualChart({
     return ratio > DUAL_AXIS_RATIO || ratio < 1 / DUAL_AXIS_RATIO;
   }, [data, showRussia]);
 
-  const isNarrow = plotWidth > 0 && plotWidth < 420;
+  const isNarrow = plotWidth > 0 && plotWidth < NARROW_CHART_WIDTH;
 
   // Ширина осей — по самой длинной подписи; на узком экране жёстче клэмп,
   // иначе dual-axis съедает половину plot-area (скрин Белгород/Россия).
@@ -201,7 +193,8 @@ export default function RegionAnnualChart({
   return (
     <div>
       <div
-        ref={wrapRef}
+        ref={setWrap}
+        onPointerDownCapture={touchTip.onPointerDownCapture}
         style={{ width: '100%', height: chartHeight }}
         role="img"
         aria-label={t('regions.ind.chartAria', {
@@ -218,7 +211,7 @@ export default function RegionAnnualChart({
                 <stop offset="100%" stopColor={CHART_THEME.ink} stopOpacity={0.02} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} vertical={false} />
+            <CartesianGrid {...GRID_PROPS} />
             <XAxis
               dataKey="period"
               tick={({ x, y, payload }) => {
@@ -240,7 +233,6 @@ export default function RegionAnnualChart({
               yAxisId="region"
               tick={{
                 ...tickStyle,
-                fontSize: isNarrow ? 10 : 11,
                 fill: dualAxis ? CHART_THEME.ink : tickStyle.fill,
               }}
               tickFormatter={(v) => formatCompactTick(v, { narrow: isNarrow })}
@@ -255,8 +247,7 @@ export default function RegionAnnualChart({
                 orientation="right"
                 tick={{
                   ...tickStyle,
-                  fontSize: isNarrow ? 10 : 11,
-                  fill: 'rgba(58,58,80,0.6)',
+                  fill: CHART_THEME.axis,
                 }}
                 tickFormatter={(v) => formatCompactTick(v, { narrow: isNarrow })}
                 tickLine={false}
@@ -266,6 +257,8 @@ export default function RegionAnnualChart({
               />
             )}
             <Tooltip
+              cursor={TOOLTIP_STYLES.cursor}
+              {...touchTip.tooltipProps}
               content={(
                 <RegionTooltip
                   unit={unit}
@@ -308,7 +301,7 @@ export default function RegionAnnualChart({
                 yAxisId={dualAxis ? 'rf' : 'region'}
                 type="monotone"
                 dataKey="russia"
-                stroke="#3A3A50"
+                stroke={CHART_THEME.axis}
                 strokeWidth={1.6}
                 strokeDasharray="5 4"
                 dot={false}
@@ -320,11 +313,11 @@ export default function RegionAnnualChart({
                 yAxisId="region"
                 type="monotone"
                 dataKey="forecast"
-                stroke={CHART_THEME.gold || '#AD8A48'}
+                stroke={CHART_THEME.champagne}
                 strokeWidth={2}
                 strokeDasharray="5 4"
                 dot={false}
-                activeDot={{ r: 3.5, fill: CHART_THEME.gold || '#AD8A48' }}
+                activeDot={{ r: 3.5, fill: CHART_THEME.champagne }}
                 isAnimationActive={false}
               />
             )}
@@ -332,13 +325,13 @@ export default function RegionAnnualChart({
         </ResponsiveContainer>
       </div>
       {dualAxis && (
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary px-1">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary px-1">
           <span className="inline-flex items-center gap-1.5">
             <span className="inline-block w-4 h-0.5 rounded bg-text-primary" />
             {t('regions.ind.axisRegion', { region: regionName })}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block w-4 border-t-2 border-dashed border-[#3A3A50]" />
+            <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: CHART_THEME.axis }} />
             {nationalLabel || t('regions.ind.axisRussia')}
           </span>
         </div>

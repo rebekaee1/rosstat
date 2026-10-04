@@ -24,7 +24,13 @@ import {
 } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
-import { ChartSkeleton } from '../components/Skeleton';
+import CompareChartState from '../components/CompareChartState';
+import Chip from '../components/Chip';
+import Button from '../components/Button';
+import {
+  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, chartHeightForWidth,
+} from '../lib/chartTheme';
+import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
 import useGlobalSearch from '../lib/useGlobalSearch';
@@ -64,11 +70,8 @@ const RANGE_OPTIONS = [
   { key: 'all', labelKey: 'compare.range.all', months: null },
 ];
 
-// До 10 рядов — палитра различимых цветов (тёмный фон карточки графика).
-const PALETTE = [
-  '#202A3C', '#AD8A48', '#6B8299', '#5D857F', '#957D9C',
-  '#A86F65', '#818754', '#59677D', '#987B68', '#708B9E',
-];
+// До 10 рядов — палитра различимых цветов из общей темы графиков (lib/chartTheme.js).
+const PALETTE = CHART_THEME.series;
 
 // «Общая база» вместо «Индекс», чтобы не путать со ЗНАЧЕНИЕМ представления
 // «Индекс» (уровень индекса цен ИПЦ/ИЦП) у отдельного ряда — это разные вещи.
@@ -377,7 +380,7 @@ function ComboSelect({
             filtered.map((g) => (
               <div key={g.label || '_'}>
                 {g.label && (
-                  <div className="sticky top-0 bg-obsidian-light px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">
+                  <div className="sticky top-0 bg-obsidian-light px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider text-text-tertiary">
                     {g.label}
                   </div>
                 )}
@@ -921,7 +924,7 @@ function CompareSeriesPicker({
   return (
     <div className="fe-panel overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
       <div className="mb-5 border-b border-border-subtle pb-4">
-        <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">{t('compare.addSeries')}</div>
+        <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne">{t('compare.addSeries')}</div>
         <div className="mt-1 text-sm text-text-secondary">
           {t('compare.pickCountryFirst')}
         </div>
@@ -934,7 +937,7 @@ function CompareSeriesPicker({
 
       {!countryKey && (
         <div>
-          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.country')}
           </div>
           <div className={cn(FIELD_CLS, 'mb-3 border-border-subtle focus-within:border-champagne/40')}>
@@ -1008,7 +1011,7 @@ function CompareSeriesPicker({
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
           <div className="mb-4">
-            <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
               {t('compare.conceptGroup')}
             </div>
             <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
@@ -1023,7 +1026,7 @@ function CompareSeriesPicker({
               />
             </div>
           </div>
-          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.russiaWhat')}
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
@@ -1060,7 +1063,7 @@ function CompareSeriesPicker({
       {countryKey === 'russia' && russiaBranch === 'macro' && (
         <div>
           <PickerBack label={t('compare.backToRussia')} onClick={() => setRussiaBranch(null)} />
-          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.macroRussia')}
           </div>
           <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
@@ -1079,7 +1082,7 @@ function CompareSeriesPicker({
       {countryKey === 'russia' && russiaBranch === 'regions' && (
         <div>
           <PickerBack label={t('compare.backToRussia')} onClick={() => setRussiaBranch(null)} />
-          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.regionalSeries')}
           </div>
           <AddRegionSeries
@@ -1101,7 +1104,7 @@ function CompareSeriesPicker({
       {countryKey && countryKey !== 'russia' && selectedCountry && hasSubnational && !worldBranch && (
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
-          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.countryWhat', { country: selectedCountry.label })}
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
@@ -1143,7 +1146,7 @@ function CompareSeriesPicker({
             label={hasSubnational ? t('compare.countryWhat', { country: selectedCountry.label }) : t('compare.backToCountry')}
             onClick={hasSubnational ? () => setWorldBranch(null) : resetCountry}
           />
-          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.countryIndicator', { country: selectedCountry.label })}
           </div>
           <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
@@ -1166,7 +1169,7 @@ function CompareSeriesPicker({
             label={t('compare.countryWhat', { country: selectedCountry.label })}
             onClick={() => setWorldBranch(null)}
           />
-          <div className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
             {t('compare.subnationalSeries', { kind: subnationalKind })}
           </div>
           <AddSubnationalSeries
@@ -1233,15 +1236,15 @@ function UpsellModal({ open, onClose }) {
 function CompareTooltip({ active, payload, label, dateFormat = 'short' }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[220px]">
-      <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, dateFormat)}</p>
+    <div className="glass-surface min-w-[200px] max-w-[calc(100vw-48px)] rounded-xl border border-border-subtle px-4 py-3 shadow-2xl">
+      <p className="mb-2 text-xs text-text-secondary">{formatDate(label, dateFormat)}</p>
       {payload.filter((p) => p.value != null).map((p) => (
-        <div key={p.dataKey} className="flex items-center justify-between gap-4 mb-1">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-            <span className="text-xs text-text-tertiary truncate max-w-[160px]">{p.name}</span>
+        <div key={p.dataKey} className="mb-1 flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: p.color }} />
+            <span className="max-w-[160px] truncate text-xs text-text-secondary">{p.name}</span>
           </div>
-          <span className="text-sm font-mono font-semibold" style={{ color: p.color }}>
+          <span className="shrink-0 text-sm font-semibold tabular-nums text-text-primary">
             {formatValueWithUnit(p.value, p.payload?.[`${p.dataKey}_unit`] || '%')}
           </span>
         </div>
@@ -1263,21 +1266,16 @@ export default function ComparePage() {
   const [panOffset, setPanOffset] = useState(0);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [plotWidth, setPlotWidth] = useState(0);
   const exportRef = useRef(null);
   const chartAreaRef = useRef(null);
+  const [setPlotNode, plotWidth] = useElementWidth();
+  const [setSectionNode, sectionWidth] = useElementWidth();
+  const touchTip = useTouchTooltip(chartAreaRef);
+  const setChartArea = useCallback((node) => {
+    chartAreaRef.current = node;
+    setPlotNode(node);
+  }, [setPlotNode]);
   const dragRef = useRef(null);
-
-  useEffect(() => {
-    const el = chartAreaRef.current;
-    if (!el || typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver((entries) => {
-      const w = entries[0]?.contentRect?.width;
-      if (w) setPlotWidth(w);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   const { isAuthed, isLoading: isAuthLoading } = useAuth();
   const cap = isAuthed ? USER_MAX : GUEST_MAX;
@@ -1623,6 +1621,12 @@ export default function ComparePage() {
   const loading = series.some((s) => s.loading);
   const loadFailed = series.some((s) => s.error);
   const hasError = series.some((s) => s.error);
+  // Повтор — только для сетевых сбоев (запрос упал); неизвестный код в адресе повторять бессмысленно.
+  const failedQueries = results.filter((r) => r.isError);
+  const retrying = failedQueries.some((r) => r.isFetching);
+  const retryFailed = () => { failedQueries.forEach((r) => r.refetch()); };
+  const chartHeight = chartHeightForWidth(sectionWidth);
+  const narrow = plotWidth > 0 && plotWidth < NARROW_CHART_WIDTH;
   // Формат дат оси: агрегированный шаг диктует гранулярность, иначе — частоты рядов.
   const compareDateFmt = step === 'year'
     ? 'annual'
@@ -1659,8 +1663,6 @@ export default function ComparePage() {
   };
   const leftUnit = distinctUnits[0];
   const rightUnit = distinctUnits[1];
-  const leftColor = series.find((s) => (s.unit || '%') === leftUnit)?.color;
-  const rightColor = series.find((s) => (s.unit || '%') === rightUnit)?.color;
 
   // Перетаскивание графика мышью/пальцем — как на карточке индикатора.
   // Тащим вправо → окно уходит в прошлое (panOffset растёт), влево → к свежим.
@@ -1744,7 +1746,7 @@ export default function ComparePage() {
         <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-6" />
 
         <div className="flex items-center gap-3 mb-4">
-          <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
+          <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[11px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
             <GitCompare className="w-3 h-3 text-champagne" />
             {t('compare.badge')}
           </span>
@@ -1803,27 +1805,21 @@ export default function ComparePage() {
                   <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
                   <span className="text-sm text-text-primary mr-1">{s.ind?.name || s.code}</span>
                   {reps.length > 1 && (
-                    <div className="flex gap-0.5 p-0.5 rounded-lg bg-obsidian-lighter border border-border-subtle">
+                    <div className="flex flex-wrap gap-1.5">
                       {reps.map((o) => (
-                        <button
+                        <Chip
                           key={o.id}
-                          type="button"
                           title={REP_HINT[o.id]}
+                          active={s.rep === o.id}
                           onClick={() => setRep(s.code, o.id)}
-                          className={cn(
-                            'px-2 py-1 text-[11px] rounded-md transition-colors',
-                            s.rep === o.id
-                              ? 'bg-champagne/15 text-champagne'
-                              : 'text-text-tertiary hover:text-text-secondary',
-                          )}
                         >
                           {o.label}
-                        </button>
+                        </Chip>
                       ))}
                     </div>
                   )}
-                  <button type="button" onClick={() => removeCode(s.code)} className="ml-auto text-text-tertiary hover:text-text-primary" aria-label={t('common.remove')}>
-                    <X className="w-4 h-4" />
+                  <button type="button" onClick={() => removeCode(s.code)} className="ml-auto flex h-9 w-9 items-center justify-center rounded-lg text-text-tertiary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11" aria-label={t('common.remove')}>
+                    <X className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
               );
@@ -1837,31 +1833,33 @@ export default function ComparePage() {
         )}
       </section>
 
-      {hasError && (
-        <div className="mb-6 rounded-2xl border border-champagne/35 bg-warn-surface px-4 py-4 text-sm shadow-md" role="alert">
-          <p className="text-text-primary">
+      {hasError && hasData && !loading && (
+        <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-champagne/35 bg-warn-surface px-4 py-4 text-sm shadow-md sm:flex-row sm:items-center sm:justify-between" role="alert">
+          <p className="min-w-0 text-text-primary">
             <span className="font-semibold">{t('compare.loadPartial')}</span>{' '}
             {t('compare.loadPartialHint')}
           </p>
+          {failedQueries.length > 0 && (
+            <Button variant="secondary" size="sm" onClick={retryFailed} loading={retrying} className="shrink-0">
+              {t('common.retry')}
+            </Button>
+          )}
         </div>
       )}
 
-      <section data-block="compare-chart" className="mb-8">
+      <section ref={setSectionNode} data-block="compare-chart" className="mb-8">
         <div className="flex items-center gap-4 border-b border-border-subtle pb-4 mb-6 flex-wrap">
           <Activity className="w-4 h-4 text-champagne" />
           <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">{t('compare.periodLabel')}</span>
-          <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+          <div className="flex flex-wrap gap-1.5">
             {RANGE_OPTIONS.map((opt) => (
-              <button
+              <Chip
                 key={opt.key}
+                active={range === opt.key}
                 onClick={() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}
-                className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                  range === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
-                )}
               >
                 {t(opt.labelKey)}
-              </button>
+              </Chip>
             ))}
           </div>
 
@@ -1876,58 +1874,48 @@ export default function ComparePage() {
               {t('compare.step.official')}
             </span>
           ) : (
-            <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+            <div className="flex flex-wrap gap-1.5">
               {STEP_OPTIONS.map((opt) => (
-                <button
+                <Chip
                   key={opt.key}
+                  active={step === opt.key}
                   onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
-                  className={cn(
-                    'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                    step === opt.key ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
-                  )}
                 >
                   {t(opt.labelKey)}
-                </button>
+                </Chip>
               ))}
             </div>
           )}
 
           <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4">{t('compare.scaleLabel')}</span>
-          <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+          <div className="flex flex-wrap gap-1.5">
             {SCALE_OPTIONS.map((opt) => {
               const disabled = forceIndex && opt.key === 'values';
               return (
-                <button
+                <Chip
                   key={opt.key}
                   disabled={disabled}
+                  active={indexed ? opt.key === 'index' : !!range && scale === opt.key && !forceIndex}
                   onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
                   title={disabled ? t('compare.indexOnlyUnits') : undefined}
-                  className={cn(
-                    'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                    (indexed ? opt.key === 'index' : range && scale === opt.key && !forceIndex)
-                      ? 'bg-champagne/15 text-champagne' : 'text-text-tertiary hover:text-text-secondary',
-                    disabled && 'opacity-40 cursor-not-allowed',
-                  )}
                 >
                   {t(opt.labelKey)}
-                </button>
+                </Chip>
               );
             })}
           </div>
 
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={handleExport}
             disabled={!hasData}
-            className={cn(
-              'ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono uppercase tracking-wider transition-colors',
-              hasData ? 'border-border-subtle text-text-tertiary hover:text-champagne hover:border-champagne/30' : 'border-border-subtle/50 text-text-tertiary/40 cursor-not-allowed',
-            )}
+            className="ml-auto"
             title={t('compare.downloadChart')}
           >
-            <ImageDown className="w-3.5 h-3.5" />
+            <ImageDown className="w-3.5 h-3.5" aria-hidden="true" />
             {t('compare.imageButton')}
-          </button>
+          </Button>
         </div>
 
         {forceIndex && (
@@ -1942,14 +1930,15 @@ export default function ComparePage() {
         )}
 
         {loading ? (
-          <div data-testid="compare-chart-skeleton">
-            <ChartSkeleton />
-          </div>
+          <CompareChartState kind="loading" height={chartHeight} />
         ) : !hasData ? (
-          <div className="h-96 rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8" data-testid="compare-empty">
-            <GitCompare className="w-10 h-10 mb-4 opacity-20" />
-            <p className="text-sm text-center max-w-md">
-              {codes.length === 0
+          <CompareChartState
+            kind={codes.length === 0 ? 'none' : loadFailed ? 'error' : 'empty'}
+            height={chartHeight}
+            onRetry={failedQueries.length > 0 ? retryFailed : undefined}
+            retrying={retrying}
+            message={
+              codes.length === 0
                 ? t('compare.emptyAdd')
                 : loadFailed
                   ? t('compare.emptyUnavailable')
@@ -1957,9 +1946,9 @@ export default function ComparePage() {
                     ? t('compare.noSharedBase')
                     : indexed && nonIndexableNames.length === series.length
                       ? t('compare.noIndexableBase')
-                      : t('compare.emptyData')}
-            </p>
-          </div>
+                      : t('compare.emptyData')
+            }
+          />
         ) : (
           <div ref={exportRef} className="fe-panel rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
             <h2 className="text-center text-lg md:text-xl font-display font-bold text-text-primary mb-1">
@@ -1972,19 +1961,21 @@ export default function ComparePage() {
               {` ${t('compare.periodLabel')}: ${t(RANGE_OPTIONS.find((r) => r.key === range)?.labelKey || 'compare.range.all').toLowerCase()}`}
             </p>
 
-            <div className="mb-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-mono border-b border-border-subtle pb-4">
+            <div className="mb-4 flex flex-col items-start gap-y-2 border-b border-border-subtle pb-4 text-xs sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-6">
               {series.map((s, i) => {
                 const dropped = nonIndexableKeys.has(s.key);
                 return (
-                  <span key={s.code} className={cn('flex items-center gap-2', dropped && 'opacity-40')}>
-                    <span className="w-3 h-0.5 rounded-full" style={{ backgroundColor: s.color }} />
-                    <span style={{ color: s.color }}>{s.ind?.name || s.code}</span>
-                    <span className="text-text-tertiary">
+                  <span key={s.code} className={cn('flex min-w-0 max-w-full items-start gap-2', dropped && 'opacity-60')}>
+                    <span className="mt-1.5 h-[3px] w-4 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
+                    <span className="min-w-0 break-words">
+                    <span className="font-semibold text-text-primary">{s.ind?.name || s.code}</span>{' '}
+                    <span className="text-text-secondary">
                       ({compareLegendParts([s.repLabel, ...(dropped
                         ? [t('compare.notRebased')]
                         : indexed
                           ? [t('compare.start100')]
                           : [unitSuffix(s.unit), s.ind?.frequency ? freqLabel(s.ind.frequency, t) : '', axisFor(i) === 'left' ? t('compare.axisLeft') : t('compare.axisRight')])])})
+                    </span>
                     </span>
                   </span>
                 );
@@ -1992,7 +1983,7 @@ export default function ComparePage() {
             </div>
 
             {nonIndexableNames.length > 0 && (
-              <p className="mb-4 -mt-1 text-center text-[11px] text-text-tertiary">
+              <p className="mb-4 -mt-1 text-center text-xs text-text-secondary">
               {t(mixedPriceIndexBases ? 'compare.priceIndexPercentExcluded' : 'compare.nonIndexableNote', {
                 names: nonIndexableNames.join(', '),
               })}
@@ -2000,7 +1991,10 @@ export default function ComparePage() {
             )}
 
             <div
-              ref={chartAreaRef}
+              ref={setChartArea}
+              role="img"
+              aria-label={t('compare.chartAria')}
+              onPointerDownCapture={touchTip.onPointerDownCapture}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -2020,41 +2014,48 @@ export default function ComparePage() {
                   forecasteconomy.com
                 </div>
               )}
-              <ResponsiveContainer width="100%" height={480}>
-                <ComposedChart data={chartRows} margin={{ top: 10, right: 20, bottom: 44, left: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <ResponsiveContainer width="100%" height={chartHeight}>
+                <ComposedChart
+                  data={chartRows}
+                  margin={{ top: 10, right: narrow ? 6 : 20, bottom: narrow ? 26 : 44, left: 0 }}
+                >
+                  <CartesianGrid {...GRID_PROPS} />
                   <XAxis
                     dataKey="date"
                     tickFormatter={(d) => formatChartAxisDate(d, compareDateFmt, { multiYear: true })}
-                    tick={{ fill: 'rgba(0,0,0,0.45)', fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif' }}
-                    axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
+                    tick={axisTick()}
+                    axisLine={{ stroke: CHART_THEME.axisLine }}
                     tickLine={false}
                     ticks={xTicks}
                     interval={0}
                     tickMargin={8}
-                    height={36}
-                    label={{ value: t('compare.periodLabel'), position: 'insideBottom', offset: -2, fill: 'rgba(0,0,0,0.5)', fontSize: 11, fontFamily: 'Manrope, system-ui, sans-serif' }}
+                    height={narrow ? 28 : 36}
+                    label={narrow ? undefined : { value: t('compare.periodLabel'), position: 'insideBottom', offset: -2, fill: CHART_THEME.axis, fontSize: 11, fontFamily: CHART_THEME.font }}
                   />
                   <YAxis
                     yAxisId="left"
-                    tick={{ fill: indexed ? 'rgba(0,0,0,0.45)' : leftColor, fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif' }}
+                    tick={axisTick()}
                     axisLine={false}
                     tickLine={false}
-                    width={60}
+                    width={narrow ? 46 : 60}
                     tickFormatter={(v) => (indexed ? formatAxisTick(v, 0) : formatAxisTick(v, unitDigits(leftUnit)))}
                   />
                   {!indexed && distinctUnits.length > 1 && (
                     <YAxis
                       yAxisId="right"
                       orientation="right"
-                      tick={{ fill: rightColor, fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif' }}
+                      tick={axisTick()}
                       axisLine={false}
                       tickLine={false}
-                      width={60}
+                      width={narrow ? 46 : 60}
                       tickFormatter={(v) => formatAxisTick(v, unitDigits(rightUnit))}
                     />
                   )}
-                  <Tooltip content={<CompareTooltip dateFormat={compareDateFmt} />} cursor={{ stroke: 'rgba(0,0,0,0.12)' }} />
+                  <Tooltip
+                    content={<CompareTooltip dateFormat={compareDateFmt} />}
+                    cursor={TOOLTIP_STYLES.cursor}
+                    {...touchTip.tooltipProps}
+                  />
                   {series.map((s, i) => (
                     <Line
                       key={s.key}
@@ -2083,7 +2084,7 @@ export default function ComparePage() {
                   value={maxPan - Math.min(panOffset, maxPan)}
                   onChange={(e) => setPanOffset(maxPan - Number(e.target.value))}
                   aria-label={t('compare.panAria')}
-                  className="w-full h-1.5 appearance-none bg-obsidian-lighter rounded-full
+                  className="w-full h-1.5 pointer-coarse:box-content pointer-coarse:py-[19px] pointer-coarse:bg-clip-content appearance-none bg-obsidian-lighter rounded-full
                     [&::-webkit-slider-thumb]:appearance-none
                     [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
                     [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-champagne
@@ -2092,7 +2093,7 @@ export default function ComparePage() {
                     [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-champagne
                     [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
                 />
-                <div className="flex justify-between text-[10px] font-mono text-text-tertiary mt-1">
+                <div className="mt-1 flex justify-between gap-2 text-[11px] text-text-secondary">
                   <span>{chartRows[0] ? formatDate(chartRows[0].date, compareDateFmt) : ''}</span>
                   <span className="hidden sm:inline text-text-tertiary/70 normal-case">
                     {t('compare.panHint')}
@@ -2109,7 +2110,7 @@ export default function ComparePage() {
         <section data-block="compare-analysis" className="fe-panel rounded-[2rem] border border-border-subtle bg-surface p-5 shadow-[0_16px_45px_rgba(35,30,16,0.05)] md:p-7">
           <div className="mb-5 flex flex-col gap-2 border-b border-border-subtle pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+              <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne">
                 {t('compare.analysis.eyebrow')}
               </div>
               <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">
@@ -2134,13 +2135,13 @@ export default function ComparePage() {
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     <div>
-                      <div className="text-[10px] uppercase tracking-wide text-text-tertiary">{t('compare.analysis.last')}</div>
+                      <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{t('compare.analysis.last')}</div>
                       <div className="mt-1 font-mono text-lg font-semibold text-text-primary">
                         {formatValueWithUnit(metric.last.value, displayUnit)}
                       </div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-wide text-text-tertiary">{t('compare.analysis.change')}</div>
+                      <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{t('compare.analysis.change')}</div>
                       <div className={cn(
                         'mt-1 font-mono text-lg font-semibold',
                         metric.change > 0 ? 'text-positive' : metric.change < 0 ? 'text-negative' : 'text-text-primary',
@@ -2150,7 +2151,7 @@ export default function ComparePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center justify-between border-t border-border-subtle pt-2.5 font-mono text-[10px] text-text-tertiary">
+                  <div className="mt-3 flex items-center justify-between border-t border-border-subtle pt-2.5 font-mono text-[11px] text-text-tertiary">
                     <span>{formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}</span>
                     <span>{t('compare.analysis.pointsCount', { n: metric.points.length })}</span>
                   </div>
@@ -2177,7 +2178,7 @@ export default function ComparePage() {
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
+              <p className="mt-3 text-xs leading-4 text-text-secondary">
                 {t('compare.analysis.pearson', {
                   counts: analysisSummary.correlations.map((item) => item.observations).join(', '),
                 })}
