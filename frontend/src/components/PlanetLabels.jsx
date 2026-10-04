@@ -10,6 +10,8 @@ const MAX_LABELS = 16;
 const FONT_FAMILY = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 const ATLAS_WIDTH = 2048;
 const ATLAS_HEIGHT = 1024;
+// A small pointer under the chip, so the name visibly belongs to the country below it.
+const TAIL_HEIGHT = 9;
 
 const VERTEX = `
   attribute vec4 labelUv;
@@ -68,7 +70,7 @@ function createLabelAtlas(labels) {
       measureValue: (text) => {
         context.font = `600 ${candidateSize}px ${FONT_FAMILY}`;
         return context.measureText(text).width;
-      }, paddingX: 12, paddingY: 8, lineGap: 4,
+      }, paddingX: 12, paddingY: 8, lineGap: 4, tailHeight: TAIL_HEIGHT,
     });
     fontPixels = candidateSize;
     if (items) break;
@@ -76,12 +78,28 @@ function createLabelAtlas(labels) {
   if (!items) return null;
   for (const label of items) {
     const { x, y, width, height, nameLines, valueLines } = label;
+    const panelHeight = height - TAIL_HEIGHT;
     context.beginPath();
-    context.roundRect(x + 1, y + 1, width - 2, height - 2, 10);
+    context.roundRect(x + 1, y + 1, width - 2, panelHeight - 2, 10);
     context.fillStyle = '#fff';
     context.fill();
     context.strokeStyle = '#f00';
     context.lineWidth = 2;
+    context.stroke();
+    // Pointer: white wedge over the bottom border, outlined on its two slanted sides only.
+    const centre = x + width / 2;
+    const base = y + panelHeight - 1;
+    context.fillStyle = '#fff';
+    context.beginPath();
+    context.moveTo(centre - 7, base - 2);
+    context.lineTo(centre + 7, base - 2);
+    context.lineTo(centre, y + height - 1);
+    context.closePath();
+    context.fill();
+    context.beginPath();
+    context.moveTo(centre - 7, base);
+    context.lineTo(centre, y + height - 1);
+    context.lineTo(centre + 7, base);
     context.stroke();
     const nameSize = fontPixels * 5 / 6;
     context.font = `500 ${nameSize}px ${FONT_FAMILY}`;

@@ -97,7 +97,7 @@ function splitAtlasSpace(spaces, used) {
 export function packPlanetLabelAtlas(labels, measure, {
   width = 2048, height = 1024, maxTextWidth = 220, lineHeight = 24,
   measureValue = measure, valueLineHeight = lineHeight,
-  paddingX = 12, paddingY = 8, lineGap = 4,
+  paddingX = 12, paddingY = 8, lineGap = 4, tailHeight = 0,
 } = {}) {
   const measured = labels.map((label, index) => {
     const nameLines = wrapPlanetLabel(label.text, measure, maxTextWidth);
@@ -110,11 +110,11 @@ export function packPlanetLabelAtlas(labels, measure, {
     const valueWidth = Math.max(...valueLines.map(measureValue), 0);
     const labelWidth = Math.ceil(Math.max(...nameLines.map(measure), valueWidth, 1)) + 2 * paddingX;
     const labelHeight = Math.ceil(nameLines.length * lineHeight
-      + (valueLines.length ? lineGap + valueLines.length * valueLineHeight : 0) + 2 * paddingY);
+      + (valueLines.length ? lineGap + valueLines.length * valueLineHeight : 0) + 2 * paddingY + tailHeight);
     return {
       ...label, lines: nameLines, nameLines, valueLine, valueLines,
       index, width: labelWidth, height: labelHeight,
-      paddingX, paddingY, lineGap, lineHeight, valueLineHeight,
+      paddingX, paddingY, lineGap, lineHeight, valueLineHeight, tailHeight,
     };
   }).sort((a, b) => b.height - a.height || b.width - a.width || a.index - b.index);
   let spaces = [{ x: 0, y: 0, width, height }];

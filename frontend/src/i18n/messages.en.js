@@ -2087,8 +2087,8 @@ export default {
   'homehero.stat.indicators.label': 'official indicators',
   'homehero.stat.thousand': 'K',
   'homehero.stat.million': 'M',
-  'homehero.stat.history.label': 'years of history',
-  'homehero.stat.since': 'since',
+  'homehero.stat.history.label': 'first year of data',
+  'homehero.stat.since': '',
   'homehero.stat.unknown': 'no data',
   'homehero.trust': 'Data come only from official sources',
   'homehero.popular.title': 'Popular countries',
@@ -2424,4 +2424,8 @@ export default {
   'w3.demo.showAs': 'Show as',
   'w3.demo.modeAbs': 'Million people',
   'w3.demo.modePct': 'Shares, %',
+  // ── X1: planet and rating (wave 3) ──
+  'x1.planet.keyLowerFirst': 'Gold marks countries with a lower value: the lower it is, the higher the rank.',
+  'x1.planet.keyHigherFirst': 'Gold marks countries with a higher value: the higher it is, the higher the rank.',
+  'x1.rating.details': 'Details',
 };

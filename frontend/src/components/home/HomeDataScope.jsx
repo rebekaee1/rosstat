@@ -96,7 +96,9 @@ export default function HomeDataScope() {
           <Stat label={t('homehero.stat.history.label')}>
             {since ? (
               <>
-                <span className="fe-stat-unit fe-stat-unit--lead">{t('homehero.stat.since')}</span>
+                {t('homehero.stat.since') ? (
+                  <span className="fe-stat-unit fe-stat-unit--lead">{t('homehero.stat.since')}</span>
+                ) : null}
                 <AnimatedCount value={since} from={endYear} format={plainYear} duration={1100} />
               </>
             ) : dash}

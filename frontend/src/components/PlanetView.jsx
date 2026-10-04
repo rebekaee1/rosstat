@@ -20,6 +20,7 @@ import CountryFlag from './CountryFlag';
 import SourceLink from './SourceLink';
 import Spinner from './Spinner';
 import WorldCountUp from './WorldCountUp';
+import YearPicker from './YearPicker';
 import './PlanetView.css';
 
 const WorldMap = lazy(() => import('./WorldMap'));
@@ -70,6 +71,8 @@ export default function PlanetView({
   initialMode = 'earth', onSelect,
   years = [], year = null, onYearChange, conceptSlug = '',
   rankingItems = [], benchmark = null, ratingHref = '',
+  // На телефоне список стран под планетой не нужен, если ниже на странице стоит свой полный список.
+  hideListOnPhone = false,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -97,6 +100,7 @@ export default function PlanetView({
   const countryCard = useRef(null);
   const countryList = useRef(null);
   const focusCountryCard = useRef(false);
+  const revealCard = useRef(false);
 
   useEffect(() => {
     const preference = window.matchMedia?.('(pointer: coarse)');
@@ -184,7 +188,7 @@ export default function PlanetView({
   const selectCountry = useCallback((code, moveFocus = false, instant = false) => {
     const country = countryByCode.get(code) || countryByCode.get(countryAlias(code));
     if (!country) return;
-    if (moveFocus) { focusCountryCard.current = true; searchInput.current?.blur(); }
+    if (moveFocus) { focusCountryCard.current = true; revealCard.current = false; searchInput.current?.blur(); }
     setSelectedCode(country.code); setSearchOpen(false); setQuery('');
     commandCamera('focus', country.code, instant);
   }, [commandCamera, countryByCode]);
@@ -196,6 +200,8 @@ export default function PlanetView({
       onSelect(country, collectionValue(detailsByCode, country.code) || null);
       return;
     }
+    // Касание по планете: карточка страны стоит под ней, её надо мягко показать, не уводя саму планету.
+    if (!moveFocus) revealCard.current = true;
     selectCountry(country.code, moveFocus);
   }, [countryByCode, selectedCode, onSelect, detailsByCode, selectCountry]);
   const handleReady = useCallback(() => setSceneStatus('ready'), []);
@@ -218,6 +224,22 @@ export default function PlanetView({
       }
     }
   }, [selectedCountry, cameraCommand]);
+  // Выбор касанием по планете на телефоне: карточка появляется под шаром — чуть прокручиваем,
+  // чтобы она оказалась на экране вместе с планетой (верх планеты остаётся под шапкой).
+  useEffect(() => {
+    if (!revealCard.current || !selectedCountry) return;
+    revealCard.current = false;
+    if (typeof window.matchMedia !== 'function' || !window.matchMedia('(max-width: 700px)').matches) return;
+    const card = countryCard.current?.getBoundingClientRect();
+    const stage = stageRef.current?.getBoundingClientRect();
+    if (!card || !stage) return;
+    const need = card.bottom - (window.innerHeight - 14);
+    const room = stage.top - 76;
+    if (need > 0 && room > 0) {
+      const quiet = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollBy?.({ top: Math.min(need, room), behavior: quiet ? 'auto' : 'smooth' });
+    }
+  }, [selectedCountry]);
   const selectedRank = selectedCountry ? rankedCountries.find((entry) => entry.country.code === selectedCountry.code)?.rank || null : null;
   const rankTotal = rankedCountries.filter((entry) => entry.rank).length;
   const selectedDetail = selectedCountry ? collectionValue(detailsByCode, selectedCountry.code) || null : null;
@@ -277,7 +299,7 @@ export default function PlanetView({
   }
 
   return (
-    <section className="planet-view" aria-labelledby={'planet-' + id + '-title'} data-planet-view="true">
+    <section className={'planet-view' + (hideListOnPhone ? ' planet-view--no-phone-list' : '')} aria-labelledby={'planet-' + id + '-title'} data-planet-view="true">
       <h3 id={'planet-' + id + '-title'} className="sr-only">{t('planet.title')}</h3>
       <div className="planet-toolbar">
         <div className="planet-search" onBlur={(event) => {
@@ -308,11 +330,10 @@ export default function PlanetView({
           </div>}
         </div>
         <div className="planet-display-controls">
-          {years.length > 1 && year != null && typeof onYearChange === 'function' && <label className="planet-year">
-            <span>{t('common.year')}</span><select aria-label={t('map.timeline.yearOnMap')} value={year} onChange={(event) => onYearChange(Number(event.target.value))}>
-              {[...years].reverse().map((value) => <option key={value} value={value}>{value}</option>)}
-            </select>
-          </label>}
+          {years.length > 1 && year != null && typeof onYearChange === 'function' && <div className="planet-year">
+            <span>{t('common.year')}</span>
+            <YearPicker years={years} value={year} onChange={onYearChange} label={t('map.timeline.yearOnMap')} />
+          </div>}
           {hasMetric && !isMap && <div className="planet-layer-control"><span className="planet-control-label">{t('planet.viewLabel')}</span><div className="planet-layer-switch" role="group" aria-label={t('planet.layerLabel')}>
               <button type="button" aria-pressed={mode === 'earth'} onClick={() => { setMode('earth'); setHoverCode(null); setHoverPlace(null); }}><Globe2 size={15} aria-hidden="true" />{t('planet.earth')}</button>
               <button type="button" aria-pressed={mode === 'data'} onClick={() => { setMode('data'); setHoverCode(null); setHoverPlace(null); }}><Layers3 size={15} aria-hidden="true" />{t('planet.data')}</button>
@@ -366,6 +387,7 @@ export default function PlanetView({
               <span><small>{t('w2.planet.keyLow')}</small>{fmt(extent.min)} {rowUnit || displayUnit}</span>
               <span><small>{t('w2.planet.keyHigh')}</small>{fmt(extent.max)} {rowUnit || displayUnit}</span>
             </div>}
+            {(colorDirection === 'asc' || colorDirection === 'desc') && <p className="planet-key-order">{t(colorDirection === 'asc' ? 'x1.planet.keyLowerFirst' : 'x1.planet.keyHigherFirst')}</p>}
             <p className="planet-key-note"><i aria-hidden="true" />{t('w2.planet.keyNoData')}</p>
             <details className="planet-scale">
               <summary>{t('planet.legend')}<ChevronDown size={14} aria-hidden="true" /></summary>

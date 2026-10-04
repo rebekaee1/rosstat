@@ -113,6 +113,14 @@ describe('geographic planet names', () => {
     expect(overlap).toBe(false);
   });
 
+  it('reserves room for the pointer under a chip when asked, and none by default', () => {
+    const label = { text: 'Германия', hasValue: false };
+    const plain = packPlanetLabelAtlas([label], (text) => text.length * 5, { lineHeight: 20, paddingY: 8 });
+    const pointed = packPlanetLabelAtlas([label], (text) => text.length * 5, { lineHeight: 20, paddingY: 8, tailHeight: 9 });
+    expect(pointed[0].height - plain[0].height).toBe(9);
+    expect(pointed[0].width).toBe(plain[0].width);
+  });
+
   it('allocates a separate primary value line and enough chip padding without truncating units', () => {
     const valueText = '12 345,6 млрд долларов США (цены 2017)';
     const [packed] = packPlanetLabelAtlas([{ text: 'Германия', hasValue: true, valueText }], (text) => text.length * 5, {

@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
-  CanvasTexture, DataTexture, LinearFilter, LinearMipmapLinearFilter,
+  BackSide, CanvasTexture, DataTexture, LinearMipmapLinearFilter,
   NoColorSpace, Quaternion, SphereGeometry, SRGBColorSpace,
   TextureLoader, Vector3,
 } from 'three';
@@ -13,6 +13,7 @@ import {
   bindPlanetCountries, loadPlanetFeatures, lonLatToSphere,
   normalizePlanetCountryCode, pickPlanetCountry, planetNeedsFineFeatures, sphereToLonLat,
 } from '../lib/planetGeometry';
+import { outlineRings } from '../lib/planetAtlas';
 import { WORLD_FEATURES } from '../lib/worldTopology';
 import {
   beginPlanetPointer, createPlanetPointerState, endPlanetPointer,
@@ -21,7 +22,7 @@ import {
 import { useLocale, useT } from '../i18n';
 import PlanetLabels from './PlanetLabels';
 import {
-  PLANET_FRAGMENT, PLANET_VERTEX,
+  ATMOSPHERE_FRAGMENT, ATMOSPHERE_VERTEX, PLANET_FRAGMENT, PLANET_VERTEX,
 } from '../lib/planetShaders';
 
 const DEFAULT_FOCUS = [25, 24];
@@ -39,76 +40,88 @@ function valueFor(collection, code) {
   return collection instanceof Map ? collection.get(code) : collection?.[code];
 }
 
+const ATLAS_WIDTH = 2048;
+const ATLAS_DETAIL_WIDTH = 4096;
+// A ring smaller than this (in atlas pixels at 2048 wide) gets a fill but no outline: at that size
+// a graphite line would only be a black speck (islands of the Caribbean, lakes, atolls).
+const MIN_OUTLINE_SPAN = 3;
+
+/** Outline only the rings big enough to carry it; the fill keeps every tiny island. */
+function tracePath(path, context, geometry, minSpanDegrees) {
+  context.beginPath();
+  for (const ring of outlineRings(geometry, minSpanDegrees)) path({ type: 'LineString', coordinates: ring });
+}
+
 /** Geography is rendered independently of country coverage in the API. */
-function paintAtlas(entries, { mode, valuesByCode, colorModel }) {
+function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WIDTH }) {
   const canvas = document.createElement('canvas');
-  canvas.width = 2048;
-  canvas.height = 1024;
+  canvas.width = width;
+  canvas.height = width / 2;
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Cannot render country boundaries');
+  const scale = width / ATLAS_WIDTH;
   const projection = geoEquirectangular()
     .scale(canvas.width / (2 * Math.PI))
     .translate([canvas.width / 2, canvas.height / 2]);
   const path = geoPath(projection, context);
+  const minSpanDegrees = MIN_OUTLINE_SPAN * 360 / width;
   context.lineJoin = 'round';
+  context.lineCap = 'round';
   for (const entry of entries) {
-    context.beginPath();
-    path(entry.feature);
-    const value = valueFor(valuesByCode, entry.dataCode);
-    const hasValue = value != null && value !== '' && Number.isFinite(Number(value));
     if (mode === 'data') {
+      context.beginPath();
+      path(entry.feature);
+      const value = valueFor(valuesByCode, entry.dataCode);
+      const hasValue = value != null && value !== '' && Number.isFinite(Number(value));
       // Страны с данными закрашены почти непрозрачно: шкала читается с первого взгляда, а не «просвечивает» рельефом.
       context.globalAlpha = hasValue ? 0.9 : 0.14;
       context.fillStyle = hasValue ? colorModel.colorFor(value) : '#7f8c9b';
       context.fill();
     }
-    // A paper halo and graphite line preserve borders over any real terrain.
-    context.globalAlpha = 0.86;
+    // Borders are a hairline: a pale veil keeps them visible over dark forest, a thin graphite line draws them.
+    tracePath(path, context, entry.feature.geometry, minSpanDegrees);
+    context.globalAlpha = 0.36;
     context.strokeStyle = '#fffaf0';
-    context.lineWidth = 2.8;
+    context.lineWidth = 1.7 * scale;
     context.stroke();
-    context.globalAlpha = mode === 'data' ? 0.5 : 0.82;
+    context.globalAlpha = mode === 'data' ? 0.34 : 0.46;
     context.strokeStyle = '#202a3c';
-    context.lineWidth = 1.15;
+    context.lineWidth = 0.7 * scale;
     context.stroke();
   }
   context.globalAlpha = 1;
   return canvas;
 }
 
-/** Hover/selection update two polygons, without repainting the complete atlas. */
-function paintHighlight(entries, selectedCode, hoveredCode) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1024;
-  canvas.height = 512;
+/**
+ * Selection and hover are two coverage masks (red = selected, green = hovered), not drawn lines:
+ * the shader turns the mask edge into a thin, smooth outline of constant screen width.
+ */
+function paintHighlight(canvas, entries, selectedCode, hoveredCode) {
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Cannot render country selection');
   const path = geoPath(geoEquirectangular()
     .scale(canvas.width / (2 * Math.PI))
     .translate([canvas.width / 2, canvas.height / 2]), context);
-  context.lineJoin = 'round';
+  context.globalCompositeOperation = 'source-over';
+  context.globalAlpha = 1;
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.globalCompositeOperation = 'lighter';
   const selected = normalizePlanetCountryCode(selectedCode);
   const hovered = normalizePlanetCountryCode(hoveredCode);
-  for (const code of new Set([hovered, selected].filter(Boolean))) {
-    const isSelected = code === selected;
-    for (const entry of entries.filter((item) => item.code === code)) {
+  const layers = [[hovered, 'rgb(0,255,0)'], [selected, 'rgb(255,0,0)']];
+  for (const [code, color] of layers) {
+    if (!code) continue;
+    context.fillStyle = color;
+    for (const entry of entries) {
+      if (entry.code !== code) continue;
       context.beginPath();
       path(entry.feature);
-      context.globalAlpha = isSelected ? 0.24 : 0.12;
-      context.fillStyle = '#ad8a48';
       context.fill();
-      context.globalAlpha = 0.95;
-      context.strokeStyle = '#fffaf0';
-      context.lineWidth = isSelected ? 5.2 : 3.1;
-      context.stroke();
-      context.globalAlpha = 1;
-      context.strokeStyle = isSelected ? '#80642f' : '#ad8a48';
-      context.lineWidth = isSelected ? 2.8 : 1.7;
-      context.stroke();
     }
   }
-  context.globalAlpha = 1;
-  return canvas;
+  context.globalCompositeOperation = 'source-over';
 }
 
 /** Owns resources so retries/unmounts release textures, including partial loads. */
@@ -128,7 +141,7 @@ function usePlanetTextures(budget, onError, wantDetail) {
       owned.push(day);
       if (!active) { day.dispose(); return; }
       day.colorSpace = SRGBColorSpace;
-      day.anisotropy = 2;
+      day.anisotropy = 8;
       setTextures({ day, surface: neutral });
       // Material detail is optional: it never blocks the first credible surface.
       if (!budget.materialDetail) return;
@@ -156,7 +169,7 @@ function usePlanetTextures(budget, onError, wantDetail) {
     new TextureLoader().loadAsync('/planet/earth_day_4096.jpg').then((big) => {
       if (!active) { big.dispose(); return; }
       big.colorSpace = SRGBColorSpace;
-      big.anisotropy = 4;
+      big.anisotropy = 8;
       detailTexture.current = big;
       setTextures((previous) => (previous ? { ...previous, day: big, detail: true } : previous));
     }).catch(() => { /* The 2048 px map stays; detail is optional. */ });
@@ -321,22 +334,39 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
     sphere.rotateY(-Math.PI / 2);
     return sphere;
   }, [budget]);
+  const fineAtlas = Boolean(textures.detail);
   const atlas = useMemo(() => {
-    const texture = new CanvasTexture(paintAtlas(entries, { mode, valuesByCode, colorModel }));
+    const texture = new CanvasTexture(paintAtlas(entries, {
+      mode, valuesByCode, colorModel, width: fineAtlas ? ATLAS_DETAIL_WIDTH : ATLAS_WIDTH,
+    }));
     texture.colorSpace = SRGBColorSpace;
     // Mipmaps: thin border lines otherwise sparkle when the sphere is minified on a phone.
     texture.minFilter = LinearMipmapLinearFilter;
     texture.generateMipmaps = true;
+    texture.anisotropy = 8;
+    return texture;
+  }, [entries, mode, valuesByCode, colorModel, fineAtlas]);
+  // One mask canvas per atlas; hover and selection repaint it instead of allocating a new texture each time.
+  const highlight = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = ATLAS_WIDTH;
+    canvas.height = ATLAS_WIDTH / 2;
+    paintHighlight(canvas, entries, selectedCode, hoveredCode);
+    const texture = new CanvasTexture(canvas);
+    // Coverage data, not colour: sampled raw so the 0.5 crossing stays on the true border.
+    texture.colorSpace = NoColorSpace;
+    texture.minFilter = LinearMipmapLinearFilter;
+    texture.generateMipmaps = true;
     texture.anisotropy = 4;
     return texture;
-  }, [entries, mode, valuesByCode, colorModel]);
-  const highlight = useMemo(() => {
-    const texture = new CanvasTexture(paintHighlight(entries, selectedCode, hoveredCode));
-    texture.colorSpace = SRGBColorSpace;
-    texture.minFilter = LinearFilter;
-    texture.generateMipmaps = false;
-    return texture;
-  }, [entries, selectedCode, hoveredCode]);
+    // Later selection/hover changes repaint the same canvas in the effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entries]);
+  useEffect(() => {
+    paintHighlight(highlight.image, entries, selectedCode, hoveredCode);
+    highlight.needsUpdate = true;
+    invalidate();
+  }, [highlight, entries, selectedCode, hoveredCode, invalidate]);
   useEffect(() => {
     invalidate();
     return () => atlas.dispose();
@@ -354,6 +384,8 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
     // In «Data» the base surface calms down so country colours read as one scale.
     dataWash: { value: mode === 'data' ? 1 : 0 },
   }), [textures, atlas, highlight, mode]);
+  // A soft veil of air around the limb: gentle on «Earth», almost gone behind the data colours.
+  const atmosphereUniforms = useMemo(() => ({ strength: { value: mode === 'data' ? 0.2 : 0.42 } }), [mode]);
   useEffect(() => () => geometry.dispose(), [geometry]);
 
   useEffect(() => {
@@ -448,7 +480,12 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
         <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} />
       </mesh>
       <PlanetLabels entries={entries} locale={locale} valuesByCode={valuesByCode} unit={unit} valueDigits={valueDigits} showValues={showValues} selectedCode={selectedCode}
-        hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} selectionOnly={mode === 'data'} />
+        hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} selectionOnly />
+      <mesh raycast={() => null} renderOrder={1}>
+        <sphereGeometry args={[1.035, 64, 40]} />
+        <shaderMaterial vertexShader={ATMOSPHERE_VERTEX} fragmentShader={ATMOSPHERE_FRAGMENT} uniforms={atmosphereUniforms}
+          transparent depthWrite={false} side={BackSide} />
+      </mesh>
       {markerPosition && (
         <mesh position={markerPosition} quaternion={markerRotation} raycast={() => null}>
           <ringGeometry args={[0.01, 0.016, 32]} />
