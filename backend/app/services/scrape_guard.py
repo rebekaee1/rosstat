@@ -3,8 +3,10 @@
 Missing/mismatched cookies, countries and hosting networks never deny access.
 The optional cookie is renewed after network changes; no JS gate is served.
 Scraping volume is bounded by nginx per-IP SSR/OG limits and the API limiter.
-Claimed crawler User-Agents grant no exemption from those limits. This does
-not distinguish a low-rate browser-looking scraper from a human visitor.
+A claimed crawler User-Agent grants no exemption from those limits; in nginx
+only a crawler verified by published network AND UA skips the per-IP SSR limits
+(frontend/search-crawlers.conf). This does not distinguish a low-rate
+browser-looking scraper from a human visitor.
 """
 from __future__ import annotations
 

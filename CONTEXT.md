@@ -703,13 +703,25 @@ embed отвечают на запрошенном хосте — иначе clo
 
 1. **nginx UA-фильтр** (`$bad_bot` → 403): `research`, `scrapy`, `aiohttp`, `okhttp`, `headlesschrome`, пустой UA. **Не** матчить `Chrome/N.0.0.0 Safari/537.36$`: с Chrome 101 это reduced UA **живого** Chrome ([UA Reduction](https://www.chromium.org/updates/ua-reduction/)); ферма копирует ту же строку. Полный build (`145.0.7632.xx`) живёт только в Client Hints. Инцидент 2026-09-04: правило 403-ило всех людей в Chrome, включая владельца в инкогнито.
 2. **Ханипот** `/russia/util/links-exchange` и `/__honeypot__/trap` — 403 в nginx, **не** в sitemap и без ссылки в HTML (2026-09-25: скрытый анкор «обмен ссылками» убран — Google считает спрятанные ссылки спамом). Прямой запрос = 403 + `X-Robots-Tag: noindex` + jail `honeytrap`; поисковики в `ignoreregex`. Recrawl skip обоих путей.
-3. **Rate-limit** `ssrstrict` 2 r/s на региональное семейство; `ssr` 5 r/s; `limit_conn 8`.
+3. **Rate-limit** `ssrstrict` 2 r/s на региональное семейство; `ssr` 5 r/s; `limit_conn 8` —
+   на клиентский IP, ключ `$crawler_limit_key`. **Исключение одно (2026-10-04, по команде
+   владельца): проверенный индексирующий краулер** — Googlebot/Google-InspectionTool,
+   bingbot, YandexBot/MobileBot/Images/RenderResourcesBot/Webmaster — получает пустой ключ
+   (nginx его не считает) **только если** IP клиента лежит в сети поисковика
+   (`frontend/search-crawlers.conf`, генерируется `scripts/refresh-search-crawler-ranges.py`
+   из списков Google/Bing и rDNS-проверенных /24 Яндекса) **и** UA называет его индексирующего
+   бота. UA без сети, сеть без UA, GoogleOther/BingPreview/ИИ-краулеры — обычный лимит.
+   Причина: 2026-10-03 настоящий Googlebot получил ≥3 573 ответов 429, все на региональных
+   страницах (`/united-states/region/*` 3 289, `/russia/region/*` 281); Google по 429
+   замедляет обход всего сайта. Список надо обновлять примерно раз в месяц; устаревший список
+   безопасен (незнакомый IP просто лимитируется, как раньше).
    На `/og/` дополнительно **глобальный** бакет `ogall` 8 r/s + `ogconn` 4 соединения
-   на хост: ИИ-краулеры (Claude/Perplexity/Amazon) в `$ssr_limit_key` с пустым
-   ключом обходят per-IP лимит, пачка живых PNG ~700 КБ кладёт backend
-   (инцидент 2026-09-04: главная «нет данных», axios 15 с, RSS 940MiB/1GiB).
-   Яндекс/Google не баним; 429 для лишних OG — краулер ретраит. Кэш PNG —
-   следующий слой, не вместо потолка.
+   на хост — он не per-IP, проверенных краулеров не освобождает: пачка живых PNG ~700 КБ
+   кладёт backend (инцидент 2026-09-04: главная «нет данных», axios 15 с, RSS 940MiB/1GiB;
+   тогда причиной был обход per-IP лимита ИИ-краулерами по UA). Кэш PNG — следующий слой,
+   не вместо потолка. История: до 2026-09-10 поисковики определялись по UA
+   (`$ssr_limit_key`), это подделывалось и было убрано; 2026-10-04 исключение возвращено,
+   но по сети, а не по UA.
 4. **fail2ban**: jails читают файлы только с `backend = polling` (Ubuntu 24 дефолт — systemd journal, `logpath` молчит). failregex — **после** снятия ISO8601-даты (`^\s*<HOST> …`), иначе 0 матчей на живом логе. `nginx-429` / **`nginx-volume`** только HTML-каталог (не `/api/`, не тикер); `honeytrap`; `recidive`. Гидра «1 хит — новый IP» этим слоем не покрыта.
 5. **Bind-cookie** `fe_bind` = HMAC(IPv4 /24 или IPv6 /48, UTC-день). HTML и API данных всегда 200: нет куки / чужой /24 — ставим новую. 403 по префиксу резал людей на VPN/CGNAT (пустой график). `/api/v1/auth/*` и `/api/auth/*` не режем. Поисковики по UA не режутся; приватный IP — skip. Гео `RUSTATS_SCRAPE_BLOCK_COUNTRIES` — аварийный рычаг (пусто = выкл). Ферму режем UA nginx + per-IP/host rate-limit, не страной.
 6. **Гигиена аналитики**: `behavior.js`/`track.js` молчат при `navigator.webdriver`, `HeadlessChrome`, `Cursor/`; сервер на `/analytics/behavior` и `/analytics/events` отвечает `accepted: false`.
@@ -717,7 +729,7 @@ embed отвечают на запрошенном хосте — иначе clo
 8. **Хостинговые ASN** больше не 403 (2026-09-06): VPN/облако — живые люди, страница должна открыться. Классификатор `is_hosting_network` остаётся для аналитики.
 9. **HTML не прячем заглушкой.** Человек без `fe_bind` сразу получает страницу и данные графика, куку ставим на этом ответе. Тёмные JS-ворота с выдачи теряли клики (2026-09-04/05). Гидра видит SSR с первого хита — следующий слой: rate-limit / fail2ban, не пустой экран и не 403 VPN.
 
-Поисковики в `$ssr_limit_key` с пустым ключом. Проверка: `curl -A "Mozilla/5.0 research/1.0" -I https://forecasteconomy.com/` → 403; после `deploy/fail2ban-install.sh` на хосте `fail2ban-client get nginx-volume logpath` не пустой.
+Проверенные поисковики — пустой `$crawler_limit_key` (п. 3). Проверка: `curl -A "Mozilla/5.0 research/1.0" -I https://forecasteconomy.com/` → 403; после `deploy/fail2ban-install.sh` на хосте `fail2ban-client get nginx-volume logpath` не пустой.
 
 ### Deploy-scope trap: «main» ≠ «одобрено к выкладке» (инцидент 2026-08-27, сайт лежал ~40 мин)
 

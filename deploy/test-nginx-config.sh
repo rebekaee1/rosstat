@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Локальная проверка анти-скрейп конфига nginx: docker run с конфигом из репо.
-# Без сборки образа: монтируем конфиг как default.conf во временный контейнер.
+# Без сборки образа: монтируем конфиг как default.conf (+ search-crawlers.conf) во временный контейнер.
 # nginx -t валиден только с существующим /usr/share/nginx/html и лог-путями —
 # создаём заглушки. Формат "main" объявляем как в реальном /etc/nginx/nginx.conf
 # образа (иначе -t падает на undefined format).
@@ -19,6 +19,7 @@ EOF
 docker run --rm \
   --add-host backend:127.0.0.1 \
   -v "$PWD/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+  -v "$PWD/frontend/search-crawlers.conf:/etc/nginx/search-crawlers.conf:ro" \
   -v /tmp/nginx-main-test.conf:/tmp/nginx-main.conf:ro \
   nginx:alpine sh -c '
     mkdir -p /usr/share/nginx/html /var/log/nginx/security /var/log/nginx

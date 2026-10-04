@@ -431,6 +431,7 @@ SELECT indexrelid::regclass, indisvalid AND indisready FROM pg_index WHERE index
 - SSR главной + 2–3 категорий + 3–5 индикаторов через `User-Agent: YandexBot/3.0` → 200, осмысленные `<title>`, корректные ссылки.
 - `GET /sitemap.xml` → 200, валидный XML.
 - Headless E2E на 6+ страницах → 0 console errors / 0 4xx-5xx.
+- Проверенные поисковые роботы (изменение 2026-10-04): `docker compose exec frontend nginx -t` OK и файл `/etc/nginx/search-crawlers.conf` на месте; через сутки в `/var/log/rosstat-nginx/security.log*` у запросов с IP Google/Bing/Яндекса и UA их индексирующего бота нет ответов 429 (до выкладки: ≥3 573 в сутки у Googlebot), а нагрузка хоста (`uptime`) не выросла против прежней. Список сетей обновлять раз в месяц: `python3 scripts/refresh-search-crawler-ranges.py`, затем `deploy/test-nginx-config.sh`, `python3 scripts/test-crawler-routing.py`, пересборка frontend.
 
 `deploy.sh` после smoke держит **15-минутный watch**: TTFB главной, `/health/ready`,
 память контейнера backend, признак `OOMKilled`. Срыв передаётся в rollback; возврат прежних image IDs допускается только при подтверждённой совместимости миграций/revision. При неизвестной ревизии или изменении схемы автоматический запуск старого кода прекращается.

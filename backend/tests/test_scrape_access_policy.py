@@ -16,12 +16,40 @@ def nginx_directives():
     return "\n".join(line.split("#", 1)[0] for line in NGINX.read_text().splitlines())
 
 
-def test_ssr_limits_have_no_ua_exemption_or_sitewide_bucket():
+CRAWLERS = NGINX.with_name("search-crawlers.conf")
+
+
+def crawler_directives():
+    return "\n".join(line.split("#", 1)[0] for line in CRAWLERS.read_text().splitlines())
+
+
+def test_ssr_limits_are_per_ip_with_only_verified_crawler_exemption():
     config = nginx_directives()
     assert "zone=ssrall" not in config
-    assert "limit_req_zone $binary_remote_addr zone=ssr:10m rate=5r/s;" in config
-    assert "limit_req_zone $binary_remote_addr zone=ssrstrict:10m rate=2r/s;" in config
+    # The key is the client IP, except a verified indexing crawler gets the empty key.
+    assert "limit_req_zone $crawler_limit_key zone=ssr:10m rate=5r/s;" in config
+    assert "limit_req_zone $crawler_limit_key zone=ssrstrict:10m rate=2r/s;" in config
+    assert "limit_conn_zone $crawler_limit_key zone=perip:10m;" in config
+    assert "include /etc/nginx/search-crawlers.conf;" in config
     assert "$ssr_limit_key" not in config
+
+
+def test_crawler_exemption_needs_published_network_and_indexing_ua():
+    """User-Agent alone must never produce the empty (unlimited) key."""
+    crawlers = crawler_directives()
+    assert "map $verified_search_crawler $crawler_limit_key {\n    1 \"\";\n    default $binary_remote_addr;" in crawlers
+    for engine in ("google", "bing", "yandex"):
+        geo = crawlers.split(f"geo ${engine}_crawler_net {{", 1)[1].split("}", 1)[0]
+        assert "default 0;" in geo
+        assert geo.count(" 1;") >= 5
+        # The UA map is keyed by the network flag first: "<flag>:<ua>" and the regex starts "^1:".
+        block = crawlers.split(f"${engine}_crawler {{", 1)[1].split("}", 1)[0]
+        assert f'map "${engine}_crawler_net:$http_user_agent"' in crawlers
+        assert "default 0;" in block and '"~' in block and "^1:" in block
+    # Not indexing crawlers: no exemption even from Google's own network.
+    for name in ("GoogleOther", "BingPreview", "YandexMetrika", "GPTBot", "ClaudeBot"):
+        assert name.lower() not in crawlers.lower().split("map ", 1)[1]
+    assert "set_real_ip_from 0.0.0.0/0;" not in nginx_directives()
 
 
 def test_og_resource_caps_remain_and_cover_direct_api():

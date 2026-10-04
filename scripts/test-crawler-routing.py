@@ -64,15 +64,16 @@ def main():
             docker("run", "-d", "--name", containers[0], "--network", name,
                    "-p", "127.0.0.1::80",
                    "-v", f"{ROOT / 'frontend/nginx.conf'}:/etc/nginx/conf.d/default.conf:ro",
+                   "-v", f"{ROOT / 'frontend/search-crawlers.conf'}:/etc/nginx/search-crawlers.conf:ro",
                    "-v", f"{fixture / 'www'}:/var/www:ro",
                    "-v", f"{fixture / 'logs'}:/var/log/nginx/security",
                    "nginx:alpine")
             port = docker("port", containers[0], "80/tcp").rsplit(":", 1)[1]
-            def request(path, ua="Googlebot/2.1", host="forecasteconomy.com"):
-                req = urllib.request.Request(
-                    f"http://127.0.0.1:{port}{path}",
-                    headers={"User-Agent": ua, "Host": host},
-                )
+            def request(path, ua="Googlebot/2.1", host="forecasteconomy.com", client_ip=None):
+                headers = {"User-Agent": ua, "Host": host}
+                if client_ip:  # the Docker bridge peer is trusted by set_real_ip_from
+                    headers["X-Forwarded-For"] = client_ip
+                req = urllib.request.Request(f"http://127.0.0.1:{port}{path}", headers=headers)
                 try:
                     with urllib.request.urlopen(req, timeout=5) as response:
                         return response.status, response.read().decode()
@@ -117,6 +118,47 @@ def main():
                        f"host-specific static sitemap: {host}")
                 verify((fixture / "requests.jsonl").read_text() == before,
                        f"sitemap served without backend: {host}")
+            # Rate limits: only a VERIFIED indexing crawler (published network AND crawler UA)
+            # skips the per-IP regional-SSR budget (2 r/s, burst 10). 40 fast requests
+            # exceed it for everyone else.
+            import re
+            ipv6 = re.search(r"^\s+([0-9a-f:]+)::/\d+ 1;", (ROOT / "frontend/search-crawlers.conf").read_text(), re.M)
+            google_v6 = ipv6.group(1) + "::1" if ipv6 else None
+            gbot = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+            bbot = "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"
+            ybot = "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
+            chrome = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/145.0.0.0 Safari/537.36"
+            region_paths = ["/united-states/region/ohio/bea-sagdp3-90", "/russia/region/moskva/some-code"]
+            def burst(ua, ip, path):
+                return [request(path, ua, client_ip=ip)[0] for _ in range(40)]
+            cases = [
+                ("Googlebot from Google network", gbot, "66.249.66.10", True),
+                ("Googlebot from new Google range", gbot, "192.178.4.1", True),
+                ("bingbot from Bing network", bbot, "157.55.39.20", True),
+                ("YandexBot from verified Yandex network", ybot, "95.108.213.30", True),
+                ("spoofed Googlebot from other IP", gbot, "203.0.113.7", False),
+                ("spoofed Googlebot from cloud IP", gbot, "34.34.233.45", False),
+                ("browser UA from Google network", chrome, "66.249.66.11", False),
+                ("GoogleOther from Google network", "Mozilla/5.0 (compatible; GoogleOther)", "66.249.66.12", False),
+                ("YandexBot from Google network", ybot, "66.249.66.13", False),
+                ("bingbot from Yandex network", bbot, "95.108.213.31", False),
+            ]
+            if google_v6:
+                cases.append(("Googlebot from Google IPv6", gbot, google_v6, True))
+            def shift(ip, n):
+                # the budget is per IP across locations: use a fresh address in the same /24 per path
+                if ":" in ip:
+                    return ip
+                head, last = ip.rsplit(".", 1)
+                return f"{head}.{(int(last) + 40 * n) % 250 + 1}"
+            for index, path in enumerate(region_paths):
+                for label, ua, ip, exempt in cases:
+                    codes = burst(ua, shift(ip, index), path)
+                    if exempt:
+                        verify(429 not in codes, f"{label}: never rate-limited on {path} (got {sorted(set(codes))})")
+                    else:
+                        verify(429 in codes, f"{label}: still rate-limited on {path} (got {sorted(set(codes))})")
+                        verify(codes[0] == 200, f"{label}: first request served on {path}")
             print(json.dumps({"passed": passed, "environment": "isolated Docker nginx + stub", "production_requests": 0}))
         except Exception:
             print(docker("logs", containers[0], check=False)[-8000:])

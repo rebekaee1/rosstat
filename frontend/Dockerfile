@@ -27,6 +27,7 @@ FROM nginx:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY search-crawlers.conf /etc/nginx/search-crawlers.conf
 
 # security/ is bind-mounted in prod for fail2ban; create it in-image so
 # nginx -t / local runs without the host mount still succeed. CI prepares the

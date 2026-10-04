@@ -1,5 +1,45 @@
 # Backlog — текущие правки в работе
 
+<a id="verified-crawlers-no-ratelimit-2026-10-04"></a>
+
+## 2026-10-04 — проверенные поисковые роботы без per-IP лимита (локально, не выпущено)
+
+**Причина.** Лог nginx за 2026-10-03: настоящий Googlebot (IP из списка Google) получил
+≥3 573 ответов 429, все на региональных страницах — `/united-states/region/*` 3 289,
+`/russia/region/*` 281 (лимит `ssrstrict` 2 r/s на IP). Google по документации снижает
+скорость обхода сайта после 429; страницы штатов США — те самые, что Google почти не
+знает (по выборке 56 URL 04.10: `world-region-years` 0 из 4 в индексе). Владелец поручил
+убрать лимит для всех индексирующих ботов.
+
+**Решение.** Пустой ключ лимита (`$crawler_limit_key`) только при совпадении **сети и UA**:
+Google (`common-crawlers.json`, 317 префиксов) + Googlebot/Google-InspectionTool; Bing
+(`bingbot.json`, 28) + bingbot; Яндекс — 8 /24, проверенных обратным и прямым DNS
+(504 из 504 IP из лога 03.10 подтвердились как `*.spider.yandex.com`), + YandexBot и др.
+Остальным — прежний лимит, включая «Googlebot» с чужого IP (в логе 240 таких запросов из
+облачных сетей, 0,06%), браузер с IP Google, GoogleOther, BingPreview, ИИ-краулеры.
+Глобальные потолки OG (`ogall`, `ogconn`) не тронуты.
+
+**Файлы.** `frontend/search-crawlers.conf` (генерируется), `frontend/nginx.conf`,
+`frontend/Dockerfile`, `scripts/refresh-search-crawler-ranges.py`,
+`scripts/test-crawler-routing.py`, `deploy/test-nginx-config.sh`,
+`backend/tests/test_scrape_access_policy.py`, docstring `scrape_guard.py`, `CONTEXT.md` п. 3.
+
+**Проверено локально.** `nginx -t` в чистом контейнере; изолированный nginx + stub:
+61 проверка, из них новые — 11 кейсов × 2 региональных пути × 40 быстрых запросов
+(исключение только у сети+UA; IPv6 Google; подделки и чужой UA получают 429); те же
+проверки на прежнем `nginx.conf` падают (Googlebot получает 429); `pytest`
+`test_scrape_access_policy` и 5 файлов, читающих `nginx.conf`, — 148 passed.
+
+**Остаток / неизвестное.** Не выпущено на прод (нужна пересборка frontend и команда
+владельца). Эффект на скорость обхода Google и на нагрузку 4 vCPU не измерен: после
+выкладки сравнить число запросов Googlebot в сутки (03.10: 394 592 из сети Google),
+`uptime` и 429. Список Google/Bing меняется — обновлять раз в месяц. Яндекс: сети только
+наблюдённые (8 /24); новый блок Яндекса попадёт под обычный лимит, пока его не добавят.
+`./scripts/check-project-knowledge.sh` красный и до этой правки (149 файлов, в основном
+`frontend/src` после UI-волны 1); строки `docs/code-review/reviews.jsonl` и карты для файлов
+этой правки (`frontend/nginx.conf`, `Dockerfile`, `scrape_guard.py`, тесты, скрипты) не
+пересобраны — делать вместе с общей пересборкой знаний ветки, а не поштучно.
+
 <a id="analytics-alerts-2026-10-04"></a>
 
 ## 2026-10-04 — аналитические алерты: меньше ложных (локально)
