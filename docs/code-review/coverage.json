@@ -19,14 +19,14 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 1452,
+    "files": 1453,
     "code_files": 1107,
-    "current_reviews": 1452,
+    "current_reviews": 1453,
     "statuses": {
       "artifact_schema_reviewed": 82,
       "asset_metadata_reviewed": 99,
       "data_schema_reviewed": 5,
-      "reviewed": 1266
+      "reviewed": 1267
     },
     "definitions": 10121,
     "annotated_definitions": 10121,
@@ -10059,9 +10059,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "26acd64c2193b85149c08980db72e233d57ba0ec2cdb8376ca46c7281b4506e8",
-      "bytes": 438519,
-      "lines": 2382,
+      "sha256": "ec0674f4b39b6663badffd6b5f50cfb31aef3106bee77657e4214d905a1aa8ee",
+      "bytes": 439353,
+      "lines": 2384,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10631,7 +10631,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "56da7b747a5ae9887e29b359591613fbce9050d72c370d30dd1f7073cb62e0af",
+      "sha256": "0405a02116465b275b0cdda29633b8eabf9c16fc38ccbbcdef5455436f7ebda3",
       "bytes": 2599342,
       "lines": 93438,
       "code": false,
@@ -10657,8 +10657,8 @@
     },
     {
       "path": "docs/knowledge-unknowns.md",
-      "sha256": "1bece69a5cf72671f9d0e72e23ae095ee983a10f1fa1444858bd9ef5b4bcc3ac",
-      "bytes": 15718,
+      "sha256": "abc2ec5bb5ef1abddbc80301cea44400a944e6ce7117373e360230c58f63d553",
+      "bytes": 16020,
       "lines": 90,
       "code": false,
       "status": "reviewed",
@@ -10909,6 +10909,19 @@
       "lines": null,
       "code": false,
       "status": "artifact_schema_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/research/capacity-measurement-2026-10-04.md",
+      "sha256": "e5f013444d93e8d7c2ae4e21f4592161e1ce0a5c9c1509f9fc8c044b9b086776",
+      "bytes": 6279,
+      "lines": 69,
+      "code": false,
+      "status": "reviewed",
       "current": true,
       "issues": [],
       "definitions": 0,
@@ -11216,9 +11229,9 @@
     },
     {
       "path": "docs/server-hardening-runbook-2026-10-04.md",
-      "sha256": "940ef7eec7c2475c47af61305fd4925d5ad7f1b6b3317f259824e19e72126ad0",
-      "bytes": 6323,
-      "lines": 51,
+      "sha256": "893bb21466c35e9c64a25d077b72c36430e1db41459c715791cf49f191cedd87",
+      "bytes": 7526,
+      "lines": 59,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -18782,9 +18795,9 @@
     },
     {
       "path": "scripts/test-server/loadtest.py",
-      "sha256": "84191fd900c7685633bd965341ded676b868f8cc5365ab2bdf73bdb61dc5a792",
-      "bytes": 5071,
-      "lines": 106,
+      "sha256": "7f4bc03b4ae5410ffb5ee53e533d520f06e53b7ddb44e58c47513b50a0f81c4f",
+      "bytes": 6376,
+      "lines": 120,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -18912,9 +18925,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "80df08812200f73ff9500359f6d4ebfd3f00da8ad017fd3264bd70035d0f888e",
+  "ledger_sha256": "033baa2b17a21470712ff04d85c008bd877f507577daed0608b08379633897f3",
   "javascript_inventory_sha256": "0e845fa2112735358187c4e6eaefdeb4004be085d68990c51353522db98c0632",
-  "baseline_commit": "2bba3f4add06e31950280c1e39091d75174e376d",
+  "baseline_commit": "d6aae01446020112d806505b1aed688e0694e9b7",
   "branch": "integration/all-20261002",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/indicator-index.json"
+  ]
 }

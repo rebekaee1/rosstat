@@ -9,11 +9,14 @@
 import argparse
 import itertools
 import json
+import random
 import statistics
 import threading
 import time
 import urllib.error
 import urllib.request
+
+SPREAD_IPS = True
 
 PAGES = [
     ("home_ssr", "/"),
@@ -34,6 +37,10 @@ COLD_QUERIES = ["население", "безработица", "ввп на д�
 def fetch(url: str, headers: dict) -> tuple[int, float]:
     started = time.perf_counter()
     try:
+        if SPREAD_IPS:
+            # Каждый запрос — «другой посетитель» из закрытой сети 10/8: nginx доверяет X-Forwarded-For от docker-сетей,
+            # поэтому лимит на IP (5 r/s) не заслоняет стоимость обработки. Только для тестового стенда.
+            headers = {**headers, "X-Forwarded-For": f"10.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(1, 254)}"}
         request = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(request, timeout=60) as response:
             response.read()
@@ -81,8 +88,12 @@ def run_level(base: str, level: int, seconds: float, headers: dict) -> dict:
         "p50_s": pct(0.5), "p95_s": pct(0.95), "p99_s": pct(0.99),
         "errors_5xx_or_network": sum(1 for status, _ in flat if status == 0 or status >= 500),
         "rate_limited_429": sum(1 for status, _ in flat if status == 429),
-        "by_page_p50_s": {name: (round(statistics.median(took for _, took in items), 3) if items else None)
-                          for name, items in results.items()},
+        # Медианы и p95 по страницам — только по ответам 200 (429 и ошибки отвечают мгновенно и искажают картину).
+        "by_page_ok_p50_s": {name: (round(statistics.median(took for st, took in items if st == 200), 3) if any(st == 200 for st, _ in items) else None)
+                             for name, items in results.items()},
+        "by_page_ok_p95_s": {name: (round(sorted(took for st, took in items if st == 200)[int(0.95 * (sum(1 for st, _ in items if st == 200) - 1))], 3)
+                                    if any(st == 200 for st, _ in items) else None)
+                             for name, items in results.items()},
     }
 
 
@@ -92,7 +103,10 @@ def main():
     parser.add_argument("--seconds", type=float, default=40)
     parser.add_argument("--levels", default="2,4,8,16")
     parser.add_argument("--host", default="", help="заголовок Host (например ru-хост)")
+    parser.add_argument("--single-ip", action="store_true", help="не подменять X-Forwarded-For (увидите лимиты nginx на один IP)")
     args = parser.parse_args()
+    global SPREAD_IPS
+    SPREAD_IPS = not args.single_ip
     # Один человекоподобный UA и один Cookie-less клиент: цель — стоимость обработки, не обход антискрейпа.
     headers = {"User-Agent": "Mozilla/5.0 (loadtest; internal) AppleWebKit/537.36 Chrome/120 Safari/537.36", "Accept": "*/*"}
     if args.host:

@@ -38,6 +38,14 @@ scripts/db-roles.sh --verify   # роль не суперпользовател�
 (ежедневный ETL, sessionize, sitemap_build, sitemap, ClickHouse-синхронизация); вход пользователя и регистрация; `scripts/pg-backup.sh` (идёт под `rustats` внутри контейнера).
 Откат: удалить две строки из `.env`, `docker compose up -d --force-recreate backend scheduler`.
 
+**Репетиция на тестовом сервере, 2026-10-04.** Роль создана `scripts/db-roles.sh`, backend и scheduler пересозданы
+(приложение под `rustats_app`, миграции — под `rustats`), `health/ready` 200, в журналах `permission denied` нет.
+Под новой ролью вручную прошли `behavior_retention_job`, `staleness_check_job`, `analytics_daily_job`; нагрузочный
+прогон (около 7 тыс. запросов) — без ошибок 5xx. `scripts/db-roles.sh --verify` показал роль без суперпользователя и
+отказ `CREATE TABLE`. Репетиция нашла две ошибки самой проверки (выход при `set -e` без `|| true`; ложный отказ из-за
+`| grep -q` под `pipefail`) — исправлены. Не проверялось на тесте: `scripts/pg-backup.sh` под новой ролью (он идёт под
+`rustats` внутри контейнера PostgreSQL), вход пользователей и регистрация (на тесте нет пользовательских таблиц).
+
 ## F09 — настройки Redis, токен метрик
 
 - `REDIS_CACHE_POLICY=volatile-lru` в боевом `.env` (сейчас `allkeys-lru`): ключи версий `fe:ver:*` без TTL не должны вытесняться; все остальные кэш-ключи имеют TTL.

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `2bba3f4add06e31950280c1e39091d75174e376d`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `d6aae01446020112d806505b1aed688e0694e9b7`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1452 |
+| Файлы в явно определённом scope | 1453 |
 | Код, шаблоны и стили | 1107 |
-| Актуальные рецензии без пропусков guard | 1452 |
+| Актуальные рецензии без пропусков guard | 1453 |
 | Именованные определения Python/JS: с аннотацией / всего | 10121 / 10121 |
 | Файлы, требующие внимания | 0 |
 
@@ -875,6 +875,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/_fpsr_raw/agent10.json](../docs/research/_fpsr_raw/agent10.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/_fpsr_raw/build_excel.py](../docs/research/_fpsr_raw/build_excel.py) | reviewed | 4/4 | актуально |
 | [docs/research/brazil-official-sources.xlsx](../docs/research/brazil-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/research/capacity-measurement-2026-10-04.md](../docs/research/capacity-measurement-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/research/catalog-scan.xlsx](../docs/research/catalog-scan.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/china-official-sources.xlsx](../docs/research/china-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/de-intl-api-probes.json](../docs/research/de-intl-api-probes.json) | artifact_schema_reviewed | 0/0 | актуально |
