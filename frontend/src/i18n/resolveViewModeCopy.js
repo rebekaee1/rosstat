@@ -40,12 +40,13 @@ import {
   getCbrTermSliceTableTitleEn,
 } from './viewModeContent.en';
 
+// Полными словами: в заголовке графика не бывает «днев.» (волна 2, 2026-10-04).
 const FREQUENCY_LONG_RU = {
-  daily: 'днев.',
-  weekly: 'недельная',
-  monthly: 'помесячно',
-  quarterly: 'квартально',
-  annual: 'годовая',
+  daily: 'по дням',
+  weekly: 'по неделям',
+  monthly: 'по месяцам',
+  quarterly: 'по кварталам',
+  annual: 'по годам',
 };
 
 const FREQUENCY_LONG_EN = {

@@ -4,6 +4,7 @@ import { localizeSource } from '../i18n/viewModeLabels';
 import { footerSourceLinks } from '../lib/footerNav';
 import { isExternalHref, pickExternalHref } from '../lib/sourceLink';
 import SourceLink from './SourceLink';
+import '../styles/indicator-russia.css';
 
 /**
  * Левая колонка под графиком: текст «Методология» + блок «Источник».
@@ -32,36 +33,33 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
     : `Источник: ${sourceName || 'указанный поставщик данных'}. Прогноз, если он доступен, показан отдельно от фактических значений.`);
 
   return (
-    <section data-block="methodology" className="lg:col-span-1 p-8 rounded-[2rem] bg-obsidian-light border border-border-subtle flex flex-col h-full">
-      <div className="flex items-center gap-3 mb-6">
-        <Info className="w-4 h-4 text-champagne-ink" />
-        <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">
-          {t('indicator.methodology')}
-        </h3>
+    <section data-block="methodology" className="fe-info-card">
+      <div className="fe-info-card__head">
+        <Info className="h-4 w-4 text-champagne-ink" aria-hidden="true" />
+        <h3 className="fe-info-card__title">{t('indicator.methodology')}</h3>
       </div>
 
-      <div className="prose prose-sm max-w-none">
-        <p className="text-text-secondary leading-relaxed">
-          {description}
-        </p>
+      <div className="fe-info-card__text">
+        <div>{description}</div>
         {methodology && (
-          <div className="text-text-secondary border-l-2 border-champagne/40 pl-4 my-4 text-xs leading-relaxed">
-            {methodology}
-          </div>
+          <details className="fe-more">
+            <summary className="fe-more__summary">{t('w3.method.more')}</summary>
+            <div className="fe-more__body">{methodology}</div>
+          </details>
         )}
       </div>
 
       {indicator?.source ? (
-        <div className="mt-auto pt-6 border-t border-border-subtle">
+        <div className="fe-info-card__foot">
           <SourceLink
             href={externalHref}
             fallbackTo={internalPath}
-            className="fe-tap inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-champagne-ink hover:bg-champagne/10 transition-colors lift-hover w-full justify-center"
-            textClassName="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border-subtle text-xs font-mono uppercase tracking-widest text-text-secondary w-full justify-center"
+            className="fe-btn fe-btn--secondary fe-press fe-info-card__source"
+            textClassName="fe-info-card__source-text"
           >
-            <Database className="w-3.5 h-3.5" />
-            {sourceLabel}
-            {externalHref ? <ExternalLink className="w-3 h-3 ml-auto opacity-50" aria-hidden="true" /> : null}
+            <Database className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <span className="min-w-0 truncate">{sourceLabel}</span>
+            {externalHref ? <ExternalLink className="ml-auto h-3 w-3 shrink-0 opacity-60" aria-hidden="true" /> : null}
           </SourceLink>
         </div>
       ) : null}

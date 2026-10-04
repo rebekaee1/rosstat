@@ -5,13 +5,14 @@ import '../styles/chart-controls.css';
 /**
  * Контейнер для рядов `Chip` / `ChipLink`: role="group" + подпись для скринридера.
  * `nowrap` — один горизонтальный ряд с прокруткой (узкие экраны).
+ * `grid` — ровная сетка равных ячеек (2 колонки на телефоне, нечётная последняя на всю ширину) вместо рваных рядов.
  */
-export default function ChipGroup({ label, nowrap = false, className, children, ...rest }) {
+export default function ChipGroup({ label, nowrap = false, grid = false, className, children, ...rest }) {
   return (
     <div
       role="group"
       aria-label={label || undefined}
-      className={cn('fe-chip-row', nowrap && 'fe-chip-row--nowrap', className)}
+      className={cn('fe-chip-row', nowrap && 'fe-chip-row--nowrap', grid && 'fe-chip-row--grid', className)}
       {...rest}
     >
       {children}

@@ -5,6 +5,7 @@ import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 import { useT } from '../i18n';
+import { PickerCard, PickerLabel } from './PickerParts';
 
 /**
  * Frequency-switcher между парами индикаторов разной частоты.
@@ -40,11 +41,9 @@ export default function FrequencySwitcher({
   if (items.length < 2) return null;
 
   return (
-    <section className="mb-8 rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-sm">
-      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {t('indicator.picker.frequency')}
-      </p>
-      <ChipGroup label={t('indicator.picker.frequency')}>
+    <PickerCard>
+      <PickerLabel>{t('indicator.picker.frequency')}</PickerLabel>
+      <ChipGroup label={t('indicator.picker.frequency')} grid>
         {items.map((item) => {
           const active = item.code === currentCode;
           return (
@@ -68,6 +67,6 @@ export default function FrequencySwitcher({
           );
         })}
       </ChipGroup>
-    </section>
+    </PickerCard>
   );
 }

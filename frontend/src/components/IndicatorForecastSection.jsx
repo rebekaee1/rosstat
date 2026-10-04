@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Activity } from 'lucide-react';
 import ForecastTable from './ForecastTable';
+import Button from './Button';
+import { russiaCategoriesPath } from '../lib/sitePaths';
+import '../styles/indicator-russia.css';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
-
-const EMPTY_BOX_CLS = 'h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center gap-3 text-text-tertiary p-8';
 
 /**
  * `forecast_view` — цель «пользователь действительно увидел блок прогноза».
@@ -123,7 +125,7 @@ export default function IndicatorForecastSection({
                   : displayForecastData;
 
     return (
-      <section ref={viewRef} className="lg:col-span-2">
+      <section ref={viewRef} data-block="forecast" className="min-w-0">
         <ForecastTable
           mode={chartMode}
           inflation={inflationResp}
@@ -138,28 +140,26 @@ export default function IndicatorForecastSection({
 
   if (forecastEnabled && !showForecast) {
     return (
-      <section className="lg:col-span-2">
-        <div className="h-full min-h-[300px] rounded-[2rem] bg-surface border border-border-subtle border-dashed flex flex-col items-center justify-center text-text-tertiary p-8">
-          <Activity className="w-8 h-8 mb-4 opacity-20" />
-          <p className="text-xs font-mono uppercase tracking-widest text-center">
-            {t('forecast.enableToggle')}
-          </p>
+      <section data-block="forecast-empty" className="fe-note-card">
+        <span className="fe-note-card__icon" aria-hidden="true"><Activity className="h-5 w-5" /></span>
+        <div className="fe-note-card__body">
+          <p className="fe-note-card__title">{t('w3.forecast.offTitle')}</p>
+          <p className="fe-note-card__text">{t('w3.forecast.offBody')}</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="lg:col-span-2">
-      <div className={EMPTY_BOX_CLS}>
-        <Activity className="w-8 h-8 mb-1 opacity-20" />
-        <p className="text-sm font-medium text-text-secondary text-center max-w-md">
-          {t('forecast.emptyTitle')}
-        </p>
-        <p className="text-xs text-center max-w-lg leading-relaxed text-text-tertiary">
-          {t('forecast.emptyBody')}
-        </p>
+    <section data-block="forecast-empty" className="fe-note-card">
+      <span className="fe-note-card__icon" aria-hidden="true"><Activity className="h-5 w-5" /></span>
+      <div className="fe-note-card__body">
+        <p className="fe-note-card__title">{t('w3.forecast.emptyTitle')}</p>
+        <p className="fe-note-card__text">{t('w3.forecast.emptyBody')}</p>
       </div>
+      <Button as={Link} to={russiaCategoriesPath()} variant="secondary" size="sm" className="fe-note-card__cta">
+        {t('w3.forecast.emptyCta')}
+      </Button>
     </section>
   );
 }

@@ -551,7 +551,7 @@ export default function IndicatorChart({
 
   if (!dataLen) {
     return (
-      <div role="status" className="fe-chart-card fe-reveal border border-dashed border-border-subtle bg-surface p-8 md:p-10 shadow-sm min-h-[320px] flex flex-col items-center justify-center text-center gap-4" style={REVEAL_STYLE}>
+      <div role="status" className="fe-chart-card fe-reveal border border-border-subtle bg-surface p-8 md:p-10 shadow-sm min-h-[240px] flex flex-col items-center justify-center text-center gap-4" style={REVEAL_STYLE}>
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-obsidian-lighter border border-border-subtle">
           <Activity className="w-7 h-7 text-champagne/80" aria-hidden />
         </div>
@@ -599,7 +599,7 @@ export default function IndicatorChart({
             <Chip
               aria-pressed={undefined}
               onClick={() => { setWindowOverride(null); setOffset(0); track(events.CHART_ZOOM, { action: 'reset', indicator: indicatorCode, indicatorCategory }); }}
-              className="fe-chip--ghost font-mono uppercase tracking-wider"
+              className="fe-chip--ghost"
               title={t('chart.resetZoomTitle')}
             >
               {t('chart.resetZoom')}
@@ -631,7 +631,7 @@ export default function IndicatorChart({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         className={cn(
-          'fe-chart-plot rounded-xl relative',
+          'fe-chart-plot fe-chart-draw rounded-xl relative',
           isDragging ? 'cursor-grabbing select-none' : 'cursor-crosshair'
         )}
         style={{ touchAction: 'pan-y' }}
@@ -793,7 +793,7 @@ export default function IndicatorChart({
           <div className="mt-1 flex justify-end pr-3">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
               <ZoomIn className="w-3 h-3 text-text-tertiary" />
-              <span className="text-xs font-mono text-text-secondary">{t('chart.zoomHint')}</span>
+              <span className="text-xs text-text-secondary">{t('chart.zoomHint')}</span>
             </div>
           </div>
         )}
@@ -811,9 +811,9 @@ export default function IndicatorChart({
             aria-label={t('chart.windowAria')}
             className="fe-range"
           />
-          <div className="flex justify-between text-xs font-mono text-text-secondary">
-            <span>{visibleData[0] ? formatDate(visibleData[0].date, dateFormat) : ''}</span>
-            <span>{visibleData.length ? formatDate(visibleData[visibleData.length - 1].date, dateFormat) : ''}</span>
+          <div className="flex justify-between text-xs text-text-secondary" aria-hidden="true">
+            <span>{t('w3.chart.earlier')}</span>
+            <span>{t('w3.chart.later')}</span>
           </div>
         </div>
       )}

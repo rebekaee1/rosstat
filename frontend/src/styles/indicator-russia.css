@@ -1,0 +1,437 @@
+/*
+ * Карточка индикатора, Россия, «Сегодня», календарь, демография (волна 2, 2026-10-04).
+ * Токены — из index.css; радиусы единые: карточки 24 px, контролы 12 px. Размер текста не меньше 12 px.
+ */
+
+/* ── Переключатели показа: ровная сетка вместо рваных рядов ───────────────── */
+.fe-pick-card {
+  min-width: 0;
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(32, 42, 60, 0.05);
+}
+.fe-pick-card--stack > * + * { margin-top: 16px; }
+.fe-pick-embedded { padding-top: 16px; border-top: 1px solid var(--color-border-subtle); }
+.fe-pick-label {
+  margin: 0 0 10px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.fe-pick-hint {
+  margin: 10px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.fe-pick-sub {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+/* Ячейки равной ширины: на телефоне две колонки (нечётная последняя на всю ширину), шире — до 224 px. */
+.fe-chip-row--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.fe-chip-row--grid > .fe-chip {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+}
+.fe-chip-row--grid > .fe-chip:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (min-width: 640px) {
+  .fe-chip-row--grid {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 14rem));
+    justify-content: start;
+  }
+  .fe-chip-row--grid > .fe-chip:last-child:nth-child(odd) { grid-column: auto; }
+  .fe-chip-row--grid > .fe-chip { min-height: 40px; }
+}
+@media (min-width: 640px) and (pointer: coarse) {
+  .fe-chip-row--grid > .fe-chip { min-height: 44px; }
+}
+/* Выбранный вариант заметнее: заливка плюс тёмная золотая рамка. */
+.fe-chip-row--grid > .fe-chip.is-active {
+  border-color: var(--color-champagne-ink);
+  background: rgba(173, 138, 72, 0.18);
+  color: var(--color-champagne-ink);
+}
+
+/* ── Плитки значений ────────────────────────────────────────────────────── */
+.fe-tele-section { margin-bottom: 24px; }
+.fe-tele-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 1024px) {
+  .fe-tele-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+}
+.fe-tele-skeleton { min-height: 112px; border-radius: 24px; }
+.fe-tele {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--fe-glass);
+  box-shadow: var(--fe-shadow);
+}
+@media (min-width: 640px) { .fe-tele { padding: 20px; } }
+.fe-tele__label {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.fe-tele__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  margin: 0;
+  min-width: 0;
+}
+.fe-tele__num {
+  color: var(--color-text-primary);
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.fe-tele__num--long { font-size: 20px; }
+@media (min-width: 640px) {
+  .fe-tele__num { font-size: 30px; }
+  .fe-tele__num--long { font-size: 24px; }
+}
+.fe-tele__unit {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+.fe-tele__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+.fe-tele__delta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  margin: 0;
+  font-size: 13px;
+}
+.fe-tele__vs { color: var(--color-text-secondary); font-size: 13px; }
+.fe-tele__meta {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* ── Секция графика: заголовок, прогноз, скачивание ─────────────────────── */
+.fe-chart-section { margin-bottom: 48px; scroll-margin-top: 96px; }
+.fe-chart-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.fe-chart-head__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.fe-chart-actions {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.fe-dl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.fe-dl__label { margin-right: 2px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
+.fe-help-link {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: var(--color-text-secondary);
+  transition: color 0.15s, background-color 0.15s;
+}
+.fe-help-link:hover { color: var(--color-champagne-ink); background: rgba(173, 138, 72, 0.1); }
+@media (pointer: coarse) { .fe-help-link { width: 44px; height: 44px; } }
+
+.fe-forecast-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 14px 0 8px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--fe-glass-soft);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.fe-forecast-switch__track {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: var(--color-obsidian-lighter);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.fe-forecast-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--color-text-tertiary);
+  transition: transform 0.2s var(--fe-ease-out), background-color 0.2s;
+}
+.fe-forecast-switch.is-on {
+  border-color: var(--color-champagne-ink);
+  background: rgba(173, 138, 72, 0.14);
+  color: var(--color-champagne-ink);
+}
+.fe-forecast-switch.is-on .fe-forecast-switch__track { border-color: var(--color-champagne-ink); background: var(--color-champagne); }
+.fe-forecast-switch.is-on .fe-forecast-switch__thumb { background: #fff; transform: translateX(14px); }
+.fe-forecast-switch.is-unavailable { cursor: default; opacity: 0.7; }
+@media (pointer: coarse) { .fe-forecast-switch { min-height: 44px; } }
+
+/* График «рисуется» слева направо один раз при появлении; после анимации ничего не держит. */
+@keyframes fe-chart-draw {
+  from { clip-path: inset(-4px 100% -4px 0); }
+  to { clip-path: inset(-4px -4px -4px 0); }
+}
+.fe-chart-draw { animation: fe-chart-draw 0.85s var(--fe-ease-out) 0.12s backwards; }
+@media (prefers-reduced-motion: reduce) { .fe-chart-draw { animation: none; } }
+
+/* ── Блок под графиком: методология и прогноз ───────────────────────────── */
+.fe-info-grid { display: grid; gap: 24px; margin-bottom: 48px; }
+@media (min-width: 1024px) {
+  .fe-info-grid[data-forecast='on'] { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: start; }
+}
+/* Нет прогноза: короткая плашка идёт первой, методология ниже — без пустой колонки. */
+.fe-info-grid[data-forecast='off'] > [data-block='forecast-empty'] { order: -1; }
+
+.fe-info-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(32, 42, 60, 0.05);
+}
+.fe-info-card__head { display: flex; align-items: center; gap: 10px; }
+.fe-info-card__title { margin: 0; color: var(--color-text-primary); font-size: 16px; font-weight: 650; }
+.fe-info-card__text { color: var(--color-text-secondary); font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
+.fe-info-card__text > * + * { margin-top: 12px; }
+.fe-info-card__foot { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--color-border-subtle); }
+.fe-info-card__source { width: 100%; justify-content: flex-start; min-width: 0; }
+.fe-info-card__source-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+.fe-more { border-radius: 12px; }
+.fe-more__summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  color: var(--color-champagne-ink);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (pointer: coarse) { .fe-more__summary { min-height: 44px; } }
+.fe-more__body {
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 2px solid var(--color-border-champagne);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Компактная доброжелательная плашка вместо пустой пунктирной карточки. */
+.fe-note-card {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 16px 20px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--color-champagne) 7%, var(--color-surface));
+}
+.fe-note-card__icon {
+  display: inline-flex;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(173, 138, 72, 0.14);
+  color: var(--color-champagne-ink);
+}
+.fe-note-card__body { min-width: 0; flex: 1 1 14rem; }
+.fe-note-card__title { margin: 0; color: var(--color-text-primary); font-size: 15px; font-weight: 650; }
+.fe-note-card__text { margin: 2px 0 0; color: var(--color-text-secondary); font-size: 14px; line-height: 1.5; }
+.fe-note-card__cta { flex: none; }
+
+/* ── Похожие индикаторы ─────────────────────────────────────────────────── */
+.fe-related { margin-top: 64px; }
+.fe-related__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+.fe-related__title { margin: 0; color: var(--color-text-primary); font-size: 20px; font-weight: 650; letter-spacing: -0.02em; }
+.fe-related__compare {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  color: var(--color-champagne-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+@media (pointer: coarse) { .fe-related__compare { min-height: 44px; } }
+.fe-related__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 640px) { .fe-related__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .fe-related__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fe-rel-card {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 84px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.fe-rel-card:hover { border-color: var(--color-border-champagne); box-shadow: 0 10px 28px -20px rgba(38, 52, 78, 0.45); }
+.fe-rel-card__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.fe-rel-card:hover .fe-rel-card__title { color: var(--color-champagne-ink); }
+.fe-rel-card__sub { margin: 2px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
+.fe-rel-card__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 8px 0 0; }
+.fe-rel-card__num { color: var(--color-text-primary); font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.fe-rel-card__date { color: var(--color-text-secondary); font-size: 13px; }
+.fe-rel-card__arrow {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  color: var(--color-text-tertiary);
+  transition: transform 0.2s, color 0.2s;
+}
+.fe-rel-card:hover .fe-rel-card__arrow { color: var(--color-champagne-ink); transform: translateX(2px); }
+
+/* ── Хлебные крошки: обычный регистр, шеврон у предыдущей крошки, текущая обрезается ───────────── */
+.fe-crumbs { color: var(--color-text-tertiary); font-size: 13px; line-height: 1.4; }
+@media (min-width: 640px) { .fe-crumbs { font-size: 14px; } }
+.fe-crumbs__list { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; margin: 0; padding: 0; list-style: none; }
+.fe-crumbs__item { display: inline-flex; min-width: 0; max-width: 100%; align-items: center; gap: 4px; }
+.fe-crumbs__link {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.fe-crumbs__link:hover { color: var(--color-champagne-ink); }
+@media (pointer: coarse) {
+  .fe-crumbs__link::before { content: ''; position: absolute; inset: -14px -4px; }
+}
+.fe-crumbs__sep { flex: none; width: 14px; height: 14px; opacity: 0.6; }
+.fe-crumbs__current {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Шапка карточки индикатора ──────────────────────────────────────────── */
+.fe-data-header.fe-indicator-header { border-radius: 24px; }
+.fe-ind-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 10px; }
+@media (min-width: 768px) { .fe-ind-meta { margin-bottom: 16px; } }
+.fe-ind-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: var(--color-obsidian-light);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+.fe-ind-cat { color: var(--color-text-secondary); font-size: 14px; }
+a.fe-ind-cat { text-decoration: none; transition: color 0.15s; }
+a.fe-ind-cat:hover { color: var(--color-champagne-ink); }
