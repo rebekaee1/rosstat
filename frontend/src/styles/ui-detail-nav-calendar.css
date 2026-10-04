@@ -1,0 +1,25 @@
+/*
+ * Мелкие добавки к общему `.fe-reveal` (index.css) для страницы индикатора, шапки, карточек и календаря.
+ *
+ * .fe-reveal--free  — `fill-mode: backwards`: после появления анимация ничего не держит. С `both` последний
+ *                     кадр (`transform: none`) навсегда перекрывает hover/active-transform карточки
+ *                     (`.lift-hover`, `.fe-press`), а нам нужен только вход.
+ * .fe-reveal--panel — выпадающая панель (мобильное меню, калькуляторы): 180 мс, сдвиг 6px.
+ * .fe-reveal--stagger — каскад: задержка `--i` (0…5) × 40 мс, то есть суммарно не больше 200 мс.
+ */
+.fe-reveal.fe-reveal--free { animation-fill-mode: backwards; }
+.fe-reveal.fe-reveal--panel {
+  --fe-duration: 0.18s;
+  --fe-rise: -6px;
+}
+.fe-reveal.fe-reveal--stagger { --fe-delay: calc(var(--i, 0) * 40ms); }
+
+/*
+ * Дельты ±%: тёмные оттенки зелёного и красного для контраста ≥ 4.5:1 на белой карточке
+ * (токены --color-positive / --color-negative светлее: 3.3:1 и 4.8:1 на белом, 4.2 на фоне страницы).
+ * В тёмной теме токены сами достаточно светлые.
+ */
+.fe-delta--up { color: #15803d; }
+.fe-delta--down { color: #b91c1c; }
+:root[data-theme="dark"] .fe-delta--up, :root.dark .fe-delta--up { color: var(--color-positive); }
+:root[data-theme="dark"] .fe-delta--down, :root.dark .fe-delta--down { color: var(--color-negative); }

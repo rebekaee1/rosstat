@@ -5,6 +5,7 @@ import { useIndicator, useIndicatorData } from '../lib/hooks';
 import { formatValueWithUnit, formatDate, formatChange, isCpiIndex } from '../lib/format';
 import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
+import EmbedSpinner from './EmbedSpinner';
 
 export default function EmbedTable() {
   const t = useT();
@@ -42,7 +43,8 @@ export default function EmbedTable() {
       )}
 
       {isLoading ? (
-        <div style={{ padding: 24, textAlign: 'center', color: colors.textTertiary, fontSize: 13 }}>
+        <div style={{ padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, color: colors.textTertiary, fontSize: 13 }} role="status">
+          <EmbedSpinner colors={colors} size={16} />
           {t('embed.loading')}
         </div>
       ) : isError ? (

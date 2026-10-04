@@ -57,7 +57,6 @@ const CATEGORY_ART = {
 export default function CategoryBlock({
   category,
   indicatorCount = 0,
-  delay = 0,
   /** false, если список индикаторов с API не загрузился — не показываем «0 показ.» */
   countsKnown = true,
 }) {
@@ -85,7 +84,6 @@ export default function CategoryBlock({
           indicatorCount,
         });
       }}
-      style={{ animationDelay: `${delay * 50}ms` }}
       className={cn(
         FOCUS_RING_SURFACE,
         'fe-panel fe-category-card group relative flex flex-col p-6 rounded-[1.5rem] border overflow-hidden',
@@ -117,7 +115,7 @@ export default function CategoryBlock({
         </div>
         {category.apiCategory && (
           <span
-            className="rounded-full border border-border-subtle bg-surface/90 px-2.5 py-1 text-[10px] font-medium text-text-secondary"
+            className="rounded-full border border-border-subtle bg-surface/90 px-2.5 py-1 text-xs font-medium text-text-secondary"
             title={!countsKnown ? t('category.countsUnavailable') : undefined}
           >
             {!countsKnown

@@ -6,6 +6,7 @@ import { useIndicator, useIndicatorData } from '../lib/hooks';
 import { formatValueWithUnit, formatChange, formatDate, isCpiIndex } from '../lib/format';
 import { useEmbedParams, useEmbedImpression, useEmbedAutoHeight, THEME_COLORS } from './useEmbedParams';
 import Attribution from './Attribution';
+import EmbedSpinner from './EmbedSpinner';
 
 function MiniSparkline({ data, width = 140, height = 36, color = '#AD8A48' }) {
   const points = useMemo(() => {
@@ -60,9 +61,8 @@ export default function EmbedCard() {
   if (metaLoading) {
     return (
       <div style={{ background: colors.bg, borderRadius: 16, border: `1px solid ${colors.border}`, height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div className="embed-spin" style={{ width: 20, height: 20, border: '2px solid', borderColor: `${colors.border} transparent`, borderRadius: '50%' }} />
-        <style>{`@keyframes espin{to{transform:rotate(360deg)}}.embed-spin{animation:espin 1s linear infinite}@media(prefers-reduced-motion:reduce){.embed-spin{animation:none;opacity:.4}}`}</style>
-      </div>
+        <EmbedSpinner colors={colors} size={20} label={t('embed.loading')} />
+        </div>
     );
   }
 

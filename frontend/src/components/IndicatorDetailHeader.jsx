@@ -3,6 +3,7 @@ import { Activity } from 'lucide-react';
 import { findCategoryByApiLabel } from '../lib/categories';
 import { indicatorDetailHeaderMobileLines } from '../lib/indicatorVariants';
 import { SkeletonBox } from './Skeleton';
+import '../styles/ui-detail-nav-calendar.css';
 import Breadcrumbs from './Breadcrumbs';
 import {
   globalMarketIndicatorTrail,
@@ -40,6 +41,10 @@ function MobileTitle({ title }) {
   );
 }
 
+const REVEAL = 'fe-reveal fe-reveal--free fe-reveal--stagger';
+// Вход шапки: каскад по 40 мс, всего ≤ 160 мс; начальное состояние задаёт CSS (без мигания и без JS-твина).
+const revealStyle = (i) => ({ '--i': i, '--fe-duration': '0.4s', '--fe-rise': '12px' });
+
 /**
  * Хедер страницы карточки индикатора:
  *   хлебные крошки + бейдж периодичности + название + английское название.
@@ -48,7 +53,6 @@ export default function IndicatorDetailHeader({
   indicator,
   code,
   loading,
-  headerRef,
   displayFrequency,
 }) {
   const { locale } = useLocale();
@@ -90,8 +94,8 @@ export default function IndicatorDetailHeader({
   );
 
   return (
-    <div ref={headerRef} className="fe-data-header fe-indicator-header">
-      <div data-animate>
+    <div className="fe-data-header fe-indicator-header">
+      <div className={REVEAL} style={revealStyle(0)}>
         <Breadcrumbs items={crumbs} variant="mono" />
       </div>
 
@@ -103,8 +107,8 @@ export default function IndicatorDetailHeader({
         </div>
       ) : (
         <>
-          <div data-animate className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2.5 md:mb-4">
-            <span className="px-2.5 sm:px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[10px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
+          <div className={`${REVEAL} flex flex-wrap items-center gap-2 sm:gap-3 mb-2.5 md:mb-4`} style={revealStyle(1)}>
+            <span className="px-2.5 sm:px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[11px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
               <Activity className="w-3 h-3 text-champagne" />
               {freqLabel}
             </span>
@@ -123,8 +127,8 @@ export default function IndicatorDetailHeader({
           </div>
 
           <h1
-            data-animate
-            className="text-[1.7rem] leading-[1.2] text-pretty sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 md:leading-tight"
+            style={revealStyle(2)}
+            className="fe-reveal fe-reveal--free fe-reveal--stagger text-[1.7rem] leading-[1.2] text-pretty sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 md:leading-tight"
           >
             <MobileTitle title={title} />
             <span className="hidden md:inline">{title}</span>
@@ -132,8 +136,8 @@ export default function IndicatorDetailHeader({
 
           {indicator?.name_en && (
             <p
-              data-animate
-              className="text-[11px] sm:text-sm font-mono uppercase tracking-[0.12em] text-text-tertiary md:text-base md:normal-case md:tracking-normal"
+              style={revealStyle(3)}
+              className="fe-reveal fe-reveal--free fe-reveal--stagger text-[11px] sm:text-sm font-mono uppercase tracking-[0.12em] text-text-tertiary md:text-base md:normal-case md:tracking-normal"
             >
               {indicator.name_en}
             </p>

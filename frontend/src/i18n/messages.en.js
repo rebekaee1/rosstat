@@ -2042,4 +2042,16 @@ export default {
   'table.emptyPeriod': 'No data for this period',
   'table.emptySearch': 'Nothing found — change the query',
   'table.loading': 'Loading the table…',
+  // ── calendar.state.* — visible calendar states (loading / error / empty)
+  'calendar.state.loading': 'Loading the calendar…',
+  'calendar.state.error.title': 'The calendar is temporarily unavailable.',
+  'calendar.state.error.hint': 'Please try again in a minute.',
+  'calendar.state.emptyMonth.title': 'No events this month',
+  'calendar.state.emptyMonth.hint': 'Try another month or reset the source filter',
+  'calendar.state.emptyUpcoming.title': 'No more upcoming events this month',
+  'calendar.state.emptyUpcoming.hint': 'Pick a date in the grid or go to another month',
+  'calendar.state.emptyDay.title': 'No events on this day',
+  'calendar.state.emptyDay.hint': 'Pick another date or show the whole month',
+  'calendar.state.resetFilter': 'Reset the source filter',
+  'calendar.state.showMonth': 'Show the whole month',
 };

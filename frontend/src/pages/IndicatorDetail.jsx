@@ -1,8 +1,7 @@
 import { cpiProvenance } from '../lib/cpiProvenance';
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, GitCompare } from 'lucide-react';
-import gsap from 'gsap';
 import {
   useIndicator, useIndicatorData, useIndicatorStats, useIndicators, useForecast,
 } from '../lib/hooks';
@@ -99,7 +98,6 @@ export default function IndicatorDetail() {
   const navigate = useNavigate();
   const { locale } = useLocale();
   const t = useT();
-  const headerRef = useRef(null);
   const [showForecast, setShowForecast] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -430,17 +428,6 @@ export default function IndicatorDetail() {
   }, [shouldSubtract100]);
 
   useEffect(() => {
-    const els = headerRef.current?.querySelectorAll('[data-animate]');
-    if (!els?.length) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const tween = gsap.fromTo(els,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.1 }
-    );
-    return () => tween.kill();
-  }, []);
-
-  useEffect(() => {
     if (!indicator?.code) return;
     track(events.INDICATOR_VIEW, {
       indicator: indicator.code,
@@ -530,7 +517,6 @@ export default function IndicatorDetail() {
           variantGroup={variantGroup}
           relatedIndicators={relatedIndicators}
           loadingInd={loadingInd}
-          headerRef={headerRef}
         />
       </div>
     );
@@ -563,7 +549,6 @@ export default function IndicatorDetail() {
         indicator={indicator}
         code={code}
         loading={loadingInd}
-        headerRef={headerRef}
         displayFrequency={effectiveIndicator?.frequency}
       />
 

@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { formatValue, formatChange, unitSuffix, unitDigits, cn } from '../lib/format';
 import { useT } from '../i18n';
+import '../styles/ui-detail-nav-calendar.css';
 
 /**
  * Карточка одного телеметрического значения на странице индикатора.
@@ -13,8 +12,8 @@ import { useT } from '../i18n';
  * Если задан `change` — показывает дельту с иконкой, цветом, единицей измерения.
  * Если задан `pctChange` — показывает процентное изменение вместо абсолютного.
  *
- * Число всегда сразу точное; только рамка мягко появляется.
- * Уважает `prefers-reduced-motion`.
+ * Число всегда сразу точное; рамка мягко появляется средствами CSS (`.fe-reveal`, задержка ≤ 200 мс,
+ * начальное состояние задаёт CSS). При `prefers-reduced-motion` анимации нет.
  */
 export default function TelemetryCard({
   label, value, unit, change, pctChange, meta, delay = 0,
@@ -23,35 +22,18 @@ export default function TelemetryCard({
 }) {
   const t = useT();
   const resolvedDelta = deltaSuffix ?? t('indicator.telemetry.delta.prevMonth');
-  const ref = useRef(null);
-  const animated = useRef(false);
-
-  useEffect(() => {
-    if (animated.current || !ref.current) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    animated.current = true;
-    const tween = gsap.fromTo(ref.current,
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.4 + delay * 0.1 }
-    );
-    return () => {
-      tween.kill();
-      // StrictMode (dev) прогоняет mount → cleanup → mount: без сброса флага
-      // второй mount выходит раньше, и карточка остаётся на opacity 0.
-      animated.current = false;
-    };
-  }, [delay]);
-
   const digits = valueDigits ?? unitDigits(unit);
   const changeNum = change != null ? Number(change) : null;
   const isUp = changeNum != null && changeNum > 0;
   const isDown = changeNum != null && changeNum < 0;
 
   return (
-    <div ref={ref} className="fe-panel fe-stat-cell group relative p-3 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-surface border border-border-subtle hover:border-champagne/30 transition-colors duration-500 overflow-hidden lift-hover">
+    <div
+      style={{ '--i': Math.min(delay, 5), '--fe-delay': 'calc(var(--i) * 40ms)', '--fe-duration': '0.4s', '--fe-rise': '12px' }}
+      className="fe-reveal fe-reveal--free fe-panel fe-stat-cell group relative p-3 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-surface border border-border-subtle hover:border-champagne/30 transition-colors duration-500 overflow-hidden lift-hover">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-champagne/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-      <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-text-tertiary font-medium mb-2 sm:mb-4 line-clamp-2 leading-tight">
+      <p className="text-[11px] uppercase tracking-wider sm:tracking-widest text-text-tertiary font-medium mb-2 sm:mb-4 line-clamp-2 leading-tight">
         {label}
       </p>
 
@@ -64,7 +46,7 @@ export default function TelemetryCard({
         )}>
           {formatValue(value, digits)}
         </span>
-        <span className="min-w-0 text-[11px] font-medium leading-snug text-text-tertiary break-words line-clamp-1 sm:shrink-0 sm:text-xs sm:line-clamp-2">
+        <span className="min-w-0 text-xs font-medium leading-snug text-text-tertiary break-words line-clamp-1 sm:shrink-0 sm:line-clamp-2">
           {unitSuffix(unit)}
         </span>
       </div>
@@ -72,21 +54,21 @@ export default function TelemetryCard({
       <div className="flex flex-col gap-1 sm:gap-1.5 mt-2 sm:mt-4 pt-2 sm:pt-4 border-t border-border-subtle/50">
         {changeNum != null && (
           <div className={cn(
-            'flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-mono font-medium flex-wrap',
-            isUp ? 'text-positive' : '',
-            isDown ? 'text-negative' : '',
+            'flex items-center gap-1 sm:gap-1.5 text-xs font-mono font-medium flex-wrap',
+            isUp ? 'fe-delta--up' : '',
+            isDown ? 'fe-delta--down' : '',
             !isUp && !isDown ? 'text-text-tertiary' : ''
           )}>
             {isUp && <TrendingUp className="w-3.5 h-3.5 shrink-0" />}
             {isDown && <TrendingDown className="w-3.5 h-3.5 shrink-0" />}
             <span>{pctChange != null ? `${formatChange(pctChange)}%` : `Δ ${formatChange(changeNum)}`}</span>
-            <span className="text-text-tertiary text-[9px] sm:text-[10px] uppercase tracking-wider ml-0.5 sm:ml-1">
+            <span className="text-text-tertiary text-[11px] uppercase tracking-wide sm:tracking-wider ml-0.5 sm:ml-1">
               {resolvedDelta}
             </span>
           </div>
         )}
         {meta && (
-          <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest text-text-tertiary leading-snug">
+          <div className="text-[11px] font-mono uppercase tracking-wide sm:tracking-widest text-text-tertiary leading-snug">
             {meta}
           </div>
         )}

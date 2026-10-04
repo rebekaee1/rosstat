@@ -4,6 +4,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { formatValueWithUnit, formatChange, isCpiIndex } from '../lib/format';
 import { useEmbedParams, useEmbedImpression, THEME_COLORS } from './useEmbedParams';
+import EmbedSpinner from './EmbedSpinner';
 
 const SPEED_MAP = { slow: 40, normal: 25, fast: 14 };
 
@@ -66,7 +67,7 @@ export default function EmbedTicker() {
 
   const statusStyle = { background: colors.bg, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary, fontSize: 12, fontFamily: 'system-ui' };
 
-  if (isLoading) return <div style={statusStyle}>{t('embed.loading')}</div>;
+  if (isLoading) return <div style={{ ...statusStyle, gap: 8 }} role="status"><EmbedSpinner colors={colors} size={14} />{t('embed.loading')}</div>;
   if (isError) return <div style={statusStyle}>{t('embed.tickerLoadError')}</div>;
   if (!items.length) return <div style={statusStyle}>{t('embed.noData')}</div>;
 
