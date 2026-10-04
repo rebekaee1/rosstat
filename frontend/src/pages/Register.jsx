@@ -8,6 +8,8 @@ import OAuthButtons from '../components/OAuthButtons';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { safeReturnTo, authLink } from '../lib/authReturn';
+import { cn } from '../lib/format';
+import Button from '../components/Button';
 
 export default function Register() {
   const t = useT();
@@ -56,6 +58,18 @@ export default function Register() {
     }
   };
 
+  // Какое поле подсветить: по тексту ошибки (сообщения приходят уже переведёнными).
+  const emailInvalid = [
+    'auth.register.emailExists', 'auth.validation.email', 'auth.validation.emailTaken', 'auth.validation.emailRequired',
+  ].some((key) => error === t(key));
+  const passwordInvalid = ['auth.validation.passwordShort', 'auth.validation.passwordLong'].some((key) => error === t(key));
+  const consentInvalid = error === t('auth.register.consentRequired');
+  const fieldClass = (invalid) => cn(
+    'fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border text-text-primary focus:outline-none',
+    invalid ? 'border-negative focus:border-negative' : 'border-border-subtle focus:border-champagne/50',
+  );
+  const describedBy = error ? 'register-error' : undefined;
+
   return (
     <div className="fe-data-page max-w-md mx-auto px-4 pt-28 pb-24">
       <div className="fe-panel fe-auth-card p-5 sm:p-8">
@@ -84,7 +98,9 @@ export default function Register() {
           <input
             id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            className="fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
+            aria-invalid={emailInvalid || undefined}
+            aria-describedby={emailInvalid ? describedBy : undefined}
+            className={fieldClass(emailInvalid)}
           />
         </div>
         <div>
@@ -92,12 +108,19 @@ export default function Register() {
           <input
             id="password" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            className="fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border border-border-subtle text-text-primary focus:outline-none focus:border-champagne/50"
+            aria-invalid={passwordInvalid || undefined}
+            aria-describedby={passwordInvalid ? describedBy : undefined}
+            className={fieldClass(passwordInvalid)}
           />
           <p className="text-xs text-text-tertiary mt-1">{t('auth.register.passwordHint')}</p>
         </div>
         <label className="flex items-start gap-2.5 text-sm text-text-secondary cursor-pointer">
-          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 accent-champagne" />
+          <input
+            type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)}
+            aria-invalid={consentInvalid || undefined}
+            aria-describedby={consentInvalid ? describedBy : undefined}
+            className={cn('mt-0.5 accent-champagne', consentInvalid && 'outline-2 outline-offset-2 outline-negative')}
+          />
           <span>
             {t('auth.oauth.policyBefore')}{' '}
             <Link to="/terms" className="fe-link">{t('auth.oauth.terms')}</Link>{' '}
@@ -111,18 +134,16 @@ export default function Register() {
           <span>{t('auth.oauth.newsletter')}</span>
         </label>
 
-        {error && <div className="text-sm text-negative">{error}</div>}
+        <div id="register-error" role="alert" className="text-sm text-negative empty:hidden">{error}</div>
+        <span role="status" className="sr-only">{busy ? t('auth.register.busy') : ''}</span>
 
-        <button
-          type="submit" disabled={busy}
-          className="fe-button-primary w-full py-2.5 rounded-xl font-semibold disabled:opacity-50"
-        >
+        <Button type="submit" loading={busy} className="w-full font-semibold">
           {busy ? t('auth.register.busy') : t('auth.register.submitAlt')}
-        </button>
+        </Button>
       </form>
 
       <p className="text-sm text-text-secondary mt-6 text-center">
-        {t('auth.register.haveAccount')} <Link to={authLink('/login', next)} className="fe-link">{t('common.login')}</Link>
+        {t('auth.register.haveAccount')} <Link to={authLink('/login', next)} className="fe-link inline-flex items-center pointer-coarse:min-h-11">{t('common.login')}</Link>
       </p>
       </div>
     </div>
