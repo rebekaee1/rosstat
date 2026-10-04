@@ -44,7 +44,9 @@ reset/drop/rebuild и последовательная полная event заг
 по-прежнему3650суток. Это не импорт PostgreSQL и не обычный15min job.
 Сбой оставляет CH incomplete без нового успешного heartbeat; повтор требует
 того же контролируемого maintenance сценария. Не запускать автоматически
-ради F05b: resync не обеспечивает передачу будущих session deletes.
+ради F05b: resync не обеспечивает передачу будущих session deletes (с
+2026-10-04 их передаёт журнал `server_session_changes`; после выпуска F05b один
+resync по maintenance-сценарию очистит ранее накопленные призраки).
 Pending intent записывается до cursor reset и первого DROP; обычный job и
 срезы блокируются до полного operator repair. После успеха marker снимается.
 Это действует при сохранном state Redis, не обеспечивает cross-store atomicity

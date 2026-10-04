@@ -15,7 +15,7 @@ replay. После retry raw MergeTree может содержать дубли,
 уникальные id. Metadata различает catch-up/deferred и завершённость captured
 среза. Это не lease/outbox/CDC и не атомарный snapshot всех таблиц.
 
-**F05b:** CH session-copy не удаляет старые visitor/start и не выбирает carry
+**F05b (с 2026-10-04 закрыт локально журналом `server_session_changes`, см. контракт ниже; не выпущен):** CH session-copy не удаляет старые visitor/start и не выбирает carry
 старше двух суток; FINAL этого не исправляет. PG BI/marts и CH session-срезы
 поэтому могут различаться после backfill. [Контракт](data-contracts.md#аналитические-окна-и-репликация-f05f06--2026-09-30),
 [проверки и ресурсные пределы](code-review/analytics-boundaries-acceptance-2026-09-30.md).

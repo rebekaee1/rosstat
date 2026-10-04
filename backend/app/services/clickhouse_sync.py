@@ -19,6 +19,14 @@ EXISTS) — новая таблица появляется без ручных �
 добавленных в уже существующую таблицу, — `_COLUMN_GUARDS` (ALTER TABLE ADD
 COLUMN IF NOT EXISTS), иначе дрейф схемы виден только после ручного `resync()`.
 
+Сессии (server_sessions) дополнительно ведёт durable журнал изменений (F05b,
+`session_change_log`): replacing insert не передаёт удаление и окно 2 суток не
+видит правку старой сессии, поэтому ключи, изменённые/исчезнувшие в PG
+(слияние сессий, поздний carry, repair), читаются пачками из журнала
+`server_session_changes`, сверяются с текущим PG и применяются: строка есть →
+replacing insert, строки нет → `ALTER TABLE … DELETE` (mutations_sync=1). Запись
+журнала подтверждается только после успеха CH; повтор идемпотентен.
+
 Деградация: CH упал → синк пишет warning и молчит, сайт не замечает,
 «Срезы» отвечают «слой недоступен», после подъёма синк догоняет по курсорам.
 """
@@ -32,11 +40,12 @@ import re
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import func, select, text
+from sqlalchemy import and_, func, or_, select, text
 from sqlalchemy.exc import DBAPIError
 
 from app.config import settings
 from app.database import analytics_session
+from app.services import session_change_log
 from app.models import (
     BehaviorEvent,
     BehaviorSession,
@@ -58,6 +67,11 @@ _BATCH = 20_000
 _EVENT_BATCHES_PER_TABLE = 4
 # Перезаливаемые слои (сессии/визиты окна) — потоком по столько строк.
 _REPLACING_BATCH = 5_000
+# Журнал изменений сессий (F05b): записей за выборку, выборок за прогон и ключей
+# в одном SQL-условии/ALTER DELETE. В штатном режиме журнал — десятки строк.
+_CHANGE_BATCH = 2_000
+_CHANGE_BATCHES_PER_RUN = 4
+_CHANGE_CHUNK = 200
 
 # DDL: MergeTree, партиции по месяцу, ORDER BY под типовые срезы.
 _DDL = [
@@ -248,6 +262,14 @@ async def _ch_insert(ch, table: str, rows: list, column_names: list[str]) -> Non
     )
 
 
+async def _ch_command(ch, sql: str, settings_: dict | None = None) -> None:
+    """DDL/мутация CH — тоже только в thread executor."""
+    kwargs = {"settings": settings_} if settings_ else {}
+    await asyncio.get_running_loop().run_in_executor(
+        None, functools.partial(ch.command, sql, **kwargs)
+    )
+
+
 _EVENT_COLUMNS = [
     "id", "event_type", "session_id_hash", "visitor_id_hash", "user_id",
     "authed", "page", "element_path", "element_text", "is_dead", "is_rage",
@@ -389,6 +411,100 @@ _VISIT_COLUMNS = [
 ]
 
 
+def _server_session_select():
+    return select(
+        ServerSession.id, ServerSession.day, ServerSession.visitor_id_hash,
+        ServerSession.user_id, ServerSession.started_at, ServerSession.duration_ms,
+        ServerSession.active_ms, ServerSession.pageviews, ServerSession.clicks,
+        ServerSession.max_scroll_pct, ServerSession.entry_page, ServerSession.exit_page,
+        ServerSession.channel, ServerSession.device, ServerSession.is_new_visitor,
+        ServerSession.is_engaged, ServerSession.micro_goals, ServerSession.macro_goals,
+        ServerSession.is_bot, ServerSession.bot_score, ServerSession.is_internal,
+    )
+
+
+def _server_session_row(s) -> list:
+    return [
+        s.id, s.day, s.visitor_id_hash, s.user_id or "", _dt(s.started_at),
+        int(s.duration_ms or 0), int(s.active_ms or 0), int(s.pageviews or 0),
+        int(s.clicks or 0), int(s.max_scroll_pct or 0), s.entry_page or "",
+        s.exit_page or "", s.channel or "", s.device or "",
+        1 if s.is_new_visitor else 0, 1 if s.is_engaged else 0,
+        int(s.micro_goals or 0), int(s.macro_goals or 0), 1 if s.is_bot else 0,
+        int(s.bot_score or 0), 1 if s.is_internal else 0,
+    ]
+
+
+def _ch_key(visitor: str, started_at: datetime) -> tuple[str, int]:
+    """Ключ строки в CH: visitor + эпоха ТЕМ ЖЕ способом, каким её пишет insert.
+
+    DateTime в CH — секунды, а clickhouse_connect кодирует наивный datetime как
+    `int(dt.timestamp())` (по TZ процесса). Берём ту же функцию, поэтому ключ
+    удаления совпадает с ключом вставки при любом TZ и без микросекунд.
+    """
+    return visitor, int(started_at.replace(microsecond=0).timestamp())
+
+
+def _ch_string(value: str) -> str:
+    return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+
+def _delete_sessions_sql(keys: list[tuple[str, int]]) -> str:
+    """ALTER TABLE … DELETE по ключам (visitor, секунда). Пустые keys недопустимы."""
+    pairs = ", ".join(f"({_ch_string(v)}, {int(e)})" for v, e in keys)
+    return (
+        "ALTER TABLE server_sessions DELETE "
+        f"WHERE (visitor_id_hash, toUnixTimestamp(started_at)) IN ({pairs})"
+    )
+
+
+async def _sync_session_changes(ch) -> int:
+    """Применить журнал изменений сессий к CH (F05b); вернуть число ключей.
+
+    Для каждого ключа истина — текущая строка PG: есть → replacing insert (в том
+    числе для сессии старше окна 2 суток), нет → ALTER DELETE (слияние/удаление
+    в PG). Запись журнала подтверждается после успеха CH с проверкой `rev`.
+    Пачки ограничены; остаток доедет следующими прогонами.
+    """
+    total = 0
+    for _ in range(_CHANGE_BATCHES_PER_RUN):
+        async with analytics_session() as db:
+            entries = await session_change_log.claim(db, _CHANGE_BATCH)
+        if not entries:
+            break
+        # CH хранит секунды: разные микросекунды одной секунды — один ключ CH.
+        seconds = {_ch_key(v, s): (v, s.replace(microsecond=0)) for v, s, _rev in entries}
+        keys = sorted(seconds)
+        present: dict[tuple[str, int], list] = {}
+        for start in range(0, len(keys), _CHANGE_CHUNK):
+            condition = or_(*(
+                and_(ServerSession.visitor_id_hash == v, ServerSession.started_at >= sec,
+                     ServerSession.started_at < sec + timedelta(seconds=1))
+                for v, sec in (seconds[k] for k in keys[start:start + _CHANGE_CHUNK])
+            ))
+            async with analytics_session() as db:
+                rows = (await db.execute(
+                    _server_session_select().where(condition).order_by(ServerSession.started_at)
+                )).all()
+            for row in rows:
+                # Несколько PG-строк в одной секунде схлопываются, как и при обычной вставке.
+                present[_ch_key(row.visitor_id_hash, row.started_at)] = _server_session_row(row)
+            del rows
+        gone = [k for k in keys if k not in present]
+        for start in range(0, len(gone), _CHANGE_CHUNK):
+            await _ch_command(ch, _delete_sessions_sql(gone[start:start + _CHANGE_CHUNK]),
+                              {"mutations_sync": 1})
+        upserts = list(present.values())
+        for start in range(0, len(upserts), _REPLACING_BATCH):
+            await _ch_insert(ch, "server_sessions", upserts[start:start + _REPLACING_BATCH], _SERVER_SESSION_COLUMNS)
+        async with analytics_session() as db:
+            await session_change_log.ack(db, entries)
+        total += len(entries)
+        if len(entries) < _CHANGE_BATCH:
+            break
+    return total
+
+
 async def _sync_replacing(ch, days: int = 2) -> int:
     """Идемпотентные слои: последние N суток перезаливкой (Replacing-дедуп).
 
@@ -436,26 +552,10 @@ async def _sync_replacing(ch, days: int = 2) -> int:
         total += len(part)
 
     async for part in _stream_partitions(
-        select(
-            ServerSession.id, ServerSession.day, ServerSession.visitor_id_hash,
-            ServerSession.user_id, ServerSession.started_at, ServerSession.duration_ms,
-            ServerSession.active_ms, ServerSession.pageviews, ServerSession.clicks,
-            ServerSession.max_scroll_pct, ServerSession.entry_page, ServerSession.exit_page,
-            ServerSession.channel, ServerSession.device, ServerSession.is_new_visitor,
-            ServerSession.is_engaged, ServerSession.micro_goals, ServerSession.macro_goals,
-            ServerSession.is_bot, ServerSession.bot_score, ServerSession.is_internal,
-        ).where(ServerSession.started_at >= since),
+        _server_session_select().where(ServerSession.started_at >= since),
         _REPLACING_BATCH,
     ):
-        await _ch_insert(ch, "server_sessions", [[
-            s.id, s.day, s.visitor_id_hash, s.user_id or "", _dt(s.started_at),
-            int(s.duration_ms or 0), int(s.active_ms or 0), int(s.pageviews or 0),
-            int(s.clicks or 0), int(s.max_scroll_pct or 0), s.entry_page or "",
-            s.exit_page or "", s.channel or "", s.device or "",
-            1 if s.is_new_visitor else 0, 1 if s.is_engaged else 0,
-            int(s.micro_goals or 0), int(s.macro_goals or 0), 1 if s.is_bot else 0,
-            int(s.bot_score or 0), 1 if s.is_internal else 0,
-        ] for s in part], _SERVER_SESSION_COLUMNS)
+        await _ch_insert(ch, "server_sessions", [_server_session_row(s) for s in part], _SERVER_SESSION_COLUMNS)
         total += len(part)
 
     base = [
@@ -535,14 +635,18 @@ async def clickhouse_sync_job() -> None:
         return
     try:
         n_events = await _sync_events(ch)
+        # Сначала журнал (удаления/старые правки), потом окно 2 суток: окно
+        # читает PG не раньше журнала и не вернёт уже удалённый ключ.
+        n_changes = await _sync_session_changes(ch)
         n_repl = await _sync_replacing(ch)
         from app.core.cache import get_state_redis
         r = await get_state_redis()
         progress = await event_sync_progress()
         if progress and all(part["caught_up"] for part in progress.values()) and not await resync_pending():
             await r.set(_LAST_SYNC_KEY, datetime.now(timezone.utc).replace(tzinfo=None).isoformat())
-        if n_events or n_repl:
-            logger.info("ClickHouse sync: %d event rows, %d replacing rows", n_events, n_repl)
+        if n_events or n_repl or n_changes:
+            logger.info("ClickHouse sync: %d event rows, %d replacing rows, %d session changes",
+                        n_events, n_repl, n_changes)
     except Exception:
         logger.exception("ClickHouse sync failed")
     finally:

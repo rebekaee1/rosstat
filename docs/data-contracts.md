@@ -83,6 +83,38 @@ history, goals и portraits читаются несколькими READ COMMITT
 сравнения относятся к зафиксированным observations и cutoff. Допуск late data
 следующим штатным окном не гарантирует произвольный старый backfill вне lookback.
 
+<a id="f05b-session-копия-и-журнал-изменений"></a>
+
+### F05b: контракт журнала изменений сессий — 2026-10-04 (локально)
+
+Действующий контракт (код: `services/session_change_log.py`,
+`clickhouse_sync._sync_session_changes`, модель `ServerSessionChange`).
+
+- `server_session_changes(visitor_id_hash, started_at) PK, rev, changed_at` —
+  «ключ создан/изменён/исчез». Любая запись в `server_sessions`, меняющая ключ
+  или зеркалируемые в CH колонки, обязана отметить ключ **в той же транзакции**
+  (сейчас: `sessionize` и `reclassify_known_crawlers_day`; новый писатель
+  `server_sessions` обязан делать то же). Пишется только при
+  `RUSTATS_CLICKHOUSE_ENABLED=true`.
+- Журнал не хранит значения: истина — текущий PG. Потребитель: строка есть →
+  replacing insert (любой возраст `started_at`), нет → `ALTER TABLE … DELETE`
+  (`mutations_sync=1`, ключ `(visitor, toUnixTimestamp(started_at))`, пачки ≤200).
+  ACK — удаление записи при совпадении `rev`; сбой CH оставляет запись.
+- Нет курсора и ceiling: порядок коммитов не важен. Повтор идемпотентен.
+  Размер ограничен числом различных ключей.
+- Синк: журнал → окно 2 суток (бутстрап и простой CH). Ограничения: 2 000
+  записей × 4 пачки за прогон, весь сетевой I/O в executor.
+- `resync()` пересобирает копию из PG и журнал не очищает (лишние записи
+  безвредны). Журнал не восстанавливает прошлое: призраки, накопленные до
+  выпуска, и включение CH с нуля требуют разового `resync()`.
+- Пределы: один синк-процесс (F07), CH хранит `DateTime` секундной точности и
+  кодирует naive `datetime` через `timestamp()` по TZ процесса (backend
+  `TZ=Europe/Moscow`) — ключ удаления считается той же функцией, но сдвиг
+  часовых срезов относительно UTC не исследовался. `ALTER DELETE` читает ключевые
+  колонки всей таблицы; объём/время на production не измерялись.
+
+Исходное описание дефекта (до 2026-10-04) сохранено ниже.
+
 ### F05b: session-копия пока не согласуется с удалениями
 
 `server_sessions` в CH — ReplacingMergeTree по visitor/start. Новый logical key

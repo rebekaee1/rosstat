@@ -11,7 +11,14 @@ actual PG/CH, герметические doubles и ресурсные набл�
 catch-up v2 выполняется постепенно. F05 не обещает произвольный старый backfill
 за пределами штатного lookback или восстановление удалённого raw history.
 
-**F05b открыт:** CH session-copy сохраняет удалённые PG keys и не копирует
+**F05b закрыт локально 2026-10-04 (не выпущен):** durable журнал
+`server_session_changes` + применение удалений/старых правок в CH
+(см. [backlog](backlog.md#f05b-session-changes-2026-10-04),
+[контракт](data-contracts.md#f05b-session-копия-и-журнал-изменений)). Не проверено:
+реальные PG/CH-тесты, `ALTER DELETE` на объёме production, часовой пояс
+`started_at` в CH (см. контракт), накопленные до выпуска призраки (нужен один
+`resync()`), межпроцессный fencing (F07). Исходная формулировка дефекта:
+CH session-copy сохраняет удалённые PG keys и не копирует
 старое carry. Нужны durable mutation/deletion и generation/ack snapshot либо
 tombstones; разовый resync этого постоянно не решает. SQL historical readwork,
 exact-distinct memory, общее расписание на 4 vCPU и production release
