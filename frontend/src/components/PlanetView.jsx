@@ -363,8 +363,8 @@ export default function PlanetView({
             <div className="planet-key-title"><strong>{metricName}</strong>{periodLabel && <span>{periodLabel}</span>}</div>
             <div className="planet-key-bar" style={{ backgroundImage: keyGradient }} aria-hidden="true" />
             {extent && <div className="planet-key-ends">
-              <span><small>{t('w2.planet.keyLow')}</small>{fmt(extent.min)} {displayUnit}</span>
-              <span><small>{t('w2.planet.keyHigh')}</small>{fmt(extent.max)} {displayUnit}</span>
+              <span><small>{t('w2.planet.keyLow')}</small>{fmt(extent.min)} {rowUnit || displayUnit}</span>
+              <span><small>{t('w2.planet.keyHigh')}</small>{fmt(extent.max)} {rowUnit || displayUnit}</span>
             </div>}
             <p className="planet-key-note"><i aria-hidden="true" />{t('w2.planet.keyNoData')}</p>
             <details className="planet-scale">
@@ -403,7 +403,7 @@ export default function PlanetView({
           {rankedCountries.length > COMPACT_LIST_ROWS + 1 && <button type="button" className="planet-list-more" aria-expanded={listExpanded} onClick={() => setListExpanded((open) => !open)}>
             {listExpanded ? t('w2.planet.showLess') : t('w2.planet.showAll', { count: rankedCountries.length })}<ChevronDown size={14} aria-hidden="true" />
           </button>}
-          <div className="planet-list-footer">{hasValue(median) && hasMetric && <span>{footerLabel}: <strong>{fmt(median)} {displayUnit}</strong></span>}{ratingHref && <PlanetLink href={ratingHref}>{t('planet.fullRating')}<ArrowUpRight size={13} aria-hidden="true" /></PlanetLink>}</div>
+          <div className="planet-list-footer">{hasValue(median) && hasMetric && <span>{footerLabel}: <strong>{fmt(median)} {rowUnit || displayUnit}</strong></span>}{ratingHref && <PlanetLink href={ratingHref}>{t('planet.fullRating')}<ArrowUpRight size={13} aria-hidden="true" /></PlanetLink>}</div>
         </aside>
       </div>
     </section>

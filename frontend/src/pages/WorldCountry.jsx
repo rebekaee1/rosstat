@@ -425,10 +425,16 @@ export default function WorldCountry() {
       )}
 
       {isLoading && (
-        <div className="min-h-screen space-y-4">
-          <SkeletonBox className="h-9 w-64 max-w-full" />
-          <SkeletonBox className="h-10 w-full rounded-xl" />
-          <SkeletonBox className="h-40 rounded-xl" />
+        <div className="space-y-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="h-4 w-28" />
+          <SkeletonBox className="h-10 w-3/4 max-w-md" />
+          <SkeletonBox className="h-4 w-full max-w-xl" />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            <SkeletonBox className="col-span-2 h-40 rounded-3xl sm:col-span-1" />
+            <SkeletonBox className="h-36 rounded-3xl" />
+            <SkeletonBox className="h-36 rounded-3xl" />
+          </div>
+          <SkeletonBox className="h-12 w-full rounded-xl" />
         </div>
       )}
 
@@ -463,7 +469,6 @@ export default function WorldCountry() {
                 code={data.country.code}
                 name={countryName}
                 slug={slug}
-                region={localizedDisplay(locale, data.country.region, data.country.region_en)}
                 area={data.area}
                 population={data.population}
               />

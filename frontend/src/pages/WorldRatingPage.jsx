@@ -794,7 +794,7 @@ export default function WorldRatingPage() {
                           className="w2-rank-row fe-press"
                         >
                           <span className="w2-rank-pos">{item.rank}</span>
-                          <CountryFlag code={item.country_code} />
+                          <span className="w2-rank-flag"><CountryFlag code={item.country_code} /></span>
                           <span className="w2-rank-name">{ratingCountryName(item)}</span>
                           <span className="w2-rank-value">
                             <strong>{fmtValue(item.value)}</strong>

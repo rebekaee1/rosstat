@@ -481,7 +481,7 @@ export default function WorldIndicatorPage() {
           shortCrumb(displayName) || '…',
           code,
         )}
-        className="flex-nowrap overflow-hidden [&>span:last-child]:min-w-0 [&>span:last-child>span]:truncate"
+        className="flex-nowrap! overflow-hidden [&>span:last-child]:min-w-0 [&>span:last-child>span]:block [&>span:last-child>span]:truncate"
       />
 
       {notFound && (

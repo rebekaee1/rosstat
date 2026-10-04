@@ -243,6 +243,87 @@ describe('WorldRatingPage', () => {
     expect(row.textContent).not.toContain('1 июня 2025');
   });
 
+  it('на телефоне показывает карточки «место, флаг, страна, значение с единицей» вместо таблицы со спрятанным значением', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
+      matches: media.includes('max-width: 639px'), media, addEventListener() {}, removeEventListener() {},
+    }));
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, []],
+      [/^\/world\/countries/, {
+        countries: [
+          { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 10 },
+          { code: 'FR', slug: 'france', name: 'Франция', name_en: 'France', indicators_count: 10 },
+          { code: 'IT', slug: 'italy', name: 'Италия', name_en: 'Italy', indicators_count: 10 },
+        ],
+        total: 3,
+      }],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [{ slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%', default_sort: 'asc' }],
+        total: 1,
+      }],
+      [/^\/world\/compare\/map-series\/unemployment-rate/, {
+        concept: { slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' },
+        years: [2025],
+        values_by_year: {
+          2025: {
+            DE: { country_code: 'DE', country_slug: 'germany', country_name: 'Германия', indicator_code: 'de-une', date: '2025-06-01', value: 3.1, unit: '%' },
+            FR: { country_code: 'FR', country_slug: 'france', country_name: 'Франция', indicator_code: 'fr-une', date: '2025-06-01', value: 7.4, unit: '%' },
+          },
+        },
+        benchmark_by_year: {},
+      }],
+    ]);
+    renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' });
+    await waitFor(() => expect(document.querySelectorAll('.w2-rank-item')).toHaveLength(2));
+    // Таблицы нет, значение и единица стоят рядом со страной в одной строке.
+    expect(document.querySelector('#rating-table table')).toBeNull();
+    const first = document.querySelectorAll('.w2-rank-row')[0];
+    const text = first.textContent.replace(/\u00A0/g, ' ');
+    expect(text).toContain('1');
+    expect(text).toContain('Германия');
+    expect(text).toContain('3,1');
+    expect(text).toContain('%');
+    expect(first.querySelector('.fe-flag')).toBeTruthy();
+    // Технические фразы убраны с экрана.
+    const page = document.body.textContent;
+    expect(page).not.toMatch(/Медиана по|В таблице участвуют|для цен на карте/i);
+    expect(document.body.textContent).not.toContain('\u00B7');
+  });
+
+  it('скрывает карточку «Страны без данных», когда без данных никого нет, и прячет нехватающих под раскрывающийся блок', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, []],
+      [/^\/world\/countries/, {
+        countries: [
+          { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 10 },
+          { code: 'FR', slug: 'france', name: 'Франция', name_en: 'France', indicators_count: 10 },
+        ],
+        total: 2,
+      }],
+      [/^\/world\/rating\/concepts/, {
+        concepts: [{ slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%', default_sort: 'asc' }],
+        total: 1,
+      }],
+      [/^\/world\/compare\/map-series\/unemployment-rate/, {
+        concept: { slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '%' },
+        years: [2025],
+        values_by_year: {
+          2025: {
+            DE: { country_code: 'DE', country_slug: 'germany', country_name: 'Германия', indicator_code: 'de-une', date: '2025-06-01', value: 3.1, unit: '%' },
+            FR: { country_code: 'FR', country_slug: 'france', country_name: 'Франция', indicator_code: 'fr-une', date: '2025-06-01', value: 7.4, unit: '%' },
+          },
+        },
+        benchmark_by_year: {},
+      }],
+    ]);
+    renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' });
+    await waitFor(() => expect(dataRows()).toHaveLength(2));
+    expect(screen.queryByText(/Страны без данных/)).toBeNull();
+    expect(screen.queryByText(/Все страны мирового каталога имеют значение/)).toBeNull();
+  });
+
   it('на рейтинге нет поиска страны, фильтра и матрицы «Страны рядом» (правка 16)', async () => {
     mockApiGet(ratingMocks());
 
