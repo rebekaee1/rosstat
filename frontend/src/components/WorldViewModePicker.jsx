@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { cn } from '../lib/format';
 import Chip from './Chip';
 import ChipGroup from './ChipGroup';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
-import { localizeViewModeLabel } from '../i18n/viewModeLabels';
+import { pickerLabel, pickerHintKey } from '../lib/pickerLabels';
+import { PickerCard, PickerLabel, PickerHint } from './PickerParts';
 import {
   defaultModeForWorldGroup,
   expandedGroupForWorldMode,
@@ -38,15 +38,16 @@ export default function WorldViewModePicker({
 }) {
   const t = useT();
   const { locale } = useLocale();
-  const sectionTitle = title || t('indicator.picker.mode');
+  const sectionTitle = title || t('w3.picker.showAs');
   const groups = useMemo(() => {
     const raw = groupModesFromApi(modes);
     return raw.map((g) => ({
       ...g,
-      label: localizeViewModeLabel(g.label, locale),
+      rawLabel: g.label,
+      label: pickerLabel(g.label, locale),
       modes: g.modes?.map((m) => ({
         ...m,
-        label: localizeViewModeLabel(m.label, locale),
+        label: pickerLabel(m.label, locale),
         hint: aggregatedModeHint(m, t),
       })),
     }));
@@ -102,18 +103,17 @@ export default function WorldViewModePicker({
   const subModes = expanded?.modes ?? [];
   const activeTopGroup = expandedGroupForWorldMode(groups, currentMode);
 
+  const activeGroup = groups.find((g) => g.id === activeTopGroup);
+  const hintKey = pickerHintKey(activeGroup?.rawLabel);
+  const visibleSub = subModes.filter((item) => !item.disabled);
+
   const body = (
     <>
-      <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-        {sectionTitle}
-      </p>
-      {/* Как CpiViewModePicker: wrap, не горизонтальный скролл —
-          иначе подпись «Уровень» (w-full) выталкивает частоты за край. */}
-      <ChipGroup label={sectionTitle}>
+      <PickerLabel>{sectionTitle}</PickerLabel>
+      <ChipGroup label={sectionTitle} grid>
         {groups.map((group) => (
           <Chip
             key={group.id}
-            className="fe-chip--wrap shrink-0"
             active={group.id === activeTopGroup}
             onClick={() => onTopClick(group)}
           >
@@ -121,50 +121,33 @@ export default function WorldViewModePicker({
           </Chip>
         ))}
       </ChipGroup>
-      {subModes.length > 0 && (
-        <ChipGroup
-          label={expanded?.label}
-          nowrap={compact}
-          className={cn('mt-3 border-t border-border-subtle pt-3', compact && '-mx-1 px-1')}
-        >
-          {!compact && (
-            <span aria-hidden="true" className="mb-0 w-full text-[11px] font-mono uppercase tracking-[0.15em] text-text-tertiary">
-              {expanded.label}
-            </span>
-          )}
-          {subModes.map((item) => (
-            <Chip
-              key={`${expanded.id}-${item.mode}`}
-              className="fe-chip--wrap shrink-0"
-              active={!item.disabled && item.mode === currentMode}
-              disabled={item.disabled}
-              title={item.hint || undefined}
-              onClick={() => onSubClick(expanded.id, item)}
-            >
-              {item.label}
-              {item.disabled && item.hint ? (
-                <span className="ml-1 font-normal">{item.hint}</span>
-              ) : (!item.official && !item.disabled ? (
-                <span className="ml-1 font-normal">{t('world.mode.badge.derived')}</span>
-              ) : null)}
-            </Chip>
-          ))}
-        </ChipGroup>
+      <PickerHint>{hintKey ? t(hintKey) : null}</PickerHint>
+      {visibleSub.length > 1 && (
+        <div className="fe-pick-sub">
+          <PickerLabel>{t('w3.picker.detail')}</PickerLabel>
+          <ChipGroup label={expanded?.label} grid>
+            {visibleSub.map((item) => (
+              <Chip
+                key={`${expanded.id}-${item.mode}`}
+                active={item.mode === currentMode}
+                title={item.hint || undefined}
+                onClick={() => onSubClick(expanded.id, item)}
+              >
+                {item.label}
+                {!item.official ? (
+                  <span className="ml-1 font-normal">{t('world.mode.badge.derived')}</span>
+                ) : null}
+              </Chip>
+            ))}
+          </ChipGroup>
+        </div>
       )}
     </>
   );
 
   if (compact) {
-    return (
-      <div className="border-t border-border-subtle pt-4">
-        {body}
-      </div>
-    );
+    return <div className="fe-pick-embedded">{body}</div>;
   }
 
-  return (
-    <section className="mb-6 min-w-0 rounded-[1.25rem] border border-border-subtle bg-surface p-3.5 shadow-sm sm:mb-8 sm:rounded-[1.5rem] sm:p-5">
-      {body}
-    </section>
-  );
+  return <PickerCard className="min-w-0">{body}</PickerCard>;
 }

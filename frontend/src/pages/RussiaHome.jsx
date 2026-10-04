@@ -8,7 +8,7 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  ArrowUpRight, CalendarDays, MapPinned, Newspaper, TrendingUp, Trophy, Users,
+  ArrowUpRight, CalendarDays, MapPinned, Newspaper, Trophy, Users,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { useRegionsLanding } from '../lib/regionsApi';
@@ -22,7 +22,11 @@ import {
   russiaIndicatorDisplay,
   russiaOverviewChips,
 } from '../lib/russiaHomeCards';
-import { formatChange, formatDate, resolveDateFormat } from '../lib/format';
+import { resolveDateFormat } from '../lib/format';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { formatDeltaWithUnit } from '../lib/deltaText';
+import { periodPhrase } from '../lib/periodPhrase';
+import DeltaBadge from '../components/DeltaBadge';
 import {
   calendarPath,
   demographicsPath,
@@ -40,6 +44,7 @@ import MobileNavSelect from '../components/MobileNavSelect';
 import { breadcrumbJsonLd, russiaHomeTrail } from '../lib/breadcrumbs';
 import { mountJsonLd } from '../lib/jsonLd';
 import '../styles/platform-pages.css';
+import '../styles/indicator-russia.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 
@@ -86,7 +91,7 @@ function RussiaTerritoryCard() {
       />
 
       <div className="absolute left-4 top-3 z-10 max-w-[60%] pr-2">
-        <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-white/70">
+        <div className="text-[13px] font-semibold text-white/80">
           {t('world.territory.profile')}
         </div>
         <div className="mt-1 text-xs text-[#d8c58b]">
@@ -108,8 +113,7 @@ function RussiaTerritoryCard() {
 
       <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 border-t border-white/10 pt-3 sm:items-end sm:gap-3">
         <div className="min-w-0">
-          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/70">RU</div>
-          <div className="mt-0.5 max-w-[11rem] truncate text-xs font-medium text-white/90">
+          <div className="max-w-[11rem] truncate text-sm font-semibold text-white/90">
             {t('crumb.russia')}
           </div>
         </div>
@@ -136,9 +140,8 @@ const QUICK_GRID_LG = {
   4: 'lg:grid-cols-4',
 }[QUICK_LINK_DEFS.length] || 'lg:grid-cols-3';
 
-function indicatorDate(dateStr, frequency, locale) {
-  if (!dateStr) return '—';
-  return formatDate(dateStr, resolveDateFormat({ frequency }), locale);
+function indicatorDate(t, dateStr, frequency, locale) {
+  return periodPhrase(t, dateStr, resolveDateFormat({ frequency }), locale) || '';
 }
 
 function formatNumberRu(value, locale) {
@@ -154,7 +157,7 @@ function FreqBadge({ item, t }) {
   const key = `world.freq.${item.frequency}`;
   const label = t(key);
   return (
-    <span className="rounded-full bg-obsidian-light px-2 py-0.5 font-mono">
+    <span className="rounded-full bg-obsidian-light px-2.5 py-0.5 text-xs font-medium text-text-secondary">
       {label !== key ? label : item.frequency}
     </span>
   );
@@ -170,36 +173,31 @@ function RussiaIndicatorTile({ indicator }) {
   const display = russiaIndicatorDisplay(indicator);
   const changeNum = russiaIndicatorChange(indicator);
   const title = locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name;
+  const polarity = indicatorPolarity(indicator.name, indicator.name_en, indicator.code);
+  const delta = changeNum != null ? formatDeltaWithUnit(changeNum, display?.unit, { locale }) : null;
+  const date = indicatorDate(t, indicator.current_date, indicator.frequency, locale);
 
   return (
     <Link
       to={russiaIndicatorPath(indicator.code)}
-      className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[92px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
+      className="fe-rus-tile fe-press group"
     >
       <div className="min-w-0 flex-1">
-        <div className="break-words text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink sm:text-[14px]">
-          {title}
-        </div>
-        <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-text-secondary sm:mt-1.5">
+        <div className="fe-rus-tile__title">{title}</div>
+        <div className="fe-rus-tile__meta">
           <FreqBadge item={indicator} t={t} />
-          {indicator.unit && <span className="min-w-0 break-words">{indicator.unit}</span>}
         </div>
       </div>
-      <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">
-        <div className="font-mono text-[15px] font-semibold tabular-nums text-text-primary sm:text-[14px] sm:font-medium">
-          {display ? formatNumberRu(display.value, locale) : '—'}
+      <div className="fe-rus-tile__side">
+        <div className="fe-rus-tile__value">
+          <span className="fe-rus-tile__num">{display ? formatNumberRu(display.value, locale) : '—'}</span>
+          {display?.unit ? <span className="fe-rus-tile__unit">{display.unit}</span> : null}
         </div>
-        <div className="flex items-center gap-1.5">
-          {changeNum != null && (
-            <span className={`font-mono text-xs tabular-nums ${changeNum > 0 ? 'fe-ink-pos' : 'fe-ink-neg'}`}>
-              {formatChange(changeNum, locale)}
-            </span>
-          )}
-          {indicator.current_date && (
-            <span className="font-mono text-xs text-text-secondary">
-              {indicatorDate(indicator.current_date, indicator.frequency, locale)}
-            </span>
-          )}
+        <div className="fe-rus-tile__foot">
+          {delta && (delta.flat
+            ? <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
+            : <DeltaBadge delta={changeNum} polarity={polarity}>{delta.text}</DeltaBadge>)}
+          {date && <span className="fe-rus-tile__date">{date}</span>}
         </div>
       </div>
     </Link>
@@ -287,7 +285,7 @@ export default function RussiaHome() {
         <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-champagne/10 blur-3xl" />
         <div className="relative grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] lg:items-center lg:gap-7">
           <div className="min-w-0">
-            <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-champagne-ink">
+            <p className="text-sm font-semibold text-champagne-ink">
               {t('russia.eyebrow')}
             </p>
             <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-text-primary md:text-5xl">
@@ -305,27 +303,24 @@ export default function RussiaHome() {
             <Link
               key={chip.code}
               to={russiaIndicatorPath(chip.code)}
-              className="group min-w-0 rounded-xl bg-obsidian-light/65 px-3 py-3 transition-colors hover:bg-champagne/[0.08]"
+              className="fe-rus-chip fe-press group"
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="font-mono text-lg font-semibold tabular-nums text-text-primary">
-                  {chip.value.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2,
-                  })}
-                  <span className="ml-1 text-xs font-normal text-text-secondary">
-                    {chip.unit}
-                  </span>
-                </div>
-                <TrendingUp size={13} className="mt-1 shrink-0 text-champagne-ink" />
-              </div>
-              <div className="mt-1 line-clamp-1 text-xs text-text-secondary group-hover:text-text-primary">
+              <div className="fe-rus-chip__name">
                 {locale === 'en' && chip.indicator.name_en
                   ? chip.indicator.name_en
                   : chip.indicator.name}
               </div>
-              <div className="mt-1 truncate font-mono text-xs text-text-secondary">
-                {indicatorDate(chip.indicator.current_date, chip.indicator.frequency, locale)}
+              <div className="fe-rus-chip__value">
+                <span className="fe-rus-chip__num">
+                  {chip.value.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
+                {chip.unit ? <span className="fe-rus-chip__unit">{chip.unit}</span> : null}
+              </div>
+              <div className="fe-rus-chip__date">
+                {indicatorDate(t, chip.indicator.current_date, chip.indicator.frequency, locale)}
               </div>
             </Link>
           ))}
@@ -342,7 +337,7 @@ export default function RussiaHome() {
       <section className="mb-8" aria-labelledby="russia-quick-title">
         <h2
           id="russia-quick-title"
-          className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-text-secondary"
+          className="mb-3 text-xl font-bold tracking-tight text-text-primary"
         >
           {t('russia.sections')}
         </h2>
@@ -356,7 +351,7 @@ export default function RussiaHome() {
               <Link
                 key={item.to}
                 to={item.to}
-                className="group flex items-start gap-3 rounded-xl border border-border-subtle bg-surface px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-sm"
+                className="fe-press group flex items-start gap-3 rounded-[1.5rem] border border-border-subtle bg-surface px-4 py-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
               >
                 <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-champagne/10 text-champagne-ink">
                   <Icon size={15} />
@@ -366,7 +361,7 @@ export default function RussiaHome() {
                     <span className="truncate">{t(item.titleKey)}</span>
                     <ArrowUpRight size={12} className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
                   </div>
-                  <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-text-secondary">
+                  <p className="mt-0.5 line-clamp-2 text-[13px] leading-snug text-text-secondary">
                     {t(item.descKey)}
                   </p>
                 </div>
@@ -430,7 +425,7 @@ export default function RussiaHome() {
           <div className="grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">
             {grouped.length > 0 && (
               <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" data-testid="russia-aside">
-                <div className="mb-2 px-2 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
+                <div className="mb-2 px-2 text-sm font-semibold text-text-primary">
                   {t('russia.categories.title')}
                 </div>
                 <nav className="flex flex-col gap-2" aria-label={t('russia.categories.title')}>
@@ -441,7 +436,7 @@ export default function RussiaHome() {
                       className="fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary"
                     >
                       <span className="min-w-0 truncate">{categoryLabel(g.category, locale)}</span>
-                      <span className="shrink-0 font-mono text-xs">{g.count}</span>
+                      <span className="shrink-0 text-xs tabular-nums">{g.count}</span>
                     </a>
                   ))}
                 </nav>
@@ -465,14 +460,14 @@ export default function RussiaHome() {
                 <section key={g.category.slug} id={`cat-${g.category.slug}`} className="scroll-mt-24" data-testid="russia-section">
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                     <div className="min-w-0">
-                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne-ink">
+                      <div className="text-[13px] font-semibold text-champagne-ink">
                         {t('world.country.indicators')}
                       </div>
                       <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
                         {categoryLabel(g.category, locale)}
                       </h2>
                     </div>
-                    <span className="shrink-0 font-mono text-xs text-text-secondary">{g.count}</span>
+                    <span className="shrink-0 text-sm tabular-nums text-text-secondary">{g.count}</span>
                   </div>
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {g.indicators.map((ind) => (

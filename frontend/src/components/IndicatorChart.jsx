@@ -7,9 +7,10 @@ import {
 import { Activity, ZoomIn, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
 import {
   formatDate, formatAxisTick, formatValue,
-  chartValueDigits, unitSuffix, cn, pickChartAxisTicks, chartAxisTickBudget,
+  chartValueDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
 } from '../lib/format';
 import { track, events } from '../lib/track';
+import { valueWithUnit } from '../lib/valueText';
 import { buildForecastVisualSeries, mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 import { useT } from '../i18n';
 import { CHART_THEME } from '../lib/chartTheme';
@@ -123,7 +124,7 @@ function CustomTooltip({
           <span className="text-sm font-semibold tabular-nums text-text-primary">
             {numericTooltipOnly
               ? formatValue(actual.value, valueDigits)
-              : `${formatValue(actual.value, valueDigits)}${unitSuffix(unit)}`}
+              : valueWithUnit(actual.value, valueDigits, unit)}
           </span>
         </div>
       )}
@@ -135,7 +136,7 @@ function CustomTooltip({
             <span className="text-xs text-text-tertiary">{forecastLabel}</span>
           </div>
           <span className="text-sm font-mono font-semibold text-champagne-muted">
-            {`${formatValue(forecast.value, valueDigits)}${unitSuffix(unit)}`}
+            {valueWithUnit(forecast.value, valueDigits, unit)}
           </span>
         </div>
       )}
@@ -153,7 +154,7 @@ function CustomTooltip({
           <span className="font-mono text-sm font-semibold" style={{ color: series.color }}>
             {numericTooltipOnly
               ? formatValue(series.payload.value, valueDigits)
-              : `${formatValue(series.payload.value, valueDigits)}${unitSuffix(unit)}`}
+              : valueWithUnit(series.payload.value, valueDigits, unit)}
           </span>
         </div>
       ))}
@@ -533,7 +534,7 @@ export default function IndicatorChart({
   const plotAriaLabel = lastActualRow
     ? t('chart.plotAria', {
       title,
-      value: `${formatValue(lastActualRow.actual, digits)}${unitSuffix(unit)}`,
+      value: valueWithUnit(lastActualRow.actual, digits, unit),
       date: formatDate(lastActualRow.date, dateFormat),
     })
     : title;

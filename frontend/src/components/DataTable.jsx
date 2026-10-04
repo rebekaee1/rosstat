@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
-import { formatDate, formatValue, formatValueWithUnit, unitSuffix, cn } from '../lib/format';
+import { formatDate, formatValue, unitSuffix, cn } from '../lib/format';
+import { valueWithUnit } from '../lib/valueText';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { tableRowMatches } from '../lib/tableSearch';
@@ -132,7 +133,7 @@ export default function DataTable({
                   </td>
                   <td className="px-5 py-2.5 text-right text-sm font-semibold tabular-nums text-text-primary">
                     {showUnitInValues
-                      ? formatValueWithUnit(row.value, unit, valueDigits)
+                      ? valueWithUnit(row.value, valueDigits, unit)
                       : formatValue(row.value, valueDigits)}
                   </td>
                 </tr>

@@ -692,3 +692,54 @@ a.fe-today-card:hover .fe-today-card__go { color: var(--color-champagne-ink); tr
   .fe-demo-item__num { font-size: 26px; text-align: left; }
   .fe-demo-item__pct { text-align: left; }
 }
+
+/* ── Страница «Россия» ──────────────────────────────────────────────────── */
+.fe-rus-chip {
+  display: block;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-obsidian-light) 65%, var(--color-surface));
+  transition: background-color 0.2s;
+}
+.fe-rus-chip:hover { background: rgba(173, 138, 72, 0.1); }
+.fe-rus-chip__name { color: var(--color-text-secondary); font-size: 14px; font-weight: 600; line-height: 1.3; }
+.fe-rus-chip__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; margin-top: 6px; }
+.fe-rus-chip__num { color: var(--color-text-primary); font-size: 24px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.fe-rus-chip__unit { color: var(--color-text-secondary); font-size: 14px; }
+.fe-rus-chip__date { margin-top: 2px; color: var(--color-text-secondary); font-size: 13px; }
+
+.fe-rus-tile {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.fe-rus-tile:hover { border-color: var(--color-border-champagne); box-shadow: 0 12px 30px -22px rgba(35, 30, 16, 0.35); }
+@media (min-width: 640px) {
+  .fe-rus-tile { min-height: 96px; flex-direction: row; align-items: center; gap: 16px; padding: 16px 20px; }
+}
+.fe-rus-tile__title { color: var(--color-text-primary); font-size: 15px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; transition: color 0.2s; }
+.fe-rus-tile:hover .fe-rus-tile__title { color: var(--color-champagne-ink); }
+.fe-rus-tile__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.fe-rus-tile__side {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+@media (min-width: 640px) {
+  .fe-rus-tile__side { width: 10rem; flex: none; flex-direction: column; align-items: flex-end; justify-content: center; padding-top: 0; border-top: 0; text-align: right; }
+}
+.fe-rus-tile__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; }
+.fe-rus-tile__num { color: var(--color-text-primary); font-size: 18px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.fe-rus-tile__unit { color: var(--color-text-secondary); font-size: 13px; }
+.fe-rus-tile__foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: flex-end; gap: 2px 8px; font-size: 13px; }
+.fe-rus-tile__date { color: var(--color-text-secondary); font-size: 13px; }
