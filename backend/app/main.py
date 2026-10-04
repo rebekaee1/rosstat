@@ -1137,6 +1137,26 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Telegram poller enabled: every 30s")
 
+        # Досылка недоставленного из telegram_outbox: только если Telegram-
+        # уведомления реально включены (токен + чат + дайджест или realtime).
+        if (
+            settings.telegram_resend_enabled
+            and settings.telegram_bot_token
+            and settings.telegram_chat_id
+            and (settings.telegram_digest_enabled or settings.telegram_realtime_alerts_enabled)
+        ):
+            from app.services.telegram_resend import telegram_resend_job
+            scheduler.add_job(
+                telegram_resend_job,
+                trigger=IntervalTrigger(minutes=5),
+                id="telegram_resend",
+                name="Telegram resend of undelivered outbox messages",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Telegram resend enabled: every 5 min")
+
         from app.services.sitemap_static import sitemap_build_job
         scheduler.add_job(
             locked_job(sitemap_build_job, "sitemap_build", ttl_seconds=3 * 3600),

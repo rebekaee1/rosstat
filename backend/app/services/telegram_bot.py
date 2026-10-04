@@ -24,6 +24,7 @@ import io
 import json
 import logging
 import re
+from contextvars import ContextVar
 from datetime import date, datetime, timezone
 from html import escape
 
@@ -34,6 +35,7 @@ from collections import Counter
 
 from app.config import settings
 from app.services.alerting import interactive_authorized_ids
+from app.services.telegram_retry import request_with_retry
 from app.core.cache import get_state_redis
 from app.database import async_session
 from app.models import AuthAudit, Consent, EmailCredential, FrontendEvent, OAuthIdentity, User
@@ -64,23 +66,52 @@ def main_menu_keyboard() -> dict:
     }
 
 
+# Методы отправки повторяются при временных сбоях (telegram_retry); поллинг
+# (getUpdates) и ответы на callback — нет: поллер сам идёт по кругу каждые 30 с,
+# а callback_query_id живёт секунды.
+_RETRY_METHODS = frozenset({"sendMessage", "sendDocument"})
+# Причина последнего неуспеха `_api` в текущем контексте — для архива outbox
+# (вместо «send failed (см. логи)» — реальный HTTP-код/класс исключения).
+_last_api_error: ContextVar[str | None] = ContextVar("tg_last_api_error", default=None)
+
+
 async def _api(method: str, payload: dict, files: dict | None = None) -> dict | None:
     token = settings.telegram_bot_token
     if not token:
         return None
+    _last_api_error.set(None)
     url = _API.format(token=token, method=method)
+
+    def _rewind() -> None:
+        # Файл — BytesIO: после первой попытки курсор в конце, повтор ушёл бы пустым.
+        for part in (files or {}).values():
+            stream = part[1] if isinstance(part, tuple) and len(part) > 1 else part
+            if hasattr(stream, "seek"):
+                stream.seek(0)
+
     try:
         async with httpx.AsyncClient(timeout=35) as client:
-            if files:
-                resp = await client.post(url, data=payload, files=files)
-            else:
-                resp = await client.post(url, json=payload)
+            async def _once() -> httpx.Response:
+                if files:
+                    _rewind()
+                    return await client.post(url, data=payload, files=files)
+                return await client.post(url, json=payload)
+
+            resp, error, _attempts = await request_with_retry(
+                _once, max_attempts=None if method in _RETRY_METHODS else 1,
+            )
+        if error is not None or resp is None:
+            _last_api_error.set(error)
+            logger.warning("Telegram %s failed: %s", method, error)
+            return None
         data = resp.json()
         if not data.get("ok"):
+            _last_api_error.set(str(data)[:250])
             logger.warning("Telegram %s failed: %s", method, str(data)[:300])
             return None
         return data
-    except Exception:
+    except Exception as exc:  # noqa: BLE001
+        _last_api_error.set(f"{type(exc).__name__}: {exc}"[:250])
         logger.warning("Telegram %s failed", method, exc_info=True)
         return None
 
@@ -188,11 +219,12 @@ async def send_message(
         row_id = await archive_begin(
             chat_id=str(chat_id), method="sendMessage", kind=kind, text=chunk, payload=payload,
         )
+        _last_api_error.set(None)
         data = await _api("sendMessage", payload)
         await archive_finish(
             row_id, ok=data is not None,
             telegram_message_id=(data or {}).get("result", {}).get("message_id"),
-            error=None if data is not None else "send failed (см. логи)",
+            error=None if data is not None else (_last_api_error.get() or "send failed (см. логи)"),
         )
         ok_any = ok_any or data is not None
     return ok_any
@@ -211,11 +243,12 @@ async def send_document(
         chat_id=str(chat_id), method="sendDocument", kind=kind, text=caption,
         payload=payload, file_name=filename, file_content=content,
     )
+    _last_api_error.set(None)
     data = await _api("sendDocument", payload, files=files)
     await archive_finish(
         row_id, ok=data is not None,
         telegram_message_id=(data or {}).get("result", {}).get("message_id"),
-        error=None if data is not None else "send failed (см. логи)",
+        error=None if data is not None else (_last_api_error.get() or "send failed (см. логи)"),
     )
     return data is not None
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from collections import Counter
 from datetime import date, datetime, time, timedelta, timezone
@@ -278,6 +279,9 @@ async def behavior_retention_job() -> None:
     logger.info("Behavior retention: deleted %s rows older than %s days", res.rowcount, days)
 
 
+_INVENTORY_BLOCK_TIMEOUT_S = 90  # потолок на блок «инвентаризация датасета» в дайджесте
+
+
 async def telegram_daily_digest_job() -> None:
     """Ежедневный Telegram-дайджест: пользователи БД + агрегированная статистика
     Метрики (визиты/посетители + достижения всех целей-CTA). ADR-0007 Phase 2."""
@@ -304,10 +308,15 @@ async def telegram_daily_digest_job() -> None:
         parts.append("ℹ️ Метрика отключена (нет токена) — только статистика БД")
     try:
         from app.services.dataset_inventory import build_inventory, format_inventory_html
-        async with analytics_session() as db:
-            inv = await build_inventory(db)
-        parts.append(format_inventory_html(inv))
-    except Exception:
+
+        async def _inventory_block() -> str:
+            async with analytics_session() as db:
+                return format_inventory_html(await build_inventory(db))
+
+        # Блок — приложение к дайджесту: сбой/таймаут (statement timeout на
+        # большой таблице) не должен задерживать или отменять сам дайджест.
+        parts.append(await asyncio.wait_for(_inventory_block(), _INVENTORY_BLOCK_TIMEOUT_S))
+    except Exception:  # noqa: BLE001 — в т.ч. asyncio.TimeoutError
         logger.warning("Telegram digest: dataset inventory failed", exc_info=True)
     from app.services.telegram_bot import main_menu_keyboard
     results = await send_telegram_digest("\n".join(parts), reply_markup=main_menu_keyboard())
