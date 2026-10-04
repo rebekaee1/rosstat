@@ -309,10 +309,12 @@ class Settings(BaseSettings):
     # LLM-фильтр отчёта через OpenRouter; пустой ключ = детерминированный fallback.
     openrouter_api_key: str = ""
     # Every captured session gets an evidence report; model enrichment is optional.
-    session_analysis_enabled: bool = True
+    # Both are off by default (owner decision 2026-10-02): the first release ships the
+    # code and tables only; enabling needs a disk/memory measurement on the test server.
+    session_analysis_enabled: bool = False
     session_analysis_ai_enabled: bool = False
     session_analysis_batch_size: int = 100
-    session_replay_enabled: bool = True
+    session_replay_enabled: bool = False
     session_replay_retention_days: int = 14
     session_replay_max_recording_bytes: int = 8_000_000
     openrouter_model: str = "anthropic/claude-sonnet-5"
