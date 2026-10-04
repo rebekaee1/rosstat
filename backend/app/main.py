@@ -240,47 +240,9 @@ scheduler = AsyncIOScheduler(
 )
 
 
-def locked_job(fn, job_id: str, ttl_seconds: int):
-    """О-13: распределённый лок на исполнение job (state-Redis SET NX EX).
-
-    Планировщик in-process: два инстанса backend (UVICORN_WORKERS=2 или
-    overlap при рестарте) исполнили бы ETL/derived/retrain дважды. Лок с TTL
-    гарантирует одного исполнителя; при недоступном Redis — fail-open
-    (single-instance допущение важнее, чем пропуск прогона).
-    """
-    import uuid
-
-    _RELEASE_LUA = (
-        "if redis.call('GET', KEYS[1]) == ARGV[1] then "
-        "return redis.call('DEL', KEYS[1]) else return 0 end"
-    )
-
-    async def wrapper(*args, **kwargs):
-        from app.core.cache import get_state_redis
-
-        key = f"sched:lock:{job_id}"
-        token = uuid.uuid4().hex
-        redis = None
-        try:
-            redis = await get_state_redis()
-            acquired = await redis.set(key, token, nx=True, ex=ttl_seconds)
-            if not acquired:
-                logger.info("Job %s: lock held by another instance, skipping", job_id)
-                return None
-        except Exception:
-            logger.warning("Job %s: lock check failed (Redis down), running unlocked", job_id)
-            redis = None
-        try:
-            return await fn(*args, **kwargs)
-        finally:
-            if redis is not None:
-                try:
-                    await redis.eval(_RELEASE_LUA, 1, key, token)
-                except Exception:
-                    pass  # TTL добьёт ключ сам
-
-    wrapper.__name__ = f"locked_{getattr(fn, '__name__', job_id)}"
-    return wrapper
+# О-13/F07: lease-блокировка задач (владелец, heartbeat, группы взаимоисключения)
+# живёт в app.services.job_lease; здесь — реэкспорт для расписания и тестов.
+from app.services.job_lease import JobLeaseLostError, locked_job  # noqa: E402,F401
 
 
 # Выставляется в начале shutdown lifespan. После него engine.dispose()

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import secrets
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
@@ -8,7 +9,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
 from pydantic import BaseModel, Field
-from sqlalchemy import desc, func, select
+from sqlalchemy import desc, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -20,6 +21,8 @@ from app.services.action_executor import execute_approved_action
 from app.services.analytics_features import detect_page_opportunities, sync_run_impact, top_pages, top_search_phrases
 from app.services.scrape_guard import is_noise_client_ua
 from app.services.yandex_metrika_reporting import MetrikaReportingClient
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
@@ -229,6 +232,32 @@ async def propose_action(payload: ActionProposal, db: AsyncSession = Depends(get
     }
 
 
+# F14: жизненный цикл действия в agent_action_audit.
+#   proposed -> applying (намерение записано и закоммичено ДО внешнего вызова)
+#            -> approved (итог записан) | failed (исполнитель вернул ошибку).
+# `applying` без итога = внешнее действие могло пройти, а запись итога не
+# удалась (или процесс упал): повторный apply запрещён, нужна ручная сверка
+# с внешней системой. Из `failed` повтор разрешён (оператор перезапускает сам).
+_APPLY_ALLOWED_FROM = ("proposed", "failed")
+_RECONCILE_NOTE = (
+    "applying: внешнее действие начато, итог не записан. Если статус не меняется — "
+    "сверьте результат во внешней системе (Метрика/Вебмастер) и закройте запись вручную; "
+    "повторный apply запрещён."
+)
+
+
+async def _record_apply_outcome(db: AsyncSession, action_id: int, values: dict[str, Any]) -> bool:
+    """Записать итог только пока запись в `applying` (guard от гонок)."""
+    result = await db.execute(
+        update(AgentActionAudit)
+        .where(AgentActionAudit.id == action_id, AgentActionAudit.status == "applying")
+        .values(**values)
+        .execution_options(synchronize_session=False)
+    )
+    await db.commit()
+    return result.rowcount == 1
+
+
 @router.post("/actions/{action_id}/apply", dependencies=[Depends(_require_analytics_token)])
 async def apply_action(action_id: int, approval_token: str, db: AsyncSession = Depends(get_db)):
     action = await db.get(AgentActionAudit, action_id)
@@ -240,21 +269,66 @@ async def apply_action(action_id: int, approval_token: str, db: AsyncSession = D
     decision = evaluate_action(action.action_type, {**(action.target_json or {}), **(action.payload_json or {})}, approved=True)
     if not decision.allowed:
         raise HTTPException(status_code=409, detail=decision.reason)
+
+    # 1) Намерение в аудит и коммит ДО внешнего вызова. Атомарный claim по
+    # статусу: из двух параллельных apply строку получит один (rowcount=1).
+    claimed_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    claim = await db.execute(
+        update(AgentActionAudit)
+        .where(AgentActionAudit.id == action_id, AgentActionAudit.status.in_(_APPLY_ALLOWED_FROM))
+        .values(
+            status="applying",
+            approval_token_hash=hashlib.sha256(approval_token.encode("utf-8")).hexdigest(),
+            response_json={"phase": "applying", "started_at": claimed_at.isoformat()},
+            error_message=_RECONCILE_NOTE,
+            applied_at=None,
+        )
+        .execution_options(synchronize_session=False)
+    )
+    await db.commit()
+    if claim.rowcount != 1:
+        await db.refresh(action)
+        raise HTTPException(
+            status_code=409,
+            detail=f"Action {action_id} is already {action.status}; repeat apply refused",
+        )
+    await db.refresh(action)
+
+    # 2) Внешнее действие.
     try:
         result = await execute_approved_action(action, approval_token=approval_token)
     except Exception as exc:
-        action.status = "failed"
-        action.error_message = str(exc)[:500]
-        db.add(action)
-        await db.commit()
+        try:
+            await db.rollback()
+            await _record_apply_outcome(
+                db, action_id, {"status": "failed", "error_message": str(exc)[:500], "response_json": None}
+            )
+        except Exception:
+            # Не смогли записать отказ: остаётся `applying` (безопасная сторона —
+            # повтор запрещён до сверки).
+            logger.exception("action %s: failed to record executor failure; left in applying", action_id)
         raise HTTPException(status_code=409, detail=str(exc))
-    action.status = "approved"
-    action.approval_token_hash = hashlib.sha256(approval_token.encode("utf-8")).hexdigest()
-    action.response_json = result
-    action.applied_at = datetime.now(timezone.utc).replace(tzinfo=None)
-    db.add(action)
-    await db.commit()
-    return {"action_id": action.id, "status": action.status, "reason": decision.reason}
+
+    # 3) Итог. Не вышло — статус остаётся `applying` с пометкой для сверки.
+    applied_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    try:
+        if not await _record_apply_outcome(
+            db, action_id,
+            {"status": "approved", "response_json": result, "error_message": None, "applied_at": applied_at},
+        ):
+            raise RuntimeError("audit row is no longer in 'applying'")
+    except Exception:
+        logger.exception("action %s executed but outcome not recorded; left in applying", action_id)
+        try:
+            await db.rollback()
+        except Exception:
+            pass
+        raise HTTPException(
+            status_code=500,
+            detail=f"Action {action_id} executed but its result was not recorded; "
+                   "status stays 'applying' — reconcile with the external system, do not re-apply",
+        )
+    return {"action_id": action_id, "status": "approved", "reason": decision.reason}
 
 
 @router.post("/events")

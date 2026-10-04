@@ -36,6 +36,9 @@ Activation cheat-sheet:
   без Yandex OAuth-токенов они выполняются вхолостую и пишут предупреждение.
 - Live writes (`low_risk_write` / `high_risk_write`) требуют `analytics_live_writes_enabled=true`
   + одобренной записи в `agent_action_audit`.
+  Статусы записи при `apply`: `proposed` → `applying` (намерение закоммичено до внешнего
+  вызова) → `approved` | `failed`; повторный apply из `approved`/`applying` — 409, `applying`
+  без итога требует ручной сверки с внешней системой (2026-10-04, F14).
 
 Each endpoint row records:
 
