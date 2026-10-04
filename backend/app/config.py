@@ -299,6 +299,20 @@ class Settings(BaseSettings):
     # Мгновенные уведомления (регистрации + обратная связь). false = тишина,
     # всё уходит только в ежедневный дайджест. ETL-алерты не затрагивает.
     telegram_realtime_alerts_enabled: bool = True
+    # Повтор отправки при временных сбоях (ConnectError/таймаут/429/5xx):
+    # до N попыток с растущей паузой в пределах общего потолка по времени.
+    # 400/403/404 (неверный чат, бот заблокирован) не повторяются.
+    telegram_send_max_attempts: int = 3
+    telegram_send_retry_base_seconds: float = 1.0
+    telegram_send_retry_budget_seconds: float = 45.0
+    # Досылка недоставленного (telegram_outbox → telegram_resend_job, каждые 5 мин).
+    # Реально включается только при включённых Telegram-уведомлениях (токен +
+    # чат + digest или realtime); флаг — выключатель на случай сбоя самой досылки.
+    telegram_resend_enabled: bool = True
+    telegram_resend_min_age_minutes: int = 10   # не трогаем свежие/летящие отправки
+    telegram_resend_window_hours: int = 6       # глубина поиска недоставленного
+    telegram_resend_max_per_run: int = 10       # потолок отправок за один запуск
+    telegram_resend_max_tries: int = 3          # досылок на одно логическое сообщение
 
     # «Пульс» — дневные снапшоты активности + LLM-отчёт (П9б).
     # Получатели: pulse_chat_id + все digest_recipients (с 2026-07-06).

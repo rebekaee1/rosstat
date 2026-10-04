@@ -73,3 +73,56 @@ def test_inventory_html_is_telegram_ready(inventory):
     assert html.startswith("📦 <b>Датасет:")
     assert "Гипотезы: открытых 1, подтверждено 1, опровергнуто 0" in html
     assert "копим без удаления" in html
+
+
+def test_behavior_by_type_is_windowed_to_last_day(auth_env):
+    """Разбивка по типам — только за сутки (по индексу occurred_at), а не GROUP BY
+    по всей таблице: старые события учитываются в общем числе, но не в by_type."""
+    from datetime import timedelta
+
+    async def _run():
+        async with auth_env["session_maker"]() as db:
+            old = datetime.utcnow() - timedelta(days=3)
+            db.add_all([
+                BehaviorEvent(event_type="click", page="/"),
+                BehaviorEvent(event_type="scroll", page="/", occurred_at=old),
+            ])
+            await db.commit()
+            return await build_inventory(db)
+
+    b = asyncio.run(_run())["sections"]["behavior_events"]
+    assert b["by_type"] == {"click": 1}
+    assert b["by_type_window_hours"] == 24 and b["by_type_available"] is True
+    assert b["rows"] == 2  # общий объём — за всё время
+
+
+def test_inventory_survives_statement_timeout_on_by_type(auth_env):
+    """Таймаут разбивки по типам не роняет инвентаризацию: блок приходит без неё."""
+    from sqlalchemy.exc import OperationalError
+
+    class _TimeoutOnByType:
+        def __init__(self, db):
+            self._db = db
+
+        def __getattr__(self, name):
+            return getattr(self._db, name)
+
+        async def execute(self, stmt, *a, **kw):
+            if "GROUP BY behavior_events.event_type" in str(stmt):
+                raise OperationalError(
+                    "SELECT ...", {}, Exception("canceling statement due to statement timeout"))
+            return await self._db.execute(stmt, *a, **kw)
+
+    async def _run():
+        async with auth_env["session_maker"]() as db:
+            db.add(BehaviorEvent(event_type="click", page="/"))
+            await db.commit()
+            return await build_inventory(_TimeoutOnByType(db))
+
+    inv = asyncio.run(_run())
+    b = inv["sections"]["behavior_events"]
+    assert b["by_type"] == {} and b["by_type_available"] is False
+    assert b["rows"] == 1
+    html = format_inventory_html(inv)
+    assert html.startswith("📦 <b>Датасет:") and "Поведение: событий 1" in html
+    assert "за 24 ч" not in html  # нет разбивки — нет и пояснения к ней

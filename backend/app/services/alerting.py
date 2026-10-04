@@ -7,6 +7,7 @@ from typing import Optional
 import httpx
 
 from app.config import settings
+from app.services.telegram_retry import request_with_retry
 
 logger = logging.getLogger(__name__)
 # httpx logs the full request URL at INFO; Telegram's URL embeds the bot token.
@@ -78,16 +79,20 @@ async def send_telegram(
     try:
         url = _TELEGRAM_API.format(token=token)
         async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.post(url, json=payload)
-        if resp.status_code != 200:
-            error = f"HTTP {resp.status_code}: {resp.text[:200]}"
-            logger.warning("Telegram alert failed: %s", error)
-        else:
+            # Временные сбои (сеть/таймаут/429/5xx) повторяются с паузой в
+            # пределах общего потолка; 400/403/404 — нет. Одна архивная строка
+            # на всю отправку: итог (и число попыток при ошибке) пишет finish.
+            resp, error, _attempts = await request_with_retry(
+                lambda: client.post(url, json=payload)
+            )
+        if error is None and resp is not None:
             ok = True
             try:
                 tg_message_id = resp.json().get("result", {}).get("message_id")
             except Exception:
                 pass
+        else:
+            logger.warning("Telegram alert failed: %s", error)
     except Exception as exc:
         # str(httpx.ConnectTimeout()) пустая — без имени класса архив молчит.
         error = f"{type(exc).__name__}: {exc}"[:250]

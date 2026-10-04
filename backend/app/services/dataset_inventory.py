@@ -22,10 +22,12 @@ raw_json (по свежей выборке строк) + кардинально�
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+import logging
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import func, select, text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import (
@@ -42,6 +44,15 @@ from app.models import (
     User,
     WebmasterSearchQuery,
 )
+
+logger = logging.getLogger(__name__)
+
+# Разбивка behavior_events по типам — только за последние сутки. Полный
+# `GROUP BY event_type` по всей таблице (~1,5 ГБ) упирался в statement timeout
+# и каждый день убивал блок в дайджесте; окно идёт по индексу ix_behavior_occurred.
+# Общее число строк и границы окна по-прежнему за всё время (оценка pg_class
+# и min/max по индексу — дёшево).
+BEHAVIOR_TYPE_WINDOW_HOURS = 24
 
 # Выборка последних строк для подсчёта фактических JSON-ключей: достаточно,
 # чтобы увидеть весь словарь параметров, и дёшево для ежедневного вызова.
@@ -85,6 +96,27 @@ async def _time_range(db: AsyncSession, col) -> tuple[str | None, str | None]:
     return _fmt(row[0]), _fmt(row[1])
 
 
+async def _behavior_by_type(db: AsyncSession) -> dict[str, int] | None:
+    """События по типам за последние `BEHAVIOR_TYPE_WINDOW_HOURS` ч.
+
+    При сбое (statement timeout и т.п.) возвращает None, не ломая остальную
+    инвентаризацию: запрос идёт в SAVEPOINT, транзакция сессии остаётся рабочей.
+    """
+    cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(
+        hours=BEHAVIOR_TYPE_WINDOW_HOURS)
+    try:
+        async with db.begin_nested():
+            rows = (await db.execute(
+                select(BehaviorEvent.event_type, func.count())
+                .where(BehaviorEvent.occurred_at >= cutoff)
+                .group_by(BehaviorEvent.event_type)
+            )).all()
+        return dict(rows)
+    except SQLAlchemyError:
+        logger.warning("dataset inventory: behavior by_type failed", exc_info=True)
+        return None
+
+
 async def build_inventory(db: AsyncSession) -> dict[str, Any]:
     """Полная инвентаризация датасета. Возвращает JSON-совместимый dict."""
     inv: dict[str, Any] = {
@@ -96,13 +128,13 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
 
     # --- Поведенческий поток -------------------------------------------------
     b_total = await _row_count(db, BehaviorEvent)
-    b_by_type = dict((await db.execute(
-        select(BehaviorEvent.event_type, func.count()).group_by(BehaviorEvent.event_type)
-    )).all())
+    b_by_type = await _behavior_by_type(db)
     b_keys = await _json_keys(db, BehaviorEvent, BehaviorEvent.params_json, BehaviorEvent.id)
     b_from, b_to = await _time_range(db, BehaviorEvent.occurred_at)
     sections["behavior_events"] = {
-        "rows": b_total, "by_type": b_by_type,
+        "rows": b_total, "by_type": b_by_type or {},
+        "by_type_window_hours": BEHAVIOR_TYPE_WINDOW_HOURS,
+        "by_type_available": b_by_type is not None,
         "columns": _table_columns(BehaviorEvent), "json_keys": sorted(b_keys),
         "from": b_from, "to": b_to,
     }
@@ -226,7 +258,7 @@ async def build_inventory(db: AsyncSession) -> dict[str, Any]:
         "parameters": (
             sum(s.get("columns", 0) for s in sections.values())
             + sum(len(s.get("json_keys", [])) for s in sections.values())
-            + len(b_by_type) + f_names
+            + len(b_by_type or {}) + f_names
         ),
     }
     return inv
@@ -244,9 +276,11 @@ def format_inventory_html(inv: dict[str, Any]) -> str:
     b, f, v = s["behavior_events"], s["frontend_events"], s["raw_metrika_visits"]
     ph, hy, core = s["metrika_search_phrases"], s["hypotheses"], s["core"]
     by_type = ", ".join(f"{k} {_n(n)}" for k, n in sorted(b["by_type"].items()))
+    hours = b.get("by_type_window_hours", BEHAVIOR_TYPE_WINDOW_HOURS)
+    type_note = f" ({by_type} — за {hours} ч)" if by_type else ""
     lines = [
         f"📦 <b>Датасет: строк {_n(t['rows'])}, параметров {_n(t['parameters'])}</b>",
-        f"🎥 Поведение: событий {_n(b['rows'])} ({by_type})",
+        f"🎥 Поведение: событий {_n(b['rows'])}{type_note}",
         f"⚡ Бизнес-события: строк {_n(f['rows'])}, типов {f['event_names']}",
         f"🧲 Визиты Метрики: строк {_n(v['rows'])}, полей {len(v['json_keys'])}",
         f"🔍 Поисковые фразы: строк {_n(ph['rows'])}, уникальных {_n(ph['distinct_phrases'])}",
