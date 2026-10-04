@@ -1517,6 +1517,7 @@ export default {
   'search.slow': 'Slow connection, still searching…',
   'a11y.skipToContent': 'Skip to main content',
   'route.slow': 'This page is taking longer than usual — check your connection, we are still loading it.',
+  'indicator.dataError': 'Could not load the series. Check your connection and try again.',
   'search.nothingFound': 'Nothing found for “{query}”.',
   'search.hint.nav': 'navigate',
   'search.hint.open': 'open',

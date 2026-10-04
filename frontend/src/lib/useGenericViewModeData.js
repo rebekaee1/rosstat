@@ -48,7 +48,7 @@ export default function useGenericViewModeData({ family, urlMode, indicator, ena
   );
 
   const code = resolved?.code ?? null;
-  const { data: dataResp, isLoading, isError, refetch } = useIndicatorData(
+  const { data: dataResp, isLoading, isError, isFetching, refetch } = useIndicatorData(
     code,
     undefined,
     { enabled: enabled && !!code },
@@ -86,6 +86,7 @@ export default function useGenericViewModeData({ family, urlMode, indicator, ena
     hasForecast,
     isLoading,
     isError,
+    isFetching,
     refetch,
     refetchForecast,
   };

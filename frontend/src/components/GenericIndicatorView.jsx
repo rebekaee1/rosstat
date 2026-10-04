@@ -20,6 +20,7 @@ import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 import { useT } from '../i18n';
+import ApiRetryBanner from './ApiRetryBanner';
 
 /**
  * Generic (config-driven) карточка индикатора для семей из
@@ -100,7 +101,7 @@ export default function GenericIndicatorView({
   }, [resolvedIndicator, indicator, resolved]);
 
   const {
-    dataPoints, viewStats, forecastResp, forecastEnabled, hasForecast, isLoading,
+    dataPoints, viewStats, forecastResp, forecastEnabled, hasForecast, isLoading, isError, refetch, isFetching,
   } = useGenericViewModeData({ family, urlMode: viewMode, indicator });
 
   const methodologyContent = useMemo(() => ({
@@ -131,7 +132,7 @@ export default function GenericIndicatorView({
     } catch { /* сеть/сервер — молча */ }
   }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
-  const chartEmptyHint = !isLoading && (dataPoints?.length ?? 0) === 0
+  const chartEmptyHint = !isLoading && !isError && (dataPoints?.length ?? 0) === 0
     ? t('indicator.empty.recalc')
     : undefined;
 
@@ -167,6 +168,12 @@ export default function GenericIndicatorView({
         onChange={setViewMode}
         trackContext={{ code, category: indicator?.category }}
       />
+
+      {isError && (dataPoints?.length ?? 0) === 0 && (
+        <ApiRetryBanner className="mb-6" onRetry={() => refetch()} isFetching={isFetching}>
+          {t('indicator.dataError')}
+        </ApiRetryBanner>
+      )}
 
       <IndicatorChartSection
         code={code}
