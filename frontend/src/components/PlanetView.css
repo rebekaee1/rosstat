@@ -59,7 +59,7 @@
 .planet-select-hint { position: absolute; top: 18px; left: 18px; right: 80px; max-width: 250px; margin: 0; color: var(--planet-muted); font-size: 12px; line-height: 1.55; pointer-events: none; }
 .planet-info { display: flex; flex-direction: column; height: var(--planet-scene-height); min-width: 0; background: var(--planet-paper); border-left: 1px solid var(--planet-line); }
 .planet-country-card { flex-shrink: 0; padding: 18px 18px 14px; border-bottom: 1px solid var(--planet-line); background: linear-gradient(180deg, var(--fe-button-bg, #F6F3EC), var(--planet-paper)); outline: none; }
-.planet-country-card { scroll-margin-top: 88px; }
+.planet-country-card { scroll-margin-top: 116px; }
 .planet-country-card.is-selected { animation: planet-card-in 220ms cubic-bezier(.2,.7,.2,1); }
 .planet-country-card:not(.is-selected) { display: none; }
 .planet-country-card:focus-visible { box-shadow: inset 0 0 0 2px var(--planet-accent); }

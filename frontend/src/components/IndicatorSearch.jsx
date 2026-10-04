@@ -402,7 +402,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
                       ))}
                     </div>
                   )}
-                  {isLoading ? <><span className="fe-search-loading-text">{t('search.loading')}</span>{slow && <span className="mt-1 block text-xs" data-testid="search-slow">{t('search.slow')}</span>}</> : isSearchError ? t('search.error')
+                  {isLoading ? <><span className="fe-search-loading-text">{String(t('search.loading')).replace(/[….]+$/, '')}</span>{slow && <span className="mt-1 block text-xs" data-testid="search-slow">{t('search.slow')}</span>}</> : isSearchError ? t('search.error')
                     : qTrim && globalSearch.data?.reason === 'unsupported_query' ? t('search.unsupportedQuery')
                       : qTrim && globalSearch.data?.reason === 'unsupported_period' ? t('search.unsupportedPeriod')
                       : qTrim && globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
