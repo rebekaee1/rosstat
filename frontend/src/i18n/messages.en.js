@@ -2031,4 +2031,15 @@ export default {
   'world.regions.mapHintZoom':
     'The +/− buttons zoom the map; when zoomed in you can pan it.',
   'world.regions.mapClickTitle': 'A click opens the territory card',
+  // ── Calculators and the Compare chart: fields, input errors, chart states (2026-10-04) ──
+  'calc.ui.errChars': 'The amount may contain digits only. The result still uses the previous value.',
+  'calc.ui.errEmpty': 'Enter an amount above zero. The result still uses the previous value.',
+  'calc.ui.errMax': 'Amount is too large: the maximum is {max}. The result still uses the previous value.',
+  'calc.ui.unitRubles': 'in rubles',
+  'calc.ui.unitLocal': 'in the national currency',
+  'calc.ui.suffixLocal': 'local currency',
+  'compare.loadingSeries': 'Loading the series for the chart…',
+  'compare.emptyNoneTitle': 'No indicators selected',
+  'compare.errorTitle': 'The chart could not be built',
+  'compare.chartAria': 'Indicator comparison chart. Tap or hover to see the values.',
 };
