@@ -229,13 +229,21 @@ def test_monthly_multi_point_year_page(world_year_client):
     assert r.status_code == 200
     html = r.text
 
-    assert "Первое наблюдение" in html
-    assert "Последнее наблюдение" in html
+    # Итоги — плитки, не маркированный список; без «наблюдений» на виду.
+    assert '<div class="seo-tiles seo-year-tiles">' in html
+    for label in ("Первое значение", "Последнее значение", "Минимум", "Максимум"):
+        assert f"<span>{label}</span>" in html
+    assert "Количество наблюдений" not in html
     assert "Среднее по опубликованным наблюдениям" in html
     assert "Годовой итог не рассчитывается" in html
     assert "Среднее за год" not in html
-    assert "Минимум и максимум" in html
-    assert "Количество наблюдений: 12" in html
+    assert "12 значений за 2024 год. Источник: Евростат." in html
+    # Пояснение о полноте — под раскрывающимся блоком, не на виду.
+    assert re.search(
+        r'<details class="seo-more seo-note-more"><summary>О полноте данных</summary>'
+        r"<p>[^<]*Годовой итог не рассчитывается",
+        html,
+    )
 
     h1 = re.search(r"<h1>([^<]+)</h1>", html).group(1)
     assert "Гармонизированный индекс потребительских цен" in h1
@@ -484,3 +492,39 @@ def test_world_annual_og_selects_exact_year_and_matches_observation_summary(worl
     response = world_year_client.get(f"/api/v1/og-image/world/germany/{CODE_MONTHLY}/2024.png")
     assert response.status_code == 200
     assert "117,5" in captured[1]["value_text"]  # mean of the 12 observations, not December 123
+
+
+def test_world_year_numbers_share_one_format_and_table_is_not_a_bullet_list(world_year_client):
+    """Таблица и плитки — числа с одним числом знаков; итоги не <ul> с маркерами."""
+    html = world_year_client.get(
+        f"/seo/world-indicator-year/germany/{CODE_MONTHLY}/2024"
+    ).text
+    tiles_html = html.split("seo-year-tiles")[1].split("</section>")[0]
+    tile_numbers = re.findall(r"<b>([^<]+?)(?:\xa0<small|<)", tiles_html)
+    cells = re.findall(r"<td>([\d ,]+)</td>", html)
+    assert len(tile_numbers) == 4 and len(cells) == 12
+    # Среднее за год («117,5») задаёт формат страницы: 112 → «112,0» везде.
+    assert {len(c.split(",")[1]) for c in cells} == {1}
+    assert {len(n.split(",")[1]) for n in tile_numbers} == {1}
+    assert "<ul>\n<li>Среднее" not in html
+
+
+def test_world_year_decimals_are_common_across_the_page(world_year_client):
+    """Безработица 3,0…4,1, среднее «3,55»: все ячейки «3,00», «3,10» — не «3» рядом с «3,1»."""
+    html = world_year_client.get(
+        f"/seo/world-indicator-year/germany/{CODE_SIBLING_M}/2023"
+    ).text
+    cells = re.findall(r"<td>(\d+,\d+)</td>", html)
+    assert len(cells) == 12
+    assert {len(c.split(",")[1]) for c in cells} == {2}
+    assert "<td>3</td>" not in html
+
+
+def test_world_year_has_no_duplicate_brand_in_caption(world_year_client):
+    html = world_year_client.get(
+        f"/seo/world-indicator-year/germany/{CODE_ANNUAL}/2023"
+    ).text
+    figure = re.search(r'<figure class="seo-chart".*?</figure>', html, re.S).group(0)
+    assert "seo-chart-brand" not in figure
+    assert "forecasteconomy.com" not in re.sub(r"<img[^>]*>", "", figure)
+    assert "Картинку можно сохранить" in figure

@@ -397,3 +397,127 @@ def test_historical_og_selects_requested_year_among_neighbors(year_landing_clien
     data = captured[0]
     assert data["point_dates"][data["selected_index"]].year == 2023
     assert data["point_dates"][-1].year == 2025
+
+
+# ── Вид страницы года (critic2 №5/№6/№9) ─────────────────────────────────────
+
+
+@pytest.fixture
+def key_rate_year_html(year_landing_client, auth_env):
+    """Дневная ставка за 2024: 40 значений с редкими изменениями (16 → 21)."""
+    from datetime import timedelta
+
+    async def render():
+        async with auth_env["session_maker"]() as db:
+            ind = Indicator(
+                code="key-rate", name="Ключевая ставка ЦБ РФ", unit="%",
+                frequency="daily", category="Процентные ставки",
+                source="Банк России", is_active=True, is_listed=True,
+            )
+            db.add(ind)
+            await db.flush()
+            day = date(2024, 1, 3)
+            for i in range(40):
+                db.add(IndicatorData(
+                    indicator_id=ind.id, date=day + timedelta(days=i),
+                    value=16.0 if i < 20 else 17.5 if i < 30 else 21.0,
+                ))
+            await db.commit()
+            return await render_indicator_year_html("key-rate", 2024, db)
+
+    status, html = asyncio.run(render())
+    assert status == 200
+    return html
+
+
+def test_year_page_headline_and_number_appear_once(key_rate_year_html):
+    """Заголовок и главное число — в одной крупной карточке, без пересказа."""
+    html = key_rate_year_html
+    assert html.count("<h1>") == 1
+    # В видимом тексте (без alt/JSON-LD/meta) название не повторяется абзацем.
+    visible = re.sub(r"<script.*?</script>|<img[^>]*>|<head>.*?</head>", "", html, flags=re.S)
+    assert visible.count("Ключевая ставка ЦБ РФ в 2024 году") <= 3  # H1 + крошка + якорь
+    assert "40 значений за 2024 год. Источник: Банк России." in html
+    assert "среднее за год — " not in visible
+
+
+def test_year_page_totals_are_tiles_not_bullets(key_rate_year_html):
+    html = key_rate_year_html
+    tiles = re.search(r'<div class="seo-tiles seo-year-tiles">(.*?)</div></section>', html, re.S)
+    assert tiles, "итоги должны быть плитками"
+    for label in ("На начало года", "На конец года", "Минимум", "Максимум"):
+        assert f"<span>{label}</span>" in tiles.group(1)
+    # Даты у плиток — человекочитаемые.
+    assert "3 января 2024" in tiles.group(1)
+    assert "Количество наблюдений" not in html
+    assert "<ul>\n<li>Среднее за год" not in html
+
+
+def test_year_page_numbers_have_one_format(key_rate_year_html):
+    """«17,62 %» в карточке и «16,00 %» в таблице: одно число знаков, запятая, пробел перед %."""
+    html = key_rate_year_html
+    cells = re.findall(r"<td>([\d,]+) %</td>", html)
+    assert len(cells) == 40
+    assert {len(c.split(",")[1]) for c in cells} == {2}
+    assert "17,62\u00a0%" not in html  # главное число — с обычным пробелом, как в мета
+    tiles = re.search(r'<div class="seo-tiles seo-year-tiles">(.*?)</section>', html, re.S).group(1)
+    nums = re.findall(r"<b>([\d,]+)", tiles)
+    assert nums == ["16,00", "21,00", "16,00", "21,00"]
+    assert not re.search(r"<td>\d+</td>", html)  # «16» без знаков — нет
+
+
+def test_year_page_long_table_is_collapsed_with_all_rows_in_markup(key_rate_year_html):
+    html = key_rate_year_html
+    section = html.split("Все значения за 2024 год</h2>")[1].split("</section>")[0]
+    first_table, rest = section.split('<details class="seo-more">')
+    assert 12 <= first_table.count("<tr><td>") <= 20
+    assert first_table.count("<tr><td>") == 12
+    assert "Показать ещё 28 значений" in rest
+    assert rest.count("<tr><td>") == 28  # остаток остаётся в HTML для поисковика
+
+
+def test_year_page_short_table_is_not_collapsed(year_landing_client, auth_env):
+    async def render():
+        async with auth_env["session_maker"]() as db:
+            return await render_indicator_year_html("cpi", 2024, db)
+
+    status, html = asyncio.run(render())
+    assert status == 200
+    assert "<details class=\"seo-more\">" not in html
+
+
+def test_year_page_has_glass_chrome_and_collapsing_menu(key_rate_year_html):
+    html = key_rate_year_html
+    assert '<header class="seo-topbar">' in html
+    assert 'id="seo-menu-toggle"' in html and 'for="seo-menu-toggle"' in html
+    # Меню не обрезается краем экрана: на телефоне — сетка за кнопкой «Меню».
+    assert "overflow-x:auto" not in re.search(
+        r"body\.seo-fast \.seo-topnav\{[^}]*\}", html
+    ).group(0)
+    # Прежние ссылки навигации на месте (перелинковка не потеряна).
+    for href in ('href="/russia"', 'href="/russia/region"', 'href="/compare"', 'href="/about"'):
+        assert href in html
+
+
+def test_year_page_keeps_seo_markup(key_rate_year_html):
+    html = key_rate_year_html
+    assert '<link rel="canonical" href="https://forecasteconomy.com/russia/indicator/key-rate/2024">' in html
+    assert '"@type": "Dataset"' in html or '"@type":"Dataset"' in html
+    assert '"@type": "BreadcrumbList"' in html or '"@type":"BreadcrumbList"' in html
+    assert 'property="og:image"' in html
+    assert 'src="/og/russia/key-rate/2024.png"' in html
+    assert "seo-chart-brand" not in html.split('<figure class="seo-chart"')[1].split("</figure>")[0]
+
+
+def test_year_page_single_value_facts_are_cards(year_landing_client, auth_env):
+    async def render():
+        async with auth_env["session_maker"]() as db:
+            return await render_indicator_year_html("population", 2025, db)
+
+    _status, html = asyncio.run(render())
+    assert '<ul class="seo-facts">' in html
+    facts = html.split('<ul class="seo-facts">')[1].split("</ul>")[0]
+    assert "Изменение к 2024 году" in facts
+    assert "Положение в истории" in facts
+    assert "Значение:" not in facts  # само значение уже в крупной карточке
+    assert "истории ряда" not in html and "историю ряда" not in html

@@ -41,6 +41,7 @@ from app.services.seo_i18n import (
     region_indicator_copy,
     translate_source,
 )
+from app.services import seo_year_ui as ui
 from app.services.seo_regional import (
     _icopy,
     _pct,
@@ -175,24 +176,16 @@ def _pct_en(cur: float, base: float) -> str | None:
 
 
 def _table(values: list[tuple[int, float]], year: int, unit_head: str) -> str:
-    """Таблица «год — значение», выбранная строка выделена, свежие сверху."""
+    """Таблица «год — значение», выбранная строка выделена, свежие сверху.
+
+    Один формат чисел на таблицу (общее число знаков), шапка с единицей.
+    """
     en = get_locale() == "en"
     head_year = "Year" if en else "Год"
     head_value = unit_head or ("Value" if en else "Значение")
-    rows = "".join(
-        (
-            f"<tr><td><strong>{y}</strong></td>"
-            f"<td><strong>{_fmt_locale(v)}</strong></td></tr>"
-            if y == year
-            else f"<tr><td>{y}</td><td>{_fmt_locale(v)}</td></tr>"
-        )
-        for y, v in values
-    )
-    return (
-        f"<table><thead><tr><th>{head_year}</th>"
-        f"<th>{escape(head_value)}</th></tr></thead>"
-        f"<tbody>{rows}</tbody></table>"
-    )
+    decimals = ui.common_decimals(v for _y, v in values)
+    rows = [(str(y), ui.format_fixed(v, decimals), y == year) for y, v in values]
+    return ui.year_values_table(rows, head_date=head_year, head_value=head_value)
 
 
 def _checkpoint_items(series: list[tuple[int, float]]) -> list[int]:
@@ -294,9 +287,10 @@ async def render_region_indicator_year_html(
     figure_html = _seo_chart_figure(
         paths.og_region_year(slug, code, year),
         alt,
-        caption,
+        ui.chart_caption(year),
         href=paths.region_indicator(slug, code),
         loading="eager",
+        brand=False,
     )
 
     # --- абзацы контента ---
@@ -408,7 +402,7 @@ async def render_region_indicator_year_html(
             extra_dyn_sections += (
                 f"<section class=\"seo-section\">"
                 f"<h2>{escape(_t('checkpoints_h2') or 'Контрольные годы')}</h2>"
-                f"<ul>{cp_list}</ul></section>"
+                f"<ul class=\"seo-facts\">{cp_list}</ul></section>"
             )
         extra_dyn_sections += (
             f"<section class=\"seo-section\">"
@@ -507,7 +501,7 @@ async def render_region_indicator_year_html(
     other_h2 = _t("other_years_h2") or "Другие годы"
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(trail)}
-{fast_answer_block(eyebrow=f"{region_name}, {year}", title=_h1(ind_name, region_name, year), value=f"{_fmt_locale(value)}{f' {unit}' if unit else ''}", note=desc_main)}
+{fast_answer_block(eyebrow=f"{region_name}, {year}", title=_h1(ind_name, region_name, year), value=f"{_fmt_locale(value)}{f' {unit}' if unit else ''}", note=ui.year_lead(n_rows=1, year=year, source=src_label, annual=True))}
 {figure_html}
 {''.join(paragraphs[1:])}
 {rank_section}

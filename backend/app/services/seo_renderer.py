@@ -207,6 +207,7 @@ def _seo_chart_figure(
     *,
     href: str | None = None,
     loading: str = "lazy",
+    brand: bool = True,
 ) -> str:
     """Видимый график: относительный src (работает на локали и на проде)
     + клик ведёт на карточку индикатора к якорю #chart."""
@@ -231,10 +232,13 @@ def _seo_chart_figure(
         if cleaned.endswith(suffix):
             cleaned = cleaned[: -len(suffix)].rstrip(" .")
             break
+    # brand=False: водяной знак уже нарисован на самой картинке; второй раз
+    # домен в подписи — лишний шум (критик 2: «логотип три раза»).
+    brand_html = '<span class="seo-chart-brand">forecasteconomy.com</span>' if brand else ""
     return (
         f'<figure class="seo-chart" data-portrait="{"true" if portrait else "false"}">{img}'
         f'<figcaption><span class="seo-chart-cap">{escape(cleaned)}</span>'
-        f'<span class="seo-chart-brand">forecasteconomy.com</span></figcaption></figure>'
+        f'{brand_html}</figcaption></figure>'
     )
 
 
@@ -767,6 +771,102 @@ body.seo-fast .seo-cta a.seo-btn:hover{background:#fff;color:#263044}
 @media(max-width:640px){body.seo-fast .seo-topbar{position:static}body.seo-fast .seo-page{padding:1rem .8rem 2rem}body.seo-fast .seo-topbar-in{padding:.85rem 1rem;gap:.75rem}body.seo-fast .seo-answer{padding:1.2rem;border-radius:20px}body.seo-fast .seo-hero-value{font-size:2.8rem}body.seo-fast .seo-chart{border-radius:18px}body.seo-fast .seo-chart figcaption{font-size:.75rem;padding:.75rem}body.seo-fast .seo-chart img{border-radius:0}body.seo-fast .seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}body.seo-fast .seo-foot{font-size:.75rem}}
 @media(max-width:640px){.seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}}
 
+/* ── Единый вид чистых SSR-страниц: стеклянная капсула, плитки, сворачивание ──
+   Только body.seo-fast (include_app=False). Токены как у приложения:
+   жемчуг #EEF0F4, золото #AD8A48, карточки 24px, контролы 12–14px. */
+body.seo-fast .seo-topbar{position:sticky;top:.6rem;z-index:30;width:calc(100% - 1.25rem);max-width:72rem;margin:.6rem auto 0;border:1px solid rgba(255,255,255,.92);border-radius:24px;background:linear-gradient(130deg,rgba(255,255,255,.9),rgba(255,255,255,.62));-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 16px 45px -33px rgba(38,52,78,.4),inset 0 1px 0 rgba(255,255,255,.7)}
+body.seo-fast .seo-topbar-in{max-width:none;margin:0;padding:.55rem .8rem .55rem 1rem;gap:.4rem .75rem;flex-wrap:wrap;align-items:center}
+body.seo-fast .seo-brand{order:1;font-size:1.3rem}
+body.seo-fast .seo-brand svg{width:26px;height:30px}
+body.seo-fast .seo-brand small{font-size:6px;margin-top:5px}
+body.seo-fast .seo-menu-check{position:absolute;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}
+body.seo-fast .seo-menu-btn{order:3;display:inline-flex;align-items:center;gap:.55rem;min-height:44px;margin-left:auto;padding:0 .95rem;border:1px solid rgba(68,87,115,.16);border-radius:14px;background:rgba(255,255,255,.7);color:#202a3c;font-size:.9rem;font-weight:650;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+body.seo-fast .seo-topbar-in:has(.seo-lang) .seo-menu-btn{margin-left:0}
+body.seo-fast .seo-menu-ico{display:block;width:16px;height:2px;border-radius:2px;background:currentColor;box-shadow:0 5px 0 currentColor,0 -5px 0 currentColor}
+body.seo-fast .seo-menu-check:focus-visible + .seo-menu-btn{outline:2px solid #80642f;outline-offset:3px}
+body.seo-fast .seo-menu-check:checked + .seo-menu-btn{border-color:#ad8a48;background:#f6f3ec}
+body.seo-fast .seo-lang{order:2;margin-left:auto;padding:.5rem .25rem;font-size:.875rem;color:#526074}
+body.seo-fast .seo-topnav{order:4;display:none;width:100%;max-width:none;grid-template-columns:1fr 1fr;gap:.4rem;margin:0;padding:.25rem 0 .2rem;overflow:visible;white-space:normal;font-size:.95rem}
+body.seo-fast .seo-menu-check:checked ~ .seo-topnav{display:grid}
+body.seo-fast .seo-topnav a{display:flex;align-items:center;min-height:44px;padding:0 .95rem;border:1px solid rgba(68,87,115,.1);border-radius:14px;background:rgba(255,255,255,.62);color:#202a3c}
+@media(min-width:1180px){
+body.seo-fast .seo-topbar-in{padding:.7rem 1.4rem;gap:.5rem 1.25rem;flex-wrap:nowrap}
+body.seo-fast .seo-brand{font-size:1.45rem}
+body.seo-fast .seo-brand svg{width:29px;height:33px}
+body.seo-fast .seo-menu-btn{display:none}
+body.seo-fast .seo-topnav,body.seo-fast .seo-menu-check:checked ~ .seo-topnav{order:2;display:flex;flex:1;justify-content:flex-end;flex-wrap:wrap;width:auto;gap:.1rem 1.15rem;padding:0;font-size:.84rem}
+body.seo-fast .seo-topnav a{min-height:0;padding:.35rem 0;border:0;border-radius:0;background:none;color:#526074}
+body.seo-fast .seo-lang{order:3;margin-left:0}
+}
+@media(max-width:479px){
+body.seo-fast .seo-brand{font-size:1.2rem;gap:.5rem}
+body.seo-fast .seo-brand svg{width:23px;height:27px}
+body.seo-fast .seo-menu-btn{width:44px;padding:0;justify-content:center;gap:0;font-size:0}
+body.seo-fast .seo-lang{font-size:.8125rem}
+}
+body.seo-fast .seo-page{overflow-wrap:break-word}
+body.seo-fast .seo-eyebrow{font-size:.8125rem;font-weight:650;letter-spacing:0;text-transform:none;color:#80642f}
+body.seo-fast .seo-page h2{margin:2rem 0 .75rem;font-size:1.25rem;font-weight:650;letter-spacing:-.02em;line-height:1.3;text-transform:none;color:#202a3c}
+body.seo-fast .seo-page th{font-size:.8125rem;font-weight:650;letter-spacing:0;text-transform:none;color:#526074}
+body.seo-fast .seo-page td:last-child,body.seo-fast .seo-page th:last-child{white-space:nowrap}
+body.seo-fast .seo-answer .seo-hero-value{margin:.5rem 0 .6rem}
+body.seo-fast .seo-answer-note{font-size:1rem;line-height:1.55}
+body.seo-fast .seo-tiles{margin:1rem 0}
+body.seo-fast .seo-tile{padding:.9rem 1rem;border:1px solid #fff;border-radius:20px;background:linear-gradient(130deg,rgba(255,255,255,.85),rgba(255,255,255,.55));box-shadow:0 16px 45px -35px rgba(38,52,78,.35)}
+body.seo-fast .seo-tile span{margin-bottom:.3rem;font-size:.8125rem;font-weight:600;letter-spacing:0;text-transform:none;color:#526074}
+body.seo-fast .seo-tile b{font-size:1.4rem;font-weight:650;letter-spacing:-.03em;color:#202a3c}
+body.seo-fast .seo-tile .seo-tile-unit{display:inline;margin:0;font-size:.8125rem;font-weight:500;letter-spacing:0;text-transform:none;color:#526074}
+body.seo-fast .seo-tile .seo-tile-note{display:block;margin-top:.2rem;font-size:.8125rem;font-weight:500;letter-spacing:0;text-transform:none;color:#526074}
+body.seo-fast .seo-facts{display:grid;gap:.6rem;margin:0 0 1rem;padding:0;list-style:none}
+body.seo-fast .seo-facts li{margin:0;padding:.8rem 1rem;border:1px solid #fff;border-radius:16px;background:rgba(255,255,255,.62);color:#202a3c;line-height:1.5}
+body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child){display:flex;flex-wrap:wrap;gap:.5rem;padding:0;list-style:none}
+body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child) li{margin:0}
+body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child) a{display:inline-flex;align-items:center;min-height:40px;padding:.35rem .95rem;border:1px solid rgba(68,87,115,.14);border-radius:999px;background:rgba(255,255,255,.7);color:#202a3c;font-size:.9rem;text-decoration:none}
+body.seo-fast .seo-page ul:not(.seo-grid):not(.seo-pills):not(.seo-facts):has(> li > a:only-child) a:hover{border-color:#ad8a48;color:#80642f}
+body.seo-fast .seo-table-scroll table{min-width:0}
+body.seo-fast .seo-more{margin:.6rem 0}
+body.seo-fast .seo-more summary{display:flex;align-items:center;gap:.6rem;min-height:44px;padding:0 1rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font-size:.9rem;font-weight:650;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
+body.seo-fast .seo-more summary::-webkit-details-marker{display:none}
+body.seo-fast .seo-more summary::after{content:"";width:8px;height:8px;margin-left:auto;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+body.seo-fast .seo-more[open] summary::after{transform:rotate(-135deg)}
+body.seo-fast .seo-more summary:focus-visible{outline:2px solid #80642f;outline-offset:3px}
+body.seo-fast .seo-more > .seo-table-scroll{margin-top:.6rem}
+body.seo-fast .seo-note-more p{margin:.6rem 0 0;font-size:.9rem}
+body.seo-fast .seo-chart figcaption{justify-content:flex-start;text-align:left}
+body.seo-fast .seo-cta{margin-top:2rem}
+body.seo-fast .seo-cta-in{max-width:72rem;margin:0 auto;border:1px solid #fff;border-radius:24px;background:linear-gradient(130deg,rgba(255,255,255,.88),rgba(255,255,255,.5));box-shadow:0 16px 45px -33px rgba(38,52,78,.3),inset 0 1px 0 rgba(255,255,255,.7);color:#202a3c}
+body.seo-fast .seo-cta p,body.seo-fast .seo-cta strong{color:#202a3c}
+body.seo-fast .seo-cta a.seo-btn{min-height:44px;display:inline-flex;align-items:center;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c}
+body.seo-fast .seo-cta a.seo-btn:hover{border-color:#ad8a48;background:#fff;color:#202a3c}
+body.seo-fast .seo-foot{max-width:none;margin:2rem 0 0;padding:0;font-size:.8125rem;color:#526074}
+body.seo-fast .seo-foot-in{max-width:72rem;margin:0 auto;padding:1.5rem 1.25rem calc(2.25rem + env(safe-area-inset-bottom,0px));border:1px solid rgba(255,255,255,.9);border-bottom:0;border-radius:32px 32px 0 0;background:linear-gradient(130deg,rgba(255,255,255,.72),rgba(255,255,255,.4))}
+body.seo-fast .seo-foot-links{display:flex;flex-wrap:wrap;gap:.25rem 1.25rem;margin:0 0 1rem}
+body.seo-fast .seo-foot-links a{display:inline-flex;align-items:center;min-height:36px;color:#202a3c;text-decoration:none;font-size:.875rem;font-weight:600}
+body.seo-fast .seo-foot-links a:hover{color:#80642f}
+body.seo-fast .seo-foot-in p{margin:0;max-width:44rem;line-height:1.55}
+body.seo-fast .seo-foot a{color:#202a3c}
+/* ── Фирменная 404 ── */
+body.seo-fast .seo-404{max-width:44rem;padding-top:2.25rem;text-align:left}
+body.seo-fast .seo-404-code{margin:0 0 .25rem;font-size:clamp(4.5rem,22vw,8rem);font-weight:650;letter-spacing:-.07em;line-height:1;background:linear-gradient(135deg,#ad8a48,#e6d5ad 55%,#c8ae78);-webkit-background-clip:text;background-clip:text;color:transparent}
+body.seo-fast .seo-404 h1{margin:0 0 .6rem}
+body.seo-fast .seo-404-lead{max-width:34rem;margin:0 0 1.25rem;font-size:1.05rem}
+body.seo-fast .seo-search{display:flex;gap:.5rem;margin:0 0 1.75rem}
+body.seo-fast .seo-search input{flex:1;min-width:0;min-height:48px;padding:0 1rem;border:1px solid rgba(68,87,115,.2);border-radius:14px;background:rgba(255,255,255,.85);color:#202a3c;font:inherit;font-size:16px}
+body.seo-fast .seo-search input:focus-visible{outline:2px solid #80642f;outline-offset:2px}
+body.seo-fast .seo-search button{min-height:48px;padding:0 1.25rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font:inherit;font-size:.95rem;font-weight:650;cursor:pointer}
+body.seo-fast .seo-search button:hover{border-color:#ad8a48}
+body.seo-fast .seo-404-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:.75rem 0 1.5rem;padding:0;list-style:none}
+@media(min-width:640px){body.seo-fast .seo-404-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+body.seo-fast .seo-404-grid li{margin:0}
+body.seo-fast .seo-404-grid a{display:block;height:100%;padding:1rem;border:1px solid #fff;border-radius:20px;background:linear-gradient(130deg,rgba(255,255,255,.85),rgba(255,255,255,.55));box-shadow:0 16px 45px -35px rgba(38,52,78,.35);color:#202a3c;text-decoration:none!important;transition:border-color .15s,transform .15s}
+body.seo-fast .seo-404-grid a:hover{border-color:#ad8a48;color:#202a3c}
+body.seo-fast .seo-404-grid a:active{transform:scale(.98)}
+body.seo-fast .seo-404-grid b{display:block;font-size:1rem;font-weight:650;line-height:1.3}
+body.seo-fast .seo-404-grid span{display:block;margin-top:.25rem;font-size:.875rem;line-height:1.4;color:#526074}
+body.seo-fast .seo-404-home{display:inline-flex;align-items:center;min-height:44px;padding:0 1.25rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font-weight:650;text-decoration:none!important}
+body.seo-fast .seo-404-home:hover{border-color:#ad8a48;color:#202a3c}
+@media(prefers-reduced-motion:reduce){body.seo-fast *{transition:none!important}}
+
 </style>"""
 
 # Не клипаем SEO при разборе HTML: на 4G bundle едет секунды, и слепой fe-js
@@ -797,26 +897,30 @@ _SPA_SSR_HIDE_SCRIPT = (
 # `_ssr_chrome_*()` / `_ssr_platform_deep_links()` по get_locale().
 _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
-<nav class="seo-topnav"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
+<input type="checkbox" id="seo-menu-toggle" class="seo-menu-check" aria-label="Открыть меню разделов">
+<label class="seo-menu-btn" for="seo-menu-toggle"><span class="seo-menu-ico" aria-hidden="true"></span>Меню</label>
+<nav class="seo-topnav" aria-label="Разделы сайта"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
 </div></header>"""
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
-<nav class="seo-topnav"><a href="/">Home</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
+<input type="checkbox" id="seo-menu-toggle" class="seo-menu-check" aria-label="Open the section menu">
+<label class="seo-menu-btn" for="seo-menu-toggle"><span class="seo-menu-ico" aria-hidden="true"></span>Menu</label>
+<nav class="seo-topnav" aria-label="Site sections"><a href="/">Home</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
 </div></header>"""
 
 _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
 <p><strong>Интерактивные графики, сравнения и проверенные прогнозы</strong> — для показателей России, регионов и доступных стран. Просмотр открыт всем, скачивание — после бесплатной регистрации.</p>
 <a class="seo-btn" href="/">Открыть платформу</a>
 </div></div>
-<footer class="seo-foot">Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy — <a href="/">forecasteconomy.com</a></footer>
+<footer class="seo-foot"><div class="seo-foot-in"><nav class="seo-foot-links" aria-label="О сервисе"><a href="/about">О проекте</a><a href="/methodology">Методология</a><a href="/calculator">Калькуляторы</a><a href="/privacy">Конфиденциальность</a><a href="/terms">Условия использования</a></nav><p>Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy — <a href="/">forecasteconomy.com</a></p></div></footer>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
 <p><strong>Interactive charts, comparisons, and validated forecasts</strong> — official statistics for national economies, their regions, and available countries. Browsing is open to everyone; downloads require a free account.</p>
 <a class="seo-btn" href="/">Open the platform</a>
 </div></div>
-<footer class="seo-foot">Data come only from official primary sources: national statistical offices, central banks, and official exchanges. Updated as publishers release. © Forecast Economy — <a href="/">forecasteconomy.com</a></footer>
+<footer class="seo-foot"><div class="seo-foot-in"><nav class="seo-foot-links" aria-label="About the service"><a href="/about">About</a><a href="/methodology">Methodology</a><a href="/calculator">Calculators</a><a href="/privacy">Privacy</a><a href="/terms">Terms of use</a></nav><p>Data come only from official primary sources: national statistical offices, central banks, and official exchanges. Updated as publishers release. © Forecast Economy — <a href="/">forecasteconomy.com</a></p></div></footer>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 # Единый выход вглубь платформы для SPA-SSR (include_app=True): без chrome
@@ -1345,73 +1449,98 @@ async def build_document(
 
 
 def render_not_found_html(message: str | None = None) -> str:
-    """Брендовая 404 для SSR-роутов и nginx catch-all.
+    """Фирменная 404 для SSR-роутов и nginx catch-all.
 
-    Самодостаточный документ (без asset-fetch и БД): critical CSS + хром +
-    навигация по основным разделам. noindex — чтобы поисковики не тащили
-    404-страницы в выдачу. Не тупик: ведём в каталог, сегодня, регионы,
-    страны, сравнение и поиск на главной.
+    Самодостаточный документ (без asset-fetch и БД): critical CSS + стеклянная
+    шапка/подвал приложения + поиск и плитки популярных разделов. HTTP-статус
+    404 и noindex выставляют вызывающие (nginx error_page / ``_html_response``).
+
+    Почему не монтировать SPA со статусом 404: SPA сама решает по адресу, что
+    рисовать (у `/germany/indicator/нет` это пустая карточка мира, не 404),
+    требует загрузки бандла (в момент деплоя ассеты могут отсутствовать) и
+    ничего не показывает роботам. Чистый документ предсказуем: один заголовок
+    для любого битого адреса, всегда с поиском и выходом на главные разделы.
+
+    ``message`` оставлен ради совместимости вызовов и игнорируется: рендереры
+    раньше отдавали «Страна не найдена»/«Страница не найдена» в зависимости от
+    пути, а посетителю важно одно — «такой страницы нет, вот куда идти».
     """
     from app.services.locale import get_locale, html_lang
-    from app.services.seo_i18n import get_category_seo
 
+    del message
     en = get_locale() == "en"
-    if message is None:
-        message = "Page not found" if en else "Страница не найдена"
-    safe = escape(message)
-    cats = []
-    for slug, meta in list(CATEGORY_META.items())[:6]:
-        disp = get_category_seo(slug) or meta
-        cats.append(
-            f'<li><a href="{escape(paths.russia_category(slug))}">{escape(disp.name)}</a></li>'
-        )
-    category_links = "".join(cats)
     if en:
-        lead = "This page does not exist or has moved. Continue from here:"
-        links = f"""<li><a href="/">Home: world map and country rankings</a></li>
-<li><a href="{paths.russia_home()}">Russia: macroeconomic indicators</a></li>
-<li><a href="{paths.today()}">Key indicators for today</a></li>
-<li><a href="{paths.region_hub()}">Statistics by Russian regions</a></li>
-<li><a href="/#countries">Country statistics</a></li>
-<li><a href="/compare">Compare indicators</a></li>
-<li><a href="{paths.calendar()}">Statistical release calendar</a></li>
-<li><a href="/">Search the platform</a> — open the home page and use search in the header</li>"""
-        catalog_h2 = "Catalogue sections"
+        title = "This page does not exist"
+        lead = (
+            "The address may have a typo, or the page has moved. Search for what "
+            "you need or open one of the popular sections."
+        )
+        eyebrow = "Error 404"
+        placeholder = "Inflation, GDP, interest rate…"
+        search_label = "Search the platform"
+        search_btn = "Search"
+        popular = "Popular sections"
+        home_label = "Go to the home page"
+        tiles = (
+            (paths.today(), "Today", "Key indicators with the latest values"),
+            ("/#countries", "Countries", "Economic indicators for countries worldwide"),
+            (paths.world_rating("gdp-usd"), "Country rankings", "Who is ahead by GDP and other measures"),
+            (paths.region_hub(), "Regions", "Map and rankings of Russian regions"),
+            ("/compare", "Compare", "Put two indicators on one chart"),
+            (paths.calendar(), "Calendar", "When new statistics come out"),
+        )
     else:
-        lead = "Такой страницы нет или она переехала. Вот с чего можно продолжить:"
-        links = f"""<li><a href="/">Главная: карта мира и рейтинг стран</a></li>
-<li><a href="{paths.russia_home()}">Россия: макроэкономические показатели</a></li>
-<li><a href="{paths.today()}">Ключевые показатели на сегодня</a></li>
-<li><a href="{paths.region_hub()}">Статистика по регионам России</a></li>
-<li><a href="/#countries">Статистика по странам</a></li>
-<li><a href="/compare">Сравнение показателей</a></li>
-<li><a href="{paths.calendar()}">Календарь публикаций статистики</a></li>
-<li><a href="/">Поиск по платформе</a> — откройте главную и воспользуйтесь поиском в шапке</li>"""
-        catalog_h2 = "Разделы каталога"
-
+        title = "Такой страницы нет"
+        lead = (
+            "Возможно, в адресе опечатка или страница переехала. Найдите нужное "
+            "через поиск или откройте один из популярных разделов."
+        )
+        eyebrow = "Ошибка 404"
+        placeholder = "Инфляция, ВВП, ключевая ставка…"
+        search_label = "Поиск по платформе"
+        search_btn = "Найти"
+        popular = "Популярные разделы"
+        home_label = "На главную"
+        tiles = (
+            (paths.russia_home(), "Россия", "Инфляция, ставка, ВВП и другие показатели"),
+            (paths.today(), "Сегодня", "Главные показатели со свежими значениями"),
+            ("/#countries", "Страны", "Экономические показатели по странам"),
+            (paths.world_rating("gdp-usd"), "Рейтинг стран", "Кто впереди по ВВП и другим показателям"),
+            (paths.region_hub(), "Регионы", "Карта и рейтинги регионов России"),
+            ("/compare", "Сравнение", "Два показателя на одном графике"),
+        )
+    # CTA «Открыть платформу» на 404 лишний: человеку нужен поиск и разделы.
+    footer = _ssr_chrome_footer()
+    footer = footer[footer.index("<footer"):]
+    tile_html = "".join(
+        f'<li><a href="{escape(href)}"><b>{escape(name)}</b><span>{escape(hint)}</span></a></li>'
+        for href, name, hint in tiles
+    )
     return f"""<!DOCTYPE html>
 <html lang="{html_lang()}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {SEO_CRITICAL_CSS}
-<title>{safe} — Forecast Economy</title>
+<title>{escape(title)} — Forecast Economy</title>
 <meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#EEF0F4">
 </head>
 <body class="seo-fast" data-no-ads>
 {_ssr_chrome_header()}
-<main class="seo-page">
-<h1>{safe}</h1>
-<p>{lead}</p>
-<ul>
-{links}
-</ul>
-<section><h2>{catalog_h2}</h2>
-<ul>
-{category_links}
-</ul></section>
+<main class="seo-page seo-404">
+<p class="seo-404-code" role="img" aria-label="{escape(eyebrow)}">404</p>
+<h1>{escape(title)}</h1>
+<p class="seo-404-lead">{escape(lead)}</p>
+<form class="seo-search" action="/" method="get" role="search">
+<input type="search" name="q" placeholder="{escape(placeholder)}" aria-label="{escape(search_label)}" autocomplete="off" enterkeyhint="search">
+<button type="submit">{escape(search_btn)}</button>
+</form>
+<h2>{escape(popular)}</h2>
+<ul class="seo-404-grid">{tile_html}</ul>
+<a class="seo-404-home" href="/">{escape(home_label)}</a>
 </main>
-{_ssr_chrome_footer()}
+{footer}
 </body>
 </html>"""
 
@@ -2400,7 +2529,7 @@ def year_history_position_lines(
     code: str,
     unit: str,
 ) -> list[str]:
-    """Положение значения в истории ряда: среднее, рекорд, давность экстремума."""
+    """Положение значения в истории показателя: среднее, рекорд, давность экстремума."""
     from app.services.seo_i18n import year_template
 
     yt = year_template
@@ -2465,14 +2594,14 @@ def year_history_position_lines(
             lines.append(
                 (
                     yt("hist_max_sole")
-                    or "Это максимум за всю доступную историю ряда ({n} лет)"
+                    or "Это максимум за всю доступную историю ({n} лет)"
                 ).format(n=n_years)
             )
         else:
             lines.append(
                 (
                     yt("hist_max_tie")
-                    or "Это один из максимумов истории ряда ({value})"
+                    or "Это один из максимумов за всю историю ({value})"
                 ).format(
                     value=f"{format_number_ru(vmax, signed=cpi_mode)}{unit_suffix}"
                 )
@@ -2495,14 +2624,14 @@ def year_history_position_lines(
             lines.append(
                 (
                     yt("hist_min_sole")
-                    or "Это минимум за всю доступную историю ряда ({n} лет)"
+                    or "Это минимум за всю доступную историю ({n} лет)"
                 ).format(n=n_years)
             )
         else:
             lines.append(
                 (
                     yt("hist_min_tie")
-                    or "Это один из минимумов истории ряда ({value})"
+                    or "Это один из минимумов за всю историю ({value})"
                 ).format(
                     value=f"{format_number_ru(vmin, signed=cpi_mode)}{unit_suffix}"
                 )
@@ -2586,7 +2715,7 @@ def _year_page_title_desc(
         )
         desc = (
             f"{name} в {year} году{period_note}: {summary_label.lower()} — {summary_bit}. "
-            f"Сравнение с прошлым годом и положение в истории ряда. "
+            f"Сравнение с прошлым годом и положение в истории показателя. "
             f"Официальные данные — {source}."
         )
         return title, desc
@@ -2605,7 +2734,7 @@ def _year_page_title_desc(
     if n_rows == 1:
         desc = (
             f"{name} в {year} году{period_note}: {summary_label.lower()} — {summary_bit}. "
-            f"Сравнение с прошлым годом и положение в истории ряда. "
+            f"Сравнение с прошлым годом и положение в истории показателя. "
             f"Официальные данные — {source}."
         )
     else:
@@ -2759,9 +2888,11 @@ async def render_indicator_year_html(
     if cpi_mode:
         value_head = yt("th_cpi_change") or "Изменение цен, %"
     elif unit:
-        value_head = (yt("th_value_unit") or "Значение, {unit}").format(unit=escape(unit))
+        value_head = (yt("th_value_unit") or "Значение, {unit}").format(unit=unit)
     else:
         value_head = yt("th_value") or "Значение"
+
+    from app.services import seo_year_ui as ui
 
     single_point = len(rows) == 1
     if single_point:
@@ -2788,38 +2919,32 @@ async def render_indicator_year_html(
             code=code,
             unit=unit,
         )
-        context_items = "".join(
-            f"<li>{escape(line)}</li>" for line in (change_lines + history_lines)
-        )
-        context_items += (
-            f"<li>{escape((yt('li_value_date') or 'Дата значения: {date}').format(date=_format_date(last.date)))}</li>"
-            f"<li>{escape((yt('li_source') or 'Источник: {source}').format(source=source))}</li>"
-        )
-        neighbor_rows = "".join(
+        # Само значение уже в крупной карточке: в фактах — только изменение,
+        # положение в истории и дата (первую строку «Значение: …» не повторяем).
+        facts = [
+            *change_lines[1:],
+            *history_lines,
+            (yt("li_value_date") or "Дата значения: {date}").format(date=_format_date(last.date)),
+        ]
+        cell_u = ui.cell_unit(unit, cpi_mode=cpi_mode)
+        n_dec = ui.common_decimals(display_value(code, v) for _y, v, _d in neighbors)
+        neighbor_rows = [
             (
-                f"<tr><td><strong>{y}</strong></td>"
-                f"<td><strong>{escape(format_number_ru(display_value(code, v), signed=cpi_mode))}</strong></td></tr>"
-                if y == year
-                else (
-                    f"<tr><td>{y}</td>"
-                    f"<td>{escape(format_number_ru(display_value(code, v), signed=cpi_mode))}</td></tr>"
-                )
+                str(y),
+                ui.with_unit(
+                    ui.format_fixed(display_value(code, v), n_dec, signed=cpi_mode), cell_u
+                ),
+                y == year,
             )
             for y, v, _d in neighbors
-        )
+        ]
         neighbors_h2 = yt("h2_neighbors") or "Динамика соседних лет"
         th_year = yt("th_year") or "Год"
-        data_section = f"""<section><h2>{escape(totals_head)}</h2>
-<ul>
-{context_items}
-</ul></section>
-<section><h2>{escape(neighbors_h2)}</h2>
-<table><thead><tr><th>{escape(th_year)}</th><th>{value_head}</th></tr></thead>
-<tbody>{neighbor_rows}</tbody></table></section>"""
-        chart_caption = (
-            yt("chart_caption_single")
-            or "{name} в {year} году — значение в контексте соседних лет. Источник: {source}. forecasteconomy.com"
-        ).format(name=name, year=year, source=source)
+        totals_section = f"<section><h2>{escape(totals_head)}</h2>{ui.year_facts(facts)}</section>"
+        table_section = (
+            f"<section><h2>{escape(neighbors_h2)}</h2>"
+            f"{ui.year_values_table(neighbor_rows, head_date=th_year, head_value=value_head)}</section>"
+        )
         chart_alt = (
             yt("chart_alt_single")
             or "{name} в {year} году — график соседних лет, {summary_label} {summary_text}, источник {source}"
@@ -2840,46 +2965,42 @@ async def render_indicator_year_html(
             )
         else:
             totals_head = (yt("h2_totals") or "Итоги {year} года").format(year=year)
-        range_label = (
-            (yt("range_cpi") or "Минимальное и максимальное изменение за период")
-            if cpi_mode
-            else (yt("range_minmax") or "Минимум и максимум")
-        )
-        data_rows = "".join(
-            f"<tr><td>{escape(_format_date(r.date))}</td>"
-            f"<td>{escape(format_number_ru(display_value(code, r.value), signed=cpi_mode))}</td></tr>"
-            for r in rows
-        )
-        li_start = (yt("li_year_start") or "Значение на начало года: {value} ({date})").format(
-            value=f"{format_number_ru(display_value(code, first.value), signed=cpi_mode)}{unit_suffix}",
-            date=_format_date(first.date),
-        )
-        end_tpl = yt("li_latest") if current_year else yt("li_year_end")
-        end_fallback = (
-            "Последнее значение: {value} ({date})"
+        shown_pairs = [(r.date, sv) for r, sv in zip(rows, shown_values)]
+        (low_date, _low), (high_date, _high) = ui.extreme_dates(shown_pairs)
+        cell_u = ui.cell_unit(unit, cpi_mode=cpi_mode)
+        n_dec = max(ui.common_decimals(shown_values), ui.decimals_in(summary_text))
+        tile_unit = "%" if cpi_mode else unit
+
+        def _num(value: float) -> str:
+            return ui.format_fixed(value, n_dec, signed=cpi_mode)
+
+        en_ui = bool(yt("title_annual"))
+        end_label = (
+            ("Latest value" if en_ui else "Последнее значение")
             if current_year
-            else "Значение на конец года: {value} ({date})"
+            else ("At year end" if en_ui else "На конец года")
         )
-        li_end = (end_tpl or end_fallback).format(
-            value=f"{format_number_ru(display_value(code, last.value), signed=cpi_mode)}{unit_suffix}",
-            date=_format_date(last.date),
+        totals_section = (
+            f"<section><h2>{escape(totals_head)}</h2>"
+            + ui.year_tiles((
+                ("At the start of the year" if en_ui else "На начало года",
+                 _num(shown_values[0]), tile_unit, _format_date(first.date)),
+                (end_label, _num(shown_values[-1]), tile_unit, _format_date(last.date)),
+                ("Lowest" if en_ui else "Минимум", _num(vmin), tile_unit, _format_date(low_date)),
+                ("Highest" if en_ui else "Максимум", _num(vmax), tile_unit, _format_date(high_date)),
+            ))
+            + "</section>"
         )
+        table_rows = [
+            (_format_date(r.date), ui.with_unit(_num(sv), cell_u))
+            for r, sv in zip(rows, shown_values)
+        ]
         all_h2 = (yt("h2_all_values") or "Все значения за {year} год").format(year=year)
         th_date = yt("th_date") or "Дата"
-        data_section = f"""<section><h2>{escape(totals_head)}</h2>
-<ul>
-<li>{escape(summary_label)}: {escape(summary_text)}</li>
-<li>{li_start}</li>
-<li>{li_end}</li>
-<li>{escape(range_label)}: {escape(format_number_ru(vmin, signed=cpi_mode))} … {escape(format_number_ru(vmax, signed=cpi_mode))}{unit_suffix}</li>
-<li>{escape((yt('li_obs') or 'Количество наблюдений: {n}').format(n=len(rows)))}</li>
-<li>{escape((yt('li_source') or 'Источник: {source}').format(source=source))}</li>
-</ul></section>
-<section><h2>{escape(all_h2)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{value_head}</th></tr></thead><tbody>{data_rows}</tbody></table></section>"""
-        chart_caption = (
-            yt("chart_caption_multi")
-            or "{name} в {year} году — график динамики. Источник: {source}. forecasteconomy.com"
-        ).format(name=name, year=year, source=source)
+        table_section = (
+            f"<section><h2>{escape(all_h2)}</h2>"
+            f"{ui.year_values_table(table_rows, head_date=th_date, head_value=value_head)}</section>"
+        )
         chart_alt = (
             yt("chart_alt_multi")
             or "{name} в {year} году — график, {summary_label} {summary_text}, источник {source}"
@@ -2924,14 +3045,23 @@ async def render_indicator_year_html(
     chart_p_tpl = yt("chart_p") or "Полная история и интерактивный график — на странице {_link}."
     chart_p = chart_p_tpl.format(_link=_link(card_path, name))
     h1_text = title.rsplit(" — ", 1)[0]
+    year_lead_text = ui.year_lead(
+        n_rows=len(rows),
+        year=year,
+        source=source,
+        current_year=current_year,
+        last_date_text=_format_date(last.date),
+        annual=freq == "annual",
+    )
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(year_trail)}
-{fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=desc)}
+{fast_answer_block(eyebrow=summary_label, title=h1_text, value=summary_text, note=year_lead_text)}
 {_cpi_provenance_note(code)}
-{_seo_chart_figure(paths.og_indicator(paths.RUSSIA, code, year), chart_alt, chart_caption, href=card_path)}
-{data_section}
+{totals_section}
+{_seo_chart_figure(paths.og_indicator(paths.RUSSIA, code, year), chart_alt, ui.chart_caption(year), href=card_path, brand=False)}
+{table_section}
 <section><h2>{escape(chart_h2)}</h2><p>{chart_p}</p></section>
-<section><h2>{escape(other_h2)}</h2>{year_links}</section>
+{f"<section><h2>{escape(other_h2)}</h2>{year_links}</section>" if year_links else ""}
 </main>"""
     # temporalCoverage — по факту, не «до 31 декабря» для незакрытого года (В-26).
     # Для годового ряда с одной точкой покрытие — дата этой точки.

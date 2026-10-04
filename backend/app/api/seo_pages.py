@@ -271,11 +271,9 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
         # Рендереры возвращают голый маркер («Not found», «<h1>…</h1>») —
         # наружу всегда уходит брендовая 404 с навигацией, не сырой текст.
         from app.services.seo_renderer import render_not_found_html
-        text = re.sub(r"<[^>]+>", "", html).strip()
-        # Empty / generic "Not found" → locale-aware default message.
-        html = render_not_found_html(
-            text if text and text not in ("Not found", "Страница не найдена") else None
-        )
+        # Один заголовок и одна помощь для любого пути: раньше «Страна не
+        # найдена» / «Страница не найдена» зависели от рендерера (N46).
+        html = render_not_found_html()
     if status_code == 404:
         # nginx error_page ставит этот заголовок сам; ответ парсера 404
         # проходит proxy без intercept и раньше уходил только с meta.
