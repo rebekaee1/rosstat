@@ -60,6 +60,42 @@ export function formatDeltaPercent(pct, locale = 'ru') {
   return `${abs.toFixed(1).replace('.', dec)}${NBSP}%`;
 }
 
+/**
+ * Изменение показателя в процентах (инфляция, безработица, доля бедных) — это не «+32,9 %»,
+ * а разница в процентных пунктах: «+3,1 п.п.». Возвращает null, если сравнивать нечего.
+ */
+export function formatPointsDelta(value, prevValue, locale = 'ru') {
+  const a = Number(value);
+  const b = Number(prevValue);
+  if (value == null || prevValue == null || !Number.isFinite(a) || !Number.isFinite(b)) return null;
+  const diff = a - b;
+  const abs = Math.abs(diff);
+  const dec = locale === 'en' ? '.' : ',';
+  const unit = locale === 'en' ? 'p.p.' : 'п.п.';
+  if (abs < 0.05) return { diff: 0, text: `0${NBSP}${unit}` };
+  const sign = diff > 0 ? '+' : '−';
+  return { diff, text: `${sign}${abs.toFixed(1).replace('.', dec)}${NBSP}${unit}` };
+}
+
+const DEMOGRAPHIC_LOAD = /коэффициент[а-яё]*\s+демографической\s+нагрузки/i;
+
+/**
+ * Показатели без единицы, которые обычному человеку не понятны («274»), получают понятное название.
+ * Остальные названия не трогаем.
+ */
+export function plainIndicatorTitle(name, locale = 'ru') {
+  const raw = String(name || '');
+  if (!DEMOGRAPHIC_LOAD.test(raw)) return raw;
+  const en = locale === 'en';
+  if (/моложе/i.test(raw)) {
+    return en ? 'Children per 1,000 working-age people' : 'Детей на 1000 человек трудоспособного возраста';
+  }
+  if (/старше/i.test(raw)) {
+    return en ? 'Older people per 1,000 working-age people' : 'Людей старшего возраста на 1000 человек трудоспособного возраста';
+  }
+  return raw;
+}
+
 /** Название показателя без хвоста «, единица» и без лишних пробелов — для коротких подписей. */
 export function plainName(name) {
   return String(name || '').replace(/\s+/g, ' ').trim();

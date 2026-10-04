@@ -517,7 +517,7 @@ export default function RegionIndicatorPage() {
                         <span className="fe-num w-4 shrink-0 text-right text-text-secondary">{i + 1}</span>
                         <span className={`truncate ${r.slug === slug ? 'text-champagne-ink font-medium' : 'text-text-primary'}`}>{r.name}</span>
                       </span>
-                      <span className="fe-num shrink-0 whitespace-nowrap text-text-secondary">{formatRegionNumber(r.value, active.indicator.unit, locale)}</span>
+                      <span className="fe-num shrink-0 whitespace-nowrap font-medium text-text-primary">{formatRegionNumber(r.value, active.indicator.unit, locale)}</span>
                     </Link>
                   </li>
                 ))}
@@ -534,7 +534,7 @@ export default function RegionIndicatorPage() {
                     <span className="fe-num w-4 text-right text-text-secondary">{active.rank.position}</span>
                     <span className="text-champagne-ink font-medium">{regionName}</span>
                   </span>
-                  <span className="fe-num text-text-secondary">{formatRegionNumber(last.value, active.indicator.unit, locale)}</span>
+                  <span className="fe-num font-medium text-text-primary">{formatRegionNumber(last.value, active.indicator.unit, locale)}</span>
                 </div>
               )}
             </div>

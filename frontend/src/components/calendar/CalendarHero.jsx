@@ -21,7 +21,7 @@ function CountdownUnit({ value, label }) {
 }
 
 function Separator() {
-  return <span className="text-xl text-text-tertiary/40 font-light self-start mt-1">:</span>;
+  return <span className="text-xl font-light leading-none text-text-secondary self-start mt-1" aria-hidden="true">:</span>;
 }
 
 function pluralUnit(n, unit, t, locale) {

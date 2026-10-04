@@ -319,10 +319,6 @@ export default function WorldRegionsHome() {
       )}
 
       <div className="mb-6">
-        <div className="mb-2 inline-flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
-          <MapPin size={15} aria-hidden="true" />
-          {kindPlural}
-        </div>
         <h1 className="font-display text-[1.75rem] font-bold leading-tight text-text-primary sm:text-4xl">
           {title}
         </h1>
@@ -407,7 +403,7 @@ export default function WorldRegionsHome() {
       {hub.data && view === 'map' && (
         <div className="mt-4">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="fe-scroll-row w-full min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
+            <div className="fe-chip-row--grid w-full min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
               <button
                 type="button"
                 role="tab"

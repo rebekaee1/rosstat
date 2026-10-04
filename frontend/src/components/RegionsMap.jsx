@@ -355,7 +355,9 @@ export default function RegionsMap({
 
       {valuesBySlug && (
         <div className="fe-map-legend">
-          <span>{extent ? formatRegionValue(extent.min) : '—'}</span>
+          <span>
+            {extent ? `${formatRegionValue(extent.min)}${unitText ? `\u00A0${unitText}` : ''}` : '—'}
+          </span>
           <div className="fe-map-legend__scale" aria-hidden="true">
             {MAP_SCALE.map((c) => (
               <span key={c} style={{ backgroundColor: c }} />

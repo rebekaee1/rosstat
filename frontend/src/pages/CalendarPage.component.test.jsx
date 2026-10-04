@@ -49,4 +49,26 @@ describe('CalendarPage: видимые состояния', () => {
       unmount();
     }
   });
+
+  it('ежедневные курсы (низкая важность) сворачиваются в одну строку, важное остаётся на виду', async () => {
+    const day = '2031-05-14';
+    const rate = (id, title) => ({
+      id, title, importance: 1, source: 'cbr', scheduled_date: day, scheduled_time: '12:00',
+      source_event_uid: `cbr-rate-${id}-${day}`, indicator_code: `rate-${id}`,
+    });
+    mockApiGet([
+      [/^\/calendar\?/, {
+        total: 5,
+        events: [
+          { id: 100, title: 'Индекс потребительских цен (ИПЦ)', importance: 3, source: 'rosstat', scheduled_date: day, scheduled_time: '19:00', source_event_uid: `rosstat-cpi-${day}`, indicator_code: 'cpi' },
+          rate(1, 'Официальный курс евро'), rate(2, 'Официальный курс доллара'), rate(3, 'Официальный курс юаня'), rate(4, 'Учётная цена на золото'),
+        ],
+      }],
+      [/^\/calendar\/upcoming/, { events: [] }],
+    ]);
+    render('ru');
+    expect(await screen.findByText('Индекс потребительских цен')).toBeTruthy();
+    const summary = screen.getByText('Ежедневные курсы и ставки: 4');
+    expect(summary.closest('details').hasAttribute('open')).toBe(false);
+  });
 });

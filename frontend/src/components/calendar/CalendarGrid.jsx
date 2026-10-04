@@ -151,7 +151,7 @@ export default function CalendarGrid({
                 'fe-cal-day relative min-h-[3.5rem] md:min-h-[4.5rem] border-b border-r border-border-subtle/50 transition-all',
                 'flex flex-col items-center pt-1.5 gap-1',
                 FOCUS_RING_SURFACE,
-                isSelected && 'bg-champagne/8 ring-1 ring-inset ring-champagne/20',
+                isSelected && 'bg-champagne/8',
                 !isSelected && dayEvents.length > 0 && 'hover:bg-surface-hover cursor-pointer',
                 !isSelected && dayEvents.length === 0 && 'cursor-default',
                 isPast && !isSelected && 'opacity-50',
@@ -160,8 +160,8 @@ export default function CalendarGrid({
               <span className={cn(
                 'w-7 h-7 flex items-center justify-center rounded-full text-sm tabular-nums leading-none',
                 isToday && !isSelected && 'bg-champagne-ink text-white font-bold',
-                isToday && isSelected && 'bg-champagne-ink text-white font-bold',
-                !isToday && isSelected && 'bg-champagne/15 text-champagne-ink font-semibold',
+                isToday && isSelected && 'bg-champagne-ink text-white font-bold ring-2 ring-champagne-ink/40 ring-offset-2 ring-offset-surface',
+                !isToday && isSelected && 'bg-champagne/15 text-champagne-ink font-semibold ring-2 ring-champagne-ink/70',
                 !isToday && !isSelected && hasHigh && 'font-semibold text-text-primary',
                 !isToday && !isSelected && !hasHigh && 'text-text-secondary',
               )}>

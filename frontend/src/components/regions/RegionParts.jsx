@@ -5,13 +5,25 @@ import { Search } from 'lucide-react';
 import DeltaBadge from '../DeltaBadge';
 import { indicatorPolarity } from '../../lib/deltaTone';
 import { yearDelta } from '../../lib/regionsApi';
-import { formatRegionCompact, formatRegionWithUnit, formatDeltaPercent } from '../../lib/regionUi';
+import {
+  formatRegionCompact, formatRegionWithUnit, formatDeltaPercent, formatPointsDelta, isPercentUnit, plainIndicatorTitle,
+} from '../../lib/regionUi';
 import { useLocale } from '../../i18n';
 import '../../styles/regions-w4.css';
 
 /** Изменение к прошлому периоду: стрелка и цвет — по смыслу показателя (падение безработицы — хорошо). */
-export function RegionDelta({ value, prevValue, name, label }) {
+export function RegionDelta({ value, prevValue, name, label, unit }) {
   const { locale } = useLocale();
+  // Показатель в процентах (инфляция, безработица): честнее разница в пунктах, а не «+32,9 %».
+  if (isPercentUnit(unit)) {
+    const pts = formatPointsDelta(value, prevValue, locale);
+    if (!pts) return null;
+    return (
+      <DeltaBadge delta={pts.diff} polarity={indicatorPolarity(name, label)} className="text-xs">
+        {pts.text}
+      </DeltaBadge>
+    );
+  }
   const d = yearDelta(value, prevValue);
   if (!d) return null;
   const signed = d.pct < 0 ? -Math.abs(d.pct) : Math.abs(d.pct);
@@ -43,7 +55,7 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
       </div>
       <div className="mt-2 flex items-center justify-between gap-2">
         <span className="text-xs text-text-secondary">{item.period_label || item.year}</span>
-        <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} label={item.label} />
+        <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} label={item.label} unit={item.unit} />
       </div>
       {empty && <span className="sr-only">{t('common.noData')}</span>}
     </Card>
@@ -57,17 +69,17 @@ export function RegionIndicatorRow({ item, to, title }) {
   return (
     <Card
       {...(empty ? { 'aria-disabled': true } : { to })}
-      className="fe-press group flex flex-col gap-2 rounded-2xl border border-border-subtle bg-surface px-3.5 py-3 transition-colors hover:border-border-champagne sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
+      className="fe-press group flex min-w-0 flex-col gap-2 rounded-2xl border border-border-subtle bg-surface px-3.5 py-3 transition-colors hover:border-border-champagne sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1 text-[14px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
-        {title || item.name}
+        {title || plainIndicatorTitle(item.name, locale)}
       </div>
       <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
         <div className="fe-num whitespace-nowrap text-[15px] font-semibold tabular-nums text-text-primary">
           {formatRegionCompact(item.value, item.unit, locale)}
         </div>
         <div className="flex items-center gap-2">
-          <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} />
+          <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />
           <span className="text-xs text-text-secondary">{item.period_label || item.year}</span>
         </div>
       </div>

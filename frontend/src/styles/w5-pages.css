@@ -411,3 +411,16 @@
 .x4-credits p { margin: 4px 0 0; max-width: 62ch; line-height: 1.6; }
 .x4-credits a { color: var(--color-champagne-ink); text-decoration: underline; text-underline-offset: 3px; }
 @media (pointer: coarse) { .x4-credits > summary { min-height: 44px; } }
+
+/* Поля входа и регистрации: один спокойный контур при фокусе вместо двойного (рамка + обводка с зазором). */
+.fe-auth-card .fe-input:focus-visible,
+.fe-auth-card .fe-input:focus {
+  outline: none;
+  border-color: var(--color-champagne-ink);
+  box-shadow: 0 0 0 3px rgba(173, 138, 72, 0.22);
+}
+
+/* Легенда демографии: цветная точка и название стоят на одной линии (первая строка), а не по центру карточки. */
+.fe-demo-item { align-items: start; }
+.fe-demo-item__dot { margin-top: 5px; }
+.fe-demo-item__label { align-self: start; }

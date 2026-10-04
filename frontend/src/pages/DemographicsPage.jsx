@@ -27,6 +27,7 @@ import {
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import '../styles/indicator-russia.css';
+import '../styles/w5-pages.css';
 
 const GROUPS = [
   // В-30: границы трудоспособного возраста менялись (пенсионная реформа

@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { CalendarX2, Download, X } from 'lucide-react';
+import { CalendarX2, ChevronDown, Download, X } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useCalendarEvents, useCalendarUpcoming } from '../lib/hooks';
@@ -20,6 +20,7 @@ import {
 } from '../lib/sitePaths';
 import { useT, useLocale } from '../i18n';
 import '../styles/indicator-russia.css';
+import '../styles/regions-w4.css';
 
 const WEEKDAY_KEYS = [
   'calendar.weekday.sun',
@@ -75,6 +76,37 @@ const FAQ_KEYS = [
   { q: 'calendar.faq.q2', a: 'calendar.faq.a2' },
   { q: 'calendar.faq.q3', a: 'calendar.faq.a3' },
 ];
+
+/**
+ * События одного дня. Ежедневные курсы и ставки (важность «низкая», их много каждый будний день)
+ * сворачиваются в одну строку «Ежедневные курсы и ставки: 4», чтобы редкие важные публикации не тонули.
+ */
+function DayEvents({ events: dayEvents, isPast, isToday, defaultOpen }) {
+  const t = useT();
+  const lows = dayEvents.filter((e) => e.importance === 1);
+  const collapse = lows.length >= 3;
+  const main = collapse ? dayEvents.filter((e) => e.importance !== 1) : dayEvents;
+  return (
+    <div className="space-y-2.5">
+      {main.map((ev, i) => (
+        <CalendarEventCard key={ev.id} event={ev} isPast={isPast} isToday={isToday} index={i} />
+      ))}
+      {collapse && (
+        <details className="fe-acc rounded-xl border border-border-subtle bg-surface" open={defaultOpen || undefined}>
+          <summary className="fe-tap flex items-center justify-between gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-text-secondary">
+            {t('x4.cal.daily', { n: lows.length })}
+            <ChevronDown className="fe-acc__chev h-4 w-4 shrink-0" aria-hidden="true" />
+          </summary>
+          <div className="space-y-2 px-2 pb-2">
+            {lows.map((ev, i) => (
+              <CalendarEventCard key={ev.id} event={ev} isPast={isPast} isToday={isToday} index={i} forceCompact />
+            ))}
+          </div>
+        </details>
+      )}
+    </div>
+  );
+}
 
 export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const t = useT();
@@ -186,7 +218,9 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
       dateStr,
       events: events.sort((a, b) => {
         if (a.importance !== b.importance) return b.importance - a.importance;
-        return (a.scheduled_time || '').localeCompare(b.scheduled_time || '');
+        const byTime = (a.scheduled_time || '').localeCompare(b.scheduled_time || '');
+        // Одинаковое время — всегда один и тот же порядок (евро, доллар, юань, золото не «прыгают» по дням).
+        return byTime || (a.title || '').localeCompare(b.title || '', 'ru');
       }),
       label: formatDayLabel(dateStr, t),
       isToday: dateStr === todayStr,
@@ -302,17 +336,12 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                         </span>
                       </h3>
                     )}
-                    <div className="space-y-2.5">
-                      {group.events.map((ev, i) => (
-                        <CalendarEventCard
-                          key={ev.id}
-                          event={ev}
-                          isPast={isPast}
-                          isToday={group.isToday}
-                          index={i}
-                        />
-                      ))}
-                    </div>
+                    <DayEvents
+                      events={group.events}
+                      isPast={isPast}
+                      isToday={group.isToday}
+                      defaultOpen={Boolean(selectedDate)}
+                    />
                   </section>
                 );
               })}

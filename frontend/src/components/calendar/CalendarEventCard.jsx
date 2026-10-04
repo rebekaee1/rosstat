@@ -111,7 +111,12 @@ function ActualValueCell({ value, previous, forecast, polarity }) {
   );
 }
 
-export default function CalendarEventCard({ event, isPast, isToday, index = 0 }) {
+/** «Индекс потребительских цен (ИПЦ)» → «Индекс потребительских цен»: скобочная аббревиатура — шум. */
+function plainEventTitle(title) {
+  return String(title || '').replace(/\s*\([A-ZА-ЯЁ]{2,6}\)\s*$/u, '').trim();
+}
+
+export default function CalendarEventCard({ event, isPast, isToday, index = 0, forceCompact = false }) {
   const t = useT();
   // Вход карточки средствами CSS, каскад ≤ 200 мс. Прошедшие события приглушены (opacity) — их не анимируем,
   // иначе в конце входа прозрачность «щёлкнула» бы с 1 до 0.7.
@@ -129,7 +134,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
       ? [{ code: event.indicator_code, name: event.indicator_name || event.indicator_code }]
       : []);
 
-  if (isLow && !isToday) {
+  if (isLow && (!isToday || forceCompact)) {
     return (
       <div
         style={revealStyle}
@@ -142,7 +147,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
         )}
       >
         <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', src.dot)} />
-        <span className="text-sm text-text-secondary truncate flex-1">{event.title}</span>
+        <span className="text-sm text-text-secondary truncate flex-1">{plainEventTitle(event.title)}</span>
         {event.scheduled_time && (
           <span className="text-xs text-text-tertiary font-mono shrink-0">{event.scheduled_time}</span>
         )}
@@ -201,7 +206,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0 })
           'font-semibold text-text-primary leading-snug mb-1',
           isHigh ? 'text-base md:text-lg' : 'text-sm',
         )}>
-          {event.title}
+          {plainEventTitle(event.title)}
         </h3>
 
         {event.reference_period && (
