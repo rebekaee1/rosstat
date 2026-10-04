@@ -9,6 +9,8 @@ import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 
+const SOFT = { '--fe-duration': '0.35s', '--fe-rise': '10px' };
+
 /**
  * `forecast_view` — цель «пользователь действительно увидел блок прогноза».
  * Срабатывает один раз на mount-видимость секции через IntersectionObserver
@@ -140,7 +142,7 @@ export default function IndicatorForecastSection({
 
   if (forecastEnabled && !showForecast) {
     return (
-      <section data-block="forecast-empty" className="fe-note-card">
+      <section data-block="forecast-empty" className="fe-reveal fe-reveal--free fe-note-card" style={SOFT}>
         <span className="fe-note-card__icon" aria-hidden="true"><Activity className="h-5 w-5" /></span>
         <div className="fe-note-card__body">
           <p className="fe-note-card__title">{t('w3.forecast.offTitle')}</p>
@@ -151,7 +153,7 @@ export default function IndicatorForecastSection({
   }
 
   return (
-    <section data-block="forecast-empty" className="fe-note-card">
+    <section data-block="forecast-empty" className="fe-reveal fe-reveal--free fe-note-card" style={SOFT}>
       <span className="fe-note-card__icon" aria-hidden="true"><Activity className="h-5 w-5" /></span>
       <div className="fe-note-card__body">
         <p className="fe-note-card__title">{t('w3.forecast.emptyTitle')}</p>

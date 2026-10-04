@@ -33,7 +33,7 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
     : `Источник: ${sourceName || 'указанный поставщик данных'}. Прогноз, если он доступен, показан отдельно от фактических значений.`);
 
   return (
-    <section data-block="methodology" className="fe-info-card">
+    <section data-block="methodology" className="fe-reveal fe-reveal--free fe-info-card" style={{ '--fe-duration': '0.35s', '--fe-rise': '10px' }}>
       <div className="fe-info-card__head">
         <Info className="h-4 w-4 text-champagne-ink" aria-hidden="true" />
         <h3 className="fe-info-card__title">{t('indicator.methodology')}</h3>

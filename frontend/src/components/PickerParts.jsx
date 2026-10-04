@@ -1,6 +1,8 @@
 import { cn } from '../lib/format';
 import '../styles/indicator-russia.css';
 
+const SOFT = { '--fe-duration': '0.3s', '--fe-rise': '8px' };
+
 /**
  * Общая оболочка переключателей показа (режим, частота, состав). `compact` — тело без карточки:
  * его вкладывает родитель, у которого карточка своя.
@@ -8,7 +10,7 @@ import '../styles/indicator-russia.css';
 export function PickerCard({ compact = false, className, children }) {
   if (compact) return children;
   return (
-    <section className={cn('fe-pick-card', className)}>
+    <section className={cn('fe-reveal fe-reveal--free fe-pick-card', className)} style={SOFT}>
       {children}
     </section>
   );

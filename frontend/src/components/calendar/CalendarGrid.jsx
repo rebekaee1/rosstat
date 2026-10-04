@@ -146,7 +146,7 @@ export default function CalendarGrid({
               onClick={() => { onSelectDate(isSelected ? null : dateStr); if (!isSelected) track(trackEvents.CALENDAR_DAY_SELECT, { day: dateStr }); }}
               data-heat={heat || undefined}
               aria-pressed={isSelected}
-              aria-label={dayEvents.length ? t('w3.cal.dayLabel', { day, n: dayEvents.length }) : undefined}
+              aria-label={dayEvents.length ? t('w3.cal.dayLabel', { day, month: t(`calendar.monthGen.${month}`), n: dayEvents.length }) : undefined}
               className={cn(
                 'fe-cal-day relative min-h-[3.5rem] md:min-h-[4.5rem] border-b border-r border-border-subtle/50 transition-all',
                 'flex flex-col items-center pt-1.5 gap-1',

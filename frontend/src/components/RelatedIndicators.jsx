@@ -31,7 +31,7 @@ export default function RelatedIndicators({ code, category, items }) {
         </Link>
       </div>
       <div className="fe-related__grid">
-        {items.map((rel) => {
+        {items.map((rel, index) => {
           const card = relatedIndicatorCardCopy(rel.code, rel.name, rel.unit);
           const display = russiaIndicatorDisplay(rel);
           const date = rel.current_date
@@ -47,7 +47,8 @@ export default function RelatedIndicators({ code, category, items }) {
                 indicatorCategory: category,
                 surface: 'indicator-related',
               })}
-              className="fe-rel-card fe-press group"
+              style={{ '--i': Math.min(index, 5), '--fe-duration': '0.35s', '--fe-rise': '10px' }}
+              className="fe-reveal fe-reveal--free fe-reveal--stagger fe-rel-card fe-press group"
             >
               <div className="min-w-0 flex-1">
                 <p className="fe-rel-card__title">{card.title}</p>

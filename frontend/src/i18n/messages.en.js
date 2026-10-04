@@ -2151,7 +2151,7 @@ export default {
   'w3.cal.tentative': 'Tentative',
   'w3.cal.tentativeHint': 'The date follows the source\'s usual schedule and is not officially confirmed yet.',
   'w3.cal.openIndicator': 'Open the indicator',
-  'w3.cal.dayLabel': 'Day {day}, events: {n}',
+  'w3.cal.dayLabel': '{month} {day}, events: {n}',
   'w3.cal.legendHint': 'The darker the day, the more events it has. A bold number marks a day with a key event.',
   'w3.cal.unit.day.one': 'day',
   'w3.cal.unit.day.few': 'days',

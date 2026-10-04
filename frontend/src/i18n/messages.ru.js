@@ -2160,7 +2160,7 @@ export default {
   'w3.cal.tentative': 'Ориентировочно',
   'w3.cal.tentativeHint': 'Дата рассчитана по графику источника, официального подтверждения пока нет.',
   'w3.cal.openIndicator': 'Открыть показатель',
-  'w3.cal.dayLabel': '{day}-е число, событий: {n}',
+  'w3.cal.dayLabel': '{day} {month}, событий: {n}',
   'w3.cal.legendHint': 'Чем темнее день, тем больше в нём событий. Жирное число — день с важным событием.',
   'w3.cal.unit.day.one': 'день',
   'w3.cal.unit.day.few': 'дня',

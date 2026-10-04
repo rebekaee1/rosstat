@@ -43,7 +43,7 @@ export default function TelemetryCard({
         <span className={valueText.length > 12 ? 'fe-tele__num fe-tele__num--long' : 'fe-tele__num'}>
           {valueText}
         </span>
-        {unitSuffix(unit) ? <span className="fe-tele__unit">{unitSuffix(unit)}</span> : null}
+        {unitSuffix(unit) && valueText !== '—' ? <span className="fe-tele__unit">{unitSuffix(unit)}</span> : null}
       </p>
 
       {(shown || meta) && (

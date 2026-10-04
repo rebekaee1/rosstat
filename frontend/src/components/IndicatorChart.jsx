@@ -106,7 +106,7 @@ function CustomTooltip({
 
   return (
     <div className={`glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl ${compactNumeric ? 'min-w-[118px]' : 'min-w-[200px]'}`}>
-      <p className="text-xs font-mono text-text-tertiary mb-2">{formatDate(label, dateFormat)}</p>
+      <p className="text-xs text-text-secondary mb-2">{formatDate(label, dateFormat)}</p>
 
       {/* Bridge-точка (последний факт, от которого тянется прогнозная линия)
           несёт оба значения — приоритет у факта, иначе последняя фактическая
@@ -135,7 +135,7 @@ function CustomTooltip({
             <span className="w-2 h-2 rounded-full" style={{ background: CHART_THEME.champagne }} />
             <span className="text-xs text-text-tertiary">{forecastLabel}</span>
           </div>
-          <span className="text-sm font-mono font-semibold text-champagne-muted">
+          <span className="text-sm font-semibold tabular-nums text-champagne-muted">
             {valueWithUnit(forecast.value, valueDigits, unit)}
           </span>
         </div>
@@ -151,7 +151,7 @@ function CustomTooltip({
               {series.label || t('chart.compareSeries')}
             </span>
           </div>
-          <span className="font-mono text-sm font-semibold" style={{ color: series.color }}>
+          <span className="text-sm font-semibold tabular-nums" style={{ color: series.color }}>
             {numericTooltipOnly
               ? formatValue(series.payload.value, valueDigits)
               : valueWithUnit(series.payload.value, valueDigits, unit)}
