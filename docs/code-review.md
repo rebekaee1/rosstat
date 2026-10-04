@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `d35f579e75b40e266294232bbc9277644fb9c541`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `b884a47189bd8e55470292aec50926d3f16ae730`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1453 |
+| Файлы в явно определённом scope | 1456 |
 | Код, шаблоны и стили | 1107 |
-| Актуальные рецензии без пропусков guard | 1453 |
-| Именованные определения Python/JS: с аннотацией / всего | 10121 / 10121 |
+| Актуальные рецензии без пропусков guard | 1456 |
+| Именованные определения Python/JS: с аннотацией / всего | 10122 / 10122 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -895,6 +895,9 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/session-replay-review-2026-10-04.md](../docs/research/session-replay-review-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/research/south-korea-official-sources.xlsx](../docs/research/south-korea-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/turkey-official-sources.xlsx](../docs/research/turkey-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/research/ui-brainstorm-planet-2026-10-04.md](../docs/research/ui-brainstorm-planet-2026-10-04.md) | reviewed | 0/0 | актуально |
+| [docs/research/ui-brainstorm-scenarios-2026-10-04.md](../docs/research/ui-brainstorm-scenarios-2026-10-04.md) | reviewed | 0/0 | актуально |
+| [docs/research/ui-review-2026-10-04.md](../docs/research/ui-review-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/research/uk-official-sources.xlsx](../docs/research/uk-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/usa-official-sources.xlsx](../docs/research/usa-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/runtime-inventory.json](../docs/runtime-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
@@ -1065,7 +1068,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/OAuthButtons.component.test.jsx](../frontend/src/components/OAuthButtons.component.test.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/OAuthButtons.jsx](../frontend/src/components/OAuthButtons.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/PlanetLabels.jsx](../frontend/src/components/PlanetLabels.jsx) | reviewed | 5/5 | актуально |
-| [frontend/src/components/PlanetScene.jsx](../frontend/src/components/PlanetScene.jsx) | reviewed | 24/24 | актуально |
+| [frontend/src/components/PlanetScene.jsx](../frontend/src/components/PlanetScene.jsx) | reviewed | 25/25 | актуально |
 | [frontend/src/components/PlanetView.component.test.jsx](../frontend/src/components/PlanetView.component.test.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/components/PlanetView.css](../frontend/src/components/PlanetView.css) | reviewed | 0/0 | актуально |
 | [frontend/src/components/PlanetView.jsx](../frontend/src/components/PlanetView.jsx) | reviewed | 21/21 | актуально |

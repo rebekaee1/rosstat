@@ -2589,7 +2589,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/IndicatorSearch.component.test.jsx": {
-    "sha256": "b23d4dbbd680d1ef08bcd2eb773b4797803d6c54c07414cbb8aff0f8d75d2e49",
+    "sha256": "c84e8bafef9ac980995c671a86dbe6478642f03d6d4579f71e1156ce6487ef13",
     "definitions": [
       {
         "name": "useIndicators",
@@ -2653,33 +2653,33 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 32
+    "anonymous_functions": 34
   },
   "frontend/src/components/IndicatorSearch.jsx": {
-    "sha256": "cb50115fe7cf1bff03a9c2581e07b727c3063afce3add14f53118f0ad2ed6810",
+    "sha256": "3150b670a00483e9e6262c281eefe62ceac3b32ad6620889cec2500eb787ad3b",
     "definitions": [
       {
         "name": "IndicatorSearch",
         "line": 25,
-        "end_line": 439,
+        "end_line": 464,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorSearch.onKey",
-        "line": 124,
-        "end_line": 154,
+        "line": 133,
+        "end_line": 163,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.onQueryChange",
-        "line": 204,
-        "end_line": 207,
+        "line": 213,
+        "end_line": 216,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "IndicatorSearch.handleListKey",
-        "line": 216,
-        "end_line": 228,
+        "line": 225,
+        "end_line": 237,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -2745,7 +2745,7 @@
         "line": 25
       }
     ],
-    "anonymous_functions": 35
+    "anonymous_functions": 39
   },
   "frontend/src/components/IndicatorSeoBlocks.jsx": {
     "sha256": "f79506a641cb9889a41ca96b2a7dcf68187c78ede545c6153244cd17f5b94055",
@@ -3132,7 +3132,7 @@
     "anonymous_functions": 4
   },
   "frontend/src/components/LocaleSwitcher.jsx": {
-    "sha256": "37f1f5e325904bbf5f3f502146d3e3f6710d59c0c5888725fb5490c248afe569",
+    "sha256": "12181b004aec716d115fbb07cca40d10aea23df0ddeb1fd83f9165658fcb7c52",
     "definitions": [
       {
         "name": "FlagRu",
@@ -3712,150 +3712,156 @@
     "anonymous_functions": 12
   },
   "frontend/src/components/PlanetScene.jsx": {
-    "sha256": "5ff64a86551265cf555882bf9ab6cb4791b0b7d0a42e813afe46de8a0cdf55d7",
+    "sha256": "5ad13dc1d96938ddcd97fc475c7b5f55d7042a70246fca47f5107579c733d360",
     "definitions": [
       {
         "name": "valueFor",
-        "line": 36,
-        "end_line": 38,
+        "line": 38,
+        "end_line": 40,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "paintAtlas",
-        "line": 41,
-        "end_line": 74,
+        "line": 43,
+        "end_line": 76,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "paintHighlight",
-        "line": 77,
-        "end_line": 109,
+        "line": 79,
+        "end_line": 111,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "usePlanetTextures",
-        "line": 112,
-        "end_line": 147,
+        "line": 114,
+        "end_line": 166,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetControls",
-        "line": 149,
-        "end_line": 278,
+        "line": 168,
+        "end_line": 306,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "PlanetControls.onChange",
+        "line": 191,
+        "end_line": 196,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "PlanetControls.interrupt",
-        "line": 171,
-        "end_line": 171,
+        "line": 198,
+        "end_line": 198,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth",
-        "line": 280,
-        "end_line": 430,
+        "line": 308,
+        "end_line": 460,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Earth.down",
-        "line": 328,
-        "end_line": 334,
+        "line": 358,
+        "end_line": 364,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.additionalDown",
-        "line": 335,
-        "end_line": 344,
+        "line": 365,
+        "end_line": 374,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.move",
-        "line": 345,
-        "end_line": 347,
+        "line": 375,
+        "end_line": 377,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.end",
-        "line": 348,
-        "end_line": 352,
+        "line": 378,
+        "end_line": 382,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.hit",
-        "line": 375,
-        "end_line": 375,
+        "line": 405,
+        "end_line": 405,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.pointerMove",
-        "line": 376,
-        "end_line": 388,
+        "line": 406,
+        "end_line": 418,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.pointerUp",
-        "line": 389,
-        "end_line": 395,
+        "line": 419,
+        "end_line": 425,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SceneContents",
-        "line": 432,
-        "end_line": 440,
+        "line": 462,
+        "end_line": 472,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SceneBoundary",
-        "line": 442,
-        "end_line": 447,
+        "line": 474,
+        "end_line": 479,
         "kind": "ClassDeclaration"
       },
       {
         "name": "SceneBoundary.getDerivedStateFromError",
-        "line": 444,
-        "end_line": 444,
+        "line": 476,
+        "end_line": 476,
         "kind": "ClassMethod"
       },
       {
         "name": "SceneBoundary.componentDidCatch",
-        "line": 445,
-        "end_line": 445,
+        "line": 477,
+        "end_line": 477,
         "kind": "ClassMethod"
       },
       {
         "name": "SceneBoundary.render",
-        "line": 446,
-        "end_line": 446,
+        "line": 478,
+        "end_line": 478,
         "kind": "ClassMethod"
       },
       {
         "name": "PlanetScene",
-        "line": 450,
-        "end_line": 537,
+        "line": 482,
+        "end_line": 569,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetScene.refine",
-        "line": 470,
-        "end_line": 475,
+        "line": 502,
+        "end_line": 507,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetScene.update",
-        "line": 499,
-        "end_line": 499,
+        "line": 531,
+        "end_line": 531,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ContextLifecycle",
-        "line": 539,
-        "end_line": 548,
+        "line": 571,
+        "end_line": 580,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ContextLifecycle.lost",
-        "line": 543,
-        "end_line": 543,
+        "line": 575,
+        "end_line": 575,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -3910,10 +3916,10 @@
         "names": [
           "default"
         ],
-        "line": 450
+        "line": 482
       }
     ],
-    "anonymous_functions": 49
+    "anonymous_functions": 57
   },
   "frontend/src/components/PlanetView.component.test.jsx": {
     "sha256": "9f605bda3969b52ce5871030b2a6cfa9b0f3cd6c80af19f07f36e00a41259b39",
@@ -3987,7 +3993,7 @@
     "anonymous_functions": 58
   },
   "frontend/src/components/PlanetView.jsx": {
-    "sha256": "5fd2fd1717306da679a97094d26254a28c6e7940e0110148052a2215c7cc57e7",
+    "sha256": "925e5d6e3a85fb4a1ab14bd7432c1787e2febbfbcf27148c95abfa65fe903c99",
     "definitions": [
       {
         "name": "PlanetLink",
@@ -4058,7 +4064,7 @@
       {
         "name": "PlanetView",
         "line": 59,
-        "end_line": 365,
+        "end_line": 373,
         "kind": "FunctionDeclaration"
       },
       {
@@ -4081,38 +4087,38 @@
       },
       {
         "name": "PlanetView.optionId",
-        "line": 209,
-        "end_line": 209,
+        "line": 217,
+        "end_line": 217,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetView.handleSearchKey",
-        "line": 218,
-        "end_line": 232,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "PlanetView.retryScene",
-        "line": 233,
-        "end_line": 236,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "PlanetView.clearSelection",
-        "line": 237,
+        "line": 226,
         "end_line": 240,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "PlanetView.toggleComparison",
+        "name": "PlanetView.retryScene",
         "line": 241,
         "end_line": 244,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "PlanetView.chooseComparisonCountry",
+        "name": "PlanetView.clearSelection",
         "line": 245,
         "end_line": 248,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PlanetView.toggleComparison",
+        "line": 249,
+        "end_line": 252,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PlanetView.chooseComparisonCountry",
+        "line": 253,
+        "end_line": 256,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -6512,30 +6518,30 @@
     "anonymous_functions": 28
   },
   "frontend/src/components/home/HomeWorkbench.jsx": {
-    "sha256": "04fa9a1938491bd6b3430def03bd4f2eea6d8b240ee3f60582ceef0beac0fd07",
+    "sha256": "e2d30e5c132e333def92f83f7f9aef2d3ee6b59c487799154293b1d8b3a9a32e",
     "definitions": [
       {
         "name": "loadPlanetView",
-        "line": 36,
-        "end_line": 36,
+        "line": 37,
+        "end_line": 37,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useAfterFirstPaint",
-        "line": 45,
-        "end_line": 62,
+        "line": 46,
+        "end_line": 63,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomeWorkbench",
-        "line": 68,
-        "end_line": 257,
+        "line": 69,
+        "end_line": 266,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomeWorkbench.onSelectCountry",
-        "line": 136,
-        "end_line": 147,
+        "line": 137,
+        "end_line": 148,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -6569,28 +6575,32 @@
         "line": 28
       },
       {
-        "source": "../IndicatorSearch",
+        "source": "../ErrorBoundary",
         "line": 29
       },
       {
-        "source": "../WorldConceptPicker",
+        "source": "../IndicatorSearch",
         "line": 30
       },
       {
-        "source": "../WorldMapConceptNote",
+        "source": "../WorldConceptPicker",
         "line": 31
       },
       {
-        "source": "./HomeDataScope",
+        "source": "../WorldMapConceptNote",
         "line": 32
       },
       {
-        "source": "../../lib/track",
+        "source": "./HomeDataScope",
         "line": 33
       },
       {
-        "source": "../../i18n",
+        "source": "../../lib/track",
         "line": 34
+      },
+      {
+        "source": "../../i18n",
+        "line": 35
       }
     ],
     "exports": [
@@ -6598,10 +6608,10 @@
         "names": [
           "default"
         ],
-        "line": 68
+        "line": 69
       }
     ],
-    "anonymous_functions": 20
+    "anonymous_functions": 21
   },
   "frontend/src/context/AuthProvider.jsx": {
     "sha256": "5268f4873b192ed5161d2c4b8451b20705227d0506970d5cc861f79dcad1ee1c",
@@ -7740,7 +7750,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "fcd5d2e397b81b0760c353348898bbad910b16eb9d6e129f8d765bb4cc287bd1",
+    "sha256": "e70d49d68f90d9c4bb4938c7e68b19ab2a273957b308a53a73204bf84960f58a",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -7838,7 +7848,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "dc2c36f5c3f34092fe34eec1f77b41b1bec9126bf469970c399a18a58f6935cb",
+    "sha256": "79c5be9b172ad2ee5263b915dd37da57025c27a5e86c0e1665b1498e04d8c2d0",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -16169,7 +16179,7 @@
     "anonymous_functions": 18
   },
   "frontend/src/lib/planetShaders.js": {
-    "sha256": "fdde5ee9c462b08c046641ad9de209af1fbbe0a82cc47b3aa9b825992e30a087",
+    "sha256": "e67b98cc95594049ff3e0f147092020d067c148d605bcf5ee5faafdff01705c4",
     "definitions": [],
     "imports": [],
     "exports": [

@@ -12736,7 +12736,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/IndicatorSearch.component.test.jsx": {
-      "sha256": "b23d4dbbd680d1ef08bcd2eb773b4797803d6c54c07414cbb8aff0f8d75d2e49",
+      "sha256": "c84e8bafef9ac980995c671a86dbe6478642f03d6d4579f71e1156ce6487ef13",
       "imports": [
         {
           "line": 2,
@@ -12804,9 +12804,9 @@
           ]
         },
         {
-          "line": 130,
-          "end_line": 130,
-          "owner": "<callback@129>",
+          "line": 154,
+          "end_line": 154,
+          "owner": "<callback@153>",
           "dynamic": true,
           "specifier": "../lib/track",
           "category": "owned_source",
@@ -12815,9 +12815,9 @@
           ]
         },
         {
-          "line": 146,
-          "end_line": 146,
-          "owner": "<callback@145>",
+          "line": 170,
+          "end_line": 170,
+          "owner": "<callback@169>",
           "dynamic": true,
           "specifier": "../lib/useGlobalSearch",
           "category": "owned_source",
@@ -12826,9 +12826,9 @@
           ]
         },
         {
-          "line": 147,
-          "end_line": 147,
-          "owner": "<callback@145>",
+          "line": 171,
+          "end_line": 171,
+          "owner": "<callback@169>",
           "dynamic": true,
           "specifier": "../lib/track",
           "category": "owned_source",
@@ -12837,9 +12837,9 @@
           ]
         },
         {
-          "line": 194,
-          "end_line": 194,
-          "owner": "<callback@193>",
+          "line": 218,
+          "end_line": 218,
+          "owner": "<callback@217>",
           "dynamic": true,
           "specifier": "../lib/track",
           "category": "owned_source",
@@ -13068,96 +13068,112 @@
         },
         {
           "line": 103,
-          "end_line": 112,
+          "end_line": 116,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it.each(['isPending', 'isDebouncing'])"
+        },
+        {
+          "line": 118,
+          "end_line": 125,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 114,
-          "end_line": 127,
+          "line": 127,
+          "end_line": 136,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 129,
-          "end_line": 143,
+          "line": 138,
+          "end_line": 151,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 145,
-          "end_line": 164,
+          "line": 153,
+          "end_line": 167,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 159,
-          "end_line": 159,
-          "owner": "<callback@145>",
+          "line": 169,
+          "end_line": 188,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 183,
+          "end_line": 183,
+          "owner": "<callback@169>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Promise"
         },
         {
-          "line": 166,
-          "end_line": 175,
+          "line": 190,
+          "end_line": 199,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 177,
-          "end_line": 191,
+          "line": 201,
+          "end_line": 215,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 178,
-          "end_line": 178,
-          "owner": "<callback@177>",
+          "line": 202,
+          "end_line": 202,
+          "owner": "<callback@201>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[0,1,2].map"
         },
         {
-          "line": 193,
-          "end_line": 201,
+          "line": 217,
+          "end_line": 225,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 195,
-          "end_line": 195,
-          "owner": "<callback@193>",
+          "line": 219,
+          "end_line": 219,
+          "owner": "<callback@217>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from"
         },
         {
-          "line": 200,
-          "end_line": 200,
-          "owner": "<callback@193>",
+          "line": 224,
+          "end_line": 224,
+          "owner": "<callback@217>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "waitFor"
         },
         {
-          "line": 200,
-          "end_line": 200,
-          "owner": "<callback@193>.<callback@200>",
+          "line": 224,
+          "end_line": 224,
+          "owner": "<callback@217>.<callback@224>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "results.map"
@@ -13193,7 +13209,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/IndicatorSearch.jsx": {
-      "sha256": "cb50115fe7cf1bff03a9c2581e07b727c3063afce3add14f53118f0ad2ed6810",
+      "sha256": "3150b670a00483e9e6262c281eefe62ceac3b32ad6620889cec2500eb787ad3b",
       "imports": [
         {
           "line": 1,
@@ -13370,7 +13386,7 @@
       "functions": [
         {
           "line": 25,
-          "end_line": 439,
+          "end_line": 464,
           "owner": "<module>",
           "name": "IndicatorSearch",
           "kind": "FunctionDeclaration",
@@ -13385,47 +13401,31 @@
           "callback_context": "useCallback"
         },
         {
-          "line": 64,
-          "end_line": 79,
+          "line": 66,
+          "end_line": 70,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
+          "callback_context": "useEffect"
         },
         {
           "line": 68,
           "end_line": 68,
-          "owner": "IndicatorSearch.<callback@64>",
+          "owner": "IndicatorSearch.<callback@66>",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "(worldPreview?.items || [])\n        .filter"
+          "callback_context": "setTimeout"
         },
         {
           "line": 69,
-          "end_line": 74,
-          "owner": "IndicatorSearch.<callback@64>",
+          "end_line": 69,
+          "owner": "IndicatorSearch.<callback@66>",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "(worldPreview?.items || [])\n        .filter(item => item.country_slug === 'united-states' && item.indicator_code)\n        .map"
+          "callback_context": null
         },
         {
-          "line": 76,
-          "end_line": 76,
-          "owner": "IndicatorSearch.<callback@64>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "indicators.filter"
-        },
-        {
-          "line": 76,
-          "end_line": 78,
-          "owner": "IndicatorSearch.<callback@64>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "indicators.filter(ind => ind.is_listed !== false).map"
-        },
-        {
-          "line": 81,
+          "line": 73,
           "end_line": 88,
           "owner": "IndicatorSearch",
           "name": null,
@@ -13433,249 +13433,297 @@
           "callback_context": "useMemo"
         },
         {
-          "line": 87,
+          "line": 77,
+          "end_line": 77,
+          "owner": "IndicatorSearch.<callback@73>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(worldPreview?.items || [])\n        .filter"
+        },
+        {
+          "line": 78,
+          "end_line": 83,
+          "owner": "IndicatorSearch.<callback@73>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(worldPreview?.items || [])\n        .filter(item => item.country_slug === 'united-states' && item.indicator_code)\n        .map"
+        },
+        {
+          "line": 85,
+          "end_line": 85,
+          "owner": "IndicatorSearch.<callback@73>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "indicators.filter"
+        },
+        {
+          "line": 85,
           "end_line": 87,
-          "owner": "IndicatorSearch.<callback@81>",
+          "owner": "IndicatorSearch.<callback@73>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "indicators.filter(ind => ind.is_listed !== false).map"
+        },
+        {
+          "line": 90,
+          "end_line": 97,
+          "owner": "IndicatorSearch",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 96,
+          "end_line": 96,
+          "owner": "IndicatorSearch.<callback@90>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...counts].filter"
         },
         {
-          "line": 87,
-          "end_line": 87,
-          "owner": "IndicatorSearch.<callback@81>",
+          "line": 96,
+          "end_line": 96,
+          "owner": "IndicatorSearch.<callback@90>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...counts].filter(([, count]) => count > 1).map"
         },
         {
-          "line": 90,
-          "end_line": 100,
+          "line": 99,
+          "end_line": 109,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 102,
-          "end_line": 120,
+          "line": 111,
+          "end_line": 129,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 123,
-          "end_line": 157,
+          "line": 132,
+          "end_line": 166,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 124,
-          "end_line": 154,
-          "owner": "IndicatorSearch.<callback@123>",
+          "line": 133,
+          "end_line": 163,
+          "owner": "IndicatorSearch.<callback@132>",
           "name": "onKey",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 156,
-          "end_line": 156,
-          "owner": "IndicatorSearch.<callback@123>",
+          "line": 165,
+          "end_line": 165,
+          "owner": "IndicatorSearch.<callback@132>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
-        },
-        {
-          "line": 160,
-          "end_line": 174,
-          "owner": "IndicatorSearch",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 168,
-          "end_line": 168,
-          "owner": "IndicatorSearch.<callback@160>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "setTimeout"
         },
         {
           "line": 169,
-          "end_line": 173,
-          "owner": "IndicatorSearch.<callback@160>",
+          "end_line": 183,
+          "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": null
+          "callback_context": "useEffect"
         },
         {
           "line": 177,
-          "end_line": 180,
-          "owner": "IndicatorSearch",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 184,
-          "end_line": 202,
-          "owner": "IndicatorSearch",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 189,
-          "end_line": 200,
-          "owner": "IndicatorSearch.<callback@184>",
+          "end_line": 177,
+          "owner": "IndicatorSearch.<callback@169>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 197,
-          "end_line": 197,
-          "owner": "IndicatorSearch.<callback@184>.<callback@189>",
+          "line": 178,
+          "end_line": 182,
+          "owner": "IndicatorSearch.<callback@169>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 186,
+          "end_line": 189,
+          "owner": "IndicatorSearch",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 193,
+          "end_line": 211,
+          "owner": "IndicatorSearch",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 198,
+          "end_line": 209,
+          "owner": "IndicatorSearch.<callback@193>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setTimeout"
+        },
+        {
+          "line": 206,
+          "end_line": 206,
+          "owner": "IndicatorSearch.<callback@193>.<callback@198>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "results.map"
         },
         {
-          "line": 201,
-          "end_line": 201,
-          "owner": "IndicatorSearch.<callback@184>",
+          "line": 210,
+          "end_line": 210,
+          "owner": "IndicatorSearch.<callback@193>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 204,
-          "end_line": 207,
+          "line": 213,
+          "end_line": 216,
           "owner": "IndicatorSearch",
           "name": "onQueryChange",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 210,
-          "end_line": 214,
+          "line": 219,
+          "end_line": 223,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 216,
-          "end_line": 228,
+          "line": 225,
+          "end_line": 237,
           "owner": "IndicatorSearch",
           "name": "handleListKey",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 232,
-          "end_line": 243,
+          "line": 241,
+          "end_line": 252,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (typeof navigator === 'undefined') return false;\n    const hint = navigator.userAgentData?.platform;\n    if (hint) return /mac|iphone|ipad|ipod/i.test(hint);\n    const ua = navigator.userAgent || '';\n    if (/Windows|Android|CrOS|Linux/i.test(ua) && !/Android.*Macintosh/i.test(ua)) {\n      return false;\n    }\n    const platform = navigator.platform || '';\n    if (platform) return /Mac|iPhone|iPad|iPod/i.test(platform);\n    return /Mac OS X|Macintosh|iPhone|iPad|iPod/i.test(ua);\n  }"
         },
         {
-          "line": 256,
-          "end_line": 256,
+          "line": 265,
+          "end_line": 265,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 275,
-          "end_line": 275,
+          "line": 284,
+          "end_line": 284,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 296,
-          "end_line": 296,
+          "line": 305,
+          "end_line": 305,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 319,
-          "end_line": 326,
+          "line": 328,
+          "end_line": 335,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 321,
-          "end_line": 321,
-          "owner": "IndicatorSearch.<callback@319>",
+          "line": 330,
+          "end_line": 330,
+          "owner": "IndicatorSearch.<callback@328>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...event.currentTarget.querySelectorAll('input, button:not([tabindex=\"-1\"])')].filter"
         },
         {
-          "line": 342,
-          "end_line": 342,
+          "line": 353,
+          "end_line": 353,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 343,
-          "end_line": 343,
+          "line": 354,
+          "end_line": 354,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 344,
-          "end_line": 344,
+          "line": 355,
+          "end_line": 355,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 385,
-          "end_line": 385,
+          "line": 394,
+          "end_line": 402,
+          "owner": "IndicatorSearch",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[72, 58, 66].map"
+        },
+        {
+          "line": 410,
+          "end_line": 410,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 388,
-          "end_line": 423,
+          "line": 413,
+          "end_line": 448,
           "owner": "IndicatorSearch",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "results.map"
         },
         {
-          "line": 407,
-          "end_line": 407,
-          "owner": "IndicatorSearch.<callback@388>",
+          "line": 432,
+          "end_line": 432,
+          "owner": "IndicatorSearch.<callback@413>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 408,
-          "end_line": 408,
-          "owner": "IndicatorSearch.<callback@388>",
+          "line": 433,
+          "end_line": 433,
+          "owner": "IndicatorSearch.<callback@413>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -13866,8 +13914,27 @@
           ]
         },
         {
-          "line": 64,
-          "end_line": 79,
+          "line": 65,
+          "end_line": 65,
+          "owner": "IndicatorSearch",
+          "callee": "useState",
+          "arguments": [
+            "''"
+          ]
+        },
+        {
+          "line": 66,
+          "end_line": 70,
+          "owner": "IndicatorSearch",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    if (!(isLoading && qTrim)) return undefined;\n    const timer = setTimeout(() => setSlowFor(qTrim), 2500);\n    return () => clearTimeout(timer);\n  }",
+            "[isLoading, qTrim]"
+          ]
+        },
+        {
+          "line": 73,
+          "end_line": 88,
           "owner": "IndicatorSearch",
           "callee": "useMemo",
           "arguments": [
@@ -13876,8 +13943,8 @@
           ]
         },
         {
-          "line": 81,
-          "end_line": 88,
+          "line": 90,
+          "end_line": 97,
           "owner": "IndicatorSearch",
           "callee": "useMemo",
           "arguments": [
@@ -13886,8 +13953,8 @@
           ]
         },
         {
-          "line": 90,
-          "end_line": 100,
+          "line": 99,
+          "end_line": 109,
           "owner": "IndicatorSearch",
           "callee": "useCallback",
           "arguments": [
@@ -13896,8 +13963,8 @@
           ]
         },
         {
-          "line": 102,
-          "end_line": 120,
+          "line": 111,
+          "end_line": 129,
           "owner": "IndicatorSearch",
           "callee": "useCallback",
           "arguments": [
@@ -13906,8 +13973,8 @@
           ]
         },
         {
-          "line": 123,
-          "end_line": 157,
+          "line": 132,
+          "end_line": 166,
           "owner": "IndicatorSearch",
           "callee": "useEffect",
           "arguments": [
@@ -13916,8 +13983,8 @@
           ]
         },
         {
-          "line": 160,
-          "end_line": 174,
+          "line": 169,
+          "end_line": 183,
           "owner": "IndicatorSearch",
           "callee": "useEffect",
           "arguments": [
@@ -13926,8 +13993,8 @@
           ]
         },
         {
-          "line": 177,
-          "end_line": 180,
+          "line": 186,
+          "end_line": 189,
           "owner": "IndicatorSearch",
           "callee": "useEffect",
           "arguments": [
@@ -13935,8 +14002,8 @@
           ]
         },
         {
-          "line": 184,
-          "end_line": 202,
+          "line": 193,
+          "end_line": 211,
           "owner": "IndicatorSearch",
           "callee": "useEffect",
           "arguments": [
@@ -13945,8 +14012,8 @@
           ]
         },
         {
-          "line": 210,
-          "end_line": 214,
+          "line": 219,
+          "end_line": 223,
           "owner": "IndicatorSearch",
           "callee": "useEffect",
           "arguments": [
@@ -13959,9 +14026,9 @@
       "storage": [],
       "events": [
         {
-          "line": 155,
-          "end_line": 155,
-          "owner": "IndicatorSearch.<callback@123>",
+          "line": 164,
+          "end_line": 164,
+          "owner": "IndicatorSearch.<callback@132>",
           "callee": "document.addEventListener",
           "arguments": [
             "'keydown'",
@@ -13969,9 +14036,9 @@
           ]
         },
         {
-          "line": 156,
-          "end_line": 156,
-          "owner": "IndicatorSearch.<callback@123>.<callback@156>",
+          "line": 165,
+          "end_line": 165,
+          "owner": "IndicatorSearch.<callback@132>.<callback@165>",
           "callee": "document.removeEventListener",
           "arguments": [
             "'keydown'",
@@ -13981,153 +14048,153 @@
       ],
       "jsx_handlers": [
         {
-          "line": 253,
-          "end_line": 266,
+          "line": 262,
+          "end_line": 275,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { arm(); setOpen(true); }}"
         },
         {
-          "line": 253,
-          "end_line": 266,
+          "line": 262,
+          "end_line": 275,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onMouseEnter",
           "expression": "{arm}"
         },
         {
-          "line": 253,
-          "end_line": 266,
+          "line": 262,
+          "end_line": 275,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onFocus",
           "expression": "{arm}"
         },
         {
-          "line": 272,
-          "end_line": 285,
+          "line": 281,
+          "end_line": 294,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { arm(); setOpen(true); }}"
         },
         {
-          "line": 272,
-          "end_line": 285,
+          "line": 281,
+          "end_line": 294,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onMouseEnter",
           "expression": "{arm}"
         },
         {
-          "line": 272,
-          "end_line": 285,
+          "line": 281,
+          "end_line": 294,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onFocus",
           "expression": "{arm}"
         },
         {
-          "line": 293,
-          "end_line": 306,
+          "line": 302,
+          "end_line": 315,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { arm(); setOpen(true); }}"
         },
         {
-          "line": 293,
-          "end_line": 306,
+          "line": 302,
+          "end_line": 315,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onMouseEnter",
           "expression": "{arm}"
         },
         {
-          "line": 293,
-          "end_line": 306,
+          "line": 302,
+          "end_line": 315,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onFocus",
           "expression": "{arm}"
         },
         {
-          "line": 312,
-          "end_line": 327,
+          "line": 321,
+          "end_line": 336,
           "owner": "IndicatorSearch",
           "component": "div",
           "event": "onKeyDown",
           "expression": "{(event) => {\n            if (event.key !== 'Tab') return;\n            const controls = [...event.currentTarget.querySelectorAll('input, button:not([tabindex=\"-1\"])')].filter(el => !el.disabled);\n            const first = controls[0];\n            const last = controls[controls.length - 1];\n            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }\n            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }\n          }}"
         },
         {
-          "line": 328,
-          "end_line": 334,
+          "line": 337,
+          "end_line": 343,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onClick",
           "expression": "{close}"
         },
         {
-          "line": 338,
-          "end_line": 356,
+          "line": 349,
+          "end_line": 367,
           "owner": "IndicatorSearch",
           "component": "input",
           "event": "onChange",
           "expression": "{(e) => onQueryChange(e.target.value)}"
         },
         {
-          "line": 338,
-          "end_line": 356,
+          "line": 349,
+          "end_line": 367,
           "owner": "IndicatorSearch",
           "component": "input",
           "event": "onCompositionStart",
           "expression": "{() => setIsComposing(true)}"
         },
         {
-          "line": 338,
-          "end_line": 356,
+          "line": 349,
+          "end_line": 367,
           "owner": "IndicatorSearch",
           "component": "input",
           "event": "onCompositionEnd",
           "expression": "{(e) => { onQueryChange(e.currentTarget.value); setIsComposing(false); }}"
         },
         {
-          "line": 338,
-          "end_line": 356,
+          "line": 349,
+          "end_line": 367,
           "owner": "IndicatorSearch",
           "component": "input",
           "event": "onKeyDown",
           "expression": "{handleListKey}"
         },
         {
-          "line": 357,
-          "end_line": 362,
+          "line": 368,
+          "end_line": 373,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onClick",
           "expression": "{close}"
         },
         {
-          "line": 385,
-          "end_line": 385,
+          "line": 410,
+          "end_line": 410,
           "owner": "IndicatorSearch",
           "component": "button",
           "event": "onClick",
           "expression": "{() => qTrim ? globalSearch.refetch() : locale === 'en' ? retryPreview() : retryRussia()}"
         },
         {
-          "line": 402,
-          "end_line": 416,
-          "owner": "IndicatorSearch.<callback@388>",
+          "line": 427,
+          "end_line": 441,
+          "owner": "IndicatorSearch.<callback@413>",
           "component": "button",
           "event": "onMouseEnter",
           "expression": "{() => setHi(i)}"
         },
         {
-          "line": 402,
-          "end_line": 416,
-          "owner": "IndicatorSearch.<callback@388>",
+          "line": 427,
+          "end_line": 441,
+          "owner": "IndicatorSearch.<callback@413>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => go(item, i + 1)}"
@@ -15415,7 +15482,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/LocaleSwitcher.jsx": {
-      "sha256": "37f1f5e325904bbf5f3f502146d3e3f6710d59c0c5888725fb5490c248afe569",
+      "sha256": "12181b004aec716d115fbb07cca40d10aea23df0ddeb1fd83f9165658fcb7c52",
       "imports": [
         {
           "line": 1,
@@ -18302,7 +18369,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/PlanetScene.jsx": {
-      "sha256": "5ff64a86551265cf555882bf9ab6cb4791b0b7d0a42e813afe46de8a0cdf55d7",
+      "sha256": "5ad13dc1d96938ddcd97fc475c7b5f55d7042a70246fca47f5107579c733d360",
       "imports": [
         {
           "line": 1,
@@ -18345,6 +18412,7 @@
             "CanvasTexture",
             "DataTexture",
             "LinearFilter",
+            "LinearMipmapLinearFilter",
             "NoColorSpace",
             "Quaternion",
             "SphereGeometry",
@@ -18471,577 +18539,649 @@
       "routes": [],
       "functions": [
         {
-          "line": 36,
-          "end_line": 38,
+          "line": 38,
+          "end_line": 40,
           "owner": "<module>",
           "name": "valueFor",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 41,
-          "end_line": 74,
+          "line": 43,
+          "end_line": 76,
           "owner": "<module>",
           "name": "paintAtlas",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 77,
-          "end_line": 109,
+          "line": 79,
+          "end_line": 111,
           "owner": "<module>",
           "name": "paintHighlight",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 91,
-          "end_line": 91,
+          "line": 93,
+          "end_line": 93,
           "owner": "paintHighlight",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "entries.filter"
         },
         {
-          "line": 112,
-          "end_line": 147,
+          "line": 114,
+          "end_line": 166,
           "owner": "<module>",
           "name": "usePlanetTextures",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 114,
-          "end_line": 145,
+          "line": 117,
+          "end_line": 148,
           "owner": "usePlanetTextures",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 123,
-          "end_line": 138,
-          "owner": "usePlanetTextures.<callback@114>",
+          "line": 126,
+          "end_line": 141,
+          "owner": "usePlanetTextures.<callback@117>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "loader.loadAsync('/planet/earth_day_2048.webp').then"
         },
         {
-          "line": 131,
-          "end_line": 137,
-          "owner": "usePlanetTextures.<callback@114>.<callback@123>",
+          "line": 134,
+          "end_line": 140,
+          "owner": "usePlanetTextures.<callback@117>.<callback@126>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "loader.loadAsync('/planet/earth_material_cloudless_512_10eb5bd716c9.webp').then"
         },
         {
-          "line": 137,
-          "end_line": 137,
-          "owner": "usePlanetTextures.<callback@114>.<callback@123>",
+          "line": 140,
+          "end_line": 140,
+          "owner": "usePlanetTextures.<callback@117>.<callback@126>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "loader.loadAsync('/planet/earth_material_cloudless_512_10eb5bd716c9.webp').then((surface) => {\n        owned.push(surface);\n        if (!active) { surface.dispose(); return; }\n        surface.colorSpace = NoColorSpace;\n        surface.anisotropy = 2;\n        setTextures({ day, surface });\n      }).catch"
         },
         {
-          "line": 138,
-          "end_line": 140,
-          "owner": "usePlanetTextures.<callback@114>",
+          "line": 141,
+          "end_line": 143,
+          "owner": "usePlanetTextures.<callback@117>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "loader.loadAsync('/planet/earth_day_2048.webp').then((day) => {\n      owned.push(day);\n      if (!active) { day.dispose(); return; }\n      day.colorSpace = SRGBColorSpace;\n      day.anisotropy = 2;\n      setTextures({ day, surface: neutral });\n      // Material detail is optional: it never blocks the first credible surface.\n      if (!budget.materialDetail) return;\n      loader.loadAsync('/planet/earth_material_cloudless_512_10eb5bd716c9.webp').then((surface) => {\n        owned.push(surface);\n        if (!active) { surface.dispose(); return; }\n        surface.colorSpace = NoColorSpace;\n        surface.anisotropy = 2;\n        setTextures({ day, surface });\n      }).catch(() => { /* Keep the real day surface if optional detail is unavailable. */ });\n    }).catch"
         },
         {
-          "line": 141,
-          "end_line": 144,
-          "owner": "usePlanetTextures.<callback@114>",
+          "line": 144,
+          "end_line": 147,
+          "owner": "usePlanetTextures.<callback@117>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 143,
-          "end_line": 143,
-          "owner": "usePlanetTextures.<callback@114>.<callback@141>",
+          "line": 146,
+          "end_line": 146,
+          "owner": "usePlanetTextures.<callback@117>.<callback@144>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "owned.forEach"
         },
         {
-          "line": 149,
-          "end_line": 278,
+          "line": 152,
+          "end_line": 163,
+          "owner": "usePlanetTextures",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 155,
+          "end_line": 161,
+          "owner": "usePlanetTextures.<callback@152>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "new TextureLoader().loadAsync('/planet/earth_day_4096.jpg').then"
+        },
+        {
+          "line": 160,
+          "end_line": 160,
+          "owner": "usePlanetTextures.<callback@152>.<callback@155>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setTextures"
+        },
+        {
+          "line": 161,
+          "end_line": 161,
+          "owner": "usePlanetTextures.<callback@152>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "new TextureLoader().loadAsync('/planet/earth_day_4096.jpg').then((big) => {\n      if (!active) { big.dispose(); return; }\n      big.colorSpace = SRGBColorSpace;\n      big.anisotropy = 4;\n      detailTexture.current = big;\n      setTextures((previous) => (previous ? { ...previous, day: big, detail: true } : previous));\n    }).catch"
+        },
+        {
+          "line": 162,
+          "end_line": 162,
+          "owner": "usePlanetTextures.<callback@152>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 164,
+          "end_line": 164,
+          "owner": "usePlanetTextures",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 164,
+          "end_line": 164,
+          "owner": "usePlanetTextures.<callback@164>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 168,
+          "end_line": 306,
           "owner": "<module>",
           "name": "PlanetControls",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 154,
-          "end_line": 181,
+          "line": 175,
+          "end_line": 208,
           "owner": "PlanetControls",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 171,
-          "end_line": 171,
-          "owner": "PlanetControls.<callback@154>",
+          "line": 191,
+          "end_line": 196,
+          "owner": "PlanetControls.<callback@175>",
+          "name": "onChange",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 198,
+          "end_line": 198,
+          "owner": "PlanetControls.<callback@175>",
           "name": "interrupt",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 175,
-          "end_line": 180,
-          "owner": "PlanetControls.<callback@154>",
+          "line": 202,
+          "end_line": 207,
+          "owner": "PlanetControls.<callback@175>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 183,
-          "end_line": 190,
+          "line": 210,
+          "end_line": 217,
           "owner": "PlanetControls",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 192,
-          "end_line": 229,
+          "line": 219,
+          "end_line": 257,
           "owner": "PlanetControls",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 199,
-          "end_line": 199,
-          "owner": "PlanetControls.<callback@192>",
+          "line": 226,
+          "end_line": 226,
+          "owner": "PlanetControls.<callback@219>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "entries.find"
         },
         {
-          "line": 232,
-          "end_line": 259,
+          "line": 260,
+          "end_line": 287,
           "owner": "PlanetControls",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 261,
-          "end_line": 276,
+          "line": 289,
+          "end_line": 304,
           "owner": "PlanetControls",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useFrame"
         },
         {
-          "line": 280,
-          "end_line": 430,
+          "line": 308,
+          "end_line": 460,
           "owner": "<module>",
           "name": "Earth",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 288,
-          "end_line": 293,
-          "owner": "Earth",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 294,
-          "end_line": 300,
-          "owner": "Earth",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 301,
-          "end_line": 307,
-          "owner": "Earth",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 308,
-          "end_line": 311,
-          "owner": "Earth",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 310,
-          "end_line": 310,
-          "owner": "Earth.<callback@308>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 312,
-          "end_line": 315,
-          "owner": "Earth",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 314,
-          "end_line": 314,
-          "owner": "Earth.<callback@312>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
           "line": 316,
-          "end_line": 322,
+          "end_line": 321,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 323,
-          "end_line": 323,
+          "line": 322,
+          "end_line": 330,
+          "owner": "Earth",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 331,
+          "end_line": 337,
+          "owner": "Earth",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 338,
+          "end_line": 341,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 323,
-          "end_line": 323,
-          "owner": "Earth.<callback@323>",
+          "line": 340,
+          "end_line": 340,
+          "owner": "Earth.<callback@338>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 325,
-          "end_line": 367,
+          "line": 342,
+          "end_line": 345,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 328,
-          "end_line": 334,
-          "owner": "Earth.<callback@325>",
+          "line": 344,
+          "end_line": 344,
+          "owner": "Earth.<callback@342>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 346,
+          "end_line": 352,
+          "owner": "Earth",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 353,
+          "end_line": 353,
+          "owner": "Earth",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 353,
+          "end_line": 353,
+          "owner": "Earth.<callback@353>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 355,
+          "end_line": 397,
+          "owner": "Earth",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 358,
+          "end_line": 364,
+          "owner": "Earth.<callback@355>",
           "name": "down",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 335,
-          "end_line": 344,
-          "owner": "Earth.<callback@325>",
+          "line": 365,
+          "end_line": 374,
+          "owner": "Earth.<callback@355>",
           "name": "additionalDown",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 345,
-          "end_line": 347,
-          "owner": "Earth.<callback@325>",
+          "line": 375,
+          "end_line": 377,
+          "owner": "Earth.<callback@355>",
           "name": "move",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 348,
-          "end_line": 352,
-          "owner": "Earth.<callback@325>",
+          "line": 378,
+          "end_line": 382,
+          "owner": "Earth.<callback@355>",
           "name": "end",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 358,
-          "end_line": 366,
-          "owner": "Earth.<callback@325>",
+          "line": 388,
+          "end_line": 396,
+          "owner": "Earth.<callback@355>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 369,
-          "end_line": 373,
+          "line": 399,
+          "end_line": 403,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 375,
-          "end_line": 375,
+          "line": 405,
+          "end_line": 405,
           "owner": "Earth",
           "name": "hit",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 376,
-          "end_line": 388,
+          "line": 406,
+          "end_line": 418,
           "owner": "Earth",
           "name": "pointerMove",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 389,
-          "end_line": 395,
+          "line": 419,
+          "end_line": 425,
           "owner": "Earth",
           "name": "pointerUp",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 397,
-          "end_line": 397,
+          "line": 427,
+          "end_line": 427,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "entries.find"
         },
         {
-          "line": 407,
-          "end_line": 409,
+          "line": 437,
+          "end_line": 439,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 412,
-          "end_line": 412,
+          "line": 442,
+          "end_line": 442,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 419,
-          "end_line": 419,
+          "line": 449,
+          "end_line": 449,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 422,
-          "end_line": 422,
+          "line": 452,
+          "end_line": 452,
           "owner": "Earth",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 432,
-          "end_line": 440,
+          "line": 462,
+          "end_line": 472,
           "owner": "<module>",
           "name": "SceneContents",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 444,
-          "end_line": 444,
+          "line": 464,
+          "end_line": 464,
+          "owner": "SceneContents",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useCallback"
+        },
+        {
+          "line": 476,
+          "end_line": 476,
           "owner": "<module>",
           "name": "getDerivedStateFromError",
           "kind": "ClassMethod",
           "callback_context": null
         },
         {
-          "line": 445,
-          "end_line": 445,
+          "line": 477,
+          "end_line": 477,
           "owner": "<module>",
           "name": "componentDidCatch",
           "kind": "ClassMethod",
           "callback_context": null
         },
         {
-          "line": 446,
-          "end_line": 446,
+          "line": 478,
+          "end_line": 478,
           "owner": "<module>",
           "name": "render",
           "kind": "ClassMethod",
           "callback_context": null
         },
         {
-          "line": 450,
-          "end_line": 537,
+          "line": 482,
+          "end_line": 569,
           "owner": "<module>",
           "name": "PlanetScene",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 456,
-          "end_line": 460,
+          "line": 488,
+          "end_line": 492,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useState"
         },
         {
-          "line": 461,
-          "end_line": 461,
+          "line": 493,
+          "end_line": 493,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useState"
         },
         {
-          "line": 462,
-          "end_line": 462,
+          "line": 494,
+          "end_line": 494,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 463,
-          "end_line": 466,
+          "line": 495,
+          "end_line": 498,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 467,
-          "end_line": 484,
+          "line": 499,
+          "end_line": 516,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 470,
-          "end_line": 475,
-          "owner": "PlanetScene.<callback@467>",
+          "line": 502,
+          "end_line": 507,
+          "owner": "PlanetScene.<callback@499>",
           "name": "refine",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 470,
-          "end_line": 475,
-          "owner": "PlanetScene.<callback@467>.refine",
+          "line": 502,
+          "end_line": 507,
+          "owner": "PlanetScene.<callback@499>.refine",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "loadPlanetFeatures('detailed').then"
         },
         {
-          "line": 479,
-          "end_line": 483,
-          "owner": "PlanetScene.<callback@467>",
+          "line": 511,
+          "end_line": 515,
+          "owner": "PlanetScene.<callback@499>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 485,
-          "end_line": 496,
+          "line": 517,
+          "end_line": 528,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 489,
-          "end_line": 494,
-          "owner": "PlanetScene.<callback@485>",
+          "line": 521,
+          "end_line": 526,
+          "owner": "PlanetScene.<callback@517>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "loadPlanetFeatures('fine').then"
         },
         {
-          "line": 495,
-          "end_line": 495,
-          "owner": "PlanetScene.<callback@485>",
+          "line": 527,
+          "end_line": 527,
+          "owner": "PlanetScene.<callback@517>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 497,
-          "end_line": 502,
+          "line": 529,
+          "end_line": 534,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 499,
-          "end_line": 499,
-          "owner": "PlanetScene.<callback@497>",
+          "line": 531,
+          "end_line": 531,
+          "owner": "PlanetScene.<callback@529>",
           "name": "update",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 501,
-          "end_line": 501,
-          "owner": "PlanetScene.<callback@497>",
+          "line": 533,
+          "end_line": 533,
+          "owner": "PlanetScene.<callback@529>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 503,
-          "end_line": 503,
+          "line": 535,
+          "end_line": 535,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useState"
         },
         {
-          "line": 513,
-          "end_line": 516,
+          "line": 545,
+          "end_line": 548,
           "owner": "PlanetScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 539,
-          "end_line": 548,
+          "line": 571,
+          "end_line": 580,
           "owner": "<module>",
           "name": "ContextLifecycle",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 541,
-          "end_line": 546,
+          "line": 573,
+          "end_line": 578,
           "owner": "ContextLifecycle",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 543,
-          "end_line": 543,
-          "owner": "ContextLifecycle.<callback@541>",
+          "line": 575,
+          "end_line": 575,
+          "owner": "ContextLifecycle.<callback@573>",
           "name": "lost",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 545,
-          "end_line": 545,
-          "owner": "ContextLifecycle.<callback@541>",
+          "line": 577,
+          "end_line": 577,
+          "owner": "ContextLifecycle.<callback@573>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -19049,8 +19189,8 @@
       ],
       "hooks": [
         {
-          "line": 113,
-          "end_line": 113,
+          "line": 115,
+          "end_line": 115,
           "owner": "usePlanetTextures",
           "callee": "useState",
           "arguments": [
@@ -19058,8 +19198,17 @@
           ]
         },
         {
-          "line": 114,
-          "end_line": 145,
+          "line": 116,
+          "end_line": 116,
+          "owner": "usePlanetTextures",
+          "callee": "useRef",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 117,
+          "end_line": 148,
           "owner": "usePlanetTextures",
           "callee": "useEffect",
           "arguments": [
@@ -19068,15 +19217,35 @@
           ]
         },
         {
-          "line": 150,
-          "end_line": 150,
+          "line": 152,
+          "end_line": 163,
+          "owner": "usePlanetTextures",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    if (!wantDetail || !budget.materialDetail || !hasSurface || hasDetail) return undefined;\n    let active = true;\n    new TextureLoader().loadAsync('/planet/earth_day_4096.jpg').then((big) => {\n      if (!active) { big.dispose(); return; }\n      big.colorSpace = SRGBColorSpace;\n      big.anisotropy = 4;\n      detailTexture.current = big;\n      setTextures((previous) => (previous ? { ...previous, day: big, detail: true } : previous));\n    }).catch(() => { /* The 2048 px map stays; detail is optional. */ });\n    return () => { active = false; };\n  }",
+            "[wantDetail, budget, hasSurface, hasDetail]"
+          ]
+        },
+        {
+          "line": 164,
+          "end_line": 164,
+          "owner": "usePlanetTextures",
+          "callee": "useEffect",
+          "arguments": [
+            "() => () => { detailTexture.current?.dispose(); detailTexture.current = null; }",
+            "[]"
+          ]
+        },
+        {
+          "line": 169,
+          "end_line": 169,
           "owner": "PlanetControls",
           "callee": "useThree",
           "arguments": []
         },
         {
-          "line": 151,
-          "end_line": 151,
+          "line": 170,
+          "end_line": 170,
           "owner": "PlanetControls",
           "callee": "useRef",
           "arguments": [
@@ -19084,8 +19253,8 @@
           ]
         },
         {
-          "line": 152,
-          "end_line": 152,
+          "line": 171,
+          "end_line": 171,
           "owner": "PlanetControls",
           "callee": "useRef",
           "arguments": [
@@ -19093,18 +19262,18 @@
           ]
         },
         {
-          "line": 154,
-          "end_line": 181,
+          "line": 175,
+          "end_line": 208,
           "owner": "PlanetControls",
           "callee": "useEffect",
           "arguments": [
-            "() => {\n    const controls = new OrbitControls(camera, gl.domElement);\n    controls.enabled = interactive;\n    // Wheel belongs to the page. Only an explicitly active touch mode owns pinch.\n    controls.enableZoom = interactive && touchNavigation;\n    // OrbitControls.connect() writes 'none'; override it after connecting.\n    gl.domElement.style.setProperty('touch-action', interactive ? 'none' : 'pan-y pinch-zoom');\n    controls.enablePan = false;\n    controls.enableDamping = !reducedMotion;\n    controls.dampingFactor = 0.12;\n    controls.rotateSpeed = 0.55;\n    controls.zoomSpeed = 0.75;\n    controls.minDistance = MIN_DISTANCE;\n    controls.maxDistance = Math.max(MAX_DISTANCE, fitDistance);\n    controls.minPolarAngle = 0.035;\n    controls.maxPolarAngle = Math.PI - 0.035;\n    controls.addEventListener('change', invalidate);\n    const interrupt = () => { flightRef.current = null; onHover(null); invalidate(); };\n    controls.addEventListener('start', interrupt);\n    controlsRef.current = controls;\n    controls.update();\n    return () => {\n      controls.removeEventListener('change', invalidate);\n      controls.removeEventListener('start', interrupt);\n      controls.dispose();\n      controlsRef.current = null;\n    };\n  }",
-            "[camera, gl, invalidate, reducedMotion, interactive, touchNavigation, onHover, fitDistance]"
+            "() => {\n    const controls = new OrbitControls(camera, gl.domElement);\n    controls.enabled = interactive;\n    // Wheel belongs to the page. Only an explicitly active touch mode owns pinch.\n    controls.enableZoom = interactive && touchNavigation;\n    // OrbitControls.connect() writes 'none'; override it after connecting.\n    gl.domElement.style.setProperty('touch-action', interactive ? 'none' : 'pan-y pinch-zoom');\n    controls.enablePan = false;\n    controls.enableDamping = !reducedMotion;\n    controls.dampingFactor = 0.12;\n    controls.rotateSpeed = 0.55;\n    controls.zoomSpeed = 0.75;\n    controls.minDistance = MIN_DISTANCE;\n    controls.maxDistance = Math.max(MAX_DISTANCE, fitDistance);\n    controls.minPolarAngle = 0.035;\n    controls.maxPolarAngle = Math.PI - 0.035;\n    const onChange = () => {\n      // The closer the camera, the less surface a pixel of drag should cover; otherwise zoomed maps race away.\n      controls.rotateSpeed = 0.55 * Math.min(1, Math.max(0.35, (camera.position.length() - 1) / Math.max(1.2, fitDistance - 1)));\n      invalidate();\n      if (camera.position.length() < DETAIL_DISTANCE) onZoomDetail?.();\n    };\n    controls.addEventListener('change', onChange);\n    const interrupt = () => { flightRef.current = null; onHover(null); invalidate(); };\n    controls.addEventListener('start', interrupt);\n    controlsRef.current = controls;\n    controls.update();\n    return () => {\n      controls.removeEventListener('change', onChange);\n      controls.removeEventListener('start', interrupt);\n      controls.dispose();\n      controlsRef.current = null;\n    };\n  }",
+            "[camera, gl, invalidate, reducedMotion, interactive, touchNavigation, onHover, fitDistance, onZoomDetail]"
           ]
         },
         {
-          "line": 183,
-          "end_line": 190,
+          "line": 210,
+          "end_line": 217,
           "owner": "PlanetControls",
           "callee": "useEffect",
           "arguments": [
@@ -19113,18 +19282,18 @@
           ]
         },
         {
-          "line": 192,
-          "end_line": 229,
+          "line": 219,
+          "end_line": 257,
           "owner": "PlanetControls",
           "callee": "useEffect",
           "arguments": [
-            "() => {\n    if (!cameraCommand) return;\n    onHover(null);\n    const currentDistance = camera.position.length();\n    let target = camera.position.clone();\n    if (cameraCommand.type === 'focus') {\n      const code = normalizePlanetCountryCode(cameraCommand.countryCode);\n      const entry = entries.find((item) => item.code === code);\n      if (!entry) return;\n      if (!entry.focus) return;\n      target = new Vector3(...lonLatToSphere(entry.focus, Math.max(currentDistance, fitDistance)));\n    } else if (cameraCommand.type === 'reset') {\n      target = new Vector3(...lonLatToSphere(\n        defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS,\n        Math.max(INITIAL_DISTANCE, fitDistance),\n      ));\n    } else {\n      const factor = cameraCommand.type === 'zoomIn' ? 0.8 : 1.25;\n      target.normalize().multiplyScalar(Math.min(Math.max(MAX_DISTANCE, fitDistance), Math.max(MIN_DISTANCE, currentDistance * factor)));\n    }\n    if (reducedMotion || cameraCommand.instant) {\n      camera.position.copy(target);\n      camera.lookAt(0, 0, 0);\n      controlsRef.current?.update();\n      flightRef.current = null;\n    } else {\n      const start = camera.position.clone().normalize();\n      flightRef.current = {\n        start,\n        rotation: new Quaternion().setFromUnitVectors(start, target.clone().normalize()),\n        fromDistance: currentDistance,\n        toDistance: target.length(),\n        elapsed: 0,\n        duration: FLIGHT_SECONDS,\n      };\n    }\n    invalidate();\n  }",
-            "[cameraCommand, entries, camera, invalidate, reducedMotion, defaultScope, fitDistance, onHover]"
+            "() => {\n    if (!cameraCommand) return;\n    onHover(null);\n    const currentDistance = camera.position.length();\n    let target = camera.position.clone();\n    if (cameraCommand.type === 'focus') {\n      const code = normalizePlanetCountryCode(cameraCommand.countryCode);\n      const entry = entries.find((item) => item.code === code);\n      if (!entry) return;\n      if (!entry.focus) return;\n      target = new Vector3(...lonLatToSphere(entry.focus, Math.max(currentDistance, fitDistance)));\n    } else if (cameraCommand.type === 'reset') {\n      target = new Vector3(...lonLatToSphere(\n        defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS,\n        Math.max(INITIAL_DISTANCE, fitDistance),\n      ));\n    } else {\n      const factor = cameraCommand.type === 'zoomIn' ? 0.8 : 1.25;\n      target.normalize().multiplyScalar(Math.min(Math.max(MAX_DISTANCE, fitDistance), Math.max(MIN_DISTANCE, currentDistance * factor)));\n      if (target.length() < DETAIL_DISTANCE) onZoomDetail?.();\n    }\n    if (reducedMotion || cameraCommand.instant) {\n      camera.position.copy(target);\n      camera.lookAt(0, 0, 0);\n      controlsRef.current?.update();\n      flightRef.current = null;\n    } else {\n      const start = camera.position.clone().normalize();\n      flightRef.current = {\n        start,\n        rotation: new Quaternion().setFromUnitVectors(start, target.clone().normalize()),\n        fromDistance: currentDistance,\n        toDistance: target.length(),\n        elapsed: 0,\n        duration: FLIGHT_SECONDS,\n      };\n    }\n    invalidate();\n  }",
+            "[cameraCommand, entries, camera, invalidate, reducedMotion, defaultScope, fitDistance, onHover, onZoomDetail]"
           ]
         },
         {
-          "line": 231,
-          "end_line": 231,
+          "line": 259,
+          "end_line": 259,
           "owner": "PlanetControls",
           "callee": "useRef",
           "arguments": [
@@ -19132,8 +19301,8 @@
           ]
         },
         {
-          "line": 232,
-          "end_line": 259,
+          "line": 260,
+          "end_line": 287,
           "owner": "PlanetControls",
           "callee": "useEffect",
           "arguments": [
@@ -19142,8 +19311,8 @@
           ]
         },
         {
-          "line": 261,
-          "end_line": 276,
+          "line": 289,
+          "end_line": 304,
           "owner": "PlanetControls",
           "callee": "useFrame",
           "arguments": [
@@ -19151,15 +19320,15 @@
           ]
         },
         {
-          "line": 281,
-          "end_line": 281,
+          "line": 309,
+          "end_line": 309,
           "owner": "Earth",
           "callee": "useThree",
           "arguments": []
         },
         {
-          "line": 282,
-          "end_line": 282,
+          "line": 310,
+          "end_line": 310,
           "owner": "Earth",
           "callee": "useRef",
           "arguments": [
@@ -19167,8 +19336,8 @@
           ]
         },
         {
-          "line": 283,
-          "end_line": 283,
+          "line": 311,
+          "end_line": 311,
           "owner": "Earth",
           "callee": "useRef",
           "arguments": [
@@ -19176,8 +19345,8 @@
           ]
         },
         {
-          "line": 284,
-          "end_line": 284,
+          "line": 312,
+          "end_line": 312,
           "owner": "Earth",
           "callee": "useRef",
           "arguments": [
@@ -19185,8 +19354,8 @@
           ]
         },
         {
-          "line": 285,
-          "end_line": 285,
+          "line": 313,
+          "end_line": 313,
           "owner": "Earth",
           "callee": "useState",
           "arguments": [
@@ -19194,8 +19363,8 @@
           ]
         },
         {
-          "line": 287,
-          "end_line": 287,
+          "line": 315,
+          "end_line": 315,
           "owner": "Earth",
           "callee": "useRef",
           "arguments": [
@@ -19203,8 +19372,8 @@
           ]
         },
         {
-          "line": 288,
-          "end_line": 293,
+          "line": 316,
+          "end_line": 321,
           "owner": "Earth",
           "callee": "useMemo",
           "arguments": [
@@ -19213,18 +19382,18 @@
           ]
         },
         {
-          "line": 294,
-          "end_line": 300,
+          "line": 322,
+          "end_line": 330,
           "owner": "Earth",
           "callee": "useMemo",
           "arguments": [
-            "() => {\n    const texture = new CanvasTexture(paintAtlas(entries, { mode, valuesByCode, colorModel }));\n    texture.colorSpace = SRGBColorSpace;\n    texture.minFilter = LinearFilter;\n    texture.generateMipmaps = false;\n    return texture;\n  }",
+            "() => {\n    const texture = new CanvasTexture(paintAtlas(entries, { mode, valuesByCode, colorModel }));\n    texture.colorSpace = SRGBColorSpace;\n    // Mipmaps: thin border lines otherwise sparkle when the sphere is minified on a phone.\n    texture.minFilter = LinearMipmapLinearFilter;\n    texture.generateMipmaps = true;\n    texture.anisotropy = 4;\n    return texture;\n  }",
             "[entries, mode, valuesByCode, colorModel]"
           ]
         },
         {
-          "line": 301,
-          "end_line": 307,
+          "line": 331,
+          "end_line": 337,
           "owner": "Earth",
           "callee": "useMemo",
           "arguments": [
@@ -19233,8 +19402,8 @@
           ]
         },
         {
-          "line": 308,
-          "end_line": 311,
+          "line": 338,
+          "end_line": 341,
           "owner": "Earth",
           "callee": "useEffect",
           "arguments": [
@@ -19243,8 +19412,8 @@
           ]
         },
         {
-          "line": 312,
-          "end_line": 315,
+          "line": 342,
+          "end_line": 345,
           "owner": "Earth",
           "callee": "useEffect",
           "arguments": [
@@ -19253,8 +19422,8 @@
           ]
         },
         {
-          "line": 316,
-          "end_line": 322,
+          "line": 346,
+          "end_line": 352,
           "owner": "Earth",
           "callee": "useMemo",
           "arguments": [
@@ -19263,8 +19432,8 @@
           ]
         },
         {
-          "line": 323,
-          "end_line": 323,
+          "line": 353,
+          "end_line": 353,
           "owner": "Earth",
           "callee": "useEffect",
           "arguments": [
@@ -19273,8 +19442,8 @@
           ]
         },
         {
-          "line": 325,
-          "end_line": 367,
+          "line": 355,
+          "end_line": 397,
           "owner": "Earth",
           "callee": "useEffect",
           "arguments": [
@@ -19283,8 +19452,8 @@
           ]
         },
         {
-          "line": 369,
-          "end_line": 373,
+          "line": 399,
+          "end_line": 403,
           "owner": "Earth",
           "callee": "useEffect",
           "arguments": [
@@ -19293,32 +19462,52 @@
           ]
         },
         {
-          "line": 433,
-          "end_line": 433,
+          "line": 463,
+          "end_line": 463,
+          "owner": "SceneContents",
+          "callee": "useState",
+          "arguments": [
+            "false"
+          ]
+        },
+        {
+          "line": 464,
+          "end_line": 464,
+          "owner": "SceneContents",
+          "callee": "useCallback",
+          "arguments": [
+            "() => setWantDetail(true)",
+            "[]"
+          ]
+        },
+        {
+          "line": 465,
+          "end_line": 465,
           "owner": "SceneContents",
           "callee": "usePlanetTextures",
           "arguments": [
             "budget",
-            "onError"
+            "onError",
+            "wantDetail"
           ]
         },
         {
-          "line": 451,
-          "end_line": 451,
+          "line": 483,
+          "end_line": 483,
           "owner": "PlanetScene",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 452,
-          "end_line": 452,
+          "line": 484,
+          "end_line": 484,
           "owner": "PlanetScene",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 453,
-          "end_line": 453,
+          "line": 485,
+          "end_line": 485,
           "owner": "PlanetScene",
           "callee": "useState",
           "arguments": [
@@ -19326,8 +19515,8 @@
           ]
         },
         {
-          "line": 454,
-          "end_line": 454,
+          "line": 486,
+          "end_line": 486,
           "owner": "PlanetScene",
           "callee": "useRef",
           "arguments": [
@@ -19335,8 +19524,8 @@
           ]
         },
         {
-          "line": 455,
-          "end_line": 455,
+          "line": 487,
+          "end_line": 487,
           "owner": "PlanetScene",
           "callee": "useState",
           "arguments": [
@@ -19344,8 +19533,8 @@
           ]
         },
         {
-          "line": 456,
-          "end_line": 460,
+          "line": 488,
+          "end_line": 492,
           "owner": "PlanetScene",
           "callee": "useState",
           "arguments": [
@@ -19353,8 +19542,8 @@
           ]
         },
         {
-          "line": 461,
-          "end_line": 461,
+          "line": 493,
+          "end_line": 493,
           "owner": "PlanetScene",
           "callee": "useState",
           "arguments": [
@@ -19362,8 +19551,8 @@
           ]
         },
         {
-          "line": 462,
-          "end_line": 462,
+          "line": 494,
+          "end_line": 494,
           "owner": "PlanetScene",
           "callee": "useMemo",
           "arguments": [
@@ -19372,8 +19561,8 @@
           ]
         },
         {
-          "line": 463,
-          "end_line": 466,
+          "line": 495,
+          "end_line": 498,
           "owner": "PlanetScene",
           "callee": "useCallback",
           "arguments": [
@@ -19382,8 +19571,8 @@
           ]
         },
         {
-          "line": 467,
-          "end_line": 484,
+          "line": 499,
+          "end_line": 516,
           "owner": "PlanetScene",
           "callee": "useEffect",
           "arguments": [
@@ -19392,8 +19581,8 @@
           ]
         },
         {
-          "line": 485,
-          "end_line": 496,
+          "line": 517,
+          "end_line": 528,
           "owner": "PlanetScene",
           "callee": "useEffect",
           "arguments": [
@@ -19402,8 +19591,8 @@
           ]
         },
         {
-          "line": 497,
-          "end_line": 502,
+          "line": 529,
+          "end_line": 534,
           "owner": "PlanetScene",
           "callee": "useEffect",
           "arguments": [
@@ -19412,8 +19601,8 @@
           ]
         },
         {
-          "line": 503,
-          "end_line": 503,
+          "line": 535,
+          "end_line": 535,
           "owner": "PlanetScene",
           "callee": "useState",
           "arguments": [
@@ -19421,15 +19610,15 @@
           ]
         },
         {
-          "line": 540,
-          "end_line": 540,
+          "line": 572,
+          "end_line": 572,
           "owner": "ContextLifecycle",
           "callee": "useThree",
           "arguments": []
         },
         {
-          "line": 541,
-          "end_line": 546,
+          "line": 573,
+          "end_line": 578,
           "owner": "ContextLifecycle",
           "callee": "useEffect",
           "arguments": [
@@ -19442,19 +19631,19 @@
       "storage": [],
       "events": [
         {
-          "line": 170,
-          "end_line": 170,
-          "owner": "PlanetControls.<callback@154>",
+          "line": 197,
+          "end_line": 197,
+          "owner": "PlanetControls.<callback@175>",
           "callee": "controls.addEventListener",
           "arguments": [
             "'change'",
-            "invalidate"
+            "onChange"
           ]
         },
         {
-          "line": 172,
-          "end_line": 172,
-          "owner": "PlanetControls.<callback@154>",
+          "line": 199,
+          "end_line": 199,
+          "owner": "PlanetControls.<callback@175>",
           "callee": "controls.addEventListener",
           "arguments": [
             "'start'",
@@ -19462,19 +19651,19 @@
           ]
         },
         {
-          "line": 176,
-          "end_line": 176,
-          "owner": "PlanetControls.<callback@154>.<callback@175>",
+          "line": 203,
+          "end_line": 203,
+          "owner": "PlanetControls.<callback@175>.<callback@202>",
           "callee": "controls.removeEventListener",
           "arguments": [
             "'change'",
-            "invalidate"
+            "onChange"
           ]
         },
         {
-          "line": 177,
-          "end_line": 177,
-          "owner": "PlanetControls.<callback@154>.<callback@175>",
+          "line": 204,
+          "end_line": 204,
+          "owner": "PlanetControls.<callback@175>.<callback@202>",
           "callee": "controls.removeEventListener",
           "arguments": [
             "'start'",
@@ -19482,9 +19671,9 @@
           ]
         },
         {
-          "line": 353,
-          "end_line": 353,
-          "owner": "Earth.<callback@325>",
+          "line": 383,
+          "end_line": 383,
+          "owner": "Earth.<callback@355>",
           "callee": "canvas.addEventListener",
           "arguments": [
             "'pointerdown'",
@@ -19493,9 +19682,9 @@
           ]
         },
         {
-          "line": 354,
-          "end_line": 354,
-          "owner": "Earth.<callback@325>",
+          "line": 384,
+          "end_line": 384,
+          "owner": "Earth.<callback@355>",
           "callee": "ownerDocument.addEventListener",
           "arguments": [
             "'pointerdown'",
@@ -19504,9 +19693,9 @@
           ]
         },
         {
-          "line": 355,
-          "end_line": 355,
-          "owner": "Earth.<callback@325>",
+          "line": 385,
+          "end_line": 385,
+          "owner": "Earth.<callback@355>",
           "callee": "ownerDocument.addEventListener",
           "arguments": [
             "'pointermove'",
@@ -19515,9 +19704,9 @@
           ]
         },
         {
-          "line": 356,
-          "end_line": 356,
-          "owner": "Earth.<callback@325>",
+          "line": 386,
+          "end_line": 386,
+          "owner": "Earth.<callback@355>",
           "callee": "ownerDocument.addEventListener",
           "arguments": [
             "'pointerup'",
@@ -19526,9 +19715,9 @@
           ]
         },
         {
-          "line": 357,
-          "end_line": 357,
-          "owner": "Earth.<callback@325>",
+          "line": 387,
+          "end_line": 387,
+          "owner": "Earth.<callback@355>",
           "callee": "ownerDocument.addEventListener",
           "arguments": [
             "'pointercancel'",
@@ -19537,9 +19726,9 @@
           ]
         },
         {
-          "line": 359,
-          "end_line": 359,
-          "owner": "Earth.<callback@325>.<callback@358>",
+          "line": 389,
+          "end_line": 389,
+          "owner": "Earth.<callback@355>.<callback@388>",
           "callee": "canvas.removeEventListener",
           "arguments": [
             "'pointerdown'",
@@ -19548,9 +19737,9 @@
           ]
         },
         {
-          "line": 360,
-          "end_line": 360,
-          "owner": "Earth.<callback@325>.<callback@358>",
+          "line": 390,
+          "end_line": 390,
+          "owner": "Earth.<callback@355>.<callback@388>",
           "callee": "ownerDocument.removeEventListener",
           "arguments": [
             "'pointerdown'",
@@ -19559,9 +19748,9 @@
           ]
         },
         {
-          "line": 361,
-          "end_line": 361,
-          "owner": "Earth.<callback@325>.<callback@358>",
+          "line": 391,
+          "end_line": 391,
+          "owner": "Earth.<callback@355>.<callback@388>",
           "callee": "ownerDocument.removeEventListener",
           "arguments": [
             "'pointermove'",
@@ -19570,9 +19759,9 @@
           ]
         },
         {
-          "line": 362,
-          "end_line": 362,
-          "owner": "Earth.<callback@325>.<callback@358>",
+          "line": 392,
+          "end_line": 392,
+          "owner": "Earth.<callback@355>.<callback@388>",
           "callee": "ownerDocument.removeEventListener",
           "arguments": [
             "'pointerup'",
@@ -19581,9 +19770,9 @@
           ]
         },
         {
-          "line": 363,
-          "end_line": 363,
-          "owner": "Earth.<callback@325>.<callback@358>",
+          "line": 393,
+          "end_line": 393,
+          "owner": "Earth.<callback@355>.<callback@388>",
           "callee": "ownerDocument.removeEventListener",
           "arguments": [
             "'pointercancel'",
@@ -19592,9 +19781,9 @@
           ]
         },
         {
-          "line": 500,
-          "end_line": 500,
-          "owner": "PlanetScene.<callback@497>",
+          "line": 532,
+          "end_line": 532,
+          "owner": "PlanetScene.<callback@529>",
           "callee": "preference.addEventListener",
           "arguments": [
             "'change'",
@@ -19602,9 +19791,9 @@
           ]
         },
         {
-          "line": 501,
-          "end_line": 501,
-          "owner": "PlanetScene.<callback@497>.<callback@501>",
+          "line": 533,
+          "end_line": 533,
+          "owner": "PlanetScene.<callback@529>.<callback@533>",
           "callee": "preference.removeEventListener",
           "arguments": [
             "'change'",
@@ -19612,9 +19801,9 @@
           ]
         },
         {
-          "line": 544,
-          "end_line": 544,
-          "owner": "ContextLifecycle.<callback@541>",
+          "line": 576,
+          "end_line": 576,
+          "owner": "ContextLifecycle.<callback@573>",
           "callee": "canvas.addEventListener",
           "arguments": [
             "'webglcontextlost'",
@@ -19622,9 +19811,9 @@
           ]
         },
         {
-          "line": 545,
-          "end_line": 545,
-          "owner": "ContextLifecycle.<callback@541>.<callback@545>",
+          "line": 577,
+          "end_line": 577,
+          "owner": "ContextLifecycle.<callback@573>.<callback@577>",
           "callee": "canvas.removeEventListener",
           "arguments": [
             "'webglcontextlost'",
@@ -19634,72 +19823,80 @@
       ],
       "jsx_handlers": [
         {
-          "line": 405,
-          "end_line": 413,
+          "line": 435,
+          "end_line": 443,
           "owner": "Earth",
           "component": "mesh",
           "event": "onAfterRender",
           "expression": "{() => {\n          if (!readyRef.current) { readyRef.current = true; onReady(); }\n        }}"
         },
         {
-          "line": 405,
-          "end_line": 413,
+          "line": 435,
+          "end_line": 443,
           "owner": "Earth",
           "component": "mesh",
           "event": "onPointerUp",
           "expression": "{pointerUp}"
         },
         {
-          "line": 405,
-          "end_line": 413,
+          "line": 435,
+          "end_line": 443,
           "owner": "Earth",
           "component": "mesh",
           "event": "onPointerMove",
           "expression": "{pointerMove}"
         },
         {
-          "line": 405,
-          "end_line": 413,
+          "line": 435,
+          "end_line": 443,
           "owner": "Earth",
           "component": "mesh",
           "event": "onPointerOut",
           "expression": "{() => { hoverCode.current = null; setHover(null); onHover(null); gl.domElement.style.setProperty('cursor', 'grab'); }}"
         },
         {
-          "line": 507,
-          "end_line": 507,
+          "line": 468,
+          "end_line": 468,
+          "owner": "SceneContents",
+          "component": "PlanetControls",
+          "event": "onZoomDetail",
+          "expression": "{requestDetail}"
+        },
+        {
+          "line": 539,
+          "end_line": 539,
           "owner": "PlanetScene",
           "component": "SceneBoundary",
           "event": "onError",
           "expression": "{onError}"
         },
         {
-          "line": 508,
-          "end_line": 517,
+          "line": 540,
+          "end_line": 549,
           "owner": "PlanetScene",
           "component": "Canvas",
           "event": "onCreated",
           "expression": "{({ gl }) => {\n          gl.setClearColor(0x000000, 0);\n          gl.domElement.setAttribute('aria-label', t('planet.earth'));\n        }}"
         },
         {
-          "line": 519,
-          "end_line": 519,
+          "line": 551,
+          "end_line": 551,
           "owner": "PlanetScene",
           "component": "ContextLifecycle",
           "event": "onError",
           "expression": "{onError}"
         },
         {
-          "line": 520,
-          "end_line": 532,
+          "line": 552,
+          "end_line": 564,
           "owner": "PlanetScene",
           "component": "SceneContents",
           "event": "onError",
           "expression": "{onError}"
         },
         {
-          "line": 520,
-          "end_line": 532,
+          "line": 552,
+          "end_line": 564,
           "owner": "PlanetScene",
           "component": "SceneContents",
           "event": "onReady",
@@ -19720,8 +19917,8 @@
           "initializer": null
         },
         {
-          "line": 34,
-          "end_line": 34,
+          "line": 36,
+          "end_line": 36,
           "owner": "<module>",
           "name": "INTRO_OFFSET",
           "kind": "ArrayExpression",
@@ -20469,7 +20666,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/PlanetView.jsx": {
-      "sha256": "5fd2fd1717306da679a97094d26254a28c6e7940e0110148052a2215c7cc57e7",
+      "sha256": "925e5d6e3a85fb4a1ab14bd7432c1787e2febbfbcf27148c95abfa65fe903c99",
       "imports": [
         {
           "line": 1,
@@ -20669,9 +20866,9 @@
           ]
         },
         {
-          "line": 234,
-          "end_line": 234,
-          "owner": "PlanetView.retryScene.<callback@234>.<callback@234>",
+          "line": 242,
+          "end_line": 242,
+          "owner": "PlanetView.retryScene.<callback@242>.<callback@242>",
           "dynamic": true,
           "specifier": "./PlanetScene",
           "category": "owned_source",
@@ -20772,7 +20969,7 @@
         },
         {
           "line": 59,
-          "end_line": 365,
+          "end_line": 373,
           "owner": "<module>",
           "name": "PlanetView",
           "kind": "FunctionDeclaration",
@@ -21068,89 +21265,49 @@
         },
         {
           "line": 195,
-          "end_line": 200,
+          "end_line": 208,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 209,
-          "end_line": 209,
+          "line": 217,
+          "end_line": 217,
           "owner": "PlanetView",
           "name": "optionId",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 210,
-          "end_line": 210,
+          "line": 218,
+          "end_line": 218,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "comparisonCodes.map"
         },
         {
-          "line": 211,
-          "end_line": 211,
+          "line": 219,
+          "end_line": 219,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "comparisonCountries.every"
         },
         {
-          "line": 212,
-          "end_line": 212,
+          "line": 220,
+          "end_line": 220,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "comparisonCountries.map"
         },
         {
-          "line": 218,
-          "end_line": 232,
-          "owner": "PlanetView",
-          "name": "handleSearchKey",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
-          "line": 233,
-          "end_line": 236,
-          "owner": "PlanetView",
-          "name": "retryScene",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
-          "line": 234,
-          "end_line": 234,
-          "owner": "PlanetView.retryScene",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "setPlanetScene"
-        },
-        {
-          "line": 234,
-          "end_line": 234,
-          "owner": "PlanetView.retryScene.<callback@234>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "lazy"
-        },
-        {
-          "line": 235,
-          "end_line": 235,
-          "owner": "PlanetView.retryScene",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "setSceneGeneration"
-        },
-        {
-          "line": 237,
+          "line": 226,
           "end_line": 240,
           "owner": "PlanetView",
-          "name": "clearSelection",
+          "name": "handleSearchKey",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
@@ -21158,44 +21315,76 @@
           "line": 241,
           "end_line": 244,
           "owner": "PlanetView",
-          "name": "toggleComparison",
+          "name": "retryScene",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
           "line": 242,
+          "end_line": 242,
+          "owner": "PlanetView.retryScene",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setPlanetScene"
+        },
+        {
+          "line": 242,
+          "end_line": 242,
+          "owner": "PlanetView.retryScene.<callback@242>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "lazy"
+        },
+        {
+          "line": 243,
           "end_line": 243,
+          "owner": "PlanetView.retryScene",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setSceneGeneration"
+        },
+        {
+          "line": 245,
+          "end_line": 248,
+          "owner": "PlanetView",
+          "name": "clearSelection",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 249,
+          "end_line": 252,
+          "owner": "PlanetView",
+          "name": "toggleComparison",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 250,
+          "end_line": 251,
           "owner": "PlanetView.toggleComparison",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setComparisonCodes"
         },
         {
-          "line": 242,
-          "end_line": 242,
-          "owner": "PlanetView.toggleComparison.<callback@242>",
+          "line": 250,
+          "end_line": 250,
+          "owner": "PlanetView.toggleComparison.<callback@250>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.filter"
         },
         {
-          "line": 245,
-          "end_line": 248,
+          "line": 253,
+          "end_line": 256,
           "owner": "PlanetView",
           "name": "chooseComparisonCountry",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 254,
-          "end_line": 256,
-          "owner": "PlanetView",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 264,
+          "line": 262,
           "end_line": 264,
           "owner": "PlanetView",
           "name": null,
@@ -21203,24 +21392,8 @@
           "callback_context": null
         },
         {
-          "line": 265,
-          "end_line": 265,
-          "owner": "PlanetView",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 266,
-          "end_line": 266,
-          "owner": "PlanetView",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 267,
-          "end_line": 269,
+          "line": 272,
+          "end_line": 272,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -21228,176 +21401,200 @@
         },
         {
           "line": 273,
+          "end_line": 273,
+          "owner": "PlanetView",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 274,
+          "end_line": 274,
+          "owner": "PlanetView",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 275,
           "end_line": 277,
+          "owner": "PlanetView",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 281,
+          "end_line": 285,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "searchCountries.map"
         },
         {
-          "line": 274,
-          "end_line": 274,
-          "owner": "PlanetView.<callback@273>",
+          "line": 282,
+          "end_line": 282,
+          "owner": "PlanetView.<callback@281>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 274,
-          "end_line": 274,
-          "owner": "PlanetView.<callback@273>",
+          "line": 282,
+          "end_line": 282,
+          "owner": "PlanetView.<callback@281>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 274,
-          "end_line": 274,
-          "owner": "PlanetView.<callback@273>",
+          "line": 282,
+          "end_line": 282,
+          "owner": "PlanetView.<callback@281>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 283,
-          "end_line": 283,
+          "line": 291,
+          "end_line": 291,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 284,
-          "end_line": 284,
+          "line": 292,
+          "end_line": 292,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...years].reverse().map"
         },
         {
-          "line": 288,
-          "end_line": 288,
-          "owner": "PlanetView",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 289,
-          "end_line": 289,
-          "owner": "PlanetView",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 295,
+          "line": 296,
           "end_line": 296,
+          "owner": "PlanetView",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 297,
+          "end_line": 297,
+          "owner": "PlanetView",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 303,
+          "end_line": 304,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "comparisonCountries.map"
         },
         {
-          "line": 295,
-          "end_line": 295,
-          "owner": "PlanetView.<callback@295>",
+          "line": 303,
+          "end_line": 303,
+          "owner": "PlanetView.<callback@303>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 295,
-          "end_line": 295,
-          "owner": "PlanetView.<callback@295>.<callback@295>",
+          "line": 303,
+          "end_line": 303,
+          "owner": "PlanetView.<callback@303>.<callback@303>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setComparisonCodes"
         },
         {
-          "line": 295,
-          "end_line": 295,
-          "owner": "PlanetView.<callback@295>.<callback@295>.<callback@295>",
+          "line": 303,
+          "end_line": 303,
+          "owner": "PlanetView.<callback@303>.<callback@303>.<callback@303>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.filter"
         },
         {
-          "line": 306,
-          "end_line": 306,
+          "line": 314,
+          "end_line": 314,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 316,
-          "end_line": 316,
+          "line": 324,
+          "end_line": 324,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 317,
-          "end_line": 317,
+          "line": 325,
+          "end_line": 325,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 318,
-          "end_line": 318,
+          "line": 326,
+          "end_line": 326,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 320,
-          "end_line": 320,
+          "line": 328,
+          "end_line": 328,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 320,
-          "end_line": 320,
-          "owner": "PlanetView.<callback@320>",
+          "line": 328,
+          "end_line": 328,
+          "owner": "PlanetView.<callback@328>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setInteractiveTouch"
         },
         {
-          "line": 333,
-          "end_line": 333,
+          "line": 341,
+          "end_line": 341,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "colorModel.bins.map"
         },
         {
-          "line": 345,
-          "end_line": 345,
+          "line": 353,
+          "end_line": 353,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 354,
-          "end_line": 357,
+          "line": 362,
+          "end_line": 365,
           "owner": "PlanetView",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rankedCountries.map"
         },
         {
-          "line": 354,
-          "end_line": 354,
-          "owner": "PlanetView.<callback@354>",
+          "line": 362,
+          "end_line": 362,
+          "owner": "PlanetView.<callback@362>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -21804,11 +22001,11 @@
         },
         {
           "line": 195,
-          "end_line": 200,
+          "end_line": 208,
           "owner": "PlanetView",
           "callee": "useEffect",
           "arguments": [
-            "() => {\n    if (focusCountryCard.current && selectedCountry && countryCard.current) {\n      focusCountryCard.current = false;\n      countryCard.current.focus({ preventScroll: true });\n    }\n  }",
+            "() => {\n    if (focusCountryCard.current && selectedCountry && countryCard.current) {\n      focusCountryCard.current = false;\n      countryCard.current.focus({ preventScroll: true });\n      // On a phone the card sits above the globe; a pick made in the list below would otherwise change it off-screen.\n      if (typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches) {\n        const box = countryCard.current.getBoundingClientRect();\n        if (box.top < 0 || box.bottom > window.innerHeight) {\n          const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n          countryCard.current.scrollIntoView?.({ block: 'start', behavior: calm ? 'auto' : 'smooth' });\n        }\n      }\n    }\n  }",
             "[selectedCountry, cameraCommand]"
           ]
         }
@@ -21839,108 +22036,92 @@
       ],
       "jsx_handlers": [
         {
-          "line": 254,
-          "end_line": 256,
+          "line": 262,
+          "end_line": 264,
           "owner": "PlanetView",
           "component": "div",
           "event": "onBlur",
           "expression": "{(event) => {\n          if (!event.currentTarget.contains(event.relatedTarget)) setSearchOpen(false);\n        }}"
         },
         {
-          "line": 260,
-          "end_line": 265,
+          "line": 268,
+          "end_line": 273,
           "owner": "PlanetView",
           "component": "input",
           "event": "onFocus",
           "expression": "{() => { setSearchOpen(true); setActiveOption(0); }}"
         },
         {
-          "line": 260,
-          "end_line": 265,
+          "line": 268,
+          "end_line": 273,
           "owner": "PlanetView",
           "component": "input",
           "event": "onChange",
           "expression": "{(event) => { setQuery(event.target.value); setActiveOption(0); setSearchOpen(true); }}"
         },
         {
-          "line": 260,
-          "end_line": 265,
+          "line": 268,
+          "end_line": 273,
           "owner": "PlanetView",
           "component": "input",
           "event": "onKeyDown",
           "expression": "{handleSearchKey}"
         },
         {
-          "line": 266,
-          "end_line": 266,
+          "line": 274,
+          "end_line": 274,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setQuery(''); setActiveOption(0); searchInput.current?.focus(); }}"
         },
         {
-          "line": 267,
-          "end_line": 269,
+          "line": 275,
+          "end_line": 277,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{() => {\n              if (searchOpen) setSearchOpen(false); else { setSearchOpen(true); searchInput.current?.focus(); }\n            }}"
         },
         {
-          "line": 273,
-          "end_line": 274,
-          "owner": "PlanetView.<callback@273>",
+          "line": 281,
+          "end_line": 282,
+          "owner": "PlanetView.<callback@281>",
           "component": "button",
           "event": "onMouseDown",
           "expression": "{(event) => event.preventDefault()}"
         },
         {
-          "line": 273,
-          "end_line": 274,
-          "owner": "PlanetView.<callback@273>",
+          "line": 281,
+          "end_line": 282,
+          "owner": "PlanetView.<callback@281>",
           "component": "button",
           "event": "onMouseEnter",
           "expression": "{() => setActiveOption(index)}"
         },
         {
-          "line": 273,
-          "end_line": 274,
-          "owner": "PlanetView.<callback@273>",
+          "line": 281,
+          "end_line": 282,
+          "owner": "PlanetView.<callback@281>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => selectCountry(country.code, true)}"
         },
         {
-          "line": 283,
-          "end_line": 283,
+          "line": 291,
+          "end_line": 291,
           "owner": "PlanetView",
           "component": "select",
           "event": "onChange",
           "expression": "{(event) => onYearChange(Number(event.target.value))}"
         },
         {
-          "line": 288,
-          "end_line": 288,
+          "line": 296,
+          "end_line": 296,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setMode('earth'); setHoverCode(null); setHoverPlace(null); }}"
-        },
-        {
-          "line": 289,
-          "end_line": 289,
-          "owner": "PlanetView",
-          "component": "button",
-          "event": "onClick",
-          "expression": "{() => { setMode('data'); setHoverCode(null); setHoverPlace(null); }}"
-        },
-        {
-          "line": 295,
-          "end_line": 296,
-          "owner": "PlanetView.<callback@295>",
-          "component": "button",
-          "event": "onClick",
-          "expression": "{() => setComparisonCodes((codes) => codes.filter((code) => code !== country.code))}"
         },
         {
           "line": 297,
@@ -21948,15 +22129,15 @@
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
-          "expression": "{chooseComparisonCountry}"
+          "expression": "{() => { setMode('data'); setHoverCode(null); setHoverPlace(null); }}"
         },
         {
           "line": 303,
-          "end_line": 303,
-          "owner": "PlanetView",
-          "component": "div",
-          "event": "onPointerMove",
-          "expression": "{trackPointer}"
+          "end_line": 304,
+          "owner": "PlanetView.<callback@303>",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{() => setComparisonCodes((codes) => codes.filter((code) => code !== country.code))}"
         },
         {
           "line": 305,
@@ -21964,116 +22145,132 @@
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
+          "expression": "{chooseComparisonCountry}"
+        },
+        {
+          "line": 311,
+          "end_line": 311,
+          "owner": "PlanetView",
+          "component": "div",
+          "event": "onPointerMove",
+          "expression": "{trackPointer}"
+        },
+        {
+          "line": 313,
+          "end_line": 313,
+          "owner": "PlanetView",
+          "component": "button",
+          "event": "onClick",
           "expression": "{retryScene}"
         },
         {
-          "line": 306,
-          "end_line": 306,
+          "line": 314,
+          "end_line": 314,
           "owner": "PlanetView",
           "component": "WorldMap",
           "event": "onSelect",
           "expression": "{(country) => selectCountry(country.code, true)}"
         },
         {
-          "line": 308,
-          "end_line": 308,
+          "line": 316,
+          "end_line": 316,
           "owner": "PlanetView",
           "component": "SceneBoundary",
           "event": "onError",
           "expression": "{handleError}"
         },
         {
-          "line": 309,
-          "end_line": 311,
+          "line": 317,
+          "end_line": 319,
           "owner": "PlanetView",
           "component": "PlanetScene",
           "event": "onHover",
           "expression": "{handleHover}"
         },
         {
-          "line": 309,
-          "end_line": 311,
+          "line": 317,
+          "end_line": 319,
           "owner": "PlanetView",
           "component": "PlanetScene",
           "event": "onSelect",
           "expression": "{activateCountry}"
         },
         {
-          "line": 309,
-          "end_line": 311,
+          "line": 317,
+          "end_line": 319,
           "owner": "PlanetView",
           "component": "PlanetScene",
           "event": "onReady",
           "expression": "{handleReady}"
         },
         {
-          "line": 309,
-          "end_line": 311,
+          "line": 317,
+          "end_line": 319,
           "owner": "PlanetView",
           "component": "PlanetScene",
           "event": "onError",
           "expression": "{handleError}"
         },
         {
-          "line": 316,
-          "end_line": 316,
+          "line": 324,
+          "end_line": 324,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{() => commandCamera('zoomIn')}"
         },
         {
-          "line": 317,
-          "end_line": 317,
+          "line": 325,
+          "end_line": 325,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{() => commandCamera('zoomOut')}"
         },
         {
-          "line": 318,
-          "end_line": 318,
+          "line": 326,
+          "end_line": 326,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{() => commandCamera('reset')}"
         },
         {
-          "line": 320,
-          "end_line": 320,
+          "line": 328,
+          "end_line": 328,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setInteractiveTouch((active) => !active)}"
         },
         {
-          "line": 341,
-          "end_line": 341,
+          "line": 349,
+          "end_line": 349,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{clearSelection}"
         },
         {
-          "line": 345,
-          "end_line": 345,
+          "line": 353,
+          "end_line": 353,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{() => onSelect?.(selectedCountry, selectedDetail)}"
         },
         {
-          "line": 346,
-          "end_line": 346,
+          "line": 354,
+          "end_line": 354,
           "owner": "PlanetView",
           "component": "button",
           "event": "onClick",
           "expression": "{toggleComparison}"
         },
         {
-          "line": 354,
-          "end_line": 355,
-          "owner": "PlanetView.<callback@354>",
+          "line": 362,
+          "end_line": 363,
+          "owner": "PlanetView.<callback@362>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => activateCountry(country.code, true)}"
@@ -33831,7 +34028,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/home/HomeWorkbench.jsx": {
-      "sha256": "04fa9a1938491bd6b3430def03bd4f2eea6d8b240ee3f60582ceef0beac0fd07",
+      "sha256": "e2d30e5c132e333def92f83f7f9aef2d3ee6b59c487799154293b1d8b3a9a32e",
       "imports": [
         {
           "line": 1,
@@ -33943,6 +34140,19 @@
           "line": 29,
           "end_line": 29,
           "owner": "<module>",
+          "specifier": "../ErrorBoundary",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/ErrorBoundary.jsx"
+          ],
+          "bindings": [
+            "ErrorBoundary"
+          ]
+        },
+        {
+          "line": 30,
+          "end_line": 30,
+          "owner": "<module>",
           "specifier": "../IndicatorSearch",
           "category": "owned_source",
           "targets": [
@@ -33953,8 +34163,8 @@
           ]
         },
         {
-          "line": 30,
-          "end_line": 30,
+          "line": 31,
+          "end_line": 31,
           "owner": "<module>",
           "specifier": "../WorldConceptPicker",
           "category": "owned_source",
@@ -33966,8 +34176,8 @@
           ]
         },
         {
-          "line": 31,
-          "end_line": 31,
+          "line": 32,
+          "end_line": 32,
           "owner": "<module>",
           "specifier": "../WorldMapConceptNote",
           "category": "owned_source",
@@ -33979,8 +34189,8 @@
           ]
         },
         {
-          "line": 32,
-          "end_line": 32,
+          "line": 33,
+          "end_line": 33,
           "owner": "<module>",
           "specifier": "./HomeDataScope",
           "category": "owned_source",
@@ -33992,8 +34202,8 @@
           ]
         },
         {
-          "line": 33,
-          "end_line": 33,
+          "line": 34,
+          "end_line": 34,
           "owner": "<module>",
           "specifier": "../../lib/track",
           "category": "owned_source",
@@ -34006,8 +34216,8 @@
           ]
         },
         {
-          "line": 34,
-          "end_line": 34,
+          "line": 35,
+          "end_line": 35,
           "owner": "<module>",
           "specifier": "../../i18n",
           "category": "owned_source",
@@ -34020,8 +34230,8 @@
           ]
         },
         {
-          "line": 36,
-          "end_line": 36,
+          "line": 37,
+          "end_line": 37,
           "owner": "loadPlanetView",
           "dynamic": true,
           "specifier": "../PlanetView",
@@ -34034,192 +34244,200 @@
       "routes": [],
       "functions": [
         {
-          "line": 36,
-          "end_line": 36,
+          "line": 37,
+          "end_line": 37,
           "owner": "<module>",
           "name": "loadPlanetView",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 45,
-          "end_line": 62,
+          "line": 46,
+          "end_line": 63,
           "owner": "<module>",
           "name": "useAfterFirstPaint",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 47,
-          "end_line": 60,
+          "line": 48,
+          "end_line": 61,
           "owner": "useAfterFirstPaint",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 48,
-          "end_line": 48,
-          "owner": "useAfterFirstPaint.<callback@47>",
+          "line": 49,
+          "end_line": 49,
+          "owner": "useAfterFirstPaint.<callback@48>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "loadPlanetView().catch"
         },
         {
-          "line": 51,
-          "end_line": 53,
-          "owner": "useAfterFirstPaint.<callback@47>",
+          "line": 52,
+          "end_line": 54,
+          "owner": "useAfterFirstPaint.<callback@48>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "window.requestAnimationFrame"
         },
         {
-          "line": 52,
-          "end_line": 52,
-          "owner": "useAfterFirstPaint.<callback@47>.<callback@51>",
+          "line": 53,
+          "end_line": 53,
+          "owner": "useAfterFirstPaint.<callback@48>.<callback@52>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "window.setTimeout"
         },
         {
-          "line": 52,
-          "end_line": 52,
-          "owner": "useAfterFirstPaint.<callback@47>.<callback@51>.<callback@52>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "startTransition"
-        },
-        {
-          "line": 55,
-          "end_line": 55,
-          "owner": "useAfterFirstPaint.<callback@47>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "window.setTimeout"
-        },
-        {
-          "line": 55,
-          "end_line": 55,
-          "owner": "useAfterFirstPaint.<callback@47>.<callback@55>",
+          "line": 53,
+          "end_line": 53,
+          "owner": "useAfterFirstPaint.<callback@48>.<callback@52>.<callback@53>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "startTransition"
         },
         {
           "line": 56,
-          "end_line": 59,
-          "owner": "useAfterFirstPaint.<callback@47>",
+          "end_line": 56,
+          "owner": "useAfterFirstPaint.<callback@48>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "window.setTimeout"
+        },
+        {
+          "line": 56,
+          "end_line": 56,
+          "owner": "useAfterFirstPaint.<callback@48>.<callback@56>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "startTransition"
+        },
+        {
+          "line": 57,
+          "end_line": 60,
+          "owner": "useAfterFirstPaint.<callback@48>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 68,
-          "end_line": 257,
+          "line": 69,
+          "end_line": 266,
           "owner": "<module>",
           "name": "HomeWorkbench",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 78,
-          "end_line": 78,
+          "line": 79,
+          "end_line": 79,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 93,
-          "end_line": 93,
+          "line": 94,
+          "end_line": 94,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 98,
-          "end_line": 102,
+          "line": 99,
+          "end_line": 103,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 107,
-          "end_line": 110,
+          "line": 108,
+          "end_line": 111,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 107,
-          "end_line": 110,
-          "owner": "HomeWorkbench.<callback@107>",
+          "line": 108,
+          "end_line": 111,
+          "owner": "HomeWorkbench.<callback@108>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "countries.map"
         },
         {
-          "line": 115,
-          "end_line": 115,
+          "line": 116,
+          "end_line": 116,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 128,
-          "end_line": 128,
+          "line": 129,
+          "end_line": 129,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 128,
-          "end_line": 128,
-          "owner": "HomeWorkbench.<callback@128>",
+          "line": 129,
+          "end_line": 129,
+          "owner": "HomeWorkbench.<callback@129>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(yearItems).map"
         },
         {
-          "line": 131,
-          "end_line": 131,
+          "line": 132,
+          "end_line": 132,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 136,
-          "end_line": 147,
+          "line": 137,
+          "end_line": 148,
           "owner": "HomeWorkbench",
           "name": "onSelectCountry",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 190,
-          "end_line": 194,
+          "line": 191,
+          "end_line": 195,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 202,
-          "end_line": 202,
+          "line": 203,
+          "end_line": 203,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 216,
-          "end_line": 220,
+          "line": 217,
+          "end_line": 221,
+          "owner": "HomeWorkbench",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 235,
+          "end_line": 235,
           "owner": "HomeWorkbench",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -34228,8 +34446,8 @@
       ],
       "hooks": [
         {
-          "line": 46,
-          "end_line": 46,
+          "line": 47,
+          "end_line": 47,
           "owner": "useAfterFirstPaint",
           "callee": "useState",
           "arguments": [
@@ -34237,8 +34455,8 @@
           ]
         },
         {
-          "line": 47,
-          "end_line": 60,
+          "line": 48,
+          "end_line": 61,
           "owner": "useAfterFirstPaint",
           "callee": "useEffect",
           "arguments": [
@@ -34247,34 +34465,25 @@
           ]
         },
         {
-          "line": 69,
-          "end_line": 69,
-          "owner": "HomeWorkbench",
-          "callee": "useT",
-          "arguments": []
-        },
-        {
           "line": 70,
           "end_line": 70,
           "owner": "HomeWorkbench",
-          "callee": "useLocale",
+          "callee": "useT",
           "arguments": []
         },
         {
           "line": 71,
           "end_line": 71,
           "owner": "HomeWorkbench",
-          "callee": "useNavigate",
+          "callee": "useLocale",
           "arguments": []
         },
         {
           "line": 72,
           "end_line": 72,
           "owner": "HomeWorkbench",
-          "callee": "useState",
-          "arguments": [
-            "null"
-          ]
+          "callee": "useNavigate",
+          "arguments": []
         },
         {
           "line": 73,
@@ -34289,19 +34498,28 @@
           "line": 74,
           "end_line": 74,
           "owner": "HomeWorkbench",
+          "callee": "useState",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 75,
+          "end_line": 75,
+          "owner": "HomeWorkbench",
           "callee": "useAfterFirstPaint",
           "arguments": []
         },
         {
-          "line": 76,
-          "end_line": 76,
+          "line": 77,
+          "end_line": 77,
           "owner": "HomeWorkbench",
           "callee": "useWorldCountries",
           "arguments": []
         },
         {
-          "line": 77,
-          "end_line": 80,
+          "line": 78,
+          "end_line": 81,
           "owner": "HomeWorkbench",
           "callee": "useMemo",
           "arguments": [
@@ -34310,8 +34528,8 @@
           ]
         },
         {
-          "line": 82,
-          "end_line": 82,
+          "line": 83,
+          "end_line": 83,
           "owner": "HomeWorkbench",
           "callee": "useWorldCompareSnapshot",
           "arguments": [
@@ -34319,8 +34537,8 @@
           ]
         },
         {
-          "line": 83,
-          "end_line": 83,
+          "line": 84,
+          "end_line": 84,
           "owner": "HomeWorkbench",
           "callee": "useWorldMapSeries",
           "arguments": [
@@ -34328,8 +34546,8 @@
           ]
         },
         {
-          "line": 92,
-          "end_line": 95,
+          "line": 93,
+          "end_line": 96,
           "owner": "HomeWorkbench",
           "callee": "useMemo",
           "arguments": [
@@ -34338,8 +34556,8 @@
           ]
         },
         {
-          "line": 97,
-          "end_line": 104,
+          "line": 98,
+          "end_line": 105,
           "owner": "HomeWorkbench",
           "callee": "useMemo",
           "arguments": [
@@ -34348,8 +34566,8 @@
           ]
         },
         {
-          "line": 106,
-          "end_line": 112,
+          "line": 107,
+          "end_line": 113,
           "owner": "HomeWorkbench",
           "callee": "useMemo",
           "arguments": [
@@ -34358,8 +34576,8 @@
           ]
         },
         {
-          "line": 114,
-          "end_line": 117,
+          "line": 115,
+          "end_line": 118,
           "owner": "HomeWorkbench",
           "callee": "useMemo",
           "arguments": [
@@ -34368,8 +34586,8 @@
           ]
         },
         {
-          "line": 127,
-          "end_line": 130,
+          "line": 128,
+          "end_line": 131,
           "owner": "HomeWorkbench",
           "callee": "useMemo",
           "arguments": [
@@ -34378,8 +34596,8 @@
           ]
         },
         {
-          "line": 131,
-          "end_line": 131,
+          "line": 132,
+          "end_line": 132,
           "owner": "HomeWorkbench",
           "callee": "useMemo",
           "arguments": [
@@ -34393,40 +34611,48 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 185,
-          "end_line": 209,
+          "line": 186,
+          "end_line": 210,
           "owner": "HomeWorkbench",
           "component": "WorldConceptPicker",
           "event": "onChange",
           "expression": "{(slug) => {\n                setPicked(slug);\n                setMapYear(null);\n                track(events.HOME_COUNTRIES_METRIC, { concept: slug });\n              }}"
         },
         {
-          "line": 200,
-          "end_line": 204,
+          "line": 201,
+          "end_line": 205,
           "owner": "HomeWorkbench",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}"
         },
         {
-          "line": 214,
-          "end_line": 222,
+          "line": 215,
+          "end_line": 223,
           "owner": "HomeWorkbench",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{() => {\n              countriesQ.refetch();\n              snapshot.refetch();\n              mapSeries.refetch();\n            }}"
         },
         {
-          "line": 232,
-          "end_line": 250,
+          "line": 235,
+          "end_line": 235,
+          "owner": "HomeWorkbench",
+          "component": "button",
+          "event": "onClick",
+          "expression": "{() => window.location.reload()}"
+        },
+        {
+          "line": 240,
+          "end_line": 258,
           "owner": "HomeWorkbench",
           "component": "PlanetView",
           "event": "onYearChange",
           "expression": "{setMapYear}"
         },
         {
-          "line": 232,
-          "end_line": 250,
+          "line": 240,
+          "end_line": 258,
           "owner": "HomeWorkbench",
           "component": "PlanetView",
           "event": "onSelect",
@@ -37403,7 +37629,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "fcd5d2e397b81b0760c353348898bbad910b16eb9d6e129f8d765bb4cc287bd1",
+      "sha256": "e70d49d68f90d9c4bb4938c7e68b19ab2a273957b308a53a73204bf84960f58a",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -37794,7 +38020,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "dc2c36f5c3f34092fe34eec1f77b41b1bec9126bf469970c399a18a58f6935cb",
+      "sha256": "79c5be9b172ad2ee5263b915dd37da57025c27a5e86c0e1665b1498e04d8c2d0",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -58986,7 +59212,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/planetShaders.js": {
-      "sha256": "fdde5ee9c462b08c046641ad9de209af1fbbe0a82cc47b3aa9b825992e30a087",
+      "sha256": "e67b98cc95594049ff3e0f147092020d067c148d605bcf5ee5faafdff01705c4",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -110267,14 +110493,14 @@
     }
   },
   "totals": {
-    "imports": 1855,
+    "imports": 1856,
     "routes": 72,
-    "functions": 6494,
-    "hooks": 1481,
+    "functions": 6510,
+    "hooks": 1488,
     "http": 80,
     "storage": 56,
     "events": 160,
-    "jsx_handlers": 629,
+    "jsx_handlers": 631,
     "registries": 327,
     "mcp_tools": 7,
     "files": 381,
