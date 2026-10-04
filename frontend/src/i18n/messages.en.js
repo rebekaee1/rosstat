@@ -2031,4 +2031,12 @@ export default {
   'world.regions.mapHintZoom':
     'The +/− buttons zoom the map; when zoomed in you can pan it.',
   'world.regions.mapClickTitle': 'A click opens the territory card',
+
+  // Charts and tables: controls, screen-reader labels, empty states (2026-10-04).
+  'chart.rangeAria': 'Chart period',
+  'chart.plotAria': '{title}. Latest value: {value} ({date}).',
+  'chart.loadingAria': 'Chart is loading',
+  'table.emptyPeriod': 'No data for this period',
+  'table.emptySearch': 'Nothing found — change the query',
+  'table.loading': 'Loading the table…',
 };

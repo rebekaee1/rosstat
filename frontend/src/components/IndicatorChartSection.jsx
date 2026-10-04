@@ -6,7 +6,7 @@ import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
-import { ChartSkeleton } from './Skeleton';
+import ChartSectionSkeleton from './ChartSectionSkeleton';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 import { useLocale, useT } from '../i18n';
 import { resolveChartTitle } from '../i18n/resolveViewModeCopy';
@@ -304,7 +304,7 @@ export default function IndicatorChartSection({
   };
 
   return (
-    <section id="chart" data-block="chart" className="mb-16 scroll-mt-24">
+    <section id="chart" data-block="chart" className="mb-16 scroll-mt-24" aria-busy={chartLoading ? true : undefined}>
       <div className="flex items-center justify-between mb-6 border-b border-border-subtle pb-4 flex-wrap gap-3">
         <div className="flex items-center gap-4">
           <Terminal className="w-4 h-4 text-champagne" />
@@ -388,7 +388,7 @@ export default function IndicatorChartSection({
       />
 
       {chartLoading ? (
-        <ChartSkeleton />
+        <ChartSectionSkeleton />
       ) : (
         <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[2rem]">
           <IndicatorChart

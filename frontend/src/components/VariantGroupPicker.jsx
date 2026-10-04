@@ -1,5 +1,5 @@
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { cn } from '../lib/format';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import ChipGroup, { ChipLink } from './ChipGroup';
 import { useT } from '../i18n';
 import MobileNavSelect from './MobileNavSelect';
 
@@ -51,26 +51,21 @@ export default function VariantGroupPicker({
       ) : null}
 
       <div className={useMobileSelect ? 'hidden lg:block' : undefined}>
-        <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+        <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
           {groupLabel}
         </p>
-        <div className="flex flex-wrap gap-2">
+        <ChipGroup label={groupLabel}>
           {codeOptions.map((item) => (
-            <Link
+            <ChipLink
               key={item.code}
+              active={item.code === currentCode}
               to={`${root}/${item.code}${suffix}`}
               preventScrollReset
-              className={cn(
-                'rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-                item.code === currentCode
-                  ? 'bg-champagne/15 text-champagne'
-                  : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-              )}
             >
               {item.displayLabel}
-            </Link>
+            </ChipLink>
           ))}
-        </div>
+        </ChipGroup>
       </div>
     </>
   );

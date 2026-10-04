@@ -8,7 +8,7 @@ import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
 import IndicatorChart from './IndicatorChart';
-import { ChartSkeleton } from './Skeleton';
+import ChartSectionSkeleton from './ChartSectionSkeleton';
 import { worldChartTitle, worldRangePreset } from '../lib/worldViewModes';
 import { useLocale, useT } from '../i18n';
 import { useCountryComparison } from '../lib/useCountryComparison';
@@ -182,7 +182,7 @@ export default function WorldChartSection({
   };
 
   return (
-    <section id="chart" data-block="chart" className="mb-10 sm:mb-16 scroll-mt-24">
+    <section id="chart" data-block="chart" className="mb-10 sm:mb-16 scroll-mt-24" aria-busy={chartLoading ? true : undefined}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-3 sm:mb-6 sm:pb-4">
         <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <Terminal className="h-4 w-4 shrink-0 text-champagne" />
@@ -331,7 +331,7 @@ export default function WorldChartSection({
       )}
 
       {chartLoading ? (
-        <ChartSkeleton />
+        <ChartSectionSkeleton />
       ) : (
         <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[2rem]">
           <IndicatorChart

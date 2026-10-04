@@ -1,6 +1,5 @@
 import { rememberAuthView, restoredAuthView } from '../lib/authReturn';
 import { useEffect, useRef, useMemo, useState, useCallback, useId } from 'react';
-import gsap from 'gsap';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, Bar, XAxis, YAxis,
   Tooltip, CartesianGrid, ReferenceLine, ReferenceArea,
@@ -15,6 +14,10 @@ import { buildForecastVisualSeries, mergeActualForecastChartSeries } from '../li
 import { useT } from '../i18n';
 import { CHART_THEME } from '../lib/chartTheme';
 import ChartBrandCaption from './ChartBrandCaption';
+import { chartPlotHeight } from './chartLayout';
+import Chip from './Chip';
+import ChipGroup from './ChipGroup';
+import '../styles/chart-controls.css';
 
 const RANGE_PRESETS = {
   default: [
@@ -58,6 +61,8 @@ const RANGE_DEFAULTS = {
 };
 
 const MIN_WINDOW = 10;
+// Появление блока средствами CSS: без задержки, график виден сразу (раньше gsap скрывал его на ~1.3 с).
+const REVEAL_STYLE = { '--fe-duration': '0.28s', '--fe-rise': '8px' };
 const ZOOM_STEP = 1.18;
 
 function dateBasedWindowSize(data, months) {
@@ -186,7 +191,6 @@ export default function IndicatorChart({
   const t = useT();
   const digits = chartValueDigits(unit, chartMode ?? mode);
   const gradientId = `actual-${useId().replaceAll(':', '')}`;
-  const ref = useRef(null);
   const chartAreaRef = useRef(null);
   const rangeOptions = (RANGE_PRESETS[rangePreset] || RANGE_PRESETS.default).map((opt) => ({
     ...opt,
@@ -200,6 +204,8 @@ export default function IndicatorChart({
   const [offset, setOffset] = useState(savedView?.offset ?? 0);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  // Последнее взаимодействие — касанием: подсказку открываем тапом по плоту и закрываем тапом вне плота.
+  const [touchMode, setTouchMode] = useState(false);
   const [prevPreset, setPrevPreset] = useState(rangePreset);
   const [chartType, setChartType] = useState(savedView?.chartType ?? defaultChartType);
   useEffect(() => {
@@ -252,16 +258,6 @@ export default function IndicatorChart({
     setWindowOverride(null);
     setOffset(0);
   }
-
-  useEffect(() => {
-    if (!ref.current) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const tween = gsap.fromTo(ref.current,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.5 }
-    );
-    return () => tween.kill();
-  }, []);
 
   const chartData = useMemo(() => {
     let base;
@@ -383,6 +379,9 @@ export default function IndicatorChart({
 
   /* ── Drag pan ── */
   const handlePointerDown = useCallback((e) => {
+    const isTouch = e.pointerType === 'touch';
+    setTouchMode(isTouch);
+    if (isTouch) setIsHovering(true);
     const rect = chartAreaRef.current?.getBoundingClientRect();
     if (!rect) return;
     dragRef.current = {
@@ -410,6 +409,8 @@ export default function IndicatorChart({
       d.phase = 'dragging';
       try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* ok */ }
       setIsDragging(true);
+      // Сдвиг пальцем — это не наведение: подсказка не должна «залипать» над сдвинутым рядом.
+      if (e.pointerType === 'touch') setIsHovering(false);
     }
 
     d = dragRef.current;
@@ -426,10 +427,34 @@ export default function IndicatorChart({
     const d = dragRef.current;
     if (d?.phase === 'dragging') {
       try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* ok */ }
+    } else if (e.pointerType === 'touch') {
+      if (e.type === 'pointercancel') {
+        // Браузер забрал жест под прокрутку страницы — подсказку убираем.
+        setIsHovering(false);
+      } else {
+        // Тап: часть сенсорных браузеров не шлёт эмулированный mousemove, а Recharts без него не знает
+        // точку. Передаём ему координаты тапа сами; лишний дубль от браузера ничего не меняет.
+        const wrapper = e.currentTarget.querySelector('.recharts-wrapper');
+        if (wrapper) {
+          wrapper.dispatchEvent(new MouseEvent('mousemove', {
+            bubbles: true, clientX: e.clientX, clientY: e.clientY,
+          }));
+        }
+      }
     }
     dragRef.current = null;
     setIsDragging(false);
   }, []);
+
+  // Тап вне плота закрывает подсказку (на сенсоре нет mouseleave).
+  useEffect(() => {
+    if (!isHovering || !touchMode) return undefined;
+    const onOutside = (event) => {
+      if (!chartAreaRef.current?.contains(event.target)) setIsHovering(false);
+    };
+    document.addEventListener('pointerdown', onOutside, true);
+    return () => document.removeEventListener('pointerdown', onOutside, true);
+  }, [isHovering, touchMode]);
 
   const { yDomain, yWidth, yTicks } = useMemo(() => {
     if (!visibleData.length) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined };
@@ -497,6 +522,22 @@ export default function IndicatorChart({
       ? t('chart.title.cpiMom')
       : t('chart.title.inflation12m'));
 
+  // Подпись плота для скринридера: название и последнее фактическое значение ряда.
+  const lastActualRow = useMemo(() => {
+    for (let i = chartData.length - 1; i >= 0; i--) {
+      const v = chartData[i].actual;
+      if (v != null && !Number.isNaN(Number(v))) return chartData[i];
+    }
+    return null;
+  }, [chartData]);
+  const plotAriaLabel = lastActualRow
+    ? t('chart.plotAria', {
+      title,
+      value: `${formatValue(lastActualRow.actual, digits)}${unitSuffix(unit)}`,
+      date: formatDate(lastActualRow.date, dateFormat),
+    })
+    : title;
+
   const baselineY = referenceLineY !== undefined
     ? referenceLineY
     : 0;
@@ -510,13 +551,13 @@ export default function IndicatorChart({
 
   if (!dataLen) {
     return (
-      <div className="p-8 md:p-10 rounded-[2rem] bg-surface border border-border-subtle border-dashed shadow-sm min-h-[320px] flex flex-col items-center justify-center text-center gap-4">
+      <div role="status" className="fe-chart-card fe-reveal border border-dashed border-border-subtle bg-surface p-8 md:p-10 shadow-sm min-h-[320px] flex flex-col items-center justify-center text-center gap-4" style={REVEAL_STYLE}>
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-obsidian-lighter border border-border-subtle">
           <Activity className="w-7 h-7 text-champagne/80" aria-hidden />
         </div>
         <div className="max-w-md space-y-2">
           <p className="text-sm font-semibold text-text-primary">{t('chart.emptyTitle')}</p>
-          <p className="text-sm text-text-tertiary leading-relaxed">
+          <p className="text-sm text-text-secondary leading-relaxed">
             {emptyHint || t('chart.emptyHint')}
           </p>
         </div>
@@ -525,7 +566,7 @@ export default function IndicatorChart({
   }
 
   return (
-    <div ref={ref} className="fe-panel fe-chart-card">
+    <div className="fe-panel fe-chart-card fe-reveal" style={REVEAL_STYLE}>
       <div className="fe-chart-toolbar flex items-center justify-between mb-5 flex-wrap gap-3">
         <h3 className="fe-chart-title">
           {title}
@@ -533,11 +574,7 @@ export default function IndicatorChart({
         {/* ml-auto: при длинном заголовке контролы переносятся на новую строку,
             но всегда прижаты вправо (а не уезжают влево). Созвон 2026-06-16. */}
         <div className="flex items-center gap-2 flex-wrap ml-auto">
-          <div
-            className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle"
-            role="radiogroup"
-            aria-label={t('chart.typeAria')}
-          >
+          <ChipGroup label={t('chart.typeAria')} className="fe-chip-row--tight">
             {[
               { key: 'area', label: t('chart.type.area'), icon: AreaIcon },
               { key: 'line', label: t('chart.type.line'), icon: LineIcon },
@@ -545,58 +582,48 @@ export default function IndicatorChart({
             ].map((opt) => {
               const IconComp = opt.icon;
               return (
-                <button
+                <Chip
                   key={opt.key}
-                  type="button"
+                  active={chartType === opt.key}
                   onClick={() => setChartType(opt.key)}
-                  role="radio"
-                  aria-checked={chartType === opt.key}
                   aria-label={opt.label}
                   title={opt.label}
-                  className={cn(
-                    'p-1.5 rounded-lg transition-colors duration-200',
-                    chartType === opt.key
-                      ? 'bg-champagne/15 text-champagne'
-                      : 'text-text-tertiary hover:text-text-secondary'
-                  )}
+                  className="fe-chip--icon"
                 >
                   <IconComp className="w-3.5 h-3.5" aria-hidden="true" />
-                </button>
+                </Chip>
               );
             })}
-          </div>
+          </ChipGroup>
           {isZoomed && (
-            <button
-              type="button"
+            <Chip
+              aria-pressed={undefined}
               onClick={() => { setWindowOverride(null); setOffset(0); track(events.CHART_ZOOM, { action: 'reset', indicator: indicatorCode, indicatorCategory }); }}
-              className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-wider text-text-tertiary hover:text-champagne transition-colors"
+              className="fe-chip--ghost font-mono uppercase tracking-wider"
               title={t('chart.resetZoomTitle')}
             >
               {t('chart.resetZoom')}
-            </button>
+            </Chip>
           )}
-          <div className="flex gap-1 p-1 rounded-xl bg-obsidian-lighter border border-border-subtle">
+          <ChipGroup label={t('chart.rangeAria')} className="fe-chip-row--tight">
             {rangeOptions.map(opt => (
-              <button
+              <Chip
                 key={opt.key}
-                type="button"
+                active={range === opt.key && !isZoomed}
                 onClick={() => handleRangeChange(opt.key)}
-                className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200',
-                  range === opt.key && !isZoomed
-                    ? 'bg-champagne/15 text-champagne'
-                    : 'text-text-tertiary hover:text-text-secondary'
-                )}
               >
                 {opt.label}
-              </button>
+              </Chip>
             ))}
-          </div>
+          </ChipGroup>
         </div>
       </div>
 
       <div
         ref={chartAreaRef}
+        role="img"
+        aria-label={plotAriaLabel}
+        data-touch-tooltip={touchMode && isHovering ? 'open' : undefined}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -609,7 +636,7 @@ export default function IndicatorChart({
         )}
         style={{ touchAction: 'pan-y' }}
       >
-        <ResponsiveContainer width="100%" height={plotWidth > 0 && plotWidth < 600 ? 280 : 390}>
+        <ResponsiveContainer width="100%" height={chartPlotHeight(plotWidth)}>
           <ComposedChart data={visualData} margin={{ top: 12, right: 36, bottom: 16, left: 0 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -762,11 +789,11 @@ export default function IndicatorChart({
           </ComposedChart>
         </ResponsiveContainer>
 
-        {isHovering && !isDragging && (
+        {isHovering && !isDragging && !touchMode && (
           <div className="mt-1 flex justify-end pr-3">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
               <ZoomIn className="w-3 h-3 text-text-tertiary" />
-              <span className="text-[10px] font-mono text-text-tertiary">{t('chart.zoomHint')}</span>
+              <span className="text-xs font-mono text-text-secondary">{t('chart.zoomHint')}</span>
             </div>
           </div>
         )}
@@ -782,16 +809,9 @@ export default function IndicatorChart({
             value={sliderValue}
             onChange={handleSlider}
             aria-label={t('chart.windowAria')}
-            className="w-full h-1.5 appearance-none bg-obsidian-lighter rounded-full
-              [&::-webkit-slider-thumb]:appearance-none
-              [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
-              [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-champagne
-              [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md
-              [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
-              [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-champagne
-              [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
+            className="fe-range"
           />
-          <div className="flex justify-between text-[10px] font-mono text-text-tertiary mt-1">
+          <div className="flex justify-between text-xs font-mono text-text-secondary">
             <span>{visibleData[0] ? formatDate(visibleData[0].date, dateFormat) : ''}</span>
             <span>{visibleData.length ? formatDate(visibleData[visibleData.length - 1].date, dateFormat) : ''}</span>
           </div>
@@ -802,12 +822,12 @@ export default function IndicatorChart({
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border-subtle pt-3">
           <div className="flex items-center gap-2">
             <span className="h-0.5 w-5 rounded-full bg-text-primary" />
-            <span className="text-[11px] text-text-tertiary">{actualSeriesLabel || t('chart.primarySeries')}</span>
+            <span className="text-xs text-text-secondary">{actualSeriesLabel || t('chart.primarySeries')}</span>
           </div>
           {resolvedComparisonSeries.map((series) => (
             <div key={series.dataKey} className="flex min-w-0 items-center gap-2">
               <span className="h-0.5 w-5 shrink-0 rounded-full" style={{ backgroundColor: series.color }} />
-              <span className="max-w-[14rem] truncate text-[11px] text-text-tertiary">{series.label}</span>
+              <span className="max-w-[14rem] truncate text-xs text-text-secondary">{series.label}</span>
             </div>
           ))}
         </div>
@@ -817,11 +837,11 @@ export default function IndicatorChart({
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-3 border-t border-border-subtle">
           <div className="flex items-center gap-2">
             <span className="w-5 h-0.5 bg-text-primary rounded-full" />
-            <span className="text-[11px] text-text-tertiary">{t('chart.legend.actual')}</span>
+            <span className="text-xs text-text-secondary">{t('chart.legend.actual')}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-5 h-0.5 rounded-full" style={{ background: CHART_THEME.champagne, opacity: 0.8 }} />
-            <span className="text-[11px] text-text-tertiary">{t('common.forecast')}</span>
+            <span className="text-xs text-text-secondary">{t('common.forecast')}</span>
           </div>
         </div>
       )}
