@@ -158,7 +158,7 @@
   .planet-layer-switch button { padding: 0 9px; }
 }
 @media (max-width: 700px) {
-  .planet-view { --planet-scene-height: 310px; }
+  .planet-view { --planet-scene-height: 360px; }
   .planet-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
   .planet-search-field input { font-size: 16px; }
   .planet-display-controls { justify-content: space-between; align-items: flex-end; gap: 12px; }

@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
-  CanvasTexture, DataTexture, LinearFilter,
+  CanvasTexture, DataTexture, LinearFilter, LinearMipmapLinearFilter,
   NoColorSpace, Quaternion, SphereGeometry, SRGBColorSpace,
   TextureLoader, Vector3,
 } from 'three';
@@ -322,8 +322,10 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, sh
   const atlas = useMemo(() => {
     const texture = new CanvasTexture(paintAtlas(entries, { mode, valuesByCode, colorModel }));
     texture.colorSpace = SRGBColorSpace;
-    texture.minFilter = LinearFilter;
-    texture.generateMipmaps = false;
+    // Mipmaps: thin border lines otherwise sparkle when the sphere is minified on a phone.
+    texture.minFilter = LinearMipmapLinearFilter;
+    texture.generateMipmaps = true;
+    texture.anisotropy = 4;
     return texture;
   }, [entries, mode, valuesByCode, colorModel]);
   const highlight = useMemo(() => {

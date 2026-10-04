@@ -376,7 +376,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
               <span className="fe-search-progress" data-active={isLoading && qTrim ? 'true' : 'false'} aria-hidden="true" />
             </div>
 
-            <p id={`${resultId}-help`} className="px-4 pt-3 pb-1 text-xs leading-relaxed text-text-tertiary">
+            <p id={`${resultId}-help`} className="px-4 pt-3 pb-1 text-xs leading-relaxed text-text-tertiary [@media(pointer:coarse)]:sr-only">
               {t('search.help')}
             </p>
 
