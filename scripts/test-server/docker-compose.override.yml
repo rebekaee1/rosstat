@@ -1,0 +1,28 @@
+# Тестовый (демо) сервер: 2 vCPU / 3,9 ГБ RAM, наружу только через cloudflared (127.0.0.1:80).
+# Файл не входит в Git (лежит рядом с docker-compose.yml на сервере); эталон — scripts/test-server/docker-compose.override.yml.
+# Лимиты памяти урезаны под хост; прод — 4 vCPU / 8 ГБ.
+services:
+  postgres:
+    ports: !override []
+  redis:
+    ports: !override []
+  frontend:
+    # Сборка с host-сетью: из docker-сети хоста pip/npm таймаутят (ловушка 2026-08/09).
+    build:
+      network: host
+    ports: !override
+      - "127.0.0.1:80:80"
+  backend:
+    build:
+      network: host
+    deploy:
+      resources:
+        limits:
+          memory: 900M
+          cpus: '1.5'
+  scheduler:
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+          cpus: '0.8'

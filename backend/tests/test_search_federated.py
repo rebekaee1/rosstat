@@ -404,3 +404,29 @@ def test_native_average_housing_prices_are_not_aggregation_modes(search_client, 
     # A separately requested temporal average still remains mandatory. The
     # native annual market mean does not invent an aggregation-mode destination.
     assert not get(search_client, query + ' средняя по годам')['results']
+
+
+def test_search_endpoint_caches_by_normalized_query_and_locale(monkeypatch):
+    """Repeated visitor queries are served from the cache, per locale and limit."""
+    import asyncio
+    from app.api import search as api
+
+    store, calls = {}, []
+
+    async def fake_get(key):
+        return store.get(key)
+
+    async def fake_set(key, value, ttl=None):
+        store[key] = value
+
+    async def fake_search(db, q, *, limit):
+        calls.append(q)
+        return {"results": [], "total": 0, "has_more": False, "version": "x"}
+
+    monkeypatch.setattr(api, "cache_get", fake_get)
+    monkeypatch.setattr(api, "cache_set", fake_set)
+    monkeypatch.setattr(api, "federated_search", fake_search)
+    run = lambda q, limit=50: asyncio.run(api.search(q=q, limit=limit, db=None))
+    run("Дизель"); run("  дизель "); run("дизель", limit=20)
+    assert calls == ["Дизель", "дизель"]   # same normalized query/limit is one computation
+    assert len(store) == 2

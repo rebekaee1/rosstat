@@ -60,7 +60,10 @@ IDENTITY_FILE="$BACKUP_DIR/${DB_NAME}_${STAMP}.identity.sql.gz"
 dc() { docker compose -f "$COMPOSE_DIR/docker-compose.yml" "$@"; }
 
 # 1) Полный бэкап всей БД (включает identity-таблицы).
-dc exec -T postgres pg_dump -Fc -U "$DB_USER" "$DB_NAME" > "$FILE"
+# Записи сессий посетителей (session_replay_chunks) — крупные, короткоживущие (retention) и
+# воспроизводимы из событий только частично; в ежедневный дамп и в его копию на Mac они
+# не попадают: структура таблицы сохраняется, строки — нет (docs/research/session-replay-review-2026-10-04.md).
+dc exec -T postgres pg_dump -Fc -U "$DB_USER" --exclude-table-data=session_replay_chunks "$DB_NAME" > "$FILE"
 SIZE=$(du -h "$FILE" | cut -f1)
 echo "[$(date)] Full backup: $FILE ($SIZE)"
 
