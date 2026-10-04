@@ -11,12 +11,14 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Minus, Maximize2 } from 'lucide-react';
 import mapData from '../lib/regionsMap.json';
 import { formatRegionValue } from '../lib/regionsApi';
+import { unitLabel } from '../lib/regionUi';
 import { colorsBySlug, valueExtent, MAP_SCALE, MAP_NO_DATA } from '../lib/regionsMapColors';
 import {
   regionPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import { CHART_THEME } from '../lib/chartTheme';
+import '../styles/regions-w4.css';
 
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.6;
@@ -30,6 +32,14 @@ const LIGHT_STROKE = 'rgba(26,26,46,0.18)';
 const LIGHT_HOVER_STROKE = CHART_THEME.champagne;
 /** Плотный кадр без полей — геометрия почти вписана в исходный viewBox. */
 const COMPACT_VIEWBOX = '8 6 984 526';
+/** Живая карта получает поля вокруг геометрии: Чукотка, Камчатка и обводка не упираются в рамку. */
+const LIVE_PAD = 8;
+
+function paddedViewBox(box) {
+  const [x, y, w, h] = box.split(' ').map(Number);
+  if (![x, y, w, h].every(Number.isFinite)) return box;
+  return `${x - LIVE_PAD} ${y - LIVE_PAD} ${w + LIVE_PAD * 2} ${h + LIVE_PAD * 2}`;
+}
 
 export default function RegionsMap({
   valuesBySlug = null,      // Map slug -> value (для choropleth) или null
@@ -58,6 +68,7 @@ export default function RegionsMap({
   const svgRef = useRef(null);
 
   const viewBox = (compact && mapDataProp == null) ? COMPACT_VIEWBOX : geometry.viewBox;
+  const drawBox = compact ? viewBox : paddedViewBox(viewBox);
   const [, , vbW, vbH] = useMemo(
     () => viewBox.split(' ').map(Number),
     [viewBox],
@@ -153,6 +164,7 @@ export default function RegionsMap({
 
   const hoverValue = hover && valuesBySlug ? valuesBySlug.get(hover.slug) : null;
   const { k, tx, ty } = view;
+  const unitText = unitLabel(unit) || unit;
 
   // Compact-тултип: одна строка «имя + значение», прижатая внутрь квадрата —
   // контейнер витрины overflow-hidden, обычный перевод на -50% резал бы края.
@@ -167,10 +179,10 @@ export default function RegionsMap({
   return (
     <div className={`select-none ${className}`.trim()}>
       {/* Обёртка только под SVG: бренд и зум привязаны к карте, не к легенде. */}
-      <div className="relative">
+      <div className="fe-map-frame">
         <svg
           ref={svgRef}
-          viewBox={viewBox}
+          viewBox={drawBox}
           className={`w-full h-auto ${k > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
           role="group"
           aria-label={ariaLabel || t('regions.mapAria')}
@@ -269,51 +281,46 @@ export default function RegionsMap({
           </g>
         </svg>
 
-        {!compact && (
-          <div className="absolute right-2 top-2 flex flex-col gap-1" data-no-export="true">
-            <button
-              type="button"
-              onClick={() => zoomBy(ZOOM_STEP)}
-              disabled={k >= ZOOM_MAX}
-              aria-label={t('regions.zoomIn')}
-              title={t('regions.zoomIn')}
-              className="fe-map-btn fe-press w-8 h-8 rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
-            >
-              <Plus size={15} />
-            </button>
-            <button
-              type="button"
-              onClick={() => zoomBy(1 / ZOOM_STEP)}
-              disabled={k <= 1}
-              aria-label={t('regions.zoomOut')}
-              title={t('regions.zoomOut')}
-              className="fe-map-btn fe-press w-8 h-8 rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
-            >
-              <Minus size={15} />
-            </button>
-            {k > 1 && (
-              <button
-                type="button"
-                onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
-                aria-label={t('regions.zoomReset')}
-                title={t('regions.zoomReset')}
-                className="fe-map-btn fe-press w-8 h-8 rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors shadow-sm"
-              >
-                <Maximize2 size={14} />
-              </button>
+        {(!compact || brandMark) && (
+          <div className="fe-map-bar">
+            {brandMark && (
+              <span className="fe-map-mark" data-no-export="true" aria-hidden="true">Forecast Economy</span>
             )}
-          </div>
-        )}
-
-        {brandMark && (
-          <div
-            className="absolute left-2.5 bottom-2.5 pointer-events-none select-none"
-            data-no-export="true"
-            aria-hidden="true"
-          >
-            <span className="block text-xs leading-none font-medium tracking-[0.04em] text-text-secondary">
-              Forecast Economy
-            </span>
+            {!compact && (
+              <div className="fe-map-tools" data-no-export="true">
+                <button
+                  type="button"
+                  onClick={() => zoomBy(ZOOM_STEP)}
+                  disabled={k >= ZOOM_MAX}
+                  aria-label={t('regions.zoomIn')}
+                  title={t('regions.zoomIn')}
+                  className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-40"
+                >
+                  <Plus size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => zoomBy(1 / ZOOM_STEP)}
+                  disabled={k <= 1}
+                  aria-label={t('regions.zoomOut')}
+                  title={t('regions.zoomOut')}
+                  className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-40"
+                >
+                  <Minus size={16} />
+                </button>
+                {k > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
+                    aria-label={t('regions.zoomReset')}
+                    title={t('regions.zoomReset')}
+                    className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                  >
+                    <Maximize2 size={15} />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -347,17 +354,15 @@ export default function RegionsMap({
       </div>
 
       {valuesBySlug && (
-        <div className="mt-2 flex items-center justify-center gap-2.5 text-xs text-text-secondary font-mono tabular-nums">
-          <span className="min-w-[3.5rem] text-right">
-            {extent ? formatRegionValue(extent.min) : '—'}
-          </span>
-          <div className="flex h-2.5 rounded-sm overflow-hidden border border-border-subtle/60" aria-hidden="true">
+        <div className="fe-map-legend">
+          <span>{extent ? formatRegionValue(extent.min) : '—'}</span>
+          <div className="fe-map-legend__scale" aria-hidden="true">
             {MAP_SCALE.map((c) => (
-              <span key={c} className="w-8 h-2.5" style={{ backgroundColor: c }} />
+              <span key={c} style={{ backgroundColor: c }} />
             ))}
           </div>
-          <span className="min-w-[3.5rem] text-left">
-            {extent ? `${formatRegionValue(extent.max)}${unit ? ` ${unit}` : ''}` : '—'}
+          <span>
+            {extent ? `${formatRegionValue(extent.max)}${unitText ? `\u00A0${unitText}` : ''}` : '—'}
           </span>
         </div>
       )}

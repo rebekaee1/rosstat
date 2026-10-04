@@ -12,6 +12,9 @@ import {
   useWorldRegionIndicator, useWorldRegionForecast, useWorldRegionsHub, formatSubnationalValue,
 } from '../lib/worldSubnationalApi';
 import { yearDelta } from '../lib/regionsApi';
+import DeltaBadge from '../components/DeltaBadge';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -33,6 +36,7 @@ import {
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
+import '../styles/regions-w4.css';
 
 function toYoYSeries(series) {
   if (!series?.length) return [];
@@ -54,9 +58,9 @@ function isNegativeCapable(series) {
 
 function StatCell({ label, children }) {
   return (
-    <div className="fe-stat-cell min-w-0 rounded-xl border border-border-subtle bg-surface p-3 sm:p-3.5">
-      <div className="truncate text-[11px] uppercase tracking-wide text-text-secondary sm:text-[11px]">{label}</div>
-      <div className="mt-1 break-words font-mono text-sm font-semibold leading-tight text-text-primary sm:text-[15px]">
+    <div className="fe-stat-cell min-w-0 rounded-2xl border border-border-subtle bg-surface p-3 sm:p-3.5">
+      <div className="text-xs font-medium leading-snug text-text-secondary">{label}</div>
+      <div className="fe-num mt-1 break-words text-[15px] font-semibold leading-tight text-text-primary">
         {children}
       </div>
     </div>
@@ -155,7 +159,12 @@ export default function WorldRegionIndicatorPage() {
   const chartCompare = compareSlug
     ? ((!isMonthly && showYoY) ? toYoYSeries(compare.data?.series || []) : (compare.data?.series || null))
     : null;
-  const chartUnit = showYoY && !isMonthly ? t('regions.ind.yoyShort') : (payload?.indicator?.unit || '');
+  const chartUnit = showYoY && !isMonthly ? t('w4.ind.yoyShort') : (unitLabel(payload?.indicator?.unit, locale) || payload?.indicator?.unit || '');
+  const withUnit = (value) => {
+    const text = formatSubnationalValue(value, locale);
+    const u = unitLabel(payload?.indicator?.unit, locale) || payload?.indicator?.unit || '';
+    return u && text !== '—' ? `${text}${NBSP}${u}` : text;
+  };
 
   const tableRows = useMemo(
     () => (series.length ? [...series].reverse() : []),
@@ -281,7 +290,7 @@ export default function WorldRegionIndicatorPage() {
       {payload && (
         <>
           <div className="fe-data-header">
-            <div className="mb-2 font-mono text-xs uppercase tracking-widest text-champagne-ink">
+            <div className="mb-2 text-sm font-medium text-champagne-ink">
               {payload.indicator.section}
             </div>
             <div className="mb-5 flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
@@ -292,33 +301,36 @@ export default function WorldRegionIndicatorPage() {
             </div>
 
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="font-mono text-2xl font-bold text-text-primary sm:text-3xl">
-                {formatSubnationalValue(last?.value, locale)}
+              <span className="fe-num whitespace-nowrap text-3xl font-bold text-text-primary">
+                {withUnit(last?.value)}
               </span>
-              <span className="text-sm text-text-secondary">{payload.indicator.unit}</span>
-              <span className="font-mono text-sm text-text-secondary">{lastLabel}</span>
+              <span className="text-sm text-text-secondary">{lastLabel}</span>
               {delta && (
-                <span className={`font-mono text-sm ${delta.up ? 'fe-ink-pos' : delta.down ? 'fe-ink-neg' : 'text-text-secondary'}`}>
+                <DeltaBadge
+                  delta={delta.up || delta.down ? delta.pct : 0}
+                  polarity={indicatorPolarity(indName)}
+                  className="text-sm"
+                >
                   {t(isMonthly ? 'regions.ind.deltaMoM' : 'regions.ind.deltaYoY', {
-                    pct: `${delta.up ? '+' : ''}${delta.pct.toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
-                  })}
-                </span>
+                    pct: `${delta.up ? '+' : delta.down ? '\u2212' : ''}${Math.abs(delta.pct).toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
+                  }).replace('%', `${NBSP}%`)}
+                </DeltaBadge>
               )}
             </div>
           </div>
 
-          <div id="chart" data-block="world-region-chart" className="fe-panel mb-4 scroll-mt-24 rounded-xl border border-border-subtle bg-surface p-3 sm:p-4" ref={chartRef}>
+          <div id="chart" data-block="world-region-chart" className="fe-panel mb-4 scroll-mt-24 rounded-3xl border border-border-subtle bg-surface p-3 sm:p-4" ref={chartRef}>
             <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-              <div className="font-mono text-xs text-text-secondary">
+              <div className="text-sm text-text-secondary">
                 {first && last
                   ? (isMonthly
-                    ? `${first.year}–${last.year}, ${payload.indicator.unit}`
-                    : `${first.year}–${last.year}, ${showYoY ? t('regions.ind.yoyUnit') : payload.indicator.unit}`)
+                    ? `${first.year}–${last.year}, ${unitLabel(payload.indicator.unit, locale) || payload.indicator.unit}`
+                    : `${first.year}–${last.year}, ${showYoY ? t('w4.ind.yoyUnit') : (unitLabel(payload.indicator.unit, locale) || payload.indicator.unit)}`)
                   : payload.indicator.unit}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
-                  className={`fe-tap inline-flex max-w-full min-w-0 items-center gap-1.5 rounded-full border px-2.5 py-1 transition-colors ${
+                  className={`fe-tap inline-flex max-w-full min-w-0 items-center gap-1.5 rounded-xl border px-3 py-1 text-sm transition-colors ${
                     compareSlug
                       ? 'border-[#5B7DA8] text-[#5B7DA8]'
                       : 'border-border-subtle text-text-secondary hover:text-text-secondary'
@@ -353,7 +365,7 @@ export default function WorldRegionIndicatorPage() {
                 )}
                 {isAnnual && series.length > 2 && !isNegativeCapable(series) && (
                   <Chip active={showYoY} onClick={() => setShowYoY((v) => !v)} title={t('regions.ind.yoyTitle')}>
-                    {t('regions.ind.yoyBtn')}
+                    {t('w4.ind.yoyBtn')}
                   </Chip>
                 )}
                 <button
@@ -362,7 +374,7 @@ export default function WorldRegionIndicatorPage() {
                   disabled={exporting}
                   title={t('regions.ind.downloadCsv')}
                   aria-label={t('regions.ind.downloadCsv')}
-                  className="fe-tap fe-press inline-flex items-center gap-1 rounded-full border border-border-subtle px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
+                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
                 >
                   <Download size={12} /> CSV
                 </button>
@@ -372,7 +384,7 @@ export default function WorldRegionIndicatorPage() {
                   disabled={exporting}
                   title={t('regions.ind.downloadExcel')}
                   aria-label={t('regions.ind.downloadExcel')}
-                  className="fe-tap fe-press inline-flex items-center gap-1 rounded-full border border-border-subtle px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
+                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
                 >
                   <Download size={12} /> Excel
                 </button>
@@ -382,7 +394,7 @@ export default function WorldRegionIndicatorPage() {
                   disabled={exporting}
                   title={t('regions.ind.downloadPng')}
                   aria-label={t('regions.ind.downloadPng')}
-                  className="fe-tap fe-press inline-flex items-center gap-1 rounded-full border border-border-subtle px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
+                  className="fe-chip fe-press gap-1 border-border-subtle hover:text-champagne-ink"
                 >
                   <ImageIcon size={12} /> PNG
                 </button>
@@ -451,10 +463,10 @@ export default function WorldRegionIndicatorPage() {
             {stats && (
               <>
                 <StatCell label={t('regions.ind.max', { year: stats.maxAt })}>
-                  {formatSubnationalValue(stats.max, locale)}
+                  {withUnit(stats.max)}
                 </StatCell>
                 <StatCell label={t('regions.ind.min', { year: stats.minAt })}>
-                  {formatSubnationalValue(stats.min, locale)}
+                  {withUnit(stats.min)}
                 </StatCell>
               </>
             )}
@@ -466,7 +478,7 @@ export default function WorldRegionIndicatorPage() {
           </div>
 
           {rank?.top?.length > 0 && (
-            <div data-block="world-region-rating" className="fe-panel mb-6 rounded-xl border border-border-subtle bg-surface p-4">
+            <div data-block="world-region-rating" className="fe-panel mb-6 rounded-3xl border border-border-subtle bg-surface p-4">
               <h2 className="mb-3 text-sm font-semibold text-text-primary">
                 {t(
                   rank.rank_as_achievement ? 'world.regions.topAchieve' : 'world.regions.topNeutral',
@@ -481,10 +493,10 @@ export default function WorldRegionIndicatorPage() {
                       className={`fe-tap -mx-2 flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[13px] transition-colors hover:bg-surface-hover ${r.slug === slug ? 'bg-champagne/5' : ''}`}
                     >
                       <span className="flex min-w-0 items-center gap-2">
-                        <span className="w-4 shrink-0 text-right font-mono text-text-secondary">{i + 1}</span>
+                        <span className="w-4 shrink-0 text-right fe-num text-text-secondary">{i + 1}</span>
                         <span className={`truncate ${r.slug === slug ? 'font-medium text-champagne-ink' : 'text-text-primary'}`}>{r.name}</span>
                       </span>
-                      <span className="shrink-0 font-mono text-text-secondary">{formatSubnationalValue(r.value, locale)}</span>
+                      <span className="shrink-0 fe-num text-text-secondary">{formatSubnationalValue(r.value, locale)}</span>
                     </Link>
                   </li>
                 ))}
@@ -492,16 +504,16 @@ export default function WorldRegionIndicatorPage() {
               {rankPosition > 5 && (
                 <div className="mt-2 flex items-center justify-between border-t border-border-subtle px-2 pt-2 text-[13px]">
                   <span className="flex items-center gap-2">
-                    <span className="w-4 text-right font-mono text-text-secondary">{rankPosition}</span>
+                    <span className="w-4 text-right fe-num text-text-secondary">{rankPosition}</span>
                     <span className="font-medium text-champagne-ink">{regionName}</span>
                   </span>
-                  <span className="font-mono text-text-secondary">{formatSubnationalValue(last?.value, locale)}</span>
+                  <span className="fe-num text-text-secondary">{formatSubnationalValue(last?.value, locale)}</span>
                 </div>
               )}
             </div>
           )}
 
-          <div className="fe-panel mb-6 overflow-hidden rounded-xl border border-border-subtle bg-surface">
+          <div className="fe-panel mb-6 overflow-hidden rounded-3xl border border-border-subtle bg-surface">
             <button
               type="button"
               onClick={() => setShowTable((v) => !v)}
@@ -535,14 +547,14 @@ export default function WorldRegionIndicatorPage() {
                       ));
                       return (
                         <tr key={p.date || p.label} className="border-t border-border-subtle">
-                          <td className="px-3 py-1.5 font-mono text-text-secondary sm:px-4">
+                          <td className="px-3 py-1.5 fe-num text-text-secondary sm:px-4">
                             {pointLabel(p, isMonthly, locale)}
                           </td>
-                          <td className="px-3 py-1.5 text-right font-mono text-text-primary sm:px-4">
+                          <td className="px-3 py-1.5 text-right fe-num text-text-primary sm:px-4">
                             {formatSubnationalValue(p.value, locale)}
                           </td>
                           {nationalSeries.length > 0 && (
-                            <td className="px-3 py-1.5 text-right font-mono text-text-secondary sm:px-4">
+                            <td className="px-3 py-1.5 text-right fe-num text-text-secondary sm:px-4">
                               {rf ? formatSubnationalValue(rf.value, locale) : '—'}
                             </td>
                           )}

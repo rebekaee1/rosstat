@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowDown, ArrowUp, Trophy } from 'lucide-react';
+import { ArrowDown, ArrowUp, Trophy, BarChart3 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
-import { useRegionsHeatmap, formatRegionValue, shortUnit } from '../lib/regionsApi';
+import { useRegionsHeatmap } from '../lib/regionsApi';
+import { formatRegionNumber, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
 import RegionsMap from '../components/RegionsMap';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -10,14 +11,17 @@ import { SkeletonBox } from '../components/Skeleton';
 import { regionRatingTrail } from '../lib/breadcrumbs';
 import {
   regionIndicatorPath,
+  regionRatingHubPath,
   regionRatingPath,
 } from '../lib/sitePaths';
 import Chip from '../components/Chip';
-import { useT } from '../i18n';
+import { useT, useLocale } from '../i18n';
 import '../styles/platform-pages.css';
+import '../styles/regions-w4.css';
 
 export default function RegionRatingPage() {
   const t = useT();
+  const { locale } = useLocale();
   const { code } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch, isFetching } = useRegionsHeatmap(code);
@@ -73,7 +77,7 @@ export default function RegionRatingPage() {
     <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
       <Breadcrumbs
         items={regionRatingTrail(
-          achievement ? `Рейтинг: ${data?.indicator?.name || '…'}` : (data?.indicator?.name || '…'),
+          achievement ? t('w4.rating.crumb', { name: data?.indicator?.name || '…' }) : (data?.indicator?.name || '…'),
           code,
         )}
       />
@@ -102,7 +106,7 @@ export default function RegionRatingPage() {
 
       {data && ranked.length >= 10 && (
         <>
-          <p className="text-champagne-ink text-xs font-mono uppercase tracking-widest mb-2">
+          <p className="mb-2 text-sm font-medium text-champagne-ink">
             {achievement ? t('regions.rating.eyebrowAchievement') : t('regions.rating.eyebrowNeutral')}
             {' — '}
             {data.year}
@@ -115,26 +119,19 @@ export default function RegionRatingPage() {
             {' '}
             {achievement ? t('regions.rating.h1Achievement') : t('regions.rating.h1Neutral')}
           </h1>
-          <p className="text-text-secondary mb-4 max-w-3xl">
-            {achievement ? t('regions.rating.eyebrowAchievement') : t('regions.rating.eyebrowNeutral')}
-            {' '}
-            {ranked.length}
-            {' '}
-            {t('regions.rating.subjectsOf', { name: data.indicator.name, year: data.year })}
-            {' '}
-            {bestLabel}
-            {' '}
-            {t('regions.rating.atRegion')}
-            {' '}
-            {top.name}
-            {' — '}
-            {formatRegionValue(top.raw ?? top.value)}
-            {' '}
-            {shortUnit(data.indicator.unit)}.
+          <p className="mb-5 max-w-3xl text-[15px] leading-relaxed text-text-secondary">
+            {t('w4.rating.lead', {
+              n: ranked.length,
+              name: data.indicator.name,
+              year: data.year,
+              best: bestLabel,
+              region: top.name,
+              value: formatRegionWithUnit(top.raw ?? top.value, data.indicator.unit, locale),
+            })}
           </p>
 
           <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-text-secondary mr-1">
+            <span className="mr-1 text-sm text-text-secondary">
               {t('regions.rating.sort')}
             </span>
             <Chip active={sortDirection === 'desc'} onClick={() => setSortOverride('desc')}>
@@ -145,39 +142,31 @@ export default function RegionRatingPage() {
             </Chip>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-            <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-secondary uppercase tracking-wide flex items-center gap-1">
-                {achievement && <Trophy size={12} className="text-champagne-ink" />}
+          <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-border-subtle bg-surface p-4">
+              <div className="flex items-center gap-1 text-xs font-medium text-text-secondary">
+                {achievement && <Trophy size={13} className="text-champagne-ink" aria-hidden="true" />}
                 {bestLabel}
               </div>
               <div className="mt-1 font-semibold text-text-primary">{top.name}</div>
-              <div className="font-mono text-sm text-text-secondary">
-                {formatRegionValue(top.raw ?? top.value)}
-                {' '}
-                {shortUnit(data.indicator.unit)}
+              <div className="fe-num text-sm text-text-secondary">
+                {formatRegionWithUnit(top.raw ?? top.value, data.indicator.unit, locale)}
               </div>
             </div>
-            <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-secondary uppercase tracking-wide">{worstLabel}</div>
+            <div className="rounded-2xl border border-border-subtle bg-surface p-4">
+              <div className="text-xs font-medium text-text-secondary">{worstLabel}</div>
               <div className="mt-1 font-semibold text-text-primary">{bottom.name}</div>
-              <div className="font-mono text-sm text-text-secondary">
-                {formatRegionValue(bottom.raw ?? bottom.value)}
-                {' '}
-                {shortUnit(data.indicator.unit)}
+              <div className="fe-num text-sm text-text-secondary">
+                {formatRegionWithUnit(bottom.raw ?? bottom.value, data.indicator.unit, locale)}
               </div>
             </div>
-            <div className="bg-surface border border-border-subtle rounded-xl p-3.5">
-              <div className="text-[11px] text-text-secondary uppercase tracking-wide">{t('regions.rating.dataFor')}</div>
-              <div className="mt-1 font-mono font-semibold text-text-primary">
-                {data.year}
-                {' '}
-                год
-              </div>
+            <div className="rounded-2xl border border-border-subtle bg-surface p-4">
+              <div className="text-xs font-medium text-text-secondary">{t('regions.rating.dataFor')}</div>
+              <div className="fe-num mt-1 font-semibold text-text-primary">{t('w4.map.yearLabel', { year: data.year })}</div>
             </div>
           </div>
 
-          <div className="bg-surface border border-border-subtle rounded-xl p-4 mb-8">
+          <div className="mb-8 rounded-3xl border border-border-subtle bg-surface p-3 sm:p-5">
             <RegionsMap
               valuesBySlug={mapValues}
               unit={data.indicator.unit}
@@ -188,13 +177,13 @@ export default function RegionRatingPage() {
           </div>
 
           <section id="chart" className="mb-8 scroll-mt-28">
-            <h2 className="font-display text-lg font-semibold text-text-primary mb-3">
+            <h2 className="mb-3 font-display text-xl font-bold text-text-primary">
               {listTitle}
             </h2>
-            <div className="overflow-x-auto rounded-xl border border-border-subtle max-h-[32rem]">
+            <div className="max-h-[32rem] overflow-auto rounded-2xl border border-border-subtle bg-surface">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-obsidian-light/95 backdrop-blur-sm z-10">
-                  <tr className="text-left text-[11px] uppercase tracking-wide text-text-secondary">
+                  <tr className="text-left text-xs font-medium text-text-secondary">
                     <th className="px-4 py-2.5 font-medium w-16">{tableCol}</th>
                     <th className="px-4 py-2.5 font-medium">{t('regions.rating.colRegion')}</th>
                     <th
@@ -209,7 +198,7 @@ export default function RegionRatingPage() {
                           : t('regions.rating.sortDesc')}
                         className="fe-tap-inline gap-1 rounded-lg transition-colors hover:text-champagne-ink"
                       >
-                        {data.indicator.unit || t('regions.rating.colValue')}
+                        {unitLabel(data.indicator.unit, locale) || t('regions.rating.colValue')}
                         {sortDirection === 'asc'
                           ? <ArrowUp size={12} aria-hidden="true" />
                           : <ArrowDown size={12} aria-hidden="true" />}
@@ -220,7 +209,7 @@ export default function RegionRatingPage() {
                 <tbody>
                   {ranked.map((row) => (
                     <tr key={row.slug} className="fe-row-link border-t border-border-subtle">
-                      <td className="px-4 py-2 font-mono text-text-secondary">{row.rank}</td>
+                      <td className="fe-num px-4 py-2 text-text-secondary">{row.rank}</td>
                       <td className="px-4 py-2">
                         <Link
                           to={regionIndicatorPath(row.slug, code)}
@@ -229,8 +218,8 @@ export default function RegionRatingPage() {
                           {row.name}
                         </Link>
                       </td>
-                      <td className="px-4 py-2 text-right font-mono text-text-primary">
-                        {formatRegionValue(row.raw ?? row.value)}
+                      <td className="fe-num whitespace-nowrap px-4 py-2 text-right text-text-primary">
+                        {formatRegionNumber(row.raw ?? row.value, data.indicator.unit, locale)}
                       </td>
                     </tr>
                   ))}
@@ -239,22 +228,23 @@ export default function RegionRatingPage() {
             </div>
           </section>
 
-          <section className="bg-surface border border-border-subtle rounded-xl p-5">
-            <h2 className="font-display text-base font-semibold text-text-primary mb-2">{t('regions.rating.sourceHeading')}</h2>
-            <p className="text-sm text-text-secondary">
-              Сборник Росстата «Регионы России. Социально-экономические показатели».
-              Значения за
-              {' '}
-              {data.year}
-              {' '}
-              год. По каждому региону — страница с полной динамикой с 1990 года.
+          <section className="rounded-3xl border border-border-subtle bg-surface p-5">
+            <h2 className="mb-2 font-display text-base font-semibold text-text-primary">{t('regions.rating.sourceHeading')}</h2>
+            <p className="text-sm leading-relaxed text-text-secondary">
+              {t('w4.rating.source', { year: data.year })}
             </p>
           </section>
         </>
       )}
 
       {!isLoading && !isError && (!data || ranked.length < 10) && (
-        <p className="text-text-secondary">{t('regions.rating.empty')}</p>
+        <div role="status" className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+          <BarChart3 size={24} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
+          <p>{t('regions.rating.empty')}</p>
+          <Link to={regionRatingHubPath()} className="fe-tap-inline mt-2 text-champagne-ink hover:underline">
+            {t('w4.rating.backToAll')}
+          </Link>
+        </div>
       )}
     </div>
   );

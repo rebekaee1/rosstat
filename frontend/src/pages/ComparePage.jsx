@@ -27,6 +27,9 @@ import { getPageSeo } from '../lib/pageMeta';
 import CompareChartState from '../components/CompareChartState';
 import Chip from '../components/Chip';
 import Button from '../components/Button';
+import CompareCountryStep from '../components/compare/CompareCountryStep';
+import CompareExample from '../components/compare/CompareExample';
+import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
   CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, chartHeightForWidth,
 } from '../lib/chartTheme';
@@ -57,6 +60,15 @@ import {
 } from '../lib/sitePaths';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { toolTrail } from '../lib/breadcrumbs';
+import '../styles/regions-w4.css';
+
+/** Сила связи двух рядов словами (число — только в «Как посчитано»). */
+function correlationKey(r) {
+  const abs = Math.abs(r);
+  if (abs >= 0.7) return r > 0 ? 'w4.compare.corr.strongUp' : 'w4.compare.corr.strongDown';
+  if (abs >= 0.4) return r > 0 ? 'w4.compare.corr.mediumUp' : 'w4.compare.corr.mediumDown';
+  return 'w4.compare.corr.weak';
+}
 
 function compatText(t, compatibility) {
   const key = compatibility?.reasonKey || compatibility?.reason;
@@ -288,10 +300,10 @@ function AddCardHeader({ icon, title, hint }) {
         <Icon className="h-3.5 w-3.5 text-champagne" />
       </span>
       <div className="min-w-0">
-        <div className="text-[11px] font-mono uppercase tracking-widest text-text-secondary leading-none">
+        <div className="text-sm font-medium text-text-secondary leading-none">
           {title}
         </div>
-        {hint && <div className="mt-1 text-[11px] text-text-tertiary leading-tight">{hint}</div>}
+        {hint && <div className="mt-1 text-xs text-text-secondary leading-snug">{hint}</div>}
       </div>
     </div>
   );
@@ -380,7 +392,7 @@ function ComboSelect({
             filtered.map((g) => (
               <div key={g.label || '_'}>
                 {g.label && (
-                  <div className="sticky top-0 bg-obsidian-light px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider text-text-tertiary">
+                  <div className="sticky top-0 bg-obsidian-light px-3 py-1.5 text-xs font-medium text-text-secondary">
                     {g.label}
                   </div>
                 )}
@@ -389,12 +401,12 @@ function ComboSelect({
                     key={it.value}
                     type="button"
                     onMouseDown={(e) => { e.preventDefault(); onChange(it.value); setQuery(''); setOpen(false); }}
-                    className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
+                    className="fe-tap flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
                   >
                     <span className="truncate text-sm text-text-primary">{it.label}</span>
                     {it.value === value
                       ? <Check className="h-3.5 w-3.5 shrink-0 text-champagne" />
-                      : it.hint && <span className="shrink-0 font-mono text-[11px] text-text-tertiary">{it.hint}</span>}
+                      : it.hint && <span className="shrink-0 text-xs text-text-secondary">{it.hint}</span>}
                   </button>
                 ))}
               </div>
@@ -483,8 +495,8 @@ function AddRegionSeries({
           disabled={atCap || !regionSlug}
           trackContext="compare-region-indicator"
         />
-        <button
-          type="button"
+        <Button
+          variant={canAdd ? 'primary' : 'secondary'}
           disabled={!canAdd}
           onClick={handleAdd}
           title={atCap
@@ -492,16 +504,10 @@ function AddRegionSeries({
             : already
               ? t('compare.alreadyAdded')
               : compatText(t, compatibility)}
-          className={cn(
-            'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-            canAdd
-              ? 'bg-champagne/15 text-champagne hover:bg-champagne/25'
-              : 'bg-obsidian-lighter text-text-tertiary cursor-not-allowed',
-          )}
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="h-4 w-4" aria-hidden="true" />
           {already ? t('compare.alreadyAddedShort') : t('compare.addRegionSeries')}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -592,8 +598,8 @@ function AddSubnationalSeries({
           disabled={atCap || !regionSlug}
           trackContext="compare-world-region-indicator"
         />
-        <button
-          type="button"
+        <Button
+          variant={canAdd ? 'primary' : 'secondary'}
           disabled={!canAdd}
           onClick={handleAdd}
           title={atCap
@@ -601,16 +607,10 @@ function AddSubnationalSeries({
             : already
               ? t('compare.alreadyAdded')
               : compatText(t, compatibility)}
-          className={cn(
-            'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-            canAdd
-              ? 'bg-champagne/15 text-champagne hover:bg-champagne/25'
-              : 'bg-obsidian-lighter text-text-tertiary cursor-not-allowed',
-          )}
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="h-4 w-4" aria-hidden="true" />
           {already ? t('compare.alreadyAddedShort') : t('compare.addSubnationalSeries')}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -702,11 +702,11 @@ function AddIndicator({
               key={ind.code}
               type="button"
               onMouseDown={(e) => { e.preventDefault(); onAdd(ind.code); setQuery(''); }}
-              className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
+              className="fe-tap flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors"
             >
               <span className="text-sm text-text-primary truncate">{ind.name}</span>
               <span className="flex items-center gap-2 shrink-0">
-                <span className="text-[11px] font-mono text-text-tertiary">{unitSuffix(ind.unit)}</span>
+                <span className="text-xs text-text-secondary">{unitSuffix(ind.unit)}</span>
                 <Plus className="w-3.5 h-3.5 text-champagne" />
               </span>
             </button>
@@ -769,8 +769,8 @@ function AddWorldCountrySeries({
         disabled={atCap || conceptItems.length === 0}
         trackContext="compare-world-concept"
       />
-      <button
-        type="button"
+      <Button
+        variant={canAdd ? 'primary' : 'secondary'}
         disabled={!canAdd}
         onClick={() => { if (canAdd) { onAdd(code); setConceptSlug(''); } }}
         title={atCap
@@ -778,16 +778,11 @@ function AddWorldCountrySeries({
           : already
             ? t('compare.alreadyAdded')
             : compatText(t, compatibility)}
-        className={cn(
-          'inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
-          canAdd
-            ? 'bg-champagne/15 text-champagne hover:bg-champagne/25'
-            : 'cursor-not-allowed bg-obsidian-lighter text-text-tertiary',
-        )}
+        className="w-full"
       >
-        <Plus className="h-3.5 w-3.5" />
+        <Plus className="h-4 w-4" aria-hidden="true" />
         {already ? t('compare.alreadyAddedShort') : t('common.add')}
-      </button>
+      </Button>
       {code && !already && !atCap && !compatibility.allowed && (
         <p className="text-xs leading-relaxed text-text-tertiary">
           {compatText(t, compatibility)}
@@ -815,7 +810,7 @@ function PickerBack({ label, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="mb-3 inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-text-tertiary hover:text-champagne transition-colors"
+      className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-champagne-ink transition-colors"
     >
       <ArrowLeft className="h-3.5 w-3.5" />
       {label}
@@ -924,8 +919,8 @@ function CompareSeriesPicker({
   return (
     <div className="fe-panel overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
       <div className="mb-5 border-b border-border-subtle pb-4">
-        <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne">{t('compare.addSeries')}</div>
-        <div className="mt-1 text-sm text-text-secondary">
+        <div className="text-sm font-medium text-champagne-ink">{t('w4.compare.addTitle')}</div>
+        <div className="mt-1 text-[15px] text-text-primary">
           {t('compare.pickCountryFirst')}
         </div>
         {activeWorldConceptName && (
@@ -936,82 +931,27 @@ function CompareSeriesPicker({
       </div>
 
       {!countryKey && (
-        <div>
-          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
-            {t('compare.country')}
-          </div>
-          <div className={cn(FIELD_CLS, 'mb-3 border-border-subtle focus-within:border-champagne/40')}>
-            <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
-            <input
-              type="text"
-              value={countryQuery}
-              onChange={(e) => setCountryQuery(e.target.value)}
-              placeholder={t('compare.findCountry')}
-              aria-label={t('compare.findCountryAria')}
-              className="min-w-0 flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary"
-            />
-            {countryQuery && (
-              <button
-                type="button"
-                aria-label={t('common.clear')}
-                onClick={() => setCountryQuery('')}
-                className="shrink-0 text-text-tertiary hover:text-text-primary"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-          <div className="max-h-80 overflow-auto rounded-xl border border-border-subtle bg-obsidian-light/45">
-            {filteredCountries.length === 0 && indicatorMatches.length > 0 ? (
-              <div data-testid="compare-indicator-matches">
-                <div className="border-b border-border-subtle/60 px-4 py-2 text-[11px] leading-snug text-text-tertiary">
-                  {t('compare.indicatorMatches')}
-                </div>
-                {indicatorMatches.map((ind) => (
-                  <button
-                    key={ind.code}
-                    type="button"
-                    disabled={atCap}
-                    title={atCap ? capHint : undefined}
-                    onClick={() => { onAdd(ind.code); setCountryQuery(''); }}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors border-b border-border-subtle/60 last:border-b-0 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <Landmark className="h-4 w-4 shrink-0 text-champagne" />
-                    <span className="min-w-0 flex-1 truncate text-sm text-text-primary">
-                      {locale === 'en' ? (ind.name_en || ind.name) : (ind.name_ru || ind.name)}
-                    </span>
-                    <span className="shrink-0 text-[11px] text-text-tertiary">{t('compare.russia')}</span>
-                  </button>
-                ))}
-              </div>
-            ) : filteredCountries.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-text-tertiary" role="status">
-                {t(indicatorMatchesPending ? 'common.loading' : 'compare.nothingFound')}
-              </div>
-            ) : (
-              filteredCountries.map((c) => (
-                <button
-                  key={c.key}
-                  type="button"
-                  onClick={() => selectCountry(c.key)}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-obsidian-lighter transition-colors border-b border-border-subtle/60 last:border-b-0"
-                >
-                  {c.key === 'russia'
-                    ? <Landmark className="h-4 w-4 shrink-0 text-champagne" />
-                    : <Globe2 className="h-4 w-4 shrink-0 text-champagne" />}
-                  <span className="truncate text-sm text-text-primary">{c.label}</span>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
+        <CompareCountryStep
+          countries={filteredCountries}
+          query={countryQuery}
+          onQuery={setCountryQuery}
+          onSelect={selectCountry}
+          indicatorMatches={indicatorMatches.map((item) => ({
+            code: item.code,
+            label: locale === 'en' ? (item.name_en || item.name) : (item.name_ru || item.name),
+          }))}
+          matchesPending={indicatorMatchesPending}
+          onAddIndicator={(item) => { onAdd(item.code); setCountryQuery(''); }}
+          atCap={atCap}
+          capHint={capHint}
+        />
       )}
 
       {countryKey === 'russia' && !russiaBranch && (
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
           <div className="mb-4">
-            <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+            <div className="mb-2 text-sm font-medium text-text-secondary">
               {t('compare.conceptGroup')}
             </div>
             <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
@@ -1026,7 +966,7 @@ function CompareSeriesPicker({
               />
             </div>
           </div>
-          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-sm font-medium text-text-secondary">
             {t('compare.russiaWhat')}
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
@@ -1039,7 +979,7 @@ function CompareSeriesPicker({
                 <Landmark className="h-4 w-4 shrink-0" />
                 {t('compare.macro')}
               </span>
-              <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
+              <span className="mt-1 block text-xs font-normal text-text-secondary">
                 {t('compare.macroHint')}
               </span>
             </button>
@@ -1052,7 +992,7 @@ function CompareSeriesPicker({
                 <MapPin className="h-4 w-4 shrink-0" />
                 {t('compare.regionsBranch')}
               </span>
-              <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
+              <span className="mt-1 block text-xs font-normal text-text-secondary">
                 {t('compare.regionsBranchHint')}
               </span>
             </button>
@@ -1063,7 +1003,7 @@ function CompareSeriesPicker({
       {countryKey === 'russia' && russiaBranch === 'macro' && (
         <div>
           <PickerBack label={t('compare.backToRussia')} onClick={() => setRussiaBranch(null)} />
-          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-sm font-medium text-text-secondary">
             {t('compare.macroRussia')}
           </div>
           <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
@@ -1082,7 +1022,7 @@ function CompareSeriesPicker({
       {countryKey === 'russia' && russiaBranch === 'regions' && (
         <div>
           <PickerBack label={t('compare.backToRussia')} onClick={() => setRussiaBranch(null)} />
-          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-sm font-medium text-text-secondary">
             {t('compare.regionalSeries')}
           </div>
           <AddRegionSeries
@@ -1104,7 +1044,7 @@ function CompareSeriesPicker({
       {countryKey && countryKey !== 'russia' && selectedCountry && hasSubnational && !worldBranch && (
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
-          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-sm font-medium text-text-secondary">
             {t('compare.countryWhat', { country: selectedCountry.label })}
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
@@ -1117,7 +1057,7 @@ function CompareSeriesPicker({
                 <Globe2 className="h-4 w-4 shrink-0" />
                 {t('compare.macro')}
               </span>
-              <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
+              <span className="mt-1 block text-xs font-normal text-text-secondary">
                 {t('compare.macroHint')}
               </span>
             </button>
@@ -1130,7 +1070,7 @@ function CompareSeriesPicker({
                 <MapPin className="h-4 w-4 shrink-0" />
                 {subnationalKind}
               </span>
-              <span className="mt-1 block text-[11px] font-normal text-text-tertiary">
+              <span className="mt-1 block text-xs font-normal text-text-secondary">
                 {t('compare.subnationalBranchHint')}
               </span>
             </button>
@@ -1146,7 +1086,7 @@ function CompareSeriesPicker({
             label={hasSubnational ? t('compare.countryWhat', { country: selectedCountry.label }) : t('compare.backToCountry')}
             onClick={hasSubnational ? () => setWorldBranch(null) : resetCountry}
           />
-          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-sm font-medium text-text-secondary">
             {t('compare.countryIndicator', { country: selectedCountry.label })}
           </div>
           <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
@@ -1169,7 +1109,7 @@ function CompareSeriesPicker({
             label={t('compare.countryWhat', { country: selectedCountry.label })}
             onClick={() => setWorldBranch(null)}
           />
-          <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-2 text-sm font-medium text-text-secondary">
             {t('compare.subnationalSeries', { kind: subnationalKind })}
           </div>
           <AddSubnationalSeries
@@ -1746,7 +1686,7 @@ export default function ComparePage() {
         <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-6" />
 
         <div className="flex items-center gap-3 mb-4">
-          <span className="px-3 py-1 rounded-full border border-border-subtle bg-obsidian-light text-[11px] font-mono uppercase tracking-widest text-text-secondary flex items-center gap-2">
+          <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-3 py-1 text-sm font-medium text-text-secondary">
             <GitCompare className="w-3 h-3 text-champagne" />
             {t('compare.badge')}
           </span>
@@ -1755,8 +1695,8 @@ export default function ComparePage() {
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
           {t('compare.title')}
         </h1>
-        <p className="text-sm md:text-base text-text-tertiary max-w-2xl">
-          {t('compare.subtitle')}
+        <p className="max-w-2xl text-[15px] leading-relaxed text-text-secondary md:text-base">
+          {t('w4.compare.subtitle')}
         </p>
       </div>
 
@@ -1848,61 +1788,69 @@ export default function ComparePage() {
       )}
 
       <section ref={setSectionNode} data-block="compare-chart" className="mb-8">
-        <div className="flex items-center gap-4 border-b border-border-subtle pb-4 mb-6 flex-wrap">
-          <Activity className="w-4 h-4 text-champagne" />
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary">{t('compare.periodLabel')}</span>
-          <div className="flex flex-wrap gap-1.5">
-            {RANGE_OPTIONS.map((opt) => (
-              <Chip
-                key={opt.key}
-                active={range === opt.key}
-                onClick={() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}
-              >
-                {t(opt.labelKey)}
-              </Chip>
-            ))}
-          </div>
-
-          <span
-            className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4"
-            title={t(hasWorldSeries ? 'compare.worldOfficialOnly' : 'compare.stepTitle')}
-          >
-            {t('compare.stepLabel')}
-          </span>
-          {hasWorldSeries ? (
-            <span className="rounded-lg border border-border-subtle bg-obsidian-lighter px-3 py-2 text-xs text-text-secondary">
-              {t('compare.step.official')}
-            </span>
-          ) : (
-            <div className="flex flex-wrap gap-1.5">
-              {STEP_OPTIONS.map((opt) => (
+        <div className="mb-6 grid gap-4 border-b border-border-subtle pb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6">
+          <div className="min-w-0">
+            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+              <Activity className="h-3.5 w-3.5 text-champagne" aria-hidden="true" />
+              {t('compare.periodLabel')}
+            </div>
+            <div className="fe-scroll-row">
+              {RANGE_OPTIONS.map((opt) => (
                 <Chip
                   key={opt.key}
-                  active={step === opt.key}
-                  onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
+                  active={range === opt.key}
+                  onClick={() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}
                 >
                   {t(opt.labelKey)}
                 </Chip>
               ))}
             </div>
-          )}
+          </div>
 
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-tertiary md:ml-4">{t('compare.scaleLabel')}</span>
-          <div className="flex flex-wrap gap-1.5">
-            {SCALE_OPTIONS.map((opt) => {
-              const disabled = forceIndex && opt.key === 'values';
-              return (
-                <Chip
-                  key={opt.key}
-                  disabled={disabled}
-                  active={indexed ? opt.key === 'index' : !!range && scale === opt.key && !forceIndex}
-                  onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
-                  title={disabled ? t('compare.indexOnlyUnits') : undefined}
-                >
-                  {t(opt.labelKey)}
-                </Chip>
-              );
-            })}
+          <div className="min-w-0">
+            <div
+              className="mb-1.5 text-xs font-medium text-text-secondary"
+              title={t(hasWorldSeries ? 'compare.worldOfficialOnly' : 'compare.stepTitle')}
+            >
+              {t('w4.compare.stepLabel')}
+            </div>
+            {hasWorldSeries ? (
+              <span className="inline-flex min-h-[34px] items-center rounded-xl border border-border-subtle bg-obsidian-lighter px-3 text-xs text-text-secondary">
+                {t('compare.step.official')}
+              </span>
+            ) : (
+              <div className="fe-scroll-row">
+                {STEP_OPTIONS.map((opt) => (
+                  <Chip
+                    key={opt.key}
+                    active={step === opt.key}
+                    onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
+                  >
+                    {t(opt.labelKey)}
+                  </Chip>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="min-w-0">
+            <div className="mb-1.5 text-xs font-medium text-text-secondary">{t('w4.compare.scaleLabel')}</div>
+            <div className="fe-scroll-row">
+              {SCALE_OPTIONS.map((opt) => {
+                const disabled = forceIndex && opt.key === 'values';
+                return (
+                  <Chip
+                    key={opt.key}
+                    disabled={disabled}
+                    active={indexed ? opt.key === 'index' : !!range && scale === opt.key && !forceIndex}
+                    onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
+                    title={disabled ? t('compare.indexOnlyUnits') : undefined}
+                  >
+                    {t(opt.labelKey)}
+                  </Chip>
+                );
+              })}
+            </div>
           </div>
 
           <Button
@@ -1910,10 +1858,10 @@ export default function ComparePage() {
             size="sm"
             onClick={handleExport}
             disabled={!hasData}
-            className="ml-auto"
+            className="w-full sm:ml-auto sm:w-auto"
             title={t('compare.downloadChart')}
           >
-            <ImageDown className="w-3.5 h-3.5" aria-hidden="true" />
+            <ImageDown className="h-3.5 w-3.5" aria-hidden="true" />
             {t('compare.imageButton')}
           </Button>
         </div>
@@ -1932,16 +1880,18 @@ export default function ComparePage() {
         {loading ? (
           <CompareChartState kind="loading" height={chartHeight} />
         ) : !hasData ? (
+          <>
           <CompareChartState
             kind={codes.length === 0 ? 'none' : loadFailed ? 'error' : 'empty'}
+            compact={codes.length === 0}
             height={chartHeight}
             onRetry={failedQueries.length > 0 ? retryFailed : undefined}
             retrying={retrying}
             message={
               codes.length === 0
-                ? t('compare.emptyAdd')
+                ? t('w4.compare.emptyAdd')
                 : loadFailed
-                  ? t('compare.emptyUnavailable')
+                  ? t('w4.compare.emptyUnavailable')
                   : noSharedBase
                     ? t('compare.noSharedBase')
                     : indexed && nonIndexableNames.length === series.length
@@ -1949,8 +1899,10 @@ export default function ComparePage() {
                       : t('compare.emptyData')
             }
           />
+          {codes.length === 0 && <CompareExample onOpen={writeCodes} />}
+          </>
         ) : (
-          <div ref={exportRef} className="fe-panel rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
+          <div ref={exportRef} className="fe-panel fe-reveal rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
             <h2 className="text-center text-lg md:text-xl font-display font-bold text-text-primary mb-1">
               {title}
             </h2>
@@ -2110,7 +2062,7 @@ export default function ComparePage() {
         <section data-block="compare-analysis" className="fe-panel rounded-[2rem] border border-border-subtle bg-surface p-5 shadow-[0_16px_45px_rgba(35,30,16,0.05)] md:p-7">
           <div className="mb-5 flex flex-col gap-2 border-b border-border-subtle pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne">
+              <div className="text-sm font-medium text-champagne-ink">
                 {t('compare.analysis.eyebrow')}
               </div>
               <h2 className="mt-1 font-display text-2xl font-bold text-text-primary">
@@ -2135,25 +2087,24 @@ export default function ComparePage() {
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     <div>
-                      <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{t('compare.analysis.last')}</div>
-                      <div className="mt-1 font-mono text-lg font-semibold text-text-primary">
+                      <div className="text-xs font-medium text-text-secondary">{t('compare.analysis.last')}</div>
+                      <div className="fe-num mt-1 text-lg font-semibold text-text-primary">
                         {formatValueWithUnit(metric.last.value, displayUnit)}
                       </div>
                     </div>
                     <div>
-                      <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{t('compare.analysis.change')}</div>
+                      <div className="text-xs font-medium text-text-secondary">{t('compare.analysis.change')}</div>
                       <div className={cn(
-                        'mt-1 font-mono text-lg font-semibold',
-                        metric.change > 0 ? 'text-positive' : metric.change < 0 ? 'text-negative' : 'text-text-primary',
+                        'fe-num mt-1 text-lg font-semibold',
+                        `fe-tone--${deltaTone(metric.change, indicatorPolarity(metric.item.ind?.name, metric.item.code))}`,
                       )}>
                         {metric.change > 0 ? '+' : ''}
                         {formatValueWithUnit(metric.change, compareDifferenceUnit(metric.item.unit || '%', { indexed, locale }))}
                       </div>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center justify-between border-t border-border-subtle pt-2.5 font-mono text-[11px] text-text-tertiary">
-                    <span>{formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}</span>
-                    <span>{t('compare.analysis.pointsCount', { n: metric.points.length })}</span>
+                  <div className="mt-3 border-t border-border-subtle pt-2.5 text-xs text-text-secondary">
+                    {formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}
                   </div>
                 </div>
               );
@@ -2172,17 +2123,25 @@ export default function ComparePage() {
                     <span className="min-w-0 truncate text-xs text-text-secondary">
                       {result.item.ind?.name || result.item.code}
                     </span>
-                    <span className="shrink-0 font-mono text-sm font-semibold text-text-primary">
-                      r = {result.value.toFixed(2)}
+                    <span className="shrink-0 text-sm font-semibold text-text-primary">
+                      {t(correlationKey(result.value))}
                     </span>
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-xs leading-4 text-text-secondary">
-                {t('compare.analysis.pearson', {
-                  counts: analysisSummary.correlations.map((item) => item.observations).join(', '),
-                })}
-              </p>
+              <details className="fe-acc mt-3 text-xs leading-5 text-text-secondary">
+                <summary className="fe-tap-inline gap-1 text-champagne-ink">
+                  {t('w4.compare.corr.how')}
+                  <ChevronDown className="fe-acc__chev h-3.5 w-3.5" aria-hidden="true" />
+                </summary>
+                <p className="mt-1">
+                  {t('w4.compare.corr.details', {
+                    values: analysisSummary.correlations
+                      .map((item) => item.value.toFixed(2).replace('.', locale === 'en' ? '.' : ','))
+                      .join(', '),
+                  })}
+                </p>
+              </details>
             </div>
           )}
         </section>

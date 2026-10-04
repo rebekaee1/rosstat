@@ -251,8 +251,16 @@ describe('WorldCountry category navigation', () => {
     }));
     renderCountry('germany', TWO_CATEGORIES);
 
+<<<<<<< HEAD
     // Главные темы идут первыми: сначала «Цены», а не категория, случайно первая по алфавиту.
     expect(await screen.findByRole('heading', { name: 'Цены' })).toBeTruthy();
+=======
+    expect(await screen.findByRole('heading', { name: 'Рынок труда' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Цены' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Рынок труда\s*1\s*Сменить/ }));
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: /Цены/ }));
+    expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
+>>>>>>> worktree-agent-a00c26ee5f20f9211
     expect(screen.queryByRole('heading', { name: 'Рынок труда' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: /Цены \(1\)/ }));
     fireEvent.click(screen.getByRole('button', { name: /Рынок труда \(1\)/ }));

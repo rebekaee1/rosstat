@@ -1,0 +1,115 @@
+// Человеческая подача региональных чисел: единица всегда рядом, процент с одним знаком,
+// «₽» и «%» не отрываются от числа (неразрывный пробел). Используется на страницах регионов и штатов.
+import { shortUnit } from './regionsApi';
+
+export const NBSP = ' ';
+
+function numberLocale(locale) {
+  return locale === 'en' ? 'en-US' : 'ru-RU';
+}
+
+/** Единица для показа: «₽», «%», «тыс. чел.»; пустая строка, если единицу нельзя назвать коротко. */
+export function unitLabel(unit, locale = 'ru') {
+  const raw = (unit || '').trim();
+  if (!raw) return '';
+  const short = shortUnit(raw);
+  if (short === '% г/г') return locale === 'en' ? '% YoY' : '% за год';
+  if (short) return short.replace(/^тыс /, 'тыс. ');
+  const u = raw.toLowerCase();
+  if (/процент|percent|%/.test(u)) return '%';
+  if (/тысяч человек|thousand people/.test(u)) return locale === 'en' ? 'thous. people' : 'тыс. чел.';
+  if (/рубл|ruble/.test(u)) return '₽';
+  return '';
+}
+
+export function isPercentUnit(unit) {
+  return unitLabel(unit) === '%' || unitLabel(unit) === '% за год' || unitLabel(unit) === '% YoY';
+}
+
+/** Число без единицы: проценты и малые величины — с одним знаком («1,0», «3,4»), крупные — целые. */
+export function formatRegionNumber(value, unit, locale = 'ru') {
+  if (value == null || Number.isNaN(Number(value))) return '—';
+  const num = Number(value);
+  const abs = Math.abs(num);
+  const percent = isPercentUnit(unit);
+  let min = 0;
+  let max;
+  if (abs >= 10000) max = 0;
+  else if (abs >= 100) max = percent ? 1 : 1;
+  else if (abs >= 10) max = 1;
+  else if (abs >= 1) max = percent ? 1 : 2;
+  else max = 2;
+  if (percent && abs < 100) min = max >= 1 ? 1 : 0;
+  return num.toLocaleString(numberLocale(locale), { minimumFractionDigits: min, maximumFractionDigits: max });
+}
+
+/** «3,4 %» / «162 572 ₽» / «13 150 тыс. чел.» — единица не отрывается от числа. */
+export function formatRegionWithUnit(value, unit, locale = 'ru') {
+  const text = formatRegionNumber(value, unit, locale);
+  if (text === '—') return text;
+  const label = unitLabel(unit, locale);
+  return label ? `${text}${NBSP}${label.replace(/ /g, NBSP)}` : text;
+}
+
+/** Изменение в процентах для бейджа: «44,4 %», «меньше 0,1 %». */
+export function formatDeltaPercent(pct, locale = 'ru') {
+  const abs = Math.abs(Number(pct));
+  const dec = locale === 'en' ? '.' : ',';
+  if (!Number.isFinite(abs)) return '';
+  if (abs < 0.1) return `<0${dec}1${NBSP}%`;
+  return `${abs.toFixed(1).replace('.', dec)}${NBSP}%`;
+}
+
+/** Название показателя без хвоста «, единица» и без лишних пробелов — для коротких подписей. */
+export function plainName(name) {
+  return String(name || '').replace(/\s+/g, ' ').trim();
+}
+
+const COMPACT_RULES_RU = {
+  '₽': [[1e6, 'млн ₽', 1e6]],
+  'млн ₽': [[1e6, 'трлн ₽', 1e6], [1e3, 'млрд ₽', 1e3]],
+  'млрд ₽': [[1e3, 'трлн ₽', 1e3]],
+  'тыс. ₽': [[1e3, 'млн ₽', 1e3]],
+  'тыс. чел.': [[1e3, 'млн чел.', 1e3]],
+};
+const COMPACT_RULES_EN = {
+  '₽': [[1e6, 'mln ₽', 1e6]],
+  'mln ₽': [[1e6, 'trn ₽', 1e6], [1e3, 'bln ₽', 1e3]],
+  'bln ₽': [[1e3, 'trn ₽', 1e3]],
+  'thous. ₽': [[1e3, 'mln ₽', 1e3]],
+  'thous. people': [[1e3, 'mln people', 1e3]],
+};
+
+/** Крупные величины в узких карточках: «8 118 831 млн ₽» → «8,1 трлн ₽», «13 150 тыс. чел.» → «13,2 млн чел.». */
+export function formatRegionCompact(value, unit, locale = 'ru') {
+  const num = Number(value);
+  if (value == null || !Number.isFinite(num)) return '—';
+  const label = unitLabel(unit, locale);
+  const rules = (locale === 'en' ? COMPACT_RULES_EN : COMPACT_RULES_RU)[label];
+  const abs = Math.abs(num);
+  const hit = rules?.find(([threshold]) => abs >= threshold);
+  if (!hit) return formatRegionWithUnit(value, unit, locale);
+  const scaled = num / hit[2];
+  const text = scaled.toLocaleString(numberLocale(locale), {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: Math.abs(scaled) >= 100 ? 0 : 1,
+  });
+  return `${text}${NBSP}${hit[1].replace(/ /g, NBSP)}`;
+}
+
+const NOISY_FIRST = /беженц|убежищ|вынужденн/i;
+const LEAD_NAME = /^(среднегодовая |постоянная )?численность (постоянного )?населения(?![а-яё])(?!.*(беженц|убежищ|лиц))/i;
+
+/** В разделе сначала главное («Численность населения»), узкие и служебные строки — в конец; порядок остальных сохраняется. */
+export function prioritizeIndicators(indicators) {
+  const score = (item) => {
+    const name = String(item?.name || '');
+    if (LEAD_NAME.test(name)) return 0;
+    if (NOISY_FIRST.test(name)) return 2;
+    return 1;
+  };
+  return indicators
+    .map((item, index) => ({ item, index, score: score(item) }))
+    .sort((a, b) => a.score - b.score || a.index - b.index)
+    .map((entry) => entry.item);
+}

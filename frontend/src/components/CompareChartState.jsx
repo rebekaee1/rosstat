@@ -10,7 +10,9 @@ import { useT } from '../i18n';
 // Высота «шапки» карточки графика (заголовок, подсказка, легенда) — как у готового графика.
 const CARD_EXTRA = 150;
 
-export default function CompareChartState({ kind, height = 390, message = '', onRetry, retrying = false }) {
+export default function CompareChartState({
+  kind, height = 390, message = '', onRetry, retrying = false, compact = false,
+}) {
   const t = useT();
 
   if (kind === 'loading') {
@@ -48,10 +50,10 @@ export default function CompareChartState({ kind, height = 390, message = '', on
       data-state={kind}
       role={isError ? 'alert' : 'status'}
       aria-live={isError ? 'assertive' : 'polite'}
-      style={{ minHeight: height + CARD_EXTRA }}
-      className="flex flex-col items-center justify-center rounded-[2rem] border border-dashed border-border-subtle bg-surface p-6 text-center md:p-8"
+      style={compact ? undefined : { minHeight: height + CARD_EXTRA }}
+      className={`flex flex-col items-center justify-center rounded-[2rem] border border-dashed border-border-subtle bg-surface text-center ${compact ? 'p-5' : 'p-6 md:p-8'}`}
     >
-      <Icon className="mb-4 h-10 w-10 text-text-tertiary opacity-60" aria-hidden="true" />
+      <Icon className={`${compact ? 'mb-2 h-7 w-7' : 'mb-4 h-10 w-10'} text-champagne-ink opacity-70`} aria-hidden="true" />
       {title && <p className="mb-1 text-base font-semibold text-text-primary">{title}</p>}
       <p className="max-w-md text-sm text-text-secondary">{message}</p>
       {isError && onRetry && (

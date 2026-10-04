@@ -113,6 +113,14 @@ describe('ComparePage', () => {
     expect(screen.getByText('Ключевая ставка ЦБ')).toBeTruthy();
   });
 
+  it('фраза «Сначала выберите страну, затем показатель» на странице один раз', async () => {
+    mockCompareApis();
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    await screen.findByRole('heading', { level: 1 });
+    expect(screen.getAllByText(/Сначала выберите страну/i)).toHaveLength(1);
+    expect(document.body.textContent.match(/выберите страну, затем показатель/gi) || []).toHaveLength(1);
+  });
+
   it('показывает шаг выбора страны с Россией первой', async () => {
     mockCompareApis();
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
@@ -199,7 +207,7 @@ describe('ComparePage', () => {
     const picker = document.querySelector('[data-block="compare-add"]');
     await waitFor(() => {
       const countryOrder = [...picker.querySelectorAll('button')]
-        .map((button) => button.textContent.trim())
+        .map((button) => button.textContent.replace(/[\u{1F1E6}-\u{1F1FF}]/gu, '').trim())
         .filter((label) => ['United States', 'Canada', 'Russia'].includes(label));
       expect(countryOrder).toEqual(['United States', 'Canada', 'Russia']);
     });
@@ -262,7 +270,7 @@ describe('ComparePage', () => {
       route: '/compare?codes=us-unemployment-rate',
     });
     const empty = await screen.findByTestId('compare-empty');
-    expect(empty.textContent).toMatch(/Не удалось загрузить выбранные ряды/);
+    expect(empty.textContent).toMatch(/Не получилось загрузить данные/);
     expect(screen.queryByTestId('compare-chart-skeleton')).toBeNull();
     await waitFor(() => {
       const urls = spy.mock.calls.map((call) => String(call[0]));

@@ -1,12 +1,13 @@
 import { Link, useParams, Navigate } from 'react-router-dom';
-import { GitCompare } from 'lucide-react';
+import { GitCompare, Trophy, ChevronRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import useDocumentMeta from '../lib/useMeta';
 import api from '../lib/api';
-import { formatRegionValue, shortUnit } from '../lib/regionsApi';
+import { formatRegionWithUnit } from '../lib/regionUi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
 import '../styles/platform-pages.css';
+import '../styles/regions-w4.css';
 import {
   regionHubPath,
   regionIndicatorPath,
@@ -37,7 +38,7 @@ function useRegionCompare(slugA, slugB) {
 }
 
 export default function RegionComparePage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { pair } = useParams();
   const parsed = parsePair(pair);
   const [slugA, slugB] = parsed || [null, null];
@@ -87,80 +88,73 @@ export default function RegionComparePage() {
 
       {data && (
         <>
-          <p className="text-champagne-ink text-xs font-mono uppercase tracking-widest mb-2">
+          <p className="mb-2 text-sm font-medium text-champagne-ink">
             {t('regions.compareEyebrow')}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
             {t('regions.compareH1', { a: data.region_a.name, b: data.region_b.name })}
           </h1>
-          <p className="text-text-secondary mb-8 max-w-3xl">
+          <p className="mb-6 max-w-3xl text-[15px] leading-relaxed text-text-secondary">
             {t('regions.compareIntro')}
           </p>
 
           {data.rows.length === 0 && (
-            <div className="mb-8 rounded-2xl border border-border-subtle bg-surface p-5 text-center text-sm text-text-secondary">
+            <div className="mb-8 rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+              <GitCompare size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
               {t('pgui.regions.compareNoRows')}
             </div>
           )}
 
-          <section className="mb-8">
-            <h2 className="font-display text-lg font-semibold text-text-primary mb-3">
-              {t('regions.compareTableTitle')}
-            </h2>
-            <div className="overflow-x-auto rounded-xl border border-border-subtle">
-              <table className="w-full text-sm min-w-[32rem]">
-                <thead>
-                  <tr className="bg-obsidian-light/50 text-left text-[11px] uppercase tracking-wide text-text-secondary">
-                    <th className="px-4 py-2.5 font-medium">{t('regions.compareColIndicator')}</th>
-                    <th className="px-4 py-2.5 font-medium">{t('common.year')}</th>
-                    <th className="px-4 py-2.5 font-medium">{data.region_a.name}</th>
-                    <th className="px-4 py-2.5 font-medium">{data.region_b.name}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.rows.map((row) => (
-                    <tr key={row.code} className="border-t border-border-subtle">
-                      <td className="px-4 py-2.5 text-text-primary">{row.name}</td>
-                      <td className="px-4 py-2.5 font-mono text-text-secondary">{row.year}</td>
-                      <td className={`px-4 py-2.5 font-mono ${row.leader_slug === data.region_a.slug ? 'text-champagne-ink font-semibold' : 'text-text-primary'}`}>
-                        {formatRegionValue(row.a.value)} {shortUnit(row.unit)}
-                      </td>
-                      <td className={`px-4 py-2.5 font-mono ${row.leader_slug === data.region_b.slug ? 'text-champagne-ink font-semibold' : 'text-text-primary'}`}>
-                        {formatRegionValue(row.b.value)} {shortUnit(row.unit)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+          <div className="mb-8 grid gap-3 md:grid-cols-2">
+            {data.rows.map((row, index) => {
+              const side = (region, point) => {
+                const leader = row.leader_slug === region.slug;
+                return (
+                  <Link
+                    to={regionIndicatorPath(region.slug, row.code)}
+                    className={`fe-press min-w-0 rounded-2xl border p-3 transition-colors ${
+                      leader
+                        ? 'border-border-champagne bg-champagne/[0.07]'
+                        : 'border-border-subtle bg-obsidian-light hover:border-border-champagne'
+                    }`}
+                  >
+                    <span className="flex items-center gap-1 text-[13px] leading-snug text-text-secondary">
+                      {leader && <Trophy size={13} className="shrink-0 text-champagne-ink" aria-hidden="true" />}
+                      <span className="min-w-0">{region.name}</span>
+                    </span>
+                    <span className={`fe-num mt-1 block whitespace-nowrap text-lg font-semibold ${leader ? 'text-champagne-ink' : 'text-text-primary'}`}>
+                      {formatRegionWithUnit(point.value, row.unit, locale)}
+                    </span>
+                  </Link>
+                );
+              };
+              return (
+                <section
+                  key={row.code}
+                  className="fe-panel fe-reveal rounded-3xl p-4"
+                  style={{ '--fe-delay': `${Math.min(index, 5) * 0.04}s`, '--fe-rise': '8px' }}
+                >
+                  <h2 className="font-display text-base font-semibold leading-snug text-text-primary">
+                    {row.name}
+                    <span className="font-normal text-text-secondary">{` (${row.year})`}</span>
+                  </h2>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    {side(data.region_a, row.a)}
+                    {side(data.region_b, row.b)}
+                  </div>
+                  {row.verdict && (
+                    <p className="mt-3 text-sm text-text-secondary">{t('regions.compareVerdict', { verdict: row.verdict })}</p>
+                  )}
+                  <Link to={regionRatingPath(row.code)} className="fe-tap-inline mt-1 gap-1 text-sm text-champagne-ink hover:underline">
+                    {t('regions.compareAllRating')}
+                    <ChevronRight size={14} aria-hidden="true" />
+                  </Link>
+                </section>
+              );
+            })}
+          </div>
 
-          {data.rows.map((row) => (
-            <section key={row.code} className="mb-6 bg-surface border border-border-subtle rounded-xl p-4">
-              <h2 className="font-display text-base font-semibold text-text-primary mb-2">
-                {row.name} ({row.year})
-              </h2>
-              <p className="text-sm text-text-secondary mb-3">
-                {data.region_a.name}: <strong className="font-mono text-text-primary">{formatRegionValue(row.a.value)} {shortUnit(row.unit)}</strong>
-                {'; '}
-                {data.region_b.name}: <strong className="font-mono text-text-primary">{formatRegionValue(row.b.value)} {shortUnit(row.unit)}</strong>.
-                {' '}{t('regions.compareVerdict', { verdict: row.verdict })}
-              </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                <Link to={regionIndicatorPath(row.a.slug, row.code)} className="fe-tap-inline text-champagne-ink hover:underline">
-                  {t('regions.compareDynamics', { name: data.region_a.name })}
-                </Link>
-                <Link to={regionIndicatorPath(row.b.slug, row.code)} className="fe-tap-inline text-champagne-ink hover:underline">
-                  {t('regions.compareDynamics', { name: data.region_b.name })}
-                </Link>
-                <Link to={regionRatingPath(row.code)} className="fe-tap-inline text-champagne-ink hover:underline">
-                  {t('regions.compareAllRating')}
-                </Link>
-              </div>
-            </section>
-          ))}
-
-          <section className="bg-surface border border-border-subtle rounded-xl p-5">
+          <section className="rounded-3xl border border-border-subtle bg-surface p-5">
             <h2 className="font-display text-base font-semibold text-text-primary mb-2 flex items-center gap-2">
               <GitCompare size={16} className="text-champagne-ink" /> {t('regions.compareProfiles')}
             </h2>
