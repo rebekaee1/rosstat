@@ -3,11 +3,12 @@ import { track, events } from '../lib/track';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { translate } from '../i18n/messages';
 import { isChunkLoadError, recoverFromStaleChunk } from '../lib/chunkRecovery';
+import Button from './Button';
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null, reloading: false };
+    this.state = { hasError: false, error: null, reloading: false, busy: false };
   }
 
   static getDerivedStateFromError(error) {
@@ -40,12 +41,13 @@ class ErrorBoundary extends Component {
             <p className="text-text-secondary mb-6">
               {t('error.boundary.body')}
             </p>
-            <button
-              onClick={() => { track(events.ERROR_RELOAD); window.location.reload(); }}
-              className="px-6 py-2 bg-champagne text-white rounded-lg hover:bg-champagne/90 transition-colors"
+            <Button
+              loading={this.state.busy}
+              onClick={() => { this.setState({ busy: true }); track(events.ERROR_RELOAD); window.location.reload(); }}
+              className="px-6"
             >
               {t('error.boundary.reload')}
-            </button>
+            </Button>
           </div>
         </div>
       );

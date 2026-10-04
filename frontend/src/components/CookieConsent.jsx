@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
+import Button from './Button';
 import { track, events } from '../lib/track';
 import {
   CONSENT_OPEN_EVENT,
@@ -44,10 +45,8 @@ const CATEGORY_DEFS = [
   },
 ];
 
-const btnBase = cn(
-  FOCUS_RING,
-  'min-h-11 min-w-0 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors text-center'
-);
+// Кнопки баннера делят ширину поровну и переносят подпись на узком экране.
+const btnBase = 'min-w-0 whitespace-normal! text-center';
 
 function notifyOverlayVisibility(visible, expanded) {
   try {
@@ -140,7 +139,7 @@ export default function CookieConsent() {
         data-analytics-overlay="cookie-consent"
         data-fe-attention-occluder="cookie-consent"
         data-fe-interaction="consent-dialog"
-        className="pointer-events-auto mx-auto sm:mx-0 sm:max-w-md flex max-h-[calc(100dvh-1.5rem)] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] consent-enter"
+        className="pointer-events-auto mx-auto sm:mx-0 sm:max-w-md flex max-h-[calc(100dvh-1.5rem)] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
       >
         <div className="flex shrink-0 items-start gap-2 p-3 pb-1">
           <div className="min-w-0 flex-1">
@@ -148,7 +147,7 @@ export default function CookieConsent() {
             {!expanded && (
               <p className="text-xs text-text-secondary leading-relaxed">
                 {t('cookie.summary')}{' '}
-                <Link to="/privacy" className="text-champagne hover:underline">
+                <Link to="/privacy" className="text-champagne-ink hover:underline">
                   {t('cookie.privacyShort')}
                 </Link>
               </p>
@@ -160,7 +159,7 @@ export default function CookieConsent() {
             data-analytics-action="consent-dismiss"
             data-fe-interaction-action="dismiss"
             onClick={dismiss}
-            className={cn(FOCUS_RING, 'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-tertiary hover:text-text-primary transition-colors')}
+            className={cn(FOCUS_RING, 'fe-press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-tertiary hover:text-text-primary transition-colors')}
           >
             <X className="w-4 h-4" aria-hidden="true" />
           </button>
@@ -170,7 +169,7 @@ export default function CookieConsent() {
           <div data-consent-scroll-body className="min-h-0 overflow-y-auto overscroll-contain px-3 pb-3">
             <p className="mb-3 text-xs text-text-secondary leading-relaxed">
               {t('cookie.bodyBefore')}{' '}
-              <Link to="/privacy" className="text-champagne hover:underline">
+              <Link to="/privacy" className="text-champagne-ink hover:underline">
                 {t('cookie.privacyLink')}
               </Link>
               .
@@ -204,7 +203,7 @@ export default function CookieConsent() {
                           </span>
                         )}
                       </span>
-                      <span className="block text-[11px] text-text-tertiary leading-relaxed mt-0.5">
+                      <span className="block text-xs text-text-tertiary leading-relaxed mt-0.5">
                         {t(cat.descKey)}
                       </span>
                     </span>
@@ -218,45 +217,43 @@ export default function CookieConsent() {
         <div data-consent-actions className="grid shrink-0 grid-cols-2 gap-2 p-3 pt-1">
           {expanded ? (
             <>
-              <button
-                type="button"
+              <Button
                 data-analytics-action="consent-save"
                 data-fe-interaction-action="save"
                 onClick={() => commit(choices.analytics, choices.ads, 'custom')}
-                className={cn(btnBase, 'flex-1 bg-champagne text-white hover:bg-champagne-muted')}
+                className={cn(btnBase, 'flex-1')}
               >
                 {t('cookie.save')}
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="secondary"
                 data-analytics-action="consent-accept-all"
                 data-fe-interaction-action="accept-all"
                 onClick={() => commit(true, true, 'accept_all')}
-                className={cn(btnBase, 'flex-1 border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-champagne')}
+                className={cn(btnBase, 'flex-1')}
               >
                 {t('cookie.acceptAll')}
-              </button>
+              </Button>
             </>
           ) : (
             <>
-              <button
-                type="button"
+              <Button
                 data-analytics-action="consent-accept"
                 data-fe-interaction-action="accept"
                 onClick={() => commit(true, true, 'accept_all')}
-                className={cn(btnBase, 'flex-1 bg-champagne text-white hover:bg-champagne-muted')}
+                className={cn(btnBase, 'flex-1')}
               >
                 {t('cookie.accept')}
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="secondary"
                 data-analytics-action="consent-customize"
                 data-fe-interaction-action="customize"
                 onClick={() => setExpanded(true)}
-                className={cn(btnBase, 'sm:flex-none border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-champagne')}
+                className={cn(btnBase, 'sm:flex-none')}
               >
                 {t('cookie.customize')}
-              </button>
+              </Button>
             </>
           )}
         </div>
