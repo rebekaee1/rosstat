@@ -1,8 +1,11 @@
 """Realtime-аномалии: пороговые алерты 15-минутного цикла (этап 5 плана).
 
 Вызывается из rollups_15min_job. Правила:
-- трафик текущего часа < 40% того же часа прошлой недели (при базе ≥ 20);
-- всплеск собственных JS-ошибок за 15 минут (≥ 10);
+- трафик текущего часа < 40% того же часа прошлой недели — только человеческие
+  просмотры (без ботов и внутреннего трафика), база ≥ 30 (ночью, 00–07 МСК, ≥ 100)
+  и два часа подряд (текущий неполный + предыдущий полный) ниже порога;
+- всплеск собственных JS-ошибок за 15 минут (≥ 10) без ошибок загрузки
+  динамических модулей (устаревшая вкладка после релиза) и сторонних скриптов;
 - тишина собственного сбора ≥ 45 минут при живом трафике за предыдущий час;
 - лаг повизитного сырья Метрики > 36 часов;
 - лаг ClickHouse-синка > 1 часа (если слой включён).
@@ -13,7 +16,8 @@
 но не доказывает ошибку антибота и не оправдывает подгонку весов.
 
 Антиспам: не чаще одного алерта каждого типа в 2 часа (state-Redis DB 1 —
-переживает FLUSHDB кэша). Канал доставки — общий send_telegram (архивируется
+переживает FLUSHDB кэша); для шумных видов своё охлаждение (`_alert_cooldown`:
+JS-всплеск — 3 часа, память — 6 часов, sitemap/обход Вебмастера — сутки). Канал доставки — общий send_telegram (архивируется
 в telegram_outbox, как всё исходящее).
 """
 from __future__ import annotations
@@ -22,15 +26,28 @@ import logging
 import re
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from app.config import settings
 from app.database import analytics_session
-from app.models import BehaviorEvent, RawMetrikaVisit
+from app.models import BehaviorEvent, RawMetrikaVisit, ServerSession
 
 logger = logging.getLogger(__name__)
 
 _MUTE_TTL = 2 * 3600  # один алерт типа — раз в 2 часа
+# Шумные виды охлаждаются дольше (ключ — часть alert_key до первого «:»).
+_ALERT_COOLDOWN = {
+    "js_error_spike": 3 * 3600,
+    "memory_pressure": 6 * 3600,
+    "webmaster_sitemap_errors": 24 * 3600,
+    "webmaster_crawl_drop": 24 * 3600,
+    "webmaster_in_search_drop": 24 * 3600,
+}
+TRAFFIC_DROP_RATIO = 0.4
+TRAFFIC_MIN_BASE = 30          # человеческих просмотров в базовом окне
+TRAFFIC_MIN_BASE_NIGHT = 100   # ночью (00–07 МСК) малая база шумит — порог выше
+_NIGHT_MSK_HOURS = range(0, 7)
+_MSK_OFFSET = timedelta(hours=3)
 COLLECTION_SILENCE_AFTER = timedelta(minutes=45)
 _COLLECTION_PROBE_WINDOW = timedelta(hours=6)
 _BEHAVIOR_INGEST_WATERMARK = "fe:beh:last_ingest_unix"
@@ -43,6 +60,16 @@ _THIRD_PARTY_HOST_SUFFIXES = (
     "webvisor.com", "yastatic.net", "adfox.ru", "yandexadexchange.net",
 )
 _JS_URL_RE = re.compile(r"https?://([^/\s):]+)")
+# Устаревшая вкладка после релиза: хэш чанка уже другой. Не дефект кода.
+_STALE_TAB_RE = re.compile(
+    r"dynamically imported module|error loading dynamically|importing a module script failed"
+    r"|unable to preload css|loading (?:css )?chunk|chunkloaderror|reading 'default'",
+    re.IGNORECASE,
+)
+
+
+def _alert_cooldown(alert_key: str) -> int:
+    return _ALERT_COOLDOWN.get(alert_key.split(":", 1)[0], _MUTE_TTL)
 
 
 def _error_host(params: dict) -> str:
@@ -54,9 +81,11 @@ def _error_host(params: dict) -> str:
 
 
 def js_error_counts_for_alert(params: object) -> bool:
-    """Ignore resource failures and errors from known ad/analytics domains."""
+    """Ignore resource failures, stale-tab chunk errors and ad/analytics domains."""
     payload = params if isinstance(params, dict) else {}
     if payload.get("kind") not in ("error", "rejection"):
+        return False
+    if _STALE_TAB_RE.search(f"{payload.get('msg') or ''} {str(payload.get('stack') or '')[:200]}"):
         return False
     host = _error_host(payload)
     if host.startswith(("mc.yandex.", "an.yandex.", "mc.webvisor.")):
@@ -72,6 +101,41 @@ def memory_pressure_episode(ratio: float | None, *, sticky: bool) -> str:
     if sticky and ratio < MEMORY_CLEAR_RATIO:
         return "clear"
     return "hold"
+
+
+def traffic_drop_due(
+    *, cur: int, base: int, prev_cur: int, prev_base: int,
+    minutes_into_hour: int, msk_hour: int,
+) -> bool:
+    """Падение человеческого трафика: два часа подряд < 40% недели назад.
+
+    cur/base — неполный текущий час и то же окно неделю назад; prev_* — предыдущий
+    полный час. Малая база (особенно ночью) и один плохой час — не повод для алерта.
+    """
+    if minutes_into_hour < 30:
+        return False
+
+    def min_base(hour: int) -> int:
+        return TRAFFIC_MIN_BASE_NIGHT if hour % 24 in _NIGHT_MSK_HOURS else TRAFFIC_MIN_BASE
+
+    if base < min_base(msk_hour) or prev_base < min_base(msk_hour - 1):
+        return False
+    return cur < base * TRAFFIC_DROP_RATIO and prev_cur < prev_base * TRAFFIC_DROP_RATIO
+
+
+def human_pageviews_query(a: datetime, b: datetime):
+    """Просмотры [a, b) без визитёров, у которых в эти сутки есть бот/внутренняя сессия."""
+    days = [a.date() + timedelta(days=i) for i in range(-1, (b.date() - a.date()).days + 2)]
+    flagged = select(ServerSession.visitor_id_hash).where(
+        ServerSession.day.in_(days),
+        or_(ServerSession.is_bot.is_(True), ServerSession.is_internal.is_(True)),
+    )
+    return select(func.count()).select_from(BehaviorEvent).where(
+        BehaviorEvent.event_type == "pageview",
+        BehaviorEvent.occurred_at >= a,
+        BehaviorEvent.occurred_at < b,
+        or_(BehaviorEvent.visitor_id_hash.is_(None), BehaviorEvent.visitor_id_hash.not_in(flagged)),
+    )
 
 
 def collection_silence_due(
@@ -148,7 +212,7 @@ async def _muted(alert_key: str) -> bool:
         from app.core.cache import get_state_redis
         r = await get_state_redis()
         key = f"fe:alerts:mute:{alert_key}"
-        return not bool(await r.set(key, "1", ex=_MUTE_TTL, nx=True))
+        return not bool(await r.set(key, "1", ex=_alert_cooldown(alert_key), nx=True))
     except Exception:  # noqa: BLE001 — редис недоступен: лучше замолчать, чем упасть
         return True
 
@@ -197,14 +261,26 @@ async def check_anomalies() -> None:
                 )
             ) or 0)
 
-        # 1. Трафик часа против того же часа прошлой недели.
-        cur = await _count_pv(hour_start, now)
-        base = await _count_pv(hour_start - timedelta(days=7), now - timedelta(days=7))
-        if base >= 20 and cur < base * 0.4 and (now - hour_start) >= timedelta(minutes=30):
+        async def _count_human_pv(a: datetime, b: datetime) -> int:
+            return int(await db.scalar(human_pageviews_query(a, b)) or 0)
+
+        # 1. Человеческий трафик часа против того же часа прошлой недели
+        # (база недели назад раздувалась ботами: ферма 20–29.09).
+        week = timedelta(days=7)
+        prev_start = hour_start - timedelta(hours=1)
+        cur = await _count_human_pv(hour_start, now)
+        base = await _count_human_pv(hour_start - week, now - week)
+        if traffic_drop_due(
+            cur=cur, base=base,
+            prev_cur=await _count_human_pv(prev_start, hour_start),
+            prev_base=await _count_human_pv(prev_start - week, hour_start - week),
+            minutes_into_hour=int((now - hour_start).total_seconds() // 60),
+            msk_hour=(hour_start + _MSK_OFFSET).hour,
+        ):
             await _alert(
                 "traffic_drop",
-                f"Трафик часа упал: {cur} просмотров против {base} в тот же час "
-                f"неделю назад ({round(cur / base * 100)}%).",
+                f"Трафик часа упал: {cur} человеческих просмотров против {base} в тот же час "
+                f"неделю назад ({round(cur / base * 100)}%), предыдущий час тоже ниже 40%.",
             )
 
         # 2. Resource failures and third-party scripts are not own JS regressions.
@@ -261,7 +337,14 @@ async def _check_host_pressure() -> None:
     ratio = memory_pressure_ratio()
     episode = memory_pressure_episode(ratio, sticky=await _memory_sticky())
     if episode == "clear":
-        await _set_memory_sticky(False)
+        # Один эпизод — одно «превышено» и одно «восстановилось». Липкий флаг
+        # снимаем только после доставки, иначе повторим на следующем цикле.
+        if await _alert(
+            "memory_pressure_recovered",
+            f"Память контейнера scheduler восстановилась: {round((ratio or 0) * 100)}% лимита "
+            f"(ниже {round(MEMORY_CLEAR_RATIO * 100)}%).",
+        ):
+            await _set_memory_sticky(False)
     elif episode == "alert" and ratio is not None:
         sent = await _alert(
             "memory_pressure",
