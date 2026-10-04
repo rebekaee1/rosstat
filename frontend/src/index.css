@@ -519,6 +519,151 @@ nav.glass-surface-soft {
   .fe-search-loading-text::after { animation: none; content: '...'; }
 }
 
+/* ── Кнопка, чип, фокус, предохранитель анимаций (2026-10-04) ───────────────── */
+:root {
+  --color-accent-solid: #80642f;      /* champagne-ink: белый текст на нём ≥ 5:1 */
+  --color-on-accent: #ffffff;
+  --fe-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --fe-dur-fast: 120ms;
+  --fe-dur-base: 200ms;
+}
+.fe-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.fe-btn--sm { min-height: 34px; padding: 0 12px; font-size: 13px; }
+.fe-btn--primary { background: var(--color-accent-solid); border-color: var(--color-accent-solid); color: var(--color-on-accent); }
+.fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']) { background: #6b5329; border-color: #6b5329; }
+.fe-btn--secondary { background: var(--fe-glass-soft); border-color: var(--color-border-subtle); color: var(--color-text-primary); }
+.fe-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) { border-color: var(--color-champagne); }
+.fe-btn--ghost { background: transparent; color: var(--color-champagne-ink); }
+.fe-btn--ghost:hover:not(:disabled):not([aria-disabled='true']) { background: rgba(173, 138, 72, 0.1); }
+.fe-btn:disabled, .fe-btn[aria-disabled='true'] { opacity: 0.5; cursor: default; }
+.fe-btn[aria-busy='true'] { cursor: progress; }
+.fe-btn__spinner { --fe-spinner-size: 14px; }
+.fe-btn--primary .fe-btn__spinner { border-color: rgba(255, 255, 255, 0.35); border-top-color: #fff; }
+.fe-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--color-obsidian-lighter, rgba(68, 87, 115, 0.1));
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.fe-chip:hover:not(:disabled):not(.is-active) { color: var(--color-text-primary); border-color: var(--color-border-subtle); }
+.fe-chip.is-active { background: rgba(173, 138, 72, 0.16); border-color: rgba(173, 138, 72, 0.35); color: var(--color-champagne-ink); }
+.fe-chip:disabled { opacity: 0.45; cursor: default; }
+@media (pointer: coarse) {
+  .fe-btn { min-height: 44px; }
+  .fe-btn--sm { min-height: 40px; }
+  .fe-chip { min-height: 44px; padding: 0 14px; }
+}
+/* Единый фокус с клавиатуры вне зависимости от обёртки страницы. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-champagne-ink);
+  outline-offset: 2px;
+}
+:where(a, button, summary, [role='button']) { -webkit-tap-highlight-color: transparent; }
+/* На сенсорных экранах hover «залипает» после нажатия: тени и подъём только при настоящем наведении. */
+@media (hover: none) {
+  .fe-button-primary:hover, .fe-button-secondary:hover { box-shadow: inset 0 1px 0 var(--fe-glass-border); }
+  .fe-category-card:hover { transform: none; }
+}
+/* Предохранитель: у тех, кто просил меньше движения, не остаётся ни одной бесконечной или длинной анимации. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .fe-spinner, .fe-search-spinner { animation-duration: 2.4s !important; animation-iteration-count: infinite !important; }
+}
+@media print {
+  .fe-navbar, nav.glass-surface, [data-consent], .fe-page-progress, .fe-ticker { display: none !important; }
+  .fe-panel, .fe-chart-card { box-shadow: none !important; backdrop-filter: none !important; break-inside: avoid; }
+  body { background: #fff !important; }
+}
+
+/* ── Общие примитивы движения (2026-10-04) ─────────────────────────────────
+   .fe-reveal   — появление блока средствами CSS: без JS, без вспышки «невидимо до старта твина»,
+                  задержка через --fe-delay, смещение через --fe-rise.
+   .fe-spinner  — единое кольцо ожидания (размер через --fe-spinner-size).
+   .fe-page-progress — тонкая полоса сверху при переходе между страницами (подгрузка чанка).
+   .fe-press    — отклик нажатия для кнопок и карточек (не двигает вёрстку).
+   Всё отключается при prefers-reduced-motion. */
+@keyframes fe-reveal {
+  from { opacity: 0; transform: translate3d(0, var(--fe-rise, 14px), 0); }
+  to   { opacity: 1; transform: none; }
+}
+.fe-reveal {
+  animation: fe-reveal var(--fe-duration, 0.55s) cubic-bezier(0.22, 0.7, 0.2, 1) var(--fe-delay, 0s) both;
+}
+@keyframes fe-spin { to { transform: rotate(360deg); } }
+.fe-spinner {
+  display: inline-block;
+  width: var(--fe-spinner-size, 1rem);
+  height: var(--fe-spinner-size, 1rem);
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 2px solid color-mix(in srgb, var(--color-champagne, #ad8a48) 26%, transparent);
+  border-top-color: var(--color-champagne, #ad8a48);
+  animation: fe-spin 0.7s linear infinite;
+}
+@keyframes fe-page-progress-run {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(-12%); }
+  100% { transform: translateX(-4%); }
+}
+.fe-page-progress {
+  position: fixed;
+  top: 36px;
+  left: 0;
+  right: 0;
+  z-index: 120;
+  height: 2px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fe-page-progress::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--color-champagne, #ad8a48) 40%, var(--color-champagne, #ad8a48));
+  animation: fe-page-progress-run 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) 120ms both;
+}
+.fe-press {
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.fe-press:active:not(:disabled) { transform: scale(0.985); }
+@media (prefers-reduced-motion: reduce) {
+  .fe-reveal { animation: none; }
+  .fe-spinner { animation-duration: 2.4s; }
+  .fe-page-progress::before { animation: none; transform: translateX(-30%); opacity: 0.6; }
+  .fe-press, .fe-press:active:not(:disabled) { transition: none; transform: none; }
+}
+
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }

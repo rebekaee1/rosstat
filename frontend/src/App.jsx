@@ -16,7 +16,8 @@ import ScrollToAnchor from './components/ScrollToAnchor';
 import ErrorBoundary from './components/ErrorBoundary';
 import RegisterNudge from './components/RegisterNudge';
 import DownloadLimitModal from './components/DownloadLimitModal';
-import { SkeletonBox } from './components/Skeleton';
+import RouteFallback from './components/RouteFallback';
+import PageProgress from './components/PageProgress';
 import useDocumentMeta from './lib/useMeta';
 import { cleanPathWithSearch } from './lib/cleanUrl';
 import { behaviorInit, behaviorRouteChange } from './lib/behavior';
@@ -94,7 +95,8 @@ function ScrollToTop() {
     const prev = prevPathname.current;
     prevPathname.current = pathname;
     if (isVariantSiblingNavigation(prev, pathname)) return;
-    window.scrollTo(0, 0);
+    // Мгновенно: при html{scroll-behavior:smooth} обычный scrollTo плавно «уезжал» вверх на каждом переходе.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [pathname]);
   return null;
 }
@@ -252,6 +254,7 @@ function AppRoutes() {
       <LocalePreviewSync />
       <LocalePreviewBanner />
       <ScrollToTop />
+      <PageProgress />
       <ScrollToAnchor />
       <YandexMetrikaHit />
       <YandexRSY />
@@ -266,11 +269,7 @@ function AppRoutes() {
       <Navbar />
       <main className="relative z-0 flex-1 pt-9">
         <ErrorBoundary>
-        <Suspense fallback={
-          <div className="min-h-screen flex items-center justify-center">
-            <SkeletonBox className="h-8 w-48" />
-          </div>
-        }>
+        <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/about" element={<About />} />
