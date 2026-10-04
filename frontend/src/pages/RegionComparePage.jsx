@@ -6,6 +6,7 @@ import api from '../lib/api';
 import { formatRegionValue, shortUnit } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
+import '../styles/platform-pages.css';
 import {
   regionHubPath,
   regionIndicatorPath,
@@ -68,18 +69,25 @@ export default function RegionComparePage() {
         className="mb-4"
       />
 
-      {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
+      {isError && (
+        <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
+          {t('pgui.regions.compareError')}
+        </ApiRetryBanner>
+      )}
 
       {isLoading && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-10 w-96 max-w-full" />
-          <SkeletonBox className="h-48 rounded-xl" />
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="mb-2 h-4 w-40" />
+          <SkeletonBox className="mb-3 h-9 w-full max-w-xl sm:h-10" />
+          <SkeletonBox className="mb-8 h-6 w-full max-w-3xl" />
+          <SkeletonBox className="mb-3 h-7 w-56" />
+          <SkeletonBox className="h-[26rem] rounded-xl" />
         </div>
       )}
 
       {data && (
         <>
-          <p className="text-champagne text-xs font-mono uppercase tracking-widest mb-2">
+          <p className="text-champagne-ink text-xs font-mono uppercase tracking-widest mb-2">
             {t('regions.compareEyebrow')}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
@@ -89,6 +97,12 @@ export default function RegionComparePage() {
             {t('regions.compareIntro')}
           </p>
 
+          {data.rows.length === 0 && (
+            <div className="mb-8 rounded-2xl border border-border-subtle bg-surface p-5 text-center text-sm text-text-secondary">
+              {t('pgui.regions.compareNoRows')}
+            </div>
+          )}
+
           <section className="mb-8">
             <h2 className="font-display text-lg font-semibold text-text-primary mb-3">
               {t('regions.compareTableTitle')}
@@ -96,7 +110,7 @@ export default function RegionComparePage() {
             <div className="overflow-x-auto rounded-xl border border-border-subtle">
               <table className="w-full text-sm min-w-[32rem]">
                 <thead>
-                  <tr className="bg-obsidian-light/50 text-left text-[11px] uppercase tracking-wide text-text-tertiary">
+                  <tr className="bg-obsidian-light/50 text-left text-[11px] uppercase tracking-wide text-text-secondary">
                     <th className="px-4 py-2.5 font-medium">{t('regions.compareColIndicator')}</th>
                     <th className="px-4 py-2.5 font-medium">{t('common.year')}</th>
                     <th className="px-4 py-2.5 font-medium">{data.region_a.name}</th>
@@ -107,11 +121,11 @@ export default function RegionComparePage() {
                   {data.rows.map((row) => (
                     <tr key={row.code} className="border-t border-border-subtle">
                       <td className="px-4 py-2.5 text-text-primary">{row.name}</td>
-                      <td className="px-4 py-2.5 font-mono text-text-tertiary">{row.year}</td>
-                      <td className={`px-4 py-2.5 font-mono ${row.leader_slug === data.region_a.slug ? 'text-champagne font-semibold' : 'text-text-primary'}`}>
+                      <td className="px-4 py-2.5 font-mono text-text-secondary">{row.year}</td>
+                      <td className={`px-4 py-2.5 font-mono ${row.leader_slug === data.region_a.slug ? 'text-champagne-ink font-semibold' : 'text-text-primary'}`}>
                         {formatRegionValue(row.a.value)} {shortUnit(row.unit)}
                       </td>
-                      <td className={`px-4 py-2.5 font-mono ${row.leader_slug === data.region_b.slug ? 'text-champagne font-semibold' : 'text-text-primary'}`}>
+                      <td className={`px-4 py-2.5 font-mono ${row.leader_slug === data.region_b.slug ? 'text-champagne-ink font-semibold' : 'text-text-primary'}`}>
                         {formatRegionValue(row.b.value)} {shortUnit(row.unit)}
                       </td>
                     </tr>
@@ -132,14 +146,14 @@ export default function RegionComparePage() {
                 {data.region_b.name}: <strong className="font-mono text-text-primary">{formatRegionValue(row.b.value)} {shortUnit(row.unit)}</strong>.
                 {' '}{t('regions.compareVerdict', { verdict: row.verdict })}
               </p>
-              <div className="flex flex-wrap gap-3 text-xs">
-                <Link to={regionIndicatorPath(row.a.slug, row.code)} className="text-champagne hover:underline">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                <Link to={regionIndicatorPath(row.a.slug, row.code)} className="fe-tap-inline text-champagne-ink hover:underline">
                   {t('regions.compareDynamics', { name: data.region_a.name })}
                 </Link>
-                <Link to={regionIndicatorPath(row.b.slug, row.code)} className="text-champagne hover:underline">
+                <Link to={regionIndicatorPath(row.b.slug, row.code)} className="fe-tap-inline text-champagne-ink hover:underline">
                   {t('regions.compareDynamics', { name: data.region_b.name })}
                 </Link>
-                <Link to={regionRatingPath(row.code)} className="text-champagne hover:underline">
+                <Link to={regionRatingPath(row.code)} className="fe-tap-inline text-champagne-ink hover:underline">
                   {t('regions.compareAllRating')}
                 </Link>
               </div>
@@ -148,15 +162,15 @@ export default function RegionComparePage() {
 
           <section className="bg-surface border border-border-subtle rounded-xl p-5">
             <h2 className="font-display text-base font-semibold text-text-primary mb-2 flex items-center gap-2">
-              <GitCompare size={16} className="text-champagne" /> {t('regions.compareProfiles')}
+              <GitCompare size={16} className="text-champagne-ink" /> {t('regions.compareProfiles')}
             </h2>
             <p className="text-sm text-text-secondary">
               {t('regions.compareProfilesLead')}{' '}
-              <Link to={regionPath(data.region_a.slug)} className="text-champagne hover:underline">{data.region_a.name}</Link>
+              <Link to={regionPath(data.region_a.slug)} className="text-champagne-ink hover:underline">{data.region_a.name}</Link>
               {', '}
-              <Link to={regionPath(data.region_b.slug)} className="text-champagne hover:underline">{data.region_b.name}</Link>.
+              <Link to={regionPath(data.region_b.slug)} className="text-champagne-ink hover:underline">{data.region_b.name}</Link>.
               {' '}{t('regions.compareProfilesTail')}{' '}
-              <Link to="/compare" className="text-champagne hover:underline">{t('regions.compareSection')}</Link>.
+              <Link to="/compare" className="text-champagne-ink hover:underline">{t('regions.compareSection')}</Link>.
             </p>
           </section>
         </>

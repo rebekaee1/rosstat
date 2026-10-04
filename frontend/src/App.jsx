@@ -19,14 +19,14 @@ import DownloadLimitModal from './components/DownloadLimitModal';
 import RouteFallback, { SsrHandoffDone } from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
-import useDocumentMeta from './lib/useMeta';
 import { cleanPathWithSearch } from './lib/cleanUrl';
 import { behaviorInit, behaviorRouteChange } from './lib/behavior';
 import { sessionReplayInit, replayRouteChange } from './lib/sessionReplay';
 import { isVariantSiblingNavigation } from './lib/indicatorVariants';
 import { AuthProvider } from './context/AuthProvider';
-import { LocaleProvider, LocalePreviewBanner, LocalePreviewSync, useT } from './i18n';
+import { LocaleProvider, LocalePreviewBanner, LocalePreviewSync } from './i18n';
 import Dashboard from './pages/Dashboard';
+import NotFound from './pages/NotFound';
 import {
   RUSSIA,
   calendarPath,
@@ -45,7 +45,6 @@ import {
   russiaIndicatorYearPath,
   todayPath,
 } from './lib/sitePaths';
-import { WORLD_RATING_TO } from './lib/navItems';
 
 const LiveTicker = lazy(() => import('./components/LiveTicker'));
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
@@ -161,56 +160,6 @@ function RedirectTo({ build }) {
 function NavigateKeepSearch({ to }) {
   const { search } = useLocation();
   return <Navigate to={`${to}${search}`} replace />;
-}
-
-function NotFound() {
-  const t = useT();
-  useDocumentMeta({
-    title: t('notFound.metaTitle'),
-    description: t('notFound.metaDesc'),
-    path: '/404',
-    robots: 'noindex, follow',
-  });
-
-  const links = [
-    { to: '/', labelKey: 'notFound.link.home' },
-    { to: regionHubPath(), labelKey: 'notFound.link.regions' },
-    { to: WORLD_RATING_TO, labelKey: 'notFound.link.worldRating' },
-    { to: '/compare', labelKey: 'notFound.link.compare' },
-    { to: calendarPath(), labelKey: 'notFound.link.calendar' },
-  ];
-
-  return (
-    <div className="max-w-3xl mx-auto px-4 pt-28 pb-24">
-      <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
-        {t('notFound.eyebrow')}
-      </p>
-      <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-4 leading-tight">
-        {t('notFound.title')}
-      </h1>
-      <p className="text-text-secondary mb-8 leading-relaxed">
-        {t('notFound.body')}
-      </p>
-      <ul className="space-y-2.5 mb-10">
-        {links.map((item) => (
-          <li key={item.to}>
-            <Link
-              to={item.to}
-              className="text-champagne hover:underline font-medium"
-            >
-              {t(item.labelKey)}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <Link
-        to="/"
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors"
-      >
-        {t('common.backHome')}
-      </Link>
-    </div>
-  );
 }
 
 const EMBED_RE = /^\/embed\/(chart|card|table|ticker|compare)/;

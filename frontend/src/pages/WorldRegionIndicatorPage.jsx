@@ -17,6 +17,7 @@ import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
+import Chip from '../components/Chip';
 import { useAuth } from '../context/authContext';
 import { exportTable } from '../lib/api';
 import { exportNodeToPng } from '../lib/chartImage';
@@ -31,6 +32,7 @@ import {
   regionIndicatorPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
+import '../styles/platform-pages.css';
 
 function toYoYSeries(series) {
   if (!series?.length) return [];
@@ -53,7 +55,7 @@ function isNegativeCapable(series) {
 function StatCell({ label, children }) {
   return (
     <div className="fe-stat-cell min-w-0 rounded-xl border border-border-subtle bg-surface p-3 sm:p-3.5">
-      <div className="truncate text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">{label}</div>
+      <div className="truncate text-[11px] uppercase tracking-wide text-text-secondary sm:text-[11px]">{label}</div>
       <div className="mt-1 break-words font-mono text-sm font-semibold leading-tight text-text-primary sm:text-[15px]">
         {children}
       </div>
@@ -254,21 +256,32 @@ export default function WorldRegionIndicatorPage() {
       />
 
       {data.isError && !payload && (
-        <ApiRetryBanner onRetry={data.refetch} isFetching={data.isFetching}>
+        <ApiRetryBanner onRetry={data.refetch} isFetching={data.isFetching} className="mb-6">
           {t('world.regions.loadError')}
         </ApiRetryBanner>
       )}
-      {!payload && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-9 w-96 max-w-full" />
-          <SkeletonBox className="h-72 rounded-xl" />
+      {!payload && !data.isError && (
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="mb-2 mt-6 h-4 w-40" />
+          <SkeletonBox className="mb-5 h-8 w-full max-w-2xl sm:h-9" />
+          <SkeletonBox className="mb-6 h-9 w-64 sm:h-10" />
+          <SkeletonBox className="mb-4 h-[392px] rounded-xl sm:h-[398px]" />
+          <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {[0, 1, 2, 3].map((i) => <SkeletonBox key={i} className="h-[64px] rounded-xl" />)}
+          </div>
+        </div>
+      )}
+
+      {payload && series.length === 0 && (
+        <div className="mb-4 rounded-2xl border border-border-subtle bg-surface p-5 text-center text-sm text-text-secondary">
+          {t('pgui.regions.indNoData')}
         </div>
       )}
 
       {payload && (
         <>
           <div className="fe-data-header">
-            <div className="mb-2 font-mono text-xs uppercase tracking-widest text-champagne">
+            <div className="mb-2 font-mono text-xs uppercase tracking-widest text-champagne-ink">
               {payload.indicator.section}
             </div>
             <div className="mb-5 flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
@@ -283,9 +296,9 @@ export default function WorldRegionIndicatorPage() {
                 {formatSubnationalValue(last?.value, locale)}
               </span>
               <span className="text-sm text-text-secondary">{payload.indicator.unit}</span>
-              <span className="font-mono text-sm text-text-tertiary">{lastLabel}</span>
+              <span className="font-mono text-sm text-text-secondary">{lastLabel}</span>
               {delta && (
-                <span className={`font-mono text-sm ${delta.up ? 'text-positive' : delta.down ? 'text-negative' : 'text-text-tertiary'}`}>
+                <span className={`font-mono text-sm ${delta.up ? 'fe-ink-pos' : delta.down ? 'fe-ink-neg' : 'text-text-secondary'}`}>
                   {t(isMonthly ? 'regions.ind.deltaMoM' : 'regions.ind.deltaYoY', {
                     pct: `${delta.up ? '+' : ''}${delta.pct.toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
                   })}
@@ -296,7 +309,7 @@ export default function WorldRegionIndicatorPage() {
 
           <div id="chart" data-block="world-region-chart" className="fe-panel mb-4 scroll-mt-24 rounded-xl border border-border-subtle bg-surface p-3 sm:p-4" ref={chartRef}>
             <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-              <div className="font-mono text-xs text-text-tertiary">
+              <div className="font-mono text-xs text-text-secondary">
                 {first && last
                   ? (isMonthly
                     ? `${first.year}–${last.year}, ${payload.indicator.unit}`
@@ -305,10 +318,10 @@ export default function WorldRegionIndicatorPage() {
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
-                  className={`inline-flex max-w-full min-w-0 items-center gap-1.5 rounded-full border px-2.5 py-1 transition-colors ${
+                  className={`fe-tap inline-flex max-w-full min-w-0 items-center gap-1.5 rounded-full border px-2.5 py-1 transition-colors ${
                     compareSlug
                       ? 'border-[#5B7DA8] text-[#5B7DA8]'
-                      : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
+                      : 'border-border-subtle text-text-secondary hover:text-text-secondary'
                   }`}
                 >
                   <GitCompare size={12} className="shrink-0 opacity-70" aria-hidden />
@@ -332,33 +345,16 @@ export default function WorldRegionIndicatorPage() {
                   </select>
                 </label>
                 {nationalSeries.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setShowNational((v) => !v)}
-                    className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
-                      showNational
-                        ? 'border-border-champagne bg-champagne/5 text-champagne'
-                        : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
-                    }`}
-                  >
+                  <Chip active={showNational} onClick={() => setShowNational((v) => !v)}>
                     {showNational
                       ? t('world.regions.vsCountry', { country: countryName })
                       : t('world.regions.addCountry', { country: countryName })}
-                  </button>
+                  </Chip>
                 )}
                 {isAnnual && series.length > 2 && !isNegativeCapable(series) && (
-                  <button
-                    type="button"
-                    onClick={() => setShowYoY((v) => !v)}
-                    title={t('regions.ind.yoyTitle')}
-                    className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
-                      showYoY
-                        ? 'border-border-champagne bg-champagne/5 text-champagne'
-                        : 'border-border-subtle text-text-tertiary hover:text-text-secondary'
-                    }`}
-                  >
+                  <Chip active={showYoY} onClick={() => setShowYoY((v) => !v)} title={t('regions.ind.yoyTitle')}>
                     {t('regions.ind.yoyBtn')}
-                  </button>
+                  </Chip>
                 )}
                 <button
                   type="button"
@@ -366,7 +362,7 @@ export default function WorldRegionIndicatorPage() {
                   disabled={exporting}
                   title={t('regions.ind.downloadCsv')}
                   aria-label={t('regions.ind.downloadCsv')}
-                  className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-2 py-1 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
+                  className="fe-tap fe-press inline-flex items-center gap-1 rounded-full border border-border-subtle px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
                 >
                   <Download size={12} /> CSV
                 </button>
@@ -376,7 +372,7 @@ export default function WorldRegionIndicatorPage() {
                   disabled={exporting}
                   title={t('regions.ind.downloadExcel')}
                   aria-label={t('regions.ind.downloadExcel')}
-                  className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-2 py-1 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
+                  className="fe-tap fe-press inline-flex items-center gap-1 rounded-full border border-border-subtle px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
                 >
                   <Download size={12} /> Excel
                 </button>
@@ -386,7 +382,7 @@ export default function WorldRegionIndicatorPage() {
                   disabled={exporting}
                   title={t('regions.ind.downloadPng')}
                   aria-label={t('regions.ind.downloadPng')}
-                  className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-2 py-1 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
+                  className="fe-tap fe-press inline-flex items-center gap-1 rounded-full border border-border-subtle px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
                 >
                   <ImageIcon size={12} /> PNG
                 </button>
@@ -405,15 +401,15 @@ export default function WorldRegionIndicatorPage() {
               forecastSeries={!showYoY && forecastQ.data?.available ? forecastQ.data.points : null}
             />
             {forecastQ.data?.available && !showYoY && (
-              <div className="mt-2 rounded-lg border border-border-subtle bg-champagne/5 px-3 py-2 text-[11px] leading-relaxed text-text-secondary">
-                <strong className="text-champagne">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
+              <div className="mt-2 rounded-lg border border-border-subtle bg-champagne/5 px-3 py-2 text-xs leading-relaxed text-text-secondary">
+                <strong className="text-champagne-ink">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
                 {' — '}{forecastQ.data.model_name}
                 {' — '}MASE {Number(forecastQ.data.quality.mase).toFixed(2)}
                 <p className="mt-1">{forecastQ.data.methodology}</p>
               </div>
             )}
             {compareSlug && compare.data && (
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-[11px] text-text-tertiary" data-no-export="true">
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-xs text-text-secondary" data-no-export="true">
                 <span className="inline-flex items-center gap-1.5">
                   <span className="inline-block h-0.5 w-4 rounded bg-champagne" />
                   {regionName}
@@ -422,7 +418,7 @@ export default function WorldRegionIndicatorPage() {
                   <span className="inline-block h-0.5 w-4 rounded" style={{ backgroundColor: '#5B7DA8' }} />
                   {compare.data.region.name}
                 </span>
-                <button type="button" onClick={() => setCompareSlug('')} className="text-text-tertiary underline hover:text-text-secondary">
+                <button type="button" onClick={() => setCompareSlug('')} className="fe-tap-inline text-text-secondary underline hover:text-text-primary">
                   {t('regions.ind.removeCompare')}
                 </button>
               </div>
@@ -442,7 +438,7 @@ export default function WorldRegionIndicatorPage() {
               >
                 <span className="inline-flex items-center gap-1.5">
                   {rank?.rank_as_achievement && (
-                    <Trophy size={14} className="text-champagne" />
+                    <Trophy size={14} className="text-champagne-ink" />
                   )}
                   {rankPosition}
                   {' '}
@@ -482,11 +478,11 @@ export default function WorldRegionIndicatorPage() {
                   <li key={r.slug}>
                     <Link
                       to={countryRegionIndicatorPath(countrySlug, r.slug, code)}
-                      className={`-mx-2 flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[13px] transition-colors hover:bg-surface-hover ${r.slug === slug ? 'bg-champagne/5' : ''}`}
+                      className={`fe-tap -mx-2 flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[13px] transition-colors hover:bg-surface-hover ${r.slug === slug ? 'bg-champagne/5' : ''}`}
                     >
                       <span className="flex min-w-0 items-center gap-2">
-                        <span className="w-4 shrink-0 text-right font-mono text-text-tertiary">{i + 1}</span>
-                        <span className={`truncate ${r.slug === slug ? 'font-medium text-champagne' : 'text-text-primary'}`}>{r.name}</span>
+                        <span className="w-4 shrink-0 text-right font-mono text-text-secondary">{i + 1}</span>
+                        <span className={`truncate ${r.slug === slug ? 'font-medium text-champagne-ink' : 'text-text-primary'}`}>{r.name}</span>
                       </span>
                       <span className="shrink-0 font-mono text-text-secondary">{formatSubnationalValue(r.value, locale)}</span>
                     </Link>
@@ -496,8 +492,8 @@ export default function WorldRegionIndicatorPage() {
               {rankPosition > 5 && (
                 <div className="mt-2 flex items-center justify-between border-t border-border-subtle px-2 pt-2 text-[13px]">
                   <span className="flex items-center gap-2">
-                    <span className="w-4 text-right font-mono text-text-tertiary">{rankPosition}</span>
-                    <span className="font-medium text-champagne">{regionName}</span>
+                    <span className="w-4 text-right font-mono text-text-secondary">{rankPosition}</span>
+                    <span className="font-medium text-champagne-ink">{regionName}</span>
                   </span>
                   <span className="font-mono text-text-secondary">{formatSubnationalValue(last?.value, locale)}</span>
                 </div>
@@ -513,16 +509,16 @@ export default function WorldRegionIndicatorPage() {
               aria-expanded={showTable}
             >
               <span className="flex items-center gap-2 text-sm font-medium text-text-primary">
-                <Table2 size={15} className="text-text-tertiary" />
+                <Table2 size={15} className="text-text-secondary" />
                 {t('regions.ind.tableToggle')}
               </span>
-              <ChevronDown size={16} className={`text-text-tertiary transition-transform ${showTable ? 'rotate-180' : ''}`} />
+              <ChevronDown size={16} className={`text-text-secondary transition-transform ${showTable ? 'rotate-180' : ''}`} />
             </button>
             {showTable && (
               <div className="max-h-96 overflow-auto border-t border-border-subtle">
                 <table className="w-full min-w-[18rem] text-[13px]">
                   <thead className="sticky top-0 bg-surface">
-                    <tr className="text-left text-text-tertiary">
+                    <tr className="text-left text-text-secondary">
                       <th className="px-3 py-2 font-medium sm:px-4">
                         {isMonthly ? t('regions.ind.colMonth') : t('regions.ind.colYear')}
                       </th>
@@ -546,7 +542,7 @@ export default function WorldRegionIndicatorPage() {
                             {formatSubnationalValue(p.value, locale)}
                           </td>
                           {nationalSeries.length > 0 && (
-                            <td className="px-3 py-1.5 text-right font-mono text-text-tertiary sm:px-4">
+                            <td className="px-3 py-1.5 text-right font-mono text-text-secondary sm:px-4">
                               {rf ? formatSubnationalValue(rf.value, locale) : '—'}
                             </td>
                           )}
@@ -580,13 +576,13 @@ export default function WorldRegionIndicatorPage() {
               <div className="flex flex-wrap gap-2">
                 <Link
                   to={indicatorPath(countrySlug, payload.indicator.national_code)}
-                  className="inline-flex items-center gap-1 rounded-full bg-champagne/10 px-3 py-1.5 text-[13px] font-medium text-champagne transition-colors hover:bg-champagne/20"
+                  className="fe-tap-inline gap-1 rounded-full bg-champagne/10 px-3 py-1.5 text-[13px] font-medium text-champagne-ink transition-colors hover:bg-champagne/20"
                 >
                   {t('world.regions.openNational')} <ArrowUpRight size={13} />
                 </Link>
                 <Link
                   to={`/compare?codes=w:${countrySlug}:${payload.indicator.national_code},s:${countrySlug}:${slug}:${code}`}
-                  className="inline-flex items-center gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne"
+                  className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
                 >
                   <GitCompare size={13} /> {t('world.regions.compareNational', { country: countryName })}
                 </Link>
@@ -604,7 +600,7 @@ export default function WorldRegionIndicatorPage() {
                   <Link
                     key={s.code}
                     to={countryRegionIndicatorPath(countrySlug, slug, s.code)}
-                    className="inline-flex items-center gap-1 rounded-full border border-border-subtle bg-surface px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne"
+                    className="fe-tap-inline gap-1 rounded-full border border-border-subtle bg-surface px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
                   >
                     {s.name.length > 60 ? `${s.name.slice(0, 57)}…` : s.name}
                     <ArrowUpRight size={12} />
@@ -614,11 +610,11 @@ export default function WorldRegionIndicatorPage() {
             </div>
           )}
 
-          <p className="mt-8 flex flex-wrap gap-4 text-sm">
-            <Link to={countryRegionPath(countrySlug, slug)} className="text-champagne hover:underline">
+          <p className="mt-8 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <Link to={countryRegionPath(countrySlug, slug)} className="fe-tap-inline text-champagne-ink hover:underline">
               {t('world.regions.backToProfile', { region: regionName })}
             </Link>
-            <Link to={countryRegionsPath(countrySlug)} className="text-text-secondary hover:text-champagne">
+            <Link to={countryRegionsPath(countrySlug)} className="fe-tap-inline text-text-secondary hover:text-champagne-ink">
               {countrySlug === 'united-states' && locale === 'ru'
                 ? 'Все штаты'
                 : t('world.regions.backToHub', { kind: kindPlural })}

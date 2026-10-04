@@ -11,6 +11,7 @@ import { regionRatingHubTrail } from '../lib/breadcrumbs';
 import { regionRatingHubPath, regionRatingPath } from '../lib/sitePaths';
 import { useRegionsCatalog } from '../lib/regionsApi';
 import { useLocale } from '../i18n';
+import '../styles/platform-pages.css';
 
 export default function RegionRatingsHub() {
   const { t } = useLocale();
@@ -41,17 +42,30 @@ export default function RegionRatingsHub() {
       </header>
 
       {isError && (
-        <ApiRetryBanner onRetry={refetch} retrying={isFetching} className="mb-6">
+        <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
           {t('regions.ratingHub.loadError')}
         </ApiRetryBanner>
       )}
 
       {isLoading && (
-        <div className="space-y-3">
-          {[0, 1, 2, 3].map((i) => (
-            <SkeletonBox key={i} className="h-10 w-full rounded-xl" />
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          {[0, 1].map((i) => (
+            <div key={i} className="mb-8">
+              <SkeletonBox className="mb-3 h-4 w-40" />
+              <div className="space-y-px overflow-hidden rounded-2xl border border-border-subtle bg-surface">
+                {[0, 1, 2, 3, 4].map((j) => (
+                  <SkeletonBox key={j} className="h-11 w-full rounded-none" />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
+      )}
+
+      {!isLoading && !isError && sections.length === 0 && (
+        <p className="rounded-2xl border border-border-subtle bg-surface p-5 text-center text-sm text-text-secondary">
+          {t('common.noData')}
+        </p>
       )}
 
       {!isLoading && !isError && sections.map(([section, items]) => (
@@ -64,7 +78,7 @@ export default function RegionRatingsHub() {
               <li key={ind.code}>
                 <Link
                   to={regionRatingPath(ind.code)}
-                  className="block px-4 py-3 text-sm text-text-primary transition-colors hover:bg-champagne/[0.06] hover:text-champagne"
+                  className="fe-tap flex items-center px-4 py-3 text-sm text-text-primary transition-colors hover:bg-champagne/[0.06] hover:text-champagne-ink"
                 >
                   {ind.name}
                 </Link>

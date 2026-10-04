@@ -31,6 +31,8 @@ import {
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import usStatesMap from '../lib/usStatesMap.json';
+import Spinner from '../components/Spinner';
+import '../styles/platform-pages.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -85,7 +87,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
     <div className="relative w-full shrink-0 sm:w-64 sm:flex-none">
       <div className={`flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs transition-colors sm:py-1.5 ${
         isCustom
-          ? 'border-transparent bg-champagne/15 text-champagne'
+          ? 'border-transparent bg-champagne/15 text-champagne-ink'
           : 'border-border-subtle bg-surface text-text-secondary focus-within:border-border-champagne'
       }`}
       >
@@ -108,7 +110,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
             type="button"
             aria-label={t('regions.map.clearMetric')}
             onMouseDown={(e) => { e.preventDefault(); onClear(); }}
-            className="shrink-0 text-champagne/70 hover:text-champagne"
+            className="fe-map-btn shrink-0 text-champagne-ink hover:text-champagne-ink"
           >
             <X size={13} />
           </button>
@@ -117,7 +119,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
       {open && (
         <div className="absolute right-0 z-30 mt-2 max-h-72 w-[min(calc(100vw-2rem),26rem)] overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl sm:left-0 sm:right-auto">
           {results.length === 0 ? (
-            <div className="px-3.5 py-3 text-[13px] text-text-tertiary">
+            <div className="px-3.5 py-3 text-[13px] text-text-secondary">
               {t('regions.home.nothingFound', { query })}
             </div>
           ) : results.slice(0, resultLimit).map((i) => (
@@ -125,10 +127,10 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
               key={i.code}
               type="button"
               onMouseDown={(e) => { e.preventDefault(); onPick(i); setOpen(false); setQuery(''); }}
-              className="w-full px-3.5 py-2 text-left transition-colors hover:bg-surface-hover"
+              className="fe-tap w-full px-3.5 py-2 text-left transition-colors hover:bg-surface-hover"
             >
               <div className="text-[13px] leading-snug text-text-primary">{i.name}</div>
-              <div className="text-[11px] text-text-tertiary">{i.section}</div>
+              <div className="text-xs text-text-secondary">{i.section}</div>
             </button>
           ))}
           {results.length > resultLimit && (
@@ -136,7 +138,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => setResultLimit((current) => current + 50)}
-              className="w-full border-t border-border-subtle px-3.5 py-3 text-left text-sm text-champagne hover:bg-surface-hover"
+              className="w-full border-t border-border-subtle px-3.5 py-3 text-left text-sm text-champagne-ink hover:bg-surface-hover"
             >
               {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}: {Math.min(resultLimit, results.length)} / {results.length}
             </button>
@@ -155,18 +157,18 @@ function RegionCard({ region, metric, countrySlug }) {
       className="group flex items-center justify-between gap-2.5 rounded-xl border border-border-subtle bg-surface px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-sm sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0">
-        <div className="truncate text-[14px] font-medium leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[15px]">
+        <div className="truncate text-[14px] font-medium leading-snug text-text-primary transition-colors group-hover:text-champagne-ink sm:text-[15px]">
           {region.name}
         </div>
         {metric && (
-          <div className="mt-1 font-mono text-[11px] text-text-secondary sm:text-xs">
+          <div className="mt-1 font-mono text-xs text-text-secondary sm:text-xs">
             {formatSubnationalValue(metric.value, locale)}
             {metric.unit ? ` ${metric.unit}` : ''}
             {metric.rank != null ? ` — ${metric.rank}` : ''}
           </div>
         )}
       </div>
-      <ChevronRight size={16} className="hidden shrink-0 text-text-tertiary transition-colors group-hover:text-champagne sm:block" />
+      <ChevronRight size={16} className="hidden shrink-0 text-text-secondary transition-colors group-hover:text-champagne-ink sm:block" />
     </Link>
   );
 }
@@ -304,9 +306,9 @@ export default function WorldRegionsHome() {
   }
 
   const view = isMapRoute ? 'map' : 'list';
-  const chipCls = (active) => `min-h-9 shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
+  const chipCls = (active) => `fe-tap shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
     active
-      ? 'bg-champagne/15 text-champagne'
+      ? 'bg-champagne/15 text-champagne-ink'
       : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
   }`;
 
@@ -320,7 +322,7 @@ export default function WorldRegionsHome() {
       )}
 
       <div className="mb-8">
-        <div className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-champagne">
+        <div className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-champagne-ink">
           <MapPin size={14} />
           {kindPlural}
         </div>
@@ -331,7 +333,7 @@ export default function WorldRegionsHome() {
           {t('world.regions.hubLead', { kind: kindPlural, country: countryName })}
         </p>
         {hub.data?.totals && (
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 font-mono text-xs text-text-tertiary">
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 font-mono text-xs text-text-secondary">
             <span className="inline-flex items-center gap-1.5">
               <Database size={12} />
               {locale === 'ru'
@@ -351,8 +353,8 @@ export default function WorldRegionsHome() {
           role="tab"
           aria-selected={view === 'list'}
           onClick={() => setView('list')}
-          className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors ${
-            view === 'list' ? 'bg-champagne/15 text-champagne' : 'text-text-secondary hover:text-text-primary'
+          className={`fe-tap inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors ${
+            view === 'list' ? 'bg-champagne/15 text-champagne-ink' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
           <List size={15} /> {t('regions.view.list')}
@@ -362,8 +364,8 @@ export default function WorldRegionsHome() {
           role="tab"
           aria-selected={view === 'map'}
           onClick={() => setView('map')}
-          className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors ${
-            view === 'map' ? 'bg-champagne/15 text-champagne' : 'text-text-secondary hover:text-text-primary'
+          className={`fe-tap inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors ${
+            view === 'map' ? 'bg-champagne/15 text-champagne-ink' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
           <MapIcon size={15} /> {t('regions.view.map')}
@@ -371,16 +373,18 @@ export default function WorldRegionsHome() {
       </div>
 
       {hub.isLoading && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-9 w-72 max-w-full" />
-          <SkeletonBox className="h-80 rounded-xl" />
+        <div className="mt-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="mb-6 h-[46px] w-full rounded-xl" />
+          <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+            {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[98px] rounded-xl sm:h-[78px]" />)}
+          </div>
         </div>
       )}
 
       {hub.data && view === 'list' && (
         <>
           <div className="relative mb-6 mt-4">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" />
             <input
               type="search"
               value={query}
@@ -393,14 +397,14 @@ export default function WorldRegionsHome() {
           <section>
             <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4">
               <div className="min-w-0">
-                <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-champagne">
+                <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-champagne-ink">
                   {normalize(deferredQuery) ? t('regions.searchResults') : t('world.regions.listHeading')}
                 </div>
                 <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
                   {kindPlural}
                 </h2>
               </div>
-              <span className="shrink-0 font-mono text-xs text-text-tertiary">{filteredRegions.length}</span>
+              <span className="shrink-0 font-mono text-xs text-text-secondary">{filteredRegions.length}</span>
             </div>
             <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
               {filteredRegions.map((r) => (
@@ -462,7 +466,7 @@ export default function WorldRegionsHome() {
 
           <div id="chart" data-block="world-regions-map" className="relative rounded-xl border border-border-subtle bg-surface p-3 sm:p-5" ref={mapCardRef}>
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-              <div className="min-w-0 text-xs text-text-tertiary">
+              <div className="min-w-0 text-xs text-text-secondary">
                 {activeCode && map.data?.indicator ? (
                   t('world.regions.mapCaptionMetric', {
                     name: map.data.indicator.name,
@@ -482,13 +486,24 @@ export default function WorldRegionsHome() {
                   onClick={handlePng}
                   title={isAuthed ? t('download.mapPng') : t('download.afterRegister')}
                   aria-label={t('download.mapPng')}
-                  className="inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
+                  className="fe-tap inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
                 >
                   <ImageIcon size={12} /> PNG
                 </button>
               </div>
             </div>
-            <Suspense fallback={<SkeletonBox className="h-80 rounded-xl" />}>
+            {activeCode && map.isError && (
+              <ApiRetryBanner onRetry={map.refetch} isFetching={map.isFetching} className="mb-3">
+                {t('pgui.regions.mapError')}
+              </ApiRetryBanner>
+            )}
+            {activeCode && map.isLoading && (
+              <div className="mb-2 flex items-center gap-2 text-xs text-text-secondary" role="status">
+                <Spinner size={14} />
+                {t('pgui.regions.mapLoading')}
+              </div>
+            )}
+            <Suspense fallback={<SkeletonBox className="aspect-[960/600] w-full rounded-xl" />}>
               <RegionsMap
                 mapData={geometry}
                 ariaLabel={t('world.regions.mapAria', { country: countryName })}
@@ -517,7 +532,7 @@ export default function WorldRegionsHome() {
               </Suspense>
             )}
           </div>
-          <p className="mt-3 text-xs leading-relaxed text-text-tertiary">
+          <p className="mt-3 text-xs leading-relaxed text-text-secondary">
             {activeCode ? t('world.regions.mapHintMetric') : t('world.regions.mapHintOverview')}
             {t('world.regions.mapHintZoom')}
           </p>

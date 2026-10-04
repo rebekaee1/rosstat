@@ -1,6 +1,9 @@
 import { Link, useInRouterContext } from 'react-router-dom';
 import { trackOutbound } from '../lib/track';
 import { isExternalHref } from '../lib/sourceLink';
+import '../styles/platform-pages.css';
+
+const join = (className) => (className ? `fe-hit ${className}` : 'fe-hit');
 
 /**
  * Ссылка на источник данных: внешний http(s) href — <a target=_blank> с
@@ -16,7 +19,7 @@ export default function SourceLink({ href, fallbackTo, className, textClassName,
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className={className}
+        className={join(className)}
         onClick={() => trackOutbound(url)}
         data-source-link="external"
         {...rest}
@@ -28,14 +31,14 @@ export default function SourceLink({ href, fallbackTo, className, textClassName,
   const to = (typeof href === 'string' && href.startsWith('/') ? href : null) || fallbackTo;
   if (to && !inRouter) {
     return (
-      <a href={to} className={className} data-source-link="internal" {...rest}>
+      <a href={to} className={join(className)} data-source-link="internal" {...rest}>
         {children}
       </a>
     );
   }
   if (to) {
     return (
-      <Link to={to} className={className} data-source-link="internal" {...rest}>
+      <Link to={to} className={join(className)} data-source-link="internal" {...rest}>
         {children}
       </Link>
     );

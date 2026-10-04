@@ -27,6 +27,8 @@ import { t as translateStandalone } from '../i18n/messages';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { localizeSource } from '../i18n/viewModeLabels';
 import SourceLink from './SourceLink';
+import Chip from './Chip';
+import '../styles/platform-pages.css';
 
 const WIDTH = 960;
 const HEIGHT = 480;
@@ -350,7 +352,7 @@ export default function WorldMap({
   return (
     <div className="select-none">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+        <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
           {t('world.map.pickCountry')}
         </div>
         <div className="inline-flex gap-1.5">
@@ -358,24 +360,19 @@ export default function WorldMap({
             ['europe', MapIcon, t('home.map.scopeEurope')],
             ['world', Globe2, t('home.map.scopeWorld')],
           ].map(([id, Icon, label]) => (
-            <button
+            <Chip
               key={id}
-              type="button"
+              active={scope === id}
               onClick={() => {
                 setScope(id);
                 setView({ k: 1, tx: 0, ty: 0 });
                 setHover(null);
               }}
-              className={[
-                'inline-flex min-h-9 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-colors',
-                scope === id
-                  ? 'bg-champagne/15 text-champagne'
-                  : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
-              ].join(' ')}
+              className="gap-1.5"
             >
               {createElement(Icon, { size: 12 })}
               {label}
-            </button>
+            </Chip>
           ))}
         </div>
       </div>
@@ -494,14 +491,14 @@ export default function WorldMap({
         </svg>
 
         <div className="absolute right-3 top-3 flex flex-col gap-1" data-no-export="true">
-          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={k >= ZOOM_MAX} aria-label={t('map.zoomIn')} className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-35">
+          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={k >= ZOOM_MAX} aria-label={t('map.zoomIn')} className="fe-map-btn fe-press h-9 w-9 rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-35">
             <Plus size={15} />
           </button>
-          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} disabled={k <= 1} aria-label={t('map.zoomOut')} className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-35">
+          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} disabled={k <= 1} aria-label={t('map.zoomOut')} className="fe-map-btn fe-press h-9 w-9 rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-35">
             <Minus size={15} />
           </button>
           {k > 1 && (
-            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label={t('map.zoomReset')} className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne">
+            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label={t('map.zoomReset')} className="fe-map-btn fe-press h-9 w-9 rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne-ink">
               <Maximize2 size={14} />
             </button>
           )}
@@ -513,17 +510,17 @@ export default function WorldMap({
             <div className="mt-1 font-mono text-base font-semibold text-champagne">
               {hover.value != null ? formatWorldValue(hover.value) : t('common.noData')}
             </div>
-            {hover.value != null && unit && <div className="mt-0.5 text-[10px] text-text-tertiary">{unit}</div>}
+            {hover.value != null && unit && <div className="mt-0.5 text-xs text-text-secondary">{unit}</div>}
             {hover.value != null && bandText(colorModel.describe(hover.value), t) && (
               <div
-                className="mt-1 text-[10px] font-medium"
+                className="mt-1 text-xs font-medium"
                 style={{ color: colorModel.labelColorFor(hover.value) }}
               >
                 {bandText(colorModel.describe(hover.value), t)}
               </div>
             )}
             {hoverPeriod && (
-              <div className="mt-1.5 border-t border-border-subtle pt-1.5 font-mono text-[10px] text-text-tertiary">
+              <div className="mt-1.5 border-t border-border-subtle pt-1.5 font-mono text-xs text-text-secondary">
                 {hoverPeriod}
               </div>
             )}
@@ -534,13 +531,13 @@ export default function WorldMap({
       {valuesByCode && (
         <div className="mt-4 rounded-xl border border-border-subtle bg-obsidian-light/45 px-3 py-3">
           <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <div className="text-[10px] font-medium text-text-secondary">
+            <div className="text-xs font-medium text-text-secondary">
               {metricName || t('world.map.distribution')}
               {periodLabel ? (
-                <span className="font-mono text-text-tertiary"> — {periodLabel}</span>
+                <span className="font-mono text-text-secondary"> — {periodLabel}</span>
               ) : null}
             </div>
-            <div className="text-[9px] uppercase tracking-[0.13em] text-text-tertiary">
+            <div className="text-[11px] uppercase tracking-[0.13em] text-text-secondary">
               {colorModel.kind === 'diverging' ? t('world.map.scaleZero') : t('world.map.scaleMedian')}
             </div>
           </div>
@@ -555,14 +552,14 @@ export default function WorldMap({
                   className="h-3.5 rounded-[4px] border border-black/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.32)]"
                   style={{ backgroundColor: bin.color }}
                 />
-                <div className="mt-1 truncate font-mono text-[8px] tabular-nums text-text-tertiary sm:text-[9px]">
+                <div className="mt-1 break-words font-mono text-xs leading-tight tabular-nums text-text-secondary">
                   {legendBinLabel(bin)}
                 </div>
               </div>
             ))}
           </div>
-          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-text-tertiary">
-            <span className="font-medium text-text-secondary">
+          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-text-secondary">
+            <span className="font-medium text-text-primary">
               {colorModel.kind === 'diverging'
                 ? t('world.map.legendZero')
                 : t('world.map.legendMedian')}
@@ -732,7 +729,7 @@ export function CountrySilhouette({
   }
   return (
     <div
-      className="relative min-h-[250px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
+      className="relative min-h-[270px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
       aria-label={t('world.map.outlineAria', { name })}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(207,180,95,0.2),transparent_47%)]" />
@@ -748,21 +745,21 @@ export function CountrySilhouette({
         <div className="pointer-events-none absolute inset-y-0 left-0 z-[5] w-[52%] bg-gradient-to-r from-[#191A20] via-[#191A20]/92 to-transparent" />
       )}
       <div className="absolute left-4 top-3 z-10 max-w-[52%] pr-2">
-        <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/45">
+        <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-white/70">
           {t('world.territory.profile')}
         </div>
-        {region && <div className="mt-1 text-[10px] text-[#d8c58b]">{region}</div>}
+        {region && <div className="mt-1 text-xs text-[#d8c58b]">{region}</div>}
         {(areaValue || populationValue) && (
           <div className="mt-2 space-y-1 sm:space-y-1.5">
             {areaValue && (
               <div>
-                <div className="text-[9px] font-mono uppercase tracking-[0.16em] text-white/40">
+                <div className="text-[11px] font-mono uppercase tracking-[0.16em] text-white/70">
                   {t('world.territory.area')}
                 </div>
                 <div className="mt-0.5 text-xs font-medium text-white/90">
                   {areaValue}
                   {areaYear ? (
-                    <span className="ml-1.5 font-mono text-[10px] font-normal text-white/50">
+                    <span className="ml-1.5 font-mono text-xs font-normal text-white/70">
                       {areaYear}
                     </span>
                   ) : null}
@@ -771,13 +768,13 @@ export function CountrySilhouette({
             )}
             {populationValue && (
               <div>
-                <div className="text-[9px] font-mono uppercase tracking-[0.16em] text-white/40">
+                <div className="text-[11px] font-mono uppercase tracking-[0.16em] text-white/70">
                   {t('world.territory.population')}
                 </div>
                 <div className="mt-0.5 text-xs font-medium text-white/90">
                   {populationValue}
                   {populationYear ? (
-                    <span className="ml-1.5 font-mono text-[10px] font-normal text-white/50">
+                    <span className="ml-1.5 font-mono text-xs font-normal text-white/70">
                       {populationYear}
                     </span>
                   ) : null}
@@ -785,7 +782,7 @@ export function CountrySilhouette({
               </div>
             )}
             {sources.length > 0 && (
-              <div className="space-y-0.5 pt-0.5 text-[9px] text-white/45">
+              <div className="space-y-0.5 pt-0.5 text-xs text-white/70">
                 {sources.map((item) => (
                   <div key={`${item.kind}-${item.label}`}>
                     {t('common.source')}:{' '}
@@ -815,10 +812,10 @@ export function CountrySilhouette({
       </svg>
       <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 border-t border-white/10 pt-3 sm:items-end sm:gap-3">
         <div className="min-w-0">
-          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">{code}</div>
+          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/70">{code}</div>
           <div className="mt-0.5 max-w-[11rem] truncate text-xs font-medium text-white/90">{name}</div>
         </div>
-        <div className="flex flex-wrap justify-end gap-1.5 text-[9px] font-mono text-white/60">
+        <div className="flex flex-wrap justify-end gap-1.5 text-xs font-mono text-white/75">
           {history && <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1">{history}</span>}
           {frequencyLabel && <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1">{frequencyLabel}</span>}
         </div>

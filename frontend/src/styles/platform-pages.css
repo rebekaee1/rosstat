@@ -1,0 +1,55 @@
+/* Общие мелочи для страниц каталога, регионов, мира и карт (2026-10-04).
+   Подключается из компонентов своей области; токены берутся из index.css. */
+
+/* Смысловые зелёный/красный на светлом фоне: токены --color-positive/negative (#16A34A / #DC2626)
+   дают 3.3:1 / 4.2:1, поэтому для текста берём тёмные оттенки (≥ 4.5:1 на странице и на белом). */
+.fe-ink-pos { color: #157a38; }
+.fe-ink-neg { color: #b91c1c; }
+.fe-btn.fe-ink-pos { color: #157a38; }
+:root[data-theme='dark'] .fe-ink-pos, :root.dark .fe-ink-pos { color: var(--color-positive); }
+:root[data-theme='dark'] .fe-ink-neg, :root.dark .fe-ink-neg { color: var(--color-negative); }
+
+/* Цель нажатия ≥ 44 px на сенсорных экранах без раздувания вида на компьютере. */
+.fe-tap-inline { display: inline-flex; align-items: center; }
+@media (pointer: coarse) {
+  .fe-tap { min-height: 44px; }
+  .fe-tap-inline { min-height: 44px; }
+}
+
+/* Невидимое расширение области нажатия у мелких контролов и ссылок (не двигает вёрстку). */
+@media (pointer: coarse) {
+  .fe-hit { position: relative; }
+  .fe-hit::after {
+    content: '';
+    position: absolute;
+    inset: -10px -6px;
+  }
+}
+
+/* Кнопки карты (зум, сброс, легенда): 32 px на компьютере, 44 px на сенсоре. */
+.fe-map-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+}
+@media (pointer: coarse) {
+  .fe-map-btn { min-width: 44px; min-height: 44px; }
+}
+
+/* Строка таблицы-ссылки целиком кликабельна: ссылка в первой ячейке растягивается на всю строку. */
+.fe-row-link { position: relative; }
+.fe-row-link a.fe-row-link__a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+@media (pointer: coarse) {
+  .fe-row-link > td { height: 44px; }
+}
+.fe-row-link:hover { background: var(--color-surface-hover); }
+.fe-row-link:focus-within { background: var(--color-surface-hover); }
+
+/* Скелетон под размер реального блока. */
+.fe-skel-block { border-radius: 16px; }

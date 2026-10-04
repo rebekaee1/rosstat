@@ -36,13 +36,13 @@ export default function Terms() {
           <TermsBodyEn t={t} h1={seo.h1 || 'Terms of use'} />
         ) : (
           <>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold mb-4">
           Правовая информация
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
           Пользовательское соглашение
         </h1>
-        <p className="text-sm text-text-tertiary mb-8">Редакция от 24 сентября 2026 г.</p>
+        <p className="text-sm text-text-secondary mb-8">Редакция от 24 сентября 2026 г.</p>
 
         <h2 className={h2}>1. Общие положения</h2>
         <p className={p}>
@@ -81,7 +81,7 @@ export default function Terms() {
           аналитике по доступным каналам связи (электронная почта или телефон). Согласие на
           рассылку добровольно и может быть отозвано в любой момент. Состав данных, сроки и порядок
           обработки описаны в{' '}
-          <Link to="/privacy" className="text-champagne hover:underline">политике конфиденциальности</Link>.
+          <Link to="/privacy" className="text-champagne-ink hover:underline">политике конфиденциальности</Link>.
         </p>
 
         <h2 className={h2}>3. Характер информации и отказ от ответственности</h2>
@@ -133,7 +133,7 @@ export default function Terms() {
           Отозвать согласие и настроить категории cookie можно в любой момент через «Настройки
           cookie» в подвале Сайта. Порядок обработки персональных данных, состав данных, сроки и
           ваши права описаны в{' '}
-          <Link to="/privacy" className="text-champagne hover:underline">
+          <Link to="/privacy" className="text-champagne-ink hover:underline">
             политике конфиденциальности
           </Link>
           .
@@ -152,7 +152,7 @@ export default function Terms() {
           Сайта направляйте на{' '}
           <a
             href="mailto:rebeka.ee@yandex.ru"
-            className="text-champagne hover:underline"
+            className="text-champagne-ink hover:underline"
             onClick={() => track(events.CONTACT_EMAIL)}
           >
             rebeka.ee@yandex.ru
@@ -160,7 +160,7 @@ export default function Terms() {
           или{' '}
           <a
             href="mailto:rebeka.ee@aimpact.ru"
-            className="text-champagne hover:underline"
+            className="text-champagne-ink hover:underline"
             onClick={() => track(events.CONTACT_EMAIL)}
           >
             rebeka.ee@aimpact.ru

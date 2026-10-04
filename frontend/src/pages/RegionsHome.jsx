@@ -18,6 +18,8 @@ import {
 } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import { SkeletonBox } from '../components/Skeleton';
+import Spinner from '../components/Spinner';
+import '../styles/platform-pages.css';
 import MobileNavSelect from '../components/MobileNavSelect';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { regionsTrail } from '../lib/breadcrumbs';
@@ -39,6 +41,7 @@ import {
   regionRatingPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
+import '../styles/platform-pages.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -88,7 +91,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
     <div className="relative min-w-0 flex-1 sm:max-w-xs">
       <div className={`flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-full text-xs border transition-colors ${
         isCustom
-          ? 'bg-champagne/15 text-champagne border-transparent'
+          ? 'bg-champagne/15 text-champagne-ink border-transparent'
           : 'bg-surface border-border-subtle text-text-secondary focus-within:border-border-champagne'
       }`}
       >
@@ -111,7 +114,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
             type="button"
             aria-label={t('regions.map.clearMetric')}
             onMouseDown={(e) => { e.preventDefault(); onClear(); }}
-            className="shrink-0 text-champagne/70 hover:text-champagne"
+            className="fe-map-btn shrink-0 text-champagne-ink hover:text-champagne-ink"
           >
             <X size={13} />
           </button>
@@ -120,9 +123,9 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
       {open && (
         <div className="absolute right-0 sm:left-0 sm:right-auto z-30 mt-2 w-[min(calc(100vw-2rem),26rem)] max-h-72 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
           {catalog.isLoading ? (
-            <div className="px-3.5 py-3 text-[13px] text-text-tertiary">{t('regions.home.loadingCatalog')}</div>
+            <div className="px-3.5 py-3 text-[13px] text-text-secondary">{t('regions.home.loadingCatalog')}</div>
           ) : results.length === 0 ? (
-            <div className="px-3.5 py-3 text-[13px] text-text-tertiary">
+            <div className="px-3.5 py-3 text-[13px] text-text-secondary">
               {t('regions.home.nothingFound', { query })}
             </div>
           ) : (
@@ -131,10 +134,10 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
                 key={i.code}
                 type="button"
                 onMouseDown={(e) => { e.preventDefault(); onPick(i); setOpen(false); setQuery(''); }}
-                className="w-full px-3.5 py-2 text-left hover:bg-surface-hover transition-colors"
+                className="fe-tap w-full px-3.5 py-2 text-left hover:bg-surface-hover transition-colors"
               >
                 <div className="text-[13px] text-text-primary leading-snug">{i.name}</div>
-                <div className="text-[11px] text-text-tertiary">{i.section}</div>
+                <div className="text-xs text-text-secondary">{i.section}</div>
               </button>
             ))
           )}
@@ -143,7 +146,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => setResultLimit((current) => current + 50)}
-              className="w-full border-t border-border-subtle px-3.5 py-3 text-left text-sm text-champagne hover:bg-surface-hover"
+              className="w-full border-t border-border-subtle px-3.5 py-3 text-left text-sm text-champagne-ink hover:bg-surface-hover"
             >
               {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}: {Math.min(resultLimit, results.length)} / {results.length}
             </button>
@@ -187,17 +190,17 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false }) {
     : null;
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-0.5 text-[13px]">
-      <span className="text-text-tertiary w-28 shrink-0">{metricLabel}</span>
+      <span className="text-text-secondary w-28 shrink-0">{metricLabel}</span>
       <span className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
-        <Link to={regionIndicatorPath(first.slug, code)} className="text-text-primary hover:text-champagne transition-colors">
-          {first.name} <span className="font-mono text-positive">{formatRegionValue(first.value)} {short}</span>
+        <Link to={regionIndicatorPath(first.slug, code)} className="fe-tap-inline flex-wrap gap-x-1.5 text-text-primary hover:text-champagne-ink transition-colors">
+          {first.name} <span className="font-mono fe-ink-pos">{formatRegionValue(first.value)} {short}</span>
         </Link>
-        <span className="text-text-tertiary">{t('common.vs')}</span>
-        <Link to={regionIndicatorPath(second.slug, code)} className="text-text-primary hover:text-champagne transition-colors">
-          {second.name} <span className="font-mono text-negative">{formatRegionValue(second.value)} {short}</span>
+        <span className="text-text-secondary">{t('common.vs')}</span>
+        <Link to={regionIndicatorPath(second.slug, code)} className="fe-tap-inline flex-wrap gap-x-1.5 text-text-primary hover:text-champagne-ink transition-colors">
+          {second.name} <span className="font-mono fe-ink-neg">{formatRegionValue(second.value)} {short}</span>
         </Link>
         {ratioLabel && (
-          <span className="text-[11px] font-mono text-champagne/70" title={t('regions.contrasts.ratioTitle')}>
+          <span className="text-xs font-mono text-champagne-ink" title={t('regions.contrasts.ratioTitle')}>
             {ratioLabel}
           </span>
         )}
@@ -217,10 +220,10 @@ function RegionCard({ region }) {
       className="group flex items-center justify-between gap-2.5 rounded-xl border border-border-subtle bg-surface px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-sm sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0">
-        <div className="truncate text-[14px] font-medium leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[15px]">
+        <div className="truncate text-[14px] font-medium leading-snug text-text-primary transition-colors group-hover:text-champagne-ink sm:text-[15px]">
           {region.name}
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 font-mono text-[11px] text-text-secondary sm:gap-x-3 sm:text-xs">
+        <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 font-mono text-xs text-text-secondary sm:gap-x-3 sm:text-xs">
           {pop && <span>{formatRegionValue(pop.value)} {pop.unit || ''}</span>}
           {wage && <span>{formatRegionValue(wage.value)} ₽</span>}
           {unemp && (
@@ -228,7 +231,7 @@ function RegionCard({ region }) {
           )}
         </div>
       </div>
-      <ChevronRight size={16} className="hidden shrink-0 text-text-tertiary transition-colors group-hover:text-champagne sm:block" />
+      <ChevronRight size={16} className="hidden shrink-0 text-text-secondary transition-colors group-hover:text-champagne-ink sm:block" />
     </Link>
   );
 }
@@ -459,7 +462,7 @@ export default function RegionsHome() {
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={regionsTrail()} className="mb-6" />
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-3">
+        <div className="flex items-center gap-2 text-champagne-ink text-xs font-mono uppercase tracking-widest mb-3">
           <MapPin size={14} />
           {t('regions.eyebrow')}
         </div>
@@ -471,7 +474,7 @@ export default function RegionsHome() {
         </p>
         <section className="mt-5" aria-labelledby="regions-rankings-title">
           <h2 id="regions-rankings-title" className="text-sm font-semibold text-text-primary">
-            <Link to={regionRatingHubPath()} className="hover:text-champagne">
+            <Link to={regionRatingHubPath()} className="fe-tap-inline hover:text-champagne-ink">
               {t('russia.link.ratings.title')}
             </Link>
           </h2>
@@ -483,7 +486,7 @@ export default function RegionsHome() {
               <Link
                 key={metric.code}
                 to={regionRatingPath(metric.code)}
-                className="rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne"
+                className="fe-tap-inline rounded-full border border-border-subtle px-3 py-1 text-xs text-text-secondary hover:border-border-champagne hover:text-champagne-ink"
               >
                 {t('regions.ratingLink', { name: t(metric.labelKey) })}
               </Link>
@@ -491,7 +494,7 @@ export default function RegionsHome() {
           </div>
         </section>
         {data && (
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs font-mono text-text-tertiary">
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs font-mono text-text-secondary">
             <span className="inline-flex items-center gap-1.5">
               <Database size={12} />
               {t('regions.stat.values', {
@@ -509,8 +512,8 @@ export default function RegionsHome() {
           role="tab"
           aria-selected={view === 'list'}
           onClick={() => setView('list')}
-          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-            view === 'list' ? 'bg-champagne/15 text-champagne' : 'text-text-secondary hover:text-text-primary'
+          className={`fe-tap inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            view === 'list' ? 'bg-champagne/15 text-champagne-ink' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
           <List size={15} /> {t('regions.view.list')}
@@ -519,8 +522,8 @@ export default function RegionsHome() {
           role="tab"
           aria-selected={view === 'map'}
           onClick={() => setView('map')}
-          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-            view === 'map' ? 'bg-champagne/15 text-champagne' : 'text-text-secondary hover:text-text-primary'
+          className={`fe-tap inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            view === 'map' ? 'bg-champagne/15 text-champagne-ink' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
           <MapIcon size={15} /> {t('regions.view.map')}
@@ -532,7 +535,7 @@ export default function RegionsHome() {
           {contrastVisible.some((m) => m.heat.data) && (
             <div data-block="contrasts" className="mb-4 bg-surface border border-border-subtle rounded-xl p-4 space-y-2">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-mono uppercase tracking-widest text-champagne">
+                <span className="text-xs font-mono uppercase tracking-widest text-champagne-ink">
                   {t('regions.contrasts')}
                 </span>
                 <button
@@ -544,7 +547,7 @@ export default function RegionsHome() {
                   }}
                   title={t('regions.contrasts.shuffleTitle')}
                   aria-label={t('regions.contrasts.shuffleAria')}
-                  className="p-2 -m-1 text-text-tertiary transition-colors hover:text-champagne"
+                  className="fe-map-btn -m-1 text-text-secondary transition-colors hover:text-champagne-ink"
                 >
                   <RefreshCw size={13} />
                 </button>
@@ -556,7 +559,7 @@ export default function RegionsHome() {
           )}
 
           <div className="relative mb-6">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" />
             <input
               type="search"
               value={query}
@@ -567,11 +570,21 @@ export default function RegionsHome() {
             />
           </div>
 
-          {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
+          {isError && (
+            <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
+              {t('pgui.regions.loadError')}
+            </ApiRetryBanner>
+          )}
 
           {isLoading && (
-            <div className="grid gap-2 sm:grid-cols-2">
-              {Array.from({ length: 10 }).map((_, i) => <SkeletonBox key={i} className="h-16 rounded-xl" />)}
+            <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5" role="status" aria-busy="true" aria-label={t('common.loading')}>
+              {Array.from({ length: 10 }).map((_, i) => <SkeletonBox key={i} className="h-[98px] rounded-xl sm:h-[78px]" />)}
+            </div>
+          )}
+
+          {!isLoading && !isError && !data?.districts?.length && (
+            <div className="rounded-2xl border border-border-subtle bg-surface p-5 text-center text-sm text-text-secondary sm:p-6">
+              {t('pgui.regions.empty')}
             </div>
           )}
 
@@ -610,7 +623,7 @@ export default function RegionsHome() {
                 >
                   {!searching && (
                     <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" aria-label={t('regions.districts')}>
-                      <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+                      <div className="mb-2 px-2 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
                         {t('regions.districts')}
                       </div>
                       <div className="flex flex-col gap-2">
@@ -618,14 +631,14 @@ export default function RegionsHome() {
                           type="button"
                           onClick={() => setActiveDistrict(null)}
                           className={[
-                            'flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                            'fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
                             !resolvedDistrict
-                              ? 'bg-champagne/12 font-medium text-champagne'
+                              ? 'bg-champagne/12 font-medium text-champagne-ink'
                               : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                           ].join(' ')}
                         >
                           <span>{t('regions.allDistricts')}</span>
-                          <span className="font-mono text-[10px] opacity-60">{totalRegions}</span>
+                          <span className="font-mono text-xs">{totalRegions}</span>
                         </button>
                         {districtNav.map((d) => (
                           <button
@@ -633,9 +646,9 @@ export default function RegionsHome() {
                             type="button"
                             onClick={() => setActiveDistrict(d.slug)}
                             className={[
-                              'flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                              'fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
                               resolvedDistrict === d.slug
-                                ? 'bg-champagne/12 font-medium text-champagne'
+                                ? 'bg-champagne/12 font-medium text-champagne-ink'
                                 : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                             ].join(' ')}
                           >
@@ -644,7 +657,7 @@ export default function RegionsHome() {
                                 ? d.name
                                 : (DISTRICT_SHORT_KEYS[d.slug] ? t(DISTRICT_SHORT_KEYS[d.slug]) : d.name)}
                             </span>
-                            <span className="shrink-0 font-mono text-[10px] opacity-60">{d.regions.length}</span>
+                            <span className="shrink-0 font-mono text-xs">{d.regions.length}</span>
                           </button>
                         ))}
                       </div>
@@ -656,14 +669,14 @@ export default function RegionsHome() {
                       <section key={d.slug} aria-labelledby={`district-${d.slug}`}>
                         <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                           <div className="min-w-0">
-                            <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                            <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne-ink">
                               {searching ? t('regions.searchResults') : t('regions.regionsLabel')}
                             </div>
                             <h2 id={`district-${d.slug}`} className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
                               {d.name}
                             </h2>
                           </div>
-                          <span className="shrink-0 font-mono text-xs text-text-tertiary">{d.regions.length}</span>
+                          <span className="shrink-0 font-mono text-xs text-text-secondary">{d.regions.length}</span>
                         </div>
                         <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
                           {d.regions.map((r) => <RegionCard key={r.slug} region={r} />)}
@@ -692,9 +705,9 @@ export default function RegionsHome() {
                 aria-selected={isOverview}
                 onClick={selectOverview}
                 title={t('regions.home.mapClickTitle')}
-                className={`min-h-9 shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
+                className={`fe-tap shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
                   isOverview
-                    ? 'bg-champagne/15 text-champagne'
+                    ? 'bg-champagne/15 text-champagne-ink'
                     : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
                 }`}
               >
@@ -708,9 +721,9 @@ export default function RegionsHome() {
                     role="tab"
                     aria-selected={selected}
                     onClick={() => selectPreset(m)}
-                    className={`min-h-9 shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
+                    className={`fe-tap shrink-0 rounded-full px-3.5 py-2 text-xs font-medium transition-colors ${
                       selected
-                        ? 'bg-champagne/15 text-champagne'
+                        ? 'bg-champagne/15 text-champagne-ink'
                         : 'bg-surface border border-border-subtle text-text-secondary hover:text-text-primary'
                     }`}
                   >
@@ -729,7 +742,7 @@ export default function RegionsHome() {
 
           <div id="chart" data-block="regions-map" className="bg-surface border border-border-subtle rounded-xl p-3 sm:p-5 relative" ref={mapCardRef}>
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-              <div className="text-xs text-text-tertiary min-w-0">
+              <div className="text-xs text-text-secondary min-w-0">
                 {activeMapCode && paint.indicator ? (
                   t('regions.home.mapCaptionMetric', {
                     name: paint.indicator.name,
@@ -749,7 +762,7 @@ export default function RegionsHome() {
                   onClick={handlePng}
                   title={isAuthed ? t('download.mapPng') : t('download.afterRegister')}
                   aria-label={t('download.mapPng')}
-                  className="inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
+                  className="fe-tap inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
                 >
                   <ImageIcon size={12} /> PNG
                 </button>
@@ -763,13 +776,24 @@ export default function RegionsHome() {
                       : (isAuthed ? t('download.mapGif') : t('download.afterRegister'))
                   }
                   aria-label={t('download.mapGif')}
-                  className="inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-tertiary transition-colors hover:border-border-champagne hover:text-champagne disabled:opacity-50"
+                  className="fe-tap inline-flex min-h-9 items-center gap-1 rounded-full border border-border-subtle px-3 py-2 text-xs text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-50"
                 >
                   <Film size={12} /> {exportingGif ? t('download.mapGifBusy') : 'GIF'}
                 </button>
               </div>
             </div>
-            <Suspense fallback={<SkeletonBox className="h-80 rounded-xl" />}>
+            {mapOn && heatmap.isError && (
+              <ApiRetryBanner onRetry={heatmap.refetch} isFetching={heatmap.isFetching} className="mb-3">
+                {t('pgui.regions.mapError')}
+              </ApiRetryBanner>
+            )}
+            {mapOn && heatmap.isLoading && (
+              <div className="mb-2 flex items-center gap-2 text-xs text-text-secondary" role="status">
+                <Spinner size={14} />
+                {t('pgui.regions.mapLoading')}
+              </div>
+            )}
+            <Suspense fallback={<SkeletonBox className="aspect-[1000/538] w-full rounded-xl" />}>
               <RegionsMap
                 valuesBySlug={activeMapCode ? heatmapValues : null}
                 transitionMs={activeMapCode ? 650 : 150}
@@ -795,7 +819,7 @@ export default function RegionsHome() {
               </Suspense>
             )}
           </div>
-          <p className="mt-3 text-xs text-text-tertiary leading-relaxed">
+          <p className="mt-3 text-xs text-text-secondary leading-relaxed">
             {activeMapCode
               ? t('regions.home.mapHintMetric')
               : t('regions.home.mapHintOverview')}

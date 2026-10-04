@@ -277,7 +277,7 @@ export default function RegionsMap({
               disabled={k >= ZOOM_MAX}
               aria-label={t('regions.zoomIn')}
               title={t('regions.zoomIn')}
-              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
+              className="fe-map-btn fe-press w-8 h-8 rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
             >
               <Plus size={15} />
             </button>
@@ -287,7 +287,7 @@ export default function RegionsMap({
               disabled={k <= 1}
               aria-label={t('regions.zoomOut')}
               title={t('regions.zoomOut')}
-              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
+              className="fe-map-btn fe-press w-8 h-8 rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors shadow-sm disabled:opacity-40"
             >
               <Minus size={15} />
             </button>
@@ -297,7 +297,7 @@ export default function RegionsMap({
                 onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
                 aria-label={t('regions.zoomReset')}
                 title={t('regions.zoomReset')}
-                className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne hover:border-border-champagne transition-colors shadow-sm"
+                className="fe-map-btn fe-press w-8 h-8 rounded-lg bg-surface border border-border-subtle text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors shadow-sm"
               >
                 <Maximize2 size={14} />
               </button>
@@ -311,7 +311,7 @@ export default function RegionsMap({
             data-no-export="true"
             aria-hidden="true"
           >
-            <span className="block text-[10px] leading-none font-medium tracking-[0.04em] text-text-tertiary/55">
+            <span className="block text-xs leading-none font-medium tracking-[0.04em] text-text-secondary">
               Forecast Economy
             </span>
           </div>
@@ -319,7 +319,7 @@ export default function RegionsMap({
 
         {compact && compactHover && nameBySlug[hover.slug] && (
           <div
-            className="absolute z-10 pointer-events-none rounded-lg border border-white/25 bg-[#1E1F26]/92 px-2.5 py-1 text-[11px] text-white shadow-lg whitespace-nowrap"
+            className="absolute z-10 pointer-events-none rounded-lg border border-white/25 bg-[#1E1F26]/92 px-2.5 py-1 text-xs text-white shadow-lg whitespace-nowrap"
             style={{ left: `${compactHover.x}%`, top: `${compactHover.y}%`, transform: 'translate(-50%, -50%)' }}
           >
             <span className="font-medium">{nameBySlug[hover.slug]}</span>
@@ -338,7 +338,7 @@ export default function RegionsMap({
           >
             <div className="font-medium text-text-primary">{nameBySlug[hover.slug] || hover.slug}</div>
             {hoverValue != null && (
-              <div className="font-mono text-champagne mt-0.5">
+              <div className="font-mono text-champagne-ink mt-0.5">
                 {formatRegionValue(hoverValue)}{unit ? ` ${unit}` : ''}
               </div>
             )}
@@ -347,7 +347,7 @@ export default function RegionsMap({
       </div>
 
       {valuesBySlug && (
-        <div className="mt-2 flex items-center justify-center gap-2.5 text-[11px] text-text-tertiary font-mono tabular-nums">
+        <div className="mt-2 flex items-center justify-center gap-2.5 text-xs text-text-secondary font-mono tabular-nums">
           <span className="min-w-[3.5rem] text-right">
             {extent ? formatRegionValue(extent.min) : '—'}
           </span>

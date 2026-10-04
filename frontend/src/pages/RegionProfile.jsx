@@ -22,6 +22,7 @@ import {
   regionPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
+import '../styles/platform-pages.css';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -32,10 +33,10 @@ function DeltaBadge({ value, prevValue }) {
   const d = yearDelta(value, prevValue);
   if (!d) return null;
   const Icon = d.up ? TrendingUp : d.down ? TrendingDown : Minus;
-  const cls = d.up ? 'text-positive' : d.down ? 'text-negative' : 'text-text-tertiary';
+  const cls = d.up ? 'fe-ink-pos' : d.down ? 'fe-ink-neg' : 'text-text-secondary';
   const dec = locale === 'en' ? '.' : ',';
   return (
-    <span className={`inline-flex items-center gap-0.5 font-mono text-[10px] tabular-nums ${cls}`}>
+    <span className={`inline-flex items-center gap-0.5 font-mono text-xs tabular-nums ${cls}`}>
       <Icon size={10} />
       {Math.abs(d.pct) >= 0.1
         ? `${Math.abs(d.pct).toFixed(1).replace('.', dec)}%`
@@ -50,13 +51,13 @@ function HeadlineCard({ item, slug }) {
       to={regionIndicatorPath(slug, item.code)}
       className="fe-panel fe-summary-card group rounded-xl border border-border-subtle bg-surface p-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
     >
-      <div className="text-[11px] uppercase tracking-wide text-text-tertiary">{item.label}</div>
+      <div className="text-[11px] uppercase tracking-wide text-text-secondary">{item.label}</div>
       <div className="mt-1 font-mono text-lg font-semibold leading-none text-text-primary">
         {formatRegionValue(item.value)}
-        <span className="ml-1 text-[11px] font-normal text-text-secondary">{shortUnit(item.unit)}</span>
+        <span className="ml-1 text-xs font-normal text-text-secondary">{shortUnit(item.unit)}</span>
       </div>
       <div className="mt-1.5 flex items-center justify-between gap-2">
-        <span className="font-mono text-[11px] text-text-tertiary">{item.year}</span>
+        <span className="font-mono text-xs text-text-secondary">{item.year}</span>
         <DeltaBadge value={item.value} prevValue={item.prev_value} />
       </div>
     </Link>
@@ -70,10 +71,10 @@ function IndicatorRow({ item, slug }) {
       className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
-        <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
+        <div className="text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink sm:text-[14px]">
           {item.name}
         </div>
-        <div className="mt-1 text-[10px] text-text-tertiary sm:mt-1.5">
+        <div className="mt-1 text-xs text-text-secondary sm:mt-1.5">
           {shortUnit(item.unit) || item.unit}
         </div>
       </div>
@@ -83,7 +84,7 @@ function IndicatorRow({ item, slug }) {
         </div>
         <div className="flex items-center gap-1.5">
           <DeltaBadge value={item.value} prevValue={item.prev_value} />
-          <span className="font-mono text-[10px] text-text-tertiary">{item.year}</span>
+          <span className="font-mono text-xs text-text-secondary">{item.year}</span>
         </div>
       </div>
     </Link>
@@ -155,12 +156,22 @@ export default function RegionProfile() {
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={regionTrail(regionName || '…', slug)} />
 
-      {isError && <ApiRetryBanner onRetry={refetch} retrying={isFetching} />}
+      {isError && (
+        <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
+          {t('pgui.regions.profileError')}
+        </ApiRetryBanner>
+      )}
       {isLoading && (
-        <div className="space-y-4">
-          <SkeletonBox className="h-10 w-72" />
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-24 rounded-xl" />)}
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <SkeletonBox className="mb-2 mt-6 h-4 w-40" />
+          <SkeletonBox className="h-[2.6rem] w-72 max-w-full sm:h-10" />
+          <SkeletonBox className="mt-3 h-5 w-full max-w-2xl" />
+          <div className="mb-8 mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[92px] rounded-xl" />)}
+          </div>
+          <SkeletonBox className="mb-6 h-[46px] w-full rounded-xl" />
+          <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
+            {Array.from({ length: 6 }).map((_, i) => <SkeletonBox key={i} className="h-[110px] rounded-xl sm:h-[84px]" />)}
           </div>
         </div>
       )}
@@ -169,7 +180,7 @@ export default function RegionProfile() {
         <>
           <div className="fe-data-header">
             {data.region.district_name && (
-              <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne">
+              <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-champagne-ink">
                 <MapPin size={13} />
                 {data.region.district_name}
               </div>
@@ -208,7 +219,7 @@ export default function RegionProfile() {
           )}
 
           <div className="relative mb-6">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" />
             <input
               type="search"
               value={query}
@@ -219,11 +230,17 @@ export default function RegionProfile() {
             />
           </div>
 
+          {!searching && filteredSections.length === 0 && (
+            <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+              {t('pgui.regions.profileEmpty')}
+            </div>
+          )}
+
           {searching && filteredSections.length === 0 && (
             <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
               {t('regions.profile.nothingFound', { query })}
               {' '}
-              <button type="button" onClick={() => setQuery('')} className="text-champagne hover:underline">
+              <button type="button" onClick={() => setQuery('')} className="fe-tap-inline text-champagne-ink hover:underline">
                 {t('regions.profile.resetSearch')}
               </button>
             </div>
@@ -248,7 +265,7 @@ export default function RegionProfile() {
           >
             {!searching && (
               <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
-                <div className="mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+                <div className="mb-2 px-2 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
                   {t('regions.profile.themes')}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -258,14 +275,14 @@ export default function RegionProfile() {
                       type="button"
                       onClick={() => setActiveSection(sec.num)}
                       className={[
-                        'flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                        'fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
                         resolvedActive === sec.num
-                          ? 'bg-champagne/12 font-medium text-champagne'
+                          ? 'bg-champagne/12 font-medium text-champagne-ink'
                           : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                       ].join(' ')}
                     >
                       <span className="min-w-0 truncate">{sec.name}</span>
-                      <span className="shrink-0 font-mono text-[10px] opacity-60">{sec.indicators.length}</span>
+                      <span className="shrink-0 font-mono text-xs">{sec.indicators.length}</span>
                     </button>
                   ))}
                 </div>
@@ -277,12 +294,12 @@ export default function RegionProfile() {
                 <section key={sec.num} data-block={`region-section-${sec.num}`}>
                   <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
                     <div className="min-w-0">
-                      <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-champagne">
+                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-champagne-ink">
                         {searching ? t('regions.searchResults') : t('regions.indicators')}
                       </div>
                       <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{sec.name}</h2>
                     </div>
-                    <span className="shrink-0 font-mono text-xs text-text-tertiary">{sec.indicators.length}</span>
+                    <span className="shrink-0 font-mono text-xs text-text-secondary">{sec.indicators.length}</span>
                   </div>
                   <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
                     {sec.indicators.map((item) => (

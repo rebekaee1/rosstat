@@ -4,6 +4,7 @@ import { Check, ChevronDown } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import { useT } from '../i18n';
+import '../styles/platform-pages.css';
 
 function optionText(opt) {
   return opt.count != null ? `${opt.label} (${opt.count})` : opt.label;
@@ -73,7 +74,7 @@ export default function MobileNavSelect({
               <div className="mx-auto mb-2.5 h-1 w-9 rounded-full bg-border-subtle sm:mx-0" aria-hidden />
               <p
                 id={titleId}
-                className="text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary"
+                className="text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary"
               >
                 {sectionLabel}
               </p>
@@ -87,7 +88,7 @@ export default function MobileNavSelect({
               onClick={() => setOpen(false)}
               className={cn(
                 FOCUS_RING_SURFACE,
-                'shrink-0 rounded-xl px-3 py-2 text-sm font-medium text-champagne bg-champagne/10 hover:bg-champagne/15',
+                'fe-tap shrink-0 rounded-xl px-4 py-2 text-sm font-medium text-champagne-ink bg-champagne/10 hover:bg-champagne/15',
               )}
             >
               {t('mobile.done')}
@@ -106,9 +107,9 @@ export default function MobileNavSelect({
                     }}
                     className={cn(
                       FOCUS_RING_SURFACE,
-                      'flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left transition-colors',
+                      'fe-tap flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left transition-colors',
                       active
-                        ? 'bg-champagne/15 text-champagne'
+                        ? 'bg-champagne/15 text-champagne-ink'
                         : 'text-text-primary hover:bg-obsidian-lighter',
                     )}
                   >
@@ -133,7 +134,7 @@ export default function MobileNavSelect({
 
   return (
     <div className={cn('mb-4 block lg:hidden', className)}>
-      <p className="mb-2 block px-0.5 text-[10px] font-mono uppercase tracking-[0.18em] text-text-tertiary">
+      <p className="mb-2 block px-0.5 text-[11px] font-mono uppercase tracking-[0.18em] text-text-secondary">
         {sectionLabel}
       </p>
       <button
@@ -143,14 +144,14 @@ export default function MobileNavSelect({
         aria-expanded={open}
         className={cn(
           FOCUS_RING_SURFACE,
-          'flex h-12 w-full items-center gap-3 rounded-xl border border-border-subtle bg-surface px-3.5 text-left shadow-sm',
+          'fe-press flex h-12 w-full items-center gap-3 rounded-xl border border-border-subtle bg-surface px-3.5 text-left shadow-sm',
           'active:border-border-champagne',
         )}
       >
         <span className="min-w-0 flex-1 truncate text-sm font-medium text-text-primary">
           {selected ? optionText(selected) : t('common.selectEllipsis')}
         </span>
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-obsidian-lighter px-2 py-1 text-[11px] font-medium text-text-secondary">
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-obsidian-lighter px-2 py-1 text-xs font-medium text-text-secondary">
           {t('common.change')}
           <ChevronDown className="h-3.5 w-3.5" />
         </span>

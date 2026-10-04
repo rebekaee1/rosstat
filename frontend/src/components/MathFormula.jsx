@@ -13,16 +13,16 @@ export function ProdLimits({ from, to }) {
       className="inline-flex flex-col items-center align-middle font-mono leading-none mx-0.5"
       aria-hidden="true"
     >
-      <span className="text-[8px] text-text-tertiary">{to}</span>
+      <span className="text-xs text-text-secondary">{to}</span>
       <span className="text-base text-text-secondary leading-none">∏</span>
-      <span className="text-[8px] text-text-tertiary">{from}</span>
+      <span className="text-xs text-text-secondary">{from}</span>
     </span>
   );
 }
 
 export function Formula({ children }) {
   return (
-    <span className="font-mono text-text-tertiary leading-relaxed">
+    <span className="font-mono text-text-secondary leading-relaxed">
       {children}
     </span>
   );

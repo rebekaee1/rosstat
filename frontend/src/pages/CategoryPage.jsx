@@ -14,6 +14,7 @@ import {
   isIndicatorListed,
 } from '../lib/categories';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
@@ -106,9 +107,9 @@ export default function CategoryPage({ fixedSlug }) {
       <div className="fe-data-page max-w-2xl mx-auto px-4 pt-32 pb-24 text-center">
         <h1 className="text-6xl font-display font-bold text-text-primary mb-4">404</h1>
         <p className="text-lg text-text-secondary mb-8">{t('category.notFound')}</p>
-        <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-champagne/10 text-champagne font-medium hover:bg-champagne/20 transition-colors">
+        <Button as={Link} to="/" variant="primary">
           {t('common.backHome')}
-        </Link>
+        </Button>
       </div>
     );
   }
@@ -117,9 +118,9 @@ export default function CategoryPage({ fixedSlug }) {
     return (
       <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 text-center">
         <p className="text-text-secondary mb-6">{categoryDescription(cat, locale)}</p>
-        <Link to="/" className="text-champagne hover:underline">
+        <Button as={Link} to="/" variant="secondary">
           {t('common.backHome')}
-        </Link>
+        </Button>
       </div>
     );
   }
@@ -151,13 +152,13 @@ export default function CategoryPage({ fixedSlug }) {
             className="group flex items-center gap-5 rounded-[2rem] border border-border-champagne bg-champagne/[0.04] p-6 md:p-8 mb-8 transition-colors hover:bg-champagne/[0.07]"
           >
             <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-champagne/10">
-              <Icon className="w-6 h-6 text-champagne" />
+              <Icon className="w-6 h-6 text-champagne-ink" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-text-primary mb-0.5">{t(feat.titleKey)}</p>
               <p className="text-xs text-text-secondary leading-relaxed">{t(feat.descKey)}</p>
             </div>
-            <ArrowRight className="w-5 h-5 text-champagne shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+            <ArrowRight className="w-5 h-5 text-champagne-ink shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
           </Link>
         );
       })()}
@@ -167,7 +168,7 @@ export default function CategoryPage({ fixedSlug }) {
       </div>
 
       <section data-block="category-list" className="rounded-[2rem] border border-border-subtle bg-surface p-3 shadow-md ring-1 ring-black/[0.06] sm:p-6 md:p-8">
-        <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-text-primary/70">
+        <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-text-secondary">
           {t('category.indicatorsHeading')}
         </h2>
         {isError && (
@@ -227,11 +228,11 @@ export default function CategoryPage({ fixedSlug }) {
                   <p className="text-sm font-semibold text-text-primary mb-1 truncate">
                     {categoryLabel(rel, locale)}
                   </p>
-                  <p className="text-xs text-text-tertiary line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-text-secondary line-clamp-2 leading-relaxed">
                     {categoryDescription(rel, locale)}
                   </p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-text-tertiary shrink-0 group-hover:text-champagne group-hover:translate-x-0.5 transition-all" />
+                <ArrowRight className="w-4 h-4 text-text-secondary shrink-0 group-hover:text-champagne-ink group-hover:translate-x-0.5 transition-all" />
               </Link>
             ))}
           </div>

@@ -21,7 +21,7 @@ export default function About() {
     <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-20 md:pb-24">
       <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
       <article className="fe-panel fe-reading prose prose-sm max-w-none p-5 sm:p-8">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-champagne font-semibold mb-4">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-champagne-ink font-semibold mb-4">
           {t('about.eyebrow')}
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
@@ -38,7 +38,7 @@ export default function About() {
               <SourceLink
                 key={item.key}
                 href={item.href}
-                className="text-champagne hover:underline"
+                className="text-champagne-ink hover:underline"
               >
                 {t(item.key)}
               </SourceLink>
@@ -97,7 +97,7 @@ export default function About() {
         <p className="text-text-secondary leading-relaxed">
           {t('about.trust.2')}
           {' '}
-          <a href="mailto:rebeka.ee@yandex.ru" className="text-champagne hover:underline" onClick={() => track(events.CONTACT_EMAIL)}>
+          <a href="mailto:rebeka.ee@yandex.ru" className="text-champagne-ink hover:underline" onClick={() => track(events.CONTACT_EMAIL)}>
             rebeka.ee@yandex.ru
           </a>
           .
