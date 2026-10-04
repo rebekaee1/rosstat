@@ -292,6 +292,31 @@ async def _run_one_loader(entry: TocEntry, *, structure_check: bool = False) -> 
     return process.returncode == 0, text_output[-2000:]
 
 
+_SKIPPED_REASON = "в наборе нет разреза по странам (geo)"
+
+
+def format_dataset_list(
+    label: str,
+    items: list[tuple[str, str]],
+    *,
+    limit: int = 10,
+    reason_chars: int = 90,
+) -> str:
+    """«label: N — ds1 (причина); ds2 (причина) …» — поимённая строка сводки.
+
+    Набор и причина в одной строке, чтобы разбирать наборы по одному; хвост
+    сверх ``limit`` сворачивается в «ещё N», чтобы сводка не раздувалась.
+    """
+    if not items:
+        return ""
+    shown = []
+    for dataset_id, reason in items[:limit]:
+        reason = " ".join((reason or "").split())[:reason_chars]
+        shown.append(f"{dataset_id} ({reason})" if reason else dataset_id)
+    more = f" …ещё {len(items) - limit}" if len(items) > limit else ""
+    return f"{label}: {len(items)} — " + "; ".join(shown) + more + ". "
+
+
 _VERDICT_RE = re.compile(r"^STRUCTURE_VERDICT (\{.*\})$", re.MULTILINE)
 
 
@@ -406,6 +431,8 @@ async def world_eurostat_ingest_job(
     processed = 0
     structure_accepted = 0
     structure_blocked = 0
+    blocked_datasets: list[tuple[str, str]] = []
+    skipped_datasets: list[tuple[str, str]] = []
     remapped_total = 0
     orphans_total = 0
     for entry in changed:
@@ -432,6 +459,9 @@ async def world_eurostat_ingest_job(
             # структуре. Ничего не записано; повтор — следующим прогоном.
             failed += 1
             structure_blocked += 1
+            blocked_datasets.append(
+                (entry.dataset_id, str(verdict.get("reason") or "blocked")),
+            )
             await _record_dataset(
                 run_id=run_id,
                 entry=entry,
@@ -463,6 +493,7 @@ async def world_eurostat_ingest_job(
             )
         elif _NOT_COUNTRY_SHAPED in detail:
             skipped += 1
+            skipped_datasets.append((entry.dataset_id, _SKIPPED_REASON))
             logger.info("World Eurostat dataset %s has no country dimension, skipped", entry.dataset_id)
             await _record_dataset(
                 run_id=run_id,
@@ -521,13 +552,21 @@ async def world_eurostat_ingest_job(
         changed_label="Успешно обновлено наборов",
         details=(
             f"Наборов обновлено: {succeeded}; очередь: {pending}. "
-            + (f"Без разреза по странам (пропущено): {skipped}. " if skipped else "")
+            + (
+                format_dataset_list("Без разреза по странам (пропущено)", skipped_datasets)
+                if skipped else ""
+            )
             + (
                 f"Смена структуры сверена и принята: {structure_accepted} "
                 f"(переподключено рядов: {remapped_total}, без замены: {orphans_total}). "
                 if structure_accepted else ""
             )
-            + (f"Разлом структуры, оставлено в карантине: {structure_blocked}. " if structure_blocked else "")
+            + (
+                format_dataset_list(
+                    "Разлом структуры, оставлено в карантине", blocked_datasets,
+                )
+                if structure_blocked else ""
+            )
             + ("Данные не записаны (shadow). " if shadow else "")
             + ("Отдельный источник IMF WEO: ошибка обновления. " if result.get("imf_error") else "")
         ).strip(),

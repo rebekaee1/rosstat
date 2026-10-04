@@ -20,6 +20,16 @@ from app.services.rosstat_weekly_inflation_parser import WEEKLY_SEGMENT_CODES
 from app.services.calculation_engine import calculation_engine
 from app.services.forecast_pipeline import catch_up_empty_forecasts, retrain_indicator_forecast
 from app.services.alerting import alert_etl_failure, alert_etl_summary, send_telegram
+from app.services.staleness import (  # noqa: F401  (реэкспорт для тестов/внешних импортов)
+    STALENESS_DEFAULT_DAYS,
+    STALENESS_SLA_DAYS,
+    StaleRow,
+    build_report,
+    find_stale,
+    load_known_flagged,
+    plan_staleness_message,
+    store_known_flagged,
+)
 from app.services.base_parser import (
     DEGRADED_STATUSES,
     STATUS_FALLBACK_USED,
@@ -420,49 +430,56 @@ async def emiss_regional_job():
 #  а через вечный no_new_data. Ежедневная сверка max(data.date) с SLA частоты.
 # ---------------------------------------------------------------------------
 
-# Пороги с запасом на лаг публикации источника (месячный ряд Росстата выходит
-# через 4-6 недель после периода). Синхронизированы по духу с freshness-SLA
-# страниц /today (`seo_today._STALE_AFTER_DAYS`), но мягче: здесь алерт
-# оператору, там — честная рамка пользователю.
-STALENESS_SLA_DAYS: dict[str, int] = {
-    "daily": 7,
-    "weekly": 21,
-    "monthly": 75,
-    "quarterly": 150,
-    "annual": 550,
-}
-_STALENESS_DEFAULT_DAYS = 550  # irregular и незнакомые частоты
+# Пороги SLA, классификация просрочек и формат сводки — app.services.staleness
+# (здесь реэкспорт для обратной совместимости импортов).
+_STALENESS_DEFAULT_DAYS = STALENESS_DEFAULT_DAYS
 
 
-def find_stale(rows: list[tuple[str, str | None, date | None]],
-               today: date | None = None) -> list[tuple[str, int]]:
-    """Из (code, frequency, max_date) — [(code, возраст_дней)] сверх SLA.
+def calculation_engine_specs():
+    """DERIVED_SPECS (dst_code → src_codes) для привязки производных к первоисточнику."""
+    from app.services.calculation_engine import DERIVED_SPECS
 
-    Чистая функция для тестируемости; ряды без точек пропускаются (их ловит
-    startup catch-up, Н-9).
-    """
-    today = today or date.today()
-    stale: list[tuple[str, int]] = []
-    for code, frequency, max_date in rows:
-        if max_date is None:
-            continue
-        sla = STALENESS_SLA_DAYS.get((frequency or "").lower(), _STALENESS_DEFAULT_DAYS)
-        age = (today - max_date).days
-        if age > sla:
-            stale.append((code, age))
-    return stale
+    return DERIVED_SPECS
 
 
 async def staleness_check_job() -> list[tuple[str, int]]:
     """Ежедневная проверка свежести всех активных индикаторов + Telegram-алерт."""
     async with async_session() as db:
+        # Последний прогон парсера (fetch_log): отличает «источник молчит»
+        # (читаем без ошибок) от «парсер сломан» (failed/parsed_zero/…).
+        last_status = (
+            select(FetchLog.status)
+            .where(FetchLog.indicator_id == Indicator.id)
+            .order_by(FetchLog.started_at.desc())
+            .limit(1)
+            .correlate(Indicator)
+            .scalar_subquery()
+        )
+        last_fetch_at = (
+            select(func.max(FetchLog.started_at))
+            .where(FetchLog.indicator_id == Indicator.id)
+            .correlate(Indicator)
+            .scalar_subquery()
+        )
         q = await db.execute(
-            select(Indicator.code, Indicator.frequency, func.max(IndicatorData.date))
+            select(
+                Indicator.code, Indicator.frequency, func.max(IndicatorData.date),
+                Indicator.parser_type, Indicator.source,
+                last_status.label("last_status"), last_fetch_at.label("last_fetch_at"),
+            )
             .outerjoin(IndicatorData, IndicatorData.indicator_id == Indicator.id)
             .where(Indicator.is_active.is_(True))
             .group_by(Indicator.id)
         )
-        rows = [(code, freq, max_date) for code, freq, max_date in q.all()]
+        stale_rows = [
+            StaleRow(
+                code=code, frequency=freq, max_date=max_date,
+                parser_type=parser_type or "", source=source or "",
+                last_status=status, last_fetch_at=fetched_at,
+            )
+            for code, freq, max_date, parser_type, source, status, fetched_at in q.all()
+        ]
+        rows = [(r.code, r.frequency, r.max_date) for r in stale_rows]
 
     # Н-14: meta-чек «алерты сломаны». Система шлёт минимум одно сообщение в
     # сутки (ETL-summary); если последней успешной отправки нет > 26 ч —
@@ -501,33 +518,41 @@ async def staleness_check_job() -> list[tuple[str, int]]:
     )
 
     stale = find_stale(rows)
+    fd_line = f"\nfd {n_fd}/{fd_limit or '?'}"
+    sent = False
     if stale:
-        from html import escape
-
         from app.services.alerting import STALENESS_MUTE_TTL, alert_muted
 
-        stale.sort(key=lambda p: -p[1])
-        # Хронический хвост (демография 1285 дн. и т.п.) — раз в неделю,
-        # не каждый день один и тот же список из 340 кодов.
-        if await alert_muted("staleness", STALENESS_MUTE_TTL):
-            logger.info(
-                "Staleness check muted (%d stale) — next digest in ≤%dd",
-                len(stale), STALENESS_MUTE_TTL // 86400,
-            )
+        derived_sources = {s.dst_code: s.src_codes for s in calculation_engine_specs()}
+        report = build_report(
+            stale_rows, derived_sources,
+            today=date.today(), now=datetime.now(timezone.utc).replace(tzinfo=None),
+        )
+        known = await load_known_flagged()
+        # Раз в неделю — полная сводка по группам; в остальные дни — только
+        # новые просрочки (хронический хвост не повторяем).
+        weekly_due = not await alert_muted("staleness_weekly", STALENESS_MUTE_TTL)
+        message = plan_staleness_message(
+            report, known, weekly_due=weekly_due, fd_line=fd_line,
+        )
+        await store_known_flagged(report.flagged_codes)
+        if message:
+            await send_telegram(message, kind="staleness")
+            sent = True
         else:
-            listing = "\n".join(
-                f"• <code>{escape(code)}</code> — {age} дн. без новых точек"
-                for code, age in stale[:25]
+            logger.info(
+                "Staleness check: nothing new to report (%d stale: attention=%d "
+                "frozen=%d derived_follow=%d within_lag=%d)",
+                len(stale), len(report.attention), len(report.frozen),
+                report.derived_follow, report.within_lag,
             )
-            more = f"\n…и ещё {len(stale) - 25}" if len(stale) > 25 else ""
-            fd_line = f"\nfd {n_fd}/{fd_limit or '?'}"
-            await send_telegram(
-                f"🟡 <b>Staleness check</b>\n{len(stale)} индикатор(ов) старше SLA "
-                f"своей частоты:\n{listing}{more}{fd_line}",
-                kind="staleness",
-            )
-        logger.warning("Staleness check: %d stale indicator(s): %s",
-                       len(stale), ", ".join(c for c, _ in stale[:40]))
+        logger.warning(
+            "Staleness check: %d stale (attention=%d frozen=%d derived_follow=%d "
+            "within_lag=%d); attention: %s",
+            len(stale), len(report.attention), len(report.frozen),
+            report.derived_follow, report.within_lag,
+            ", ".join(f"{i.code}:{i.age}" for i in report.attention[:40]),
+        )
     else:
         logger.info("Staleness check: all %d active indicators fresh", len(rows))
 
@@ -537,7 +562,7 @@ async def staleness_check_job() -> list[tuple[str, int]]:
             n_fd,
             fd_limit or "unknown",
         )
-        if not stale:
+        if not sent:
             await send_telegram(
                 f"🟡 <b>Staleness check</b>\nОткрытых файловых дескрипторов "
                 f"{n_fd} из {fd_limit or '?'} (больше 80% soft ulimit).",

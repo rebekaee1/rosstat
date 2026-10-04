@@ -304,6 +304,10 @@ async def alert_etl_summary(
     await send_telegram("\n".join(parts), kind="etl_summary")
 
 
+# Поимённые списки наборов/рядов длиннее 1000 символов; лимит Telegram — 4096.
+_WORLD_SUMMARY_DETAILS_LIMIT = 2000
+
+
 async def alert_world_ingest_summary(
     source: str,
     *,
@@ -337,5 +341,5 @@ async def alert_world_ingest_summary(
         f"{escape(checked_label)}: {checked} · {escape(changed_label)}: {changed} · Ошибок: {failed}",
     ]
     if details:
-        parts.append(escape(details[:1000]))
+        parts.append(escape(details[:_WORLD_SUMMARY_DETAILS_LIMIT]))
     await send_telegram("\n".join(parts), kind="world_ingest_summary")
