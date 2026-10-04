@@ -18,6 +18,7 @@ import RegisterNudge from './components/RegisterNudge';
 import DownloadLimitModal from './components/DownloadLimitModal';
 import RouteFallback from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
+import SkipLink from './components/SkipLink';
 import useDocumentMeta from './lib/useMeta';
 import { cleanPathWithSearch } from './lib/cleanUrl';
 import { behaviorInit, behaviorRouteChange } from './lib/behavior';
@@ -251,6 +252,7 @@ function AppRoutes() {
   return (
     <LocaleProvider>
     <AuthProvider>
+      <SkipLink />
       <LocalePreviewSync />
       <LocalePreviewBanner />
       <ScrollToTop />
@@ -267,7 +269,7 @@ function AppRoutes() {
         </Suspense>
       </ErrorBoundary>
       <Navbar />
-      <main className="relative z-0 flex-1 pt-9">
+      <main id="main-content" tabIndex={-1} className="relative z-0 flex-1 pt-9 outline-none">
         <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>
           <Routes>

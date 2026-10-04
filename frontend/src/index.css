@@ -577,6 +577,26 @@ nav.glass-surface-soft {
   .fe-btn--sm { min-height: 40px; }
   .fe-chip { min-height: 44px; padding: 0 14px; }
 }
+/* Ссылка «к содержимому»: видна только при фокусе с клавиатуры. */
+.fe-skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 300;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--color-accent-solid);
+  color: var(--color-on-accent);
+  font-size: 14px;
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform 0.15s ease;
+}
+.fe-skip-link:focus { transform: none; }
+/* iOS приближает страницу при фокусе в поле со шрифтом меньше 16px. */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea { font-size: 16px; }
+}
 /* Единый фокус с клавиатуры вне зависимости от обёртки страницы. */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
   outline: 2px solid var(--color-champagne-ink);

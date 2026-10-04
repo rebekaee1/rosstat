@@ -26,7 +26,8 @@ if (import.meta.env.VITE_SENTRY_DSN) {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 2,
+      // axios уже повторяет безопасные GET (lib/api.js); два уровня повторов давали до ~3 минут скелетона.
+      retry: 1,
       refetchOnWindowFocus: false,
     },
   },

@@ -1517,6 +1517,8 @@ export default {
   'search.empty': 'Введите показатель, страну или регион.',
   'search.loading': 'Ищем…',
   'search.slow': 'Сеть медленная, ещё ищем…',
+  'a11y.skipToContent': 'К основному содержимому',
+  'route.slow': 'Страница грузится дольше обычного — проверьте соединение, мы продолжаем.',
   'search.nothingFound': 'Ничего не нашли по запросу «{query}».',
   'search.hint.nav': 'навигация',
   'search.hint.open': 'открыть',

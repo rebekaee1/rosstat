@@ -1515,6 +1515,8 @@ export default {
   'search.empty': 'Type an indicator, country or region.',
   'search.loading': 'Searching…',
   'search.slow': 'Slow connection, still searching…',
+  'a11y.skipToContent': 'Skip to main content',
+  'route.slow': 'This page is taking longer than usual — check your connection, we are still loading it.',
   'search.nothingFound': 'Nothing found for “{query}”.',
   'search.hint.nav': 'navigate',
   'search.hint.open': 'open',
