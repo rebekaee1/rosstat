@@ -9,8 +9,62 @@ const api = axios.create({
   withCredentials: true,
 });
 
+/*
+ * Политика повторов (F11, 2026-10-04).
+ *
+ * Автоматически повторяется только то, что безопасно выполнить дважды:
+ *   - GET/HEAD (чтение) — при обрыве сети/таймауте и при 429/503;
+ *   - изменяющий запрос (POST/PUT/PATCH/DELETE) — только если вызывающий явно
+ *     объявил его идемпотентным: `{ idempotent: true }` в конфиге или заголовок
+ *     `Idempotency-Key` (сервер должен дедуплицировать по ключу).
+ * Регистрация, обратная связь, выгрузка, подписка и прочие изменяющие операции
+ * по умолчанию НЕ повторяются: после 429/503/обрыва неизвестно, выполнил ли их
+ * сервер, и повтор может задвоить действие. Ошибка уходит вызывающему коду.
+ * Эндпоинты `/auth*` не повторяются никогда (креды, лимиты входа).
+ *
+ * Параметры: не более RETRY_LIMIT повторов; заголовок Retry-After (секунды или
+ * HTTP-date) соблюдается как минимальная пауза, а если сервер просит ждать
+ * дольше RETRY_AFTER_MAX_MS — повтор не делается (UI не блокируем минутами);
+ * без заголовка — экспоненциальная пауза с небольшим jitter.
+ * Отмена запроса (AbortController) в повторы не попадает.
+ */
 const RETRY_LIMIT = 3;
+const RETRY_AFTER_MAX_MS = 10000;
+const RETRY_BASE_MS = 500;
+const RETRYABLE_STATUS = new Set([429, 503]);
+const SAFE_METHODS = new Set(['get', 'head']);
 const MUTATING = new Set(['post', 'put', 'patch', 'delete']);
+
+function hasIdempotencyKey(headers) {
+  if (!headers) return false;
+  if (typeof headers.has === 'function') return Boolean(headers.has('Idempotency-Key'));
+  return Object.keys(headers).some((k) => k.toLowerCase() === 'idempotency-key' && headers[k]);
+}
+
+/** Можно ли выполнить этот запрос повторно без риска задвоить эффект. */
+export function isRetrySafe(config) {
+  if (!config) return false;
+  const method = (config.method || 'get').toLowerCase();
+  if (SAFE_METHODS.has(method)) return true;
+  return config.idempotent === true || hasIdempotencyKey(config.headers);
+}
+
+/** Retry-After → миллисекунды (секунды или HTTP-date); null — заголовка нет/не разобран. */
+export function parseRetryAfter(headers, now = Date.now()) {
+  let raw;
+  try {
+    raw = typeof headers?.get === 'function' ? headers.get('retry-after') : headers?.['retry-after'] ?? headers?.['Retry-After'];
+  } catch { return null; }
+  if (raw == null || raw === '') return null;
+  const value = String(raw).trim();
+  if (/^\d+(?:\.\d+)?$/.test(value)) return Number(value) * 1000;
+  const when = Date.parse(value);
+  return Number.isFinite(when) ? Math.max(0, when - now) : null;
+}
+
+function backoffMs(attempt) {
+  return RETRY_BASE_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 250);
+}
 
 function readCookie(name) {
   const m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
@@ -41,26 +95,25 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
     if (!config) return Promise.reject(error);
-    // Не ретраим auth-эндпоинты: иначе при 429 повторно зашлём креды/мутации.
+    // Политика — в комментарии выше: auth и небезопасные для повтора запросы не ретраим.
     const isAuth = (config.url || '').startsWith('/auth');
-    const method = (config.method || 'get').toLowerCase();
     config.__retryCount = config.__retryCount || 0;
+    if (isAuth || !isRetrySafe(config) || config.__retryCount >= RETRY_LIMIT) {
+      return Promise.reject(error);
+    }
 
-    // Сеть / Empty reply / рестарт backend — ретрай только безопасных GET.
-    const networkMiss = !response && method === 'get' && !isAuth
-      && config.__retryCount < RETRY_LIMIT;
-    if (networkMiss) {
+    // Сеть / Empty reply / рестарт backend / таймаут.
+    if (!response) {
       config.__retryCount += 1;
-      await new Promise((r) => setTimeout(r, 2 ** config.__retryCount * 250));
+      await new Promise((r) => setTimeout(r, backoffMs(config.__retryCount)));
       return api(config);
     }
 
-    if (!response) return Promise.reject(error);
-
-    if (!isAuth && (response.status === 429 || response.status === 503) && config.__retryCount < RETRY_LIMIT) {
+    if (RETRYABLE_STATUS.has(response.status)) {
+      const retryAfter = parseRetryAfter(response.headers);
+      if (retryAfter != null && retryAfter > RETRY_AFTER_MAX_MS) return Promise.reject(error);
       config.__retryCount += 1;
-      const retryAfter = parseInt(response.headers['retry-after'] || '1', 10);
-      const delay = Math.min(retryAfter * 1000, 2 ** config.__retryCount * 1000);
+      const delay = Math.max(backoffMs(config.__retryCount), retryAfter ?? 0);
       await new Promise((r) => setTimeout(r, delay));
       return api(config);
     }
