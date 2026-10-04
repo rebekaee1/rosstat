@@ -26,6 +26,7 @@ import {
 } from '../../lib/worldApi';
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
+import ErrorBoundary from '../ErrorBoundary';
 import IndicatorSearch from '../IndicatorSearch';
 import WorldConceptPicker from '../WorldConceptPicker';
 import WorldMapConceptNote from '../WorldMapConceptNote';
@@ -228,6 +229,13 @@ export default function HomeWorkbench({ ratingConcepts }) {
             {!mapMounted || mapDataPending ? (
               <SkeletonBox className="h-[36rem] w-full rounded-2xl sm:h-[32rem]" />
             ) : (
+              <ErrorBoundary fallback={(
+                <div className="flex h-[22rem] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-border-subtle bg-surface-hover px-6 text-center text-sm text-text-secondary" role="alert">
+                  <p>{t('home.map.loadError')}</p>
+                  <button type="button" onClick={() => window.location.reload()} className="min-h-11 rounded-lg border border-border-subtle bg-surface px-4 text-text-primary">{t('common.retry')}</button>
+                </div>
+              )}
+              >
               <Suspense fallback={<SkeletonBox className="h-[36rem] w-full rounded-2xl sm:h-[32rem]" />}>
                 <PlanetView
                   countries={mapCountries}
@@ -249,6 +257,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                   onSelect={onSelectCountry}
                 />
               </Suspense>
+              </ErrorBoundary>
             )}
         </div>
       </section>

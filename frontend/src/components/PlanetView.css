@@ -41,6 +41,8 @@
 .planet-stage[data-scene-ready="true"] canvas { opacity: 1; }
 .planet-stage > div:first-child:not(.planet-map-fallback) { height: 100%; }
 .planet-stage canvas { display: block; }
+/* A soft contact shadow gives the pale sphere an edge on the light page; the canvas is transparent outside the sphere. */
+.planet-stage canvas { filter: drop-shadow(0 12px 18px rgba(36, 56, 84, .16)); }
 .planet-camera-controls { position: absolute; top: 16px; right: 16px; z-index: 2; display: flex; flex-direction: column; gap: 6px; }
 .planet-camera-controls button { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--planet-line); border-radius: 12px; color: var(--planet-ink); background: var(--planet-paper); box-shadow: 0 2px 8px rgba(0,0,0,.07); cursor: pointer; }
 .planet-stage-caption { position: absolute; bottom: 16px; left: 18px; right: 66px; margin: 0; color: var(--planet-muted); font-size: 11px; line-height: 1.4; pointer-events: none; }
@@ -57,6 +59,7 @@
 .planet-select-hint { position: absolute; top: 18px; left: 18px; right: 80px; max-width: 250px; margin: 0; color: var(--planet-muted); font-size: 12px; line-height: 1.55; pointer-events: none; }
 .planet-info { display: flex; flex-direction: column; height: var(--planet-scene-height); min-width: 0; background: var(--planet-paper); border-left: 1px solid var(--planet-line); }
 .planet-country-card { flex-shrink: 0; padding: 18px 18px 14px; border-bottom: 1px solid var(--planet-line); background: linear-gradient(180deg, var(--fe-button-bg, #F6F3EC), var(--planet-paper)); outline: none; }
+.planet-country-card { scroll-margin-top: 88px; }
 .planet-country-card.is-selected { animation: planet-card-in 220ms cubic-bezier(.2,.7,.2,1); }
 .planet-country-card:not(.is-selected) { display: none; }
 .planet-country-card:focus-visible { box-shadow: inset 0 0 0 2px var(--planet-accent); }
@@ -190,6 +193,7 @@
   /* The search field above already says this; on a phone the hint would cover the globe. */
   .planet-select-hint { display: none; }
 }
+@media (orientation: landscape) and (max-height: 520px) and (max-width: 950px) { .planet-view { --planet-scene-height: min(300px, 72dvh); } }
 @media (max-width: 380px) { .planet-view { --planet-scene-height: 280px; } .planet-pin-country { font-size: 11px; } }
 @media (prefers-reduced-motion: reduce) { .planet-loading svg, .planet-country-card.is-selected { animation: none; } .planet-view button, .planet-view a, .planet-stage canvas, .planet-country-list > button > svg { transition: none; } }
 @keyframes planet-loader-turn { to { transform: rotate(360deg); } }

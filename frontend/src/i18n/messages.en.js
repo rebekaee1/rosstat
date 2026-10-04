@@ -1514,6 +1514,7 @@ export default {
   'search.refine': 'Some results are shown. Refine the indicator, country or region.',
   'search.empty': 'Type an indicator, country or region.',
   'search.loading': 'Searching…',
+  'search.slow': 'Slow connection, still searching…',
   'search.nothingFound': 'Nothing found for “{query}”.',
   'search.hint.nav': 'navigate',
   'search.hint.open': 'open',

@@ -100,6 +100,30 @@ it.each(['isPending', 'isDebouncing'])('does not expose stale clickable results 
   expect(screen.queryByText('search.nothingFound')).toBeNull();
 });
 
+it.each(['isPending', 'isDebouncing'])('shows spinner, progress bar and skeleton rows while %s, and removes them afterwards', (flag) => {
+  searchState[flag] = true;
+  const { rerender } = render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'ввп' } });
+  expect(screen.getByTestId('search-spinner')).toBeTruthy();
+  expect(screen.getByTestId('search-skeleton')).toBeTruthy();
+  expect(document.querySelector('.fe-search-progress').getAttribute('data-active')).toBe('true');
+  searchState[flag] = false;
+  rerender(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  expect(screen.queryByTestId('search-spinner')).toBeNull();
+  expect(screen.queryByTestId('search-skeleton')).toBeNull();
+  expect(document.querySelector('.fe-search-progress').getAttribute('data-active')).toBe('false');
+});
+
+it('says the connection is slow only after a long wait', async () => {
+  searchState.isPending = true;
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'медленно' } });
+  expect(screen.queryByTestId('search-slow')).toBeNull();
+  expect(await screen.findByTestId('search-slow', {}, { timeout: 4000 })).toBeTruthy();
+}, 8000);
+
 it('distinguishes request failure from an empty catalogue match', () => {
   searchState.isError = true;
   searchState.refetch = vi.fn();

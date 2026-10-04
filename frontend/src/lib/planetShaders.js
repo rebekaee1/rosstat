@@ -39,15 +39,17 @@ export const PLANET_FRAGMENT = `
     float water = smoothstep(0.004, 0.03, blueLead) * (1.0 - smoothstep(0.22, 0.42, luminance));
     // Land keeps its real terrain; shadows are lifted so countries read on a light page.
     vec3 land = mix(dayColor, vec3(luminance), 0.08);
+    // The source composite is flat; a little saturation makes land and forest readable against the sea.
+    land = mix(vec3(dot(land, vec3(0.2126, 0.7152, 0.0722))), land, 1.16);
     land = pow(land, vec3(0.74)) * vec3(1.04, 1.015, 0.97);
     // A calm porcelain sea replaces the archive's near-black navy. Depth survives
     // as a small tonal variation; no highlight, halo or coloured rim is added.
-    vec3 sea = mix(vec3(0.47, 0.63, 0.73), vec3(0.63, 0.77, 0.84), smoothstep(0.0, 0.06, luminance));
+    vec3 sea = mix(vec3(0.43, 0.61, 0.73), vec3(0.60, 0.75, 0.84), smoothstep(0.0, 0.06, luminance));
     vec3 surface = mix(land, sea, water);
     surface *= 0.9 + max(sunlight, 0.0) * 0.16;
     // Neutral limb shading gives the sphere volume without tinting its edge.
     float facing = max(dot(normal, normalize(cameraPosition)), 0.0);
-    surface *= mix(0.80, 1.0, smoothstep(0.0, 0.5, facing));
+    surface *= mix(0.72, 1.0, smoothstep(0.0, 0.55, facing));
     vec3 color = surface;
     vec4 atlas = texture2D(atlasMap, vUv);
     color = mix(color, atlas.rgb, atlas.a);

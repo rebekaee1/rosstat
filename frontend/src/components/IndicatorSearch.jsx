@@ -61,6 +61,15 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
     : locale === 'en' ? isPreviewError : isRussiaError;
   const isLoading = isSearchPending || (!qTrim && (locale === 'en' ? isPreviewPending : isRussiaPending));
 
+  // «Долго»: отметка ставится таймером для конкретной фразы и гаснет сама, когда фраза или состояние меняются.
+  const [slowFor, setSlowFor] = useState('');
+  useEffect(() => {
+    if (!(isLoading && qTrim)) return undefined;
+    const timer = setTimeout(() => setSlowFor(qTrim), 2500);
+    return () => clearTimeout(timer);
+  }, [isLoading, qTrim]);
+  const slow = isLoading && Boolean(qTrim) && slowFor === qTrim;
+
   const results = useMemo(() => {
     if (qTrim) return isSearchPending || isSearchError ? [] : globalSearch.data?.results || [];
     if (locale === 'en') {
@@ -298,7 +307,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
           onFocus={arm}
           className={cn(
             FOCUS_RING,
-            'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors',
+            'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11',
             className,
           )}
           aria-label={t('search.openAriaMod', { mod })}
@@ -333,8 +342,10 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             onClick={close}
           />
           <div className="fe-dialog-panel relative flex max-h-[calc(90dvh-1rem)] w-full max-w-2xl flex-col rounded-2xl border border-border-subtle bg-surface shadow-2xl overflow-hidden">
-            <div className="flex shrink-0 items-center gap-3 px-4 py-3 border-b border-border-subtle">
-              <Search className="w-4 h-4 text-text-tertiary shrink-0" aria-hidden="true" />
+            <div className="relative flex shrink-0 items-center gap-3 px-4 py-3 border-b border-border-subtle">
+              {isLoading && qTrim
+                ? <span className="fe-search-spinner shrink-0" aria-hidden="true" data-testid="search-spinner" />
+                : <Search className="w-4 h-4 text-text-tertiary shrink-0" aria-hidden="true" />}
               <input
                 ref={inputRef}
                 type="search"
@@ -362,6 +373,7 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
               >
                 <X className="w-4 h-4" />
               </button>
+              <span className="fe-search-progress" data-active={isLoading && qTrim ? 'true' : 'false'} aria-hidden="true" />
             </div>
 
             <p id={`${resultId}-help`} className="px-4 pt-3 pb-1 text-xs leading-relaxed text-text-tertiary">
@@ -377,7 +389,20 @@ export default function IndicatorSearch({ className, variant = 'icon', inlinePla
             <div ref={listRef} className="min-h-0 max-h-[60vh] overflow-y-auto py-2" role="listbox" id={`${resultId}-list`} aria-busy={isLoading}>
               {results.length === 0 ? (
                 <div className="px-4 py-6 text-sm text-text-tertiary" role="status" aria-live="polite">
-                  {isLoading ? t('search.loading') : isSearchError ? t('search.error')
+                  {isLoading && qTrim && (
+                    <div className="mb-4 space-y-3" aria-hidden="true" data-testid="search-skeleton">
+                      {[72, 58, 66].map((width) => (
+                        <div key={width} className="flex items-center gap-3">
+                          <span className="skeleton h-8 w-8 shrink-0 rounded-lg" />
+                          <span className="flex-1 space-y-1.5">
+                            <span className="skeleton block h-3 rounded" style={{ width: `${width}%` }} />
+                            <span className="skeleton block h-2.5 w-2/5 rounded" />
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {isLoading ? <><span className="fe-search-loading-text">{t('search.loading')}</span>{slow && <span className="mt-1 block text-xs" data-testid="search-slow">{t('search.slow')}</span>}</> : isSearchError ? t('search.error')
                     : qTrim && globalSearch.data?.reason === 'unsupported_query' ? t('search.unsupportedQuery')
                       : qTrim && globalSearch.data?.reason === 'unsupported_period' ? t('search.unsupportedPeriod')
                       : qTrim && globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')

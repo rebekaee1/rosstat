@@ -466,6 +466,59 @@ nav.glass-surface-soft {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
+/* Ожидание ответа поиска: кольцо в поле, бегущая полоса под полем и каркас строк. */
+@keyframes fe-search-turn { to { transform: rotate(360deg); } }
+@keyframes fe-search-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(260%); }
+}
+@keyframes fe-search-dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+.fe-search-spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  border: 2px solid color-mix(in srgb, var(--color-champagne, #ad8a48) 28%, transparent);
+  border-top-color: var(--color-champagne, #ad8a48);
+  animation: fe-search-turn 0.7s linear infinite;
+}
+.fe-search-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+.fe-search-progress[data-active='true'] { opacity: 1; }
+.fe-search-progress::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 38%;
+  background: linear-gradient(90deg, transparent, var(--color-champagne, #ad8a48), transparent);
+  animation: fe-search-slide 1.1s ease-in-out infinite;
+}
+.fe-search-loading-text::after {
+  content: '';
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+  animation: fe-search-dots 1.2s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fe-search-spinner { animation: none; border-top-color: color-mix(in srgb, var(--color-champagne, #ad8a48) 28%, transparent); }
+  .fe-search-progress::before { animation: none; width: 100%; opacity: 0.35; }
+  .fe-search-loading-text::after { animation: none; content: '...'; }
+}
+
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -610,4 +663,9 @@ nav.glass-surface-soft {
 .rsy-hidden div:has([data-r-a-19489903-1-floorad]),
 .rsy-hidden div:has([data-r-a-19489903-2-floorad]) {
   display: none !important;
+}
+
+/* Каркас и «живая» точка не должны двигаться у тех, кто просил меньше анимации. */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton, .pulse-dot { animation: none; }
 }

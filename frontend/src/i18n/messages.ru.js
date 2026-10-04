@@ -1516,6 +1516,7 @@ export default {
   'search.refine': 'Показана часть результатов. Уточните показатель, страну или регион.',
   'search.empty': 'Введите показатель, страну или регион.',
   'search.loading': 'Ищем…',
+  'search.slow': 'Сеть медленная, ещё ищем…',
   'search.nothingFound': 'Ничего не нашли по запросу «{query}».',
   'search.hint.nav': 'навигация',
   'search.hint.open': 'открыть',

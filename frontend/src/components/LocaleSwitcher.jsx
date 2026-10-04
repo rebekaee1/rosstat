@@ -101,7 +101,7 @@ export default function LocaleSwitcher() {
         onClick={() => setOpen(!open)}
         className={cn(
           FOCUS_RING,
-          'flex h-8 items-center gap-1 rounded-lg px-1.5 text-text-secondary transition-colors',
+          'flex h-8 items-center gap-1 rounded-lg px-1.5 text-text-secondary transition-colors [@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:justify-center',
           'hover:text-text-primary',
           open && 'text-champagne',
         )}

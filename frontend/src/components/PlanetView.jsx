@@ -196,6 +196,14 @@ export default function PlanetView({
     if (focusCountryCard.current && selectedCountry && countryCard.current) {
       focusCountryCard.current = false;
       countryCard.current.focus({ preventScroll: true });
+      // On a phone the card sits above the globe; a pick made in the list below would otherwise change it off-screen.
+      if (typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches) {
+        const box = countryCard.current.getBoundingClientRect();
+        if (box.top < 0 || box.bottom > window.innerHeight) {
+          const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          countryCard.current.scrollIntoView?.({ block: 'start', behavior: calm ? 'auto' : 'smooth' });
+        }
+      }
     }
   }, [selectedCountry, cameraCommand]);
   const selectedDetail = selectedCountry ? collectionValue(detailsByCode, selectedCountry.code) || null : null;

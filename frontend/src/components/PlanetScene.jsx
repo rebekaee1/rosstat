@@ -27,6 +27,8 @@ import {
 const DEFAULT_FOCUS = [25, 24];
 const MIN_DISTANCE = 1.45;
 const MAX_DISTANCE = 4.8;
+// Closer than this the 2048 px day map starts to blur; the 4096 px map is fetched once, on demand.
+const DETAIL_DISTANCE = 2.7;
 const INITIAL_DISTANCE = 3.35;
 const FLIGHT_SECONDS = 0.6;
 const INTRO_SECONDS = 1.4;
@@ -109,8 +111,9 @@ function paintHighlight(entries, selectedCode, hoveredCode) {
 }
 
 /** Owns resources so retries/unmounts release textures, including partial loads. */
-function usePlanetTextures(budget, onError) {
+function usePlanetTextures(budget, onError, wantDetail) {
   const [textures, setTextures] = useState(null);
+  const detailTexture = useRef(null);
   useEffect(() => {
     let active = true;
     const owned = [];
@@ -143,14 +146,32 @@ function usePlanetTextures(budget, onError) {
       owned.forEach((texture) => texture.dispose());
     };
   }, [budget, onError]);
+  // Sharper day map, only after the visitor zooms in and only where the device can afford it.
+  const hasSurface = Boolean(textures);
+  const hasDetail = Boolean(textures?.detail);
+  useEffect(() => {
+    if (!wantDetail || !budget.materialDetail || !hasSurface || hasDetail) return undefined;
+    let active = true;
+    new TextureLoader().loadAsync('/planet/earth_day_4096.jpg').then((big) => {
+      if (!active) { big.dispose(); return; }
+      big.colorSpace = SRGBColorSpace;
+      big.anisotropy = 4;
+      detailTexture.current = big;
+      setTextures((previous) => (previous ? { ...previous, day: big, detail: true } : previous));
+    }).catch(() => { /* The 2048 px map stays; detail is optional. */ });
+    return () => { active = false; };
+  }, [wantDetail, budget, hasSurface, hasDetail]);
+  useEffect(() => () => { detailTexture.current?.dispose(); detailTexture.current = null; }, []);
   return textures;
 }
 
-function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, interactive, touchNavigation, onHover, surfaceReady }) {
+function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, interactive, touchNavigation, onHover, surfaceReady, onZoomDetail }) {
   const { camera, gl, invalidate, size } = useThree();
   const controlsRef = useRef(null);
   const flightRef = useRef(null);
-  const fitDistance = planetFitDistance({ fov: camera.fov, aspect: size.width / size.height });
+  const aspect = size.width / size.height;
+  // On a narrow phone stage the control column would sit on the sphere; leave it a margin.
+  const fitDistance = planetFitDistance({ fov: camera.fov, aspect, padding: aspect < 1 ? 1.2 : 1.08 });
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
     controls.enabled = interactive;
@@ -167,18 +188,24 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
     controls.maxDistance = Math.max(MAX_DISTANCE, fitDistance);
     controls.minPolarAngle = 0.035;
     controls.maxPolarAngle = Math.PI - 0.035;
-    controls.addEventListener('change', invalidate);
+    const onChange = () => {
+      // The closer the camera, the less surface a pixel of drag should cover; otherwise zoomed maps race away.
+      controls.rotateSpeed = 0.55 * Math.min(1, Math.max(0.35, (camera.position.length() - 1) / Math.max(1.2, fitDistance - 1)));
+      invalidate();
+      if (camera.position.length() < DETAIL_DISTANCE) onZoomDetail?.();
+    };
+    controls.addEventListener('change', onChange);
     const interrupt = () => { flightRef.current = null; onHover(null); invalidate(); };
     controls.addEventListener('start', interrupt);
     controlsRef.current = controls;
     controls.update();
     return () => {
-      controls.removeEventListener('change', invalidate);
+      controls.removeEventListener('change', onChange);
       controls.removeEventListener('start', interrupt);
       controls.dispose();
       controlsRef.current = null;
     };
-  }, [camera, gl, invalidate, reducedMotion, interactive, touchNavigation, onHover, fitDistance]);
+  }, [camera, gl, invalidate, reducedMotion, interactive, touchNavigation, onHover, fitDistance, onZoomDetail]);
 
   useEffect(() => {
     if (camera.position.length() < fitDistance) {
@@ -208,6 +235,7 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
     } else {
       const factor = cameraCommand.type === 'zoomIn' ? 0.8 : 1.25;
       target.normalize().multiplyScalar(Math.min(Math.max(MAX_DISTANCE, fitDistance), Math.max(MIN_DISTANCE, currentDistance * factor)));
+      if (target.length() < DETAIL_DISTANCE) onZoomDetail?.();
     }
     if (reducedMotion || cameraCommand.instant) {
       camera.position.copy(target);
@@ -226,7 +254,7 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
       };
     }
     invalidate();
-  }, [cameraCommand, entries, camera, invalidate, reducedMotion, defaultScope, fitDistance, onHover]);
+  }, [cameraCommand, entries, camera, invalidate, reducedMotion, defaultScope, fitDistance, onHover, onZoomDetail]);
 
   const introDone = useRef(false);
   useEffect(() => {
@@ -430,10 +458,12 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, sh
 }
 
 function SceneContents({ entries, budget, onError, ...props }) {
-  const textures = usePlanetTextures(budget, onError);
+  const [wantDetail, setWantDetail] = useState(false);
+  const requestDetail = useCallback(() => setWantDetail(true), []);
+  const textures = usePlanetTextures(budget, onError, wantDetail);
   return (
     <>
-      <PlanetControls entries={entries} {...props} />
+      <PlanetControls entries={entries} onZoomDetail={requestDetail} {...props} />
       {textures && <Earth textures={textures} budget={budget} entries={entries} {...props} />}
     </>
   );
