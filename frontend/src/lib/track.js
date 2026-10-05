@@ -255,6 +255,12 @@ export const events = {
   FEEDBACK_NUDGE_CTA: 'feedback_nudge_cta',
   FEEDBACK_SUBMIT: 'feedback_submit',
 
+  // «Фальшивая дверь» платного API (замер спроса). Параметры — только
+  // source / indicator_code / use_case; почта в события НЕ кладётся.
+  API_INTEREST_VIEW: 'api_interest_view',
+  API_INTEREST_CLICK: 'api_interest_click',
+  API_INTEREST_SUBMIT: 'api_interest_submit',
+
   // Спрос-аналитика поиска: что пользователи ищут — введённое (debounce),
   // выбранное и брошенное. Агрегируется в ежедневный Telegram-дайджест,
   // запросы с 0 результатов = карта пробелов в каталоге индикаторов.

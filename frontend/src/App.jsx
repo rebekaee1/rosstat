@@ -16,6 +16,7 @@ import ScrollToAnchor from './components/ScrollToAnchor';
 import ErrorBoundary from './components/ErrorBoundary';
 import RegisterNudge from './components/RegisterNudge';
 import DownloadLimitModal from './components/DownloadLimitModal';
+import ApiInterestModal from './components/ApiInterestModal';
 import RouteFallback from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
@@ -324,6 +325,7 @@ function AppRoutes() {
       <RegisterNudge />
       <Footer />
       <DownloadLimitModal />
+      <ApiInterestModal />
     </AuthProvider>
     </LocaleProvider>
   );

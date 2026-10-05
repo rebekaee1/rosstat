@@ -16,6 +16,7 @@ import CountryComparePanel, { ScaleNudge } from './CountryComparePicker';
 import ChartDownloadMenu from './ChartDownloadMenu';
 import ForecastControl from './ForecastControl';
 import EmbedLink from './EmbedLink';
+import ApiInterestLink from './ApiInterestLink';
 import Button from './Button';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
@@ -253,6 +254,7 @@ export default function IndicatorChartSection({
             onPng={handleDownloadImage}
           />
           <EmbedLink code={code} />
+          <ApiInterestLink source="indicator" code={code} />
           <Link
             to="/methodology"
             title={t('chart.methodologyHint')}

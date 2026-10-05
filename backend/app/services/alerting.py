@@ -234,6 +234,61 @@ async def notify_feedback(info: dict) -> None:
         await send_telegram("\n".join(lines), chat_id=cid, kind="feedback")
 
 
+# Сегменты «Для чего нужны данные» заявки на API (ключевая сегментация замера
+# спроса). Ключи — контракт с фронтом (ApiInterestModal), подписи — для владельца.
+API_INTEREST_USE_CASES = {
+    "analytics_treasury": "аналитика / казначейство",
+    "planning_contracts": "бизнес-планирование и договоры",
+    "consulting": "консалтинг",
+    "research": "исследование / наука",
+    "study": "учёба",
+    "journalism": "журналистика",
+    "other": "другое",
+}
+_API_INTEREST_SOURCES = {"indicator": "страница показателя", "limit_modal": "окно лимита скачиваний"}
+
+
+def format_api_interest_message(info: dict) -> str:
+    """Текст Telegram-сообщения «заявка на API». Чистая функция (тестируется).
+
+    Почта и комментарий — введённый гостем текст: экранируем под parse_mode=HTML.
+    Это единственное место, где почта попадает в хранилище (telegram_outbox,
+    как и у обратной связи); в логи и в frontend_events она не пишется.
+    """
+    def esc(v) -> str:
+        return escape(str(v)) if v not in (None, "") else "—"
+
+    use_case = info.get("use_case")
+    lines = [
+        "🧪 <b>Заявка на API</b> (замер спроса)",
+        f"Email: {esc(info.get('email'))}",
+        f"Для чего: {esc(API_INTEREST_USE_CASES.get(use_case, use_case))}",
+        f"Откуда: {esc(_API_INTEREST_SOURCES.get(info.get('source'), info.get('source')))}",
+        f"Показатель: {esc(info.get('indicator_code'))}",
+        f"Версия сайта: {site_version_label(info.get('locale'))}",
+    ]
+    comment = info.get("comment")
+    if comment:
+        lines += ["", esc(comment)]
+    return "\n".join(lines)
+
+
+async def notify_api_interest(info: dict) -> bool:
+    """Заявка на платный API → всем получателям дайджеста (владелец + skrakan).
+
+    Не зависит от `telegram_realtime_alerts_enabled`: заявка — это данные
+    замера, а не алерт, молча терять её нельзя. Возвращает True, если хотя бы
+    одно сообщение доставлено. Недоставленное остаётся в telegram_outbox и
+    досылается job'ом (kind in RESEND_KINDS).
+    """
+    text = format_api_interest_message(info)
+    delivered = False
+    for cid in digest_recipients():
+        if await send_telegram(text, chat_id=cid, kind="api_interest"):
+            delivered = True
+    return delivered
+
+
 async def alert_forecast_issue(indicator_code: str, detail: str) -> None:
     """Прогнозный контур (Н-7/Н-8): нерезолвнутая стратегия, провал каскада."""
     msg = (

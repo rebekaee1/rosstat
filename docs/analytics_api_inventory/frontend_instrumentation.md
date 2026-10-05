@@ -194,6 +194,9 @@ ym(107136069, 'init', {
 | `search_abandon` | `IndicatorSearch` | закрыли поиск без выбора | `q`, `results` |
 | `register_nudge_view` / `register_nudge_expand` / `register_nudge_cta` | глобально | плашка «регистрация» | — |
 | `feedback_nudge_view` / `feedback_nudge_expand` / `feedback_nudge_cta` / `feedback_submit` | глобально | обратная связь | — |
+| `api_interest_view` | `ApiInterestLink` (график показателя; окно лимита) | показ точки входа «API и выгрузка с прогнозом», не чаще 1 раза за сессию на точку входа; только при `RUSTATS_API_INTEREST_ENABLED=true` | `source` (`indicator`/`limit_modal`) |
+| `api_interest_click` | `ApiInterestLink` | клик по точке входа, открывает окно заявки | `source`, `indicator_code` |
+| `api_interest_submit` | `ApiInterestModal` | заявка отправлена (замер платного спроса) | `use_case`, `source`; почта в событие не кладётся |
 | `header_login_click` / `header_register_click` | `Navbar` | CTA в шапке | — |
 | `signup` / `login_success` / `oauth_start` | auth-флоу (ADR-0007) | регистрация/вход | `method` |
 | `newsletter_opt_in` / `newsletter_opt_out` | кабинет | подписка на рассылку | — |

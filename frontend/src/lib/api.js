@@ -218,6 +218,13 @@ export const deleteAccount = () => api.delete('/auth/account').then((r) => r.dat
 export const submitFeedback = (payload) =>
   api.post('/auth/feedback', payload).then((r) => r.data);
 
+/**
+ * Заявка «API и выгрузка с прогнозом» (замер спроса). Открыта и гостям; почта
+ * уходит только на этот эндпоинт — в аналитические события не попадает.
+ */
+export const submitApiInterest = (payload) =>
+  api.post('/api-interest', payload).then((r) => r.data);
+
 /** Подписка/отписка на информационную рассылку из кабинета. */
 export const updateNewsletter = (subscribe) =>
   api.post('/auth/account/newsletter', { subscribe }).then((r) => r.data.user);

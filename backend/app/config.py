@@ -352,6 +352,12 @@ class Settings(BaseSettings):
     # Интерактивные кнопки бота (getUpdates-поллер каждые 30 с)
     telegram_poller_enabled: bool = False
 
+    # «Фальшивая дверь» платного API (замер спроса, 2026-10-05): точки входа
+    # «API и выгрузка с прогнозом» на странице показателя и в окне лимита
+    # скачиваний. false = фронт ничего не показывает, POST /api-interest → 404.
+    # Включает владелец в .env; код выкладкой опрос не включает.
+    api_interest_enabled: bool = False
+
     # Админ-BI (/admin/bi): comma-separated email'ы с доступом к дашборду.
     # Вход обычной сессией; email сверяется по способам входа пользователя.
     admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"

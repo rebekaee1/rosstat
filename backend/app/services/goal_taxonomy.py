@@ -46,6 +46,7 @@ _MACRO = {
     "signup",
     "newsletter_opt_in",
     "feedback_submit",
+    "api_interest_submit",    # заявка на платный API («фальшивая дверь», 2026-10-05)
 }
 
 # --- micro: ценные действия с продуктом ---
@@ -79,6 +80,7 @@ _INTENT = {
     "feedback_nudge_cta",
     "register_nudge_expand",
     "feedback_nudge_expand",
+    "api_interest_click",   # клик «API и выгрузка» — намерение, ещё не заявка
 }
 
 # --- engagement: вовлечение в контент и инструменты ---
@@ -164,6 +166,7 @@ _TECHNICAL = {
     "embed_runtime_view",   # сигнал дистрибуции — своя карточка, не конверсия
     "search_abandon",       # негативный сигнал «искал и не нашёл»
     "outbound_link",        # уход с сайта — не вовлечение
+    "api_interest_view",    # показ точки входа «API и выгрузка» — знаменатель CTR
 }
 
 # Точечные override веса (сильнее дефолта tier'а).
@@ -171,6 +174,7 @@ _WEIGHT_OVERRIDES = {
     "signup": 100,
     "newsletter_opt_in": 60,
     "feedback_submit": 40,
+    "api_interest_submit": 40,
     "login_success": 15,
     "download_csv": 12,
     "download_excel": 12,

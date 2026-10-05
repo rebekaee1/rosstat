@@ -37,7 +37,7 @@ from app.models import TelegramOutbox
 logger = logging.getLogger(__name__)
 
 RESEND_KINDS = (
-    "digest", "pulse_digest", "new_user", "feedback",
+    "digest", "pulse_digest", "new_user", "feedback", "api_interest",
     "etl_summary", "world_ingest_summary",
 )
 PENDING_ERROR = "pending"
