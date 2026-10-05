@@ -2556,7 +2556,6 @@ export default {
   'z3.rating.guestLimitTitle': 'Дополнительный показатель добавлен',
   'z3.rating.guestLimitHint': 'Чтобы добавить ещё, создайте бесплатный аккаунт или войдите.',
   'z3.rating.addNamed': 'Добавить колонку: {name}',
-<<<<<<< HEAD
   // ── W6A: волна 6, зона A (ожидание, ошибки, вход, приглашения) ──
   'w6a.loading.caption': 'Загружаем данные…',
   'w6a.loading.slow': 'Дольше обычного.',
@@ -2624,7 +2623,6 @@ export default {
   'w6b.country.cuts_many': 'разрезов',
   'w6b.scope.yearsWord': 'лет',
   'w6b.country.profile': 'Профиль страны',
-=======
   // ── Волна 6, зона C: планета на первом экране, управление, карточка, цвета ──
   'w6c.hero.subtitle': 'Официальные данные национальных источников: найдите, сравните, посмотрите прогноз.',
   'w6c.hint.touch': 'Проведите по шару — он повернётся',
@@ -2653,5 +2651,4 @@ export default {
   'w6c.place.ask': 'Попросить добавить',
   'w6c.place.mailSubject': 'Данные по стране: {country}',
   'w6c.trend.label': 'Середина рейтинга по годам: с {from} по {to}',
->>>>>>> worktree-agent-a315f5f9a87c20afa
 };

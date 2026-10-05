@@ -2550,7 +2550,6 @@ export default {
   'z3.rating.guestLimitTitle': 'Extra indicator added',
   'z3.rating.guestLimitHint': 'To add more, create a free account or sign in.',
   'z3.rating.addNamed': 'Add column: {name}',
-<<<<<<< HEAD
   // ── W6A: wave 6, zone A (waiting, errors, sign-in, invitations) ──
   'w6a.loading.caption': 'Loading data…',
   'w6a.loading.slow': 'Taking longer than usual.',
@@ -2618,7 +2617,6 @@ export default {
   'w6b.scope.yearsWord_few': 'years',
   'w6b.scope.yearsWord_many': 'years',
   'w6b.country.profile': 'Country profile',
-=======
   // ── Wave 6, zone C: the planet on the first screen, controls, country card, colours ──
   'w6c.hero.subtitle': 'Official data from national sources: find, compare, see the forecast.',
   'w6c.hint.touch': 'Swipe across the globe to turn it',
@@ -2647,5 +2645,4 @@ export default {
   'w6c.place.ask': 'Ask us to add it',
   'w6c.place.mailSubject': 'Data for the country: {country}',
   'w6c.trend.label': 'Middle of the ranking by year: {from} to {to}',
->>>>>>> worktree-agent-a315f5f9a87c20afa
 };
