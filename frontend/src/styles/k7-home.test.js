@@ -55,6 +55,15 @@ describe('k7-home.css, planet-hero.css, z3-home.css (главная в хрус�
     expect(k7).toMatch(/\.fe-country-grid > li:nth-child\(n \+ 17\)\s*\{[^}]*content-visibility:\s*auto/);
   });
 
+  it('круг 4: шкала места это трубка и камень, без столбиков; кадр героя и карточка планеты поправлены', () => {
+    expect(k7).toMatch(/\.fe-today__scale\s*\{[^}]*linear-gradient\(90deg, #B08A3E/);
+    expect(k7).toMatch(/\.fe-today__gem\s*\{[^}]*left:\s*calc\(var\(--fe-rank-pos/);
+    expect(k7).not.toMatch(/fe-today__ladder/);
+    expect(z3).not.toMatch(/fe-today__ladder|fe-today-bar/);
+    expect(k7).toMatch(/--fe-hero-frame-right:\s*-10vw/);
+    expect(hero).toMatch(/\.fe-hero-planet\s*\{\s*position:\s*sticky/);
+  });
+
   it('у трёх панелей «Попробуйте сами» разные лампы, у плиток «Мир сейчас» четыре оттенка', () => {
     expect(k7).toMatch(/\.fe-tool:nth-child\(2\)\s*\{\s*--lamp:\s*var\(--k7-lamp-rose\)/);
     expect(k7).toMatch(/\.fe-tool:nth-child\(3\)\s*\{\s*--lamp:\s*var\(--k7-lamp-ice\)/);

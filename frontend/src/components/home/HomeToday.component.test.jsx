@@ -60,14 +60,18 @@ describe('HomeToday: «Мир сейчас»', () => {
     expect(prices.textContent).toContain('рост цен за год, 2025');
     expect(prices.textContent).toContain('Место 1 из 4');
     expect(prices.textContent).toContain('\u{1F1F9}\u{1F1F7}');
-    expect(prices.querySelectorAll('.fe-today__ladder rect')).toHaveLength(4);
-    expect(prices.querySelectorAll('.fe-today__ladder rect.is-mark')).toHaveLength(1);
-    // Столбики-стёкла: заливка берётся из градиентов внутри SVG; текущая страна золотая.
-    const rects = [...prices.querySelectorAll('.fe-today__ladder rect')];
-    expect(prices.querySelectorAll('.fe-today__ladder linearGradient')).toHaveLength(2);
-    expect(rects.every((rect) => /^url\(#g[\w-]+-(glass|gold)\)$/.test(rect.getAttribute('fill')))).toBe(true);
-    expect(prices.querySelector('.fe-today__ladder rect.is-mark').getAttribute('fill')).toMatch(/-gold\)$/);
-    expect(prices.getAttribute('href')).toBe('/turkey/indicator/turkey-x');
+    // Шкала места: трубка и один камень; Турция первая, камень в самом начале.
+    const scale = prices.querySelector('.fe-today__scale');
+    expect(scale).toBeTruthy();
+    expect(prices.querySelectorAll('.fe-today__gem')).toHaveLength(1);
+    expect(scale.className).toContain('is-first');
+    expect(scale.style.getPropertyValue('--fe-rank-pos')).toBe('0');
+    // Штрихов-столбиков (похожих на штрих-код) нет.
+    expect(prices.querySelectorAll('svg rect')).toHaveLength(0);
+    // Не первое место: камень сдвинут по рангу (дом: 4 страны, место ниже первого), «первого» класса нет.
+    const homeScale = block.querySelector('[data-tile="home"], [data-tile="median"]').querySelector('.fe-today__scale');
+    expect(Number(homeScale.style.getPropertyValue('--fe-rank-pos'))).toBeGreaterThan(0);
+    expect(homeScale.className).not.toContain('is-first');
     const jobs = block.querySelector('[data-tile="jobs"]');
     expect(jobs.textContent).toContain('Япония');
     expect(jobs.textContent).toContain('2,5');

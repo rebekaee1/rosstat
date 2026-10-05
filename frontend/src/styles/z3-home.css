@@ -126,14 +126,9 @@
 .fe-today__flag { flex: none; font-size: 17px; line-height: 1; }
 .fe-today__country { min-width: 0; overflow-wrap: anywhere; }
 .fe-today__caption { font-size: 13px; line-height: 1.35; color: var(--z3-muted); }
-.fe-today__rank { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 10px; }
-.fe-today__ladder { flex: 1 1 auto; min-width: 0; height: 22px; }
-.fe-today__ladder rect {
-  /* Цвет столбиков задают градиенты в самом SVG (стекло и золото, см. HomeToday.jsx); здесь только появление. */
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: fe-today-bar 0.7s var(--z3-ease) calc(var(--i) * 9ms + 180ms) both;
-}
+.fe-today__rank { display: grid; gap: 7px; margin-top: auto; padding-top: 12px; }
+/* Шкала места: трубка и камень рисуются в k7-home.css (раунд 3, круг 4: вместо столбиков-штрихов). */
+.fe-today__scale { position: relative; display: block; height: 14px; }
 .fe-today__rank-text { flex: none; font-size: 12.5px; font-weight: 600; color: var(--z3-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .fe-today__all {
   display: inline-flex;
@@ -151,7 +146,7 @@
 .fe-today__all:hover svg { transform: translateX(3px); }
 .fe-today__all:hover { text-decoration: underline; text-underline-offset: 3px; }
 @keyframes fe-today-pulse { 0% { opacity: 0.55; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(2.6); } }
-@keyframes fe-today-bar { from { transform: scaleY(0); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fe-today-gem { from { transform: translate(-50%, -50%) scale(0.4); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; } }
 
 /* ── Числа платформы под «Миром сейчас»: золотые цифры, значки, поднятие при наведении ─ */
 .fe-dashboard [data-block='home-data-scope'].fe-scope {
@@ -409,7 +404,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fe-today__pulse::after, .fe-today__ladder rect { animation: none; }
+  .fe-today__pulse::after, .fe-today__gem { animation: none; }
   .fe-today__tile, .fe-dashboard .fe-country-row, .fe-quick__chip, .fe-dashboard .fe-scope-stat { transition: none; }
   .fe-today__tile:hover, .fe-dashboard .fe-country-row:hover, .fe-dashboard .fe-scope-stat:hover, .fe-quick__chip:hover { transform: none; }
 }
