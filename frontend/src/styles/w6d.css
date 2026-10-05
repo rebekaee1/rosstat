@@ -18,7 +18,10 @@
 }
 .w6d-quick svg { color: var(--color-champagne-ink); flex-shrink: 0; }
 .w6d-quick.is-active,
-.w6d-tile.is-active { background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg); box-shadow: var(--fe-shadow-active), var(--fe-inset-glint); }
+.w6d-tile.is-active { background: var(--fe-glass-active); color: var(--fe-on-gold, #231B0B); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+.w6d-quick.is-active svg, .w6d-tile.is-active .w6d-tile__icon { color: var(--fe-on-gold, #231B0B); }
+.w6d-tile.is-active .w6d-tile__icon { background: rgba(255, 255, 255, 0.34); }
+.w6d-tile.is-active .w6d-tile__unit { color: rgba(35, 27, 11, 0.78); }
 .w6d-picker__all { color: var(--color-champagne-ink); }
 .w6d-picker__chev { transition: transform 0.18s ease; }
 .w6d-picker__all.is-open .w6d-picker__chev { transform: rotate(180deg); }
@@ -31,9 +34,11 @@
 }
 }
 .w6d-picker__panel {
-  margin-top: 12px; padding: 12px;  border-radius: 20px;
-  background: var(--fe-pop-bg);
-  box-shadow: var(--fe-card-shadow);
+  margin-top: 12px; padding: 12px; border-radius: 20px;
+  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
+  -webkit-backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  box-shadow: var(--fe-float-shadow-hover, var(--fe-card-shadow)), var(--fe-inset-glint);
 }
 .w6d-picker__search {
   display: flex; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 12px; padding: 0 12px;
@@ -92,13 +97,28 @@
 /* ── Другие годы, места за 5 лет ── */
 .w6d-block-title { margin: 0 0 10px; font-family: var(--font-display, inherit); font-size: 20px; font-weight: 700; color: var(--color-text-primary); }
 .w6d-years, .w6d-shifts { margin: 28px 0; }
-.w6d-years__list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+/* Годы: одна лента L2 с желобом, годы лежат в ней плоскими сегментами; под рукой поднимается плитка. Линий нет. */
+.w6d-years__list {
+  display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 6px; list-style: none;
+  border-radius: 20px; background: var(--fe-glass-l2);
+  box-shadow: inset 0 2px 6px rgba(120, 90, 30, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85);
+}
 .w6d-year-link {
   display: inline-flex; align-items: center; justify-content: center; min-width: 64px; min-height: 44px; padding: 0 14px;
-   border-radius: 12px; background: var(--fe-glass-l2);
-  color: var(--color-text-primary); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; text-decoration: none; box-shadow: var(--fe-l2-shadow);
+  border-radius: 14px; background: transparent;
+  color: var(--color-text-primary); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; text-decoration: none;
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
 }
-@media (hover: hover) { .w6d-year-link:hover { color: var(--color-champagne-ink); } }
+@media (hover: hover) { .w6d-year-link:hover { color: var(--color-champagne-ink); background: var(--fe-glass-l2-hover); box-shadow: var(--fe-l2-shadow); } }
+@media (max-width: 639px) {
+  .w6d-years__list {
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 28px), transparent 100%);
+  }
+  .w6d-years__list::-webkit-scrollbar { display: none; }
+  .w6d-years__list > li { flex: none; }
+}
 .w6d-shifts__lead { margin: -4px 0 12px; color: var(--color-text-secondary); font-size: 14px; }
 .w6d-shifts__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 16px; }
 .w6d-shifts__head { margin: 0 0 6px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
@@ -127,7 +147,7 @@
    border-radius: 999px; background: var(--fe-glass-l2);
   color: var(--color-text-primary); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; touch-action: manipulation; box-shadow: var(--fe-l2-shadow);
 }
-.w6d-sr-chip[aria-current='true'] { background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg); box-shadow: var(--fe-shadow-active), var(--fe-inset-glint); }
+.w6d-sr-chip[aria-current='true'] { background: var(--fe-glass-active); color: var(--fe-on-gold, #231B0B); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
 @media (hover: hover) { .w6d-sr-chip:hover { background: var(--fe-glass-l2-hover); } }
 .w6d-sr-value { display: flex; align-items: center; gap: 10px; margin-top: 4px; color: var(--color-text-primary); }
 .w6d-sr-value strong { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }

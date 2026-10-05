@@ -51,6 +51,7 @@ import YearPicker from '../components/YearPicker';
 import '../styles/world.css';
 import '../styles/w6d.css';
 import '../styles/z6-rating.css';
+import '../styles/k6-country.css';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { ratingHeading } from '../lib/ratingConcepts';
 import {
@@ -713,7 +714,7 @@ export default function WorldRatingPage() {
                       <Link
                         key={item.country_code}
                         to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })}
-                        className="w2-fact fe-press"
+                        className="w2-fact fe-press fe-glint fe-cursor-light"
                         data-place={label === t('w2.rating.first') ? 'first' : 'last'}
                       >
                         <span className="w2-fact-label">{label}</span>
@@ -892,12 +893,12 @@ export default function WorldRatingPage() {
                   </>
                 ) : (
                   <div
-                    className="z6-table-card overflow-x-auto rounded-3xl fe-glass-lite"
+                    className="z6-table-card overflow-x-auto"
                     data-scroll={extraColumns.length > 0 ? 'x' : undefined}
                   >
                     <div style={tableStyle} className="transition-transform duration-200">
                       <table className="w6d-table w-full min-w-[34rem] text-sm">
-                        <thead className="sticky top-0 z-10 bg-obsidian-light/95 backdrop-blur-sm">
+                        <thead>
                           <tr className="text-left text-xs text-text-secondary">
                             <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
                             <SortableTh
@@ -942,7 +943,7 @@ export default function WorldRatingPage() {
                           {visibleRows.map((item, rowIndex) => (
                             <tr
                               key={item.country_code}
-                              className="z6-row border-t border-border-subtle"
+                              className="z6-row"
                               data-top={medalOf(item.rank)}
                               style={{ '--z6-i': Math.min(rowIndex, 24) }}
                             >

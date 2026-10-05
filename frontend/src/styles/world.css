@@ -57,7 +57,7 @@
   position: relative;
   overflow: hidden;
   background: radial-gradient(circle at 34% 28%, #fff 0%, #e9f0f5 34%, #c3d4e1 78%, #a9c0d3 100%);
-  box-shadow: 0 16px 32px -14px rgba(36, 56, 84, 0.3), 0 0 0 3px rgba(150, 188, 224, 0.14), 0 0 26px 4px rgba(132, 176, 222, 0.22);
+  box-shadow: 0 16px 32px -14px rgba(36, 56, 84, 0.3), 0 0 26px 4px rgba(132, 176, 222, 0.22);
   animation: w2-breathe 2.2s ease-in-out infinite;
 }
 .w2-planet-skeleton-orb::before {
@@ -134,16 +134,20 @@
 }
 
 /* Рейтинг на телефоне: карточки-строки вместо таблицы. */
-.w2-rank-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.w2-rank-item { min-width: 0; border-radius: 18px; background: var(--fe-glass-l2); overflow: hidden; box-shadow: var(--fe-l2-shadow); }
+.w2-rank-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+/* Телефон: строка рейтинга — низкая L1-полка без линий; у топ-3 свой тон стекла, знак отличия — медаль. */
+.w2-rank-item { min-width: 0; border-radius: 18px; background: var(--fe-l1-bg); overflow: hidden; box-shadow: var(--fe-card-shadow); }
+.w2-rank-item:has([data-medal='1']) { background: linear-gradient(135deg, var(--k6-tint-gold, rgba(250, 234, 176, 0.7)), transparent 80%), var(--fe-glass-l1); }
+.w2-rank-item:has([data-medal='2']) { background: linear-gradient(135deg, var(--k6-tint-silver, rgba(226, 235, 247, 0.74)), transparent 80%), var(--fe-glass-l1); }
+.w2-rank-item:has([data-medal='3']) { background: linear-gradient(135deg, var(--k6-tint-bronze, rgba(248, 224, 204, 0.7)), transparent 80%), var(--fe-glass-l1); }
 .w2-rank-row {
   position: relative;
   display: grid;
-  grid-template-columns: 26px 24px minmax(0, 1fr) auto 16px;
+  grid-template-columns: 28px 24px minmax(0, 1fr) auto 16px;
   align-items: center;
   gap: 10px;
-  min-height: 56px;
-  padding: 10px 14px 12px;
+  min-height: 52px;
+  padding: 8px 14px 14px;
   color: var(--color-text-primary);
   text-decoration: none;
 }
@@ -153,8 +157,13 @@
 .w2-rank-value { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .w2-rank-value strong { font-size: 16px; font-weight: 600; }
 .w2-rank-value small { color: var(--color-text-secondary); font-size: 13px; }
-.w2-rank-bar { position: absolute; left: 14px; right: 14px; bottom: 5px; height: 3px; border-radius: 999px; background: color-mix(in srgb, var(--color-champagne) 14%, transparent); overflow: hidden; }
-.w2-rank-bar::after { content: ''; position: absolute; inset: 0 auto 0 0; width: var(--w2-share, 0); border-radius: inherit; background: var(--color-champagne); opacity: 0.75; }
+/* Столбец значения — стеклянная трубка: жёлоб с внутренней тенью и «жидкое золото» с бликом и свечением на конце. */
+.w2-rank-bar { position: absolute; left: 14px; right: 14px; bottom: 5px; height: 6px; border-radius: 999px; background: var(--k6-groove, rgba(88, 74, 46, 0.09)); box-shadow: inset 0 1px 2px var(--k6-groove-shade, rgba(60, 48, 24, 0.22)), inset 0 -1px 0 var(--k6-groove-lip, rgba(255, 255, 255, 0.85)); }
+.w2-rank-bar::after {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: var(--w2-share, 0); min-width: 6px; border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 55%), linear-gradient(90deg, #EAD59A, #C9A24D);
+  box-shadow: 3px 0 9px -1px rgba(201, 162, 77, 0.7);
+}
 .w2-rank-extra { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; padding: 8px 14px 10px 52px; font-size: 13px; }
 .w2-rank-extra > div { display: flex; gap: 6px; }
 .w2-rank-extra dt { color: var(--color-text-secondary); }
@@ -280,7 +289,7 @@
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent; box-shadow: var(--fe-l2-shadow);
 }
-.fe-year-button[aria-expanded='true'] { box-shadow: 0 0 0 3px rgba(173, 138, 72, 0.1); }
+.fe-year-button[aria-expanded='true'] { box-shadow: 0 0 16px 1px rgba(201, 162, 77, 0.4), var(--fe-shadow-l2, 0 6px 18px -12px rgba(60, 48, 24, 0.35)), var(--fe-inset-glint); }
 .fe-year-button:focus-visible, .fe-year-option:focus-visible { outline: 2px solid var(--color-champagne); outline-offset: 2px; }
 .fe-year-button:disabled { opacity: 0.5; cursor: default; }
 .fe-year-chevron { flex-shrink: 0; color: var(--color-text-tertiary); transition: transform 0.15s ease; }
@@ -298,9 +307,11 @@
   padding: 10px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border-radius: 16px;
-  background: var(--fe-glass-l2);
-  box-shadow: 0 16px 36px -12px rgba(70, 56, 28, 0.3);
+  border-radius: 18px;
+  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg, rgba(255, 255, 255, 0.88));
+  -webkit-backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  box-shadow: var(--fe-float-shadow-hover, 0 16px 36px -12px rgba(70, 56, 28, 0.3)), var(--fe-inset-glint);
   animation: fe-year-in 0.16s ease-out;
 }
 .fe-year-pop--start { right: auto; left: 0; }
@@ -320,9 +331,9 @@
   touch-action: manipulation;
 }
 .fe-year-option[aria-selected='true'] {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg);
-  color: var(--color-champagne-ink);
-  font-weight: 650; box-shadow: var(--fe-shadow-active), var(--fe-inset-glint);
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold, #231B0B);
+  font-weight: 650; box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 @media (hover: hover) { .fe-year-option:hover { color: var(--color-text-primary); } }
 @keyframes fe-year-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
