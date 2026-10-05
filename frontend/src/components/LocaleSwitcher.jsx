@@ -82,7 +82,7 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
       {open && (
         <div
           className={cn(
-            'absolute top-full z-[110] mt-2 min-w-[10.5rem] rounded-2xl fe-glass-pop',
+            'absolute top-full z-[110] mt-2 min-w-[10.5rem] rounded-2xl',
             'py-1.5 shadow-2xl fe-glass-pop',
             'right-0',
           )}

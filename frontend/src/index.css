@@ -755,6 +755,8 @@ nav.glass-surface-soft {
     scroll-behavior: auto !important;
   }
   .fe-spinner, .fe-search-spinner { animation-duration: 2.4s !important; animation-iteration-count: infinite !important; }
+  /* Парение и нажатие тоже отключены: тень и цвет меняются, но ничего не движется. */
+  .fe-chip, .fe-btn, .fe-button-primary, .fe-button-secondary, .fe-category-card { transform: none !important; }
 }
 @media print {
   .fe-navbar, nav.glass-surface, [data-consent], .fe-page-progress, .fe-ticker { display: none !important; }

@@ -172,12 +172,11 @@ nav.fe-navbar a.fe-nav-login:hover {
 .fe-nav-round:hover, .fe-nav-round[aria-expanded='true'] { background: var(--z2-gold-soft); color: var(--color-text-primary); }
 .fe-nav-round > svg:not([class*='chevron']) { width: 18px; height: 18px; }
 
-/* Выпадающие панели шапки: тёплое стекло, золотая кромка. */
+/* Выпадающие панели шапки: тёплое стекло (L1, плотнее для читаемости над страницей), блик сверху и тень, без кромки. */
 .fe-nav-panel {
-  background: color-mix(in srgb, var(--color-surface) 93%, transparent);
-  -webkit-backdrop-filter: blur(18px) saturate(1.15);
-  backdrop-filter: blur(18px) saturate(1.15);
-  box-shadow: 0 24px 60px -24px rgba(38, 52, 78, 0.38), inset 0 1px 0 #fffc;
+  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
 .fe-nav-tools { min-width: 300px; padding: 8px; }
 .fe-nav-tool {

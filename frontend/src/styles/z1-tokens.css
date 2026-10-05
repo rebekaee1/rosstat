@@ -219,7 +219,8 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
 @media (hover: hover) {
   a.fe-glass-2:hover, button.fe-glass-2:hover:not(:disabled), [role='button'].fe-glass-2:hover { background: var(--fe-glass-l2-hover); }
 }
-.fe-glass-2:focus-within { box-shadow: var(--fe-focus-ring), var(--fe-shadow-l2); }
+/* Поля и обёртки полей: мягкое золотое кольцо при фокусе (кнопки и ссылки берут общий :focus-visible, чтобы кольцо не залипало после мыши). */
+.fe-glass-2:not(button, a, summary, [role='button']):focus-within { box-shadow: var(--fe-focus-ring), var(--fe-shadow-l2); }
 .fe-glass-2.is-invalid, .fe-glass-2[aria-invalid='true'] { box-shadow: inset 0 -2px 0 var(--color-negative), var(--fe-shadow-l2); }
 /* Только тень L2, когда фон уже задан своим тоном (тонированные плашки). */
 .fe-shadow-2 { box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
