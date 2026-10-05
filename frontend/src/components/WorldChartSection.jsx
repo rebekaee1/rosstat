@@ -39,9 +39,6 @@ function lastAbs(points) {
   return null;
 }
 
-// Постоянный пустой массив: новый [] на каждом рендере заставлял график перерисовываться бесконечно.
-const NO_SERIES = [];
-
 export default function WorldChartSection({
   code,
   indicator,
@@ -92,6 +89,7 @@ export default function WorldChartSection({
     displayedUnit,
     windowRebase,
     windowRebaseUnit,
+    autoPercentActive,
   } = useCountryComparison({
     surface: 'world',
     peers: comparisonPeers,
@@ -101,6 +99,7 @@ export default function WorldChartSection({
     unit,
     title: nameForAria,
     modeMeta,
+    autoPercent: true,
   });
   const effectiveShowForecast = forecastEnabled && showForecast && !windowRebase && !rebased;
   // IndicatorChart ждёт российскую оболочку {forecast: {values}}, а world API
@@ -212,7 +211,12 @@ export default function WorldChartSection({
           suggestPercent={suggestPercent && !showScaleNudge}
         />
       </div>
-      <ScaleNudge show={showScaleNudge} onScale={setComparisonScale} />
+      <ScaleNudge
+        show={showScaleNudge}
+        auto={autoPercentActive}
+        onScale={setComparisonScale}
+        reserve={activeComparisonIds.length > 0 && comparisonQueries.some((query) => query.isLoading)}
+      />
 
       {chartLoading ? (
         <ChartSectionSkeleton />
@@ -239,7 +243,7 @@ export default function WorldChartSection({
             referenceLineY={!windowRebase && (unit === '%' || unit === 'п.п.') ? 0 : null}
             numericTooltipOnly
             actualSeriesLabel={country?.name}
-            comparisonSeries={windowRebase ? loadedComparisonSeries : NO_SERIES}
+            comparisonSeries={loadedComparisonSeries}
             rebaseVisible={windowRebase}
           />
         </div>

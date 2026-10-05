@@ -1,0 +1,447 @@
+/* Раунд 2, зона Z7: «Сравнение» и сравнение стран на карточке показателя.
+   Глобальные токены берём только как var(--fe-…, запасное значение): файл живёт и без z1-tokens.css. */
+
+/* ---------- Плашка «проценты / значения» над графиком ---------- */
+
+/* Место под плашку держится, пока ряды стран грузятся: график и кнопка не «ползут» вниз под пальцем. */
+.fe-z7-scale-slot {
+  min-height: 4.25rem;
+  margin-top: 0.75rem;
+}
+@media (min-width: 640px) {
+  .fe-z7-scale-slot { min-height: 3.25rem; }
+}
+.fe-z7-scale-slot--on { min-height: 0; }
+.fe-z7-scale-slot > .fe-w6g-scale-nudge { margin-top: 0; }
+
+.fe-z7-scale-note {
+  position: relative;
+  border-color: color-mix(in srgb, var(--fe-gold, #AD8A48) 38%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--fe-gold, #AD8A48) 11%, transparent), color-mix(in srgb, var(--fe-gold, #AD8A48) 4%, transparent));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  animation: fe-z7-note-in var(--fe-reveal-dur, 320ms) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.fe-z7-scale-note--auto { padding-left: 1.125rem; }
+.fe-z7-scale-note--auto::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 0.7rem;
+  bottom: 0.7rem;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--fe-gold, #AD8A48);
+}
+@keyframes fe-z7-note-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fe-z7-scale-note { animation: none; }
+}
+
+/* ---------- Страница «Сравнение»: контейнер и шапка ---------- */
+
+/* Левый край 24 px, как у других страниц данных; на узких экранах 16 px. Ширина по токену контейнера. */
+.fe-compare-page {
+  width: 100%;
+  max-width: var(--fe-container-data, 1280px);
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+@media (min-width: 768px) {
+  .fe-compare-page { padding-inline: 24px; }
+}
+@media (min-width: 1700px) {
+  .fe-compare-page { max-width: min(var(--fe-container-wide, 1400px), 1400px); }
+}
+.fe-compare-h1 { text-wrap: balance; }
+
+/* Плашка готового примера всегда в одну строку: текст сокращается многоточием, кнопка справа. */
+.fe-compare-page .fe-compare-demo {
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+  padding: 0.375rem 0.375rem 0.375rem 1rem;
+}
+.fe-compare-page .fe-compare-demo__text {
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+/* ---------- Выбранные ряды ---------- */
+
+.fe-compare-picked {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 10px;
+}
+.fe-compare-picked__card {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), color-mix(in srgb, var(--color-obsidian-light, #F4F5F8) 90%, white));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 6px 18px -14px rgba(32, 42, 60, 0.35);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+@media (hover: hover) {
+  .fe-compare-picked__card:hover {
+    transform: translateY(var(--fe-lift, -2px));
+    border-color: color-mix(in srgb, var(--fe-gold, #AD8A48) 45%, var(--color-border-subtle));
+  }
+}
+
+/* ---------- Лимит рядов ---------- */
+
+.fe-z7-cap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 10px 12px 10px 14px;
+  border-radius: 12px;
+  border-left: 3px solid var(--fe-gold, #AD8A48);
+  background: color-mix(in srgb, var(--fe-gold, #AD8A48) 8%, transparent);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-primary, #202A3C);
+}
+.fe-z7-cap p { min-width: 0; flex: 1 1 14rem; }
+.fe-z7-cap__btn {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  font-weight: 600;
+  color: var(--color-champagne-ink, #80642F);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (pointer: coarse) {
+  .fe-z7-cap__btn { min-height: 44px; }
+}
+
+/* ---------- Телефон: список выбора слоем на весь экран ---------- */
+
+.fe-z7-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface, #fff);
+  animation: fe-z7-sheet-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.fe-z7-sheet__bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px 10px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: color-mix(in srgb, var(--color-surface, #fff) 94%, var(--fe-gold, #AD8A48));
+}
+.fe-z7-sheet__search {
+  display: flex;
+  min-height: 48px;
+  min-width: 0;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  background: var(--color-surface, #fff);
+}
+.fe-z7-sheet__search:focus-within {
+  border-color: var(--color-champagne-ink, #80642F);
+  box-shadow: 0 0 0 1px var(--color-champagne-ink, #80642F);
+}
+.fe-z7-sheet__close {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  color: var(--color-text-secondary);
+}
+.fe-z7-sheet__list {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.fe-z7-sheet__group {
+  position: sticky;
+  top: 0;
+  padding: 10px 16px 6px;
+  background: color-mix(in srgb, var(--color-surface, #fff) 92%, var(--fe-gold, #AD8A48));
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-champagne-ink, #80642F);
+}
+.fe-z7-sheet__item {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border-subtle) 70%, transparent);
+  text-align: left;
+}
+.fe-z7-sheet__item:active { background: color-mix(in srgb, var(--fe-gold, #AD8A48) 10%, transparent); }
+@keyframes fe-z7-sheet-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fe-z7-sheet { animation: none; }
+}
+
+/* ---------- Карточка графика ---------- */
+
+.fe-compare-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 16px 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.9));
+  box-shadow: var(--fe-card-shadow, 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 22px 56px -30px rgba(32, 42, 60, 0.38), 0 2px 8px rgba(32, 42, 60, 0.05));
+}
+.fe-compare-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--fe-gold, #AD8A48) 30%, var(--fe-gold-soft, #D9BC82) 60%, transparent);
+  opacity: 0.85;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .fe-compare-card { padding: 24px 28px 22px; }
+}
+.fe-compare-card__head { margin-bottom: 14px; }
+.fe-compare-card__title {
+  font-family: var(--font-display, inherit);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  text-wrap: balance;
+}
+@media (min-width: 768px) {
+  .fe-compare-card__title { font-size: 24px; }
+}
+.fe-compare-card__caption {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--fe-text-muted, var(--color-text-secondary));
+}
+
+/* Проценты включила сама страница: объяснение и возврат к значениям внутри карточки. */
+.fe-compare-auto {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 14px;
+  padding: 10px 12px 10px 18px;
+  border: 1px solid color-mix(in srgb, var(--fe-gold, #AD8A48) 38%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold, #AD8A48) 11%, transparent), color-mix(in srgb, var(--fe-gold, #AD8A48) 4%, transparent));
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-primary);
+  animation: fe-z7-note-in var(--fe-reveal-dur, 320ms) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.fe-compare-auto::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--fe-gold, #AD8A48);
+}
+.fe-compare-auto p { min-width: 0; flex: 1 1 16rem; }
+@media (prefers-reduced-motion: reduce) {
+  .fe-compare-auto { animation: none; }
+}
+
+/* «США больше, чем Китай, в 1,6 раза» над графиком. */
+.fe-compare-gap {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 7px 14px 7px 12px;
+  border: 1px solid color-mix(in srgb, var(--fe-gold, #AD8A48) 32%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fe-gold, #AD8A48) 9%, white);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-text-primary);
+}
+.fe-compare-gap svg { color: var(--color-champagne-ink, #80642F); }
+
+.fe-compare-legend {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px 24px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 13px;
+  line-height: 1.4;
+}
+@media (min-width: 640px) {
+  .fe-compare-legend { flex-direction: row; flex-wrap: wrap; align-items: center; }
+}
+.fe-compare-legend.sr-only { margin: -1px; padding: 0; border: 0; }
+
+/* Подписи концов линий: стеклянные плашки справа от графика. */
+.fe-compare-end {
+  position: absolute;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  height: 34px;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2px 8px 2px 9px;
+  border-left: 3px solid var(--color-text-primary);
+  border-radius: 4px 10px 10px 4px;
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 16px -10px rgba(32, 42, 60, 0.4);
+  pointer-events: none;
+  transition: top 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fe-compare-end__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--fe-text-muted, var(--color-text-secondary));
+}
+.fe-compare-end__value {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fe-compare-end { transition: none; }
+}
+
+/* Период под графиком */
+.fe-compare-brush { margin-top: 10px; padding-inline: 4px; }
+.fe-compare-brush__dates {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--fe-text-muted, var(--color-text-secondary));
+}
+
+/* ---------- Что изменилось: карточки на всю ширину ---------- */
+
+.fe-compare-analysis {
+  box-shadow: var(--fe-card-shadow, 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 22px 56px -34px rgba(32, 42, 60, 0.32), 0 2px 8px rgba(32, 42, 60, 0.04));
+}
+.fe-compare-summary {
+  display: grid;
+  gap: 14px;
+  /* auto-fit растягивает 1–3 карточки на всю ширину, а не оставляет пустую треть справа. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+.fe-compare-summary__card {
+  border: 1px solid var(--color-border-subtle);
+  border-top: 3px solid color-mix(in srgb, var(--fe-series, var(--fe-gold, #AD8A48)) 75%, transparent);
+  border-radius: 18px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-obsidian-light, #F4F5F8) 70%, white), var(--color-obsidian-light, #F4F5F8));
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+@media (hover: hover) {
+  .fe-compare-summary__card:hover {
+    transform: translateY(var(--fe-lift, -2px));
+    box-shadow: 0 14px 30px -22px rgba(32, 42, 60, 0.45);
+  }
+}
+@media (min-width: 1280px) {
+  .fe-compare-summary__card { padding: 18px 22px; }
+}
+
+/* ---------- Данные временно недоступны ---------- */
+
+.fe-z7-unavailable {
+  position: relative;
+  display: flex;
+  min-height: 320px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 32px 20px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), color-mix(in srgb, var(--fe-bg-warm, #FAF7F0) 70%, white));
+  color: var(--color-text-primary);
+  text-align: center;
+}
+.fe-z7-unavailable__sketch {
+  position: absolute;
+  inset: 24px 16px;
+  width: calc(100% - 32px);
+  height: calc(100% - 48px);
+}
+.fe-z7-unavailable__body {
+  position: relative;
+  max-width: 28rem;
+  padding: 20px 24px 22px;
+  border: 1px solid color-mix(in srgb, var(--fe-gold, #AD8A48) 30%, var(--color-border-subtle));
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 44px -28px rgba(32, 42, 60, 0.45);
+}
+.fe-z7-unavailable__icon {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fe-gold, #AD8A48) 14%, white);
+  color: var(--color-champagne-ink, #80642F);
+}
+.fe-z7-unavailable__title { font-size: 17px; font-weight: 700; line-height: 1.25; }
+.fe-z7-unavailable__text { margin-top: 4px; font-size: 14px; line-height: 1.45; color: var(--color-text-secondary); }

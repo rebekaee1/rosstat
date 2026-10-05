@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import {
@@ -7,7 +8,7 @@ import {
 } from 'recharts';
 import {
   ArrowLeft, Activity, Search, X, Plus, ImageDown, Sparkles,
-  Landmark, MapPin, Check, ChevronDown, Globe2,
+  Landmark, MapPin, Check, ChevronDown, Globe2, TrendingUp,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { fetchIndicatorData } from '../lib/api';
@@ -28,13 +29,18 @@ import CompareChartState from '../components/CompareChartState';
 import Chip from '../components/Chip';
 import Button from '../components/Button';
 import { formatValueSplit, splitUnit } from '../lib/compareUnitSplit';
+import {
+  formatEndValue, gapInsight, isAbsoluteUnit, spreadLabels, yForValue,
+} from '../lib/compareInsight';
+import { scalesDiffer } from '../lib/useCountryComparison';
+import ChartBrush from '../components/ChartBrush';
 import CompareCountryStep from '../components/compare/CompareCountryStep';
 import { COMPARE_PRESETS, DEFAULT_COMPARE_PRESET, presetIsActive, presetParams } from '../lib/comparePresets';
 import { compareLabels, conceptShortLabel, unitHint } from '../lib/compareTitle';
 import useMediaQuery from '../lib/useMediaQuery';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
-  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, axisSampleValues,
+  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, axisTick, axisSampleValues,
   axisWidthForLabels, chartHeightForWidth, niceAxis,
 } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
@@ -66,6 +72,33 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/regions-w4.css';
 import '../styles/w6-g.css';
+import '../styles/z7-compare.css';
+
+/** Высота окна браузера (px); 0 до первого измерения и без window. */
+function useViewportHeight() {
+  const [height, setHeight] = useState(0);
+  useEffect(() => {
+    const read = () => setHeight(window.innerHeight || 0);
+    read();
+    window.addEventListener('resize', read, { passive: true });
+    return () => window.removeEventListener('resize', read);
+  }, []);
+  return height;
+}
+
+/** После добавления ряда на телефоне плавно ведём к графику, если он ниже середины экрана или выше края. */
+function scrollToCompareChart() {
+  const chart = document.querySelector('[data-block="compare-chart"]');
+  if (!chart) return;
+  const top = chart.getBoundingClientRect().top;
+  if (top >= 72 && top < window.innerHeight * 0.55) return;
+  const reduce = typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (typeof window.scrollTo === 'function') {
+    // 88 px: шапка и лента курсов не закрывают заголовок графика.
+    window.scrollTo({ top: Math.max(0, window.scrollY + top - 88), behavior: reduce ? 'auto' : 'smooth' });
+  }
+}
 
 /** Сила связи двух рядов словами (число — только в «Как посчитано»). */
 function correlationKey(r) {
@@ -298,6 +331,9 @@ async function fetchWorldSeries(code, { signal }) {
 /** Ось Y по данным, а не от нуля: линия не прибита к верху пустого графика. */
 const AXIS_DOMAIN = ['auto', 'auto'];
 
+/** Вертикальная линия при наведении: тонкая, золотая, пунктиром. */
+const HOVER_CURSOR = Object.freeze({ stroke: CHART_THEME.champagne, strokeWidth: 1, strokeDasharray: '4 4' });
+
 const FIELD_CLS =
   'flex items-center gap-2 rounded-lg border bg-obsidian-light px-3 py-2 transition-colors';
 
@@ -320,17 +356,90 @@ function AddCardHeader({ icon, title, hint }) {
 }
 
 /**
+ * Телефон: список выбора открывается отдельным слоем на весь экран со своим полем поиска.
+ * Раньше список раскрывался прямо под полем: тап по нему прокручивал страницу, а клавиатура
+ * закрывала список (тестировщик решал, что «не работает»).
+ */
+function ComboSheet({
+  ariaLabel, searchPlaceholder, query, onQuery, filtered, total, value, onPick, onClose,
+}) {
+  const t = useT();
+  const inputRef = useRef(null);
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (event) => { if (event.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    const focusTimer = window.setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 60);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKey);
+      window.clearTimeout(focusTimer);
+    };
+  }, [onClose]);
+  return createPortal(
+    <div className="fe-z7-sheet" role="dialog" aria-modal="true" aria-label={ariaLabel}>
+      <div className="fe-z7-sheet__bar">
+        <label className="fe-z7-sheet__search">
+          <Search className="h-4 w-4 shrink-0 text-text-tertiary" aria-hidden="true" />
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => onQuery(e.target.value)}
+            placeholder={searchPlaceholder}
+            aria-label={ariaLabel}
+            className="min-w-0 flex-1 bg-transparent text-base text-text-primary outline-none placeholder:text-text-tertiary"
+          />
+        </label>
+        <button type="button" className="fe-z7-sheet__close" onClick={onClose} aria-label={t('common.close')}>
+          <X className="h-5 w-5" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="fe-z7-sheet__list">
+        {total === 0 ? (
+          <div className="px-4 py-6 text-sm text-text-tertiary">{t('compare.nothingFound')}</div>
+        ) : (
+          filtered.map((g) => (
+            <div key={g.label || '_'}>
+              {g.label && <div className="fe-z7-sheet__group">{g.label}</div>}
+              {g.items.map((it) => (
+                <button
+                  key={it.value}
+                  type="button"
+                  onClick={() => onPick(it.value)}
+                  className="fe-z7-sheet__item"
+                >
+                  <span className="min-w-0 break-words text-[15px] leading-snug text-text-primary">{it.label}</span>
+                  {it.value === value
+                    ? <Check className="h-4 w-4 shrink-0 text-champagne-ink" aria-hidden="true" />
+                    : it.hint && <span className="shrink-0 text-xs text-text-secondary">{it.hint}</span>}
+                </button>
+              ))}
+            </div>
+          ))
+        )}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+/**
  * Searchable single-select combobox: открывается по клику (весь список,
  * скроллится), фильтруется вводом. Поддерживает группы (секции показателей).
- * Один визуальный язык с макро-поиском (`AddIndicator`).
+ * Один визуальный язык с макро-поиском (`AddIndicator`). На телефоне список
+ * открывается слоем на весь экран (`ComboSheet`).
  */
 function ComboSelect({
   groups, value, onChange, placeholder, searchPlaceholder, ariaLabel, disabled, trackContext,
 }) {
   const t = useT();
+  const phone = useMediaQuery('(max-width: 639px)');
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const boxRef = useRef(null);
+  const fieldRef = useRef(null);
 
   const selectedLabel = useMemo(() => {
     for (const g of groups) {
@@ -359,27 +468,36 @@ function ComboSelect({
   // уходит в search_query (директива «собирать все поиски», 2026-07-05).
   useSearchTracking(trackContext || 'compare-combo', open ? query : '', total);
 
+  const closeSheet = useCallback(() => {
+    setOpen(false);
+    setQuery('');
+    fieldRef.current?.blur();
+  }, []);
+
   return (
     <div className="relative" ref={boxRef}>
       <div
         className={cn(
           FIELD_CLS,
+          'pointer-coarse:min-h-12',
           disabled ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink',
           value && !open && 'border-champagne/30',
         )}
       >
         <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
         <input
+          ref={fieldRef}
           type="text"
           aria-label={ariaLabel}
           disabled={disabled}
-          value={open ? query : selectedLabel}
-          placeholder={value && !open ? selectedLabel : (open ? searchPlaceholder : placeholder)}
+          readOnly={phone}
+          value={open && !phone ? query : selectedLabel}
+          placeholder={value && !open ? selectedLabel : (open && !phone ? searchPlaceholder : placeholder)}
           onFocus={() => { setOpen(true); setQuery(''); }}
           onClick={() => setOpen(true)}
-          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onBlur={phone ? undefined : () => setTimeout(() => setOpen(false), 150)}
           onChange={(e) => setQuery(e.target.value)}
-          className="min-w-0 flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary disabled:cursor-not-allowed"
+          className="min-w-0 flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary disabled:cursor-not-allowed pointer-coarse:text-base"
         />
         {value && !open ? (
           <button
@@ -395,7 +513,21 @@ function ComboSelect({
         )}
       </div>
 
-      {open && !disabled && (
+      {open && !disabled && phone && (
+        <ComboSheet
+          ariaLabel={ariaLabel}
+          searchPlaceholder={searchPlaceholder}
+          query={query}
+          onQuery={setQuery}
+          filtered={filtered}
+          total={total}
+          value={value}
+          onClose={closeSheet}
+          onPick={(picked) => { onChange(picked); closeSheet(); }}
+        />
+      )}
+
+      {open && !disabled && !phone && (
         <div className="absolute z-40 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
           {total === 0 ? (
             <div className="px-4 py-3 text-sm text-text-tertiary">{t('compare.nothingFound')}</div>
@@ -430,6 +562,21 @@ function ComboSelect({
   );
 }
 
+/** Лимит рядов достигнут: говорим, что сделать, и даём кнопку для гостя (поле при этом серое). */
+function CapNotice({ text, onLimit }) {
+  const t = useT();
+  return (
+    <div className="fe-z7-cap" role="status" data-testid="compare-cap-notice">
+      <p>{text}</p>
+      {onLimit && (
+        <button type="button" onClick={onLimit} className="fe-z7-cap__btn">
+          {t('w6a.compare.register')}
+        </button>
+      )}
+    </div>
+  );
+}
+
 /**
  * Добавление регионального ряда: тот же язык, что и макро-поиск, но разбит на
  * два searchable-combobox'а — «Регион» и «Показатель» — и кнопку «Добавить».
@@ -437,7 +584,7 @@ function ComboSelect({
  * показателей).
  */
 function AddRegionSeries({
-  selected, onAdd, atCap, capHint, compatibilityFor,
+  selected, onAdd, atCap, capHint, compatibilityFor, onLimit,
 }) {
   const t = useT();
   const landing = useRegionsLanding();
@@ -504,14 +651,14 @@ function AddRegionSeries({
           disabled={atCap || !regionSlug}
           trackContext="compare-region-indicator"
         />
-        {atCap && <p className="text-xs leading-relaxed text-text-secondary">{capHint}</p>}
+        {atCap && <CapNotice text={capHint} onLimit={onLimit} />}
       </div>
     </div>
   );
 }
 
 function AddSubnationalSeries({
-  countrySlug, selected, onAdd, atCap, capHint, compatibilityFor,
+  countrySlug, selected, onAdd, atCap, capHint, compatibilityFor, onLimit,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -591,7 +738,7 @@ function AddSubnationalSeries({
           disabled={atCap || !regionSlug}
           trackContext="compare-world-region-indicator"
         />
-        {atCap && <p className="text-xs leading-relaxed text-text-secondary">{capHint}</p>}
+        {atCap && <CapNotice text={capHint} onLimit={onLimit} />}
       </div>
     </div>
   );
@@ -619,7 +766,7 @@ function russiaLandingPool(indicators, worldItems, locale) {
 }
 
 function AddIndicator({
-  indicators, selected, onAdd, atCap, capHint, compatibilityFor, placeholder,
+  indicators, selected, onAdd, atCap, capHint, compatibilityFor, placeholder, onLimit,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -667,11 +814,12 @@ function AddIndicator({
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpenList(true)}
           onBlur={() => setTimeout(() => setOpenList(false), 150)}
-          placeholder={atCap ? capHint : (placeholder || t('compare.macroPlaceholder'))}
+          placeholder={atCap ? t('z7.compare.capField') : (placeholder || t('compare.macroPlaceholder'))}
           className="flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary disabled:cursor-not-allowed"
         />
         <ChevronDown className="w-4 h-4 shrink-0 text-text-tertiary" />
       </div>
+      {atCap && <div className="mt-2"><CapNotice text={capHint} onLimit={onLimit} /></div>}
       {openList && !atCap && results.length === 0 && (
         <div className="absolute z-40 mt-2 w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm text-text-tertiary shadow-2xl">
           {t('compare.nothingFound')}
@@ -708,7 +856,7 @@ const POPULAR_CONCEPTS = ['gdp-usd', 'hicp-index', 'unemployment-rate', 'populat
  * Код ряда — `w:{slug}:{concept}`. Выбор в списке сразу ставит ряд на график, без второго нажатия.
  */
 function AddWorldCountrySeries({
-  items, countrySlug, selected, onAdd, atCap, capHint, compatibilityFor,
+  items, countrySlug, selected, onAdd, atCap, capHint, compatibilityFor, onLimit,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -776,7 +924,7 @@ function AddWorldCountrySeries({
         disabled={atCap || conceptItems.length === 0}
         trackContext="compare-world-concept"
       />
-      {atCap && <p className="text-xs leading-relaxed text-text-secondary">{capHint}</p>}
+      {atCap && <CapNotice text={capHint} onLimit={onLimit} />}
       {emptyKey && (
         <p className="text-xs leading-relaxed text-text-secondary">
           {t(emptyKey)}
@@ -812,7 +960,7 @@ function PickerBack({ label, onClick }) {
  */
 function CompareSeriesPicker({
   indicators, worldItems, selected, onAdd, atCap, capHint, compatibilityFor,
-  status = '', catalogLoading = false,
+  status = '', catalogLoading = false, onLimit,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -976,6 +1124,7 @@ function CompareSeriesPicker({
                 capHint={capHint}
                 compatibilityFor={compatibilityFor}
                 placeholder={t('compare.conceptSearch')}
+                onLimit={onLimit}
               />
             </div>
           </div>
@@ -1027,6 +1176,7 @@ function CompareSeriesPicker({
               atCap={atCap}
               capHint={capHint}
               compatibilityFor={compatibilityFor}
+              onLimit={onLimit}
             />
           </div>
         </div>
@@ -1044,6 +1194,7 @@ function CompareSeriesPicker({
             atCap={atCap}
             capHint={capHint}
             compatibilityFor={compatibilityFor}
+            onLimit={onLimit}
           />
           <p className="mt-3 text-xs leading-relaxed text-text-tertiary">
             {t('compare.compareRegionsCta')}{' '}
@@ -1111,6 +1262,7 @@ function CompareSeriesPicker({
               atCap={atCap}
               capHint={capHint}
               compatibilityFor={compatibilityFor}
+              onLimit={onLimit}
             />
           </div>
         </div>
@@ -1132,6 +1284,7 @@ function CompareSeriesPicker({
             atCap={atCap}
             capHint={capHint}
             compatibilityFor={compatibilityFor}
+            onLimit={onLimit}
           />
           <p className="mt-3 text-xs leading-relaxed text-text-tertiary">
             {t('compare.compareRegionsCta')}{' '}
@@ -1211,13 +1364,18 @@ export default function ComparePage() {
   const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const [range, setRange] = useState('5y');
+  // Свой период, выбранный ручками под графиком: длина окна в точках (range === 'custom').
+  const [customLen, setCustomLen] = useState(0);
   const [scale, setScale] = useState('values');
+  // Человек сам выбрал «Значения» или «Проценты»: автоматика больше не переключает.
+  const [scaleChosen, setScaleChosen] = useState(false);
   const [step, setStep] = useState('auto');
   const [compatibilityMessage, setCompatibilityMessage] = useState('');
   // Подсказка после добавления: что произошло и что делать дальше.
   const [status, setStatus] = useState('');
   const [pickerOpen, setPickerOpen] = useState(false);
   const coarsePointer = useMediaQuery('(pointer: coarse)');
+  const phoneView = useMediaQuery('(max-width: 767px)');
   // Панорама окна: сдвиг в точках от правого края ряда («кружочек» как на
   // карточке индикатора — созвон «На правки 13»).
   const [panOffset, setPanOffset] = useState(0);
@@ -1382,7 +1540,9 @@ export default function ComparePage() {
     // Выбор остаётся раскрытым: после первого ряда сразу можно добавить второй.
     setPickerOpen(true);
     track(events.COMPARE_ADD, { code, count: next.length });
-  }, [codes, isDemo, cap, isAuthed, writeCodes, t, shortNameForCode]);
+    // Телефон: график остаётся ниже выбора. Подкручиваем к нему, чтобы результат был виден сразу.
+    if (phoneView) window.setTimeout(scrollToCompareChart, 140);
+  }, [codes, isDemo, cap, isAuthed, writeCodes, t, shortNameForCode, phoneView]);
 
   const removeCode = useCallback((code) => {
     writeCodes(codes.filter((c) => c !== code));
@@ -1520,10 +1680,23 @@ export default function ComparePage() {
   }, [series]);
   const mixedPriceIndexBases = requiresRebasedPriceIndex(series);
   const forceIndex = distinctUnits.length > 2 || mixedPriceIndexBases;
-  const indexed = forceIndex || scale === 'index';
+  // Ряды в одной единице, но разного размера (США и Австрия): на общей оси меньший кажется ровным.
+  // Тогда сразу показываем рост в процентах от начала периода и оставляем кнопку «Показать значения».
+  const autoIndex = useMemo(() => {
+    if (scaleChosen || scale !== 'values' || forceIndex || series.length < 2) return false;
+    if (distinctUnits.length !== 1 || !isAbsoluteUnit(distinctUnits[0])) return false;
+    if (series.some((s) => s.loading || s.error || s.rep !== REP_LEVEL || s.transform)) return false;
+    const levels = series.map((s) => (Array.isArray(s.data?.data) ? s.data.data : []));
+    if (levels.some((points) => !points.length)) return false;
+    return scalesDiffer(levels[0], levels.slice(1).map((data) => ({ data })));
+  }, [scaleChosen, scale, forceIndex, series, distinctUnits]);
+  const indexed = forceIndex || scale === 'index' || autoIndex;
 
   const chartData = useMemo(() => {
-    const EMPTY = { rows: [], nonIndexableNames: [], nonIndexableKeys: new Set(), maxPan: 0, baseDate: null, noSharedBase: false };
+    const EMPTY = {
+      rows: [], nonIndexableNames: [], nonIndexableKeys: new Set(), maxPan: 0, baseDate: null, noSharedBase: false,
+      brushRows: [], windowStart: 0, windowEnd: 0,
+    };
     if (!series.length) return EMPTY;
     const maps = series.map((s) => {
       const raw = Array.isArray(s.data?.data) ? s.data.data : [];
@@ -1541,7 +1714,9 @@ export default function ComparePage() {
     // Окно: длина — из пресета периода, позиция — из слайдера-панорамы.
     const rangeOpt = RANGE_OPTIONS.find((r) => r.key === range);
     let windowLen = allDates.length;
-    if (rangeOpt?.months) {
+    if (range === 'custom' && customLen > 0) {
+      windowLen = Math.min(allDates.length, customLen);
+    } else if (rangeOpt?.months) {
       const cutoff = new Date(allDates[allDates.length - 1]);
       cutoff.setUTCMonth(cutoff.getUTCMonth() - rangeOpt.months);
       const cutoffStr = cutoff.toISOString().slice(0, 10);
@@ -1553,6 +1728,8 @@ export default function ComparePage() {
     const startIdx = Math.max(0, endIdx - windowLen);
 
     const dates = allDates.slice(startIdx, endIdx);
+    // Уменьшенная копия первого ряда по всей истории: на ней стоят ручки периода.
+    const brushRows = allDates.map((d) => ({ date: d, actual: maps[0]?.get(d) ?? null }));
 
     // К общей базе (=100) приводится ТОЛЬКО положительный уровень. Знакопеременные
     // ряды (сальдо, счёт текущих операций, дефицит), %-ряды и представления
@@ -1571,7 +1748,9 @@ export default function ComparePage() {
       indexed ? series.filter((_, i) => !indexable[i]).map((s) => s.key) : [],
     );
     if (indexed && !baseDate) {
-      return { ...EMPTY, nonIndexableNames, nonIndexableKeys, maxPan, noSharedBase: candidates.length > 0 };
+      return {
+        ...EMPTY, nonIndexableNames, nonIndexableKeys, maxPan, noSharedBase: candidates.length > 0,
+      };
     }
     const idxUnit = t('compare.indexUnit');
 
@@ -1596,11 +1775,16 @@ export default function ComparePage() {
       });
       return row;
     });
-    return { rows, nonIndexableNames, nonIndexableKeys, maxPan, baseDate, noSharedBase: false };
-  }, [series, range, indexed, step, panOffset, t]);
+    return {
+      rows, nonIndexableNames, nonIndexableKeys, maxPan, baseDate, noSharedBase: false,
+      brushRows, windowStart: startIdx, windowEnd: endIdx,
+    };
+  }, [series, range, customLen, indexed, step, panOffset, t]);
 
   const chartRows = chartData.rows;
-  const { nonIndexableNames, nonIndexableKeys, maxPan, baseDate, noSharedBase } = chartData;
+  const {
+    nonIndexableNames, nonIndexableKeys, maxPan, baseDate, noSharedBase, brushRows, windowStart, windowEnd,
+  } = chartData;
   const analysisSummary = useMemo(() => {
     const metrics = series.map((item) => {
       const points = chartRows
@@ -1643,7 +1827,12 @@ export default function ComparePage() {
   const failedQueries = results.filter((r) => r.isError);
   const retrying = failedQueries.some((r) => r.isFetching);
   const retryFailed = () => { failedQueries.forEach((r) => r.refetch()); };
-  const chartHeight = chartHeightForWidth(sectionWidth);
+  // Широкий график не выше ~половины экрана: на ноутбуке 1280x720 он целиком в первом экране, на высоких мониторах 480 px.
+  const viewportHeight = useViewportHeight();
+  const baseChartHeight = chartHeightForWidth(sectionWidth);
+  const chartHeight = baseChartHeight >= 480 && viewportHeight > 0
+    ? Math.min(baseChartHeight, Math.max(360, Math.round(viewportHeight * 0.52)))
+    : baseChartHeight;
   const narrow = plotWidth > 0 && plotWidth < NARROW_CHART_WIDTH;
   // Формат дат оси: агрегированный шаг диктует гранулярность, иначе — частоты рядов.
   const compareDateFmt = step === 'year'
@@ -1715,16 +1904,73 @@ export default function ComparePage() {
     left: niceAxis(axisValues('left'), narrow ? 4 : 5),
     right: niceAxis(axisValues('right'), narrow ? 4 : 5),
   };
+  const { headline: chartHeadline, labels } = compareLabels(series, {
+    t, locale, fallback: t('z2.compare.seriesFallback'),
+  });
+  // Подписи осей крупнее: 12 px на узком графике, 13 px на широком (раньше 11 px).
+  const axisFontSize = narrow ? 12 : 13;
   const axisWidths = (() => {
     const calc = (id, unit) => {
       const vals = axisValues(id);
       const digits = indexed ? 0 : unitDigits(unit);
       return axisWidthForLabels(
         axisSampleValues(vals).map((v) => formatAxisTick(v, digits)),
-        { min: narrow ? 40 : 48, perChar: 7, pad: 12 },
+        { min: narrow ? 42 : 52, perChar: narrow ? 7.4 : 8, pad: 12 },
       );
     };
     return { left: calc('left', leftUnit), right: calc('right', rightUnit) };
+  })();
+
+  // Подписи концов линий («США 30 767») вместо легенды: только на широком графике и при одной оси.
+  const xAxisHeight = narrow ? 28 : 32;
+  const showEndLabels = !narrow && plotWidth >= 560 && distinctUnits.length === 1
+    && series.length > 0 && chartRows.length > 0 && !!axisScales.left;
+  const endLabelWidth = plotWidth >= 900 ? 136 : 116;
+  const chartMarginRight = showEndLabels ? endLabelWidth : (narrow ? 14 : 24);
+  const endLabels = (() => {
+    if (!showEndLabels) return [];
+    const plotTop = 10;
+    const plotHeight = chartHeight - plotTop - 4 - xAxisHeight;
+    const raw = [];
+    series.forEach((s, i) => {
+      for (let r = chartRows.length - 1; r >= 0; r -= 1) {
+        const v = chartRows[r][s.key];
+        if (v == null || !Number.isFinite(Number(v))) continue;
+        const y = yForValue(v, axisScales.left.domain, { top: plotTop, plotHeight });
+        if (y != null) {
+          raw.push({
+            key: s.key, y, color: s.color, value: v,
+            name: labels[i] || t('z2.compare.seriesFallback'),
+          });
+        }
+        break;
+      }
+    });
+    const placed = spreadLabels(raw, { min: 17, max: plotTop + plotHeight + 6, gap: 38 });
+    return raw.map((item) => ({
+      ...item,
+      top: placed[item.key] - 17,
+      text: formatEndValue(item.value, { unit: leftUnit, locale, indexed }),
+    }));
+  })();
+  // Легенду прячем (оставляем для скринридера), когда подписи концов уже всё сказали.
+  const legendNeeded = !showEndLabels
+    || nonIndexableNames.length > 0
+    || series.some((s) => s.rep && s.rep !== REP_LEVEL)
+    || new Set(series.map((x) => x.ind?.frequency).filter(Boolean)).size > 1;
+  // Единицы одной фразой над графиком: «Значения, млрд $».
+  const unitsCaption = (() => {
+    if (indexed || distinctUnits.length !== 1) return '';
+    const unit = splitUnit(distinctUnits[0]).short || distinctUnits[0];
+    return unit && unit !== '%' ? t('z7.compare.valuesIn', { unit: unitSuffix(unit) }) : '';
+  })();
+  // Разрыв двух величин словами: «США больше, чем Китай, в 1,6 раза».
+  const gap = (() => {
+    if (indexed || series.length !== 2 || distinctUnits.length !== 1 || !isAbsoluteUnit(distinctUnits[0])) return null;
+    if (series.some((s) => s.rep !== REP_LEVEL)) return null;
+    const lasts = analysisSummary.metrics.map((m) => m.last?.value);
+    if (lasts.some((v) => v == null)) return null;
+    return gapInsight(series.map((s, i) => ({ label: labels[i], value: lasts[i] })), locale);
   })();
 
   // Перетаскивание графика мышью/пальцем — как на карточке индикатора.
@@ -1795,30 +2041,45 @@ export default function ComparePage() {
 
   const atCap = codes.length >= cap;
   const capHint = isAuthed
-    ? t('compare.capAuthed', { n: USER_MAX })
-    : t('compare.capGuest');
-  const { headline: chartHeadline, labels } = compareLabels(series, {
-    t, locale, fallback: t('z2.compare.seriesFallback'),
-  });
+    ? t('z7.compare.capAuthedFix', { n: USER_MAX })
+    : t('z7.compare.capGuestFix');
+  const openLimit = () => {
+    track(events.COMPARE_LIMIT_HIT, { count: codes.length });
+    setUpsellOpen(true);
+  };
+  // Короткое имя ряда для плашек и сводки: «ВВП, текущие цены, США»; полное остаётся в подсказке.
+  const shortSeriesName = (s) => (s.isWorld && s.ind?.countryName && s.ind?.conceptName
+    ? `${conceptShortLabel(s.ind.conceptSlug, s.ind.conceptName, t)}, ${s.ind.countryName}`
+    : s.name);
+  const handleBrush = (start, end) => {
+    setRange('custom');
+    setCustomLen(end - start);
+    setPanOffset(Math.max(0, brushRows.length - end));
+  };
+  const chooseScale = (key) => {
+    setScale(key);
+    setScaleChosen(true);
+    track(events.COMPARE_RANGE, { scale: key });
+  };
   const headline = series.length ? chartHeadline : t('compare.title');
   const showPicker = pickerOpen || (!isDemo && codes.length === 0);
   const activePreset = COMPARE_PRESETS.find((preset) => presetIsActive(preset, codes));
 
   return (
-    <div className="fe-data-page fe-gutter max-w-7xl mx-auto pt-24 md:pt-28 pb-12 md:pb-16">
+    <div className="fe-data-page fe-compare-page pt-24 md:pt-28 pb-12 md:pb-16">
       <UpsellModal open={upsellOpen} onClose={() => setUpsellOpen(false)} />
 
-      <div className="mb-3 md:mb-8 max-w-4xl">
-        <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-3 md:mb-6" />
+      <div className="mb-3 md:mb-5 max-w-4xl">
+        <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-3 md:mb-4" />
 
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 leading-tight">
+        <h1 className="fe-compare-h1 text-[28px] md:text-[40px] font-display font-bold tracking-tight mb-1.5 md:mb-2 leading-[1.1]">
           {t('compare.title')}
         </h1>
         {/* На телефоне пояснение в одну строку, чтобы график был виден без прокрутки. */}
         <p className="max-w-2xl text-sm leading-snug text-text-secondary sm:hidden">
           {t('w7p.compare.subtitleShort')}
         </p>
-        <p className="hidden max-w-2xl text-[15px] leading-relaxed text-text-secondary sm:block md:text-base">
+        <p className="hidden max-w-2xl text-[15px] leading-snug text-text-secondary sm:block md:text-base">
           {t('w6g.compare.subtitle')}
         </p>
       </div>
@@ -1869,7 +2130,7 @@ export default function ComparePage() {
         )}
 
         {!isDemo && codes.length > 0 && (
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="fe-compare-picked mt-4">
             {series.map((s) => {
               const reps = s.isWorld
                 ? worldCompareRepresentationsFor({
@@ -1880,12 +2141,12 @@ export default function ComparePage() {
               return (
                 <div
                   key={s.code}
-                  className="rounded-xl border border-border-subtle bg-obsidian-light px-3 py-2.5"
+                  className="fe-compare-picked__card"
                 >
                   {/* Название и «×» — одна строка; варианты показа — отдельным рядом ниже, без пустоты справа. */}
                   <div className="flex items-start gap-2">
                     <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
-                    <span className="min-w-0 flex-1 break-words text-sm leading-snug text-text-primary">{s.name || (s.loading
+                    <span title={s.name || undefined} className="min-w-0 flex-1 break-words text-sm leading-snug text-text-primary">{shortSeriesName(s) || (s.loading
                       ? <span className="skeleton mt-0.5 block h-4 w-3/4 rounded-md" role="status" aria-busy="true" aria-label={t('compare.loadingSeries')} />
                       : t('z2.compare.seriesFallback'))}</span>
                     <button type="button" onClick={() => removeCode(s.code)} className="-my-1 -mr-1.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11" aria-label={t('common.remove')}>
@@ -1942,6 +2203,7 @@ export default function ComparePage() {
               compatibilityFor={(code) => compareCompatibility(isDemo ? [] : codes, code)}
               status={status}
               catalogLoading={worldCatalogLoading}
+              onLimit={isAuthed ? undefined : openLimit}
             />
 
             {compatibilityMessage && (
@@ -2006,23 +2268,49 @@ export default function ComparePage() {
             }
           />
         ) : (
-          <div ref={exportRef} className="fe-panel fe-reveal rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
-            <h2 className="text-left text-lg md:text-xl font-display font-bold text-text-primary mb-1">
-              {headline}
-            </h2>
-            <p className="text-left text-xs text-text-secondary mb-4">
-              {indexed
-                ? t('compare.hintIndex', { date: formatDate(baseDate, compareDateFmt) })
-                : t('compare.hintValues')}
-              {` ${t('compare.periodLabel')}: ${t(RANGE_OPTIONS.find((r) => r.key === range)?.labelKey || 'compare.range.all').toLowerCase()}`}
-            </p>
+          <div ref={exportRef} className="fe-panel fe-reveal fe-compare-card">
+            <div className="fe-compare-card__head">
+              <h2 className="fe-compare-card__title">
+                {headline}
+              </h2>
+              <p className="fe-compare-card__caption">
+                {indexed
+                  ? t('compare.hintIndex', { date: formatDate(baseDate, compareDateFmt) })
+                  : (unitsCaption || t('compare.hintValues'))}
+                {` ${t('compare.periodLabel')}: ${range === 'custom'
+                  ? `${formatDate(chartRows[0]?.date, compareDateFmt)} – ${formatDate(chartRows[chartRows.length - 1]?.date, compareDateFmt)}`
+                  : t(RANGE_OPTIONS.find((r) => r.key === range)?.labelKey || 'compare.range.all').toLowerCase()}`}
+              </p>
+            </div>
 
-            <div className="mb-4 flex flex-col items-start gap-y-2 border-b border-border-subtle pb-4 text-xs sm:flex-row sm:flex-wrap sm:items-center sm:justify-start sm:gap-x-6">
+            {autoIndex && (
+              <div className="fe-compare-auto" role="status" data-testid="compare-auto-index" data-no-export="true">
+                <p>{t('z7.compare.autoIndex', { date: formatDate(baseDate, compareDateFmt) })}</p>
+                <Button variant="secondary" size="sm" onClick={() => chooseScale('values')}>
+                  {t('z7.scale.backToValues')}
+                </Button>
+              </div>
+            )}
+
+            {gap && (
+              <p className="fe-compare-gap" data-testid="compare-gap">
+                <TrendingUp className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>
+                  {gap.equal
+                    ? t('z7.compare.gapEqual', { a: gap.a, b: gap.b })
+                    : t('z7.compare.gap', {
+                      leader: gap.leader, other: gap.other, ratio: gap.ratio, times: t(`z7.compare.times.${gap.plural}`),
+                    })}
+                </span>
+              </p>
+            )}
+
+            <div className={cn('fe-compare-legend', !legendNeeded && 'sr-only')}>
               {series.map((s, i) => {
                 const dropped = nonIndexableKeys.has(s.key);
                 return (
                   <span key={s.code} className={cn('flex min-w-0 max-w-full items-start gap-2', dropped && 'opacity-60')}>
-                    <span className="mt-1.5 h-[3px] w-4 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
+                    <span className="mt-[7px] h-[3px] w-5 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
                     <span className="min-w-0 break-words">
                     <span className="font-semibold text-text-primary">{labels[i] || t('z2.compare.seriesFallback')}</span>{' '}
                     <span className="text-text-secondary">
@@ -2052,7 +2340,7 @@ export default function ComparePage() {
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={cn(
-                'relative rounded-2xl',
+                'fe-compare-plot relative rounded-2xl',
                 maxPan > 0 && (isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'),
               )}
               style={{ touchAction: 'pan-y' }}
@@ -2060,25 +2348,25 @@ export default function ComparePage() {
               <ResponsiveContainer width="100%" height={chartHeight}>
                 <ComposedChart
                   data={chartRows}
-                  margin={{ top: 10, right: narrow ? 14 : 24, bottom: 4, left: 0 }}
+                  margin={{ top: 10, right: chartMarginRight, bottom: 4, left: 0 }}
                 >
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis
                     dataKey="date"
                     tickFormatter={(d) => formatChartAxisDate(d, compareDateFmt, { multiYear: true })}
-                    tick={axisTick()}
+                    tick={axisTick({ fontSize: axisFontSize })}
                     axisLine={{ stroke: CHART_THEME.axisLine }}
                     tickLine={false}
                     ticks={xTicks}
                     interval={0}
                     tickMargin={8}
-                    height={narrow ? 28 : 32}
+                    height={xAxisHeight}
                   />
                   <YAxis
                     yAxisId="left"
                     domain={axisScales.left?.domain || AXIS_DOMAIN}
                     ticks={axisScales.left?.ticks}
-                    tick={axisTick()}
+                    tick={axisTick({ fontSize: axisFontSize })}
                     axisLine={false}
                     tickLine={false}
                     width={axisWidths.left}
@@ -2090,7 +2378,7 @@ export default function ComparePage() {
                       orientation="right"
                       domain={axisScales.right?.domain || AXIS_DOMAIN}
                       ticks={axisScales.right?.ticks}
-                      tick={axisTick()}
+                      tick={axisTick({ fontSize: axisFontSize })}
                       axisLine={false}
                       tickLine={false}
                       width={axisWidths.right}
@@ -2099,7 +2387,7 @@ export default function ComparePage() {
                   )}
                   <Tooltip
                     content={<CompareTooltip dateFormat={compareDateFmt} />}
-                    cursor={TOOLTIP_STYLES.cursor}
+                    cursor={HOVER_CURSOR}
                     {...touchTip.tooltipProps}
                   />
                   {series.map((s, i) => (
@@ -2110,14 +2398,28 @@ export default function ComparePage() {
                       dataKey={s.key}
                       name={labels[i] || t('z2.compare.seriesFallback')}
                       stroke={s.color}
-                      strokeWidth={2}
+                      strokeWidth={3}
+                      strokeLinecap="round"
                       dot={false}
+                      activeDot={isDragging ? false : { r: 5, fill: s.color, stroke: '#FFFFFF', strokeWidth: 2 }}
                       connectNulls
                       isAnimationActive={false}
                     />
                   ))}
                 </ComposedChart>
               </ResponsiveContainer>
+              {/* Подписи концов линий: имя и последнее значение прямо у линии, без поиска по легенде. */}
+              {endLabels.map((item) => (
+                <div
+                  key={item.key}
+                  className="fe-compare-end"
+                  data-testid="compare-end-label"
+                  style={{ top: item.top, width: endLabelWidth - 10, borderLeftColor: item.color }}
+                >
+                  <span className="fe-compare-end__name">{item.name}</span>
+                  <span className="fe-compare-end__value fe-num">{item.text}</span>
+                </div>
+              ))}
               {/* Знак сайта стоит под графиком, а не поверх него: раньше он налезал на подписи дат. */}
               {!isAuthed && !isAuthLoading && (
                 <div
@@ -2130,29 +2432,25 @@ export default function ComparePage() {
               )}
             </div>
 
-            {/* Панорама окна по всей истории — как на карточке индикатора. */}
-            {maxPan > 0 && (
-              <div className="px-2 mt-2" data-no-export="true">
-                <input
-                  type="range"
-                  min={0}
-                  max={maxPan}
-                  value={maxPan - Math.min(panOffset, maxPan)}
-                  onChange={(e) => setPanOffset(maxPan - Number(e.target.value))}
-                  aria-label={t('compare.panAria')}
-                  className="w-full h-1.5 pointer-coarse:box-content pointer-coarse:py-[19px] pointer-coarse:bg-clip-content appearance-none bg-obsidian-lighter rounded-full
-                    [&::-webkit-slider-thumb]:appearance-none
-                    [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
-                    [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-champagne
-                    [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md
-                    [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
-                    [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-champagne
-                    [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
+            {/* Период: две ручки (начало и конец) на уменьшенной копии ряда, середина двигает окно. */}
+            {brushRows.length >= 8 && (
+              <div className="fe-compare-brush" data-no-export="true">
+                <ChartBrush
+                  rows={brushRows}
+                  start={windowStart}
+                  end={windowEnd}
+                  minWindow={Math.min(4, Math.max(2, brushRows.length - 1))}
+                  onChange={handleBrush}
+                  labels={{
+                    group: t('chart.windowAria'),
+                    from: t('w6e.brush.from'),
+                    to: t('w6e.brush.to'),
+                  }}
                 />
-                <div className="mt-1 flex justify-between gap-2 text-[11px] text-text-secondary">
+                <div className="fe-compare-brush__dates">
                   <span>{chartRows[0] ? formatDate(chartRows[0].date, compareDateFmt) : ''}</span>
-                  <span className="hidden sm:inline text-text-tertiary/70 normal-case">
-                    {t(coarsePointer ? 'w6g.compare.panHintTouch' : 'compare.panHint')}
+                  <span className="hidden sm:inline">
+                    {t(coarsePointer ? 'z7.compare.brushHintTouch' : 'z7.compare.brushHint')}
                   </span>
                   <span>{chartRows.length ? formatDate(chartRows[chartRows.length - 1].date, compareDateFmt) : ''}</span>
                 </div>
@@ -2220,8 +2518,8 @@ export default function ComparePage() {
                     <Chip
                       key={opt.key}
                       disabled={disabled}
-                      active={indexed ? opt.key === 'index' : !!range && scale === opt.key && !forceIndex}
-                      onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
+                      active={indexed ? opt.key === 'index' : scale === opt.key && !forceIndex}
+                      onClick={() => chooseScale(opt.key)}
                       title={disabled ? t('compare.indexOnlyUnits') : undefined}
                     >
                       {t(opt.key === 'index' ? 'w6g.compare.scale.index' : 'w6g.compare.scale.values')}
@@ -2257,7 +2555,7 @@ export default function ComparePage() {
       </section>
 
       {hasData && analysisSummary.metrics.some((metric) => metric.last) && (
-        <section data-block="compare-analysis" className="fe-panel rounded-[2rem] border border-border-subtle bg-surface p-5 shadow-[0_16px_45px_rgba(35,30,16,0.05)] md:p-7">
+        <section data-block="compare-analysis" className="fe-panel fe-compare-analysis rounded-[2rem] border border-border-subtle bg-surface p-5 md:p-7">
           <div className="mb-5 flex flex-col gap-2 border-b border-border-subtle pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-sm font-medium text-champagne-ink">
@@ -2272,7 +2570,7 @@ export default function ComparePage() {
             </div>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="fe-compare-summary" data-count={analysisSummary.metrics.filter((metric) => metric.last).length}>
             {analysisSummary.metrics.filter((metric) => metric.last).map((metric) => {
               const displayUnit = indexed ? t('compare.points') : (metric.item.unit || '%');
               // Большие числа без дробной части: «3 360 622», а не «3 360 621,70».
@@ -2284,11 +2582,11 @@ export default function ComparePage() {
                 bigDigits(metric.change),
               );
               return (
-                <div key={metric.item.code} className="rounded-2xl border border-border-subtle bg-obsidian-light p-4">
+                <div key={metric.item.code} className="fe-compare-summary__card" style={{ '--fe-series': metric.item.color }}>
                   <div className="flex items-start gap-2">
                     <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: metric.item.color }} />
-                    <div className="min-w-0 text-sm font-medium leading-5 text-text-primary">
-                      {metric.item.name || t('z2.compare.seriesFallback')}
+                    <div title={metric.item.name || undefined} className="min-w-0 text-sm font-medium leading-5 text-text-primary">
+                      {shortSeriesName(metric.item) || t('z2.compare.seriesFallback')}
                     </div>
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3">
@@ -2335,7 +2633,7 @@ export default function ComparePage() {
                 {analysisSummary.correlations.map((result) => (
                   <div key={result.item.code} className="flex items-center justify-between gap-3 rounded-xl bg-white/65 px-3 py-2.5">
                     <span className="min-w-0 break-words text-xs text-text-secondary">
-                      {result.item.name || t('z2.compare.seriesFallback')}
+                      {shortSeriesName(result.item) || t('z2.compare.seriesFallback')}
                     </span>
                     <span className="shrink-0 text-sm font-semibold text-text-primary">
                       {t(correlationKey(result.value))}
