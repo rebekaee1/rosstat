@@ -1,15 +1,12 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "afc3519bf60596613a2b85417b5557ef6e210cf4",
+  "baseline_commit": "a9e6a7c0b8273a4968104f043733fa5dd5201098",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "backend/app/services/seo_renderer.py",
     "docs/code-review/coverage.json",
-    "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/materials-2026-09-30.json",
     "docs/code-review/reviews.jsonl",
-    "docs/mechanism-inventory.json"
+    "scripts/test-server/deploy.sh"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -2275,7 +2272,7 @@
     {"path": "scripts/sitemap-inventory.py", "kind": "code", "bytes": 1950, "lines": 53, "sha256": "2bd181049f6e1fba8e36004542fc3373d89f091a6791839fe5da35705ad5b1d3", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/sync-local-from-prod.py", "kind": "code", "bytes": 4307, "lines": 134, "sha256": "ce71271a04d7a745fab23a6c26e0dedfcfa6283d44007b81ef922adf51cc5756", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/test-crawler-routing.py", "kind": "code", "bytes": 9645, "lines": 174, "sha256": "b7f3955526c41c797fcf0e6aa5357eaf4abbe0de0bb07c0edb43b24868f41fd0", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
-    {"path": "scripts/test-server/deploy.sh", "kind": "code", "bytes": 3602, "lines": 61, "sha256": "69745b781686db9cbb19e643f27279333702c2cc7ea7791ac6b9284adb97bd7a", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
+    {"path": "scripts/test-server/deploy.sh", "kind": "code", "bytes": 4350, "lines": 64, "sha256": "39d172a21218779c0fd13868405a5eb110fb964d6629d5e74e3bbfb9b507e71e", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/test-server/docker-compose.override.yml", "kind": "asset/data/config", "bytes": 922, "lines": 28, "sha256": "39dc7b920abd49bb61b03454c403974476fbcd48c82d70df3b0c426ea73c5b9e", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/test-server/env.additions", "kind": "asset/data/config", "bytes": 286, "lines": 6, "sha256": "166833c5e7363b4cf8e1083b7782dde29a969a3fee0de63ede3b3d680721fe59", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/test-server/loadtest.py", "kind": "code", "bytes": 6376, "lines": 120, "sha256": "7f4bc03b4ae5410ffb5ee53e533d520f06e53b7ddb44e58c47513b50a0f81c4f", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},

@@ -20628,9 +20628,9 @@
     },
     {
       "path": "scripts/test-server/deploy.sh",
-      "sha256": "69745b781686db9cbb19e643f27279333702c2cc7ea7791ac6b9284adb97bd7a",
-      "bytes": 3602,
-      "lines": 61,
+      "sha256": "39d172a21218779c0fd13868405a5eb110fb964d6629d5e74e3bbfb9b507e71e",
+      "bytes": 4350,
+      "lines": 64,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -20797,12 +20797,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "a6fcbc83d0ada21771eae42f8d32b8d59810a8668d46e0834a58e3c6b4f0c1a1",
+  "ledger_sha256": "4ec8c4d738cb346729aab3366decec9163647c9b9c702da1bb383227f98276ba",
   "javascript_inventory_sha256": "e0f94eddbe66c39474b5c1b07812c81c3341139aa3d196c1b537ff4602fa77ef",
-  "baseline_commit": "afc3519bf60596613a2b85417b5557ef6e210cf4",
+  "baseline_commit": "a9e6a7c0b8273a4968104f043733fa5dd5201098",
   "branch": "integration/all-20261002",
   "unstaged_at_capture": [
-    "backend/app/services/seo_renderer.py",
-    "docs/mechanism-inventory.json"
+    "scripts/test-server/deploy.sh"
   ]
 }

@@ -55,6 +55,9 @@ for i in $(seq 1 40); do
   sleep 6
 done
 echo "ready: $code"
+# Как в scripts/deploy.sh: SSR HTML-ключи fe:*:ssr:* сбрасываются после выкладки. Подпись ключа зависит только от
+# ассетов фронта, поэтому правка рендера на backend без этого шага отдавала бы старый HTML до 6 часов.
+"${SSH[@]}" "cd $APP_DIR && PW=\$(grep '^REDIS_PASSWORD=' .env 2>/dev/null | cut -d= -f2- | tr -d \"'\" ) && docker compose exec -T -e REDISCLI_AUTH=\"\${PW:-changeme}\" redis sh -ec 'redis-cli -n 0 --scan --pattern \"fe:*:ssr:*\" --count 1000 | xargs -r -n 500 redis-cli -n 0 UNLINK >/dev/null; echo SSR-кэш сброшен'" || echo "предупреждение: SSR-кэш не сброшен"
 URL="$("${SSH[@]}" "cat /root/fe-demo-tunnel.url 2>/dev/null || true")"
 echo "туннель: ${URL:-не найден}"
 "${SSH[@]}" "cd $APP_DIR && docker compose ps --format 'table {{.Service}}\t{{.Status}}'"

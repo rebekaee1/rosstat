@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1461  ·  **Строк:** 1 047 272  ·  **Токенов (≈):** 9 872 694
+**Файлов:** 1461  ·  **Строк:** 1 047 275  ·  **Токенов (≈):** 9 872 839
 
 ## По верхним папкам
 
@@ -22,7 +22,7 @@
 | `docs` | 115 | 673 539 | 5 753 988 |
 | `frontend` | 540 | 101 065 | 1 075 957 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 98 | 20 292 | 240 494 |
+| `scripts` | 98 | 20 295 | 240 639 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -917,6 +917,7 @@
 | `backend/app/services/session.py` | 117 | 904 |
 | `backend/tests/test_eurostat_deep_expand.py` | 84 | 904 |
 | `backend/tests/test_ssr_matrix.py` | 104 | 904 |
+| `scripts/test-server/deploy.sh` | 64 | 901 |
 | `backend/app/data/world_country_population.py` | 94 | 899 |
 | `backend/app/services/cbr_monetary_parser.py` | 104 | 898 |
 | `backend/app/data/housing_historical.py` | 92 | 884 |
@@ -1001,7 +1002,6 @@
 | `frontend/src/lib/planetNavigation.js` | 68 | 760 |
 | `frontend/src/lib/utm.js` | 74 | 758 |
 | `docs/design/art-prompts/forecast-glass-reconstruction.md` | 54 | 756 |
-| `scripts/test-server/deploy.sh` | 61 | 756 |
 | `frontend/src/lib/calendarText.test.js` | 63 | 754 |
 | `frontend/src/lib/chartHooks.component.test.jsx` | 88 | 754 |
 | `frontend/src/lib/behavior.apitiming.test.js` | 73 | 752 |
