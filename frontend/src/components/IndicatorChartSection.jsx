@@ -23,6 +23,7 @@ import '../styles/x2-indicator.css';
 import '../styles/y2-indicator.css';
 import '../styles/w6e-indicator.css';
 import '../styles/z4-indicator.css';
+import '../styles/k5-pages.css';
 import { localizeSource } from '../i18n/viewModeLabels';
 
 /* ── Mode-зависимые подписи ──
@@ -308,7 +309,7 @@ export default function IndicatorChartSection({
       {chartLoading ? (
         <ChartSectionSkeleton />
       ) : (
-        <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem]">
+        <div ref={chartRef} className="k5-chart-host relative w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem]">
           <IndicatorChart
             key={`${indicator?.code}-${chartMode}`}
             mode={

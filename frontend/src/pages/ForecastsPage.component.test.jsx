@@ -129,6 +129,25 @@ describe('ForecastsPage', () => {
     expect(screen.queryAllByTestId('forecast-card')).toHaveLength(0);
   });
 
+  it('K5.4: карточки без blur (fe-glass-lite), стрелка-грань между цифрами, луч «сейчас», лента лениво', async () => {
+    const { container } = renderForecasts();
+    const cards = await screen.findAllByTestId('forecast-card');
+    for (const card of cards) {
+      expect(card.className).toContain('fe-glass-lite');
+      expect(card.className).not.toContain('fe-panel');
+      expect(card.querySelector('.zb-fc__arrow')).toBeTruthy();
+      expect(card.querySelector('.zb-fc__ray')).toBeTruthy();
+      expect(card.querySelector('.zb-fc__split')).toBeNull();
+    }
+    expect(cards[1].querySelector('.zb-fc__badge').getAttribute('data-verified')).toBe('true');
+    const ribbon = container.querySelector('.zb-fc__ribbon img');
+    expect(ribbon.getAttribute('src')).toBe('/brand/ribbon.webp');
+    expect(ribbon.getAttribute('loading')).toBe('lazy');
+    expect(ribbon.getAttribute('alt')).toBe('');
+    expect(ribbon.getAttribute('width')).toBe('1114');
+    expect(ribbon.getAttribute('height')).toBe('631');
+  });
+
   it('без жаргона на виду', async () => {
     const { container } = renderForecasts();
     await screen.findAllByTestId('forecast-card');

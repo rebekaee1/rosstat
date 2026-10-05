@@ -16,7 +16,9 @@ import { isGlobalMarketIndicator } from '../lib/globalMarketIndicators';
 import { russiaCategoryPath } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
+import AccentTitle from './K5Accent';
 import '../styles/z4-indicator.css';
+import '../styles/k5-pages.css';
 
 const FREQ_MAP = {
   monthly: 'Помесячно',
@@ -30,13 +32,13 @@ const FREQ_MAP = {
 function MobileTitle({ title }) {
   const lines = indicatorDetailHeaderMobileLines(title);
   if (!lines) {
-    return <span className="md:hidden text-pretty">{title}</span>;
+    return <span className="md:hidden text-pretty"><AccentTitle text={title} /></span>;
   }
   return (
     <span className="md:hidden flex flex-col gap-0.5">
-      {lines.map((line) => (
+      {lines.map((line, index) => (
         <span key={line} className="block">
-          {line}
+          {index === lines.length - 1 ? <AccentTitle text={line} /> : line}
         </span>
       ))}
     </span>
@@ -104,7 +106,7 @@ export default function IndicatorDetailHeader({
   );
 
   return (
-    <div className="fe-data-header fe-indicator-header z4-hero" data-has-value={aside ? 'true' : 'false'}>
+    <div className="fe-data-header fe-indicator-header z4-hero fe-cursor-light" data-has-value={aside ? 'true' : 'false'}>
       <div className="z4-hero__main">
         <div className={REVEAL} style={revealStyle(0)}>
           <Breadcrumbs items={crumbs} variant="mono" />
@@ -139,7 +141,7 @@ export default function IndicatorDetailHeader({
               className="fe-reveal fe-reveal--free fe-reveal--stagger z4-hero__title text-pretty font-display font-bold tracking-tight"
             >
               <MobileTitle title={title || code} />
-              <span className="hidden md:inline">{title || code}</span>
+              <span className="hidden md:inline"><AccentTitle text={title || code} /></span>
             </h1>
             {children ? <div className="z4-hero__line">{children}</div> : null}
           </>

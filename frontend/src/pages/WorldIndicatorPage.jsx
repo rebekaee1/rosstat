@@ -37,6 +37,7 @@ import { track, events } from '../lib/track';
 import { prepareVariantGroup } from '../lib/viewModeShortLabels';
 import WorldViewModePicker from '../components/WorldViewModePicker';
 import IndicatorHeroValue from '../components/IndicatorHeroValue';
+import AccentTitle from '../components/K5Accent';
 import ChartSectionSkeleton from '../components/ChartSectionSkeleton';
 import { ViewModesPanel } from '../components/ViewModesPanel';
 import WorldChartSection from '../components/WorldChartSection';
@@ -66,6 +67,7 @@ import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import '../styles/w6e-indicator.css';
 import '../styles/z4-indicator.css';
+import '../styles/k5-pages.css';
 
 const EMPTY_POINTS = [];
 
@@ -543,7 +545,7 @@ export default function WorldIndicatorPage() {
       {metaQ.data && indicator && (
         <>
           <header
-            className="fe-data-header z4-hero"
+            className="fe-data-header z4-hero fe-cursor-light"
             data-has-value={summary || (dataLoading && !dataError) ? 'true' : 'false'}
           >
             <div className="z4-hero__main">
@@ -567,7 +569,7 @@ export default function WorldIndicatorPage() {
                 )}
               </div>
               <h1 className="z4-hero__title text-pretty font-display font-bold tracking-tight text-text-primary">
-                {displayName}
+                <AccentTitle text={displayName} />
               </h1>
               <div className="z4-hero__line">
                 {summary ? (

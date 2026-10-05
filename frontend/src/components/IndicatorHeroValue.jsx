@@ -11,6 +11,7 @@ import { SkeletonBox } from './Skeleton';
 import WorldCountUp from './WorldCountUp';
 import { sparkValues } from '../lib/sparkValues';
 import '../styles/z4-indicator.css';
+import '../styles/k5-pages.css';
 
 /**
  * Главное число страницы показателя в правой части шапки: крупное значение (золотой акцент), изменение к прошлому
@@ -82,8 +83,9 @@ export default function IndicatorHeroValue({
   const trendUp = spark.length > 1 ? spark[spark.length - 1] >= spark[0] : true;
 
   return (
-    <div className="z4-hv" data-testid="indicator-hero-value">
+    <div className="z4-hv fe-glint" data-testid="indicator-hero-value">
       <p className="z4-hv__label">
+        <span className="k5-signal" aria-hidden="true" />
         <span>{label}</span>
         {when ? <span className="z4-hv__when">{when}</span> : null}
       </p>

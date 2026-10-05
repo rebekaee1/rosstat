@@ -1,0 +1,474 @@
+/*
+ * K5. Страница показателя, сравнение, прогнозы (раунд 3 «Хрусталь без границ»).
+ *
+ * Что здесь (в порядке файла):
+ *   1. Токены K5 (--k5-*): дымка L0, карточка L2, торец плиты, золотая гравировка. Светлая и тёмная тема.
+ *   2. Шапка показателя: плита L1 с тёплым светом, золотое слово-акцент, «Сейчас» 54-88 px гравировкой, сигнальная точка.
+ *   3. Полоса «Что показать / Показать как»: дымка L0 вместо второй плиты, сегмент-«жёлоб»; телефон: L1-лист.
+ *   4. График: торец плиты, высота плота, период лентой с маской (телефон), график на всю ширину.
+ *   5. Правая колонка: три L2-карточки (действия, сравнение стран, плитки), кнопки L2.
+ *   6. Таблицы истории и прогноза: строки без линий, чередование тона, hover-полоса, прилипающая шапка.
+ *   7. Световой шов `.k5-seam` (CSS-аналог LightSeam из K2): вместо серых `.fe-divider` между секциями.
+ *   8. Осколок пустого места `.k5-empty` / `.k5-shard`.
+ *   9. Сравнение: плашка-пример, бейдж «больше, чем» с двумя бусинами, ленты рядов (золото / сапфир), карточка графика.
+ *  10. Плитки «Сегодня».
+ *
+ * Правила: рамок нет (только свет и тень); анимируются transform и opacity; blur здесь не добавляется
+ * (бюджет кадра: ≤ 12 слоёв на компьютере, ≤ 6 на телефоне); всё движение гаснет при prefers-reduced-motion.
+ * Селекторы с `:root:root` перебивают `:root .класс` из z4/x2/y2/w6e независимо от порядка подключения файлов.
+ */
+
+/* ===== 1. Токены ===== */
+:root {
+  /* Золотая гравировка крупных цифр и слова-акцента: самая светлая точка #A07829 даёт ≥ 3:1 даже на золотом сиянии шапки. */
+  --k5-gold-text: linear-gradient(135deg, #6B5224 0%, #876A2C 40%, #A07829 72%, #7E6128 100%);
+  /* L0 «дымка»: полоса выбора без собственной тени-парения. */
+  --k5-haze: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.2));
+  --k5-haze-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 18px 40px -32px rgba(60, 48, 24, 0.3);
+  /* L2-карточка правой колонки: светлее фона, блик слева сверху, мягкая тень снизу. */
+  --k5-card: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 62%), var(--fe-glass-l2);
+  --k5-card-shadow: 0 14px 30px -22px rgba(60, 48, 24, 0.42), var(--fe-inset-glint);
+  /* Торец плиты: 7 px света снизу (вместо линии). */
+  --k5-edge: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85) 60%, rgba(233, 205, 142, 0.5));
+  /* Жёлоб сегмента: вдавленная дорожка. */
+  --k5-trough: rgba(236, 228, 208, 0.5);
+  --k5-trough-shadow: inset 0 2px 6px rgba(120, 95, 45, 0.16), inset 0 -1px 0 rgba(255, 255, 255, 0.85);
+  /* Прилипающая шапка таблицы. */
+  --k5-sticky: rgba(251, 248, 241, 0.94);
+  --k5-hover-row: linear-gradient(90deg, rgba(233, 205, 142, 0.2), rgba(255, 255, 255, 0.72));
+  --k5-stripe: rgba(255, 255, 255, 0.3);
+  --k5-hero-warm: rgba(233, 205, 142, 0.26);
+  --k5-hero-ice: rgba(191, 224, 245, 0.24);
+}
+:root[data-theme='dark'] {
+  --k5-gold-text: linear-gradient(135deg, #E4C994 0%, #D0B47D 50%, #F0DCAE 100%);
+  --k5-haze: linear-gradient(180deg, rgba(216, 230, 250, 0.07), rgba(216, 230, 250, 0.03));
+  --k5-haze-shadow: inset 0 1px 0 rgba(216, 230, 250, 0.1), 0 18px 40px -32px rgba(0, 0, 0, 0.55);
+  --k5-card: linear-gradient(135deg, rgba(216, 230, 250, 0.09), rgba(216, 230, 250, 0) 62%), var(--fe-glass-l2);
+  --k5-card-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.6), var(--fe-inset-glint);
+  --k5-edge: linear-gradient(180deg, rgba(216, 230, 250, 0), rgba(216, 230, 250, 0.16) 60%, rgba(208, 180, 125, 0.32));
+  --k5-trough: rgba(10, 16, 26, 0.35);
+  --k5-trough-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(216, 230, 250, 0.08);
+  --k5-sticky: rgba(32, 45, 64, 0.95);
+  --k5-hover-row: linear-gradient(90deg, rgba(208, 180, 125, 0.16), rgba(216, 230, 250, 0.1));
+  --k5-stripe: rgba(216, 230, 250, 0.05);
+  --k5-hero-warm: rgba(208, 180, 125, 0.16);
+  --k5-hero-ice: rgba(95, 128, 168, 0.18);
+}
+
+/* ===== 2. Шапка показателя ===== */
+:root:root .fe-data-header.z4-hero {
+  background:
+    radial-gradient(80% 160% at 100% 0%, var(--k5-hero-warm), rgba(233, 205, 142, 0) 62%),
+    radial-gradient(60% 130% at 0% 100%, var(--k5-hero-ice), rgba(191, 224, 245, 0) 64%),
+    var(--fe-glass-l1-sheen),
+    var(--fe-glass-l1);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+}
+
+/* Слово-акцент в названии: последнее слово золотой гравировкой. Текст заголовка тот же. */
+.k5-accent {
+  color: var(--fe-gold-ink, #7A5F2A);
+}
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .k5-accent {
+    background: var(--k5-gold-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}
+
+/* «Сейчас»: крупная золотая цифра с мягким отсветом (гравировка), единица мельче. */
+:root:root .z4-hv__value {
+  font-size: clamp(3.4rem, 2.2rem + 3.6vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  filter: drop-shadow(0 6px 14px rgba(176, 138, 62, 0.35));
+}
+:root:root .z4-hv__value--long { font-size: clamp(2.4rem, 1.7rem + 2.2vw, 3.8rem); }
+:root:root .z4-hv__unit { font-size: 0.3em; }
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  :root:root .z4-hv__value {
+    background: var(--k5-gold-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+@media (forced-colors: active) {
+  .k5-accent { background: none; -webkit-text-fill-color: CanvasText; color: CanvasText; }
+}
+
+/* Телефон: вместо блока справа главное число стоит строкой под названием («США: 30,8 трлн $ за 2025 год»), тоже золотом. */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  :root:root .fe-hero-line__value {
+    background: var(--k5-gold-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-size: 1.5em;
+  }
+  :root:root .fe-hero-line__value .fe-hero-line__unit {
+    -webkit-text-fill-color: var(--color-text-secondary);
+    color: var(--color-text-secondary);
+  }
+}
+
+/* Сигнальная точка перед подписью «Сейчас»: данные живые. Кольцо света расходится 6 раз и успокаивается. */
+.k5-signal {
+  position: relative;
+  flex: none;
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FFF6DA, #C9A24D 55%, #8F6B24);
+  box-shadow: 0 0 10px 2px rgba(201, 162, 77, 0.6);
+}
+.k5-signal::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 162, 77, 0.5), rgba(201, 162, 77, 0) 70%);
+  opacity: 0;
+  animation: k5-signal 3.2s ease-out 0.6s 6 both;
+}
+@keyframes k5-signal {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  70%, 100% { transform: scale(2); opacity: 0; }
+}
+
+/* Метки в шапке: вторичная строка читается на тёплом свете. */
+:root:root .z4-hv__delta .fe-delta-badge { box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
+
+/* ===== 3. Полоса «Что показать / Показать как» ===== */
+@media (min-width: 768px) {
+  /* Дымка L0: без blur и без тени-парения, чипы L2 поднимаются над ней. Плита выбора больше не «карточка в карточке». */
+  :root:root .z4-desk .fe-vm-body {
+    border-radius: 22px;
+    background: var(--k5-haze);
+    box-shadow: var(--k5-haze-shadow);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  /* «Показать как»: общий жёлоб, активный сегмент золотом (уже есть) лежит в нём бегунком. */
+  :root:root .z4-desk .fe-vm-body .fe-pick-card--mode .fe-chip-row.fe-chip-row--grid {
+    background: var(--k5-trough);
+    box-shadow: var(--k5-trough-shadow);
+  }
+  :root:root .z4-desk .fe-vm-body .fe-pick-card--mode .fe-chip-row.fe-chip-row--grid > .fe-chip:hover:not(.is-active) {
+    background: var(--fe-glass-l2-hover);
+  }
+}
+@media (max-width: 767.98px) {
+  /* Телефон: «Вид графика» без bottom-sheet (K3.5 ещё не слит): строка-L1 и под ней L1-лист. */
+  :root:root .z4-desk .fe-vm-toggle {
+    background: var(--fe-l1-bg);
+    box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  }
+  :root:root .fe-vm-panel[data-open='true'] > .fe-vm-body {
+    margin-bottom: 14px;
+    padding: 14px 12px 12px;
+    border-radius: 22px;
+    background: var(--fe-l1-bg);
+    box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  }
+  :root:root .fe-vm-panel[data-open='true'] > .fe-vm-body .fe-pick-card {
+    margin-bottom: 14px;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+  }
+  :root:root .fe-vm-panel[data-open='true'] > .fe-vm-body .fe-pick-card:last-child { margin-bottom: 0; }
+}
+
+/* ===== 4. График ===== */
+/* Обёртка плиты не обрезает тень-парение: скругление и обрезку содержимого держит сама плита (.fe-chart-card). */
+:root:root .k5-chart-host { overflow: visible; }
+
+/* Торец плиты: полоска света снизу, как грань толстого стекла. */
+:root:root .z4-chart-wrap .fe-chart-card { position: relative; }
+:root:root .z4-chart-wrap .fe-chart-card::after {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 0;
+  height: 7px;
+  border-radius: 7px 7px 0 0;
+  background: var(--k5-edge);
+  pointer-events: none;
+}
+
+/* На компьютере плот выше: график заполняет колонку рядом с тремя карточками справа, под ним не остаётся пустоты. */
+@supports (height: 1svh) {
+  @media (min-width: 1100px) {
+    :root:root .z4-plot { height: clamp(360px, calc(100svh - 500px), 520px); }
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* График на всю ширину: плита чуть шире текста страницы, поля внутри минимальные. */
+  :root:root .k5-chart-host { margin-inline: -8px; width: auto; max-width: none; }
+  :root:root .z4-chart-wrap .fe-chart-card {
+    padding: 12px 8px 14px;
+    border-radius: 22px;
+  }
+  /* Период: чипы L2 лентой, края гаснут маской, ряд листается пальцем. */
+  :root:root .z4-chart-wrap .fe-chart-toolbar .fe-chip-row--tight {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding: 4px 18px 12px 4px;
+    margin-bottom: -8px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 28px), transparent 100%);
+  }
+  :root:root .z4-chart-wrap .fe-chart-toolbar .fe-chip-row--tight::-webkit-scrollbar { display: none; }
+  :root:root .z4-chart-wrap .fe-chart-toolbar .fe-chip-row--tight > .fe-chip { flex: none; }
+}
+
+/* ===== 5. Правая колонка: три L2-карточки без рамок ===== */
+:root:root .z4-compare .fe-compare-panel {
+  margin-bottom: 0;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--k5-card);
+  box-shadow: var(--k5-card-shadow);
+}
+@media (min-width: 1100px) {
+  :root:root .z4-stage:not(.z4-stage--solo) .z4-chart-head {
+    border-radius: 20px;
+    background: var(--k5-card);
+    box-shadow: var(--k5-card-shadow);
+  }
+}
+/* Плитки значений («Сейчас» уже в шапке): тот же L2, число золотой гравировкой. */
+:root:root .z4-tiles .w2-stat,
+:root:root .z4-tiles .fe-tele {
+  border-radius: 20px;
+  background: var(--k5-card);
+  box-shadow: var(--k5-card-shadow);
+}
+:root:root .z4-tiles .w2-stat-value,
+:root:root .z4-tiles .fe-tele__num { letter-spacing: -0.035em; }
+
+/* Кнопки действий: L2 чуть светлее карточки, на которой лежат (иначе слой не читается). */
+:root:root .z4-chart-head .fe-btn--secondary,
+:root:root .z4-chart-head .fe-help-link,
+:root:root .z4-chart-head .z4-info__btn {
+  background: var(--fe-glass-l2-hover);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
+}
+:root:root .z4-chart-head .fe-help-link {
+  border-radius: 12px;
+  color: var(--color-text-secondary);
+}
+:root:root .z4-chart-head .fe-help-link:hover { color: var(--color-champagne-ink); }
+@media (hover: hover) {
+  :root:root .z4-chart-head .fe-help-link:hover { transform: translateY(var(--fe-lift, -2px)); }
+}
+:root:root .z4-chart-head .fe-help-link { transition: transform 0.2s var(--fe-ease-reveal), color 0.15s ease; }
+
+/* Подсказка «Прогноза нет»: стекло, а не плоская плашка. */
+:root:root .z4-info__pop { background: var(--fe-glass-l1-sheen), var(--fe-pop-bg); box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint); }
+
+/* ===== 6. Таблицы истории и прогноза ===== */
+:root:root .k5-table :is(tr, td, th) { border: 0; }
+:root:root .k5-table tbody tr:nth-child(odd) { background: var(--k5-stripe); }
+:root:root .k5-table tbody tr:nth-child(even) { background: transparent; }
+@media (hover: hover) {
+  :root:root .k5-table tbody tr:hover { background: var(--k5-hover-row); }
+}
+:root:root .k5-table thead tr { background: transparent; }
+:root:root .k5-table thead th {
+  background: var(--k5-sticky);
+  box-shadow: 0 10px 14px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint);
+}
+/* Шапка прилипает только в таблице со своей прокруткой (история показателя). */
+:root:root .fe-histtable thead th { position: sticky; top: 0; z-index: 2; }
+/* Самое высокое и низкое значения остаются подсвеченными (w6e) и поверх полосы. */
+:root:root .fe-histtable tr.is-max td { background: rgba(77, 138, 100, 0.12); }
+:root:root .fe-histtable tr.is-min td { background: rgba(200, 107, 91, 0.12); }
+
+/* ===== 7. Световой шов (замена серой линии между секциями) ===== */
+/* Элемент с .k5-seam получает луч света снизу; с .k5-seam--top — сверху. Грань-ромб в центре, свечение вместо контура. */
+.k5-seam { position: relative; }
+.k5-seam::before,
+.k5-seam::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  pointer-events: none;
+}
+.k5-seam::after {
+  background:
+    linear-gradient(90deg, rgba(201, 162, 77, 0), rgba(201, 162, 77, 0.6) 50%, rgba(201, 162, 77, 0)) center / 100% 1px no-repeat,
+    radial-gradient(ellipse 46% 100% at 50% 50%, rgba(233, 205, 142, 0.5), rgba(233, 205, 142, 0.12) 55%, rgba(233, 205, 142, 0) 78%);
+}
+.k5-seam::before {
+  left: 50%;
+  right: auto;
+  width: 7px;
+  margin-left: -3.5px;
+  transform: rotate(45deg) scale(0.9);
+  z-index: 1;
+  background: linear-gradient(135deg, #F7EBC8, #B08A3E);
+  box-shadow: 0 0 10px 1px rgba(233, 205, 142, 0.8);
+  border-radius: 1px;
+}
+.k5-seam--top::before,
+.k5-seam--top::after { bottom: auto; top: 0; }
+:root[data-theme='dark'] .k5-seam::after {
+  background:
+    linear-gradient(90deg, rgba(208, 180, 125, 0), rgba(208, 180, 125, 0.45) 50%, rgba(208, 180, 125, 0)) center / 100% 1px no-repeat,
+    radial-gradient(ellipse 46% 100% at 50% 50%, rgba(208, 180, 125, 0.28), rgba(208, 180, 125, 0.08) 55%, rgba(208, 180, 125, 0) 78%);
+}
+
+/* ===== 8. Осколок пустого места ===== */
+.k5-empty {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.k5-shard { flex: none; filter: drop-shadow(0 10px 14px rgba(176, 138, 62, 0.3)); }
+
+/* ===== 9. Сравнение ===== */
+/* Плашка «Пример готового сравнения»: L2 без рамки, грань-ромб слева, «Изменить» золотом (кнопка primary). */
+:root:root .fe-compare-page .fe-compare-demo {
+  position: relative;
+  padding-left: 2.25rem;
+  border-radius: 16px;
+  background: var(--k5-card);
+  box-shadow: var(--k5-card-shadow);
+}
+.fe-compare-page .fe-compare-demo::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  transform: rotate(45deg);
+  border-radius: 1.5px;
+  background: linear-gradient(135deg, #F7EBC8, #B08A3E);
+  box-shadow: 0 0 10px rgba(201, 162, 77, 0.7);
+}
+
+/* Бейдж «США больше, чем Китай…»: линза с двумя бусинами цветов рядов. */
+:root:root .fe-compare-gap {
+  gap: 10px;
+  padding: 7px 16px 7px 10px;
+  background: var(--k5-card);
+  box-shadow: var(--k5-card-shadow);
+}
+.fe-compare-gap__beads { display: inline-flex; flex: none; align-items: center; }
+.fe-compare-gap__beads i {
+  display: block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0, rgba(255, 255, 255, 0) 42%), var(--bead, #B08A3E);
+  box-shadow: 0 3px 7px -2px color-mix(in srgb, var(--bead, #B08A3E) 70%, transparent), inset 0 -2px 3px rgba(0, 0, 0, 0.18);
+}
+.fe-compare-gap__beads i + i { margin-left: -5px; }
+
+/* Ленты рядов: золото и сапфир со свечением снизу (stroke задаёт градиент в defs графика). */
+.fe-compare-plot .fe-cl-0 .recharts-line-curve { filter: drop-shadow(0 6px 8px rgba(201, 162, 77, 0.42)); }
+.fe-compare-plot .fe-cl-1 .recharts-line-curve { filter: drop-shadow(0 6px 8px rgba(53, 89, 154, 0.36)); }
+
+/* Подписи концов линий: линза с флагом страны. */
+.fe-compare-end__flag {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.35) 55%),
+    color-mix(in srgb, var(--bead, #B08A3E) 24%, #fff);
+  box-shadow: 0 3px 8px -3px color-mix(in srgb, var(--bead, #B08A3E) 70%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.fe-compare-end__flag--dot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bead, #B08A3E);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--bead, #B08A3E) 70%, transparent);
+}
+.fe-compare-end__text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Карточка графика: торец, как у плиты показателя. */
+.fe-compare-card::after {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 0;
+  height: 7px;
+  border-radius: 7px 7px 0 0;
+  background: var(--k5-edge);
+  pointer-events: none;
+}
+
+/* ===== 10. «Сегодня»: страница показателя ===== */
+:root:root .fe-today-stat {
+  border-radius: 20px;
+  background: var(--k5-card);
+  box-shadow: var(--k5-card-shadow);
+}
+:root:root .fe-today-stat--main { box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom); }
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  :root:root .fe-today-stat__num--main {
+    background: var(--k5-gold-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-size: 40px;
+    filter: drop-shadow(0 5px 10px rgba(176, 138, 62, 0.3));
+  }
+  :root:root .fe-today-stat__num--main .fe-today-stat__unit {
+    -webkit-text-fill-color: var(--color-text-secondary);
+    color: var(--color-text-secondary);
+  }
+}
+.fe-today-chart { position: relative; overflow: hidden; }
+.fe-today-chart::after {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 0;
+  height: 7px;
+  border-radius: 7px 7px 0 0;
+  background: var(--k5-edge);
+  pointer-events: none;
+}
+
+/* ===== Движение: всё гаснет при prefers-reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  .k5-signal::after { animation: none; opacity: 0; }
+  :root:root .z4-chart-head .fe-help-link { transition: none; }
+}
+html[data-fe-motion='off'] .k5-signal::after { animation: none; opacity: 0; }

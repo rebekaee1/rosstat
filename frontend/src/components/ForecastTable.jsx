@@ -1,5 +1,6 @@
 import { formatDate, formatValueWithUnit, unitSuffix, chartValueDigits } from '../lib/format';
 import { useT } from '../i18n';
+import '../styles/k5-pages.css';
 
 export default function ForecastTable({ mode = 'inflation', inflation, forecastData, actualPoints, unit = '%', dateFormat = 'full' }) {
   const t = useT();
@@ -44,7 +45,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
 
   return (
     <div
-      className="fe-reveal rounded-[2rem] overflow-hidden fe-glass-lite"
+      className="fe-reveal k5-table rounded-[2rem] overflow-hidden fe-glass-lite"
       style={{ '--fe-duration': '0.28s', '--fe-rise': '8px' }}
     >
       <div className="p-5 flex items-center justify-between flex-wrap gap-3">
@@ -56,7 +57,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
       <div className="overflow-x-auto scrollbar-hide">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-t border-border-subtle">
+            <tr>
               <th scope="col" className="text-left px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t('forecast.asOf')}
               </th>
@@ -67,7 +68,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
           </thead>
           <tbody>
             {rows.map(row => (
-              <tr key={row.date} className="border-t border-border-subtle hover:bg-surface-hover transition-colors">
+              <tr key={row.date} className="transition-colors">
                 <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
                   {formatDate(row.date, dateFormat)}
                 </td>
