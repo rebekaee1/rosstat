@@ -92,6 +92,7 @@ export const JSX_BORDER_ALLOW = [
   { file: 'pages/RegionIndicatorPage.jsx', token: /^border-t$|^border-border-subtle$/, why: 'п.2: строки таблицы значений (<tr>)' },
   { file: 'pages/WorldRegionIndicatorPage.jsx', token: /^border-t$|^border-border-subtle$/, why: 'п.2: строки таблицы значений (<tr>)' },
   { file: 'pages/TodayIndicatorPage.jsx', token: /^border-t$|^border-border-subtle$/, why: 'п.2: строки таблицы значений (<tr>)' },
+  { file: 'components/PlanetLabels.jsx', token: /^border$/, why: 'не CSS: слово «border» в тексте GLSL-шейдера планеты (рамка панели на текстуре подписей)' },
   { file: 'components/RegionAnnualChart.jsx', token: /^border-t-2$|^border-dashed$/, why: 'п.3: образец штриховой линии в легенде графика' },
   { file: 'components/calendar/CalendarEventCard.jsx', token: /^border-l-(blue|emerald|amber)-500$|^border-l-\[3px\]$|^border$/, why: 'п.4: цвет акцента слева у события (3 px, рисуется ::before)' },
 ];
@@ -100,7 +101,8 @@ export const JSX_BORDER_ALLOW = [
 const TW_BORDER = /^(?:(?:[a-z0-9-]+|\[[^\]]+\]|aria-[^:]+|data-[^:]+):)*(border(?:-[trblxy])?(?:-[0-9]+|-\[[^\]\s]+\])?|border-(?:border-subtle|border-champagne|champagne|champagne-ink|subtle|white|black|negative|positive|dashed|dotted|solid|blue-\d+|emerald-\d+|amber-\d+|\[[^\]\s]+\])(?:\/[0-9]+|\/\[[^\]\s]+\])?|border-[trblxy]-(?:[a-z-]+\d*)(?:\/[0-9]+)?|ring(?:-[0-9]+)?|ring-(?:black|champagne|champagne-ink|white|negative|positive|offset-[\w-]+|\[[^\]\s]+\])(?:\/[0-9]+|\/\[[^\]\s]+\])?)!?$/;
 const NEUTRAL = /^(?:[a-z0-9-]+:)*border-(?:0|none|box|collapse|separate|spacing)$|^(?:[a-z0-9-]+:)*border-[trblxy]-0$/;
 
-const STR = /(["'`])((?:\\.|(?!\1)[^\\\n])*?)\1/g;
+// Строки в кавычках (одна строка) и шаблонные литералы (в том числе многострочные, с вставками ${...}).
+const STR = /(["'])((?:\\.|(?!\1)[^\\\n])*?)\1|(`)((?:\\.|[^`\\])*)\3/g;
 
 function jsxViolations() {
   const bad = [];
@@ -110,7 +112,7 @@ function jsxViolations() {
     STR.lastIndex = 0;
     let m;
     while ((m = STR.exec(text))) {
-      const body = m[2];
+      const body = m[2] ?? m[4] ?? '';
       if (!/(?:^|[\s:])(?:border|ring)/.test(body)) continue;
       for (const tok of body.split(/\s+/)) {
         if (!tok || NEUTRAL.test(tok)) continue;
