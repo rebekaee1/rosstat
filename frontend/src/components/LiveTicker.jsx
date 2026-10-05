@@ -7,10 +7,12 @@ import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
 import { formatAsOfHuman, tickerSourceKind, tzFor } from '../lib/tickerFormat';
+import { useScrollDirection } from '../lib/useScrollDirection';
 import { useLocale, useT } from '../i18n';
 import '../styles/shell.css';
 import '../styles/platform-pages.css';
 import '../styles/z2-shell.css';
+import '../styles/k3-shell.css';
 
 /**
  * Мета ленты. linkTo — только если ведёт на ту же карточку/ряд, что и число.
@@ -167,7 +169,7 @@ function TickerCell({ snapshot, nowMs }) {
         {caption ? <span className="fe-ticker__caption">{caption}</span> : null}
       </span>
       {showPct ? (
-        <span className="fe-ticker__delta tabular-nums">
+        <span className="fe-ticker__delta tabular-nums" data-dir={pct > 0 ? 'up' : 'down'}>
           <span aria-hidden="true">{pct > 0 ? '\u25B2' : '\u25BC'}</span>
           <span className="sr-only">{pct > 0 ? t('w6b.ticker.up') : t('w6b.ticker.down')}</span>
           {formatPct(pct, locale)}
@@ -280,15 +282,19 @@ export default function LiveTicker() {
   // а золото в долларах за унцию показывать нельзя (лицензия дневного ряда), поэтому в английской ленте его нет.
   const snapshots = (data?.snapshots || []).filter((s) => !(locale === 'en' && s.code === 'gold-rub-live'));
   const { ref: scrollerRef, edges, measure } = useEdgeFade(snapshots.length);
+  // Телефон: при прокрутке вниз лента уезжает вверх (CSS, только transform и opacity), при прокрутке вверх возвращается.
+  const { deep, dir } = useScrollDirection();
+  const hidden = deep && dir === 'down';
   if (snapshots.length === 0) {
     return (
-      <div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface fe-shadow-2" />
+      <div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9" />
     );
   }
 
   return (
     <div
-      className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface shadow-sm pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] fe-shadow-2"
+      className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
+      data-hidden={hidden ? 'true' : 'false'}
     >
       <div className="fe-ticker__inner mx-auto h-full">
         <div className="fe-ticker__scroller">

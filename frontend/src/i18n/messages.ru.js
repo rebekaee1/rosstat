@@ -3274,4 +3274,10 @@ export default {
   'zb.change.percent.up': 'выше на {n} %',
   'zb.change.percent.down': 'ниже на {n} %',
   'zb.change.flat': 'почти без изменений',
+
+  // ===== K3 =====
+  'k3.dock.aria': 'Основные разделы',
+  'k3.dock.more': 'Ещё',
+  'k3.sheet.menuAria': 'Меню сайта',
+  'k3.sheet.dragHint': 'Потяните вниз, чтобы закрыть',
 };

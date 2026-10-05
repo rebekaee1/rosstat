@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Settings2, X } from 'lucide-react';
+import { Cookie, Settings2, X } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import Button from './Button';
@@ -13,8 +13,11 @@ import {
   saveConsent,
 } from '../lib/consent';
 import { useT } from '../i18n';
+import useMediaQuery from '../lib/useMediaQuery';
+import { useScrollDirection } from '../lib/useScrollDirection';
 import '../styles/shell.css';
 import '../styles/z2-shell.css';
+import '../styles/k3-shell.css';
 
 /**
  * Cookie-баннер (152-ФЗ): информирование о подразумеваемом согласии.
@@ -26,6 +29,10 @@ import '../styles/z2-shell.css';
  * Повторное открытие — событие CONSENT_OPEN_EVENT («Настройки cookie»
  * в футере и на странице политики). Смена CONSENT_VERSION (новая редакция
  * политики) показывает баннер заново.
+ *
+ * Телефон: после первой прокрутки плашка сворачивается в значок 44 px справа внизу (над док-панелью, если она
+ * на экране), нажатие на значок возвращает плашку. Сворачивание только прячет плашку: согласие не записывается,
+ * молчание остаётся молчанием.
  */
 
 // Два переключателя обычными словами вместо названий сервисов. «Необходимые» — не переключатель, а строка текста.
@@ -50,6 +57,11 @@ export default function CookieConsent() {
   const { pathname } = useLocation();
   const [visible, setVisible] = useState(() => !isConsentCurrent(getConsent()));
   const [expanded, setExpanded] = useState(false);
+  // Телефон: свёрнутый значок после первой прокрутки; `pinned` — посетитель сам вернул плашку, больше не сворачиваем.
+  const phone = useMediaQuery('(max-width: 639px)');
+  const { scrolled } = useScrollDirection();
+  const [pinned, setPinned] = useState(false);
+  const collapsed = phone && scrolled && !expanded && !pinned;
   const committing = useRef(false);
   const overlayVisible = visible && !pathname.startsWith('/admin');
   // Подразумеваемое согласие: по умолчанию всё включено (трекеры уже загружены).
@@ -70,6 +82,7 @@ export default function CookieConsent() {
         ads: current ? Boolean(current.ads) : true,
       });
       setExpanded(true);
+      setPinned(false);
       setVisible(true);
     };
     window.addEventListener(CONSENT_OPEN_EVENT, reopen);
@@ -77,8 +90,8 @@ export default function CookieConsent() {
   }, []);
 
   useEffect(() => {
-    notifyOverlayVisibility(overlayVisible, expanded);
-  }, [overlayVisible, expanded]);
+    notifyOverlayVisibility(overlayVisible && !collapsed, expanded);
+  }, [overlayVisible, expanded, collapsed]);
 
   useEffect(() => () => notifyOverlayVisibility(false, false), []);
 
@@ -89,8 +102,15 @@ export default function CookieConsent() {
     if (!overlayVisible || typeof document === 'undefined') return undefined;
     const root = document.documentElement;
     const node = panelRef.current;
+    // Свёрнутый значок места внизу документа не занимает; его высота нужна только тем, кто стоит рядом (--fe-cookie-fab-h).
+    if (collapsed || !node) {
+      root.style.setProperty('--fe-cookie-fab-h', collapsed ? '56px' : '0px');
+      return () => {
+        root.style.removeProperty('--fe-cookie-fab-h');
+      };
+    }
     const apply = () => {
-      const h = node ? Math.ceil(node.getBoundingClientRect().height) : 0;
+      const h = Math.ceil(node.getBoundingClientRect().height);
       root.style.setProperty('--fe-cookie-h', `${h + 12}px`);
     };
     apply();
@@ -103,7 +123,7 @@ export default function CookieConsent() {
       if (observer) observer.disconnect();
       root.style.removeProperty('--fe-cookie-h');
     };
-  }, [overlayVisible, expanded]);
+  }, [overlayVisible, expanded, collapsed]);
 
   // Служебные страницы (/admin/*) — баннер не показываем: админ не «посетитель»,
   // а перекрытие карточек BI мешает работе (владелец, 2026-07-06).
@@ -119,6 +139,7 @@ export default function CookieConsent() {
     finally {
       setVisible(false);
       setExpanded(false);
+      setPinned(false);
     }
     try {
       track(events.CONSENT_UPDATE, {
@@ -140,22 +161,35 @@ export default function CookieConsent() {
     );
   };
 
+  if (collapsed) {
+    return (
+      <button
+        type="button"
+        className="fe-cookie-fab fe-reveal fe-reveal--free"
+        aria-label={t('cookie.aria')}
+        data-fe-interaction="consent-reopen"
+        onClick={() => setPinned(true)}
+      >
+        <Cookie aria-hidden="true" />
+      </button>
+    );
+  }
+
   return (
     <div
       role="dialog"
       aria-modal="false"
       aria-label={t('cookie.aria')}
-      className="fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-2 [padding-bottom:max(0.5rem,env(safe-area-inset-bottom))] sm:p-4"
+      // Появление (прозрачность и сдвиг) играет обёртка, а не панель с blur: пока идёт анимация, размытие не пересчитывается.
+      className="fe-cookie-wrap fe-reveal fe-reveal--free fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-2 [padding-bottom:max(0.5rem,env(safe-area-inset-bottom))] [--fe-duration:0.22s] [--fe-rise:10px] sm:right-auto sm:p-4"
     >
       <div
         ref={panelRef}
         data-analytics-overlay="cookie-consent"
         data-fe-attention-occluder="cookie-consent"
         data-fe-interaction="consent-dialog"
-        className={cn(
-          'fe-cookie-panel pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-2xl fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]',
-          expanded ? 'sm:max-w-md' : 'sm:max-w-[31rem]',
-        )}
+        data-expanded={expanded ? 'true' : 'false'}
+        className="fe-cookie-panel pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden sm:max-w-[26rem]"
       >
         {expanded ? (
           <div className="flex shrink-0 items-start gap-1 px-3 pt-3 pb-1">

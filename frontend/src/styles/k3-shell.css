@@ -1,0 +1,462 @@
+/* Раунд 3, зона K3: оболочка в хрустале (шапка-капсула, лента курсов, нижняя док-панель телефона, шторка меню, cookie-значок).
+   Рамок нет: форму задают свет и тень (блик сверху, тень снизу, разница светлоты слоёв). Двигаются только transform и opacity;
+   blur, box-shadow и filter не анимируются. Всё движение гасится в конце файла (prefers-reduced-motion), а при
+   prefers-reduced-transparency и без backdrop-filter слои становятся плотными.
+
+   Слой стекла шапки, ленты и панелей рисуют псевдоэлементы (`::before`, `::after`), а не сам элемент: backdrop-filter на самом
+   <nav> сделал бы его «корнем фона», и выпадающие панели внутри него (меню «Инструменты», страны мира, язык) размывали бы пустоту.
+
+   Новые общие классы этой зоны (для переноса в фундамент, если пригодятся другим зонам):
+     .fe-sheet / .fe-sheet-scrim   шторка снизу (components/BottomSheet.jsx)
+     .fe-dock                      нижняя панель телефона (components/MobileDock.jsx)
+     .fe-mnav-tile                 иконка пункта меню в стеклянной «грани» 40 px
+     .fe-cookie-fab                значок свёрнутой cookie-плашки */
+
+:root {
+  /* Цвет «бумаги» для стекла шапки, ленты, панелей: rgb(var(--k3-paper) / альфа). */
+  --k3-paper: 255 252 245;
+  /* Рост и падение курсов: изумруд и бронза (не красный: курс сам по себе не «плохо»). */
+  --k3-up: #2e9c6a;
+  --k3-up-glow: rgba(46, 156, 106, 0.55);
+  --k3-down: #b8763a;
+  --k3-down-glow: rgba(184, 118, 58, 0.55);
+  --k3-caption: #55627a;
+  --k3-ease: var(--fe-ease-reveal, cubic-bezier(0.22, 0.7, 0.2, 1));
+}
+:root[data-theme='dark'], :root.dark {
+  --k3-paper: 28 39 55;
+  --k3-caption: #a8b9cf;
+}
+
+/* ═══ Шапка: парящая стеклянная капсула ═══════════════════════════════════ */
+nav.fe-navbar--glass {
+  background: none;
+  box-shadow: none;
+}
+/* Основа: L1, блик сверху (диагональ и inset), тень-парение, размытие 26 px. */
+nav.fe-navbar--glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.55);
+  -webkit-backdrop-filter: blur(26px) saturate(1.3);
+  backdrop-filter: blur(26px) saturate(1.3);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+}
+/* Прокрутка: слой плотнее (0,55 → 0,7) и тень глубже. Меняется только прозрачность слоя, а не цвет и не тень. */
+nav.fe-navbar--glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgb(var(--k3-paper) / 0.34);
+  box-shadow: 0 34px 56px -26px rgba(60, 48, 24, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+nav.fe-navbar--glass[data-scrolled='true']::after { opacity: 1; }
+/* При прокрутке капсула опускается на 6 px: между лентой и шапкой появляется воздух. */
+nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
+
+/* Телефон: шапка сжимается до 56 px при прокрутке вниз и возвращается при прокрутке вверх; лента курсов уезжает вместе с ней. */
+@media (max-width: 767px) {
+  nav.fe-navbar--glass[data-compact='true'] {
+    transform: translateY(-30px);
+    padding-block: 4px;
+  }
+  nav.fe-navbar--glass[data-compact='true'] .fe-brand { transform: scale(0.9); transform-origin: left center; }
+  nav.fe-navbar--glass .fe-brand { transition: transform 0.3s ease; }
+}
+
+/* Три кружка телефона (поиск, язык, меню) живут в одной стеклянной капсуле L2: без колец, 44 px каждый. */
+.fe-nav-cluster {
+  gap: 0;
+  padding: 2px;
+  border-radius: 9999px;
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
+}
+.fe-nav-cluster .fe-nav-round {
+  background: transparent;
+  box-shadow: none;
+}
+.fe-nav-cluster .fe-nav-round:hover,
+.fe-nav-cluster .fe-nav-round[aria-expanded='true'] {
+  background: var(--z2-gold-soft);
+  box-shadow: none;
+}
+
+/* ═══ Лента курсов ════════════════════════════════════════════════════════ */
+.fe-ticker::before {
+  /* Основа ленты: стекло L1 (размытие 24 px), блик сверху, тень снизу. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  backdrop-filter: blur(24px) saturate(1.3);
+  box-shadow: 0 14px 28px -22px rgba(60, 48, 24, 0.42), var(--fe-inset-glint);
+}
+/* Свет вместо нижней кромки: тёплое сияние по центру, затухающее к краям. */
+.fe-ticker::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  pointer-events: none;
+  background: radial-gradient(60% 100% at 50% 100%, rgba(255, 233, 180, 0.6), transparent);
+}
+.fe-ticker__cell + .fe-ticker__cell::before {
+  /* Между курсами не линия, а грань-ромб 5×8 px с мягким свечением. */
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: 50%;
+  width: 5px;
+  height: 8px;
+  margin-top: -4px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='8' viewBox='0 0 5 8'%3E%3Cpath d='M2.5 0 5 4 2.5 8 0 4Z' fill='%23C9A24D'/%3E%3C/svg%3E") center / 5px 8px no-repeat;
+  filter: drop-shadow(0 0 4px rgba(201, 162, 77, 0.75));
+  pointer-events: none;
+}
+/* Рост и падение: точка-свечение (изумруд / бронза), а не красная стрелка; направление читает скринридер. */
+.fe-ticker__delta > [aria-hidden='true'] { display: none; }
+.fe-ticker__delta::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--k3-up);
+  box-shadow: 0 0 8px 1px var(--k3-up-glow);
+}
+.fe-ticker__delta[data-dir='down']::before {
+  background: var(--k3-down);
+  box-shadow: 0 0 8px 1px var(--k3-down-glow);
+}
+
+/* Телефон: две пары на экране и свайп; третья проступает из-под затухающего края, слова не режутся. */
+@media (max-width: 767px) {
+  .fe-ticker {
+    transition: transform 0.28s var(--k3-ease), opacity 0.2s ease;
+  }
+  /* Бюджет размытия на телефоне: лента без blur, чуть плотнее. */
+  .fe-ticker::before {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.84);
+  }
+  .fe-ticker[data-hidden='true'] {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .fe-ticker__scroll {
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 8px;
+  }
+  .fe-ticker .fe-ticker__fade { width: 40px; }
+  .fe-ticker__cell {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-areas: 'name name' 'quote delta';
+    align-content: center;
+    justify-content: start;
+    column-gap: 8px;
+    row-gap: 0;
+    min-width: calc((100vw - 52px) / 2);
+    padding-inline: 12px;
+    scroll-snap-align: start;
+  }
+  .fe-ticker .fe-ticker__name { grid-area: name; font-size: 11px; line-height: 1.15; color: var(--k3-caption); }
+  .fe-ticker .fe-ticker__quote { grid-area: quote; }
+  .fe-ticker .fe-ticker__delta { grid-area: delta; align-self: end; font-size: 12px; }
+}
+
+/* ═══ Выпадающие панели шапки ═════════════════════════════════════════════ */
+.fe-mega__tile {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: rgb(var(--k3-paper) / 0.75);
+  box-shadow: var(--fe-l2-shadow);
+  line-height: 1;
+}
+.fe-mega__flag.fe-mega__tile { font-size: 17px; }
+.fe-mega__tile--gem { background: linear-gradient(145deg, rgb(255 255 255 / 0.9), rgb(246 231 190 / 0.6)); }
+.fe-locale-flag {
+  background: rgb(var(--k3-paper) / 0.7);
+  box-shadow: var(--fe-l2-shadow);
+}
+.fe-locale-item:hover { background: var(--fe-glass-l2-hover); }
+.fe-locale-item.is-active { background: rgb(201 162 77 / 0.16); }
+
+/* ═══ Нижняя док-панель телефона ══════════════════════════════════════════ */
+.fe-dock {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 70;
+  max-width: 440px;
+  height: 64px;
+  margin-inline: auto;
+  border-radius: 28px;
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  backdrop-filter: blur(24px) saturate(1.3);
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.3s var(--k3-ease), opacity 0.24s ease, visibility 0s;
+}
+.fe-dock[data-visible='false'] {
+  transform: translateY(calc(100% + 28px));
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.3s var(--k3-ease), opacity 0.24s ease, visibility 0s 0.3s;
+}
+@media (min-width: 768px) {
+  .fe-dock { display: none; }
+}
+.fe-dock__list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  height: 100%;
+  margin: 0;
+  padding: 0 6px;
+  list-style: none;
+}
+.fe-dock__cell { min-width: 0; }
+.fe-dock__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 22px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.fe-dock__label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fe-dock__gem {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 30px;
+  border-radius: 13px;
+  transition: transform 0.2s var(--k3-ease);
+}
+.fe-dock__gem svg { width: 21px; height: 21px; }
+/* Активный раздел: золотая гемма с внутренним светом и грань-бликом по диагонали. */
+.fe-dock__item.is-active { color: var(--color-champagne-ink); }
+.fe-dock__item.is-active .fe-dock__gem {
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.fe-dock__item.is-active .fe-dock__gem::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), transparent 52%);
+}
+.fe-dock__item:active .fe-dock__gem { transform: scale(0.94); }
+
+/* ═══ Шторка снизу (меню телефона и планшета) ══════════════════════════════ */
+.fe-sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(20, 33, 61, 0.25);
+  touch-action: none;
+  animation: fe-k3-fade 0.24s ease backwards;
+}
+.fe-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 130;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 560px;
+  max-height: min(86dvh, 760px);
+  margin-inline: auto;
+  border-radius: 28px 28px 0 0;
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.78);
+  -webkit-backdrop-filter: blur(28px) saturate(1.3);
+  backdrop-filter: blur(28px) saturate(1.3);
+  box-shadow: 0 -24px 60px -28px rgba(20, 33, 61, 0.45), var(--fe-inset-glint);
+  overscroll-behavior: contain;
+  outline: none;
+  animation: fe-k3-sheet-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@media (min-width: 640px) { .fe-sheet { max-width: 720px; } }
+@media (min-width: 900px) { .fe-sheet { max-width: 880px; } }
+@keyframes fe-k3-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fe-k3-sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+
+.fe-sheet__grab {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  cursor: grab;
+  touch-action: none;
+}
+/* Ручка-капля: золотая «капля света», тянется вниз. */
+.fe-sheet__handle {
+  width: 48px;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(176, 138, 62, 0.35), rgba(201, 162, 77, 0.95) 50%, rgba(176, 138, 62, 0.35));
+  box-shadow: 0 2px 10px rgba(201, 162, 77, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.fe-sheet__body { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+.fe-sheet__foot { flex: none; }
+
+/* Пункты меню в шторке: 56 px, иконка-грань, без линий (между группами воздух). */
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-scroll { padding: 4px 12px 8px; background: none; }
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-group { gap: 4px; animation: fe-mnav-in 0.22s var(--fe-ease-out, ease-out) backwards; }
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 14px; padding-top: 0; }
+@media (min-width: 640px) {
+  /* В две и три колонки группы лежат рядом: воздух между рядами даёт зазор сетки, а не верхний отступ. */
+  .fe-sheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 0; }
+  .fe-sheet .fe-mnav-columns { row-gap: 14px; }
+}
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-title {
+  padding: 4px 12px 2px;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-champagne-ink);
+}
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link {
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 8px 12px 8px 10px;
+  border-radius: 18px;
+  text-align: left;
+}
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link--nested { min-height: 56px; }
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link:active { background: var(--fe-glass-l2-hover); }
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] { background: rgb(201 162 77 / 0.16); }
+.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] .fe-mnav-label { color: var(--color-champagne-ink); }
+@media (hover: hover) {
+  .fe-sheet.fe-navbar-mobile-menu .fe-mnav-link:hover { background: var(--fe-glass-l2-hover); }
+}
+.fe-mnav-tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgb(255 255 255 / 0.92), rgb(246 231 190 / 0.55));
+  box-shadow: var(--fe-l2-shadow);
+}
+.fe-sheet .fe-mnav-tile .fe-mnav-icon { margin-top: 0; color: var(--color-champagne-ink); }
+.fe-sheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile {
+  background: var(--fe-glass-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.fe-sheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile .fe-mnav-icon { color: var(--fe-on-gold); }
+.fe-sheet .fe-mnav-chevron { margin-right: 4px; }
+/* Вход и регистрация: закреплены внизу, над ними мягкий свет вместо линии. */
+.fe-sheet .fe-mnav-foot {
+  padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(180deg, transparent, rgb(var(--k3-paper) / 0.6));
+}
+
+/* ═══ Cookie: стеклянная капсула и значок ═════════════════════════════════ */
+.fe-cookie-fab {
+  position: fixed;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--fe-pop-bg);
+  box-shadow: var(--fe-shadow-l2), var(--fe-float-shadow), var(--fe-inset-glint);
+  color: var(--color-champagne-ink);
+  cursor: pointer;
+  /* Над док-панелью, когда она на экране (--fe-dock-h ставит MobileDock), иначе у самого края. */
+  transform: translateY(calc(-1 * var(--fe-dock-h, 0px)));
+  transition: transform 0.3s var(--k3-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.fe-cookie-fab svg { width: 20px; height: 20px; }
+.fe-cookie-fab:active { scale: 0.96; }
+@media (min-width: 640px) {
+  .fe-cookie-fab { display: none; }
+}
+@media (max-width: 639px) {
+  /* Плашка cookie, возвращённая нажатием на значок, встаёт над док-панелью, а не под ней. */
+  .fe-cookie-wrap {
+    transform: translateY(calc(-1 * var(--fe-dock-h, 0px)));
+    transition: transform 0.3s var(--k3-ease);
+  }
+}
+
+/* ═══ Плотные слои: без backdrop-filter и при «меньше прозрачности» ═════════ */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  nav.fe-navbar--glass::before, .fe-ticker::before { background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.94); }
+  .fe-dock, .fe-sheet { background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.96); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  nav.fe-navbar--glass::before, .fe-ticker::before {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.96);
+  }
+  .fe-dock, .fe-sheet {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.97);
+  }
+}
+
+/* ═══ Движение и печать ══════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  nav.fe-navbar--glass::after, nav.fe-navbar--glass .fe-brand,
+  .fe-ticker, .fe-dock, .fe-dock__gem, .fe-cookie-fab, .fe-cookie-wrap { transition: none; }
+  .fe-sheet, .fe-sheet-scrim, .fe-sheet.fe-navbar-mobile-menu .fe-mnav-group { animation: none; }
+  nav.fe-navbar--glass[data-scrolled='true'], nav.fe-navbar--glass[data-compact='true'] { transform: none; }
+  .fe-ticker[data-hidden='true'] { transform: none; opacity: 1; pointer-events: auto; }
+}
+@media print {
+  .fe-dock, .fe-sheet, .fe-sheet-scrim, .fe-cookie-fab, .fe-cookie-wrap { display: none !important; }
+}

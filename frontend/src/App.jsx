@@ -9,6 +9,7 @@ import {
   Link,
 } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import MobileDock from './components/MobileDock';
 import YandexRSY from './components/YandexRSY';
 import CookieConsent from './components/CookieConsent';
 import Footer from './components/Footer';
@@ -246,11 +247,13 @@ function AppRoutes() {
       <CookieConsent />
       {/* Бегущая строка — декор: сбой её чанка не должен ронять всё приложение. */}
       <ErrorBoundary fallback={null}>
-        <Suspense fallback={<div className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0]" style={{ height: 36 }} aria-hidden="true" />}>
+        <Suspense fallback={<div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9" style={{ height: 36 }} aria-hidden="true" />}>
           <LiveTicker />
         </Suspense>
       </ErrorBoundary>
       <Navbar />
+      {/* Нижняя док-панель телефона: пять главных разделов под большим пальцем (K3.4). */}
+      <MobileDock />
       <main id="main-content" tabIndex={-1} className="relative z-0 flex-1 pt-9 outline-none">
         <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>

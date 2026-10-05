@@ -182,6 +182,40 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(document.documentElement.dataset.feTicker).toBeUndefined();
     expect(document.querySelector('.fe-ticker').className).toContain('h-9');
   });
+  it('K3: изменение курса помечено точкой-свечением: рост и падение разного цвета, направление остаётся в тексте для скринридера', async () => {
+    mockSnapshots();
+    renderTicker({ locale: 'ru', route: '/' });
+    await screen.findByText('84,41');
+    const deltas = [...document.querySelectorAll('.fe-ticker__delta')];
+    expect(deltas.map((d) => d.getAttribute('data-dir'))).toEqual(['down', 'up']);
+    expect(deltas[0].textContent).toContain('w6b.ticker.down');
+    expect(deltas[1].textContent).toContain('w6b.ticker.up');
+  });
+
+  it('K3: на телефоне при прокрутке вниз лента помечается скрытой, при прокрутке вверх возвращается', async () => {
+    // Соседний тест оставил scrollY = 400: начинаем с верха страницы.
+    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+    mockSnapshots();
+    renderTicker({ locale: 'ru', route: '/' });
+    await screen.findByText('84,41');
+    const ticker = document.querySelector('.fe-ticker');
+    expect(ticker.getAttribute('data-hidden')).toBe('false');
+    const setY = async (y) => {
+      Object.defineProperty(window, 'scrollY', { value: y, configurable: true });
+      await act(async () => {
+        window.dispatchEvent(new Event('scroll'));
+        await new Promise((resolve) => { setTimeout(resolve, 40); });
+      });
+    };
+    await setY(400);
+    expect(ticker.getAttribute('data-hidden')).toBe('true');
+    // Высота зарезервирована всегда: прячет её только CSS-сдвиг, шапка и страница под ней не прыгают.
+    expect(ticker.className).toContain('h-9');
+    await setY(300);
+    expect(ticker.getAttribute('data-hidden')).toBe('false');
+    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+  });
+
   it('EN: пара доллар к юаню подписана «USD/CNY» без знака юаня, чтобы не читалась как доллар к иене', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,

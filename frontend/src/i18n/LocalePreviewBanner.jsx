@@ -33,8 +33,9 @@ export default function LocalePreviewBanner() {
   const scrolling = useHiddenWhileScrolling();
   if (!isPreview) return null;
 
-  // Над плашкой cookie: её высота лежит в --fe-cookie-h (0, пока плашки нет).
-  const lift = { bottom: 'calc(var(--fe-cookie-h, 0px) + 8px)' };
+  // Над плашкой cookie и её значком, над док-панелью телефона: их высоты лежат в --fe-cookie-h, --fe-cookie-fab-h и --fe-dock-h
+  // (0, пока их нет на экране).
+  const lift = { bottom: 'calc(var(--fe-cookie-h, 0px) + var(--fe-cookie-fab-h, 0px) + var(--fe-dock-h, 0px) + 8px)' };
 
   if (!open) {
     return (
@@ -46,7 +47,7 @@ export default function LocalePreviewBanner() {
         aria-expanded="false"
         onClick={() => setOpen(true)}
         style={lift}
-        className="z2-preview-toggle fixed right-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full text-champagne opacity-55 backdrop-blur-sm hover:opacity-100 focus-visible:opacity-100 fe-glass-pop"
+        className="z2-preview-toggle fixed right-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full text-champagne opacity-55 hover:opacity-100 focus-visible:opacity-100 fe-glass-2"
       >
         <Languages className="h-4 w-4" aria-hidden="true" />
       </button>

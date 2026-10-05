@@ -22,6 +22,9 @@ import {
 
 export const UNITED_STATES_SLUG = 'united-states';
 
+/** Событие для шапки: «Ещё» в нижней док-панели телефона открывает то же меню-шторку, что и гамбургер (состояние меню живёт в Navbar). */
+export const OPEN_NAV_MENU_EVENT = 'fe:nav-menu-open';
+
 export const WORLD_RATING_TO = worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT);
 
 /** «Курсы валют»: страница с курсами ЦБ, рынком и конвертером. */
