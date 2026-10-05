@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { Children, useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import Brand from './Brand';
@@ -17,10 +17,12 @@ import {
   footerCatalogColumn,
   footerHomeCountryColumn,
   footerSourceLinks,
+  footerToolLinks,
   footerWorldLinks,
 } from '../lib/footerNav';
 import { useT, useLocale } from '../i18n';
 import '../styles/shell.css';
+import '../styles/z2-shell.css';
 
 const chipLink = cn(FOCUS_RING, 'fe-foot-chip fe-press');
 
@@ -49,7 +51,7 @@ function ImageCredit({ t }) {
  * Группа ссылок подвала. На телефоне — аккордеон (заголовок-кнопка раскрывает список), чтобы подвал не занимал
  * три экрана; от 640 px — обычная колонка с заголовком. Все заголовки одного стиля, регистр обычный.
  */
-function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, children }) {
+function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, span = 1, cols = 1, children }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const expanded = desktop || open;
@@ -69,8 +71,10 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, children 
       </section>
     );
   }
+  // Длинный список на широком экране занимает две дорожки сетки и идёт в два столбца (строк поровну).
+  const rows = Math.ceil(Children.count(children) / 2);
   return (
-    <section className="fe-foot-group">
+    <section className={cn('fe-foot-group', span === 2 && 'fe-foot-span-2')}>
       <h3 className="fe-foot-title">
         {desktop ? (
           hubTo ? <Link to={hubTo} className={footLink}>{title}</Link> : title
@@ -89,7 +93,10 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, children 
       </h3>
       <div id={panelId} className="fe-foot-panel" data-open={expanded} inert={!expanded}>
         <div className="fe-foot-panel__inner">
-          <ul className="fe-foot-list text-sm">
+          <ul
+            className={cn('fe-foot-list text-sm', cols === 2 && 'fe-foot-list--cols2')}
+            style={cols === 2 ? { '--fe-foot-rows': rows } : undefined}
+          >
             {!desktop && hubTo && hubLabel ? (
               <li>
                 <Link to={hubTo} className={footLink}>{hubLabel}</Link>
@@ -103,6 +110,24 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, children 
   );
 }
 
+/** Источники данных одной строкой: «Источники: Росстат, Евростат, МВФ, Банк России» с золотыми точками между названиями (их рисует CSS). */
+function SourcesStrip({ t, links }) {
+  return (
+    <div className="fe-foot-sources" role="group" aria-label={t('footer.sources')}>
+      <span className="fe-foot-sources__label">{t('footer.sources')}</span>
+      <ul>
+        {links.map((item) => (
+          <li key={item.key}>
+            <SourceLink href={item.href} className={footLink}>
+              {t(item.key)}
+            </SourceLink>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function Footer() {
   const t = useT();
   const { locale } = useLocale();
@@ -112,18 +137,25 @@ export default function Footer() {
   const homeCountry = footerHomeCountryColumn(locale);
   const catalog = footerCatalogColumn(locale);
   const worldLinks = footerWorldLinks(locale);
+  const toolLinks = footerToolLinks();
+  const isEn = locale === 'en';
 
   return (
-    <footer className="fe-footer mt-auto border-t border-border-subtle">
+    <footer className="fe-footer mt-auto">
       <div className="fe-page-shell fe-foot-wrap py-10 md:py-16">
-        <div className="fe-footer-grid grid grid-cols-1 gap-x-8 gap-y-0 sm:grid-cols-2 sm:gap-y-8 md:grid-cols-4">
-          <div>
+        <div className="fe-foot-top">
+          <div className="fe-foot-brand">
             <Link to="/" className={cn(FOCUS_RING, 'mb-4 inline-flex rounded-lg')} aria-label={t('nav.homeAria')}>
               <Brand />
             </Link>
-            <p className="mb-2 text-sm text-text-secondary leading-relaxed sm:mb-5">
+            <p className="mb-2 sm:mb-0">
               {t('footer.tagline')}
             </p>
+          </div>
+          {/* Компьютер: источники одной строкой справа от логотипа. Телефон: сворачиваемая группа, как раньше. */}
+          {desktop ? (
+            <SourcesStrip t={t} links={sourceLinks} />
+          ) : (
             <FooterGroup title={t('footer.sources')} desktop={desktop}>
               {sourceLinks.map((item) => (
                 <li key={item.key}>
@@ -133,14 +165,18 @@ export default function Footer() {
                 </li>
               ))}
             </FooterGroup>
-          </div>
+          )}
+        </div>
 
+        <div className="fe-footer-grid grid grid-cols-1 gap-x-8 gap-y-0 sm:grid-cols-2 sm:gap-y-8 md:grid-cols-4">
           {catalog.kind === 'countries' ? (
             <FooterGroup
               title={t(catalog.headingKey)}
               hubTo={catalog.headingTo}
               desktop={desktop}
               chips
+              span={2}
+              cols={2}
             >
               {catalog.links.map((item) => (
                 <li key={item.key}>
@@ -157,6 +193,8 @@ export default function Footer() {
               hubLabel={t('shell.footer.allCategories')}
               desktop={desktop}
               chips
+              span={2}
+              cols={2}
             >
               {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
                 <li key={c.slug}>
@@ -173,7 +211,13 @@ export default function Footer() {
             </FooterGroup>
           )}
 
-          <FooterGroup title={t('footer.section.world')} desktop={desktop} chips>
+          <FooterGroup
+            title={t('footer.section.world')}
+            desktop={desktop}
+            chips
+            span={isEn ? 2 : 1}
+            cols={isEn ? 2 : 1}
+          >
             {worldLinks.map((item) => (
               <li key={item.key}>
                 <Link to={item.to} className={desktop ? footLink : chipLink}>
@@ -194,24 +238,16 @@ export default function Footer() {
           </FooterGroup>
 
           <FooterGroup title={t('footer.tools')} desktop={desktop}>
-            <li>
-              <Link to="/calculator" className={footLink}>
-                {t('footer.calcInflation')}
-              </Link>
-            </li>
-            <li>
-              <Link to="/calculator/mortgage" className={footLink}>
-                {t('footer.calcMortgage')}
-              </Link>
-            </li>
-            <li>
-              <Link to="/calculator/compound" className={footLink}>
-                {t('footer.calcCompound')}
-              </Link>
-            </li>
+            {toolLinks.map((item) => (
+              <li key={item.key}>
+                <Link to={item.to} className={footLink}>
+                  {t(item.key)}
+                </Link>
+              </li>
+            ))}
           </FooterGroup>
 
-          <FooterGroup title={t('footer.info')} desktop={desktop}>
+          <FooterGroup title={t('footer.info')} desktop={desktop} span={isEn ? 1 : 2} cols={isEn ? 1 : 2}>
             <li>
               <Link to="/about" className={footLink}>
                 {t('footer.about')}
@@ -256,20 +292,21 @@ export default function Footer() {
         </div>
 
         <div className="fe-foot-bottom">
-          <p className="fe-foot-updates">
-            <span className="fe-foot-updates__dot" aria-hidden="true" />
-            {t('shell.footer.updates')}
-          </p>
+          <div className="fe-foot-meta">
+            <p className="fe-foot-updates">
+              <span className="fe-foot-updates__dot" aria-hidden="true" />
+              {t('shell.footer.updates')}
+            </p>
+            {/* Лицензия изображения Земли: на компьютере под строкой об обновлениях, на телефоне внутри «Реквизитов». */}
+            {desktop ? <ImageCredit t={t} /> : null}
+          </div>
 
           <div className="fe-foot-legal">
             <p>
               &copy; {new Date().getFullYear()} Forecast Economy. {t('footer.disclaimer')}
             </p>
             {desktop ? (
-              <>
-                <p>{t('footer.operator')}</p>
-                <ImageCredit t={t} />
-              </>
+              <p>{t('footer.operator')}</p>
             ) : (
               <details className="fe-foot-requisites">
                 <summary className={cn(FOCUS_RING, 'fe-foot-requisites__summary')}>

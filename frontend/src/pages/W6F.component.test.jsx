@@ -27,9 +27,11 @@ describe('404: подсказка и возврат', () => {
     expect(within(guess).getByRole('link', { name: 'Рейтинг стран по ВВП' }).getAttribute('href')).toBe('/world/rating/gdp-usd');
     expect(screen.getByRole('button', { name: 'Вернуться назад' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Валюты' }).getAttribute('href')).toBe('/currencies');
-    // Огромной цифры нет: вместо неё маленькая планета.
-    expect(document.querySelector('.w5-planet')).toBeTruthy();
-    expect(document.body.textContent).not.toMatch(/^404$/m);
+    // Раунд 2 (Z2): крупная золотая «404», где нуль заменён планетой; цифры декоративны (скрыты от скринридера),
+    // само сообщение об ошибке даёт заголовок и подпись «Ошибка 404».
+    expect(document.querySelector('.z2-nf-planet')).toBeTruthy();
+    expect(document.querySelector('.z2-nf-code').getAttribute('aria-hidden')).toBe('true');
+    expect(screen.getByText('Ошибка 404')).toBeTruthy();
   });
 
   it('у адреса без знакомых слов подсказки нет', async () => {

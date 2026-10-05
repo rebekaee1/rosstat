@@ -31,7 +31,7 @@ function LocaleFlag({ locale, className }) {
  * До cutover / localhost: тот же origin + ?preview_locale=en (не канон).
  * После cutover на прод-хостах: path-identical host-swap (EN=apex, RU=ru.).
  */
-export default function LocaleSwitcher() {
+export default function LocaleSwitcher({ className: triggerClassName }) {
   const t = useT();
   const { locale, switchLanguage } = useLocale();
   const [open, setOpen] = useState(false);
@@ -70,6 +70,7 @@ export default function LocaleSwitcher() {
           'flex h-8 items-center gap-1 rounded-lg px-1.5 text-text-secondary transition-colors [@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:justify-center',
           'hover:text-text-primary',
           open && 'text-champagne',
+          triggerClassName,
         )}
         aria-label={`${t('nav.language')}: ${t(current.labelKey)}`}
         aria-expanded={open}

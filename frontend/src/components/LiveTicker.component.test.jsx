@@ -36,11 +36,11 @@ afterEach(() => {
 });
 
 describe('LiveTicker запрашивает lane по языку и региону страницы', () => {
-  it('ru на странице другой страны — lane=world: рубль там не главное', async () => {
+  it('ru на странице другой страны — тот же lane=russia: набор ленты не меняется от страницы к странице', async () => {
     const fetchMock = mockTickerFetch();
     renderTicker({ locale: 'ru', route: '/germany' });
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-    expect(fetchMock.mock.calls[0][0]).toContain('lane=world');
+    expect(fetchMock.mock.calls[0][0]).toContain('lane=russia');
   });
 
   it('ru на странице России и в «Валютах» — lane=russia', async () => {
@@ -104,18 +104,36 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(text).not.toMatch(/-\d,\d %/);
   });
 
-  it('слова «биржа» и «ЦБ» не занимают места в строке, но остаются в подсказке; чужую дату пишет словами', async () => {
+  it('«биржа» и «ЦБ» стоят мелко под ценой, полное название источника остаётся в подсказке; чужую дату пишет словами', async () => {
     mockSnapshots();
     renderTicker({ locale: 'ru', route: '/' });
     await screen.findByText('84,41');
-    expect(screen.queryByText('shell.ticker.source.market')).toBeNull();
-    expect(screen.queryByText('shell.ticker.source.cb')).toBeNull();
+    // Доллар с биржи подписан «биржа», евро с сегодняшней датой — «ЦБ».
+    const caption = screen.getByText('shell.ticker.source.market');
+    expect(caption.className).toContain('fe-ticker__caption');
+    expect(caption.previousElementSibling.textContent).toContain('84,41');
+    expect(screen.getByText('shell.ticker.source.cb').className).toContain('fe-ticker__caption');
     const usd = screen.getByText('84,41').closest('a');
     expect(usd.getAttribute('title')).toContain('shell.ticker.source.market');
     // Нет «04.10»-подобных технических дат.
     expect(document.body.textContent).not.toMatch(/\b\d{2}\.\d{2}\b/);
-    // Устаревший ряд Brent получил дату словами (ключ i18n подставляет саму дату).
+    // Устаревший ряд Brent получил дату словами (ключ i18n подставляет саму дату) вместо подписи источника.
     expect(screen.getAllByText('shell.ticker.asOf')).toHaveLength(1);
+  });
+
+  it('EN: золото в рублях в ленте не показывается, остальные курсы на месте', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        snapshots: [
+          { code: 'eur-usd', price: 1.12, change_pct: 0, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, source: 'ECB' },
+          { code: 'gold-rub-live', price: 11143, change_pct: 0, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, source: 'Bank of Russia' },
+        ],
+      }),
+    }));
+    renderTicker({ locale: 'en', route: '/' });
+    await screen.findByText('1.12');
+    expect(screen.queryByText('w6b.ticker.gold')).toBeNull();
   });
 
   it('последний пункт ведёт в раздел «Валюты»', async () => {

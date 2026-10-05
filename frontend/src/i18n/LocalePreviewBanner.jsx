@@ -1,26 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Languages, X } from 'lucide-react';
 import { useLocale } from './localeContext';
+import '../styles/z2-shell.css';
+
+/** Пока страница прокручивается (и ещё полсекунды после), значок прячется: он не должен лежать поверх текста. */
+function useHiddenWhileScrolling() {
+  const [scrolling, setScrolling] = useState(false);
+  useEffect(() => {
+    let timer = 0;
+    const onScroll = () => {
+      setScrolling(true);
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setScrolling(false), 600);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(timer);
+    };
+  }, []);
+  return scrolling;
+}
 
 /**
  * Режим предпросмотра языка (?preview_locale=…), только для разработки и проверки. На рабочих хостах не показывается.
- * Свёрнут в маленькую иконку внизу слева, чтобы не закрывать кнопки и ссылки; по нажатию раскрывается пояснение
- * и кнопка выхода.
+ * Свёрнут в маленькую полупрозрачную иконку у правого нижнего края (над плашкой cookie, если она на экране),
+ * прячется при прокрутке, чтобы не закрывать текст; по нажатию раскрывается пояснение и кнопка выхода.
  */
 export default function LocalePreviewBanner() {
   const { isPreview, locale, setPreviewLocale, t } = useLocale();
   const [open, setOpen] = useState(false);
+  const scrolling = useHiddenWhileScrolling();
   if (!isPreview) return null;
+
+  // Над плашкой cookie: её высота лежит в --fe-cookie-h (0, пока плашки нет).
+  const lift = { bottom: 'calc(var(--fe-cookie-h, 0px) + 8px)' };
 
   if (!open) {
     return (
       <button
         type="button"
         data-testid="locale-preview-toggle"
+        data-hidden={scrolling ? 'true' : 'false'}
         aria-label={t('preview.banner')}
         aria-expanded="false"
         onClick={() => setOpen(true)}
-        className="fixed bottom-3 left-3 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-champagne/30 bg-obsidian text-champagne shadow-sm opacity-80 hover:opacity-100"
+        style={lift}
+        className="z2-preview-toggle fixed right-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-champagne/25 bg-obsidian/70 text-champagne opacity-55 backdrop-blur-sm hover:opacity-100 focus-visible:opacity-100"
       >
         <Languages className="h-4 w-4" aria-hidden="true" />
       </button>
@@ -30,7 +56,8 @@ export default function LocalePreviewBanner() {
   return (
     <div
       role="status"
-      className="fixed bottom-3 left-3 z-[60] w-max max-w-[calc(100%-1.5rem)] rounded-2xl border border-champagne/30 bg-obsidian p-3 text-xs text-text-secondary shadow-sm"
+      style={lift}
+      className="fixed right-2 z-[60] w-max max-w-[calc(100%-1rem)] rounded-2xl border border-champagne/30 bg-obsidian p-3 text-xs text-text-secondary shadow-sm"
     >
       <div className="flex items-start gap-2">
         <p className="min-w-0 flex-1">{t('preview.banner')}</p>

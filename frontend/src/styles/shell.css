@@ -559,32 +559,7 @@ aside.fe-nudge-m .fe-nudge-m__close { align-self: start; }
 aside.fe-nudge-m .fe-nudge-m__title { padding-top: 2px; }
 aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
 
-/* ── Тикер: затухание по краям и лёгкая подсказка прокрутки ─────────────────── */
-.fe-ticker__scroller { position: relative; height: 100%; }
-/* Строка не прячется при прокрутке: высота зарезервирована всегда (шапка под ней не «прыгает»). */
-.fe-ticker__sign { font-weight: 500; color: var(--color-text-secondary); }
-.fe-ticker__delta { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--color-text-secondary); }
-.fe-ticker__fade {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 1;
-  width: 36px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, var(--color-warn-surface), transparent); }
-.fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, var(--color-warn-surface), transparent); }
-.fe-ticker__fade[data-on='true'] { opacity: 1; }
-/* На телефоне правый край ленты всегда гаснет (справа 32 px запаса, поэтому последний курс при прокрутке виден целиком):
-   курс не «обрезан», а уходит в тень, даже пока скрипт не успел измерить ширину. */
-@media (max-width: 767px) {
-  .fe-ticker__scroll {
-    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
-    mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
-  }
-}
+/* ── Тикер: стили перенесены в z2-shell.css (раунд 2, зона Z2). ─────────────────────────────── */
 
 /* ── Подвал: ссылки темнее, «Реквизиты» того же размера и со стрелкой ──────── */
 .fe-foot-list { color: color-mix(in srgb, var(--color-text-primary) 78%, var(--color-text-secondary)); }
@@ -700,31 +675,7 @@ body:has(main .fe-route-skel) .fe-nudge-root { display: none !important; }
   .fe-nudge-desk { transition: none; }
 }
 
-/* Cookie-плашка: тонкая, в одну строку на планшете и компьютере (на телефоне текст и кнопки в два ряда),
-   под ней резервируется место внизу страницы. */
-.fe-cookie-compact {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
-  padding: 6px 6px 6px 14px;
-}
-.fe-cookie-compact__text {
-  flex: 1 1 15rem;
-  min-width: 0;
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.35;
-  color: var(--color-text-secondary);
-}
-.fe-cookie-compact__actions { display: flex; flex: 0 0 auto; gap: 4px; margin-left: auto; }
-.fe-cookie-compact__actions .fe-btn { min-height: 44px; padding: 0 14px; font-size: 13.5px; }
-@media (max-width: 479px) {
-  .fe-cookie-compact { padding: 8px 8px 6px 12px; }
-  .fe-cookie-compact__actions { width: 100%; }
-  .fe-cookie-compact__actions .fe-btn { flex: 1 1 0; }
-}
-body { padding-bottom: var(--fe-cookie-h, 0px); }
+/* Cookie-плашка и резерв места под ней: см. z2-shell.css (раунд 2, зона Z2). */
 
 /* Хлебные крошки: пока название не пришло, на его месте серая полоска, а не «…». */
 .fe-crumbs__ph { display: inline-block; width: 7rem; max-width: 40vw; height: 0.8em; vertical-align: -0.05em; border-radius: 6px; }

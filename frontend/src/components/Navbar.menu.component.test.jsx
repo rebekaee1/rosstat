@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
@@ -72,12 +73,16 @@ describe('Navbar: появление и закрытие панелей', () => 
     expect([...menu.querySelectorAll('a')].some((a) => a.getAttribute('href') === '/currencies')).toBe(true);
   });
 
-  it('выпадашка инструментов: три калькулятора и виджеты, у каждого пометка, для кого он', () => {
+  it('выпадашка инструментов: конвертер и калькулятор инфляции первыми, затем ипотека, проценты и виджеты; у каждого золотой значок и пометка', () => {
     renderNav();
     fireEvent.click(screen.getByRole('button', { name: /Инструменты/i }));
     const menu = screen.getByRole('menu');
     const hrefs = [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual(['/calculator', '/calculator/mortgage', '/calculator/compound', '/widgets']);
+    expect(hrefs).toEqual(['/currencies', '/calculator', '/calculator/mortgage', '/calculator/compound', '/widgets']);
+    const names = [...menu.querySelectorAll('.fe-nav-tool__name')].map((n) => n.textContent);
+    expect(names.slice(0, 2)).toEqual(['Конвертер валют', 'Калькулятор инфляции']);
+    expect(menu.querySelectorAll('.fe-tool-ico svg')).toHaveLength(5);
+    expect(menu.className).toContain('fe-nav-panel');
     expect(menu.textContent).toContain('Россия и страны мира');
     expect(menu.textContent).toContain('Для рублёвых кредитов');
     expect(menu.textContent).toContain('Для любой валюты');
@@ -127,5 +132,118 @@ describe('Navbar: появление и закрытие панелей', () => 
 
     fireEvent.pointerDown(document.body);
     expect(screen.queryByRole('menu')).toBeNull();
+  });
+});
+
+function GoTo({ to }) {
+  const navigate = useNavigate();
+  return <button type="button" data-testid="go" onClick={() => navigate(to)}>go</button>;
+}
+
+describe('Navbar: меню закрывается при любом переходе и при открытии поиска', () => {
+  it('выпадашка инструментов закрывается, когда адрес сменился не через её ссылку (например, «назад»)', () => {
+    mockApiGet([['/auth/me', { user: null }]]);
+    renderPage(<><Navbar /><GoTo to="/compare" /></>, { path: '*', route: '/' });
+    fireEvent.click(screen.getByRole('button', { name: /Инструменты/i }));
+    expect(screen.getByRole('menu')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('go'));
+    expect(screen.queryByRole('menu')).toBeNull();
+  });
+
+  it('мобильное меню тоже закрывается при смене адреса', () => {
+    mockApiGet([['/auth/me', { user: null }]]);
+    renderPage(<><Navbar /><GoTo to="/compare" /></>, { path: '*', route: '/' });
+    fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
+    expect(document.getElementById('fe-nav-mobile-menu')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('go'));
+    expect(document.getElementById('fe-nav-mobile-menu')).toBeNull();
+  });
+
+  it('когда открывается окно поиска (Ctrl/Cmd+K), открытые панели меню и затемнение уходят', async () => {
+    renderNav();
+    fireEvent.click(screen.getByRole('button', { name: /Инструменты/i }));
+    expect(screen.getByRole('menu')).toBeTruthy();
+    expect(document.querySelector('.fe-nav-scrim')).toBeTruthy();
+    const dialog = document.createElement('div');
+    dialog.setAttribute('data-fe-search-dialog', '');
+    await act(async () => { document.body.appendChild(dialog); });
+    await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
+    expect(document.querySelector('.fe-nav-scrim')).toBeNull();
+    dialog.remove();
+  });
+
+  it('затемнение под меню лёгкое: класс стеклянной подложки, а не сплошной чёрный блюр', () => {
+    renderNav();
+    fireEvent.click(screen.getByRole('button', { name: /Инструменты/i }));
+    const scrim = document.querySelector('.fe-nav-scrim');
+    expect(scrim.className).not.toMatch(/backdrop-blur-\[2px\]/);
+  });
+});
+
+describe('Navbar: меню Курсы валют и мега-панель Страны мира', () => {
+  it('в шапке есть «Курсы валют» (короткая подпись «Валюты» до 2xl) и ведёт на /currencies', () => {
+    renderNav();
+    const nav = screen.getByRole('navigation');
+    const rates = within(nav).getByRole('link', { name: /Курсы валют/ });
+    expect(rates.getAttribute('href')).toBe('/currencies');
+    expect(rates.textContent).toContain('Валюты');
+    expect(rates.className).toContain('fe-nav-link');
+  });
+
+  it('EN: пункт Exchange rates тоже есть, с короткой подписью Rates', () => {
+    renderNav('en');
+    const nav = screen.getByRole('navigation');
+    const rates = within(nav).getByRole('link', { name: /Exchange rates/ });
+    expect(rates.getAttribute('href')).toBe('/currencies');
+    expect(rates.textContent).toContain('Rates');
+  });
+
+  it('фокус на «Страны мира» открывает панель с флагами и рейтингами, Esc закрывает и возвращает фокус', async () => {
+    renderNav();
+    const nav = screen.getByRole('navigation');
+    expect(document.getElementById('fe-nav-mega')).toBeNull();
+    const countries = within(nav).getByRole('link', { name: /Страны/ });
+    act(() => { countries.focus(); });
+    await waitFor(() => expect(document.getElementById('fe-nav-mega')).toBeTruthy());
+    const mega = document.getElementById('fe-nav-mega');
+    const hrefs = [...mega.querySelectorAll('a')].map((a) => a.getAttribute('href'));
+    expect(hrefs).toContain('/united-states');
+    expect(hrefs).toContain('/china');
+    expect(hrefs).toContain('/world/rating/gdp-usd');
+    expect(hrefs).toContain('/world/rating/unemployment-rate');
+    expect(hrefs).toContain('/#countries');
+    expect(within(mega).getByText('США')).toBeTruthy();
+    expect(countries.getAttribute('aria-expanded')).toBe('true');
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(document.getElementById('fe-nav-mega')).toBeNull();
+  });
+
+  it('EN: названия стран в панели по-английски', async () => {
+    renderNav('en');
+    const nav = screen.getByRole('navigation');
+    act(() => { within(nav).getByRole('link', { name: /Countries/ }).focus(); });
+    await waitFor(() => expect(document.getElementById('fe-nav-mega')).toBeTruthy());
+    expect(within(document.getElementById('fe-nav-mega')).getByText('United States')).toBeTruthy();
+    expect(within(document.getElementById('fe-nav-mega')).getByText('Germany')).toBeTruthy();
+  });
+
+  it('панель стран закрывается при переходе по адресу', async () => {
+    mockApiGet([['/auth/me', { user: null }]]);
+    renderPage(<><Navbar /><GoTo to="/compare" /></>, { path: '*', route: '/' });
+    act(() => { within(screen.getByRole('navigation')).getByRole('link', { name: /Страны/ }).focus(); });
+    await waitFor(() => expect(document.getElementById('fe-nav-mega')).toBeTruthy());
+    fireEvent.click(screen.getByTestId('go'));
+    expect(document.getElementById('fe-nav-mega')).toBeNull();
+  });
+});
+
+describe('Navbar: круглые кнопки телефона', () => {
+  it('поиск, язык и меню одного вида: круг 44 px (класс fe-nav-round)', () => {
+    renderNav();
+    const toggle = screen.getByRole('button', { name: 'Открыть меню' });
+    expect(toggle.className).toContain('fe-nav-round');
+    const lang = screen.getAllByRole('button', { name: /Язык/ }).filter((b) => b.className.includes('fe-nav-round'));
+    expect(lang).toHaveLength(1);
   });
 });

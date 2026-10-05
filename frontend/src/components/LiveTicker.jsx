@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { cn } from '../lib/format';
 import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
@@ -10,6 +10,7 @@ import { formatAsOfHuman, tickerSourceKind, tzFor } from '../lib/tickerFormat';
 import { useLocale, useT } from '../i18n';
 import '../styles/shell.css';
 import '../styles/platform-pages.css';
+import '../styles/z2-shell.css';
 
 /**
  * Мета ленты. linkTo — только если ведёт на ту же карточку/ряд, что и число.
@@ -119,7 +120,7 @@ function TickerCell({ snapshot, nowMs }) {
     : null;
 
   const titleParts = [t('ticker.source', { source: snapshot.source })];
-  // Слова «биржа» и «ЦБ» не занимают места в строке, но остаются в подсказке.
+  // Подпись «биржа» или «ЦБ» стоит мелко под ценой (от 768 px), а полное название источника остаётся в подсказке.
   if (sourceKind) titleParts.unshift(t(`shell.ticker.source.${sourceKind}`));
   if (!isIntraday) {
     if (asOfTitle) titleParts.push(t('ticker.valueAsOf', { date: asOfTitle }));
@@ -135,8 +136,8 @@ function TickerCell({ snapshot, nowMs }) {
   }
 
   const cellClass = cn(
-    'flex h-full min-h-7 shrink-0 items-center gap-1 px-1.5 rounded-md whitespace-nowrap',
-    'sm:gap-1.5 sm:px-2.5 md:gap-2 md:px-3',
+    'fe-ticker__cell flex h-full min-h-7 shrink-0 items-center gap-1.5 px-2.5 rounded-md whitespace-nowrap',
+    'md:gap-2 md:px-3.5',
     'transition-colors duration-200',
     meta.linkTo && 'hover:bg-champagne/10',
     'border border-transparent',
@@ -151,17 +152,21 @@ function TickerCell({ snapshot, nowMs }) {
   // По-русски знак валюты после числа («85,79 ₽»), по-английски перед («$1.12»).
   const signFirst = locale === 'en' && meta.cur !== 'rub';
   const showPct = pct !== null && pct !== undefined && Math.abs(pct) >= 0.05;
+  // Подпись под ценой: дата, если ряд давний (иначе он выглядел бы свежей котировкой), иначе источник — «биржа» или «ЦБ».
+  const caption = asOfHuman
+    ? t('shell.ticker.asOf', { date: asOfHuman })
+    : (sourceKind ? t(`shell.ticker.source.${sourceKind}`) : null);
   const body = (
     <>
-      <span className="text-xs font-medium text-text-secondary">{t(meta.nameKey)}</span>
-      <span className="text-sm font-semibold tabular-nums text-text-primary">
-        {signFirst && hasPrice ? <span className="fe-ticker__sign">{sign}</span> : null}
-        <span>{hasPrice ? formatPrice(snapshot.price, meta.decimals, locale) : '\u2014'}</span>
-        {!signFirst && hasPrice && sign ? <span className="fe-ticker__sign">{`\u00a0${sign}${meta.perGram ? t('w6b.ticker.perGram') : ''}`}</span> : null}
+      <span className="fe-ticker__name">{t(meta.nameKey)}</span>
+      <span className="fe-ticker__quote">
+        <span className="fe-ticker__price tabular-nums">
+          {signFirst && hasPrice ? <span className="fe-ticker__sign">{sign}</span> : null}
+          <span>{hasPrice ? formatPrice(snapshot.price, meta.decimals, locale) : '\u2014'}</span>
+          {!signFirst && hasPrice && sign ? <span className="fe-ticker__sign">{`\u00a0${sign}${meta.perGram ? t('w6b.ticker.perGram') : ''}`}</span> : null}
+        </span>
+        {caption ? <span className="fe-ticker__caption">{caption}</span> : null}
       </span>
-      {asOfHuman ? (
-        <span className="text-xs text-text-secondary">{t('shell.ticker.asOf', { date: asOfHuman })}</span>
-      ) : null}
       {showPct ? (
         <span className="fe-ticker__delta tabular-nums">
           <span aria-hidden="true">{pct > 0 ? '\u25B2' : '\u25BC'}</span>
@@ -241,7 +246,9 @@ function useEdgeFade(dep) {
         backTimer = window.setTimeout(() => { if (!cancelled) el.scrollTo({ left: 0, behavior: 'smooth' }); }, 900);
       }, 1400);
     }
+    // Наведение курсора тоже останавливает подсказку: лента не должна «убегать» из-под руки.
     el.addEventListener('pointerdown', cancel, { passive: true });
+    el.addEventListener('pointerenter', cancel, { passive: true });
     el.addEventListener('wheel', cancel, { passive: true });
     return () => {
       cancel();
@@ -249,6 +256,7 @@ function useEdgeFade(dep) {
       window.removeEventListener('resize', measure);
       observer?.disconnect();
       el.removeEventListener('pointerdown', cancel);
+      el.removeEventListener('pointerenter', cancel);
       el.removeEventListener('wheel', cancel);
     };
   }, [measure, dep]);
@@ -258,8 +266,7 @@ function useEdgeFade(dep) {
 export default function LiveTicker() {
   const t = useT();
   const { locale } = useLocale();
-  const { pathname } = useLocation();
-  const lane = tickerLaneFor(locale, pathname);
+  const lane = tickerLaneFor(locale);
   const { data, dataUpdatedAt } = useQuery({
     queryKey: ['ticker', 'live', lane],
     queryFn: () => fetchLiveTicker(lane),
@@ -270,7 +277,9 @@ export default function LiveTicker() {
     staleTime: 0,
   });
 
-  const snapshots = data?.snapshots || [];
+  // Золото в ленте — учётная цена Банка России в рублях за грамм. Англоязычному посетителю рубли ничего не говорят,
+  // а золото в долларах за унцию показывать нельзя (лицензия дневного ряда), поэтому в английской ленте его нет.
+  const snapshots = (data?.snapshots || []).filter((s) => !(locale === 'en' && s.code === 'gold-rub-live'));
   const { ref: scrollerRef, edges, measure } = useEdgeFade(snapshots.length);
   if (snapshots.length === 0) {
     return (
@@ -282,7 +291,7 @@ export default function LiveTicker() {
     <div
       className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface border-b border-champagne/15 shadow-sm pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
     >
-      <div className="mx-auto h-full max-w-7xl">
+      <div className="fe-ticker__inner mx-auto h-full">
         <div className="fe-ticker__scroller">
           <span className="fe-ticker__fade fe-ticker__fade--l" data-on={edges.start} aria-hidden="true" />
           <span className="fe-ticker__fade fe-ticker__fade--r" data-on={edges.end} aria-hidden="true" />
@@ -294,16 +303,16 @@ export default function LiveTicker() {
             aria-label={t('ticker.quotes')}
           >
             <div className="flex h-full w-max min-w-full">
-              <div className="mx-auto flex h-full items-center gap-0.5 pl-3 pr-8 sm:gap-1 sm:px-3 md:gap-1.5 md:px-4 xl:gap-3">
+              <div className="fe-ticker__track mx-auto flex h-full items-center">
                 {snapshots.map((s) => (
                   <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
                 ))}
                 <Link
                   to={currenciesPath()}
-                  className="flex h-full min-h-7 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-2 text-xs font-medium text-champagne-ink hover:bg-champagne/10 sm:px-3"
+                  className="fe-ticker__all flex h-full min-h-7 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 text-champagne-ink hover:bg-champagne/10"
                 >
                   {t('w6b.ticker.all')}
-                  <ChevronRight size={12} aria-hidden="true" />
+                  <ChevronRight size={14} aria-hidden="true" />
                 </Link>
               </div>
             </div>

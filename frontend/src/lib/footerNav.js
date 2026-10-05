@@ -3,6 +3,7 @@
  * RU keeps the Russia column; EN swaps it for United States.
  */
 
+import { FORECASTS_TO, RATES_TO } from './navItems';
 import {
   calendarPath,
   comparePath,
@@ -122,6 +123,8 @@ export function footerWorldLinks(locale) {
     { to: '/#countries', key: 'footer.countries' },
     { to: worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT), key: 'footer.worldRating' },
     { to: comparePath(), key: 'footer.compare' },
+    { to: FORECASTS_TO, key: 'w6b.nav.forecasts' },
+    { to: RATES_TO, key: 'z2.nav.rates' },
   ];
   if (locale === 'en') {
     links.push(
@@ -132,4 +135,14 @@ export function footerWorldLinks(locale) {
     );
   }
   return links;
+}
+
+/** Колонка «Инструменты»: конвертер валют первым, затем три калькулятора. */
+export function footerToolLinks() {
+  return [
+    { to: RATES_TO, key: 'z2.tools.converter' },
+    { to: '/calculator', key: 'footer.calcInflation' },
+    { to: '/calculator/mortgage', key: 'footer.calcMortgage' },
+    { to: '/calculator/compound', key: 'footer.calcCompound' },
+  ];
 }

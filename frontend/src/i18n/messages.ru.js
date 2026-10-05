@@ -2979,4 +2979,22 @@ export default {
   'w7p.reg.legalMid': 'и',
   'w7p.reg.legalPrivacy': 'политикой конфиденциальности',
   'w7p.reg.legalAfter': ', включая обработку персональных данных.',
+
+  // ===== Z2 =====
+  'z2.nav.rates': 'Курсы валют',
+  'z2.nav.ratesShort': 'Валюты',
+  'z2.tools.converter': 'Конвертер валют',
+  'z2.tools.converter.note': 'Доллар, евро, юань и другие',
+  'z2.mega.aria': 'Страны мира: быстрый переход',
+  'z2.mega.countriesTitle': 'Крупнейшие экономики',
+  'z2.mega.indicatorsTitle': 'Популярные рейтинги',
+  'z2.mega.gdp': 'ВВП',
+  'z2.mega.gdpPerCapita': 'ВВП на душу населения',
+  'z2.mega.unemployment': 'Безработица',
+  'z2.mega.debt': 'Государственный долг',
+  'z2.mega.population': 'Население',
+  'z2.mega.all': 'Все страны',
+  'z2.mega.rating': 'Весь рейтинг стран',
+  'z2.cookie.short': 'Мы используем cookie.',
+  'z2.nf.guess.forecasts': 'Прогнозы',
 };
