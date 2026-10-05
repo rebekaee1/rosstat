@@ -25,6 +25,7 @@ import { toolTrail } from '../lib/breadcrumbs';
 import CalcSlider from '../components/CalcSlider';
 import CalcMoneyField from '../components/CalcMoneyField';
 import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
+import CalcStickyResult from '../components/CalcStickyResult';
 import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
 import CalcMethod from '../components/CalcMethod';
 import CalcKeyRate from '../components/CalcKeyRate';
@@ -32,6 +33,7 @@ import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
 import { useChartTouchHint } from '../lib/useChartTouchHint';
 import '../styles/w5-tools.css';
 import '../styles/z8-tools.css';
+import '../styles/k8-tools.css';
 import { useT, useLocale } from '../i18n';
 import {
   russiaIndicatorPath,
@@ -50,6 +52,7 @@ export default function CompoundCalculatorPage() {
   const { locale } = useLocale();
   const faqItems = FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) }));
   const chartBoxRef = useRef(null);
+  const resultRef = useRef(null);
   const touchTip = useTouchTooltip(chartBoxRef);
   const touchHint = useChartTouchHint();
   const [setChartWidthNode, chartWidth] = useElementWidth();
@@ -169,7 +172,7 @@ export default function CompoundCalculatorPage() {
       <div className="fe-z8-calc__out">
       {result && (
         <>
-          <section style={revealStyle(3)} className="fe-reveal fe-panel fe-z8-result rounded-[2rem] p-6 md:p-8 mb-6 min-h-[17rem]" aria-live="polite">
+          <section ref={resultRef} style={revealStyle(3)} className="fe-reveal fe-z8-result fe-k8-stone fe-glint rounded-[2rem] p-6 md:p-8 mb-6 min-h-[17rem]" aria-live="polite">
             <p className="text-sm text-text-secondary mb-2">{t('calc.compound.growsIn', {
               years: yearsLabel(years),
             })}</p>
@@ -257,6 +260,12 @@ export default function CompoundCalculatorPage() {
       )}
       </div>
       </div>
+
+      <CalcStickyResult
+        targetRef={resultRef}
+        active={Boolean(result)}
+        value={result ? formatRubles(Math.round(result.balance)) : ''}
+      />
 
       <div className="fe-z8-calc__lower">
       <div style={revealStyle(6)} className="fe-reveal fe-z8-calc__method">

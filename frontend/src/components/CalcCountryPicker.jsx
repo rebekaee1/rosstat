@@ -1,11 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, Globe2, Landmark, Search, X } from 'lucide-react';
+import { ChevronDown, Globe2, Search, X } from 'lucide-react';
 import { cn } from '../lib/format';
-import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
+import { flagForSlug } from '../lib/slugFlags';
 import { RUSSIA_SLUG } from '../lib/inflationCalc';
 import { useT } from '../i18n';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchCountries } from '../lib/worldCompareSearch';
+import '../styles/z8-tools.css';
+import '../styles/k8-tools.css';
+
+/** Флаг в стеклянном диске (стили .fe-z8-coin); страна без флага получает глобус. */
+function CountryDisc({ slug }) {
+  const flag = flagForSlug(slug);
+  return <span className="fe-z8-coin" aria-hidden="true">{flag || <Globe2 size={15} />}</span>;
+}
 
 /**
  * Выбор страны в калькуляторе инфляции.
@@ -79,18 +87,13 @@ export default function CalcCountryPicker({
       </p>
       <button
         type="button"
-        className={cn(
-          FOCUS_RING_SURFACE,
-          'flex h-11 w-full items-center gap-2 rounded-xl px-3 text-left text-sm font-medium text-text-primary transition-colors fe-glass-2',
-        )}
+        className="fe-k8-well flex min-h-12 w-full items-center gap-2.5 rounded-2xl px-2.5 text-left text-sm font-medium text-text-primary"
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-label={t('calc.country')}
         onClick={() => setOpen((prev) => !prev)}
       >
-        {selected.slug === RUSSIA_SLUG
-          ? <Landmark className="h-4 w-4 shrink-0 text-champagne" />
-          : <Globe2 className="h-4 w-4 shrink-0 text-champagne" />}
+        <CountryDisc slug={selected.slug} />
         {pending && !selected.name
           ? <span className="skeleton h-4 w-32 rounded-md" role="status" aria-busy={loading || undefined} aria-label={t('common.loading')} />
           : <span className="min-w-0 flex-1 truncate">{selected.name}</span>}
@@ -100,10 +103,10 @@ export default function CalcCountryPicker({
 
       {open && (
         <div
-          className="absolute left-0 right-0 z-30 mt-1.5 overflow-hidden rounded-xl shadow-lg fe-glass-pop"
+          className="absolute left-0 right-0 z-30 mt-2 overflow-hidden rounded-2xl fe-glass-pop"
           role="listbox"
         >
-          <label className="flex items-center gap-2 px-3 py-2 fe-divider-b">
+          <label className="fe-k8-well m-2 mb-1 flex items-center gap-2 rounded-xl px-3 py-1">
             <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
             <span className="sr-only">{t('calc.country.search')}</span>
             <input
@@ -125,7 +128,7 @@ export default function CalcCountryPicker({
               </button>
             )}
           </label>
-          <div className="max-h-64 overflow-y-auto">
+          <div className="max-h-64 overflow-y-auto px-2 pb-2 pt-1">
             {filtered.length === 0 ? (
               <div className="px-4 py-3 text-sm text-text-secondary" role="status">
                 {t('calc.country.notFound')}
@@ -138,16 +141,9 @@ export default function CalcCountryPicker({
                   role="option"
                   aria-selected={c.slug === selected.slug}
                   onClick={() => pick(c.slug)}
-                  className={cn(
-                    'flex min-h-11 w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors last:border-b-0 fe-glass-2',
-                    c.slug === selected.slug
-                      ? 'bg-champagne/10 text-champagne-ink font-medium'
-                      : 'text-text-primary hover:bg-obsidian-lighter',
-                  )}
+                  className={cn('fe-k8-opt', c.slug === selected.slug && 'is-current')}
                 >
-                  {c.slug === RUSSIA_SLUG
-                    ? <Landmark className="h-4 w-4 shrink-0 text-champagne" />
-                    : <Globe2 className="h-4 w-4 shrink-0 text-champagne" />}
+                  <CountryDisc slug={c.slug} />
                   <span className="min-w-0 break-words leading-snug">{c.name}</span>
                 </button>
               ))

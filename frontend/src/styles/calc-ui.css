@@ -1,35 +1,32 @@
 /* Денежные калькуляторы: ползунок с достаточной целью нажатия на сенсорных экранах.
-   Базовый вид `.calc-slider` задан в index.css (тонкий трек 4 px, бегунок 20 px);
-   здесь — только то, что нужно пальцу: высота элемента 44 px, бегунок 28 px, видимый трек прежний. */
+   Базовый вид `.calc-slider` задан в index.css, а хрустальный (жёлоб, жидкое золото, бусина 26 px) —
+   в k8-tools.css; на касании там же бусина 28 px и высота элемента 44 px. Здесь только то, что нужно пальцу. */
 @media (pointer: coarse) {
-  .calc-slider {
-    height: 44px;
-    background: transparent;
-    touch-action: pan-y;
-  }
-  .calc-slider::-webkit-slider-runnable-track {
-    height: 4px;
-    border-radius: 9999px;
-    background: linear-gradient(to right, var(--color-champagne) 0%, var(--color-border-subtle) 100%);
-  }
-  .calc-slider::-webkit-slider-thumb {
-    width: 28px;
-    height: 28px;
-    margin-top: -12px;
-  }
-  .calc-slider::-moz-range-thumb {
-    width: 28px;
-    height: 28px;
-  }
+  .calc-slider { touch-action: pan-y; }
 }
 
-/* Поле суммы: не меньше 44 px по высоте. */
-.calc-field-input { min-height: 44px; }
+/* Поле суммы: не меньше 44 px по высоте; колодец «вырезано в стекле» (K8.1), фокус даёт свечение, не кольцо. */
+.calc-field-input {
+  min-height: 44px;
+  border: 0;
+  background: var(--k8-well-bg, rgba(255, 255, 255, 0.45));
+  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(120, 90, 30, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
+}
+.calc-field-input:hover { background: var(--k8-well-bg-hover, rgba(255, 255, 255, 0.58)); }
+.calc-field-input:focus-visible {
+  outline: none;
+  background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8));
+  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5));
+}
 
 /* Значение результата не «дышит» шириной цифр при пересчёте. */
 .calc-result-number { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
 
 /* Поле с ошибкой: нижняя линия 2 px (заметна без опоры на цвет) и сообщение под ним. */
 .calc-field-input[aria-invalid='true'] {
-  box-shadow: inset 0 -2px 0 var(--color-negative);
+  box-shadow: var(--k8-well-shadow, none), inset 0 -2px 0 var(--color-negative);
+}
+
+.calc-field-input[aria-invalid='true']:focus-visible {
+  box-shadow: var(--k8-well-shadow, none), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5)), inset 0 -2px 0 var(--color-negative);
 }

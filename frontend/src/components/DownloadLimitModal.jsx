@@ -9,6 +9,7 @@ import { authLink, prepareAuthReturn, pendingExport, clearPendingExport, current
 import { resumeExport } from '../lib/excel';
 import Button from './Button';
 import ApiInterestLink from './ApiInterestLink';
+import '../styles/k8-tools.css';
 
 // Открывается по window-событию 'fe:download-limit' (диспатчится из excel.js,
 // когда бэкенд вернул 403 download_limit). Перенаправляет гостя на регистрацию.
@@ -49,11 +50,11 @@ export default function DownloadLimitModal() {
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm fe-reveal [--fe-duration:0.18s] [--fe-rise:0px]"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 fe-k8-scrim fe-reveal [--fe-duration:0.18s] [--fe-rise:0px]"
       onClick={close}
     >
       <div
-        className="w-full max-w-md rounded-2xl shadow-2xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
+        className="w-full max-w-md rounded-3xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -61,7 +62,7 @@ export default function DownloadLimitModal() {
       >
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-champagne/15">
+            <div className="fe-k8-gem">
               <Lock className="w-5 h-5 text-champagne" />
             </div>
             <h2 id="download-limit-title" className="text-lg font-display font-bold text-text-primary">{t(canResume ? 'download.resume.title' : 'download.limit.title')}</h2>

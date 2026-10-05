@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef, useCallback, useId } from 'react'
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  BarChart3, Briefcase, Building2, Coins, Fuel, Gem, Globe2, Home, Landmark, MapPin, Percent, Search, SearchX,
+  BarChart3, Briefcase, Building2, Coins, Fuel, Gem, Globe2, Home, Landmark, MapPin, Percent, Search,
   Tag, TrendingUp, Users, X,
 } from 'lucide-react';
 import { cn, formatDate, formatValue } from '../lib/format';
@@ -23,6 +23,7 @@ import { RatingSpark } from './RatingExtras';
 import '../styles/shell.css';
 import '../styles/w6d.css';
 import '../styles/z8-tools.css';
+import '../styles/k8-tools.css';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
@@ -450,7 +451,7 @@ export default function IndicatorSearch({
               ? <RotatingHint lead={t('shell.search.hintLead')} items={examples} />
               : <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>}
             {/* Подсказка про клавиши только там, где есть клавиатура и мышь: на планшете «⌘K» ничего не говорит. */}
-            <kbd className="hidden pointer-fine:inline text-xs font-sans text-text-tertiary rounded px-1.5 py-0.5 fe-glass-2">
+            <kbd className="fe-k8-kbd hidden pointer-fine:inline">
               {isAppleModKey ? '⌘K' : 'Ctrl K'}
             </kbd>
           </button>
@@ -509,11 +510,11 @@ export default function IndicatorSearch({
             type="button"
             aria-label={t('common.close')}
             tabIndex={-1}
-            className="absolute inset-0 bg-text-primary/30 backdrop-blur-[2px]"
+            className="absolute inset-0 fe-k8-scrim"
             onClick={close}
           />
           <div className="fe-dialog-panel fe-search-panel relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col rounded-2xl shadow-2xl overflow-hidden sm:max-h-[calc(90dvh-1rem)]">
-            <div className="fe-search-field relative flex shrink-0 items-center gap-3 px-4 py-2 fe-divider-b">
+            <div className="fe-search-field fe-k8-well relative flex shrink-0 items-center gap-3 px-4 py-1">
               {isLoading && qTrim
                 ? <span className="fe-search-spinner shrink-0" aria-hidden="true" data-testid="search-spinner" />
                 : <Search className="w-5 h-5 text-text-tertiary shrink-0" aria-hidden="true" />}
@@ -612,9 +613,7 @@ export default function IndicatorSearch({
                         : globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
                           : (
                             <div className="text-center" data-testid="search-nothing">
-                              <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-champagne/10 text-champagne-ink" aria-hidden="true">
-                                <SearchX size={22} />
-                              </span>
+                              <span className="fe-k8-shard mx-auto" aria-hidden="true" />
                               <p className="mt-3 text-base font-semibold text-text-primary">{t('search.nothingFound', { query: qTrim })}</p>
                               <ul className="mx-auto mt-3 max-w-sm space-y-1 text-left text-sm text-text-secondary">
                                 <li>{t('shell.search.tip.spelling')}</li>
@@ -666,10 +665,10 @@ export default function IndicatorSearch({
               </button>
             ) : null}
 
-            <div className="fe-search-kbd px-4 py-2 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary [@media(pointer:coarse)]:hidden fe-divider">
-              <span><kbd className="px-1 py-0.5 rounded fe-glass-2">↑</kbd> <kbd className="px-1 py-0.5 rounded fe-glass-2">↓</kbd> {t('search.hint.nav')}</span>
-              <span><kbd className="px-1 py-0.5 rounded fe-glass-2">Enter</kbd> {t('search.hint.open')}</span>
-              <span><kbd className="px-1 py-0.5 rounded fe-glass-2">Esc</kbd> {t('search.hint.close')}</span>
+            <div className="fe-search-kbd px-4 pb-3 pt-2 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary [@media(pointer:coarse)]:hidden">
+              <span><kbd className="fe-k8-kbd">↑</kbd> <kbd className="fe-k8-kbd">↓</kbd> {t('search.hint.nav')}</span>
+              <span><kbd className="fe-k8-kbd">Enter</kbd> {t('search.hint.open')}</span>
+              <span><kbd className="fe-k8-kbd">Esc</kbd> {t('search.hint.close')}</span>
             </div>
           </div>
         </div>,
@@ -732,8 +731,8 @@ function SearchRow({
         onTouchStart={onWarm}
         onClick={() => onPick(row, index + 1)}
         className={cn(
-          'fe-search-row w-full min-h-14 text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
-          active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
+          'fe-search-row w-full min-h-14 text-left px-3 py-2.5 flex items-center gap-3 transition-colors',
+          active && 'is-active',
         )}
         role="option"
         tabIndex={-1}

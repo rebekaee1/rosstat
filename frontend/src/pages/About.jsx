@@ -13,6 +13,7 @@ import { footerSourceLinks } from '../lib/footerNav';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/w5-pages.css';
+import '../styles/k8-tools.css';
 
 const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
 

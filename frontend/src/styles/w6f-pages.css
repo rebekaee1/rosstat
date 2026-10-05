@@ -22,7 +22,7 @@
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  transition: transform 0.2s var(--fe-ease-reveal), color 0.15s, box-shadow 0.2s ease; box-shadow: var(--fe-l2-shadow);
+  transition: transform 0.2s var(--fe-ease-reveal), color 0.15s; box-shadow: var(--fe-l2-shadow);
 }
 .w6f-nf-chip:hover { color: var(--color-champagne-ink); }
 .w6f-nf-chip--strong { background: rgba(173, 138, 72, 0.14); }

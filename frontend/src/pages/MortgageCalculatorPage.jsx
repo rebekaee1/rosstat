@@ -25,6 +25,7 @@ import { toolTrail } from '../lib/breadcrumbs';
 import CalcSlider from '../components/CalcSlider';
 import CalcMoneyField from '../components/CalcMoneyField';
 import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
+import CalcStickyResult from '../components/CalcStickyResult';
 import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
 import CalcMethod from '../components/CalcMethod';
 import CalcKeyRate from '../components/CalcKeyRate';
@@ -32,6 +33,7 @@ import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
 import { useChartTouchHint } from '../lib/useChartTouchHint';
 import '../styles/w5-tools.css';
 import '../styles/z8-tools.css';
+import '../styles/k8-tools.css';
 import { useLocale, useT } from '../i18n';
 import {
   russiaIndicatorPath,
@@ -50,6 +52,7 @@ export default function MortgageCalculatorPage() {
   const { locale } = useLocale();
   const faqItems = FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) }));
   const areaBoxRef = useRef(null);
+  const resultRef = useRef(null);
   const pieBoxRef = useRef(null);
   const areaTouch = useTouchTooltip(areaBoxRef);
   const pieTouch = useTouchTooltip(pieBoxRef);
@@ -200,7 +203,7 @@ export default function MortgageCalculatorPage() {
       <div className="fe-z8-calc__out">
       {result && (
         <>
-          <section style={revealStyle(3)} className="fe-reveal fe-panel fe-z8-result rounded-[2rem] p-6 md:p-8 mb-6 min-h-[19rem]" aria-live="polite">
+          <section ref={resultRef} style={revealStyle(3)} className="fe-reveal fe-z8-result fe-k8-stone fe-glint rounded-[2rem] p-6 md:p-8 mb-6 min-h-[19rem]" aria-live="polite">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <p className="text-sm text-text-secondary mb-2">{t('calc.mortgage.payment')}</p>
@@ -327,7 +330,7 @@ export default function MortgageCalculatorPage() {
                 <CalcStatTile index={1} label={t('calc.mortgage.principalYear')} value={formatRubles(yearBreakdown.principalPaid)} />
                 <CalcStatTile index={2} label={t('calc.mortgage.balanceYearEnd')} value={formatRubles(yearBreakdown.balance)} />
               </CalcStatGrid>
-              <div className="mt-4 h-3 rounded-full overflow-hidden flex fe-glass-2">
+              <div className="mt-4 h-3.5 flex fe-k8-tube">
                 <div
                   className="h-full transition-all duration-300"
                   style={{
@@ -376,6 +379,13 @@ export default function MortgageCalculatorPage() {
       )}
       </div>
       </div>
+
+      <CalcStickyResult
+        targetRef={resultRef}
+        active={Boolean(result)}
+        label={t('calc.mortgage.payment')}
+        value={result ? formatRubles(result.payment) : ''}
+      />
 
       <div className="fe-z8-calc__lower">
       <div style={revealStyle(7)} className="fe-reveal fe-z8-calc__method">

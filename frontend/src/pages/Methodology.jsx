@@ -13,6 +13,7 @@ import { InfoCard, InfoGrid, InfoMore } from '../components/InfoCard';
 import { toolTrail } from '../lib/breadcrumbs';
 import { cn } from '../lib/format';
 import '../styles/w5-pages.css';
+import '../styles/k8-tools.css';
 import '../styles/z8-tools.css';
 
 const STEPS = [1, 2, 3, 4];

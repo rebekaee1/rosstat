@@ -12,6 +12,7 @@ import { safeReturnTo, authLink } from '../lib/authReturn';
 import { cn } from '../lib/format';
 import Button from '../components/Button';
 import '../styles/w5-pages.css';
+import '../styles/k8-tools.css';
 
 export default function Login() {
   const t = useT();

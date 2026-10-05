@@ -3279,4 +3279,7 @@ export default {
   'k2.empty.noResults': 'Nothing found',
   'k2.empty.error': 'Could not load. Please try again',
   'k2.empty.waiting': 'Loading data',
+  // ===== K8 =====
+  'k8.sticky.label': 'Result',
+  'k8.sticky.aria': 'Calculation result: {value}. Press to go to the result',
 };

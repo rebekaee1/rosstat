@@ -9,6 +9,7 @@
 import { useId } from 'react';
 import { useLocale } from '../i18n';
 import '../styles/calc-ui.css';
+import '../styles/k8-tools.css';
 
 export default function CalcSlider({
   label, ariaLabel, value, display, onChange, min, max, step = 1, suffix = '', className = '', stacked = false,
@@ -17,6 +18,9 @@ export default function CalcSlider({
   const { locale } = useLocale();
   const numeric = locale === 'en' ? String(value) : String(value).replace('.', ',');
   const shown = display ?? `${numeric}${suffix}`;
+  // Доля заполнения 0..1: жидкое золото в жёлобе доходит до бусины (k8-tools.css, --k8-r).
+  const span = Number(max) - Number(min);
+  const ratio = span > 0 ? Math.min(1, Math.max(0, (Number(value) - Number(min)) / span)) : 0;
   return (
     <div className={`min-w-0 ${className}`}>
       <div className={stacked ? 'mb-2 flex flex-col gap-0.5' : 'flex items-start justify-between gap-2 mb-2'}>
@@ -40,6 +44,7 @@ export default function CalcSlider({
         aria-label={ariaLabel || undefined}
         aria-valuetext={typeof shown === 'string' ? shown.replaceAll('\u00A0', ' ') : undefined}
         className="calc-slider w-full"
+        style={{ '--k8-r': ratio }}
       />
     </div>
   );
