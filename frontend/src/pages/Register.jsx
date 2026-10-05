@@ -25,8 +25,9 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [consent, setConsent] = useState(false);
-  // Рассылка — только по явному согласию: заранее отмеченная галочка вызывает недоверие.
-  const [newsletter, setNewsletter] = useState(false);
+  // Рассылка: галочка отмечена по умолчанию (решение владельца 2026-10-05, возврат прежнего
+  // поведения до 4d560ea); человек снимает её сам, выбор уходит на сервер и в журнал согласий.
+  const [newsletter, setNewsletter] = useState(true);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [welcome, setWelcome] = useState(false);

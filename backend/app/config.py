@@ -352,6 +352,36 @@ class Settings(BaseSettings):
     # Интерактивные кнопки бота (getUpdates-поллер каждые 30 с)
     telegram_poller_enabled: bool = False
 
+    # «Фальшивая дверь» платного API (замер спроса, 2026-10-05): точки входа
+    # «API и выгрузка с прогнозом» на странице показателя и в окне лимита
+    # скачиваний. false = фронт ничего не показывает, POST /api-interest → 404.
+    # Включает владелец в .env; код выкладкой опрос не включает.
+    api_interest_enabled: bool = False
+
+    # Веб-приложение (PWA, 2026-10-05). Аварийные выключатели БЕЗ пересборки фронта:
+    # фронт и сам service worker читают их из GET /api/v1/pwa/config.
+    #   pwa_enabled=false                 — SW снимает себя и чистит кэши, SW не регистрируется;
+    #   pwa_install_prompt_enabled=false  — окно «Установить приложение» и пункт в подвале скрыты.
+    # Манифест отдаётся всегда (установка из меню браузера не зависит от флагов).
+    pwa_enabled: bool = True
+    pwa_install_prompt_enabled: bool = True
+
+    # Web-push — ТОЛЬКО ПОДГОТОВКА (2026-10-05): ничего никому не отправляется.
+    #   push_subscribe_enabled — принимать подписки (/push/subscribe, /push/unsubscribe; иначе 404)
+    #                            и отдавать клиенту публичный ключ VAPID; по умолчанию выключено.
+    #   push_send_enabled      — отдельный выключатель ОТПРАВКИ: пока false, сервис отправки
+    #                            (services/web_push.py) отказывает безусловно.
+    #   push_dry_run           — даже при включённой отправке по умолчанию сухой прогон (ничего
+    #                            не уходит в сеть); реальная отправка требует push_dry_run=false.
+    # Ключи VAPID — только через окружение (`scripts/generate-vapid-keys.py`), не коммитить;
+    # приватный ключ никуда не логируется и не отдаётся API.
+    push_subscribe_enabled: bool = False
+    push_send_enabled: bool = False
+    push_dry_run: bool = True
+    vapid_public_key: str = ""
+    vapid_private_key: str = ""
+    vapid_subject: str = ""  # mailto:… или https://… (требование VAPID)
+
     # Админ-BI (/admin/bi): comma-separated email'ы с доступом к дашборду.
     # Вход обычной сессией; email сверяется по способам входа пользователя.
     admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"

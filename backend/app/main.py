@@ -1292,6 +1292,7 @@ _GEO_EXCLUDED_PREFIXES = (
 )
 _GEO_EXCLUDED_EXACT = frozenset({
     "/robots.txt", "/llms.txt", "/feed.xml", "/health", "/favicon.ico",
+    "/manifest.webmanifest", "/sw.js", "/offline.html",
 })
 _GEO_RU_CODES: frozenset[str] | None = None
 
@@ -1654,6 +1655,10 @@ app.include_router(oauth_compat_router)
 
 from app.api.sitemap import router as sitemap_router
 app.include_router(sitemap_router)
+
+# Манифест и офлайн-страница PWA: host-aware, раньше catch-all SEO-роутов.
+from app.api.pwa import router as pwa_router
+app.include_router(pwa_router)
 
 from app.api.seo_pages import router as seo_pages_router
 app.include_router(seo_pages_router)

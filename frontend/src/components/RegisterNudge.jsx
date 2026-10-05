@@ -14,6 +14,7 @@ import {
   hasDownloadAttempt, markDownloadAttempt, readActions, shouldOfferNudge, writeActions,
 } from '../lib/registerNudge';
 import Button from './Button';
+import { usePwaCardVisible } from '../lib/pwa';
 import '../styles/indicator-russia.css';
 import '../styles/shell.css';
 import '../styles/z1-polish.css';
@@ -85,6 +86,7 @@ export default function RegisterNudge() {
   const location = useLocation();
   const variant = isAuthed ? FEEDBACK_VARIANT : REGISTER_VARIANT;
   const pill = t(variant.pillKey);
+  const pwaCardVisible = usePwaCardVisible(); // окно «Установить приложение» не накрываем и не перебиваем
 
   const [dismissed, setDismissed] = useState(() => readDismissed(variant.storageKey));
   const [expanded, setExpanded] = useState(false);
@@ -126,7 +128,7 @@ export default function RegisterNudge() {
     pathname: location.pathname,
     requireDownloadable: variant.requireDownloadable,
   });
-  const visible = !isLoading && !dismissed && !onHiddenPath && offered;
+  const visible = !isLoading && !dismissed && !onHiddenPath && offered && !pwaCardVisible;
 
   // Значок прячется, когда на экране подвал: не закрывает ссылки и реквизиты.
   useEffect(() => {

@@ -8,6 +8,7 @@ import { useAuth } from '../context/authContext';
 import { authLink, prepareAuthReturn, pendingExport, clearPendingExport, currentReturnTo } from '../lib/authReturn';
 import { resumeExport } from '../lib/excel';
 import Button from './Button';
+import ApiInterestLink from './ApiInterestLink';
 
 // Открывается по window-событию 'fe:download-limit' (диспатчится из excel.js,
 // когда бэкенд вернул 403 download_limit). Перенаправляет гостя на регистрацию.
@@ -98,6 +99,8 @@ export default function DownloadLimitModal() {
             {t('common.login')}
           </Button></>}
         </div>
+        {/* Вторичная точка входа «фальшивой двери» API: только при api_interest_enabled. */}
+        {!canResume && <ApiInterestLink source="limit_modal" variant="inline" onActivate={() => setOpen(false)} />}
       </div>
     </div>
   );

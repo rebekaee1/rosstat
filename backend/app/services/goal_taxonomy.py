@@ -46,6 +46,8 @@ _MACRO = {
     "signup",
     "newsletter_opt_in",
     "feedback_submit",
+    "api_interest_submit",    # заявка на платный API («фальшивая дверь», 2026-10-05)
+    "pwa_installed",          # сайт установлен как приложение (appinstalled)
 }
 
 # --- micro: ценные действия с продуктом ---
@@ -79,6 +81,10 @@ _INTENT = {
     "feedback_nudge_cta",
     "register_nudge_expand",
     "feedback_nudge_expand",
+    "api_interest_click",   # клик «API и выгрузка» — намерение, ещё не заявка
+    "pwa_install_prompt_accept",    # «Установить» / «Понятно» в окне приглашения
+    "pwa_install_native_accepted",  # согласие в системном окне установки
+    "pwa_install_entry_click",      # пункт «Установить приложение» в подвале
 }
 
 # --- engagement: вовлечение в контент и инструменты ---
@@ -86,6 +92,7 @@ _ENGAGEMENT = {
     "indicator_view",
     "region_indicator_view",
     "forecast_view",
+    "pwa_app_launch",       # запуск из установленного приложения (раз за сессию)
     "forecast_toggle",
     "search_query",
     "search_select",
@@ -164,6 +171,11 @@ _TECHNICAL = {
     "embed_runtime_view",   # сигнал дистрибуции — своя карточка, не конверсия
     "search_abandon",       # негативный сигнал «искал и не нашёл»
     "outbound_link",        # уход с сайта — не вовлечение
+    "api_interest_view",    # показ точки входа «API и выгрузка» — знаменатель CTR
+    "pwa_install_prompt_view",       # показ окна «Установить приложение» — знаменатель CTR
+    "pwa_ios_hint_view",             # показ подсказки «Поделиться → На экран Домой»
+    "pwa_install_prompt_dismiss",    # «Не сейчас» (откладывает показ)
+    "pwa_install_native_dismissed",  # отказ в системном окне установки
 }
 
 # Точечные override веса (сильнее дефолта tier'а).
@@ -171,6 +183,8 @@ _WEIGHT_OVERRIDES = {
     "signup": 100,
     "newsletter_opt_in": 60,
     "feedback_submit": 40,
+    "api_interest_submit": 40,
+    "pwa_installed": 50,
     "login_success": 15,
     "download_csv": 12,
     "download_excel": 12,

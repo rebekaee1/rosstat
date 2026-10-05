@@ -71,6 +71,17 @@ from app.services.seo_content import (
 logger = logging.getLogger(__name__)
 
 
+# PWA (2026-10-05): мета для «На экран Домой» в iOS и Android. Зеркалит index.html
+# (оболочка для /login, /admin, /embed); <link rel="manifest"> и apple-touch-icon
+# SSR берёт из оболочки вместе с остальными ссылками (get_app_assets).
+PWA_HEAD_META = (
+    '<meta name="mobile-web-app-capable" content="yes">\n'
+    '<meta name="apple-mobile-web-app-capable" content="yes">\n'
+    '<meta name="apple-mobile-web-app-title" content="Forecast">\n'
+    '<meta name="apple-mobile-web-app-status-bar-style" content="default">'
+)
+
+
 @dataclass(frozen=True)
 class AppAssets:
     head_links: str
@@ -89,7 +100,9 @@ def _fallback_assets() -> AppAssets:
             '<link href="/fonts/fonts.css" rel="stylesheet">\n'
             '<link rel="icon" href="/favicon.ico" sizes="any">\n'
             '<link rel="icon" type="image/svg+xml" href="/favicon.svg">\n'
-            '<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">'
+            '<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">\n'
+            '<link rel="manifest" href="/manifest.webmanifest">\n'
+            '<link rel="apple-touch-icon" href="/apple-touch-icon.png">'
         ),
         body_scripts=(
             '<script type="module" src="/src/main.jsx"></script>' if settings.debug else ""
@@ -112,7 +125,10 @@ async def get_app_assets() -> AppAssets:
         head_links = []
         for link in soup.find_all("link"):
             rel = {r.lower() for r in (link.get("rel") or [])}
-            if rel & {"stylesheet", "modulepreload", "preconnect", "icon", "shortcut icon"} or (
+            if rel & {
+                "stylesheet", "modulepreload", "preconnect", "icon", "shortcut icon",
+                "manifest", "apple-touch-icon",
+            } or (
                 "preload" in rel and link.get("as") == "font"
             ):
                 head_links.append(str(link))
@@ -1741,6 +1757,7 @@ def compose_document(
 <meta name="robots" content="{robots_content}">
 <meta name="theme-color" content="#EEF0F4">
 <meta name="color-scheme" content="light">
+{PWA_HEAD_META}
 {_yandex_verification_meta()}
 {canonical_link}
 <link rel="alternate" type="application/rss+xml" title="{rss_title}" href="{escape(_absolute("/feed.xml"))}">

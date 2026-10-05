@@ -1394,6 +1394,38 @@ class TelegramOutbox(Base):
     error: Mapped[str | None] = mapped_column(String(300))
 
 
+class PushSubscription(Base):
+    """Подписка браузера на web-push (подготовка, 2026-10-05; ничего не отправляется).
+
+    Адрес подписки (`endpoint`) и ключи шифрования (`p256dh`, `auth`) — это
+    ПЕРСОНАЛЬНЫЕ ДАННЫЕ: по ним можно слать сообщения конкретному устройству.
+    Не логировать, не класть в аналитику, удалять вместе с аккаунтом (FK CASCADE) и
+    при отписке/410 от push-сервиса. Дедуп по `endpoint_hash` (SHA-256 адреса).
+    Строки создаются только эндпоинтом /push/subscribe за флагом
+    `push_subscribe_enabled` (по умолчанию выключен).
+    """
+    __tablename__ = "push_subscriptions"
+    __table_args__ = (
+        UniqueConstraint("endpoint_hash", name="uq_push_endpoint_hash"),
+        Index("ix_push_subscriptions_user", "user_id"),
+        Index("ix_push_subscriptions_active", "revoked_at"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(), primary_key=True, default=uuid.uuid4)
+    endpoint_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    endpoint: Mapped[str] = mapped_column(Text, nullable=False)
+    p256dh: Mapped[str] = mapped_column(String(255), nullable=False)
+    auth: Mapped[str] = mapped_column(String(255), nullable=False)
+    user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    locale: Mapped[str | None] = mapped_column(String(5))
+    user_agent: Mapped[str | None] = mapped_column(String(300))
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    last_success_at: Mapped[datetime | None] = mapped_column(DateTime)
+    failure_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
 class SeedState(Base):
     """Key-value для seed_schema_hash (П-12, риск Р-3).
 

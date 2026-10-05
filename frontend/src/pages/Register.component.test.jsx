@@ -63,6 +63,43 @@ describe('экран радости после регистрации', () => {
   });
 });
 
+describe('согласие на рассылку по умолчанию (решение владельца 2026-10-05)', () => {
+  const fill = () => {
+    fireEvent.change(screen.getByLabelText('common.email'), { target: { value: 'a@b.co' } });
+    fireEvent.change(screen.getByLabelText('common.password'), { target: { value: 'longpassword' } });
+    fireEvent.click(screen.getAllByRole('checkbox')[0]); // политика — явное согласие
+  };
+  const renderRegister = () => render(
+    <MemoryRouter initialEntries={['/register']}><Routes><Route path="/register" element={<Register />} /></Routes></MemoryRouter>,
+  );
+
+  it('галочка рассылки отмечена, политика — нет', () => {
+    renderRegister();
+    const [policy, newsletter] = screen.getAllByRole('checkbox');
+    expect(policy.checked).toBe(false);
+    expect(newsletter.checked).toBe(true);
+  });
+
+  it('без правок на сервер уходит newsletter: true', async () => {
+    const { registerUser } = await import('../lib/api');
+    registerUser.mockClear(); registerUser.mockResolvedValue({});
+    renderRegister(); fill();
+    fireEvent.submit(screen.getByLabelText('common.email').closest('form'));
+    await waitFor(() => expect(registerUser).toHaveBeenCalledTimes(1));
+    expect(registerUser).toHaveBeenCalledWith({ email: 'a@b.co', password: 'longpassword', consent: true, newsletter: true });
+  });
+
+  it('если человек снял галочку, уходит newsletter: false', async () => {
+    const { registerUser } = await import('../lib/api');
+    registerUser.mockClear(); registerUser.mockResolvedValue({});
+    renderRegister(); fill();
+    fireEvent.click(screen.getAllByRole('checkbox')[1]);
+    fireEvent.submit(screen.getByLabelText('common.email').closest('form'));
+    await waitFor(() => expect(registerUser).toHaveBeenCalledTimes(1));
+    expect(registerUser).toHaveBeenCalledWith(expect.objectContaining({ newsletter: false }));
+  });
+});
+
 describe('email fallback from unavailable Google signup', () => {
   it('keeps next, explains the temporary fallback in English, and focuses email', async () => {
     render(

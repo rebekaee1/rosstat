@@ -2,6 +2,7 @@ import { Children, useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import Brand from './Brand';
+import PwaInstallEntry from './PwaInstallEntry';
 import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -273,6 +274,7 @@ export default function Footer() {
                 {t('footer.credits')}
               </Link>
             </li>
+            <PwaInstallEntry className={footLink} />
             <li>
               <button type="button" onClick={openConsentSettings} className={cn(footLink, 'text-left')}>
                 {t('footer.cookies')}

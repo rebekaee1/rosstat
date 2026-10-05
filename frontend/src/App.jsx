@@ -16,6 +16,8 @@ import ScrollToAnchor from './components/ScrollToAnchor';
 import ErrorBoundary from './components/ErrorBoundary';
 import RegisterNudge from './components/RegisterNudge';
 import DownloadLimitModal from './components/DownloadLimitModal';
+import ApiInterestModal from './components/ApiInterestModal';
+import PwaInstallPrompt from './components/PwaInstallPrompt';
 import RouteFallback from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
@@ -348,8 +350,10 @@ function AppRoutes() {
         </ErrorBoundary>
       </main>
       <RegisterNudge />
+      <PwaInstallPrompt />
       <Footer />
       <DownloadLimitModal />
+      <ApiInterestModal />
     </AuthProvider>
     </LocaleProvider>
   );

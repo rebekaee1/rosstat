@@ -427,9 +427,9 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
 
     newsletter = bool(tx.get("newsletter"))
     if created and intent == "login":
-        # Выбор чекбоксов сделан во всплывающем окне перед редиректом.
-        # Фиксируем версию/ip/ua; заранее отмеченная рассылка сама по себе
-        # не доказывает действительное согласие для юрисдикций с opt-in.
+        # Выбор чекбоксов сделан во всплывающем окне перед редиректом. Рассылка там отмечена
+        # по умолчанию для всех провайдеров (решение владельца 2026-10-05, юридический риск
+        # озвучен, ADR-0007); версию/ip/ua фиксируем как свидетельство сделанного выбора.
         ip = request.client.host if request.client else "unknown"
         ua = (request.headers.get("user-agent") or "")[:500]
         db.add(Consent(user_id=user.id, kind="pd", version=AUTH_CONSENT_VERSION, ip=ip, user_agent=ua))

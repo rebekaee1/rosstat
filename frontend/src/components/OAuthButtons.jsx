@@ -54,10 +54,11 @@ export default function OAuthButtons({
 }) {
   const { locale, t } = useLocale();
   const [providers, setProviders] = useState(null); // null = ещё грузим
-  // Согласие перед редиректом на провайдера. Рассылку можно отключить отдельно.
+  // Согласие перед редиректом на провайдера. Рассылка отмечена по умолчанию для всех входов
+  // (Яндекс, VK, Google; вход и регистрация) — решение владельца 2026-10-05; снять галочку можно.
   const [pending, setPending] = useState(null); // id провайдера, ждущего согласия
   const [policy, setPolicy] = useState(false);
-  const [newsletter, setNewsletter] = useState(false);
+  const [newsletter, setNewsletter] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
@@ -93,7 +94,7 @@ export default function OAuthButtons({
   const openConsent = (id) => {
     setPolicy(false);
     setRedirecting(false);
-    setNewsletter(id === 'google' && intent === 'login');
+    setNewsletter(true);
     setPending(id);
   };
 

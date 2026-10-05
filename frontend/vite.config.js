@@ -110,6 +110,24 @@ function publicOriginPlugin(origin) {
 }
 
 /**
+ * Service worker (public/sw.js) — статический файл с токеном версии. На каждой сборке
+ * токен меняется, байты sw.js отличаются, браузер ставит новую версию (skipWaiting +
+ * clients.claim в самом sw.js), старые кэши `fe-` чистятся при активации.
+ */
+function swVersionPlugin(env) {
+  const version = String(env.VITE_BUILD_ID || '') + '-' + Date.now().toString(36)
+  return {
+    name: 'fe-sw-version',
+    apply: 'build',
+    writeBundle(options) {
+      const file = resolve(options.dir || resolve(process.cwd(), 'dist'), 'sw.js')
+      if (!existsSync(file)) return
+      writeFileSync(file, readFileSync(file, 'utf8').replaceAll('__SW_VERSION__', version))
+    },
+  }
+}
+
+/**
  * Оболочка (/login, /register, /account, /admin/bi, /widgets) отдаётся nginx как есть.
  * Блокирующий <link rel="stylesheet"> держит экран белым, пока едет весь CSS-бандл,
  * и фирменная заставка из index.html не успевает показаться. В сборке делаем ссылку
@@ -148,33 +166,38 @@ export default defineConfig(({ mode }) => {
   const publicOrigin = resolvePublicOrigin(env)
   const apiTarget = env.VITE_DEV_API_PROXY || publicOrigin
 
+  const apiProxy = {
+    target: apiTarget,
+    changeOrigin: true,
+    secure: true,
+    configure: (proxy) => {
+      // Vite EN preview: forward ?preview_locale= from Referer so API
+      // returns name_en in `name` without touching production hosts.
+      proxy.on('proxyReq', (proxyReq, req) => {
+        // Local replay collector validates Origin against Host. Keep the
+        // browser's Host when forwarding to a loopback development API.
+        if (['localhost', '127.0.0.1', '[::1]'].includes(new URL(apiTarget).hostname)) {
+          proxyReq.setHeader('Host', req.headers.host);
+        }
+        const referer = req.headers.referer || ''
+        const m = /[?&]preview_locale=(en|ru)\b/i.exec(referer)
+        if (m) proxyReq.setHeader('X-FE-Locale', m[1].toLowerCase())
+      })
+    },
+  }
+
   return {
-  plugins: [react(), tailwindcss(), publicOriginPlugin(publicOrigin), nonBlockingCssPlugin()],
+  plugins: [react(), tailwindcss(), publicOriginPlugin(publicOrigin), nonBlockingCssPlugin(), swVersionPlugin(env)],
   // Версия сборки в js_error: привязка регрессий фронта к деплоям.
   define: {
     __BUILD_ID__: JSON.stringify(env.VITE_BUILD_ID || new Date().toISOString().slice(0, 10)),
   },
   server: {
     proxy: {
-      '/api': {
-        target: apiTarget,
-        changeOrigin: true,
-        secure: true,
-        configure: (proxy) => {
-          // Vite EN preview: forward ?preview_locale= from Referer so API
-          // returns name_en in `name` without touching production hosts.
-          proxy.on('proxyReq', (proxyReq, req) => {
-            // Local replay collector validates Origin against Host. Keep the
-            // browser's Host when forwarding to a loopback development API.
-            if (['localhost', '127.0.0.1', '[::1]'].includes(new URL(apiTarget).hostname)) {
-              proxyReq.setHeader('Host', req.headers.host);
-            }
-            const referer = req.headers.referer || ''
-            const m = /[?&]preview_locale=(en|ru)\b/i.exec(referer)
-            if (m) proxyReq.setHeader('X-FE-Locale', m[1].toLowerCase())
-          })
-        },
-      },
+      '/api': apiProxy,
+      // PWA: манифест и офлайн-страницу отдаёт backend (host-aware), как robots.txt.
+      '/manifest.webmanifest': apiProxy,
+      '/offline.html': apiProxy,
     },
   },
   build: {
