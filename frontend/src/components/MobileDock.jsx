@@ -6,6 +6,7 @@ import { useT } from '../i18n';
 import { FORECASTS_TO, OPEN_NAV_MENU_EVENT, WORLD_RATING_TO, resolveActiveNavId } from '../lib/navItems';
 import { comparePath } from '../lib/sitePaths';
 import { useScrollDirection } from '../lib/useScrollDirection';
+import { useFooterTone } from '../lib/useFooterTone';
 import '../styles/k3-shell.css';
 
 const ITEMS = [
@@ -26,14 +27,28 @@ export default function MobileDock() {
   const { pathname, hash } = useLocation();
   const { deep, dir, idle } = useScrollDirection();
   const hidden = pathname.startsWith('/admin');
+  const overFooter = useFooterTone().dock;
   const visible = !hidden && deep && (dir === 'up' || idle);
   const activeId = pathname === '/' && hash === '#countries' ? 'countries' : resolveActiveNavId(pathname);
 
+  // --fe-dock-reserve: место под панелью, пока она смонтирована (main и подвал на телефоне добавляют его к нижнему отступу);
+  // --fe-dock-h: сколько занимает панель сейчас (0, пока спрятана); data-fe-dock: показывает значок cookie вместе с панелью.
+  useEffect(() => {
+    if (hidden) return undefined;
+    const root = document.documentElement;
+    root.style.setProperty('--fe-dock-reserve', '76px');
+    return () => root.style.removeProperty('--fe-dock-reserve');
+  }, [hidden]);
   useEffect(() => {
     if (hidden) return undefined;
     const root = document.documentElement;
     root.style.setProperty('--fe-dock-h', visible ? '76px' : '0px');
-    return () => root.style.removeProperty('--fe-dock-h');
+    if (visible) root.dataset.feDock = 'visible';
+    else delete root.dataset.feDock;
+    return () => {
+      root.style.removeProperty('--fe-dock-h');
+      delete root.dataset.feDock;
+    };
   }, [visible, hidden]);
 
   if (hidden) return null;
@@ -42,6 +57,7 @@ export default function MobileDock() {
     <nav
       className="fe-dock"
       data-visible={visible ? 'true' : 'false'}
+      data-tone={overFooter ? 'dark' : undefined}
       aria-label={t('k3.dock.aria')}
     >
       <ul className="fe-dock__list">

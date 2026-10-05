@@ -8,6 +8,7 @@ import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
 import { formatAsOfHuman, tickerSourceKind, tzFor } from '../lib/tickerFormat';
 import { useScrollDirection } from '../lib/useScrollDirection';
+import { useFooterTone } from '../lib/useFooterTone';
 import { useLocale, useT } from '../i18n';
 import '../styles/shell.css';
 import '../styles/platform-pages.css';
@@ -285,6 +286,7 @@ export default function LiveTicker() {
   // Телефон: при прокрутке вниз лента уезжает вверх (CSS, только transform и opacity), при прокрутке вверх возвращается.
   const { deep, dir } = useScrollDirection();
   const hidden = deep && dir === 'down';
+  const overFooter = useFooterTone().ticker;
   if (snapshots.length === 0) {
     return (
       <div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9" />
@@ -295,6 +297,7 @@ export default function LiveTicker() {
     <div
       className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
       data-hidden={hidden ? 'true' : 'false'}
+      data-tone={overFooter ? 'dark' : undefined}
     >
       <div className="fe-ticker__inner mx-auto h-full">
         <div className="fe-ticker__scroller">

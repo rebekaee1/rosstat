@@ -11,7 +11,7 @@ import '../styles/k3-shell.css';
  * Лист рисуется порталом в body: у шапки и панелей с `backdrop-filter` потомок с `position: fixed` привязался бы
  * к ним, а не к окну. Состояние открытия держит вызывающий (`open`, `onClose`); пока `open` ложь, ничего не рисуется.
  *
- * `children` — прокручиваемое тело (по умолчанию класс `fe-sheet__body`, `bodyClassName` добавляет свои),
+ * `children` — прокручиваемое тело (по умолчанию класс `fe-bsheet__body`, `bodyClassName` добавляет свои),
  * `header` — закреплённая полоса между ручкой и телом (заголовок и «Готово» у выбора раздела),
  * `footer` — закреплённая нижняя полоса (кнопки «Войти» / «Регистрация» и т.п.),
  * `ariaLabel` или `labelledBy` (id заголовка) — имя диалога.
@@ -117,7 +117,7 @@ export default function BottomSheet({
 
   return createPortal(
     <>
-      <div className="fe-sheet-scrim" aria-hidden="true" data-testid="sheet-scrim" onClick={() => onCloseRef.current?.()} />
+      <div className="fe-bsheet-scrim" aria-hidden="true" data-testid="sheet-scrim" onClick={() => onCloseRef.current?.()} />
       <div
         ref={sheetRef}
         id={id}
@@ -126,22 +126,22 @@ export default function BottomSheet({
         aria-label={labelledBy ? undefined : ariaLabel}
         aria-labelledby={labelledBy}
         tabIndex={-1}
-        className={cn('fe-sheet', className)}
+        className={cn('fe-bsheet', className)}
       >
         <div
-          className="fe-sheet__grab"
+          className="fe-bsheet__grab"
           data-testid="sheet-grab"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={finishDrag}
           onPointerCancel={finishDrag}
         >
-          <span className="fe-sheet__handle" aria-hidden="true" />
+          <span className="fe-bsheet__handle" aria-hidden="true" />
           <span className="sr-only">{t('k3.sheet.dragHint')}</span>
         </div>
         {header}
-        <div className={cn('fe-sheet__body', bodyClassName)}>{children}</div>
-        {footer ? <div className={cn('fe-sheet__foot', footerClassName)}>{footer}</div> : null}
+        <div className={cn('fe-bsheet__body', bodyClassName)}>{children}</div>
+        {footer ? <div className={cn('fe-bsheet__foot', footerClassName)}>{footer}</div> : null}
       </div>
     </>,
     document.body,

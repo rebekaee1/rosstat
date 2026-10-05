@@ -36,9 +36,9 @@ describe('BottomSheet: шторка снизу', () => {
     expect(sheet.getAttribute('role')).toBe('dialog');
     expect(sheet.getAttribute('aria-modal')).toBe('true');
     expect(sheet.getAttribute('aria-label')).toBe('Проверка');
-    expect(sheet.querySelector('.fe-sheet__handle')).toBeTruthy();
-    expect(sheet.querySelector('.fe-sheet__body a').textContent).toBe('Пункт');
-    expect(sheet.querySelector('.fe-sheet__foot button').textContent).toBe('Войти');
+    expect(sheet.querySelector('.fe-bsheet__handle')).toBeTruthy();
+    expect(sheet.querySelector('.fe-bsheet__body a').textContent).toBe('Пункт');
+    expect(sheet.querySelector('.fe-bsheet__foot button').textContent).toBe('Войти');
     expect(screen.getByTestId('sheet-scrim')).toBeTruthy();
     // Подсказка про жест есть только для скринридера.
     expect(sheet.querySelector('.sr-only').textContent).toBe('Потяните вниз, чтобы закрыть');

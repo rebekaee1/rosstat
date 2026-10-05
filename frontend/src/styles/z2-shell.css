@@ -13,8 +13,7 @@
 }
 
 /* ═══ Лента курсов ═══════════════════════════════════════════════════════ */
-/* Лента курсов: стекло L1 над страницей, блик сверху и свет вместо нижней кромки рисуют `::before`/`::after` из styles/k3-shell.css. */
-.fe-ticker { background: none; }
+/* Лента курсов: стекло L1 над страницей (фон, размытие, тень на самом блоке) и свет вместо нижней кромки: styles/k3-shell.css. */
 /* Ширина как у шапки и страниц: один контейнер на весь сайт. */
 .fe-ticker__inner { max-width: max(var(--fe-container-wide, 1440px), 1440px); }
 .fe-ticker__scroller { position: relative; height: 100%; }
@@ -116,14 +115,16 @@ nav.fe-navbar .fe-nav-tools-btn { position: relative; }
 }
 
 /* «Войти» читается как кнопка (L2: светлое стекло, блик и тень, без рамки); при наведении теплеет. «Регистрация» рядом золотая. */
-nav.fe-navbar a.fe-nav-login {
+nav.fe-navbar a.fe-nav-login,
+.fe-bsheet a.fe-nav-login {
   color: var(--color-text-primary);
   font-weight: 650;
   background: var(--fe-glass-l2);
   transition: transform 0.2s var(--fe-ease-reveal), background-color 0.2s ease, box-shadow 0.2s ease;
   box-shadow: var(--fe-l2-shadow);
 }
-nav.fe-navbar a.fe-nav-login:hover {
+nav.fe-navbar a.fe-nav-login:hover,
+.fe-bsheet a.fe-nav-login:hover {
   background: var(--z2-gold-soft);
   box-shadow: 0 6px 16px -10px var(--z2-gold);
 }
@@ -288,7 +289,10 @@ nav.fe-navbar a.fe-nav-login:hover {
   border: 0;
 }
 @media (max-width: 639px) {
-  .fe-cookie-compact { min-height: 56px; padding: 4px 4px 4px 14px; }
+  /* Телефон: одна строка 48 px (плашка вместе с отступами ≈ 60 px вместо 72). */
+  .fe-cookie-compact { min-height: 48px; padding: 2px 2px 2px 14px; }
+  .fe-cookie-compact__actions .fe-cookie-accept { min-height: 36px; padding: 0 14px; }
+  .fe-cookie-compact__actions .fe-cookie-gear { width: 40px; min-height: 40px; }
   .fe-cookie-compact__long { display: none; }
   .fe-cookie-compact__short { display: inline; }
   .fe-cookie-compact__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -297,7 +301,7 @@ nav.fe-navbar a.fe-nav-login:hover {
 footer.fe-footer { padding-bottom: var(--fe-cookie-h, 0px); }
 /* Телефон: ещё и высота нижней док-панели (64 px + отступ 12), чтобы она не закрывала конец подвала. */
 @media (max-width: 767px) {
-  footer.fe-footer { padding-bottom: calc(var(--fe-cookie-h, 0px) + 76px); }
+  footer.fe-footer { padding-bottom: calc(var(--fe-cookie-h, 0px) + var(--fe-dock-reserve, 0px)); }
 }
 
 /* ═══ Подвал: графитовое стекло с золотой линией ═════════════════════════ */
