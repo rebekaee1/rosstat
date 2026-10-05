@@ -329,7 +329,7 @@ function YearChart({ pair }) {
           </p>
         )}
       </header>
-      <div className="fe-z8-chart__plot" role="img" aria-label={title}>
+      <div className="fe-z8-chart__plot k4-glass k4-glass-plot" role="img" aria-label={title}>
         <div className="fe-z8-chart__abs">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>

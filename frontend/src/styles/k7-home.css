@@ -177,6 +177,11 @@
 .fe-dashboard .fe-today__ladder rect.is-mark {
   filter: drop-shadow(0 0 4px rgb(201 162 77 / 0.85));
 }
+/* K4, круг 4: лесенка не штрих-код. Столбики шагом 4 с шириной 2,6 читались как штрихи; теперь они чуть шире шага и сливаются
+   в плавную ленту-шкалу, ступеньки смягчены. Золотая отметка текущей страны остаётся отдельным камнем. */
+.fe-dashboard .fe-today__ladder rect { width: 4.2px; rx: 0; }
+.fe-dashboard .fe-today__ladder { filter: blur(0.45px) drop-shadow(0 3px 3px rgb(60 48 24 / 0.16)); }
+.fe-dashboard .fe-today__ladder rect.is-mark { width: 5px; }
 .fe-dashboard .fe-today__pulse {
   width: 10px;
   height: 10px;

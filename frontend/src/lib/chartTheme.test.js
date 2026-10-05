@@ -49,12 +49,12 @@ describe('chartTheme', () => {
     expect(GRID_PROPS.vertical).toBe(false);
   });
 
-  it('сетка без пунктира: полосы 4–5 % чередуются с пустыми', () => {
+  it('сетка без пунктира: очень мягкие полосы (не больше 3,5 %) чередуются с пустыми', () => {
     expect(GRID_PROPS.strokeDasharray).toBeUndefined();
     expect(GRID_PROPS.horizontalFill).toHaveLength(2);
     const alpha = Number(GRID_PROPS.horizontalFill[0].match(/,\s*([0-9.]+)\)$/)[1]);
-    expect(alpha).toBeGreaterThanOrEqual(0.04);
-    expect(alpha).toBeLessThanOrEqual(0.05);
+    expect(alpha).toBeGreaterThan(0.01);
+    expect(alpha).toBeLessThanOrEqual(0.035);
   });
 
   it('лента: градиент золото-светлое → золото → тёмное, заливка 35 % → 0, второй ряд сапфир', () => {
