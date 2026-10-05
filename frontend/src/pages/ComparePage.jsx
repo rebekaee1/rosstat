@@ -1,9 +1,9 @@
-import { useState, useMemo, useCallback, useEffect, useId, useRef } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import {
-  ResponsiveContainer, ComposedChart, Line, XAxis, YAxis,
+  ResponsiveContainer, ComposedChart, Line, Area, ReferenceDot, XAxis, YAxis,
   Tooltip, CartesianGrid,
 } from 'recharts';
 import {
@@ -40,10 +40,10 @@ import { compareLabels, conceptShortLabel, unitHint } from '../lib/compareTitle'
 import useMediaQuery from '../lib/useMediaQuery';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
-  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, axisTick, axisSampleValues,
+  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, RIBBON_STOPS, SAPPHIRE_STOPS, CHART_AREA, axisTick, axisSampleValues,
   axisWidthForLabels, chartHeightForWidth, niceAxis,
 } from '../lib/chartTheme';
-import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
+import { useElementWidth, useTouchTooltip, useChartGlassIds } from '../lib/chartHooks';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
 import useGlobalSearch from '../lib/useGlobalSearch';
@@ -123,15 +123,25 @@ const RANGE_OPTIONS = [
 ];
 
 // До 10 рядов — палитра различимых цветов из общей темы графиков (lib/chartTheme.js).
-// K5.3: первая линия — золотая лента, вторая — сапфировая (вместо графитовой); дальше прежние цвета темы.
+// K5.3 / круг 4: первая линия — золотая стеклянная лента, вторая — сапфировая (цвета и стопы из общей темы K4:
+// lib/chartTheme.js), дальше прежние цвета темы простыми линиями.
 const PALETTE = Object.freeze([
-  CHART_THEME.series[0], '#35599A', ...CHART_THEME.series.slice(2), CHART_THEME.series[1],
+  CHART_THEME.series[0], CHART_THEME.sapphire, ...CHART_THEME.series.slice(2), CHART_THEME.series[1],
 ]);
-// Лента первых двух рядов красится градиентом вдоль линии; id вставляется в stroke как url(#id).
-const RIBBON_STOPS = Object.freeze([
-  [['#E9CD8E', 0], ['#C9A24D', 0.5], ['#A9812F', 1]],
-  [['#6E96D2', 0], ['#3F66AA', 0.5], ['#1E2A4A', 1]],
-]);
+const RIBBON_GRADIENTS = Object.freeze([RIBBON_STOPS, SAPPHIRE_STOPS]);
+const RIBBON_COUNT = RIBBON_GRADIENTS.length;
+
+/** Бусина на конце ленты: гало, шарик с градиентом (id), белый блик. Рисуется поверх линии, мыши не мешает. */
+function RibbonBead({ cx, cy, fill, color }) {
+  if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  return (
+    <g pointerEvents="none" className="fe-compare-bead">
+      <circle cx={cx} cy={cy} r={11} fill={color} fillOpacity={0.22} />
+      <circle cx={cx} cy={cy} r={6.5} fill={fill} />
+      <circle cx={cx - 2} cy={cy - 2.2} r={1.4} fill="#fff" fillOpacity={0.9} />
+    </g>
+  );
+}
 
 /** Флаг страны ряда для линзы на конце линии: мировой ряд по slug страны, российский показатель — Россия, регионы — без флага. */
 function seriesFlag(s) {
@@ -1380,7 +1390,8 @@ function CompareTooltip({
 
 export default function ComparePage() {
   const t = useT();
-  const ribbonUid = useId().replace(/:/g, '');
+  const glass = useChartGlassIds('k5c');
+  const beadSapphireId = `${glass.bead}-sapphire`;
   const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const [range, setRange] = useState('5y');
@@ -2086,6 +2097,18 @@ export default function ComparePage() {
   const activePreset = COMPARE_PRESETS.find((preset) => presetIsActive(preset, codes));
   // Подсказка красит точки сплошным цветом ряда: у лент первых двух рядов stroke — ссылка на градиент.
   const seriesColors = Object.fromEntries(series.map((s) => [s.key, s.color]));
+  // Последняя точка каждого ряда в окне: сюда ставится бусина ленты.
+  const endDots = [];
+  series.forEach((s, i) => {
+    for (let r = chartRows.length - 1; r >= 0; r -= 1) {
+      const v = chartRows[r][s.key];
+      if (v == null || !Number.isFinite(Number(v))) continue;
+      endDots.push({
+        key: s.key, index: i, x: chartRows[r].date, y: Number(v), color: s.color, axis: axisFor(i),
+      });
+      break;
+    }
+  });
 
   return (
     <div className="fe-data-page fe-compare-page pt-24 md:pt-28 pb-12 md:pb-16">
@@ -2377,11 +2400,29 @@ export default function ComparePage() {
                   margin={{ top: 10, right: chartMarginRight, bottom: 4, left: 0 }}
                 >
                   <defs>
-                    {RIBBON_STOPS.map((stops, gi) => (
-                      <linearGradient key={gi} id={`${ribbonUid}-${gi}`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={Math.max(plotWidth, 320)} y2="0">
-                        {stops.map(([color, offset]) => <stop key={offset} offset={offset} stopColor={color} />)}
+                    {RIBBON_GRADIENTS.map((stops, gi) => (
+                      <linearGradient key={gi} id={`${glass.ribbon}-${gi}`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={Math.max(plotWidth, 320)} y2="0">
+                        {stops.map((stop) => <stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />)}
                       </linearGradient>
                     ))}
+                    <linearGradient id={glass.area} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={CHART_THEME.goldLight} stopOpacity={CHART_AREA.top} />
+                      <stop offset="100%" stopColor={CHART_THEME.goldLight} stopOpacity={CHART_AREA.bottom} />
+                    </linearGradient>
+                    <linearGradient id={glass.areaSapphire} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={CHART_THEME.sapphireLight} stopOpacity={0.22} />
+                      <stop offset="100%" stopColor={CHART_THEME.sapphireLight} stopOpacity={0} />
+                    </linearGradient>
+                    <radialGradient id={glass.bead} cx="34%" cy="28%" r="78%">
+                      <stop offset="0%" stopColor="#FFF6DA" />
+                      <stop offset="38%" stopColor={CHART_THEME.goldBright} />
+                      <stop offset="100%" stopColor={CHART_THEME.goldDeep} />
+                    </radialGradient>
+                    <radialGradient id={beadSapphireId} cx="34%" cy="28%" r="78%">
+                      <stop offset="0%" stopColor="#DCE8FA" />
+                      <stop offset="38%" stopColor={CHART_THEME.sapphireLight} />
+                      <stop offset="100%" stopColor={CHART_THEME.sapphireDeep} />
+                    </radialGradient>
                   </defs>
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis
@@ -2423,6 +2464,23 @@ export default function ComparePage() {
                     cursor={HOVER_CURSOR}
                     {...touchTip.tooltipProps}
                   />
+                  {/* Мягкая заливка под лентами первых двух рядов: 35 % светлого золота / 22 % сапфира у линии, к оси 0. */}
+                  {series.slice(0, RIBBON_COUNT).map((s, i) => (
+                    <Area
+                      key={`${s.key}-area`}
+                      yAxisId={axisFor(i)}
+                      type="monotone"
+                      dataKey={s.key}
+                      stroke="none"
+                      fill={`url(#${i === 0 ? glass.area : glass.areaSapphire})`}
+                      dot={false}
+                      activeDot={false}
+                      connectNulls
+                      isAnimationActive={false}
+                      legendType="none"
+                      tooltipType="none"
+                    />
+                  ))}
                   {series.map((s, i) => (
                     <Line
                       key={s.key}
@@ -2430,14 +2488,53 @@ export default function ComparePage() {
                       type="monotone"
                       dataKey={s.key}
                       name={labels[i] || t('z2.compare.seriesFallback')}
-                      className={i < RIBBON_STOPS.length ? `fe-cl fe-cl-${i}` : 'fe-cl'}
-                      stroke={i < RIBBON_STOPS.length ? `url(#${ribbonUid}-${i})` : s.color}
+                      className={i === 0 ? 'k4-ribbon' : i === 1 ? 'k4-ribbon k4-ribbon--sapphire' : 'k4-ribbon k4-ribbon--plain'}
+                      stroke={i < RIBBON_COUNT ? `url(#${glass.ribbon}-${i})` : s.color}
                       strokeWidth={3}
                       strokeLinecap="round"
+                      strokeLinejoin="round"
                       dot={false}
                       activeDot={isDragging ? false : { r: 5, fill: s.color, stroke: '#FFFFFF', strokeWidth: 2 }}
                       connectNulls
                       isAnimationActive={false}
+                    />
+                  ))}
+                  {/* Белый блик-штрих 1 px поверх каждой ленты, на 1 px выше (css k4-gloss). */}
+                  {series.slice(0, RIBBON_COUNT).map((s, i) => (
+                    <Line
+                      key={`${s.key}-gloss`}
+                      className="k4-gloss"
+                      yAxisId={axisFor(i)}
+                      type="monotone"
+                      dataKey={s.key}
+                      stroke="rgba(255,255,255,0.72)"
+                      strokeWidth={1}
+                      strokeLinecap="round"
+                      dot={false}
+                      activeDot={false}
+                      connectNulls
+                      isAnimationActive={false}
+                      legendType="none"
+                      tooltipType="none"
+                    />
+                  ))}
+                  {/* Бусина на конце каждой линии (при перетаскивании окна прячется, как у карточки показателя). */}
+                  {!isDragging && endDots.map((dot) => (
+                    <ReferenceDot
+                      key={dot.key}
+                      yAxisId={dot.axis}
+                      x={dot.x}
+                      y={dot.y}
+                      r={5}
+                      ifOverflow="visible"
+                      shape={(props) => (
+                        <RibbonBead
+                          cx={props.cx}
+                          cy={props.cy}
+                          color={dot.color}
+                          fill={dot.index === 0 ? `url(#${glass.bead})` : dot.index === 1 ? `url(#${beadSapphireId})` : dot.color}
+                        />
+                      )}
                     />
                   ))}
                 </ComposedChart>

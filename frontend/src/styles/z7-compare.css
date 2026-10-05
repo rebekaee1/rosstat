@@ -42,18 +42,12 @@
 
 /* ---------- Страница «Сравнение»: контейнер и шапка ---------- */
 
-/* Левый край 24 px, как у других страниц данных; на узких экранах 16 px. Ширина по токену контейнера. */
+/* Ширина и поля те же, что у показателя и рейтинга (`.fe-data-page.max-w-7xl`): контент и поля по токенам Z1 (G5.1). */
 .fe-compare-page {
   width: 100%;
-  max-width: var(--fe-container-data, 1280px);
+  max-width: var(--fe-box-data, 1344px);
   margin-inline: auto;
-  padding-inline: 16px;
-}
-@media (min-width: 768px) {
-  .fe-compare-page { padding-inline: 24px; }
-}
-@media (min-width: 1700px) {
-  .fe-compare-page { max-width: min(var(--fe-container-wide, 1400px), 1400px); }
+  padding-inline: var(--fe-gutter, 24px);
 }
 .fe-compare-h1 { text-wrap: balance; }
 
