@@ -17,6 +17,8 @@
  * Один event возвращается as-is (без поля `indicators`).
  */
 
+import { groupDescription } from './calendarText';
+
 // source_event_uid обычно имеет вид `cbr-<indicator>-<date>` (см. backend
 // calendar generator). Чтобы события одной публикации совпадали по
 // grouping key, отрезаем индикатор-суффикс: всё что лежит между source-
@@ -88,7 +90,8 @@ export function groupSimilarEvents(events) {
 
     // Берём первый event как основу, чтобы остальные поля (importance,
     // values, description, source_url, id) пришли консистентно.
-    return { ...arr[0], indicators };
+    // Описание — у «головного» показателя группы (индекс цен, а не его услуговая часть).
+    return { ...arr[0], description: groupDescription(arr), indicators };
   });
 }
 

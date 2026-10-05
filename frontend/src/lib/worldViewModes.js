@@ -83,7 +83,7 @@ const FREQUENCY_LONG_EN = {
   annual: 'annual',
 };
 
-const FREQ_SUFFIX_RE = /(?:,\s*(помесячно|поквартально|за год|понедельно|по дням)|\s*[-–—]\s*(monthly|quarterly|annual|yearly|weekly|daily)\s+data)\s*$/i;
+const FREQ_SUFFIX_RE = /(?:,\s*(помесячно|поквартально|за год|понедельно|по дням)|\s*[-–—]\s*(monthly|quarterly|annual|yearly|weekly|daily)\s+data(?:\s*\([^)]*\))?)\s*$/i;
 const CYRILLIC_RE = /[А-Яа-яЁё]/;
 
 /** Убрать суффикс частоты из публичного имени (частота живёт в переключателе). */
@@ -108,6 +108,29 @@ export function localizedDisplay(locale, facing, englishFallback) {
   return String(facing || '').trim();
 }
 
+/**
+ * Название для человека: без диапазона лет в скобках, без повторного «индекс» в хвосте,
+ * без аббревиатур вроде HICP и «% ЭАН» (единица измерения показывается отдельно).
+ */
+export function tidyPublicName(name, locale = 'ru') {
+  let text = String(name || '').trim();
+  if (!text) return '';
+  text = text.replace(/\s*\((?:19|20)\d{2}\s*[-–—]\s*(?:19|20)\d{2}\)\s*$/, '');
+  text = stripFrequencySuffix(text);
+  if (locale === 'en') {
+    text = text.replace(/\bHICP\b/g, 'Harmonised consumer price index');
+    if (/\bindex\b/i.test(text.replace(/,\s*index\s*\([^)]*\)\s*$/i, ''))) {
+      text = text.replace(/,\s*index\s*\([^)]*\)\s*$/i, '');
+    }
+  } else {
+    text = text.replace(/%\s*ЭАН/gi, '% от рабочей силы');
+    if (/индекс/i.test(text.replace(/,\s*индекс\s*\([^)]*\)\s*$/i, ''))) {
+      text = text.replace(/,\s*индекс\s*\([^)]*\)\s*$/i, '');
+    }
+  }
+  return text.trim();
+}
+
 /** Locale-facing indicator title. EN never stays on a Cyrillic `name`. */
 export function indicatorPublicName(indicator, locale = 'ru') {
   if (!indicator) return '';
@@ -117,7 +140,7 @@ export function indicatorPublicName(indicator, locale = 'ru') {
   const raw = locale === 'en'
     ? (pickEnDisplay(facing, en) || ru)
     : (facing || ru || en);
-  return stripFrequencySuffix(raw);
+  return tidyPublicName(raw, locale);
 }
 
 /** @param {string|null|undefined} token */

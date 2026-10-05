@@ -177,7 +177,7 @@ export default function CategoryPage({ fixedSlug }) {
 
       <section data-block="category-list" className="fe-cat-list">
         <h2 className="fe-cat-list__title">
-          {t('category.indicatorsHeading')}
+          {compactRows ? t('z1.cat.ratesHeading') : t('category.indicatorsHeading')}
         </h2>
         {isError && (
           <ApiRetryBanner

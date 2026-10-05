@@ -81,9 +81,9 @@ const CATEGORY_DEFS = [
     status: 'active',
     flagshipCode: 'm2',
     sentiment: 'neutral',
-    description: 'Денежные агрегаты М0, М1, М2. Резервы, внешний долг, кредиты, депозиты, бюджет.',
+    description: 'Деньги в обращении, резервы, внешний долг, кредиты, депозиты, бюджет.',
     descriptionEn:
-      'Monetary aggregates M0, M1, M2. Reserves, external debt, credit, deposits, budget.',
+      'Money in circulation, reserves, external debt, credit, deposits, budget.',
     relatedSlugs: ['currencies', 'rates', 'trade'],
   },
   {

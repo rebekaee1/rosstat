@@ -43,6 +43,7 @@ export function pickerLabel(label, locale) {
     if (text.startsWith(from)) return `${to}${text.slice(from.length)}`;
   }
   return text
+    .replace(/%\s*ЭАН/gi, '% от рабочей силы')
     .replace(/соотв\.\s+периоду\s+пред\.\s+года/gi, 'тому же периоду прошлого года')
     .replace(/пред\.\s+года/gi, 'прошлого года')
     .replace(/пред\.\s+периоду/gi, 'прошлому значению')
