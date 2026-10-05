@@ -66,6 +66,10 @@
 @keyframes fe-k2-emblem-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 .fe-emblem--spin img { animation: fe-k2-emblem-spin 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
 
+/* Логотип-кристалл: мягкая цветная тень-парение под знаком (статичный drop-shadow, без перехода). */
+.fe-brand svg { overflow: visible; filter: drop-shadow(0 3px 3px rgba(176, 138, 62, 0.34)) drop-shadow(0 1px 1px rgba(32, 42, 60, 0.2)); }
+footer.fe-footer .fe-brand svg { filter: drop-shadow(0 3px 5px rgba(232, 200, 119, 0.3)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35)); }
+
 /* Блик по золотому квадрату логотипа раз в 12 с (≈1 с проход). */
 @keyframes fe-k2-brand-glint { 0%, 90% { transform: translateX(-8px); } 100% { transform: translateX(14px); } }
 .fe-brand-glint { animation: fe-k2-brand-glint 12s ease-in-out 4s infinite; }

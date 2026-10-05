@@ -9,6 +9,7 @@ import FacetCoin from './FacetCoin';
 import { FACET_COIN_TONES } from './brandTones';
 import CountryFlag from '../CountryFlag';
 import { FLAG_ART_CODES, flagArt } from './flagArt';
+import Brand from '../Brand';
 import { renderPage } from '../../test/renderPage';
 
 describe('FacetMark', () => {
@@ -160,5 +161,25 @@ describe('flagArt', () => {
     expect(missing).toEqual([]);
     expect(isoForSlug('germany')).toBe('DE');
     expect(isoForSlug('nowhere')).toBe('');
+  });
+});
+
+describe('Brand (логотип-кристалл)', () => {
+  it('знак объёмный: градиент, световая грань, гранёный камень и блик; надпись и размеры прежние', () => {
+    const { container } = render(<Brand compact />);
+    const svg = container.querySelector('svg');
+    expect(svg.getAttribute('viewBox')).toBe('0 0 40 44');
+    expect(svg.getAttribute('aria-hidden')).toBe('true');
+    expect(svg.querySelector('.fe-brand-vol')).toBeTruthy();
+    expect(svg.querySelectorAll('.fe-brand-top').length).toBe(2);
+    expect(svg.querySelector('.fe-brand-glint')).toBeTruthy();
+    expect(container.querySelector('.fe-brand-wordmark').textContent).toBe('forecasteconomyECONOMIC INTELLIGENCE');
+    expect(container.querySelector('.fe-brand').className).toContain('fe-brand-compact');
+  });
+
+  it('у двух логотипов на странице (шапка и подвал) разные id градиентов', () => {
+    const { container } = render(<><Brand /><Brand /></>);
+    const ids = [...container.querySelectorAll('linearGradient')].map((g) => g.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });
