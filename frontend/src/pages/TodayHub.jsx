@@ -23,6 +23,7 @@ import '../styles/platform-pages.css';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
 import '../styles/w6f-pages.css';
+import '../styles/k6-country.css';
 
 function todayLabel(code, t) {
   const key = `today.spec.${code}`;

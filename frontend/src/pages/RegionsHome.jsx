@@ -561,7 +561,7 @@ export default function RegionsHome() {
           aria-selected={view === 'list'}
           onClick={() => setView('list')}
           className={`fe-tap fe-press inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-            view === 'list' ? 'bg-champagne/15 text-champagne-ink' : 'text-text-secondary hover:text-text-primary'
+            view === 'list' ? 'fe-glass-active font-semibold' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
           <List size={15} /> {t('regions.view.list')}
@@ -571,7 +571,7 @@ export default function RegionsHome() {
           aria-selected={view === 'map'}
           onClick={() => setView('map')}
           className={`fe-tap fe-press inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-            view === 'map' ? 'bg-champagne/15 text-champagne-ink' : 'text-text-secondary hover:text-text-primary'
+            view === 'map' ? 'fe-glass-active font-semibold' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
           <MapIcon size={15} /> {t('regions.view.map')}
@@ -679,23 +679,23 @@ export default function RegionsHome() {
                   : 'grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]'}
                 >
                   {!searching && (
-                    <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" aria-label={t('regions.districts')}>
-                      <div className="mb-2 px-2 text-sm font-medium text-text-secondary">
+                    <aside className="z5-topics hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" aria-label={t('regions.districts')}>
+                      <div className="z5-aside-title">
                         {t('regions.districts')}
                       </div>
-                      <div className="flex flex-col gap-2">
+                      <div className="z5-topics__list">
                         <button
                           type="button"
                           onClick={() => setActiveDistrict(null)}
                           className={[
-                            'fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                            'fe-tap fe-press z5-topic',
                             !resolvedDistrict
-                              ? 'bg-champagne/12 font-medium text-champagne-ink'
-                              : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                              ? 'is-active'
+                              : '',
                           ].join(' ')}
                         >
                           <span>{t('w4.regions.allRegions')}</span>
-                          <span className="fe-num text-xs">{totalRegions}</span>
+                          <span className="z5-topic__count">{totalRegions}</span>
                         </button>
                         {districtNav.map((d) => (
                           <button
@@ -703,10 +703,10 @@ export default function RegionsHome() {
                             type="button"
                             onClick={() => setActiveDistrict(d.slug)}
                             className={[
-                              'fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                              'fe-tap fe-press z5-topic',
                               resolvedDistrict === d.slug
-                                ? 'bg-champagne/12 font-medium text-champagne-ink'
-                                : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                                ? 'is-active'
+                                : '',
                             ].join(' ')}
                           >
                             <span className="min-w-0 break-words leading-snug">
@@ -714,7 +714,7 @@ export default function RegionsHome() {
                                 ? d.name
                                 : (DISTRICT_SHORT_KEYS[d.slug] ? t(DISTRICT_SHORT_KEYS[d.slug]) : d.name)}
                             </span>
-                            <span className="fe-num shrink-0 text-xs">{d.regions.length}</span>
+                            <span className="z5-topic__count">{d.regions.length}</span>
                           </button>
                         ))}
                       </div>

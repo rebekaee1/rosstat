@@ -30,6 +30,7 @@ import {
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
+import '../styles/z5-country.css';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -261,25 +262,25 @@ export default function WorldRegionProfile() {
               />
             )}
             {!searching && !isUsCatalog && (
-              <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
-                <div className="mb-2 px-2 text-sm font-medium text-text-secondary">
+              <aside className="z5-topics hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
+                <div className="z5-aside-title">
                   {t('regions.profile.themes')}
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="z5-topics__list">
                   {filteredSections.map((sec) => (
                     <button
                       key={sec.num}
                       type="button"
                       onClick={() => setActiveSection(sec.num)}
                       className={[
-                        'fe-tap fe-press flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
+                        'fe-tap fe-press z5-topic',
                         resolvedActive === sec.num
-                          ? 'bg-champagne/12 font-medium text-champagne-ink'
-                          : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                          ? 'is-active'
+                          : '',
                       ].join(' ')}
                     >
                       <span className="min-w-0 break-words leading-snug">{sec.name}</span>
-                      <span className="fe-num shrink-0 text-xs">{sec.indicators.length}</span>
+                      <span className="z5-topic__count">{sec.indicators.length}</span>
                     </button>
                   ))}
                 </div>

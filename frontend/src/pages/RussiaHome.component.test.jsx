@@ -83,7 +83,9 @@ describe('RussiaHome hero и обзорные чипы', () => {
     await screen.findByRole('heading', { level: 1, name: 'Россия' });
 
     const card = await screen.findByLabelText('Карта субъектов Российской Федерации');
-    expect(card.className).toContain('bg-[#191A20]');
+    // R3 K6: тёмная карточка территории — сапфировое стекло L3 (класс fe-glass-dark), а не плоская заливка #191A20.
+    expect(card.className).toContain('fe-glass-dark');
+    expect(card.className).toContain('z5-ru-territory');
     expect(card.textContent).toContain('Профиль территории');
     expect(card.textContent).toContain('85 субъектов');
     // Код страны «RU» человеку ничего не говорит: в карточке только название.

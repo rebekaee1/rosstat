@@ -197,8 +197,10 @@ describe('«Регионы России»: рейтинг вместо алфа�
     expect(chips.length).toBeGreaterThanOrEqual(1);
     expect(within(ranking).getByRole('button', { name: /Сколько производит один житель \(ВРП\)/ })).toBeTruthy();
     expect(within(ranking).queryByText('Экономика на человека')).toBeNull();
-    // Кубок у троих лидеров (здесь регионов всего три, у всех место ≤ 3).
-    expect(ranking.querySelectorAll('svg[aria-label="Тройка лидеров"]').length).toBe(3);
+    // Гранёная медаль у троих лидеров (R3 K6: вместо кубка; здесь регионов всего три, у всех место ≤ 3).
+    const medals = [...ranking.querySelectorAll('.fe-rank__place [data-medal]')];
+    expect(medals.map((medal) => medal.getAttribute('data-medal'))).toEqual(['1', '2', '3']);
+    expect(medals.every((medal) => medal.getAttribute('title') === 'Тройка лидеров')).toBe(true);
   });
 
   it('«Ещё показатели» открывает поиск по всему каталогу и переключает рейтинг', async () => {

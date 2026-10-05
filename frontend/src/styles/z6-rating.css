@@ -1,10 +1,12 @@
 /*
- * Раунд 2, зона Z6: «Рейтинг стран».
- * Идея страницы: сверху одна тонкая строка выбора показателя, под ней слева таблица (главное, ради чего пришли),
- * справа шар без дублирующего списка стран, под шаром те, кто сильнее всего поднялся и опустился.
+ * Раунд 2, зона Z6: «Рейтинг стран». Раунд 3, K6.5: хрусталь без границ.
+ * Идея страницы: сверху одна строка выбора показателя (слой L0: чипы лежат прямо на странице), под ней слева
+ * таблица-«витрина» (строки — низкие L1-полки 52 px с зазором 6 px, топ-3 с гранёными медалями), справа шар без
+ * дублирующего списка стран, под шаром те, кто сильнее всего поднялся и опустился.
  * Золото берётся из общих токенов `--fe-*` (запасные значения на случай, если токены ещё не подключены);
  * оттенки считаются от цвета поверхности, поэтому светлая и тёмная темы работают без отдельных правил.
  * Всё в классах `.z6-*` и усиленных селекторах; чужие файлы не переопределяются.
+ * Медали, стеклянная трубка и золотая гравировка (общие классы K6) лежат в styles/k6-country.css.
  */
 
 .z6-page {
@@ -13,7 +15,6 @@
   --z6-gold-soft: var(--fe-gold-soft, #e6d3a3);
   --z6-gold-ink: var(--fe-gold-ink, var(--color-champagne-ink, #80642f));
   --z6-muted: var(--fe-text-muted, var(--color-text-secondary, #59697f));
-  --z6-line: color-mix(in srgb, var(--z6-gold) 20%, var(--color-border-subtle, rgba(68, 87, 115, 0.13)));
   --z6-shadow: var(--fe-card-shadow, 0 1px 2px rgba(32, 42, 60, 0.04), 0 16px 34px -22px rgba(32, 42, 60, 0.28));
   --z6-sticky-top: 96px;
 }
@@ -27,7 +28,7 @@
   .z6-head__sub .w2-details > p {
     position: absolute; z-index: 30; left: 0; top: 100%;
     width: min(36rem, 100%); margin: 4px 0 0; padding: 14px 18px;
-     border-radius: 18px;
+    border-radius: 18px;
     background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
     backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
     box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint);
@@ -59,11 +60,11 @@
   .z6-split { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 20px 32px; }
 }
 
-/* ── Выбор показателя: одна строка ── */
+/* ── Выбор показателя: слой L0, чипы L2 лежат прямо на странице, активный — золото ── */
 .z6-toolbar {
-  padding: 10px 12px;  border-radius: 20px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--z6-gold) 8%, transparent), transparent), var(--fe-l1-bg);
-  box-shadow: var(--fe-card-shadow);
+  padding: 2px 0;
+  background: none;
+  box-shadow: none;
 }
 .z6-toolbar .w6d-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
 .z6-toolbar .w6d-picker__label {
@@ -76,11 +77,7 @@
 .z6-toolbar .w6d-quick,
 .z6-toolbar .w6d-picker__all {
   border-radius: 999px; padding: 0 14px;
-  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-}
-.z6-toolbar .w6d-quick.is-active {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg);
-  box-shadow: var(--fe-shadow-active), var(--fe-inset-glint);
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 .z6-toolbar .w6d-picker__all:disabled { opacity: 0.55; cursor: default; }
 @media (hover: hover) and (pointer: fine) {
@@ -111,103 +108,136 @@
 .z6-planet .planet-info { display: none; }
 .z6-planet .planet-shell {
   grid-template-columns: minmax(0, 1fr);
-   box-shadow: var(--z6-shadow);
+  box-shadow: var(--z6-shadow);
 }
 .z6-planet .planet-toolbar { padding: 12px 14px; }
 
-/* ── Золотая лента: первое и последнее место ── */
+/* ── Первое и последнее место: две L1-плиты, у каждой свой свет (шампань и лёд), общей рамки нет ── */
 .z6-ribbon.w2-facts {
-  position: relative; padding: 0; overflow: hidden; container: z6ribbon / inline-size;
-   border-radius: 20px;
-  background: linear-gradient(105deg, color-mix(in srgb, var(--z6-gold) 26%, transparent) 0%, color-mix(in srgb, var(--z6-gold) 10%, transparent) 55%, transparent 100%), var(--fe-l1-bg);
-  box-shadow: var(--fe-card-shadow);
+  position: relative; padding: 0; container: z6ribbon / inline-size;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
-.z6-ribbon.w2-facts::before {
-  content: ''; position: absolute; inset: 0 auto 0 0; width: 4px;
-  background: linear-gradient(180deg, var(--z6-gold-soft), var(--z6-gold));
-}
-.z6-ribbon .w2-facts-grid { gap: 0; }
+.z6-ribbon .w2-facts-grid { gap: 14px; }
 .z6-ribbon .w2-fact {
+  --k6-place-light: rgba(246, 224, 150, 0.62);
+  --k6-place-glow: rgba(201, 162, 77, 0.42);
+  position: relative;
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 4px 14px;
-  padding: 12px 18px 12px 22px; border: 0; border-radius: 0; background: transparent;
-  transition: background-color 0.2s ease;
+  padding: 14px 20px 16px; overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(130% 120% at 0% 0%, var(--k6-place-light), transparent 62%),
+    var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  box-shadow: var(--fe-card-shadow), 0 26px 30px -24px var(--k6-place-glow);
+  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease;
 }
-.z6-ribbon .w2-fact + .w2-fact { padding-left: 18px; }
+.z6-ribbon .w2-fact[data-place='last'] {
+  --k6-place-light: rgba(188, 214, 240, 0.66);
+  --k6-place-glow: rgba(92, 134, 200, 0.34);
+}
 .z6-ribbon .w2-fact-label {
-  grid-column: 1 / -1; display: flex; align-items: center; gap: 8px;
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 9px;
   color: var(--z6-gold-ink); font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
 }
+/* Бусина у подписи: светится (blur 8 px), не кольцо. */
 .z6-ribbon .w2-fact-label::before {
-  content: ''; width: 8px; height: 8px; border-radius: 50%;
-  background: linear-gradient(135deg, #f1dfa6, #c9a24f);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--z6-gold) 20%, transparent);
+  content: ''; width: 10px; height: 10px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #FFF3CF, #E9C97A 55%, #B08A3E);
+  box-shadow: 0 0 9px 1px rgba(201, 162, 77, 0.6);
 }
+.z6-ribbon .w2-fact[data-place='last'] .w2-fact-label { color: #3F5A82; }
 .z6-ribbon .w2-fact[data-place='last'] .w2-fact-label::before {
-  background: linear-gradient(135deg, #cfd6e2, #8f9bb0); box-shadow: 0 0 0 3px rgba(143, 155, 176, 0.2);
+  background: radial-gradient(circle at 32% 28%, #F2F7FD, #C9D7EA 55%, #7F96B8);
+  box-shadow: 0 0 9px 1px rgba(127, 150, 184, 0.6);
 }
 .z6-ribbon .w2-fact-name { font-size: 15px; }
-.z6-ribbon .w2-fact-value { justify-content: flex-end; font-size: 20px; font-weight: 650; }
-@media (hover: hover) { .z6-ribbon .w2-fact:hover { background: color-mix(in srgb, var(--z6-gold) 8%, transparent); } }
+.z6-ribbon .w2-fact-value { justify-content: flex-end; font-size: 22px; font-weight: 700; }
 @container z6ribbon (max-width: 540px) {
   .z6-ribbon .w2-facts-grid { grid-template-columns: minmax(0, 1fr); }
   .z6-ribbon .w2-fact { grid-template-columns: minmax(0, 1fr); }
-  .z6-ribbon .w2-fact + .w2-fact { border-left: 0; padding-left: 22px; }
   .z6-ribbon .w2-fact-value { justify-content: flex-start; }
 }
 
-/* ── Таблица ── */
+/* ── Таблица: полки вместо клеток ──
+   Таблица остаётся таблицей (скринридер, сортировка, столбцы), но раздвинута: между строками 6 px воздуха,
+   каждая строка — низкая плита L1 высотой 52 px из закруглённых по краям ячеек. Линий между строками нет. */
 .z6-table { min-width: 0; }
 .z6-table__sub { margin: 2px 0 0; color: var(--z6-muted); font-size: 13px; line-height: 1.4; }
-.z6-table-card {
+:root .z6-table-card {
   container: z6table / inline-size;
-   box-shadow: var(--z6-shadow);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
-/* Без дополнительных колонок обрезаем без прокрутки, чтобы шапка липла к верху окна. */
-@supports (overflow: clip) {
-  .z6-table-card:not([data-scroll]) { overflow: clip; }
+/* Без дополнительных столбцов прокрутки нет: тени полок не режутся, шапка липнет к верху окна. */
+:root .z6-table-card:not([data-scroll]) { overflow: visible; }
+:root .z6-table-card[data-scroll] { padding: 4px 4px 26px; margin: -4px -4px -26px; }
+.z6-table-card table { border-collapse: separate; border-spacing: 0 6px; }
+.z6-table-card thead { position: sticky; top: var(--z6-sticky-top); z-index: 10; }
+/* Липкая шапка: плотная L1-полоса без blur (не лишний слой) — под ней проезжают строки. */
+.z6-table-card thead th {
+  padding-block: 12px; background: var(--fe-pop-bg, rgba(250, 247, 240, 0.92));
+  box-shadow: var(--fe-inset-glint, inset 0 1px 0 rgba(255, 255, 255, 0.9)), 0 12px 16px -14px rgba(60, 48, 24, 0.42);
+  color: var(--z6-muted); font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em;
 }
-.z6-table-card thead {
-  top: var(--z6-sticky-top);
-  background: color-mix(in srgb, var(--z6-gold) 8%, var(--color-surface, #fff));
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--z6-gold) 34%, transparent);
-}
-.z6-table-card thead th { padding-block: 12px; color: var(--z6-muted); font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em; }
+.z6-table-card thead th:first-child { border-radius: 14px 0 0 14px; }
+.z6-table-card thead th:last-child { border-radius: 0 14px 14px 0; }
 .z6-table-card thead th:not(.w6d-col-bar) { padding-inline: 12px; }
-.z6-table-card tbody td { padding-block: 12px; vertical-align: middle; }
+.z6-table-card thead th:first-child { padding-left: 16px; }
+.z6-table-card tbody td {
+  height: 52px; padding-block: 8px; vertical-align: middle;
+  background: var(--fe-glass-l1, rgba(255, 255, 255, 0.52));
+  box-shadow: var(--fe-inset-glint, inset 0 1px 0 rgba(255, 255, 255, 0.8)), 0 12px 16px -14px rgba(60, 48, 24, 0.4);
+  transition: background-color 0.18s ease;
+}
+.z6-table-card tbody td:first-child { border-radius: 16px 0 0 16px; padding-left: 16px; }
+.z6-table-card tbody td:last-child { border-radius: 0 16px 16px 0; }
 .z6-table-card tbody td:not(.w6d-col-bar) { padding-inline: 12px; }
 .z6-table-card tbody td:first-child { padding-left: 16px; }
-.z6-table-card thead th:first-child { padding-left: 16px; }
-.z6-row { transition: background-color 0.18s ease; animation: z6-row-in 320ms ease both; animation-delay: calc(var(--z6-i, 0) * 18ms); }
+.z6-row { animation: z6-row-in 320ms ease both; animation-delay: calc(var(--z6-i, 0) * 18ms); }
 @keyframes z6-row-in { from { opacity: 0; } to { opacity: 1; } }
 .z6-row td:nth-child(2) a { font-size: 15px; }
 /* Цифры крупнее: у остальных строк спокойные, у тройки лидеров выразительные. */
 .z6-val { font-size: 16px; letter-spacing: -0.01em; }
 @media (hover: hover) {
-  .z6-row:hover { background: color-mix(in srgb, var(--z6-gold) 6%, transparent); }
+  .z6-row:hover td { background: var(--fe-glass-l2-hover, rgba(255, 255, 255, 0.78)); }
 }
-.z6-row[data-top] {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--z6-gold) 16%, var(--color-surface, #fff)), color-mix(in srgb, var(--z6-gold) 5%, var(--color-surface, #fff)) 72%, transparent);
-}
-.z6-row[data-top] td:first-child { box-shadow: inset 3px 0 0 var(--z6-gold); }
+/* Топ-3: у строки свой тон стекла (золото, лёд, бронза) вместо полосы слева; сам знак отличия — медаль в первой ячейке. */
+.z6-row[data-top='1'] td { background: var(--k6-tint-gold, rgba(250, 234, 176, 0.7)); }
+.z6-row[data-top='2'] td { background: var(--k6-tint-silver, rgba(226, 235, 247, 0.74)); }
+.z6-row[data-top='3'] td { background: var(--k6-tint-bronze, rgba(248, 224, 204, 0.7)); }
 .z6-row[data-top] .z6-val { font-size: 17px; font-weight: 700; }
 .z6-row[data-top='1'] .z6-val { font-size: 18px; }
 @media (hover: hover) {
-  .z6-row[data-top]:hover {
-    background: linear-gradient(90deg, color-mix(in srgb, var(--z6-gold) 24%, var(--color-surface, #fff)), color-mix(in srgb, var(--z6-gold) 8%, var(--color-surface, #fff)) 72%, transparent);
-  }
+  .z6-row[data-top='1']:hover td { background: var(--k6-tint-gold-hover, rgba(252, 241, 196, 0.9)); }
+  .z6-row[data-top='2']:hover td { background: var(--k6-tint-silver-hover, rgba(238, 244, 252, 0.92)); }
+  .z6-row[data-top='3']:hover td { background: var(--k6-tint-bronze-hover, rgba(251, 235, 220, 0.9)); }
 }
-/* Полоски: золото от светлого к насыщенному, густота зависит от значения. */
+/* Столбец-трубка: жёлоб с внутренней тенью, «жидкое золото» с бликом и свечением на конце (K6.5). */
 .z6-table-card .w6d-bar {
-  height: 8px; background: color-mix(in srgb, var(--z6-gold) 12%, transparent);
-  box-shadow: none;
+  height: 10px; overflow: visible;
+  background: var(--k6-groove, rgba(88, 74, 46, 0.09));
+  box-shadow: inset 0 2px 3px var(--k6-groove-shade, rgba(60, 48, 24, 0.2)), inset 0 -1px 0 var(--k6-groove-lip, rgba(255, 255, 255, 0.9));
 }
 .z6-table-card .w6d-bar > span {
-  opacity: 1; transform-origin: left center;
-  background: linear-gradient(90deg, var(--z6-gold-soft), var(--z6-gold));
+  position: relative; opacity: 1; transform-origin: left center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 52%),
+    linear-gradient(90deg, #EAD59A, #C9A24D);
   background-size: calc(100% / max(var(--z6-s, 1), 0.08)) 100%; background-repeat: no-repeat;
+  box-shadow: 0 0 12px -2px rgba(201, 162, 77, 0.65);
   animation: z6-bar-grow 650ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   animation-delay: calc(var(--z6-i, 0) * 22ms + 120ms);
+}
+.z6-table-card .w6d-bar > span::after {
+  content: ''; position: absolute; right: -2px; top: 50%; width: 12px; height: 12px; margin-top: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #FFFBE8, #F0D98F 45%, #C9A24D);
+  box-shadow: 0 0 10px 2px rgba(201, 162, 77, 0.55);
 }
 @keyframes z6-bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 /* Ширина столбцов зависит от ширины самой таблицы, а не окна. */
@@ -220,29 +250,29 @@
 @container z6table (max-width: 500px) {
   .z6-table .w6d-table .w6d-col-bar { display: none; }
 }
-.z6-table .w6d-showall { background: color-mix(in srgb, var(--z6-gold) 5%, var(--color-surface, #fff)); box-shadow: var(--z6-shadow); }
+.z6-table .w6d-showall { box-shadow: var(--fe-l2-shadow); }
 .z6-table .w6d-median { color: var(--z6-muted); }
 
 /* ── Кто поднялся и опустился: узкий блок под шаром ── */
 .z6-split .w6d-shifts { margin: 0; }
 .w6d-shifts--compact {
-  padding: 16px 16px 14px;  border-radius: 24px;
+  padding: 16px 16px 14px; border-radius: 24px;
   background: var(--fe-l1-bg); box-shadow: var(--fe-card-shadow);
 }
 .w6d-shifts--compact .w6d-block-title { margin-bottom: 4px; font-size: 18px; line-height: 1.25; }
 .w6d-shifts--compact .w6d-shifts__lead { margin: 0 0 12px; }
 .w6d-shifts--compact .w6d-shifts__cols { grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .w6d-shifts--compact .w6d-shifts__head { display: flex; align-items: center; gap: 8px; font-weight: 700; }
-.w6d-shifts--compact .w6d-shifts__head::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.w6d-shifts--compact .w6d-shifts__head::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px 1px currentColor; }
 .w6d-shifts--compact .w6d-shifts__col.is-up .w6d-shifts__head { color: var(--color-positive, #16a34a); }
 .w6d-shifts--compact .w6d-shifts__col.is-down .w6d-shifts__head { color: var(--color-negative, #dc2626); }
-.w6d-shifts--compact .w6d-shifts__list { gap: 4px; }
+.w6d-shifts--compact .w6d-shifts__list { gap: 6px; }
 .w6d-shifts--compact .w6d-shift {
-  min-height: 40px; padding: 2px 10px;  border-radius: 12px;
-  background: color-mix(in srgb, var(--z6-gold) 4%, transparent);
+  min-height: 40px; padding: 2px 10px; border-radius: 12px;
+  background: var(--fe-glass-l2);
   transition: background-color 0.18s ease;
 }
-@media (hover: hover) { .w6d-shifts--compact .w6d-shift:hover { background: color-mix(in srgb, var(--z6-gold) 10%, transparent); } }
+@media (hover: hover) { .w6d-shifts--compact .w6d-shift:hover { background: var(--fe-glass-l2-hover); } }
 
 /* ── Пояснения под таблицей ── */
 .z6-notes.w2-facts { padding: 6px 18px 14px; box-shadow: var(--z6-shadow); }
@@ -251,6 +281,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .z6-row, .z6-table-card .w6d-bar > span, .z6-quick-ghost { animation: none; }
-  .z6-toolbar .w6d-quick, .z6-toolbar .w6d-picker__all, .z6-ribbon .w2-fact, .z6-row, .w6d-shifts--compact .w6d-shift { transition: none; }
+  .z6-toolbar .w6d-quick, .z6-toolbar .w6d-picker__all, .z6-ribbon .w2-fact, .w6d-shifts--compact .w6d-shift, .z6-table-card tbody td { transition: none; }
   .z6-toolbar .w6d-quick:hover, .z6-toolbar .w6d-picker__all:hover { transform: none; }
 }

@@ -20,6 +20,7 @@ import { filterSearchOptions } from '../lib/searchSynonyms';
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
+import '../styles/k6-country.css';
 
 const POPULAR = [
   { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', labelKey: 'regions.metric.wages' },
@@ -60,10 +61,10 @@ function PopularCard({ metric, index }) {
         </div>
       )}
       {top.length > 0 && (
-        <ol className="mt-3 space-y-1.5">
+        <ol className="k6-medals-sm mt-3 space-y-2">
           {top.map((row, i) => (
-            <li key={row.slug} className="flex items-start gap-2 text-sm leading-snug">
-              <span className="fe-num w-4 shrink-0 text-text-secondary">{i + 1}</span>
+            <li key={row.slug} className="flex items-center gap-2.5 text-sm leading-snug">
+              <span className="w2-rank-pos shrink-0" data-medal={i + 1}>{i + 1}</span>
               <span className="min-w-0 flex-1 break-words text-text-primary">{row.name}</span>
               <span className="fe-num shrink-0 whitespace-nowrap font-medium text-text-primary">
                 {formatRegionCompact(row.raw ?? row.value, data.indicator.unit, locale)}
@@ -87,16 +88,16 @@ function ThemeGroup({ name, items }) {
     >
       <summary className="fe-tap flex items-center gap-3 rounded-2xl px-4 py-3">
         <span className="min-w-0 flex-1 text-[15px] font-medium text-text-primary">{name}</span>
-        <span className="fe-num shrink-0 rounded-full bg-obsidian-lighter px-2 py-0.5 text-xs font-medium text-text-secondary">{items.length}</span>
+        <span className="fe-num shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-text-secondary fe-glass-2">{items.length}</span>
         <ChevronDown size={16} className="fe-acc__chev shrink-0 text-text-secondary" aria-hidden="true" />
       </summary>
       {open && (
-        <ul className="fe-divide-y">
+        <ul className="grid gap-1 px-2 pb-3">
           {items.map((ind) => (
             <li key={ind.code}>
               <Link
                 to={regionRatingPath(ind.code)}
-                className="fe-tap flex items-center px-4 py-3 text-sm text-text-primary transition-colors hover:bg-champagne/[0.06] hover:text-champagne-ink"
+                className="fe-tap flex items-center rounded-xl px-3 py-3 text-sm text-text-primary transition-colors hover:bg-champagne/[0.1] hover:text-champagne-ink"
               >
                 {ind.name}
               </Link>
@@ -187,12 +188,12 @@ export default function RegionRatingsHub() {
             </div>
           </div>
         ) : (
-          <ul className="overflow-hidden rounded-2xl fe-glass-lite fe-divide-y">
+          <ul className="grid gap-1 rounded-2xl p-2 fe-glass-lite">
             {found.slice(0, SEARCH_LIMIT).map((ind) => (
               <li key={ind.code}>
                 <Link
                   to={regionRatingPath(ind.code)}
-                  className="fe-tap block px-4 py-3 transition-colors hover:bg-champagne/[0.06]"
+                  className="fe-tap block rounded-xl px-3 py-3 transition-colors hover:bg-champagne/[0.1]"
                 >
                   <span className="block text-sm text-text-primary">{ind.name}</span>
                   <span className="block text-xs text-text-secondary">{ind.section}</span>

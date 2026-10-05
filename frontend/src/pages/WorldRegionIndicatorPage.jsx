@@ -39,6 +39,7 @@ import {
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
+import '../styles/k6-country.css';
 
 function toYoYSeries(series) {
   if (!series?.length) return [];
@@ -484,7 +485,7 @@ export default function WorldRegionIndicatorPage() {
                 ))}
               </ol>
               {rankPosition > 5 && (
-                <div className="mt-2 flex items-center justify-between px-2 pt-2 text-[13px] fe-divider">
+                <div className="k6-seam-top mt-3 flex items-center justify-between px-2 pt-3 text-[13px]">
                   <span className="flex items-center gap-2">
                     <span className="w-4 text-right fe-num text-text-secondary">{rankPosition}</span>
                     <span className="font-medium text-champagne-ink">{regionName}</span>

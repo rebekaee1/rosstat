@@ -29,6 +29,7 @@ import LoadingNote from '../components/LoadingNote';
 import MobileNavSelect from '../components/MobileNavSelect';
 import UsCatalogNav from '../components/UsCatalogNav';
 import CountryKeyFigures, { KEY_FIGURES_MAX } from '../components/country/CountryKeyFigures';
+import { CountryMood, CrystalDefs } from '../components/country/CountryMood';
 import CountryTopicNav, { GdpForecastCard, SimilarCountries } from '../components/country/CountryTopicNav';
 import { IndicatorRow, IndicatorRows } from '../components/country/CountryIndicatorRow';
 import { SparkBudgetContext, createSparkBudget } from '../components/country/sparkBudget';
@@ -55,6 +56,7 @@ import '../styles/world.css';
 import '../styles/x2-indicator.css';
 import '../styles/z1-polish.css';
 import '../styles/z5-country.css';
+import '../styles/k6-country.css';
 import usePageLoading from '../lib/usePageLoading';
 
 /** Главные темы идут первыми: человек ждёт «Экономику» и «Население», а не алфавитный «Бизнес». */
@@ -403,6 +405,8 @@ export default function WorldCountry() {
       {data && (
         <>
           <div className="fe-data-header z5-hero">
+            <CountryMood code={data.country.code} />
+            <CrystalDefs />
             <div className="z5-hero__grid">
               <div className="z5-hero__lead">
                 <div className="w2-kicker mb-2 flex items-center gap-2">
@@ -447,7 +451,7 @@ export default function WorldCountry() {
           {data.country?.has_regions && (
             <Link
               to={countryRegionsPath(slug)}
-              className="fe-panel mb-8 flex items-center justify-between gap-4 rounded-xl px-5 py-4 transition-colors"
+              className="fe-glass-lite fe-float fe-press mb-8 flex items-center justify-between gap-4 rounded-3xl px-5 py-4"
             >
               <div>
                 <div className="w2-kicker">
@@ -460,7 +464,7 @@ export default function WorldCountry() {
                   {t('world.regions.cardBody')}
                 </p>
               </div>
-              <span className="shrink-0 rounded-full bg-champagne/15 px-3 py-1.5 text-sm text-champagne-ink">
+              <span className="shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold text-champagne-ink fe-glass-2">
                 {t('world.regions.open')}
               </span>
             </Link>

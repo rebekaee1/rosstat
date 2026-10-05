@@ -1,0 +1,242 @@
+/*
+ * K6. Страна, Россия, регионы, рейтинг (раунд 3 «Хрусталь без границ»).
+ *
+ * Что здесь (общее для зоны K6; основной вид страниц лежит в z5-country.css, z6-rating.css, w6d.css, world.css):
+ *   1. Токены зоны (--k6-*), светлая и тёмная тема: золотая гравировка цифр, сапфир, оттенки медалей, жёлоб трубки.
+ *   2. Гранёные медали первой тройки (золото #E9C97A, лёд-серебро #C9D7EA, бронза #E0B08E) для `.w2-rank-pos[data-medal]`.
+ *   3. Рейтинг регионов (`.fe-rank*`, классы живут в w6f-pages.css зоны K8: здесь только усиленные селекторы поверх).
+ *   4. Шторка «Все показатели по темам» (`.fe-sheet*`) и кнопка-триггер.
+ *   5. Карточки категорий: размытие только у первых восьми.
+ *   6. Скрытый SVG с градиентом кристалла для силуэта страны (`.k6-crystal-defs`).
+ *   7. Тёмная тема для всего перечисленного.
+ *
+ * Правила: рамок нет; анимируются только transform и opacity; blur и box-shadow не анимируются.
+ * Селекторы усилены `:root`, чтобы порядок загрузки чанков не менял результат.
+ */
+
+/* ===== 1. Токены ===== */
+:root {
+  /* Золотая гравировка крупных цифр: контраст самой светлой точки не ниже 3:1 на плите L1. */
+  --k6-engrave: linear-gradient(175deg, #6B5224 0%, #8F6B24 42%, #A47F34 100%);
+  --k6-engrave-lip: rgba(255, 255, 255, 0.85);
+  /* Единица измерения у цифры: бронзовая, 4,7:1 на бумаге (в эталоне V17 была #8B7A55 с 3,7:1: чуть темнее, чтобы мелкий текст читался). */
+  --k6-unit: #7A6A45;
+  /* Сапфировое стекло L3 для вторичных тёмных карточек страны (прогноз ВВП). */
+  --k6-sapphire:
+    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.24), transparent 58%),
+    radial-gradient(90% 80% at 0% 100%, rgba(92, 134, 200, 0.2), transparent 62%),
+    linear-gradient(160deg, rgba(31, 49, 90, 0.94), rgba(14, 26, 51, 0.96) 72%);
+  /* Тон стекла у строк топ-3 (вместо полосы слева). */
+  --k6-tint-gold: rgba(250, 234, 176, 0.7);
+  --k6-tint-gold-hover: rgba(252, 241, 196, 0.9);
+  --k6-tint-silver: rgba(226, 235, 247, 0.74);
+  --k6-tint-silver-hover: rgba(238, 244, 252, 0.92);
+  --k6-tint-bronze: rgba(248, 224, 204, 0.7);
+  --k6-tint-bronze-hover: rgba(251, 235, 220, 0.9);
+  /* Жёлоб стеклянной трубки: внутренняя тень сверху, блик снизу. */
+  --k6-groove: rgba(88, 74, 46, 0.09);
+  --k6-groove-shade: rgba(60, 48, 24, 0.22);
+  --k6-groove-lip: rgba(255, 255, 255, 0.9);
+  /* Медали: заливка (грани как conic-градиент + блик), цвет цифры, тень-свечение. */
+  --k6-medal-gold:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.85), transparent 40%),
+    conic-gradient(from 200deg, #FFF3CF, #E9C97A 14%, #C9A24D 32%, #F6E2A0 50%, #DDB862 68%, #B8913F 84%, #FFF3CF);
+  --k6-medal-silver:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.9), transparent 40%),
+    conic-gradient(from 200deg, #FFFFFF, #C9D7EA 14%, #9CB0CA 32%, #EAF1F9 50%, #B9C9DD 68%, #8398B4 84%, #FFFFFF);
+  --k6-medal-bronze:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.8), transparent 40%),
+    conic-gradient(from 200deg, #FCE6D0, #E0B08E 14%, #BE8450 32%, #F4CFAB 50%, #CE9867 68%, #A06A38 84%, #FCE6D0);
+}
+:root[data-theme='dark'], :root.dark {
+  --k6-engrave: linear-gradient(175deg, #F3E4B8 0%, #E3C57D 50%, #C9A24D 100%);
+  --k6-engrave-lip: rgba(0, 0, 0, 0.5);
+  --k6-unit: #C9B98F;
+  --k6-tint-gold: rgba(201, 162, 77, 0.24);
+  --k6-tint-gold-hover: rgba(201, 162, 77, 0.34);
+  --k6-tint-silver: rgba(150, 170, 205, 0.22);
+  --k6-tint-silver-hover: rgba(150, 170, 205, 0.32);
+  --k6-tint-bronze: rgba(200, 140, 90, 0.22);
+  --k6-tint-bronze-hover: rgba(200, 140, 90, 0.32);
+  --k6-groove: rgba(0, 0, 0, 0.28);
+  --k6-groove-shade: rgba(0, 0, 0, 0.55);
+  --k6-groove-lip: rgba(216, 230, 250, 0.12);
+}
+
+/* ===== 2. Гранёные медали ===== */
+:root .w2-rank-pos[data-medal],
+:root .fe-rank__place > [data-medal] {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #2A1D05;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: var(--k6-medal-gold);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -3px 4px -2px rgba(120, 84, 20, 0.45),
+    0 7px 12px -6px rgba(176, 138, 62, 0.75);
+}
+:root .w2-rank-pos[data-medal='2'], :root .fe-rank__place > [data-medal='2'] {
+  color: #14203A;
+  background: var(--k6-medal-silver);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -3px 4px -2px rgba(60, 80, 112, 0.4), 0 7px 12px -6px rgba(110, 132, 166, 0.7);
+}
+:root .w2-rank-pos[data-medal='3'], :root .fe-rank__place > [data-medal='3'] {
+  color: #2E1808;
+  background: var(--k6-medal-bronze);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -3px 4px -2px rgba(120, 70, 24, 0.42), 0 7px 12px -6px rgba(168, 112, 58, 0.7);
+}
+
+/* Медали поменьше: в карточках «Популярные рейтинги» и плитках. */
+:root .k6-medals-sm .w2-rank-pos[data-medal] { width: 22px; height: 22px; font-size: 11px; }
+
+/* Плитки «лучший / худший» в рейтинге регионов: у каждой свой свет (шампань и лёд), общей рамки нет. */
+:root .k6-place { position: relative; overflow: hidden; }
+:root .k6-place--first {
+  background: radial-gradient(130% 120% at 0% 0%, rgba(246, 224, 150, 0.6), transparent 62%), var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  box-shadow: var(--fe-card-shadow), 0 26px 30px -24px rgba(201, 162, 77, 0.4);
+}
+:root .k6-place--last {
+  background: radial-gradient(130% 120% at 0% 0%, rgba(188, 214, 240, 0.64), transparent 62%), var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  box-shadow: var(--fe-card-shadow), 0 26px 30px -24px rgba(92, 134, 200, 0.34);
+}
+:root[data-theme='dark'] .k6-place--first, :root.dark .k6-place--first { background: radial-gradient(130% 120% at 0% 0%, rgba(201, 162, 77, 0.3), transparent 62%), var(--fe-glass-l1-sheen), var(--fe-glass-l1); }
+:root[data-theme='dark'] .k6-place--last, :root.dark .k6-place--last { background: radial-gradient(130% 120% at 0% 0%, rgba(95, 128, 168, 0.36), transparent 62%), var(--fe-glass-l1-sheen), var(--fe-glass-l1); }
+
+/* Световой шов вместо линии: луч-линза, тает к краям. `.k6-seam` — отдельный элемент, `.k6-seam-top` — шов над блоком.
+   Когда в раунде появится общий LightSeam (зона K2), его используют вместо этих двух классов. */
+.k6-seam {
+  height: 8px;
+  min-width: 24px;
+  background: radial-gradient(closest-side, rgba(176, 138, 62, 0.42), rgba(176, 138, 62, 0) 100%) center / 100% 100% no-repeat;
+}
+.k6-seam-top { position: relative; }
+.k6-seam-top::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -4px;
+  height: 8px;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(176, 138, 62, 0.36), rgba(176, 138, 62, 0) 100%) center / 100% 100% no-repeat;
+}
+
+/* ===== 3. Рейтинг регионов: полки L1 и стеклянная трубка ===== */
+:root .fe-rank__list { display: grid; gap: 6px; }
+:root .fe-rank__row {
+  min-height: 52px;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: var(--fe-glass-l1);
+  box-shadow: var(--fe-l2-shadow), var(--fe-inset-glint);
+  column-gap: 12px;
+  transition: transform 0.2s var(--fe-ease-reveal, ease), background-color 0.2s ease;
+}
+:root .fe-rank__row:has([data-medal='1']) { background: linear-gradient(135deg, var(--k6-tint-gold), transparent 80%), var(--fe-glass-l1); }
+:root .fe-rank__row:has([data-medal='2']) { background: linear-gradient(135deg, var(--k6-tint-silver), transparent 80%), var(--fe-glass-l1); }
+:root .fe-rank__row:has([data-medal='3']) { background: linear-gradient(135deg, var(--k6-tint-bronze), transparent 80%), var(--fe-glass-l1); }
+@media (hover: hover) {
+  :root .fe-rank__row:hover { background: var(--fe-glass-l2-hover); transform: translateY(-1px); }
+}
+:root .fe-rank__bar {
+  position: relative;
+  height: 8px;
+  overflow: visible;
+  border-radius: 999px;
+  background: var(--k6-groove);
+  box-shadow: inset 0 2px 3px var(--k6-groove-shade), inset 0 -1px 0 var(--k6-groove-lip);
+}
+:root .fe-rank__bar > span {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 52%), linear-gradient(90deg, #EAD59A, #C9A24D);
+  box-shadow: 0 0 12px -2px rgba(201, 162, 77, 0.65);
+}
+:root .fe-rank__bar > span::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin-top: -5.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #FFFBE8, #F0D98F 45%, #C9A24D);
+  box-shadow: 0 0 9px 2px rgba(201, 162, 77, 0.55);
+}
+:root .fe-rank__place { gap: 0; }
+
+/* ===== 4. Шторка «Все показатели по темам» ===== */
+:root .fe-sheet__backdrop { background: rgba(20, 33, 61, 0.28); }
+:root .fe-sheet__panel {
+  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
+  -webkit-backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  box-shadow: 0 -18px 50px -20px rgba(32, 42, 60, 0.5), var(--fe-inset-glint);
+}
+@media (min-width: 768px) {
+  :root .fe-sheet__panel { box-shadow: -24px 0 60px -26px rgba(32, 42, 60, 0.5), var(--fe-inset-glint); }
+}
+:root .fe-topic-row__main.is-active {
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold, #231B0B);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+:root .fe-topic-row__main:hover:not(.is-active) { background: var(--fe-glass-l2); }
+
+/* ===== 5. Карточки категорий: стекло без blur, размытие только у первых шести (телефон: двух) ===== */
+:root .fe-category-card.fe-glass-lite:nth-child(-n + 6) {
+  -webkit-backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+}
+@media (max-width: 767px) {
+  :root .fe-category-card.fe-glass-lite:nth-child(n + 3) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* ===== 6. Градиент кристалла для силуэта страны ===== */
+.k6-crystal-defs,
+.z5-hero > .k6-crystal-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ===== 7. Тёмная тема ===== */
+:root[data-theme='dark'] .z5-key__ago,
+:root.dark .z5-key__ago {
+  background: linear-gradient(135deg, rgba(216, 230, 250, 0.14), rgba(216, 230, 250, 0.05));
+  box-shadow: inset 0 1px 0 rgba(216, 230, 250, 0.18), 0 8px 16px -10px var(--k6-bead-glow);
+  color: var(--color-text-secondary);
+}
+:root[data-theme='dark'] .z5-key__ago.fe-tone--good, :root.dark .z5-key__ago.fe-tone--good { color: #8EE5B4; }
+:root[data-theme='dark'] .z5-key__ago.fe-tone--bad, :root.dark .z5-key__ago.fe-tone--bad { color: #F2BE8B; }
+:root[data-theme='dark'] .z5-key__value, :root.dark .z5-key__value { color: #E3C57D; }
+:root[data-theme='dark'] .z6-ribbon .w2-fact, :root.dark .z6-ribbon .w2-fact { --k6-place-light: rgba(201, 162, 77, 0.3); }
+:root[data-theme='dark'] .z6-ribbon .w2-fact[data-place='last'], :root.dark .z6-ribbon .w2-fact[data-place='last'] { --k6-place-light: rgba(95, 128, 168, 0.36); }
+:root[data-theme='dark'] .z6-ribbon .w2-fact[data-place='last'] .w2-fact-label, :root.dark .z6-ribbon .w2-fact[data-place='last'] .w2-fact-label { color: #9DB7DE; }
+:root[data-theme='dark'] .z5-ru-key, :root.dark .z5-ru-key { --k6-stone: rgba(201, 162, 77, 0.3); }
+:root[data-theme='dark'] .z5-ru-key[data-stone='inflation'], :root.dark .z5-ru-key[data-stone='inflation'] { --k6-stone: rgba(200, 120, 150, 0.3); }
+:root[data-theme='dark'] .z5-ru-key[data-stone='usd'], :root.dark .z5-ru-key[data-stone='usd'] { --k6-stone: rgba(95, 128, 168, 0.4); }
+:root[data-theme='dark'] .z5-ru-key[data-stone='gdp'], :root.dark .z5-ru-key[data-stone='gdp'] { --k6-stone: rgba(100, 170, 140, 0.3); }
+:root[data-theme='dark'] .z5-ru-key[data-stone='unemployment'], :root.dark .z5-ru-key[data-stone='unemployment'] { --k6-stone: rgba(150, 130, 200, 0.3); }
+:root[data-theme='dark'] .z6-table-card thead th, :root.dark .z6-table-card thead th { background: var(--fe-pop-bg); }
+
+/* Меньше движения и прозрачности: ничего, кроме подъёма при наведении, в этом файле не движется; hover отключается общим предохранителем index.css. */
+@media (prefers-reduced-motion: reduce) {
+  :root .fe-rank__row { transition: none; }
+  :root .fe-rank__row:hover { transform: none; }
+}
