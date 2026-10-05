@@ -54,6 +54,6 @@ describe('NotFound', () => {
     expect(guess).toBeTruthy();
     const first = guess.querySelector('a');
     expect(first.textContent).toBe('Прогнозы');
-    expect(first.getAttribute('href')).toBe('/methodology#read');
+    expect(first.getAttribute('href')).toBe('/forecasts');
   });
 });

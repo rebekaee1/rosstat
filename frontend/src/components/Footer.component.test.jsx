@@ -123,7 +123,7 @@ describe('Footer', () => {
     asDesktop();
     renderFooter();
     const footer = screen.getByRole('contentinfo');
-    expect(within(footer).getByRole('link', { name: 'Прогнозы' }).getAttribute('href')).toBe('/methodology#read');
+    expect(within(footer).getByRole('link', { name: 'Прогнозы' }).getAttribute('href')).toBe('/forecasts');
     expect(within(footer).getByRole('link', { name: 'Курсы валют' }).getAttribute('href')).toBe('/currencies');
     const converter = within(footer).getByRole('link', { name: 'Конвертер валют' });
     expect(converter.getAttribute('href')).toBe('/currencies');
