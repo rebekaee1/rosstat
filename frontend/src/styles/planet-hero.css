@@ -28,41 +28,35 @@
 }
 .fe-dashboard [data-block="home-hero"] .fe-hero-text .mt-5 { margin-top: 14px; }
 
-/* Планета внутри hero: стеклянная карточка с тонкой золотой кромкой, сразу под поиском. Выбор показателя и
-   «Другие показатели» стоят под шаром (на шаре только быстрые чипы), чтобы шар был виден целиком на первом экране. */
+/* Планета внутри hero (R3, K7.1): ОДНА стеклянная плита L1 (blur здесь единственный на весь блок планеты), без «карточки в карточке».
+   Внутренняя белая карточка PlanetView (`.planet-shell`) становится прозрачной: шар, поля, список и легенда лежат прямо на плите.
+   Выбор показателя и «Другие показатели» стоят под шаром (на шаре только быстрые чипы). Правила ниже переопределяют PlanetView.css
+   только здесь, на главной (селекторы с `.fe-dashboard .fe-hero-planet`); сам PlanetView.css (зона K4) не правим. */
 .fe-dashboard .fe-hero-planet [data-block="home-workbench"] {
   position: relative;
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
-  padding: 8px;
-  border-radius: 28px;
-  box-shadow: inset 0 1px 0 #FFFFFFB3, 0 2px 5px -2px rgb(38 52 78 / 0.12), 0 34px 64px -34px rgb(38 52 78 / 0.42);
+  padding: 10px;
+  border-radius: 30px;
+  background:
+    radial-gradient(60% 46% at 16% 0%, var(--k7-lamp-gold), transparent 72%),
+    radial-gradient(52% 44% at 100% 100%, var(--k7-lamp-ice), transparent 70%),
+    var(--fe-glass-l1-sheen),
+    var(--fe-glass-l1);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
 .fe-dashboard .fe-hero-planet [data-block="home-workbench"] > .relative { order: 1; }
 .fe-dashboard .fe-hero-planet [data-block="home-map-controls"] {
   order: 2;
-  margin: 10px 0 0;
-  padding: 12px 8px 4px;
+  margin: 6px 0 0;
+  padding: 10px 8px 4px;
   border-bottom: 0;
 }
 .fe-dashboard .fe-hero-planet [data-block="home-map-controls"] h2 { font-size: 16px; }
 
-/* Тёплое поле позади hero: золотое сияние за планетой и тонкие орбиты вокруг шара (центр по центру колонки планеты). */
-.fe-dashboard [data-block="home-hero"]:has(.fe-hero-grid)::before {
-  content: '';
-  display: block;
-  position: absolute;
-  z-index: -1;
-  inset: -90px -44px -40px -44px;
-  pointer-events: none;
-  background:
-    radial-gradient(46% 40% at 12% 4%, color-mix(in srgb, var(--color-ice, #CAD8E5) 55%, transparent), transparent 72%),
-    radial-gradient(56% 56% at 82% 34%, color-mix(in srgb, var(--z3-gold) 15%, transparent), transparent 74%);
-  -webkit-mask-image: none;
-  mask-image: none;
-  opacity: 1;
-}
+/* Тёплое поле позади hero рисует сцена K1 (LightScene: каустики и кадр граней); здесь своё поле не нужно: два слоя ледяного угла вернули бы серо-голубое пятно слева сверху. */
+/* Тёплое сияние за шаром вместо тонких золотых орбит (линий на странице нет: форму задаёт свет). */
 .fe-hero-planet::before {
   content: '';
   position: absolute;
@@ -70,17 +64,11 @@
   inset: -70px -6vw -50px -4vw;
   pointer-events: none;
   background: radial-gradient(
-    circle at 50% 38%,
-    transparent 0 330px,
-    color-mix(in srgb, var(--z3-gold) 26%, transparent) 331px 332px,
-    transparent 333px 452px,
-    color-mix(in srgb, var(--z3-gold) 15%, transparent) 453px 454px,
-    transparent 455px 600px,
-    color-mix(in srgb, var(--z3-gold) 9%, transparent) 601px 602px,
-    transparent 603px
+    ellipse 52% 46% at 36% 40%,
+    color-mix(in srgb, var(--z3-gold) 18%, transparent),
+    color-mix(in srgb, var(--z3-gold) 6%, transparent) 55%,
+    transparent 75%
   );
-  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
-  mask-image: linear-gradient(180deg, #000 55%, transparent);
 }
 @media (max-width: 1023px) {
   .fe-hero-planet::before { display: none; }
@@ -111,21 +99,168 @@
   .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { font-size: 16px; line-height: 1.55; }
 }
 
-/* Размер шара зависит от высоты экрана: на 1280x720 шар, поиск и год помещаются в первый экран, на высоких мониторах шар крупнее.
-   Правило срабатывает только когда карточка широкая (шар слева, рейтинг справа); на телефоне размер задаёт сама планета. */
+/* Размер шара зависит от высоты экрана: вся карточка (поля, чипы, шар, легенда, выбор показателя) не выше 100vh − 140 px.
+   Остальное в карточке занимает около 380 px (плита, поля, ряд чипов, легенда, заголовок и показатели под шаром), шару достаётся
+   разница; ниже 380 px шар не опускается (на невысоких окнах карточка выше экрана). Правило срабатывает только когда карточка
+   широкая (шар слева, рейтинг справа); на телефоне размер задаёт сама планета. */
 @container planet (min-width: 701px) {
   .fe-dashboard .fe-hero-planet .planet-view {
-    --planet-scene-height: clamp(400px, calc(100vh - 300px), min(78cqw, 600px));
+    --planet-scene-height: clamp(380px, calc(100vh - 520px), min(78cqw, 600px));
+    --planet-key-h: 88px;
   }
 }
 @supports (height: 100svh) {
   @container planet (min-width: 701px) {
     .fe-dashboard .fe-hero-planet .planet-view {
-      --planet-scene-height: clamp(400px, calc(100svh - 300px), min(78cqw, 600px));
+      --planet-scene-height: clamp(380px, calc(100svh - 520px), min(78cqw, 600px));
     }
   }
 }
-/* Узкая карточка (телефон): шар чуть меньше ширины, чтобы под ним сразу был поиск страны. */
+/* Узкая карточка (телефон): шар чуть меньше ширины; чипы стоят над шаром (место под них оставлено в k7-home.css), поле поиска страны под шаром. */
 @container planet (max-width: 440px) {
   .fe-dashboard .fe-hero-planet .planet-view { --planet-scene-height: min(92cqw, 340px); }
 }
+
+/* ── Внутри плиты (R3, K7.1 и K7.6): шар, быстрые чипы, поля-«колодцы», список-столбец, легенда-трубка ───────────────
+   Всё только для главной. Blur на мелких слоях (кнопки +/−, чипы, подсказка) снят: бюджет кадра 12 слоёв на компьютере и 6 на телефоне,
+   а раньше одна планета давала 12 (чипы, кнопки, подсказка), поэтому слои стали L2 без размытия: фон плотнее, блик и тень остались. */
+.fe-dashboard .fe-hero-planet .planet-view {
+  --planet-glass: rgb(255 255 255 / 0.8);
+  --planet-glass-strong: rgb(255 255 255 / 0.9);
+  --planet-glass-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
+}
+.fe-dashboard .fe-hero-planet .planet-shell {
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  border-radius: 22px;
+}
+.fe-dashboard .fe-hero-planet .planet-info,
+.fe-dashboard .fe-hero-planet .planet-key { background: transparent; }
+
+/* Сцена: прозрачное окно на плите. Над ней оставлено место под ряд быстрых чипов, чтобы чипы не наезжали на шар
+   (раньше они лежали поверх верхней дуги шара, особенно на телефоне). Ряд вынесен в это место, canvas не двигается. */
+.fe-dashboard .fe-hero-planet .planet-stage {
+  background: transparent;
+  overflow: visible;
+}
+.fe-dashboard .fe-hero-planet .planet-stage:has(> .planet-quick) { margin-top: 52px; }
+.fe-dashboard .fe-hero-planet .planet-stage .planet-quick {
+  top: -52px;
+  left: 0;
+  right: 0;
+  align-items: center;
+  height: 48px;
+  padding: 4px 2px 6px;
+}
+.fe-dashboard .fe-hero-planet .planet-stage .planet-quick[data-more='true']::after { display: none; }
+.fe-dashboard .fe-hero-planet .planet-stage .planet-quick[data-more='true'] {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent);
+  padding-right: 40px;
+}
+.fe-dashboard .fe-hero-planet .planet-stage .planet-camera-controls { top: 12px; }
+.fe-dashboard .fe-hero-planet .planet-stage .planet-minimap { top: 12px; }
+.fe-dashboard .fe-hero-planet .planet-stage .planet-play-year { top: 14px; }
+
+.fe-dashboard .fe-hero-planet .planet-quick-chip,
+.fe-dashboard .fe-hero-planet .planet-camera-controls button,
+.fe-dashboard .fe-hero-planet .planet-round,
+.fe-dashboard .fe-hero-planet .planet-pill,
+.fe-dashboard .fe-hero-planet .planet-gesture-hint {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.fe-dashboard .fe-hero-planet .planet-quick-chip {
+  background: var(--fe-glass-l2);
+  box-shadow: 0 4px 12px -8px rgb(60 48 24 / 0.38), var(--fe-inset-glint);
+}
+.fe-dashboard .fe-hero-planet .planet-quick-chip.is-active,
+.fe-dashboard .fe-hero-planet .planet-round.is-active {
+  color: var(--fe-on-gold);
+  background: var(--fe-glass-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.45);
+}
+@media (hover: hover) {
+  .fe-dashboard .fe-hero-planet .planet-quick-chip:not(.is-active):hover { background: var(--fe-glass-l2-hover); }
+}
+
+/* Поля поиска страны и года: «колодцы» (вдавленные: тень внутри сверху, блик по нижней кромке), подписи над ними скрыты визуально. */
+.fe-dashboard .fe-hero-planet .planet-toolbar { padding: 2px 2px 12px; }
+.fe-dashboard .fe-hero-planet .planet-toolbar .planet-control-label,
+.fe-dashboard .fe-hero-planet .planet-year > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.fe-dashboard .fe-hero-planet .planet-search-field,
+.fe-dashboard .fe-hero-planet .fe-year-button,
+.fe-dashboard .fe-hero-planet .planet-layer-switch {
+  background: var(--k7-well-bg, rgb(240 232 214 / 0.55));
+  box-shadow: var(--k7-well-shadow, inset 0 2px 5px rgb(120 95 45 / 0.16), inset 0 -1px 0 rgb(255 255 255 / 0.8));
+}
+.fe-dashboard .fe-hero-planet .planet-search-field { min-height: 52px; border-radius: 16px; }
+.fe-dashboard .fe-hero-planet .planet-search-field:focus-within {
+  box-shadow: var(--k7-well-shadow, inset 0 2px 5px rgb(120 95 45 / 0.16)), var(--fe-focus-ring), 0 0 24px -4px rgb(201 162 77 / 0.5);
+}
+.fe-dashboard .fe-hero-planet .planet-layer-switch button[aria-pressed='true'] {
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.45);
+}
+
+/* Колонка списка стоит рядом со сценой, у которой сверху 52 px под ряд чипов: высота колонки растёт на те же 52 px, низы выровнены. */
+.fe-dashboard .fe-hero-planet .planet-shell:has(.planet-quick) .planet-info { height: calc(var(--planet-scene-height) + 52px); }
+.fe-dashboard .fe-hero-planet .planet-shell.has-key:has(.planet-quick) .planet-info { height: calc(var(--planet-scene-height) + var(--planet-key-h) + 52px); }
+
+/* Список стран справа: L0-столбец без линий. Тон чередуется через строку, выбранная страна подсвечена золотым стеклом. */
+.fe-dashboard .fe-hero-planet .planet-info {
+  border-radius: 22px;
+  background: var(--k7-haze, linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(246 242 234 / 0.2)));
+  box-shadow: var(--fe-inset-glint);
+}
+.fe-dashboard .fe-hero-planet .planet-list-heading { padding: 14px 16px 10px; }
+.fe-dashboard .fe-hero-planet .planet-country-list { padding: 0 8px 8px; }
+.fe-dashboard .fe-hero-planet .planet-country-list > button { border-radius: 12px; }
+.fe-dashboard .fe-hero-planet .planet-country-list > button:nth-child(odd) { background: var(--k7-stripe, rgb(255 255 255 / 0.36)); }
+@media (hover: hover) and (pointer: fine) {
+  .fe-dashboard .fe-hero-planet .planet-country-list > button:hover { background: var(--k7-stripe-hover, rgb(255 255 255 / 0.7)); }
+}
+.fe-dashboard .fe-hero-planet .planet-country-list > button.is-selected {
+  background: linear-gradient(135deg, rgb(201 162 77 / 0.3), rgb(201 162 77 / 0.14));
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.6);
+}
+
+/* Легенда шара: стеклянная трубка с градиентом (цвета шкалы лежат в самом элементе), блик по верхней дуге, объём внутри. */
+.fe-dashboard .fe-hero-planet .planet-key { padding: 8px 8px 10px; }
+.fe-dashboard .fe-hero-planet .planet-key-bar {
+  position: relative;
+  height: 16px;
+  box-shadow:
+    inset 0 2px 3px rgb(255 255 255 / 0.55),
+    inset 0 -3px 5px rgb(60 48 24 / 0.22),
+    0 8px 14px -8px rgb(60 48 24 / 0.45);
+}
+.fe-dashboard .fe-hero-planet .planet-key-bar::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 2px;
+  height: 5px;
+  border-radius: 999px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.04));
+}
+/* «Как читать цвета»: линза L2 без золотой рамки. */
+.fe-dashboard .fe-hero-planet .planet-scale summary {
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
+}
+.fe-dashboard .fe-hero-planet .planet-scale[open] summary { background: var(--fe-glass-active); color: var(--fe-on-gold); }
+.fe-dashboard .fe-hero-planet .planet-legend { box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint); }
