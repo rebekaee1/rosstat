@@ -3268,4 +3268,10 @@ export default {
   'zb.change.percent.up': 'up {n}%',
   'zb.change.percent.down': 'down {n}%',
   'zb.change.flat': 'about the same',
+
+  // ===== K2 =====
+  'k2.empty.noData': 'No data yet',
+  'k2.empty.noResults': 'Nothing found',
+  'k2.empty.error': 'Could not load. Please try again',
+  'k2.empty.waiting': 'Loading data',
 };

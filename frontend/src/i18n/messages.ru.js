@@ -3274,4 +3274,10 @@ export default {
   'zb.change.percent.up': 'выше на {n} %',
   'zb.change.percent.down': 'ниже на {n} %',
   'zb.change.flat': 'почти без изменений',
+
+  // ===== K2 =====
+  'k2.empty.noData': 'Данных пока нет',
+  'k2.empty.noResults': 'Ничего не нашли',
+  'k2.empty.error': 'Не удалось загрузить. Попробуйте ещё раз',
+  'k2.empty.waiting': 'Загружаем данные',
 };
