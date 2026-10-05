@@ -105,3 +105,21 @@ export function axisWidthForLabels(labels, { min = 36, max = 110, perChar = 7, p
   const longest = (labels || []).reduce((n, label) => Math.max(n, String(label ?? '').length), 0);
   return Math.max(min, Math.min(max, Math.round(longest * perChar) + pad));
 }
+
+/**
+ * Значения-образцы для расчёта ширины оси: края данных плюс запас 10 % на «красивый» домен,
+ * который Recharts достраивает за пределы данных («355 000» → «400 000», «999» → «1 000»).
+ */
+export function axisSampleValues(values) {
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const v of values || []) {
+    const n = Number(v);
+    if (!Number.isFinite(n)) continue;
+    if (n < lo) lo = n;
+    if (n > hi) hi = n;
+  }
+  if (!Number.isFinite(lo)) return [];
+  const pad = (Math.abs(hi - lo) || Math.abs(hi) || 1) * 0.1;
+  return [lo - pad, hi + pad, lo, hi];
+}

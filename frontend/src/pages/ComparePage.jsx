@@ -32,7 +32,8 @@ import CompareCountryStep from '../components/compare/CompareCountryStep';
 import CompareExample from '../components/compare/CompareExample';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
-  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, chartHeightForWidth,
+  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, axisSampleValues,
+  axisWidthForLabels, chartHeightForWidth,
 } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { track, events } from '../lib/track';
@@ -358,7 +359,7 @@ function ComboSelect({
       <div
         className={cn(
           FIELD_CLS,
-          disabled ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne/40',
+          disabled ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25',
           value && !open && 'border-champagne/30',
         )}
       >
@@ -680,7 +681,7 @@ function AddIndicator({
     <div className="relative">
       <div className={cn(
         FIELD_CLS,
-        atCap ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne/40',
+        atCap ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25',
       )}>
         <Search className="w-4 h-4 text-text-tertiary shrink-0" />
         <input
@@ -755,6 +756,14 @@ function AddWorldCountrySeries({
     return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, 'ru'));
   }, [items, countrySlug, selected, compatibilityFor, t]);
 
+  // Пустой список бывает по трём разным причинам — и говорить про них надо по-разному.
+  const emptyKey = (() => {
+    if (conceptItems.length) return null;
+    const own = (items || []).filter((item) => item.country_slug === countrySlug);
+    if (own.some((item) => selected.includes(item.code))) return 'y1.compare.allAdded';
+    return own.length ? 'y1.compare.noMatch' : 'compare.noCountrySeries';
+  })();
+
   const selectedConcept = conceptItems.find((item) => item.value === conceptSlug);
   const code = selectedConcept?.code || null;
   const already = code && selected.includes(code);
@@ -794,9 +803,9 @@ function AddWorldCountrySeries({
           {compatText(t, compatibility)}
         </p>
       )}
-      {!conceptItems.length && (
-        <p className="text-xs leading-relaxed text-text-tertiary">
-          {t('compare.noCountrySeries')}
+      {emptyKey && (
+        <p className="text-xs leading-relaxed text-text-secondary">
+          {t(emptyKey)}
         </p>
       )}
     </div>
@@ -927,7 +936,7 @@ function CompareSeriesPicker({
       <div className="mb-5 border-b border-border-subtle pb-4">
         <div className="text-sm font-medium text-champagne-ink">{t('w4.compare.addTitle')}</div>
         <div className="mt-1 text-[15px] text-text-primary">
-          {t('compare.pickCountryFirst')}
+          {t(countryKey ? 'y1.compare.pickIndicator' : 'compare.pickCountryFirst')}
         </div>
         {activeWorldConceptName && (
           <p className="mt-2 text-xs leading-relaxed text-text-tertiary">
@@ -1609,6 +1618,23 @@ export default function ComparePage() {
   };
   const leftUnit = distinctUnits[0];
   const rightUnit = distinctUnits[1];
+  // Ширина оси Y — по самой длинной подписи: фиксированные 46–60 px резали левую цифру
+  // («355 000» читалось как «55 000»).
+  const axisWidths = (() => {
+    const calc = (id, unit) => {
+      const vals = [];
+      series.forEach((s, i) => {
+        if (axisFor(i) !== id) return;
+        chartRows.forEach((r) => { if (r[s.key] != null) vals.push(r[s.key]); });
+      });
+      const digits = indexed ? 0 : unitDigits(unit);
+      return axisWidthForLabels(
+        axisSampleValues(vals).map((v) => formatAxisTick(v, digits)),
+        { min: narrow ? 40 : 48, perChar: 7, pad: 12 },
+      );
+    };
+    return { left: calc('left', leftUnit), right: calc('right', rightUnit) };
+  })();
 
   // Перетаскивание графика мышью/пальцем — как на карточке индикатора.
   // Тащим вправо → окно уходит в прошлое (panOffset растёт), влево → к свежим.
@@ -1742,12 +1768,18 @@ export default function ComparePage() {
               return (
                 <div
                   key={s.code}
-                  className="flex flex-wrap items-center gap-2 rounded-xl border border-border-subtle bg-obsidian-light px-3 py-2"
+                  className="rounded-xl border border-border-subtle bg-obsidian-light px-3 py-2.5"
                 >
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
-                  <span className="text-sm text-text-primary mr-1">{s.ind?.name || s.code}</span>
+                  {/* Название и «×» — одна строка; варианты показа — отдельным рядом ниже, без пустоты справа. */}
+                  <div className="flex items-start gap-2">
+                    <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
+                    <span className="min-w-0 flex-1 break-words text-sm leading-snug text-text-primary">{s.ind?.name || s.code}</span>
+                    <button type="button" onClick={() => removeCode(s.code)} className="-my-1 -mr-1.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11" aria-label={t('common.remove')}>
+                      <X className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  </div>
                   {reps.length > 1 && (
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="mt-2 flex flex-wrap gap-1.5 pl-[1.125rem]">
                       {reps.map((o) => (
                         <Chip
                           key={o.id}
@@ -1760,9 +1792,6 @@ export default function ComparePage() {
                       ))}
                     </div>
                   )}
-                  <button type="button" onClick={() => removeCode(s.code)} className="ml-auto flex h-9 w-9 items-center justify-center rounded-lg text-text-tertiary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11" aria-label={t('common.remove')}>
-                    <X className="w-4 h-4" aria-hidden="true" />
-                  </button>
                 </div>
               );
             })}
@@ -1906,17 +1935,17 @@ export default function ComparePage() {
           </>
         ) : (
           <div ref={exportRef} className="fe-panel fe-reveal rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
-            <h2 className="text-center text-lg md:text-xl font-display font-bold text-text-primary mb-1">
+            <h2 className="text-left text-lg md:text-xl font-display font-bold text-text-primary mb-1">
               {title}
             </h2>
-            <p className="text-center text-xs text-text-tertiary mb-4">
+            <p className="text-left text-xs text-text-secondary mb-4">
               {indexed
                 ? t('compare.hintIndex', { date: formatDate(baseDate, compareDateFmt) })
                 : t('compare.hintValues')}
               {` ${t('compare.periodLabel')}: ${t(RANGE_OPTIONS.find((r) => r.key === range)?.labelKey || 'compare.range.all').toLowerCase()}`}
             </p>
 
-            <div className="mb-4 flex flex-col items-start gap-y-2 border-b border-border-subtle pb-4 text-xs sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-6">
+            <div className="mb-4 flex flex-col items-start gap-y-2 border-b border-border-subtle pb-4 text-xs sm:flex-row sm:flex-wrap sm:items-center sm:justify-start sm:gap-x-6">
               {series.map((s, i) => {
                 const dropped = nonIndexableKeys.has(s.key);
                 return (
@@ -1938,7 +1967,7 @@ export default function ComparePage() {
             </div>
 
             {nonIndexableNames.length > 0 && (
-              <p className="mb-4 -mt-1 text-center text-xs text-text-secondary">
+              <p className="mb-4 -mt-1 text-left text-xs text-text-secondary">
               {t(mixedPriceIndexBases ? 'compare.priceIndexPercentExcluded' : 'compare.nonIndexableNote', {
                 names: nonIndexableNames.join(', '),
               })}
@@ -1993,7 +2022,7 @@ export default function ComparePage() {
                     tick={axisTick()}
                     axisLine={false}
                     tickLine={false}
-                    width={narrow ? 46 : 60}
+                    width={axisWidths.left}
                     tickFormatter={(v) => (indexed ? formatAxisTick(v, 0) : formatAxisTick(v, unitDigits(leftUnit)))}
                   />
                   {!indexed && distinctUnits.length > 1 && (
@@ -2004,7 +2033,7 @@ export default function ComparePage() {
                       tick={axisTick()}
                       axisLine={false}
                       tickLine={false}
-                      width={narrow ? 46 : 60}
+                      width={axisWidths.right}
                       tickFormatter={(v) => formatAxisTick(v, unitDigits(rightUnit))}
                     />
                   )}

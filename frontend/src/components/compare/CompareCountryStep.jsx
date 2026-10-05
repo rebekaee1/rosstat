@@ -57,7 +57,7 @@ export default function CompareCountryStep({
   return (
     <div>
       <div className="mb-2 text-sm font-medium text-text-secondary">{t('compare.country')}</div>
-      <div className="mb-3 flex items-center gap-2 rounded-xl border border-border-subtle bg-obsidian-light px-3 transition-colors focus-within:border-champagne/40">
+      <div className="mb-3 flex items-center gap-2 rounded-xl border border-border-subtle bg-obsidian-light px-3 transition-colors focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25">
         <Search className="h-4 w-4 shrink-0 text-text-tertiary" aria-hidden="true" />
         <input
           type="text"
