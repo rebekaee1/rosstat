@@ -116,6 +116,7 @@ function ConverterTool() {
       <div className="fe-tool__result" role="status" aria-live="polite">
         {result ? (
           <>
+            <i key={`${formatConverted(result.value, locale)}${to}`} className="fe-tool__sheen" aria-hidden="true" />
             <span className="fe-tool__big">
               <span className="fe-tool__num">{formatConverted(result.value, locale)}</span>
               <span className="fe-tool__unit">{UNITS[to].symbol}</span>
@@ -177,12 +178,14 @@ function InflationTool() {
           max="30"
           step="1"
           value={years}
+          style={{ '--fe-range-p': `${((years - 1) / 29) * 100}%` }}
           onChange={(event) => setYears(Number(event.target.value))}
         />
       </label>
       <div className="fe-tool__result" role="status" aria-live="polite">
         {left != null ? (
           <>
+            <i key={money(left)} className="fe-tool__sheen" aria-hidden="true" />
             <span className="fe-tool__big">
               <span className="fe-tool__num">{money(left)}</span>
             </span>

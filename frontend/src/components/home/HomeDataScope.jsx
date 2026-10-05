@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { BarChart3, ChevronDown, Globe2, History } from 'lucide-react';
 import { homeScopeCountriesCount } from '../../lib/homeWorkbench';
@@ -6,6 +6,7 @@ import { compactIndicatorCount, historyYears, startYear } from '../../lib/homeSt
 import { pluralRu, useWorldCountries } from '../../lib/worldApi';
 import { russiaCategoriesPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
+import CountUp from './CountUp';
 import '../../styles/shell.css';
 import '../../styles/z3-home.css';
 
@@ -13,46 +14,6 @@ const groupDigits = (locale) => {
   const formatter = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU');
   return (n) => formatter.format(Math.round(n));
 };
-
-// Счёт от нуля до значения проигрывается один раз за открытие сайта и только если число уже видно в экране.
-// Число ниже экрана остаётся итоговым сразу: иначе снимок страницы целиком, поиск по странице и печать показали бы «0».
-let countPlayed = false;
-const COUNT_MS = 900;
-
-/**
- * Число, которое «набегает» один раз при открытии страницы. Итоговый текст всегда лежит в разметке
- * (поиск, скринридер и печать видят его сразу); без requestAnimationFrame, при «уменьшить движение»
- * и для чисел вне экрана счёта нет.
- */
-function CountUp({ value, format }) {
-  const ref = useRef(null);
-  const text = format(value);
-  useLayoutEffect(() => {
-    const node = ref.current;
-    if (!node || countPlayed || !Number.isFinite(value) || value <= 0) return undefined;
-    if (typeof window.requestAnimationFrame !== 'function') return undefined;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
-    const box = node.getBoundingClientRect();
-    if (!(box.width > 0 && box.height > 0 && box.top < window.innerHeight && box.bottom > 0)) return undefined;
-    let frame = 0;
-    let started = 0;
-    node.textContent = format(0);
-    const step = (now) => {
-      if (!started) started = now;
-      const progress = Math.min(1, (now - started) / COUNT_MS);
-      const eased = 1 - (1 - progress) ** 3;
-      node.textContent = format(value * eased);
-      if (progress < 1) frame = window.requestAnimationFrame(step);
-      else countPlayed = true;
-    };
-    frame = window.requestAnimationFrame(step);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      node.textContent = text;
-    };
-  }, [value, text, format]);
-  return <span ref={ref}>{text}</span>;
-}
 
 /**
  * Плитка числа: значок и крупное золотое число сверху, пояснение фразой снизу (читается как предложение:
@@ -116,11 +77,10 @@ export default function HomeDataScope() {
   return (
     <aside
       data-block="home-data-scope"
-      className="fe-scope fe-reveal relative z-30 overflow-hidden"
+      className="fe-scope fe-reveal fe-glint fe-cursor-light relative z-30 overflow-hidden"
       style={{ '--fe-delay': '0.08s' }}
       aria-labelledby="home-data-scope-title"
     >
-      <div className="pointer-events-none absolute -right-12 -top-14 h-36 w-36 rounded-full bg-champagne/10 blur-3xl" />
       <div className="relative">
         <h2 id="home-data-scope-title" className="fe-scope-title">
           {t('home.scope.title')}
@@ -134,7 +94,7 @@ export default function HomeDataScope() {
           >
             {pending ? wait : indicators ? (
               <>
-                <CountUp value={indicators.value} format={numberFormat} />
+                <CountUp value={indicators.value} format={numberFormat} group="scope" />
                 {indicators.unit ? (
                   <span className="fe-stat-unit">{t(`homehero.stat.${indicators.unit}`)}</span>
                 ) : null}
@@ -142,13 +102,13 @@ export default function HomeDataScope() {
             ) : dash}
           </Stat>
           <Stat to="/#countries" label={countriesLabel} icon={Globe2}>
-            {pending ? wait : countriesCount != null ? <CountUp value={countriesCount} format={numberFormat} /> : dash}
+            {pending ? wait : countriesCount != null ? <CountUp value={countriesCount} format={numberFormat} group="scope" /> : dash}
           </Stat>
           <Stat label={t('w6b.scope.history', { years: yearsWord, since: since || '' })} icon={History}>
             {years ? (
               <>
                 <span className="fe-stat-unit fe-stat-unit--lead">{t('w6b.scope.upTo')}</span>
-                <CountUp value={years} format={numberFormat} />
+                <CountUp value={years} format={numberFormat} group="scope" />
               </>
             ) : dash}
           </Stat>

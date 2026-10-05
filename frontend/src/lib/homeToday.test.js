@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  buildTodayTiles, ladderHeights, metricTone, sparkTrend, splitEconomy, splitPercent, yearOfItem,
+  buildTodayTiles, ladderHeights, metricTone, parseShownNumber, sparkTrend, splitEconomy, splitPercent, yearOfItem,
 } from './homeToday';
 
 const item = (code, value, extra = {}) => ({
@@ -38,6 +38,15 @@ describe('homeToday', () => {
     expect(splitEconomy(580, 'ru').unit).toBe('млрд $');
     expect(splitEconomy(0.4, 'ru').unit).toBe('млн $');
     expect(splitEconomy(0, 'ru')).toBeNull();
+  });
+
+  it('parseShownNumber: число, знаки после запятой и обрамление для счёта цифр', () => {
+    expect(parseShownNumber('30,8', 'ru')).toEqual({ prefix: '', value: 30.8, digits: 1, suffix: '' });
+    expect(parseShownNumber('$30.8', 'en')).toEqual({ prefix: '$', value: 30.8, digits: 1, suffix: '' });
+    expect(parseShownNumber('4\u00a0900', 'ru')).toEqual({ prefix: '', value: 4900, digits: 0, suffix: '' });
+    expect(parseShownNumber('1,215', 'en')).toEqual({ prefix: '', value: 1215, digits: 0, suffix: '' });
+    expect(parseShownNumber('—', 'ru')).toBeNull();
+    expect(parseShownNumber('', 'ru')).toBeNull();
   });
 
   it('splitPercent и yearOfItem', () => {
