@@ -1570,6 +1570,119 @@ async def _country_market_indicators(db: AsyncSession, slug: str) -> list[dict]:
     return items
 
 
+async def build_country_overview(
+    db: AsyncSession, country: WorldCountry, all_inds: list[WorldIndicator],
+) -> list[dict]:
+    """«Главное» страны: по одному чипу на концепт (последнее значение).
+
+    Вынесено из ``country_detail`` без изменений: тот же расчёт использует
+    серверный HTML страницы страны (seo_country_figures), чтобы цифры в
+    HTML и в API совпадали.
+    """
+    # Шапка страны: один чип на концепт. Приоритет — национальный ряд из
+    # crosswalk (BLS 4,10 % за август, не WEO 4,38 % «за 2026»): чип и
+    # карточка каталога обязаны показывать одно и то же число. WEO/Eurostat
+    # берём только когда национального ряда нет и концепт матчится однозначно.
+    # Для hicp-index чип — изменение за год (как карта/рейтинг), не уровень.
+    all_by_code = {str(ind.code): ind for ind in all_inds}
+    overview_candidates: list[tuple] = []
+    seen_concepts: set[str] = set()
+    for concept in WORLD_CONCEPTS:
+        if concept.slug in seen_concepts:
+            continue
+        national_code = (NATIONAL_CONCEPT_INDICATOR_CODES.get(concept.slug) or {}).get(
+            (country.code or "").upper()
+        )
+        national = all_by_code.get(national_code) if national_code else None
+        if national is not None and int(national.points_count or 0) > 0:
+            overview_candidates.append((concept, national))
+            seen_concepts.add(concept.slug)
+            continue
+        matches = [
+            indicator
+            for indicator in all_inds
+            if concept_for_indicator(indicator) == concept
+            and int(indicator.points_count or 0) > 0
+        ]
+        if not matches:
+            continue
+        # Несколько рядов одного концепта: официальный ряд ведомства/Eurostat
+        # важнее годовой оценки МВФ, затем карточка каталога (is_listed),
+        # при равенстве — самая глубокая история.
+        best = max(
+            matches,
+            key=lambda ind: (
+                str(getattr(ind, "provider", "") or "").lower() != "imf",
+                bool(ind.is_listed),
+                int(ind.points_count or 0),
+            ),
+        )
+        overview_candidates.append((concept, best))
+        seen_concepts.add(concept.slug)
+
+    # Хвост ряда: для yoy-концептов нужно ≥13 месячных точек, поэтому берём
+    # последние 14 на ряд одним запросом (для level используется только rn=1).
+    _OVERVIEW_TAIL = 14
+    overview_tail: dict[int, list[tuple[date, float]]] = defaultdict(list)
+    if overview_candidates:
+        overview_ids = [indicator.id for _, indicator in overview_candidates]
+        ranked = (
+            select(
+                WorldDataPoint.indicator_id.label("indicator_id"),
+                WorldDataPoint.date.label("date"),
+                WorldDataPoint.value.label("value"),
+                func.row_number().over(
+                    partition_by=WorldDataPoint.indicator_id,
+                    order_by=WorldDataPoint.date.desc(),
+                ).label("rn"),
+            )
+            .where(WorldDataPoint.indicator_id.in_(overview_ids))
+            .subquery()
+        )
+        overview_rows = (
+            await db.execute(
+                select(ranked.c.indicator_id, ranked.c.date, ranked.c.value)
+                .where(ranked.c.rn <= _OVERVIEW_TAIL)
+            )
+        ).all()
+        for indicator_id, point_date, value in overview_rows:
+            overview_tail[indicator_id].append((point_date, float(value)))
+
+    overview = []
+    for concept, indicator in overview_candidates:
+        tail = overview_tail.get(indicator.id) or []
+        if not tail:
+            continue
+        mode = ranking_value_mode(concept.slug, [])
+        # Чип — последнее опубликованное значение, без «годового» отсечения
+        # текущего года, которое нужно только рейтингу.
+        series = apply_rank_series(tail, mode, yoy_kind=rank_yoy_kind(indicator))
+        latest = series[-1] if series else None
+        if latest is None or latest[1] == 0:
+            continue
+        # Имя чипа — как в рейтинге: для цен это «изменение за год», а не
+        # «гармонизированный индекс» (национальные CPI США/Канады — не HICP,
+        # а значение чипа — темп, не индекс).
+        overview.append({
+            "concept_slug": concept.slug,
+            "name": ranking_display_name(mode, concept.slug, concept_public_name(concept)),
+            "name_en": ranking_display_name(
+                mode, concept.slug, (concept.name_en or "").strip(), locale="en"
+            ),
+            "unit": ranking_public_unit(mode, concept_public_unit(concept)),
+            "indicator_code": indicator.code,
+            "frequency": normalize_frequency(indicator.frequency),
+            "date": latest[0].isoformat(),
+            "value": round(latest[1], 4),
+        })
+    return overview
+
+
+async def country_detail_cache_key(slug: str) -> str:
+    """Ключ Redis каталога страны (тот же читает серверный HTML страны)."""
+    return await versioned_key("world", f"country:v18:{slug}:{get_locale()}")
+
+
 @router.get("/countries/{slug}")
 async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     """Каталог страны по категориям.
@@ -1580,7 +1693,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     политике (например annual у месячного индекса); клиент помечает такие
     режимы как расчётные.
     """
-    cache_key = await versioned_key("world", f"country:v18:{slug}:{get_locale()}")
+    cache_key = await country_detail_cache_key(slug)
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -1741,102 +1854,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         }
         for name, items in sorted(by_cat.items(), key=lambda kv: kv[0])
     ]
-    # Шапка страны: один чип на концепт. Приоритет — национальный ряд из
-    # crosswalk (BLS 4,10 % за август, не WEO 4,38 % «за 2026»): чип и
-    # карточка каталога обязаны показывать одно и то же число. WEO/Eurostat
-    # берём только когда национального ряда нет и концепт матчится однозначно.
-    # Для hicp-index чип — изменение за год (как карта/рейтинг), не уровень.
-    all_by_code = {str(ind.code): ind for ind in all_inds}
-    overview_candidates: list[tuple] = []
-    seen_concepts: set[str] = set()
-    for concept in WORLD_CONCEPTS:
-        if concept.slug in seen_concepts:
-            continue
-        national_code = (NATIONAL_CONCEPT_INDICATOR_CODES.get(concept.slug) or {}).get(
-            (country.code or "").upper()
-        )
-        national = all_by_code.get(national_code) if national_code else None
-        if national is not None and int(national.points_count or 0) > 0:
-            overview_candidates.append((concept, national))
-            seen_concepts.add(concept.slug)
-            continue
-        matches = [
-            indicator
-            for indicator in all_inds
-            if concept_for_indicator(indicator) == concept
-            and int(indicator.points_count or 0) > 0
-        ]
-        if not matches:
-            continue
-        # Несколько рядов одного концепта: официальный ряд ведомства/Eurostat
-        # важнее годовой оценки МВФ, затем карточка каталога (is_listed),
-        # при равенстве — самая глубокая история.
-        best = max(
-            matches,
-            key=lambda ind: (
-                str(getattr(ind, "provider", "") or "").lower() != "imf",
-                bool(ind.is_listed),
-                int(ind.points_count or 0),
-            ),
-        )
-        overview_candidates.append((concept, best))
-        seen_concepts.add(concept.slug)
-
-    # Хвост ряда: для yoy-концептов нужно ≥13 месячных точек, поэтому берём
-    # последние 14 на ряд одним запросом (для level используется только rn=1).
-    _OVERVIEW_TAIL = 14
-    overview_tail: dict[int, list[tuple[date, float]]] = defaultdict(list)
-    if overview_candidates:
-        overview_ids = [indicator.id for _, indicator in overview_candidates]
-        ranked = (
-            select(
-                WorldDataPoint.indicator_id.label("indicator_id"),
-                WorldDataPoint.date.label("date"),
-                WorldDataPoint.value.label("value"),
-                func.row_number().over(
-                    partition_by=WorldDataPoint.indicator_id,
-                    order_by=WorldDataPoint.date.desc(),
-                ).label("rn"),
-            )
-            .where(WorldDataPoint.indicator_id.in_(overview_ids))
-            .subquery()
-        )
-        overview_rows = (
-            await db.execute(
-                select(ranked.c.indicator_id, ranked.c.date, ranked.c.value)
-                .where(ranked.c.rn <= _OVERVIEW_TAIL)
-            )
-        ).all()
-        for indicator_id, point_date, value in overview_rows:
-            overview_tail[indicator_id].append((point_date, float(value)))
-
-    overview = []
-    for concept, indicator in overview_candidates:
-        tail = overview_tail.get(indicator.id) or []
-        if not tail:
-            continue
-        mode = ranking_value_mode(concept.slug, [])
-        # Чип — последнее опубликованное значение, без «годового» отсечения
-        # текущего года, которое нужно только рейтингу.
-        series = apply_rank_series(tail, mode, yoy_kind=rank_yoy_kind(indicator))
-        latest = series[-1] if series else None
-        if latest is None or latest[1] == 0:
-            continue
-        # Имя чипа — как в рейтинге: для цен это «изменение за год», а не
-        # «гармонизированный индекс» (национальные CPI США/Канады — не HICP,
-        # а значение чипа — темп, не индекс).
-        overview.append({
-            "concept_slug": concept.slug,
-            "name": ranking_display_name(mode, concept.slug, concept_public_name(concept)),
-            "name_en": ranking_display_name(
-                mode, concept.slug, (concept.name_en or "").strip(), locale="en"
-            ),
-            "unit": ranking_public_unit(mode, concept_public_unit(concept)),
-            "indicator_code": indicator.code,
-            "frequency": normalize_frequency(indicator.frequency),
-            "date": latest[0].isoformat(),
-            "value": round(latest[1], 4),
-        })
+    overview = await build_country_overview(db, country, all_inds)
 
     history_starts = [indicator.history_start for indicator in listed if indicator.history_start]
     history_ends = [indicator.history_end for indicator in listed if indicator.history_end]

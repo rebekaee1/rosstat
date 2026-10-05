@@ -175,7 +175,7 @@ export function useWorldIndicatorData(
   code,
   mode,
   {
-    from, to, requestCode, includeForecast = false,
+    from, to, requestCode, includeForecast = false, enabled = true,
   } = {},
 ) {
   const lk = useLocaleKey();
@@ -195,7 +195,7 @@ export function useWorldIndicatorData(
         () => getWorldMockData(slug, dataCode, mode || 'level-monthly'),
       );
     },
-    enabled: !!slug && !!dataCode && !!mode,
+    enabled: enabled && !!slug && !!dataCode && !!mode,
     // Тоггл «Прогноз» меняет queryKey: без placeholder карточка на refetch
     // на мгновение пустеет (телеметрия и таблица «(0)»). Держим прошлые точки
     // только если отличается один include_forecast — смена ряда/режима/окна
