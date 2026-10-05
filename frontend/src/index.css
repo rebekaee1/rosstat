@@ -49,6 +49,7 @@
   --fe-button-bg: #F7F1E3;
   --fe-button-border: #D9C79B;
   --fe-art-opacity: 0.76;
+  --fe-focus: #B08A3E;
   /* Единая заливка выбранного чипа: переключатели режима, частоты, диапазона. */
   --fe-chip-active-bg: var(--fe-glass-active, linear-gradient(135deg, #C9A24D, #B08A3E));
   --fe-chip-active-ink: var(--fe-on-gold, #231B0B);
@@ -102,6 +103,7 @@
   --fe-button-bg: #403A2E;
   --fe-button-border: #9D865650;
   --fe-art-opacity: 0.35;
+  --fe-focus: #D0B47D;
 }
 
 .fe-page-shell {
@@ -118,7 +120,12 @@
   backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 .fe-panel-soft { background: var(--fe-glass-l1-sheen), var(--fe-glass-l1-soft); }
-.fe-calendar-event { background: var(--fe-glass); box-shadow: var(--fe-shadow); }
+.fe-calendar-event {
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  border: 0;
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+}
 /* Диалог (поиск ⌘K и др.): тот же хрусталь, но плотнее, чтобы текст читался поверх страницы. */
 .fe-dialog-panel {
   background: var(--fe-glass-l1-sheen), var(--fe-nav-surface);
@@ -167,40 +174,48 @@
 .fe-reading a:hover, .fe-link:hover { text-decoration-color: currentColor; }
 /* Champagne stays decorative; its text shade needs contrast on pearl. */
 .fe-data-page :is(a, button, p, span, label, dt, dd).text-champagne { color: var(--color-champagne-ink); }
-.fe-summary-card { border-radius: 18px; }
+.fe-summary-card {
+  border: 0;
+  border-radius: 18px;
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+}
 .fe-auth-card h1 { font-size: clamp(25px, 2.5vw, 32px); margin-bottom: 12px; }
 .fe-auth-card button { min-height: 44px; }
 .fe-auth-card input[type="checkbox"] { width: 18px; height: 18px; flex: none; }
 .fe-auth-card label:has(input[type="checkbox"]) { min-height: 44px; padding-block: 4px; }
-.fe-input { min-height: 48px; background: var(--fe-glass-soft); }
-:where(.fe-data-page, .fe-navbar, .fe-footer, .fe-dialog-panel) :is(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid var(--color-champagne-ink);
-  outline-offset: 3px;
+/* Поле ввода: слой L2 без рамки. Ошибка — нижняя линия 2 px цвета «падение» (исключение 5 эталона). */
+.fe-input {
+  min-height: 48px;
+  border: 0;
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
 }
+.fe-input[aria-invalid='true'], .fe-input.is-invalid { border-bottom: 2px solid var(--color-negative); }
 .fe-button-primary, .fe-button-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 40px;
-  border: 1px solid var(--fe-button-border);
-  background: var(--fe-button-bg);
+  border: 0;
+  border-radius: 12px;
   color: var(--color-text-primary);
-  box-shadow: inset 0 1px 0 var(--fe-glass-border);
-  transition: border-color 160ms, background-color 160ms, box-shadow 160ms;
+  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background 0.2s ease;
+}
+.fe-button-primary {
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .fe-button-secondary {
-  background: var(--fe-glass-soft);
-  border-color: var(--color-border-subtle);
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
 }
-.fe-button-primary:hover, .fe-button-secondary:hover {
-  border-color: var(--color-champagne);
-  box-shadow: 0 4px 14px -8px var(--color-champagne);
-}
-.fe-button-primary:focus-visible, .fe-button-secondary:focus-visible {
-  outline: 2px solid var(--color-champagne);
-  outline-offset: 3px;
-}
+.fe-button-primary:hover { background: var(--fe-glass-active-hover); box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
+.fe-button-secondary:hover { background: var(--fe-glass-l2-hover); box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint); }
+.fe-button-primary:active, .fe-button-secondary:active { transform: scale(0.98); transition-duration: 0.12s; }
 
 .fe-brand {
   display: inline-flex;
@@ -225,7 +240,7 @@
 }
 .fe-brand-compact { font-size: 23px; gap: 7px; }
 .fe-brand-compact svg { width: 26px; height: 31px; }
-.fe-navbar { box-shadow: var(--fe-shadow); }
+.fe-navbar { border: 0; box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom); }
 .fe-navbar > a { min-height: 40px; }
 .fe-navbar a[aria-current="page"] { color: var(--color-text-primary); }
 .fe-navbar a[aria-current="page"]::after {
@@ -282,10 +297,11 @@
 }
 .fe-dashboard [data-block="home-data-scope"],
 .fe-dashboard [data-block="home-workbench"] {
-  background: var(--fe-glass);
-  border: 1px solid var(--fe-glass-border);
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  border: 0;
   border-radius: 24px;
-  box-shadow: var(--fe-shadow);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 /* The indicator picker, country search and planet read as one working surface. */
 .fe-dashboard [data-block="home-workbench"] { padding: 24px; border-radius: 28px; }
@@ -306,11 +322,11 @@
 .fe-dashboard [data-block="home-map-controls"] {
   margin-bottom: 18px;
   padding: 0 2px 18px;
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--fe-divider-line);
 }
 .fe-dashboard [data-block="home-map-controls"] h2 { font-size: 20px; letter-spacing: -.02em; }
-.fe-category-card { min-height: 270px; transition: box-shadow 180ms, border-color 180ms, transform 180ms; }
-.fe-category-card:hover { box-shadow: var(--fe-glow-gold, 0 0 0 1px rgba(176, 138, 62, 0.5)), var(--fe-card-shadow); transform: translateY(var(--fe-lift, -2px)); }
+.fe-category-card { min-height: 270px; transition: box-shadow 200ms var(--fe-ease-reveal), transform 200ms var(--fe-ease-reveal); }
+.fe-category-card:hover { box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom); transform: translateY(var(--fe-lift, -2px)); }
 .fe-category-card > :not(.fe-category-art) { position: relative; z-index: 1; }
 .fe-category-art {
   position: absolute;
@@ -325,7 +341,7 @@
   mask-image: linear-gradient(90deg, transparent, #000 55%), linear-gradient(0deg, transparent, #000 70%);
   mask-composite: intersect;
 }
-.fe-category-icon { background: var(--fe-glass); border: 1px solid var(--fe-glass-border); }
+.fe-category-icon { background: var(--fe-glass-l2); border: 0; box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
 
 @media (min-width: 1280px) {
   .fe-footer-grid { grid-template-columns: 1.6fr repeat(5, minmax(0, 1fr)); gap: 28px; }
@@ -604,14 +620,14 @@ nav.glass-surface-soft {
   --fe-dur-base: 200ms;
 }
 .fe-btn {
-  transition: transform 0.12s ease, box-shadow 0.18s ease, background-color 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background 0.2s ease, color 0.15s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 40px;
   padding: 0 16px;
-  border: 1px solid transparent;
+  border: 0;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
@@ -621,50 +637,63 @@ nav.glass-surface-soft {
   white-space: nowrap;
 }
 .fe-btn--sm { min-height: 34px; padding: 0 12px; font-size: 13px; }
+/* Primary: золотая заливка с бликом, тёмный текст (контраст ≥ 6:1), тень цвета золота. */
 .fe-btn--primary {
-  background: linear-gradient(180deg, #876A33, var(--color-accent-solid) 70%);
-  border-color: var(--color-accent-solid);
-  color: var(--color-on-accent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 18px -12px rgba(122, 95, 42, 0.7);
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']) {
-  background: linear-gradient(180deg, #7A5F2A, #6b5329 70%);
-  border-color: #6b5329;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 12px 22px -12px rgba(122, 95, 42, 0.8);
+  background: var(--fe-glass-active-hover);
+  box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
-/* Подъём только при настоящем наведении мышью; на касании «залипает». */
+/* Парение только при настоящем наведении мышью; на касании «залипает». */
 @media (hover: hover) {
-  .fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']):not(:active) { transform: translateY(var(--fe-lift, -2px)); }
+  .fe-btn:hover:not(:disabled):not([aria-disabled='true']):not(:active) { transform: translateY(var(--fe-lift, -2px)); }
 }
-.fe-btn--secondary { background: var(--fe-glass-soft); border-color: var(--color-border-subtle); color: var(--color-text-primary); }
-.fe-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) { border-color: var(--color-champagne); }
+.fe-btn:active:not(:disabled):not([aria-disabled='true']) { transform: scale(0.98); transition-duration: 0.12s; }
+/* Secondary: слой L2, без рамки. */
+.fe-btn--secondary { background: var(--fe-glass-l2); color: var(--color-text-primary); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
+.fe-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) { background: var(--fe-glass-l2-hover); box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint); }
 .fe-btn--ghost { background: transparent; color: var(--color-champagne-ink); }
-.fe-btn--ghost:hover:not(:disabled):not([aria-disabled='true']) { background: rgba(173, 138, 72, 0.1); }
+.fe-btn--ghost:hover:not(:disabled):not([aria-disabled='true']) { background: var(--fe-glass-l2); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
 .fe-btn:disabled, .fe-btn[aria-disabled='true'] { opacity: 0.5; cursor: default; }
 .fe-btn[aria-busy='true'] { cursor: progress; }
 .fe-btn__spinner { --fe-spinner-size: 14px; }
-.fe-btn--primary .fe-btn__spinner { border-color: rgba(255, 255, 255, 0.35); border-top-color: #fff; }
+.fe-btn--primary .fe-btn__spinner { border-color: rgba(35, 27, 11, 0.3); border-top-color: var(--fe-on-gold); }
 .fe-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 34px;
   padding: 0 12px;
-  border: 1px solid transparent;
+  border: 0;
   border-radius: 12px;
-  background: var(--color-obsidian-lighter, rgba(68, 87, 115, 0.1));
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
   color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
   text-wrap: balance;
+  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background 0.2s ease, color 0.15s ease;
 }
-.fe-chip:hover:not(:disabled):not(.is-active) { color: var(--color-text-primary); border-color: var(--color-border-subtle); }
+@media (hover: hover) {
+  .fe-chip:hover:not(:disabled):not(.is-active) {
+    background: var(--fe-glass-l2-hover);
+    color: var(--color-text-primary);
+    transform: translateY(var(--fe-lift, -2px));
+    box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint);
+  }
+}
+.fe-chip:active:not(:disabled) { transform: scale(0.98); transition-duration: 0.12s; }
+/* Активный чип: золотая заливка вместо контура. */
 .fe-chip.is-active {
   background: var(--fe-chip-active-bg);
   color: var(--fe-chip-active-ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 /* Подпись чипа: до двух строк по словам, лишнее скрывается с многоточием, а не рвётся посреди слова; полное имя в title. */
 .fe-chip__label {
@@ -707,15 +736,16 @@ nav.glass-surface-soft {
   input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea { font-size: 16px; }
 }
 /* Единый фокус с клавиатуры вне зависимости от обёртки страницы. */
-:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-champagne-ink);
+:where(a, button, input, select, textarea, summary, [tabindex], [role='button'], [role='tab']):focus-visible {
+  outline: 2px solid var(--fe-focus, #B08A3E);
   outline-offset: 2px;
 }
 :where(a, button, summary, [role='button']) { -webkit-tap-highlight-color: transparent; }
 /* На сенсорных экранах hover «залипает» после нажатия: тени и подъём только при настоящем наведении. */
 @media (hover: none) {
-  .fe-button-primary:hover, .fe-button-secondary:hover { box-shadow: inset 0 1px 0 var(--fe-glass-border); }
-  .fe-category-card:hover { transform: none; }
+  .fe-button-primary:hover { box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+  .fe-button-secondary:hover { box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
+  .fe-category-card:hover { transform: none; box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom); }
 }
 /* Предохранитель: у тех, кто просил меньше движения, не остаётся ни одной бесконечной или длинной анимации. */
 @media (prefers-reduced-motion: reduce) {
@@ -729,7 +759,7 @@ nav.glass-surface-soft {
 }
 @media print {
   .fe-navbar, nav.glass-surface, [data-consent], .fe-page-progress, .fe-ticker { display: none !important; }
-  .fe-panel, .fe-chart-card { box-shadow: none !important; backdrop-filter: none !important; break-inside: avoid; }
+  .fe-panel, .fe-glass, .fe-glass-2, .fe-glass-dark, .fe-chart-card { box-shadow: none !important; backdrop-filter: none !important; break-inside: avoid; }
   body { background: #fff !important; }
 }
 
@@ -744,14 +774,15 @@ nav.glass-surface-soft {
   gap: 5px;
   padding: 2px 9px 2px 7px;
   border-radius: 999px;
-  background: color-mix(in srgb, currentColor 10%, transparent);
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
   font-weight: 650;
   font-variant-numeric: tabular-nums;
   line-height: 1.35;
   white-space: nowrap;
 }
 .fe-delta-badge > [aria-hidden='true'] { font-size: 0.72em; line-height: 1; }
-.fe-delta-badge--plain { padding: 0; background: none; }
+.fe-delta-badge--plain { padding: 0; background: none; box-shadow: none; }
 
 /* ── Общие примитивы движения (2026-10-04) ─────────────────────────────────
    .fe-reveal   — появление блока средствами CSS: без JS, без вспышки «невидимо до старта твина»,
@@ -829,6 +860,7 @@ nav.glass-surface-soft {
   background-repeat: no-repeat;
   animation: shimmer var(--fe-shimmer-dur, 1.6s) ease-in-out infinite;
   border-radius: 0.5rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 /* Calculator slider */

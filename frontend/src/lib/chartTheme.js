@@ -102,19 +102,19 @@ export function refLabel(value, position = 'insideTopRight') {
 
 /**
  * Внешний вид стандартной подсказки Recharts (где свой контент не нужен):
- * тот же шрифт, рамка и радиус, что у собственных подсказок страниц.
+ * тот же шрифт, стекло без рамки и радиус, что у собственных подсказок страниц.
  */
 export const TOOLTIP_STYLES = Object.freeze({
-  // Стеклянная плашка: полупрозрачная белая с размытием фона, золотая тонкая кромка.
+  // Стеклянная плашка (слой L2): полупрозрачная белая с размытием фона, блик сверху и тень снизу, без рамки.
   contentStyle: Object.freeze({
     fontFamily: CHART_THEME.font,
     fontSize: 13,
     color: CHART_THEME.ink,
-    background: 'rgba(255,255,255,0.86)',
-    backdropFilter: 'blur(14px) saturate(1.1)',
-    border: '1px solid rgba(176,138,62,0.34)',
+    background: 'rgba(255,255,255,0.78)',
+    backdropFilter: 'blur(14px) saturate(1.25)',
+    border: 0,
     borderRadius: 14,
-    boxShadow: '0 14px 34px -20px rgba(70,56,28,0.5)',
+    boxShadow: '0 14px 34px -20px rgba(60,48,24,0.5), inset 0 1px 0 rgba(255,255,255,0.85)',
     padding: '10px 12px',
   }),
   labelStyle: Object.freeze({ color: CHART_THEME.axis, fontWeight: 600, marginBottom: 4 }),
@@ -128,12 +128,12 @@ export const ECHART_BASE = Object.freeze({
   color: CHART_THEME.series,
   textStyle: Object.freeze({ fontFamily: CHART_THEME.font, color: CHART_THEME.axis }),
   tooltip: Object.freeze({
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    borderColor: 'rgba(176,138,62,0.34)',
-    borderWidth: 1,
+    backgroundColor: 'rgba(255,255,255,0.82)',
+    borderColor: 'transparent',
+    borderWidth: 0,
     padding: [10, 12],
     textStyle: Object.freeze({ color: CHART_THEME.ink, fontFamily: CHART_THEME.font, fontSize: 13 }),
-    extraCssText: 'border-radius:14px;box-shadow:0 14px 34px -20px rgba(70,56,28,.5);backdrop-filter:blur(14px);',
+    extraCssText: 'border-radius:14px;box-shadow:0 14px 34px -20px rgba(60,48,24,.5),inset 0 1px 0 rgba(255,255,255,.85);backdrop-filter:blur(14px) saturate(1.25);',
   }),
 });
 

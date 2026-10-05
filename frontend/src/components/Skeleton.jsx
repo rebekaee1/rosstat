@@ -26,7 +26,7 @@ export function ChartSkeleton({ height }) {
 
 export function TileSkeleton() {
   return (
-    <div className="p-5 rounded-[1.5rem] border border-border-subtle bg-surface" aria-hidden="true">
+    <div className="fe-glass p-5 rounded-[1.5rem]" aria-hidden="true">
       <SkeletonBox className="h-3 w-16 mb-3" />
       <SkeletonBox className="h-5 w-36 mb-4" />
       <SkeletonBox className="h-8 w-24 mb-2" />
