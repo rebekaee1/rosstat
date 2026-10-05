@@ -23,6 +23,9 @@ export const UNITED_STATES_SLUG = 'united-states';
 
 export const WORLD_RATING_TO = worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT);
 
+/** «Курсы валют»: страница с курсами ЦБ, рынком и конвертером. */
+export const RATES_TO = russiaCategoryPath('currencies');
+
 /** Раздел «Прогнозы»: отдельной страницы-витрины нет, ссылка ведёт к объяснению прогнозов в «Как мы считаем». */
 export const FORECASTS_TO = '/methodology#read';
 
@@ -71,6 +74,15 @@ export const PRIMARY_NAV = [
     labelKey: 'w6b.nav.forecasts',
     hintKey: 'w6b.nav.forecasts.hint',
     icon: 'trend',
+  },
+  {
+    id: 'currencies',
+    to: RATES_TO,
+    match: RATES_TO,
+    labelKey: 'z2.nav.rates',
+    shortLabelKey: 'z2.nav.ratesShort',
+    hintKey: 'w6b.nav.currencies.hint',
+    icon: 'coins',
   },
   { id: 'russia', to: russiaHomePath(), match: russiaHomePath(), labelKey: 'nav.russia' },
   {
@@ -123,7 +135,7 @@ export function mobileNavGroups(locale) {
     },
     {
       id: 'currencies', icon: 'coins', to: russiaCategoryPath('currencies'), match: russiaCategoryPath('currencies'),
-      labelKey: 'shell3.nav.currencies', hintKey: 'w6b.nav.currencies.hint',
+      labelKey: 'z2.nav.rates', hintKey: 'w6b.nav.currencies.hint',
     },
     {
       id: 'methodology', icon: 'book', to: '/methodology', match: '/methodology',

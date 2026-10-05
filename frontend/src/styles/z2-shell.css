@@ -1,0 +1,509 @@
+/* Раунд 2, зона Z2: оболочка сайта (лента курсов, шапка, меню, cookie, подвал, страница 404).
+   Золото, тёмная поверхность и контейнер берутся из токенов Z1 (`--fe-*`), запасные значения совпадают с палитрой
+   index.css, поэтому файл работает и без токенов. Движение гасится блоком prefers-reduced-motion в конце. */
+
+:root {
+  --z2-gold: var(--fe-gold, #ad8a48);
+  --z2-gold-ink: var(--fe-gold-ink, #80642f);
+  --z2-gold-soft: var(--fe-gold-soft, rgba(173, 138, 72, 0.14));
+  --z2-gold-line: color-mix(in srgb, var(--z2-gold) 34%, transparent);
+  --z2-dark: var(--fe-dark-surface, #1e2638);
+  --z2-gold-on-dark: #dcc189;
+  --z2-ease: var(--fe-ease-out, cubic-bezier(0.2, 0.7, 0.2, 1));
+}
+
+/* ═══ Лента курсов ═══════════════════════════════════════════════════════ */
+.fe-ticker {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-warn-surface) 70%, #fff), var(--color-warn-surface));
+}
+/* Ширина как у шапки и страниц: один контейнер на весь сайт. */
+.fe-ticker__inner { max-width: max(var(--fe-container-wide, 1440px), 1440px); }
+.fe-ticker__scroller { position: relative; height: 100%; }
+.fe-ticker__track { padding-inline: 8px 4px; }
+.fe-ticker__cell { position: relative; font-size: 14px; }
+/* Тонкая золотая черта между курсами вместо пустого промежутка. */
+.fe-ticker__cell + .fe-ticker__cell::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 11px;
+  bottom: 11px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--z2-gold-line), transparent);
+  pointer-events: none;
+}
+.fe-ticker__name { font-size: 13px; font-weight: 500; line-height: 1.2; color: var(--color-text-secondary); }
+.fe-ticker__quote { display: flex; flex-direction: column; justify-content: center; line-height: 1.1; }
+.fe-ticker__price { font-size: 14px; font-weight: 650; color: var(--color-text-primary); }
+.fe-ticker__sign { font-weight: 500; color: var(--color-text-secondary); }
+/* «биржа» или «ЦБ» мелко под ценой; на телефоне строки не хватает, источник остаётся в подсказке. */
+.fe-ticker__caption { display: none; margin-top: 1px; font-size: 11px; font-weight: 500; line-height: 1; color: var(--color-text-tertiary); }
+@media (min-width: 768px) {
+  .fe-ticker__caption { display: block; }
+}
+.fe-ticker__delta { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--color-text-secondary); }
+.fe-ticker__fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 24px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, var(--color-warn-surface), transparent); }
+.fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, var(--color-warn-surface), transparent); }
+.fe-ticker__fade[data-on='true'] { opacity: 1; }
+/* «Все валюты» держится у правого края, пока лента длиннее экрана: ссылка никогда не режется посередине слова. */
+.fe-ticker__all {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  font-size: 13px;
+  font-weight: 650;
+  background-color: var(--color-warn-surface);
+}
+.fe-ticker__all::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -22px;
+  width: 22px;
+  background: linear-gradient(90deg, transparent, var(--color-warn-surface));
+  pointer-events: none;
+}
+.fe-ticker__all:hover { background-color: color-mix(in srgb, var(--z2-gold) 12%, var(--color-warn-surface)); }
+
+/* ═══ Шапка ══════════════════════════════════════════════════════════════ */
+/* Капсула той же ширины, что страницы и лента, но не уже 1440 px: на экранах от 1536 px в неё должны влезть
+   полные подписи семи пунктов, а ниже капсула и так занимает почти всю ширину окна. */
+nav.fe-navbar { max-width: min(max(var(--fe-container-wide, 1440px), 1440px), calc(100% - 2rem)); }
+
+/* Между логотипом и меню всегда свободное место; при нехватке места ужимаются промежутки, а не сам логотип. */
+nav.fe-navbar .fe-navbar-links { gap: 16px; padding-left: 28px; }
+@media (min-width: 1536px) {
+  nav.fe-navbar .fe-navbar-links { gap: 24px; padding-left: 36px; }
+}
+
+/* Пункт меню: золотая черта растёт слева направо, вес шрифта не меняется (текст не «прыгает»). */
+nav.fe-navbar a.fe-nav-link {
+  position: relative;
+  padding-block: 8px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+nav.fe-navbar a.fe-nav-link::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: -1px;
+  width: auto;
+  height: 2px;
+  margin: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--z2-gold), color-mix(in srgb, var(--z2-gold) 35%, transparent));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.3s var(--z2-ease);
+}
+nav.fe-navbar a.fe-nav-link:hover::after { transform: scaleX(0.5); }
+nav.fe-navbar a.fe-nav-link[aria-current='page']::after { transform: scaleX(1); }
+nav.fe-navbar a.fe-nav-link[aria-current='page'] { color: var(--color-text-primary); }
+/* Кнопка «Инструменты» подчёркивается так же, пока открыта. */
+nav.fe-navbar .fe-nav-tools-btn { position: relative; }
+nav.fe-navbar .fe-nav-tools-btn[aria-expanded='true']::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--z2-gold), color-mix(in srgb, var(--z2-gold) 35%, transparent));
+}
+
+/* Поиск в шапке: на 1280–1535 px только лупа в круге, подпись «Поиск» появляется на широких экранах. */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .fe-nav-search button { width: 40px; height: 40px; padding: 0; justify-content: center; }
+  .fe-nav-search button > span { display: none; }
+}
+
+/* «Войти» читается как кнопка, а не как серый текст: тёмная подпись и тонкая золотая рамка при наведении. */
+nav.fe-navbar a.fe-nav-login {
+  color: var(--color-text-primary);
+  font-weight: 650;
+  border: 1px solid var(--color-border-subtle);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+nav.fe-navbar a.fe-nav-login:hover {
+  border-color: var(--z2-gold);
+  background: var(--z2-gold-soft);
+  box-shadow: 0 6px 16px -10px var(--z2-gold);
+}
+nav.fe-navbar a.fe-nav-login.flex-1 { border-color: var(--color-border-champagne); }
+
+/* Затемнение под открытым меню: лёгкое матовое стекло, а не тяжёлый блюр. */
+.fe-nav-scrim {
+  background: color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* Круглые кнопки шапки на телефоне: поиск, язык, меню одного размера (44 px, как требует палец). */
+.fe-nav-round {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-surface) 62%, transparent);
+  color: var(--color-text-secondary);
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.fe-nav-round:hover, .fe-nav-round[aria-expanded='true'] { border-color: var(--color-border-champagne); background: var(--z2-gold-soft); color: var(--color-text-primary); }
+.fe-nav-round > svg:not([class*='chevron']) { width: 18px; height: 18px; }
+
+/* Выпадающие панели шапки: тёплое стекло, золотая кромка. */
+.fe-nav-panel {
+  background: color-mix(in srgb, var(--color-surface) 93%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  backdrop-filter: blur(18px) saturate(1.15);
+  border-color: var(--color-border-champagne);
+  box-shadow: 0 24px 60px -24px rgba(38, 52, 78, 0.38), inset 0 1px 0 #fffc;
+}
+.fe-nav-tools { min-width: 300px; padding: 8px; }
+.fe-nav-tool {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  transition: background-color 0.18s ease, transform 0.18s var(--z2-ease);
+}
+.fe-nav-tool:hover { background: var(--z2-gold-soft); }
+.fe-nav-tool:active { transform: scale(0.985); }
+.fe-nav-tool__text { display: flex; min-width: 0; flex-direction: column; gap: 1px; }
+.fe-nav-tool__name { font-size: 14.5px; font-weight: 600; line-height: 1.25; color: var(--color-text-primary); }
+.fe-nav-tool__note { font-size: 12.5px; line-height: 1.3; color: var(--color-text-secondary); }
+/* Золотой значок инструмента. */
+.fe-tool-ico {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 11px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--z2-gold) 24%, #fff), color-mix(in srgb, var(--z2-gold) 10%, #fff));
+  color: var(--fe-gold-ink, var(--color-champagne-ink));
+  box-shadow: inset 0 1px 0 #fffc, 0 4px 10px -6px var(--z2-gold);
+}
+.fe-tool-ico svg { width: 18px; height: 18px; }
+
+/* Мега-панель «Страны мира»: флаги крупнейших экономик и популярные показатели. */
+.fe-mega { position: absolute; left: -16px; top: 100%; z-index: 110; width: min(640px, 86vw); padding-top: 14px; }
+.fe-mega__card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 8px 24px;
+  padding: 18px 20px 14px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 22px;
+}
+.fe-mega__title { margin: 0 0 8px; font-size: 12px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; color: var(--z2-gold-ink); }
+.fe-mega__list { display: grid; margin: 0; padding: 0; list-style: none; }
+.fe-mega__list--flags { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 8px; }
+.fe-mega__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  font-weight: 550;
+  color: var(--color-text-primary);
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+.fe-mega__link:hover { background: var(--z2-gold-soft); color: var(--z2-gold-ink); }
+.fe-mega__flag { font-size: 20px; line-height: 1; }
+.fe-mega__foot {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+.fe-mega__all { font-size: 14px; font-weight: 650; color: var(--z2-gold-ink); }
+.fe-mega__all:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Телефон: шапка при прокрутке растягивается на всю ширину и становится непрозрачной,
+   чтобы по бокам капсулы не проглядывал текст страницы. */
+@media (max-width: 767px) {
+  nav.fe-navbar {
+    transition-property: transform, opacity, background-color, box-shadow, border-color, width, border-radius;
+  }
+  nav.fe-navbar[data-scrolled='true'] {
+    width: 100%;
+    max-width: none;
+    border-radius: 0 0 22px 22px;
+    border-top-width: 0;
+    border-inline-width: 0;
+  }
+}
+
+/* Ссылки меню телефона: тёплая подложка у текущего раздела вместо чёрточки справа от текста. */
+nav.fe-navbar .fe-navbar-mobile-menu a[aria-current='page']::after { display: none; }
+nav.fe-navbar .fe-navbar-mobile-menu a[aria-current='page'] { background: var(--z2-gold-soft); border-radius: 12px; }
+/* На самых узких телефонах (320 px) три круглые кнопки чуть меньше, чтобы не вылезать из капсулы. */
+@media (max-width: 339px) {
+  .fe-nav-round { width: 40px; height: 40px; min-width: 40px; min-height: 40px; }
+}
+
+/* ═══ Cookie ═════════════════════════════════════════════════════════════ */
+/* Компьютер: плашка 52 px у левого края, шириной до 500 px. Телефон: полоса одной строкой.
+   Молчание не считается согласием: плашка не закрывается сама. */
+.fe-cookie-panel {
+  background: color-mix(in srgb, var(--color-surface) 86%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border-color: var(--color-border-champagne);
+  box-shadow: 0 14px 38px -16px rgba(26, 34, 52, 0.32), inset 0 1px 0 #fffc;
+}
+.fe-cookie-compact { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 4px 6px 4px 16px; }
+.fe-cookie-compact__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+.fe-cookie-compact__short { display: none; }
+.fe-cookie-compact__actions { display: flex; flex: none; align-items: center; gap: 2px; margin-left: auto; }
+.fe-cookie-compact__actions .fe-cookie-accept {
+  position: relative;
+  min-height: 40px;
+  padding: 0 16px;
+  font-size: 13.5px;
+  border-radius: 12px;
+}
+/* Кнопка выглядит на 40 px, а нажимается как 44: зона нажатия шире видимой. */
+.fe-cookie-compact__actions .fe-cookie-accept::after { content: ''; position: absolute; inset: -2px; }
+.fe-cookie-compact__actions .fe-cookie-gear {
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 9999px;
+  color: var(--color-text-secondary);
+}
+.fe-cookie-compact__actions .fe-cookie-gear:hover:not(:disabled) { color: var(--z2-gold-ink); }
+.fe-cookie-gear svg { width: 18px; height: 18px; }
+.fe-cookie-gear__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 639px) {
+  .fe-cookie-compact { min-height: 56px; padding: 4px 4px 4px 14px; }
+  .fe-cookie-compact__long { display: none; }
+  .fe-cookie-compact__short { display: inline; }
+  .fe-cookie-compact__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+/* Место под плашкой резервируется в подвале (его фон продолжается до края), а не серой полосой под ним. */
+footer.fe-footer { padding-bottom: var(--fe-cookie-h, 0px); }
+
+/* ═══ Подвал: графитовое стекло с золотой линией ═════════════════════════ */
+footer.fe-footer {
+  --color-text-primary: #f3efe6;
+  --color-text-secondary: #bcc4d3;
+  --color-text-tertiary: #a2adc0;
+  --color-border-subtle: rgba(255, 255, 255, 0.11);
+  --color-border-champagne: rgba(220, 193, 137, 0.38);
+  --color-champagne: #dcc189;
+  --color-champagne-ink: #dcc189;
+  --fe-glass-soft: rgba(255, 255, 255, 0.05);
+  --tw-ring-offset-color: var(--z2-dark);
+  position: relative;
+  overflow: hidden;
+  border-top: 0;
+  background-color: var(--z2-dark);
+  background-image:
+    radial-gradient(900px 280px at 14% -140px, rgba(220, 193, 137, 0.17), transparent 70%),
+    radial-gradient(760px 260px at 96% 112%, rgba(220, 193, 137, 0.09), transparent 70%);
+  color: var(--color-text-secondary);
+}
+footer.fe-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 28px;
+  right: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #dcc189 24%, #f0dcaa 50%, #dcc189 76%, transparent);
+  opacity: 0.85;
+  pointer-events: none;
+}
+footer.fe-footer :where(a, button, summary):focus-visible { outline: 2px solid #dcc189; outline-offset: 3px; }
+footer.fe-footer .fe-brand { color: #f6f2e9; }
+footer.fe-footer .fe-foot-wrap { padding-block: 28px; }
+@media (min-width: 640px) {
+  footer.fe-footer .fe-foot-wrap { padding-block: 28px 18px; }
+}
+
+footer.fe-footer .fe-foot-title { color: var(--z2-gold-on-dark); font-size: 13px; letter-spacing: 0.04em; }
+footer.fe-footer .fe-foot-title a { color: inherit; }
+footer.fe-footer .fe-foot-list { gap: 5px; font-size: 15px; line-height: 1.3; color: color-mix(in srgb, var(--color-text-primary) 84%, var(--color-text-secondary)); }
+footer.fe-footer .fe-foot-list a:hover, footer.fe-footer .fe-foot-list button:hover { color: #fff; }
+footer.fe-footer .fe-foot-title { margin-bottom: 8px; }
+@media (pointer: coarse) {
+  footer.fe-footer .fe-foot-list { gap: 0; }
+}
+
+/* Верхний ряд: логотип, одна фраза о проекте и источники данных. */
+.fe-foot-top { display: block; }
+.fe-foot-brand p { margin: 0 0 6px; font-size: 13.5px; line-height: 1.5; color: var(--color-text-secondary); }
+.fe-foot-sources { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.fe-foot-sources__label { font-size: 12px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; color: var(--z2-gold-on-dark); }
+.fe-foot-sources ul { display: flex; flex-wrap: wrap; align-items: center; margin: 0; padding: 0; list-style: none; }
+.fe-foot-sources li { display: inline-flex; align-items: center; font-size: 14px; }
+.fe-foot-sources li + li::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  margin-inline: 10px;
+  border-radius: 9999px;
+  background: var(--z2-gold-on-dark);
+  opacity: 0.75;
+}
+.fe-foot-sources a { color: var(--color-text-primary); }
+.fe-foot-sources a:hover { color: #fff; text-decoration: underline; text-decoration-color: var(--z2-gold-on-dark); text-underline-offset: 3px; }
+@media (min-width: 640px) {
+  .fe-foot-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 40px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  .fe-foot-brand { display: flex; flex: 1 1 520px; align-items: center; gap: 20px; min-width: 0; }
+  .fe-foot-brand > a { flex: none; margin-bottom: 0; }
+  .fe-foot-brand p { max-width: 36rem; margin: 0; }
+}
+
+/* Колонки: на 1180+ семь равных дорожек, длинные списки занимают две и идут в два столбца. */
+@media (min-width: 1180px) {
+  footer.fe-footer .fe-footer-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); column-gap: 24px; row-gap: 0; }
+  .fe-foot-span-2 { grid-column: span 2; }
+  .fe-foot-list--cols2 {
+    grid-auto-flow: column;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--fe-foot-rows, 6), auto);
+    column-gap: 20px;
+  }
+}
+@media (min-width: 640px) {
+  footer.fe-footer .fe-footer-grid { row-gap: 18px; }
+}
+
+/* Нижняя строка: слева «данные обновляются», справа юридический текст светлее и без лишних абзацев. */
+footer.fe-footer .fe-foot-bottom { margin-top: 16px; padding-top: 14px; font-size: 12.5px; line-height: 1.5; color: var(--color-text-tertiary); }
+@media (min-width: 768px) {
+  footer.fe-footer .fe-foot-bottom { margin-top: 16px; padding-top: 14px; gap: 32px; }
+}
+.fe-foot-meta { display: grid; gap: 2px; }
+.fe-foot-meta p { margin: 0; }
+footer.fe-footer .fe-foot-updates__dot { background: var(--z2-gold-on-dark); box-shadow: 0 0 0 4px rgba(220, 193, 137, 0.16); }
+footer.fe-footer .fe-foot-legal { max-width: 56rem; gap: 2px; color: var(--color-text-tertiary); }
+footer.fe-footer .fe-foot-credit a { color: inherit; }
+footer.fe-footer .fe-foot-requisites__summary { color: var(--color-text-secondary); }
+
+/* Чипы телефона на тёмном фоне. */
+footer.fe-footer .fe-foot-chip { color: var(--color-text-primary); background: var(--fe-glass-soft); border-color: var(--color-border-subtle); }
+footer.fe-footer .fe-foot-chip:hover { border-color: var(--color-border-champagne); }
+footer.fe-footer .fe-foot-chip--soon { color: var(--color-text-tertiary); }
+
+/* ═══ Страница 404: «4, планета, 4» ═══════════════════════════════════ */
+.z2-nf { max-width: max(720px, var(--fe-container-text, 760px)); }
+.z2-nf-hero { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 26px; text-align: center; }
+.z2-nf-code {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0px, 1.4vw, 14px);
+  margin-bottom: 6px;
+  line-height: 1;
+  user-select: none;
+}
+.z2-nf-digit {
+  font-family: var(--font-display);
+  font-size: clamp(120px, 30vw, 250px);
+  font-weight: 650;
+  letter-spacing: -0.07em;
+  line-height: 0.86;
+  background: linear-gradient(180deg, #ecd6a0 0%, #c2994d 48%, #8b6a2c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 14px 24px rgba(173, 138, 72, 0.3));
+}
+.z2-nf-planet { flex: none; width: clamp(122px, 27vw, 236px); height: auto; overflow: visible; animation: z2-nf-float 6.5s ease-in-out infinite alternate; }
+.z2-nf-surface { animation: z2-nf-spin 28s linear infinite; }
+.z2-nf-orbit { transform-origin: 120px 120px; animation: z2-nf-orbit 20s linear infinite; }
+@keyframes z2-nf-spin { to { transform: translateX(-130px); } }
+@keyframes z2-nf-orbit { to { transform: rotate(360deg); } }
+@keyframes z2-nf-float { from { transform: translateY(-4px); } to { transform: translateY(6px); } }
+.z2-nf-title { margin: 0; font-size: clamp(28px, 4vw, 40px); font-weight: 650; line-height: 1.15; letter-spacing: -0.03em; color: var(--color-text-primary); }
+.z2-nf-body { max-width: 30rem; margin: 0; font-size: 16px; line-height: 1.55; color: var(--color-text-secondary); }
+.z2-nf-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin: 22px 0 34px; }
+.z2-nf-actions .fe-btn { min-height: 48px; padding: 0 24px; font-size: 15px; border-radius: 14px; }
+/* Главная кнопка страницы 404: золотая заливка и мягкое свечение. */
+.z2-nf-actions .z2-nf-home {
+  border-color: transparent;
+  background: linear-gradient(135deg, #cfa95a, #a4803c 60%, #8f6d2e);
+  color: #fff;
+  box-shadow: 0 12px 26px -14px rgba(143, 109, 46, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.z2-nf-actions .z2-nf-home:hover:not(:disabled):not([aria-disabled='true']) {
+  background: linear-gradient(135deg, #d8b468, #ad8940 60%, #96742f);
+  border-color: transparent;
+  box-shadow: 0 16px 30px -14px rgba(143, 109, 46, 1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.z2-nf-section-title { margin: 0 0 10px; font-size: 15px; font-weight: 650; color: var(--color-text-primary); }
+
+/* ═══ Значок смены языка (только тестовый режим) ═════════════════════════ */
+.z2-preview-toggle { transition: opacity 0.25s ease, transform 0.25s var(--z2-ease); }
+.z2-preview-toggle[data-hidden='true'] { opacity: 0; pointer-events: none; transform: translateY(12px); }
+
+/* Ссылка на каталог стран приходит с якорем: заголовок не прячется под шапкой. */
+#countries { scroll-margin-top: 116px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .z2-nf-planet, .z2-nf-surface, .z2-nf-orbit { animation: none; }
+  nav.fe-navbar a.fe-nav-link::after, .fe-nav-tool, .fe-mega__link, .z2-preview-toggle { transition: none; }
+}

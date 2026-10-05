@@ -102,4 +102,62 @@ describe('Footer', () => {
     expect(within(footer).getByRole('link', { name: 'Источники данных и изображений' }).getAttribute('href')).toBe('/about#credits');
     expect(within(footer).queryByRole('link', { name: 'Благодарности' })).toBeNull();
   });
+
+  it('компьютер: источники данных одной строкой над колонками, каждый ведёт на официальный сайт в новой вкладке', () => {
+    asDesktop();
+    renderFooter();
+    const footer = screen.getByRole('contentinfo');
+    const strip = footer.querySelector('.fe-foot-sources');
+    expect(strip).toBeTruthy();
+    expect(strip.querySelector('.fe-foot-sources__label').textContent).toBe('Источники');
+    const names = [...strip.querySelectorAll('li')].map((li) => li.textContent);
+    expect(names).toEqual(['Евростат', 'МВФ', 'Росстат', 'Банк России', 'Минфин России']);
+    const links = [...strip.querySelectorAll('a')];
+    expect(links.every((a) => a.getAttribute('target') === '_blank')).toBe(true);
+    // Строка стоит в верхнем ряду, а не внутри сетки колонок.
+    expect(footer.querySelector('.fe-foot-top').contains(strip)).toBe(true);
+    expect(footer.querySelector('.fe-footer-grid').contains(strip)).toBe(false);
+  });
+
+  it('компьютер: «Прогнозы», «Курсы валют» и «Конвертер валют» есть в подвале', () => {
+    asDesktop();
+    renderFooter();
+    const footer = screen.getByRole('contentinfo');
+    expect(within(footer).getByRole('link', { name: 'Прогнозы' }).getAttribute('href')).toBe('/methodology#read');
+    expect(within(footer).getByRole('link', { name: 'Курсы валют' }).getAttribute('href')).toBe('/currencies');
+    const converter = within(footer).getByRole('link', { name: 'Конвертер валют' });
+    expect(converter.getAttribute('href')).toBe('/currencies');
+    // Конвертер первый в колонке «Инструменты».
+    const tools = converter.closest('ul');
+    expect(tools.querySelector('a').textContent).toBe('Конвертер валют');
+  });
+
+  it('компьютер: длинные списки занимают две дорожки и идут в два столбца', () => {
+    asDesktop();
+    renderFooter();
+    const footer = screen.getByRole('contentinfo');
+    const categories = within(footer).getByRole('heading', { name: 'Категории' }).closest('section');
+    expect(categories.className).toContain('fe-foot-span-2');
+    const list = categories.querySelector('ul');
+    expect(list.className).toContain('fe-foot-list--cols2');
+    expect(list.style.getPropertyValue('--fe-foot-rows')).toBe(String(Math.ceil(list.children.length / 2)));
+  });
+
+  it('EN: колонки Countries и World двухстолбцовые, источники тоже одной строкой', () => {
+    asDesktop();
+    renderFooter('en');
+    const footer = screen.getByRole('contentinfo');
+    expect(footer.querySelector('.fe-foot-sources')).toBeTruthy();
+    expect(within(footer).getByRole('link', { name: 'Forecasts' })).toBeTruthy();
+    expect(within(footer).getByRole('link', { name: 'Exchange rates' })).toBeTruthy();
+    expect(within(footer).getByRole('link', { name: 'Currency converter' })).toBeTruthy();
+    expect(footer.querySelectorAll('.fe-foot-list--cols2').length).toBe(2);
+  });
+
+  it('телефон: источники остались сворачиваемой группой, строки-ленты нет', () => {
+    renderFooter();
+    const footer = screen.getByRole('contentinfo');
+    expect(footer.querySelector('.fe-foot-sources')).toBeNull();
+    expect(within(footer).getByRole('button', { name: 'Источники' })).toBeTruthy();
+  });
 });

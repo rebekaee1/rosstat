@@ -20,6 +20,7 @@ import RouteFallback from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
 import { cleanPathWithSearch } from './lib/cleanUrl';
+import { calculatorAliasTarget } from './lib/calculatorAlias';
 import { behaviorInit, behaviorRouteChange } from './lib/behavior';
 import { sessionReplayInit, replayRouteChange } from './lib/sessionReplay';
 import { isVariantSiblingNavigation } from './lib/indicatorVariants';
@@ -164,6 +165,12 @@ function NavigateKeepSearch({ to }) {
   return <Navigate to={`${to}${search}`} replace />;
 }
 
+/** Угаданные адреса калькуляторов: /calculators/mortgage → /calculator/mortgage, всё прочее → /calculator. */
+function CalculatorsAlias() {
+  const params = useParams();
+  return <NavigateKeepSearch to={calculatorAliasTarget(params['*'])} />;
+}
+
 /** Guessed address of the country list: the home page, scrolled to the list. */
 function CountriesToHome() {
   const { search } = useLocation();
@@ -294,6 +301,7 @@ function AppRoutes() {
             <Route path="/rankings/gdp" element={<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} />
             <Route path="/ranking/gdp" element={<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} />
             <Route path="/calculators" element={<NavigateKeepSearch to="/calculator" />} />
+            <Route path="/calculators/*" element={<CalculatorsAlias />} />
             <Route path="/today" element={<NavigateKeepSearch to={todayPath()} />} />
             <Route path="/today/:code" element={<RedirectTo build={({ code }) => todayPath(code)} />} />
             <Route path="/calendar" element={<NavigateKeepSearch to={calendarPath()} />} />
@@ -302,6 +310,7 @@ function AppRoutes() {
             <Route path="/regions" element={<NavigateKeepSearch to={regionHubPath()} />} />
             <Route path="/russia/regions" element={<NavigateKeepSearch to={regionHubPath()} />} />
             <Route path="/countries" element={<CountriesToHome />} />
+            <Route path="/countries/:slug" element={<RedirectTo build={({ slug }) => countryPath(slug)} />} />
             <Route path="/regions/map/:code" element={<RedirectTo build={({ code }) => regionMapPath(code)} />} />
             <Route path="/region/:slug" element={<RedirectTo build={({ slug }) => regionPath(slug)} />} />
             <Route path="/region/:slug/:code" element={<RedirectTo build={({ slug, code }) => regionIndicatorPath(slug, code)} />} />

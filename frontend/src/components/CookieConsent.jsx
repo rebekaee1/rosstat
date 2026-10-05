@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X } from 'lucide-react';
+import { Settings2, X } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import Button from './Button';
@@ -14,6 +14,7 @@ import {
 } from '../lib/consent';
 import { useT } from '../i18n';
 import '../styles/shell.css';
+import '../styles/z2-shell.css';
 
 /**
  * Cookie-баннер (152-ФЗ): информирование о подразумеваемом согласии.
@@ -82,7 +83,7 @@ export default function CookieConsent() {
   useEffect(() => () => notifyOverlayVisibility(false, false), []);
 
   // Баннер не должен навсегда закрывать конец страницы: резервируем под ним место внизу документа
-  // (переменная читается в styles/shell.css, класс fe-cookie-pad на <body>).
+  // (переменная читается в styles/z2-shell.css: она добавляется к нижнему отступу подвала, фон подвала доходит до края).
   const panelRef = useRef(null);
   useEffect(() => {
     if (!overlayVisible || typeof document === 'undefined') return undefined;
@@ -144,7 +145,7 @@ export default function CookieConsent() {
       role="dialog"
       aria-modal="false"
       aria-label={t('cookie.aria')}
-      className="fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-3 [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))] sm:p-4"
+      className="fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-2 [padding-bottom:max(0.5rem,env(safe-area-inset-bottom))] sm:p-4"
     >
       <div
         ref={panelRef}
@@ -152,8 +153,8 @@ export default function CookieConsent() {
         data-fe-attention-occluder="cookie-consent"
         data-fe-interaction="consent-dialog"
         className={cn(
-          'pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]',
-          expanded ? 'sm:max-w-md' : 'sm:max-w-xl',
+          'fe-cookie-panel pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]',
+          expanded ? 'sm:max-w-md' : 'sm:max-w-[31rem]',
         )}
       >
         {expanded ? (
@@ -175,7 +176,9 @@ export default function CookieConsent() {
         ) : (
           <div className="fe-cookie-compact">
             <p className="fe-cookie-compact__text">
-              {t('cookie.summary')}{' '}
+              <span className="fe-cookie-compact__long">{t('cookie.summary')}</span>
+              <span className="fe-cookie-compact__short">{t('z2.cookie.short')}</span>
+              {' '}
               <Link to="/privacy" className="text-champagne-ink hover:underline">
                 {t('cookie.privacyShort')}
               </Link>
@@ -185,7 +188,7 @@ export default function CookieConsent() {
                 data-analytics-action="consent-accept"
                 data-fe-interaction-action="accept"
                 onClick={() => commit(true, true, 'accept_all')}
-                className={btnBase}
+                className={cn(btnBase, 'fe-cookie-accept')}
               >
                 {t('cookie.accept')}
               </Button>
@@ -194,9 +197,11 @@ export default function CookieConsent() {
                 data-analytics-action="consent-customize"
                 data-fe-interaction-action="customize"
                 onClick={() => setExpanded(true)}
-                className={btnBase}
+                title={t('cookie.customize')}
+                className={cn(btnBase, 'fe-cookie-gear')}
               >
-                {t('cookie.customize')}
+                <Settings2 aria-hidden="true" />
+                <span className="fe-cookie-gear__label">{t('cookie.customize')}</span>
               </Button>
             </div>
           </div>

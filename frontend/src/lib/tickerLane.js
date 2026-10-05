@@ -1,5 +1,3 @@
-import { isReservedFirstSegment, RUSSIA } from './sitePaths';
-
 /**
  * Lane живой ленты по языку: ru, и любой не-en, получает российский набор; en получает мировые кроссы.
  */
@@ -7,19 +5,11 @@ export function tickerLaneForLocale(locale) {
   return locale === 'en' ? 'world' : 'russia';
 }
 
-/** Страница зарубежной страны (`/germany`, `/india/indicator/...`) или мировой рейтинг: рубли тут не главное. */
-export function isForeignWorldPath(pathname) {
-  const first = String(pathname || '').split('/').filter(Boolean)[0];
-  if (!first) return false;
-  if (first === 'world') return true;
-  return !isReservedFirstSegment(first) && first !== RUSSIA;
-}
-
 /**
- * Lane по языку и региону страницы: русская лента (рубль) остаётся на главной, в России и в «Валютах»,
- * а на страницах других стран русскоязычный посетитель видит те же мировые курсы, что и англоязычный.
+ * Lane ленты для страницы. Состав зависит только от языка: раньше русскоязычный посетитель на странице другой
+ * страны видел другой набор (курс доллара к юаню вместо рубля), и лента казалась «случайной». Один набор на всех
+ * страницах читается как постоянная шапка сайта. Второй параметр оставлен ради совместимости вызовов.
  */
-export function tickerLaneFor(locale, pathname) {
-  if (locale === 'en') return 'world';
-  return isForeignWorldPath(pathname) ? 'world' : 'russia';
+export function tickerLaneFor(locale) {
+  return tickerLaneForLocale(locale);
 }

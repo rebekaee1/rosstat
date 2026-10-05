@@ -2973,4 +2973,22 @@ export default {
   'w7p.reg.legalMid': 'and',
   'w7p.reg.legalPrivacy': 'privacy policy',
   'w7p.reg.legalAfter': ', including personal data processing.',
+
+  // ===== Z2 =====
+  'z2.nav.rates': 'Exchange rates',
+  'z2.nav.ratesShort': 'Rates',
+  'z2.tools.converter': 'Currency converter',
+  'z2.tools.converter.note': 'Dollar, euro, yuan and more',
+  'z2.mega.aria': 'Countries: quick links',
+  'z2.mega.countriesTitle': 'Largest economies',
+  'z2.mega.indicatorsTitle': 'Popular rankings',
+  'z2.mega.gdp': 'GDP',
+  'z2.mega.gdpPerCapita': 'GDP per capita',
+  'z2.mega.unemployment': 'Unemployment',
+  'z2.mega.debt': 'Government debt',
+  'z2.mega.population': 'Population',
+  'z2.mega.all': 'All countries',
+  'z2.mega.rating': 'Full country ranking',
+  'z2.cookie.short': 'We use cookies.',
+  'z2.nf.guess.forecasts': 'Forecasts',
 };

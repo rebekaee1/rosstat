@@ -1,8 +1,10 @@
 /**
  * «Возможно, вы искали»: по словам из неверного адреса подсказывает раздел сайта.
  * Правила совпадают с backend/app/services/seo_renderer.py (`_NF_GUESS_RULES`):
- * серверная и клиентская 404 подсказывают одно и то же.
+ * серверная и клиентская 404 подсказывают одно и то же. Исключение: правило `forecasts` пока только здесь
+ * (раунд 2, зона Z2); серверной 404 его нужно добавить при переносе на общую оболочку.
  */
+import { FORECASTS_TO } from './navItems';
 import {
   calendarPath,
   comparePath,
@@ -15,6 +17,8 @@ import {
 } from './sitePaths';
 
 const RULES = [
+  // Прогнозы идут первыми: адрес вроде /forecasts человек вводит, ожидая страницу прогнозов, а не «методологию».
+  { keys: ['forecast', 'forecasts', 'prognoz', 'prognozy', 'prognosis'], id: 'forecasts' },
   { keys: ['rank', 'rating', 'gdp', 'vvp', 'top'], id: 'rating' },
   { keys: ['calc', 'calculator', 'kalk', 'inflation', 'mortgage', 'ipotek'], id: 'calculator' },
   { keys: ['region', 'regions', 'oblast', 'okrug'], id: 'regions' },
@@ -29,6 +33,7 @@ const RULES = [
 ];
 
 const TARGETS = {
+  forecasts: { to: FORECASTS_TO, labelKey: 'z2.nf.guess.forecasts' },
   rating: { to: worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT), labelKey: 'w6f.nf.guess.rating' },
   calculator: { to: '/calculator', labelKey: 'w6f.nf.guess.calculator' },
   regions: { to: regionHubPath(), labelKey: 'w6f.nf.guess.regions' },

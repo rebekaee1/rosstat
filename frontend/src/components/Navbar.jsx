@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
-  Menu, X, ChevronDown, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2, Home, Info,
-  Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2,
+  Menu, X, ChevronDown, ArrowLeftRight, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2,
+  Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -11,12 +11,14 @@ import IndicatorSearch from './IndicatorSearch';
 import LocaleSwitcher from './LocaleSwitcher';
 import Brand from './Brand';
 import { useAuth } from '../context/authContext';
-import { mobileNavGroups, primaryNav, resolveActiveNavId } from '../lib/navItems';
+import { mobileNavGroups, primaryNav, resolveActiveNavId, RATES_TO, WORLD_RATING_TO } from '../lib/navItems';
+import { megaCountries, megaIndicators } from '../lib/megaMenu';
 import { isRussiaSectionPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import '../styles/ui-detail-nav-calendar.css';
 import '../styles/shell.css';
 import '../styles/z3-polish.css';
+import '../styles/z2-shell.css';
 
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();
@@ -53,8 +55,8 @@ function AuthCluster({ mobile = false, onNavigate }) {
         onClick={() => { track(events.HEADER_LOGIN_CLICK); onNavigate?.(); }}
         className={cn(
           FOCUS_RING,
-          'rounded-full px-3.5 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors',
-          mobile && 'flex-1 justify-center text-center border border-border-subtle',
+          'fe-nav-login rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
+          mobile && 'flex-1 justify-center text-center',
         )}
       >
         {t('common.login')}
@@ -90,28 +92,83 @@ const MOBILE_ICONS = {
   book: BookOpen,
 };
 
-// Инструменты: три калькулятора (три разных значка, у каждого пометка «для каких стран») и конструктор виджетов.
+// Инструменты: конвертер валют и калькуляторы (разные золотые значки, у каждого пометка «для каких стран») и конструктор виджетов.
 const CALCULATOR_ITEMS = [
+  { to: RATES_TO, labelKey: 'z2.tools.converter', noteKey: 'z2.tools.converter.note', icon: ArrowLeftRight },
   { to: '/calculator', labelKey: 'nav.calc.inflation', noteKey: 'w6g.nav.note.inflation', icon: Percent },
   { to: '/calculator/mortgage', labelKey: 'nav.calc.mortgage', noteKey: 'w6g.nav.note.mortgage', icon: Building2 },
   { to: '/calculator/compound', labelKey: 'nav.calc.compound', noteKey: 'w6g.nav.note.compound', icon: PiggyBank },
   { to: '/widgets', labelKey: 'w6g.nav.widgets', noteKey: 'w6g.nav.note.widgets', icon: Code2 },
 ];
 
+/** Мега-панель «Страны мира»: флаги крупнейших экономик, популярные рейтинги, ссылки на каталог и рейтинг. */
+function CountriesMega({ locale, t, onNavigate }) {
+  const countries = megaCountries(locale);
+  const indicators = megaIndicators();
+  return (
+    <div id="fe-nav-mega" className="fe-mega fe-reveal fe-reveal--free fe-reveal--panel">
+      <div className="fe-mega__card fe-nav-panel" role="group" aria-label={t('z2.mega.aria')}>
+        <div>
+          <p className="fe-mega__title">{t('z2.mega.countriesTitle')}</p>
+          <ul className="fe-mega__list fe-mega__list--flags">
+            {countries.map((c) => (
+              <li key={c.slug}>
+                <Link to={c.to} className={cn(FOCUS_RING, 'fe-mega__link')} onClick={onNavigate}>
+                  <span className="fe-mega__flag" aria-hidden="true">{c.flag}</span>
+                  <span>{c.label}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="fe-mega__title">{t('z2.mega.indicatorsTitle')}</p>
+          <ul className="fe-mega__list">
+            {indicators.map((item) => (
+              <li key={item.slug}>
+                <Link to={item.to} className={cn(FOCUS_RING, 'fe-mega__link')} onClick={onNavigate}>
+                  <BarChart3 size={16} aria-hidden="true" className="text-champagne-ink" />
+                  <span>{t(item.labelKey)}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="fe-mega__foot">
+          <Link to="/#countries" className={cn(FOCUS_RING, 'fe-mega__all rounded-md')} onClick={onNavigate}>
+            {t('z2.mega.all')}
+          </Link>
+          <Link to={WORLD_RATING_TO} className={cn(FOCUS_RING, 'fe-mega__all rounded-md')} onClick={onNavigate}>
+            {t('z2.mega.rating')}
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Navbar() {
   const t = useT();
   const { locale } = useLocale();
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [calcOpen, setCalcOpen] = useState(false);
+  // Открытые панели помнят адрес, на котором их открыли: при любом переходе (ссылка, «назад», программный переход)
+  // адрес меняется, и панель закрывается сама, без отдельных обработчиков на каждой ссылке.
+  const { pathname, key: locationKey } = useLocation();
+  const [mobileOpenAt, setMobileOpenAt] = useState(null);
+  const [calcOpenAt, setCalcOpenAt] = useState(null);
+  const [megaOpenAt, setMegaOpenAt] = useState(null);
+  const mobileOpen = mobileOpenAt === locationKey;
+  const calcOpen = calcOpenAt === locationKey;
+  const megaOpen = megaOpenAt === locationKey;
   // Раскрытые группы меню: «Россия» раскрыта сама только на страницах российского раздела.
   const [openGroups, setOpenGroups] = useState({});
   const navRef = useRef(null);
   const calcWrapRef = useRef(null);
   const calcBtnRef = useRef(null);
+  const megaWrapRef = useRef(null);
+  const megaTimer = useRef(0);
   const mobileBtnRef = useRef(null);
   const mobileMenuRef = useRef(null);
-  const { pathname } = useLocation();
   // Служебный раздел /admin/*: fixed-пилюля наезжала на карточки BI при
   // скролле (обход BI 2.1, этап 4а) — показываем шапку только вверху страницы.
   const isAdmin = pathname.startsWith('/admin');
@@ -120,10 +177,16 @@ export default function Navbar() {
   const mobileGroups = mobileNavGroups(locale);
   const mobileActiveId = resolveActiveNavId(pathname, mobileGroups.flatMap((group) => group.items));
 
-  const closeAll = () => {
-    setMobileOpen(false);
-    setCalcOpen(false);
+  const setMobileOpen = (next) => setMobileOpenAt(next ? locationKey : null);
+  const setCalcOpen = (next) => {
+    setCalcOpenAt(next ? locationKey : null);
+    if (next) setMegaOpenAt(null);
   };
+  const closeAll = useCallback(() => {
+    setMobileOpenAt(null);
+    setCalcOpenAt(null);
+    setMegaOpenAt(null);
+  }, []);
 
   useEffect(() => {
     // Порог маленький: контент подходит под фиксированный навбар уже при
@@ -135,19 +198,24 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => () => window.clearTimeout(megaTimer.current), []);
+
+  const panelOpen = mobileOpen || calcOpen || megaOpen;
   useEffect(() => {
-    if (!mobileOpen && !calcOpen) return;
+    if (!panelOpen) return undefined;
     // Тап/клик вне открытой панели закрывает её (pointerdown + mousedown: второй — для окружений без Pointer Events).
     const onDoc = (e) => {
       const inCalc = calcWrapRef.current?.contains(e.target);
+      const inMega = megaWrapRef.current?.contains(e.target);
       const inMobile = mobileMenuRef.current?.contains(e.target) || mobileBtnRef.current?.contains(e.target);
-      if (calcOpen && !inCalc) setCalcOpen(false);
-      if (mobileOpen && !inMobile) setMobileOpen(false);
+      if (calcOpen && !inCalc) setCalcOpenAt(null);
+      if (megaOpen && !inMega) setMegaOpenAt(null);
+      if (mobileOpen && !inMobile) setMobileOpenAt(null);
     };
     const onKey = (e) => {
       if (e.key !== 'Escape') return;
       // Фокус — на кнопку, которая открыла панель: клавиатурный пользователь не теряет место.
-      const target = calcOpen ? calcBtnRef.current : mobileBtnRef.current;
+      const target = calcOpen ? calcBtnRef.current : (megaOpen ? megaWrapRef.current?.querySelector('a') : mobileBtnRef.current);
       closeAll();
       target?.focus();
     };
@@ -159,7 +227,18 @@ export default function Navbar() {
       document.removeEventListener('mousedown', onDoc);
       document.removeEventListener('keydown', onKey);
     };
-  }, [mobileOpen, calcOpen]);
+  }, [panelOpen, mobileOpen, calcOpen, megaOpen, closeAll]);
+
+  // Поиск открылся (Ctrl/Cmd+K, «/» или нажатие на лупу): панели меню закрываются, иначе за окном поиска оставались
+  // размытая страница и открытое меню. Окно поиска рисуется порталом в body — следим за его появлением.
+  useEffect(() => {
+    if (!panelOpen || typeof MutationObserver === 'undefined') return undefined;
+    const observer = new MutationObserver(() => {
+      if (document.querySelector('[data-fe-search-dialog]')) closeAll();
+    });
+    observer.observe(document.body, { childList: true });
+    return () => observer.disconnect();
+  }, [panelOpen, closeAll]);
 
   const navItemClass = (isActive) => cn(
     FOCUS_RING,
@@ -171,30 +250,58 @@ export default function Navbar() {
 
   const itemClass = cn(
     FOCUS_RING,
-    'rounded-xl block px-4 py-2.5 text-sm text-left transition-colors hover:bg-obsidian-lighter/80'
+    'fe-nav-tool'
   );
 
   const menuOpen = mobileOpen || calcOpen;
+
+  // Мега-панель «Страны мира» открывается наведением мыши с небольшой паузой (чтобы не мигать при пролёте курсора),
+  // фокусом с клавиатуры и закрывается при уходе курсора или фокуса. Нажатие на саму ссылку ведёт в каталог стран.
+  const openMega = () => {
+    window.clearTimeout(megaTimer.current);
+    megaTimer.current = window.setTimeout(() => { setMegaOpenAt(locationKey); setCalcOpenAt(null); }, 110);
+  };
+  const closeMega = () => {
+    window.clearTimeout(megaTimer.current);
+    megaTimer.current = window.setTimeout(() => setMegaOpenAt(null), 200);
+  };
 
   const renderPrimaryLink = (item, { desktop = false } = {}) => {
     const isActive = activeNavId === item.id;
     const full = t(item.labelKey);
     const short = item.shortLabelKey ? t(item.shortLabelKey) : null;
-    return (
+    const link = (
       <Link
         key={`${desktop ? 'd' : 'm'}-${item.id}`}
         to={item.to}
-        className={navItemClass(isActive)}
+        className={cn(navItemClass(isActive), desktop && 'fe-nav-link')}
         onClick={closeAll}
         aria-current={isActive ? 'page' : undefined}
+        aria-expanded={desktop && item.id === 'countries' ? megaOpen : undefined}
+        aria-controls={desktop && item.id === 'countries' && megaOpen ? 'fe-nav-mega' : undefined}
       >
         {desktop && short ? (
           <>
-            <span className="xl:hidden">{short}</span>
-            <span className="hidden xl:inline">{full}</span>
+            <span className="2xl:hidden">{short}</span>
+            <span className="hidden 2xl:inline">{full}</span>
           </>
         ) : full}
       </Link>
+    );
+    if (!(desktop && item.id === 'countries')) return link;
+    return (
+      <div
+        key="d-countries-wrap"
+        ref={megaWrapRef}
+        className="relative"
+        onPointerEnter={(e) => { if (e.pointerType === 'mouse') openMega(); }}
+        onPointerLeave={(e) => { if (e.pointerType === 'mouse') closeMega(); }}
+        onFocus={openMega}
+        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) closeMega(); }}
+      >
+        {link}
+        {megaOpen ? <CountriesMega locale={locale} t={t} onNavigate={closeAll} /> : null}
+      </div>
     );
   };
 
@@ -202,7 +309,7 @@ export default function Navbar() {
     <>
       {menuOpen && (
         <div
-          className="fe-reveal fixed inset-0 z-[80] bg-text-primary/25 backdrop-blur-[2px] [--fe-duration:0.2s] [--fe-rise:0px] md:bg-text-primary/20"
+          className="fe-nav-scrim fe-reveal fixed inset-0 z-[80] [--fe-duration:0.2s] [--fe-rise:0px]"
           aria-hidden
           onClick={closeAll}
         />
@@ -210,6 +317,7 @@ export default function Navbar() {
       <nav
         ref={navRef}
         style={{ '--fe-duration': '0.3s', '--fe-rise': '-8px' }}
+        data-scrolled={scrolled ? 'true' : 'false'}
         className={cn(
           // .fe-reveal: шапка видна сразу (в SSR и без JS), лишь мягко опускается на 8px.
           'fe-reveal fe-reveal--free fe-navbar fixed top-9 inset-x-0 mx-auto z-[100]',
@@ -237,19 +345,19 @@ export default function Navbar() {
       {/* justify-end: при переполнении лишнее выезжает ВЛЕВО, поверх логотипа
           (задвоенный логотип на скринах руководителя 2026-07-05 и 2026-07-27).
           scrollWidth такое переполнение не показывает — ловится только
-          сравнением боксов, см. scripts/e2e/navbar-overlap.mjs. Поэтому до xl
-          длинные подписи заменяются короткими (`shortLabelKey`), а «О проекте»
-          на десктопе живёт в футере и мобильном меню. */}
-      <div className="fe-navbar-links hidden xl:flex items-center gap-3 xl:gap-5 flex-1 justify-end min-w-0">
+          сравнением боксов, см. scripts/e2e/navbar-overlap.mjs. Поэтому до 2xl
+          длинные подписи заменяются короткими (`shortLabelKey`), поиск сжимается до лупы,
+          а «О проекте» на десктопе живёт в футере и мобильном меню. */}
+      <div className="fe-navbar-links hidden xl:flex items-center flex-1 justify-end min-w-0">
         {primaryItems.map((item) => renderPrimaryLink(item, { desktop: true }))}
         <div className="relative" ref={calcWrapRef}>
           <button
             ref={calcBtnRef}
             type="button"
-            onClick={() => { setCalcOpen((o) => !o); }}
+            onClick={() => { setCalcOpen(!calcOpen); }}
             className={cn(
               FOCUS_RING,
-              'flex items-center gap-1 text-sm font-medium transition-colors px-2 py-1 rounded-xl',
+              'fe-nav-tools-btn flex items-center gap-1 text-sm font-medium transition-colors px-2 py-1 rounded-xl',
               calcOpen ? 'text-champagne' : 'text-text-secondary hover:text-text-primary'
             )}
             aria-expanded={calcOpen}
@@ -262,24 +370,28 @@ export default function Navbar() {
           {calcOpen && (
             <div
               id="fe-nav-calc-menu"
-              className="fe-reveal fe-reveal--free fe-reveal--panel absolute right-0 top-full z-[110] mt-2 min-w-[240px] rounded-2xl border border-border-subtle bg-surface py-2 shadow-2xl ring-1 ring-black/[0.08]"
+              className="fe-nav-panel fe-nav-tools fe-reveal fe-reveal--free fe-reveal--panel absolute right-0 top-full z-[110] mt-2 rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08]"
               role="menu"
             >
-              {CALCULATOR_ITEMS.map((c) => (
-                <NavLink
-                  key={c.to}
-                  to={c.to}
-                  end
-                  className={({ isActive }) =>
-                    cn(itemClass, isActive ? 'text-champagne bg-champagne/5' : 'text-text-primary')
-                  }
-                  onClick={closeAll}
-                  role="menuitem"
-                >
-                  <span className="block">{t(c.labelKey)}</span>
-                  <span className="block text-xs font-normal text-text-secondary">{t(c.noteKey)}</span>
-                </NavLink>
-              ))}
+              {CALCULATOR_ITEMS.map((c) => {
+                const ToolIcon = c.icon;
+                return (
+                  <NavLink
+                    key={c.to}
+                    to={c.to}
+                    end
+                    className={({ isActive }) => cn(itemClass, isActive && 'bg-champagne/5')}
+                    onClick={closeAll}
+                    role="menuitem"
+                  >
+                    <span className="fe-tool-ico"><ToolIcon aria-hidden="true" /></span>
+                    <span className="fe-nav-tool__text">
+                      <span className="fe-nav-tool__name">{t(c.labelKey)}</span>
+                      <span className="fe-nav-tool__note">{t(c.noteKey)}</span>
+                    </span>
+                  </NavLink>
+                );
+              })}
             </div>
           )}
         </div>
@@ -287,22 +399,22 @@ export default function Navbar() {
       </div>
 
       <div className="hidden xl:flex items-center shrink-0 gap-2 xl:gap-3">
-        <IndicatorSearch variant="pill" />
+        <div className="fe-nav-search"><IndicatorSearch variant="pill" /></div>
         <LocaleSwitcher />
         <div className="h-5 w-px bg-border-subtle" aria-hidden />
         <AuthCluster />
       </div>
 
-      <div className="xl:hidden ml-auto flex items-center gap-1">
-        <IndicatorSearch className="!px-2 !py-1.5" />
-        <LocaleSwitcher />
+      <div className="xl:hidden ml-auto flex items-center gap-1.5">
+        <IndicatorSearch className="fe-nav-round" />
+        <LocaleSwitcher className="fe-nav-round" />
         <button
           ref={mobileBtnRef}
           type="button"
           onClick={() => { setMobileOpen(!mobileOpen); track(events.NAV_MOBILE_TOGGLE); }}
           className={cn(
             FOCUS_RING,
-            'flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2.5 text-text-secondary transition-colors hover:text-text-primary'
+            'fe-nav-round'
           )}
           aria-expanded={mobileOpen}
           aria-controls={mobileOpen ? 'fe-nav-mobile-menu' : undefined}
@@ -311,6 +423,7 @@ export default function Navbar() {
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
+
 
       {mobileOpen && (
         <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,600px)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08] xl:hidden">

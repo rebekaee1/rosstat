@@ -206,6 +206,37 @@ describe('cookie choices remain usable when measurement fails', () => {
     expect(dialog.firstElementChild.className).toMatch(/max-h-\[min\(30rem/);
   });
 
+  it.each(['ru', 'en'])('компактная плашка: короткая строка для телефона, значок-шестерёнка вместо слова, ширина до 500 px (%s)', (locale) => {
+    renderConsent(locale);
+    const dialog = screen.getByRole('dialog');
+    const panel = dialog.firstElementChild;
+    expect(panel.className).toContain('fe-cookie-panel');
+    expect(panel.className).toContain('sm:max-w-[31rem]');
+    // Длинный текст для компьютера и короткий для телефона лежат рядом, CSS показывает один из них.
+    expect(dialog.querySelector('.fe-cookie-compact__long').textContent).toBe(translate('cookie.summary', undefined, locale));
+    expect(dialog.querySelector('.fe-cookie-compact__short').textContent).toBe(translate('z2.cookie.short', undefined, locale));
+    expect(translate('z2.cookie.short', undefined, locale).length).toBeLessThan(30);
+    // «Настроить» остаётся именем кнопки для скринридера и подсказкой, на глаз это значок.
+    const gear = within(dialog).getByRole('button', { name: translate('cookie.customize', undefined, locale) });
+    expect(gear.className).toContain('fe-cookie-gear');
+    expect(gear.getAttribute('title')).toBe(translate('cookie.customize', undefined, locale));
+    expect(gear.querySelector('svg')).toBeTruthy();
+    expect(gear.querySelector('.fe-cookie-gear__label')).toBeTruthy();
+  });
+
+  it('молчание не считается согласием: плашка не закрывается сама', () => {
+    vi.useFakeTimers();
+    try {
+      renderConsent();
+      act(() => { vi.advanceTimersByTime(60_000); });
+      expect(screen.getByRole('dialog')).toBeTruthy();
+      expect(getConsent()).toBeNull();
+      expect(track).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('settings offer a direct refusal: only necessary cookies', () => {
     renderConsent();
     fireEvent.click(screen.getByRole('button', { name: 'Настроить' }));
