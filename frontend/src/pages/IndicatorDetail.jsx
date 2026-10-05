@@ -66,6 +66,7 @@ import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 import '../styles/z4-indicator.css';
+import '../styles/k5-pages.css';
 
 // Правка №16 (звонок 2026-05-21): на карточке ИПП по умолчанию показываем
 // г/г %, не уровень индекса 2018=100 (raw 105.2 без контекста бессмыслен).

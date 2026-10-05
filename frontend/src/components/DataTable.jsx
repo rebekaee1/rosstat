@@ -10,9 +10,11 @@ import { formatPercentChange, growthDigits, unitKind } from '../lib/indicatorSum
 import { useLocale } from '../i18n';
 import Button from './Button';
 import Spinner from './Spinner';
+import { EmptyShard } from './K5Accent';
 import '../styles/chart-controls.css';
 import '../styles/w6e-indicator.css';
 import '../styles/z4-indicator.css';
+import '../styles/k5-pages.css';
 
 const PAGE_SIZE = 20;
 // Блок появляется средствами CSS сразу, без задержки (раньше gsap скрывал таблицу на ~1.3 с).
@@ -97,7 +99,7 @@ export default function DataTable({
 
   return (
     <div
-      className="fe-reveal fe-datatable fe-histtable rounded-[1.5rem] overflow-hidden fe-glass-lite"
+      className="fe-reveal fe-datatable fe-histtable k5-table rounded-[1.5rem] overflow-hidden fe-glass-lite"
       style={REVEAL_STYLE}
       aria-busy={loading || undefined}
     >
@@ -121,7 +123,7 @@ export default function DataTable({
       <div className="fe-histtable__scroll overflow-x-auto scrollbar-hide">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-t border-border-subtle">
+            <tr>
               <th
                 scope="col"
                 aria-sort={sortAsc ? 'ascending' : 'descending'}
@@ -161,7 +163,12 @@ export default function DataTable({
                       <Spinner size={16} />
                       {t('table.loading')}
                     </span>
-                  ) : search ? t('table.emptySearch') : t('table.emptyPeriod')}
+                  ) : (
+                    <span className="k5-empty">
+                      <EmptyShard size={72} />
+                      <span>{search ? t('table.emptySearch') : t('table.emptyPeriod')}</span>
+                    </span>
+                  )}
                 </td>
               </tr>
             ) : (
@@ -169,8 +176,7 @@ export default function DataTable({
                 <tr
                   key={row.date}
                   className={cn(
-                    'border-t border-border-subtle transition-colors',
-                    'hover:bg-surface-hover',
+                    'transition-colors',
                     row.date === maxDate && 'is-max',
                     row.date === minDate && 'is-min',
                   )}
@@ -196,7 +202,7 @@ export default function DataTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="p-4 flex items-center justify-between fe-divider">
+        <div className="p-4 flex items-center justify-between k5-seam k5-seam--top">
           <Button
             variant="secondary"
             className="fe-pager-btn"

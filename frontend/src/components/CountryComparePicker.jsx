@@ -12,6 +12,7 @@ import Spinner from './Spinner';
 import CountryFlag from './CountryFlag';
 import '../styles/w6-g.css';
 import '../styles/z7-compare.css';
+import '../styles/k5-pages.css';
 
 /** После выбора страны график должен быть на виду: подкручиваем к самому графику (не к началу блока), если он ушёл за край экрана. */
 function scrollChartIntoView() {
@@ -170,7 +171,7 @@ export default function CountryComparePanel({
     .filter((option) => !activeComparisonIds.includes(option.code));
   const atLimit = activeComparisonIds.length >= MAX_COMPARISONS;
   return (
-    <div className="fe-compare-panel mb-4 rounded-3xl p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
+    <div className="fe-compare-panel mb-4 rounded-3xl p-4">
       <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
         <GitCompare size={15} className="text-champagne" aria-hidden="true" />
         {t('world.chart.compare')}
@@ -218,7 +219,7 @@ export default function CountryComparePanel({
 
 
       {activeComparisonIds.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center gap-2 pt-3 fe-divider">
+        <div className="mt-3 flex flex-wrap items-center gap-2 pt-5 k5-seam k5-seam--top">
           {baseLabel && (
             <span className="fe-compare-base" title={baseLabel}>
               <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: baseColor }} aria-hidden="true" />

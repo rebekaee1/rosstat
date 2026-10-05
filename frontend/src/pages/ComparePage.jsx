@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useState, useMemo, useCallback, useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import {
   ArrowLeft, Activity, Search, X, Plus, ImageDown, Sparkles,
-  Landmark, MapPin, Check, ChevronDown, Globe2, TrendingUp,
+  Landmark, MapPin, Check, ChevronDown, Globe2,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { fetchIndicatorData } from '../lib/api';
@@ -69,10 +69,12 @@ import {
   regionHubPath,
 } from '../lib/sitePaths';
 import Breadcrumbs from '../components/Breadcrumbs';
+import { flagForSlug } from '../lib/slugFlags';
 import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/regions-w4.css';
 import '../styles/w6-g.css';
 import '../styles/z7-compare.css';
+import '../styles/k5-pages.css';
 
 /** Высота окна браузера (px); 0 до первого измерения и без window. */
 function useViewportHeight() {
@@ -121,7 +123,22 @@ const RANGE_OPTIONS = [
 ];
 
 // До 10 рядов — палитра различимых цветов из общей темы графиков (lib/chartTheme.js).
-const PALETTE = CHART_THEME.series;
+// K5.3: первая линия — золотая лента, вторая — сапфировая (вместо графитовой); дальше прежние цвета темы.
+const PALETTE = Object.freeze([
+  CHART_THEME.series[0], '#35599A', ...CHART_THEME.series.slice(2), CHART_THEME.series[1],
+]);
+// Лента первых двух рядов красится градиентом вдоль линии; id вставляется в stroke как url(#id).
+const RIBBON_STOPS = Object.freeze([
+  [['#E9CD8E', 0], ['#C9A24D', 0.5], ['#A9812F', 1]],
+  [['#6E96D2', 0], ['#3F66AA', 0.5], ['#1E2A4A', 1]],
+]);
+
+/** Флаг страны ряда для линзы на конце линии: мировой ряд по slug страны, российский показатель — Россия, регионы — без флага. */
+function seriesFlag(s) {
+  if (s.isWorld) return flagForSlug(parseWorldCompareCode(s.code)?.countrySlug);
+  if (s.isRegion || s.isSubnational) return '';
+  return flagForSlug('russia');
+}
 
 // «Общая база» вместо «Индекс», чтобы не путать со ЗНАЧЕНИЕМ представления
 // «Индекс» (уровень индекса цен ИПЦ/ИЦП) у отдельного ряда — это разные вещи.
@@ -1075,7 +1092,7 @@ function CompareSeriesPicker({
 
   return (
     <div className="fe-panel overflow-visible rounded-2xl p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
-      <div className="mb-5 pb-4 fe-divider-b">
+      <div className="mb-5 pb-5 k5-seam">
         <div className="text-sm font-medium text-champagne-ink">{t('w6g.compare.pickerTitle')}</div>
         <div className="mt-1 text-[15px] text-text-primary">{stepHint}</div>
         {status && (
@@ -1339,7 +1356,9 @@ function UpsellModal({ open, onClose }) {
   );
 }
 
-function CompareTooltip({ active, payload, label, dateFormat = 'short' }) {
+function CompareTooltip({
+  active, payload, label, dateFormat = 'short', colors = null,
+}) {
   if (!active || !payload?.length) return null;
   return (
     <div className="glass-surface min-w-[200px] max-w-[calc(100vw-48px)] rounded-xl px-4 py-3 shadow-2xl">
@@ -1347,7 +1366,7 @@ function CompareTooltip({ active, payload, label, dateFormat = 'short' }) {
       {payload.filter((p) => p.value != null).map((p) => (
         <div key={p.dataKey} className="mb-1 flex items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-2">
-            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: p.color }} />
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: colors?.[p.dataKey] || p.color }} />
             <span className="max-w-[160px] truncate text-xs text-text-secondary">{p.name}</span>
           </div>
           <span className="shrink-0 text-sm font-semibold tabular-nums text-text-primary">
@@ -1361,6 +1380,7 @@ function CompareTooltip({ active, payload, label, dateFormat = 'short' }) {
 
 export default function ComparePage() {
   const t = useT();
+  const ribbonUid = useId().replace(/:/g, '');
   const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const [range, setRange] = useState('5y');
@@ -1939,7 +1959,7 @@ export default function ComparePage() {
         const y = yForValue(v, axisScales.left.domain, { top: plotTop, plotHeight });
         if (y != null) {
           raw.push({
-            key: s.key, y, color: s.color, value: v,
+            key: s.key, y, color: s.color, value: v, flag: seriesFlag(s),
             name: labels[i] || t('z2.compare.seriesFallback'),
           });
         }
@@ -2064,6 +2084,8 @@ export default function ComparePage() {
   const headline = series.length ? chartHeadline : t('compare.title');
   const showPicker = pickerOpen || (!isDemo && codes.length === 0);
   const activePreset = COMPARE_PRESETS.find((preset) => presetIsActive(preset, codes));
+  // Подсказка красит точки сплошным цветом ряда: у лент первых двух рядов stroke — ссылка на градиент.
+  const seriesColors = Object.fromEntries(series.map((s) => [s.key, s.color]));
 
   return (
     <div className="fe-data-page fe-compare-page pt-24 md:pt-28 pb-12 md:pb-16">
@@ -2106,7 +2128,7 @@ export default function ComparePage() {
               <span className="sm:hidden">{t('w7p.compare.demoShort')}</span>
               <span className="hidden sm:inline">{t('w6g.compare.demoNote')}</span>
             </p>
-            <Button variant="secondary" onClick={startEditing}>
+            <Button variant="primary" size="sm" onClick={startEditing}>
               {t('w6g.compare.edit')}
             </Button>
           </div>
@@ -2294,7 +2316,11 @@ export default function ComparePage() {
 
             {gap && (
               <p className="fe-compare-gap" data-testid="compare-gap">
-                <TrendingUp className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="fe-compare-gap__beads" aria-hidden="true">
+                  {series.slice(0, 2).map((s) => (
+                    <i key={s.key} style={{ '--bead': s.color }} />
+                  ))}
+                </span>
                 <span>
                   {gap.equal
                     ? t('z7.compare.gapEqual', { a: gap.a, b: gap.b })
@@ -2350,6 +2376,13 @@ export default function ComparePage() {
                   data={chartRows}
                   margin={{ top: 10, right: chartMarginRight, bottom: 4, left: 0 }}
                 >
+                  <defs>
+                    {RIBBON_STOPS.map((stops, gi) => (
+                      <linearGradient key={gi} id={`${ribbonUid}-${gi}`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={Math.max(plotWidth, 320)} y2="0">
+                        {stops.map(([color, offset]) => <stop key={offset} offset={offset} stopColor={color} />)}
+                      </linearGradient>
+                    ))}
+                  </defs>
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis
                     dataKey="date"
@@ -2386,7 +2419,7 @@ export default function ComparePage() {
                     />
                   )}
                   <Tooltip
-                    content={<CompareTooltip dateFormat={compareDateFmt} />}
+                    content={<CompareTooltip dateFormat={compareDateFmt} colors={seriesColors} />}
                     cursor={HOVER_CURSOR}
                     {...touchTip.tooltipProps}
                   />
@@ -2397,7 +2430,8 @@ export default function ComparePage() {
                       type="monotone"
                       dataKey={s.key}
                       name={labels[i] || t('z2.compare.seriesFallback')}
-                      stroke={s.color}
+                      className={i < RIBBON_STOPS.length ? `fe-cl fe-cl-${i}` : 'fe-cl'}
+                      stroke={i < RIBBON_STOPS.length ? `url(#${ribbonUid}-${i})` : s.color}
                       strokeWidth={3}
                       strokeLinecap="round"
                       dot={false}
@@ -2414,10 +2448,13 @@ export default function ComparePage() {
                   key={item.key}
                   className="fe-compare-end"
                   data-testid="compare-end-label"
-                  style={{ top: item.top, width: endLabelWidth - 10, borderLeftColor: item.color }}
+                  style={{ top: item.top, width: endLabelWidth - 10, '--bead': item.color }}
                 >
-                  <span className="fe-compare-end__name">{item.name}</span>
-                  <span className="fe-compare-end__value fe-num">{item.text}</span>
+                  {item.flag ? <span className="fe-compare-end__flag" aria-hidden="true">{item.flag}</span> : <span className="fe-compare-end__flag fe-compare-end__flag--dot" aria-hidden="true" />}
+                  <span className="fe-compare-end__text">
+                    <span className="fe-compare-end__name">{item.name}</span>
+                    <span className="fe-compare-end__value fe-num">{item.text}</span>
+                  </span>
                 </div>
               ))}
               {/* Знак сайта стоит под графиком, а не поверх него: раньше он налезал на подписи дат. */}
@@ -2463,7 +2500,7 @@ export default function ComparePage() {
         {hasData && !loading && (
           <div
             data-block="compare-settings"
-            className="mt-5 grid gap-4 pt-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6 fe-divider"
+            className="mt-5 grid gap-4 pt-5 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6 k5-seam k5-seam--top"
           >
             <div className="min-w-0">
               <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-secondary">
@@ -2556,7 +2593,7 @@ export default function ComparePage() {
 
       {hasData && analysisSummary.metrics.some((metric) => metric.last) && (
         <section data-block="compare-analysis" className="fe-panel fe-compare-analysis rounded-[2rem] p-5 md:p-7">
-          <div className="mb-5 flex flex-col gap-2 pb-4 sm:flex-row sm:items-end sm:justify-between fe-divider-b">
+          <div className="mb-5 flex flex-col gap-2 pb-5 sm:flex-row sm:items-end sm:justify-between k5-seam">
             <div>
               <div className="text-sm font-medium text-champagne-ink">
                 {t('compare.analysis.eyebrow')}
@@ -2615,7 +2652,7 @@ export default function ComparePage() {
                   {/п\.\s?п\.|p\.p\./.test(changeValue.unitShort || '') && (
                     <p className="mt-1 text-xs leading-snug text-text-tertiary">{t('x4.compare.ppHint')}</p>
                   )}
-                  <div className="mt-3 pt-2.5 text-xs text-text-secondary fe-divider">
+                  <div className="mt-3 pt-2.5 text-xs text-text-secondary">
                     {formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}
                   </div>
                 </div>

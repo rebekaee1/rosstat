@@ -24,6 +24,7 @@ import { WorldHeroLine } from './WorldStatTiles';
 import IndicatorHeroValue from './IndicatorHeroValue';
 import { indicatorPolarity } from '../lib/deltaTone';
 import '../styles/z4-indicator.css';
+import '../styles/k5-pages.css';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';

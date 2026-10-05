@@ -32,6 +32,7 @@ import SourceLink from '../components/SourceLink';
 import Button from '../components/Button';
 import '../styles/platform-pages.css';
 import '../styles/indicator-russia.css';
+import '../styles/k5-pages.css';
 
 function ruDateShort(iso) {
   if (!iso) return '';
@@ -256,17 +257,17 @@ export default function TodayIndicatorPage() {
 
           <section className="mb-8">
             <h2 className="font-display text-lg font-semibold text-text-primary mb-3">{t('today.page.recent')}</h2>
-            <div className="overflow-x-auto rounded-[1.5rem] fe-glass-lite">
+            <div className="k5-table overflow-x-auto rounded-[1.5rem] fe-glass-lite">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-obsidian-light/50 text-left text-[13px] text-text-secondary">
+                  <tr className="text-left text-[13px] text-text-secondary">
                     <th className="px-4 py-2.5 font-semibold">{t('today.page.colDate')}</th>
                     <th className="px-4 py-2.5 font-semibold">{indicator.unit || t('today.page.colValue')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[...points].reverse().slice(0, 15).map((row) => (
-                    <tr key={row.date} className="border-t border-border-subtle tabular-nums">
+                    <tr key={row.date} className="tabular-nums">
                       <td className="px-4 py-2 text-text-secondary">{ruDateShort(row.date)}</td>
                       <td className="px-4 py-2 text-text-primary">{formatTodayNumber(row.value)}</td>
                     </tr>
