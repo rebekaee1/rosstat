@@ -1,0 +1,153 @@
+/* Волна 6, зона D: рейтинг стран и поиск. Классы `.w6d-*`; ничего глобального не переопределяется. */
+
+/* ── Выбор показателя ── */
+.w6d-subtitle { margin: 4px 0 0; max-width: 56rem; color: var(--color-text-secondary); font-size: 15px; line-height: 1.45; }
+.w6d-picker { min-width: 0; }
+.w6d-picker__label { margin: 0 0 8px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
+.w6d-picker__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.w6d-picker__quick { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.w6d-quick,
+.w6d-picker__all {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 0 14px;
+  border: 1px solid var(--color-border-subtle); border-radius: 14px;
+  background: var(--color-surface); color: var(--color-text-primary);
+  font: inherit; font-size: 14px; font-weight: 600; line-height: 1.2; text-decoration: none;
+  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+.w6d-quick svg { color: var(--color-champagne-ink); flex-shrink: 0; }
+.w6d-quick.is-active,
+.w6d-tile.is-active {
+  border-color: var(--color-border-champagne);
+  background: color-mix(in srgb, var(--color-champagne) 14%, var(--color-surface));
+}
+.w6d-picker__all { border-style: dashed; color: var(--color-champagne-ink); }
+.w6d-picker__all.is-open { border-style: solid; border-color: var(--color-border-champagne); }
+.w6d-picker__chev { transition: transform 0.18s ease; }
+.w6d-picker__all.is-open .w6d-picker__chev { transform: rotate(180deg); }
+.w6d-picker__current { display: flex; align-items: center; gap: 6px; margin: 8px 0 0; color: var(--color-text-secondary); font-size: 13px; }
+.w6d-picker__current svg { color: var(--color-champagne-ink); }
+@media (hover: hover) {
+  .w6d-quick:hover, .w6d-picker__all:hover, .w6d-tile:hover { border-color: var(--color-border-champagne); }
+}
+.w6d-picker__panel {
+  margin-top: 12px; padding: 12px; border: 1px solid var(--color-border-subtle); border-radius: 20px;
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-champagne) 4%);
+}
+.w6d-picker__search {
+  display: flex; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 12px; padding: 0 12px;
+  border: 1px solid var(--color-border-subtle); border-radius: 12px; background: var(--color-surface); color: var(--color-text-tertiary);
+}
+.w6d-picker__search:focus-within { border-color: var(--color-border-champagne); }
+.w6d-picker__search input {
+  flex: 1; min-width: 0; min-height: 42px; border: 0; outline: 0; background: transparent;
+  color: var(--color-text-primary); font: inherit; font-size: 16px;
+}
+.w6d-picker__empty { margin: 4px 2px; color: var(--color-text-secondary); font-size: 14px; }
+.w6d-group + .w6d-group { margin-top: 14px; }
+.w6d-group__title { margin: 0 0 8px; color: var(--color-text-secondary); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.w6d-group__tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr)); gap: 8px; }
+.w6d-tile {
+  display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 52px; padding: 8px 12px;
+  border: 1px solid var(--color-border-subtle); border-radius: 14px; background: var(--color-surface);
+  color: var(--color-text-primary); text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.w6d-tile__icon {
+  display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border-radius: 11px;
+  background: color-mix(in srgb, var(--color-champagne) 14%, transparent); color: var(--color-champagne-ink);
+}
+.w6d-tile__text { display: flex; flex-direction: column; min-width: 0; }
+.w6d-tile__name { font-size: 14px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.w6d-tile__unit { margin-top: 1px; color: var(--color-text-secondary); font-size: 12px; line-height: 1.3; }
+
+/* ── Смена показателя: прежний срез остаётся, пока приходит новый ── */
+.w6d-switching { opacity: 0.55; transition: opacity 0.2s ease; pointer-events: none; }
+.w6d-switching-note { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--color-text-secondary); font-size: 14px; }
+
+/* ── Таблица рейтинга ── */
+.w6d-table .w6d-col-bar { width: 22%; min-width: 5rem; }
+.w6d-bar { display: block; height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--color-champagne) 14%, transparent); overflow: hidden; }
+.w6d-bar > span { display: block; height: 100%; border-radius: inherit; background: var(--color-champagne); opacity: 0.8; }
+.w6d-spark { display: inline-block; vertical-align: middle; }
+.w6d-spark--empty { width: 76px; height: 26px; }
+.w6d-delta { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--color-text-secondary); }
+.w6d-delta--good { color: var(--color-positive); }
+.w6d-delta--bad { color: var(--color-negative); }
+.w6d-delta--none { color: var(--color-text-tertiary); font-weight: 400; }
+.w6d-rank-sub { display: block; margin-top: 2px; font-weight: 400; }
+.w6d-rank-sub .w6d-delta { font-size: 12px; }
+@media (max-width: 899px) { .w6d-table .w6d-col-bar { display: none; } }
+@media (max-width: 1099px) { .w6d-table .w6d-col-trend { display: none; } }
+.w6d-showall {
+  display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: 48px; margin-top: 10px;
+  border: 1px solid var(--color-border-subtle); border-radius: 14px; background: var(--color-surface);
+  color: var(--color-champagne-ink); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; touch-action: manipulation;
+}
+.w6d-showall .w6d-rot { transform: rotate(180deg); }
+@media (hover: hover) { .w6d-showall:hover { border-color: var(--color-border-champagne); } }
+.w6d-median { margin: 10px 2px 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.5; }
+
+/* ── Другие годы, места за 5 лет ── */
+.w6d-block-title { margin: 0 0 10px; font-family: var(--font-display, inherit); font-size: 20px; font-weight: 700; color: var(--color-text-primary); }
+.w6d-years, .w6d-shifts { margin: 28px 0; }
+.w6d-years__list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.w6d-year-link {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 64px; min-height: 44px; padding: 0 14px;
+  border: 1px solid var(--color-border-subtle); border-radius: 12px; background: var(--color-surface);
+  color: var(--color-text-primary); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; text-decoration: none;
+}
+@media (hover: hover) { .w6d-year-link:hover { border-color: var(--color-border-champagne); color: var(--color-champagne-ink); } }
+.w6d-shifts__lead { margin: -4px 0 12px; color: var(--color-text-secondary); font-size: 14px; }
+.w6d-shifts__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 16px; }
+.w6d-shifts__head { margin: 0 0 6px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
+.w6d-shifts__list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.w6d-shift {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; min-height: 44px; padding: 6px 12px;
+  border: 1px solid var(--color-border-subtle); border-radius: 12px; background: var(--color-surface);
+}
+.w6d-shift__name { display: flex; align-items: center; min-height: 32px; color: var(--color-text-primary); font-size: 14px; font-weight: 600; text-decoration: none; overflow-wrap: anywhere; }
+.w6d-shift__delta { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.w6d-shift__delta.is-up { color: var(--color-positive); }
+.w6d-shift__delta.is-down { color: var(--color-negative); }
+.w6d-shift__places { color: var(--color-text-tertiary); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .w6d-picker__chev, .w6d-switching, .w6d-quick, .w6d-tile, .w6d-picker__all { transition: none; }
+}
+
+/* ── Поиск: группы, строки-семьи, переключатели, значения ── */
+.w6d-sr-group { padding: 4px 0 2px; }
+.w6d-sr-title { margin: 0; padding: 10px 16px 4px; color: var(--color-text-secondary); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.w6d-sr-row { position: relative; }
+.w6d-sr-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 10px 68px; }
+.w6d-sr-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px;
+  border: 1px solid var(--color-border-subtle); border-radius: 999px; background: var(--color-surface);
+  color: var(--color-text-primary); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; touch-action: manipulation;
+}
+.w6d-sr-chip[aria-current='true'] { border-color: var(--color-border-champagne); background: color-mix(in srgb, var(--color-champagne) 14%, var(--color-surface)); }
+@media (hover: hover) { .w6d-sr-chip:hover { border-color: var(--color-border-champagne); } }
+.w6d-sr-value { display: flex; align-items: center; gap: 10px; margin-top: 4px; color: var(--color-text-primary); }
+.w6d-sr-value strong { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.w6d-sr-value small { color: var(--color-text-secondary); font-size: 12px; }
+.w6d-sr-value .w6d-spark { color: var(--color-champagne-ink); }
+.w6d-open-progress {
+  position: relative; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 12px 16px;
+  color: var(--color-text-primary); font-size: 15px; font-weight: 600;
+}
+.w6d-open-progress__bar { position: absolute; left: 0; right: 0; top: 0; height: 3px; overflow: hidden; background: color-mix(in srgb, var(--color-champagne) 18%, transparent); }
+.w6d-open-progress__bar::after {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 40%; border-radius: 999px; background: var(--color-champagne);
+  animation: w6d-slide 1.1s ease-in-out infinite;
+}
+@keyframes w6d-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+@media (prefers-reduced-motion: reduce) { .w6d-open-progress__bar::after { animation: none; width: 100%; opacity: 0.6; } }
+.fe-search-field input:placeholder-shown { caret-color: transparent; }
+
+.w6d-sr-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.fe-search-row__tile .w6d-sr-globe {
+  position: absolute; right: -5px; bottom: -5px; width: 18px; height: 18px; padding: 2px; border-radius: 50%;
+  background: var(--color-surface); color: var(--color-champagne-ink); box-shadow: 0 0 0 1px var(--color-border-subtle);
+}

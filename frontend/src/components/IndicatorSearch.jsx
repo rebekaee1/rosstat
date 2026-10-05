@@ -1,25 +1,42 @@
 import { useState, useEffect, useMemo, useRef, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
-import { Landmark, MapPin, Search, SearchX, TrendingUp, X } from 'lucide-react';
-import { cn } from '../lib/format';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  BarChart3, Briefcase, Building2, Coins, Fuel, Gem, Globe2, Home, Landmark, MapPin, Percent, Search, SearchX,
+  Tag, TrendingUp, Users, X,
+} from 'lucide-react';
+import { cn, formatDate, formatValue } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
-import { useWorldCountries } from '../lib/worldApi';
-import { dedupeSearchRows, describeSearchResult, searchExamples } from '../lib/searchExamples';
-import { friendlySearchName, splitSearchRows } from '../lib/searchGroups';
+import { useWorldCountries, useWorldRatingConcepts } from '../lib/worldApi';
+import { dedupeSearchRows, describeSearchResult, searchSuggestions } from '../lib/searchExamples';
+import { friendlySearchName } from '../lib/searchGroups';
+import { buildSearchView, COUNTRY_CHIPS_VISIBLE } from '../lib/searchView';
+import { isGlobalMarketRow, plainUnit, searchTopic } from '../lib/searchText';
+import { homeConceptLabel } from '../lib/homeWorkbench';
+import { splitUnit } from '../lib/countryFlag';
 import Chip from './Chip';
 import CountryFlag from './CountryFlag';
+import { RatingSpark } from './RatingExtras';
 import '../styles/shell.css';
+import '../styles/w6d.css';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
 const SEARCH_TRACK_DEBOUNCE_MS = 900;
 const SEARCH_MIN_LEN = 2;
 
-const KIND_ICON = { country: Landmark, region: MapPin, subnational_region: MapPin };
+const KIND_ICON = { country: Landmark, region: MapPin, subnational_region: MapPin, rating: BarChart3 };
+const TOPIC_ICON = {
+  labour: Briefcase, prices: Tag, people: Users, energy: Fuel, metal: Gem, money: Coins, rates: Percent,
+  housing: Home, output: Building2, state: Landmark, chart: TrendingUp,
+};
+/** Сколько ждём переход на страницу, прежде чем снять индикатор «Открываем» (панель остаётся, можно повторить). */
+const OPENING_TIMEOUT_MS = 12000;
+const ENTITY_KINDS = new Set(['country', 'region', 'subnational_region']);
+const PERIOD_FORMAT = { daily: 'day', weekly: 'day', monthly: 'full', quarterly: 'quarterly', annual: 'annual' };
 
 /** Подсказка в поле на главной: «Например: Инфляция в США», примеры плавно сменяют друг друга. */
 function RotatingHint({ lead, items }) {
@@ -44,6 +61,7 @@ export default function IndicatorSearch({
   const t = useT();
   const { locale } = useLocale();
   const navigate = useNavigate();
+  const location = useLocation();
   const resultId = useId();
   // Поиск грузится лениво: при hover/focus кнопки или первом открытии (кэш React-Query — 5 мин).
   // Переход с серверной 404 или внешней ссылки: `/?q=инфляция` сразу открывает поиск с этим запросом.
@@ -54,6 +72,11 @@ export default function IndicatorSearch({
   const [query, setQuery] = useState(seed);
   const [isComposing, setIsComposing] = useState(false);
   const [hi, setHi] = useState(0); // highlighted result index
+  // После выбора панель не исчезает, пока страница не открылась: полоса «Открываем: …» вместо тишины.
+  const [opening, setOpening] = useState(null);
+  // Подсказка без готового адреса: ищем и открываем лучший результат сами.
+  const [autoOpen, setAutoOpen] = useState(null);
+  const [expandedKey, setExpandedKey] = useState('');
   const triggerRef = useRef(null);
   const inputRef = useRef(null);
   const listRef = useRef(null);
@@ -71,7 +94,8 @@ export default function IndicatorSearch({
   const isSearchPending = Boolean(qTrim) && (isComposing || globalSearch.isDebouncing || globalSearch.isPending);
   const isSearchError = Boolean(qTrim) && !globalSearch.isDebouncing && globalSearch.isError;
   const isLoading = isSearchPending;
-  const popular = useMemo(() => searchExamples(t), [t]);
+  const suggestions = useMemo(() => searchSuggestions(t), [t]);
+  const popular = useMemo(() => suggestions.map((item) => item.text), [suggestions]);
   // Флаги в выдаче: код страны берём из общего (кэшированного) каталога стран, он грузится только при открытом поиске.
   const countriesQ = useWorldCountries({ enabled: shouldLoad && open });
   const flagBySlug = useMemo(() => {
@@ -81,6 +105,9 @@ export default function IndicatorSearch({
     }
     return map;
   }, [countriesQ.data]);
+  // Каталог рейтингов нужен только для строк «ВВП: рейтинг стран»; грузится, когда есть запрос.
+  const ratingQ = useWorldRatingConcepts({ enabled: shouldLoad && open && qTrim.length >= SEARCH_MIN_LEN });
+  const ratingConcepts = useMemo(() => ratingQ.data?.concepts || [], [ratingQ.data]);
 
   // «Долго»: отметка ставится таймером для конкретной фразы и гаснет сама, когда фраза или состояние меняются.
   const [slowFor, setSlowFor] = useState('');
@@ -100,21 +127,27 @@ export default function IndicatorSearch({
     (item) => (locale === 'en' && item.name_en ? item.name_en : item.name),
     [locale],
   );
-  const detailOf = useCallback((item) => describeSearchResult(item, t), [t]);
-  const allRows = useMemo(() => {
-    if (!qTrim) {
-      return popular.map((text, i) => ({
-        kind: 'suggestion', key: `suggest:${i}`, name: text, query: text,
-      }));
-    }
-    return dedupeSearchRows(results, nameOf, detailOf);
-  }, [qTrim, popular, results, nameOf, detailOf]);
-  // Вариации одного показателя сворачиваются в «Ещё варианты»: сначала человек видит самое подходящее.
-  const grouped = useMemo(() => (qTrim ? splitSearchRows(allRows, nameOf) : null), [qTrim, allRows, nameOf]);
+  const detailOf = useCallback((item) => describeSearchResult(item, t, locale), [t, locale]);
+  const titleOf = useCallback((item) => friendlySearchName(item, nameOf(item), t, locale), [nameOf, t, locale]);
+  const ratingLabelOf = useCallback((concept) => homeConceptLabel(concept.slug, t, concept.name), [t]);
+  const suggestionRows = useMemo(() => suggestions.map((item, i) => ({
+    type: 'suggestion', id: `suggest:${i}`, item: { kind: 'suggestion', key: `suggest:${i}`, path: item.path }, name: item.text, query: item.text, path: item.path,
+  })), [suggestions]);
+  // Раскладка: «Страны», «Рейтинги», «Показатели»; вариации частот и страны свёрнуты в строки, лишнее — в «Ещё варианты».
+  const view = useMemo(() => {
+    if (!qTrim) return null;
+    const deduped = dedupeSearchRows(results, nameOf, detailOf);
+    return buildSearchView(deduped, {
+      query: qTrim, intent: globalSearch.data?.intent || null, locale, nameOf, titleOf, detailOf, t, ratingConcepts, ratingLabelOf,
+    });
+  }, [qTrim, results, nameOf, detailOf, titleOf, t, locale, ratingConcepts, ratingLabelOf, globalSearch.data?.intent]);
   const [moreFor, setMoreFor] = useState('');
   const showMore = Boolean(qTrim) && moreFor === qTrim;
-  const rows = grouped && !showMore ? grouped.primary : allRows;
-  const hiddenCount = grouped ? grouped.more.length : 0;
+  const rows = useMemo(() => {
+    if (!qTrim) return suggestionRows;
+    return view ? [...view.flat, ...(showMore ? view.more : [])] : [];
+  }, [qTrim, view, showMore, suggestionRows]);
+  const hiddenCount = view ? view.hiddenCount : 0;
   const highlighted = Math.max(0, Math.min(hi, rows.length - 1));
 
   const close = useCallback(() => {
@@ -127,16 +160,13 @@ export default function IndicatorSearch({
     setQuery('');
     setIsComposing(false);
     setHi(0);
+    setOpening(null);
+    setAutoOpen(null);
+    setExpandedKey('');
   }, []);
 
-  const go = useCallback((item, position = null) => {
-    if (item?.kind === 'suggestion') {
-      // Подсказка не уводит со страницы: подставляет запрос, поиск показывает результаты.
-      setQuery(item.query);
-      setHi(0);
-      inputRef.current?.focus();
-      return;
-    }
+  // Открыть страницу: панель остаётся с полосой «Открываем: …», пока адрес не сменился (или 12 секунд).
+  const openTarget = useCallback((item, { label = '', position = null } = {}) => {
     if (!item?.path?.startsWith('/') || item.path.startsWith('//') || item.path.includes('\\')) return;
     const q = (queryRef.current || '').trim();
     selectedRef.current = true;
@@ -151,10 +181,59 @@ export default function IndicatorSearch({
       interaction_id: interactionRef.current,
       ...(position ? { position } : {}),
     });
-    close();
-    if (item.navigation === 'document') window.location.assign(item.path);
-    else navigate(item.path);
-  }, [close, navigate, globalSearch.data?.version]);
+    const pathname = item.path.split(/[?#]/)[0];
+    if (item.navigation === 'document') {
+      setOpening({ name: label, pathname });
+      window.location.assign(item.path);
+      return;
+    }
+    if (pathname === location.pathname) {
+      close();
+      navigate(item.path);
+      return;
+    }
+    setOpening({ name: label, pathname });
+    navigate(item.path);
+  }, [close, navigate, location.pathname, globalSearch.data?.version]);
+
+  // Страница открылась: панель закрывается сама. Если переход затянулся, полосу снимаем: можно выбрать снова.
+  useEffect(() => {
+    if (!opening) return undefined;
+    // Адрес сменился: закрываем в следующем такте (состояние не меняется прямо в теле эффекта).
+    const arrived = opening.pathname === location.pathname;
+    const timer = setTimeout(arrived ? close : () => setOpening(null), arrived ? 0 : OPENING_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [opening, location.pathname, close]);
+
+  const startAutoOpen = useCallback((row) => {
+    setAutoOpen({ q: row.query, label: row.name });
+    globalSearch.flush?.(row.query);
+    setQuery(row.query);
+    setHi(0);
+  }, [globalSearch]);
+
+  const go = useCallback((row, position = null, chipItem = null) => {
+    if (row?.type === 'suggestion') {
+      // Подсказка с готовым адресом открывает страницу сразу; остальные ищут и открывают лучший результат сами.
+      if (row.path) openTarget({ kind: 'suggestion', key: row.id, path: row.path, navigation: 'spa' }, { label: row.name });
+      else startAutoOpen(row);
+      return;
+    }
+    const item = chipItem || row?.open || row?.item;
+    openTarget(item, { label: chipItem ? (row.name || '') : (row?.name || ''), position });
+  }, [openTarget, startAutoOpen]);
+
+  // Автооткрытие: как только пришла выдача на подсказку, открываем лучший показатель (не страну).
+  useEffect(() => {
+    if (!autoOpen || !view || qTrim !== autoOpen.q || isSearchPending) return undefined;
+    const flat = view.flat;
+    const target = isSearchError ? null : flat.find((r) => r.type !== 'rating' && !ENTITY_KINDS.has(r.item?.kind)) || flat[0];
+    const timer = setTimeout(() => {
+      setAutoOpen(null);
+      if (target) go(target, 1);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [autoOpen, view, qTrim, isSearchPending, isSearchError, go]);
 
   // Cmd+K / Ctrl+K — открыть; Escape — закрыть; '/' — открыть (если не в инпуте)
   useEffect(() => {
@@ -279,6 +358,28 @@ export default function IndicatorSearch({
     return /Mac OS X|Macintosh|iPhone|iPad|iPod/i.test(ua);
   })();
 
+  const indexById = useMemo(() => new Map(rows.map((row, i) => [row.id, i])), [rows]);
+  const renderRow = (row) => {
+    const i = indexById.get(row.id);
+    return (
+      <SearchRow
+        key={row.id}
+        row={row}
+        index={i}
+        id={`${resultId}-result-${i}`}
+        active={i === highlighted}
+        flagCode={flagBySlug.get(row.item?.country_slug) || ''}
+        flagBySlug={flagBySlug}
+        locale={locale}
+        t={t}
+        expanded={expandedKey === row.id}
+        onToggle={() => setExpandedKey(expandedKey === row.id ? '' : row.id)}
+        onHover={setHi}
+        onPick={go}
+      />
+    );
+  };
+
   const mod = isAppleModKey ? '⌘' : 'Ctrl';
   const placeholder = inlinePlaceholder || t('home.searchPlaceholder');
 
@@ -325,7 +426,8 @@ export default function IndicatorSearch({
             {examples?.length
               ? <RotatingHint lead={t('shell.search.hintLead')} items={examples} />
               : <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>}
-            <kbd className="hidden sm:inline text-xs font-sans text-text-tertiary border border-border-subtle rounded px-1.5 py-0.5">
+            {/* Подсказка про клавиши только там, где есть клавиатура и мышь: на планшете «⌘K» ничего не говорит. */}
+            <kbd className="hidden pointer-fine:inline text-xs font-sans text-text-tertiary border border-border-subtle rounded px-1.5 py-0.5">
               {isAppleModKey ? '⌘K' : 'Ctrl+K'}
             </kbd>
           </button>
@@ -413,9 +515,12 @@ export default function IndicatorSearch({
               />
               <button
                 type="button"
-                onClick={close}
+                onClick={() => {
+                  // Крестик сначала очищает запрос, и только пустое поле закрывает окно.
+                  if (query) { setAutoOpen(null); onQueryChange(''); inputRef.current?.focus(); } else close();
+                }}
                 className={cn(FOCUS_RING, 'fe-press flex min-h-11 min-w-11 items-center justify-center rounded-xl p-1 text-text-tertiary hover:text-text-primary')}
-                aria-label={t('common.close')}
+                aria-label={query ? t('w6d.search.clear') : t('common.close')}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -433,22 +538,28 @@ export default function IndicatorSearch({
             )}
 
             <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2 sm:max-h-[60vh]" role="listbox" id={`${resultId}-list`} aria-busy={isLoading}>
+              {opening || (autoOpen && qTrim === autoOpen.q) ? (
+                <div className="w6d-open-progress" role="status" aria-live="polite" data-testid="search-opening">
+                  <span className="w6d-open-progress__bar" aria-hidden="true" />
+                  <span className="fe-search-spinner shrink-0" aria-hidden="true" />
+                  <span className="min-w-0 break-words">{t('w6d.search.opening', { name: (opening?.name || autoOpen?.label || '') })}</span>
+                </div>
+              ) : null}
               {!qTrim ? (
-                <div role="group" aria-labelledby={`${resultId}-popular`}>
+                <div role="group" aria-labelledby={`${resultId}-popular`} className={opening ? 'pointer-events-none opacity-60' : undefined}>
                   <p id={`${resultId}-popular`} className="px-4 pb-1 pt-1 text-sm font-semibold text-text-secondary">
                     {t('shell.search.popular')}
                   </p>
-                  {rows.map((item, i) => (
+                  {rows.map((row, i) => (
                     <SearchRow
-                      key={item.key}
-                      item={item}
+                      key={row.id}
+                      row={row}
                       index={i}
                       id={`${resultId}-result-${i}`}
                       active={i === highlighted}
-                      name={item.name}
-                      detail=""
                       onHover={setHi}
                       onPick={go}
+                      onWarm={() => { if (!row.path) globalSearch.prefetch?.(row.query); }}
                     />
                   ))}
                 </div>
@@ -499,25 +610,23 @@ export default function IndicatorSearch({
                           )}
                 </div>
               ) : (
-                <>
-                  {rows.map((item, i) => (
-                    <SearchRow
-                      key={item.key}
-                      item={item}
-                      index={i}
-                      id={`${resultId}-result-${i}`}
-                      active={i === highlighted}
-                      name={friendlySearchName(item, nameOf(item), t)}
-                      detail={detailOf(item)}
-                      flagCode={flagBySlug.get(item.country_slug) || ''}
-                      onHover={setHi}
-                      onPick={go}
-                    />
+                <div className={opening ? 'pointer-events-none opacity-60' : undefined}>
+                  {view?.sections.map((section) => (
+                    <div key={section.id} role="group" aria-labelledby={`${resultId}-sec-${section.id}`} className="w6d-sr-group">
+                      <p id={`${resultId}-sec-${section.id}`} className="w6d-sr-title">{t(`w6d.search.section.${section.id}`)}</p>
+                      {section.rows.map((row) => renderRow(row))}
+                    </div>
                   ))}
+                  {showMore && view?.more.length > 0 && (
+                    <div role="group" aria-labelledby={`${resultId}-sec-more`} className="w6d-sr-group">
+                      <p id={`${resultId}-sec-more`} className="w6d-sr-title">{t('w6d.search.section.more')}</p>
+                      {view.more.map((row) => renderRow(row))}
+                    </div>
+                  )}
                   {globalSearch.data?.has_more && !isLoading && (
                     <p className="px-4 pb-2 pt-3 text-sm text-text-secondary">{t('search.refine')}</p>
                   )}
-                </>
+                </div>
               )}
             </div>
 
@@ -545,38 +654,112 @@ export default function IndicatorSearch({
   );
 }
 
-/** Одна строка выдачи: значок вида, название, подпись «где и как часто», крупная цель нажатия. */
-function SearchRow({ item, index, id, active, name, detail, flagCode = '', onHover, onPick }) {
-  const isSuggestion = item.kind === 'suggestion';
-  const Icon = isSuggestion ? Search : KIND_ICON[item.kind] || TrendingUp;
-  // Страна — её флаг вместо значка; у региона и показателя значок вида, а флаг страны — маленьким бейджем в углу.
+/** Последнее значение строки: «4,0 %, август 2026» (число и месяц по языку страницы). */
+function latestText(item, locale) {
+  const latest = item?.latest;
+  if (!latest || latest.value == null || !Number.isFinite(Number(latest.value))) return '';
+  const abs = Math.abs(Number(latest.value));
+  const value = formatValue(latest.value, abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
+  const short = splitUnit(plainUnit(String(item.unit || '').trim(), locale)).short;
+  const period = latest.date ? formatDate(latest.date, PERIOD_FORMAT[item.frequency] || 'full', locale) : '';
+  return [short ? `${value}\u00A0${short}` : value, period && period !== '—' ? period : ''].filter(Boolean).join(', ');
+}
+
+/**
+ * Одна строка выдачи: значок по теме, название, подпись «где и как часто», последнее значение с мини-графиком.
+ * Строка-семья несёт переключатель частот, строка «по странам» — кнопки стран; сама строка открывает главное.
+ */
+function SearchRow({
+  row, index, id, active, flagCode = '', flagBySlug = null, locale = 'ru', t, expanded = false, onToggle, onHover, onPick, onWarm,
+}) {
+  const isSuggestion = row.type === 'suggestion';
+  const item = row.item || {};
+  const globalMarket = !isSuggestion && isGlobalMarketRow(item);
+  const Icon = isSuggestion ? Search : KIND_ICON[item.kind] || TOPIC_ICON[searchTopic(item)] || TrendingUp;
+  // Страна — её флаг вместо значка; у региона и показателя значок темы, а флаг страны — маленьким бейджем в углу.
+  // Мировая цена (нефть, газ) получает глобус: чужой флаг на ней сбивает с толку.
   const flagAsIcon = item.kind === 'country' && Boolean(flagCode);
-  const flagBadge = !isSuggestion && !flagAsIcon && Boolean(flagCode);
+  const flagBadge = !isSuggestion && !flagAsIcon && !globalMarket && row.type !== 'byCountry' && row.type !== 'rating' && Boolean(flagCode);
+  const value = row.type === 'item' || row.type === 'family' ? latestText(item, locale) : '';
+  const spark = (row.type === 'item' || row.type === 'family') && Array.isArray(item.spark) && item.spark.length >= 3
+    ? item.spark.map((v) => ({ value: v })) : null;
+  const countries = row.type === 'byCountry' ? row.countries : [];
+  const shownCountries = expanded ? countries : countries.slice(0, COUNTRY_CHIPS_VISIBLE);
   return (
-    <button
-      style={isSuggestion ? { '--fe-delay': `${Math.min(index, 5) * 0.03}s`, '--fe-duration': '0.2s', '--fe-rise': '6px' } : undefined}
-      type="button"
-      data-row={index}
-      id={id}
-      onMouseEnter={() => onHover(index)}
-      onClick={() => onPick(item, index + 1)}
-      className={cn(
-        'fe-search-row w-full min-h-14 text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
-        isSuggestion && 'fe-reveal',
-        active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
-      )}
-      role="option"
-      tabIndex={-1}
-      aria-selected={active}
-    >
-      <span className="fe-search-row__tile relative grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-champagne/10 text-champagne-ink" aria-hidden="true">
-        {flagAsIcon ? <CountryFlag code={flagCode} className="fe-search-row__flag" /> : <Icon size={18} />}
-        {flagBadge ? <CountryFlag code={flagCode} className="fe-search-row__badge" /> : null}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-[15px] font-medium leading-snug text-text-primary whitespace-normal break-words">{name}</span>
-        {detail ? <span className="mt-0.5 block text-[13px] leading-snug text-text-secondary whitespace-normal break-words">{detail}</span> : null}
-      </span>
-    </button>
+    <div className="w6d-sr-row">
+      <button
+        type="button"
+        data-row={index}
+        id={id}
+        onMouseEnter={() => { onHover(index); onWarm?.(); }}
+        onFocus={onWarm}
+        onTouchStart={onWarm}
+        onClick={() => onPick(row, index + 1)}
+        className={cn(
+          'fe-search-row w-full min-h-14 text-left px-4 py-2.5 flex items-center gap-3 transition-colors',
+          active ? 'bg-champagne/10' : 'hover:bg-obsidian-lighter/60',
+        )}
+        role="option"
+        tabIndex={-1}
+        aria-selected={active}
+      >
+        <span className="fe-search-row__tile relative grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-champagne/10 text-champagne-ink" aria-hidden="true">
+          {flagAsIcon ? <CountryFlag code={flagCode} className="fe-search-row__flag" /> : <Icon size={18} />}
+          {flagBadge ? <CountryFlag code={flagCode} className="fe-search-row__badge" /> : null}
+          {globalMarket ? <Globe2 className="w6d-sr-globe" size={14} /> : null}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="w6d-sr-name block text-[15px] font-medium leading-snug text-text-primary">{row.name}</span>
+          {row.detail ? <span className="mt-0.5 block text-[13px] leading-snug text-text-secondary whitespace-normal break-words">{row.detail}</span> : null}
+          {value ? (
+            <span className="w6d-sr-value">
+              <strong>{value}</strong>
+              {spark ? <RatingSpark points={spark} width={56} height={20} label={t('w6d.search.trendAria')} /> : null}
+            </span>
+          ) : null}
+        </span>
+      </button>
+      {row.type === 'family' ? (
+        <div className="w6d-sr-chips" role="group" aria-label={t('w6d.search.freqAria')}>
+          {row.chips.map((chip) => (
+            <button
+              key={chip.frequency}
+              type="button"
+              className="w6d-sr-chip fe-press"
+              aria-current={chip.item === row.item ? 'true' : undefined}
+              onClick={() => onPick(row, index + 1, chip.item)}
+            >
+              {t(`w6d.search.freq.${chip.frequency}`)}
+            </button>
+          ))}
+        </div>
+      ) : null}
+      {row.type === 'byCountry' ? (
+        <div className="w6d-sr-chips">
+          {row.rating ? (
+            <button type="button" className="w6d-sr-chip fe-press" onClick={() => onPick(row, index + 1, row.rating)}>
+              <BarChart3 size={15} aria-hidden="true" />
+              {t('w6d.search.ratingChip')}
+            </button>
+          ) : null}
+          {shownCountries.map((country) => (
+            <button
+              key={country.key}
+              type="button"
+              className="w6d-sr-chip fe-press"
+              onClick={() => onPick(row, index + 1, country)}
+            >
+              {flagBySlug?.get(country.country_slug) ? <CountryFlag code={flagBySlug.get(country.country_slug)} /> : null}
+              {country.country_name}
+            </button>
+          ))}
+          {countries.length > COUNTRY_CHIPS_VISIBLE ? (
+            <button type="button" className="w6d-sr-chip fe-press" aria-expanded={expanded} onClick={onToggle}>
+              {expanded ? t('w6d.search.countryLess') : t('w6d.search.countryMore', { n: countries.length - COUNTRY_CHIPS_VISIBLE })}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   );
 }

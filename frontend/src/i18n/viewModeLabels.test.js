@@ -27,4 +27,11 @@ describe('localizeSource', () => {
     expect(localizeSource('Росстат', 'ru')).toBe('Росстат');
     expect(localizeSource('Евростат', 'ru')).toBe('Евростат');
   });
+
+  it('turns English names the server sent into Russian on ru', () => {
+    expect(localizeSource('Rosstat, Bank of Russia', 'ru')).toBe('Росстат, Банк России');
+    expect(localizeSource('International Monetary Fund', 'ru')).toBe('Международный валютный фонд');
+    expect(localizeSource('Ministry of Finance', 'ru')).toBe('Минфин России');
+    expect(localizeSource('', 'ru')).toBe('');
+  });
 });

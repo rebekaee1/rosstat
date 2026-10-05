@@ -430,3 +430,29 @@ def test_search_endpoint_caches_by_normalized_query_and_locale(monkeypatch):
     run("Дизель"); run("  дизель "); run("дизель", limit=20)
     assert calls == ["Дизель", "дизель"]   # same normalized query/limit is one computation
     assert len(store) == 2
+
+
+def test_latest_value_is_attached_to_series_rows_without_changing_order(search_client):
+    """Wave 6 (D): the first rows carry their own last stored value; ordering and keys are untouched."""
+    body = get(search_client, 'cpi US')
+    row = next(item for item in body['results'] if item.get('code') == 'us-cpi')
+    assert row['latest'] == {'value': 120.0, 'date': '2024-05-01'}
+    assert 'spark' not in row  # one stored point is not a trend
+    russia = get(search_client, 'курс доллара')['results']
+    usd = next(item for item in russia if item.get('code') == 'usd-rub')
+    assert usd['latest']['value'] == 100.0
+    # Territories have no series of their own and stay as they were.
+    assert 'latest' not in get(search_client, 'Германия')['results'][0]
+
+
+def test_latest_trend_needs_three_points():
+    from datetime import date as day
+    from app.services.search_latest import _apply
+    short, long = {}, {}
+    _apply(short, [(day(2024, 1, 1), 1.0), (day(2024, 2, 1), 2.0)])
+    _apply(long, [(day(2024, 1, 1), 1.0), (day(2024, 2, 1), 2.0), (day(2024, 3, 1), 3.5)])
+    assert short == {'latest': {'value': 2.0, 'date': '2024-02-01'}}
+    assert long['spark'] == [1.0, 2.0, 3.5] and long['latest']['date'] == '2024-03-01'
+    empty = {}
+    _apply(empty, [])
+    assert empty == {}

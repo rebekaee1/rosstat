@@ -4,6 +4,7 @@ import { render, screen, fireEvent, cleanup, waitFor, within } from '@testing-li
 import { MemoryRouter } from 'react-router-dom';
 import IndicatorSearch from './IndicatorSearch';
 const localeState = vi.hoisted(() => ({ value: 'ru' }));
+const ratingState = vi.hoisted(() => ({ concepts: [] }));
 const searchState = vi.hoisted(() => ({ data: { results: [], version: 'v2' }, isPending: false, isDebouncing: false, isError: false }));
 vi.mock('../lib/useGlobalSearch', () => ({ default: vi.fn(() => searchState) }));
 vi.mock('../lib/hooks', () => ({ useIndicators: () => ({ data: [] }) }));
@@ -19,12 +20,14 @@ vi.mock('../lib/worldApi', () => ({
   useWorldCountries: () => ({
     data: { countries: [{ slug: 'germany', code: 'DE' }, { slug: 'united-states', code: 'US' }] },
   }),
+  useWorldRatingConcepts: () => ({ data: { concepts: ratingState.concepts } }),
   WORLD_GLOBAL_SEARCH_LIMIT: 50,
 }));
 vi.mock('../lib/track', () => ({ track: vi.fn(), events: {} }));
 vi.mock('../i18n', () => ({ useT: () => key => key, useLocale: () => ({ locale: localeState.value }) }));
 beforeEach(() => {
   localeState.value = 'ru';
+  ratingState.concepts = [];
   Object.assign(searchState, { data: { results: [], version: 'v2' }, isPending: false, isDebouncing: false, isError: false });
   HTMLElement.prototype.scrollIntoView = vi.fn();
   // jsdom has no layout. Simulate actual browser rects, including hidden parents.
@@ -79,7 +82,7 @@ it.each([['ru', 'Инфляция в США'], ['en', 'Inflation in the US']])('
   fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
   expect(screen.getByText('shell.search.popular')).toBeTruthy();
   const options = screen.getAllByRole('option');
-  expect(options).toHaveLength(6);
+  expect(options).toHaveLength(8);
   expect(options[0].textContent).toBe(`shell.search.example.1`);
   expect(first).toBeTruthy();
   // Ни кодов рядов, ни категорий базы: только понятные фразы.
@@ -117,7 +120,7 @@ it('result rows show place, frequency and unit without internal codes and collap
   const rows = screen.getAllByRole('option');
   expect(rows).toHaveLength(3);
   const text = rows.map((row) => row.textContent).join('|');
-  expect(text).toContain('Германия — shell.freq.monthly, индекс (2015 = 100)');
+  expect(text).toContain('Германия — shell.freq.monthly, индекс');
   expect(text).toContain('Германия — shell.freq.annual, %');
   expect(text).not.toMatch(/prc_hicp|de-unemp|\//);
 });
@@ -247,7 +250,8 @@ it('review: composition confirms text without selecting or closing', async () =>
   fireEvent.keyDown(document,{key:'Escape',isComposing:true,keyCode:229});
   expect(screen.getByRole('dialog')).toBeTruthy();
   fireEvent.keyDown(input,{key:'Enter'});
-  expect(screen.queryByRole('dialog')).toBeNull();
+  // Панель остаётся, пока страница не открылась (адрес сменился), и только потом закрывается.
+  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 });
 
 it('suspends requests, selectable results and demand telemetry through the complete IME composition', async () => {
@@ -282,7 +286,7 @@ it('explains an unsupported query and associates natural-query help with the inp
   expect(screen.queryByText('search.nothingFound')).toBeNull();
 });
 
-it('review: same-query replacement clamps highlight for aria and Enter', () => {
+it('review: same-query replacement clamps highlight for aria and Enter', async () => {
   searchState.data = {results:[0,1,2].map(i=>({key:'r'+i,name:'Result '+i,path:'/russia/indicator/result-'+i})),version:'v2'};
   const view=render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
   fireEvent.click(screen.getByRole('button',{name:'search.openAria'}));
@@ -295,7 +299,7 @@ it('review: same-query replacement clamps highlight for aria and Enter', () => {
   view.rerender(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
   expect(screen.getByRole('combobox').getAttribute('aria-activedescendant')).toBe(screen.getByRole('option').id);
   fireEvent.keyDown(screen.getByRole('combobox'),{key:'Enter'});
-  expect(screen.queryByRole('dialog')).toBeNull();
+  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 });
 
 it('review: query telemetry retains all 100 candidate keys', async () => {
@@ -321,10 +325,10 @@ it('X3: вариации одного показателя свёрнуты в �
   fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
   fireEvent.change(screen.getByRole('combobox'), { target: { value: 'germany inflation' } });
 
-  // Видны инфляция страны и безработица; четыре вариации спрятаны.
+  // Видна только инфляция страны: безработица запросом не подтверждена и вместе с четырьмя вариациями спрятана.
   const rows = screen.getAllByRole('option');
-  expect(rows).toHaveLength(2);
-  expect(rows[0].textContent).toContain('shell3.search.inflation');
+  expect(rows).toHaveLength(1);
+  expect(rows[0].textContent).toContain('w6d.search.inflationIn');
   expect(rows[0].textContent).not.toMatch(/Гармонизированный/);
   const more = screen.getByRole('button', { name: /shell3\.search\.moreVariants/ });
   expect(more.getAttribute('aria-expanded')).toBe('false');
@@ -333,7 +337,7 @@ it('X3: вариации одного показателя свёрнуты в �
   expect(screen.getAllByRole('option')).toHaveLength(6);
   expect(screen.getByRole('button', { name: 'shell3.search.fewerVariants' }).getAttribute('aria-expanded')).toBe('true');
   fireEvent.click(screen.getByRole('button', { name: 'shell3.search.fewerVariants' }));
-  expect(screen.getAllByRole('option')).toHaveLength(2);
+  expect(screen.getAllByRole('option')).toHaveLength(1);
 });
 
 it('X3: фокус поля поиска рисуется на всей строке поля, а не на голом input', () => {

@@ -5,6 +5,8 @@
  * первым остаётся самый релевантный представитель семьи.
  */
 
+import { inflationTitle, plainTitle } from './searchText';
+
 /** Сколько строк видно, пока человек не нажал «Ещё варианты». */
 export const SEARCH_PRIMARY_LIMIT = 8;
 
@@ -46,12 +48,12 @@ export function splitSearchRows(rows, nameOf, { primaryLimit = SEARCH_PRIMARY_LI
 }
 
 /**
- * Название строки обычными словами: индекс потребительских цен страны — «Инфляция: Германия».
- * Остальные названия остаются как пришли с сервера.
+ * Название строки обычными словами: индекс потребительских цен страны — «Инфляция в Германии»,
+ * служебные слова («ИПЦ», «цепные объёмы», база индекса) убраны. Остальные названия остаются как пришли.
  */
-export function friendlySearchName(item, name, t) {
+export function friendlySearchName(item, name, t, locale = 'ru') {
   if (item?.country_name && HICP_RE.test(String(name || '').trim())) {
-    return t('shell3.search.inflation', { country: item.country_name });
+    return inflationTitle(item.country_name, t, locale);
   }
-  return name;
+  return plainTitle(name, locale);
 }

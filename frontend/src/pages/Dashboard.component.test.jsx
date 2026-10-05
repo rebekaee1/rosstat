@@ -97,8 +97,8 @@ describe('Dashboard', () => {
     expect(screen.getByRole('button', { name: 'Открыть поиск' })).toBeTruthy();
     // Примеры запросов под полем: одно касание до выдачи.
     const examples = screen.getByRole('list', { name: 'Примеры запросов' });
-    expect(examples.textContent).toContain('Инфляция в США');
-    expect(examples.textContent).toContain('ВВП Китая');
+    expect(examples.textContent).toContain('Инфляция в Турции');
+    expect(examples.textContent).toContain('ВВП Индии');
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
   });
 });

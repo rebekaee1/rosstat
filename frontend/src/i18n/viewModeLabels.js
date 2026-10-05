@@ -104,8 +104,26 @@ export function localizeViewModeLabel(label, locale) {
   return LABELS_EN[label] || label;
 }
 
+// Английские названия -> русские; для двух Минфинов берём полное «Минфин России».
+const SOURCE_RU = (() => {
+  const map = {};
+  for (const [ru, en] of Object.entries(SOURCE_EN)) {
+    if (!map[en] || ru.length > map[en].length) map[en] = ru;
+  }
+  return map;
+})();
+
 export function localizeSource(source, locale) {
-  if (locale !== 'en' || !source) return source;
+  if (!source) return source;
+  if (locale !== 'en') {
+    // Русский интерфейс не показывает английские названия источников, даже если сервер отдал их.
+    if (!/[A-Za-z]{3}/.test(source)) return source;
+    let ruOut = source;
+    for (const [en, ru] of Object.entries(SOURCE_RU).sort((a, b) => b[0].length - a[0].length)) {
+      if (ruOut.includes(en)) ruOut = ruOut.split(en).join(ru);
+    }
+    return ruOut;
+  }
   if (SOURCE_EN[source]) return SOURCE_EN[source];
   const entries = Object.entries(SOURCE_EN).sort((a, b) => b[0].length - a[0].length);
   let out = source;

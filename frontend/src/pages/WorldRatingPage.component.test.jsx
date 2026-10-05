@@ -123,7 +123,7 @@ describe('WorldRatingPage', () => {
       { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate?cols=hicp-index' },
     );
 
-    expect(await screen.findByRole('heading', { name: /Рейтинг стран по уровню безработицы/i })).toBeTruthy();
+    expect(await screen.findByRole('heading', { name: /Безработица по странам, 2025/i })).toBeTruthy();
     expect(await screen.findByTestId('world-map-stub')).toBeTruthy();
 
     expect(screen.getAllByRole('link', { name: 'Безработица' }).length).toBeGreaterThan(0);
@@ -228,7 +228,7 @@ describe('WorldRatingPage', () => {
 
     renderPage(
       <WorldRatingPage />,
-      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+      { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' },
     );
 
     await waitFor(() => expect(dataRows()).toHaveLength(1));
@@ -274,7 +274,7 @@ describe('WorldRatingPage', () => {
         benchmark_by_year: {},
       }],
     ]);
-    renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' });
+    renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' });
     await waitFor(() => expect(document.querySelectorAll('.w2-rank-item')).toHaveLength(2));
     // Таблицы нет, значение и единица стоят рядом со страной в одной строке.
     expect(document.querySelector('#rating-table table')).toBeNull();
@@ -318,7 +318,7 @@ describe('WorldRatingPage', () => {
         benchmark_by_year: {},
       }],
     ]);
-    renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' });
+    renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' });
     await waitFor(() => expect(dataRows()).toHaveLength(2));
     expect(screen.queryByText(/Страны без данных/)).toBeNull();
     expect(screen.queryByText(/Все страны мирового каталога имеют значение/)).toBeNull();
@@ -329,7 +329,7 @@ describe('WorldRatingPage', () => {
 
     renderPage(
       <WorldRatingPage />,
-      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+      { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' },
     );
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
@@ -404,7 +404,7 @@ describe('WorldRatingPage', () => {
 
     renderPage(
       <WorldRatingPage />,
-      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+      { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' },
     );
 
     await waitFor(() => {
@@ -493,7 +493,7 @@ describe('WorldRatingPage', () => {
 
     renderPage(
       <WorldRatingPage />,
-      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+      { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' },
     );
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
@@ -504,10 +504,10 @@ describe('WorldRatingPage', () => {
     expect(screen.queryByText('Дополнительные колонки — после входа')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Добавить колонку: Инфляция' }));
 
-    // Колонки: место, страна, значение, инфляция, период.
+    // Колонки: место, страна, значение, изменение, по годам, инфляция, период (полоска доли скрыта от скринридера).
     await waitFor(() => {
       const head = headRow();
-      expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
+      expect(within(head).getAllByRole('columnheader')).toHaveLength(7);
     });
     // Второй добавить нельзя — достигнут гостевой лимит: вместо выбора — приглашение зарегистрироваться.
     fireEvent.click(screen.getByRole('button', { name: 'Добавить показатель' }));
@@ -521,7 +521,7 @@ describe('WorldRatingPage', () => {
 
     renderPage(
       <WorldRatingPage />,
-      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+      { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' },
     );
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
@@ -541,10 +541,10 @@ describe('WorldRatingPage', () => {
       { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate?cols=hicp-index' },
     );
 
-    // Колонки: место, страна, значение, инфляция, период.
+    // Колонки: место, страна, значение, изменение, по годам, инфляция, период (полоска доли скрыта от скринридера).
     await waitFor(() => {
       const head = headRow();
-      expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
+      expect(within(head).getAllByRole('columnheader')).toHaveLength(7);
     });
     expect(screen.queryByRole('link', { name: 'Создать аккаунт' })).toBeNull();
   });
@@ -555,7 +555,7 @@ describe('WorldRatingPage', () => {
 
     renderPage(
       <WorldRatingPage />,
-      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+      { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' },
     );
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
@@ -680,7 +680,7 @@ describe('WorldRatingPage', () => {
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
     const head = headRow();
-    expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
+    expect(within(head).getAllByRole('columnheader')).toHaveLength(7);
     // Шапка доп-колонки несёт единицу измерения своего концепта.
     expect(within(head).getByText(/Инфляция, %/)).toBeTruthy();
     // Значения инфляции взяты из 2025 — ближайшего опубликованного года к базе 2026
@@ -762,7 +762,7 @@ it('сохраняет год из быстрой ссылки и переклю
     [/^\/world\/compare\/map-series\/gdp-usd/, { concept: { slug: 'gdp-usd', name: 'ВВП', unit: 'USD' },
       years: [2024, 2025], values_by_year: { 2024: { DE: point(4100, 2024) }, 2025: { DE: point(4900, 2025) } }, benchmark_by_year: {} }],
   ]);
-  renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/gdp-usd?view=interactive&year=2024#chart' });
+  renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/gdp-usd?view=interactive&year=2024#chart' });
   await waitFor(async () => expect((await planetProps())?.year).toBe(2024));
   expect((await planetProps()).years).toEqual([2024, 2025]);
   expect((await planetProps()).rankingItems).toMatchObject([{ country_code: 'DE', value: 4100 }]);
@@ -802,7 +802,7 @@ it('смена года планеты сохраняет нулевую Рос�
       benchmark_by_year: { 2025: { value: 0, label: 'Сравнимое значение' } },
     }],
   ]);
-  renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' });
+  renderPage(<WorldRatingPage />, { path: '/world/rating/:conceptSlug/:year?', route: '/world/rating/unemployment-rate' });
   await waitFor(async () => expect((await planetProps())?.year).toBe(2025));
   expect((await planetProps()).rankingItems[0]).toMatchObject({ country_code: 'RU', value: 0, rank: 1 });
   expect((await planetProps()).benchmark).toEqual({ value: 0, label: 'Сравнимое значение' });

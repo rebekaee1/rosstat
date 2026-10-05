@@ -1,7 +1,7 @@
 // API-слой мирового блока (bounded context «Мировая экономика»).
 // Отдельно от макро/регионов: своя ось (страна × индикатор × mode).
 // Факты и quality-gated прогнозы остаются в отдельном world API.
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import api, { fetchWorldSearch } from './api';
 import { formatValue } from './format';
 import {
@@ -346,9 +346,8 @@ export function useWorldCompareSnapshot(conceptSlug) {
   });
 }
 
-export function useWorldMapSeries(conceptSlug) {
-  const lk = useLocaleKey();
-  return useQuery({
+function worldMapSeriesOptions(conceptSlug, lk) {
+  return {
     queryKey: worldMapSeriesQueryKey(conceptSlug, lk),
     queryFn: async ({ signal }) => (
       await api.get(`/world/compare/map-series/${conceptSlug}`, { signal })
@@ -357,7 +356,25 @@ export function useWorldMapSeries(conceptSlug) {
     staleTime: STALE,
     gcTime: GC,
     retry: WORLD_SURFACE_RETRY,
+  };
+}
+
+/**
+ * `keepPrevious`: при смене показателя страница рейтинга держит прежний срез на экране, пока приходит новый,
+ * вместо серого каркаса; смену видно по `isPlaceholderData`.
+ */
+export function useWorldMapSeries(conceptSlug, { keepPrevious = false } = {}) {
+  const lk = useLocaleKey();
+  return useQuery({
+    ...worldMapSeriesOptions(conceptSlug, lk),
+    ...(keepPrevious ? { placeholderData: keepPreviousData } : {}),
   });
+}
+
+/** Подгрузить срез показателя заранее (наведение, фокус, касание, простой страницы): к нажатию он уже в кэше. */
+export function prefetchWorldMapSeries(queryClient, conceptSlug, lk = localeKey()) {
+  if (!queryClient || !conceptSlug) return Promise.resolve();
+  return queryClient.prefetchQuery(worldMapSeriesOptions(conceptSlug, lk)).catch(() => {});
 }
 
 export async function fetchWorldAverageSeries(conceptSlug, mode, { signal } = {}) {
@@ -413,8 +430,26 @@ function tidyUnitEn(text) {
     .replace(/(\d{4})=100/g, '$1 = 100');
 }
 
+/** Английские подписи единиц, которые сервер мог отдать к русскому интерфейсу (смена языка, старый кэш). */
+const WORLD_UNIT_RU = Object.freeze({
+  'billion $': 'млрд $',
+  'million $': 'млн $',
+  '$ per person': '$ на человека',
+  '% of the labour force': '% от рабочей силы',
+  '% of population': '% населения',
+  '% of gdp': '% ВВП',
+  '% of eu average per capita': '% от среднего по ЕС на душу населения',
+  'year-over-year change, %': 'изменение за год, %',
+  'ths persons': 'тыс. человек',
+  people: 'человек',
+  persons: 'человек',
+  points: 'пунктов',
+  'million people': 'млн чел.',
+});
+
 function tidyUnitRu(text) {
-  return text
+  const known = WORLD_UNIT_RU[text.toLowerCase()];
+  return (known || text)
     .replace(/%\s*ЭАН/gi, '% от рабочей силы')
     .replace(/(\d{4})=100/g, '$1 = 100');
 }

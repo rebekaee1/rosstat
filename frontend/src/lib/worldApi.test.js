@@ -29,6 +29,10 @@ describe('localizeWorldUnit', () => {
   it('переводит млрд $ на EN и не трогает RU', () => {
     expect(localizeWorldUnit('млрд $', 'en')).toBe('billion $');
     expect(localizeWorldUnit('млрд $', 'ru')).toBe('млрд $');
+    // Английская подпись от сервера не доходит до русского интерфейса.
+    expect(localizeWorldUnit('billion $', 'ru')).toBe('млрд $');
+    expect(localizeWorldUnit('% of GDP', 'ru')).toBe('% ВВП');
+    expect(localizeWorldUnit('$ per person', 'ru')).toBe('$ на человека');
     expect(localizeWorldUnit('% ВВП', 'en')).toBe('% of GDP');
     expect(localizeWorldUnit('% ЭАН', 'en')).toBe('% of the labour force');
     expect(localizeWorldUnit('тыс. человек', 'en')).toBe('ths persons');
