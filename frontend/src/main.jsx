@@ -39,10 +39,8 @@ function mountApp() {
   const root = document.getElementById('root');
   if (!root) return;
   window.__feAppMounted = true;
-  // SSR-страница остаётся видимой, пока подгружается чанк маршрута (см. RouteFallback): без этого
-  // посетитель из поиска видел, как готовый текст исчезает и несколько секунд висит каркас.
-  const ssrPage = root.querySelector(':scope > main.seo-page');
-  window.__feSsrSnapshot = ssrPage ? root.innerHTML.replace('<main class="seo-page"', '<div class="seo-page"').replace(/<\/main>\s*$/, '</div>') : null;
+  // Серверный текст человеку не показываем: до готовности стоит фирменная заставка (html.fe-boot),
+  // затем каркас страницы (RouteFallback), пока подгружается чанк маршрута. Роботам текст остаётся в HTML.
   createRoot(root).render(
     <SpaRoot queryClient={queryClient} />,
   );

@@ -190,4 +190,16 @@ describe('WorldConceptPicker', () => {
       spies.forEach((spy) => spy.mockRestore());
     }
   });
+
+  it('волна 6: пока список показателей грузится, вместо «Нет данных» стоят серые заготовки', () => {
+    renderPicker(<WorldConceptPicker concepts={[]} value="" onChange={vi.fn()} searchable={false} loading />);
+    expect(screen.getByTestId('concept-picker-skeleton')).toBeTruthy();
+    expect(screen.queryByText('Нет данных')).toBeNull();
+  });
+
+  it('волна 6: когда загрузка закончилась и показателей правда нет, пишем «Нет данных»', () => {
+    renderPicker(<WorldConceptPicker concepts={[]} value="" onChange={vi.fn()} searchable={false} />);
+    expect(screen.queryByTestId('concept-picker-skeleton')).toBeNull();
+    expect(screen.getByText('Нет данных')).toBeTruthy();
+  });
 });

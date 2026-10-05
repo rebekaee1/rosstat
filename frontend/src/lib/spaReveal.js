@@ -9,6 +9,8 @@ export function revealSpaNow() {
     return;
   }
   if (typeof document !== 'undefined') {
+    // Оболочка без SSR (index.html): заставка fe-boot снимается здесь же.
+    document.documentElement.classList.remove('fe-boot');
     document.documentElement.classList.add('fe-js');
   }
 }

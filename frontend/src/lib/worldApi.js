@@ -1,7 +1,7 @@
 // API-слой мирового блока (bounded context «Мировая экономика»).
 // Отдельно от макро/регионов: своя ось (страна × индикатор × mode).
 // Факты и quality-gated прогнозы остаются в отдельном world API.
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import api, { fetchWorldSearch } from './api';
 import { formatValue } from './format';
 import {
@@ -95,6 +95,19 @@ export function useWorldCountries({ enabled = true } = {}) {
     gcTime: GC,
     retry: WORLD_SURFACE_RETRY,
   });
+}
+
+/**
+ * Страна из уже загруженного каталога (без запроса): нужна, чтобы по нажатию на страну сразу показать
+ * её название, флаг и число показателей, пока грузится карточка. null, если каталога в кэше ещё нет.
+ */
+export function useCachedWorldCountry(slug) {
+  const queryClient = useQueryClient();
+  const lk = useLocaleKey();
+  if (!slug) return null;
+  const catalog = queryClient.getQueryData(worldCountriesQueryKey(lk));
+  const list = Array.isArray(catalog?.countries) ? catalog.countries : [];
+  return list.find((country) => country?.slug === slug) || null;
 }
 
 export function useWorldCountry(slug, { enabled = true } = {}) {

@@ -49,6 +49,8 @@ const PROVIDER_NAME_KEY = {
 export default function OAuthButtons({
   intent = 'login', next = '/account', dividerLabel = null,
   showGoogleEmailFallback = false, onGoogleEmailFallback,
+  googleFallbackLabelKey = 'auth.oauth.googleRegister',
+  preferRealGoogle = false,
 }) {
   const { locale, t } = useLocale();
   const [providers, setProviders] = useState(null); // null = ещё грузим
@@ -83,7 +85,8 @@ export default function OAuthButtons({
   const available = providers || [];
   // Register can keep the branded Google entry visible while intentionally
   // routing every click to email until Google signup is explicitly enabled.
-  const showGoogleFallback = showGoogleEmailFallback;
+  // На входе (preferRealGoogle) настоящий Google-вход главнее запасного: запасной нужен, только пока провайдер не подключён.
+  const showGoogleFallback = showGoogleEmailFallback && !(preferRealGoogle && available.includes('google'));
   const ordered = order.filter((id) => available.includes(id) || (id === 'google' && showGoogleFallback));
   if (ordered.length === 0) return null;
 
@@ -123,7 +126,7 @@ export default function OAuthButtons({
               className={cn('w-full gap-2.5 font-medium', ui.className)}
             >
               {ui.logo}
-              {t(id === 'google' && showGoogleEmailFallback ? 'auth.oauth.googleRegister' : ui.labelKey)}
+              {t(id === 'google' && showGoogleFallback ? googleFallbackLabelKey : ui.labelKey)}
             </Button>
           );
         })}

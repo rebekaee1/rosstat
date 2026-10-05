@@ -6,6 +6,7 @@ import { MapPin, SearchX } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useRegionProfile } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Button from '../components/Button';
 import { SkeletonBox } from '../components/Skeleton';
@@ -96,6 +97,7 @@ export default function RegionProfile() {
       )}
       {isLoading && (
         <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => refetch()} className="mb-4" />
           <SkeletonBox className="mb-6 mt-6 h-[148px] rounded-3xl" />
           <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[112px] rounded-2xl" />)}

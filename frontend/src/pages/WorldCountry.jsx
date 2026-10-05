@@ -12,7 +12,7 @@ import {
   worldCountryTitle,
 } from '../lib/pageMeta';
 import {
-  useWorldCountry, useWorldIndicatorData, formatWorldValue, localizeWorldUnit,
+  useWorldCountry, useCachedWorldCountry, useWorldIndicatorData, formatWorldValue, localizeWorldUnit,
 } from '../lib/worldApi';
 import {
   collapseCountryIndicators, indicatorPublicName, localizedDisplay,
@@ -29,6 +29,7 @@ import Sparkline, { SparklineSkeleton } from '../components/Sparkline';
 import WorldCountUp from '../components/WorldCountUp';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
+import LoadingNote from '../components/LoadingNote';
 import MobileNavSelect from '../components/MobileNavSelect';
 import UsCatalogNav from '../components/UsCatalogNav';
 import { groupUsSections, shortUsIndicatorName } from '../lib/usCatalogTopics';
@@ -52,7 +53,7 @@ import { countryPublicName } from '../lib/homeWorkbench';
 import '../styles/world.css';
 import '../styles/x2-indicator.css';
 import '../styles/z1-polish.css';
-import usePageLoading, { useSlowFlag } from '../lib/usePageLoading';
+import usePageLoading from '../lib/usePageLoading';
 
 /** Главные темы идут первыми: человек ждёт «Экономику» и «Население», а не алфавитный «Бизнес». */
 const TOPIC_PRIORITY = [
@@ -235,11 +236,13 @@ export default function WorldCountry() {
       : false,
   );
   usePageLoading(isLoading);
-  const slowLoading = useSlowFlag(isLoading, 5000);
   const deferredQuery = useDeferredValue(query);
   const searching = normalize(deferredQuery).length > 0;
 
   const countryName = countryPublicName(data?.country, locale);
+  // Название и флаг из каталога стран, который уже в кэше: человек видит страну сразу после нажатия.
+  const cachedCountry = useCachedWorldCountry(slug);
+  const previewName = countryPublicName(cachedCountry, locale);
   const notFound = isError && error?.response?.status === 404;
 
   const countryMeta = useMemo(() => {
@@ -410,7 +413,7 @@ export default function WorldCountry() {
 
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
-      <Breadcrumbs items={worldCountryTrail(countryName || '…', slug)} />
+      <Breadcrumbs items={worldCountryTrail(countryName || previewName || '…', slug)} />
 
       {isError && !notFound && (
         <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
@@ -420,12 +423,30 @@ export default function WorldCountry() {
 
       {isLoading && (
         <div className="space-y-5" role="status" aria-busy="true" aria-label={t('common.loading')} data-testid="country-skeleton">
-          <SkeletonBox className="h-4 w-28" />
-          <SkeletonBox className="h-9 w-3/4 max-w-md" />
-          <div className="space-y-2">
-            <SkeletonBox className="h-4 w-full max-w-xl" />
-            <SkeletonBox className="h-4 w-2/3 max-w-md" />
-          </div>
+          {previewName ? (
+            <div data-testid="country-preview">
+              <div className="w2-kicker mb-2 flex items-center gap-2">
+                <CountryFlag code={cachedCountry.code} className="w2-kicker-flag" />
+                {localizedDisplay(locale, cachedCountry.region, cachedCountry.region_en)}
+              </div>
+              <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
+                {worldCountryTitle(slug, previewName, locale)}
+              </h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:text-base">
+                {t('w2.country.lead', { country: previewName })}
+              </p>
+            </div>
+          ) : (
+            <>
+              <SkeletonBox className="h-4 w-28" />
+              <SkeletonBox className="h-9 w-3/4 max-w-md" />
+              <div className="space-y-2">
+                <SkeletonBox className="h-4 w-full max-w-xl" />
+                <SkeletonBox className="h-4 w-2/3 max-w-md" />
+              </div>
+            </>
+          )}
+          <LoadingNote onRefresh={() => refetch()} />
           <SkeletonBox className="h-12 w-full rounded-xl sm:w-60" />
           <SkeletonBox className="h-32 w-full rounded-3xl" />
           <div className="fe-kpi-grid">
@@ -433,7 +454,6 @@ export default function WorldCountry() {
           </div>
           <SkeletonBox className="h-12 w-full rounded-xl" />
           <SkeletonBox className="h-14 w-full rounded-xl" />
-          {slowLoading && <p className="fe-slow-hint">{t('z1.country.slowLoading')}</p>}
         </div>
       )}
 

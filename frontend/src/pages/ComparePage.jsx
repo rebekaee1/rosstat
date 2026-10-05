@@ -1784,19 +1784,22 @@ export default function ComparePage() {
           </div>
         )}
 
-        <p className="mt-3 text-[13px] leading-snug text-text-secondary">
-          {isAuthed
-            ? t('compare.selectedAuthed', { n: codes.length, max: USER_MAX })
-            : t('compare.selectedGuest', { n: codes.length, max: GUEST_MAX })}
-          {!isAuthed && (
-            <>
-              {' '}
-              <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="font-medium text-champagne-ink hover:underline">
-                {t('compare.wantMore')}
-              </button>
-            </>
-          )}
-        </p>
+        {/* Гостю про лимит говорим только тогда, когда он упёрся в него (волна 6, 15.3), а не заранее. */}
+        {(isAuthed || atCap) && (
+          <p className="mt-3 text-[13px] leading-snug text-text-secondary" data-testid="compare-limit-note">
+            {isAuthed
+              ? t('compare.selectedAuthed', { n: codes.length, max: USER_MAX })
+              : t('w6a.compare.guestLimit')}
+            {!isAuthed && (
+              <>
+                {' '}
+                <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="inline-flex min-h-11 items-center font-medium text-champagne-ink hover:underline">
+                  {t('w6a.compare.register')}
+                </button>
+              </>
+            )}
+          </p>
+        )}
 
         {codes.length > 0 && (
           <div className="mt-4 flex flex-col gap-2">

@@ -36,7 +36,7 @@ describe('CalendarPage: видимые состояния', () => {
   });
 
   it('ошибка загрузки: баннер с повтором, без ложного «нет событий» (ru и en)', async () => {
-    for (const [locale, title] of [['ru', 'Календарь временно недоступен.'], ['en', 'The calendar is temporarily unavailable.']]) {
+    for (const [locale, title] of [['ru', 'Не получилось загрузить календарь.'], ['en', 'Could not load the calendar.']]) {
       vi.restoreAllMocks();
       vi.spyOn(api, 'get').mockImplementation((url) => {
         const err = new Error(`fail ${url}`);
@@ -46,6 +46,8 @@ describe('CalendarPage: видимые состояния', () => {
       const { unmount } = render(locale);
       await waitFor(() => expect(screen.getByRole('alert').textContent).toContain(title));
       expect(screen.queryByTestId('calendar-empty')).toBeNull();
+      // Волна 6: при ошибке без данных сетку календаря не рисуем (раньше «недоступен» стоял над готовой сеткой).
+      expect(screen.queryByTestId('calendar-grid')).toBeNull();
       unmount();
     }
   });

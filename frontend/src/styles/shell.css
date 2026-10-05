@@ -591,3 +591,127 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
 .fe-route-skel { animation: fe-reveal 0.2s ease-out both; }
 .fe-route-skel__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 768px) { .fe-route-skel__tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* ═══ Волна 6, зона A: ожидание, ошибки, приглашение, cookie ═══════════════════ */
+
+/* Подпись под скелетом: «Загружаем данные…», через 8 с ещё и «Обновить». */
+.fe-loading-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  min-height: 28px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+.fe-loading-note__dot,
+.fe-nav-hint__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-champagne);
+  animation: fe-note-pulse 1.4s ease-in-out infinite;
+}
+.fe-loading-note .fe-loading-note__btn { min-height: 44px; }
+@keyframes fe-note-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Плашка «Открываем: …» сразу после нажатия на ссылку (PageProgress). */
+.fe-nav-hint {
+  position: fixed;
+  top: 48px;
+  left: 50%;
+  z-index: 121;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 14px;
+  border: 1px solid var(--fe-glass-border);
+  border-radius: 999px;
+  background: var(--fe-glass);
+  box-shadow: var(--fe-shadow);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: fe-nav-hint-in 0.18s ease-out 0.08s both;
+}
+.fe-nav-hint__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+@keyframes fe-nav-hint-in {
+  from { opacity: 0; transform: translate(-50%, -4px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Приглашение зарегистрироваться на планшете и компьютере: маленькая кнопка-значок в углу,
+   прячется у подвала; не показывается поверх скелета и ошибки. */
+.fe-nudge-desk {
+  position: fixed;
+  right: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 40;
+  max-width: calc(100vw - 32px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.fe-nudge-desk[data-near-footer='true'] { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.fe-nudge-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 50%;
+  background: var(--fe-glass);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--fe-shadow), 0 8px 20px -10px rgba(128, 100, 47, 0.5);
+  color: var(--color-champagne-ink);
+  cursor: pointer;
+}
+.fe-nudge-fab:hover { border-color: var(--color-champagne); }
+:root[data-fe-error] .fe-nudge-root,
+body:has(main .skeleton) .fe-nudge-root,
+body:has(main .fe-route-skel) .fe-nudge-root { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .fe-loading-note__dot, .fe-nav-hint__dot { animation: none; }
+  .fe-nav-hint { animation: none; }
+  .fe-nudge-desk { transition: none; }
+}
+
+/* Cookie-плашка: тонкая, в одну строку на планшете и компьютере (на телефоне текст и кнопки в два ряда),
+   под ней резервируется место внизу страницы. */
+.fe-cookie-compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 6px 6px 6px 14px;
+}
+.fe-cookie-compact__text {
+  flex: 1 1 15rem;
+  min-width: 0;
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+.fe-cookie-compact__actions { display: flex; flex: 0 0 auto; gap: 4px; margin-left: auto; }
+.fe-cookie-compact__actions .fe-btn { min-height: 44px; padding: 0 14px; font-size: 13.5px; }
+@media (max-width: 479px) {
+  .fe-cookie-compact { padding: 8px 8px 6px 12px; }
+  .fe-cookie-compact__actions { width: 100%; }
+  .fe-cookie-compact__actions .fe-btn { flex: 1 1 0; }
+}
+body { padding-bottom: var(--fe-cookie-h, 0px); }
+
+/* Хлебные крошки: пока название не пришло, на его месте серая полоска, а не «…». */
+.fe-crumbs__ph { display: inline-block; width: 7rem; max-width: 40vw; height: 0.8em; vertical-align: -0.05em; border-radius: 6px; }

@@ -110,6 +110,33 @@ function publicOriginPlugin(origin) {
 }
 
 /**
+ * Оболочка (/login, /register, /account, /admin/bi, /widgets) отдаётся nginx как есть.
+ * Блокирующий <link rel="stylesheet"> держит экран белым, пока едет весь CSS-бандл,
+ * и фирменная заставка из index.html не успевает показаться. В сборке делаем ссылку
+ * неблокирующей (media=print + onload) и помечаем data-fe-css: mountWhenCssReady
+ * поднимет приложение, когда стили готовы, а backend (seo_renderer) не продублирует
+ * атрибуты и добавит запасной <noscript>. Запасного <noscript> здесь нет намеренно:
+ * backend читает все <link> оболочки, и вложенная в noscript ссылка стала бы блокирующей.
+ */
+function nonBlockingCssPlugin() {
+  return {
+    name: 'fe-nonblocking-css',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        return html.replace(
+          /<link\b([^>]*\brel="stylesheet"[^>]*\bhref="\/assets\/[^"]+\.css"[^>]*)>/g,
+          (full, attrs) => (/\bdata-fe-css\b|\bmedia=/.test(attrs)
+            ? full
+            : `<link${attrs} media="print" data-fe-css="1" onload="this.media='all'">`),
+        )
+      },
+    },
+  }
+}
+
+/**
  * В dev без локального backend данные «пропадали»: прокси шёл на :8000.
  * Default proxy target — публичный origin; HTTP methods не фильтруются.
  * Локальный API: в .env.local задать VITE_DEV_API_PROXY=http://127.0.0.1:8000
@@ -122,7 +149,7 @@ export default defineConfig(({ mode }) => {
   const apiTarget = env.VITE_DEV_API_PROXY || publicOrigin
 
   return {
-  plugins: [react(), tailwindcss(), publicOriginPlugin(publicOrigin)],
+  plugins: [react(), tailwindcss(), publicOriginPlugin(publicOrigin), nonBlockingCssPlugin()],
   // Версия сборки в js_error: привязка регрессий фронта к деплоям.
   define: {
     __BUILD_ID__: JSON.stringify(env.VITE_BUILD_ID || new Date().toISOString().slice(0, 10)),

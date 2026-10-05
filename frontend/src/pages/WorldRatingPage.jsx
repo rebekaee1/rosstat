@@ -33,6 +33,7 @@ import { formatDate } from '../lib/format';
 import { splitUnit, uniformDigits } from '../lib/countryFlag';
 import useMatchMedia from '../lib/useMatchMedia';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import { SkeletonBox } from '../components/Skeleton';
 import Breadcrumbs from '../components/Breadcrumbs';
 import WorldConceptPicker from '../components/WorldConceptPicker';
@@ -341,8 +342,11 @@ export default function WorldRatingPage() {
   );
   const ratingCountryName = (item) => {
     const catalog = catalogByKey.get(item.country_code) || catalogByKey.get(item.country_slug);
+    // По-русски справочник стран главнее названия из строки рейтинга: оно приходит на английском
+    // и «Первое место: United States» оставалось на английском в русской версии.
+    const catalogRu = locale === 'ru' ? (catalog?.name_ru || catalog?.name) : null;
     return countryPublicName({
-      name: item.country_name || catalog?.name,
+      name: catalogRu || item.country_name || catalog?.name,
       name_en: catalog?.name_en || item.country_name_en,
       name_ru: catalog?.name_ru,
       country_name: item.country_name,
@@ -572,21 +576,16 @@ export default function WorldRatingPage() {
               label={t('world.rating.conceptLabel')}
               searchable={false}
               mobileScroll
+              loading={loading && concepts.length === 0}
               trailing={<WorldMapConceptNote conceptSlug={activeConcept} />}
             />
-            {loading && concepts.length === 0 && (
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {[0, 1, 2].map((i) => (
-                  <SkeletonBox key={i} className="h-7 w-24 rounded-xl" />
-                ))}
-              </div>
-            )}
           </section>
 
           <section id="chart" className="mb-5 grid scroll-mt-24 gap-4">
             <div className="min-w-0">
               {mapSeriesQ.isLoading ? (
                 <div className="w2-planet-skeleton" role="status" aria-label={t('planet.loading')}>
+                  <LoadingNote onRefresh={() => mapSeriesQ.refetch()} />
                   <SkeletonBox className="h-12 w-full rounded-xl" />
                   <div className="w2-planet-skeleton-orb" aria-hidden="true" />
                 </div>

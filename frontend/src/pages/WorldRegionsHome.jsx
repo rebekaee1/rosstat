@@ -17,6 +17,7 @@ import { pickPopularIndicators } from '../lib/mapMetricPicks';
 import { unitLabel } from '../lib/regionUi';
 import { rememberScroll, useRestoreScroll } from '../lib/keepScroll';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import { worldSubnationalHubTrail } from '../lib/breadcrumbs';
@@ -358,6 +359,7 @@ export default function WorldRegionsHome() {
 
       {hub.isLoading && (
         <div className="mt-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => hub.refetch()} className="mb-4" />
           <SkeletonBox className="mb-6 h-[46px] w-full rounded-xl" />
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5">
             {Array.from({ length: 8 }).map((_, i) => <SkeletonBox key={i} className="h-[98px] rounded-xl sm:h-[78px]" />)}

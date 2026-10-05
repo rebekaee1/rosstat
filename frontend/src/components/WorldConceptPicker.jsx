@@ -62,6 +62,8 @@ export default function WorldConceptPicker({
   nowrap = false,
   /** Только на узком экране: одна прокручиваемая лента с затуханием по краям; активный показатель выводится в центр. */
   mobileScroll = false,
+  /** Список показателей ещё грузится: вместо «Нет данных» показываем серые заготовки. */
+  loading = false,
 }) {
   const t = useT();
   const sectionLabel = label || t('home.map.metricFallback');
@@ -148,7 +150,12 @@ export default function WorldConceptPicker({
           onPick={() => setOpen(false)}
         />
       ))}
-      {matches.length === 0 && (
+      {matches.length === 0 && loading && !q && (
+        <span className="inline-flex gap-1.5" aria-hidden="true" data-testid="concept-picker-skeleton">
+          {[0, 1, 2].map((i) => <span key={i} className="skeleton block h-7 w-24 rounded-xl" />)}
+        </span>
+      )}
+      {matches.length === 0 && !(loading && !q) && (
         <span className="text-xs text-text-secondary">
           {q ? t('home.map.conceptNotFound', { query }) : t('common.noData')}
         </span>

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { ChevronDown, SearchX, Trophy } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Button from '../components/Button';
 import { SkeletonBox } from '../components/Skeleton';
 import { RegionSearchField } from '../components/regions/RegionParts';
@@ -160,6 +161,7 @@ export default function RegionRatingsHub() {
 
       {isLoading && (
         <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => refetch()} className="mb-4" />
           <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {POPULAR.map((m) => <SkeletonBox key={m.code} className="h-[184px] rounded-3xl" />)}
           </div>

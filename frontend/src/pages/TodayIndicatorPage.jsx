@@ -14,6 +14,7 @@ import { indicatorPolarity } from '../lib/deltaTone';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import DeltaBadge from '../components/DeltaBadge';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import IndicatorChart from '../components/IndicatorChart';
 import { SkeletonBox } from '../components/Skeleton';
@@ -116,6 +117,7 @@ export default function TodayIndicatorPage() {
 
       {isLoading && (
         <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => refetch()} className="mb-4" />
           <SkeletonBox className="mb-2 mt-6 h-4 w-32" />
           <SkeletonBox className="mb-4 h-8 w-80 max-w-full sm:h-9" />
           <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
