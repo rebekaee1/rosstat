@@ -43,7 +43,7 @@ from app.data.indicator_seo import (
     forecast_ssr_image_name,
 )
 from app.data.global_market_indicators import is_global_market_indicator
-from app.models import Indicator, IndicatorData
+from app.models import FetchLog, Indicator, IndicatorData
 from app.services.display import (
     today_msk,
     annual_summary,
@@ -1868,6 +1868,7 @@ async def render_home_html(db: AsyncSession) -> str:
     # копия обязана держать эти ссылки, иначе карточки стран теряют
     # внутреннюю перелинковку.
     country_links = await _home_country_links(db)
+    refreshed = await _last_data_refresh(db)
     page = get_page_seo("home")
     if page is None:
         page = PAGE_META["home"]
@@ -1984,6 +1985,7 @@ async def render_home_html(db: AsyncSession) -> str:
             "url": _absolute("/"),
             "inLanguage": in_language(),
             "isPartOf": {"@id": f"{_absolute('/')}/#website"},
+            **({"dateModified": refreshed.isoformat()} if refreshed else {}),
         },
         {
             "@context": "https://schema.org",
@@ -2013,14 +2015,33 @@ async def render_home_html(db: AsyncSession) -> str:
         body=body,
         json_ld=json_ld,
         keywords=page.keywords or None,
-        extra_head=_home_bootstrap_head(
-            flagships,
-            world_countries=world_countries if isinstance(world_countries, dict) else None,
-            map_snapshot=map_snapshot if isinstance(map_snapshot, dict) else None,
-            map_concept="gdp-usd",
+        extra_head=(
+            _home_bootstrap_head(
+                flagships,
+                world_countries=world_countries if isinstance(world_countries, dict) else None,
+                map_snapshot=map_snapshot if isinstance(map_snapshot, dict) else None,
+                map_concept="gdp-usd",
+            )
+            + (f'\n<meta property="og:updated_time" content="{refreshed.isoformat()}">' if refreshed else "")
         ),
     )
     return html
+
+
+async def _last_data_refresh(db: AsyncSession) -> date | None:
+    """Дата последней успешной загрузки данных (тот же источник, что `etl_last_ok_age_hours` в /health/ready).
+
+    Это честный сигнал свежести для поисковиков: платформа действительно загружает данные каждый день, а дата
+    берётся из журнала загрузок, а не подставляется «сегодняшней». Любой сбой даёт None, и сигнал не выводится.
+    """
+    try:
+        last_ok = await db.scalar(
+            select(func.max(FetchLog.completed_at)).where(FetchLog.status.in_(("success", "no_new_data")))
+        )
+    except Exception:
+        logger.warning("last data refresh date unavailable", exc_info=True)
+        return None
+    return last_ok.date() if last_ok is not None else None
 
 
 async def _indicators_by_codes(
