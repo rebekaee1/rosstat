@@ -2,6 +2,8 @@ import { Children, useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import Brand from './Brand';
+import Emblem from './brand/Emblem';
+import FacetMark from './brand/FacetMark';
 import PwaInstallEntry from './PwaInstallEntry';
 import { CATEGORIES } from '../lib/categories';
 import { cn } from '../lib/format';
@@ -24,6 +26,7 @@ import {
 import { useT, useLocale } from '../i18n';
 import '../styles/shell.css';
 import '../styles/z2-shell.css';
+import '../styles/k2-brand.css';
 
 const chipLink = cn(FOCUS_RING, 'fe-foot-chip fe-press');
 
@@ -60,7 +63,10 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, span = 1,
   if (chips && !desktop) {
     return (
       <section className="fe-foot-group fe-foot-group--chips">
-        <h3 className="fe-foot-title fe-foot-title--static">{title}</h3>
+        <h3 className="fe-foot-title fe-foot-title--static">
+          <FacetMark size={6} tone="light" />
+          {title}
+        </h3>
         <ul className="fe-foot-chips">
           {hubTo && hubLabel ? (
             <li>
@@ -77,6 +83,7 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, span = 1,
   return (
     <section className={cn('fe-foot-group', span === 2 && 'fe-foot-span-2')}>
       <h3 className="fe-foot-title">
+        <FacetMark size={6} tone="light" />
         {desktop ? (
           hubTo ? <Link to={hubTo} className={footLink}>{title}</Link> : title
         ) : (
@@ -115,7 +122,10 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, span = 1,
 function SourcesStrip({ t, links }) {
   return (
     <div className="fe-foot-sources" role="group" aria-label={t('footer.sources')}>
-      <span className="fe-foot-sources__label">{t('footer.sources')}</span>
+      <span className="fe-foot-sources__label">
+        <FacetMark size={6} tone="light" />
+        {t('footer.sources')}
+      </span>
       <ul>
         {links.map((item) => (
           <li key={item.key}>
@@ -142,7 +152,15 @@ export default function Footer() {
   const isEn = locale === 'en';
 
   return (
-    <footer className="fe-footer mt-auto">
+    <footer className="fe-footer fe-k2-footer mt-auto">
+      {/* Сапфировый фон: кадр грузится лениво, на телефоне другой кадр; текст на нём не рисуется. */}
+      <div className="fe-k2-foot-bg" aria-hidden="true">
+        <picture>
+          <source media="(max-width: 639px)" srcSet="/brand/footer-phone.webp" width="780" height="1045" />
+          <img src="/brand/footer-desktop.webp" width="1920" height="793" alt="" loading="lazy" decoding="async" />
+        </picture>
+        <Emblem variant="photo" size={380} className="fe-k2-foot-emblem" />
+      </div>
       <div className="fe-page-shell fe-foot-wrap py-10 md:py-16">
         <div className="fe-foot-top">
           <div className="fe-foot-brand">
