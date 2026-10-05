@@ -96,7 +96,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
       <div className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
         isCustom
           ? 'border-transparent bg-champagne/15 text-champagne-ink'
-          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25'
+          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink'
       }`}
       >
         <Search size={14} className="shrink-0" aria-hidden="true" />
@@ -191,10 +191,10 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false, neutral = false }
   const side = (row, tone) => (
     <Link
       to={regionIndicatorPath(row.slug, code)}
-      className="fe-contrast-side fe-press block transition-colors hover:bg-obsidian-lighter"
+      className="fe-contrast-side fe-press transition-colors hover:bg-obsidian-lighter"
     >
       <span className="block text-[13px] leading-snug text-text-primary">{row.name}</span>
-      <span className={`fe-num mt-1 block whitespace-nowrap text-[17px] font-semibold ${tone}`}>
+      <span className={`fe-num block whitespace-nowrap text-[17px] font-semibold ${tone}`}>
         {formatRegionCompact(row.value, unit, locale)}
       </span>
     </Link>
@@ -221,7 +221,7 @@ function RegionCard({ region }) {
   const mini = (label, text) => (
     <div className="min-w-0">
       <div className="text-xs text-text-secondary">{label}</div>
-      <div className="fe-num mt-0.5 whitespace-nowrap text-[13px] font-medium text-text-primary">{text}</div>
+      <div className="fe-num mt-0.5 text-[13px] font-medium leading-snug text-text-primary">{text}</div>
     </div>
   );
   return (
@@ -234,7 +234,7 @@ function RegionCard({ region }) {
           {region.name}
         </div>
         {(pop || wage || unemp) && (
-          <div className="mt-2 grid grid-cols-3 gap-2">
+          <div className="mt-2 grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,0.85fr)] items-start gap-2">
             {mini(t('w4.regions.card.pop'), pop ? formatRegionCompact(pop.value, pop.unit, locale) : '\u2014')}
             {mini(t('w4.regions.card.wage'), wage ? formatRegionWithUnit(wage.value, '₽', locale) : '\u2014')}
             {mini(t('w4.regions.card.unemp'), unemp ? formatRegionWithUnit(unemp.value, '%', locale) : '\u2014')}
@@ -662,7 +662,7 @@ export default function RegionsHome() {
                                 : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                             ].join(' ')}
                           >
-                            <span className="min-w-0 truncate">
+                            <span className="min-w-0 break-words leading-snug">
                               {locale === 'en'
                                 ? d.name
                                 : (DISTRICT_SHORT_KEYS[d.slug] ? t(DISTRICT_SHORT_KEYS[d.slug]) : d.name)}

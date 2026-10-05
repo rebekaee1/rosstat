@@ -423,8 +423,9 @@ const UNIT_CONFIG = {
   'млн кв.м':  { digits: 1, suffix: ' млн кв.м', space: false },
 };
 
-function groupThousands(str) {
-  return str.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+// Тысячи: RU — неразрывный пробел, EN — запятая («100,000»).
+function groupThousands(str, loc) {
+  return str.replace(/\B(?=(\d{3})+(?!\d))/g, loc === 'en' ? ',' : '\u00A0');
 }
 
 // Десятичный разделитель: RU — запятая (В-11), EN — точка. Тысячи — NBSP.
@@ -436,7 +437,7 @@ function formatFixed(num, digits, locale) {
   const [intPart, decPart] = fixed.split('.');
   const sign = intPart.startsWith('-') ? '-' : '';
   const abs = intPart.replace('-', '');
-  const grouped = groupThousands(abs);
+  const grouped = groupThousands(abs, loc);
   return decPart !== undefined ? `${sign}${grouped}${dec}${decPart}` : `${sign}${grouped}`;
 }
 
@@ -497,7 +498,7 @@ export function formatAxisTick(val, digits = 2, locale) {
   const [intPart, decPart] = cleaned.split('.');
   const sign = intPart.startsWith('-') ? '-' : '';
   const abs = intPart.replace('-', '');
-  const grouped = groupThousands(abs);
+  const grouped = groupThousands(abs, loc);
   return decPart ? `${sign}${grouped}${dec}${decPart}` : `${sign}${grouped}`;
 }
 

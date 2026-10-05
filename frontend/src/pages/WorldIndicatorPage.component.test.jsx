@@ -271,7 +271,7 @@ describe('WorldIndicatorPage EN overlay', () => {
     await waitFor(() => {
       const text = document.body.textContent.replace(/\u00a0/g, ' ');
       expect(text).toContain('billion $');
-      expect(text).toContain('2 319.9');
+      expect(text).toContain('2,319.9');
       expect(text).toContain('Unemployment rate');
       expect(text).toContain('Population');
       expect(text).toContain('National accounts');

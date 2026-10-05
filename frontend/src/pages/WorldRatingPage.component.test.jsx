@@ -727,7 +727,7 @@ describe('WorldRatingPage', () => {
     expect(screen.getByRole('link', { name: 'Germany' })).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'США' })).toBeNull();
     expect(screen.getByText(/Billion \$/)).toBeTruthy();
-    expect(dataRows()[0].textContent).toMatch(/5[\u00A0 ]?048/);
+    expect(dataRows()[0].textContent).toMatch(/5[,\u00A0 ]?048/);
   });
 });
 

@@ -123,3 +123,37 @@ export function axisSampleValues(values) {
   const pad = (Math.abs(hi - lo) || Math.abs(hi) || 1) * 0.1;
   return [lo - pad, hi + pad, lo, hi];
 }
+
+/**
+ * «Ровная» ось Y: шаг только 1, 2 или 5 × 10^k, границы кратны шагу. Автодомен Recharts
+ * иногда даёт шаг вроде 55 000 («3 190 000 / 3 245 000 / 3 300 000») — читается как рваный.
+ * Возвращает { domain: [lo, hi], ticks } либо null, если данных нет.
+ */
+export function niceAxis(values, tickCount = 5) {
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const v of values || []) {
+    if (v == null) continue;
+    const n = Number(v);
+    if (!Number.isFinite(n)) continue;
+    if (n < lo) lo = n;
+    if (n > hi) hi = n;
+  }
+  if (!Number.isFinite(lo)) return null;
+  if (lo === hi) {
+    const pad = Math.abs(lo) * 0.05 || 1;
+    lo -= pad;
+    hi += pad;
+  }
+  const raw = (hi - lo) / Math.max(1, tickCount - 1);
+  const pow = 10 ** Math.floor(Math.log10(raw));
+  const frac = raw / pow;
+  const step = (frac <= 1 ? 1 : frac <= 2 ? 2 : frac <= 5 ? 5 : 10) * pow;
+  const start = Math.floor(lo / step + 1e-9) * step;
+  const end = Math.ceil(hi / step - 1e-9) * step;
+  const ticks = [];
+  for (let v = start, i = 0; v <= end + step * 1e-6 && i < 20; v += step, i += 1) {
+    ticks.push(Math.abs(v) < step * 1e-9 ? 0 : Number(v.toPrecision(12)));
+  }
+  return { domain: [ticks[0], ticks[ticks.length - 1]], ticks };
+}

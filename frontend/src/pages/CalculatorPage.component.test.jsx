@@ -222,7 +222,7 @@ describe('CalculatorPage country select', () => {
       expect(collapseWs(document.body.textContent)).toMatch(/ряд есть с 2018/);
     });
     expect(collapseWs(document.body.textContent)).toMatch(/2019–2020|2019-2020/);
-    expect(collapseWs(document.body.textContent)).toMatch(/106 080/);
+    expect(collapseWs(document.body.textContent)).toMatch(/106[ ,]080/);
   });
 });
 
@@ -254,7 +254,7 @@ describe('calculator default country by locale (K1)', () => {
       });
 
       await waitFor(() => {
-        expect(collapseWs(document.body.textContent)).toMatch(/106 080/);
+        expect(collapseWs(document.body.textContent)).toMatch(/106[ ,]080/);
       });
       expect(collapseWs(document.body.textContent)).toMatch(/U\.S\. Bureau of Labor Statistics/);
       expect(screen.getByRole('button', { name: 'Country' }).textContent).toMatch(/США/);
@@ -291,7 +291,7 @@ describe('calculator default country by locale (K1)', () => {
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Country' }).textContent).toMatch(/США/);
-        expect(collapseWs(document.body.textContent)).toMatch(/106 080/);
+        expect(collapseWs(document.body.textContent)).toMatch(/106[ ,]080/);
       });
     } finally {
       resetPreviewLocale();

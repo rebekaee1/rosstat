@@ -129,12 +129,12 @@ export default function EmbedChart() {
   const displayVal = isCpiIndex(code) && meta?.current_value != null
     ? +(meta.current_value - 100).toFixed(2) : meta?.current_value;
   const change = meta?.change;
-  const chartH = height - (showTitle ? 50 : 0) - (narrow ? 54 : 28);
+  const chartH = height - (showTitle ? 58 : 0) - (narrow ? 54 : 28);
 
   return (
     <div style={{ background: colors.bg, height, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {showTitle && meta && (
-        <div style={{ padding: '12px 16px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ padding: '12px 16px 4px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: colors.textSecondary, fontFamily: 'Manrope, system-ui, sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {meta.name}
@@ -179,7 +179,7 @@ export default function EmbedChart() {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={Math.max(120, chartH)}>
-            <ComposedChart data={chartData} margin={{ top: 8, right: 16, bottom: 4, left: -4 }}>
+            <ComposedChart data={chartData} margin={{ top: 16, right: 28, bottom: 4, left: -4 }}>
               <defs>
                 <linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#AD8A48" stopOpacity={0.15} />

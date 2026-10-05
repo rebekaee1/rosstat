@@ -68,4 +68,21 @@ describe('ComparePage: состояния графика', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Повторить' }));
     await waitFor(() => expect(dataCalls()).toBeGreaterThan(before));
   });
+
+  it('мировой ряд до прихода данных: в карточке название из каталога, внутренний код не виден', async () => {
+    const code = 'w:germany:gdp-volume-annual';
+    const spy = mockApiGet([
+      ...COMMON_ROUTES.filter(([k]) => k !== '/world/compare/catalog'),
+      ['/world/compare/catalog', { items: [{
+        code, country_slug: 'germany', country_name: 'Германия', country_name_en: 'Germany',
+        concept_slug: 'gdp-volume-annual', concept_name: 'ВВП в постоянных ценах', concept_name_en: 'Real GDP',
+        frequency: 'annual', unit: 'млн евро',
+      }], total: 1 }],
+    ]);
+    const original = spy.getMockImplementation();
+    spy.mockImplementation((url) => (/^\/world\/(germany|compare\/germany)/.test(url) ? new Promise(() => {}) : original(url)));
+    renderPage(<ComparePage />, { path: '/compare', route: `/compare?codes=${encodeURIComponent(code)}` });
+    await screen.findAllByText(/ВВП в постоянных ценах — Германия/);
+    expect(document.body.textContent).not.toContain('w:germany');
+  });
 });

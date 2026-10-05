@@ -93,7 +93,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
       <div className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
         isCustom
           ? 'border-transparent bg-champagne/15 text-champagne-ink'
-          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25'
+          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink'
       }`}
       >
         <Search size={13} className="shrink-0" />
@@ -201,7 +201,9 @@ export default function WorldRegionsHome() {
   const kindPlural = hub.data?.kind_label_plural || t('world.regions.fallbackKindPlural');
   const title = countrySlug === 'united-states' && locale === 'ru'
     ? 'Штаты США'
-    : t('world.regions.hubTitle', { kind: kindPlural, country: countryName });
+    : countrySlug === 'united-states' && locale === 'en'
+      ? 'US states'
+      : t('world.regions.hubTitle', { kind: kindPlural, country: countryName });
 
   useDocumentMeta({
     title: `${title} | Forecast Economy`,

@@ -1,11 +1,23 @@
 // Общие форматтеры денежных калькуляторов (/calculator*): одна точка истины
 // для инфляционного, ипотечного и калькулятора сложных процентов.
+// Числа следуют языку страницы: RU «1 000,5», EN «1,000.5».
+import { currentUiLocale } from '../i18n/locale';
+
+const isEn = () => currentUiLocale() === 'en';
+const group = (str, sep) => str.replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+
+/** Десятичное число в языке страницы: «3,1» / «3.1». */
+export function decimalText(n, digits = 1) {
+  if (n == null || !Number.isFinite(n)) return '—';
+  const fixed = Number(n).toFixed(digits);
+  return isEn() ? fixed : fixed.replace('.', ',');
+}
 
 export function formatRubles(n) {
   if (n == null || !Number.isFinite(n)) return '—';
   const abs = Math.abs(Math.round(n));
   const sign = n < 0 ? '-' : '';
-  return sign + abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + '\u00A0₽';
+  return sign + group(abs.toString(), isEn() ? ',' : '\u00A0') + '\u00A0₽';
 }
 
 export function parseAmount(str) {
@@ -15,7 +27,7 @@ export function parseAmount(str) {
 
 export function formatInput(n) {
   if (!n || n <= 0) return '';
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return group(n.toString(), isEn() ? ',' : ' ');
 }
 
 /** Склонение существительного при числе: 21 год, 22 года, 25 лет. */
@@ -53,7 +65,7 @@ export function loanYearOrdinal(n, locale = 'ru') {
 export function fmtPct(v, sign = false) {
   if (v == null || !Number.isFinite(v)) return '—';
   const s = sign && v > 0 ? '+' : '';
-  return `${s}${v.toFixed(1).replace('.', ',')}%`;
+  return `${s}${decimalText(v, 1)}%`;
 }
 
 /**

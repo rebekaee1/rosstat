@@ -515,7 +515,7 @@ export default function RegionIndicatorPage() {
                     >
                       <span className="flex items-center gap-2 min-w-0">
                         <span className="fe-num w-4 shrink-0 text-right text-text-secondary">{i + 1}</span>
-                        <span className={`truncate ${r.slug === slug ? 'text-champagne-ink font-medium' : 'text-text-primary'}`}>{r.name}</span>
+                        <span className={`min-w-0 break-words leading-snug ${r.slug === slug ? 'text-champagne-ink font-medium' : 'text-text-primary'}`}>{r.name}</span>
                       </span>
                       <span className="fe-num shrink-0 whitespace-nowrap font-medium text-text-primary">{formatRegionWithUnit(r.value, active.indicator.unit, locale)}</span>
                     </Link>

@@ -69,7 +69,8 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
 
 /* Контрасты России: пара «лидер — аутсайдер» двумя половинками, разница — значком в шапке. */
 .fe-contrast-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.fe-contrast-side { min-width: 0; padding: 10px 12px; border-radius: 14px; background: var(--color-obsidian-light); }
+.fe-contrast-side { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; min-width: 0; padding: 10px 12px; border-radius: 14px; background: var(--color-obsidian-light); }
+.fe-contrast-side > .fe-num { margin-top: auto; }
 .fe-contrast-ratio { padding: 3px 9px; border-radius: 999px; background: rgba(173, 138, 72, 0.16); color: var(--color-champagne-ink); font-size: 12px; font-weight: 700; white-space: nowrap; }
 
 /* Линия примера на странице сравнения «рисуется» один раз слева направо. */
@@ -123,4 +124,25 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
+}
+
+/* Касание региона на карте: карточка с названием, значением и кнопкой «Открыть». */
+.fe-map-pick {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 8px; padding: 8px 8px 8px 14px;
+  border: 1px solid var(--color-border-champagne, var(--color-border-subtle));
+  border-radius: 16px; background: var(--color-surface);
+  box-shadow: 0 6px 18px -10px rgba(32, 42, 60, 0.35);
+}
+.fe-map-pick__text { min-width: 0; flex: 1; }
+.fe-map-pick__name { font-size: 14px; font-weight: 600; line-height: 1.25; color: var(--color-text-primary); overflow-wrap: anywhere; }
+.fe-map-pick__value { margin-top: 2px; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--color-champagne-ink); }
+.fe-map-pick__open {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  min-height: 44px; padding: 0 14px; border-radius: 12px;
+  background: var(--color-champagne-ink); color: #fff; font-size: 14px; font-weight: 600;
+}
+.fe-map-pick__close {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 44px; height: 44px; border-radius: 12px; color: var(--color-text-secondary);
 }

@@ -57,7 +57,7 @@ export default function CompareCountryStep({
   return (
     <div>
       <div className="mb-2 text-sm font-medium text-text-secondary">{t('compare.country')}</div>
-      <div className="mb-3 flex items-center gap-2 rounded-xl border border-border-subtle bg-obsidian-light px-3 transition-colors focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25">
+      <div className="mb-3 flex items-center gap-2 rounded-xl border border-border-subtle bg-obsidian-light px-3 transition-colors focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink">
         <Search className="h-4 w-4 shrink-0 text-text-tertiary" aria-hidden="true" />
         <input
           type="text"
@@ -107,7 +107,7 @@ export default function CompareCountryStep({
               className="fe-tap fe-press flex min-h-12 w-full items-center gap-3 border-b border-border-subtle/60 px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-obsidian-lighter disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Flag slug="russia" />
-              <span className="min-w-0 flex-1 truncate text-[15px] text-text-primary">{ind.label}</span>
+              <span className="min-w-0 flex-1 break-words leading-snug text-[15px] text-text-primary">{ind.label}</span>
               <span className="shrink-0 text-xs text-text-secondary">{t('compare.russia')}</span>
             </button>
           ))}

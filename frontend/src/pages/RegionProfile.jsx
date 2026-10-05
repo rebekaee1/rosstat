@@ -193,7 +193,7 @@ export default function RegionProfile() {
                           : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                       ].join(' ')}
                     >
-                      <span className="min-w-0 truncate">{sec.name}</span>
+                      <span className="min-w-0 break-words leading-snug">{sec.name}</span>
                       <span className="fe-num shrink-0 text-xs">{sec.indicators.length}</span>
                     </button>
                   ))}

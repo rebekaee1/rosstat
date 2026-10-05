@@ -265,6 +265,7 @@
   cursor: pointer;
 }
 .fe-foot-requisites p { margin: 0 0 8px; }
+.fe-foot-credit { font-size: 12px; line-height: 1.5; }
 
 /* ── Меню телефона: группы и значки ──────────────────────────────────────── */
 .fe-mnav-group { display: flex; flex-direction: column; gap: 2px; }

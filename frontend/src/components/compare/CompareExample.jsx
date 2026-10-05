@@ -168,7 +168,7 @@ export default function CompareExample({ onOpen }) {
             <li key={line.slug} className="flex min-w-0 items-center gap-2 text-sm text-text-primary">
               <span className="h-[3px] w-4 shrink-0 rounded-full" style={{ backgroundColor: line.color }} aria-hidden="true" />
               <span aria-hidden="true">{flagForSlug(line.slug)}</span>
-              <span className="min-w-0 flex-1 truncate">{line.name}</span>
+              <span className="min-w-0 flex-1 break-words leading-snug">{line.name}</span>
               <span className="fe-num shrink-0 whitespace-nowrap font-semibold">{shown.main}</span>
             </li>
           );

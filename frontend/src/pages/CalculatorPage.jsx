@@ -13,7 +13,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import useInflationCalc from '../lib/useInflationCalc';
 import { formatDate, formatAxisTick, pickChartAxisTicks, cn } from '../lib/format';
-import { formatInput, fmtPct, years as yearsPhrase } from '../lib/calcFormat';
+import { formatInput, fmtPct, decimalText, years as yearsPhrase } from '../lib/calcFormat';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import { mountJsonLd } from '../lib/jsonLd';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, refLabel, axisWidthForLabels } from '../lib/chartTheme';
@@ -539,7 +539,7 @@ export default function CalculatorPage() {
     if (result.peakYear && result.yearlyBreakdown.length > 2) {
       const ratio = result.peakYear.rate / result.avgAnnual;
       const peakExtra = ratio > 1.5
-        ? t('calc.inflation.insight.peakRatio', { ratio: ratio.toFixed(1).replace('.', ',') })
+        ? t('calc.inflation.insight.peakRatio', { ratio: decimalText(ratio, 1) })
         : '';
       items.push({
         icon: Flame,
@@ -808,7 +808,7 @@ export default function CalculatorPage() {
             <CalcStatGrid className="mb-6 w5-tiles--three">
               <CalcStatTile index={0} label={t('w5.calc.inflation.statTotal')} value={fmtPct(result.totalInflation, true)} />
               <CalcStatTile index={1} label={t('w5.calc.inflation.statAvg')} value={fmtPct(result.avgAnnual)} />
-              <CalcStatTile index={2} label={t('w5.calc.inflation.statMult')} value={`×${result.multiplier.toFixed(2).replace('.', ',')}`} accent />
+              <CalcStatTile index={2} label={t('w5.calc.inflation.statMult')} value={`×${decimalText(result.multiplier, 2)}`} accent />
             </CalcStatGrid>
 
             {/* Share */}
@@ -904,7 +904,7 @@ export default function CalculatorPage() {
                       y={amount}
                       stroke={CHART_THEME.refLine}
                       strokeDasharray="6 4"
-                      label={refLabel(
+                      label={yTicks?.includes(amount) ? undefined : refLabel(
                         formatCalcAmount(amount, { withRuble }),
                         chartMode === 'purchasing' ? 'insideBottomRight' : 'insideTopLeft',
                       )}

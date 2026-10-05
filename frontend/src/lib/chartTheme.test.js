@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CHART_HEIGHTS, CHART_THEME, GRID_PROPS, axisSampleValues, axisTick, axisWidthForLabels, chartHeightForWidth,
+  CHART_HEIGHTS, CHART_THEME, GRID_PROPS, axisSampleValues, axisTick, axisWidthForLabels, chartHeightForWidth, niceAxis,
 } from './chartTheme';
 
 function channel(c) {
@@ -80,5 +80,29 @@ describe('ось Y сравнения не режет «355 000»', () => {
     const labels = axisSampleValues([190000, 355000]).map((v) => String(Math.round(v)).replace(/\B(?=(\d{3})+$)/g, '\u00A0'));
     const width = axisWidthForLabels(labels, { min: 40, perChar: 7, pad: 12 });
     expect(width).toBeGreaterThan(60);
+  });
+});
+
+describe('niceAxis: ровный шаг оси Y', () => {
+  it('3 190 000…3 300 000 получает шаг 20 000, а не 55 000', () => {
+    const axis = niceAxis([3195000, 3290000]);
+    const steps = axis.ticks.slice(1).map((v, i) => v - axis.ticks[i]);
+    expect(new Set(steps).size).toBe(1);
+    expect([1, 2, 5].includes(Number(String(steps[0]).replace(/0+$/, '')))).toBe(true);
+    expect(axis.domain[0]).toBeLessThanOrEqual(3195000);
+    expect(axis.domain[1]).toBeGreaterThanOrEqual(3290000);
+  });
+
+  it('без данных — null, плоский ряд — не вырождается', () => {
+    expect(niceAxis([])).toBeNull();
+    expect(niceAxis([null, 'x'])).toBeNull();
+    const flat = niceAxis([5, 5]);
+    expect(flat.ticks.length).toBeGreaterThan(1);
+  });
+
+  it('проценты около нуля: ось проходит через 0 с шагом 1', () => {
+    const axis = niceAxis([-0.4, 3.1]);
+    expect(axis.ticks).toContain(0);
+    expect(axis.ticks[1] - axis.ticks[0]).toBe(1);
   });
 });
