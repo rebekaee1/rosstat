@@ -82,6 +82,20 @@ describe('LightScene', () => {
     expect(other.container.parentElement.querySelector('.fe-scene-leak--bottom')).not.toBeNull();
   });
 
+  it('на странице 404 (адрес из одного сегмента, корень .z2-nf) героя страны нет', async () => {
+    const nf = document.createElement('div');
+    nf.className = 'z2-nf';
+    document.body.appendChild(nf);
+    try {
+      const view = scene('/no-such-country');
+      await settle();
+      expect(view.container.parentElement.querySelector('.fe-scene-hero')).toBeNull();
+      expect(view.container.parentElement.querySelector('.fe-scene-leak--top')).toBeNull();
+    } finally {
+      nf.remove();
+    }
+  });
+
   it('при экономии трафика (Save-Data) героя не монтирует', async () => {
     Object.defineProperty(window.navigator, 'connection', { value: { saveData: true }, configurable: true });
     try {

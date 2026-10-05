@@ -164,7 +164,7 @@ footer.fe-footer.fe-k2-footer {
   -webkit-backdrop-filter: none;
   color: #C7CBD6;
 }
-/* Верх: переход длиной 160 px над подвалом, один оттенок (прозрачный → сапфир) без цветного стопа: полосы нет. */
+/* Верх: переход длиной 160 px над подвалом, плавный, без резкого цветного стопа. */
 footer.fe-footer.fe-k2-footer::before {
   content: '';
   position: absolute;
@@ -172,7 +172,8 @@ footer.fe-footer.fe-k2-footer::before {
   left: 0;
   right: 0;
   height: 160px;
-  background: linear-gradient(180deg, rgba(14, 26, 51, 0) 0%, rgba(14, 26, 51, 0.04) 25%, rgba(14, 26, 51, 0.16) 50%, rgba(14, 26, 51, 0.46) 75%, #0E1A33 100%);
+  /* Тёплый переход (круг 4): прозрачный → шампань → тёплая тень → сапфир. Раньше сапфир .16-.46 по кремовой бумаге давал серо-синюю «дымку». */
+  background: linear-gradient(180deg, rgba(233, 215, 166, 0) 0%, rgba(233, 215, 166, 0.26) 34%, rgba(150, 126, 104, 0.3) 62%, rgba(27, 43, 77, 0.66) 86%, #0E1A33 100%);
   opacity: 1;
   pointer-events: none;
   z-index: 0;
