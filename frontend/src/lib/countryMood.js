@@ -20,10 +20,33 @@ const FLAG_COLORS = {
   TR: ['#E30A17', '#F09AA0'], UA: ['#0057B8', '#FFD700'], GB: ['#012169', '#C8102E'], US: ['#3C3B6E', '#B22234'],
 };
 
-/** Два цвета для пятен за героем страны по ISO-коду; неизвестный код даёт золото бренда. */
+function hue(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = ((n >> 16) & 255) / 255;
+  const g = ((n >> 8) & 255) / 255;
+  const b = (n & 255) / 255;
+  const max = Math.max(r, g, b);
+  const d = max - Math.min(r, g, b);
+  if (d === 0) return -1;
+  let h;
+  if (max === r) h = ((g - b) / d) % 6;
+  else if (max === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  return ((h * 60) + 360) % 360;
+}
+
+/** Красные и розовые оттенки на светлой плите дают грязно-розовое пятно: они уходят в тёплое золото бренда. */
+const isReddish = (hex) => {
+  const h = hue(hex);
+  return h >= 0 && (h >= 335 || h <= 22);
+};
+
+/** Два чистых цвета для пятен за героем страны по ISO-коду; красное заменено золотом, неизвестный код даёт золото бренда. */
 export function moodColors(code) {
   const pair = FLAG_COLORS[String(code || '').trim().toUpperCase()];
-  return pair ? [...pair] : [...BRAND];
+  if (!pair) return [...BRAND];
+  const clean = pair.map((hex, i) => (isReddish(hex) ? BRAND[i] : hex));
+  return clean;
 }
 
 export default moodColors;

@@ -27,12 +27,13 @@
     radial-gradient(90% 80% at 0% 100%, rgba(92, 134, 200, 0.2), transparent 62%),
     linear-gradient(160deg, rgba(31, 49, 90, 0.94), rgba(14, 26, 51, 0.96) 72%);
   /* Тон стекла у строк топ-3 (вместо полосы слева). */
-  --k6-tint-gold: rgba(250, 234, 176, 0.7);
-  --k6-tint-gold-hover: rgba(252, 241, 196, 0.9);
-  --k6-tint-silver: rgba(226, 235, 247, 0.74);
-  --k6-tint-silver-hover: rgba(238, 244, 252, 0.92);
-  --k6-tint-bronze: rgba(248, 224, 204, 0.7);
-  --k6-tint-bronze-hover: rgba(251, 235, 220, 0.9);
+  /* Круг 4: лёгкий оттенок стекла, альфа не выше .35 (под ним остаётся белое стекло L1). */
+  --k6-tint-gold: rgba(233, 201, 122, 0.26);
+  --k6-tint-gold-hover: rgba(233, 201, 122, 0.35);
+  --k6-tint-silver: rgba(190, 206, 228, 0.28);
+  --k6-tint-silver-hover: rgba(190, 206, 228, 0.35);
+  --k6-tint-bronze: rgba(224, 176, 142, 0.26);
+  --k6-tint-bronze-hover: rgba(224, 176, 142, 0.35);
   /* Жёлоб стеклянной трубки: внутренняя тень сверху, блик снизу. */
   --k6-groove: rgba(88, 74, 46, 0.09);
   --k6-groove-shade: rgba(60, 48, 24, 0.22);
