@@ -39,6 +39,7 @@ import {
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
+import '../styles/k6-country.css';
 
 // Годовой ряд → изменения год к году, % (кнопка YoY / «% г/г»).
 function toYoYSeries(series) {
@@ -540,7 +541,7 @@ export default function RegionIndicatorPage() {
                 {t('regions.ind.fullRanking')}
               </Link>
               {active.rank.position > 5 && (
-                <div className="mt-2 pt-2 flex items-center justify-between text-[13px] px-2 fe-divider">
+                <div className="k6-seam-top mt-3 pt-3 flex items-center justify-between text-[13px] px-2">
                   <span className="flex items-center gap-2">
                     <span className="fe-num w-4 text-right text-text-secondary">{active.rank.position}</span>
                     <span className="text-champagne-ink font-medium">{regionName}</span>

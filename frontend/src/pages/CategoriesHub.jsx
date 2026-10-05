@@ -16,6 +16,7 @@ import { russiaCategoriesTrail, breadcrumbJsonLd } from '../lib/breadcrumbs';
 import { mountJsonLd } from '../lib/jsonLd';
 import { russiaCategoriesPath } from '../lib/sitePaths';
 import '../styles/indicator-russia.css';
+import '../styles/k6-country.css';
 
 export default function CategoriesHub() {
   const t = useT();

@@ -3,7 +3,7 @@
 // настоящий рейтинг (место, название, полоса, значение), а «Ещё показатели» открывает поиск по всему каталогу.
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDown, ArrowUp, Search, Trophy, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Search, X } from 'lucide-react';
 import { SkeletonBox } from '../Skeleton';
 import ApiRetryBanner from '../ApiRetryBanner';
 import { useRegionsCatalog, useRegionsHeatmap } from '../../lib/regionsApi';
@@ -14,6 +14,7 @@ import { track, events } from '../../lib/track';
 import { useLocale } from '../../i18n';
 import '../../styles/regions-w4.css';
 import '../../styles/w6f-pages.css';
+import '../../styles/k6-country.css';
 
 const FIRST_ROWS = 12;
 
@@ -190,9 +191,8 @@ export default function RegionRanking({ metrics, initialCode }) {
                 <Link to={regionIndicatorPath(row.slug, code)} className="fe-rank__row fe-press">
                   <span className="fe-rank__place fe-num">
                     {achievement && row.rank <= 3
-                      ? <Trophy size={14} className="text-champagne-ink" aria-label={t('w6f.rank.topThree')} />
-                      : null}
-                    {row.rank}
+                      ? <span data-medal={row.rank} title={t('w6f.rank.topThree')}>{row.rank}</span>
+                      : row.rank}
                   </span>
                   <span className="fe-rank__name">{row.name}</span>
                   <span className="fe-rank__bar" aria-hidden="true">

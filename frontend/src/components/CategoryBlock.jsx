@@ -27,6 +27,7 @@ import {
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { plural } from '../lib/calcFormat';
+import '../styles/k6-country.css';
 
 const CATEGORY_ICONS = {
   TrendingUp,
@@ -91,7 +92,7 @@ export default function CategoryBlock({
       }}
       className={cn(
         FOCUS_RING_SURFACE,
-        'fe-panel fe-category-card group relative flex flex-col p-6 rounded-[1.5rem] overflow-hidden',
+        'fe-glass-lite fe-glint fe-category-card group relative flex flex-col p-6 rounded-[1.5rem] overflow-hidden',
         category.apiCategory && 'lift-hover cursor-pointer',
         !category.apiCategory && 'opacity-50 cursor-not-allowed',
         soon && 'opacity-70'

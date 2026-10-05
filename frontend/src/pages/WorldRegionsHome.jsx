@@ -41,6 +41,7 @@ import Spinner from '../components/Spinner';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/w6f-pages.css';
+import '../styles/k6-country.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -343,7 +344,7 @@ export default function WorldRegionsHome() {
           aria-selected={view === 'list'}
           onClick={() => setView('list')}
           className={`fe-tap fe-press inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-            view === 'list' ? 'bg-champagne/15 text-champagne-ink' : 'text-text-secondary hover:text-text-primary'
+            view === 'list' ? 'fe-glass-active font-semibold' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
           <List size={15} /> {t('regions.view.list')}
@@ -354,7 +355,7 @@ export default function WorldRegionsHome() {
           aria-selected={view === 'map'}
           onClick={() => setView('map')}
           className={`fe-tap fe-press inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-            view === 'map' ? 'bg-champagne/15 text-champagne-ink' : 'text-text-secondary hover:text-text-primary'
+            view === 'map' ? 'fe-glass-active font-semibold' : 'text-text-secondary hover:text-text-primary'
           }`}
         >
           <MapIcon size={15} /> {t('regions.view.map')}

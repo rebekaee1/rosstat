@@ -22,6 +22,7 @@ import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
 import '../styles/z8-tools.css';
+import '../styles/k6-country.css';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
   breadcrumbJsonLd,
@@ -161,9 +162,9 @@ export default function CategoryPage({ fixedSlug }) {
         return (
           <Link
             to={feat.to}
-            className="fe-press group flex items-center gap-5 rounded-[1.5rem] bg-champagne/[0.04] p-5 md:p-6 mb-8 transition-colors hover:bg-champagne/[0.07] fe-shadow-2"
+            className="fe-press group flex items-center gap-5 rounded-[1.5rem] p-5 md:p-6 mb-8 fe-glass-lite fe-float"
           >
-            <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-champagne/10">
+            <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl fe-glass-2">
               <Icon className="w-6 h-6 text-champagne-ink" />
             </div>
             <div className="flex-1 min-w-0">
@@ -255,7 +256,7 @@ export default function CategoryPage({ fixedSlug }) {
             <h2 className="fe-cat-list__title mb-0!">
               {t('category.related')}
             </h2>
-            <div className="h-[1px] flex-1 bg-border-subtle" />
+            <div className="k6-seam flex-1" aria-hidden="true" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {relatedCategories.map((rel) => (

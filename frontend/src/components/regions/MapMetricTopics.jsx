@@ -3,6 +3,7 @@
 // несколько экранов. Для США — восемь понятных тем (usCatalogTopics), внутри них разделы; для остальных —
 // разделы каталога. Коды отраслей не показываются в названиях: они лежат в подсказке «i».
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Info, ListTree, Search, X } from 'lucide-react';
 import { useLocale } from '../../i18n';
 import { buildTopicGroups } from '../../lib/mapMetricPicks';
@@ -10,6 +11,7 @@ import { plainUsIndicatorName, plainUsSectionTitle } from '../../lib/usCatalogTo
 import { filterSearchOptions } from '../../lib/searchSynonyms';
 import '../../styles/regions-w4.css';
 import '../../styles/w6f-pages.css';
+import '../../styles/k6-country.css';
 
 function IndicatorRow({ item, active, onPick, locale }) {
   const { t } = useLocale();
@@ -99,7 +101,8 @@ export default function MapMetricTopics({ indicators, sections, usTopics = false
         <span className="fe-num text-xs text-text-secondary">{total}</span>
       </button>
 
-      {open && (
+      {/* Шторка вынесена в body: она position: fixed, а любой предок с backdrop-filter (панель страницы) запер бы её внутри блока. */}
+      {open && createPortal(
         <div className="fe-sheet" role="presentation">
           <button type="button" className="fe-sheet__backdrop" aria-label={t('common.close')} onClick={() => setOpen(false)} tabIndex={-1} />
           <div className="fe-sheet__panel" role="dialog" aria-modal="true" aria-label={t('y1.map.allByTopic')}>
@@ -175,7 +178,8 @@ export default function MapMetricTopics({ indicators, sections, usTopics = false
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

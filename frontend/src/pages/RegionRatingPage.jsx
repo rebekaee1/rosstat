@@ -19,6 +19,7 @@ import Chip from '../components/Chip';
 import { useT, useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
+import '../styles/k6-country.css';
 
 export default function RegionRatingPage() {
   const t = useT();
@@ -145,7 +146,7 @@ export default function RegionRatingPage() {
           </div>
 
           <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl p-4 fe-glass-lite">
+            <div className="k6-place k6-place--first rounded-2xl p-4 fe-glass-lite">
               <div className="flex items-center gap-1 text-xs font-medium text-text-secondary">
                 {achievement && <Trophy size={13} className="text-champagne-ink" aria-hidden="true" />}
                 {bestLabel}
@@ -155,7 +156,7 @@ export default function RegionRatingPage() {
                 {formatRegionWithUnit(top.raw ?? top.value, data.indicator.unit, locale)}
               </div>
             </div>
-            <div className="rounded-2xl p-4 fe-glass-lite">
+            <div className="k6-place k6-place--last rounded-2xl p-4 fe-glass-lite">
               <div className="text-xs font-medium text-text-secondary">{worstLabel}</div>
               <div className="mt-1 font-semibold text-text-primary">{bottom.name}</div>
               <div className="fe-num text-sm text-text-secondary">
@@ -184,7 +185,7 @@ export default function RegionRatingPage() {
             </h2>
             <div className="max-h-[32rem] overflow-auto rounded-2xl fe-glass-lite">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-obsidian-light/95 backdrop-blur-sm z-10">
+                <thead className="sticky top-0 bg-obsidian-light/95 z-10">
                   <tr className="text-left text-xs font-medium text-text-secondary">
                     <th className="px-4 py-2.5 font-medium w-16">{tableCol}</th>
                     <th className="px-4 py-2.5 font-medium">{t('regions.rating.colRegion')}</th>
@@ -211,7 +212,11 @@ export default function RegionRatingPage() {
                 <tbody>
                   {ranked.map((row) => (
                     <tr key={row.slug} className="fe-row-link border-t border-border-subtle">
-                      <td className="fe-num px-4 py-2 text-text-secondary">{row.rank}</td>
+                      <td className="fe-num px-4 py-2 text-text-secondary">
+                        {achievement && row.rank <= 3
+                          ? <span className="w2-rank-pos" data-medal={row.rank} title={t('w6f.rank.topThree')}>{row.rank}</span>
+                          : row.rank}
+                      </td>
                       <td className="px-4 py-2">
                         <Link
                           to={regionIndicatorPath(row.slug, code)}
