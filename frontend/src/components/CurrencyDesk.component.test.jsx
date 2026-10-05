@@ -13,6 +13,23 @@ vi.mock('../lib/track', async (importOriginal) => {
 
 afterEach(() => vi.restoreAllMocks());
 
+/** Список валюты: открыть по подписи и выбрать вариант по названию. */
+function pick(label, optionName) {
+  fireEvent.click(screen.getByRole('combobox', { name: new RegExp(`^${label}`) }));
+  fireEvent.click(screen.getByRole('option', { name: new RegExp(optionName) }));
+}
+
+/** Живая лента: доллар на бирже и золото, нефть, биткоин. */
+function mockMarket() {
+  const snapshots = [
+    { code: 'usd-rub-live', price: 85.81, change_pct: 1.1 },
+    { code: 'gold-rub-live', price: 11143, change_pct: -0.3 },
+    { code: 'brent', price: 113.96, change_pct: -5 },
+    { code: 'btc-usd', price: 85276, change_pct: -0.1 },
+  ];
+  return vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: () => Promise.resolve({ snapshots }) });
+}
+
 const INDICATORS = [
   { code: 'btc-usd', name: 'Bitcoin', name_en: 'Bitcoin', current_value: 60000, current_date: '2026-10-05', change: 600, frequency: 'daily', is_active: true },
   { code: 'eur-usd', name: 'EUR/USD', current_value: 1.1, current_date: '2026-10-05', change: -0.01, frequency: 'daily', is_active: true },
@@ -50,7 +67,7 @@ describe('CurrencyDesk', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Поменять местами' }));
     fireEvent.change(screen.getByLabelText('Сумма'), { target: { value: '8 000' } });
     expect(screen.getByTestId('converter-result').textContent).toContain('100');
-    expect(screen.getByLabelText('Из').value).toBe('RUB');
+    expect(screen.getByRole('combobox', { name: /^Из/ }).getAttribute('data-value')).toBe('RUB');
     fireEvent.change(screen.getByLabelText('Сумма'), { target: { value: 'abc' } });
     expect(screen.getByTestId('converter-result').textContent).toContain('Введите число');
   });
@@ -59,7 +76,7 @@ describe('CurrencyDesk', () => {
     mockApis();
     renderPage(<CurrencyDesk indicators={INDICATORS} />);
     fireEvent.change(screen.getByLabelText('Сумма'), { target: { value: '1' } });
-    fireEvent.change(screen.getByLabelText('Из'), { target: { value: 'BTC' } });
+    pick('Из', 'Биткоин');
     expect(screen.getByTestId('converter-result').textContent).toContain('4\u00A0800\u00A0000');
     expect(screen.getByTestId('converter-result').textContent).toMatch(/По последним курсам/);
   });
@@ -99,12 +116,75 @@ describe('CurrencyDesk', () => {
     expect(container.querySelectorAll('.fe-w6g-currency-row').length).toBe(3);
   });
 
-  it('объясняет, почему курс отличается от строки сверху', () => {
+  it('две плитки рядом: курс ЦБ с золотой отметкой и рыночный курс, пояснение одной строкой', async () => {
+    mockApis();
+    mockMarket();
+    const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
+    const tiles = container.querySelector('[data-block="currency-rate-tiles"]');
+    expect(tiles.textContent).toContain('Курс ЦБ на 3 окт.');
+    expect(tiles.textContent).toContain('80,00');
+    expect(tiles.querySelector('.fe-z8-rate--cb .fe-z8-rate__mark')).toBeTruthy();
+    await waitFor(() => expect(tiles.textContent).toContain('85,81'));
+    expect(tiles.textContent).toContain('Рынок');
+    // Пояснение стоит на виду, а не за ссылкой «Почему курс отличается?».
+    expect(tiles.querySelector('.fe-z8-why').textContent).toMatch(/официальный курс раз в день/);
+    expect(container.querySelector('details.fe-w6g-why')).toBeNull();
+  });
+
+  it('справа «Золото, нефть, биткоин» из живой ленты; без ответа сервера блока нет', async () => {
+    mockApis();
+    mockMarket();
+    const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
+    await waitFor(() => expect(container.querySelector('[data-block="currency-market-board"]')).toBeTruthy());
+    const board = container.querySelector('[data-block="currency-market-board"]');
+    expect([...board.querySelectorAll('.fe-z8-board__name')].map((n) => n.textContent)).toEqual(['Золото', 'Нефть', 'Биткоин']);
+    expect(board.textContent).toContain('11\u00A0143');
+  });
+
+  it('без ответа ленты нет плитки «Рынок» и блока справа, остальное работает', () => {
+    mockApis();
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('offline'));
+    const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
+    expect(container.querySelector('.fe-z8-rate--cb')).toBeTruthy();
+    expect(container.querySelectorAll('.fe-z8-rate')).toHaveLength(1);
+    expect(container.querySelector('[data-block="currency-market-board"]')).toBeNull();
+    expect(container.querySelector('.fe-z8-why')).toBeNull();
+  });
+
+  it('у доллара значок «$», а не флаг; у евро флаг', () => {
     mockApis();
     const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
-    const why = container.querySelector('.fe-w6g-why');
-    expect(why.querySelector('summary').textContent).toMatch(/Почему курс отличается от строки сверху/);
-    expect(why.textContent).toMatch(/биржевые котировки/);
+    const coins = [...container.querySelectorAll('.fe-w6g-currency-row .fe-w6g-coin')].map((n) => n.textContent);
+    expect(coins[0]).toBe('$');
+    expect(coins[1]).not.toBe('$');
+  });
+
+  it('свой список валюты: открывается, ищет по слову, выбирается клавишей и закрывается по Escape', () => {
+    mockApis();
+    renderPage(<CurrencyDesk indicators={INDICATORS} />);
+    const from = screen.getByRole('combobox', { name: /^Из/ });
+    expect(from.getAttribute('aria-expanded')).toBe('false');
+    fireEvent.click(from);
+    expect(from.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getAllByRole('option').length).toBeGreaterThanOrEqual(4);
+    const search = document.querySelector('.fe-z8-select__search input');
+    fireEvent.change(search, { target: { value: 'евр' } });
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([expect.stringContaining('Евро')]);
+    fireEvent.keyDown(search, { key: 'Enter' });
+    expect(from.getAttribute('aria-expanded')).toBe('false');
+    expect(from.getAttribute('data-value')).toBe('EUR');
+    fireEvent.click(from);
+    fireEvent.keyDown(screen.getByRole('listbox').parentElement, { key: 'Escape' });
+    expect(from.getAttribute('aria-expanded')).toBe('false');
+    expect(from.getAttribute('data-value')).toBe('EUR');
+  });
+
+  it('график пары за год и строка «1 USD = …»', async () => {
+    mockApis();
+    const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
+    expect(screen.getByTestId('converter-result').textContent).toContain('1 USD = 80,00 RUB');
+    await waitFor(() => expect(container.querySelector('[data-block="currency-year-chart"] .fe-z8-chart__title')).toBeTruthy());
+    expect(container.querySelector('.fe-z8-chart__title').textContent).toContain('Доллар США → Рубль');
   });
 });
 

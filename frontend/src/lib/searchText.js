@@ -156,3 +156,41 @@ export function isGlobalMarketRow(item) {
   if (!item) return false;
   return /^(?:мировой рынок|global markets?|world market)$/i.test(String(item.country_name || '').trim());
 }
+
+const INDEX_UNIT_RE = /index|индекс|\d{4}\s*=\s*100/i;
+
+/** Единица-индекс («индекс 2015 = 100»): само число без базы ничего не говорит, его прячем в «Подробнее». */
+export function isIndexUnit(unit) {
+  return INDEX_UNIT_RE.test(String(unit || ''));
+}
+
+/**
+ * Подпись «Открываем: …» только из названия: числа, суммы и проценты, попавшие в строку, убираются,
+ * четырёхзначные годы остаются («ВВП России, 2024»).
+ */
+export function openingLabel(name) {
+  const text = String(name || '');
+  const stripped = text
+    .split(/\s+[—–]\s+/)[0]
+    .replace(
+      /(?:^|\s)[+−-]?\d[\d\s.,]*(?:\s?(?:%|млрд|млн|тыс\S*|трлн|bn|m|k))?(?=\s|$|,)/giu,
+      (match) => (/^\s?\d{4}$/.test(match) ? match : ''),
+    )
+    .replace(/\s{2,}/g, ' ')
+    .replace(/[\s,:;]+$/g, '')
+    .trim();
+  return stripped || text;
+}
+
+/** Группы выдачи по теме: крупные первыми, «прочее» последним. Метка темы — сообщение `z8.search.topic.<id>`. */
+export function groupByTopic(rows, topicOf) {
+  const groups = new Map();
+  for (const row of rows) {
+    const id = topicOf(row);
+    if (!groups.has(id)) groups.set(id, []);
+    groups.get(id).push(row);
+  }
+  return [...groups.entries()]
+    .map(([id, list]) => ({ id, rows: list }))
+    .sort((a, b) => (a.id === 'chart') - (b.id === 'chart') || b.rows.length - a.rows.length);
+}

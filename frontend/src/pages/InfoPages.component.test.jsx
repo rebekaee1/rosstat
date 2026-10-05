@@ -62,4 +62,21 @@ describe('Methodology', () => {
     // У каждой карточки с деталями есть «Подробнее».
     expect(container.querySelectorAll('details.w5-more-inline').length).toBeGreaterThanOrEqual(5);
   });
+
+  it('раунд 2: «Откуда данные» с плитками источников, справа оглавление со ссылками на все шесть разделов', async () => {
+    mockApiGet([['/auth/me', { user: null }]]);
+    const { container } = renderPage(<Methodology />, { path: '/methodology', route: '/methodology' });
+    expect(await screen.findByRole('heading', { level: 1 })).toBeTruthy();
+    const sources = [...container.querySelectorAll('#principles .fe-z8-source strong')].map((n) => n.textContent);
+    expect(sources).toEqual(['Росстат', 'Банк России', 'Минфин России', 'МВФ', 'Евростат', 'Ведомства США']);
+    const toc = within(container.querySelector('.fe-z8-meth__toc'));
+    const hrefs = toc.getAllByRole('link').map((a) => a.getAttribute('href'));
+    expect(hrefs).toEqual(['#principles', '#steps', '#read', '#countries', '#skip', '#limits']);
+    for (const href of hrefs) expect(container.querySelector(href)).toBeTruthy();
+    expect(toc.getAllByRole('link')[0].getAttribute('aria-current')).toBe('location');
+    // Карточки держат высоту содержимого, а не растягиваются по соседней.
+    expect(container.querySelector('.x4-cards.fe-z8-meth__cards')).toBeTruthy();
+    // Монограммы источников декоративны: названия есть текстом рядом.
+    expect(container.querySelector('.fe-z8-source__badge').getAttribute('aria-hidden')).toBe('true');
+  });
 });

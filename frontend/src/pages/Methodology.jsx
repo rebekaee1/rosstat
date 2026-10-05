@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Database, Calculator, TrendingUp, Globe2, Ban, ShieldAlert, LineChart,
@@ -10,9 +11,40 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import Button from '../components/Button';
 import { InfoCard, InfoGrid, InfoMore } from '../components/InfoCard';
 import { toolTrail } from '../lib/breadcrumbs';
+import { cn } from '../lib/format';
 import '../styles/w5-pages.css';
+import '../styles/z8-tools.css';
 
 const STEPS = [1, 2, 3, 4];
+const SOURCES = ['rosstat', 'cbr', 'minfin', 'imf', 'eurostat', 'us'];
+const TOC = [
+  ['principles', 'x4.meth.data.title'],
+  ['steps', 'x4.meth.how.title'],
+  ['read', 'x4.meth.forecast.title'],
+  ['countries', 'x4.meth.world.title'],
+  ['skip', 'x4.meth.skip.title'],
+  ['limits', 'x4.meth.limits.title'],
+];
+
+/** Какой раздел сейчас на экране: подсвечивается в оглавлении справа. Без IntersectionObserver остаётся первый. */
+function useActiveSection(ids) {
+  const [active, setActive] = useState(ids[0]);
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+    const seen = new Map();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => seen.set(entry.target.id, entry.isIntersecting ? entry.boundingClientRect.top : null));
+      const visible = [...seen.entries()].filter(([, top]) => top != null).sort((a, b) => a[1] - b[1]);
+      if (visible.length) setActive(visible[0][0]);
+    }, { rootMargin: '-110px 0px -55% 0px' });
+    ids.forEach((id) => {
+      const node = document.getElementById(id);
+      if (node) observer.observe(node);
+    });
+    return () => observer.disconnect();
+  }, [ids]);
+  return active;
+}
 
 /**
  * «Методология»: короткий лид и шесть карточек. На виду — человеческие объяснения в 1–2
@@ -21,6 +53,7 @@ const STEPS = [1, 2, 3, 4];
 export default function Methodology() {
   const { locale } = useLocale();
   const t = useT();
+  const active = useActiveSection(TOC.map(([id]) => id));
   const seo = getPageSeo('methodology', locale);
   useDocumentMeta({
     title: seo.title,
@@ -36,19 +69,41 @@ export default function Methodology() {
   ];
 
   return (
-    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 md:pb-16">
+    <div className="fe-data-page fe-gutter fe-z8-meth pt-24 md:pt-28 pb-12 md:pb-16">
       <Breadcrumbs items={toolTrail(seo.h1, seo.path)} className="mb-6" />
 
-      <header className="mb-8 fe-reveal">
-        <h1 className="mb-4 font-display text-3xl font-bold leading-[1.1] text-text-primary md:text-5xl">
-          {seo.h1}
-        </h1>
-        <p className="x4-lead" style={{ marginBottom: 0 }}>{t('x4.meth.lead')}</p>
+      <header className="fe-z8-meth__head fe-reveal">
+        <div>
+          <h1 className="fe-z8-meth__title">{seo.h1}</h1>
+          <p className="x4-lead" style={{ marginBottom: 0 }}>{t('x4.meth.lead')}</p>
+        </div>
+        <div className="fe-z8-meth__cta">
+          <Button as={Link} to="/">
+            <LineChart className="h-4 w-4" aria-hidden="true" />
+            {t('meth.cta.indicators')}
+          </Button>
+          <Button as={Link} to="/about" variant="secondary">
+            {t('meth.cta.about')}
+          </Button>
+        </div>
       </header>
 
-      <InfoGrid>
-        <InfoCard icon={Database} title={t('x4.meth.data.title')} id="principles">
+      <div className="fe-z8-meth__layout">
+      <div className="fe-z8-meth__main">
+      <InfoGrid className="fe-z8-meth__cards">
+        <InfoCard icon={Database} title={t('x4.meth.data.title')} id="principles" wide>
           <p>{t('x4.meth.data.body')}</p>
+          <ul className="fe-z8-sources" aria-label={t('z8.meth.sourcesAria')}>
+            {SOURCES.map((id) => (
+              <li key={id} className="fe-z8-source">
+                <span className="fe-z8-source__badge" aria-hidden="true">{t(`z8.meth.src.${id}.badge`)}</span>
+                <span className="fe-z8-source__text">
+                  <strong>{t(`z8.meth.src.${id}.name`)}</strong>
+                  <span>{t(`z8.meth.src.${id}.desc`)}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
           <InfoMore label={more}>
             <p>{t('meth.p.officialBody')}</p>
             <p>{t('meth.p.reproBody')}</p>
@@ -56,7 +111,7 @@ export default function Methodology() {
           </InfoMore>
         </InfoCard>
 
-        <InfoCard icon={Calculator} title={t('x4.meth.how.title')} id="steps">
+        <InfoCard icon={Calculator} title={t('x4.meth.how.title')} id="steps" wide>
           <ol className="x4-mini-steps">
             {STEPS.map((n) => (
               <li key={n}>
@@ -133,15 +188,20 @@ export default function Methodology() {
           </InfoMore>
         </InfoCard>
       </InfoGrid>
+      </div>
 
-      <div className="flex flex-wrap gap-3">
-        <Button as={Link} to="/">
-          <LineChart className="h-4 w-4" aria-hidden="true" />
-          {t('meth.cta.indicators')}
-        </Button>
-        <Button as={Link} to="/about" variant="secondary">
-          {t('meth.cta.about')}
-        </Button>
+      <nav className="fe-z8-meth__toc" aria-label={t('z8.meth.tocAria')}>
+        <p className="fe-z8-meth__toc-title">{t('z8.meth.toc')}</p>
+        <ol>
+          {TOC.map(([id, key]) => (
+            <li key={id}>
+              <a href={`#${id}`} className={cn(active === id && 'is-active')} aria-current={active === id ? 'location' : undefined}>
+                {t(key)}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
       </div>
     </div>
   );

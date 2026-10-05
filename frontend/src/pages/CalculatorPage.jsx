@@ -41,6 +41,7 @@ import CalcMethod from '../components/CalcMethod';
 import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
 import { useChartTouchHint } from '../lib/useChartTouchHint';
 import '../styles/w5-tools.css';
+import '../styles/z8-tools.css';
 import '../styles/w6-g.css';
 import Chip from '../components/Chip';
 import Button from '../components/Button';
@@ -453,6 +454,9 @@ export default function CalculatorPage() {
     try { await navigator.clipboard.writeText(text); } catch { /* ok */ }
   }, [result, amountText, fromYear, toYear, reversed, t, withRuble, money]);
 
+  const periodYears = result ? Math.max(1, Math.round(result.months / 12)) : 0;
+  const periodLabel = locale === 'en' ? t('calc.years', { n: periodYears }) : yearsPhrase(periodYears);
+
   const formatHero = money;
   const heroValue = reversed ? result?.purchasing : result?.equivalent;
   const heroPrefix = reversed
@@ -653,38 +657,38 @@ export default function CalculatorPage() {
   /* ─── Render ─── */
 
   return (
-    <div className="fe-data-page fe-gutter max-w-3xl mx-auto pt-24 md:pt-28 pb-12 sm:pb-16">
+    <div className="fe-data-page fe-gutter fe-z8-calc pt-24 md:pt-28 pb-12 sm:pb-16">
 
-      <div style={revealStyle(0)} className="fe-reveal mb-8">
+      <div style={revealStyle(0)} className="fe-reveal mb-5">
         <Breadcrumbs items={toolTrail(t('calc.inflation.title'), '/calculator')} />
       </div>
 
-      {/* Hero */}
-      <header style={revealStyle(1)} className="fe-reveal mb-10">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-champagne/10 border border-champagne/20">
-            <Calculator className="w-5 h-5 text-champagne" />
-          </div>
+      {/* Hero: короткая шапка, чтобы форма была на первом экране */}
+      <header style={revealStyle(1)} className="fe-reveal fe-z8-calc__head">
+        <div className="fe-z8-calc__icon" aria-hidden="true">
+          <Calculator className="w-5 h-5" />
+        </div>
+        <div className="fe-z8-calc__headtext">
           <span className="w5-eyebrow">
             {t(isRussia ? 'w5.calc.inflation.eyebrow' : 'w5.calc.inflation.eyebrowWorld')}
           </span>
+          <h1 className="fe-z8-calc__title">{t('calc.inflation.title')}</h1>
+          <p className="fe-z8-calc__lead">
+            {isRussia
+              ? t('calc.inflation.subtitle')
+              : countryName
+                ? t('w6g.calc.subtitleWorld', { country: countryName })
+                : t('w6g.calc.subtitleWorldNoName')}
+          </p>
         </div>
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
-          {t('calc.inflation.title')}
-        </h1>
-        <p className="text-base text-text-secondary leading-relaxed max-w-xl">
-          {isRussia
-            ? t('calc.inflation.subtitle')
-            : countryName
-              ? t('w6g.calc.subtitleWorld', { country: countryName })
-              : t('w6g.calc.subtitleWorldNoName')}
-        </p>
       </header>
 
       <CalculatorShowcase current="inflation" />
 
+      <div className="fe-z8-calc__grid">
+      <div className="fe-z8-calc__side">
       {/* Calculator Card */}
-      <section style={revealStyle(2)} data-block="calc-form" className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+      <section style={revealStyle(2)} data-block="calc-form" className="fe-reveal fe-panel fe-z8-card p-6 md:p-7">
 
         <CalcCountryPicker
           countries={countries}
@@ -770,6 +774,17 @@ export default function CalculatorPage() {
         )}
       </section>
 
+      {result && !isLoading && (
+        <aside style={revealStyle(3)} className="fe-reveal fe-z8-hint" data-block="calc-hint">
+          <span className="fe-z8-hint__label">{t('z8.calc.hint.label')}</span>
+          <p className="fe-z8-hint__big">{fmtPct(result.totalInflation)}</p>
+          <p className="fe-z8-hint__line">{t('z8.calc.hint.inflation', { years: periodLabel })}</p>
+          <p className="fe-z8-hint__sub">{t('z8.calc.hint.avg', { rate: fmtPct(result.avgAnnual) })}</p>
+        </aside>
+      )}
+      </div>
+
+      <div className="fe-z8-calc__out">
       {/* Loading: тот же размер, что у карточки результата — без прыжка высоты */}
       {isLoading && (
         <div
@@ -815,7 +830,7 @@ export default function CalculatorPage() {
             style={revealStyle(3)}
             data-block="calc-result"
             className={cn(
-              'fe-reveal rounded-[2rem] border p-6 md:p-8 mb-6 min-h-[22rem] transition-colors duration-500',
+              'fe-reveal fe-z8-result rounded-[2rem] border p-6 md:p-8 mb-6 min-h-[22rem] transition-colors duration-500',
               extremeInflation ? 'bg-negative/[0.03] border-negative/20' : 'bg-surface border-border-champagne'
             )}
             aria-live="polite"
@@ -967,16 +982,16 @@ export default function CalculatorPage() {
                   <AreaChart data={chartData} margin={{ top: 16, right: 16, bottom: 5, left: 4 }}>
                     <defs>
                       <linearGradient id="calcGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={CHART_THEME.champagne} stopOpacity={0.18} />
+                        <stop offset="0%" stopColor={CHART_THEME.champagne} stopOpacity={0.3} />
                         <stop offset="100%" stopColor={CHART_THEME.champagne} stopOpacity={0.01} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid {...GRID_PROPS} />
                     <XAxis dataKey="date" tickFormatter={d => formatDate(d, 'annual')}
-                      stroke={CHART_THEME.axisLine} tick={axisTick()}
+                      stroke={CHART_THEME.axisLine} tick={axisTick({ fontSize: 13 })}
                       tickLine={false} ticks={xTicks} interval={0}
                     />
-                    <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
+                    <YAxis stroke={CHART_THEME.axisLine} tick={axisTick({ fontSize: 13 })}
                       tickLine={false} axisLine={false} domain={yDomain} ticks={yTicks}
                       tickFormatter={(v) => money(v)} width={yWidth}
                     />
@@ -1004,7 +1019,7 @@ export default function CalculatorPage() {
                       />
                     ))}
 
-                    <Area dataKey="value" stroke={CHART_THEME.champagne} strokeWidth={2}
+                    <Area dataKey="value" stroke={CHART_THEME.champagne} strokeWidth={2.5}
                       fill="url(#calcGrad)" dot={false}
                       activeDot={{ r: 4, fill: CHART_THEME.champagne, stroke: CHART_THEME.surface, strokeWidth: 2 }}
                       isAnimationActive={false}
@@ -1047,8 +1062,12 @@ export default function CalculatorPage() {
         </>
       )}
 
+      </div>
+      </div>
+
+      <div className="fe-z8-calc__lower">
       {/* ── Как считаем (простыми словами; формулы на виду нет) ── */}
-      <div style={revealStyle(8)} className="fe-reveal">
+      <div style={revealStyle(8)} className="fe-reveal fe-z8-calc__method">
         <CalcMethod
           dataBlock="calc-methodology"
           paragraphs={[
@@ -1060,7 +1079,7 @@ export default function CalculatorPage() {
       </div>
 
       {/* ── FAQ ── */}
-      <section style={revealStyle(9)} className="fe-reveal mb-8">
+      <section style={revealStyle(9)} className="fe-reveal fe-z8-calc__faq">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">{t('calc.faqHeading')}</h2>
         <FaqAccordion
           items={faqItems}
@@ -1071,8 +1090,9 @@ export default function CalculatorPage() {
       </section>
 
       {/* ── Другие калькуляторы ── */}
-      <div style={revealStyle(10)} className="fe-reveal">
+      <div style={revealStyle(10)} className="fe-reveal fe-z8-calc__siblings">
         <CalculatorSiblings current="inflation" />
+      </div>
       </div>
 
       {/* ── K5: Смотреть дальше — третий блок перелинковки вглубь платформы ── */}

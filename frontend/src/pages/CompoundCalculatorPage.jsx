@@ -31,6 +31,7 @@ import CalcKeyRate from '../components/CalcKeyRate';
 import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
 import { useChartTouchHint } from '../lib/useChartTouchHint';
 import '../styles/w5-tools.css';
+import '../styles/z8-tools.css';
 import { useT, useLocale } from '../i18n';
 import {
   russiaIndicatorPath,
@@ -115,31 +116,29 @@ export default function CompoundCalculatorPage() {
   }, [initial, monthly, rate, years, inflation]);
 
   return (
-    <div className="fe-data-page fe-gutter max-w-3xl mx-auto pt-24 md:pt-28 pb-12 sm:pb-16">
-      <div style={revealStyle(0)} className="fe-reveal mb-8">
+    <div className="fe-data-page fe-gutter fe-z8-calc pt-24 md:pt-28 pb-12 sm:pb-16">
+      <div style={revealStyle(0)} className="fe-reveal mb-5">
         <Breadcrumbs items={toolTrail(t('calc.compound.title'), '/calculator/compound')} />
       </div>
 
-      <header style={revealStyle(1)} className="fe-reveal mb-10">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-champagne/10 border border-champagne/20">
-            <TrendingUp className="w-5 h-5 text-champagne" />
-          </div>
-          <span className="w5-eyebrow">{t('calc.compound.eyebrow')}</span>
+      <header style={revealStyle(1)} className="fe-reveal fe-z8-calc__head">
+        <div className="fe-z8-calc__icon" aria-hidden="true">
+          <TrendingUp className="w-5 h-5" />
         </div>
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight text-text-primary leading-tight mb-3">
-          {t('calc.compound.title')}
-        </h1>
-        <p className="text-base text-text-secondary leading-relaxed max-w-xl">
-          {t('calc.compound.subtitle')}
-        </p>
-        <CalcKeyRate rate={keyRate} />
+        <div className="fe-z8-calc__headtext">
+          <span className="w5-eyebrow">{t('calc.compound.eyebrow')}</span>
+          <h1 className="fe-z8-calc__title">{t('calc.compound.title')}</h1>
+          <p className="fe-z8-calc__lead">{t('calc.compound.subtitle')}</p>
+          <CalcKeyRate rate={keyRate} />
+        </div>
       </header>
 
       <CalculatorShowcase current="compound" />
 
-      <section style={revealStyle(2)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
-        <div className="grid sm:grid-cols-2 gap-6">
+      <div className="fe-z8-calc__grid">
+      <div className="fe-z8-calc__side">
+      <section style={revealStyle(2)} className="fe-reveal fe-panel fe-z8-card p-6 md:p-7 space-y-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-1 gap-6">
           <CalcMoneyField
             label={t('calc.compound.initial')} unitName={t('calc.ui.unitRubles')}
             value={initial} onChange={setInitial} prefix="₽" placeholder="100 000" size="md" allowZero
@@ -150,7 +149,7 @@ export default function CompoundCalculatorPage() {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-x-6 gap-y-5">
           <CalcSlider label={t('calc.compound.rate')} value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
           <CalcSlider label={t('calc.compound.term')} value={years} onChange={setYears} min={1} max={40} display={yearsLabel(years)} />
           <CalcSlider label={t('calc.compound.inflation')} value={inflation} onChange={setInflation} min={0} max={20} step={0.5} suffix="%" />
@@ -158,8 +157,19 @@ export default function CompoundCalculatorPage() {
       </section>
 
       {result && (
+        <aside style={revealStyle(3)} className="fe-reveal fe-z8-hint" data-block="calc-hint">
+          <span className="fe-z8-hint__label">{t('z8.calc.hint.label')}</span>
+          <p className="fe-z8-hint__big">{`×${decimalText(result.invested ? result.balance / result.invested : 1, 1)}`}</p>
+          <p className="fe-z8-hint__line">{t('z8.calc.hint.compound', { years: yearsLabel(years) })}</p>
+          <p className="fe-z8-hint__sub">{t('z8.calc.hint.compoundSub', { amount: formatRubles(result.gain) })}</p>
+        </aside>
+      )}
+      </div>
+
+      <div className="fe-z8-calc__out">
+      {result && (
         <>
-          <section style={revealStyle(3)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6 min-h-[17rem]" aria-live="polite">
+          <section style={revealStyle(3)} className="fe-reveal fe-panel fe-z8-result rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6 min-h-[17rem]" aria-live="polite">
             <p className="text-sm text-text-secondary mb-2">{t('calc.compound.growsIn', {
               years: yearsLabel(years),
             })}</p>
@@ -192,10 +202,10 @@ export default function CompoundCalculatorPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid {...GRID_PROPS} />
-                  <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick()} tickLine={false}
+                  <XAxis dataKey="year" stroke={CHART_THEME.axisLine} tick={axisTick({ fontSize: 13 })} tickLine={false}
                     ticks={evenYearTicks(result.series[result.series.length - 1]?.year)} interval={0}
                     tickFormatter={(y) => (y === 0 ? t('w5.calc.axisStart') : t('w5.calc.axisYear', { n: y }))} />
-                  <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
+                  <YAxis stroke={CHART_THEME.axisLine} tick={axisTick({ fontSize: 13 })}
                     tickLine={false} axisLine={false} tickFormatter={rubleTick}
                     width={axisWidthForLabels(result.series.flatMap((p) => [rubleTick(p.balance), rubleTick(0)]), { min: 56, perChar: 6.8, pad: 10 })} />
                   <Tooltip
@@ -245,8 +255,11 @@ export default function CompoundCalculatorPage() {
           </section>
         </>
       )}
+      </div>
+      </div>
 
-      <div style={revealStyle(6)} className="fe-reveal">
+      <div className="fe-z8-calc__lower">
+      <div style={revealStyle(6)} className="fe-reveal fe-z8-calc__method">
         <CalcMethod
           paragraphs={[t('w5.calc.compound.how.p1'), t('w5.calc.compound.how.p2')]}
         >
@@ -260,7 +273,7 @@ export default function CompoundCalculatorPage() {
         </CalcMethod>
       </div>
 
-      <section style={revealStyle(7)} className="fe-reveal mb-8">
+      <section style={revealStyle(7)} className="fe-reveal fe-z8-calc__faq">
         <h2 className="text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold mb-6">{t('calc.faqHeading')}</h2>
         <FaqAccordion
           items={faqItems}
@@ -268,8 +281,9 @@ export default function CompoundCalculatorPage() {
         />
       </section>
 
-      <div style={revealStyle(8)} className="fe-reveal">
+      <div style={revealStyle(8)} className="fe-reveal fe-z8-calc__siblings">
         <CalculatorSiblings current="compound" />
+      </div>
       </div>
     </div>
   );

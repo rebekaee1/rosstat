@@ -5,7 +5,7 @@
  * первым остаётся самый релевантный представитель семьи.
  */
 
-import { inflationTitle, plainTitle } from './searchText';
+import { inCountry, inflationTitle, isIndexUnit, plainTitle } from './searchText';
 
 /** Сколько строк видно, пока человек не нажал «Ещё варианты». */
 export const SEARCH_PRIMARY_LIMIT = 8;
@@ -52,8 +52,26 @@ export function splitSearchRows(rows, nameOf, { primaryLimit = SEARCH_PRIMARY_LI
  * служебные слова («ИПЦ», «цепные объёмы», база индекса) убраны. Остальные названия остаются как пришли.
  */
 export function friendlySearchName(item, name, t, locale = 'ru') {
-  if (item?.country_name && HICP_RE.test(String(name || '').trim())) {
+  const text = String(name || '').trim();
+  if (item?.country_name && HICP_RE.test(text)) {
     return inflationTitle(item.country_name, t, locale);
   }
+  // Годовая инфляция страны в процентах: «Инфляция в Турции, за год» (а не «Индекс потребительских цен …»).
+  if (item?.country_name && isAnnualInflationPercent(item, text)) {
+    const where = inCountry(item.country_name, locale);
+    return where
+      ? t('z8.search.inflationYear', { where })
+      : t('z8.search.inflationYearPlain', { country: item.country_name });
+  }
   return plainTitle(name, locale);
+}
+
+const INFLATION_NAME = /inflation|инфляц|annual rate of change|изменение (?:потребительских )?цен|consumer price/i;
+const ANNUAL_NAME = /annual|year[- ]on[- ]year|за год|годов|12-month|за 12 месяцев|к соответствующему/i;
+
+/** Строка «процент изменения цен за год»: единица — проценты (не индекс), в названии инфляция и «за год». */
+function isAnnualInflationPercent(item, name) {
+  const unit = String(item?.unit || '');
+  if (!/%|процент|percent/i.test(unit) || isIndexUnit(unit)) return false;
+  return INFLATION_NAME.test(name) && ANNUAL_NAME.test(name);
 }

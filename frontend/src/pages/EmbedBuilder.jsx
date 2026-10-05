@@ -23,6 +23,7 @@ import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/platform-pages.css';
 import '../styles/w5-tools.css';
 import '../styles/w6-g.css';
+import '../styles/z8-tools.css';
 
 const WIDGET_TYPES = [
   { key: 'chart', labelKey: 'embed.type.chart', descKey: 'w5.embed.type.chartHint', icon: BarChart3 },
@@ -370,7 +371,7 @@ export default function EmbedBuilder() {
     : (fitsAsIs ? previewBoxW : Math.min(previewBoxW, Math.max(360, availW)));
   const widthScale = typeof renderW === 'number' && availW > 0 && renderW > availW ? availW / renderW : 1;
   // Закреплённый предпросмотр на телефоне не должен съедать экран: ограничиваем высоту.
-  const maxPreviewH = compactPreview ? 112 : Infinity;
+  const maxPreviewH = compactPreview ? 84 : Infinity;
   const heightScale = previewH > maxPreviewH ? maxPreviewH / previewH : 1;
   const previewScale = Math.min(widthScale, heightScale);
   const previewW = renderW;

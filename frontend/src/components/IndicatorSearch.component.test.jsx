@@ -330,7 +330,7 @@ it('X3: вариации одного показателя свёрнуты в �
   expect(rows).toHaveLength(1);
   expect(rows[0].textContent).toContain('w6d.search.inflationIn');
   expect(rows[0].textContent).not.toMatch(/Гармонизированный/);
-  const more = screen.getByRole('button', { name: /shell3\.search\.moreVariants/ });
+  const more = screen.getByRole('button', { name: /z8\.search\.moreTopics/ });
   expect(more.getAttribute('aria-expanded')).toBe('false');
 
   fireEvent.click(more);
