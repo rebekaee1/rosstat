@@ -24,9 +24,9 @@
    ========================================================================== */
 
 /* Страница валют шире и сидит в общем контейнере данных (на очень широких экранах он шире). */
-.fe-data-page.fe-z8-cur-page { max-width: var(--fe-container-data, 80rem); }
+.fe-data-page.fe-z8-cur-page { max-width: var(--fe-box-data, 85rem); }
 @media (min-width: 1700px) {
-  .fe-data-page.fe-z8-cur-page { max-width: var(--fe-container-wide, 100rem); }
+  .fe-data-page.fe-z8-cur-page { max-width: var(--fe-box-wide, 85rem); }
 }
 
 .fe-z8-cur {
@@ -527,11 +527,11 @@
    ========================================================================== */
 
 .fe-z8-calc {
-  max-width: var(--fe-container-data, 80rem);
+  max-width: var(--fe-box-data, 85rem);
   margin-inline: auto;
 }
 @media (min-width: 1700px) {
-  .fe-z8-calc { max-width: var(--fe-container-wide, 100rem); }
+  .fe-z8-calc { max-width: var(--fe-box-wide, 85rem); }
 }
 
 /* --- шапка --- */
@@ -750,8 +750,8 @@
    M1. Методология: карточки по высоте содержимого, источники, оглавление справа
    ========================================================================== */
 
-.fe-z8-meth { max-width: var(--fe-container-data, 80rem); margin-inline: auto; }
-@media (min-width: 1700px) { .fe-z8-meth { max-width: var(--fe-container-wide, 100rem); } }
+.fe-z8-meth { max-width: var(--fe-box-data, 85rem); margin-inline: auto; }
+@media (min-width: 1700px) { .fe-z8-meth { max-width: var(--fe-box-wide, 85rem); } }
 .fe-z8-meth__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 32px; margin-bottom: 28px; }
 .fe-z8-meth__title {
   margin: 0 0 12px;

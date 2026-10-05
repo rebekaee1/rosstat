@@ -105,6 +105,28 @@ describe('z1-tokens.css: хрусталь без границ (R3)', () => {
   });
 });
 
+describe('z1-tokens.css: ширина страниц данных (DS1, круг 4)', () => {
+  // Страница данных держит gutter padding-ом (:where(.fe-data-page), .fe-gutter), поэтому её max-width обязан быть
+  // коробкой (--fe-box-*, с полями), а не шириной контента (--fe-container-*): иначе поля считаются дважды
+  // (на 1440 было 112–1328 вместо 80–1360).
+  const here = dirname(fileURLToPath(import.meta.url));
+  const SKIP = new Set(['z1-tokens.css', 'z2-shell.css', 'k1-scene.css', 'z7-compare.css']);
+  it('зоны не задают max-width страницы через --fe-container-data/-wide', async () => {
+    const { readdirSync } = await import('node:fs');
+    const bad = [];
+    for (const f of readdirSync(here).filter((n) => n.endsWith('.css') && !SKIP.has(n))) {
+      const text = readFileSync(join(here, f), 'utf8');
+      if (/max-width\s*:\s*(?:min\(|max\()?var\(--fe-container-(?:data|wide)/.test(text)) bad.push(f);
+    }
+    expect(bad).toEqual([]);
+  });
+
+  it('коробка данных = контент + 2 поля: 1280 + 64 на 1440 даёт контент 80–1360', () => {
+    expect(tokens).toMatch(/--fe-box-data:\s*calc\(var\(--fe-container-data\) \+ 2 \* var\(--fe-gutter\)\)/);
+    expect(tokens).toMatch(/:where\(\.fe-data-page\.max-w-7xl[^)]*\)\s*\{\s*max-width:\s*var\(--fe-box-data\)/);
+  });
+});
+
 describe('index.css: базовая палитра и типографика раунда 2', () => {
   it('фон страницы тёплый, а вторичный текст темнее прежнего', () => {
     expect(indexCss).toMatch(/--color-obsidian:\s*#F6F2EA/);

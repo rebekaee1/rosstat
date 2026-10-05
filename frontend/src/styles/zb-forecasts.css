@@ -1,7 +1,7 @@
 /* Страница «Прогнозы» (трек ZB). Только свои классы zb-fc*; токены Z1 с запасными значениями. */
 
 .zb-fc {
-  max-width: var(--fe-container-data, 80rem);
+  max-width: var(--fe-box-data, 85rem);
   --zb-gold: var(--fe-gold, #ad8a48);
   --zb-gold-ink: var(--fe-gold-ink, #80642f);
   --zb-gold-soft: var(--fe-gold-soft, rgba(173, 138, 72, 0.14));
