@@ -30,6 +30,20 @@ const footLink = cn(
   'pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center'
 );
 
+/** Лицензия изображения Земли: честно указана, но не на виду — только в блоке реквизитов подвала. */
+function ImageCredit({ t }) {
+  return (
+    <p className="fe-foot-credit">
+      {t('w5.about.credits.before')}
+      {' '}
+      <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Solar System Scope</a>
+      {', '}
+      <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">CC BY 4.0</a>
+      .
+    </p>
+  );
+}
+
 /**
  * Группа ссылок подвала. На телефоне — аккордеон (заголовок-кнопка раскрывает список), чтобы подвал не занимал
  * три экрана; от 640 px — обычная колонка с заголовком. Все заголовки одного стиля, регистр обычный.
@@ -238,7 +252,10 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} Forecast Economy. {t('footer.disclaimer')}
             </p>
             {desktop ? (
-              <p>{t('footer.operator')}</p>
+              <>
+                <p>{t('footer.operator')}</p>
+                <ImageCredit t={t} />
+              </>
             ) : (
               <details className="fe-foot-requisites">
                 <summary className={cn(FOCUS_RING, 'fe-foot-requisites__summary')}>
@@ -246,6 +263,7 @@ export default function Footer() {
                   <ChevronDown size={16} aria-hidden="true" className="fe-foot-requisites__chevron" />
                 </summary>
                 <p>{t('footer.operator')}</p>
+                <ImageCredit t={t} />
               </details>
             )}
           </div>

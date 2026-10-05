@@ -181,6 +181,9 @@
   .w5-embed-types > *, .w5-embed-types > :nth-child(n + 4) { grid-column: auto; }
 }
 .w5-embed-type {
+  box-sizing: border-box;
+  width: 100%;
+  justify-self: stretch;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

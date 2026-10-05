@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Database, Globe2, TrendingUp, Users, Gift, ShieldAlert, Mail,
 } from 'lucide-react';
@@ -23,6 +23,7 @@ const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
 export default function About() {
   const { locale } = useLocale();
   const t = useT();
+  const { hash } = useLocation();
   const seo = getPageSeo('about', locale);
   useDocumentMeta({
     title: seo.title,
@@ -100,17 +101,19 @@ export default function About() {
         </InfoCard>
       </InfoGrid>
 
-      {/* Благодарности — всегда одной строкой с текстом: заголовок без содержимого пугает. */}
-      <p id="credits" className="x4-credits">
-        <strong>{t('about.creditsTitle')}.</strong>
-        {' '}
-        {t('w5.about.credits.before')}
-        {' '}
-        <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a>
-        {', '}
-        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>
-        .
-      </p>
+      {/* Источники изображений — свёрнуты: лицензия указана, но не торчит мелкой строкой под карточками.
+          Ссылка «Благодарности» из подвала (/about#credits) раскрывает блок. */}
+      <details id="credits" className="x4-credits" open={hash === '#credits' || undefined}>
+        <summary>{t('z2.about.imageSources')}</summary>
+        <p>
+          {t('w5.about.credits.before')}
+          {' '}
+          <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a>
+          {', '}
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>
+          .
+        </p>
+      </details>
     </div>
   );
 }

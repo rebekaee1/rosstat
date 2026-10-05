@@ -8,7 +8,7 @@
 // «На правки 13» (мелкие республики Кавказа не разглядеть без приближения).
 import { useMemo, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Minus, Maximize2 } from 'lucide-react';
+import { Plus, Minus, Maximize2, X, ArrowRight } from 'lucide-react';
 import mapData from '../lib/regionsMap.json';
 import { formatRegionValue } from '../lib/regionsApi';
 import { unitLabel } from '../lib/regionUi';
@@ -61,6 +61,10 @@ export default function RegionsMap({
   const { t } = useLocale();
   const navigate = useNavigate();
   const [hover, setHover] = useState(null); // { slug, x, y }
+  // Касание пальцем: первое нажатие выбирает регион (подсветка + карточка со ссылкой «Открыть»),
+  // переход — только по кнопке или повторному касанию. Мышь и клавиатура ведут сразу, как раньше.
+  const [picked, setPicked] = useState(null); // slug
+  const pointerTypeRef = useRef('mouse');
 
   // Зум/пан: transform = translate(tx,ty) scale(k) в координатах viewBox.
   const [view, setView] = useState({ k: 1, tx: 0, ty: 0 });
@@ -92,13 +96,14 @@ export default function RegionsMap({
   // Hover-outline берёт путь из той же mapData, что и fill — без отдельного
   // кэша геометрии (баг: при зуме обводка «отставала» от актуальных полигонов,
   // когда stroke жил на fill-слое с /k и конкурировал с seal-обводкой).
+  const outlineSlug = hover?.slug || picked;
   const hoverRegion = useMemo(
-    () => (hover ? geometry.regions.find((r) => r.slug === hover.slug) : null),
-    [hover, geometry.regions],
+    () => (outlineSlug ? geometry.regions.find((r) => r.slug === outlineSlug) : null),
+    [outlineSlug, geometry.regions],
   );
   const hoverMarker = useMemo(
-    () => (hover ? (geometry.markers || []).find((m) => m.slug === hover.slug) : null),
-    [hover, geometry.markers],
+    () => (outlineSlug ? (geometry.markers || []).find((m) => m.slug === outlineSlug) : null),
+    [outlineSlug, geometry.markers],
   );
 
   const clampView = useCallback((next) => {
@@ -122,11 +127,21 @@ export default function RegionsMap({
     });
   }, [vbW, vbH, clampView]);
 
-  const handleSelect = useCallback((slug) => {
-    if (panRef.current?.moved) return;
+  const openRegion = useCallback((slug) => {
     if (onSelect) onSelect(slug);
     else navigate(regionPath(slug));
   }, [onSelect, navigate]);
+
+  const handleSelect = useCallback((slug) => {
+    if (panRef.current?.moved) return;
+    const touch = !compact && pointerTypeRef.current !== 'mouse';
+    if (touch && picked !== slug) {
+      setPicked(slug);
+      setHover(null);
+      return;
+    }
+    openRegion(slug);
+  }, [compact, picked, openRegion]);
 
   const handleMove = useCallback((e, slug) => {
     const box = e.currentTarget.ownerSVGElement.getBoundingClientRect();
@@ -177,7 +192,10 @@ export default function RegionsMap({
     : null;
 
   return (
-    <div className={`select-none ${className}`.trim()}>
+    <div
+      className={`select-none ${className}`.trim()}
+      onPointerDownCapture={(e) => { pointerTypeRef.current = e.pointerType || 'mouse'; }}
+    >
       {/* Обёртка только под SVG: бренд и зум привязаны к карте, не к легенде. */}
       <div className="fe-map-frame">
         <svg
@@ -190,6 +208,7 @@ export default function RegionsMap({
           onPointerMove={compact ? undefined : onPointerMove}
           onPointerUp={compact ? undefined : onPointerUp}
           onPointerCancel={compact ? undefined : onPointerUp}
+          onClick={(e) => { if (e.target === e.currentTarget) setPicked(null); }}
           style={{ touchAction: k > 1 && !compact ? 'none' : 'pan-y' }}
         >
           <g transform={`translate(${tx} ${ty}) scale(${k})`}>
@@ -352,6 +371,26 @@ export default function RegionsMap({
           </div>
         )}
       </div>
+
+      {!compact && picked && (
+        <div className="fe-map-pick" role="status" data-no-export="true">
+          <div className="fe-map-pick__text">
+            <div className="fe-map-pick__name">{nameBySlug[picked] || picked}</div>
+            {valuesBySlug?.get(picked) != null && (
+              <div className="fe-map-pick__value">
+                {formatRegionValue(valuesBySlug.get(picked))}{unitText ? `\u00A0${unitText}` : ''}
+              </div>
+            )}
+          </div>
+          <button type="button" className="fe-map-pick__open fe-press" onClick={() => openRegion(picked)}>
+            {t('z2.map.open')}
+            <ArrowRight size={14} aria-hidden="true" />
+          </button>
+          <button type="button" className="fe-map-pick__close fe-press" onClick={() => setPicked(null)} aria-label={t('common.close')}>
+            <X size={16} aria-hidden="true" />
+          </button>
+        </div>
+      )}
 
       {valuesBySlug && (
         <div className="fe-map-legend">

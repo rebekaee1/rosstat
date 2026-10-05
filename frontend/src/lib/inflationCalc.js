@@ -1,3 +1,4 @@
+import { currentUiLocale } from '../i18n/locale';
 /**
  * Чистая математика калькулятора инфляции.
  * Россия: месячный ИПЦ (к предыдущему месяцу, 100 = без изменений).
@@ -432,6 +433,6 @@ export function formatCalcAmount(n, { withRuble = true } = {}) {
   if (n == null || !Number.isFinite(n)) return '—';
   const abs = Math.abs(Math.round(n));
   const sign = n < 0 ? '-' : '';
-  const body = sign + abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  const body = sign + abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, currentUiLocale() === 'en' ? ',' : '\u00A0');
   return withRuble ? `${body}\u00A0₽` : body;
 }

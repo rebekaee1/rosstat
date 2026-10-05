@@ -72,6 +72,9 @@ export default function Methodology() {
                 <p>{t(`meth.step.${n}body`)}</p>
               </div>
             ))}
+            <InfoMore label={t('z2.meth.expertLabel')}>
+              <p>{t('z2.meth.expertBody')}</p>
+            </InfoMore>
           </InfoMore>
         </InfoCard>
 

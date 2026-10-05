@@ -524,7 +524,7 @@ describe('WorldCountry EN overlay', () => {
       name: /Gross domestic product at current prices/,
     })).toBeTruthy();
     expect(document.body.textContent).toContain('billion $');
-    expect(document.body.textContent.replace(/\u00a0/g, ' ')).toContain('2 319.9');
+    expect(document.body.textContent.replace(/\u00a0/g, ' ')).toContain('2,319.9');
     expect(document.body.textContent).toContain('Americas');
     expect(document.body.textContent).not.toContain('млрд $');
     expect(document.body.textContent).not.toContain('Национальные счета');

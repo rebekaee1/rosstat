@@ -13,7 +13,7 @@ import { formatCompactTick } from '../lib/regionsApi';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { revealStyle } from '../lib/calcUi';
-import { formatRubles, fmtPct, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
+import { formatRubles, fmtPct, decimalText, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
@@ -169,7 +169,7 @@ export default function CompoundCalculatorPage() {
               <CalcStatTile index={1} label={t('calc.compound.gain')} value={formatRubles(result.gain)} accent />
               <CalcStatTile index={2} label={t('calc.compound.real')} value={formatRubles(result.real)} />
               {result.doubling && result.doubling < 100 && (
-                <CalcStatTile index={3} label={t('calc.compound.doubling')} value={`≈ ${result.doubling.toFixed(1).replace('.', ',')} ${t('calc.compound.yearsUnit')}`} />
+                <CalcStatTile index={3} label={t('calc.compound.doubling')} value={`≈ ${decimalText(result.doubling, 1)} ${t('calc.compound.yearsUnit')}`} />
               )}
             </CalcStatGrid>
           </section>

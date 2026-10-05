@@ -140,7 +140,7 @@ export default function CalcCountryPicker({
                   {c.slug === RUSSIA_SLUG
                     ? <Landmark className="h-4 w-4 shrink-0 text-champagne" />
                     : <Globe2 className="h-4 w-4 shrink-0 text-champagne" />}
-                  <span className="truncate">{c.name}</span>
+                  <span className="min-w-0 break-words leading-snug">{c.name}</span>
                 </button>
               ))
             )}

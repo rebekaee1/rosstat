@@ -23,7 +23,7 @@ describe('planet metric values', () => {
     const russian = metricLabel('DE', { DE: 1234567 }, { unit: 'млрд $' });
     const english = metricLabel('DE', { DE: 1234567 }, { locale: 'en', unit: 'млрд $' });
     expect(russian.valueText.replace(/\s/g, ' ')).toBe('1 234 567 млрд $');
-    expect(english.valueText.replace(/\s/g, ' ')).toBe('1 234 567 billion $');
+    expect(english.valueText.replace(/\s/g, ' ')).toBe('1,234,567 billion $');
     expect(metricLabel('DE', { DE: -12.34 }, { locale: 'en', unit: '%' }).valueText).toBe('-12.34\u00a0%');
   });
 

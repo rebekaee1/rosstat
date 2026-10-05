@@ -1,5 +1,11 @@
-import { describe, it, expect } from 'vitest';
-import { plural, years, loanYearOrdinal } from './calcFormat';
+import { describe, it, expect, vi } from 'vitest';
+import { plural, years, loanYearOrdinal, fmtPct, formatInput, formatRubles, decimalText } from './calcFormat';
+import { currentUiLocale } from '../i18n/locale';
+
+vi.mock('../i18n/locale', async (importOriginal) => ({
+  ...(await importOriginal()),
+  currentUiLocale: vi.fn(() => 'ru'),
+}));
 
 describe('calcFormat — склонения', () => {
   it('годы склоняются по русским правилам, включая второй десяток', () => {
@@ -42,5 +48,24 @@ describe('loanYearOrdinal', () => {
     expect(loanYearOrdinal(21, 'en')).toBe('21st');
     expect(loanYearOrdinal(22, 'en')).toBe('22nd');
     expect(loanYearOrdinal(23, 'en')).toBe('23rd');
+  });
+});
+
+describe('числа калькуляторов следуют языку страницы', () => {
+  it('русский: запятая и пробел тысяч', () => {
+    currentUiLocale.mockReturnValue('ru');
+    expect(fmtPct(40.5, true)).toBe('+40,5%');
+    expect(formatInput(100000)).toBe('100 000');
+    expect(decimalText(1.414, 2)).toBe('1,41');
+    expect(formatRubles(140532)).toBe('140\u00A0532\u00A0₽');
+  });
+
+  it('английский: точка и запятая тысяч', () => {
+    currentUiLocale.mockReturnValue('en');
+    expect(fmtPct(40.5, true)).toBe('+40.5%');
+    expect(formatInput(100000)).toBe('100,000');
+    expect(decimalText(1.414, 2)).toBe('1.41');
+    expect(formatRubles(140532)).toBe('140,532\u00A0₽');
+    currentUiLocale.mockReturnValue('ru');
   });
 });

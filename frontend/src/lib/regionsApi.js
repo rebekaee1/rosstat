@@ -172,7 +172,8 @@ export function axisScaleFor(values) {
   }
   if (max >= 1e9) return { div: 1e9, key: 'map.compact.billion' };
   if (max >= 1e6) return { div: 1e6, key: 'map.compact.million' };
-  if (max >= 1e4) return { div: 1e3, key: 'y1.axis.thousand' };
+  // По-английски «140 k» непонятно, а «140 thousand» слишком широко для оси: пишем полное число «140,000».
+  if (max >= 1e4 && localeKey() !== 'en') return { div: 1e3, key: 'y1.axis.thousand' };
   return { div: 1, key: null };
 }
 

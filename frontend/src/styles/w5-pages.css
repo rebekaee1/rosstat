@@ -404,8 +404,10 @@
 }
 .x4-mini-steps strong { display: block; font-weight: 700; color: var(--color-text-primary); }
 
-/* Мелкая строка в конце страницы (благодарности). */
-.x4-credits { margin: 16px 0 24px; max-width: 62ch; line-height: 1.6; font-size: 13px; color: var(--color-text-secondary); }
+/* Источники изображений: свёрнутый блок в конце страницы. */
+.x4-credits { margin: 8px 0 24px; max-width: 62ch; line-height: 1.6; font-size: 13px; color: var(--color-text-secondary); }
+.x4-credits summary { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; color: var(--color-text-secondary); }
+.x4-credits p { margin: 0 0 8px; }
 .x4-credits a { color: var(--color-champagne-ink); text-decoration: underline; text-underline-offset: 3px; }
 
 /* Поля входа и регистрации: один спокойный контур при фокусе вместо двойного (рамка + обводка с зазором). */

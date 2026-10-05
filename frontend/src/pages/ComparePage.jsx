@@ -27,13 +27,13 @@ import { getPageSeo } from '../lib/pageMeta';
 import CompareChartState from '../components/CompareChartState';
 import Chip from '../components/Chip';
 import Button from '../components/Button';
-import { formatValueSplit } from '../lib/compareUnitSplit';
+import { formatValueSplit, splitUnit } from '../lib/compareUnitSplit';
 import CompareCountryStep from '../components/compare/CompareCountryStep';
 import CompareExample from '../components/compare/CompareExample';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
   CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, axisSampleValues,
-  axisWidthForLabels, chartHeightForWidth,
+  axisWidthForLabels, chartHeightForWidth, niceAxis,
 } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { track, events } from '../lib/track';
@@ -359,7 +359,7 @@ function ComboSelect({
       <div
         className={cn(
           FIELD_CLS,
-          disabled ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25',
+          disabled ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink',
           value && !open && 'border-champagne/30',
         )}
       >
@@ -681,7 +681,7 @@ function AddIndicator({
     <div className="relative">
       <div className={cn(
         FIELD_CLS,
-        atCap ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25',
+        atCap ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink',
       )}>
         <Search className="w-4 h-4 text-text-tertiary shrink-0" />
         <input
@@ -1288,6 +1288,13 @@ export default function ComparePage() {
     [worldCompareCatalog],
   );
 
+  // Название мировой серии известно из каталога сразу после выбора — до прихода данных.
+  const worldNameByCode = useMemo(() => new Map((worldCompareCatalog?.items || []).map((item) => {
+    const concept = locale === 'en' ? (item.concept_name_en || item.concept_name) : item.concept_name;
+    const country = locale === 'en' ? (item.country_name_en || item.country_name) : item.country_name;
+    return [item.code, country ? `${concept} — ${country}` : concept];
+  })), [worldCompareCatalog, locale]);
+
   useEffect(() => {
     if (hasWorldSeries && step !== 'auto') setStep('auto');
   }, [hasWorldSeries, step]);
@@ -1427,8 +1434,14 @@ export default function ComparePage() {
     })),
   });
 
-  const series = useMemo(() => resolved.map((r, i) => ({
+  const series = useMemo(() => resolved.map((r, i) => {
+    const known = r.isWorld
+      ? (results[i]?.data?.__worldMeta?.name || worldNameByCode.get(r.code))
+      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.name : r.ind?.name;
+    return {
     code: r.code,
+    // Внутренний код никогда не показываем: пока название не пришло — null (скелетон).
+    name: known || null,
     key: `v${i}`,
     color: PALETTE[i % PALETTE.length],
     ind: r.isWorld
@@ -1446,7 +1459,8 @@ export default function ComparePage() {
     data: results[i]?.data,
     loading: results[i]?.isLoading || r.waitingCatalog,
     error: results[i]?.isError || r.unknown,
-  })), [resolved, results]);
+    };
+  }), [resolved, results, worldNameByCode]);
 
   // Разные единицы измерения рядов (после резолва представления). Максимум две
   // оси — при 3+ различных единицах корректно показать нельзя, форсим индекс.
@@ -1502,7 +1516,7 @@ export default function ComparePage() {
       : { date: null, candidates: [], bases: [] };
     const indexable = series.map((_, i) => candidates.includes(i));
     const nonIndexableNames = indexed
-      ? series.filter((_, i) => !indexable[i]).map((s) => s.ind?.name || s.code)
+      ? series.filter((_, i) => !indexable[i]).map((s) => s.name || t('z2.compare.seriesFallback'))
       : [];
     const nonIndexableKeys = new Set(
       indexed ? series.filter((_, i) => !indexable[i]).map((s) => s.key) : [],
@@ -1616,17 +1630,45 @@ export default function ComparePage() {
     const u = series[i]?.unit || '%';
     return distinctUnits[0] === u ? 'left' : 'right';
   };
+  // Короткая подпись легенды: без повтора «Значение», длинных единиц и «шкала слева»
+  // при одной оси — единицы видны на оси и в сводке ниже.
+  const legendDetail = (s, i, dropped) => {
+    const parts = [];
+    if (s.rep && s.rep !== REP_LEVEL) parts.push(s.repLabel);
+    if (dropped) parts.push(t('compare.notRebased'));
+    else if (indexed) parts.push(t('compare.start100'));
+    else {
+      const short = splitUnit(s.unit).short;
+      if (short && short.length <= 14) parts.push(unitSuffix(short));
+      // Частота — только если у рядов она разная: иначе это лишнее слово в каждой подписи.
+      if (new Set(series.map((x) => x.ind?.frequency).filter(Boolean)).size > 1 && s.ind?.frequency) {
+        parts.push(freqLabel(s.ind.frequency, t));
+      }
+      if (distinctUnits.length > 1) parts.push(axisFor(i) === 'left' ? t('compare.axisLeft') : t('compare.axisRight'));
+    }
+    const text = compareLegendParts(parts);
+    return text ? `(${text})` : '';
+  };
   const leftUnit = distinctUnits[0];
   const rightUnit = distinctUnits[1];
   // Ширина оси Y — по самой длинной подписи: фиксированные 46–60 px резали левую цифру
   // («355 000» читалось как «55 000»).
+  const axisValues = (id) => {
+    const vals = [];
+    series.forEach((s, i) => {
+      if (axisFor(i) !== id) return;
+      chartRows.forEach((r) => { if (r[s.key] != null) vals.push(r[s.key]); });
+    });
+    return vals;
+  };
+  // Ровный шаг оси (1/2/5 × 10^k) вместо автодомена с шагом вроде 55 000.
+  const axisScales = {
+    left: niceAxis(axisValues('left'), narrow ? 4 : 5),
+    right: niceAxis(axisValues('right'), narrow ? 4 : 5),
+  };
   const axisWidths = (() => {
     const calc = (id, unit) => {
-      const vals = [];
-      series.forEach((s, i) => {
-        if (axisFor(i) !== id) return;
-        chartRows.forEach((r) => { if (r[s.key] != null) vals.push(r[s.key]); });
-      });
+      const vals = axisValues(id);
       const digits = indexed ? 0 : unitDigits(unit);
       return axisWidthForLabels(
         axisSampleValues(vals).map((v) => formatAxisTick(v, digits)),
@@ -1707,7 +1749,7 @@ export default function ComparePage() {
     ? t('compare.capAuthed', { n: USER_MAX })
     : t('compare.capGuest');
   const title = series.length
-    ? `${t('compare.badge')}: ${series.map((s) => s.ind?.name || s.code).join(' — ')}`
+    ? `${t('compare.badge')}: ${series.map((s) => s.name || t('z2.compare.seriesFallback')).join(' — ')}`
     : t('compare.title');
 
   return (
@@ -1773,7 +1815,9 @@ export default function ComparePage() {
                   {/* Название и «×» — одна строка; варианты показа — отдельным рядом ниже, без пустоты справа. */}
                   <div className="flex items-start gap-2">
                     <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
-                    <span className="min-w-0 flex-1 break-words text-sm leading-snug text-text-primary">{s.ind?.name || s.code}</span>
+                    <span className="min-w-0 flex-1 break-words text-sm leading-snug text-text-primary">{s.name || (s.loading
+                      ? <span className="skeleton mt-0.5 block h-4 w-3/4 rounded-md" role="status" aria-busy="true" aria-label={t('compare.loadingSeries')} />
+                      : t('z2.compare.seriesFallback'))}</span>
                     <button type="button" onClick={() => removeCode(s.code)} className="-my-1 -mr-1.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11" aria-label={t('common.remove')}>
                       <X className="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -1952,13 +1996,9 @@ export default function ComparePage() {
                   <span key={s.code} className={cn('flex min-w-0 max-w-full items-start gap-2', dropped && 'opacity-60')}>
                     <span className="mt-1.5 h-[3px] w-4 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
                     <span className="min-w-0 break-words">
-                    <span className="font-semibold text-text-primary">{s.ind?.name || s.code}</span>{' '}
+                    <span className="font-semibold text-text-primary">{s.name || t('z2.compare.seriesFallback')}</span>{' '}
                     <span className="text-text-secondary">
-                      ({compareLegendParts([s.repLabel, ...(dropped
-                        ? [t('compare.notRebased')]
-                        : indexed
-                          ? [t('compare.start100')]
-                          : [unitSuffix(s.unit), s.ind?.frequency ? freqLabel(s.ind.frequency, t) : '', axisFor(i) === 'left' ? t('compare.axisLeft') : t('compare.axisRight')])])})
+                      {legendDetail(s, i, dropped)}
                     </span>
                     </span>
                   </span>
@@ -2018,7 +2058,8 @@ export default function ComparePage() {
                   />
                   <YAxis
                     yAxisId="left"
-                    domain={AXIS_DOMAIN}
+                    domain={axisScales.left?.domain || AXIS_DOMAIN}
+                    ticks={axisScales.left?.ticks}
                     tick={axisTick()}
                     axisLine={false}
                     tickLine={false}
@@ -2029,7 +2070,8 @@ export default function ComparePage() {
                     <YAxis
                       yAxisId="right"
                       orientation="right"
-                      domain={AXIS_DOMAIN}
+                      domain={axisScales.right?.domain || AXIS_DOMAIN}
+                      ticks={axisScales.right?.ticks}
                       tick={axisTick()}
                       axisLine={false}
                       tickLine={false}
@@ -2048,7 +2090,7 @@ export default function ComparePage() {
                       yAxisId={axisFor(i)}
                       type="monotone"
                       dataKey={s.key}
-                      name={s.ind?.name || s.code}
+                      name={s.name || t('z2.compare.seriesFallback')}
                       stroke={s.color}
                       strokeWidth={2}
                       dot={false}
@@ -2111,17 +2153,20 @@ export default function ComparePage() {
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {analysisSummary.metrics.filter((metric) => metric.last).map((metric) => {
               const displayUnit = indexed ? t('compare.points') : (metric.item.unit || '%');
-              const lastValue = formatValueSplit(metric.last.value, displayUnit);
+              // Большие числа без дробной части: «3 360 622», а не «3 360 621,70».
+              const bigDigits = (v) => (Math.abs(v) >= 1000 ? 0 : undefined);
+              const lastValue = formatValueSplit(metric.last.value, displayUnit, bigDigits(metric.last.value));
               const changeValue = formatValueSplit(
                 metric.change,
                 compareDifferenceUnit(metric.item.unit || '%', { indexed, locale }),
+                bigDigits(metric.change),
               );
               return (
                 <div key={metric.item.code} className="rounded-2xl border border-border-subtle bg-obsidian-light p-4">
                   <div className="flex items-start gap-2">
                     <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: metric.item.color }} />
                     <div className="min-w-0 text-sm font-medium leading-5 text-text-primary">
-                      {metric.item.ind?.name || metric.item.code}
+                      {metric.item.name || t('z2.compare.seriesFallback')}
                     </div>
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3">
@@ -2167,8 +2212,8 @@ export default function ComparePage() {
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {analysisSummary.correlations.map((result) => (
                   <div key={result.item.code} className="flex items-center justify-between gap-3 rounded-xl bg-white/65 px-3 py-2.5">
-                    <span className="min-w-0 truncate text-xs text-text-secondary">
-                      {result.item.ind?.name || result.item.code}
+                    <span className="min-w-0 break-words text-xs text-text-secondary">
+                      {result.item.name || t('z2.compare.seriesFallback')}
                     </span>
                     <span className="shrink-0 text-sm font-semibold text-text-primary">
                       {t(correlationKey(result.value))}

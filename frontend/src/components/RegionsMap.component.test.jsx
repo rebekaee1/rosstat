@@ -92,4 +92,31 @@ describe('RegionsMap', () => {
     expect(legend.textContent).toContain('40\u00A0588');
     expect(legend.textContent).toContain('\u00A0₽');
   });
+
+  it('касание пальцем: первое выбирает регион и показывает карточку, переход — по «Открыть»', () => {
+    const calls = [];
+    const target = mapData.regions[0];
+    const { container } = renderMap({ onSelect: (slug) => calls.push(slug), nameBySlug: { [target.slug]: 'Регион А' } });
+    const path = container.querySelector(`svg path[data-region-slug="${target.slug}"]`);
+    fireEvent.pointerDown(path, { pointerType: 'touch' });
+    fireEvent.click(path);
+    expect(calls).toEqual([]);
+    const card = container.querySelector('.fe-map-pick');
+    expect(card).toBeTruthy();
+    expect(card.textContent).toContain('Регион А');
+    expect(container.querySelector(`svg path[data-hover-outline="${target.slug}"]`)).toBeTruthy();
+    fireEvent.click(card.querySelector('.fe-map-pick__open'));
+    expect(calls).toEqual([target.slug]);
+  });
+
+  it('мышь: клик открывает регион сразу, без карточки', () => {
+    const calls = [];
+    const target = mapData.regions[0];
+    const { container } = renderMap({ onSelect: (slug) => calls.push(slug) });
+    const path = container.querySelector(`svg path[data-region-slug="${target.slug}"]`);
+    fireEvent.pointerDown(path, { pointerType: 'mouse' });
+    fireEvent.click(path);
+    expect(calls).toEqual([target.slug]);
+    expect(container.querySelector('.fe-map-pick')).toBeNull();
+  });
 });

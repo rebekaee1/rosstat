@@ -474,7 +474,7 @@ export default function WorldRegionIndicatorPage() {
                     >
                       <span className="flex min-w-0 items-center gap-2">
                         <span className="w-4 shrink-0 text-right fe-num text-text-secondary">{i + 1}</span>
-                        <span className={`truncate ${r.slug === slug ? 'font-medium text-champagne-ink' : 'text-text-primary'}`}>{r.name}</span>
+                        <span className={`min-w-0 break-words leading-snug ${r.slug === slug ? 'font-medium text-champagne-ink' : 'text-text-primary'}`}>{r.name}</span>
                       </span>
                       <span className="shrink-0 fe-num text-text-secondary">{formatSubnationalValue(r.value, locale)}</span>
                     </Link>
