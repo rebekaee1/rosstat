@@ -11,16 +11,24 @@ import Chip from './Chip';
 import Spinner from './Spinner';
 import CountryFlag from './CountryFlag';
 import '../styles/w6-g.css';
+import '../styles/z7-compare.css';
 
-/** После выбора страны график должен быть на виду: подкручиваем к нему, если он ушёл за край экрана. */
+/** После выбора страны график должен быть на виду: подкручиваем к самому графику (не к началу блока), если он ушёл за край экрана. */
 function scrollChartIntoView() {
-  const chart = document.getElementById('chart');
-  if (!chart?.scrollIntoView) return;
-  const top = chart.getBoundingClientRect().top;
-  if (top >= 0 && top < window.innerHeight * 0.5) return;
+  const section = document.getElementById('chart');
+  if (!section?.scrollIntoView) return;
+  const canvas = section.querySelector('.recharts-responsive-container') || section;
+  const top = canvas.getBoundingClientRect().top;
+  // График уже в верхней половине экрана: ничего не двигаем.
+  if (top >= 72 && top < window.innerHeight * 0.5) return;
   const reduce = typeof window.matchMedia === 'function'
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  chart.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  if (typeof window.scrollTo === 'function' && canvas !== section) {
+    // 88 px — высота шапки и ленты курсов: график встаёт сразу под ними.
+    window.scrollTo({ top: Math.max(0, window.scrollY + top - 88), behavior: reduce ? 'auto' : 'smooth' });
+    return;
+  }
+  section.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
 }
 
 export function CountryComparePicker({
@@ -100,17 +108,37 @@ export function CountryComparePicker({
 
 /**
  * Страны разного размера на одной оси: меньшая линия кажется ровной, хотя меняется.
- * Плашка стоит НАД графиком и одним нажатием включает проценты.
+ * Плашка стоит НАД графиком. Два вида: предложение «Показать в процентах» (проценты ещё не включены)
+ * и пояснение «Показан рост в процентах» с кнопкой «Показать значения» (проценты включила сама страница).
+ * Место под плашку резервируется, пока ряды стран грузятся (`reserve`): иначе она «ползёт» вниз
+ * вместе с графиком, и первое нажатие мимо кнопки не срабатывает.
  */
-export function ScaleNudge({ show, onScale }) {
+export function ScaleNudge({
+  show, onScale, auto = false, reserve = false,
+}) {
   const t = useT();
-  if (!show) return null;
+  if (!show && !auto) {
+    return reserve ? <div className="fe-z7-scale-slot" aria-hidden="true" /> : null;
+  }
   return (
-    <div className="fe-w6g-scale-nudge mb-3" role="status" data-testid="compare-scale-nudge" data-no-export="true">
-      <p>{t('w6g.chart.scaleNudge')}</p>
-      <Button variant="primary" onClick={() => onScale('index')}>
-        {t('w6g.chart.showPercent')}
-      </Button>
+    <div className="fe-z7-scale-slot fe-z7-scale-slot--on">
+      <div
+        className={`fe-w6g-scale-nudge fe-z7-scale-note${auto ? ' fe-z7-scale-note--auto' : ''}`}
+        role="status"
+        data-testid={auto ? 'compare-scale-auto' : 'compare-scale-nudge'}
+        data-no-export="true"
+      >
+        <p>{auto ? t('z7.scale.autoNote') : t('w6g.chart.scaleNudge')}</p>
+        {auto ? (
+          <Button variant="secondary" onClick={() => onScale('values')}>
+            {t('z7.scale.backToValues')}
+          </Button>
+        ) : (
+          <Button variant="primary" onClick={() => onScale('index')}>
+            {t('w6g.chart.showPercent')}
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

@@ -97,6 +97,7 @@ export function useCountryComparison({
   modeMeta,
   peerMode,
   peerValueScale = 1,
+  autoPercent = false,
 } = {}) {
   const { locale } = useLocale();
   const t = useT();
@@ -105,7 +106,11 @@ export function useCountryComparison({
     enabled: comparisonPickerActive,
   });
   const [comparisonIds, setComparisonIds] = useState([]);
-  const [comparisonScale, setComparisonScale] = useState('values');
+  const [scaleState, setScaleState] = useState('values');
+  // Человек сам выбрал «Значения» или «Проценты»: дальше автоматика не вмешивается.
+  const [scaleChosen, setScaleChosen] = useState(false);
+  // Проценты включила сама страница (по виду показателя), а не человек.
+  const [scaleAuto, setScaleAuto] = useState(false);
   const hicpWorldCard = surface === 'world' && conceptSlug === 'hicp-index';
   const ownCatalogItem = hicpWorldCard
     ? compareCatalog.data?.items?.find((item) => (
@@ -269,6 +274,19 @@ export function useCountryComparison({
     const loaded = selectedComparisons.filter((item) => item.data.length > 0);
     return loaded.length ? loaded : EMPTY_LIST;
   }, [selectedComparisons]);
+  const absolute = surface === 'russia'
+    ? isAbsoluteLevel(unit, { type: 'level' })
+    : isAbsoluteLevel(unit, modeMeta);
+  // Страны разного размера на одной оси: меньшая линия кажется ровной. При включённой автоматике
+  // сразу показываем рост в процентах, а человеку остаётся кнопка «Показать значения».
+  const autoPercentActive = autoPercent && !scaleChosen && scaleState === 'values' && absolute
+    && loadedComparisonSeries.length > 0 && scalesDiffer(dataPoints, loadedComparisonSeries);
+  const comparisonScale = autoPercentActive ? 'index' : scaleState;
+  const setComparisonScale = (next) => {
+    setScaleChosen(true);
+    setScaleAuto(false);
+    setScaleState(next);
+  };
   const rebased = useMemo(
     () => (comparisonScale === 'index'
       ? rebaseWorldComparison(dataPoints || [], loadedComparisonSeries)
@@ -283,9 +301,6 @@ export function useCountryComparison({
   const windowRebase = comparisonScale === 'index' && loadedComparisonSeries.length > 0;
   const windowRebaseUnit = t('w6e.compare.unit');
 
-  const absolute = surface === 'russia'
-    ? isAbsoluteLevel(unit, { type: 'level' })
-    : isAbsoluteLevel(unit, modeMeta);
   const scaleMismatch = comparisonScale === 'values' && !rebased && absolute
     && scalesDiffer(dataPoints, loadedComparisonSeries);
 
@@ -296,7 +311,14 @@ export function useCountryComparison({
       && absolute
       && !DIRECT_VALUE_CONCEPTS.has(conceptSlug)
     ) {
-      setComparisonScale('index');
+      setScaleState('index');
+      setScaleAuto(true);
+    }
+    // Все страны убраны: выбор масштаба начинается заново.
+    if (activeComparisonIds.includes(id) && activeComparisonIds.length === 1) {
+      setScaleState('values');
+      setScaleChosen(false);
+      setScaleAuto(false);
     }
     setComparisonIds((current) => {
       if (current.includes(id)) return current.filter((item) => item !== id);
@@ -318,6 +340,7 @@ export function useCountryComparison({
     comparisonQueries,
     comparisonScale,
     setComparisonScale,
+    autoPercentActive: autoPercentActive || (scaleAuto && !scaleChosen && comparisonScale === 'index'),
     toggleComparison,
     setComparisonPickerActive,
     compareCodes,

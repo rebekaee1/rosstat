@@ -42,7 +42,8 @@ describe('CompareChartState', () => {
     const onRetry = vi.fn();
     renderState({ kind: 'error', height: 390, message: 'Не удалось загрузить выбранные ряды.', onRetry });
     const box = screen.getByRole('alert');
-    expect(box.textContent).toMatch(/Не удалось построить график/);
+    expect(box.textContent).toMatch(/Данные временно недоступны/);
+    expect(box.querySelector('svg.fe-z7-unavailable__sketch')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Повторить' }));
     expect(onRetry).toHaveBeenCalledOnce();
   });
@@ -55,6 +56,12 @@ describe('CompareChartState', () => {
     const btn = screen.getByRole('button', { name: /Повторить/ });
     expect(btn.disabled).toBe(true);
     expect(btn.getAttribute('aria-busy')).toBe('true');
+  });
+
+  it('error is translated in the EN storefront and keeps the plate', () => {
+    renderState({ kind: 'error', message: 'Could not load.', onRetry: () => {} }, 'en');
+    expect(screen.getByRole('alert').textContent).toMatch(/Data is temporarily unavailable/);
+    expect(screen.getByRole('alert').classList.contains('fe-z7-unavailable')).toBe(true);
   });
 
   it('is translated in the EN storefront', () => {
