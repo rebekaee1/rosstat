@@ -282,10 +282,10 @@ describe('WorldCountry frequency badges', () => {
     });
 
     const row = await screen.findByRole('link', { name: /Уровень безработицы/ });
-    const badges = Array.from(row.querySelectorAll('span.rounded-full'));
+    const badges = Array.from(row.querySelectorAll('span.z5-freq'));
     // Месячные данные — только «мес.»; кв./год перечислены в подсказке.
     expect(badges.map((b) => b.textContent)).toEqual(['ежемесячно']);
-    expect(badges[0].className).not.toContain('opacity-60');
+    expect(badges[0].className).not.toContain('z5-freq--est');
     expect(badges[0].getAttribute('title')).toBe('ежемесячно; также: ежеквартально, ~ежегодно');
   });
 
@@ -308,7 +308,7 @@ describe('WorldCountry frequency badges', () => {
     });
 
     const row = await screen.findByRole('link', { name: /ВВП/ });
-    const badges = Array.from(row.querySelectorAll('span.rounded-full'));
+    const badges = Array.from(row.querySelectorAll('span.z5-freq'));
     expect(badges.map((b) => b.textContent)).toEqual(['ежеквартально']);
     expect(badges[0].getAttribute('title')).toBe('ежеквартально; также: ежегодно');
   });
@@ -333,10 +333,10 @@ describe('WorldCountry frequency badges', () => {
     });
 
     const row = await screen.findByRole('link', { name: /ВВП годовой/ });
-    const badges = Array.from(row.querySelectorAll('span.rounded-full'));
+    const badges = Array.from(row.querySelectorAll('span.z5-freq'));
     expect(badges.map((b) => b.textContent)).toEqual(['~ежегодно']);
-    expect(badges[0].className).toContain('opacity-60');
-    expect(badges[0].getAttribute('title')).toBeNull();
+    expect(badges[0].className).toContain('z5-freq--est');
+    expect(badges[0].getAttribute('title')).toBe('~ежегодно');
   });
 
   it('без частот бейджей нет', async () => {
@@ -359,7 +359,7 @@ describe('WorldCountry frequency badges', () => {
     });
 
     const row = await screen.findByRole('link', { name: /Без частоты/ });
-    expect(row.querySelectorAll('span.rounded-full').length).toBe(0);
+    expect(row.querySelectorAll('span.z5-freq').length).toBe(0);
   });
 });
 
@@ -470,7 +470,8 @@ describe('WorldCountry key figures', () => {
         { name: 'Национальные счета', indicators: [{ code: 'de-n', name: 'ВВП', frequency: 'annual', last_value: 1, last_date: '2025-01-01' }] },
       ],
     });
-    await screen.findByRole('heading', { name: 'Национальные счета' });
+    // «Национальные счета» на странице называются по-человечески: «ВВП и рост».
+    await screen.findByRole('heading', { name: 'ВВП и рост' });
     const order = Array.from(document.querySelectorAll('[data-world-country-category]')).map((node) => node.dataset.worldCountryCategory);
     expect(order).toEqual(['Национальные счета', 'Население', 'Бизнес и инвестиции']);
   });
@@ -542,7 +543,7 @@ describe('WorldCountry EN overlay', () => {
 
     const heading = await screen.findByRole('heading', { name: /Canada/ });
     expect(heading.textContent).not.toMatch(/[А-Яа-яЁё]/);
-    expect(await screen.findByRole('heading', { name: 'National accounts' })).toBeTruthy();
+    expect(await screen.findByRole('heading', { name: 'GDP and growth' })).toBeTruthy();
     expect(screen.getByRole('link', {
       name: /Gross domestic product at current prices/,
     })).toBeTruthy();
@@ -551,6 +552,7 @@ describe('WorldCountry EN overlay', () => {
     expect(document.body.textContent).toContain('Americas');
     expect(document.body.textContent).not.toContain('млрд $');
     expect(document.body.textContent).not.toContain('Национальные счета');
+    expect(document.body.textContent).not.toContain('National accounts');
     expect(document.body.textContent).not.toContain('Канада');
   });
 });
@@ -576,7 +578,8 @@ describe('WorldCountry числа одним правилом (RU)', () => {
     renderCountry('germany', payload, 'ru');
     const row = await screen.findByRole('link', { name: /Индекс цен/ });
     expect(row.textContent).toContain('132,5');
-    expect(row.textContent).toContain('+0,10');
+    // Смысл изменения словами, без «+0,10» и «п. п.».
+    expect(row.textContent.replace(/\u00a0/g, ' ')).toContain('на 0,1 пункта выше, чем в прошлом месяце');
     expect(row.textContent).not.toMatch(/\d\.\d/);
     const big = screen.getByRole('link', { name: /Население/ });
     expect(big.textContent).toContain('83 400 000');

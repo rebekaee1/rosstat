@@ -101,3 +101,63 @@ export function russiaOverviewChips(indicators) {
   }
   return chips;
 }
+
+/**
+ * «Главная пятёрка» страны: инфляция, ставка, курс доллара, ВВП, безработица.
+ * Главное число инфляции — за год (derived `cpi-yoy`); месячный индекс остаётся мелко рядом.
+ * Нет годового ряда: показываем то, что есть у `cpi` (как раньше), без подмены смысла.
+ */
+export const RUSSIA_MAIN_FIVE = Object.freeze([
+  Object.freeze({ id: 'inflation', codes: Object.freeze(['cpi']) }),
+  Object.freeze({ id: 'rate', codes: Object.freeze(['key-rate']) }),
+  Object.freeze({ id: 'usd', codes: Object.freeze(['usd-rub']) }),
+  Object.freeze({ id: 'gdp', codes: Object.freeze(['gdp-nominal']) }),
+  Object.freeze({ id: 'unemployment', codes: Object.freeze(['unemployment', 'unemployment-rate']) }),
+]);
+
+/**
+ * @returns {Array<{ id: string, code: string, seriesCode: string, indicator: object, value: number,
+ *   unit: string, monthly: ?{ value: number, unit: string }, date: ?string }>}
+ */
+export function russiaMainFive(indicators) {
+  const byCode = new Map(
+    (indicators || []).filter((ind) => ind?.code).map((ind) => [ind.code, ind]),
+  );
+  const out = [];
+  for (const slot of RUSSIA_MAIN_FIVE) {
+    const indicator = slot.codes.map((code) => byCode.get(code)).find(Boolean);
+    const display = russiaIndicatorDisplay(indicator);
+    if (!indicator || !display) continue;
+    if (slot.id === 'inflation') {
+      const yoy = byCode.get('cpi-yoy');
+      const yoyValue = yoy?.current_value;
+      if (yoyValue != null && Number.isFinite(Number(yoyValue))) {
+        out.push({
+          id: slot.id,
+          code: indicator.code,
+          seriesCode: 'cpi-yoy',
+          indicator,
+          value: Number(yoyValue),
+          unit: '%',
+          monthly: { value: display.value, unit: display.unit === 'индекс' ? '%' : display.unit },
+          date: yoy.current_date || indicator.current_date,
+        });
+        continue;
+      }
+    }
+    out.push({
+      id: slot.id,
+      code: indicator.code,
+      seriesCode: indicator.code,
+      indicator,
+      value: display.value,
+      unit: display.unit,
+      monthly: null,
+      date: indicator.current_date,
+    });
+  }
+  return out;
+}
+
+/** Сколько строк категории видно сразу, остальное по кнопке «Показать ещё». */
+export const RUSSIA_CATEGORY_PREVIEW = 5;

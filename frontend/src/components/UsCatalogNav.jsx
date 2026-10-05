@@ -1,11 +1,17 @@
+import { ChevronDown } from 'lucide-react';
 import MobileNavSelect from './MobileNavSelect';
+import { compactCount, indicatorsCountText } from '../lib/countryKeyFigures';
+import { useLocale, useT } from '../i18n';
 import '../styles/platform-pages.css';
+import '../styles/z5-country.css';
 
 /** Two-level navigation shared only by US country and state catalogs. */
 export default function UsCatalogNav({
   topics, activeTopic, activeSection, onTopic, onSection,
   sectionKey, sectionLabel, themesLabel, detailLabel,
 }) {
+  const { locale } = useLocale();
+  const t = useT();
   if (!topics.length) return null;
   const selected = topics.find((topic) => topic.id === activeTopic) || topics[0];
   const sectionOptions = selected.sections.map((section) => ({
@@ -30,11 +36,9 @@ export default function UsCatalogNav({
           options={sectionOptions}
         />
       </div>
-      <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
-        <div className="mb-2 px-2 text-sm font-medium text-text-secondary">
-          {themesLabel}
-        </div>
-        <div className="flex flex-col gap-1">
+      <aside className="z5-topics hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
+        <h3 className="z5-aside-title">{themesLabel}</h3>
+        <div className="z5-topics__list">
           {topics.map((topic) => (
             <button
               key={topic.id}
@@ -42,39 +46,39 @@ export default function UsCatalogNav({
               onClick={() => onTopic(topic.id)}
               aria-current={selected.id === topic.id ? 'true' : undefined}
               className={[
-                'fe-tap fe-press flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm transition-colors',
-                selected.id === topic.id
-                  ? 'bg-champagne/12 font-medium text-champagne-ink'
-                  : 'bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                'fe-tap fe-press z5-topic z5-topic--row',
+                selected.id === topic.id ? 'is-active' : '',
               ].join(' ')}
             >
-              <span className="min-w-0 flex-1">{topic.label}</span>
-              <span className="fe-num shrink-0 text-xs">{topic.count}</span>
+              <span className="z5-topic__name"><span className="min-w-0">{topic.label}</span></span>
+              <span className="z5-topic__count" title={indicatorsCountText(topic.count, locale, t)}>{compactCount(topic.count, locale)}</span>
             </button>
           ))}
         </div>
-        <div className="mb-2 mt-5 px-2 text-sm font-medium text-text-secondary">
-          {detailLabel}
-        </div>
-        <div className="flex flex-col gap-1">
-          {selected.sections.map((section) => (
-            <button
-              key={String(sectionKey(section))}
-              type="button"
-              onClick={() => onSection(String(sectionKey(section)))}
-              aria-current={String(activeSection) === String(sectionKey(section)) ? 'true' : undefined}
-              className={[
-                'fe-tap fe-press flex items-center justify-between gap-2 rounded-xl px-3.5 py-2 text-left text-[13px] transition-colors',
-                String(activeSection) === String(sectionKey(section))
-                  ? 'bg-champagne/10 font-medium text-champagne-ink'
-                  : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
-              ].join(' ')}
-            >
-              <span className="min-w-0 flex-1">{sectionLabel(section)}</span>
-              <span className="fe-num shrink-0 text-xs">{section.indicators.length}</span>
-            </button>
-          ))}
-        </div>
+        <details className="z5-more" open>
+          <summary className="z5-more__summary">
+            <span>{detailLabel}</span>
+            <ChevronDown size={15} aria-hidden="true" className="z5-more__chevron" />
+          </summary>
+          <div className="z5-more__chips">
+            {selected.sections.map((section) => {
+              const key = String(sectionKey(section));
+              const current = String(activeSection) === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => onSection(key)}
+                  aria-current={current ? 'true' : undefined}
+                  className={`fe-tap fe-press z5-topic z5-topic--chip${current ? ' is-active' : ''}`}
+                >
+                  <span className="z5-topic__name"><span className="min-w-0">{sectionLabel(section)}</span></span>
+                  <span className="z5-topic__count" title={indicatorsCountText(section.indicators.length, locale, t)}>{compactCount(section.indicators.length, locale)}</span>
+                </button>
+              );
+            })}
+          </div>
+        </details>
       </aside>
     </>
   );
