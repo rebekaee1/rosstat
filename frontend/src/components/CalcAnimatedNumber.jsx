@@ -5,6 +5,7 @@
 // озвучивался бы.
 import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
+import '../styles/z8-tools.css';
 
 export default function CalcAnimatedNumber({ value, format, className }) {
   const ref = useRef(null);
@@ -28,6 +29,9 @@ export default function CalcAnimatedNumber({ value, format, className }) {
       return undefined;
     }
     const counter = { v: from };
+    // Пока цифры «считаются», итог светится золотом (см. .is-counting в z8-tools.css).
+    const box = node.parentElement;
+    box?.classList.add('is-counting');
     const tween = gsap.to(counter, {
       v: value,
       duration: first ? 0.9 : 0.4,
@@ -39,10 +43,12 @@ export default function CalcAnimatedNumber({ value, format, className }) {
       onComplete() {
         shownRef.current = value;
         if (ref.current) ref.current.textContent = format(value);
+        box?.classList.remove('is-counting');
       },
     });
     return () => {
       tween.kill();
+      box?.classList.remove('is-counting');
       // Строгий режим повторяет эффект: следующий запуск снова считается первым, пока ничего не показано.
       if (shownRef.current === 0) firstRef.current = first;
     };

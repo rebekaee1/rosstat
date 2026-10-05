@@ -14,6 +14,7 @@ import {
   codeMatchesTargets, filterSearchOptions, normalizeSearchQuery, resolveSynonymTargets,
 } from './searchSynonyms';
 import { searchFamilyKey, SEARCH_PRIMARY_LIMIT } from './searchGroups';
+import { groupByTopic, searchTopic } from './searchText';
 import { POPULAR_COUNTRY_SLUGS } from './countryFlag';
 import { worldRatingPath } from './sitePaths';
 
@@ -148,6 +149,33 @@ function preferMain(rows, nameOf) {
   return [...sorted, ...rest];
 }
 
+const CURRENCY_CODE = /^(?:usd|eur|cny|gbp)-rub$|^(?:btc|eth)-usd$/;
+
+/** Коды курсов, о которых спросил человек («usd», «курс доллара», «dollar rate»); пусто, если запрос не про курс. */
+function currencyTargets(query) {
+  const text = queryWithoutNumbers(query);
+  if (!text) return [];
+  const found = new Set(resolveSynonymTargets(text) || []);
+  for (const piece of text.split(' ')) {
+    if (piece.length >= 3) for (const code of resolveSynonymTargets(piece) || []) found.add(code);
+  }
+  return [...found].filter((code) => CURRENCY_CODE.test(code));
+}
+
+/** Курс по запросу «usd» встаёт первым: выше рейтингов ВВП и прочих «страновых» строк. */
+function promoteCurrency(rows, targets) {
+  if (!targets.length) return rows;
+  const at = rows.findIndex((item) => targets.includes(item.code));
+  if (at <= 0) return rows;
+  return [rows[at], ...rows.slice(0, at), ...rows.slice(at + 1)];
+}
+
+/** Запрос из одной буквы: сначала страны и главные показатели, региональные ряды в конец. */
+function placeRank(item) {
+  if (item.region_slug || item.kind === 'region' || item.kind === 'subnational_region') return 2;
+  return item.kind === 'russia' || item.kind === 'world' ? 0 : 1;
+}
+
 function frequencyChips(members) {
   const byFrequency = new Map();
   for (const item of members) {
@@ -175,9 +203,17 @@ export function buildSearchView(rows, {
   primaryLimit = SEARCH_PRIMARY_LIMIT,
 }) {
   const popular = POPULAR_COUNTRY_SLUGS[locale === 'en' ? 'en' : 'ru'] || [];
-  const entities = [];
-  const series = [];
+  let entities = [];
+  let series = [];
   for (const row of rows || []) (ENTITY_KINDS.has(row.kind) ? entities : series).push(row);
+  const singleLetter = [...normalizeSearchQuery(query)].filter((ch) => /[\p{L}\p{N}]/u.test(ch)).length === 1;
+  if (singleLetter) {
+    const byRank = (list, rank) => list.map((row, index) => [row, index])
+      .sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([row]) => row);
+    series = byRank(series, placeRank);
+    entities = byRank(entities, (row) => (row.kind === 'country' ? 0 : 1));
+  }
+  const currencyCodes = currencyTargets(query);
 
   // 1. Подтверждённые запросом строки; остальные, кроме верхних, уходят под «Ещё».
   // Пока запрос подтверждён меньше чем двумя строками, ничего не прячем: уверенного «ядра» ответа ещё нет.
@@ -193,7 +229,14 @@ export function buildSearchView(rows, {
     else if (!confirmed || index < KEEP_TOP || confirmed.has(item.key)) relevant.push(item);
     else demoted.push(item);
   });
-  const ordered = promoteHeadline(preferMain(relevant, nameOf), query, nameOf, intent);
+  // Страна из запроса идёт первой: её строки выше строк без привязки к стране (порядок внутри групп сохраняется).
+  const preferred = preferMain(relevant, nameOf);
+  const countryFirst = wantedCountries
+    ? preferred.map((row, index) => [row, index])
+      .sort((a, b) => (wantedCountries.has(a[0].country_slug) ? 0 : 1) - (wantedCountries.has(b[0].country_slug) ? 0 : 1) || a[1] - b[1])
+      .map(([row]) => row)
+    : preferred;
+  const ordered = promoteCurrency(promoteHeadline(countryFirst, query, nameOf, intent), currencyCodes);
 
   // 2. Вариации одной семьи: частоты — в переключатель, повторы — под «Ещё».
   const hiddenDuplicates = [];
@@ -290,8 +333,10 @@ export function buildSearchView(rows, {
   };
   const countryRows = entities.map((item) => ({ id: item.key, type: 'item', item, open: item, name: titleOf(item), detail: detailOf(item) }));
   const seriesRows = units.map(toRow);
-  const countryFirst = noExplicitGeo || !seriesRows.length;
-  const order = countryFirst
+  // Запрос про курс («usd», «курс доллара»): курсы выше рейтингов и стран.
+  const currencyQuery = currencyCodes.length > 0 && series.some((item) => currencyCodes.includes(item.code));
+  const geoFirst = !currencyQuery && (noExplicitGeo || !seriesRows.length);
+  const order = geoFirst
     ? [['countries', countryRows], ['ratings', ratingRows], ['indicators', seriesRows]]
     : [['indicators', seriesRows], ['ratings', ratingRows], ['countries', countryRows]];
 
@@ -311,12 +356,17 @@ export function buildSearchView(rows, {
     ...demoted.map(plain),
   ];
   const seenMore = new Set();
-  const more = moreRows.filter((row) => {
+  const uniqueMore = moreRows.filter((row) => {
     const key = row.item.key;
     if (seenMore.has(key)) return false;
     seenMore.add(key);
     return true;
   });
+  // «Ещё варианты» по темам: инфляция и цены, курсы, ставки… Порядок строк = порядок на экране (по нему ходят стрелки).
+  const moreGroups = groupByTopic(uniqueMore, (row) => searchTopic(row.item));
+  const more = moreGroups.flatMap((group) => group.rows);
   const flat = sections.flatMap((section) => section.rows);
-  return { sections, more, flat, hiddenCount: more.length };
+  return {
+    sections, more, moreGroups, moreTopics: moreGroups.map((group) => group.id), flat, hiddenCount: more.length,
+  };
 }

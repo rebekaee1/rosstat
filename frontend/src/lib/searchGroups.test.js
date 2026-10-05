@@ -9,6 +9,30 @@ const hicp = (key, extra = '') => ({
   key, kind: 'world', country_slug: 'germany', country_name: 'Германия', name: `Гармонизированный индекс потребительских цен${extra}`,
 });
 
+describe('friendlySearchName: годовая инфляция страны (раунд 2)', () => {
+  const tr = (key, vars) => translate(key, vars, 'ru');
+  const annual = (extra = {}) => ({
+    kind: 'world', country_name: 'Турция', unit: '%', name: 'Инфляция, изменение цен за год', ...extra,
+  });
+
+  it('«Инфляция в Турции, за год» вместо длинного названия ряда', () => {
+    const item = annual();
+    expect(friendlySearchName(item, item.name, tr)).toBe('Инфляция в Турции, за год');
+  });
+
+  it('индекс с базой и название без «за год» остаются как есть', () => {
+    const index = annual({ unit: 'индекс 2015 = 100' });
+    expect(friendlySearchName(index, index.name, tr)).not.toMatch(/Турции/);
+    const plain = annual({ name: 'Инфляция' });
+    expect(friendlySearchName(plain, plain.name, tr)).toBe('Инфляция');
+  });
+
+  it('страна без известной формы «в …»: нейтральная запись', () => {
+    const item = annual({ country_name: 'Атлантида' });
+    expect(friendlySearchName(item, item.name, tr)).toBe('Инфляция: Атлантида, за год');
+  });
+});
+
 describe('splitSearchRows: вариации одного показателя сворачиваются', () => {
   it('пять вариаций «Гармонизированного индекса…» одной страны — одна строка, остальное в «ещё»', () => {
     const rows = [

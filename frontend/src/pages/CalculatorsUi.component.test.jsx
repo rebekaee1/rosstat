@@ -51,6 +51,26 @@ describe('Ипотечный калькулятор', () => {
     expect(screen.getByLabelText('Срок кредита').getAttribute('aria-valuetext')).toBe('20 лет');
   });
 
+  it('раунд 2: форма слева, итог справа, подсказка о переплате; по-русски пояснения про Россию нет', () => {
+    mockApiGet(ROUTES);
+    const { container } = renderPage(<MortgageCalculatorPage />, { path: '/calculator/mortgage', route: '/calculator/mortgage' });
+    expect(container.querySelector('.fe-z8-calc__side .fe-z8-card')).toBeTruthy();
+    expect(container.querySelector('.fe-z8-calc__out .fe-z8-result')).toBeTruthy();
+    const hint = container.querySelector('[data-block="calc-hint"]');
+    expect(hint.textContent).toMatch(/Переплата за 20 лет/);
+    expect(hint.textContent).toMatch(/Это .* от суммы кредита/);
+    expect(container.querySelector('[data-testid="mortgage-en-note"]')).toBeNull();
+  });
+
+  it('раунд 2: английская версия объясняет, что калькулятор для рублёвой ипотеки в России', () => {
+    mockApiGet(ROUTES);
+    const { container } = renderPage(<MortgageCalculatorPage />, { path: '/calculator/mortgage', route: '/calculator/mortgage', locale: 'en' });
+    const note = container.querySelector('[data-testid="mortgage-en-note"]');
+    expect(note.textContent).toMatch(/mortgages in Russia/);
+    expect(note.textContent).toMatch(/Russian rubles/);
+    expect(note.textContent).toMatch(/"m" means million/);
+  });
+
   it('результат читается экранным дикторам один раз (анимируемая копия скрыта)', () => {
     mockApiGet(ROUTES);
     const { container } = renderPage(<MortgageCalculatorPage />, { path: '/calculator/mortgage', route: '/calculator/mortgage' });
@@ -69,6 +89,15 @@ describe('Сложные проценты', () => {
     fireEvent.change(monthly, { target: { value: '0' } });
     expect(screen.queryByRole('alert')).toBeNull();
     expect(screen.getByText('10 лет')).toBeTruthy();
+  });
+
+  it('раунд 2: подсказка «Капитал вырастет за N лет» с кратностью роста', () => {
+    mockApiGet(ROUTES);
+    const { container } = renderPage(<CompoundCalculatorPage />, { path: '/calculator/compound', route: '/calculator/compound' });
+    const hint = container.querySelector('[data-block="calc-hint"]');
+    expect(hint.textContent).toMatch(/Капитал вырастет за 10 лет/);
+    expect(hint.querySelector('.fe-z8-hint__big').textContent).toMatch(/^×\d/);
+    expect(container.querySelector('.fe-z8-calc__side [data-block="calc-hint"]')).toBeTruthy();
   });
 
   it('на английском единицы и сообщения тоже переведены', () => {

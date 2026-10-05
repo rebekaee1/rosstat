@@ -1,8 +1,34 @@
 import { describe, expect, it } from 'vitest';
 import { translate } from '../i18n/messages';
 import {
-  inCountry, inflationTitle, plainTitle, plainUnit,
+  groupByTopic, inCountry, inflationTitle, isIndexUnit, openingLabel, plainTitle, plainUnit,
 } from './searchText';
+
+describe('раунд 2 (Z8): подписи выдачи', () => {
+  it('индекс без базы узнаётся по единице', () => {
+    expect(isIndexUnit('индекс 2015 = 100')).toBe(true);
+    expect(isIndexUnit('index')).toBe(true);
+    expect(isIndexUnit('%')).toBe(false);
+    expect(isIndexUnit('')).toBe(false);
+  });
+
+  it('«Открываем: …» только из названия: числа убираются, годы остаются', () => {
+    expect(openingLabel('Инфляция в Турции, 34,9 %')).toBe('Инфляция в Турции');
+    expect(openingLabel('Индекс цен 1 645,7')).toBe('Индекс цен');
+    expect(openingLabel('ВВП России, 2024')).toBe('ВВП России, 2024');
+    expect(openingLabel('Курс доллара — 83,48')).toBe('Курс доллара');
+    expect(openingLabel('123')).toBe('123');
+    expect(openingLabel('')).toBe('');
+  });
+
+  it('группы по темам: крупные первыми, «прочее» последним', () => {
+    const rows = ['a', 'b', 'c', 'd', 'e'];
+    const topic = { a: 'chart', b: 'rates', c: 'prices', d: 'prices', e: 'prices' };
+    const groups = groupByTopic(rows, (row) => topic[row]);
+    expect(groups.map((g) => g.id)).toEqual(['prices', 'rates', 'chart']);
+    expect(groups[0].rows).toEqual(['c', 'd', 'e']);
+  });
+});
 
 describe('plainTitle', () => {
   it('убирает базу индекса, цепные объёмы и расшифровывает служебные слова', () => {

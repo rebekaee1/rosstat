@@ -230,3 +230,57 @@ describe('buildSearchView: сохранность', () => {
     expect(ids(result.sections).every(([, list]) => list.length > 0)).toBe(true);
   });
 });
+
+describe('buildSearchView: раунд 2 (Z8)', () => {
+  it('запрос из одной буквы: сначала страны и главные показатели, региональные ряды в конец', () => {
+    const rows = [
+      row('reg-fdi', 'Поступление ПИИ', { kind: 'russia', country_slug: 'russia', country_name: 'Россия', region_slug: 'cfo', region_name: 'ЦФО' }),
+      row('reg-2', 'Население региона', { kind: 'russia', country_slug: 'russia', country_name: 'Россия', region_slug: 'pfo', region_name: 'ПФО' }),
+      row('gdp', 'ВВП', { country_slug: 'germany' }),
+      { key: 'c1', kind: 'subnational_region', name: 'Центральный', region_slug: 'cfo' },
+      { key: 'c2', kind: 'country', name: 'Албания', country_slug: 'albania' },
+    ];
+    const result = view(rows, 'а', { intent: { countries: [], regions: [] } });
+    const order = [...result.flat, ...result.more].map((r) => r.item.key);
+    expect(order.indexOf('c2')).toBeLessThan(order.indexOf('c1'));
+    expect(order.indexOf('gdp')).toBeLessThan(order.indexOf('reg-fdi'));
+    expect(order.indexOf('gdp')).toBeLessThan(order.indexOf('reg-2'));
+  });
+
+  it('«usd» и «курс доллара»: курс первым, выше рейтингов ВВП', () => {
+    const rows = [
+      row('gdp-us', 'ВВП США', { country_slug: 'united-states', country_name: 'США', code: 'gdp-usd', frequency: 'annual' }),
+      row('usd', 'Курс доллара США', { kind: 'russia', code: 'usd-rub', country_slug: 'russia', country_name: 'Россия', frequency: 'daily', unit: '₽' }),
+    ];
+    for (const query of ['usd', 'курс доллара']) {
+      const result = view(rows, query, { intent: { countries: [], regions: [] } });
+      expect(result.sections[0].id).toBe('indicators');
+      expect(result.flat[0].item.key).toBe('usd');
+    }
+  });
+
+  it('страна из запроса: её строки идут первыми', () => {
+    const rows = [
+      row('anon', 'Инфляция', { country_slug: '', country_name: '' }),
+      row('tr', 'Инфляция', { country_slug: 'turkey', country_name: 'Турция', code: 'tr-cpi' }),
+    ];
+    const result = view(rows, 'инфляция турция', { intent: { countries: ['turkey'], regions: [] } });
+    expect(result.flat[0].item.key).toBe('tr');
+  });
+
+  it('«Ещё варианты» разложены по темам, порядок строк равен порядку на экране', () => {
+    const primary = Array.from({ length: 8 }, (_, i) => row(`p${i}`, `Показатель ${i}`, { country_slug: `c${i}` }));
+    const extra = [
+      row('pop1', 'Численность населения региона', { country_slug: 'zz' }),
+      row('inf1', 'Инфляция в регионе', { country_slug: 'zz' }),
+      row('inf2', 'Индекс потребительских цен, продукты', { country_slug: 'zz' }),
+    ];
+    const result = view([...primary, ...extra], 'показатель', { intent: { countries: [], regions: [] } });
+    expect(result.moreGroups.length).toBeGreaterThan(0);
+    expect(result.more.map((r) => r.item.key)).toEqual(result.moreGroups.flatMap((g) => g.rows.map((r) => r.item.key)));
+    expect(result.moreTopics).toEqual(result.moreGroups.map((g) => g.id));
+    // Крупная тема (две строки про цены) стоит раньше одиночной.
+    const prices = result.moreGroups.find((g) => g.id === 'prices');
+    if (prices) expect(result.moreGroups[0].id).toBe('prices');
+  });
+});

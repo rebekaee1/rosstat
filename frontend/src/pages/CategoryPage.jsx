@@ -21,6 +21,7 @@ import CurrencyDesk from '../components/CurrencyDesk';
 import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
+import '../styles/z8-tools.css';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
   breadcrumbJsonLd,
@@ -142,10 +143,10 @@ export default function CategoryPage({ fixedSlug }) {
   const isCurrencies = cat.slug === 'currencies';
 
   return (
-    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
+    <div className={`fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24${isCurrencies ? ' fe-z8-cur-page' : ''}`}>
       <Breadcrumbs items={crumbs} className="mb-8" />
 
-      <header className="mb-12 max-w-3xl">
+      <header className={isCurrencies ? 'mb-8 max-w-3xl' : 'mb-12 max-w-3xl'}>
         <h1 className="font-display text-3xl md:text-[2.15rem] font-bold text-text-primary tracking-tight mb-4">
           {catSeo?.h1 || categoryLabel(cat, locale)}
         </h1>

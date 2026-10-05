@@ -145,6 +145,26 @@ describe('CalculatorPage: волна 6', () => {
     expect(showcase.textContent).toContain('Для любой валюты');
   });
 
+  it('раунд 2: вкладки калькуляторов 48 px с полными именами, форма слева, результат справа, подсказка «Инфляция за N лет»', async () => {
+    mockApis();
+    const { container } = renderPage(<CalculatorPage />, { path: '/calculator', route: '/calculator?amount=100000&from=2020&to=2021' });
+    await waitFor(() => expect(container.querySelector('[data-block="calc-result"]')).toBeTruthy());
+    const tabs = container.querySelector('[data-block="calc-showcase"]');
+    expect(tabs.classList.contains('fe-z8-tabs')).toBe(true);
+    const links = [...tabs.querySelectorAll('a.fe-z8-tab')];
+    expect(links.map((a) => a.getAttribute('aria-label'))).toEqual(['Калькулятор инфляции', 'Ипотечный калькулятор', 'Сложные проценты']);
+    expect(links.map((a) => a.querySelector('.fe-z8-tab__short').textContent)).toEqual(['Инфляция', 'Ипотека', 'Проценты']);
+    expect(links[0].classList.contains('is-active')).toBe(true);
+    // Форма в левой колонке, результат в правой.
+    expect(container.querySelector('.fe-z8-calc__side [data-block="calc-form"]')).toBeTruthy();
+    expect(container.querySelector('.fe-z8-calc__out [data-block="calc-result"]')).toBeTruthy();
+    // Боковая подсказка с главным числом периода.
+    const hint = container.querySelector('[data-block="calc-hint"]');
+    expect(hint.textContent).toMatch(/Инфляция за \d+ (год|года|лет)/);
+    expect(hint.querySelector('.fe-z8-hint__big').textContent).toMatch(/\d/);
+    expect(hint.textContent).toMatch(/В среднем .* в год/);
+  });
+
   it('«Смотреть дальше» следует за выбранной страной', async () => {
     mockApis();
     renderPage(<CalculatorPage />, { path: '/calculator', route: '/calculator?amount=100000&from=2019&to=2020&country=germany' });

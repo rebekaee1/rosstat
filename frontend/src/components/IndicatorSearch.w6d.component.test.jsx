@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, afterEach, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, cleanup, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, waitFor, within, act } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import IndicatorSearch from './IndicatorSearch';
 import { translate } from '../i18n/messages';
@@ -199,7 +199,76 @@ it('нерелевантное после точных совпадений ух
   const input = mount();
   type(input, 'безработица германии');
   expect(screen.getAllByRole('option')).toHaveLength(1);
-  const more = screen.getByRole('button', { name: /Ещё варианты \(2\)/ });
+  const more = screen.getByRole('button', { name: /Ещё: население \(2\)/ });
   fireEvent.click(more);
   expect(screen.getAllByRole('option')).toHaveLength(3);
+});
+
+it('раунд 2: «Ещё варианты» раскрываются группами по темам, у каждой группы свой заголовок', () => {
+  searchState.data = { version: 'v2', intent: { countries: ['germany'], regions: [] }, results: [
+    row('un-m', 'Уровень безработицы', { frequency: 'monthly' }),
+    row('un-y', 'Уровень безработицы', { frequency: 'annual' }),
+    row('pop', 'Население, %'),
+    row('cpi2', 'Потребительские цены, продукты'),
+  ] };
+  const input = mount();
+  type(input, 'безработица германии');
+  fireEvent.click(screen.getByRole('button', { name: /Ещё: / }));
+  const titles = [...document.querySelectorAll('.w6d-sr-title')].map((n) => n.textContent);
+  expect(titles.some((text) => /Ещё варианты: Население/.test(text))).toBe(true);
+  expect(titles.some((text) => /Ещё варианты: Инфляция и цены/.test(text))).toBe(true);
+});
+
+it('раунд 2: годовой процент читается «34,9 % за 2025», индекс без базы уходит в «Подробнее»', () => {
+  searchState.data = { version: 'v2', intent: { countries: ['turkey'], regions: [] }, results: [
+    row('tr-cpi', 'Инфляция', { country_slug: 'turkey', country_name: 'Турция', frequency: 'annual', unit: '%', latest: { value: 34.9, date: '2025-12-31' } }),
+    row('tr-idx', 'Индекс потребительских цен', { country_slug: 'turkey', country_name: 'Турция', frequency: 'monthly', unit: 'индекс 2015 = 100', latest: { value: 1645.7, date: '2026-08-01' } }),
+  ] };
+  const input = mount();
+  type(input, 'инфляция турция');
+  const rows = screen.getAllByRole('option');
+  expect(rows[0].textContent).toMatch(/34,9\s%\sза 2025/);
+  const indexRow = rows.find((r) => /Индекс потребительских цен/.test(r.textContent));
+  expect(indexRow.textContent).not.toMatch(/1\s?645/);
+  const details = document.querySelector('.fe-z8-sr-more');
+  expect(details.querySelector('summary').textContent).toBe('Подробнее');
+  expect(details.textContent).toMatch(/Значение индекса: .*1\s?645,7/);
+});
+
+it('раунд 2: подсказка в поле стоит неподвижно, потом раз в 3 секунды плавно меняется (200 мс на затухание)', () => {
+  vi.useFakeTimers();
+  try {
+    render(<MemoryRouter><IndicatorSearch variant="inline" examples={['ВВП Индии', 'Инфляция в Турции', 'Курс евро']} /></MemoryRouter>);
+    const text = () => document.querySelector('.fe-z8-hint__text');
+    expect(text().textContent).toBe('ВВП Индии');
+    expect(text().className).not.toContain('is-fading');
+    act(() => { vi.advanceTimersByTime(2900); });
+    expect(text().textContent).toBe('ВВП Индии');
+    act(() => { vi.advanceTimersByTime(150); });
+    expect(text().className).toContain('is-fading');
+    act(() => { vi.advanceTimersByTime(200); });
+    expect(text().textContent).toBe('Инфляция в Турции');
+    expect(text().className).not.toContain('is-fading');
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+it('раунд 2: ⌘K показывается только на Mac, на других системах «Ctrl K»', () => {
+  const ua = vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  expect(document.querySelector('kbd').textContent).toBe('Ctrl K');
+  ua.mockRestore();
+});
+
+it('раунд 2: подпись «Открываем: …» без чисел', async () => {
+  searchState.data = { version: 'v2', results: [
+    row('x', 'Инфляция в Турции, 34,9 %', { country_slug: 'turkey', country_name: 'Турция', path: '/turkey/indicator/x' }),
+  ] };
+  const input = mount();
+  type(input, 'инфляция');
+  fireEvent.click(screen.getAllByRole('option')[0]);
+  const opening = await screen.findByTestId('search-opening');
+  expect(opening.textContent).toContain('Открываем: Инфляция в Турции');
+  expect(opening.textContent).not.toMatch(/34/);
 });

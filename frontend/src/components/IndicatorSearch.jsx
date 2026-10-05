@@ -14,7 +14,7 @@ import { useWorldCountries, useWorldRatingConcepts } from '../lib/worldApi';
 import { dedupeSearchRows, describeSearchResult, searchSuggestions } from '../lib/searchExamples';
 import { friendlySearchName } from '../lib/searchGroups';
 import { buildSearchView, COUNTRY_CHIPS_VISIBLE } from '../lib/searchView';
-import { isGlobalMarketRow, plainUnit, searchTopic } from '../lib/searchText';
+import { isGlobalMarketRow, isIndexUnit, openingLabel, plainUnit, searchTopic } from '../lib/searchText';
 import { homeConceptLabel } from '../lib/homeWorkbench';
 import { splitUnit } from '../lib/countryFlag';
 import Chip from './Chip';
@@ -22,6 +22,7 @@ import CountryFlag from './CountryFlag';
 import { RatingSpark } from './RatingExtras';
 import '../styles/shell.css';
 import '../styles/w6d.css';
+import '../styles/z8-tools.css';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
@@ -38,19 +39,33 @@ const OPENING_TIMEOUT_MS = 12000;
 const ENTITY_KINDS = new Set(['country', 'region', 'subnational_region']);
 const PERIOD_FORMAT = { daily: 'day', weekly: 'day', monthly: 'full', quarterly: 'quarterly', annual: 'annual' };
 
-/** Подсказка в поле на главной: «Например: Инфляция в США», примеры плавно сменяют друг друга. */
+/**
+ * Подсказка в поле на главной: «Например: Инфляция в Турции». Первый пример стоит неподвижно (виден сразу,
+ * без появления), потом раз в 3 секунды плавно сменяется следующим: гаснет за 200 мс и проявляется новым.
+ */
 function RotatingHint({ lead, items }) {
   const [index, setIndex] = useState(0);
+  const [fading, setFading] = useState(false);
   useEffect(() => {
     if (items.length < 2) return undefined;
     if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
-    const timer = setInterval(() => setIndex((i) => (i + 1) % items.length), 3200);
-    return () => clearInterval(timer);
+    let swap = 0;
+    const timer = setInterval(() => {
+      setFading(true);
+      swap = setTimeout(() => {
+        setIndex((i) => (i + 1) % items.length);
+        setFading(false);
+      }, 200);
+    }, 3000);
+    return () => {
+      clearInterval(timer);
+      clearTimeout(swap);
+    };
   }, [items.length]);
   return (
     <span className="flex-1 min-w-0 truncate text-sm text-text-tertiary">
       {lead}{' '}
-      <span key={index} className="fe-rotate-in text-text-secondary">{items[index % items.length]}</span>
+      <span className={cn('fe-z8-hint__text text-text-secondary', fading && 'is-fading')}>{items[index % items.length]}</span>
     </span>
   );
 }
@@ -148,6 +163,13 @@ export default function IndicatorSearch({
     return view ? [...view.flat, ...(showMore ? view.more : [])] : [];
   }, [qTrim, view, showMore, suggestionRows]);
   const hiddenCount = view ? view.hiddenCount : 0;
+  // «Ещё: инфляция и цены, курсы валют, ставки (51)»: темы вместо безликих «Ещё варианты».
+  const moreLabel = useMemo(() => {
+    const topics = (view?.moreTopics || []).filter((id) => id !== 'chart').slice(0, 3)
+      .map((id) => String(t(`z8.search.topic.${id}`)).toLocaleLowerCase(locale === 'en' ? 'en' : 'ru'));
+    if (!topics.length) return t('shell3.search.moreVariants', { n: hiddenCount });
+    return t('z8.search.moreTopics', { topics: topics.join(', '), n: hiddenCount });
+  }, [view, hiddenCount, t, locale]);
   const highlighted = Math.max(0, Math.min(hi, rows.length - 1));
 
   const close = useCallback(() => {
@@ -182,8 +204,9 @@ export default function IndicatorSearch({
       ...(position ? { position } : {}),
     });
     const pathname = item.path.split(/[?#]/)[0];
+    const shownLabel = openingLabel(label);
     if (item.navigation === 'document') {
-      setOpening({ name: label, pathname });
+      setOpening({ name: shownLabel, pathname });
       window.location.assign(item.path);
       return;
     }
@@ -192,7 +215,7 @@ export default function IndicatorSearch({
       navigate(item.path);
       return;
     }
-    setOpening({ name: label, pathname });
+    setOpening({ name: shownLabel, pathname });
     navigate(item.path);
   }, [close, navigate, location.pathname, globalSearch.data?.version]);
 
@@ -206,7 +229,7 @@ export default function IndicatorSearch({
   }, [opening, location.pathname, close]);
 
   const startAutoOpen = useCallback((row) => {
-    setAutoOpen({ q: row.query, label: row.name });
+    setAutoOpen({ q: row.query, label: openingLabel(row.name) });
     globalSearch.flush?.(row.query);
     setQuery(row.query);
     setHi(0);
@@ -428,7 +451,7 @@ export default function IndicatorSearch({
               : <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>}
             {/* Подсказка про клавиши только там, где есть клавиатура и мышь: на планшете «⌘K» ничего не говорит. */}
             <kbd className="hidden pointer-fine:inline text-xs font-sans text-text-tertiary border border-border-subtle rounded px-1.5 py-0.5">
-              {isAppleModKey ? '⌘K' : 'Ctrl+K'}
+              {isAppleModKey ? '⌘K' : 'Ctrl K'}
             </kbd>
           </button>
           {examples?.length ? (
@@ -617,12 +640,14 @@ export default function IndicatorSearch({
                       {section.rows.map((row) => renderRow(row))}
                     </div>
                   ))}
-                  {showMore && view?.more.length > 0 && (
-                    <div role="group" aria-labelledby={`${resultId}-sec-more`} className="w6d-sr-group">
-                      <p id={`${resultId}-sec-more`} className="w6d-sr-title">{t('w6d.search.section.more')}</p>
-                      {view.more.map((row) => renderRow(row))}
+                  {showMore && view?.more.length > 0 && view.moreGroups.map((group) => (
+                    <div key={group.id} role="group" aria-labelledby={`${resultId}-more-${group.id}`} className="w6d-sr-group">
+                      <p id={`${resultId}-more-${group.id}`} className="w6d-sr-title">
+                        {t('w6d.search.section.more')}: {t(`z8.search.topic.${group.id}`)}
+                      </p>
+                      {group.rows.map((row) => renderRow(row))}
                     </div>
-                  )}
+                  ))}
                   {globalSearch.data?.has_more && !isLoading && (
                     <p className="px-4 pb-2 pt-3 text-sm text-text-secondary">{t('search.refine')}</p>
                   )}
@@ -637,7 +662,7 @@ export default function IndicatorSearch({
                 aria-expanded={showMore}
                 onClick={() => setMoreFor(showMore ? '' : qTrim)}
               >
-                {showMore ? t('shell3.search.fewerVariants') : t('shell3.search.moreVariants', { n: hiddenCount })}
+                {showMore ? t('shell3.search.fewerVariants') : moreLabel}
               </button>
             ) : null}
 
@@ -655,14 +680,21 @@ export default function IndicatorSearch({
 }
 
 /** Последнее значение строки: «4,0 %, август 2026» (число и месяц по языку страницы). */
-function latestText(item, locale) {
+function latestText(item, locale, t) {
   const latest = item?.latest;
   if (!latest || latest.value == null || !Number.isFinite(Number(latest.value))) return '';
   const abs = Math.abs(Number(latest.value));
-  const value = formatValue(latest.value, abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
   const short = splitUnit(plainUnit(String(item.unit || '').trim(), locale)).short;
+  // Годовой процент читается как «34,9 % за 2025» (один знак после запятой), остальное как «4,00 %, август 2026».
+  const yearPercent = item.frequency === 'annual' && /%/.test(short);
+  const value = formatValue(latest.value, yearPercent ? 1 : abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
   const period = latest.date ? formatDate(latest.date, PERIOD_FORMAT[item.frequency] || 'full', locale) : '';
-  return [short ? `${value}\u00A0${short}` : value, period && period !== '—' ? period : ''].filter(Boolean).join(', ');
+  const shown = short ? `${value}\u00A0${short}` : value;
+  const hasPeriod = period && period !== '—';
+  if (hasPeriod && yearPercent && typeof t === 'function') {
+    return t('z8.search.valueForYear', { value: shown, period });
+  }
+  return [shown, hasPeriod ? period : ''].filter(Boolean).join(', ');
 }
 
 /**
@@ -680,7 +712,11 @@ function SearchRow({
   // Мировая цена (нефть, газ) получает глобус: чужой флаг на ней сбивает с толку.
   const flagAsIcon = item.kind === 'country' && Boolean(flagCode);
   const flagBadge = !isSuggestion && !flagAsIcon && !globalMarket && row.type !== 'byCountry' && row.type !== 'rating' && Boolean(flagCode);
-  const value = row.type === 'item' || row.type === 'family' ? latestText(item, locale) : '';
+  const isValueRow = row.type === 'item' || row.type === 'family';
+  // Индекс без базы («1 645,7») ничего не говорит: число уходит в «Подробнее», в строке остаётся название.
+  const indexRow = isValueRow && isIndexUnit(item.unit);
+  const rawValue = isValueRow ? latestText(item, locale, t) : '';
+  const value = indexRow ? '' : rawValue;
   const spark = (row.type === 'item' || row.type === 'family') && Array.isArray(item.spark) && item.spark.length >= 3
     ? item.spark.map((v) => ({ value: v })) : null;
   const countries = row.type === 'byCountry' ? row.countries : [];
@@ -719,6 +755,12 @@ function SearchRow({
           ) : null}
         </span>
       </button>
+      {indexRow && rawValue ? (
+        <details className="fe-z8-sr-more">
+          <summary>{t('z8.search.details')}</summary>
+          <p>{t('z8.search.indexValue', { value: rawValue })}</p>
+        </details>
+      ) : null}
       {row.type === 'family' ? (
         <div className="w6d-sr-chips" role="group" aria-label={t('w6d.search.freqAria')}>
           {row.chips.map((chip) => (
