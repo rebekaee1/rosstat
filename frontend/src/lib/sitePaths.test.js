@@ -30,6 +30,7 @@ import {
   WORLD_RATING_DEFAULT_CONCEPT,
   worldHubPath,
   worldRatingPath,
+  worldRatingYearPath,
 } from './sitePaths';
 
 describe('sitePaths', () => {
@@ -59,6 +60,8 @@ describe('sitePaths', () => {
     expect(WORLD_RATING_DEFAULT_CONCEPT).toBe('gdp-usd');
     expect(worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)).toBe('/world/rating/gdp-usd');
     expect(worldRatingPath('gdp')).toBe('/world/rating/gdp');
+    expect(worldRatingYearPath('gdp-usd', 2020)).toBe('/world/rating/gdp-usd/2020');
+    expect(worldRatingYearPath('gdp-usd', 'x')).toBe('/world/rating/gdp-usd');
     expect(russiaCategoriesPath()).toBe('/russia/category');
     expect(regionRatingHubPath()).toBe('/russia/region-rating');
   });

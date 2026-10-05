@@ -3,7 +3,7 @@ import {
   Link, useLocation, useNavigate, useParams, useSearchParams,
 } from 'react-router-dom';
 import {
-  ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Globe2,
+  ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Globe2,
   MapPinned, Plus, X,
 } from 'lucide-react';
 import { useAuth } from '../context/authContext';
@@ -36,9 +36,11 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import { SkeletonBox } from '../components/Skeleton';
 import Breadcrumbs from '../components/Breadcrumbs';
-import WorldConceptPicker from '../components/WorldConceptPicker';
+import RatingMetricPicker from '../components/RatingMetricPicker';
+import { OtherYears, RankShifts, RatingDelta, RatingSpark } from '../components/RatingExtras';
 import WorldMapConceptNote from '../components/WorldMapConceptNote';
 import { useLocale, useT } from '../i18n';
+import { localizeSource } from '../i18n/viewModeLabels';
 import PlanetView from '../components/PlanetView';
 import Button from '../components/Button';
 import Chip from '../components/Chip';
@@ -47,11 +49,18 @@ import CountryFlag from '../components/CountryFlag';
 import WorldCountUp from '../components/WorldCountUp';
 import YearPicker from '../components/YearPicker';
 import '../styles/world.css';
+import '../styles/w6d.css';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { ratingHeading } from '../lib/ratingConcepts';
+import {
+  countrySeries, rankShifts, shareOf, yearOverYear,
+} from '../lib/ratingInsights';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
   WORLD_RATING_DEFAULT_CONCEPT,
   worldRatingPath,
+  worldRatingYearPath,
 } from '../lib/sitePaths';
 
 const RATING_EXTRA_MAX_AUTH = 4;
@@ -61,6 +70,11 @@ const RATING_EXTRA_MAX_GUEST = 1;
 
 /** Спец-код базовой колонки «Значение» в сортировке по заголовкам. */
 const SORT_BASE_COLUMN = '__base__';
+/** Служебные колонки сортировки: название страны и изменение к прошлому году. */
+const SORT_NAME_COLUMN = '__name__';
+const SORT_DELTA_COLUMN = '__delta__';
+/** Сколько строк видно, пока человек не нажал «Показать все страны». */
+const TABLE_COMPACT_ROWS = 12;
 
 /**
  * Шапка сортируемой колонки: подпись со стрелкой направления.
@@ -176,19 +190,21 @@ export default function WorldRatingPage() {
   const t = useT();
   const { locale } = useLocale();
   const { isAuthed } = useAuth();
-  const { conceptSlug } = useParams();
+  const { conceptSlug, year: pathYear } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { hash, search } = useLocation();
   const activeConcept = conceptSlug || WORLD_RATING_DEFAULT_CONCEPT;
-  const rawYear = searchParams.get('year');
+  // Год живёт в адресе: `/world/rating/{показатель}/{год}`; старый `?year=` читается как запасной вариант.
+  const rawYear = pathYear || searchParams.get('year');
   const selectedYear = /^[1-9]\d{3}$/.test(rawYear || '') ? Number(rawYear) : null;
-  const setSelectedYear = (year) => {
+  // Ссылки и переходы между показателями сохраняют выбранные колонки (`cols`), но не старый `?year=`.
+  const keepSearch = useMemo(() => {
     const next = new URLSearchParams(searchParams);
-    if (year == null) next.delete('year');
-    else next.set('year', String(year));
-    navigate({ search: next.toString(), hash }, { replace: true });
-  };
+    next.delete('year');
+    const text = next.toString();
+    return text ? `?${text}` : '';
+  }, [searchParams]);
   // Активная колонка сортировки: { slug, dir } | null. null = пользователь ещё
   // не трогал переключатель → применяется смысловой порядок (лучшие сверху).
   // Любой refetch каталога не должен откатывать клик, поэтому запись идёт
@@ -197,7 +213,12 @@ export default function WorldRatingPage() {
 
   const countriesQ = useWorldCountries();
   const catalogQ = useWorldRatingConcepts();
-  const mapSeriesQ = useWorldMapSeries(activeConcept);
+  // Срез прежнего показателя остаётся на экране, пока приходит новый: выбранные год и страна не теряются.
+  const mapSeriesQ = useWorldMapSeries(activeConcept, { keepPrevious: true });
+  const dataSlug = mapSeriesQ.data?.concept?.slug;
+  const switching = Boolean(mapSeriesQ.isPlaceholderData && dataSlug && dataSlug !== activeConcept);
+  // Всё, что рисуется из данных (шар, таблица, цвет, направление), относится к показателю этих данных.
+  const viewSlug = switching ? dataSlug : activeConcept;
 
   useEffect(() => {
     if (!conceptSlug) {
@@ -250,29 +271,54 @@ export default function WorldRatingPage() {
 
   // Смысловые направления («лучшие сверху») — из дефолта рейтинга концепта.
   const baseDirection = useMemo(
-    () => defaultSortForConcept(activeConcept, concepts),
-    [activeConcept, concepts],
+    () => defaultSortForConcept(viewSlug, concepts),
+    [viewSlug, concepts],
   );
-  const semanticDirectionFor = useCallback((slug) => (
-    slug === SORT_BASE_COLUMN
-      ? baseDirection
-      : defaultSortForConcept(slug, concepts)
-  ), [baseDirection, concepts]);
+  const semanticDirectionFor = useCallback((slug) => {
+    if (slug === SORT_BASE_COLUMN) return baseDirection;
+    if (slug === SORT_NAME_COLUMN) return 'asc';
+    if (slug === SORT_DELTA_COLUMN) return 'desc';
+    return defaultSortForConcept(slug, concepts);
+  }, [baseDirection, concepts]);
 
   const concept = useMemo(
-    () => concepts.find((item) => item.slug === activeConcept)
+    () => concepts.find((item) => item.slug === viewSlug)
       || mapSeriesQ.data?.concept
       || {
-        slug: activeConcept,
-        name: homeConceptLabel(activeConcept, t, t('world.ratingFallback')),
+        slug: viewSlug,
+        name: homeConceptLabel(viewSlug, t, t('world.ratingFallback')),
         unit: '',
       },
-    [activeConcept, concepts, mapSeriesQ.data, t],
+    [viewSlug, concepts, mapSeriesQ.data, t],
+  );
+  // Показатель из адреса (не данных): заголовок и подпись меняются сразу после нажатия.
+  const targetConcept = useMemo(
+    () => concepts.find((item) => item.slug === activeConcept)
+      || (switching ? null : mapSeriesQ.data?.concept)
+      || { slug: activeConcept, name: homeConceptLabel(activeConcept, t, t('world.ratingFallback')), unit: '' },
+    [activeConcept, concepts, mapSeriesQ.data, switching, t],
   );
   const knownConceptLoaded = !catalogQ.isLoading && concepts.length > 0;
   const unknownConcept = knownConceptLoaded && !concepts.some((item) => item.slug === activeConcept);
-  const years = mapSeriesQ.data?.years || [];
+  const years = useMemo(() => mapSeriesQ.data?.years || [], [mapSeriesQ.data]);
+  const defaultYear = resolveActiveMapYear(years, null, mapSeriesQ.data?.values_by_year);
   const activeYear = resolveActiveMapYear(years, selectedYear, mapSeriesQ.data?.values_by_year);
+  // Год — постоянный адрес. Год по умолчанию живёт на базовом адресе показателя (так же отвечает сервер).
+  const ratingTarget = useCallback((slug, year) => ({
+    pathname: year != null && year !== defaultYear ? worldRatingYearPath(slug, year) : worldRatingPath(slug),
+    search: keepSearch,
+    hash,
+  }), [defaultYear, keepSearch, hash]);
+  const setSelectedYear = (year) => {
+    navigate(ratingTarget(activeConcept, year), { replace: true });
+  };
+  // Адрес с годом, которого у показателя нет (или совпадающим с годом по умолчанию), приводим к постоянному.
+  useEffect(() => {
+    if (switching || !years.length || !rawYear || mapSeriesQ.isFetching) return;
+    if (selectedYear == null || !years.includes(selectedYear) || (selectedYear === defaultYear && pathYear)) {
+      navigate(ratingTarget(activeConcept, null), { replace: true });
+    }
+  }, [switching, years, rawYear, selectedYear, defaultYear, pathYear, mapSeriesQ.isFetching, navigate, ratingTarget, activeConcept]);
   const extraColumns = useMemo(() => extraSlugs.map((slug, index) => {
     const seriesData = [extraSeries0.data, extraSeries1.data, extraSeries2.data, extraSeries3.data][index];
     return {
@@ -299,16 +345,53 @@ export default function WorldRatingPage() {
     [countriesQ.data, baseYearItems, mapSeriesQ.data],
   );
   const russiaLinks = useMemo(
-    () => russiaDeepLinksForConcept(activeConcept),
-    [activeConcept],
+    () => russiaDeepLinksForConcept(viewSlug),
+    [viewSlug],
   );
+  const catalogByKey = useMemo(() => {
+    const map = new Map();
+    for (const country of countries) {
+      if (country?.code) map.set(country.code, country);
+      if (country?.slug) map.set(country.slug, country);
+    }
+    return map;
+  }, [countries]);
+  const mapCountries = useMemo(
+    () => countries.map((country) => ({
+      ...country,
+      name: countryPublicName(country, locale),
+    })),
+    [countries, locale],
+  );
+  // Название страны берём из каталога на языке страницы: срез показателя мог прийти с английской подписью.
+  const ratingCountryName = useCallback((item) => {
+    const catalog = catalogByKey.get(item.country_code) || catalogByKey.get(item.country_slug);
+    if (catalog) {
+      const fromCatalog = countryPublicName({
+        name: catalog.name_ru || catalog.name,
+        name_en: catalog.name_en,
+        name_ru: catalog.name_ru,
+      }, locale);
+      if (fromCatalog) return fromCatalog;
+    }
+    return countryPublicName({
+      name: item.country_name,
+      name_en: item.country_name_en,
+      country_name: item.country_name,
+    }, locale);
+  }, [catalogByKey, locale]);
   const valuesByCode = useMemo(
     () => new Map(Object.entries(yearItems).map(([countryCode, item]) => [countryCode, item.value])),
     [yearItems],
   );
+  // Подписи страны и источника — на языке страницы, чтобы шар и карточка не показывали английские названия по-русски.
   const detailsByCode = useMemo(
-    () => new Map(Object.entries(yearItems)),
-    [yearItems],
+    () => new Map(Object.entries(yearItems).map(([code, item]) => [code, {
+      ...item,
+      country_name: ratingCountryName(item) || item.country_name,
+      ...(item.source ? { source: localizeSource(item.source, locale) } : {}),
+    }])),
+    [yearItems, ratingCountryName, locale],
   );
   // Полный рейтинг с местами считается по смысловому направлению концепта
   // (лучшие сверху) и НЕ зависит от кликов по стрелкам: место страны в
@@ -325,34 +408,6 @@ export default function WorldRatingPage() {
     const withData = new Set(Object.values(yearItems).map((item) => item.country_code));
     return countries.filter((country) => !withData.has(country.code));
   }, [countries, yearItems]);
-  const catalogByKey = useMemo(() => {
-    const map = new Map();
-    for (const country of countries) {
-      if (country?.code) map.set(country.code, country);
-      if (country?.slug) map.set(country.slug, country);
-    }
-    return map;
-  }, [countries]);
-  const mapCountries = useMemo(
-    () => countries.map((country) => ({
-      ...country,
-      name: countryPublicName(country, locale),
-    })),
-    [countries, locale],
-  );
-  const ratingCountryName = (item) => {
-    const catalog = catalogByKey.get(item.country_code) || catalogByKey.get(item.country_slug);
-    // По-русски справочник стран главнее названия из строки рейтинга: оно приходит на английском
-    // и «Первое место: United States» оставалось на английском в русской версии.
-    const catalogRu = locale === 'ru' ? (catalog?.name_ru || catalog?.name) : null;
-    return countryPublicName({
-      name: catalogRu || item.country_name || catalog?.name,
-      name_en: catalog?.name_en || item.country_name_en,
-      name_ru: catalog?.name_ru,
-      country_name: item.country_name,
-    }, locale);
-  };
-
   // Единица одна на всю таблицу — уносим её в шапку колонки: иначе строка
   // повторяет «изменение за год, %» сорок один раз подряд.
   const sharedUnit = useMemo(() => {
@@ -385,22 +440,30 @@ export default function WorldRatingPage() {
     extraSeries2.refetch();
     extraSeries3.refetch();
   };
-  const colCount = (sharedUnit ? 4 : 5) + extraColumns.length;
+  const colCount = (sharedUnit ? 7 : 8) + extraColumns.length;
 
-  const shortName = homeConceptLabel(activeConcept, t, concept.name);
-  const pageTitle = worldRatingTitle(activeConcept, concept.name || shortName, activeYear, t);
+  const shortName = homeConceptLabel(viewSlug, t, concept.name);
+  const targetName = homeConceptLabel(activeConcept, t, targetConcept.name);
+  const pageTitle = worldRatingTitle(activeConcept, targetConcept.name || targetName, activeYear, t);
+  // Видимый заголовок короткий («ВВП стран мира, 2025»), полная формулировка остаётся в title страницы.
+  const heading = ratingHeading(activeConcept, {
+    t,
+    name: targetConcept.name,
+    unit: localizeWorldUnit(targetConcept.unit, locale),
+    year: activeYear,
+  });
   useDocumentMeta({
     title: pageTitle,
     description: t('world.rating.metaDesc', { title: pageTitle }),
-    path: activeYear && activeYear !== resolveActiveMapYear(years, null, mapSeriesQ.data?.values_by_year)
-      ? `${worldRatingPath(activeConcept)}/${activeYear}`
+    path: activeYear && activeYear !== defaultYear
+      ? worldRatingYearPath(activeConcept, activeYear)
       : worldRatingPath(activeConcept),
   });
 
 
   const openCountry = (country, detail) => {
     const href = mapSelectHref(country, detail, {
-      conceptSlug: activeConcept,
+      conceptSlug: viewSlug,
       russiaIndicatorCode,
     });
     if (href) navigate(href);
@@ -411,6 +474,8 @@ export default function WorldRatingPage() {
   // первого клика — смысловое («лучшие сверху»), второго — обратное.
   const sortedColSlug = sortOverride
     && (sortOverride.slug === SORT_BASE_COLUMN
+      || sortOverride.slug === SORT_NAME_COLUMN
+      || sortOverride.slug === SORT_DELTA_COLUMN
       || extraColumns.some((col) => col.slug === sortOverride.slug))
     ? sortOverride.slug
     : SORT_BASE_COLUMN;
@@ -423,9 +488,9 @@ export default function WorldRatingPage() {
       if (prev && prev.slug === slug) {
         return { slug, dir: prev.dir === 'asc' ? 'desc' : 'asc' };
       }
-      return { slug, dir: slug === SORT_BASE_COLUMN ? baseDirection : defaultSortForConcept(slug, concepts) };
+      return { slug, dir: semanticDirectionFor(slug) };
     });
-  }, [baseDirection, concepts]);
+  }, [semanticDirectionFor]);
 
   // Доп-колонки: добавление через селектор, снятие крестиком в шапке колонки.
   const [addOpen, setAddOpen] = useState(false);
@@ -456,12 +521,36 @@ export default function WorldRatingPage() {
   );
   const atExtraMax = extraSlugs.length >= extraMax;
 
+  // Изменение к прошлому году и мини-график считаются из уже загруженных лет: сервер ничего не досчитывает.
+  const valuesByYear = mapSeriesQ.data?.values_by_year;
+  const polarity = useMemo(() => indicatorPolarity(concept.name, shortName), [concept.name, shortName]);
+  const percentUnit = Boolean(sharedUnit) && sharedUnit.startsWith('%');
+  const changeByCode = useMemo(() => {
+    const map = new Map();
+    for (const item of ranked) map.set(item.country_code, yearOverYear(valuesByYear, years, activeYear, item.country_code));
+    return map;
+  }, [ranked, valuesByYear, years, activeYear]);
+  const sparkByCode = useMemo(() => {
+    const map = new Map();
+    for (const item of ranked) map.set(item.country_code, countrySeries(valuesByYear, years, activeYear, item.country_code));
+    return map;
+  }, [ranked, valuesByYear, years, activeYear]);
+
   // Порядок строк таблицы: колонка сортируется той же функцией, которой
   // рисуется ячейка (базовая — значение года, доп — lookupExtraValue).
   // Пустые значения всегда внизу независимо от направления.
   const displayRows = useMemo(() => {
+    if (sortedColSlug === SORT_NAME_COLUMN) {
+      const sign = sortedColDir === 'asc' ? 1 : -1;
+      return [...ranked].sort((a, b) => sign * ratingCountryName(a).localeCompare(ratingCountryName(b), locale));
+    }
     const valueOf = (item) => {
       if (sortedColSlug === SORT_BASE_COLUMN) return item.value ?? null;
+      if (sortedColSlug === SORT_DELTA_COLUMN) {
+        const change = changeByCode.get(item.country_code);
+        if (!change) return null;
+        return percentUnit || change.pct == null ? change.abs : change.pct;
+      }
       const col = extraColumns.find((candidate) => candidate.slug === sortedColSlug);
       return lookupExtraValue(col?.seriesData, activeYear, item)?.value ?? null;
     };
@@ -475,7 +564,15 @@ export default function WorldRatingPage() {
       ? valueOf(a) - valueOf(b)
       : valueOf(b) - valueOf(a)));
     return [...withValue, ...withoutValue];
-  }, [ranked, sortedColSlug, sortedColDir, extraColumns, activeYear]);
+  }, [ranked, sortedColSlug, sortedColDir, extraColumns, activeYear, changeByCode, percentUnit, ratingCountryName, locale]);
+
+  const [showAllRows, setShowAllRows] = useState(false);
+  const compactRows = !showAllRows && displayRows.length > TABLE_COMPACT_ROWS + 3;
+  const visibleRows = compactRows ? displayRows.slice(0, TABLE_COMPACT_ROWS) : displayRows;
+  const shifts = useMemo(
+    () => rankShifts(valuesByYear, years, activeYear, baseDirection),
+    [valuesByYear, years, activeYear, baseDirection],
+  );
 
   // Медали — только когда порядок «лучшие сверху» по базовому показателю: иначе места 1–3 окажутся где попало.
   const medalsOn = sortedColSlug === SORT_BASE_COLUMN && sortedColDir === baseDirection;
@@ -525,11 +622,19 @@ export default function WorldRatingPage() {
     }
     return { max, positive };
   }, [ranked]);
+  // Ориентир по странам: медиана поясняется словами, а не термином.
+  const benchmark = mapSeriesQ.data?.benchmark_by_year?.[String(activeYear)];
+  const medianNote = useMemo(() => {
+    if (!benchmark || benchmark.value == null || !Number.isFinite(Number(benchmark.value))) return '';
+    const isMedian = /медиан|median/i.test(String(benchmark.label || '')) || ['gdp-usd', 'gdp-per-capita-usd', 'hicp-index'].includes(viewSlug);
+    const value = [fmtValue(benchmark.value), shortUnitOf(factUnit)].filter(Boolean).join(' ');
+    return t(isMedian ? 'w6d.rating.medianNote' : 'w6d.rating.meanNote', { value });
+  }, [benchmark, viewSlug, fmtValue, factUnit, t]);
 
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6">
       <Breadcrumbs
-        items={worldRatingTrail(shortName || concept.name || t('crumb.rating'), activeConcept)}
+        items={worldRatingTrail(targetName || targetConcept.name || t('crumb.rating'), activeConcept)}
       />
 
       <header className="mb-4">
@@ -538,8 +643,9 @@ export default function WorldRatingPage() {
           {t('nav.worldRating')}
         </div>
         <h1 className="max-w-4xl font-display text-2xl font-bold leading-tight text-text-primary sm:text-3xl lg:text-4xl">
-          {pageTitle}
+          {heading.title}
         </h1>
+        {heading.subtitle && <p className="w6d-subtitle">{heading.subtitle}</p>}
         {/* Пояснение не стоит между заголовком и планетой: планета должна быть видна на первом экране. */}
         <details className="w2-details w2-details--tight">
           <summary>{t('x1.rating.details')}</summary>
@@ -567,22 +673,34 @@ export default function WorldRatingPage() {
 
       {!unknownConcept && (
         <>
-          <section className="mb-4 rounded-3xl border border-border-subtle bg-surface px-3.5 py-3 shadow-sm sm:px-4">
-            <WorldConceptPicker
+          <section className="mb-4 rounded-3xl border border-border-subtle bg-surface px-3.5 py-3 shadow-sm sm:px-4" aria-busy={switching}>
+            <RatingMetricPicker
               concepts={concepts}
               value={activeConcept}
-              mode="link"
-              linkForSlug={(slug) => worldRatingPath(slug)}
+              linkForSlug={(slug) => ({
+                pathname: activeYear ? worldRatingYearPath(slug, activeYear) : worldRatingPath(slug),
+                search: keepSearch,
+              })}
               label={t('world.rating.conceptLabel')}
-              searchable={false}
-              mobileScroll
-              loading={loading && concepts.length === 0}
-              trailing={<WorldMapConceptNote conceptSlug={activeConcept} />}
             />
+            <div className="mt-1.5"><WorldMapConceptNote conceptSlug={activeConcept} /></div>
+            {loading && concepts.length === 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {[0, 1, 2].map((i) => (
+                  <SkeletonBox key={i} className="h-11 w-28 rounded-xl" />
+                ))}
+              </div>
+            )}
           </section>
 
           <section id="chart" className="mb-5 grid scroll-mt-24 gap-4">
-            <div className="min-w-0">
+            {switching && (
+              <p className="w6d-switching-note" role="status">
+                <span className="fe-search-spinner" aria-hidden="true" />
+                {t('w6d.rating.updating', { name: targetName })}
+              </p>
+            )}
+            <div className={`min-w-0${switching ? ' w6d-switching' : ''}`} aria-busy={switching}>
               {mapSeriesQ.isLoading ? (
                 <div className="w2-planet-skeleton" role="status" aria-label={t('planet.loading')}>
                   <LoadingNote onRefresh={() => mapSeriesQ.refetch()} />
@@ -599,13 +717,13 @@ export default function WorldRatingPage() {
                     unit={localizeWorldUnit(concept.unit || mapSeriesQ.data?.concept?.unit || '', locale)}
                     metricName={shortName}
                     periodLabel={activeYear ? String(activeYear) : ''}
-                    colorMode={conceptColorMode(activeConcept)}
+                    colorMode={conceptColorMode(viewSlug)}
                     colorDirection={sortedColDir}
                     defaultScope="world"
                     years={years}
                     year={activeYear}
                     onYearChange={setSelectedYear}
-                    conceptSlug={activeConcept}
+                    conceptSlug={viewSlug}
                     rankingItems={ranked}
                     benchmark={mapSeriesQ.data?.benchmark_by_year?.[String(activeYear)]}
                     ratingHref="#rating-table"
@@ -625,7 +743,7 @@ export default function WorldRatingPage() {
                   ].filter(([item]) => item).map(([item, label]) => (
                     <Link
                       key={item.country_code}
-                      to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })}
+                      to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })}
                       className="w2-fact fe-press"
                     >
                       <span className="w2-fact-label">{label}</span>
@@ -643,7 +761,7 @@ export default function WorldRatingPage() {
                 <details className="w2-details">
                   <summary>{t('w2.rating.howTitle')}</summary>
                   <p>
-                    {activeConcept === 'hicp-index' || mapSeriesQ.data?.concept?.value_mode === 'yoy'
+                    {viewSlug === 'hicp-index' || mapSeriesQ.data?.concept?.value_mode === 'yoy'
                       ? t('world.rating.noteYoy')
                       : t('world.rating.noteDefault')}
                   </p>
@@ -798,19 +916,28 @@ export default function WorldRatingPage() {
                   {valueHeader}
                   {activeYear ? `, ${activeYear}` : ''}
                 </p>
-                <ol className="w2-rank-list">
-                  {displayRows.map((item) => {
-                    const share = barMax.positive && barMax.max > 0 && Number.isFinite(Number(item.value))
-                      ? Math.max(2, Math.min(100, (Number(item.value) / barMax.max) * 100)) : 0;
+                <ol className={`w2-rank-list${switching ? ' w6d-switching' : ''}`}>
+                  {visibleRows.map((item) => {
+                    const share = shareOf(item.value, barMax.max, barMax.positive);
                     return (
                       <li key={item.country_code} className="w2-rank-item">
                         <Link
-                          to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })}
+                          to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })}
                           className="w2-rank-row fe-press"
                         >
                           <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
                           <span className="w2-rank-flag"><CountryFlag code={item.country_code} /></span>
-                          <span className="w2-rank-name">{ratingCountryName(item)}</span>
+                          <span className="w2-rank-name">
+                            {ratingCountryName(item)}
+                            <span className="w6d-rank-sub">
+                              <RatingDelta
+                                change={changeByCode.get(item.country_code)}
+                                percentUnit={percentUnit}
+                                polarity={polarity}
+                                locale={locale}
+                              />
+                            </span>
+                          </span>
                           <span className="w2-rank-value">
                             <strong>{fmtValue(item.value)}</strong>
                             {cardUnit(item) && <small>{cardUnit(item)}</small>}
@@ -841,17 +968,31 @@ export default function WorldRatingPage() {
             ) : (
               <div className="overflow-x-auto rounded-3xl border border-border-subtle bg-surface">
                 <div style={tableStyle} className="transition-transform duration-200">
-                  <table className="w-full min-w-[34rem] text-sm">
+                  <table className="w6d-table w-full min-w-[34rem] text-sm">
                     <thead className="sticky top-0 z-10 bg-obsidian-light/95 backdrop-blur-sm">
                       <tr className="text-left text-xs text-text-secondary">
                         <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
-                        <th className="px-4 py-3 font-medium">{t('world.rating.col.country')}</th>
+                        <SortableTh
+                          label={t('world.rating.col.country')}
+                          right={false}
+                          active={sortedColSlug === SORT_NAME_COLUMN}
+                          dir={sortedColDir}
+                          onClick={() => handleSortClick(SORT_NAME_COLUMN)}
+                        />
                         <SortableTh
                           label={valueHeader}
                           active={sortedColSlug === SORT_BASE_COLUMN}
                           dir={sortedColDir}
                           onClick={() => handleSortClick(SORT_BASE_COLUMN)}
                         />
+                        <th className="w6d-col-bar px-2 py-3 font-medium" aria-hidden="true" />
+                        <SortableTh
+                          label={t('w6d.rating.col.change')}
+                          active={sortedColSlug === SORT_DELTA_COLUMN}
+                          dir={sortedColDir}
+                          onClick={() => handleSortClick(SORT_DELTA_COLUMN)}
+                        />
+                        <th className="w6d-col-trend px-4 py-3 text-right font-medium">{t('w6d.rating.col.trend')}</th>
                         {extraColumns.map((col) => (
                           <SortableTh
                             key={col.slug}
@@ -871,19 +1012,36 @@ export default function WorldRatingPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {displayRows.map((item) => (
+                      {visibleRows.map((item) => (
                         <tr key={item.country_code} className="border-t border-border-subtle transition-colors hover:bg-surface-hover">
                           <td className="px-4 py-3 tabular-nums text-text-tertiary">
                             <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
                           </td>
                           <td className="px-4 py-3">
-                            <Link to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })} className="inline-flex items-center gap-2.5 font-medium text-text-primary transition-colors hover:text-champagne">
+                            <Link to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })} className="inline-flex items-center gap-2.5 font-medium text-text-primary transition-colors hover:text-champagne">
                               <CountryFlag code={item.country_code} />
                               {ratingCountryName(item)}
                             </Link>
                           </td>
                           <td className="px-4 py-3 text-right font-semibold tabular-nums text-text-primary">
                             {fmtValue(item.value)}
+                          </td>
+                          <td className="w6d-col-bar px-2 py-3" aria-hidden="true">
+                            <span className="w6d-bar"><span style={{ width: `${shareOf(item.value, barMax.max, barMax.positive)}%` }} /></span>
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <RatingDelta
+                              change={changeByCode.get(item.country_code)}
+                              percentUnit={percentUnit}
+                              polarity={polarity}
+                              locale={locale}
+                            />
+                          </td>
+                          <td className="w6d-col-trend px-4 py-3 text-right text-champagne-ink">
+                            <RatingSpark
+                              points={sparkByCode.get(item.country_code)}
+                              label={t('w6d.rating.trendLabel', { name: ratingCountryName(item) })}
+                            />
                           </td>
                           {extraColumns.map((col) => (
                             <td
@@ -915,6 +1073,18 @@ export default function WorldRatingPage() {
                 </div>
               </div>
             )}
+            {displayRows.length > TABLE_COMPACT_ROWS + 3 && (
+              <button
+                type="button"
+                className="w6d-showall fe-press"
+                aria-expanded={!compactRows}
+                onClick={() => setShowAllRows((open) => !open)}
+              >
+                {compactRows ? t('w6d.rating.showAll', { n: displayRows.length }) : t('w6d.rating.showLess')}
+                <ChevronDown size={15} aria-hidden="true" className={compactRows ? '' : 'w6d-rot'} />
+              </button>
+            )}
+            {medianNote && <p className="w6d-median">{medianNote}</p>}
             {!narrow && maxShift > 0 && (
               <div className="mt-2 flex items-center justify-end gap-1.5" data-testid="table-shift">
                 <Button
@@ -938,6 +1108,18 @@ export default function WorldRatingPage() {
               </div>
             )}
           </section>
+
+          <RankShifts
+            shifts={shifts}
+            nameOf={(code) => ratingCountryName(yearItems[code] || { country_code: code })}
+            hrefOf={(code) => rowHref(yearItems[code] || { country_code: code }, { conceptSlug: viewSlug, russiaIndicatorCode })}
+          />
+
+          <OtherYears
+            years={years}
+            activeYear={activeYear}
+            hrefFor={(year) => ratingTarget(activeConcept, year)}
+          />
 
           {withoutData.length > 0 && (
             <details className="w2-details w2-details--card">

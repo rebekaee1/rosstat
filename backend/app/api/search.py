@@ -1,6 +1,7 @@
 """Public federated discovery; read-only, bounded and locale-aware."""
 
 import hashlib
+import logging
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,8 +10,10 @@ from app.core.cache import cache_get, cache_set
 from app.database import get_db
 from app.services.locale import get_locale
 from app.services.search import federated_search
+from app.services.search_latest import attach_latest
 from app.services.search_intent import SEARCH_VERSION, normalize
 
+logger = logging.getLogger(__name__)
 router = APIRouter(tags=["search"])
 
 # Visitors repeat the same short queries; a result costs 0.5–2 s of CPU. Entries
@@ -36,5 +39,10 @@ async def search(
     if cached is not None:
         return cached
     result = await federated_search(db, q, limit=limit)
+    try:
+        # Latest value and a short trend for the first rows; presentation only, never reorders.
+        await attach_latest(db, result.get("results") or [])
+    except Exception:
+        logger.warning("search latest-value enrichment skipped", exc_info=True)
     await cache_set(key, result, ttl=_RESULT_TTL_SECONDS)
     return result

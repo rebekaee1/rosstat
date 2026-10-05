@@ -214,6 +214,14 @@ export function worldRatingPath(concept) {
   return concept ? `/world/rating/${slug(concept)}` : '/world/rating';
 }
 
+/** Постоянный адрес рейтинга за год: `/world/rating/{показатель}/{год}` (зеркало backend `world_rating_year`). */
+export function worldRatingYearPath(concept, year) {
+  const y = Number(year);
+  return Number.isInteger(y) && y >= 1000 && y <= 2999
+    ? `${worldRatingPath(concept)}/${y}`
+    : worldRatingPath(concept);
+}
+
 /** @deprecated use countryPath — оставлено для читаемости в world-коде */
 export function worldCountryPath(countrySlug) {
   return countryPath(countrySlug);

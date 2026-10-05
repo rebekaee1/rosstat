@@ -239,7 +239,7 @@ function AppRoutes() {
 
             {/* Мир: хаб и рейтинги до country catch-all */}
             <Route path="/world/rating" element={<WorldRatingPage />} />
-            <Route path="/world/rating/:conceptSlug" element={<WorldRatingPage />} />
+            <Route path="/world/rating/:conceptSlug/:year?" element={<WorldRatingPage />} />
 
             <Route path="/currencies" element={<CategoryPage fixedSlug="currencies" />} />
             <Route path="/currencies/indicator/:code" element={<IndicatorDetailKeyed />} />

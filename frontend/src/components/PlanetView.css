@@ -309,3 +309,12 @@
 @keyframes planet-hint-in { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @keyframes planet-hand-sway { 0%, 100% { transform: translateX(-5px) rotate(-8deg); } 50% { transform: translateX(5px) rotate(8deg); } }
 @keyframes planet-pop-in { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: none; } }
+@media (max-width: 380px) { .planet-pin-country { font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .planet-loading svg, .planet-country-card.is-selected, .planet-orb { animation: none; } .planet-view button, .planet-view a, .planet-stage canvas, .planet-country-list > button > svg, .planet-orb { transition: none; } }
+@keyframes planet-orb-breathe { 0%, 100% { transform: translate(-50%, -50%) scale(.985); opacity: .86; } 50% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+@keyframes planet-card-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* Волна 6, зона D: длинные названия стран в списке не налезают на значение («Великобрита4 003»). */
+.planet-list-name { overflow-wrap: anywhere; hyphens: auto; }
+.planet-list-name > :first-child { flex-shrink: 0; }
+.planet-country-list > button > strong { min-width: 3.2em; padding-left: 6px; text-align: right; }

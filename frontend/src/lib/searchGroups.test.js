@@ -1,3 +1,4 @@
+import { translate } from '../i18n/messages';
 import { describe, expect, it } from 'vitest';
 import {
   SEARCH_PRIMARY_LIMIT, friendlySearchName, searchFamilyKey, splitSearchRows,
@@ -42,14 +43,21 @@ describe('splitSearchRows: вариации одного показателя с
 });
 
 describe('friendlySearchName', () => {
-  const t = (key, vars) => `${key}:${vars?.country}`;
-  it('индекс потребительских цен страны называет инфляцией', () => {
-    expect(friendlySearchName(hicp('a'), hicp('a').name, t)).toBe('shell3.search.inflation:Германия');
+  const ruT = (key, vars) => translate(key, vars, 'ru');
+  const enT = (key, vars) => translate(key, vars, 'en');
+  it('индекс потребительских цен страны называет инфляцией в этой стране', () => {
+    expect(friendlySearchName(hicp('a'), hicp('a').name, ruT)).toBe('Инфляция в Германии');
     const en = { country_name: 'Germany' };
-    expect(friendlySearchName(en, 'Harmonised index of consumer prices', t)).toBe('shell3.search.inflation:Germany');
+    expect(friendlySearchName(en, 'Harmonised index of consumer prices', enT, 'en')).toBe('Inflation in Germany');
+    expect(friendlySearchName({ country_name: 'United States' }, 'Harmonised index of consumer prices', enT, 'en')).toBe('Inflation in the United States');
   });
-  it('остальные названия не трогает', () => {
-    expect(friendlySearchName({ country_name: 'Германия' }, 'Безработица', t)).toBe('Безработица');
-    expect(friendlySearchName({}, 'Гармонизированный индекс потребительских цен', t)).toBe('Гармонизированный индекс потребительских цен');
+  it('для страны без известной формы падежа остаётся нейтральное «Инфляция: Страна»', () => {
+    expect(friendlySearchName({ country_name: 'Лихтенштейн' }, 'Гармонизированный индекс потребительских цен', ruT)).toBe('Инфляция: Лихтенштейн');
+  });
+  it('остальные названия не трогает, а служебные слова убирает', () => {
+    expect(friendlySearchName({ country_name: 'Германия' }, 'Безработица', ruT)).toBe('Безработица');
+    expect(friendlySearchName({}, 'Гармонизированный индекс потребительских цен', ruT)).toBe('Гармонизированный индекс потребительских цен');
+    expect(friendlySearchName({}, 'ИПЦ (2015 = 100)', ruT)).toBe('Потребительские цены');
+    expect(friendlySearchName({}, 'Сальдо бюджета сектора государственного управления', ruT)).toBe('Сальдо бюджета государства');
   });
 });
