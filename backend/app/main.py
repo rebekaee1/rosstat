@@ -2,6 +2,7 @@ import asyncio
 import ipaddress
 import json
 import logging
+import os
 import time
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone as dt_timezone
@@ -97,8 +98,10 @@ return c
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """Redis-based rate limiter with separate limits for main API and embed endpoints."""
 
-    LIMIT = 120
-    EMBED_LIMIT = 600
+    # Боевые значения 120/600 в минуту на адрес. Тестовый стенд поднимает их переменной окружения: проверяющие
+    # браузеры и агенты приходят с одного внешнего адреса и иначе получают «429 Too Many Requests».
+    LIMIT = int(os.environ.get("RUSTATS_API_RATE_LIMIT", "120"))
+    EMBED_LIMIT = int(os.environ.get("RUSTATS_EMBED_RATE_LIMIT", "600"))
     WINDOW = 60
 
     # Н-18: fail-open осознан (доступность > лимит), но при лежащем Redis

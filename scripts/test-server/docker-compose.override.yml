@@ -19,6 +19,10 @@ services:
   backend:
     build:
       network: host
+    # Лимит API на адрес поднят: проверяющие и агенты приходят с одного внешнего адреса (боевые 120/600 в минуту).
+    environment:
+      RUSTATS_API_RATE_LIMIT: "6000"
+      RUSTATS_EMBED_RATE_LIMIT: "6000"
     deploy:
       resources:
         limits:
