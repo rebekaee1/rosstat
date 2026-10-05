@@ -3268,4 +3268,10 @@ export default {
   'zb.change.percent.up': 'up {n}%',
   'zb.change.percent.down': 'down {n}%',
   'zb.change.flat': 'about the same',
+
+  // ===== K3 =====
+  'k3.dock.aria': 'Main sections',
+  'k3.dock.more': 'More',
+  'k3.sheet.menuAria': 'Site menu',
+  'k3.sheet.dragHint': 'Drag down to close',
 };

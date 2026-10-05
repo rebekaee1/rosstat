@@ -13,38 +13,24 @@
 }
 
 /* ═══ Лента курсов ═══════════════════════════════════════════════════════ */
-.fe-ticker {
-  /* Лента курсов: стекло над страницей (под ней при прокрутке проходит контент), блик сверху, мягкая тень снизу. */
-  background: var(--fe-glass-l1-sheen), color-mix(in srgb, var(--color-warn-surface) 80%, transparent);
-  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
-  box-shadow: 0 10px 24px -18px rgba(60, 48, 24, 0.4), var(--fe-inset-glint);
-}
+/* Лента курсов: стекло L1 над страницей, блик сверху и свет вместо нижней кромки рисуют `::before`/`::after` из styles/k3-shell.css. */
+.fe-ticker { background: none; }
 /* Ширина как у шапки и страниц: один контейнер на весь сайт. */
 .fe-ticker__inner { max-width: max(var(--fe-container-wide, 1440px), 1440px); }
 .fe-ticker__scroller { position: relative; height: 100%; }
 .fe-ticker__track { padding-inline: 8px 4px; }
 .fe-ticker__cell { position: relative; font-size: 14px; }
-/* Тонкая золотая черта между курсами вместо пустого промежутка. */
-.fe-ticker__cell + .fe-ticker__cell::before {
-  content: '';
-  position: absolute;
-  left: -1px;
-  top: 11px;
-  bottom: 11px;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, var(--z2-gold-line), transparent);
-  pointer-events: none;
-}
+/* Между курсами: воздух и грань-ромб с мягким свечением (рисуется в styles/k3-shell.css), без линии. */
 .fe-ticker__name { font-size: 13px; font-weight: 500; line-height: 1.2; color: var(--color-text-secondary); }
 .fe-ticker__quote { display: flex; flex-direction: column; justify-content: center; line-height: 1.1; }
 .fe-ticker__price { font-size: 14px; font-weight: 650; color: var(--color-text-primary); }
 .fe-ticker__sign { font-weight: 500; color: var(--color-text-secondary); }
 /* «биржа» или «ЦБ» мелко под ценой; на телефоне строки не хватает, источник остаётся в подсказке. */
-.fe-ticker__caption { display: none; margin-top: 1px; font-size: 11px; font-weight: 500; line-height: 1; color: var(--color-text-tertiary); }
+.fe-ticker__caption { display: none; margin-top: 1px; font-size: 11px; font-weight: 500; line-height: 1; color: var(--k3-caption, #55627a); }
 @media (min-width: 768px) {
   .fe-ticker__caption { display: block; }
 }
-.fe-ticker__delta { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--color-text-secondary); }
+.fe-ticker__delta { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text-secondary); }
 .fe-ticker__fade {
   position: absolute;
   top: 0;
@@ -55,8 +41,9 @@
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-.fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, var(--color-warn-surface), transparent); }
-.fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, var(--color-warn-surface), transparent); }
+/* Края ленты: вуаль цвета стекла (var(--k3-paper)), а не сплошная плашка. */
+.fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, rgb(var(--k3-paper, 255 252 245) / 0.9), rgb(var(--k3-paper, 255 252 245) / 0)); }
+.fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, rgb(var(--k3-paper, 255 252 245) / 0.9), rgb(var(--k3-paper, 255 252 245) / 0)); }
 .fe-ticker__fade[data-on='true'] { opacity: 1; }
 /* «Все валюты» держится у правого края, пока лента длиннее экрана: ссылка никогда не режется посередине слова. */
 .fe-ticker__all {
@@ -65,7 +52,7 @@
   z-index: 2;
   font-size: 13px;
   font-weight: 650;
-  background-color: var(--color-warn-surface);
+  background-color: rgb(var(--k3-paper, 255 252 245) / 0.9);
 }
 .fe-ticker__all::before {
   content: '';
@@ -74,10 +61,10 @@
   bottom: 0;
   left: -22px;
   width: 22px;
-  background: linear-gradient(90deg, transparent, var(--color-warn-surface));
+  background: linear-gradient(90deg, rgb(var(--k3-paper, 255 252 245) / 0), rgb(var(--k3-paper, 255 252 245) / 0.9));
   pointer-events: none;
 }
-.fe-ticker__all:hover { background-color: color-mix(in srgb, var(--z2-gold) 12%, var(--color-warn-surface)); }
+.fe-ticker__all:hover { background-color: color-mix(in srgb, var(--z2-gold) 14%, rgb(var(--k3-paper, 255 252 245) / 0.9)); }
 
 /* ═══ Шапка ══════════════════════════════════════════════════════════════ */
 /* Капсула той же ширины, что страницы и лента, но не уже 1440 px: на экранах от 1536 px в неё должны влезть
@@ -90,44 +77,37 @@ nav.fe-navbar .fe-navbar-links { gap: 16px; padding-left: 28px; }
   nav.fe-navbar .fe-navbar-links { gap: 24px; padding-left: 36px; }
 }
 
-/* Пункт меню: золотая черта растёт слева направо, вес шрифта не меняется (текст не «прыгает»). */
+/* Пункт меню: активный раздел отмечен «каплей света» под текстом (золотое сияние 28×6 px, не линия), текст золотой #7A5F2A.
+   Вес шрифта не меняется (текст не «прыгает»); при наведении капля проступает наполовину. Двигаются только transform и opacity. */
 nav.fe-navbar a.fe-nav-link {
   position: relative;
   padding-block: 8px;
   font-weight: 500;
   letter-spacing: 0;
 }
-nav.fe-navbar a.fe-nav-link::after {
+nav.fe-navbar a.fe-nav-link::after,
+nav.fe-navbar .fe-nav-tools-btn::after {
   content: '';
   display: block;
   position: absolute;
-  left: 2px;
-  right: 2px;
-  bottom: -1px;
-  width: auto;
-  height: 2px;
-  margin: 0;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--z2-gold), color-mix(in srgb, var(--z2-gold) 35%, transparent));
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform 0.3s var(--z2-ease);
+  left: 50%;
+  bottom: -7px;
+  width: 28px;
+  height: 6px;
+  margin: 0 0 0 -14px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(201, 162, 77, 0.95), rgba(201, 162, 77, 0.45) 55%, transparent);
+  opacity: 0;
+  transform: scaleX(0.4);
+  pointer-events: none;
+  transition: transform 0.3s var(--z2-ease), opacity 0.3s ease;
 }
-nav.fe-navbar a.fe-nav-link:hover::after { transform: scaleX(0.5); }
-nav.fe-navbar a.fe-nav-link[aria-current='page']::after { transform: scaleX(1); }
-nav.fe-navbar a.fe-nav-link[aria-current='page'] { color: var(--color-text-primary); }
-/* Кнопка «Инструменты» подчёркивается так же, пока открыта. */
+nav.fe-navbar a.fe-nav-link:hover::after { opacity: 0.7; transform: scaleX(0.75); }
+nav.fe-navbar a.fe-nav-link[aria-current='page']::after,
+nav.fe-navbar .fe-nav-tools-btn[aria-expanded='true']::after { opacity: 1; transform: scaleX(1); }
+nav.fe-navbar a.fe-nav-link[aria-current='page'] { color: var(--color-champagne-ink); }
+/* Кнопка «Инструменты» получает ту же каплю, пока открыта. */
 nav.fe-navbar .fe-nav-tools-btn { position: relative; }
-nav.fe-navbar .fe-nav-tools-btn[aria-expanded='true']::after {
-  content: '';
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: -1px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--z2-gold), color-mix(in srgb, var(--z2-gold) 35%, transparent));
-}
 
 /* Поиск в шапке: на 1280–1535 px только лупа в круге, подпись «Поиск» появляется на широких экранах. */
 @media (min-width: 1280px) and (max-width: 1535px) {
@@ -135,7 +115,7 @@ nav.fe-navbar .fe-nav-tools-btn[aria-expanded='true']::after {
   .fe-nav-search button > span { display: none; }
 }
 
-/* «Войти» читается как кнопка, а не как серый текст: тёмная подпись и тонкая золотая рамка при наведении. */
+/* «Войти» читается как кнопка (L2: светлое стекло, блик и тень, без рамки); при наведении теплеет. «Регистрация» рядом золотая. */
 nav.fe-navbar a.fe-nav-login {
   color: var(--color-text-primary);
   font-weight: 650;
@@ -148,11 +128,9 @@ nav.fe-navbar a.fe-nav-login:hover {
   box-shadow: 0 6px 16px -10px var(--z2-gold);
 }
 
-/* Затемнение под открытым меню: лёгкое матовое стекло, а не тяжёлый блюр. */
+/* Затемнение под открытым меню «Инструменты»: лёгкая тонировка без размытия (бюджет blur в кадре). */
 .fe-nav-scrim {
-  background: color-mix(in srgb, var(--color-text-primary) 12%, transparent);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: rgba(20, 33, 61, 0.12);
 }
 
 /* Круглые кнопки шапки на телефоне: поиск, язык, меню одного размера (44 px, как требует палец). */
@@ -178,7 +156,8 @@ nav.fe-navbar a.fe-nav-login:hover {
 /* Выпадающие панели шапки: тёплое стекло (L1, плотнее для читаемости над страницей), блик сверху и тень, без кромки. */
 .fe-nav-panel {
   background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
-  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+  -webkit-backdrop-filter: blur(28px) saturate(1.3);
+  backdrop-filter: blur(28px) saturate(1.3);
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
 .fe-nav-tools { min-width: 300px; padding: 8px; }
@@ -191,7 +170,8 @@ nav.fe-navbar a.fe-nav-login:hover {
   border-radius: 14px;
   transition: background-color 0.18s ease, transform 0.18s var(--z2-ease);
 }
-.fe-nav-tool:hover { background: var(--z2-gold-soft); }
+/* Пункт при наведении: плитка L2 с бликом (светлое стекло и мягкая тень), без рамки. */
+.fe-nav-tool:hover { background: var(--fe-glass-l1-sheen), var(--fe-glass-l2-hover); box-shadow: var(--fe-l2-shadow); }
 .fe-nav-tool:active { transform: scale(0.985); }
 .fe-nav-tool__text { display: flex; min-width: 0; flex-direction: column; gap: 1px; }
 .fe-nav-tool__name { font-size: 14.5px; font-weight: 600; line-height: 1.25; color: var(--color-text-primary); }
@@ -218,8 +198,6 @@ nav.fe-navbar a.fe-nav-login:hover {
   gap: 8px 24px;
   padding: 18px 20px 14px;
   border-radius: 22px;
-  background: var(--fe-pop-bg);
-  box-shadow: var(--fe-card-shadow);
 }
 .fe-mega__title { margin: 0 0 8px; font-size: 12px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; color: var(--z2-gold-ink); }
 .fe-mega__list { display: grid; margin: 0; padding: 0; list-style: none; }
@@ -236,7 +214,7 @@ nav.fe-navbar a.fe-nav-login:hover {
   color: var(--color-text-primary);
   transition: background-color 0.16s ease, color 0.16s ease;
 }
-.fe-mega__link:hover { background: var(--z2-gold-soft); color: var(--z2-gold-ink); }
+.fe-mega__link:hover { background: var(--fe-glass-l1-sheen), var(--fe-glass-l2-hover); box-shadow: var(--fe-l2-shadow); color: var(--z2-gold-ink); }
 .fe-mega__flag { font-size: 20px; line-height: 1; }
 .fe-mega__foot {
   display: flex;
@@ -250,38 +228,26 @@ nav.fe-navbar a.fe-nav-login:hover {
 .fe-mega__all { font-size: 14px; font-weight: 650; color: var(--z2-gold-ink); }
 .fe-mega__all:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-/* Телефон: шапка при прокрутке растягивается на всю ширину и становится непрозрачной,
-   чтобы по бокам капсулы не проглядывал текст страницы. */
-@media (max-width: 767px) {
-  nav.fe-navbar {
-    transition-property: transform, opacity, background-color, box-shadow, border-color, width, border-radius;
-  }
-  nav.fe-navbar[data-scrolled='true'] {
-    width: 100%;
-    max-width: none;
-    border-radius: 0 0 22px 22px;
-    border-top-width: 0;
-    border-inline-width: 0;
-  }
-}
-
-/* Ссылки меню телефона: тёплая подложка у текущего раздела вместо чёрточки справа от текста. */
-nav.fe-navbar .fe-navbar-mobile-menu a[aria-current='page']::after { display: none; }
-nav.fe-navbar .fe-navbar-mobile-menu a[aria-current='page'] { background: var(--z2-gold-soft); border-radius: 12px; }
+/* Телефон: капсула остаётся парящей и при прокрутке (плотнее, ниже на 6 px, сжимается при движении вниз): см. styles/k3-shell.css.
+   Меню телефона теперь шторка снизу (components/BottomSheet.jsx), её пункты оформлены там же. */
 /* На самых узких телефонах (320 px) три круглые кнопки чуть меньше, чтобы не вылезать из капсулы. */
 @media (max-width: 339px) {
   .fe-nav-round { width: 40px; height: 40px; min-width: 40px; min-height: 40px; }
 }
 
 /* ═══ Cookie ═════════════════════════════════════════════════════════════ */
-/* Компьютер: плашка 52 px у левого края, шириной до 500 px. Телефон: полоса одной строкой.
-   Молчание не считается согласием: плашка не закрывается сама. */
+/* Компьютер: стеклянная капсула слева внизу, шириной до 416 px. Телефон: полоса одной строкой, а после первой прокрутки
+   значок 44 px справа внизу (styles/k3-shell.css). Молчание не считается согласием: плашка не закрывается сама.
+   Рамки нет: блик сверху и тень-парение; размытие 24 px (плотность 0,74, чтобы текст страницы под ней не мешал). */
 .fe-cookie-panel {
-  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
-  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+  border-radius: 28px;
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper, 255 252 245) / 0.74);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  backdrop-filter: blur(24px) saturate(1.3);
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
-.fe-cookie-compact { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 4px 6px 4px 16px; }
+.fe-cookie-panel[data-expanded='true'] { border-radius: 24px; }
+.fe-cookie-compact { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 4px 6px 4px 18px; }
 .fe-cookie-compact__text {
   flex: 1 1 auto;
   min-width: 0;
@@ -297,7 +263,7 @@ nav.fe-navbar .fe-navbar-mobile-menu a[aria-current='page'] { background: var(--
   min-height: 40px;
   padding: 0 16px;
   font-size: 13.5px;
-  border-radius: 12px;
+  border-radius: 9999px;
 }
 /* Кнопка выглядит на 40 px, а нажимается как 44: зона нажатия шире видимой. */
 .fe-cookie-compact__actions .fe-cookie-accept::after { content: ''; position: absolute; inset: -2px; }
@@ -329,6 +295,10 @@ nav.fe-navbar .fe-navbar-mobile-menu a[aria-current='page'] { background: var(--
 }
 /* Место под плашкой резервируется в подвале (его фон продолжается до края), а не серой полосой под ним. */
 footer.fe-footer { padding-bottom: var(--fe-cookie-h, 0px); }
+/* Телефон: ещё и высота нижней док-панели (64 px + отступ 12), чтобы она не закрывала конец подвала. */
+@media (max-width: 767px) {
+  footer.fe-footer { padding-bottom: calc(var(--fe-cookie-h, 0px) + 76px); }
+}
 
 /* ═══ Подвал: графитовое стекло с золотой линией ═════════════════════════ */
 footer.fe-footer {
@@ -500,5 +470,5 @@ footer.fe-footer .fe-foot-chip--soon { color: var(--color-text-tertiary); }
 
 @media (prefers-reduced-motion: reduce) {
   .z2-nf-planet, .z2-nf-surface, .z2-nf-orbit { animation: none; }
-  nav.fe-navbar a.fe-nav-link::after, .fe-nav-tool, .fe-mega__link, .z2-preview-toggle { transition: none; }
+  nav.fe-navbar a.fe-nav-link::after, nav.fe-navbar .fe-nav-tools-btn::after, .fe-nav-tool, .fe-mega__link, .z2-preview-toggle { transition: none; }
 }

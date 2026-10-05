@@ -473,12 +473,7 @@ main#main-content .fe-ssr-hold { padding-top: 2.75rem; }
 .fe-navbar-mobile-menu .fe-mnav-group:nth-child(3) { animation-delay: 0.08s; }
 .fe-navbar-mobile-menu .fe-mnav-group:nth-child(4) { animation-delay: 0.12s; }
 
-/* ── Шапка: после прокрутки капсула непрозрачная, текст страницы не просвечивает ── */
-nav.fe-navbar.glass-surface {
-  background: color-mix(in srgb, var(--color-surface) 86%, var(--color-obsidian));
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
-}
+/* ── Шапка: стекло капсулы задаёт styles/k3-shell.css (`nav.fe-navbar--glass`). ── */
 
 /* ── Диалог поиска: рамка фокуса по всему полю, а не по голому input ──────── */
 .fe-search-panel [role='combobox']:focus-visible { outline: none; }
@@ -611,10 +606,9 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
   max-width: calc(100vw - 32px);
   padding: 8px 14px;
   border-radius: 999px;
-  background: var(--fe-glass);
-  box-shadow: var(--fe-shadow);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  /* Плашка «Открываем…»: плотное светлое стекло без размытия (блик и тень, рамки нет); бюджет blur в кадре. */
+  background: var(--fe-pop-bg);
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint);
   color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 600;

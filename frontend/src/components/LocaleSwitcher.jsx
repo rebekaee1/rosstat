@@ -4,6 +4,7 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useLocale, useT } from '../i18n';
 import { canonicalLanguageUrl } from '../i18n/locale';
+import '../styles/k3-shell.css';
 
 const LOCALES = [
   { code: 'ru', labelKey: 'nav.locale.ru' },
@@ -17,7 +18,7 @@ function LocaleFlag({ locale, className }) {
       aria-hidden="true"
       className={cn(
         'inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full',
-        'bg-champagne/10 text-[9.5px] font-bold uppercase leading-none tracking-[0.02em] text-text-primary fe-shadow-2',
+        'fe-locale-flag text-[9.5px] font-bold uppercase leading-none tracking-[0.02em] text-text-primary',
         className,
       )}
     >
@@ -94,8 +95,8 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
             const className = cn(
               FOCUS_RING,
               'flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors',
-              'hover:bg-obsidian-lighter/80',
-              active ? 'text-champagne bg-champagne/5' : 'text-text-primary',
+              'fe-locale-item',
+              active ? 'is-active text-champagne' : 'text-text-primary',
             );
             // Production hosts: real alternate URL, identical to hreflang.
             // Click still sets the preference cookie so a geo-redirect does not

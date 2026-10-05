@@ -9,9 +9,11 @@ import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import IndicatorSearch from './IndicatorSearch';
 import LocaleSwitcher from './LocaleSwitcher';
+import BottomSheet from './BottomSheet';
 import Brand from './Brand';
 import { useAuth } from '../context/authContext';
-import { mobileNavGroups, primaryNav, resolveActiveNavId, RATES_TO, WORLD_RATING_TO } from '../lib/navItems';
+import { mobileNavGroups, primaryNav, resolveActiveNavId, OPEN_NAV_MENU_EVENT, RATES_TO, WORLD_RATING_TO } from '../lib/navItems';
+import { useScrollDirection } from '../lib/useScrollDirection';
 import { megaCountries, megaIndicators } from '../lib/megaMenu';
 import { isRussiaSectionPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
@@ -19,6 +21,7 @@ import '../styles/ui-detail-nav-calendar.css';
 import '../styles/shell.css';
 import '../styles/z3-polish.css';
 import '../styles/z2-shell.css';
+import '../styles/k3-shell.css';
 
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();
@@ -76,6 +79,15 @@ function AuthCluster({ mobile = false, onNavigate }) {
   );
 }
 
+/** Иконка пункта меню в стеклянной «грани» 40 px: светлая плитка с бликом и мягкой тенью (рамок нет). */
+function MnavTile({ icon: Icon }) {
+  return (
+    <span className="fe-mnav-tile" aria-hidden="true">
+      <Icon size={18} className="fe-mnav-icon" />
+    </span>
+  );
+}
+
 const MOBILE_ICONS = {
   home: Home,
   globe: Globe2,
@@ -114,7 +126,7 @@ function CountriesMega({ locale, t, onNavigate }) {
             {countries.map((c) => (
               <li key={c.slug}>
                 <Link to={c.to} className={cn(FOCUS_RING, 'fe-mega__link')} onClick={onNavigate}>
-                  <span className="fe-mega__flag" aria-hidden="true">{c.flag}</span>
+                  <span className="fe-mega__flag fe-mega__tile" aria-hidden="true">{c.flag}</span>
                   <span>{c.label}</span>
                 </Link>
               </li>
@@ -127,7 +139,7 @@ function CountriesMega({ locale, t, onNavigate }) {
             {indicators.map((item) => (
               <li key={item.slug}>
                 <Link to={item.to} className={cn(FOCUS_RING, 'fe-mega__link')} onClick={onNavigate}>
-                  <BarChart3 size={16} aria-hidden="true" className="text-champagne-ink" />
+                  <span className="fe-mega__tile fe-mega__tile--gem" aria-hidden="true"><BarChart3 size={16} className="text-champagne-ink" /></span>
                   <span>{t(item.labelKey)}</span>
                 </Link>
               </li>
@@ -150,7 +162,9 @@ function CountriesMega({ locale, t, onNavigate }) {
 export default function Navbar() {
   const t = useT();
   const { locale } = useLocale();
-  const [scrolled, setScrolled] = useState(false);
+  // Прокрутка: шапка плотнее (scrolled), а на телефоне при движении вниз сжимается и уезжает вверх вместе с лентой курсов.
+  const { scrolled, deep, dir } = useScrollDirection();
+  const compact = deep && dir === 'down';
   // Открытые панели помнят адрес, на котором их открыли: при любом переходе (ссылка, «назад», программный переход)
   // адрес меняется, и панель закрывается сама, без отдельных обработчиков на каждой ссылке.
   const { pathname, key: locationKey } = useLocation();
@@ -168,7 +182,6 @@ export default function Navbar() {
   const megaWrapRef = useRef(null);
   const megaTimer = useRef(0);
   const mobileBtnRef = useRef(null);
-  const mobileMenuRef = useRef(null);
   // Служебный раздел /admin/*: fixed-пилюля наезжала на карточки BI при
   // скролле (обход BI 2.1, этап 4а) — показываем шапку только вверху страницы.
   const isAdmin = pathname.startsWith('/admin');
@@ -188,15 +201,12 @@ export default function Navbar() {
     setMegaOpenAt(null);
   }, []);
 
+  // «Ещё» в нижней док-панели телефона открывает то же меню, что и гамбургер.
   useEffect(() => {
-    // Порог маленький: контент подходит под фиксированный навбар уже при
-    // ~30px скролла — при 200 текст страницы просвечивал сквозь слабое
-    // стекло (наложение, скрин руководителя 2026-07-05).
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    const open = () => { setMobileOpenAt(locationKey); setCalcOpenAt(null); setMegaOpenAt(null); };
+    window.addEventListener(OPEN_NAV_MENU_EVENT, open);
+    return () => window.removeEventListener(OPEN_NAV_MENU_EVENT, open);
+  }, [locationKey]);
 
   useEffect(() => () => window.clearTimeout(megaTimer.current), []);
 
@@ -207,7 +217,8 @@ export default function Navbar() {
     const onDoc = (e) => {
       const inCalc = calcWrapRef.current?.contains(e.target);
       const inMega = megaWrapRef.current?.contains(e.target);
-      const inMobile = mobileMenuRef.current?.contains(e.target) || mobileBtnRef.current?.contains(e.target);
+      // Шторка меню рисуется порталом в body, поэтому ищем её по id, а не через ref внутри шапки.
+      const inMobile = document.getElementById('fe-nav-mobile-menu')?.contains(e.target) || mobileBtnRef.current?.contains(e.target);
       if (calcOpen && !inCalc) setCalcOpenAt(null);
       if (megaOpen && !inMega) setMegaOpenAt(null);
       if (mobileOpen && !inMobile) setMobileOpenAt(null);
@@ -307,7 +318,7 @@ export default function Navbar() {
 
   return (
     <>
-      {menuOpen && (
+      {calcOpen && (
         <div
           className="fe-nav-scrim fe-reveal fixed inset-0 z-[80] [--fe-duration:0.2s] [--fe-rise:0px]"
           aria-hidden
@@ -318,17 +329,14 @@ export default function Navbar() {
         ref={navRef}
         style={{ '--fe-duration': '0.3s', '--fe-rise': '-8px' }}
         data-scrolled={scrolled ? 'true' : 'false'}
+        data-compact={compact && !menuOpen ? 'true' : 'false'}
         className={cn(
           // .fe-reveal: шапка видна сразу (в SSR и без JS), лишь мягко опускается на 8px.
-          'fe-reveal fe-reveal--free fe-navbar fixed top-9 inset-x-0 mx-auto z-[100]',
-          // Не transition-all: иначе transition тянет backdrop-filter и в
-          // части движков blur на время/после смены soft↔surface пропадает.
-          'transition-[transform,opacity,background-color,box-shadow,border-color] duration-500 ease-out',
+          // Стекло капсулы (L1, плотнее при прокрутке) и тень задаёт styles/k3-shell.css; движутся только transform и opacity.
+          'fe-reveal fe-reveal--free fe-navbar fe-navbar--glass fixed top-9 inset-x-0 mx-auto z-[100]',
+          'transition-[transform,opacity] duration-300 ease-out',
           'rounded-[1.5rem] px-3 sm:px-5 lg:px-6 py-3 flex items-center gap-2 sm:gap-3',
           'max-w-[1440px] w-[calc(100%-2rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))]',
-          scrolled
-            ? 'glass-surface shadow-lg shadow-black/5'
-            : 'glass-surface-soft',
           isAdmin && scrolled && !menuOpen && '-translate-y-24 opacity-0 pointer-events-none'
         )}
       >
@@ -401,11 +409,10 @@ export default function Navbar() {
       <div className="hidden xl:flex items-center shrink-0 gap-2 xl:gap-3">
         <div className="fe-nav-search"><IndicatorSearch variant="pill" /></div>
         <LocaleSwitcher />
-        <div className="h-5 w-px bg-border-subtle" aria-hidden />
         <AuthCluster />
       </div>
 
-      <div className="xl:hidden ml-auto flex items-center gap-1.5">
+      <div className="fe-nav-cluster xl:hidden ml-auto flex items-center">
         <IndicatorSearch className="fe-nav-round" />
         <LocaleSwitcher className="fe-nav-round" />
         <button
@@ -425,100 +432,100 @@ export default function Navbar() {
       </div>
 
 
-      {mobileOpen && (
-        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,600px)] rounded-2xl shadow-2xl xl:hidden fe-glass-pop">
-          <div className="fe-mnav-scroll">
-            <div className="fe-mnav-columns">
-              {mobileGroups.map((group) => {
-                const renderLink = (item, nested = false) => {
-                  const Icon = MOBILE_ICONS[item.icon];
-                  const isActive = mobileActiveId === item.id;
-                  return (
-                    <Link
-                      key={`m-${item.id}`}
-                      to={item.to}
-                      className={cn(navItemClass(isActive), 'fe-mnav-link', nested && 'fe-mnav-link--nested')}
-                      onClick={closeAll}
-                      aria-current={isActive ? 'page' : undefined}
-                    >
-                      {Icon ? <Icon size={18} aria-hidden="true" className="fe-mnav-icon" /> : null}
-                      <span className="fe-mnav-text">
-                        <span className="fe-mnav-label">{t(item.labelKey)}</span>
-                        {item.hintKey ? <span className="fe-mnav-hint">{t(item.hintKey)}</span> : null}
-                      </span>
-                    </Link>
-                  );
-                };
-                if (group.collapsible) {
-                  const GroupIcon = MOBILE_ICONS[group.icon];
-                  const open = openGroups[group.id] ?? isRussiaSectionPath(pathname);
-                  const panelId = `fe-nav-group-${group.id}`;
-                  return (
-                    <div key={group.id} className="fe-mnav-group fe-mnav-group--collapsible">
-                      <button
-                        type="button"
-                        className={cn(navItemClass(false), 'fe-mnav-link fe-mnav-toggle w-full text-left')}
-                        aria-expanded={open}
-                        aria-controls={panelId}
-                        onClick={() => setOpenGroups((prev) => ({ ...prev, [group.id]: !open }))}
-                      >
-                        {GroupIcon ? <GroupIcon size={18} aria-hidden="true" className="fe-mnav-icon" /> : null}
-                        <span className="fe-mnav-text">
-                          <span className="fe-mnav-label">{t(group.titleKey)}</span>
-                          {group.hintKey ? <span className="fe-mnav-hint">{t(group.hintKey)}</span> : null}
-                        </span>
-                        <ChevronDown size={16} aria-hidden="true" className={cn('fe-mnav-chevron', open && 'is-open')} />
-                      </button>
-                      {open ? (
-                        <div id={panelId} className="fe-mnav-sub">
-                          {group.items.map((item) => renderLink(item, true))}
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                }
-                return (
-                  <div key={group.id} className="fe-mnav-group">
-                    {group.titleKey ? <p className="fe-mnav-title">{t(group.titleKey)}</p> : null}
-                    {group.items.map((item) => renderLink(item))}
-                  </div>
-                );
-              })}
-              <div className="fe-mnav-group">
-                <p className="fe-mnav-title">{t('w6g.nav.tools')}</p>
-                {CALCULATOR_ITEMS.map((c) => {
-                  const CalcIcon = c.icon;
-                  return (
-                    <NavLink key={c.to} to={c.to} end className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
-                      <CalcIcon size={18} aria-hidden="true" className="fe-mnav-icon" />
-                      <span className="fe-mnav-text"><span className="fe-mnav-label">{t(c.labelKey)}</span></span>
-                    </NavLink>
-                  );
-                })}
-              </div>
-              <div className="fe-mnav-group">
-                <NavLink to="/about" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
-                  <Info size={18} aria-hidden="true" className="fe-mnav-icon" />
-                  <span className="fe-mnav-text"><span className="fe-mnav-label">{t('nav.about')}</span></span>
-                </NavLink>
-                <a
-                  href="mailto:rebeka.ee@yandex.ru"
-                  className={cn(navItemClass(false), 'fe-mnav-link')}
-                  onClick={() => { track(events.CONTACT_EMAIL); closeAll(); }}
+    </nav>
+
+      {/* Меню телефона и планшета: шторка снизу порталом в body (шапка с blur не должна быть её контейнером). */}
+      <BottomSheet
+        open={mobileOpen}
+        onClose={closeAll}
+        id="fe-nav-mobile-menu"
+        ariaLabel={t('k3.sheet.menuAria')}
+        className="fe-navbar-mobile-menu"
+        bodyClassName="fe-mnav-scroll"
+        footerClassName="fe-mnav-foot"
+        footer={<AuthCluster mobile onNavigate={closeAll} />}
+      >
+        <div className="fe-mnav-columns">
+          {mobileGroups.map((group) => {
+            const renderLink = (item, nested = false) => {
+              const Icon = MOBILE_ICONS[item.icon];
+              const isActive = mobileActiveId === item.id;
+              return (
+                <Link
+                  key={`m-${item.id}`}
+                  to={item.to}
+                  className={cn(navItemClass(isActive), 'fe-mnav-link', nested && 'fe-mnav-link--nested')}
+                  onClick={closeAll}
+                  aria-current={isActive ? 'page' : undefined}
                 >
-                  <Mail size={18} aria-hidden="true" className="fe-mnav-icon" />
-                  <span className="fe-mnav-text"><span className="fe-mnav-label">{t('shell.footer.contact')}</span></span>
-                </a>
+                  {Icon ? <MnavTile icon={Icon} /> : null}
+                  <span className="fe-mnav-text">
+                    <span className="fe-mnav-label">{t(item.labelKey)}</span>
+                    {item.hintKey ? <span className="fe-mnav-hint">{t(item.hintKey)}</span> : null}
+                  </span>
+                </Link>
+              );
+            };
+            if (group.collapsible) {
+              const GroupIcon = MOBILE_ICONS[group.icon];
+              const open = openGroups[group.id] ?? isRussiaSectionPath(pathname);
+              const panelId = `fe-nav-group-${group.id}`;
+              return (
+                <div key={group.id} className="fe-mnav-group fe-mnav-group--collapsible">
+                  <button
+                    type="button"
+                    className={cn(navItemClass(false), 'fe-mnav-link fe-mnav-toggle w-full text-left')}
+                    aria-expanded={open}
+                    aria-controls={panelId}
+                    onClick={() => setOpenGroups((prev) => ({ ...prev, [group.id]: !open }))}
+                  >
+                    {GroupIcon ? <MnavTile icon={GroupIcon} /> : null}
+                    <span className="fe-mnav-text">
+                      <span className="fe-mnav-label">{t(group.titleKey)}</span>
+                      {group.hintKey ? <span className="fe-mnav-hint">{t(group.hintKey)}</span> : null}
+                    </span>
+                    <ChevronDown size={16} aria-hidden="true" className={cn('fe-mnav-chevron', open && 'is-open')} />
+                  </button>
+                  {open ? (
+                    <div id={panelId} className="fe-mnav-sub">
+                      {group.items.map((item) => renderLink(item, true))}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            }
+            return (
+              <div key={group.id} className="fe-mnav-group">
+                {group.titleKey ? <p className="fe-mnav-title">{t(group.titleKey)}</p> : null}
+                {group.items.map((item) => renderLink(item))}
               </div>
-            </div>
+            );
+          })}
+          <div className="fe-mnav-group">
+            <p className="fe-mnav-title">{t('w6g.nav.tools')}</p>
+            {CALCULATOR_ITEMS.map((c) => (
+              <NavLink key={c.to} to={c.to} end className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
+                <MnavTile icon={c.icon} />
+                <span className="fe-mnav-text"><span className="fe-mnav-label">{t(c.labelKey)}</span></span>
+              </NavLink>
+            ))}
           </div>
-          {/* Вход и регистрация закреплены внизу: видны сразу, не после прокрутки списка. */}
-          <div className="fe-mnav-foot">
-            <AuthCluster mobile onNavigate={closeAll} />
+          <div className="fe-mnav-group">
+            <NavLink to="/about" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
+              <MnavTile icon={Info} />
+              <span className="fe-mnav-text"><span className="fe-mnav-label">{t('nav.about')}</span></span>
+            </NavLink>
+            <a
+              href="mailto:rebeka.ee@yandex.ru"
+              className={cn(navItemClass(false), 'fe-mnav-link')}
+              onClick={() => { track(events.CONTACT_EMAIL); closeAll(); }}
+            >
+              <MnavTile icon={Mail} />
+              <span className="fe-mnav-text"><span className="fe-mnav-label">{t('shell.footer.contact')}</span></span>
+            </a>
           </div>
         </div>
-      )}
-    </nav>
+      </BottomSheet>
     </>
   );
 }
