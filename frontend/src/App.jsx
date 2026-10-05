@@ -21,6 +21,7 @@ import PwaInstallPrompt from './components/PwaInstallPrompt';
 import RouteFallback from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
+import LightScene from './components/LightScene';
 import { cleanPathWithSearch } from './lib/cleanUrl';
 import { calculatorAliasTarget } from './lib/calculatorAlias';
 import { behaviorInit, behaviorRouteChange } from './lib/behavior';
@@ -233,6 +234,7 @@ function AppRoutes() {
     <LocaleProvider>
     <AuthProvider>
       <SkipLink />
+      <LightScene />
       <LocalePreviewSync />
       <LocalePreviewBanner />
       <ScrollToTop />
