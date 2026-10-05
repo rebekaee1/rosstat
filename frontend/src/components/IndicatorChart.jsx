@@ -27,6 +27,7 @@ import ChipGroup from './ChipGroup';
 import '../styles/chart-controls.css';
 import '../styles/z4-indicator.css';
 import '../styles/k4-charts.css';
+import '../lib/glassChartDefs';
 
 // Основная линия: «стеклянная лента» 3 px (K4.1). Сплошной цвет нужен подсказке, легенде и шарику; сама линия — градиент ribbon.
 const LINE = CHART_THEME.gold ?? CHART_THEME.line ?? '#B08A3E';
@@ -854,7 +855,7 @@ export default function IndicatorChart({
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={visualData} margin={{ top: 38, right: 14, bottom: 16, left: 0 }}>
             <defs>
-              <ChartGlassDefs ids={glass} forecastColor={FORECAST} />
+              <ChartGlassDefs ids={glass} forecastColor={FORECAST} width={Math.max(plotWidth, 320)} />
             </defs>
 
             {/* Сетка без пунктира: полосы 4,5 % чередуются (K4.1), линии едва заметны. */}

@@ -52,4 +52,18 @@ describe('ChartGlassDefs', () => {
     const prism = container.querySelector(`[id="${ids.prism}"]`);
     expect(prism.getAttribute('x2')).toBe('1');
   });
+
+  it('с известной шириной градиенты ленты привязаны к графику (userSpaceOnUse): плоская линия не пропадает', () => {
+    const ids = {
+      ribbon: 'r', sapphire: 's', area: 'a', areaSapphire: 'as', forecast: 'f', prism: 'p', bar: 'b', barForecast: 'bf', bead: 'bd',
+    };
+    const { container } = render(<svg><defs><ChartGlassDefs ids={ids} width={640} /></defs></svg>);
+    for (const id of ['r', 's', 'f']) {
+      const gradient = container.querySelector(`[id="${id}"]`);
+      expect(gradient.getAttribute('gradientUnits')).toBe('userSpaceOnUse');
+      expect(gradient.getAttribute('x2')).toBe('640');
+    }
+    // Вертикальная заливка под линией остаётся в долях рамки: у залитой фигуры высота есть всегда.
+    expect(container.querySelector('[id="a"]').getAttribute('gradientUnits')).toBeNull();
+  });
 });

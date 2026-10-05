@@ -75,6 +75,7 @@ import '../styles/regions-w4.css';
 import '../styles/w6-g.css';
 import '../styles/z7-compare.css';
 import '../styles/k5-pages.css';
+import '../styles/k4-charts.css';
 
 /** Высота окна браузера (px); 0 до первого измерения и без window. */
 function useViewportHeight() {
@@ -2389,7 +2390,7 @@ export default function ComparePage() {
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={cn(
-                'fe-compare-plot relative rounded-2xl',
+                'fe-compare-plot k4-glass-plot relative rounded-2xl',
                 maxPan > 0 && (isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'),
               )}
               style={{ touchAction: 'pan-y' }}

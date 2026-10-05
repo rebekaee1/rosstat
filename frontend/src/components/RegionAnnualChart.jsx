@@ -243,7 +243,7 @@ export default function RegionAnnualChart({
         <ResponsiveContainer>
           <ComposedChart data={plotData} margin={chartMargin}>
             <defs>
-              <ChartGlassDefs ids={glass} />
+              <ChartGlassDefs ids={glass} width={Math.max(plotWidth, 320)} />
             </defs>
             <CartesianGrid {...GRID_PROPS} />
             <XAxis

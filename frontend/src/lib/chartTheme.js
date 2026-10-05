@@ -34,8 +34,8 @@ export const CHART_THEME = Object.freeze({
   font: 'Manrope, system-ui, sans-serif',
   // Оси читаются: 12 px (было 11).
   tickSize: 12,
-  // Чередующиеся полосы сетки (4,5 % тёплого тона) вместо пунктирных линий.
-  gridBand: 'rgba(88,74,46,0.045)',
+  // Чередующиеся полосы сетки (3 % тёплого тона, края размыты в k4-charts.css) вместо пунктирных линий.
+  gridBand: 'rgba(88,74,46,0.03)',
   // До 10 различимых цветов для рядов «Сравнения»; первый — золото, второй — графит.
   series: Object.freeze([
     '#B08A3E', '#202A3C', '#5E86A8', '#4F8A7B', '#8E6FA0',
@@ -110,11 +110,11 @@ export function axisTick(overrides = {}) {
 }
 
 /**
- * Общие свойства `<CartesianGrid>`: без пунктира. Горизонтальные полосы чередуются (4,5 % тёплого тона и пусто),
+ * Общие свойства `<CartesianGrid>`: без пунктира. Горизонтальные полосы чередуются (3 % тёплого тона и пусто),
  * сами линии почти не видны — читается ритм, а не решётка.
  */
 export const GRID_PROPS = Object.freeze({
-  stroke: 'rgba(32,42,60,0.04)',
+  stroke: 'rgba(32,42,60,0.025)',
   vertical: false,
   horizontalFill: Object.freeze([CHART_THEME.gridBand, 'rgba(88,74,46,0)']),
 });
