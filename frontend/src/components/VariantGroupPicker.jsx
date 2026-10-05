@@ -59,6 +59,7 @@ export default function VariantGroupPicker({
   const body = (
     <>
       {useMobileSelect ? (
+        <div className="lg:hidden">
         <MobileNavSelect
           label={groupLabel}
           value={currentCode}
@@ -72,6 +73,7 @@ export default function VariantGroupPicker({
           }}
           className="mb-0"
         />
+        </div>
       ) : null}
 
       <div className={useMobileSelect ? 'hidden lg:block' : undefined}>

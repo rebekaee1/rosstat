@@ -337,7 +337,6 @@
 .fe-z8-chart__plot { position: relative; flex: 1 1 auto; min-height: 250px; }
 .fe-z8-chart__abs { position: absolute; inset: 0; }
 .fe-z8-chart__skeleton { width: 100%; height: 320px; border-radius: 16px; }
-.fe-z8-chart .recharts-wrapper { max-width: 100%; }
 .fe-z8-tip { padding: 10px 14px; border: 1px solid rgba(173, 138, 72, 0.35); border-radius: 12px; box-shadow: 0 14px 30px -18px rgba(32, 42, 60, 0.55); }
 .fe-z8-tip__date { margin: 0 0 2px; font-size: 12px; color: var(--color-text-secondary); }
 .fe-z8-tip__val { margin: 0; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--z8-gold-ink); }
