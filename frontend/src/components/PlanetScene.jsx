@@ -42,9 +42,10 @@ function valueFor(collection, code) {
 
 const ATLAS_WIDTH = 2048;
 const ATLAS_DETAIL_WIDTH = 4096;
-// A ring smaller than this (in atlas pixels at 2048 wide) gets a fill but no outline: at that size
-// a graphite line would only be a black speck (islands of the Caribbean, lakes, atolls).
-const MIN_OUTLINE_SPAN = 3;
+// A ring smaller than this (in atlas pixels at 2048 wide, about 1.4 degrees) gets a fill but no outline:
+// the border line is as wide as such a ring, so it would be a black speck (Greenland fjord islets,
+// Azov and Caspian islands, lakes, atolls). The threshold is in degrees, so it holds for the 4096 atlas too.
+const MIN_OUTLINE_SPAN = 8;
 
 /** Outline only the rings big enough to carry it; the fill keeps every tiny island. */
 function tracePath(path, context, geometry, minSpanDegrees) {
@@ -64,7 +65,7 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WID
     .scale(canvas.width / (2 * Math.PI))
     .translate([canvas.width / 2, canvas.height / 2]);
   const path = geoPath(projection, context);
-  const minSpanDegrees = MIN_OUTLINE_SPAN * 360 / width;
+  const minSpanDegrees = MIN_OUTLINE_SPAN * 360 / ATLAS_WIDTH;
   context.lineJoin = 'round';
   context.lineCap = 'round';
   for (const entry of entries) {

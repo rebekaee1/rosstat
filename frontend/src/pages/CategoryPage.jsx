@@ -133,6 +133,10 @@ export default function CategoryPage({ fixedSlug }) {
   );
   const filtered = allIndicators.filter(isIndicatorListed);
   const commonPhrase = commonTilePhrase(filtered, t, locale);
+  // Короткие списки ежедневных котировок (курсы, крипто) — компактными строками с мини-графиком,
+  // а не стопкой больших карточек.
+  const compactRows = filtered.length >= 3 && filtered.length <= 16
+    && filtered.filter((ind) => ind.frequency === 'daily').length * 2 >= filtered.length;
 
   return (
     <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
@@ -198,19 +202,39 @@ export default function CategoryPage({ fixedSlug }) {
             {commonPhrase && (
               <p className="fe-cat-asof">{t('x2.cat.asOf', { phrase: commonPhrase })}</p>
             )}
-            <div className="fe-cat-grid">
-            {filtered.map((ind, i) => (
-              <IndicatorTile
-                commonPhrase={commonPhrase}
-                spark={ind.frequency === 'daily' && filtered.length <= 14}
-                key={ind.code}
-                indicator={ind}
-                delay={i}
-                displayOverride={cpiInflationMap[ind.code]}
-                surface="category"
-              />
-            ))}
-            </div>
+            {compactRows ? (
+              <>
+                {!commonPhrase && <p className="fe-cat-asof">{t('y2.cat.rowsNote')}</p>}
+                <div className="fe-trow-list">
+                  {filtered.map((ind, i) => (
+                    <IndicatorTile
+                      row
+                      commonPhrase={commonPhrase}
+                      spark={ind.frequency === 'daily'}
+                      key={ind.code}
+                      indicator={ind}
+                      delay={i}
+                      displayOverride={cpiInflationMap[ind.code]}
+                      surface="category"
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="fe-cat-grid">
+                {filtered.map((ind, i) => (
+                  <IndicatorTile
+                    commonPhrase={commonPhrase}
+                    spark={ind.frequency === 'daily' && filtered.length <= 14}
+                    key={ind.code}
+                    indicator={ind}
+                    delay={i}
+                    displayOverride={cpiInflationMap[ind.code]}
+                    surface="category"
+                  />
+                ))}
+              </div>
+            )}
           </>
         )}
       </section>

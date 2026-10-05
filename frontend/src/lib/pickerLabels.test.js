@@ -17,8 +17,15 @@ describe('pickerLabel', () => {
     expect(pickerLabel('нет официального ряда', 'ru')).not.toMatch(/ряд/);
   });
 
-  it('сам текст без сокращений не трогает', () => {
-    expect(pickerLabel('На конец периода', 'ru')).toBe('На конец периода');
+  it('не оставляет слово «период» в подписях режимов', () => {
+    expect(pickerLabel('На конец периода', 'ru')).toBe('На конец');
+    expect(pickerLabel('Средняя за период', 'ru')).toBe('В среднем');
+    expect(pickerLabel('К прошлому периоду', 'ru')).toBe('К прошлому значению');
+    expect(pickerLabel('К прошлому периоду (г/г)', 'ru')).not.toMatch(/период/);
+    expect(pickerLabel('За период', 'ru')).not.toMatch(/период/);
+  });
+
+  it('текст без сокращений не трогает', () => {
     expect(pickerLabel('По месяцам', 'ru')).toBe('По месяцам');
   });
 

@@ -44,6 +44,10 @@ function formatTodayDate(d, locale) {
 
 const CBR_RATE_CODES = new Set(['usd-rub', 'eur-rub', 'cny-rub']);
 
+// Сколько последних значений брать для мини-графика. Ключевая ставка меняется раз в 1–2 месяца:
+// за 30 дней это ровная линия-«заплатка», поэтому показываем около года.
+const SPARK_LIMIT = { 'key-rate': 365 };
+
 function TodayCard({ code, index }) {
   const t = useT();
   const { locale } = useLocale();
@@ -52,7 +56,7 @@ function TodayCard({ code, index }) {
   const { data: indicator } = useIndicator(seriesCode);
   const {
     data: rows, isLoading, isError, refetch, isFetching,
-  } = useIndicatorData(seriesCode, { limit: 30 });
+  } = useIndicatorData(seriesCode, { limit: SPARK_LIMIT[code] || 30 });
   const query = todayLabel(code, t);
 
   const series = rows?.data || [];
@@ -73,7 +77,9 @@ function TodayCard({ code, index }) {
   const sparkValues = series.map((row) => Number(row.value)).filter(Number.isFinite);
   // Цвет графика — по тому же изменению, что показывает значок рядом: зелёный график при красной дельте сбивает с толку.
   const trend = change == null || Math.abs(change) < 1e-12 ? 'flat' : change > 0 ? 'up' : 'down';
-  const sentiment = polarity === 'up-good' ? 'positive' : polarity === 'up-bad' ? 'inverse' : 'neutral';
+  // Ровный график без оценки «хорошо/плохо»: золотая линия, а не бледно-серая.
+  const sentiment = trend === 'flat' ? 'neutral'
+    : polarity === 'up-good' ? 'positive' : polarity === 'up-bad' ? 'inverse' : 'neutral';
 
   if (isError && !last) {
     return (

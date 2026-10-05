@@ -3,6 +3,7 @@ import ChipGroup, { OverflowChipGroup } from './ChipGroup';
 import { PickerCard, PickerLabel, PickerHint } from './PickerParts';
 import { useT } from '../i18n';
 import { pickerHintKey } from '../lib/pickerLabels';
+import { modeSummaryText, useViewModeSummary } from './viewModesContext';
 
 /**
  * Двухуровневый переключатель показа (общая отрисовка для всех семейных пикеров).
@@ -28,6 +29,11 @@ export default function ModeGroupsPicker({
   const activeGroup = groups.find((g) => g.id === activeGroupId);
   const hintKey = pickerHintKey(activeGroup?.rawLabel);
   const visibleSub = subModes.filter((m) => !m.disabled);
+  const currentSub = visibleSub.length > 1 ? visibleSub.find((m) => m.mode === currentMode) : null;
+  useViewModeSummary(
+    'mode', 20,
+    modeSummaryText(activeGroup?.label, currentSub?.label),
+  );
 
   const body = (
     <>

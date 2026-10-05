@@ -4,6 +4,7 @@ import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import { pickerLabel } from '../lib/pickerLabels';
 import { PickerCard, PickerLabel } from './PickerParts';
+import { useViewModeSummary } from './viewModesContext';
 
 /**
  * Generic in-page view-mode switcher used on indicator pages where a
@@ -20,6 +21,8 @@ export default function ViewModePicker({
   const t = useT();
   const { locale } = useLocale();
   const sectionTitle = title || t('w3.picker.showAs');
+  const currentItem = modes.find((item) => item.mode === currentMode);
+  useViewModeSummary('mode', 20, currentItem ? pickerLabel(currentItem.label, locale) : '');
   return (
     <PickerCard>
       <PickerLabel>{pickerLabel(sectionTitle, locale) || sectionTitle}</PickerLabel>

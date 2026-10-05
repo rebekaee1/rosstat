@@ -3,6 +3,7 @@ import ChipGroup, { ChipLink } from './ChipGroup';
 import { useT } from '../i18n';
 import MobileNavSelect from './MobileNavSelect';
 import { PickerCard, PickerLabel } from './PickerParts';
+import { useViewModeSummary } from './viewModesContext';
 
 /**
  * Внутрисемейный переключатель карточек («Все товары»/«Продовольственные»/...).
@@ -23,6 +24,11 @@ export default function VariantGroupPicker({
   const t = useT();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const currentItem = group?.codes?.find((item) => item.code === currentCode);
+  useViewModeSummary(
+    'variant', 10,
+    currentItem ? (currentItem.labelKey ? t(currentItem.labelKey) : currentItem.label) : '',
+  );
   if (!group) return null;
   const qs = searchParams.toString();
   const suffix = qs ? `?${qs}` : '';

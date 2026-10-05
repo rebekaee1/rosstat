@@ -5,6 +5,7 @@ import { resolveViewMode } from '../lib/viewModeEngine';
 import IndicatorDetailHeader from './IndicatorDetailHeader';
 import VariantGroupPicker from './VariantGroupPicker';
 import GenericViewModePicker from './GenericViewModePicker';
+import { ViewModesPanel } from './ViewModesPanel';
 import IndicatorTelemetryGrid from './IndicatorTelemetryGrid';
 import IndicatorChartSection from './IndicatorChartSection';
 import IndicatorMethodologyPanel from './IndicatorMethodologyPanel';
@@ -154,16 +155,18 @@ export default function GenericIndicatorView({
         loading={loadingInd || isLoading}
       />
 
-      {variantGroup ? (
-        <VariantGroupPicker group={variantGroup} currentCode={code} />
-      ) : null}
+      <ViewModesPanel>
+        {variantGroup ? (
+          <VariantGroupPicker group={variantGroup} currentCode={code} />
+        ) : null}
 
-      <GenericViewModePicker
-        family={family}
-        currentMode={safeMode}
-        onChange={setViewMode}
-        trackContext={{ code, category: indicator?.category }}
-      />
+        <GenericViewModePicker
+          family={family}
+          currentMode={safeMode}
+          onChange={setViewMode}
+          trackContext={{ code, category: indicator?.category }}
+        />
+      </ViewModesPanel>
 
       {isError && (dataPoints?.length ?? 0) === 0 && (
         <ApiRetryBanner className="mb-6" onRetry={() => refetch()} isFetching={isFetching}>

@@ -34,6 +34,7 @@ import { splitUnit } from '../lib/countryFlag';
 import { downloadCSV, downloadExcel } from '../lib/excel';
 import { track, events } from '../lib/track';
 import WorldViewModePicker from '../components/WorldViewModePicker';
+import { ViewModesPanel } from '../components/ViewModesPanel';
 import WorldChartSection from '../components/WorldChartSection';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
@@ -614,22 +615,24 @@ export default function WorldIndicatorPage() {
             )}
           </section>
 
-          {variantGroup && (
-            <VariantGroupPicker
-              group={variantGroup}
-              currentCode={code}
-              basePath={`${countryPath(slug)}/indicator`}
-            />
-          )}
+          <ViewModesPanel>
+            {variantGroup && (
+              <VariantGroupPicker
+                group={variantGroup}
+                currentCode={code}
+                basePath={`${countryPath(slug)}/indicator`}
+              />
+            )}
 
-          {modes.length > 0 && (
-            <WorldViewModePicker
-              modes={modes}
-              currentMode={activeMode}
-              onChange={setMode}
-              trackContext={{ code, category: indicator.category }}
-            />
-          )}
+            {modes.length > 0 && (
+              <WorldViewModePicker
+                modes={modes}
+                currentMode={activeMode}
+                onChange={setMode}
+                trackContext={{ code, category: indicator.category }}
+              />
+            )}
+          </ViewModesPanel>
 
           {dataQ.isError && (
             <ApiRetryBanner onRetry={dataQ.refetch} isFetching={dataQ.isFetching} className="mb-6">

@@ -1,0 +1,114 @@
+/*
+ * Волна 4, область Y2: панель «Вид» над графиком показателя (свёрнута на телефоне), карточки «Сегодня»,
+ * строки валют, подпись обновления. Токены — из index.css; радиусы: карточки 24 px, контролы 12 px.
+ */
+
+/* ── Панель «Вид»: одна строка вместо 300–700 px переключателей ─────────────── */
+.fe-vm-panel { min-width: 0; }
+.fe-vm-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  margin-bottom: 16px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(32, 42, 60, 0.05);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+.fe-vm-toggle:hover { border-color: var(--color-border-champagne); }
+.fe-vm-toggle__main { display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; gap: 1px; }
+.fe-vm-toggle__label { color: var(--color-text-secondary); font-size: 12px; font-weight: 600; line-height: 1.3; }
+.fe-vm-toggle__sum {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fe-vm-toggle__act {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-champagne-ink);
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.fe-vm-toggle__chev { transition: transform 0.2s ease; }
+.fe-vm-toggle[aria-expanded='true'] { margin-bottom: 12px; border-color: var(--color-border-champagne); }
+.fe-vm-toggle[aria-expanded='true'] .fe-vm-toggle__chev { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .fe-vm-toggle__chev { transition: none; } }
+
+@media (max-width: 767.98px) {
+  .fe-vm-panel[data-collapsible='true'][data-open='false'] > .fe-vm-body { display: none; }
+}
+@media (min-width: 768px) {
+  .fe-vm-toggle { display: none; }
+}
+
+/* ── Под графиком: сравнение стран и пояснения идут после него, а не перед ───── */
+.fe-chart-after { margin-top: 16px; }
+.fe-chart-after:empty { display: none; }
+
+/* ── Список котировок: компактные строки вместо стопки больших карточек ───────── */
+.fe-trow-list {
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(32, 42, 60, 0.05);
+}
+@media (min-width: 768px) { .fe-trow-list { max-width: 52rem; } }
+.fe-trow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px auto;
+  align-items: center;
+  gap: 4px 12px;
+  min-height: 64px;
+  padding: 10px 16px;
+  color: var(--color-text-primary);
+  transition: background-color 0.15s;
+}
+.fe-trow + .fe-trow { border-top: 1px solid var(--color-border-subtle); }
+.fe-trow:not(.fe-trow--pending):hover { background: var(--color-surface-hover); }
+.fe-trow--pending { opacity: 0.55; pointer-events: none; }
+.fe-trow__main { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.fe-trow__title {
+  margin: 0;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.fe-trow:hover .fe-trow__title { color: var(--color-champagne-ink); }
+.fe-trow__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; font-size: 13px; line-height: 1.4; }
+.fe-trow__vs, .fe-trow__date { color: var(--color-text-secondary); font-size: 13px; }
+.fe-trow__spark { min-width: 0; }
+.fe-trow__val { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.fe-trow__num {
+  color: var(--color-text-primary);
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.fe-trow__unit { color: var(--color-text-secondary); font-size: 12px; font-weight: 500; line-height: 1.3; }
+@media (min-width: 640px) {
+  .fe-trow { grid-template-columns: minmax(0, 1fr) 140px minmax(96px, auto); gap: 4px 20px; padding: 12px 20px; }
+}

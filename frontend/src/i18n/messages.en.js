@@ -1042,8 +1042,8 @@ export default {
   'world.chart.forecastGate': 'There is no forecast for this indicator yet: there is not enough data.',
   'world.chart.forecastHighFreq':
     'Forecast is not published for daily and weekly series.',
-  'world.chart.forecastPassed': 'The platform\'s forecast: on past data it proved more accurate than a simple benchmark.',
-  'world.chart.forecastAdvisory': 'The platform\'s forecast: on past data it did not beat a simple benchmark, so read it as a rough trend.',
+  'world.chart.forecastPassed': 'The forecast was tested on past data: it proved more accurate than simply repeating the past.',
+  'world.chart.forecastAdvisory': 'The forecast was not more accurate than simply repeating the past, so read it as a rough trend.',
   'world.chart.forecastDerived':
     'The forecast at this frequency is calculated from the source-series forecast for complete calendar periods.',
   'world.chart.forecastStarts': 'The forecast starts after the last official observation.',
@@ -2089,7 +2089,7 @@ export default {
   'homehero.stat.history.label': 'first year of data',
   'homehero.stat.since': '',
   'homehero.stat.unknown': 'no data',
-  'homehero.trust': 'Data come only from official sources',
+  'homehero.trust': 'All data comes from official sources',
   'homehero.popular.title': 'Popular countries',
   'homehero.popular.all': 'All countries',
   'homehero.catalog.lead': '{n} {word} in the catalogue. Open a region and pick a country.',
@@ -2505,4 +2505,10 @@ export default {
   'x4.meth.limits.title': 'Good to know',
   'x4.meth.limits.body': 'A forecast rests on the past and may differ from reality. It is reference information, not investment advice.',
   'x4.cal.daily': 'Daily rates and quotes: {n}',
+
+  // ── Wave 4, Y2: view panel, quotes list ──
+  'y2.view.label': 'Chart view',
+  'y2.view.change': 'Change view',
+  'y2.view.close': 'Collapse',
+  'y2.cat.rowsNote': 'Each rate has its own date: sources publish at different times.',
 };

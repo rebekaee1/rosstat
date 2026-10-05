@@ -562,6 +562,14 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
 .fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, var(--color-warn-surface), transparent); }
 .fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, var(--color-warn-surface), transparent); }
 .fe-ticker__fade[data-on='true'] { opacity: 1; }
+/* На телефоне правый край ленты всегда гаснет (справа 32 px запаса, поэтому последний курс при прокрутке виден целиком):
+   курс не «обрезан», а уходит в тень, даже пока скрипт не успел измерить ширину. */
+@media (max-width: 767px) {
+  .fe-ticker__scroll {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
+  }
+}
 
 /* ── Подвал: ссылки темнее, «Реквизиты» того же размера и со стрелкой ──────── */
 .fe-foot-list { color: color-mix(in srgb, var(--color-text-primary) 78%, var(--color-text-secondary)); }

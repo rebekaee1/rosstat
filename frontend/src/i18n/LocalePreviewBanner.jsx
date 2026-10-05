@@ -8,7 +8,7 @@ export default function LocalePreviewBanner() {
   return (
     <div
       role="status"
-      className="sticky top-0 z-[60] border-b border-champagne/30 bg-obsidian px-4 py-2 text-center text-xs text-text-secondary"
+      className="fixed bottom-2 left-1/2 z-[60] w-max max-w-[calc(100%-1rem)] -translate-x-1/2 rounded-full border border-champagne/30 bg-obsidian px-4 py-1.5 text-center text-xs text-text-secondary shadow-sm"
     >
       <span className="mr-3">{t('preview.banner')}</span>
       <button
