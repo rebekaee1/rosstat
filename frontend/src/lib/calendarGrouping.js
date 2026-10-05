@@ -91,3 +91,41 @@ export function groupSimilarEvents(events) {
     return { ...arr[0], indicators };
   });
 }
+
+/**
+ * Повторяющиеся каждый день события («Ставка RUONIA», курсы ЦБ) не должны занимать место в каждом дне
+ * месяца: их выносят в одну строку «Каждый рабочий день». Повтор = одно и то же название и источник
+ * минимум в `minDays` разных датах месяца (недельные публикации сюда не попадают).
+ *
+ * @param {Array<object>} monthEvents — все события месяца (для подсчёта повторов).
+ * @returns {{ keys: Set<string>, items: Array<{key:string,title:string,time:string,source:string,days:number}>, everyDay: boolean }}
+ */
+export function findDailyRecurring(monthEvents, { minDays = 8 } = {}) {
+  const byKey = new Map();
+  for (const ev of Array.isArray(monthEvents) ? monthEvents : []) {
+    if (!ev?.title || !ev.scheduled_date) continue;
+    const key = recurringKeyOf(ev);
+    let entry = byKey.get(key);
+    if (!entry) {
+      entry = { key, title: ev.title.trim(), time: ev.scheduled_time || '', source: ev.source || '', dates: new Set() };
+      byKey.set(key, entry);
+    }
+    entry.dates.add(ev.scheduled_date);
+  }
+  const items = [];
+  let everyDay = false;
+  for (const entry of byKey.values()) {
+    if (entry.dates.size < minDays) continue;
+    for (const d of entry.dates) {
+      const dow = new Date(`${d}T12:00:00`).getDay();
+      if (dow === 0 || dow === 6) everyDay = true;
+    }
+    items.push({ key: entry.key, title: entry.title, time: entry.time, source: entry.source, days: entry.dates.size });
+  }
+  items.sort((a, b) => (a.time || '').localeCompare(b.time || '') || a.title.localeCompare(b.title, 'ru'));
+  return { keys: new Set(items.map((i) => i.key)), items, everyDay };
+}
+
+export function recurringKeyOf(event) {
+  return `${event?.source || ''}|${String(event?.title || '').trim()}`;
+}

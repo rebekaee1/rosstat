@@ -26,17 +26,17 @@ function EmbedTooltip({ active, payload, label, unit, colors }) {
       borderRadius: 8, padding: '8px 12px', fontSize: 12,
       fontFamily: 'Manrope, system-ui, sans-serif', boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
     }}>
-      <div style={{ color: colors.textTertiary, fontSize: 10, marginBottom: 4, fontFamily: 'ui-monospace, monospace' }}>
+      <div style={{ color: colors.textTertiary, fontSize: 10, marginBottom: 4, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums' }}>
         {formatDate(label)}
       </div>
       {/* В-18: на чужом сайте без легенды цвет ничего не говорит — подписываем словами. */}
       {actual && (
-        <div style={{ color: '#AD8A48', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
+        <div style={{ color: '#AD8A48', fontWeight: 600, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums' }}>
           {t('embed.actual', { value: formatValueWithUnit(actual.value, unit) })}
         </div>
       )}
       {forecast && !actual && (
-        <div style={{ color: '#6B8299', fontWeight: 600, fontFamily: 'ui-monospace, monospace' }}>
+        <div style={{ color: '#6B8299', fontWeight: 600, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums' }}>
           {t('embed.forecast', { value: formatValueWithUnit(forecast.value, unit) })}
         </div>
       )}
@@ -110,7 +110,8 @@ export default function EmbedChart() {
     }
     if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yTicks: undefined, yWidth: 50 };
     const span = max - min || 1;
-    const rough = span / 5;
+    // Меньше делений — спокойная шкала: 3 на низком виджете, 4 на обычном (раньше до 6, «зигзаг» 99,8–101,8).
+    const rough = span / (height < 260 ? 3 : 4);
     const pow = Math.pow(10, Math.floor(Math.log10(rough)));
     const frac = rough / pow;
     const step = frac <= 1.5 ? pow : frac <= 3.5 ? 2 * pow : frac <= 7.5 ? 5 * pow : 10 * pow;
@@ -122,7 +123,7 @@ export default function EmbedChart() {
     const sample = formatAxisTick(Math.abs(niceMin) > Math.abs(niceMax) ? niceMin : niceMax, digits);
     const w = Math.max(40, Math.min(100, sample.length * 7.5 + 10));
     return { yDomain: [niceMin, niceMax], yTicks: ticks, yWidth: w };
-  }, [chartData, meta?.unit]);
+  }, [chartData, meta?.unit, height]);
 
   const unit = meta?.unit || '%';
   const displayVal = isCpiIndex(code) && meta?.current_value != null
@@ -151,7 +152,7 @@ export default function EmbedChart() {
             </span>
             {change != null && (
               <span style={{
-                fontSize: 12, fontWeight: 600, fontFamily: 'ui-monospace, monospace',
+                fontSize: 12, fontWeight: 600, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums',
                 color: embedChangeColor(change, theme, colors, meta?.name, code),
                 display: 'inline-flex', alignItems: 'center', gap: 2,
               }}>

@@ -28,9 +28,9 @@ describe('EmbedBuilder: превью и копирование', () => {
   it('пока iframe не загрузился, показывает ожидание; после onLoad убирает', async () => {
     setup();
     const frame = await screen.findByTitle('Превью виджета');
-    expect(screen.getByText('Загружаем превью…')).toBeTruthy();
+    expect(screen.getByText('Готовим превью…')).toBeTruthy();
     act(() => { fireEvent.load(frame); });
-    await waitFor(() => expect(screen.queryByText('Загружаем превью…')).toBeNull());
+    await waitFor(() => expect(screen.queryByText('Готовим превью…')).toBeNull());
   });
 
   it('после копирования показывает «Скопировано» в зоне aria-live', async () => {

@@ -361,13 +361,21 @@ export default function EmbedBuilder() {
   const previewScale = typeof renderW === 'number' && availW > 0 && renderW > availW ? availW / renderW : 1;
   const previewW = renderW;
   // Превью грузится в iframe: пока он не сообщил о загрузке, показываем кольцо ожидания.
+  // Не загрузился за 12 секунд — понятная ошибка с кнопкой «Повторить», а не пустой прямоугольник.
   const [loadedUrl, setLoadedUrl] = useState('');
-  const previewLoading = loadedUrl !== previewUrl;
+  const [failedUrl, setFailedUrl] = useState('');
+  const [attempt, setAttempt] = useState(0);
+  const previewFailed = failedUrl === previewUrl && loadedUrl !== previewUrl;
+  const previewLoading = loadedUrl !== previewUrl && !previewFailed;
   useEffect(() => {
     if (!previewLoading) return undefined;
-    const timer = setTimeout(() => setLoadedUrl(previewUrl), 15000);
+    const timer = setTimeout(() => setFailedUrl(previewUrl), 12000);
     return () => clearTimeout(timer);
-  }, [previewLoading, previewUrl]);
+  }, [previewLoading, previewUrl, attempt]);
+  const retryPreview = () => {
+    setFailedUrl('');
+    setAttempt((n) => n + 1);
+  };
 
   const activeFormat = CODE_FORMATS.find((f) => f.key === codeTab) || CODE_FORMATS[0];
   const nameOf = (c) => indicators?.find((i) => i.code === c)?.name || c;
@@ -560,25 +568,33 @@ export default function EmbedBuilder() {
                     : { width: '100%', height: '100%' }}
                 >
                 <iframe
-                  key={previewUrl}
+                  key={`${previewUrl}#${attempt}`}
                   src={previewUrl}
                   width="100%"
                   height="100%"
                   frameBorder="0"
                   style={{ border: 'none', borderRadius: 12, overflow: 'hidden', maxWidth: '100%' }}
                   title={t('pgui.embed.previewTitle')}
-                  loading="lazy"
-                  onLoad={() => setLoadedUrl(previewUrl)}
+                  onLoad={() => { setLoadedUrl(previewUrl); setFailedUrl(''); }}
                 />
                 </div>
-                {previewLoading && (
+                {(previewLoading || previewFailed) && (
                   <div
-                    className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl text-xs"
-                    style={{ background: theme === 'dark' ? 'rgba(17,17,17,0.82)' : 'rgba(245,245,245,0.86)', color: theme === 'dark' ? '#e5e7eb' : '#374151' }}
-                    role="status"
+                    className={cn('w5-embed-preview__state', theme === 'dark' && 'is-dark')}
+                    role={previewFailed ? 'alert' : 'status'}
                   >
-                    <Spinner size={20} />
-                    {t('pgui.embed.previewLoading')}
+                    {previewFailed ? (
+                      <>
+                        <p className="max-w-xs text-sm font-medium">{t('y1.embed.previewFailed')}</p>
+                        <p className="max-w-xs text-xs opacity-80">{t('y1.embed.previewFailedHint')}</p>
+                        <Button variant="secondary" size="sm" onClick={retryPreview}>{t('y1.embed.previewRetry')}</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Spinner size={22} />
+                        <span className="text-sm">{t('pgui.embed.previewLoading')}</span>
+                      </>
+                    )}
                   </div>
                 )}
               </div>

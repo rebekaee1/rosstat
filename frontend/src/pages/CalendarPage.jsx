@@ -13,7 +13,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { track, events } from '../lib/track';
-import { groupSimilarEvents } from '../lib/calendarGrouping';
+import { groupSimilarEvents, findDailyRecurring, recurringKeyOf } from '../lib/calendarGrouping';
 import { calendarMonthTrail, calendarTrail } from '../lib/breadcrumbs';
 import {
   calendarPath,
@@ -21,6 +21,7 @@ import {
 import { useT, useLocale } from '../i18n';
 import '../styles/indicator-russia.css';
 import '../styles/regions-w4.css';
+import '../styles/w5-pages.css';
 
 const WEEKDAY_KEYS = [
   'calendar.weekday.sun',
@@ -200,12 +201,19 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
 
   const isCurrentMonth = year === initYear && month === initMonth;
 
+  // Ежедневные события («Ставка RUONIA», курсы) — одной строкой «Каждый рабочий день», а не в каждом дне.
+  const recurring = useMemo(() => findDailyRecurring(allEvents), [allEvents]);
+  const showRecurring = !selectedDate && recurring.items.length > 0;
+
   const visibleEvents = useMemo(() => {
     let filtered = allEvents;
     if (selectedDate) filtered = allEvents.filter((e) => e.scheduled_date === selectedDate);
-    else if (isCurrentMonth) filtered = allEvents.filter((e) => e.scheduled_date >= todayStr);
+    else {
+      if (isCurrentMonth) filtered = allEvents.filter((e) => e.scheduled_date >= todayStr);
+      if (recurring.keys.size > 0) filtered = filtered.filter((e) => !recurring.keys.has(recurringKeyOf(e)));
+    }
     return groupSimilarEvents(filtered);
-  }, [allEvents, selectedDate, isCurrentMonth, todayStr]);
+  }, [allEvents, selectedDate, isCurrentMonth, todayStr, recurring]);
 
   const grouped = useMemo(() => {
     const map = new Map();
@@ -292,9 +300,23 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
             </div>
           )}
 
+          {showRecurring && (
+            <section className="fe-cal-recurring mb-6" aria-label={t(recurring.everyDay ? 'y1.cal.everyDay' : 'y1.cal.everyWorkday')} data-testid="calendar-recurring">
+              <h3 className="fe-cal-recurring__title">{t(recurring.everyDay ? 'y1.cal.everyDay' : 'y1.cal.everyWorkday')}</h3>
+              <ul className="fe-cal-recurring__list">
+                {recurring.items.map((item) => (
+                  <li key={item.key}>
+                    <span className="min-w-0">{item.title}</span>
+                    {item.time ? <span className="fe-num shrink-0 text-text-secondary">{item.time.slice(0, 5)}</span> : null}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           {grouped.length === 0 ? (
             // При ошибке загрузки текст «нет событий» был бы неправдой — о причине уже говорит баннер выше.
-            !isError && (
+            !isError && !showRecurring && (
               <div
                 className="fe-reveal fe-reveal--free flex flex-col items-center rounded-[1.5rem] border border-border-subtle bg-surface px-6 py-10 text-center"
                 role="status"
@@ -326,11 +348,6 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                     {!selectedDate && (
                       <h3 className={cn('fe-cal-dayhead', group.isToday && 'is-today')}>
                         {group.label}
-                        {group.isToday && (
-                          <span className="px-1.5 py-px rounded bg-champagne/10 text-champagne-ink text-xs font-bold">
-                            Сегодня
-                          </span>
-                        )}
                         <span className="fe-cal-dayhead__count">
                           — {group.events.length} {group.events.length === 1 ? 'событие' : group.events.length < 5 ? 'события' : 'событий'}
                         </span>

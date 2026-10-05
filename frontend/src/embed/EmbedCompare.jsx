@@ -24,14 +24,14 @@ function CompareTooltip({ active, payload, label, unitA, unitB, nameA, nameB, co
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
           <span style={{ width: 8, height: 2, background: COLOR_A, borderRadius: 1 }} />
           <span style={{ color: colors.textSecondary, fontSize: 12 }}>{nameA}</span>
-          <span style={{ fontWeight: 600, color: COLOR_A, fontFamily: 'ui-monospace, monospace', marginLeft: 'auto' }}>{formatValueWithUnit(a.value, unitA)}</span>
+          <span style={{ fontWeight: 600, color: COLOR_A, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums', marginLeft: 'auto' }}>{formatValueWithUnit(a.value, unitA)}</span>
         </div>
       )}
       {b?.value != null && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{ width: 8, height: 2, background: COLOR_B, borderRadius: 1 }} />
           <span style={{ color: colors.textSecondary, fontSize: 12 }}>{nameB}</span>
-          <span style={{ fontWeight: 600, color: COLOR_B, fontFamily: 'ui-monospace, monospace', marginLeft: 'auto' }}>{formatValueWithUnit(b.value, unitB)}</span>
+          <span style={{ fontWeight: 600, color: COLOR_B, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums', marginLeft: 'auto' }}>{formatValueWithUnit(b.value, unitB)}</span>
         </div>
       )}
     </div>
@@ -116,14 +116,14 @@ export default function EmbedCompare() {
             <ComposedChart data={chartData} margin={{ top: 8, right: 8, bottom: 4, left: -4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} vertical={false} />
               <XAxis dataKey="date" tickFormatter={d => formatDate(d)} stroke={colors.grid}
-                tick={{ fill: colors.tick, fontSize: 10, fontFamily: 'ui-monospace, monospace' }}
+                tick={{ fill: colors.tick, fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums' }}
                 tickLine={false} interval="preserveStartEnd" minTickGap={50} />
               <YAxis yAxisId="left" stroke={colors.grid}
-                tick={{ fill: COLOR_A, fontSize: 10, fontFamily: 'ui-monospace, monospace' }}
+                tick={{ fill: COLOR_A, fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums' }}
                 tickLine={false} axisLine={false}
                 tickFormatter={v => formatAxisTick(v, unitDigits(unitA))} width={55} />
               <YAxis yAxisId="right" orientation="right" stroke={colors.grid}
-                tick={{ fill: COLOR_B, fontSize: 10, fontFamily: 'ui-monospace, monospace' }}
+                tick={{ fill: COLOR_B, fontSize: 10, fontFamily: 'Manrope, system-ui, sans-serif', fontVariantNumeric: 'tabular-nums' }}
                 tickLine={false} axisLine={false}
                 tickFormatter={v => formatAxisTick(v, unitDigits(unitB))} width={55} />
               <Tooltip content={<CompareTooltip unitA={unitA} unitB={unitB} nameA={nameA} nameB={nameB} colors={colors} />} />

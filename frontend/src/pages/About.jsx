@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Database, Globe2, TrendingUp, Users, Gift, ShieldAlert, Mail,
 } from 'lucide-react';
@@ -24,7 +23,6 @@ const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
 export default function About() {
   const { locale } = useLocale();
   const t = useT();
-  const location = useLocation();
   const seo = getPageSeo('about', locale);
   useDocumentMeta({
     title: seo.title,
@@ -34,8 +32,6 @@ export default function About() {
 
   const sources = footerSourceLinks(locale);
   const andWord = locale === 'en' ? 'and' : 'и';
-  // Ссылка из подвала (/about#credits) сразу раскрывает благодарности.
-  const [creditsOpen] = useState(() => location.hash === '#credits');
 
   return (
     <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 md:pb-16">
@@ -104,17 +100,17 @@ export default function About() {
         </InfoCard>
       </InfoGrid>
 
-      <details id="credits" className="x4-credits" open={creditsOpen || undefined}>
-        <summary>{t('about.creditsTitle')}</summary>
-        <p>
-          {t('w5.about.credits.before')}
-          {' '}
-          <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a>
-          {', '}
-          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>
-          .
-        </p>
-      </details>
+      {/* Благодарности — всегда одной строкой с текстом: заголовок без содержимого пугает. */}
+      <p id="credits" className="x4-credits">
+        <strong>{t('about.creditsTitle')}.</strong>
+        {' '}
+        {t('w5.about.credits.before')}
+        {' '}
+        <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a>
+        {', '}
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>
+        .
+      </p>
     </div>
   );
 }

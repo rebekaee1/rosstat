@@ -639,6 +639,20 @@ a.fe-today-card:hover .fe-today-card__go { color: var(--color-champagne-ink); tr
   font-weight: 650;
 }
 .fe-cal-dayhead.is-today { color: var(--color-champagne-ink); }
+.fe-cal-recurring {
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 16px;
+  background: var(--color-surface);
+}
+.fe-cal-recurring__title { margin: 0 0 6px; font-size: 14px; font-weight: 700; color: var(--color-text-primary); }
+.fe-cal-recurring__list { margin: 0; padding: 0; list-style: none; }
+.fe-cal-recurring__list li {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 6px 0; font-size: 14px; line-height: 1.35; color: var(--color-text-primary);
+  border-top: 1px solid color-mix(in srgb, var(--color-border-subtle) 70%, transparent);
+}
+.fe-cal-recurring__list li:first-child { border-top: 0; }
 .fe-cal-dayhead__count { font-weight: 500; color: var(--color-text-secondary); }
 
 /* ── Демография ─────────────────────────────────────────────────────────── */
