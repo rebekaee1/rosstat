@@ -21,7 +21,7 @@ function CountdownUnit({ value, label }) {
 }
 
 function Separator() {
-  return <span className="text-xl font-light leading-none text-text-secondary self-start mt-1" aria-hidden="true">:</span>;
+  return <span className="text-xl font-medium leading-none text-text-primary/70 self-start mt-1" aria-hidden="true">:</span>;
 }
 
 function pluralUnit(n, unit, t, locale) {
@@ -74,7 +74,7 @@ export default function CalendarHero({ nextEvent }) {
             </span>
           </div>
           <h2 className="text-lg md:text-xl font-semibold text-text-primary leading-snug mb-2 line-clamp-2">
-            {nextEvent.title}
+            {String(nextEvent.title || '').replace(/\s*\([A-ZА-ЯЁ]{2,6}\)\s*$/u, '').trim()}
           </h2>
           <p className="text-sm text-text-secondary">
             {new Date(nextEvent.scheduled_date).toLocaleDateString(dateLocale, {

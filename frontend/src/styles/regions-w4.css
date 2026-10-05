@@ -54,9 +54,11 @@
 .fe-map-legend__scale > span { flex: 1 1 0; }
 
 /* Год на ползунке «перекатывается» при смене. */
-@keyframes fe-year-pop { from { opacity: 0.35; transform: translateY(5px); } to { opacity: 1; transform: none; } }
-.fe-year-pop { display: inline-block; animation: fe-year-pop 0.22s var(--fe-ease-out, ease-out) both; }
-@media (prefers-reduced-motion: reduce) { .fe-year-pop { animation: none; } }
+/* Не называть fe-year-pop: так зовётся выпадающее окно выбора года (world.css) —
+   при совпадении имён год на ползунке превращался в белую плашку поверх подсказки. */
+@keyframes fe-map-year-in { from { opacity: 0.35; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+.fe-map-year { display: inline-block; animation: fe-map-year-in 0.22s var(--fe-ease-out, ease-out) both; }
+@media (prefers-reduced-motion: reduce) { .fe-map-year { animation: none; } }
 
 /* Раскрывающийся блок «Подробнее»/группа показателей. */
 details.fe-acc > summary { list-style: none; cursor: pointer; }
@@ -107,3 +109,18 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
   min-height: 44px; padding: 8px 10px; border-radius: 12px; text-align: left;
 }
 .fe-dl__item:hover { background: var(--color-surface-hover); }
+
+/* Поле внутри скруглённой обёртки (поиск, выбор показателя): обводку при фокусе рисует обёртка
+   (focus-within), а общий прямоугольный контур у самого input убираем — иначе рамка двойная.
+   Селектор тяжелее глобального :focus-visible из index.css. */
+:where(.fe-data-page, .fe-navbar, .fe-footer, .fe-dialog-panel) input:is(.outline-none, .focus\:outline-none):focus-visible,
+:where(.fe-data-page, .fe-navbar, .fe-footer, .fe-dialog-panel) select:is(.outline-none, .focus\:outline-none):focus-visible {
+  outline: none;
+}
+
+/* Карточки-кнопки: при случайном свайпе текст не выделяется, а долгое нажатие не открывает меню копирования. */
+.fe-data-page :is(a, button).fe-press {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}

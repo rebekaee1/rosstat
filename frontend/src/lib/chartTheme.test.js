@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CHART_HEIGHTS, CHART_THEME, GRID_PROPS, axisTick, axisWidthForLabels, chartHeightForWidth,
+  CHART_HEIGHTS, CHART_THEME, GRID_PROPS, axisSampleValues, axisTick, axisWidthForLabels, chartHeightForWidth,
 } from './chartTheme';
 
 function channel(c) {
@@ -65,5 +65,20 @@ describe('chartTheme', () => {
     // Ширина ещё неизвестна (SSR / первый кадр) — средняя высота.
     expect(chartHeightForWidth(0)).toBe(390);
     expect(chartHeightForWidth(undefined)).toBe(390);
+  });
+});
+
+describe('ось Y сравнения не режет «355 000»', () => {
+  it('образцы включают края данных с запасом на «красивый» домен', () => {
+    const samples = axisSampleValues([190000, 245000, 355000, null, 'x']);
+    expect(Math.max(...samples)).toBeGreaterThan(355000);
+    expect(Math.min(...samples)).toBeLessThan(190000);
+    expect(axisSampleValues([])).toEqual([]);
+  });
+
+  it('ширина по длинной подписи больше прежних фиксированных 46–60 px', () => {
+    const labels = axisSampleValues([190000, 355000]).map((v) => String(Math.round(v)).replace(/\B(?=(\d{3})+$)/g, '\u00A0'));
+    const width = axisWidthForLabels(labels, { min: 40, perChar: 7, pad: 12 });
+    expect(width).toBeGreaterThan(60);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { groupSimilarEvents, normalizeEventUid } from './calendarGrouping';
+import { findDailyRecurring, recurringKeyOf, groupSimilarEvents, normalizeEventUid } from './calendarGrouping';
 
 const baseTradeEvent = {
   scheduled_date: '2026-05-14',
@@ -141,5 +141,42 @@ describe('groupSimilarEvents', () => {
     const result = groupSimilarEvents([a, b]);
     expect(result).toHaveLength(1);
     expect(result[0].indicators).toHaveLength(2);
+  });
+});
+
+describe('findDailyRecurring', () => {
+  const weekdays = [];
+  for (let d = 1; d <= 31; d += 1) {
+    const date = `2026-10-${String(d).padStart(2, '0')}`;
+    const dow = new Date(`${date}T12:00:00`).getDay();
+    if (dow !== 0 && dow !== 6) weekdays.push(date);
+  }
+  const daily = weekdays.map((date, i) => ({
+    id: i, scheduled_date: date, scheduled_time: '12:00:00', source: 'cbr', title: 'Ставка RUONIA',
+  }));
+  const weekly = ['2026-10-07', '2026-10-14', '2026-10-21', '2026-10-28'].map((date, i) => ({
+    id: 100 + i, scheduled_date: date, scheduled_time: '19:00:00', source: 'rosstat', title: 'Недельная инфляция',
+  }));
+
+  it('выносит событие, которое есть почти в каждый рабочий день, и не трогает недельные', () => {
+    const r = findDailyRecurring([...daily, ...weekly]);
+    expect(r.items.map((i) => i.title)).toEqual(['Ставка RUONIA']);
+    expect(r.everyDay).toBe(false);
+    expect(r.keys.has(recurringKeyOf(daily[0]))).toBe(true);
+    expect(r.keys.has(recurringKeyOf(weekly[0]))).toBe(false);
+  });
+
+  it('если события бывают и в выходные — «каждый день»', () => {
+    const r = findDailyRecurring(
+      Array.from({ length: 10 }, (_u, i) => ({
+        scheduled_date: `2026-10-${String(i + 1).padStart(2, '0')}`, source: 'cbr', title: 'Курс',
+      })),
+    );
+    expect(r.everyDay).toBe(true);
+  });
+
+  it('пустой и странный ввод не падает', () => {
+    expect(findDailyRecurring(null).items).toEqual([]);
+    expect(findDailyRecurring([{ title: 'x' }]).items).toEqual([]);
   });
 });

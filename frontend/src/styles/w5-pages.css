@@ -405,12 +405,8 @@
 .x4-mini-steps strong { display: block; font-weight: 700; color: var(--color-text-primary); }
 
 /* Мелкая строка в конце страницы (благодарности). */
-.x4-credits { margin: 8px 0 24px; font-size: 13px; color: var(--color-text-secondary); }
-.x4-credits > summary { cursor: pointer; list-style: none; display: inline-flex; min-height: 36px; align-items: center; font-weight: 600; color: var(--color-text-secondary); }
-.x4-credits > summary::-webkit-details-marker { display: none; }
-.x4-credits p { margin: 4px 0 0; max-width: 62ch; line-height: 1.6; }
+.x4-credits { margin: 16px 0 24px; max-width: 62ch; line-height: 1.6; font-size: 13px; color: var(--color-text-secondary); }
 .x4-credits a { color: var(--color-champagne-ink); text-decoration: underline; text-underline-offset: 3px; }
-@media (pointer: coarse) { .x4-credits > summary { min-height: 44px; } }
 
 /* Поля входа и регистрации: один спокойный контур при фокусе вместо двойного (рамка + обводка с зазором). */
 .fe-auth-card .fe-input:focus-visible,
@@ -424,3 +420,37 @@
 .fe-demo-item { align-items: start; }
 .fe-demo-item__dot { margin-top: 5px; }
 .fe-demo-item__label { align-self: start; }
+
+/* Календарь: цветная кромка слева — полоса внутри карточки, а не толстая рамка, которая на скруглённых
+   углах загибалась «полумесяцем». Цвет берётся из того же класса источника (border-l-*-500). */
+.fe-calendar-event.fe-calendar-event { overflow: hidden; border-left-width: 1px; border-left-color: var(--color-border-subtle); }
+.fe-calendar-event::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--color-champagne); }
+.fe-calendar-event.border-l-blue-500::before { background: var(--color-blue-500, #3b82f6); }
+.fe-calendar-event.border-l-emerald-500::before { background: var(--color-emerald-500, #10b981); }
+.fe-calendar-event.border-l-amber-500::before { background: var(--color-amber-500, #f59e0b); }
+
+/* Чекбокс согласия на входе/регистрации: заметная рамка вместо бледной системной. */
+.fe-auth-card input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-content: center;
+  margin: 0;
+  border: 2px solid var(--color-champagne-ink);
+  border-radius: 6px;
+  background: var(--color-surface);
+  cursor: pointer;
+}
+.fe-auth-card input[type='checkbox']::after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) scale(0);
+  margin-top: -2px;
+  transition: transform 0.15s var(--fe-ease-out, ease-out);
+}
+.fe-auth-card input[type='checkbox']:checked { background: var(--color-accent-solid); border-color: var(--color-accent-solid); }
+.fe-auth-card input[type='checkbox']:checked::after { transform: rotate(-45deg) scale(1); }
+@media (prefers-reduced-motion: reduce) { .fe-auth-card input[type='checkbox']::after { transition: none; } }

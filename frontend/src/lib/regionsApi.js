@@ -160,6 +160,35 @@ export function compactTickAxisWidth(values, { narrow = false } = {}) {
   return Math.max(minW, Math.min(maxW, Math.round(longest * (narrow ? 6.2 : 6.8)) + (narrow ? 8 : 12)));
 }
 
+/**
+ * Единый масштаб подписей оси Y: все подписи одной оси — в одних единицах («35 тыс.», «70 тыс.», «140 тыс.», «0»),
+ * а не смесь «140 т» и «70 000». Порог «тысяч» — 10 000; ниже — обычные числа с пробелами.
+ */
+export function axisScaleFor(values) {
+  let max = 0;
+  for (const v of values || []) {
+    const n = Math.abs(Number(v));
+    if (Number.isFinite(n) && n > max) max = n;
+  }
+  if (max >= 1e9) return { div: 1e9, key: 'map.compact.billion' };
+  if (max >= 1e6) return { div: 1e6, key: 'map.compact.million' };
+  if (max >= 1e4) return { div: 1e3, key: 'y1.axis.thousand' };
+  return { div: 1, key: null };
+}
+
+export function formatScaledTick(value, scale, { locale = localeKey() } = {}) {
+  if (value == null || !Number.isFinite(Number(value))) return '';
+  const num = Number(value);
+  if (num === 0) return '0';
+  const loc = numberLocale(locale);
+  const scaled = num / scale.div;
+  const abs = Math.abs(scaled);
+  const text = scaled
+    .toLocaleString(loc, { minimumFractionDigits: 0, maximumFractionDigits: abs < 10 ? 1 : 0 })
+    .replace(/\s/g, '\u00A0');
+  return scale.key ? `${text}\u00A0${t(scale.key)}` : text;
+}
+
 /** Русское склонение: pluralRu(471, ['показатель','показателя','показателей']). */
 export function pluralRu(n, [one, few, many]) {
   const abs = Math.abs(n) % 100;

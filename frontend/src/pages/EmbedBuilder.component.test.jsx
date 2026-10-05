@@ -1,7 +1,7 @@
 // Т-13: EmbedBuilder — конструктор embed-виджетов: монтируется, показывает
 // типы виджетов и генерирует iframe-код с выбранным индикатором.
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import EmbedBuilder from './EmbedBuilder';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
@@ -27,5 +27,27 @@ describe('EmbedBuilder', () => {
     // Код для вставки содержит embed-URL с индикатором.
     const code = document.body.textContent;
     expect(code).toContain('forecasteconomy.com');
+  });
+
+  it('если превью не загрузилось за 12 секунд — понятная ошибка и «Повторить», а не пустой блок', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      mockApiGet([
+        ['/auth/me', { user: null }],
+        [/^\/indicators/, INDICATORS],
+      ]);
+      renderPage(<EmbedBuilder />, { path: '/embed-builder', route: '/embed-builder' });
+      await screen.findAllByText('График');
+      expect(document.querySelector('.w5-embed-preview__state')).toBeTruthy();
+      expect(document.body.textContent).toContain('Готовим превью');
+      await act(async () => { vi.advanceTimersByTime(12100); });
+      const alert = screen.getByRole('alert');
+      expect(alert.textContent).toContain('Превью не загрузилось');
+      fireEvent.click(screen.getByRole('button', { name: 'Повторить' }));
+      expect(screen.queryByRole('alert')).toBeNull();
+      expect(document.body.textContent).toContain('Готовим превью');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

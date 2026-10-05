@@ -18,7 +18,7 @@ import {
 } from '../lib/regionsApi';
 import DeltaBadge from '../components/DeltaBadge';
 import { indicatorPolarity } from '../lib/deltaTone';
-import { formatRegionNumber, formatRegionWithUnit, unitLabel, NBSP } from '../lib/regionUi';
+import { formatRegionNumber, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -506,7 +506,7 @@ export default function RegionIndicatorPage() {
                   { year: active.rank.year },
                 )}
               </h2>
-              <ol className="space-y-1.5">
+              <ol className="space-y-0.5">
                 {active.rank.top.map((r, i) => (
                   <li key={r.slug}>
                     <Link
@@ -517,7 +517,7 @@ export default function RegionIndicatorPage() {
                         <span className="fe-num w-4 shrink-0 text-right text-text-secondary">{i + 1}</span>
                         <span className={`truncate ${r.slug === slug ? 'text-champagne-ink font-medium' : 'text-text-primary'}`}>{r.name}</span>
                       </span>
-                      <span className="fe-num shrink-0 whitespace-nowrap font-medium text-text-primary">{formatRegionNumber(r.value, active.indicator.unit, locale)}</span>
+                      <span className="fe-num shrink-0 whitespace-nowrap font-medium text-text-primary">{formatRegionWithUnit(r.value, active.indicator.unit, locale)}</span>
                     </Link>
                   </li>
                 ))}
@@ -534,7 +534,7 @@ export default function RegionIndicatorPage() {
                     <span className="fe-num w-4 text-right text-text-secondary">{active.rank.position}</span>
                     <span className="text-champagne-ink font-medium">{regionName}</span>
                   </span>
-                  <span className="fe-num font-medium text-text-primary">{formatRegionNumber(last.value, active.indicator.unit, locale)}</span>
+                  <span className="fe-num whitespace-nowrap font-medium text-text-primary">{formatRegionWithUnit(last.value, active.indicator.unit, locale)}</span>
                 </div>
               )}
             </div>
@@ -622,18 +622,19 @@ export default function RegionIndicatorPage() {
               <h2 className="text-sm font-semibold text-text-primary mb-3">
                 {t('regions.ind.moreInSection', { section: active.indicator.section_name })}
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <ul className="grid gap-2 sm:grid-cols-2">
                 {active.siblings.map(s => (
-                  <Link
-                    key={s.code}
-                    to={regionIndicatorPath(slug, s.code)}
-                    className="fe-tap-inline gap-1 px-3 py-1.5 rounded-full bg-surface border border-border-subtle text-[13px] text-text-secondary hover:text-champagne-ink hover:border-border-champagne transition-colors"
-                  >
-                    {s.name.length > 60 ? `${s.name.slice(0, 57)}…` : s.name}
-                    <ArrowUpRight size={12} />
-                  </Link>
+                  <li key={s.code} className="min-w-0">
+                    <Link
+                      to={regionIndicatorPath(slug, s.code)}
+                      className="fe-tap fe-press flex h-full items-center justify-between gap-3 rounded-2xl border border-border-subtle bg-surface px-3.5 py-2.5 text-sm leading-snug text-text-primary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                    >
+                      <span className="min-w-0 break-words">{glueNumbers(s.name)}</span>
+                      <ArrowUpRight size={14} className="shrink-0 text-text-secondary" aria-hidden="true" />
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           )}
         </>

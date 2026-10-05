@@ -101,7 +101,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
       </div>
 
       <div className="w-16 shrink-0 text-right">
-        <span key={year} className="fe-year-pop fe-num text-xl font-bold text-champagne-ink">{year}</span>
+        <span key={year} className="fe-map-year fe-num whitespace-nowrap text-xl font-bold text-champagne-ink" data-testid="map-timeline-year">{year}</span>
         <span className="-mt-0.5 block text-xs text-text-secondary">{t('common.year').toLowerCase()}</span>
       </div>
     </div>

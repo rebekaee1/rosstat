@@ -96,7 +96,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
       <div className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
         isCustom
           ? 'border-transparent bg-champagne/15 text-champagne-ink'
-          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-border-champagne'
+          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25'
       }`}
       >
         <Search size={14} className="shrink-0" aria-hidden="true" />
@@ -486,27 +486,30 @@ export default function RegionsHome() {
         <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
           {t('regions.intro')}
         </p>
-        <section className="mt-5" aria-labelledby="regions-rankings-title">
-          <h2 id="regions-rankings-title" className="text-base font-semibold text-text-primary">
-            <Link to={regionRatingHubPath()} className="fe-tap-inline hover:text-champagne-ink">
-              {t('russia.link.ratings.title')}
-            </Link>
-          </h2>
-          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary">
-            {t('regions.hub.ratingsLead')}
-          </p>
-          <div className="fe-chip-row--grid mt-3">
-            {MAP_METRICS.map((metric) => (
-              <Link
-                key={metric.code}
-                to={regionRatingPath(metric.code)}
-                className="fe-chip fe-press"
-              >
-                {t('regions.ratingLink', { name: t(metric.labelKey) })}
+        {/* В режиме карты те же показатели уже выбираются чипами над картой — вторую сетку не показываем. */}
+        {view === 'list' && (
+          <section className="mt-5" aria-labelledby="regions-rankings-title">
+            <h2 id="regions-rankings-title" className="text-base font-semibold text-text-primary">
+              <Link to={regionRatingHubPath()} className="fe-tap-inline hover:text-champagne-ink">
+                {t('russia.link.ratings.title')}
               </Link>
-            ))}
-          </div>
-        </section>
+            </h2>
+            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary">
+              {t('regions.hub.ratingsLead')}
+            </p>
+            <div className="fe-chip-row--grid mt-3">
+              {MAP_METRICS.map((metric) => (
+                <Link
+                  key={metric.code}
+                  to={regionRatingPath(metric.code)}
+                  className="fe-chip fe-press"
+                >
+                  {t('regions.ratingLink', { name: t(metric.labelKey) })}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       <div className="mb-3 flex w-fit items-center gap-1 rounded-2xl border border-border-subtle bg-surface p-1" role="tablist" aria-label={t('regions.viewAria')}>

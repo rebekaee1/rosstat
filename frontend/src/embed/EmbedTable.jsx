@@ -32,7 +32,7 @@ export default function EmbedTable() {
   const unit = meta?.unit || '%';
   const isCpi = isCpiIndex(code);
   const font = 'Manrope, system-ui, sans-serif';
-  const mono = 'ui-monospace, monospace';
+  const mono = 'Manrope, system-ui, sans-serif';
 
   return (
     <div style={{ background: colors.bg, fontFamily: font, overflow: 'hidden' }}>
@@ -79,13 +79,13 @@ export default function EmbedTable() {
                   borderBottom: i < rows.length - 1 ? `1px solid ${colors.border}` : 'none',
                   transition: 'background 0.15s',
                 }}>
-                  <td style={{ padding: '8px 16px', fontFamily: mono, color: colors.textSecondary, fontSize: 12 }}>
+                  <td style={{ padding: '8px 16px', fontFamily: mono, fontVariantNumeric: 'tabular-nums', color: colors.textSecondary, fontSize: 12 }}>
                     {formatDate(r.date, 'full')}
                   </td>
-                  <td style={{ padding: '8px 16px', textAlign: 'right', fontFamily: mono, fontWeight: 600, color: colors.text }}>
+                  <td style={{ padding: '8px 16px', textAlign: 'right', fontFamily: mono, fontVariantNumeric: 'tabular-nums', fontWeight: 600, color: colors.text }}>
                     {formatValueWithUnit(displayVal, unit)}
                   </td>
-                  <td style={{ padding: '8px 16px', textAlign: 'right', fontFamily: mono, fontWeight: 500, fontSize: 12, color: embedChangeColor(chg, theme, colors, meta?.name, code) }}>
+                  <td style={{ padding: '8px 16px', textAlign: 'right', fontFamily: mono, fontVariantNumeric: 'tabular-nums', fontWeight: 500, fontSize: 12, color: embedChangeColor(chg, theme, colors, meta?.name, code) }}>
                     {chg != null ? formatChange(chg) : '—'}
                   </td>
                 </tr>

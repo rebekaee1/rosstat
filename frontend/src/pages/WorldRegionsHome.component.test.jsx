@@ -204,6 +204,37 @@ describe('WorldRegionsHome', () => {
     expect(screen.getByLabelText('Скачать карту картинкой')).toBeTruthy();
   });
 
+  it('над картой шесть понятных тем, остальные показатели — в аккордеонах по темам', async () => {
+    const indicators = [
+      { code: 'unemployment-rate', name: 'Безработица', section: 'Труд', unit: '%' },
+      { code: 'population', name: 'Население', section: 'Население', unit: 'чел.' },
+      { code: 'income', name: 'Доход на душу населения', section: 'Доходы', unit: '$' },
+      { code: 'gdp', name: 'ВРП', section: 'Счета', unit: 'млн $' },
+      ...Array.from({ length: 30 }, (_u, i) => ({
+        code: `exp-${i}`, name: `Потребительские расходы по функциям: Статья ${i}`, section: 'Расходы', unit: 'млн $',
+      })),
+    ];
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      ['/world/united-states/regions', { ...HUB, indicators, sections: [] }],
+      [/\/world\/united-states\/regions\/map\//, MAP],
+    ]);
+    renderPage(<WorldRegionsHome />, {
+      path: '/:countrySlug/region/map/:code', route: '/united-states/region/map/unemployment-rate',
+    });
+    await screen.findByTestId('map-stub');
+    const chips = [...document.querySelectorAll('.fe-chip-row--grid [role="tab"]')];
+    // «Обзор» и не больше шести показателей — без «разбивок» с двоеточием.
+    expect(chips.length).toBeGreaterThan(1);
+    expect(chips.length).toBeLessThanOrEqual(7);
+    expect(chips.some((c) => /Статья/.test(c.textContent))).toBe(false);
+    const topics = document.querySelector('[data-block="map-metric-topics"]');
+    expect(topics).toBeTruthy();
+    expect(topics.textContent).toContain('Все показатели по темам');
+    expect(topics.hasAttribute('open')).toBe(false);
+    expect(topics.querySelectorAll('details').length).toBeGreaterThan(1);
+  });
+
   it('сохраняет ползунок при загрузке следующего года во время перетаскивания', async () => {
     const get = mockWorld();
     const original = get.getMockImplementation();

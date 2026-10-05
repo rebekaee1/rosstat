@@ -35,8 +35,8 @@ describe('About', () => {
     // Лид — 2–3 предложения.
     const lead = container.querySelector('.x4-lead').textContent;
     expect(lead.split(/(?<=[.!?])\s+/).length).toBeLessThanOrEqual(3);
-    // Благодарности свёрнуты и не мешают странице.
-    expect(container.querySelector('details.x4-credits').hasAttribute('open')).toBe(false);
+    // Благодарности — одна строка с текстом, а не пустой заголовок.
+    expect(container.querySelector('#credits').textContent).toMatch(/Благодарности\..*Solar System Scope.*CC BY 4\.0/);
     // Почта — кнопкой, а не строкой в тексте.
     const mail = screen.getByRole('link', { name: /Написать письмо/ });
     expect(mail.getAttribute('href')).toMatch(/^mailto:/);

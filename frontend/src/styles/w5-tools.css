@@ -194,11 +194,12 @@
   cursor: pointer;
   color: var(--color-text-primary);
 }
-.w5-embed-type:hover { border-color: var(--color-champagne); }
+/* Подсветка при наведении — только там, где есть настоящий hover: на телефоне после касания она «залипала». */
+@media (hover: hover) { .w5-embed-type:hover:not(.is-active) { border-color: var(--color-champagne); } }
 .w5-embed-type.is-active {
-  border-color: rgba(173, 138, 72, 0.6);
+  border-color: var(--color-champagne-ink);
   background: rgba(173, 138, 72, 0.12);
-  box-shadow: inset 0 0 0 1px rgba(173, 138, 72, 0.25);
+  box-shadow: inset 0 0 0 1px var(--color-champagne-ink);
 }
 .w5-embed-type__icon { width: 20px; height: 20px; color: var(--color-champagne-ink); }
 .w5-embed-type__name { font-size: 15px; font-weight: 700; line-height: 1.2; }
@@ -233,7 +234,7 @@
   height: 22px;
   margin: 0;
   border-radius: 7px;
-  border: 2px solid color-mix(in srgb, var(--color-champagne-ink) 65%, transparent);
+  border: 2px solid var(--color-champagne-ink);
   background: var(--color-surface);
   display: grid;
   place-content: center;
@@ -261,6 +262,22 @@
   overflow: hidden;
 }
 .w5-embed-preview__stage { display: flex; justify-content: center; padding: 16px; overflow-x: auto; }
+.w5-embed-preview__state {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  padding: 16px; border-radius: 12px; text-align: center;
+  color: #374151;
+  background: linear-gradient(100deg, #eceff3 30%, #f6f7f9 50%, #eceff3 70%) 0 0 / 200% 100%;
+  animation: w5-embed-shimmer 1.4s linear infinite;
+}
+.w5-embed-preview__state.is-dark {
+  color: #e5e7eb;
+  background: linear-gradient(100deg, #1b1b1b 30%, #262626 50%, #1b1b1b 70%) 0 0 / 200% 100%;
+}
+.w5-embed-preview__state[role='alert'] { animation: none; background: #eceff3; }
+.w5-embed-preview__state.is-dark[role='alert'] { background: #1b1b1b; }
+@keyframes w5-embed-shimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .w5-embed-preview__state { animation: none; } }
 .w5-embed-preview__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--color-border-subtle); }
 .w5-embed-code {
   border-radius: 24px;
