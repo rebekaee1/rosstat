@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useIndicatorData } from '../../lib/hooks';
 import { formatValue, resolveDateFormat } from '../../lib/format';
-import { indicatorPolarity } from '../../lib/deltaTone';
+import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
 import { periodPhrase } from '../../lib/periodPhrase';
 import { russiaMainFive } from '../../lib/russiaHomeCards';
 import { figureDigits, scaleMoneyUnit, yearAgoPoint } from '../../lib/countryKeyFigures';
@@ -14,6 +14,7 @@ import Sparkline from '../Sparkline';
 import { SkeletonBox } from '../Skeleton';
 import useSparkHeight from '../country/useSparkHeight';
 import '../../styles/z5-country.css';
+import '../../styles/k6-country.css';
 
 const SPARK_ROWS = 96;
 
@@ -51,7 +52,9 @@ function MainCard({ card, index }) {
   return (
     <Link
       to={russiaIndicatorPath(card.code)}
-      className="z5-key z5-ru-key fe-press fe-reveal fe-reveal--free fe-reveal--stagger"
+      className="z5-key z5-ru-key fe-press fe-glint fe-cursor-light fe-reveal fe-reveal--free fe-reveal--stagger"
+      data-stone={card.id}
+      data-tone={ago ? deltaTone(card.value - ago.value, polarity) : undefined}
       style={{ '--i': index, '--fe-duration': '0.45s', '--fe-rise': '12px' }}
     >
       <span className="z5-key__name" title={fullName}>

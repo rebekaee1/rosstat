@@ -7,7 +7,7 @@ import {
 } from '../../lib/worldApi';
 import { localizedDisplay } from '../../lib/worldViewModes';
 import { formatDate } from '../../lib/format';
-import { indicatorPolarity } from '../../lib/deltaTone';
+import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
 import { splitUnit } from '../../lib/countryFlag';
 import { homeConceptLabel } from '../../lib/homeWorkbench';
 import {
@@ -21,6 +21,7 @@ import Sparkline from '../Sparkline';
 import WorldCountUp from '../WorldCountUp';
 import useSparkHeight from './useSparkHeight';
 import '../../styles/z5-country.css';
+import '../../styles/k6-country.css';
 
 /** Сколько последних точек ряда рисуем: примерно десять лет при любой частоте. */
 const SPARK_POINTS = { daily: 120, weekly: 120, monthly: 120, quarterly: 40, annual: 12 };
@@ -88,7 +89,8 @@ function KeyFigureCard({ item, slug, locale, index, preload }) {
   return (
     <Link
       to={indicatorPath(slug, item.indicator_code)}
-      className="w2-kpi z5-key fe-press fe-reveal fe-reveal--free fe-reveal--stagger"
+      className="w2-kpi z5-key fe-press fe-glint fe-cursor-light fe-reveal fe-reveal--free fe-reveal--stagger"
+      data-tone={ago ? deltaTone(diff, polarity) : undefined}
       style={{ '--i': index, '--fe-duration': '0.45s', '--fe-rise': '12px' }}
     >
       <span className="w2-kpi-name z5-key__name" title={fullName}>{kpiName}</span>

@@ -89,6 +89,49 @@
   pointer-events: none;
 }
 .z5-hero > * { position: relative; }
+/* K6.2: настроение страны. За текстом два размытых пятна цветов флага (градиент вместо blur 80: фильтр не нужен),
+   прозрачность .2, плавание 20 с (только transform). Первым ребёнком героя, содержимое лежит выше. */
+.z5-hero > .z5-mood {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.z5-mood::before,
+.z5-mood::after {
+  content: '';
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.2;
+}
+.z5-mood::before {
+  left: -14%;
+  top: -34%;
+  background: radial-gradient(closest-side, var(--mood-a, #C9A24D), transparent 74%);
+  animation: z5-mood-drift 20s ease-in-out infinite alternate;
+}
+.z5-mood::after {
+  right: -10%;
+  bottom: -46%;
+  background: radial-gradient(closest-side, var(--mood-b, #B08A3E), transparent 74%);
+  animation: z5-mood-drift 24s ease-in-out -9s infinite alternate-reverse;
+}
+@keyframes z5-mood-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(7%, 5%, 0) scale(1.1); }
+}
+@media (max-width: 767px) {
+  .z5-mood::after { animation: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .z5-mood::before, .z5-mood::after { animation: none; }
+}
+html[data-fe-motion='off'] .z5-mood::before,
+html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 .z5-hero__grid {
   display: flex;
   flex-direction: column;
@@ -138,7 +181,7 @@
   background: linear-gradient(90deg, var(--fe-gold, #b08a3e), transparent);
 }
 
-/* ── Профиль страны: тёмная стеклянная карточка с золотым контуром (одна для всех стран) ── */
+/* ── Профиль страны: сапфировое стекло L3 без контура, силуэт — золотой кристалл (K6.1) ── */
 :root .fe-data-header .w2-profile.z5-profile {
   position: relative;
   display: grid;
@@ -152,25 +195,24 @@
   overflow: hidden;
   color: #f4efe3;
   border-radius: 24px;
+  /* Сапфир + золотое сияние в верхнем углу + холодный отсвет внизу слева. Альфа ≥ .9: сквозь тёмное стекло видна лишь тень сцены. */
   background:
-    radial-gradient(120% 90% at 82% 8%, rgba(207, 180, 95, 0.22), transparent 55%),
-    linear-gradient(160deg, #263049 0%, var(--fe-dark-surface, #1b2030) 100%);
-  box-shadow: 0 26px 50px -30px rgba(20, 24, 38, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.24), transparent 58%),
+    radial-gradient(90% 80% at 0% 100%, rgba(92, 134, 200, 0.2), transparent 62%),
+    linear-gradient(160deg, rgba(31, 49, 90, 0.94), rgba(14, 26, 51, 0.96) 72%);
+  box-shadow: var(--fe-dark-shadow, 0 24px 52px -30px rgba(18, 24, 38, 0.7)), var(--fe-dark-glint, inset 0 1px 0 rgba(255, 255, 255, 0.1)), inset 0 -1px 0 rgba(233, 201, 122, 0.08);
 }
+/* Точечная сетка параллелей вместо линий: градиентная маска, не линия. */
 :root .fe-data-header .z5-profile::before {
   content: '';
   position: absolute;
   inset: 0;
-  opacity: 0.18;
+  opacity: 0.5;
   pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 28px 28px;
-  -webkit-mask-image: radial-gradient(90% 90% at 70% 40%, #000, transparent);
-  mask-image: radial-gradient(90% 90% at 70% 40%, #000, transparent);
+  background-image: radial-gradient(rgba(190, 210, 255, 0.28) 1px, transparent 1.6px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(70% 80% at 30% 45%, #000, transparent);
+  mask-image: radial-gradient(70% 80% at 30% 45%, #000, transparent);
 }
 :root .fe-data-header .z5-profile > * { position: relative; }
 :root .fe-data-header .z5-profile .w2-profile-head {
@@ -182,20 +224,22 @@
   align-self: start;
 }
 :root .fe-data-header .z5-profile .w2-profile-title {
-  color: #e5d39a;
+  color: #E8C877;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+/* Бейдж страны: L2 на тёмном — светлее фона, блик сверху, тень снизу, без кольца. */
 .z5-flag-badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   min-width: 0;
-  padding: 4px 11px 4px 8px;
+  padding: 4px 12px 4px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.11);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 6px 14px -8px rgba(5, 10, 24, 0.7);
   color: #f4efe3;
   font-size: 12.5px;
   font-weight: 600;
@@ -212,24 +256,26 @@
   max-width: 260px;
   max-height: 150px;
   margin: 0 auto;
+  overflow: visible;
 }
+/* Силуэт: золотой кристалл. Градиент с диагональным бликом задаёт <CrystalDefs /> (id fe-k6-crystal); запасной цвет — сплошное золото. */
 :root .fe-data-header .z5-profile .w2-profile-shape {
-  fill: rgba(212, 184, 106, 0.58);
-  stroke: #ebd9a0;
-  stroke-width: 1.3;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+  fill: #C9A24D;
+  fill: url(#fe-k6-crystal) #C9A24D;
+  stroke: rgba(255, 246, 214, 0.55);
+  stroke-width: 1;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 14px rgba(201, 162, 77, 0.22));
 }
 :root .fe-data-header .z5-profile .w2-profile-facts {
   grid-area: facts;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px 16px;
+  gap: 14px 16px;
   margin: 0;
   padding: 0;
-  border: 0;
 }
 :root .fe-data-header .z5-profile .w2-profile-facts dt {
-  color: rgba(244, 239, 227, 0.62);
+  color: rgba(190, 210, 255, 0.7);
   font-size: 12px;
 }
 :root .fe-data-header .z5-profile .w2-profile-facts dd {
@@ -241,18 +287,18 @@
   overflow-wrap: anywhere;
 }
 :root .fe-data-header .z5-profile .w2-profile-facts dd small {
-  color: rgba(244, 239, 227, 0.58);
-  font-size: 11.5px;
+  color: rgba(190, 210, 255, 0.66);
+  font-size: 12px;
 }
 :root .fe-data-header .z5-profile .w2-profile-source {
   grid-area: source;
   margin: 0;
-  color: rgba(244, 239, 227, 0.55);
-  font-size: 11.5px;
+  color: rgba(190, 210, 255, 0.66);
+  font-size: 12px;
 }
 :root .fe-data-header .z5-profile .w2-profile-source a {
-  color: #e5d39a;
-  text-decoration-color: rgba(229, 211, 154, 0.5);
+  color: #E8C877;
+  text-decoration-color: rgba(232, 200, 119, 0.5);
 }
 /* Планшет: карта слева, факты справа. */
 @media (min-width: 640px) {
@@ -262,30 +308,30 @@
   }
   :root .fe-data-header .z5-profile .w2-profile-map { max-width: none; max-height: 170px; margin: 0; }
 }
-/* Компьютер: факты строками «подпись — значение», карточка 260–300 px высотой. */
+/* Компьютер: факты строками «подпись — значение», разделяет их воздух 14 px, а не линия. */
 @media (min-width: 1024px) {
   :root .fe-data-header .w2-profile.z5-profile { padding: 18px 20px 16px; }
-  :root .fe-data-header .z5-profile .w2-profile-facts { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  :root .fe-data-header .z5-profile .w2-profile-facts { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   :root .fe-data-header .z5-profile .w2-profile-facts > div {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 14px;
-    padding: 8px 0;
   }
-  :root .fe-data-header .z5-profile .w2-profile-facts > div:last-child { border-bottom: 0; }
   :root .fe-data-header .z5-profile .w2-profile-facts dd { margin: 0; text-align: right; }
 }
-/* Узкий телефон: профиль в одну колонку, карта 160 px сверху, факты 2x2. */
+/* Телефон: профиль компактно, карта 150 px сверху, факты 2x2. */
 @media (max-width: 639px) {
-  :root .fe-data-header .z5-profile .w2-profile-map { max-height: 160px; }
+  :root .fe-data-header .w2-profile.z5-profile { padding: 14px 16px 12px; row-gap: 10px; }
+  :root .fe-data-header .z5-profile .w2-profile-map { max-height: 150px; }
+  :root .fe-data-header .z5-profile .w2-profile-facts { gap: 12px 14px; }
 }
 
-/* ── «Главное»: крупные цифры с золотым мини-графиком ────────────────────────── */
+/* ── «Главное»: плитки L1 без кромки, цифра золотой гравировкой, бейдж «год назад» — стекло с бусиной (K6.3) ── */
 .z5-key-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
+  gap: 14px;
   margin-top: 14px;
 }
 @media (min-width: 640px) {
@@ -296,24 +342,29 @@
   .z5-key-grid--n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 :root .z5-key {
+  /* Цветное свечение снизу по знаку изменения: рост — изумруд, падение — бронза, неясно — золото. */
+  --k6-glow: rgba(176, 138, 62, 0.3);
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
-  padding: 18px 20px 12px;
+  padding: 18px 20px 14px;
   overflow: hidden;
   border-radius: 22px;
+  container: z5key / inline-size;
   background: var(--fe-l1-bg);
-  box-shadow: var(--fe-card-shadow);
+  box-shadow: var(--fe-card-shadow), 0 26px 30px -24px var(--k6-glow);
   color: var(--color-text-primary);
   text-decoration: none;
   transition: transform 0.28s cubic-bezier(0.22, 0.7, 0.2, 1), box-shadow 0.28s;
 }
+:root .z5-key[data-tone='good'] { --k6-glow: rgba(22, 163, 74, 0.34); }
+:root .z5-key[data-tone='bad'] { --k6-glow: rgba(184, 105, 31, 0.36); }
 @media (hover: hover) {
   :root .z5-key:hover {
     transform: translateY(var(--fe-lift, -2px));
-    box-shadow: 0 22px 40px -24px rgba(122, 92, 30, 0.45);
+    box-shadow: var(--fe-float-shadow-hover, 0 32px 64px -28px rgba(60, 48, 24, 0.45)), var(--fe-inset-glint), 0 30px 34px -22px var(--k6-glow);
   }
 }
 :root .z5-key__name {
@@ -322,23 +373,41 @@
   font-weight: 600;
   line-height: 1.35;
 }
+/* Цифра: золотая гравировка, 48–56 px на компьютере (по ширине плитки). Единица — 50 % размера цифры, бронзовая, не жирная. */
 :root .z5-key__value {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 2px 8px;
   margin-top: 2px;
-  color: #1b2236;
+  color: #6B5224;
   font-size: clamp(2rem, 1.5rem + 1.1vw, 2.65rem);
-  font-weight: 650;
-  line-height: 1.1;
+  font-weight: 700;
+  line-height: 1.08;
   letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
+@supports (font-size: 1cqi) {
+  @media (min-width: 640px) {
+    :root .z5-key__value { font-size: clamp(2.25rem, 17cqi, 3.5rem); }
+  }
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  :root .z5-key__value > span:not(.sr-only) {
+    background-image: var(--k6-engrave, linear-gradient(175deg, #6B5224 0%, #8F6B24 42%, #A47F34 100%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    /* Гравировка: светлая кромка снизу и мягкая золотая тень (filter статичный, не анимируется). */
+    filter: drop-shadow(0 1px 0 var(--k6-engrave-lip, rgba(255, 255, 255, 0.85))) drop-shadow(0 6px 10px rgba(176, 138, 62, 0.24));
+  }
+}
 :root .z5-key__value small {
-  color: var(--fe-gold-ink, #7a5c1e);
-  font-size: 15px;
-  font-weight: 600;
+  color: var(--k6-unit, #7A6A45);
+  -webkit-text-fill-color: currentColor;
+  font-size: clamp(14px, 0.5em, 24px);
+  font-weight: 500;
   letter-spacing: 0;
 }
 :root .z5-key__period {
@@ -346,18 +415,46 @@
   font-size: 12.5px;
   line-height: 1.4;
 }
+/* «Год назад»: стеклянная пилюля, слева бусина с точкой-свечением (изумруд — хорошо, бронза — плохо, золото — неясно), без красного и без кольца. */
 :root .z5-key__ago {
+  --k6-bead-a: #F3E4B8;
+  --k6-bead-b: #B08A3E;
+  --k6-bead-glow: rgba(201, 162, 77, 0.6);
   align-self: flex-start;
+  gap: 7px;
   margin-top: 6px;
+  padding: 3px 12px 3px 4px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.42));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 8px 16px -10px var(--k6-bead-glow);
+  color: var(--color-text-secondary);
   font-size: 12.5px;
   font-weight: 600;
 }
-:root .z5-key__ago--empty { min-height: 18px; margin-top: 6px; }
+:root .z5-key__ago.fe-tone--good { --k6-bead-a: #7BE0A8; --k6-bead-b: #16A34A; --k6-bead-glow: rgba(22, 163, 74, 0.6); color: #14532D; }
+:root .z5-key__ago.fe-tone--bad { --k6-bead-a: #F2C28C; --k6-bead-b: #B8691F; --k6-bead-glow: rgba(184, 105, 31, 0.6); color: #7A3F0B; }
+:root .z5-key__ago > [aria-hidden='true'] {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, var(--k6-bead-a), var(--k6-bead-b) 70%);
+  box-shadow: 0 0 9px 1px var(--k6-bead-glow), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 7px;
+  line-height: 1;
+}
+:root .z5-key__ago--empty { min-height: 22px; margin-top: 6px; background: none; box-shadow: none; padding: 0; }
+/* Мини-график: лента со свечением; «нет данных» не рисуем ни прочерком, ни подписью: контейнер скрыт. */
 :root .z5-key__spark {
   display: block;
   min-height: 52px;
   margin: 8px -4px 0;
+  filter: drop-shadow(0 5px 8px rgba(201, 162, 77, 0.32));
 }
+:root .z5-key__spark:has(.w2-kpi-nospark) { display: none; }
 @media (min-width: 640px) {
   :root .z5-key__spark { min-height: 88px; }
 }
@@ -373,24 +470,24 @@
     padding: 14px 16px;
   }
   :root .z5-key__name { grid-area: name; }
-  :root .z5-key__value { grid-area: value; font-size: 2rem; }
+  :root .z5-key__value { grid-area: value; font-size: 2.25rem; }
   :root .z5-key__period { grid-area: period; }
   :root .z5-key__ago { grid-area: ago; }
   :root .z5-key__spark { grid-area: spark; align-self: center; margin: 0; min-height: 48px; }
   .z5-key--skel { min-height: 104px; }
 }
 
-/* ── Тематическая навигация ───────────────────────────────────────────────────── */
-.z5-topics__list { display: flex; flex-direction: column; gap: 6px; }
+/* ── Тематическая навигация: колонка L2-таблеток, активная — золото (K6.4) ──────── */
+.z5-topics__list { display: flex; flex-direction: column; gap: 8px; }
 .z5-topics .z5-topic {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   width: 100%;
-  min-height: 42px;
-  padding: 8px 12px;
-  border-radius: 14px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 16px;
   background: var(--fe-glass-l2);
   color: var(--color-text-secondary);
   font-size: 14px;
@@ -400,68 +497,79 @@
 }
 .z5-topics .z5-topic:hover { background: var(--fe-glass-l2-hover); color: var(--color-text-primary); }
 .z5-topics .z5-topic.is-active {
-  background: linear-gradient(135deg, rgba(233, 217, 174, 0.55), rgba(255, 255, 255, 0.75));
-  color: var(--fe-gold-ink, #7a5c1e);
-  font-weight: 600;
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold, #231B0B);
+  font-weight: 650;
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .z5-topic__name { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
+/* Счётчик мелким капсом. */
 .z5-topic__count {
   flex: none;
   color: var(--fe-text-muted, #5b6578);
-  font-size: 11.5px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   font-variant-numeric: tabular-nums;
-  opacity: 0.85;
 }
+.z5-topics .z5-topic.is-active .z5-topic__count { color: rgba(35, 27, 11, 0.8); }
+/* Золотая точка «главная тема»: свечение с размытием, не кольцо. */
 .z5-dot {
   flex: none;
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--fe-gold, #b08a3e);
-  box-shadow: 0 0 0 3px rgba(176, 138, 62, 0.18);
+  box-shadow: 0 0 9px 1px rgba(201, 162, 77, 0.6);
 }
-.z5-more {
-  margin-top: 14px;
-  padding-top: 10px;
-}
+.z5-topics .z5-topic.is-active .z5-dot { background: #7A5F2A; box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.55); }
+.z5-more { margin-top: 14px; }
+/* «Ещё темы»: таблетка L2 без пунктира. */
 .z5-more__summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 36px;
-  padding: 0 4px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
   color: var(--fe-gold-ink, #7a5c1e);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   list-style: none;
+  transition: background 0.2s;
 }
+.z5-more__summary:hover { background: var(--fe-glass-l2-hover); }
 .z5-more__summary::-webkit-details-marker { display: none; }
 .z5-more__chevron { transition: transform 0.2s ease; }
 .z5-more[open] .z5-more__chevron { transform: rotate(180deg); }
-.z5-more__chips { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 6px; }
+.z5-more__chips { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; }
 .z5-topics .z5-topic--chip {
   width: auto;
-  min-height: 32px;
-  padding: 5px 11px;
+  min-height: 36px;
+  padding: 5px 13px;
   border-radius: 999px;
   font-size: 12.5px;
 }
+/* «Прогноз ВВП»: тёмный хрусталь L3 в сапфире. */
 .z5-forecast {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-top: 18px;
   padding: 14px;
-  border-radius: 18px;
-  background: radial-gradient(120% 100% at 90% 0%, rgba(207, 180, 95, 0.22), transparent 60%), linear-gradient(160deg, #263049, var(--fe-dark-surface, #1b2030));
+  border-radius: 20px;
+  background: var(--k6-sapphire, var(--fe-dark-glass));
   color: #f4efe3;
   text-decoration: none;
-  box-shadow: 0 20px 36px -26px rgba(20, 24, 38, 0.6);
+  box-shadow: var(--fe-dark-shadow, 0 24px 52px -30px rgba(18, 24, 38, 0.7)), var(--fe-dark-glint, inset 0 1px 0 rgba(255, 255, 255, 0.1));
   transition: transform 0.25s, box-shadow 0.25s;
 }
 @media (hover: hover) {
-  .z5-forecast:hover { transform: translateY(var(--fe-lift, -2px)); box-shadow: 0 24px 40px -22px rgba(122, 92, 30, 0.5); }
+  .z5-forecast:hover { transform: translateY(var(--fe-lift, -2px)); box-shadow: 0 32px 64px -30px rgba(18, 24, 38, 0.8), var(--fe-dark-glint, inset 0 1px 0 rgba(255, 255, 255, 0.1)); }
 }
 .z5-forecast__icon {
   display: grid;
@@ -470,12 +578,13 @@
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: rgba(207, 180, 95, 0.18);
-  color: #e5d39a;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #E8C877;
 }
 .z5-forecast__text { min-width: 0; }
 .z5-forecast__text strong { display: block; font-size: 14px; }
-.z5-forecast__text small { display: block; color: rgba(244, 239, 227, 0.68); font-size: 12px; line-height: 1.4; }
+.z5-forecast__text small { display: block; color: rgba(244, 239, 227, 0.74); font-size: 12px; line-height: 1.4; }
 .z5-similar { margin-top: 20px; }
 .z5-similar__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .z5-similar__chip {
@@ -500,13 +609,13 @@
   .z5-similar__chip { min-height: 44px; }
 }
 
-/* ── Строки показателей страны ──────────────────────────────────────────────── */
+/* ── Строки показателей страны: полки L2 без линий, зазор 10 px, тон чередуется (K6.4) ───── */
 .z5-rows {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
 }
-.z5-rows--nested { margin-top: 10px; }
+.z5-rows--nested { margin-top: 12px; }
 .fe-ind-group.z5-group { grid-column: 1 / -1; }
 .z5-row {
   position: relative;
@@ -522,11 +631,32 @@
   text-decoration: none;
   transition: transform 0.25s cubic-bezier(0.22, 0.7, 0.2, 1), box-shadow 0.25s; box-shadow: var(--fe-l2-shadow);
 }
+/* Тон чередуется (плотнее, реже): строки читаются рядами без единой линии. */
+.z5-rows > .z5-row:nth-child(even) { background: var(--fe-glass-l1-soft, rgba(255, 255, 255, 0.42)); }
+.z5-rows--nested > .z5-row { background: var(--fe-glass-l2-hover, rgba(255, 255, 255, 0.72)); }
 @media (hover: hover) {
-  .z5-row:hover {
+  .z5-row:hover,
+  .z5-rows > .z5-row:nth-child(even):hover {
     transform: translateY(var(--fe-lift, -2px));
-    box-shadow: 0 18px 32px -24px rgba(122, 92, 30, 0.4);
+    background: var(--fe-glass-l2-hover);
+    box-shadow: 0 18px 32px -22px rgba(60, 48, 24, 0.42), var(--fe-inset-glint);
   }
+}
+/* 346 строк: размытие только у первых шести (телефон — двух) первой темы: вместе с шапкой, лентой курсов, cookie и героем
+   это укладывается в бюджет 12 слоёв на компьютере и 6 на телефоне. У остальных обычный L2 без blur, а браузер не рисует строки вне окна. */
+.z5-section:first-of-type > .z5-rows > .z5-row:nth-child(-n + 6) {
+  -webkit-backdrop-filter: blur(var(--fe-blur-l2, 12px)) saturate(1.2);
+  backdrop-filter: blur(var(--fe-blur-l2, 12px)) saturate(1.2);
+}
+@media (max-width: 767px) {
+  .z5-section:first-of-type > .z5-rows > .z5-row:nth-child(n + 3) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+.z5-rows > .z5-row:nth-child(n + 13) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 150px;
 }
 .z5-row__name { display: flex; align-items: flex-start; gap: 6px; min-width: 0; }
 .z5-row__title {
@@ -555,12 +685,9 @@
 }
 .z5-row__value small { color: var(--fe-text-muted, #5b6578); font-size: 12.5px; font-weight: 500; }
 .z5-row__spark { flex: none; width: 42%; max-width: 150px; min-height: 40px; }
-.z5-row__spark-empty {
-  display: block;
-  height: 40px;
-  background: linear-gradient(to right, rgba(176, 138, 62, 0.45) 55%, transparent 0) center / 9px 1.5px repeat-x;
-  opacity: 0.6;
-}
+/* Нет ряда для мини-графика: ни штриховки, ни прочерка, места под него не резервируем. */
+.z5-row__spark-empty { display: none; }
+.z5-row__spark:has(.z5-row__spark-empty) { display: none; }
 .z5-row__meaning {
   align-items: flex-start;
   font-size: 12.5px;
@@ -581,9 +708,10 @@
 .z5-freq { display: inline-flex; align-items: center; color: var(--fe-gold-ink, #7a5c1e); cursor: help; }
 .z5-freq--est { opacity: 0.5; }
 .fe-ind-group.z5-group {
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--fe-glass-l2);
 }
+.fe-ind-group.z5-group[open] { padding-bottom: 14px; }
 
 /* Поиск показателя */
 .z5-search input { min-height: 50px; border-radius: 16px; }
@@ -592,22 +720,41 @@
   .z5-row__num { font-size: 20px; }
 }
 
-/* ── Россия: главная пятёрка и компактные строки ──────────────────────────────── */
+/* ── Россия: пятёрка «камней» сверху и компактные полки (K6.4) ─────────────────── */
 .z5-ru-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
+  gap: 14px;
   margin-top: 14px;
 }
 @media (min-width: 640px) {
-  .z5-ru-main { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .z5-ru-main { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
 }
-:root .z5-ru-key { padding: 16px 16px 10px; }
+/* «Камень»: плитка L1 со своим цветом света в верхнем углу и светлой гранью по диагонали (это заливка, не линия). */
+:root .z5-ru-key {
+  --k6-stone: rgba(233, 205, 142, 0.6);
+  padding: 16px 16px 12px;
+  background:
+    linear-gradient(118deg, transparent 54%, rgba(255, 255, 255, 0.36) 54.4%, rgba(255, 255, 255, 0) 76%),
+    radial-gradient(120% 90% at 100% 0%, var(--k6-stone), transparent 64%),
+    var(--fe-l1-bg);
+}
+:root .z5-ru-key[data-stone='inflation'] { --k6-stone: rgba(244, 198, 216, 0.66); }
+:root .z5-ru-key[data-stone='rate'] { --k6-stone: rgba(233, 205, 142, 0.7); }
+:root .z5-ru-key[data-stone='usd'] { --k6-stone: rgba(191, 224, 245, 0.7); }
+:root .z5-ru-key[data-stone='gdp'] { --k6-stone: rgba(190, 230, 208, 0.64); }
+:root .z5-ru-key[data-stone='unemployment'] { --k6-stone: rgba(214, 208, 240, 0.66); }
 :root .z5-ru-key .z5-key__value { font-size: clamp(1.7rem, 1.3rem + 0.9vw, 2.2rem); }
+@supports (font-size: 1cqi) {
+  @media (min-width: 640px) {
+    :root .z5-ru-key .z5-key__value { font-size: clamp(2rem, 15cqi, 3rem); }
+  }
+}
 :root .z5-ru-key__monthly { color: var(--fe-text-muted, #5b6578); font-size: 12px; line-height: 1.4; }
 :root .z5-ru-key .z5-key__spark { min-height: 64px; }
 @media (max-width: 639px) {
   :root .z5-ru-key { grid-template-areas: 'name spark' 'value spark' 'period spark' 'monthly spark' 'ago spark'; }
+  :root .z5-ru-key .z5-key__value { font-size: 2.25rem; }
   :root .z5-ru-key__monthly { grid-area: monthly; }
   :root .z5-ru-key .z5-key__spark { min-height: 48px; }
 }
@@ -623,18 +770,35 @@
   align-items: center;
   gap: 3px 16px;
   min-height: 56px;
-  padding: 9px 14px;
-  border-radius: 14px;
+  padding: 9px 16px;
+  border-radius: 16px;
   background: var(--fe-glass-l2);
   color: inherit;
   text-decoration: none;
   transition: box-shadow 0.2s, transform 0.2s; box-shadow: var(--fe-l2-shadow);
 }
+.z5-ru-rows > .z5-ru-row:nth-child(even) { background: var(--fe-glass-l1-soft, rgba(255, 255, 255, 0.42)); }
 @media (hover: hover) {
-  .z5-ru-row:hover {
+  .z5-ru-row:hover,
+  .z5-ru-rows > .z5-ru-row:nth-child(even):hover {
     transform: translateY(var(--fe-lift, -2px));
-    box-shadow: 0 14px 26px -22px rgba(122, 92, 30, 0.45);
+    background: var(--fe-glass-l2-hover);
+    box-shadow: 0 14px 26px -20px rgba(60, 48, 24, 0.45), var(--fe-inset-glint);
   }
+}
+.z5-section:first-of-type > .z5-ru-rows > .z5-ru-row:nth-child(-n + 6) {
+  -webkit-backdrop-filter: blur(var(--fe-blur-l2, 12px)) saturate(1.2);
+  backdrop-filter: blur(var(--fe-blur-l2, 12px)) saturate(1.2);
+}
+@media (max-width: 767px) {
+  .z5-section:first-of-type > .z5-ru-rows > .z5-ru-row:nth-child(n + 3) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+.z5-ru-rows > .z5-ru-row:nth-child(n + 13) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 60px;
 }
 .z5-ru-row__title {
   grid-area: title;
@@ -715,4 +879,20 @@
     scroll-snap-align: start;
   }
   .z5-map-tools { margin-top: -2px; }
+}
+
+/* ── Россия: карточка территории в шапке — тот же сапфир L3, что у профиля страны (K6.1) ───────── */
+:root .z5-ru-territory {
+  border-radius: 24px;
+  background: var(--k6-sapphire, var(--fe-dark-glass));
+  /* Внутри панели героя размытие невидимо, а fixed-подсказки карты остались бы в ловушке blur: слой без backdrop-filter. */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.z5-ru-territory__dots {
+  opacity: 0.5;
+  background-image: radial-gradient(rgba(190, 210, 255, 0.28) 1px, transparent 1.6px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(75% 85% at 40% 45%, #000, transparent);
+  mask-image: radial-gradient(75% 85% at 40% 45%, #000, transparent);
 }

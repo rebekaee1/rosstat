@@ -39,12 +39,13 @@ import { mountJsonLd } from '../lib/jsonLd';
 import '../styles/platform-pages.css';
 import '../styles/indicator-russia.css';
 import '../styles/z5-country.css';
+import '../styles/k6-country.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 
 function RussiaMapSkeleton() {
   return (
-    <div className="aspect-[984/526] w-full bg-[#191A20]/40">
+    <div className="aspect-[984/526] w-full">
       <SkeletonBox className="h-full w-full rounded-none bg-white/5" />
     </div>
   );
@@ -71,18 +72,11 @@ function RussiaTerritoryCard() {
   return (
     <aside
       data-block="russia-territory-card"
-      className="relative min-h-[270px] overflow-hidden rounded-2xl bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
+      className="z5-ru-territory fe-glass-dark relative min-h-[270px] overflow-hidden"
       aria-label={t('russia.map.caption')}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(207,180,95,0.2),transparent_47%)]" />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
+      <div className="z5-ru-territory__dots pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="absolute left-4 top-3 z-10 max-w-[60%] pr-2">
         <div className="text-[13px] font-semibold text-white/80">
@@ -211,8 +205,8 @@ export default function RussiaHome() {
     <div className="fe-data-page z5-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={crumbs} />
 
-      <section className="fe-panel relative mb-6 overflow-hidden rounded-[1.5rem] p-4 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:mb-8 sm:rounded-[2rem] sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-champagne/10 blur-3xl" />
+      <section className="fe-panel relative mb-6 overflow-hidden rounded-[1.5rem] p-4 sm:mb-8 sm:rounded-[2rem] sm:p-8">
+        <div className="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(closest-side,rgba(201,162,77,0.2),transparent)]" />
         <div className="relative grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] lg:items-center lg:gap-7">
           <div className="min-w-0">
             <p className="text-sm font-semibold text-champagne-ink">
@@ -228,7 +222,7 @@ export default function RussiaHome() {
           <RussiaTerritoryCard />
         </div>
 
-        <div className="relative mt-6 pt-5 fe-divider">
+        <div className="relative mt-8">
           <h2 className="w2-main-title z5-main-title">{t('z5.ru.main.title')}</h2>
           <RussiaKeyFigures indicators={indicators} isLoading={isLoading} />
         </div>
@@ -253,7 +247,7 @@ export default function RussiaHome() {
                 to={item.to}
                 className="fe-press group flex items-start gap-3 rounded-[1.5rem] px-4 py-3.5 transition-all hover:shadow-sm fe-glass-lite fe-float"
               >
-                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-champagne/10 text-champagne-ink">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-champagne-ink fe-glass-2">
                   <Icon size={15} />
                 </div>
                 <div className="min-w-0">
@@ -325,19 +319,19 @@ export default function RussiaHome() {
 
           <div className="grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">
             {grouped.length > 0 && (
-              <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" data-testid="russia-aside">
-                <div className="mb-2 px-2 text-sm font-semibold text-text-primary">
+              <aside className="z5-topics hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" data-testid="russia-aside">
+                <div className="z5-aside-title">
                   {t('russia.categories.title')}
                 </div>
-                <nav className="flex flex-col gap-2" aria-label={t('russia.categories.title')}>
+                <nav className="z5-topics__list" aria-label={t('russia.categories.title')}>
                   {grouped.map((g) => (
                     <a
                       key={g.category.slug}
                       href={`#cat-${g.category.slug}`}
-                      className="fe-tap flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-left text-sm text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary"
+                      className="fe-tap fe-press z5-topic"
                     >
                       <span className="min-w-0 truncate">{categoryLabel(g.category, locale)}</span>
-                      <span className="shrink-0 text-xs tabular-nums">{g.count}</span>
+                      <span className="z5-topic__count">{g.count}</span>
                     </a>
                   ))}
                 </nav>
