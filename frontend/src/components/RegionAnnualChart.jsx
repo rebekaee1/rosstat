@@ -7,7 +7,7 @@
 // В этом случае обе линии пересчитываются в «Россия = 100» и рисуются на одной оси: две разные
 // шкалы в одном поле (волна 6) заставляли новичка сравнивать высоту линий, которая ничего не значит.
 // Старый вариант с правой осью остался только для графика с нашим прогнозом (у него нет ряда РФ).
-import { useCallback, useMemo, useRef, useId } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
   Tooltip, CartesianGrid,
@@ -18,13 +18,15 @@ import { useLocale } from '../i18n';
 import {
   CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, axisSampleValues, axisWidthForLabels,
 } from '../lib/chartTheme';
-import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
+import { useChartGlassIds, useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import ChartBrandCaption from './ChartBrandCaption';
+import ChartGlassDefs from './ChartGlassDefs';
+import '../styles/k4-charts.css';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
 const DUAL_AXIS_RATIO = 3;
 
-const COMPARE_COLOR = CHART_THEME.blue;
+const COMPARE_COLOR = CHART_THEME.sapphire;
 
 /** Линия «рисуется» один раз; у тех, кто просил меньше движения, сразу готовый график. */
 function chartMayAnimate() {
@@ -50,7 +52,7 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
   const periodLabel = tickLabel ? tickLabel(label) : label;
   return (
-    <div className="rounded-xl px-3 py-2 shadow-lg text-xs max-w-[calc(100vw-48px)] fe-glass-2">
+    <div className="fe-chart-tooltip fe-chart-tooltip--stack text-xs max-w-[calc(100vw-48px)]">
       <div className="text-text-secondary mb-1">{periodLabel}</div>
       {region && (
         <div className="font-semibold tabular-nums text-champagne-ink">
@@ -98,7 +100,7 @@ export default function RegionAnnualChart({
   const [setWidthNode, plotWidth] = useElementWidth();
   const touchTip = useTouchTooltip(wrapRef);
   const setWrap = useCallback((node) => { wrapRef.current = node; setWidthNode(node); }, [setWidthNode]);
-  const gradientId = `region-${useId().replaceAll(':', '')}`;
+  const glass = useChartGlassIds('k4r');
   const animate = chartMayAnimate();
 
   const monthly = frequency === 'monthly';
@@ -241,10 +243,7 @@ export default function RegionAnnualChart({
         <ResponsiveContainer>
           <ComposedChart data={plotData} margin={chartMargin}>
             <defs>
-              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.28} />
-                <stop offset="100%" stopColor={CHART_THEME.ink} stopOpacity={0.02} />
-              </linearGradient>
+              <ChartGlassDefs ids={glass} />
             </defs>
             <CartesianGrid {...GRID_PROPS} />
             <XAxis
@@ -310,52 +309,60 @@ export default function RegionAnnualChart({
               )}
             />
             <Area
+              className="k4-ribbon"
               yAxisId="region"
               type="linear"
               dataKey="value"
-              stroke={CHART_THEME.ink}
-              strokeWidth={2.2}
-              fill={`url(#${gradientId})`}
+              stroke={`url(#${glass.ribbon})`}
+              strokeWidth={3}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill={`url(#${glass.area})`}
               dot={false}
-              activeDot={{ r: 4, fill: CHART_THEME.ink }}
+              activeDot={{ r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
               isAnimationActive={animate}
-              animationDuration={700}
+              animationDuration={900}
               animationEasing="ease-out"
             />
             {compareSeries?.length > 0 && (
               <Line
+                className="k4-ribbon k4-ribbon--sapphire"
                 yAxisId="region"
                 type="linear"
                 dataKey="compare"
-                stroke={COMPARE_COLOR}
-                strokeWidth={2}
+                stroke={`url(#${glass.sapphire})`}
+                strokeWidth={2.5}
+                strokeLinecap="round"
                 dot={false}
-                activeDot={{ r: 3.5, fill: COMPARE_COLOR }}
+                activeDot={{ r: 4, fill: COMPARE_COLOR, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
               />
             )}
             {showRussia && (
               <Line
+                className="k4-ribbon k4-ribbon--plain"
                 yAxisId={dualAxis ? 'rf' : 'region'}
                 type="linear"
                 dataKey="russia"
                 stroke={CHART_THEME.axis}
-                strokeWidth={1.6}
-                strokeDasharray="5 4"
+                strokeOpacity={0.7}
+                strokeWidth={1.8}
+                strokeLinecap="round"
                 dot={false}
                 isAnimationActive={false}
               />
             )}
             {forecastSeries?.length > 0 && (
               <Line
+                className="k4-forecast"
                 yAxisId="region"
                 type="linear"
                 dataKey="forecast"
-                stroke={CHART_THEME.champagne}
-                strokeWidth={2}
-                strokeDasharray="5 4"
+                stroke={`url(#${glass.forecast})`}
+                strokeWidth={3}
+                strokeLinecap="round"
                 dot={false}
-                activeDot={{ r: 3.5, fill: CHART_THEME.champagne }}
+                activeDot={{ r: 4.5, fill: CHART_THEME.champagneInk, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
               />
             )}
@@ -365,11 +372,11 @@ export default function RegionAnnualChart({
       {showRussia && !dualAxis && (
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-sm text-text-secondary">
           <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block h-0.5 w-5 rounded bg-text-primary" />
+            <span className="k4-swatch k4-swatch--ribbon" aria-hidden="true" />
             {regionName}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block w-5 border-t-2 border-dashed" style={{ borderColor: CHART_THEME.axis }} />
+            <span className="k4-swatch" style={{ background: CHART_THEME.axis, opacity: 0.7 }} aria-hidden="true" />
             {indexMode ? t('w6f.reg.russia100', { name: russiaLabel }) : russiaLabel}
           </span>
           {indexMode && (
@@ -380,11 +387,11 @@ export default function RegionAnnualChart({
       {dualAxis && (
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-sm text-text-secondary">
           <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block w-4 h-0.5 rounded bg-text-primary" />
+            <span className="k4-swatch k4-swatch--ribbon" aria-hidden="true" />
             {t('regions.ind.axisRegion', { region: regionName })}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: CHART_THEME.axis }} />
+            <span className="k4-swatch" style={{ background: CHART_THEME.axis, opacity: 0.7 }} aria-hidden="true" />
             {nationalLabel || t('regions.ind.axisRussia')}
           </span>
         </div>

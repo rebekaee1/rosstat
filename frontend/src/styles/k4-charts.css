@@ -1,0 +1,205 @@
+/*
+ * K4. Графики, карты и планета в хрустале (раунд 3 «Хрусталь без границ»).
+ *
+ * Что здесь:
+ *   1. Лента графика: свечение под золотой и сапфировой линией, блик-штрих, линия прогноза, коридор-«призма», луч «сейчас».
+ *   2. Шарик последней точки и стеклянная плашка со значением (пульс три раза).
+ *   3. Подсказка графика: стекло L2 без рамки с золотой вертикалью.
+ *   4. Образцы цвета в легенде графика (лента, сапфир, прогноз, коридор).
+ *   5. Спарклайны карточек (ленточка со свечением и заливкой золото → 0), правка поверх компонента Sparkline.
+ *   6. Карта мира и карта регионов: стеклянная трубка-легенда, «нет данных» матовым стеклом, ползунок времени.
+ *
+ * Правила: анимируются только transform и opacity; blur, тени и filter не анимируются (они статичны);
+ * рамок нет; движение выключается через prefers-reduced-motion.
+ * Сегмент «Область / Линия / Столбцы», рамка периода и ползунок лежат в chart-controls.css, планета — в PlanetView.css.
+ */
+
+/* ===== 1. Лента ===== */
+/* Рисование слева направо 900 мс (механизм .fe-chart-draw из indicator-russia.css; здесь только длительность). */
+.fe-chart-plot.z4-plot.fe-chart-draw { animation-duration: 0.9s; animation-delay: 0.06s; }
+
+/* Свечение под лентой: мягкая тёплая тень, не кольцо. Фильтр статичный. */
+.k4-ribbon .recharts-curve { filter: drop-shadow(0 6px 10px rgba(201, 162, 77, 0.4)); }
+.k4-ribbon--sapphire .recharts-curve { filter: drop-shadow(0 6px 10px rgba(30, 42, 74, 0.3)); }
+.k4-ribbon--plain .recharts-curve { filter: drop-shadow(0 5px 8px rgba(32, 42, 60, 0.18)); }
+/* Блик-штрих: белая линия 1 px поверх ленты, на 1 px выше. */
+.k4-gloss { transform: translateY(-1px); pointer-events: none; }
+/* Прогноз: линия того же ряда, прозрачность тает вдоль (градиент в ChartGlassDefs). */
+.k4-forecast .recharts-curve { filter: drop-shadow(0 6px 10px rgba(128, 100, 47, 0.24)); }
+/* Коридор: края растушёваны лёгким размытием, без контура. */
+.k4-prism .recharts-area-area { filter: blur(0.7px); }
+/* Луч «сейчас»: размытое свечение рядом с тонкой линией. */
+.k4-beam__glow { filter: blur(4px); }
+
+/* ===== 2. Последняя точка ===== */
+.k4-lastpoint__halo {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.k4-lastpoint__tag { filter: drop-shadow(0 6px 8px rgba(60, 48, 24, 0.28)); }
+@media (prefers-reduced-motion: no-preference) {
+  /* Три вдоха: гало растёт и гаснет, потом остаётся тихим кругом. */
+  .k4-lastpoint__halo { animation: k4-halo-pulse 1.5s ease-out 0.9s 3 backwards; }
+}
+@keyframes k4-halo-pulse {
+  0% { transform: scale(0.7); opacity: 0.9; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* ===== 3. Подсказка графика ===== */
+.fe-chart-tooltip {
+  position: relative;
+  padding: 7px 14px 7px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 14px 34px -20px rgba(60, 48, 24, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+}
+.fe-chart-tooltip--stack { padding: 12px 16px 12px 18px; }
+/* Золотая вертикаль слева: одна на плашку (п. 4 эталона), рисуется заливкой, а не рамкой. */
+.fe-chart-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 6px;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #E9CD8E, #B08A3E);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .fe-chart-tooltip { background: rgba(255, 255, 255, 0.94); }
+}
+
+/* ===== 4. Образцы цвета в легенде ===== */
+.k4-swatch {
+  display: inline-block;
+  flex: none;
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+}
+.k4-swatch--ribbon {
+  background: linear-gradient(90deg, #E9CD8E, #C9A24D 52%, #A9812F);
+  box-shadow: 0 3px 6px -2px rgba(201, 162, 77, 0.55);
+}
+.k4-swatch--sapphire {
+  background: linear-gradient(90deg, #5C86C8, #1E2A4A);
+  box-shadow: 0 3px 6px -2px rgba(30, 42, 74, 0.4);
+}
+.k4-swatch--forecast { background: linear-gradient(90deg, #7A5F2A, rgba(122, 95, 42, 0.3)); }
+.k4-swatch--prism {
+  width: 22px;
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, rgba(233, 205, 142, 0.5), rgba(188, 212, 236, 0.3));
+}
+
+/* ===== 5. Спарклайны карточек (поверх components/Sparkline.jsx) ===== */
+/* Лента 2,4 px: свойство CSS сильнее атрибута stroke-width в SVG, поэтому правим здесь, не трогая компонент. */
+.sparkline-svg path[fill='none'] {
+  stroke-width: 2.4px;
+  filter: drop-shadow(0 4px 5px rgba(201, 162, 77, 0.38));
+}
+/* Золотая заливка к нулю и золотая лента по длине: поверх цветов компонента (цвет тренда остаётся у бусины на конце). */
+.sparkline-svg linearGradient:nth-of-type(1) stop:first-child { stop-color: #E9CD8E; stop-opacity: 0.38; }
+.sparkline-svg linearGradient:nth-of-type(1) stop:last-child { stop-color: #E9CD8E; stop-opacity: 0; }
+.sparkline-svg linearGradient:nth-of-type(2) stop:first-child { stop-color: #E9CD8E; stop-opacity: 0.6; }
+.sparkline-svg linearGradient:nth-of-type(2) stop:last-child { stop-color: #B08A3E; stop-opacity: 1; }
+/* Бусина на конце: тёмный низ и светлый блик, чтобы читалась как камень. */
+.sparkline-svg circle:last-of-type { filter: drop-shadow(0 2px 3px rgba(60, 48, 24, 0.35)); }
+
+/* ===== 6. Карты: легенда, «нет данных», ползунок времени ===== */
+/* Легенда — стеклянная трубка: градиент шкалы, блик сверху, бусины-деления. */
+.k4-tube {
+  position: relative;
+  height: 14px;
+  border-radius: 999px;
+  box-shadow: inset 0 3px 6px rgba(120, 90, 30, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.85), 0 6px 14px -8px rgba(60, 48, 24, 0.4);
+}
+.k4-tube::before {
+  content: '';
+  position: absolute;
+  inset: 2px 6px auto;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+/* Деления шкалы: ряд бусин поверх трубки, по одной на границу полосы. */
+.k4-tube__beads {
+  position: absolute;
+  inset: 0 7px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+.k4-tube__beads > i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 28%, #FFFFFF, rgba(255, 255, 255, 0.55));
+  box-shadow: 0 1px 3px rgba(60, 48, 24, 0.35);
+}
+/* Полоса легенды карты мира: стеклянная капсула со своим цветом и бликом. */
+.k4-bin {
+  height: 14px;
+  border-radius: 7px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 5px -3px rgba(60, 48, 24, 0.28), 0 4px 8px -5px rgba(60, 48, 24, 0.35);
+}
+/* «Нет данных»: матовое стекло без штриховки. */
+.k4-nodata {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(220, 232, 243, 0.62));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -2px 4px -2px rgba(88, 74, 46, 0.16), 0 4px 8px -5px rgba(60, 48, 24, 0.3);
+}
+
+/* Ползунок времени (index.css .map-timeline): жёлоб и золотая жидкость до бусины. Заливку до бусины задаёт --k4-pct. */
+input.map-timeline {
+  height: 8px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #E9CD8E 0%, #C9A24D var(--k4-pct, 0%), rgba(88, 74, 46, 0.09) var(--k4-pct, 0%), rgba(88, 74, 46, 0.09) 100%);
+  box-shadow: inset 0 2px 5px rgba(120, 90, 30, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.85);
+}
+input.map-timeline::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  background: radial-gradient(circle at 34% 28%, #FFF6DA 0, #E9CD8E 22%, #C9A24D 58%, #A9812F 100%);
+  box-shadow: 0 6px 12px -4px rgba(60, 48, 24, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+input.map-timeline::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  background: radial-gradient(circle at 34% 28%, #FFF6DA 0, #E9CD8E 22%, #C9A24D 58%, #A9812F 100%);
+  box-shadow: 0 6px 12px -4px rgba(60, 48, 24, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Плита карты: вода — лёд, суша со стеклянным бликом; без внешней рамки. */
+.k4-map-plate {
+  background: #DCE8F3;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -26px 36px -30px rgba(176, 138, 62, 0.22), 0 22px 44px -28px rgba(60, 48, 24, 0.4);
+}
+
+/* ===== 7. Печать-грань «Проверен на истории» (для K5: класс вешается на .zb-fc__badge, когда прогноз проверен) ===== */
+.k4-seal {
+  position: relative;
+  padding-left: 26px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(233, 205, 142, 0.38));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 16px -10px rgba(176, 138, 62, 0.6);
+}
+/* Грань: квадрат, повёрнутый на 45 градусов, с золотым градиентом и тенью (ромб без среза clip-path). */
+.k4-seal::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #FFF3CF, #C9A24D 55%, #8F6B24);
+  box-shadow: 0 2px 4px -1px rgba(60, 48, 24, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transform: rotate(45deg);
+}

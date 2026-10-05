@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useId } from 'react';
 import { CHART_THEME } from '../lib/chartTheme';
 import { SkeletonBox } from './Skeleton';
+import '../styles/k4-charts.css';
 
 const COLOR_POSITIVE = '#16A34A';
 const COLOR_NEGATIVE = '#DC2626';
