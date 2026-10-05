@@ -118,7 +118,7 @@
       "currencies": {
         "description": "Ruble exchange rates, global currency pairs, and cryptocurrency prices from the Bank of Russia, ECB, and Binance.",
         "h1": "Currency and cryptocurrency rates",
-        "intro": "Explore ruble exchange rates, global currency pairs, and cryptocurrency prices. Each series shows its own source and update period.",
+        "intro": "Explore ruble exchange rates, global currency pairs, and cryptocurrency prices. Each rate shows its own source and update date.",
         "name": "Currencies",
         "slug": "currencies",
         "title": "Currency and cryptocurrency rates"

@@ -29,7 +29,9 @@ import Chip from '../components/Chip';
 import Button from '../components/Button';
 import { formatValueSplit, splitUnit } from '../lib/compareUnitSplit';
 import CompareCountryStep from '../components/compare/CompareCountryStep';
-import CompareExample from '../components/compare/CompareExample';
+import { COMPARE_PRESETS, DEFAULT_COMPARE_PRESET, presetIsActive, presetParams } from '../lib/comparePresets';
+import { compareLabels, conceptShortLabel, unitHint } from '../lib/compareTitle';
+import useMediaQuery from '../lib/useMediaQuery';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
   CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, axisSampleValues,
@@ -63,6 +65,7 @@ import {
 import Breadcrumbs from '../components/Breadcrumbs';
 import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/regions-w4.css';
+import '../styles/w6-g.css';
 
 /** Сила связи двух рядов словами (число — только в «Как посчитано»). */
 function correlationKey(r) {
@@ -280,6 +283,8 @@ async function fetchWorldSeries(code, { signal }) {
     __worldMeta: {
       code,
       name: `${conceptName} — ${countryName}`,
+      conceptName,
+      countryName,
       unit: payload.meta.unit,
       frequency: payload.meta.frequency,
       category: 'compare.category.world',
@@ -371,6 +376,7 @@ function ComboSelect({
           value={open ? query : selectedLabel}
           placeholder={value && !open ? selectedLabel : (open ? searchPlaceholder : placeholder)}
           onFocus={() => { setOpen(true); setQuery(''); }}
+          onClick={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onChange={(e) => setQuery(e.target.value)}
           className="min-w-0 flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-tertiary disabled:cursor-not-allowed"
@@ -459,18 +465,15 @@ function AddRegionSeries({
     })).filter((section) => section.items.length);
   }, [catalog.data, compatibilityFor, regionSlug]);
 
-  const code = regionSlug && indCode ? `r:${regionSlug}:${indCode}` : null;
-  const already = code && selected.includes(code);
-  const compatibility = code && compatibilityFor
-    ? compatibilityFor(code)
-    : { allowed: true, reason: null };
-  const canAdd = code && !already && !atCap && compatibility.allowed;
-
-  const handleAdd = () => {
-    if (!canAdd) return;
+  // Выбор показателя сразу ставит ряд на график. Регион остаётся: удобно добавить второй показатель того же региона.
+  const handlePick = (value) => {
+    setIndCode('');
+    if (!value || !regionSlug || atCap) return;
+    const code = `r:${regionSlug}:${value}`;
+    const compatibility = compatibilityFor ? compatibilityFor(code) : { allowed: true };
+    if (selected.includes(code) || !compatibility.allowed) return;
     onAdd(code);
     track(events.REGION_COMPARE_ADD, { code });
-    setIndCode(''); // регион оставляем — удобно добавить второй показатель того же региона
   };
 
   return (
@@ -494,26 +497,14 @@ function AddRegionSeries({
         <ComboSelect
           groups={indicatorGroups}
           value={indCode}
-          onChange={setIndCode}
+          onChange={handlePick}
           ariaLabel={t('compare.regionIndicatorAria')}
           placeholder={t('compare.regionIndicatorPlaceholder')}
           searchPlaceholder={t('compare.regionIndicatorSearch')}
           disabled={atCap || !regionSlug}
           trackContext="compare-region-indicator"
         />
-        <Button
-          variant={canAdd ? 'primary' : 'secondary'}
-          disabled={!canAdd}
-          onClick={handleAdd}
-          title={atCap
-            ? capHint
-            : already
-              ? t('compare.alreadyAdded')
-              : compatText(t, compatibility)}
-        >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          {already ? t('compare.alreadyAddedShort') : t('compare.addRegionSeries')}
-        </Button>
+        {atCap && <p className="text-xs leading-relaxed text-text-secondary">{capHint}</p>}
       </div>
     </div>
   );
@@ -562,18 +553,14 @@ function AddSubnationalSeries({
     }].filter((section) => section.items.length);
   }, [hub.data, compatibilityFor, countrySlug, regionSlug]);
 
-  const code = regionSlug && indCode ? `s:${countrySlug}:${regionSlug}:${indCode}` : null;
-  const already = code && selected.includes(code);
-  const compatibility = code && compatibilityFor
-    ? compatibilityFor(code)
-    : { allowed: true, reason: null };
-  const canAdd = code && !already && !atCap && compatibility.allowed;
-
-  const handleAdd = () => {
-    if (!canAdd) return;
+  const handlePick = (value) => {
+    setIndCode('');
+    if (!value || !regionSlug || atCap) return;
+    const code = `s:${countrySlug}:${regionSlug}:${value}`;
+    const compatibility = compatibilityFor ? compatibilityFor(code) : { allowed: true };
+    if (selected.includes(code) || !compatibility.allowed) return;
     onAdd(code);
     track(events.REGION_COMPARE_ADD, { code, world: true });
-    setIndCode('');
   };
 
   return (
@@ -597,26 +584,14 @@ function AddSubnationalSeries({
         <ComboSelect
           groups={indicatorGroups}
           value={indCode}
-          onChange={setIndCode}
+          onChange={handlePick}
           ariaLabel={t('compare.regionIndicatorAria')}
           placeholder={t('compare.regionIndicatorPlaceholder')}
           searchPlaceholder={t('compare.regionIndicatorSearch')}
           disabled={atCap || !regionSlug}
           trackContext="compare-world-region-indicator"
         />
-        <Button
-          variant={canAdd ? 'primary' : 'secondary'}
-          disabled={!canAdd}
-          onClick={handleAdd}
-          title={atCap
-            ? capHint
-            : already
-              ? t('compare.alreadyAdded')
-              : compatText(t, compatibility)}
-        >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          {already ? t('compare.alreadyAddedShort') : t('compare.addSubnationalSeries')}
-        </Button>
+        {atCap && <p className="text-xs leading-relaxed text-text-secondary">{capHint}</p>}
       </div>
     </div>
   );
@@ -647,6 +622,7 @@ function AddIndicator({
   indicators, selected, onAdd, atCap, capHint, compatibilityFor, placeholder,
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const [query, setQuery] = useState('');
   const [openList, setOpenList] = useState(false);
   // Директория сравнения: показываем ВСЕ показатели (минус уже выбранные),
@@ -713,7 +689,7 @@ function AddIndicator({
             >
               <span className="line-clamp-2 min-w-0 break-words text-sm leading-snug text-text-primary">{ind.name}</span>
               <span className="mt-0.5 flex items-center gap-2 shrink-0">
-                <span className="text-xs text-text-secondary">{unitSuffix(ind.unit)}</span>
+                <span className="text-xs text-text-secondary">{unitHint(ind.unit, locale)}</span>
                 <Plus className="w-3.5 h-3.5 text-champagne" />
               </span>
             </button>
@@ -724,15 +700,18 @@ function AddIndicator({
   );
 }
 
+/** Показатели, которые люди ищут чаще всего: показываются в списке первыми. */
+const POPULAR_CONCEPTS = ['gdp-usd', 'hicp-index', 'unemployment-rate', 'population', 'gdp-per-capita-usd'];
+
 /**
  * Показатель выбранной страны (страна уже зафиксирована в дереве пикера).
- * Код ряда — `w:{slug}:{concept}`.
+ * Код ряда — `w:{slug}:{concept}`. Выбор в списке сразу ставит ряд на график, без второго нажатия.
  */
 function AddWorldCountrySeries({
   items, countrySlug, selected, onAdd, atCap, capHint, compatibilityFor,
 }) {
   const t = useT();
-  const [conceptSlug, setConceptSlug] = useState('');
+  const { locale } = useLocale();
 
   const conceptItems = useMemo(() => {
     const map = new Map();
@@ -745,18 +724,33 @@ function AddWorldCountrySeries({
         : item.frequency === 'quarterly'
           ? t('compare.freq.quarterShort')
           : t('compare.freq.yearShort');
+      const fullName = locale === 'en' ? (item.concept_name_en || item.concept_name) : item.concept_name;
       map.set(item.concept_slug, {
         ...item,
         value: item.concept_slug,
-        label: item.concept_name,
+        // Короткое название для списка; полное остаётся в поиске (name).
+        label: conceptShortLabel(item.concept_slug, fullName, t),
+        name: fullName,
+        name_en: item.concept_name_en,
         hint: freq,
         code: item.code,
       });
     }
-    return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, 'ru'));
-  }, [items, countrySlug, selected, compatibilityFor, t]);
+    return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, locale === 'en' ? 'en' : 'ru'));
+  }, [items, countrySlug, selected, compatibilityFor, t, locale]);
 
-  // Пустой список бывает по трём разным причинам — и говорить про них надо по-разному.
+  const groups = useMemo(() => {
+    const popular = POPULAR_CONCEPTS
+      .map((slug) => conceptItems.find((item) => item.value === slug))
+      .filter(Boolean);
+    const rest = conceptItems.filter((item) => !popular.includes(item));
+    return [
+      { label: t('w6g.compare.popular'), items: popular },
+      { label: popular.length ? t('w6g.compare.allIndicators') : t('compare.conceptGroup'), items: rest },
+    ].filter((group) => group.items.length);
+  }, [conceptItems, t]);
+
+  // Пустой список бывает по трём разным причинам, и говорить про них надо по-разному.
   const emptyKey = (() => {
     if (conceptItems.length) return null;
     const own = (items || []).filter((item) => item.country_slug === countrySlug);
@@ -764,45 +758,25 @@ function AddWorldCountrySeries({
     return own.length ? 'y1.compare.noMatch' : 'compare.noCountrySeries';
   })();
 
-  const selectedConcept = conceptItems.find((item) => item.value === conceptSlug);
-  const code = selectedConcept?.code || null;
-  const already = code && selected.includes(code);
-  const compatibility = code
-    ? compatibilityFor(code)
-    : { allowed: false, reason: null };
-  const canAdd = code && !already && !atCap && compatibility.allowed;
+  const pick = (conceptSlug) => {
+    const item = conceptItems.find((it) => it.value === conceptSlug);
+    if (!item || atCap) return;
+    onAdd(item.code);
+  };
 
   return (
     <div className="grid gap-2">
       <ComboSelect
-        groups={[{ label: t('compare.conceptGroup'), items: conceptItems }]}
-        value={conceptSlug}
-        onChange={setConceptSlug}
-        placeholder={t('compare.conceptPlaceholder')}
-        searchPlaceholder={t('compare.conceptSearch')}
+        groups={groups}
+        value=""
+        onChange={pick}
+        placeholder={t('w6g.compare.findIndicator')}
+        searchPlaceholder={t('w6g.compare.findIndicator')}
         ariaLabel={t('compare.conceptAria')}
         disabled={atCap || conceptItems.length === 0}
         trackContext="compare-world-concept"
       />
-      <Button
-        variant={canAdd ? 'primary' : 'secondary'}
-        disabled={!canAdd}
-        onClick={() => { if (canAdd) { onAdd(code); setConceptSlug(''); } }}
-        title={atCap
-          ? capHint
-          : already
-            ? t('compare.alreadyAdded')
-            : compatText(t, compatibility)}
-        className="w-full"
-      >
-        <Plus className="h-4 w-4" aria-hidden="true" />
-        {already ? t('compare.alreadyAddedShort') : t('common.add')}
-      </Button>
-      {code && !already && !atCap && !compatibility.allowed && (
-        <p className="text-xs leading-relaxed text-text-tertiary">
-          {compatText(t, compatibility)}
-        </p>
-      )}
+      {atCap && <p className="text-xs leading-relaxed text-text-secondary">{capHint}</p>}
       {emptyKey && (
         <p className="text-xs leading-relaxed text-text-secondary">
           {t(emptyKey)}
@@ -838,6 +812,7 @@ function PickerBack({ label, onClick }) {
  */
 function CompareSeriesPicker({
   indicators, worldItems, selected, onAdd, atCap, capHint, compatibilityFor,
+  status = '', catalogLoading = false,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -915,7 +890,26 @@ function CompareSeriesPicker({
     ? { key: 'russia', label: t('compare.russia') }
     : countries.find((c) => c.key === countryKey) || null;
   const activeWorldConcept = selected.map(parseWorldCompareCode).find(Boolean)?.conceptSlug;
-  const activeWorldConceptName = worldItems.find((item) => item.concept_slug === activeWorldConcept)?.concept_name;
+  const activeWorldConceptItem = worldItems.find((item) => item.concept_slug === activeWorldConcept);
+  const activeWorldConceptName = activeWorldConceptItem
+    ? conceptShortLabel(
+      activeWorldConcept,
+      locale === 'en' ? (activeWorldConceptItem.concept_name_en || activeWorldConceptItem.concept_name) : activeWorldConceptItem.concept_name,
+      t,
+    )
+    : undefined;
+
+  // Подсказка шага зависит от состояния: не просим «выбрать показатель», когда все уже на графике.
+  const countryHasOptions = Boolean(
+    countryKey && countryKey !== 'russia'
+    && worldItems.some((item) => item.country_slug === countryKey
+      && !selected.includes(item.code) && compatibilityFor(item.code).allowed),
+  );
+  const stepHint = !countryKey
+    ? t('compare.pickCountryFirst')
+    : countryKey === 'russia' || countryHasOptions || !selectedCountry
+      ? t('w6g.compare.pickIndicatorInstant')
+      : t('w6g.compare.countryDone', { country: selectedCountry.label });
 
   const resetCountry = () => {
     setCountryKey(null);
@@ -934,10 +928,13 @@ function CompareSeriesPicker({
   return (
     <div className="fe-panel overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
       <div className="mb-5 border-b border-border-subtle pb-4">
-        <div className="text-sm font-medium text-champagne-ink">{t('w4.compare.addTitle')}</div>
-        <div className="mt-1 text-[15px] text-text-primary">
-          {t(countryKey ? 'y1.compare.pickIndicator' : 'compare.pickCountryFirst')}
-        </div>
+        <div className="text-sm font-medium text-champagne-ink">{t('w6g.compare.pickerTitle')}</div>
+        <div className="mt-1 text-[15px] text-text-primary">{stepHint}</div>
+        {status && (
+          <p role="status" data-testid="compare-status" className="mt-2 text-[13px] leading-snug text-champagne-ink">
+            {status}
+          </p>
+        )}
         {activeWorldConceptName && (
           <p className="mt-2 text-xs leading-relaxed text-text-tertiary">
             {t('compare.sameConceptHint', { indicator: activeWorldConceptName })}
@@ -959,6 +956,7 @@ function CompareSeriesPicker({
           onAddIndicator={(item) => { onAdd(item.code); setCountryQuery(''); }}
           atCap={atCap}
           capHint={capHint}
+          loading={catalogLoading}
         />
       )}
 
@@ -1005,7 +1003,7 @@ function CompareSeriesPicker({
             >
               <span className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 shrink-0" />
-                {t('compare.regionsBranch')}
+                {t('w6g.compare.regionsRussia')}
               </span>
               <span className="mt-1 block text-xs font-normal text-text-secondary">
                 {t('compare.regionsBranchHint')}
@@ -1216,6 +1214,10 @@ export default function ComparePage() {
   const [scale, setScale] = useState('values');
   const [step, setStep] = useState('auto');
   const [compatibilityMessage, setCompatibilityMessage] = useState('');
+  // Подсказка после добавления: что произошло и что делать дальше.
+  const [status, setStatus] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const coarsePointer = useMediaQuery('(pointer: coarse)');
   // Панорама окна: сдвиг в точках от правого края ряда («кружочек» как на
   // карточке индикатора — созвон «На правки 13»).
   const [panOffset, setPanOffset] = useState(0);
@@ -1236,7 +1238,12 @@ export default function ComparePage() {
   const cap = isAuthed ? USER_MAX : GUEST_MAX;
   // Гость никогда не рендерит/экспортирует больше двух рядов — даже если коды
   // переданы напрямую в URL.
-  const allCodes = useMemo(() => parseCodes(searchParams), [searchParams]);
+  // Без `codes` в адресе страница открывается готовым живым сравнением, а не пустой анкетой.
+  const isDemo = !searchParams.has('codes') && !searchParams.has('a') && !searchParams.has('b');
+  const allCodes = useMemo(
+    () => (isDemo ? DEFAULT_COMPARE_PRESET.codes : parseCodes(searchParams)),
+    [isDemo, searchParams],
+  );
   const compatibleCodes = useMemo(() => sanitizeCompareCodes(allCodes), [allCodes]);
   const codes = useMemo(
     () => (isAuthed ? compatibleCodes : compatibleCodes.slice(0, GUEST_MAX)),
@@ -1251,7 +1258,8 @@ export default function ComparePage() {
   });
 
   useEffect(() => {
-    track(events.COMPARE_OPEN, { count: codes.length, codes: codes.join(',') || null });
+    // Готовый пример (без выбора в адресе) в аналитику не пишем как выбор человека.
+    track(events.COMPARE_OPEN, { count: isDemo ? 0 : codes.length, codes: isDemo ? null : (codes.join(',') || null), demo: isDemo });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -1270,14 +1278,14 @@ export default function ComparePage() {
   const { data: unlistedIndicators, isFetched: unlistedFetched } = useIndicators({
     includeUnlisted: true, enabled: needsUnlisted,
   });
-  const { data: worldCompareCatalog } = useWorldCompareCatalog();
+  const { data: worldCompareCatalog, isLoading: worldCatalogLoading } = useWorldCompareCatalog();
   const hasWorldSeries = codes.some(isWorldCode);
   const dataSpacesCount = [
     codes.some((code) => isWorldCode(code) || isSubnationalCode(code)),
     codes.some(isRegionCode),
     codes.some((code) => !isWorldCode(code) && !isRegionCode(code) && !isSubnationalCode(code)),
   ].filter(Boolean).length;
-  const worldCompareItems = worldCompareCatalog?.items || [];
+  const worldCompareItems = useMemo(() => worldCompareCatalog?.items || [], [worldCompareCatalog]);
   const compatibilityNote = activeCompatibilityNote(codes);
   const worldMetaByCode = useMemo(
     () => new Map((worldCompareCatalog?.items || []).map((item) => [item.code, {
@@ -1299,14 +1307,17 @@ export default function ComparePage() {
     if (hasWorldSeries && step !== 'auto') setStep('auto');
   }, [hasWorldSeries, step]);
 
-  const repByCode = useMemo(() => parseReps(searchParams), [searchParams]);
+  const repByCode = useMemo(
+    () => (isDemo ? DEFAULT_COMPARE_PRESET.reps : parseReps(searchParams)),
+    [isDemo, searchParams],
+  );
 
   const writeCodes = useCallback((next) => {
     const params = new URLSearchParams(searchParams);
     params.delete('a');
     params.delete('b');
-    if (next.length) params.set('codes', next.join(','));
-    else params.delete('codes');
+    // Пустой `codes=` отличает «убрал всё» от «пришёл без выбора» (там показывается готовый пример).
+    params.set('codes', next.join(','));
     // Убираем rep-записи удалённых кодов, чтобы URL не тащил мусор.
     const rawRep = params.get('rep');
     if (rawRep) {
@@ -1330,30 +1341,68 @@ export default function ComparePage() {
     track(events.COMPARE_CHANGE, { code, rep });
   }, [searchParams, setSearchParams, repByCode]);
 
+  // Короткое имя ряда для подсказки «… добавлен на график».
+  const shortNameForCode = useCallback((code) => {
+    const parsed = parseWorldCompareCode(code);
+    if (parsed) {
+      const item = worldCompareItems.find((it) => it.code === code);
+      if (!item) return '';
+      const concept = conceptShortLabel(
+        item.concept_slug,
+        locale === 'en' ? (item.concept_name_en || item.concept_name) : item.concept_name,
+        t,
+      );
+      const country = locale === 'en' ? (item.country_name_en || item.country_name) : item.country_name;
+      return country ? `${concept}, ${country}` : concept;
+    }
+    return indicators?.find((item) => item.code === code)?.name || '';
+  }, [worldCompareItems, indicators, locale, t]);
+
   const addCode = useCallback((code) => {
-    if (codes.includes(code)) return;
-    if (codes.length >= cap) {
+    // Из готового примера «с нуля» не добавляем: пример только показ, выбор начинается пустым.
+    const current = isDemo ? [] : codes;
+    if (current.includes(code)) return;
+    if (current.length >= cap) {
       if (!isAuthed) {
-        track(events.COMPARE_LIMIT_HIT, { count: codes.length });
+        track(events.COMPARE_LIMIT_HIT, { count: current.length });
         setUpsellOpen(true);
       }
       return;
     }
-    const compatibility = compareCompatibility(codes, code);
+    const compatibility = compareCompatibility(current, code);
     if (!compatibility.allowed) {
       setCompatibilityMessage(compatText(t, compatibility) || '');
       return;
     }
     setCompatibilityMessage('');
-    const next = [...codes, code];
+    const next = [...current, code];
     writeCodes(next);
+    const name = shortNameForCode(code) || t('z2.compare.seriesFallback');
+    setStatus(t(next.length >= cap && !isAuthed ? 'w6g.compare.addedLimit' : 'w6g.compare.added', { name }));
+    // Выбор остаётся раскрытым: после первого ряда сразу можно добавить второй.
+    setPickerOpen(true);
     track(events.COMPARE_ADD, { code, count: next.length });
-  }, [codes, cap, isAuthed, writeCodes, t]);
+  }, [codes, isDemo, cap, isAuthed, writeCodes, t, shortNameForCode]);
 
   const removeCode = useCallback((code) => {
     writeCodes(codes.filter((c) => c !== code));
+    setStatus('');
     track(events.COMPARE_CHANGE, { removed: code });
   }, [codes, writeCodes]);
+
+  // Готовый набор одним нажатием: график строится сразу.
+  const applyPreset = useCallback((preset) => {
+    setSearchParams(presetParams(preset, searchParams), { replace: true });
+    setStatus('');
+    setCompatibilityMessage('');
+    track(events.COMPARE_CHANGE, { preset: preset.id });
+  }, [searchParams, setSearchParams]);
+
+  // «Изменить» на готовом примере: пример становится рабочим сравнением, выбор раскрывается.
+  const startEditing = useCallback(() => {
+    if (isDemo) setSearchParams(presetParams(DEFAULT_COMPARE_PRESET, searchParams), { replace: true });
+    setPickerOpen(true);
+  }, [isDemo, searchParams, setSearchParams]);
 
   // Резолв (индикатор, представление) → {код ряда для загрузки, transform, unit}.
   // Так каждый ряд грузится в выбранном виде (уровень/к пред./к году), а не в
@@ -1748,58 +1797,55 @@ export default function ComparePage() {
   const capHint = isAuthed
     ? t('compare.capAuthed', { n: USER_MAX })
     : t('compare.capGuest');
-  const title = series.length
-    ? `${t('compare.badge')}: ${series.map((s) => s.name || t('z2.compare.seriesFallback')).join(' — ')}`
-    : t('compare.title');
+  const { headline: chartHeadline, labels } = compareLabels(series, {
+    t, locale, fallback: t('z2.compare.seriesFallback'),
+  });
+  const headline = series.length ? chartHeadline : t('compare.title');
+  const showPicker = pickerOpen || (!isDemo && codes.length === 0);
+  const activePreset = COMPARE_PRESETS.find((preset) => presetIsActive(preset, codes));
 
   return (
-    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 md:pb-16">
+    <div className="fe-data-page fe-gutter max-w-7xl mx-auto pt-24 md:pt-28 pb-12 md:pb-16">
       <UpsellModal open={upsellOpen} onClose={() => setUpsellOpen(false)} />
 
-      <div className="mb-10 md:mb-12 max-w-4xl">
+      <div className="mb-6 md:mb-8 max-w-4xl">
         <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-6" />
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
           {t('compare.title')}
         </h1>
         <p className="max-w-2xl text-[15px] leading-relaxed text-text-secondary md:text-base">
-          {t('w4.compare.subtitle')}
+          {t('w6g.compare.subtitle')}
         </p>
       </div>
 
       <section data-block="compare-add" className="mb-6">
-        <CompareSeriesPicker
-          indicators={indicators}
-          worldItems={worldCompareItems}
-          selected={codes}
-          onAdd={addCode}
-          atCap={atCap}
-          capHint={capHint}
-          compatibilityFor={(code) => compareCompatibility(codes, code)}
-        />
+        {/* Готовые сравнения: один тап, и график уже построен. */}
+        <div className="mb-4" role="group" aria-label={t('w6g.compare.presetsAria')}>
+          <div className="fe-scroll-row">
+            {COMPARE_PRESETS.map((preset) => (
+              <Chip
+                key={preset.id}
+                active={activePreset?.id === preset.id}
+                onClick={() => applyPreset(preset)}
+              >
+                {t(preset.labelKey)}
+              </Chip>
+            ))}
+          </div>
+        </div>
 
-        {compatibilityMessage && (
-          <div className="mt-3 rounded-xl border border-champagne/25 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary" role="status">
-            {compatibilityMessage}
+        {isDemo && (
+          <div className="fe-compare-demo mb-4" data-testid="compare-demo">
+            <p className="fe-compare-demo__text">{t('w6g.compare.demoNote')}</p>
+            <Button variant="secondary" onClick={startEditing}>
+              {t('w6g.compare.edit')}
+            </Button>
           </div>
         )}
 
-        <p className="mt-3 text-[13px] leading-snug text-text-secondary">
-          {isAuthed
-            ? t('compare.selectedAuthed', { n: codes.length, max: USER_MAX })
-            : t('compare.selectedGuest', { n: codes.length, max: GUEST_MAX })}
-          {!isAuthed && (
-            <>
-              {' '}
-              <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="font-medium text-champagne-ink hover:underline">
-                {t('compare.wantMore')}
-              </button>
-            </>
-          )}
-        </p>
-
-        {codes.length > 0 && (
-          <div className="mt-4 flex flex-col gap-2">
+        {!isDemo && codes.length > 0 && (
+          <div className="mb-4 flex flex-col gap-2">
             {series.map((s) => {
               const reps = s.isWorld
                 ? worldCompareRepresentationsFor({
@@ -1841,10 +1887,61 @@ export default function ComparePage() {
             })}
           </div>
         )}
+
         {dataSpacesCount > 1 && compatibilityNote && (
-          <div className="mt-3 rounded-xl border border-champagne/20 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary">
+          <div className="mb-4 rounded-xl border border-champagne/20 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary">
             {t(compatibilityNote)}
           </div>
+        )}
+
+        {!isDemo && codes.length > 0 && (
+          <Button
+            variant="secondary"
+            aria-expanded={showPicker}
+            onClick={() => setPickerOpen((open) => !open)}
+            className="mb-4"
+          >
+            {showPicker ? <ChevronDown className="h-4 w-4 rotate-180" aria-hidden="true" /> : <Plus className="h-4 w-4" aria-hidden="true" />}
+            {showPicker ? t('w6g.compare.hidePicker') : t('w6g.compare.addMore')}
+          </Button>
+        )}
+
+        {showPicker && (
+          <>
+            <CompareSeriesPicker
+              indicators={indicators}
+              worldItems={worldCompareItems}
+              selected={isDemo ? [] : codes}
+              onAdd={addCode}
+              atCap={atCap}
+              capHint={capHint}
+              compatibilityFor={(code) => compareCompatibility(isDemo ? [] : codes, code)}
+              status={status}
+              catalogLoading={worldCatalogLoading}
+            />
+
+            {compatibilityMessage && (
+              <div className="mt-3 rounded-xl border border-champagne/25 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary" role="status">
+                {compatibilityMessage}
+              </div>
+            )}
+
+            {(atCap || !isAuthed) && (
+              <p className="mt-3 text-[13px] leading-snug text-text-secondary">
+                {isAuthed
+                  ? t('compare.selectedAuthed', { n: codes.length, max: USER_MAX })
+                  : t('compare.selectedGuest', { n: codes.length, max: GUEST_MAX })}
+                {!isAuthed && (
+                  <>
+                    {' '}
+                    <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="font-medium text-champagne-ink hover:underline">
+                      {t('compare.wantMore')}
+                    </button>
+                  </>
+                )}
+              </p>
+            )}
+          </>
         )}
       </section>
 
@@ -1863,100 +1960,9 @@ export default function ComparePage() {
       )}
 
       <section ref={setSectionNode} data-block="compare-chart" className="mb-8">
-        <div className="mb-6 grid gap-4 border-b border-border-subtle pb-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6">
-          <div className="min-w-0">
-            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-secondary">
-              <Activity className="h-3.5 w-3.5 text-champagne" aria-hidden="true" />
-              {t('compare.periodLabel')}
-            </div>
-            <div className="fe-scroll-row">
-              {RANGE_OPTIONS.map((opt) => (
-                <Chip
-                  key={opt.key}
-                  active={range === opt.key}
-                  onClick={() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}
-                >
-                  {t(opt.labelKey)}
-                </Chip>
-              ))}
-            </div>
-          </div>
-
-          <div className="min-w-0">
-            <div
-              className="mb-1.5 text-xs font-medium text-text-secondary"
-              title={t(hasWorldSeries ? 'compare.worldOfficialOnly' : 'compare.stepTitle')}
-            >
-              {t('w4.compare.stepLabel')}
-            </div>
-            {hasWorldSeries ? (
-              <span className="inline-flex min-h-[34px] items-center rounded-xl border border-border-subtle bg-obsidian-lighter px-3 text-xs text-text-secondary">
-                {t('compare.step.official')}
-              </span>
-            ) : (
-              <div className="fe-scroll-row">
-                {STEP_OPTIONS.map((opt) => (
-                  <Chip
-                    key={opt.key}
-                    active={step === opt.key}
-                    onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
-                  >
-                    {t(opt.labelKey)}
-                  </Chip>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="min-w-0">
-            <div className="mb-1.5 text-xs font-medium text-text-secondary">{t('w4.compare.scaleLabel')}</div>
-            <div className="fe-scroll-row">
-              {SCALE_OPTIONS.map((opt) => {
-                const disabled = forceIndex && opt.key === 'values';
-                return (
-                  <Chip
-                    key={opt.key}
-                    disabled={disabled}
-                    active={indexed ? opt.key === 'index' : !!range && scale === opt.key && !forceIndex}
-                    onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
-                    title={disabled ? t('compare.indexOnlyUnits') : undefined}
-                  >
-                    {t(opt.labelKey)}
-                  </Chip>
-                );
-              })}
-            </div>
-          </div>
-
-          {hasData && (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleExport}
-              className="w-full sm:ml-auto sm:w-auto"
-              title={t('compare.downloadChart')}
-            >
-              <ImageDown className="h-3.5 w-3.5" aria-hidden="true" />
-              {t('compare.imageButton')}
-            </Button>
-          )}
-        </div>
-
-        {forceIndex && (
-          <p className="-mt-3 mb-6 text-xs text-text-tertiary">
-            {t(mixedPriceIndexBases ? 'compare.priceIndexBaseHint' : 'compare.forceIndexHint')}
-            {mixedPriceIndexBases && (
-              <> {' '}<Link to="/world/rating/hicp-index" className="text-champagne hover:underline">
-                {t('world.chart.compareInflationRates')}
-              </Link></>
-            )}
-          </p>
-        )}
-
         {loading ? (
           <CompareChartState kind="loading" height={chartHeight} />
         ) : !hasData ? (
-          <>
           <CompareChartState
             kind={codes.length === 0 ? 'none' : loadFailed ? 'error' : 'empty'}
             compact={codes.length === 0}
@@ -1965,7 +1971,7 @@ export default function ComparePage() {
             retrying={retrying}
             message={
               codes.length === 0
-                ? t('w4.compare.emptyAdd')
+                ? t('w6g.compare.emptyAdd')
                 : loadFailed
                   ? t('w4.compare.emptyUnavailable')
                   : noSharedBase
@@ -1975,12 +1981,10 @@ export default function ComparePage() {
                       : t('compare.emptyData')
             }
           />
-          {codes.length === 0 && <CompareExample onOpen={writeCodes} />}
-          </>
         ) : (
           <div ref={exportRef} className="fe-panel fe-reveal rounded-[2rem] bg-surface border border-border-subtle p-4 md:p-6">
             <h2 className="text-left text-lg md:text-xl font-display font-bold text-text-primary mb-1">
-              {title}
+              {headline}
             </h2>
             <p className="text-left text-xs text-text-secondary mb-4">
               {indexed
@@ -1996,7 +2000,7 @@ export default function ComparePage() {
                   <span key={s.code} className={cn('flex min-w-0 max-w-full items-start gap-2', dropped && 'opacity-60')}>
                     <span className="mt-1.5 h-[3px] w-4 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
                     <span className="min-w-0 break-words">
-                    <span className="font-semibold text-text-primary">{s.name || t('z2.compare.seriesFallback')}</span>{' '}
+                    <span className="font-semibold text-text-primary">{labels[i] || t('z2.compare.seriesFallback')}</span>{' '}
                     <span className="text-text-secondary">
                       {legendDetail(s, i, dropped)}
                     </span>
@@ -2041,7 +2045,7 @@ export default function ComparePage() {
               <ResponsiveContainer width="100%" height={chartHeight}>
                 <ComposedChart
                   data={chartRows}
-                  margin={{ top: 10, right: narrow ? 18 : 28, bottom: narrow ? 26 : 44, left: 0 }}
+                  margin={{ top: 10, right: narrow ? 14 : 24, bottom: 4, left: 0 }}
                 >
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis
@@ -2053,8 +2057,7 @@ export default function ComparePage() {
                     ticks={xTicks}
                     interval={0}
                     tickMargin={8}
-                    height={narrow ? 28 : 36}
-                    label={narrow ? undefined : { value: t('compare.periodLabel'), position: 'insideBottom', offset: -2, fill: CHART_THEME.axis, fontSize: 11, fontFamily: CHART_THEME.font }}
+                    height={narrow ? 28 : 32}
                   />
                   <YAxis
                     yAxisId="left"
@@ -2090,7 +2093,7 @@ export default function ComparePage() {
                       yAxisId={axisFor(i)}
                       type="monotone"
                       dataKey={s.key}
-                      name={s.name || t('z2.compare.seriesFallback')}
+                      name={labels[i] || t('z2.compare.seriesFallback')}
                       stroke={s.color}
                       strokeWidth={2}
                       dot={false}
@@ -2124,13 +2127,107 @@ export default function ComparePage() {
                 <div className="mt-1 flex justify-between gap-2 text-[11px] text-text-secondary">
                   <span>{chartRows[0] ? formatDate(chartRows[0].date, compareDateFmt) : ''}</span>
                   <span className="hidden sm:inline text-text-tertiary/70 normal-case">
-                    {t('compare.panHint')}
+                    {t(coarsePointer ? 'w6g.compare.panHintTouch' : 'compare.panHint')}
                   </span>
                   <span>{chartRows.length ? formatDate(chartRows[chartRows.length - 1].date, compareDateFmt) : ''}</span>
                 </div>
               </div>
             )}
           </div>
+        )}
+
+        {/* Настройки — после графика и только когда есть что настраивать. */}
+        {hasData && !loading && (
+          <div
+            data-block="compare-settings"
+            className="mt-5 grid gap-4 border-t border-border-subtle pt-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6"
+          >
+            <div className="min-w-0">
+              <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+                <Activity className="h-3.5 w-3.5 text-champagne" aria-hidden="true" />
+                {t('compare.periodLabel')}
+              </div>
+              <div className="fe-scroll-row">
+                {RANGE_OPTIONS.map((opt) => (
+                  <Chip
+                    key={opt.key}
+                    active={range === opt.key}
+                    onClick={() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}
+                  >
+                    {t(opt.labelKey)}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+
+            <div className="min-w-0">
+              <div
+                className="mb-1.5 text-xs font-medium text-text-secondary"
+                title={t(hasWorldSeries ? 'compare.worldOfficialOnly' : 'compare.stepTitle')}
+              >
+                {t('w4.compare.stepLabel')}
+              </div>
+              {hasWorldSeries ? (
+                <span className="inline-flex min-h-[34px] items-center rounded-xl border border-border-subtle bg-obsidian-lighter px-3 text-xs text-text-secondary">
+                  {t('w6g.compare.step.official')}
+                </span>
+              ) : (
+                <div className="fe-scroll-row">
+                  {STEP_OPTIONS.map((opt) => (
+                    <Chip
+                      key={opt.key}
+                      active={step === opt.key}
+                      onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
+                    >
+                      {t(opt.labelKey === 'compare.step.auto' ? 'w6g.compare.step.auto' : opt.labelKey)}
+                    </Chip>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="min-w-0">
+              <div className="mb-1.5 text-xs font-medium text-text-secondary">{t('w4.compare.scaleLabel')}</div>
+              <div className="fe-scroll-row">
+                {SCALE_OPTIONS.map((opt) => {
+                  const disabled = forceIndex && opt.key === 'values';
+                  return (
+                    <Chip
+                      key={opt.key}
+                      disabled={disabled}
+                      active={indexed ? opt.key === 'index' : !!range && scale === opt.key && !forceIndex}
+                      onClick={() => { setScale(opt.key); track(events.COMPARE_RANGE, { scale: opt.key }); }}
+                      title={disabled ? t('compare.indexOnlyUnits') : undefined}
+                    >
+                      {t(opt.key === 'index' ? 'w6g.compare.scale.index' : 'w6g.compare.scale.values')}
+                    </Chip>
+                  );
+                })}
+              </div>
+            </div>
+
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleExport}
+              className="w-full sm:ml-auto sm:w-auto"
+              title={t('compare.downloadChart')}
+            >
+              <ImageDown className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('w6g.compare.saveImage')}
+            </Button>
+          </div>
+        )}
+
+        {forceIndex && hasData && (
+          <p className="mt-4 text-xs text-text-tertiary">
+            {t(mixedPriceIndexBases ? 'compare.priceIndexBaseHint' : 'compare.forceIndexHint')}
+            {mixedPriceIndexBases && (
+              <> {' '}<Link to="/world/rating/hicp-index" className="text-champagne hover:underline">
+                {t('world.chart.compareInflationRates')}
+              </Link></>
+            )}
+          </p>
         )}
       </section>
 

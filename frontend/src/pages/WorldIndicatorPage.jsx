@@ -43,6 +43,8 @@ import DataTable from '../components/DataTable';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import DeltaBadge from '../components/DeltaBadge';
 import WorldCountUp from '../components/WorldCountUp';
+import PopulationStats from '../components/PopulationStats';
+import { isPeopleUnit } from '../lib/populationFacts';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import Button from '../components/Button';
@@ -317,6 +319,9 @@ export default function WorldIndicatorPage() {
     })))
     : chartValueDigits(rawUnit || displayUnit);
   const unitParts = splitUnit(displayUnit);
+  // Численность населения: плитки «28,1 млн», «+0,35 млн», «место среди стран», «рост за 10 лет».
+  const isPopulation = indicator?.concept_slug === 'population'
+    && isPeopleUnit(rawUnit || displayUnit || indicator?.unit);
   const span = dataSpan(telemetry?.dataCount, activeFreq);
   const spanWord = (unit, n) => (locale === 'en'
     ? t(`w2.span.${unit}.${n === 1 ? 'one' : 'many'}`)
@@ -562,6 +567,8 @@ export default function WorldIndicatorPage() {
                   <SkeletonBox key={i} className="h-32 rounded-3xl" />
                 ))}
               </div>
+            ) : isPopulation ? (
+              <PopulationStats points={points} unit={rawUnit} countrySlug={slug} />
             ) : (
               <>
                 <div className="fe-substat-grid grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">

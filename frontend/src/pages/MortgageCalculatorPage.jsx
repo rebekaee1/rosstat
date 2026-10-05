@@ -19,6 +19,8 @@ import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
 import Breadcrumbs from '../components/Breadcrumbs';
 import CalculatorSiblings from '../components/CalculatorSiblings';
+import CalculatorShowcase from '../components/CalculatorShowcase';
+import '../styles/w6-g.css';
 import { toolTrail } from '../lib/breadcrumbs';
 import CalcSlider from '../components/CalcSlider';
 import CalcMoneyField from '../components/CalcMoneyField';
@@ -138,7 +140,7 @@ export default function MortgageCalculatorPage() {
   const yearBreakdown = result?.yearly?.[clampedYear - 1] || null;
 
   return (
-    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 sm:pb-16">
+    <div className="fe-data-page fe-gutter max-w-3xl mx-auto pt-24 md:pt-28 pb-12 sm:pb-16">
       <div style={revealStyle(0)} className="fe-reveal mb-8">
         <Breadcrumbs items={toolTrail(t('calc.mortgage.title'), '/calculator/mortgage')} />
       </div>
@@ -158,6 +160,8 @@ export default function MortgageCalculatorPage() {
         </p>
         <CalcKeyRate rate={keyRate} />
       </header>
+
+      <CalculatorShowcase current="mortgage" />
 
       <section style={revealStyle(2)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6 space-y-6">
         <CalcMoneyField

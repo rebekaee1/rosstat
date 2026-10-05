@@ -17,6 +17,8 @@ export default function CalcCountryPicker({
   value,
   onChange,
   russiaLabel,
+  loading = false,
+  fallbackName = '',
 }) {
   const t = useT();
   const [query, setQuery] = useState('');
@@ -30,7 +32,10 @@ export default function CalcCountryPicker({
 
   const options = useMemo(() => [russia, ...countries], [russia, countries]);
 
-  const selected = options.find((c) => c.slug === value) || russia;
+  // Пока каталог стран грузится, выбранной страны в списке ещё нет: не подменяем её Россией и не показываем слаг.
+  const known = options.find((c) => c.slug === value);
+  const pending = !known && value && value !== RUSSIA_SLUG;
+  const selected = known || (pending ? { slug: value, name: fallbackName || '' } : russia);
 
   const filtered = useMemo(() => {
     return filterSearchCountries(options, query);
@@ -86,7 +91,10 @@ export default function CalcCountryPicker({
         {selected.slug === RUSSIA_SLUG
           ? <Landmark className="h-4 w-4 shrink-0 text-champagne" />
           : <Globe2 className="h-4 w-4 shrink-0 text-champagne" />}
-        <span className="min-w-0 flex-1 truncate">{selected.name}</span>
+        {pending && !selected.name
+          ? <span className="skeleton h-4 w-32 rounded-md" role="status" aria-busy={loading || undefined} aria-label={t('common.loading')} />
+          : <span className="min-w-0 flex-1 truncate">{selected.name}</span>}
+        {pending && !selected.name ? <span className="flex-1" /> : null}
         <ChevronDown className={cn('h-4 w-4 shrink-0 text-text-tertiary transition-transform', open && 'rotate-180')} />
       </button>
 

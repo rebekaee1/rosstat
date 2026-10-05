@@ -77,7 +77,7 @@ CATEGORY_META_EN: dict[str, CategorySeo] = {
         ),
         intro=(
             "Explore ruble exchange rates, global currency pairs, and cryptocurrency "
-            "prices. Each series shows its own source and update period."
+            "prices. Each rate shows its own source and update date."
         ),
         flagship_code="usd-rub",
         keywords=(

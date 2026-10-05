@@ -35,6 +35,26 @@ function isAbsoluteLevel(unit, modeMeta) {
     && !normalized.includes('п.п.');
 }
 
+/** Последнее конечное значение ряда или null. */
+function lastFinite(points) {
+  for (let i = (points?.length || 0) - 1; i >= 0; i -= 1) {
+    const v = Number(points[i]?.value);
+    if (Number.isFinite(v)) return v;
+  }
+  return null;
+}
+
+/**
+ * Масштабы стран различаются больше чем вдвое: на общей оси меньшая линия выглядит ровной,
+ * хотя меняется. Тогда над графиком предлагается показать рост в процентах.
+ */
+export function scalesDiffer(basePoints, others, factor = 2) {
+  const values = [lastFinite(basePoints), ...(others || []).map((item) => lastFinite(item.data))]
+    .filter((v) => v != null && v > 0);
+  if (values.length < 2) return false;
+  return Math.max(...values) / Math.min(...values) > factor;
+}
+
 function averageCountryLabel(conceptSlug, t) {
   if (WORLD_RANKING_MEDIAN_CONCEPTS.has(conceptSlug)) {
     return t('world.chart.medianCountries');
@@ -260,10 +280,13 @@ export function useCountryComparison({
   const displayedUnit = rebased ? t('world.chart.rebasedUnit') : unit;
   const displayedTitle = rebased ? t('world.chart.rebasedTitle', { title }) : title;
 
+  const absolute = surface === 'russia'
+    ? isAbsoluteLevel(unit, { type: 'level' })
+    : isAbsoluteLevel(unit, modeMeta);
+  const scaleMismatch = comparisonScale === 'values' && !rebased && absolute
+    && scalesDiffer(dataPoints, loadedComparisonSeries);
+
   const toggleComparison = (id) => {
-    const absolute = surface === 'russia'
-      ? isAbsoluteLevel(unit, { type: 'level' })
-      : isAbsoluteLevel(unit, modeMeta);
     if (
       !activeComparisonIds.includes(id)
       && activeComparisonIds.length === 0
@@ -296,6 +319,7 @@ export function useCountryComparison({
     setComparisonPickerActive,
     compareCodes,
     rebased,
+    scaleMismatch,
     loadedComparisonSeries,
     displayedDataPoints,
     displayedComparisonSeries,

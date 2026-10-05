@@ -17,6 +17,7 @@ import {
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
+import CurrencyDesk from '../components/CurrencyDesk';
 import { track, events } from '../lib/track';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
@@ -137,6 +138,8 @@ export default function CategoryPage({ fixedSlug }) {
   // а не стопкой больших карточек.
   const compactRows = filtered.length >= 3 && filtered.length <= 16
     && filtered.filter((ind) => ind.frequency === 'daily').length * 2 >= filtered.length;
+  // Курсы валют и криптовалют: конвертер, вкладки и поиск валюты вместо общей ленты (волна 6, G).
+  const isCurrencies = cat.slug === 'currencies';
 
   return (
     <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-24">
@@ -171,14 +174,18 @@ export default function CategoryPage({ fixedSlug }) {
         );
       })()}
 
-      <div className="mb-8">
-        <IndicatorSearch variant="inline" inlinePlaceholder={t('w3.search.short')} />
-      </div>
+      {!isCurrencies && (
+        <div className="mb-8">
+          <IndicatorSearch variant="inline" inlinePlaceholder={t('w3.search.short')} />
+        </div>
+      )}
 
       <section data-block="category-list" className="fe-cat-list">
-        <h2 className="fe-cat-list__title">
-          {compactRows ? t('z1.cat.ratesHeading') : t('category.indicatorsHeading')}
-        </h2>
+        {!isCurrencies && (
+          <h2 className="fe-cat-list__title">
+            {compactRows ? t('z1.cat.ratesHeading') : t('category.indicatorsHeading')}
+          </h2>
+        )}
         {isError && (
           <ApiRetryBanner
             className="mb-6"
@@ -197,6 +204,8 @@ export default function CategoryPage({ fixedSlug }) {
           </div>
         ) : isError ? null : filtered.length === 0 ? (
           <p className="text-text-secondary">{t('category.empty')}</p>
+        ) : isCurrencies ? (
+          <CurrencyDesk indicators={filtered} />
         ) : (
           <>
             {commonPhrase && (

@@ -16,7 +16,7 @@ import Button from './Button';
 import { indicatorPublicName, worldRangePreset } from '../lib/worldViewModes';
 import { useLocale, useT } from '../i18n';
 import { useCountryComparison } from '../lib/useCountryComparison';
-import CountryComparePanel from './CountryComparePicker';
+import CountryComparePanel, { ScaleNudge } from './CountryComparePicker';
 
 /**
  * Секция графика мировой карточки.
@@ -137,6 +137,7 @@ export default function WorldChartSection({
     setComparisonPickerActive,
     compareCodes,
     rebased,
+    scaleMismatch,
     loadedComparisonSeries,
     displayedDataPoints,
     displayedComparisonSeries,
@@ -254,6 +255,8 @@ export default function WorldChartSection({
           />
         </div>
       </div>
+
+      <ScaleNudge show={scaleMismatch && comparisonScale === 'values'} onScale={setComparisonScale} />
 
       {chartLoading ? (
         <ChartSectionSkeleton />

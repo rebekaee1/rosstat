@@ -46,7 +46,7 @@ function renderShell(route = '/', locale) {
 }
 
 describe('Navbar H-4 menu', () => {
-  it('десктоп: Главная, Россия, Рейтинг стран, Сравнение и Калькуляторы — без витрины мира', () => {
+  it('десктоп: Главная, Россия, Рейтинг стран, Сравнение и Инструменты — без витрины мира', () => {
     renderShell();
 
     const nav = screen.getByRole('navigation');
@@ -63,7 +63,7 @@ describe('Navbar H-4 menu', () => {
     expect(within(nav).getByRole('link', { name: 'Россия' }).getAttribute('href')).toBe(russiaHomePath());
     // До xl подпись короткая, с xl — полная: в DOM обе, имя ссылки склеенное.
     expect(within(nav).getByRole('link', { name: /Сравнение/ }).getAttribute('href')).toBe('/compare');
-    expect(within(nav).getByRole('button', { name: /Калькуляторы/i })).toBeTruthy();
+    expect(within(nav).getByRole('button', { name: /Инструменты/i })).toBeTruthy();
   });
 
   it('мобильное меню: те же разделы, что в шапке без JS, сгруппированные; без демографии', () => {

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useIndicatorData } from './hooks';
 import { useWorldCompareCatalog, useWorldCompareSeries, useWorldIndicator } from './worldApi';
 import { useLocale } from '../i18n';
@@ -122,11 +122,12 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
    */
   const sourceUrl = isRussia ? RUSSIA_SOURCE_URL : (metaQ.data?.indicator?.source_url || null);
 
+  // Пока название страны неизвестно, возвращаем null: страница не должна показывать слаг («united-states»).
   const countryName = isRussia
     ? null
     : (seriesQ.data?.meta?.country_name
-      || countries.find((c) => c.slug === countrySlug)?.name
-      || countrySlug);
+      || countries.find((c) => c.slug === resolvedSlug)?.name
+      || null);
 
   const isLoading = isRussia
     ? (qCpi.isLoading || qFood.isLoading || qNonfood.isLoading || qServices.isLoading)
@@ -136,6 +137,17 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
     : seriesQ.isError;
 
   const countriesLoading = catalogQ.isLoading;
+
+  // Повтор загрузки по кнопке: перезапрашиваем только то, что упало (и ряд, и описание источника).
+  const refetchAll = useCallback(() => {
+    if (isRussia) {
+      [qCpi, qFood, qNonfood, qServices].forEach((q) => { if (q.isError) q.refetch(); });
+      return;
+    }
+    seriesQ.refetch();
+    if (metaQ.isError) metaQ.refetch();
+    if (catalogQ.isError) catalogQ.refetch();
+  }, [isRussia, qCpi, qFood, qNonfood, qServices, seriesQ, metaQ, catalogQ]);
 
   return useMemo(() => {
     const base = {
@@ -153,6 +165,7 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
       countryName,
       seriesStartYear,
       isRussia,
+      refetch: refetchAll,
     };
 
     if (isLoading || isError || !amount || amount <= 0) {
@@ -194,6 +207,6 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
     amount, fromYear, toYear, cpiAll, cpiFood, cpiNonfood, cpiServices,
     worldPoints, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate,
     countries, countriesLoading, source, sourceUrl, countryName, seriesStartYear,
-    isRussia, resolvedSlug,
+    isRussia, resolvedSlug, refetchAll,
   ]);
 }

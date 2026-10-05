@@ -7,6 +7,10 @@ import VariantGroupPicker from './VariantGroupPicker';
 import GenericViewModePicker from './GenericViewModePicker';
 import { ViewModesPanel } from './ViewModesPanel';
 import IndicatorTelemetryGrid from './IndicatorTelemetryGrid';
+import CurrencyTelemetry from './CurrencyTelemetry';
+import CurrencyNext from './CurrencyNext';
+import { isCurrencyIndicator } from '../lib/sitePaths';
+import { normalizeRateNameEn } from '../lib/currencyRates';
 import IndicatorChartSection from './IndicatorChartSection';
 import IndicatorMethodologyPanel from './IndicatorMethodologyPanel';
 import IndicatorForecastSection from './IndicatorForecastSection';
@@ -15,7 +19,7 @@ import IndicatorSeoBlocks from './IndicatorSeoBlocks';
 import RelatedIndicators from './RelatedIndicators';
 import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
-import { useT } from '../i18n';
+import { useLocale, useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';
 
 /**
@@ -128,6 +132,13 @@ export default function GenericIndicatorView({
     } catch { /* сеть/сервер — молча */ }
   }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
+  const isCurrency = isCurrencyIndicator(code);
+  const { locale } = useLocale();
+  // На английском название курса пишется одинаково везде: «USD/RUB exchange rate».
+  const headerIndicator = isCurrency && locale === 'en' && indicator?.name
+    ? { ...indicator, name: normalizeRateNameEn(indicator.name) }
+    : indicator;
+
   const chartEmptyHint = !isLoading && !isError && (dataPoints?.length ?? 0) === 0
     ? t('indicator.empty.recalc')
     : undefined;
@@ -135,27 +146,48 @@ export default function GenericIndicatorView({
   return (
     <>
       <IndicatorDetailHeader
-        indicator={indicator}
+        indicator={headerIndicator}
         code={code}
         loading={loadingInd}
         headerRef={headerRef}
         displayFrequency={effectiveIndicator?.frequency}
       />
 
-      <IndicatorTelemetryGrid
-        indicator={effectiveIndicator}
-        viewStats={viewStats}
-        stats={stats}
-        {...FLAGS}
-        chartMode="cpi"
-        safeViewMode={safeMode}
-        cpiPrevDate={null}
-        adj={IDENTITY}
-        firstDate={dataPoints?.[0]?.date}
-        loading={loadingInd || isLoading}
-      />
+      {isCurrency ? (
+        <CurrencyTelemetry
+          code={code}
+          loading={loadingInd}
+          fallback={(
+            <IndicatorTelemetryGrid
+              indicator={effectiveIndicator}
+              viewStats={viewStats}
+              stats={stats}
+              {...FLAGS}
+              chartMode="cpi"
+              safeViewMode={safeMode}
+              cpiPrevDate={null}
+              adj={IDENTITY}
+              firstDate={dataPoints?.[0]?.date}
+              loading={loadingInd || isLoading}
+            />
+          )}
+        />
+      ) : (
+        <IndicatorTelemetryGrid
+          indicator={effectiveIndicator}
+          viewStats={viewStats}
+          stats={stats}
+          {...FLAGS}
+          chartMode="cpi"
+          safeViewMode={safeMode}
+          cpiPrevDate={null}
+          adj={IDENTITY}
+          firstDate={dataPoints?.[0]?.date}
+          loading={loadingInd || isLoading}
+        />
+      )}
 
-      <ViewModesPanel>
+      <ViewModesPanel label={isCurrency ? t('w6g.cur.show') : undefined}>
         {variantGroup ? (
           <VariantGroupPicker group={variantGroup} currentCode={code} />
         ) : null}
@@ -218,6 +250,8 @@ export default function GenericIndicatorView({
         {...FLAGS}
         dataPoints={dataPoints}
       />
+
+      {isCurrency && <CurrencyNext code={code} />}
 
       <IndicatorSeoBlocks blocks={indicator?.seo_blocks} indicatorCode={code} />
 

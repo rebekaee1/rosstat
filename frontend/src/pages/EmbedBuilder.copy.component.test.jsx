@@ -44,18 +44,19 @@ describe('EmbedBuilder: превью и копирование', () => {
     expect(live?.textContent).toBe('Скопировано');
   });
 
-  it('выбор «что вставить» — карточки с подсказками; код спрятан под «Показать код»', async () => {
+  it('выбор «что вставить» — карточки с подсказками; код развёрнут, копировать одной главной кнопкой', async () => {
     setup();
     const ticker = await screen.findByRole('button', { name: /Бегущая строка/ });
     expect(ticker.getAttribute('aria-pressed')).toBe('false');
     expect(screen.getByRole('button', { name: /График/ }).getAttribute('aria-pressed')).toBe('true');
     fireEvent.click(ticker);
     expect(ticker.getAttribute('aria-pressed')).toBe('true');
-    // Код — внутри свёрнутого <details>, не на виду; превью с адресом и «светофором» нет.
+    // Код развёрнут сразу; кнопка «Копировать код» одна и стоит в закреплённом предпросмотре.
     const code = document.querySelector('.w5-embed-code details');
     expect(code).toBeTruthy();
-    expect(code.hasAttribute('open')).toBe(false);
-    expect(screen.getByText('Показать код')).toBeTruthy();
+    expect(code.hasAttribute('open')).toBe(true);
+    expect(screen.getAllByRole('button', { name: /Копировать код/ })).toHaveLength(1);
+    expect(document.querySelector('.fe-w6g-embed-preview').contains(screen.getByRole('button', { name: /Копировать код/ }))).toBe(true);
     expect(document.querySelector('.w5-embed-preview .rounded-full')).toBeNull();
   });
 
