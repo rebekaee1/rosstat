@@ -172,10 +172,28 @@
   background: radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.4) 62%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.95), 0 6px 10px -6px rgb(60 48 24 / 0.5);
 }
-/* Лесенка стран: стеклянные столбики, текущая страна золотая и со свечением. */
-.fe-dashboard .fe-today__ladder { filter: drop-shadow(0 3px 3px rgb(60 48 24 / 0.16)); }
-.fe-dashboard .fe-today__ladder rect.is-mark {
-  filter: drop-shadow(0 0 4px rgb(201 162 77 / 0.85));
+/* Шкала места: гладкая стеклянная трубка с «жидким золотом» (темнее у первого места) и камень-самоцвет на позиции по рангу.
+   Полос и штрихов нет: форму задают градиент, блик и тень. Камень появляется через transform и opacity. */
+.fe-dashboard .fe-today__scale {
+  height: 14px;
+  margin: 0 9px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0) 55%),
+    linear-gradient(90deg, #B08A3E 0%, #D9BC72 38%, #F3E4B8 100%);
+  box-shadow: inset 0 2px 3px rgb(255 255 255 / 0.5), inset 0 -3px 5px rgb(107 82 36 / 0.28), 0 8px 12px -8px rgb(60 48 24 / 0.45);
+}
+.fe-dashboard .fe-today__gem {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--fe-rank-pos, 0) * 100%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 32% 28%, #fff 0 12%, #FFF3CF 30%, #E9C97A 58%, #8F6B24);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -3px 4px rgb(107 82 36 / 0.3), 0 0 14px rgb(201 162 77 / 0.7), 0 7px 10px -4px rgb(107 82 36 / 0.6);
+  animation: fe-today-gem 0.6s var(--z3-ease) 0.2s both;
 }
 .fe-dashboard .fe-today__pulse {
   width: 10px;
@@ -522,3 +540,12 @@
   .fe-dashboard .fe-country-row:hover { transform: none; }
 }
 html[data-fe-motion='off'] .fe-dashboard .fe-tool__sheen { animation: none; opacity: 0; }
+
+/* Кадр граней героя (K1) на главной: кластер уходит в правое поле и чуть выше, чтобы не ложиться на «Год» и верх списка стран.
+   Переменные положения объявлены в k1-scene.css; здесь только их значения для главной (страница страны и телефон не затронуты). */
+@media (min-width: 768px) {
+  html:has(.fe-dashboard) .fe-scene-hero:not([data-fe-hero='country']) {
+    --fe-hero-frame-right: -10vw;
+    --fe-hero-frame-top: -2vw;
+  }
+}

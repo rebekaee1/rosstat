@@ -1,4 +1,4 @@
-import { useId, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useWorldCompareSnapshot, useWorldCountries } from '../../lib/worldApi';
@@ -13,53 +13,21 @@ import { SkeletonBox } from '../Skeleton';
 import CountUp from './CountUp';
 import '../../styles/z3-home.css';
 
-const BAR_STEP = 4;
-const BAR_WIDTH = 2.6;
-const BAR_AREA = 22;
-
 /**
- * Лесенка всех стран в порядке рейтинга: столбики-«стёкла», выбранная страна золотая и выше соседей.
- * Чисто декоративна, смысл дублирует подпись «место N из M». Градиенты заданы в самом SVG (у каждого экземпляра свой id).
+ * Шкала места: гладкая трубка «жидкое золото» и камень-самоцвет на ней. Позиция камня по рангу: первое место в самом начале,
+ * последнее в конце. Чисто декоративна, смысл дублирует подпись «Место N из M» под ней (поэтому aria-hidden).
  */
-function Ladder({ ladder }) {
-  const gid = `g${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
-  const count = ladder.bars.length;
+function RankScale({ ladder }) {
+  const span = Math.max(1, ladder.total - 1);
+  const pos = Math.min(1, Math.max(0, (ladder.rank - 1) / span));
   return (
-    <svg
-      className="fe-today__ladder"
-      viewBox={`0 0 ${count * BAR_STEP - (BAR_STEP - BAR_WIDTH)} ${BAR_AREA}`}
-      preserveAspectRatio="none"
+    <span
+      className={'fe-today__scale' + (ladder.rank === 1 ? ' is-first' : '')}
+      style={{ '--fe-rank-pos': pos }}
       aria-hidden="true"
-      focusable="false"
     >
-      <defs>
-        <linearGradient id={`${gid}-glass`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.95" />
-          <stop offset="1" stopColor="#C9A24D" stopOpacity="0.42" />
-        </linearGradient>
-        <linearGradient id={`${gid}-gold`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#F3E4B8" />
-          <stop offset="0.45" stopColor="#C9A24D" />
-          <stop offset="1" stopColor="#8F6B24" />
-        </linearGradient>
-      </defs>
-      {ladder.bars.map((height, index) => {
-        const h = Math.max(2, height * BAR_AREA);
-        return (
-          <rect
-            key={index}
-            className={index === ladder.mark ? 'is-mark' : undefined}
-            fill={`url(#${gid}-${index === ladder.mark ? 'gold' : 'glass'})`}
-            x={index * BAR_STEP}
-            y={BAR_AREA - h}
-            width={BAR_WIDTH}
-            height={h}
-            rx="0.6"
-            style={{ '--i': index }}
-          />
-        );
-      })}
-    </svg>
+      <i className="fe-today__gem" />
+    </span>
   );
 }
 
@@ -104,7 +72,7 @@ function TodayTile({ tile, href, countriesByCode }) {
       </span>
       <span className="fe-today__caption">{caption}</span>
       <span className="fe-today__rank">
-        <Ladder ladder={tile.ladder} />
+        <RankScale ladder={tile.ladder} />
         <span className="fe-today__rank-text">{rank}</span>
       </span>
     </Link>
