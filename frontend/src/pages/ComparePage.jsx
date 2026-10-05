@@ -641,7 +641,7 @@ function AddRegionSeries({
   };
 
   return (
-    <div className="fe-panel rounded-xl p-3">
+    <div className="fe-glass-lite rounded-xl p-3">
       <AddCardHeader
         icon={MapPin}
         title={t('compare.addRegionTitle')}
@@ -728,7 +728,7 @@ function AddSubnationalSeries({
   };
 
   return (
-    <div className="fe-panel rounded-xl p-3">
+    <div className="fe-glass-lite rounded-xl p-3">
       <AddCardHeader
         icon={MapPin}
         title={t('compare.addSubnationalTitle', { kind: kindPlural })}

@@ -139,7 +139,7 @@ function ForecastCard({ item, locale, t }) {
   });
 
   return (
-    <article className="fe-glass-lite zb-fc__card fe-reveal" data-testid="forecast-card" data-theme-id={item.theme}>
+    <article className="fe-glass-lite zb-fc__card fe-glint fe-reveal" data-testid="forecast-card" data-theme-id={item.theme}>
       <div className="zb-fc__card-head">
         <h3 className="zb-fc__card-title">{item.title}</h3>
         <span className="zb-fc__badge" data-verified={item.verified ? 'true' : 'false'}>

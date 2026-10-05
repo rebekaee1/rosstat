@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { splitAccent } from '../lib/k5Accent';
 
 /**
  * K5. Мелкие общие детали страниц показателя, сравнения и прогнозов.
@@ -10,15 +11,6 @@ import { useId } from 'react';
  *
  * EmptyShard: осколок для пустых мест (CSS/SVG-аналог EmptyState из K2, пока он не слит).
  */
-const SPLIT = /^([\s\S]*\s)([^\s)\]»"'.,;:!?]{3,})([)\]»"'.,;:!?]*)$/;
-
-export function splitAccent(text) {
-  const value = String(text ?? '');
-  const m = SPLIT.exec(value);
-  if (!m) return null;
-  return { head: m[1], word: m[2], tail: m[3] };
-}
-
 export default function AccentTitle({ text }) {
   const parts = splitAccent(text);
   if (!parts) return text ?? null;

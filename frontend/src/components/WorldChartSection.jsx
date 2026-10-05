@@ -23,6 +23,7 @@ import { buildChartTitle } from '../lib/z4ChartTitle';
 import { localizeSource } from '../i18n/viewModeLabels';
 import CountryComparePanel, { ScaleNudge } from './CountryComparePicker';
 import '../styles/z4-indicator.css';
+import '../styles/k5-pages.css';
 
 /**
  * Секция графика мировой карточки.
@@ -256,7 +257,7 @@ export default function WorldChartSection({
         {chartLoading ? (
           <ChartSectionSkeleton />
         ) : (
-          <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem]">
+          <div ref={chartRef} className="k5-chart-host relative w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem]">
             <IndicatorChart
               key={`${code}-${modeMeta?.id}-${activeFreq}`}
               mode="cpi"
