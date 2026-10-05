@@ -56,7 +56,7 @@ async function killIfDisabled(force) {
       await Promise.all(names.map((n) => caches.delete(n)));
       await self.registration.unregister();
     }
-  } catch (_) { /* сеть недоступна: не выключаем */ }
+  } catch { /* сеть недоступна: не выключаем */ }
 }
 
 self.addEventListener('fetch', (event) => {
@@ -75,7 +75,7 @@ self.addEventListener('fetch', (event) => {
 // ── Push (заготовка, ничего не запрашивает и не показывает без серверной отправки) ──
 self.addEventListener('push', (event) => {
   let data = {};
-  try { data = event.data ? event.data.json() : {}; } catch (_) { data = {}; }
+  try { data = event.data ? event.data.json() : {}; } catch { data = {}; }
   const title = typeof data.title === 'string' && data.title ? data.title.slice(0, 120) : 'Forecast Economy';
   const options = {
     body: typeof data.body === 'string' ? data.body.slice(0, 300) : '',
@@ -94,13 +94,13 @@ self.addEventListener('notificationclick', (event) => {
   try {
     const url = new URL((event.notification.data && event.notification.data.url) || '/', self.location.origin);
     if (url.origin === self.location.origin) target = url.pathname + url.search + url.hash;
-  } catch (_) { /* остаётся / */ }
+  } catch { /* остаётся / */ }
   event.waitUntil((async () => {
     const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     for (const client of windows) {
       if ('focus' in client) {
         await client.focus();
-        if ('navigate' in client) { try { await client.navigate(target); } catch (_) { /* iOS */ } }
+        if ('navigate' in client) { try { await client.navigate(target); } catch { /* iOS */ } }
         return;
       }
     }
