@@ -1817,8 +1817,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391",
-      "bytes": 70540,
+      "sha256": "6496378342013c0573a53350769300eca2a45f6d79b457781921b2d5d2bf5f62",
+      "bytes": 70626,
       "lines": 1570,
       "code": true,
       "status": "reviewed",
@@ -4326,8 +4326,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "1e731bc68cc0207971bce6d6403a451f29ab92d1a6f1fab8caa73290c7f28a49",
-      "bytes": 85385,
+      "sha256": "d680e3acadfbae40b2de7ee81e48ccdf214b3a4f36978687e8e20163e8c4b0b2",
+      "bytes": 85427,
       "lines": 2081,
       "code": true,
       "status": "reviewed",
@@ -10735,8 +10735,8 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "08473e1b26406076d7c534b4a1da745d7de77f6bcf42e5b5c8e2e3b4db92edfd",
-      "bytes": 9370936,
+      "sha256": "b640ada5049370704a23b8819776095823c1e27e40dfd36c102d4bc7d7d64453",
+      "bytes": 9371023,
       "lines": 279805,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -20823,17 +20823,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "80be5eb34cadc6bd6de84fe9909a560fe9a2da486c8098b6d961bdde77f3dfc7",
+  "ledger_sha256": "e7c113751fd8c4a0434ac4f4dcfb728a3ab92c049db1a9509bdcb172c0f1b910",
   "javascript_inventory_sha256": "929e0bf72612a5dbfe26262da0e4f7c3d8bde93b0f28903fe6a413158c4e9f44",
-  "baseline_commit": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+  "baseline_commit": "ee23056826619fe3ec7929c19f4a0690784045bd",
   "branch": "integration/all-20261002",
   "unstaged_at_capture": [
-    "backend/app/services/seo_renderer.py",
-    "docs/backlog.md",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "backend/app/data/i18n/seo_en.py",
+    "backend/app/services/seo_world.py",
+    "docs/mechanism-inventory.json"
   ]
 }

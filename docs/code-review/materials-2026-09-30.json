@@ -55,7 +55,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1b090f7e6ef8a59c6cf3cffff511218abcca6fc980630a6ab899563b8d65e0b1",
@@ -100,7 +100,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6630f357781e67e96e18c43d1c5c48e82fe431cc332f07f736f01c56c48f03ac",
@@ -145,7 +145,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "dbdb6d6be860ab23c9400d8546e5516c98ab3d2f5ecae1dea1e9fba7fac7eec1",
@@ -190,7 +190,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8845a98240b7d1853df3acc545a4af0efac055c88c0bf3fcc43631863f5f683f",
@@ -235,7 +235,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "91f204a1c51f3d844f28cb8bcfc1dce360ff1a6c04f08e8b4bbdfd82e51181ab",
@@ -280,7 +280,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "69c49497f7143a331f71102794ef1057ff4431de3d882d6a914e713ce3450eaa",
@@ -321,7 +321,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "21958168590c94130cdfe8abf97dab39058f48c1f1e0a759f7e076df9a78fd38",
@@ -368,7 +368,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e10bd378004525f721adb7683171ebbc524733f91880ed94297607afa5eec27d",
@@ -421,7 +421,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8f997bfd8952cc057e4d3c5a3a3c60134b84867416956078e8609be95d273790",
@@ -466,7 +466,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "70153297639346d10d2d8cafaf08d70e6a9f567400f41b0b347154a1c0507f89",
@@ -507,7 +507,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "749b68755d24418863ffc2fd1218ce7e13dd6e4ff0b6dd990a1266dcc9829c37",
@@ -552,7 +552,7 @@
       "role": "agent entry",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1f8b20da652785f8fa1c3a05952856abcf6d940eb4ac79e7317c5c0c6112a9dd",
@@ -738,7 +738,7 @@
       "role": "domain glossary and dated invariants",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1076da25a9432be9a245a68dd51baa6660225ff206db2bc3a13b7cb5673e9ce0",
@@ -1237,7 +1237,7 @@
       "role": "product overview",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "593369ddc5fa20c2be045790beea7dc6c1a2f26cdd06fc78255cffe4a5bb3245",
@@ -1585,7 +1585,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "27926cf6444bcbecd31c8b4f59e0ce72d11651feaa0a01d6d8a578abd5ed5ec1",
@@ -1632,7 +1632,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "94caef989a8de916e6e166b242f33fe9bf62ce35207384655d727442016b857b",
@@ -1679,7 +1679,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "47c85e7d4da7247a0e14c9b9e0734f0b3e7d072790fa13fd050f3bfbc0f61b1a",
@@ -1726,7 +1726,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "250c2ccd8ea186f520034268829b895dadc91e1166a53856752f6962fabb5e98",
@@ -1773,7 +1773,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "64b7c1734f95f25ed454456a0ef629774a3920db53b9fc0ce59a13d58e1dba98",
@@ -1820,7 +1820,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c59ffc214e32a31bdd2cb38fab11a99d5276628844c5de2155f06505866141b4",
@@ -1867,31 +1867,38 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391",
-        "bytes": 70540
+        "sha256": "6496378342013c0573a53350769300eca2a45f6d79b457781921b2d5d2bf5f62",
+        "bytes": 70626
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "method": "Предыдущее полное чтение файла сохранено (prior_full_read_sha256); изменённый фрагмент прочитан автором правки и проверен тестами SEO",
+          "method": "Предыдущее полное чтение файла сохранено (prior_full_read_sha256); дельта прочитана автором правки и проверена тестами",
           "date": "2026-10-05",
-          "head": "75df320",
-          "prior_full_read_sha256": "61535a4989522955eaf504ccf86a18c0c73598b2761605d7dbb1ce82abe878b9",
+          "head": "ee23056",
+          "prior_full_read_sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391",
           "prior_review_basis": {
-            "method": "Файл прочитан целиком агентом-рецензентом (Claude Sonnet) после волн правок интерфейса 04-05.10.2026; описание сверено с кодом, определения recheck/write прочитаны по телу",
+            "method": "Предыдущее полное чтение файла сохранено (prior_full_read_sha256); изменённый фрагмент прочитан автором правки и проверен тестами SEO",
             "date": "2026-10-05",
-            "branch": "integration/all-20261002",
-            "head": "8e51316"
+            "head": "75df320",
+            "prior_full_read_sha256": "61535a4989522955eaf504ccf86a18c0c73598b2761605d7dbb1ce82abe878b9",
+            "prior_review_basis": {
+              "method": "Файл прочитан целиком агентом-рецензентом (Claude Sonnet) после волн правок интерфейса 04-05.10.2026; описание сверено с кодом, определения recheck/write прочитаны по телу",
+              "date": "2026-10-05",
+              "branch": "integration/all-20261002",
+              "head": "8e51316"
+            },
+            "delta": "Переписан английский текст блока «Calculation steps» без Dickey–Fuller и ARIMA/SARIMA; структура данных не менялась."
           },
-          "delta": "Переписан английский текст блока «Calculation steps» без Dickey–Fuller и ARIMA/SARIMA; структура данных не менялась."
+          "delta": "Переписаны английские шаблоны вводного текста рейтинга (rating_intro, rating_without_data, rating_money_guard): без «another 0 … have no value» и без слова series; ключи и структура не менялись."
         },
         "status_in_review": "reviewed",
-        "sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391"
+        "sha256": "6496378342013c0573a53350769300eca2a45f6d79b457781921b2d5d2bf5f62"
       },
       "canonical_source": "backend/app/data/i18n/seo_en.py",
       "linked_mechanisms": null,
@@ -1962,6 +1969,36 @@
             "status_in_review": "reviewed",
             "sha256": "61535a4989522955eaf504ccf86a18c0c73598b2761605d7dbb1ce82abe878b9"
           }
+        },
+        {
+          "source_version": {
+            "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391",
+            "bytes": 70540
+          },
+          "review_status": "exact_version_review_in_ledger",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "proposal": "docs/code-review/reviews.jsonl",
+            "review_provenance": {
+              "method": "Предыдущее полное чтение файла сохранено (prior_full_read_sha256); изменённый фрагмент прочитан автором правки и проверен тестами SEO",
+              "date": "2026-10-05",
+              "head": "75df320",
+              "prior_full_read_sha256": "61535a4989522955eaf504ccf86a18c0c73598b2761605d7dbb1ce82abe878b9",
+              "prior_review_basis": {
+                "method": "Файл прочитан целиком агентом-рецензентом (Claude Sonnet) после волн правок интерфейса 04-05.10.2026; описание сверено с кодом, определения recheck/write прочитаны по телу",
+                "date": "2026-10-05",
+                "branch": "integration/all-20261002",
+                "head": "8e51316"
+              },
+              "delta": "Переписан английский текст блока «Calculation steps» без Dickey–Fuller и ARIMA/SARIMA; структура данных не менялась."
+            },
+            "status_in_review": "reviewed",
+            "sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391"
+          }
         }
       ]
     },
@@ -1973,7 +2010,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7b58b236f22f68cf00287b7d5b3ddc49eef9f20c9e6d240830bb6e42880a709d",
@@ -2020,7 +2057,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f4a6aa698f00c2fd678adc8d1bb6df3b7b03ab86483ca88916461933d6033f8d",
@@ -2130,7 +2167,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fb665f6d663aced87f29192c638179ca82fdd2350dbd5ef7c772ba030e4e816a",
@@ -2399,7 +2436,7 @@
       "role": "Finder filesystem metadata",
       "classification": "excluded",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "551e0ca138ecd241327cb8145e914719df88a00a622ca3cefa408c80f72b00b7",
@@ -2420,7 +2457,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9162d486eb7855105951ac04a901a00924889ea74f80ac31d38277ca226f9f35",
@@ -2509,7 +2546,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "477aecee55c0a5ed9ef663dc6901eeb8d3f593c450449b53395e4a951310587b",
@@ -2556,7 +2593,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bab2ebec2c6369294cfaf64d95ca1b9b998c94a57a7313fe957d8a69cd9533a3",
@@ -2733,7 +2770,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "352a14ac814e321fec149d3ca292c9dd3bf0d2532aa943256b950f9b3e436edc",
@@ -2780,7 +2817,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "11e9af1b5cf850645cdfd0d1b2447c93f82e50f2c9bae1bc8bc0f17cc3431e0f",
@@ -2827,7 +2864,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "08026a6d29ec4b0cb9436176d6cc84c0fe4ef0ed9c4f499ce37f13735f1937a3",
@@ -2874,7 +2911,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8f60df542b612f0c420b7ed8d62abb9828472111272cbf53ebc3ae105e9be682",
@@ -2921,7 +2958,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2e0de4507082e66ccf76ff4ef836f3cc60e27b83759aa119e7e778810e2a5742",
@@ -3110,7 +3147,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "478ce5d6e2bf48ca9c392229b3a65405749340e1e29075e5c69dabf7245be7b2",
@@ -3157,7 +3194,7 @@
       "role": "dated decision and later additions",
       "classification": "current_document",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "10a7a1dd66d01f2849c874aa318cc37d69165aa7d9f6cc5229e2d4a95cf6e4bd",
@@ -3291,7 +3328,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e51947a43aafec5a8c977cbebdf14c97f9b3e30c9829860636247929a7b8d96d",
@@ -3381,7 +3418,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "510371dbc67c71b913edf422b12c79d308ccf2c9241c7b5bbd3288499d109bac",
@@ -3470,7 +3507,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8f1e7da130fe1b654231f25b07f7e28d08d4a156e730c8abb5ac047988d872c",
@@ -3517,7 +3554,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d3697501fd51554ca1fec638e4b6cea89a532ab83d7a9028f8bd747d6b50da09",
@@ -3638,7 +3675,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3ceeebe2443bbb269359a95e03c5f71d2dd1fbffb07eafb87cab521212e66372",
@@ -3702,7 +3739,7 @@
         "sha256": "5c4f3a40c8021b19d1a16342231ee15ead3ce09e021e42a1d872c663cacbde1b"
       },
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5c4f3a40c8021b19d1a16342231ee15ead3ce09e021e42a1d872c663cacbde1b",
@@ -4022,7 +4059,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "14da8adac2f7e57b7b48bc86b996795a85a9b86d3da39a48e9dd69898c51c086",
@@ -4038,7 +4075,7 @@
       "role": "owner indicator/category recipes",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ca094bf94a7d7fafd4d17b203c5d298e8bc981e2bc22be3bf988bce837bda9df",
@@ -4087,7 +4124,7 @@
       "role": "project source/explanation",
       "classification": "current_document",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "537e5bf43de35436dded4caafac052f5c5d0982326a299725ddb8819648029c6",
@@ -4210,7 +4247,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2246ffc76ca7537169b7e9db9d0dd91b29a52882cac3f1cf01b0bd1e2310565d",
@@ -4333,7 +4370,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "644130253a2fa24ea0e54c765eae9c2ba81f9658c9f7d144dadf2da2f6230bb0",
@@ -4380,7 +4417,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "77649635b4d753b3e1e286730c4728048565c584114a47f9a4310d3ef9f8dfe0",
@@ -4427,7 +4464,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "704672067d5cc9dcd2e5786b48ff8c0a29f7572546386c9f084dc06173ece084",
@@ -4474,7 +4511,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "76671fa70b5e781e3ea5d813f24aae2df290c6917825a9bd1437fdcd505ddc0e",
@@ -4521,7 +4558,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41716999dfd14d8c268ef9289111bf6e50fe35d675b265e613506704348e50a1",
@@ -4568,7 +4605,7 @@
       "role": "history/recovery index",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7f5e942e3859e8426edf07f73f9f5b59e293650f94182d0df1bbfaca2593d710",
@@ -4960,7 +4997,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "86587255fded212e1a67835787614a9bd9c2b64ce583c57da2d64088dd5dbc2c",
@@ -5007,7 +5044,7 @@
       "role": "system topology/scenarios",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2bd1fe8509e5f1953390281870f0189690e0ff15951b1eb1147e3910e2cf7aa1",
@@ -5417,7 +5454,7 @@
       "role": "one execution backlog",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fc0e0c255acad411c80c680dd4cd760ede1163f1fa7af04fef673c6d1a1a155d",
@@ -6227,7 +6264,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "63c33e4164af9914ec4d3847b3ef684e25dc90bc57d75a30db98414f21d3b18c",
@@ -6340,7 +6377,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fee5b9416d9a41121e936937661a9c5a1fbb8f8a87038f88e717328d23b93b83",
@@ -6426,7 +6463,7 @@
       "role": "project source/explanation",
       "classification": "current_document",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13",
@@ -6612,7 +6649,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c4c18f163265729a58dbb9f4fb6a0957e9d37c715f1bcf64020e4e9ce0e07ed5",
@@ -6670,7 +6707,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fd5c7605c45253e2d2345e3dc4e1b261a3f37f412f8134c30eca0e880b70b98e",
@@ -6741,7 +6778,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "554eb447f0226bdc985f586c7e9aa1c8de9c39ab092e3ab23d5073ed9e8486b6",
@@ -6792,7 +6829,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d3bee1aa5998a9c2dc66e8d40ca26857030fe76be93bdf773f0af89a1b755802",
@@ -6821,7 +6858,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2ccadda31c0850e1ec9479c707805a9302324b336379a443e29e112d21607dd5",
@@ -6851,7 +6888,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6137d4de5bc294b86d46ceaf440b2a0cade95129ee7f2f848ec157ab8f6c2c9b",
@@ -6867,7 +6904,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3a77673afc8037819e16331e6e5ca18563855aa0e2eb119894f2061f6cd24299",
@@ -6897,7 +6934,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b29d972461a4cc5ae9b739426de0cf6784485ca19d22eec5c56b0cb02db9c36c",
@@ -6941,7 +6978,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4e2122391dbc38693b281b02cb0ada730b3f486f4691377dcbd2780fb542eae5",
@@ -7014,7 +7051,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3291dde1df9827b1bd085aa0dc41c1b5a4c941d610d18c89797762f62a0234ff",
@@ -7105,7 +7142,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "68c42025a2e95c770272c64b3901575dd3e7a152ad8c1527e57001506899e9db",
@@ -7134,7 +7171,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "045ecb543ee82140cf299ad63e6f35d91c15279793102067c2d911ee34af0a1b",
@@ -7162,7 +7199,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bddd4016dfa3c0029403ce1b647e84efd491fb5ff4f74b2754262096037346cd",
@@ -7178,7 +7215,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7c3e36c9797aaae26248bf4b328b96ed83000499a1354711bd36df76b4337e61",
@@ -7223,7 +7260,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53adbd9f59a10e9a20d594663a5a10d32434f4ddcbf2d580ef0308893a67bc6c",
@@ -7253,7 +7290,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1e66cef556bb2f0faa9f9dec7dd8f2fb576280dff112500270baec37df7b4241",
@@ -7274,7 +7311,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "87289cca5a34b71fa6f74d4d6e5caaca14734a81a2f524f4e35bb9dfcb16f99e",
@@ -7295,7 +7332,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2f3cbf945373c548b86d850781f4e6d06290d9c3f31e9a3baca5750f6491f137",
@@ -7316,7 +7353,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4d628f315709eee124d5ab99e3f64593b3a0cd49fd8cc585cf0b6d83c0a977d6",
@@ -7337,7 +7374,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bff42d02ab7f2fcdae179d74efcaffa36674d678ee92467b253e13bcc89d9075",
@@ -7358,7 +7395,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "312228d991f4764f8c40ca8f2af9e98452654fc1ce0388bd38481cdebfcb3913",
@@ -7392,7 +7429,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "be8f5018dabfc39fa53477ab4e691fa86a7900b3f082d810a525727a9a9b84a7",
@@ -7443,7 +7480,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "23d875961fbfebd0ffd71676470ea5c825436be3df1cddfef084254514fed47b",
@@ -7473,7 +7510,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "839838b807644a6a11df6eaf0fc627628c978818157484b819651eeb25f9ed92",
@@ -7503,7 +7540,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3d349e1c78b4e22a16a320841957a29149948864d55c4af93200459c7dc7fead",
@@ -7531,7 +7568,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "34415c55bbed16287f5aa19a2cd4c76f35368de3343a7f0da526c558b1f07552",
@@ -7560,7 +7597,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a45c17d50b8cb96493bc49b1d1695fb2ef6c2c1519671f09c636e28309d1defe",
@@ -7692,7 +7729,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "78c0fed9e41bc2cb035a573ec4ef112f037eb2ac8a79961c5c8fe2adadd9bb98",
@@ -7794,17 +7831,17 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "9903281736ff1a7befd925cdc55a6652b057a85e66feb35494170dfc194ceadd",
-        "bytes": 609699
+        "sha256": "946ac4df818b5c0d49310ddc75813ab31bb34339141a650df2178bd990473ff1",
+        "bytes": 609558
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "9903281736ff1a7befd925cdc55a6652b057a85e66feb35494170dfc194ceadd",
+        "sha256": "946ac4df818b5c0d49310ddc75813ab31bb34339141a650df2178bd990473ff1",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -8293,6 +8330,74 @@
             "sha256": "a7157d9325cd1da25381444752cb4430331386d0e2eda9ce7de941cbf25bec5f",
             "canonical_source": "scripts/audit-code-documentation.py"
           }
+        },
+        {
+          "source_version": {
+            "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "9903281736ff1a7befd925cdc55a6652b057a85e66feb35494170dfc194ceadd",
+            "bytes": 609699
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "9903281736ff1a7befd925cdc55a6652b057a85e66feb35494170dfc194ceadd",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "3b11438f5361be69d13b113a11a9355125e38ec5fcb43104bdb1228f3c683414",
+            "bytes": 610999
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "3b11438f5361be69d13b113a11a9355125e38ec5fcb43104bdb1228f3c683414",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "5b82869d4c96a2dc77a6dbec15fd968e55d6d07b8b05c13d2888f2881c055c52",
+            "bytes": 610933
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "5b82869d4c96a2dc77a6dbec15fd968e55d6d07b8b05c13d2888f2881c055c52",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "035d4396c402eb534e64696e63f57c080867d04ae924d41c6023790f46fe29f4",
+            "bytes": 609591
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "035d4396c402eb534e64696e63f57c080867d04ae924d41c6023790f46fe29f4",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -8318,7 +8423,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "46f005d6b3401ceac4fb458d2f0aca42386f92dc8d57f614b35cd6c935048588",
@@ -8370,7 +8475,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "25a19b7070db92aacd22ae74b72e3c6c064af58869ce9ef6ac5906d6d4ef632d",
@@ -8399,7 +8504,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c60873105f82599634b4b3663278441d5caced7492e1b642e561688418a97cf2",
@@ -8428,7 +8533,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "75a5fb156f99fbe4f31eb7a8899ee935f5b022cc48b1df0597a1d613f8ad8b86",
@@ -8444,7 +8549,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c3dd7018c30a5c3c96a298f58e2dfa52d208f2933edad03100b58507208fd2e3",
@@ -8492,7 +8597,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ed512ad288e0d2fcba89054ac59702f588b5d8fb09b4e830896a8eaa4007785f",
@@ -8542,15 +8647,15 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "99e13b07cd485556c1721bae44eb24d27a2dbe934a8f2126f0ed92ae55e1cebd",
+        "sha256": "6b41238f563a5d7b86ca74441257a240a9fcea0f505c44a85db1787099be57f0",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "99e13b07cd485556c1721bae44eb24d27a2dbe934a8f2126f0ed92ae55e1cebd",
+        "sha256": "6b41238f563a5d7b86ca74441257a240a9fcea0f505c44a85db1787099be57f0",
         "bytes": 5841973
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -9032,6 +9137,57 @@
             "sha256": "c5d3f1e20a8e2064b6acb7140a654722182e0bf8701553e1462bd7547185ce3e",
             "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
           }
+        },
+        {
+          "source_version": {
+            "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "99e13b07cd485556c1721bae44eb24d27a2dbe934a8f2126f0ed92ae55e1cebd",
+            "bytes": 5841973
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "99e13b07cd485556c1721bae44eb24d27a2dbe934a8f2126f0ed92ae55e1cebd",
+            "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
+          }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "d535337d0e69b300afde6fe8d14c4c2c410060c6ef3c44620235f0f2a8214fd3",
+            "bytes": 5841973
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "d535337d0e69b300afde6fe8d14c4c2c410060c6ef3c44620235f0f2a8214fd3",
+            "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
+          }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "227edce1f88760f8193e2adc5ad4a8b167156a0c3e99d13f4bd96efaf1653e35",
+            "bytes": 5841973
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "227edce1f88760f8193e2adc5ad4a8b167156a0c3e99d13f4bd96efaf1653e35",
+            "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
+          }
         }
       ]
     },
@@ -9056,7 +9212,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4cdc8c00bf8947c341140212e9eb7c86602140effbe1e834f7048b49e7a304f4",
@@ -9101,7 +9257,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7d20e372512460ab37f1a53d6cc075965573c62ea55c77ab4778f9aeb6df9763",
@@ -9130,7 +9286,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a60799f2d1ad73f125060a4bfaaf77a0cb748af493f5ed22692925290c57f7e4",
@@ -9160,7 +9316,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a3845ab30998f62e8ca9d0205a39e3e417e3f4fb3dd9f95a330dcee40bef2626",
@@ -9189,7 +9345,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7287b4b228298f9d4d7e104bb54d31ef685a8f9d45d3b330d63d75232d46f8c3",
@@ -9227,7 +9383,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "929e0bf72612a5dbfe26262da0e4f7c3d8bde93b0f28903fe6a413158c4e9f44",
@@ -9433,7 +9589,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2073b2afe833e5c32fbc3f95486e9655206be2e24a1c2dabefd8d74e14183001",
@@ -9507,7 +9663,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5377d90ecb5fa84c2aa08938bf59fc3170c25412adb76175bd8fcdc287d5d257",
@@ -9535,7 +9691,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d3637ae305eaa2366ebc2d74381f373a6a044ad548d4181cda8c66577ec6f637",
@@ -9563,7 +9719,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f2849aaf74b18e219b6f071f97e383b5ba2764d1bcdd563ced83626051734836",
@@ -9612,7 +9768,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "892429678ca12073b1ce9abceb7e1c1f1f68203cc01ac810ecde7687279edd86",
@@ -9661,7 +9817,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f7bdf88a530cd1328284b55403cc455dd801b0c4c5373bf32f97e213e735c756",
@@ -9689,7 +9845,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4dcc0258e5345124503230a9bca89dce134d147cc27bad8772cc048f8db3764c",
@@ -9747,7 +9903,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c5af3ca8ca3ea3c3a795cdf8f096cd13c939ffe061a9c610632650a4e90636ed",
@@ -9805,7 +9961,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9392d611cf6db12a80af26fc4c40b91c58b4fb632a4567c3478bde4a358589e4",
@@ -9835,7 +9991,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7cf6afc720a657f4c5882a10a097907d9b0a6c7c0db6d304fd328e80bf3d3346",
@@ -9863,7 +10019,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "98ebf5d5313f2b2314731f5361a6852f260f3fd931e9b6e6c7f4eb4b94e8464a",
@@ -9879,7 +10035,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7ac778b2e76c2dd863ea1c60e195027d2b7d53475e1b39355a0027c043e6858",
@@ -9937,7 +10093,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "be16232583fcdb3df2ba3bf66ba9162499a1f1fb504296b29752398c367cf66e",
@@ -9967,7 +10123,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8ebf4116269d4b41379f5f2eafbb72d968a38e95294afa865f043edb97c930ae",
@@ -9983,7 +10139,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "091398f5aafb1130d3a6322fc9f2f338a9f7e6b7fc5c5a243094eadad22822e2",
@@ -10004,7 +10160,7 @@
       "role": "knowledge acceptance K01-K12",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cfab5aabcaf8b3314efeffbfa8cbfd751dbd9caf54b08d2e5b871e197b889cb2",
@@ -10126,7 +10282,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5140e2dd7ac32b87d36709ca8f3bb616eddfbac234ecc2670b6a16662c2de86b",
@@ -10161,7 +10317,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "45f6dccc2d5ae3692b4f30aee5199df51b7b6585aa1251b55f1547d04cd017da",
@@ -10213,7 +10369,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "54e0bcac9c26a2e2b6bf050a92efac861f913f0ae8d73ca8bef172379e6cfb15",
@@ -10242,7 +10398,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7b6c4e0355dcb163ea66012b16427efa59579237a37c6aeb9a1442c4025a4507",
@@ -10300,17 +10456,17 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "generated",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "80be5eb34cadc6bd6de84fe9909a560fe9a2da486c8098b6d961bdde77f3dfc7",
-        "bytes": 12541890
+        "sha256": "e7c113751fd8c4a0434ac4f4dcfb728a3ab92c049db1a9509bdcb172c0f1b910",
+        "bytes": 12543928
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "80be5eb34cadc6bd6de84fe9909a560fe9a2da486c8098b6d961bdde77f3dfc7",
+        "sha256": "e7c113751fd8c4a0434ac4f4dcfb728a3ab92c049db1a9509bdcb172c0f1b910",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -10827,6 +10983,57 @@
             "sha256": "cdecced2e94816125c3a2b579ffe78749cd345f85f7cab827db93793e0c18fca",
             "canonical_source": "docs/code-review/reviews.jsonl"
           }
+        },
+        {
+          "source_version": {
+            "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "80be5eb34cadc6bd6de84fe9909a560fe9a2da486c8098b6d961bdde77f3dfc7",
+            "bytes": 12541890
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "80be5eb34cadc6bd6de84fe9909a560fe9a2da486c8098b6d961bdde77f3dfc7",
+            "canonical_source": "docs/code-review/reviews.jsonl"
+          }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "f134ace635d1b5409c7971ba4351e3fe86700e43829eb440d9448476ce75ca0b",
+            "bytes": 12543228
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "f134ace635d1b5409c7971ba4351e3fe86700e43829eb440d9448476ce75ca0b",
+            "canonical_source": "docs/code-review/reviews.jsonl"
+          }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "afcf86d8e20ebccd6403df3b25966e67d211918754503c42e189974ad3719d8b",
+            "bytes": 12543660
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "afcf86d8e20ebccd6403df3b25966e67d211918754503c42e189974ad3719d8b",
+            "canonical_source": "docs/code-review/reviews.jsonl"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -10839,7 +11046,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "eb8c0c1398c5c05336682bf808a6c2312aabc7dbcc752d418f7bf9467ae07acd",
@@ -10884,7 +11091,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ba22e1e7d1d6f30551b97f62ed9d84f1194e7157a19a7136ff25bfb0b450d899",
@@ -10905,7 +11112,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "044f0dd8632b0625620b6f8da7fe41063c66d7bd007da3c89e7322e739b623fd",
@@ -10935,7 +11142,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e3264c3e3619725e17020fed57785060c5efdb88881a233267523a1ae6e098e4",
@@ -10965,7 +11172,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e4b40aaa97d94d9b830afab85cf95e2765c07266fa67aac310312ed20bbeea54",
@@ -10995,7 +11202,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fde033ba9176d5005d3d1b577f5d4809d5adcd2a4765b24d5aff4f4e1e8a17e2",
@@ -11038,7 +11245,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7a596a0e66cea368e42f7b3c11bfceeef1bafce7d36aa96fe48cc6c411728ac",
@@ -11054,7 +11261,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5510eb83294c0e9016605ab79f20a9184e2540e3e7e0cf1164f0c08e424e5384",
@@ -11087,7 +11294,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f5ae0ec25b3ef8ff4933c34d753c86fa2b83ff7ea75adc1f32b4664ba7a76820",
@@ -11103,7 +11310,7 @@
       "role": "data and boundary contracts",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c4c888fc4417fde76a39eb7eaa8597a93287f9d51b00bb962c2bb9e9ec5938e2",
@@ -11526,7 +11733,7 @@
       "role": "official source mappings",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "260c17baf3425c579a66ad999f5495adffd45e18a587e87ca2d4ccf568d14bab",
@@ -11590,7 +11797,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7476bd8f629b996e3f5b4aaf6621e06a30d8bc1cfe24415b4467663a01c68a03",
@@ -11751,7 +11958,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5daa1323bfa4d3ddd6b88a34d9b59b86f92a34ddfbc0376bf0d4c8d86ba7a19e",
@@ -11798,7 +12005,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c02433608b474a744ff54c4d40ab95b09ec403dfae4137aaaa4ae0c6659d8b9c",
@@ -11845,7 +12052,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c9a2ace1e58bfa1d1a2cd29fdd147a238eb98ea4e3677a093dcc53c170a930da",
@@ -11892,7 +12099,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5046e2d30d5b20968f4b81fb3ae2e90452e817783003b44f62e3323bf34b67fd",
@@ -11939,7 +12146,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a8a8370b93e82538d9ee4a8e1381794bfd6b00188932b4a45417e77a9cf31a95",
@@ -11986,7 +12193,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "aa58aa5fe2ff11c835cfd06fef0c16dee1904659377125793b46434b5838a985",
@@ -12033,7 +12240,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "89916f0c5b9ef4042cfa9c2d92be8440fa0f4fb7673ba0286d41d94692793525",
@@ -12080,7 +12287,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "79d525d3a108c4b809a3393d0986f681413deb95c27917f0db9d8fc5067b4366",
@@ -12127,7 +12334,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cc6d2fa7998e6fa249e86653bc8a841e6b6ebd5ad125e3784a18636ae8e1bfa9",
@@ -12174,7 +12381,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3526d55d57b307d0a606fcfc85c1599f2f4668c7fb5351d15bbf149d75486160",
@@ -12221,7 +12428,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fa3b35325a6d08b67200ed515a7785b2bf537cf91f8a79f19a9975da2038bc2e",
@@ -12268,7 +12475,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c8adcfdf6b076d4fa1f539319b3da2c993cf8627b5c043e7e7cdb280997ce413",
@@ -12315,7 +12522,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "068984170ba573465354342144c5fa130852c07a6ba200ab3bfd19d06f964e07",
@@ -12362,7 +12569,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "88bcbaf32bc5730597dfe74317b09f651dbec5ea26f8f58dac0e4920917a5cbe",
@@ -12409,7 +12616,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2265d2e973c2a0496fd345e14eb145e34e06ca020ae4e6ace395ae176dbbeb0e",
@@ -12456,7 +12663,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9cd46dc60d1b6e353b07276c56638da3485bfcee54d9486488e5d1ae0b80f5ab",
@@ -12503,7 +12710,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0eeec3468f8d214605ab3de2d3ac23322ff7431a1b98a72f40bbe19985dd19e7",
@@ -12550,7 +12757,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "02cdf2ac7bbc5621463e13ee4975b9609111e5d214954fe7d477fe45ac2d8c88",
@@ -12597,7 +12804,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5f47a42592976ba922e6eda4c0c0fef1c2f473d1bf1263de073ec3352e9e2c2e",
@@ -12644,7 +12851,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d676691e283189edded954bc1e99e76e82e5fa787f70a224fe7692309944f317",
@@ -12691,7 +12898,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5fbc290c0d7ea36b1174c8f781c6b2b64548fd174c2e6810b14e282ea1c87a8c",
@@ -12738,7 +12945,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6b26acbc764cf16d7db013482a241a442acf51b62f0f52ae48893bfc9db55e46",
@@ -12785,7 +12992,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6de8820bc64e5a60f059413e5d84220c9f4a260626678a20385a04bb7d20e255",
@@ -12832,7 +13039,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6d8c001988b782810d4cb10b0ca22e5a868f7f86b5408e5c76a6bdffda032ed4",
@@ -12879,7 +13086,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c807812a963112736171c7376cd99fb3bc4dc9c96ae488eab7bf181751ca22d8",
@@ -12926,7 +13133,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8e577651dd732a798d1c007d75aca5b4cd9ad4fa2266b96ed22e77a42168902c",
@@ -12973,7 +13180,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "372c3d5dd0702967d8cd32cf50ea300d25e25b7cea9641a3703a17aced123368",
@@ -13020,7 +13227,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a0ed46edd4e049a17941783fa790ac68e38fe906e7aea4171915501ff6e31474",
@@ -13067,7 +13274,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e45fae4ad5036659c471142215c3aadc6d68be79a84ee012c8f8005b67d597d5",
@@ -13114,7 +13321,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1f7fddce1329353ccda316be38c278331b7f957d4412f9da421dcd064cf7c560",
@@ -13161,7 +13368,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ad031293827635dd61266f469f0540f2ade88492f0253a7dcd9b2a0db136d615",
@@ -13208,7 +13415,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "290e39cad4d9c57916c5d504702af518674b76ec327eda282bed317ee86d7498",
@@ -13255,7 +13462,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8022f4aa7b6221ce87227155b9d6c382cc8c4cfd666937b5404be86dbdab4d2e",
@@ -13302,7 +13509,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f84b8138719d58a594280e1f068fafd8aceaa62f30b7c64ba8878ccd920b39b5",
@@ -13349,7 +13556,7 @@
       "role": "operational acceptance and recovery",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3584e03a888664cfd74cae92aadf9ee63b42acbf0f432eba91ca0e27765bf51c",
@@ -13483,7 +13690,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339",
@@ -13530,7 +13737,7 @@
       "role": "view-mode domain recipe",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8c07a29ff4a5a68b323c4f10035cad8fb8af81fc10d9d1d4b36ca6ccb99a8186",
@@ -13577,7 +13784,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "31e945cc058ae85d6d461399e2dc28a9a2426dee77083c754ff28f57910255df",
@@ -21076,6 +21283,40 @@
             "sha256": "a00e225aadf4e13abae1236f32acfca7dd87a4b3de7798607f99f9a98349ca4a",
             "canonical_source": "scripts/build-indicator-index.py"
           }
+        },
+        {
+          "source_version": {
+            "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "31e945cc058ae85d6d461399e2dc28a9a2426dee77083c754ff28f57910255df",
+            "bytes": 2664678
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "31e945cc058ae85d6d461399e2dc28a9a2426dee77083c754ff28f57910255df",
+            "canonical_source": "scripts/build-indicator-index.py"
+          }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "0408aca0f869270d3b894298a27d024c4f42e745605f7f5b985d33d9464ad63f",
+            "bytes": 2673301
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "0408aca0f869270d3b894298a27d024c4f42e745605f7f5b985d33d9464ad63f",
+            "canonical_source": "scripts/build-indicator-index.py"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -21088,7 +21329,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "97ca2770bb7147cea9f682928cde554b3d2a2bbfac10c54e213048cc7a5eafdc",
@@ -21278,7 +21519,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "abc2ec5bb5ef1abddbc80301cea44400a944e6ce7117373e360230c58f63d553",
@@ -21528,7 +21769,7 @@
       "role": "obligatory knowledge lifecycle",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a",
@@ -21706,16 +21947,16 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "08473e1b26406076d7c534b4a1da745d7de77f6bcf42e5b5c8e2e3b4db92edfd",
+        "sha256": "b640ada5049370704a23b8819776095823c1e27e40dfd36c102d4bc7d7d64453",
         "canonical_source": "docs/mechanism-inventory.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "08473e1b26406076d7c534b4a1da745d7de77f6bcf42e5b5c8e2e3b4db92edfd",
-        "bytes": 9370936
+        "sha256": "b640ada5049370704a23b8819776095823c1e27e40dfd36c102d4bc7d7d64453",
+        "bytes": 9371023
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -21905,6 +22146,23 @@
             "sha256": "67929b5e41f2a48690d86e6a8e61037b9d24a38983095bec032520be64fd89dd",
             "canonical_source": "docs/mechanism-inventory.json"
           }
+        },
+        {
+          "source_version": {
+            "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "08473e1b26406076d7c534b4a1da745d7de77f6bcf42e5b5c8e2e3b4db92edfd",
+            "bytes": 9370936
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "08473e1b26406076d7c534b4a1da745d7de77f6bcf42e5b5c8e2e3b4db92edfd",
+            "canonical_source": "docs/mechanism-inventory.json"
+          }
         }
       ]
     },
@@ -21926,7 +22184,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ab7d0dc3efd947b3d345beace6473f245aab2bef8cf21b4bea0df43c29b93be5",
@@ -22097,7 +22355,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a",
@@ -22162,7 +22420,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b684a07257b86a66c40267ebcd3c46c542773642d92992367fe34733a90e2d7c",
@@ -22246,7 +22504,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c30d99d14b7d27abf99b029962459072fb8e0474f5d5aa71c3049974aed8e60a",
@@ -22302,7 +22560,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e3171d011b1acb532b8d62b4e03cde3e9b597926b6dfbbe1896e71fa91c99da2",
@@ -22458,7 +22716,7 @@
       "role": "Finder filesystem metadata",
       "classification": "excluded",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "0763966523de8b7b07936b56a28138b1b26b917f860b29a873e2c6a78b079991",
@@ -22479,7 +22737,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5026f5e2e163627a567c73b45b8868166cdef929d322b4c367e74d72de03b754",
@@ -22526,7 +22784,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d40796901993721dd1386e07783856e0c83a1b8b539c28badf9ee21b7ec41948",
@@ -22573,7 +22831,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "214c0da63da38517da57687a253996d088cf0c6c21127d623c3af89b20186bbb",
@@ -22620,7 +22878,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8551a3ccf372b24e98d8f5856e2666b2ae2f9f1a0f3040b885d368fc50601c00",
@@ -22667,7 +22925,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a68905d253959c4bd65e2a97acffbe4f59c9f1d7285440e89466b6c58648d98d",
@@ -22714,7 +22972,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d69ea8ce7a177029caec266724454160a0e2c849dbe1dd5573edba68a6384e5a",
@@ -22761,7 +23019,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b3d830741adfa2a4e00a4dc3dcfd52ff006d9aba40b5b93c1cefd770ed3cb294",
@@ -22808,7 +23066,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6e12c388f71c7be67df096ce4280e5a84e9ce28d98c3afd40b5894d43e7e7885",
@@ -22855,7 +23113,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "947c463e742672b79c4c077a324c383925ec0d412ed4b0695123a4bb95a36e51",
@@ -22902,7 +23160,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2bbafbbb61ae8eeb8c33ee7b8a61fe9ec36ea702447699bd8ca729d733d30a66",
@@ -22949,7 +23207,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "60d3e4ef6de5e0cd5d59b381aac838e248b12a2f5b51107d53958c1087cf579e",
@@ -22996,7 +23254,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "56b6b74c76b986237587e39f19ecb3fae62db5bf3170b7bd9546821a9623db6f",
@@ -23080,7 +23338,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e5f013444d93e8d7c2ae4e21f4592161e1ce0a5c9c1509f9fc8c044b9b086776",
@@ -23096,7 +23354,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41c72daa4fb9de204f37129c5e3d167bbb825a1740fec1ac3838afbbcfb60a8a",
@@ -23165,7 +23423,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a3f7bac69696435237687e0400d0359a2b3756be99417f12411d3adade24db60",
@@ -23250,7 +23508,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "10f355a5c7e1a1b525a7ad76ec0fc60c5d12a62cb133ac049941c451eb6b2a49",
@@ -23282,13 +23540,34 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6c50532f0ab521e7c3616b695439ac2db2361bbcd805fe9f30ad0435374bf58f",
         "bytes": 68970
       },
       "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/research/data-comparison-2026-10-05.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/research/data-comparison-2026-10-05.md",
+      "repository_path": "docs/research/data-comparison-2026-10-05.md",
+      "format": ".md",
+      "role": "project material",
+      "classification": "current",
+      "canonical_source": "docs/research/data-comparison-2026-10-05.md",
+      "linked_mechanisms": null,
+      "review_status": "metadata_only",
+      "body_reviewed_in_this_pass": false,
+      "review_basis": null,
+      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "source_version": {
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "scope": "observed working tree, not automatically main",
+        "date": "2026-09-30",
+        "sha256": "663ad9cf51c5fd7852e94fca4bc5c1d0dd9ea52db8287d5046eb963313a26c43",
+        "bytes": 45697
+      }
     },
     {
       "id": "docs/research/de-intl-api-probes.json",
@@ -23298,7 +23577,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "860ccfb7c648f0b15b6cada449ef8caec271f56176de3d624d5409049dfb93cb",
@@ -23345,7 +23624,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "c2eec792d8c95c997a6c869c9b58d47806e36dff8fd957fedb9d5cf6d7e77ae5",
@@ -23366,7 +23645,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "040631e7adc32fd0ef6a6d8f7302e3d2778a7da4f50d8e773b3899c245d39f88",
@@ -23387,7 +23666,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "observed working tree, not automatically main",
         "date": "2026-09-30",
         "sha256": "676e5056143282abdef2161ff457a8211d348a7961f93241134aa86d5f4a3833",
@@ -23408,7 +23687,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "05cd2f29a403fb267da3ca2d9b59751f5421f2cf7168b77fc6b2c2e1b05661a8",
@@ -23477,7 +23756,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ade56805105abc8a5ad1c1bd681f8d7e88a47478dc8041c3742e9e2936e000e9",
@@ -23546,7 +23825,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "12032f633fe04ec1ef0fdd2582008e17a55c42f3c16d3813ef6e17a121dc8863",
@@ -23615,7 +23894,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "317243ccf87fee465667636f231fc26e4879f725115a8ad31de7966cbb8672b4",
@@ -23695,7 +23974,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "14698ceb0bc1dffcf1784d9d30c6fa46adabe8660d71835b4253ab1b5a03bc7c",
@@ -23757,6 +24036,27 @@
       "current_delta_reviewed_in_this_pass": false
     },
     {
+      "id": "docs/research/our-state-2026-10-05.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/research/our-state-2026-10-05.md",
+      "repository_path": "docs/research/our-state-2026-10-05.md",
+      "format": ".md",
+      "role": "project material",
+      "classification": "current",
+      "canonical_source": "docs/research/our-state-2026-10-05.md",
+      "linked_mechanisms": null,
+      "review_status": "metadata_only",
+      "body_reviewed_in_this_pass": false,
+      "review_basis": null,
+      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "source_version": {
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "scope": "observed working tree, not automatically main",
+        "date": "2026-09-30",
+        "sha256": "e656c15e5f62362cd7eddf189fb10afa63e8dad08bee058bd577680e5057cbc3",
+        "bytes": 70974
+      }
+    },
+    {
       "id": "docs/research/russia-fpsr-official-sources.xlsx",
       "location": "/Users/iprofi/tradingeconomics/rosstat/docs/research/russia-fpsr-official-sources.xlsx",
       "repository_path": "docs/research/russia-fpsr-official-sources.xlsx",
@@ -23764,7 +24064,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a65fc039de33066dfeb4fbe0768b6b528daeb8a6b6170a5608efd082628966de",
@@ -23853,7 +24153,7 @@
         "sha256": "f2a0275947ea8d57f9402c54462e2cdf40148ebe4d83901a194c9045f0d0b646"
       },
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f2a0275947ea8d57f9402c54462e2cdf40148ebe4d83901a194c9045f0d0b646",
@@ -24001,7 +24301,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "dd312d4a63c945a26a4ff7119114a5c1d99de34ec784b6d608c7cb6095e1127b",
@@ -24028,7 +24328,7 @@
         "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a"
       },
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a",
@@ -24108,7 +24408,7 @@
         "sha256": "87105e7ef5b93a8d01b75880114d1446e4abbe25bad439dd1e69a2d366fb6848"
       },
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "87105e7ef5b93a8d01b75880114d1446e4abbe25bad439dd1e69a2d366fb6848",
@@ -24315,7 +24615,7 @@
         "sha256": "8aec2bb6bd24e6c6bc8d49dcfbb90dc9175e70bcf4f145d70294d50384df3e3e"
       },
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8aec2bb6bd24e6c6bc8d49dcfbb90dc9175e70bcf4f145d70294d50384df3e3e",
@@ -24484,7 +24784,7 @@
         "sha256": "c11acdfc0636e0bc401646dbb767c3111a2cd34ab499be00bc1c2aade06fd83c"
       },
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c11acdfc0636e0bc401646dbb767c3111a2cd34ab499be00bc1c2aade06fd83c",
@@ -24727,7 +25027,7 @@
         "sha256": "200fe2bd1f6426d289a4b15e0d09c56fac19ef1ec88d9281349b6ecd8761a0ce"
       },
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "200fe2bd1f6426d289a4b15e0d09c56fac19ef1ec88d9281349b6ecd8761a0ce",
@@ -24874,7 +25174,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ff61486cff1e69f4bf5658b25c32821ba7fa53f5ef8a659f37a6b3ff921cefda",
@@ -24890,7 +25190,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41354109cb35c16a4effd5e8defe668265bfe62c9a4868477b60f25988a011bf",
@@ -24952,6 +25252,27 @@
       "current_delta_reviewed_in_this_pass": false
     },
     {
+      "id": "docs/research/tech-benchmark-2026-10-05.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/research/tech-benchmark-2026-10-05.md",
+      "repository_path": "docs/research/tech-benchmark-2026-10-05.md",
+      "format": ".md",
+      "role": "project material",
+      "classification": "current",
+      "canonical_source": "docs/research/tech-benchmark-2026-10-05.md",
+      "linked_mechanisms": null,
+      "review_status": "metadata_only",
+      "body_reviewed_in_this_pass": false,
+      "review_basis": null,
+      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "source_version": {
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "scope": "observed working tree, not automatically main",
+        "date": "2026-09-30",
+        "sha256": "08ddb1dcbe8743ed5c969dedfafe2d22c6e8e3ca7fc3f2d47838f7403ccee037",
+        "bytes": 49392
+      }
+    },
+    {
       "id": "docs/research/turkey-official-sources.xlsx",
       "location": "/Users/iprofi/tradingeconomics/rosstat/docs/research/turkey-official-sources.xlsx",
       "repository_path": "docs/research/turkey-official-sources.xlsx",
@@ -24959,7 +25280,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b661aac648e124f3ee80e598a82148f005e2331bf3070eb0f148bc5fc55b746b",
@@ -25043,7 +25364,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "630f99f4acc90b8d911bb09115bd3a2c11135235d0398d880fe67fc4db393e2a",
@@ -25074,7 +25395,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3f39d44b937312cb861d0b94bf73766a5d0e5bb005c176a948d229a2a91b57ef",
@@ -25105,7 +25426,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "11fdb17535e5acc8baf776359cda94f16a1c33552770ed3f26f94d4ab3620cb3",
@@ -25145,7 +25466,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf",
@@ -25214,7 +25535,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710",
@@ -25283,7 +25604,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b21573da3b9be5cd1a343b49c4bdf26556248312d6fd15cfc656f748da73e23f",
@@ -25419,7 +25740,7 @@
         "sha256": "a58fcc7ad924eae0d4b7cb26e5d9727e8aa7047913ffb45122abe4206c3d555d"
       },
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a58fcc7ad924eae0d4b7cb26e5d9727e8aa7047913ffb45122abe4206c3d555d",
@@ -26088,7 +26409,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "893bb21466c35e9c64a25d077b72c36430e1db41459c715791cf49f191cedd87",
@@ -26128,7 +26449,7 @@
       "role": "project source/explanation",
       "classification": "generated",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c628cc19ea494dcec92f4b44f2bff1b9066fb7bae86606c151a595fc9be714fb",
@@ -26174,7 +26495,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b1108dda38345640549754179e7380483324d992bafa4dea90ffc549fc736af6",
@@ -26236,7 +26557,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ac14cba681558995fb3f55887004eded425d5fb28eda7ce68bbcf494a2322980",
@@ -26252,7 +26573,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e0548dcf2b4155648fe21c8924efa9752b0b174fb96160f89843db1a924c66d2",
@@ -26299,7 +26620,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "42181870d6129e325dcb37782a9ccd24f6a57186ec5e945564e80bcc5c366ebf",
@@ -26346,7 +26667,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "54e63895a8275fe3aafdd3dd6c5b673ebe1280a738ad82d06128f0958f5e8275",
@@ -26393,7 +26714,7 @@
       "role": "dev/release procedures",
       "classification": "current_document",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "97e2508be6fa0f09acc9e5f2d9134f141c21b00eb764fcbbf4e9b5b14ceae25d",
@@ -26602,7 +26923,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1f400ae86b24179fc34587c820a885061b176a0ebd2b4922aee989ba61b83e35",
@@ -26658,7 +26979,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a7c34306e9ef93f54ca97cf751da8c04e900860e3c6683f6c3bdca3ed8925139",
@@ -26725,7 +27046,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "699caf5b7a8ad6f4bc7b770e1dc8cddee5f47241f6dd7110c0d532c1ff9f80f9",
@@ -26772,7 +27093,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "335eef2202576be354899af024d39732d4b595346642eee749425309988ea029",
@@ -26819,7 +27140,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1a82f4db7956825c4e84ab064a05973d31257918828cbadb6890773f6cb7ee54",
@@ -26864,7 +27185,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "93a1f02be37383700cb86c1ad4a21a5fa1f1de94a2b8681510f87ee3266d9f93",
@@ -26909,7 +27230,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8367dbb0ca6ac0cf2e3d73d17ae7cf0ba354a1e49c1ce8c0e39adf4b1efab3c",
@@ -26954,7 +27275,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fe401f0a54c499dee2d36ae1a4e929d0437021d1098ab0b4a1ebf312eb4df4d3",
@@ -26999,7 +27320,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a7e888dece908bb530ce1b59bbfed6ada4a8bbc2f1c226ad37e1daa0113ee5f6",
@@ -27044,7 +27365,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "07985b604b4f04bf2f46165095b92d55a0d71c4ad5b390d9257e1569b1d32f7b",
@@ -27089,7 +27410,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "15b9f131a96199fd810f17089d5529d580aece9f4ad296c93a211d2c69611d9a",
@@ -27134,7 +27455,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e92fab475ace4abb557ebc22f38c76ead9ad532d861ddca78feac9a97d69f619",
@@ -27179,7 +27500,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d046bbcb2399a6d03062de0f724138b69b020cce9c2f55c0e5b3b7655c2f89e6",
@@ -27224,7 +27545,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "92bb5c411f0b7009d9100b6d80372a391d9a83870feeb897a81c0ae986df275d",
@@ -27269,7 +27590,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f017c6e5407c0e4f632baa016bfbcd63934881cee854a5870995b0546a0bd275",
@@ -27314,7 +27635,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a37c9f3198c593a9d52dcfcda1eab8652097ed760d12df79fe5e9646e40bba23",
@@ -27359,7 +27680,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a70c45d18f3fba4d3a2c9ab18563ee3ac32f1a916e89ceac3624074d241e974e",
@@ -27404,7 +27725,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5d556119520e53221bcca38b970ef348cbe2e220bf56d39ce3b3bb6f033e8320",
@@ -27449,7 +27770,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "599c8b0a731cc0c2f403c678d57fc44a470393f277019803e5b3f4384220b3a7",
@@ -27494,7 +27815,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6021950642f7e96fb263ed7988e22167984fa34a94b8803e5ce23ab3558dbab0",
@@ -27539,7 +27860,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53d40500a285c3700174929e7052f302c36fed87d64e22bbcc12d692127ae922",
@@ -27584,7 +27905,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d4a46e61ff81210d876111437e99139632b25a3faa407b78cad6f48221879840",
@@ -27629,7 +27950,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ff4d9dbd6022897057207ba55db3a515170542aa1188df1689532ecc3d1ca411",
@@ -27674,7 +27995,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9ab0a89fe98a1668a1e363e0cf8ad12628d756274ef0bf8dd903c302086898da",
@@ -27719,7 +28040,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d9f8572cc878560fa900b86276fd2e301b6ef3519e3751ee4f4d16914e3b13ea",
@@ -27764,7 +28085,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "69aafa5d7858c9583f585bb51e5301c47b713a89d655bbdc6bce553c15ca2f50",
@@ -27809,7 +28130,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2ba59dcd3882fd75eb4341b82f0993fbaf2796fddccd7506b1105387f74598ca",
@@ -27854,7 +28175,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3ab095df112731eba07953496b22fd7122bb6dabcfda4d6efc838b7b09f4df56",
@@ -27899,7 +28220,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "584776bbf4ec5348b1b81a3de24850a6f4de7322fa84165823765df71c9285da",
@@ -27944,7 +28265,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ee71192a55fb93c56c39191c2e414b904e9f49aa921db30504ead84e058eb17d",
@@ -27989,7 +28310,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fcd0f14c8efc8498db86bc7107aadab622339999998fb5d8cca846119c7a3b96",
@@ -28034,7 +28355,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d1993c44fb809483230ddecfda6deaef46b98239f2d950af601ec82be5c282bb",
@@ -28079,7 +28400,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9b4070f54a4c69d9aea65cdc6bdd436aae1913a52b219af0ae1d9b1a1cae1f3f",
@@ -28124,7 +28445,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bf789376399bdbdb4dddebbd2a53cb78550e9077b3c552e8ad7e280db7a8d324",
@@ -28169,7 +28490,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0a194cd7217af2048f38cb3799487ae746c4b3c9a74dc989137830447f1f89d6",
@@ -28214,7 +28535,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "660bc618011937b4fdf2abc8ae90d5208a9748bc4d2d13b451cd92ebf1ffd79d",
@@ -28259,7 +28580,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "97dbbfe0d8619fae01158f95c10ebcfebbe4dd8f6852828475790bfc90881aa3",
@@ -28304,7 +28625,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d78cca8e9a83c03ba4725bf0119b1f523a3d0732a45087675a2774e725aa31cd",
@@ -28349,7 +28670,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "57a8fdf945bf73d760f296382bb6613a15220bd4f6a588d80c4f16ede068a328",
@@ -28394,7 +28715,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "302ecc8948731f828f18df639235f42c4b45e110b43f78c40d3c90d82cd06555",
@@ -28439,7 +28760,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6074899d86f98cf1d862f4a0315ae668a590ded214cc378afca2fffa5d16dafb",
@@ -28484,7 +28805,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d6a309fcfb963d329a93baf9df66fa5f3c23a4be2b5f67edf24d6cafecde12ac",
@@ -28531,7 +28852,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fd3d58f3db64bfba66da3139de3b30230bbd925ac56d9ec5abfd9a134c5777f9",
@@ -28651,7 +28972,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4d40536f27e1cffd2bf4f8d4e97727c3ea57b77299d1c7289e2aaa9c78fade6c",
@@ -28696,7 +29017,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7fb94b640b3a19b81439f0bb8ece783628f7de7ddd90cb2c9eab7db069333ce2",
@@ -28741,7 +29062,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4d40536f27e1cffd2bf4f8d4e97727c3ea57b77299d1c7289e2aaa9c78fade6c",
@@ -28786,7 +29107,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a5993d437214e57cc3c91828ded4c2026b81af40cf87174305426bdb3ffb8250",
@@ -28997,7 +29318,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "06507fb38a9065ecb50cff41cd9eec654c1ad86af3df14bd4d70baac763e26cb",
@@ -29042,7 +29363,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e1df127a752f4044aba92258cc8165ee3821ee68f9ad26d442c6f59afcd611eb",
@@ -29087,7 +29408,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53ee75ed6ab7e7452c8f160293877e6dd7e2a7283ad6126550290d03f973388a",
@@ -29134,7 +29455,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "591346bf090109cdb260996c7fb284d7dd157d2fe2415dfee241c12c7e26c43d",
@@ -29181,7 +29502,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "35ef61ed53b323ae94a16a8ec659b3d0af3880698791133f23b084085ab1c2e5",
@@ -29226,7 +29547,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "83b531b870be333c861eb73b67ec980a8ebe5f373a0d1c5a47fe80eae6128fc2",
@@ -29273,7 +29594,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8a40e40e40a56dbe29a3073344135149614fb3fad6d5ddf22df096e3eb0a7e89",
@@ -29320,7 +29641,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7bc9053c135dfd274c3756716c7cb284a2cab497ccd6943fc02cdce5debb8a7",
@@ -29367,7 +29688,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9f7e25385d36729110d401c56e326d03f312b2d5d0060da385c1f7f17d54f5f9",
@@ -29437,7 +29758,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "84befc3cb36300701c99cf4c568ed1e8f3b838d8034768787ed1d7b6f857893c",
@@ -29484,7 +29805,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c9de02357e6ef94ae047dfe5c0f82e716c433a8975c88e11a5c9b6624224deef",
@@ -29858,7 +30179,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6e9f5dec0570a89a6023410c723e57849d66dc63a75d2b7cfd423203782eb4d8",
@@ -29905,7 +30226,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7152a39b43bcac5e257ef3f73164a3a8c46ee6d965d6a2d9a81968abc76566a2",
@@ -29952,7 +30273,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e6f599601ec611f15c116bf2d8202532d95f419928eccfb69268eb9947c134a9",
@@ -30401,7 +30722,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "871709ec15ec5099592a8c657f281271c8b860dfb10265ff03ad2577ffb991d9",
@@ -30471,7 +30792,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9810cdded44129a186f032c0e854d91da96e434c673de614c2576f359ccbfe83",
@@ -30518,7 +30839,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9c977d2ff47c0b322eb7f40d62fad7c6e8a0f230b5f5376c18ab04e5255ab021",
@@ -30565,7 +30886,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8a73314e26d0cdedc5ff531980158ec5caa62935156bc66270ddba60e6feff3f",
@@ -30612,7 +30933,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "36e5d3e0f9dedd9ef18ef52b17706952b09f29699cd5c59d51eac8776be4cd79",
@@ -30659,7 +30980,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d457dfe007c246c946951fff3ed8f96103d967bcf574d0be25fba3a9b5d6c3bd",
@@ -30785,7 +31106,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a180c1bbe9b7de73ab8ca107ee4ca663b1f8efa8717bbf946cf69d0e77be050d",
@@ -30832,7 +31153,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f95388492d2c5dfe30ce4b3e95df7c47049ecd6c4e943d5ec1670e5b15669199",
@@ -30902,7 +31223,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "22e2284a44edc61ad74551fe47657019c3a847a40da901e662e71f1bafd4fbef",
@@ -30949,7 +31270,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cbedbe02e33512a2ea0234a5aefe6bfc7807336a6336b0a5c9416a682b0df85b",
@@ -31005,7 +31326,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5a6b28a864b64bbb9ec2430e924268146277693228e1f7c6b053d042bd299f78",
@@ -31052,7 +31373,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d32ca7bbbe22f9b7f26f400cf5f789712602db5749a4e39f0df255f869102952",
@@ -31099,7 +31420,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a4b8af3360b381f9c1c6c5305571a1f2abd2cb1b18d842c7cfe61363f50f8637",
@@ -31188,7 +31509,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8537824c2655a7b2f67f08a96ff8da8c07dcd6632b22cfcc9c3f5851e85d3882",
@@ -31235,7 +31556,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "86e1b37b582132f9876bc253add4d1677f028bba0fc9a1ea267376a45f2a341e",
@@ -31282,7 +31603,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8c787342f45fb9761897a0a8bc86166a8aae90f4239e6e38b23ff8ee9904a3e",
@@ -47660,8 +47981,8 @@
     }
   ],
   "metadata_refresh": {
-    "at_utc": "2026-10-05T12:02:16.327543+00:00",
-    "head": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
+    "at_utc": "2026-10-05T12:14:13.893645+00:00",
+    "head": "ee23056826619fe3ec7929c19f4a0690784045bd",
     "collector": "docs/code-review/refresh-materials-2026-09-30.py",
     "tracked_docs_required": 203,
     "excluded_hash_paths": [

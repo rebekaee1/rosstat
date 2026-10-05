@@ -445,7 +445,7 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391",
+      "sha256": "6496378342013c0573a53350769300eca2a45f6d79b457781921b2d5d2bf5f62",
       "lines": 1570
     },
     {
@@ -1375,7 +1375,7 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "1e731bc68cc0207971bce6d6403a451f29ab92d1a6f1fab8caa73290c7f28a49",
+      "sha256": "d680e3acadfbae40b2de7ee81e48ccdf214b3a4f36978687e8e20163e8c4b0b2",
       "lines": 2081
     },
     {
@@ -59497,10 +59497,10 @@
         },
         {
           "key": "'rating_intro'",
-          "expression": "'Country ranking by “{name}” for {year}. The table covers {with_data}; another {without_data}.'",
+          "expression": "'Country ranking by “{name}” for {year}. The table covers {with_data}{without_data}. Countries can be ordered from the highest value to the lowest, or the other way round.'",
           "expression_truncated": false,
-          "expression_chars": 95,
-          "ast_sha256": "51b370552908cf809a9e95aaa5b63679877d1e26b395df4805eb5e804c8d98e5"
+          "expression_chars": 172,
+          "ast_sha256": "1d101c5d138d6fa1797972af21524560ab5b8db4abc17223f4f8491a81f0c3bf"
         },
         {
           "key": "'n_indicators_one'",
@@ -59679,10 +59679,10 @@
         },
         {
           "key": "'rating_money_guard'",
-          "expression": "' Monetary indicators are not converted to another currency: only series already published in a comparable unit enter the ranking.'",
+          "expression": "' Monetary indicators are not converted to another currency: only values already published in a comparable unit enter the ranking.'",
           "expression_truncated": false,
           "expression_chars": 131,
-          "ast_sha256": "613c0f6a145f74bcf5772d130f25f60c80e87fad9e4d88f4dbf44ad95e9c371d"
+          "ast_sha256": "d836a66d3300cf3ecd6ee52a87c4f49d614c3977eed05f7964eff62887606ee8"
         },
         {
           "key": "'rating_index_guard'",
@@ -59700,10 +59700,10 @@
         },
         {
           "key": "'rating_without_data'",
-          "expression": "'{n} in the world catalogue have no value for this year'",
+          "expression": "'{n} more countries in the catalogue have no value for this year'",
           "expression_truncated": false,
-          "expression_chars": 56,
-          "ast_sha256": "01694d8e753ddd49e963602685092fedc7e187e2193beecbb4f8432a6237153f"
+          "expression_chars": 65,
+          "ast_sha256": "16d2230850a159ef90f21a8c6634de7e239b7203af572a00d7aeb12d7f53b154"
         },
         {
           "key": "'country_eyebrow_national'",
@@ -60014,10 +60014,10 @@
           "ast_sha256": "100a910eed6207cc209d68c0c43510195601048a24cd5e8436baa7f239515971"
         }
       ],
-      "expression": "{'country_title': 'Economy of {country}: statistics and indicators', 'country_h1': 'Economy of {country}: statistics and indicators', 'country_desc_national': '{country}: {n_phrase} — prices, GDP, labor market, trade, and finance. Source: {source_phrase}. Charts and latest values on Forecast Economy.', 'country_desc_eurostat': '{country}: {n_phrase} from Eurostat — prices, GDP, labor market, trade, and finance. Charts and latest values on Forecast Economy.', 'indicator_title': '{display} in {country}: {last_value}{unit_sfx} ({last_label})', 'indicator_desc': '{display} in {country}: {last_value}{unit_sfx} as of {last_label}. Dynamics over {period}, chart and table. Source: {source}.', 'indicator_h1': '{display} in {country}', 'rating_title': 'Country ranking by {query_name}', 'rating_title_year': 'Country ranking by {query_name}, {year}', 'rating_title_for_year': 'Country ranking by {query_name} for {year}', 'rating_desc': '{title}: full table of {N} of {total}, map, and links to country cards. Official statistics from national agencies and Eurostat.', 'rating_intro': 'Country ranking by “{name}” for {year}. The table covers {with_data}; another {without_data}.', 'n_indicators_one': '{n} indicator', 'n_indicators_many': '{n} indicators', 'keywords_rating': '{name} by country, country ranking by {name}, {name} {year}, world economy ranking', 'keywords_country': '{country} economy, {country} statistics, {country} gdp, {country} inflation, {country} unemployment', 'keywords_indicator': '{display} {country}, {country} {display} chart, {country} statistics', 'rating_eyebrow': 'Comparable country indicators', 'rating_th_rank': 'Rank', 'rating_th_country': 'Country', 'rating_th_value': 'Value', 'rating_th_unit': 'Unit', 'rating_th_period': 'Period', 'rating_h2_full': 'Full country ranking', 'rating_h2_missing': 'Countries without data for {year}', 'rating_missing_p': 'These countries have no published value for the selected indicator in {year}.', 'rating_h2_other': 'Other ",
+      "expression": "{'country_title': 'Economy of {country}: statistics and indicators', 'country_h1': 'Economy of {country}: statistics and indicators', 'country_desc_national': '{country}: {n_phrase} — prices, GDP, labor market, trade, and finance. Source: {source_phrase}. Charts and latest values on Forecast Economy.', 'country_desc_eurostat': '{country}: {n_phrase} from Eurostat — prices, GDP, labor market, trade, and finance. Charts and latest values on Forecast Economy.', 'indicator_title': '{display} in {country}: {last_value}{unit_sfx} ({last_label})', 'indicator_desc': '{display} in {country}: {last_value}{unit_sfx} as of {last_label}. Dynamics over {period}, chart and table. Source: {source}.', 'indicator_h1': '{display} in {country}', 'rating_title': 'Country ranking by {query_name}', 'rating_title_year': 'Country ranking by {query_name}, {year}', 'rating_title_for_year': 'Country ranking by {query_name} for {year}', 'rating_desc': '{title}: full table of {N} of {total}, map, and links to country cards. Official statistics from national agencies and Eurostat.', 'rating_intro': 'Country ranking by “{name}” for {year}. The table covers {with_data}{without_data}. Countries can be ordered from the highest value to the lowest, or the other way round.', 'n_indicators_one': '{n} indicator', 'n_indicators_many': '{n} indicators', 'keywords_rating': '{name} by country, country ranking by {name}, {name} {year}, world economy ranking', 'keywords_country': '{country} economy, {country} statistics, {country} gdp, {country} inflation, {country} unemployment', 'keywords_indicator': '{display} {country}, {country} {display} chart, {country} statistics', 'rating_eyebrow': 'Comparable country indicators', 'rating_th_rank': 'Rank', 'rating_th_country': 'Country', 'rating_th_value': 'Value', 'rating_th_unit': 'Unit', 'rating_th_period': 'Period', 'rating_h2_full': 'Full country ranking', 'rating_h2_missing': 'Countries without data for {year}', 'rating_missing_p': 'These countries have no publi",
       "expression_truncated": true,
-      "expression_chars": 6292,
-      "ast_sha256": "ba7dde7993a828fd1a84872efe5fc8f23bc8ddcab9df22bff3d5ae8b923c9ef1",
+      "expression_chars": 6378,
+      "ast_sha256": "b2bbf6a906433b9fb36eed9536db9f7f132d88f53c8c90fb85e79e04be79a227",
       "runtime_expansion": false
     },
     {

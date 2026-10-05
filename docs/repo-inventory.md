@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1463  ·  **Строк:** 1 047 565  ·  **Токенов (≈):** 9 876 958
+**Файлов:** 1463  ·  **Строк:** 1 047 565  ·  **Токенов (≈):** 9 877 012
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 415 | 52 392 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 679 | 248 717 | 2 736 665 |
+| `backend` | 679 | 248 717 | 2 736 697 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 776 | 9 082 |
-| `docs` | 115 | 673 668 | 5 755 808 |
+| `docs` | 115 | 673 668 | 5 755 830 |
 | `frontend` | 541 | 101 149 | 1 076 950 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 98 | 20 295 | 240 639 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 279 805 | 2 299 155 |
+| `docs/mechanism-inventory.json` | 279 805 | 2 299 177 |
 | `docs/client-mechanism-inventory.json` | 136 437 | 980 090 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -65,9 +65,9 @@
 | `backend/app/services/seo_regional.py` | 2 111 | 20 923 |
 | `backend/app/models.py` | 1 565 | 20 229 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
-| `backend/app/services/seo_world.py` | 2 081 | 19 248 |
+| `backend/app/services/seo_world.py` | 2 081 | 19 259 |
 | `backend/app/data/i18n/indicator_copy_en.py` | 1 061 | 17 960 |
-| `backend/app/data/i18n/seo_en.py` | 1 570 | 17 535 |
+| `backend/app/data/i18n/seo_en.py` | 1 570 | 17 556 |
 | `backend/app/services/analytics_marts.py` | 1 607 | 17 268 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/main.py` | 1 656 | 16 776 |

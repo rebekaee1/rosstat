@@ -997,13 +997,13 @@ async def render_world_rating_html(
     if en_intro and en:
         with_tpl = world_template("rating_with_data") or "{n} countries with a published value"
         without_tpl = world_template("rating_without_data") or (
-            "{n} in the world catalogue have no value for this year"
+            "{n} more countries in the catalogue have no value for this year"
         )
         intro = en_intro.format(
             name=name,
             year=active_year,
             with_data=with_tpl.format(n=with_data),
-            without_data=without_tpl.format(n=without_data),
+            without_data=("; " + without_tpl.format(n=without_data)) if without_data else "",
         )
     else:
         missing = (

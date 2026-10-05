@@ -738,8 +738,8 @@ WORLD_TEMPLATES_EN: dict[str, str] = {
         "Official statistics from national agencies and Eurostat."
     ),
     "rating_intro": (
-        "Country ranking by “{name}” for {year}. The table covers {with_data}; "
-        "another {without_data}."
+        "Country ranking by “{name}” for {year}. The table covers {with_data}{without_data}. "
+        "Countries can be ordered from the highest value to the lowest, or the other way round."
     ),
     "n_indicators_one": "{n} indicator",
     "n_indicators_many": "{n} indicators",
@@ -781,7 +781,7 @@ WORLD_TEMPLATES_EN: dict[str, str] = {
     "rating_unit_fallback": "source units",
     "rating_of_total": "{with_data} of {total}",
     "rating_money_guard": (
-        " Monetary indicators are not converted to another currency: only series "
+        " Monetary indicators are not converted to another currency: only values "
         "already published in a comparable unit enter the ranking."
     ),
     "rating_index_guard": (
@@ -791,7 +791,7 @@ WORLD_TEMPLATES_EN: dict[str, str] = {
     ),
     "rating_with_data": "{n} countries with a published value",
     "rating_without_data": (
-        "{n} in the world catalogue have no value for this year"
+        "{n} more countries in the catalogue have no value for this year"
     ),
     "country_eyebrow_national": "National statistics — {country}",
     "country_eyebrow_eurostat": "Eurostat statistics — {country}",
