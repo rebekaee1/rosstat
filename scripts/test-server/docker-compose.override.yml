@@ -12,6 +12,10 @@ services:
       network: host
     ports: !override
       - "127.0.0.1:80:80"
+    # Лимиты запросов nginx подняты (генерируется deploy.sh из frontend/nginx.conf): все посетители и проверяющие агенты
+    # приходят с одного внешнего адреса, и боевой лимит 5 запросов/с на адрес отдавал им «429 Too Many Requests».
+    volumes:
+      - /root/nginx-test.conf:/etc/nginx/conf.d/default.conf:ro
   backend:
     build:
       network: host

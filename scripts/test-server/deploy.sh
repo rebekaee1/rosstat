@@ -42,6 +42,10 @@ else
   "${SSH[@]}" "cd $APP_DIR && git fetch -q /root/fe-deploy.bundle $BR:refs/heads/$BR --force && git checkout -q --detach $SHA && git rev-parse --short HEAD"
 fi
 
+# 1b. Конфиг nginx тестового сервера: тот же frontend/nginx.conf, но лимиты запросов в 100 раз выше по скорости (rate=Nr/s -> N*100) и в 10 раз по всплеску (burst).
+#     Подключается bind-mount'ом из docker-compose.override.yml; боевой конфиг не меняется.
+"${SSH[@]}" "cd $APP_DIR && sed -E -e 's/rate=([0-9]+)r\/s/rate=\100r\/s/' -e 's/burst=([0-9]+)/burst=\10/' frontend/nginx.conf > /root/nginx-test.conf && grep -c 'limit_req_zone' /root/nginx-test.conf"
+
 # 2. Образы (host-сеть задана в docker-compose.override.yml; без неё pip/npm таймаутят) и перезапуск.
 if [[ $BUILD -eq 1 ]]; then
   "${SSH[@]}" "cd $APP_DIR && docker compose build backend frontend" 2>&1 | tail -3

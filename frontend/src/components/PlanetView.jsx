@@ -115,7 +115,6 @@ export default function PlanetView({
   const [cameraCommand, setCameraCommand] = useState(null);
   const [comparisonCodes, setComparisonCodes] = useState([]);
   const [touchNavigation, setTouchNavigation] = useState(() => window.matchMedia?.('(pointer: coarse)').matches || false);
-  const [interactiveTouch, setInteractiveTouch] = useState(false);
   const [listExpanded, setListExpanded] = useState(false);
   // Первое касание шара прекращает самовращение и подсказку.
   const [engaged, setEngaged] = useState(false);
@@ -143,7 +142,7 @@ export default function PlanetView({
   useEffect(() => {
     const preference = window.matchMedia?.('(pointer: coarse)');
     if (!preference) return undefined;
-    const update = () => { setTouchNavigation(preference.matches); setInteractiveTouch(false); };
+    const update = () => { setTouchNavigation(preference.matches); };
     preference.addEventListener('change', update);
     return () => preference.removeEventListener('change', update);
   }, []);
@@ -269,7 +268,7 @@ export default function PlanetView({
   const handleReady = useCallback(() => setSceneStatus('ready'), []);
   const handleError = useCallback((error) => {
     console.warn('Planet rendering failed:', error);
-    setSceneStatus('error'); setHoverCode(null); setHoverPlace(null); setInteractiveTouch(false);
+    setSceneStatus('error'); setHoverCode(null); setHoverPlace(null);
   }, []);
   const handleInteract = useCallback(() => setEngaged(true), []);
   const handleOcean = useCallback((value) => setWater(value), []);
@@ -408,7 +407,6 @@ export default function PlanetView({
     };
   }, [benchmarkSeries, coverage]);
   const compactList = !listExpanded && rankedCountries.length > COMPACT_LIST_ROWS + 1;
-  const showRotateToggle = touchNavigation;
   const playTitle = t(playing ? 'w6c.play.stop' : 'w6c.play.start', { from: playYears[0], to: playYears[playYears.length - 1] });
   const shareTitle = t(shared ? 'w6c.share.done' : 'w6c.share');
   const placeMail = placeCard ? 'mailto:' + CONTACT_EMAIL + '?' + new URLSearchParams({
@@ -513,7 +511,7 @@ export default function PlanetView({
                 <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
                   <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
                     valueDigits={digits} onHover={handleHover} onSelect={handleSceneSelect} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
-                    interactive={!touchNavigation || interactiveTouch} touchNavigation={touchNavigation}
+                    interactive={!touchNavigation} touchNavigation={touchNavigation}
                     autoRotate={!engaged && sceneStatus === 'ready'} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
                 </Suspense></SceneBoundary>
                 <div className="planet-orb" aria-hidden="true" />
@@ -536,9 +534,6 @@ export default function PlanetView({
               </>}
               <div className="planet-stage-bottom">
                 {!isMap && <div className="planet-stage-actions">
-                  {showRotateToggle && <button type="button" className={'planet-pill planet-navigation-toggle' + (interactiveTouch ? ' is-active' : '')} aria-pressed={interactiveTouch} title={t('w6c.rotate.hint')} onClick={() => setInteractiveTouch((active) => !active)}>
-                    {interactiveTouch ? <Check size={16} aria-hidden="true" /> : <Hand size={16} aria-hidden="true" />}{t('planet.rotate')}
-                  </button>}
                   {water && !selectedCountry && <button type="button" className="planet-pill planet-back-to-countries" onClick={() => commandCamera('reset')}><RotateCcw size={15} aria-hidden="true" />{t('w6c.backToCountries')}</button>}
                   {canPlay && <button type="button" className={'planet-round' + (playing ? ' is-active' : '')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
                     {playing ? <Pause size={17} aria-hidden="true" /> : <Play size={17} aria-hidden="true" />}</button>}

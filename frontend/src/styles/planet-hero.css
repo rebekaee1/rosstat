@@ -52,9 +52,19 @@
   .fe-hero-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 580px);
     grid-template-areas: "text planet" "scope planet";
+    /* Лишняя высота правой колонки достаётся пустой нижней строке, а не растягивает текст и «платформу в цифрах». */
+    grid-template-rows: auto 1fr;
     column-gap: 36px;
     row-gap: 22px;
   }
+  /* Раскрытый рейтинг стран скроллится внутри карточки: страница не вытягивается на 55 строк, левая колонка не пустеет. */
+  .fe-dashboard .fe-hero-planet .planet-country-list:not(.is-compact) {
+    max-height: min(560px, 62vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* Заголовок с поиском и числа платформы стоят подряд у верха левой колонки. */
+  .fe-hero-text, .fe-hero-scope { align-self: start; }
   .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(36px, 3.3vw, 46px); }
   .fe-dashboard .fe-hero-planet [data-block="home-workbench"] { padding: 14px; }
 }

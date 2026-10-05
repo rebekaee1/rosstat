@@ -91,7 +91,6 @@
   color: var(--planet-accent-ink); background: var(--planet-glass); box-shadow: var(--planet-glass-shadow); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
   -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3);
 }
-.planet-navigation-toggle.is-active { border-color: var(--planet-accent-ink); color: #fff; background: var(--planet-accent-ink); }
 .planet-back-to-countries { color: #fff; border-color: var(--planet-accent-ink); background: var(--planet-accent-ink); animation: planet-pop-in 260ms cubic-bezier(.2,.8,.2,1); }
 /* Подписи у кнопок: на компьютере всплывают при наведении и с клавиатуры, на телефоне есть aria-label. */
 @media (hover: hover) and (pointer: fine) {

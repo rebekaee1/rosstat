@@ -415,23 +415,16 @@ describe('PlanetView interaction contract', () => {
     expect(lastCountry.getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('starts the coarse-pointer scene with horizontal spin only; «Free rotation» is a labelled toggle on the globe', async () => {
+  it('starts the coarse-pointer scene with horizontal spin only and has no rotation toggle', async () => {
     vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
       matches: query === '(pointer: coarse)', media: query,
       addEventListener: vi.fn(), removeEventListener: vi.fn(),
     }));
-    const { container } = render(<PlanetView countries={countries} />);
+    render(<PlanetView countries={countries} />);
     await screen.findByTestId('planet-scene');
     expect(scene.props.touchNavigation).toBe(true);
     expect(scene.props.interactive).toBe(false);
-    const toggle = screen.getByRole('button', { name: 'planet.rotate' });
-    expect(container.querySelector('.planet-stage').contains(toggle)).toBe(true);
-    expect(toggle.getAttribute('aria-pressed')).toBe('false');
-    fireEvent.click(toggle);
-    expect(scene.props.interactive).toBe(true);
-    expect(screen.getByRole('button', { name: 'planet.rotate' }).getAttribute('aria-pressed')).toBe('true');
-    fireEvent.click(screen.getByRole('button', { name: 'planet.rotate' }));
-    expect(scene.props.interactive).toBe(false);
+    expect(screen.queryByRole('button', { name: 'planet.rotate' })).toBeNull();
   });
 
   it('falls back after a scene error and retains country selection and CTA through retry', async () => {
