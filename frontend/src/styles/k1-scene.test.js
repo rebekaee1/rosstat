@@ -67,4 +67,18 @@ describe('k1-scene.css', () => {
     expect(lamp).toMatch(/mask-image:\s*radial-gradient\(closest-side/);
     expect(lamp).not.toMatch(/border-radius/);
   });
+
+  it('у кадра героя нет прямых краёв: эллиптическая маска на десктопе и на телефоне (G1.1)', () => {
+    const base = stripped.match(/\.fe-scene-hero \{[^}]*\}/)[0];
+    expect(base).toMatch(/mask-image:[^;]*radial-gradient\(ellipse/);
+    expect(base).toMatch(/mask-composite:\s*intersect, intersect/);
+    const phone = stripped.match(/@media \(max-width: 767px\) \{\s*\.fe-scene-hero,[\s\S]*?\n\}/)[0];
+    expect(phone).toMatch(/mask-image:[^;]*radial-gradient\(ellipse/);
+  });
+
+  it('лёд тёплый и тихий: альфа не выше .24, на телефоне .14 и пятно не у левого края', () => {
+    expect(stripped).toMatch(/--fe-scene-ice:\s*rgba\(204, 222, 250, 0\.24\)/);
+    expect(stripped).toMatch(/\.fe-scene \{ --fe-scene-ice: rgba\(204, 222, 250, 0\.14\); \}/);
+    expect(stripped).toMatch(/\.fe-scene__lamp--ice \{ left: 8vw;/);
+  });
 });

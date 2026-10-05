@@ -28,13 +28,17 @@
 :root {
   --fe-scene-paper: var(--color-obsidian, #F6F2EA);
   --fe-scene-gold: rgba(246, 231, 190, 0.6);
-  --fe-scene-ice: rgba(191, 224, 245, 0.35);
+  /* Лёд: светлый сиреневато-голубой и тише прежнего (было rgba(191,224,245,.35)). Голубой поверх кремовой бумаги даёт серо-голубую
+     «муть» (около #E6EAEC); при альфе .24 и сдвиге к сиреневому остаётся жемчужный свет без серого оттенка. */
+  --fe-scene-ice: rgba(204, 222, 250, 0.24);
   --fe-scene-rose: rgba(244, 198, 216, 0.2);
   --fe-scene-texture-opacity: 0.06;
   --fe-scene-hero-opacity: 0.85;
   --fe-scene-leak-opacity: 0.2;
   --fe-glint-color: rgba(255, 255, 255, 0.65);
   --fe-light-color: rgba(255, 255, 255, 0.55);
+  /* До монтирования сцены (первый кадр) страницу ещё красит body из index.css: ледяное сияние там тёплое, а не серо-голубое. */
+  --fe-glow-ice-bg: rgba(238, 230, 212, 0.3);
 }
 
 :root[data-theme="dark"], :root.dark {
@@ -202,10 +206,12 @@ html.fe-scene-on #root {
   mix-blend-mode: multiply;
   opacity: 0;
   transition: opacity 0.6s ease;
-  -webkit-mask-image: linear-gradient(90deg, transparent 36%, #000 66%), linear-gradient(180deg, #000 56%, transparent 96%);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 36%, #000 66%), linear-gradient(180deg, #000 56%, transparent 96%);
-  mask-composite: intersect;
+  /* Маска со всех сторон (G1.1): слева и снизу линейные, плюс эллипс вокруг кластера (x 67-94 %, y 0-89 % кадра), так что
+     у кадра нет ни одного прямого края. Дополнительно сами кадры растворены в белый у краёв (R3/k1/flat.py). */
+  -webkit-mask-image: linear-gradient(90deg, transparent 36%, #000 66%), linear-gradient(180deg, #000 56%, transparent 96%), radial-gradient(ellipse 34% 64% at 80% 46%, #000 52%, transparent 100%);
+  -webkit-mask-composite: source-in, source-in;
+  mask-image: linear-gradient(90deg, transparent 36%, #000 66%), linear-gradient(180deg, #000 56%, transparent 96%), radial-gradient(ellipse 34% 64% at 80% 46%, #000 52%, transparent 100%);
+  mask-composite: intersect, intersect;
 }
 /* Страна: кластер в пустой середине hero, между заголовком и карточкой профиля (на 1440 центр около x 815). */
 .fe-scene-hero[data-fe-hero="country"] {
@@ -234,8 +240,8 @@ html.fe-scene-on #root {
     --fe-hero-frame-top: 40px;
     aspect-ratio: 780 / 1044;
     /* Слева на кадре холодное облако: оно уходит маской, остаются грани справа от заголовка. */
-    -webkit-mask-image: linear-gradient(90deg, transparent 26%, #000 52%), linear-gradient(180deg, #000 52%, transparent 92%);
-    mask-image: linear-gradient(90deg, transparent 26%, #000 52%), linear-gradient(180deg, #000 52%, transparent 92%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 26%, #000 52%), linear-gradient(180deg, #000 52%, transparent 92%), radial-gradient(ellipse 46% 54% at 66% 32%, #000 50%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 26%, #000 52%), linear-gradient(180deg, #000 52%, transparent 92%), radial-gradient(ellipse 46% 54% at 66% 32%, #000 50%, transparent 100%);
   }
 }
 
@@ -402,6 +408,9 @@ html[data-fe-lite="on"] .fe-scene-leak {
 /* Телефон: только каустики и герой. Каустики стоят, плавает один герой (не больше одной анимации в кадре). */
 @media (max-width: 767px) {
   .fe-scene__lamp { animation: none; }
+  /* Телефон: ледяное пятно слабее и не у левого края (раньше там читался холодный серо-голубой угол). */
+  .fe-scene { --fe-scene-ice: rgba(204, 222, 250, 0.14); }
+  .fe-scene__lamp--ice { left: 8vw; top: 34vh; width: 110vw; height: 80vh; }
 }
 
 @media print {

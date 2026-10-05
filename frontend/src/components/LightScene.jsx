@@ -198,10 +198,38 @@ function useSceneParallax(rootRef) {
   }, [rootRef]);
 }
 
+/**
+ * Любой неизвестный адрес из одного сегмента (`/abc`) похож на карточку страны, но это 404. На странице 404 корень
+ * `.z2-nf`: пока он в документе, героя страны не рисуем (иначе на 404 появлялся кадр граней с резкими краями).
+ * Проверка идёт на rAF и после мутаций DOM, пока адрес похож на страну.
+ */
+function useIsNotFoundPage(active, pathname) {
+  const [notFound, setNotFound] = useState(false);
+  useEffect(() => {
+    if (!active || typeof document === 'undefined') return undefined;
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      setNotFound(!!document.querySelector('.z2-nf'));
+    };
+    const schedule = () => { if (!frame) frame = window.requestAnimationFrame(check); };
+    schedule();
+    const mo = typeof MutationObserver === 'function' ? new MutationObserver(schedule) : null;
+    if (mo) mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      if (mo) mo.disconnect();
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [active, pathname]);
+  return active && notFound;
+}
+
 export default function LightScene() {
   const { pathname } = useLocation();
   const rootRef = useRef(null);
-  const kind = heroKindForPath(pathname, isReservedFirstSegment);
+  const pathKind = heroKindForPath(pathname, isReservedFirstSegment);
+  const isNotFound = useIsNotFoundPage(pathKind === 'country', pathname);
+  const kind = isNotFound ? null : pathKind;
 
   useEffect(() => applySceneMode(), []);
   useLightPointer();
