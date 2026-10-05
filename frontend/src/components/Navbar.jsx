@@ -240,7 +240,7 @@ export default function Navbar() {
           сравнением боксов, см. scripts/e2e/navbar-overlap.mjs. Поэтому до xl
           длинные подписи заменяются короткими (`shortLabelKey`), а «О проекте»
           на десктопе живёт в футере и мобильном меню. */}
-      <div className="fe-navbar-links hidden lg:flex items-center gap-3 xl:gap-5 flex-1 justify-end min-w-0">
+      <div className="fe-navbar-links hidden xl:flex items-center gap-3 xl:gap-5 flex-1 justify-end min-w-0">
         {primaryItems.map((item) => renderPrimaryLink(item, { desktop: true }))}
         <div className="relative" ref={calcWrapRef}>
           <button
@@ -286,14 +286,14 @@ export default function Navbar() {
         {/* В пилюлю не влезает: доступна из футера и мобильного меню. */}
       </div>
 
-      <div className="hidden lg:flex items-center shrink-0 gap-2 xl:gap-3">
+      <div className="hidden xl:flex items-center shrink-0 gap-2 xl:gap-3">
         <IndicatorSearch variant="pill" />
         <LocaleSwitcher />
         <div className="h-5 w-px bg-border-subtle" aria-hidden />
         <AuthCluster />
       </div>
 
-      <div className="lg:hidden ml-auto flex items-center gap-1">
+      <div className="xl:hidden ml-auto flex items-center gap-1">
         <IndicatorSearch className="!px-2 !py-1.5" />
         <LocaleSwitcher />
         <button
@@ -313,7 +313,7 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,600px)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
+        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,600px)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08] xl:hidden">
           <div className="fe-mnav-scroll">
             <div className="fe-mnav-columns">
               {mobileGroups.map((group) => {

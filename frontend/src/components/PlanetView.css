@@ -59,19 +59,18 @@
 .planet-stage canvas { display: block; }
 /* A soft contact shadow gives the pale sphere an edge on the light page; the canvas is transparent outside the sphere. */
 .planet-stage canvas { filter: drop-shadow(0 12px 18px rgba(36, 56, 84, .16)); }
-/* Статичный шар на время загрузки: настоящая карта мира (тот же файл, что потом читает сцена), плавно плывущая по кругу,
-   с объёмом, бликом и дымкой по краю. Размер как у настоящей Земли, поэтому подмена незаметна. */
+/* Шар на время загрузки: бледная сфера в палитре режима «Данные» (без фотографии Земли), с объёмом, бликом, дымкой по краю
+   и мягким «дыханием». Размер как у настоящего шара, поэтому подмена незаметна. */
 .planet-orb {
   position: absolute; z-index: -1; left: 50%; top: 50%; width: min(86%, calc(var(--planet-scene-height) * .86)); aspect-ratio: 1; transform: translate(-50%, -50%);
   border-radius: 50%; pointer-events: none; overflow: hidden;
   background:
     radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 52%, rgba(150,190,228,.5) 100%),
     radial-gradient(circle at 31% 25%, rgba(255,255,255,.62) 0%, rgba(255,255,255,0) 40%),
-    radial-gradient(circle at 70% 78%, rgba(30,60,96,.30) 0%, rgba(30,60,96,0) 58%),
-    url("/planet/earth_day_2048.webp") 22% 50% / 200% 100% no-repeat,
-    #C3D4E1;
+    radial-gradient(circle at 70% 78%, rgba(30,60,96,.22) 0%, rgba(30,60,96,0) 58%),
+    #D5E1EB;
   box-shadow: 0 16px 32px -14px rgba(36, 56, 84, .32), 0 0 0 3px rgba(150, 188, 224, .14), 0 0 26px 4px rgba(132, 176, 222, .22), inset -10px -14px 28px rgba(80, 112, 144, .16);
-  animation: planet-orb-turn 26s ease-in-out infinite alternate;
+  animation: planet-orb-breathe 3.2s ease-in-out infinite;
   transition: opacity 520ms ease-out;
 }
 .planet-stage[data-scene-ready="true"] .planet-orb { opacity: 0; animation: none; }
