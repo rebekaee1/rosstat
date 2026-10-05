@@ -6,6 +6,7 @@ import {
 import { resolveDateFormat, cn } from '../lib/format';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
+import '../styles/y2-indicator.css';
 import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
@@ -254,84 +255,6 @@ export default function WorldChartSection({
         </div>
       </div>
 
-      <CountryComparePanel
-        pickerOptions={pickerOptions}
-        activeComparisonIds={activeComparisonIds}
-        selectedComparisons={selectedComparisons}
-        comparisonQueries={comparisonQueries}
-        comparisonScale={comparisonScale}
-        onToggle={toggleComparison}
-        onOpen={() => setComparisonPickerActive(true)}
-        onScale={setComparisonScale}
-        conceptSlug={conceptSlug}
-        countrySlug={country?.slug}
-        compareCodes={compareCodes}
-        rebased={rebased}
-        loadedComparisonSeries={loadedComparisonSeries}
-      />
-
-      {priceIndexLevel && activeComparisonIds.length === 0 && (
-        <p className="mb-4 text-xs text-text-tertiary">
-          {t('world.chart.priceIndexBaseHint')}{' '}
-          <Link to="/world/rating/hicp-index" className="text-champagne hover:underline">
-            {t('world.chart.compareInflationRates')}
-          </Link>
-        </p>
-      )}
-
-      {comparisonQueries.some((query) => query.isError) && (
-        <p className="mb-3 text-[12px] text-text-secondary">
-          {t('world.chart.modePartial')}
-        </p>
-      )}
-
-      {aggregated && (
-        <p className="mb-3 text-[12px] text-text-secondary">
-          {aggregation?.source_frequency === 'weekly'
-            ? t('world.mode.hint.derivedWeekly')
-            : aggregation?.source_frequency === 'daily'
-              ? t('world.mode.hint.derivedDaily')
-              : aggregation?.policy === 'sum'
-                ? t('world.mode.hint.sum')
-                : aggregation?.policy === 'last'
-                  ? t('world.mode.hint.last')
-                  : aggregation?.policy === 'mean'
-                    ? t('world.mode.hint.mean')
-                    : t('world.chart.aggregated', {
-                      source: indicator?.source || t('world.chart.sourceFallback'),
-                    })}
-        </p>
-      )}
-
-      <p className="mb-3 text-[12px] leading-5 text-text-secondary">
-        {forecastNote}
-        {' '}
-        <Link to="/methodology" className="text-champagne hover:underline">
-          {t('common.methodology')}
-        </Link>
-      </p>
-
-      {showForecast && forecastEnabled && !rebased && (
-        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-tertiary">
-          <span>
-            {t('world.chart.forecastStarts')}
-          </span>
-          <Link to="/methodology" className="text-champagne hover:underline">
-            {t('common.methodology')}
-          </Link>
-        </div>
-      )}
-      {showForecast && forecastEnabled && !chartLoading && forecastData.length === 0 && (
-        <p className="mb-3 text-xs text-text-tertiary">
-          {t('world.chart.forecastIncomplete')}
-        </p>
-      )}
-      {showForecast && rebased && (
-        <p className="mb-3 text-xs text-text-tertiary">
-          {t('world.chart.forecastHiddenRebase')}
-        </p>
-      )}
-
       {chartLoading ? (
         <ChartSectionSkeleton />
       ) : (
@@ -360,6 +283,76 @@ export default function WorldChartSection({
           />
         </div>
       )}
+
+      <div className="fe-chart-after">
+        <CountryComparePanel
+          pickerOptions={pickerOptions}
+          activeComparisonIds={activeComparisonIds}
+          selectedComparisons={selectedComparisons}
+          comparisonQueries={comparisonQueries}
+          comparisonScale={comparisonScale}
+          onToggle={toggleComparison}
+          onOpen={() => setComparisonPickerActive(true)}
+          onScale={setComparisonScale}
+          conceptSlug={conceptSlug}
+          countrySlug={country?.slug}
+          compareCodes={compareCodes}
+          rebased={rebased}
+          loadedComparisonSeries={loadedComparisonSeries}
+        />
+
+        {priceIndexLevel && activeComparisonIds.length === 0 && (
+          <p className="mb-4 text-xs text-text-tertiary">
+            {t('world.chart.priceIndexBaseHint')}{' '}
+            <Link to="/world/rating/hicp-index" className="text-champagne hover:underline">
+              {t('world.chart.compareInflationRates')}
+            </Link>
+          </p>
+        )}
+
+        {comparisonQueries.some((query) => query.isError) && (
+          <p className="mb-3 text-[12px] text-text-secondary">
+            {t('world.chart.modePartial')}
+          </p>
+        )}
+
+        {aggregated && (
+          <p className="mb-3 text-[12px] text-text-secondary">
+            {aggregation?.source_frequency === 'weekly'
+              ? t('world.mode.hint.derivedWeekly')
+              : aggregation?.source_frequency === 'daily'
+                ? t('world.mode.hint.derivedDaily')
+                : aggregation?.policy === 'sum'
+                  ? t('world.mode.hint.sum')
+                  : aggregation?.policy === 'last'
+                    ? t('world.mode.hint.last')
+                    : aggregation?.policy === 'mean'
+                      ? t('world.mode.hint.mean')
+                      : t('world.chart.aggregated', {
+                        source: indicator?.source || t('world.chart.sourceFallback'),
+                      })}
+          </p>
+        )}
+
+        <p className="mb-3 text-[13px] leading-5 text-text-secondary">
+          {forecastNote}
+          {' '}
+          <Link to="/methodology" className="text-champagne hover:underline">
+            {t('common.methodology')}
+          </Link>
+        </p>
+
+        {showForecast && forecastEnabled && !chartLoading && forecastData.length === 0 && (
+          <p className="mb-3 text-xs text-text-tertiary">
+            {t('world.chart.forecastIncomplete')}
+          </p>
+        )}
+        {showForecast && rebased && (
+          <p className="mb-3 text-xs text-text-tertiary">
+            {t('world.chart.forecastHiddenRebase')}
+          </p>
+        )}
+      </div>
     </section>
   );
 }

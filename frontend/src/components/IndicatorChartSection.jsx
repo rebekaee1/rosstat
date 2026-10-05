@@ -16,6 +16,7 @@ import CountryComparePanel from './CountryComparePicker';
 import Button from './Button';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
+import '../styles/y2-indicator.css';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -317,23 +318,6 @@ export default function IndicatorChartSection({
         <p className="fe-chart-hint">{guestHistoryHint}</p>
       )}
 
-      <CountryComparePanel
-        pickerOptions={comparison.pickerOptions}
-        activeComparisonIds={comparison.activeComparisonIds}
-        selectedComparisons={comparison.selectedComparisons}
-        comparisonQueries={comparison.comparisonQueries}
-        comparisonScale={comparison.comparisonScale}
-        onToggle={handleToggleCompare}
-        onOpen={() => comparison.setComparisonPickerActive(true)}
-        onScale={comparison.setComparisonScale}
-        conceptSlug={compareConcept?.slug}
-        countrySlug="russia"
-        compareCodes={comparison.compareCodes}
-        rebased={compareCompatible ? comparison.rebased : null}
-        loadedComparisonSeries={compareCompatible ? comparison.loadedComparisonSeries : []}
-        hint={compareHint}
-      />
-
       {chartLoading ? (
         <ChartSectionSkeleton />
       ) : (
@@ -377,6 +361,25 @@ export default function IndicatorChartSection({
           />
         </div>
       )}
+
+      <div className="fe-chart-after">
+        <CountryComparePanel
+          pickerOptions={comparison.pickerOptions}
+          activeComparisonIds={comparison.activeComparisonIds}
+          selectedComparisons={comparison.selectedComparisons}
+          comparisonQueries={comparison.comparisonQueries}
+          comparisonScale={comparison.comparisonScale}
+          onToggle={handleToggleCompare}
+          onOpen={() => comparison.setComparisonPickerActive(true)}
+          onScale={comparison.setComparisonScale}
+          conceptSlug={compareConcept?.slug}
+          countrySlug="russia"
+          compareCodes={comparison.compareCodes}
+          rebased={compareCompatible ? comparison.rebased : null}
+          loadedComparisonSeries={compareCompatible ? comparison.loadedComparisonSeries : []}
+          hint={compareHint}
+        />
+      </div>
     </section>
   );
 }

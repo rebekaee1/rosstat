@@ -17,6 +17,7 @@ import {
   worldRatingPath,
 } from './sitePaths';
 import { currentUiLocale } from '../i18n/locale';
+import { useLocale } from '../i18n/localeContext';
 
 /** Лимит выдачи для глобальной палитры ⌘K (Россия + мир). */
 export const WORLD_GLOBAL_SEARCH_LIMIT = 100;
@@ -29,6 +30,12 @@ const WORLD_SURFACE_RETRY = 1;
 /** Locale in queryKey — иначе preview_locale=en оставляет RU payload в кэше. */
 function localeKey() {
   return currentUiLocale();
+}
+
+/** В хуках язык берём из контекста: ключ кэша меняется вместе с языком интерфейса, а не читается из глобальной переменной. */
+function useLocaleKey() {
+  const { locale } = useLocale();
+  return locale || localeKey();
 }
 
 /** Stable query keys — homeBootstrap seeds the same shapes on cold SSR. */
@@ -75,8 +82,9 @@ async function withMockFallback(request, mockFactory) {
 const WORLD_COUNTRIES_TIMEOUT_MS = 45000;
 
 export function useWorldCountries() {
+  const lk = useLocaleKey();
   return useQuery({
-    queryKey: worldCountriesQueryKey(),
+    queryKey: worldCountriesQueryKey(lk),
     queryFn: ({ signal }) =>
       withMockFallback(
         () => api.get('/world/countries', { signal, timeout: WORLD_COUNTRIES_TIMEOUT_MS }),
@@ -89,8 +97,9 @@ export function useWorldCountries() {
 }
 
 export function useWorldCountry(slug, { enabled = true } = {}) {
+  const lk = useLocaleKey();
   return useQuery({
-    queryKey: ['world-country', slug, localeKey()],
+    queryKey: ['world-country', slug, lk],
     queryFn: ({ signal }) =>
       withMockFallback(
         () => api.get(`/world/countries/${slug}`, { signal }),
@@ -117,8 +126,9 @@ export function useWorldCountry(slug, { enabled = true } = {}) {
 }
 
 export function useWorldIndicator(slug, code) {
+  const lk = useLocaleKey();
   return useQuery({
-    queryKey: ['world-indicator', slug, code, localeKey()],
+    queryKey: ['world-indicator', slug, code, lk],
     queryFn: ({ signal }) =>
       withMockFallback(
         () => api.get(`/world/indicators/${slug}/${code}`, { signal }),
@@ -154,9 +164,10 @@ export function useWorldIndicatorData(
     from, to, requestCode, includeForecast = false,
   } = {},
 ) {
+  const lk = useLocaleKey();
   const dataCode = requestCode || code;
   const FORECAST_SLOT = 4;
-  const queryKey = ['world-indicator-data', slug, dataCode, mode, includeForecast, from, to, localeKey()];
+  const queryKey = ['world-indicator-data', slug, dataCode, mode, includeForecast, from, to, lk];
   return useQuery({
     queryKey,
     queryFn: ({ signal }) => {
@@ -187,9 +198,10 @@ export function useWorldIndicatorData(
 }
 
 export function useWorldSearch(q, { country, limit = 50, enabled = true } = {}) {
+  const lk = useLocaleKey();
   const needle = (q || '').trim();
   return useQuery({
-    queryKey: ['world-search', needle, country, limit, localeKey()],
+    queryKey: ['world-search', needle, country, limit, lk],
     queryFn: ({ signal }) =>
       withMockFallback(
         async () => ({ data: await fetchWorldSearch(needle, { country, limit }, { signal }) }),
@@ -202,8 +214,9 @@ export function useWorldSearch(q, { country, limit = 50, enabled = true } = {}) 
 }
 
 export function useWorldCompareCatalog({ enabled = true } = {}) {
+  const lk = useLocaleKey();
   return useQuery({
-    queryKey: ['world-compare-catalog', localeKey()],
+    queryKey: ['world-compare-catalog', lk],
     queryFn: async ({ signal }) => (await api.get('/world/compare/catalog', { signal })).data,
     enabled,
     staleTime: STALE,
@@ -217,8 +230,9 @@ export function useWorldCompareCatalog({ enabled = true } = {}) {
  * Индексы цен с разными базами ранжируются как изменение за год (%).
  */
 export function useWorldRatingConcepts({ enabled = true } = {}) {
+  const lk = useLocaleKey();
   return useQuery({
-    queryKey: ['world-rating-concepts', localeKey()],
+    queryKey: ['world-rating-concepts', lk],
     queryFn: async ({ signal }) => (await api.get('/world/rating/concepts', { signal })).data,
     enabled,
     staleTime: STALE,
@@ -294,8 +308,9 @@ export async function fetchWorldCompareOrCard(countrySlug, seriesKey, { signal }
 
 /** Официальный ряд curated-понятия (карточка страны / сравнение / калькулятор). */
 export function useWorldCompareSeries(countrySlug, conceptSlug, { enabled = true } = {}) {
+  const lk = useLocaleKey();
   return useQuery({
-    queryKey: ['world-compare-series', countrySlug, conceptSlug, localeKey()],
+    queryKey: ['world-compare-series', countrySlug, conceptSlug, lk],
     queryFn: ({ signal }) => fetchWorldCompareSeries(countrySlug, conceptSlug, { signal }),
     enabled: enabled && !!countrySlug && !!conceptSlug,
     staleTime: STALE,
@@ -317,8 +332,9 @@ export async function fetchWorldIndicatorMode(countrySlug, indicatorCode, mode, 
 }
 
 export function useWorldCompareSnapshot(conceptSlug) {
+  const lk = useLocaleKey();
   return useQuery({
-    queryKey: worldCompareSnapshotQueryKey(conceptSlug),
+    queryKey: worldCompareSnapshotQueryKey(conceptSlug, lk),
     queryFn: async ({ signal }) => (
       await api.get(`/world/compare/snapshot/${conceptSlug}`, { signal })
     ).data,
@@ -330,8 +346,9 @@ export function useWorldCompareSnapshot(conceptSlug) {
 }
 
 export function useWorldMapSeries(conceptSlug) {
+  const lk = useLocaleKey();
   return useQuery({
-    queryKey: worldMapSeriesQueryKey(conceptSlug),
+    queryKey: worldMapSeriesQueryKey(conceptSlug, lk),
     queryFn: async ({ signal }) => (
       await api.get(`/world/compare/map-series/${conceptSlug}`, { signal })
     ).data,

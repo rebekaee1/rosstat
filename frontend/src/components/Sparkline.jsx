@@ -85,13 +85,16 @@ export default function Sparkline({
   staggerMs = 0,
 }) {
   const uid = useId();
-  const svgRef = useRef(null);
+  // Наблюдаем за обёрткой, а не за <svg>: svg появляется только после замера ширины, когда эффект уже отработал,
+  // и тогда линия с готовой длиной пути оставалась «спрятанной» навсегда (пустая карточка вместо графика).
+  const wrapRef = useRef(null);
   const lineRef = useRef(null);
   const [inView, setInView] = useState(false);
   const [pathLength, setPathLength] = useState(0);
   const reducedMotion = useReducedMotion();
+  const hasPoints = (points?.length ?? 0) >= 2;
 
-  const revealed = reducedMotion || inView;
+  const revealed = reducedMotion || inView || typeof IntersectionObserver === 'undefined';
   const color = resolveColor(trend, sentiment);
   const pad = 4;
   const dotR = 2.5;
@@ -102,7 +105,8 @@ export default function Sparkline({
   const lineGradId = `spark-line-${safeId}`;
 
   useEffect(() => {
-    if (!svgRef.current || reducedMotion) return;
+    if (!hasPoints || !wrapRef.current || reducedMotion) return;
+    if (typeof IntersectionObserver === 'undefined') return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -113,9 +117,9 @@ export default function Sparkline({
       },
       { threshold: 0.3 },
     );
-    observer.observe(svgRef.current);
+    observer.observe(wrapRef.current);
     return () => observer.disconnect();
-  }, [staggerMs, reducedMotion]);
+  }, [staggerMs, reducedMotion, hasPoints]);
 
   useEffect(() => {
     if (lineRef.current) {
@@ -155,7 +159,6 @@ export default function Sparkline({
 
     return (
       <svg
-        ref={svgRef}
         width={width}
         height={height}
         viewBox={`0 0 ${width} ${height}`}
@@ -238,7 +241,7 @@ export default function Sparkline({
   };
 
   return (
-    <div className="sparkline-container w-full" style={{ height }}>
+    <div ref={wrapRef} className="sparkline-container w-full" style={{ height }}>
       <SparklineResizer height={height} render={renderContent} />
     </div>
   );

@@ -5,6 +5,7 @@ import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import { pickerLabel, pickerHintKey } from '../lib/pickerLabels';
 import { PickerCard, PickerLabel, PickerHint } from './PickerParts';
+import { modeSummaryText, useViewModeSummary } from './viewModesContext';
 import {
   defaultModeForWorldGroup,
   expandedGroupForWorldMode,
@@ -96,9 +97,6 @@ export default function WorldViewModePicker({
     trackMode(item.mode, groupId);
   };
 
-  if (groups.length === 0) return null;
-  if (groups.length <= 1 && (groups[0]?.modes?.length ?? 0) <= 1) return null;
-
   const expanded = groups.find((g) => g.id === expandedGroup && !g.leafMode);
   const subModes = expanded?.modes ?? [];
   const activeTopGroup = expandedGroupForWorldMode(groups, currentMode);
@@ -106,6 +104,14 @@ export default function WorldViewModePicker({
   const activeGroup = groups.find((g) => g.id === activeTopGroup);
   const hintKey = pickerHintKey(activeGroup?.rawLabel);
   const visibleSub = subModes.filter((item) => !item.disabled);
+  const currentSub = visibleSub.length > 1 ? visibleSub.find((item) => item.mode === currentMode) : null;
+  const nothingToPick = groups.length === 0 || (groups.length <= 1 && (groups[0]?.modes?.length ?? 0) <= 1);
+  useViewModeSummary(
+    'mode', 20,
+    nothingToPick ? '' : modeSummaryText(activeGroup?.label, currentSub?.label),
+  );
+
+  if (nothingToPick) return null;
 
   const body = (
     <>

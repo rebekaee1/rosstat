@@ -14,12 +14,13 @@ import { periodPhrase } from '../lib/periodPhrase';
 import DeltaBadge from './DeltaBadge';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
+import '../styles/y2-indicator.css';
 
 /**
  * Мини-график последних значений для плитки списка. Цвет — по тому же изменению, что и значок рядом;
  * смысл показателя неизвестен — золото без оценки. Нет двух точек — ничего не рисуем.
  */
-function TileSpark({ code, polarity, index }) {
+function TileSpark({ code, polarity, index, height = 40 }) {
   const { data } = useIndicatorData(code, { limit: 30 });
   const values = (data?.data || []).map((row) => Number(row.value)).filter(Number.isFinite);
   if (values.length < 2) return null;
@@ -28,13 +29,13 @@ function TileSpark({ code, polarity, index }) {
   const sentiment = polarity === 'up-good' ? 'positive' : polarity === 'up-bad' ? 'inverse' : 'neutral';
   return (
     <div className="fe-tile__spark" aria-hidden="true">
-      <Sparkline points={values} trend={trend} sentiment={sentiment} height={40} staggerMs={Math.min(index, 5) * 80} />
+      <Sparkline points={values} trend={trend} sentiment={sentiment} height={height} staggerMs={Math.min(index, 5) * 80} />
     </div>
   );
 }
 
 export default function IndicatorTile({
-  indicator, delay = 0, displayOverride, surface = 'home', commonPhrase = null, spark = false,
+  indicator, delay = 0, displayOverride, surface = 'home', commonPhrase = null, spark = false, row = false,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -87,6 +88,47 @@ export default function IndicatorTile({
       surface,
     });
   };
+
+  if (row) {
+    // Компактная строка списка (курсы, котировки): название, изменение и мини-график слева направо в одну строку.
+    const valueText = formatValue(displayVal, undefined, locale);
+    return (
+      <Link
+        to={isActive ? russiaIndicatorPath(indicator.code) : '#'}
+        onClick={handleClick}
+        aria-disabled={isActive ? undefined : true}
+        className={cn(FOCUS_RING_SURFACE, 'fe-trow fe-press', !isActive && 'fe-trow--pending')}
+      >
+        <span className="fe-trow__main">
+          <h3 className="fe-trow__title">{title}</h3>
+          <span className="fe-trow__meta">
+            {isActive && change && (
+              change.flat ? (
+                <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
+              ) : (
+                <>
+                  <DeltaBadge delta={changeNum} polarity={polarity}>{change.text}</DeltaBadge>
+                  <span className="fe-trow__vs">{perText}</span>
+                </>
+              )
+            )}
+            {isActive && date && <span className="fe-trow__date">{date}</span>}
+          </span>
+        </span>
+        <span className="fe-trow__spark" aria-hidden="true">
+          {spark && isActive ? <TileSpark code={indicator.code} polarity={polarity} index={delay} height={30} /> : null}
+        </span>
+        {isActive ? (
+          <span className="fe-trow__val">
+            <span className="fe-trow__num">{valueText}</span>
+            {displayUnit ? <span className="fe-trow__unit">{displayUnit}</span> : null}
+          </span>
+        ) : (
+          <span className="fe-tile__soon">{t('tile.pending')}</span>
+        )}
+      </Link>
+    );
+  }
 
   return (
     <Link

@@ -242,6 +242,11 @@ function useEdgeFade(dep) {
     if (!el) return undefined;
     const frame = window.requestAnimationFrame(measure);
     window.addEventListener('resize', measure);
+    // Ширина ленты меняется, когда подгружаются шрифты и курсы: измеряем края заново, иначе затухания нет.
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null;
+    observer?.observe(el);
+    if (el.firstElementChild) observer?.observe(el.firstElementChild);
+    document.fonts?.ready?.then(measure).catch(() => {});
     let hintTimer = 0;
     let backTimer = 0;
     let cancelled = false;
@@ -260,6 +265,7 @@ function useEdgeFade(dep) {
       cancel();
       window.cancelAnimationFrame(frame);
       window.removeEventListener('resize', measure);
+      observer?.disconnect();
       el.removeEventListener('pointerdown', cancel);
       el.removeEventListener('wheel', cancel);
     };
@@ -301,7 +307,7 @@ export default function LiveTicker() {
           <div
             ref={scrollerRef}
             onScroll={measure}
-            className="scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
+            className="fe-ticker__scroll scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
             role="group"
             aria-label={t('ticker.quotes')}
           >

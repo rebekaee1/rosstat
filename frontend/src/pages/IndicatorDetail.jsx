@@ -14,6 +14,7 @@ import PpiIndicatorControls from '../components/PpiIndicatorControls';
 import CbrTermSliceRateIndicatorControls from '../components/CbrTermSliceRateIndicatorControls';
 import UnemploymentIndicatorControls from '../components/UnemploymentIndicatorControls';
 import ViewModePicker from '../components/ViewModePicker';
+import { ViewModesPanel } from '../components/ViewModesPanel';
 import IndicatorTelemetryGrid from '../components/IndicatorTelemetryGrid';
 import IndicatorChartSection from '../components/IndicatorChartSection';
 import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
@@ -593,74 +594,76 @@ export default function IndicatorDetail() {
           GenericIndicatorView (early-return выше) — здесь остаются только
           специализированные ценовые/индексные карточки и срезы ставок CBR,
           не входящие в canonical-конфиг движка. */}
-      {isPriceCategory ? (
-        <CpiIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isHousingFamily ? (
-        <HousingIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isPpiFamily ? (
-        <PpiIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isCbrTermSliceFamily ? (
-        <CbrTermSliceRateIndicatorControls
-          variantGroup={variantGroup}
-          currentCode={code}
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : isUnemploymentFamily && isUnemploymentCanonical ? (
-        <UnemploymentIndicatorControls
-          currentMode={safeViewMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      ) : (
-        <VariantGroupPicker group={variantGroup} currentCode={code} />
-      )}
+      <ViewModesPanel>
+        {isPriceCategory ? (
+          <CpiIndicatorControls
+            variantGroup={variantGroup}
+            currentCode={code}
+            currentMode={safeViewMode}
+            onChange={setViewMode}
+            trackContext={{ code, category: indicator?.category }}
+          />
+        ) : isHousingFamily ? (
+          <HousingIndicatorControls
+            variantGroup={variantGroup}
+            currentCode={code}
+            currentMode={safeViewMode}
+            onChange={setViewMode}
+            trackContext={{ code, category: indicator?.category }}
+          />
+        ) : isPpiFamily ? (
+          <PpiIndicatorControls
+            currentMode={safeViewMode}
+            onChange={setViewMode}
+            trackContext={{ code, category: indicator?.category }}
+          />
+        ) : isCbrTermSliceFamily ? (
+          <CbrTermSliceRateIndicatorControls
+            variantGroup={variantGroup}
+            currentCode={code}
+            currentMode={safeViewMode}
+            onChange={setViewMode}
+            trackContext={{ code, category: indicator?.category }}
+          />
+        ) : isUnemploymentFamily && isUnemploymentCanonical ? (
+          <UnemploymentIndicatorControls
+            currentMode={safeViewMode}
+            onChange={setViewMode}
+            trackContext={{ code, category: indicator?.category }}
+          />
+        ) : (
+          <VariantGroupPicker group={variantGroup} currentCode={code} />
+        )}
 
-      {isFamily && !isHousingFamily && !isPpiFamily
-        && !isCbrTermSliceFamily && !isUnemploymentFamily && (
-        <ViewModePicker
-          title={t('w3.picker.showAs')}
-          modes={viewFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
-          currentMode={familyMode}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      )}
+        {isFamily && !isHousingFamily && !isPpiFamily
+          && !isCbrTermSliceFamily && !isUnemploymentFamily && (
+          <ViewModePicker
+            title={t('w3.picker.showAs')}
+            modes={viewFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
+            currentMode={familyMode}
+            onChange={setViewMode}
+            trackContext={{ code, category: indicator?.category }}
+          />
+        )}
 
-      {/* Phase 5: daily-агрегации для прочих daily-индикаторов вне family/движка */}
-      {!isFamily && !isUnemploymentFamily
-        && indicator?.frequency === 'daily' && (
-        <ViewModePicker
-          title={t('w3.picker.showData')}
-          modes={[
-            { mode: 'level', label: 'Ежедневно' },
-            { mode: 'weekly', label: 'Понедельно' },
-            { mode: 'monthly', label: 'Помесячно' },
-            { mode: 'quarterly', label: 'Поквартально' },
-            { mode: 'annual', label: 'Годово' },
-          ]}
-          currentMode={dailyAggGranularity ? viewMode : 'level'}
-          onChange={setViewMode}
-          trackContext={{ code, category: indicator?.category }}
-        />
-      )}
+        {/* Phase 5: daily-агрегации для прочих daily-индикаторов вне family/движка */}
+        {!isFamily && !isUnemploymentFamily
+          && indicator?.frequency === 'daily' && (
+          <ViewModePicker
+            title={t('w3.picker.showData')}
+            modes={[
+              { mode: 'level', label: 'Ежедневно' },
+              { mode: 'weekly', label: 'Понедельно' },
+              { mode: 'monthly', label: 'Помесячно' },
+              { mode: 'quarterly', label: 'Поквартально' },
+              { mode: 'annual', label: 'Годово' },
+            ]}
+            currentMode={dailyAggGranularity ? viewMode : 'level'}
+            onChange={setViewMode}
+            trackContext={{ code, category: indicator?.category }}
+          />
+        )}
+      </ViewModesPanel>
 
       <IndicatorChartSection
         code={code}
