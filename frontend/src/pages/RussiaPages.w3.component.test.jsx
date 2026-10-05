@@ -49,12 +49,17 @@ describe('TodayHub', () => {
     await waitFor(() => expect(container.querySelectorAll('.fe-delta-badge').length).toBeGreaterThan(2));
     const cards = [...container.querySelectorAll('.fe-today-card')];
     const cardOf = (title) => cards.find((c) => c.textContent.includes(title));
-    const inflation = within(cardOf('Инфляция сегодня')).getAllByText(/\+0,34/)[0].closest('.fe-delta-badge');
+    const inflation = within(cardOf('Инфляция')).getAllByText(/\+0,34/)[0].closest('.fe-delta-badge');
     expect(inflation.className).toContain('fe-tone--bad');
-    expect(inflation.textContent).toContain('п. п.');
-    const dollar = within(cardOf('Курс доллара сегодня')).getByText(/\+0,28/).closest('.fe-delta-badge');
+    // Волна 6: «п. п.» заменено словами, слово «сегодня» ушло с карточек (дата стоит рядом с числом).
+    expect(inflation.textContent).toContain('процентного пункта');
+    expect(inflation.textContent).not.toContain('п. п.');
+    expect(cardOf('Инфляция').textContent).not.toMatch(/сегодня/);
+    const dollar = within(cardOf('Курс доллара')).getByText(/\+0,28/).closest('.fe-delta-badge');
     expect(dollar.className).toContain('fe-tone--neutral');
-    expect(within(cardOf('Курс евро сегодня')).getByText('Без изменений')).toBeTruthy();
+    expect(within(cardOf('Курс евро')).getByText('Без изменений')).toBeTruthy();
+    // Подпись «График →» на каждой карточке показывает, что она ведёт на график.
+    expect(within(cardOf('Курс доллара')).getByText('График →')).toBeTruthy();
   });
 
   it('названия не капсом и не моноширинным шрифтом, у даты нет сокращений «авг»', async () => {

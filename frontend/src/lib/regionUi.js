@@ -114,6 +114,41 @@ export function plainIndicatorTitle(name, locale = 'ru') {
   return raw;
 }
 
+/**
+ * Подсказка «что это значит» одной фразой для названий, которые без экономического образования не читаются.
+ * Возвращает пустую строку, если название и так понятно. Правил немного и они точные: лучше промолчать, чем ошибиться.
+ */
+export function explainIndicator(name, unit, locale = 'ru') {
+  const raw = String(name || '');
+  const en = locale === 'en';
+  if (DEMOGRAPHIC_LOAD.test(raw)) {
+    return en
+      ? 'How many children and older people there are for every 1,000 people of working age.'
+      : 'Сколько детей и пожилых приходится на каждую тысячу человек трудоспособного возраста.';
+  }
+  if (/\bВРП\b|валов[а-яё]+ региональн/i.test(raw)) {
+    return en
+      ? 'Gross regional product: the value of everything produced in the region in a year.'
+      : 'Валовой региональный продукт: стоимость всего, что произвели в регионе за год.';
+  }
+  if (/коэффициент\s+(миграционного|естественного)/i.test(raw)) {
+    return en
+      ? 'The change in population per 10,000 residents: positive means the population grows.'
+      : 'Изменение численности на 10 000 жителей: плюс означает рост населения.';
+  }
+  if (/индекс\s+потребительских\s+цен/i.test(raw)) {
+    return en
+      ? 'How much consumer prices changed compared with the previous period.'
+      : 'Насколько изменились потребительские цены по сравнению с прошлым периодом.';
+  }
+  if (isPercentUnit(unit) && /уровень|доля|удельный вес/i.test(raw)) {
+    return en
+      ? 'A share in percent. A change is given in percentage points: the difference between two shares.'
+      : 'Доля в процентах. Изменение показано в процентных пунктах: это разница между двумя долями.';
+  }
+  return '';
+}
+
 /** Название показателя без хвоста «, единица» и без лишних пробелов — для коротких подписей. */
 export function plainName(name) {
   return glueNumbers(String(name || '').replace(/\s+/g, ' ').trim());

@@ -9,7 +9,7 @@ import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
-import { plainEventTitle, localizeReferencePeriod, pluralForm } from '../../lib/calendarText';
+import { plainEventTitle, plainEventText, localizeReferencePeriod, pluralForm } from '../../lib/calendarText';
 import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
 import '../../styles/ui-detail-nav-calendar.css';
 
@@ -217,8 +217,9 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
         )}
 
         {event.description && (
-          <p className="text-xs text-text-tertiary leading-relaxed mb-3 max-w-lg">
-            {event.description}
+          // Одна строка «что это»: первая фраза описания, сокращения расшифрованы.
+          <p className="fe-cal-what mb-3" title={plainEventText(event.description, locale)}>
+            {plainEventText(event.description, locale)}
           </p>
         )}
 

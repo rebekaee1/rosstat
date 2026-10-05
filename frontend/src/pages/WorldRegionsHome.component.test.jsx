@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import WorldRegionsHome from './WorldRegionsHome';
 import WorldRegionProfile from './WorldRegionProfile';
 import WorldRegionIndicatorPage from './WorldRegionIndicatorPage';
@@ -176,7 +176,7 @@ describe('WorldRegionsHome', () => {
     mockWorld();
     renderPage(<WorldRegionsHome />, {
       path: '/:countrySlug/regions',
-      route: '/united-states/regions',
+      route: '/united-states/regions?view=list',
     });
 
     expect(await screen.findByRole('heading', { name: 'Штаты США' })).toBeTruthy();
@@ -223,7 +223,7 @@ describe('WorldRegionsHome', () => {
       path: '/:countrySlug/region/map/:code', route: '/united-states/region/map/unemployment-rate',
     });
     await screen.findByTestId('map-stub');
-    const chips = [...document.querySelectorAll('.fe-chip-row--grid [role="tab"]')];
+    const chips = [...document.querySelectorAll('.fe-chip-ribbon [role="tab"]')];
     // «Обзор» и не больше шести показателей — без «разбивок» с двоеточием.
     expect(chips.length).toBeGreaterThan(1);
     expect(chips.length).toBeLessThanOrEqual(7);
@@ -231,8 +231,19 @@ describe('WorldRegionsHome', () => {
     const topics = document.querySelector('[data-block="map-metric-topics"]');
     expect(topics).toBeTruthy();
     expect(topics.textContent).toContain('Все показатели по темам');
-    expect(topics.hasAttribute('open')).toBe(false);
-    expect(topics.querySelectorAll('details').length).toBeGreaterThan(1);
+    // Список открывается в шторке по нажатию, а не разворачивается прямо в странице.
+    expect(screen.queryByRole('dialog')).toBeNull();
+    fireEvent.click(within(topics).getByRole('button', { name: /Все показатели по темам/ }));
+    const sheet = await screen.findByRole('dialog');
+    expect(sheet.querySelectorAll('details').length).toBeGreaterThan(1);
+    expect(within(sheet).getByRole('searchbox', { name: 'Найти тему или показатель' })).toBeTruthy();
+  });
+
+  it('страница штатов открывается картой, а список по вкладке «Список» с пометкой «51 территория»', async () => {
+    mockWorld();
+    renderPage(<WorldRegionsHome />, { path: '/:countrySlug/regions', route: '/united-states/regions' });
+    expect(await screen.findByTestId('map-stub')).toBeTruthy();
+    expect(screen.getByRole('tab', { name: 'Карта' }).getAttribute('aria-selected')).toBe('true');
   });
 
   it('сохраняет ползунок при загрузке следующего года во время перетаскивания', async () => {

@@ -21,19 +21,25 @@ export function formatDeltaNumber(delta, { digits = 2, locale } = {}) {
 }
 
 /** Единица изменения: для процента это проценты пунктами, для индекса единицы нет. */
-export function deltaUnit(unit, locale) {
+export function deltaUnit(unit, locale, { plain = false } = {}) {
   if (unit == null || unit === '' || unit === 'индекс' || unit === 'index') return '';
-  if (unit === '%') return locale === 'en' ? 'pp' : 'п. п.';
+  // plain: слова вместо жаргона («п. п.», «руб./л») для людей без экономического образования.
+  if (unit === '%') {
+    if (plain) return locale === 'en' ? 'percentage points' : 'процентного пункта';
+    return locale === 'en' ? 'pp' : 'п. п.';
+  }
+  if (plain && (unit === 'руб./л' || unit === 'руб/л')) return locale === 'en' ? 'rubles per liter' : '₽ за литр';
   return unitSuffix(unit);
 }
 
 /**
- * Полный текст изменения: «+0,24 п. п.». `pct` — изменение уже в процентах (для индексов): «+1,2 %».
+ * Полный текст изменения: «+0,24 п. п.» (с `plain` — «+0,24 процентного пункта»). `pct` — изменение уже в процентах
+ * (для индексов): «+1,2 %».
  */
-export function formatDeltaWithUnit(delta, unit, { pct = false, digits = 2, locale } = {}) {
+export function formatDeltaWithUnit(delta, unit, { pct = false, digits = 2, locale, plain = false } = {}) {
   const { flat, text } = formatDeltaNumber(delta, { digits, locale });
   if (flat) return { flat: true, text: '' };
   if (pct) return { flat: false, text: `${text}${NBSP}%` };
-  const suffix = deltaUnit(unit, locale);
+  const suffix = deltaUnit(unit, locale, { plain });
   return { flat: false, text: suffix ? `${text}${NBSP}${suffix}` : text };
 }
