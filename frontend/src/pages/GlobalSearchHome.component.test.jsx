@@ -56,10 +56,12 @@ describe('Every homepage search entry uses global discovery', () => {
       // На главной есть и поиск страны на планете — берём поле именно из диалога.
       const input = within(screen.getByRole('dialog')).getByRole('combobox');
       fireEvent.change(input, { target: { value: query } });
-      await waitFor(() => expect(screen.getAllByRole('option')).toHaveLength(4));
+      // Варианты считаем внутри диалога: на главной есть и обычные списки (конвертер, сравнение стран) со своими option.
+      const rows = () => within(screen.getByRole('dialog')).getAllByRole('option');
+      await waitFor(() => expect(rows()).toHaveLength(4));
       expect(get).toHaveBeenCalledWith('/search', expect.objectContaining({ params: { q: query, limit: 100 } }));
-      expect(screen.getAllByRole('option').map(row => row.textContent).join(' ')).toContain('Germany');
-      expect(screen.getAllByRole('option').map(row => row.textContent).join(' ')).toContain('California');
+      expect(rows().map(row => row.textContent).join(' ')).toContain('Germany');
+      expect(rows().map(row => row.textContent).join(' ')).toContain('California');
       fireEvent.keyDown(document, { key: 'Escape' });
       expect(screen.queryByRole('dialog')).toBeNull();
     }
@@ -67,7 +69,7 @@ describe('Every homepage search entry uses global discovery', () => {
     // rewrite an international region result into a Russian destination.
     fireEvent.click(triggers[2]);
     fireEvent.change(within(screen.getByRole('dialog')).getByRole('combobox'), { target: { value: query } });
-    fireEvent.click((await screen.findAllByRole('option'))[3]);
+    fireEvent.click((await within(screen.getByRole('dialog')).findAllByRole('option'))[3]);
     expect(screen.getByTestId('destination').textContent).toBe(hits[3].path);
     expect(track).toHaveBeenCalledWith(events.SEARCH_SELECT, expect.objectContaining({ path: hits[3].path, version: 'federated-v2', country: 'united-states' }));
   });

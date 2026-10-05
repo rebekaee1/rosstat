@@ -12,6 +12,7 @@ import { buildCountryFacts, formatEconomySize, formatPercentValue } from '../../
 import Sparkline from '../Sparkline';
 import { HOME_MAP_RUSSIA_COUNTRY, countryPublicName, homeScopeCountriesCount } from '../../lib/homeWorkbench';
 import { countryFlag } from '../../lib/countryFlag';
+import { metricTone, sparkTrend } from '../../lib/homeToday';
 import { countryPath, russiaHomePath } from '../../lib/sitePaths';
 import { SkeletonBox } from '../Skeleton';
 import Chip from '../Chip';
@@ -20,9 +21,14 @@ import ApiRetryBanner from '../ApiRetryBanner';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
 import '../../styles/shell.css';
+import '../../styles/z3-home.css';
 
-/** Сколько стран видно, пока человек не искал и не раскрыл список: хватает на два экрана телефона. */
-const COLLAPSED_COUNT = 12;
+/**
+ * Сколько стран видно, пока человек не искал и не раскрыл список. Число подобрано под сетку:
+ * при сортировке по размеру три крупные карточки и 12 обычных (три строки по четыре), по алфавиту 16 (четыре строки по четыре).
+ */
+const COLLAPSED_COUNT = 16;
+const COLLAPSED_COUNT_FEATURED = 15;
 
 function CountryMark({ code }) {
   // Флаг вместо двухбуквенного кода; для не-ISO кодов — нейтральный глобус, а не «XX».
@@ -34,7 +40,20 @@ function CountryMark({ code }) {
   );
 }
 
-function CountryRow({ country, regionLabel, facts }) {
+/** Число с цветным маркером «в норме / внимание / тревожно»: цвет не единственный признак, слово лежит рядом для скринридера. */
+function Metric({ label, value, tone }) {
+  const t = useT();
+  return (
+    <span className="fe-country-row__metric" data-tone={tone || undefined}>
+      {tone ? <i className="fe-country-row__dot" aria-hidden="true" /> : null}
+      <span className="fe-country-row__fact-label">{label}</span>
+      {value}
+      {tone ? <span className="sr-only">{t(`z3.tone.${tone}`)}</span> : null}
+    </span>
+  );
+}
+
+function CountryRow({ country, regionLabel, regionId, facts, topTen = false }) {
   const t = useT();
   const { locale } = useLocale();
   const primary = countryPublicName(country, locale);
@@ -43,30 +62,40 @@ function CountryRow({ country, regionLabel, facts }) {
   const unemployment = facts && Number.isFinite(facts.unemployment) ? formatPercentValue(facts.unemployment, locale) : '';
   const hasFacts = Boolean(economy || inflation || unemployment);
   const spark = facts?.spark?.length > 1 ? facts.spark : null;
+  const trend = spark ? sparkTrend(spark) : 'flat';
   return (
     <Link
       // Карточка ведёт на обзор страны (главные цифры и все темы), а не на отдельный показатель.
       to={country.slug === 'russia' ? russiaHomePath() : countryPath(country.slug)}
       onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'country', code: country.code })}
-      className="fe-country-row fe-press group"
+      className={'fe-country-row fe-press group' + (topTen ? ' is-top' : '')}
+      data-region={regionId}
     >
       <CountryMark code={country.code} />
-      <span className="min-w-0 flex-1">
+      <span className="fe-country-row__main">
         <span className="fe-country-row__name">{primary}</span>
         {regionLabel ? <span className="fe-country-row__meta">{regionLabel}</span> : null}
         {hasFacts ? (
           <span className="fe-country-row__facts">
-            {economy ? <span><span className="fe-country-row__fact-label">{t('w6b.catalog.gdp')}</span>{economy}</span> : null}
-            {inflation ? <span><span className="fe-country-row__fact-label">{t('w6b.catalog.inflation')}</span>{inflation}</span> : null}
-            {unemployment ? <span><span className="fe-country-row__fact-label">{t('w6b.catalog.unemployment')}</span>{unemployment}</span> : null}
+            {economy || spark ? (
+              <span className="fe-country-row__top">
+                {economy ? <span className="fe-country-row__gdp"><span className="fe-country-row__fact-label">{t('w6b.catalog.gdp')}</span><span className="fe-country-row__gdp-num">{economy}</span></span> : null}
+                {spark ? (
+                  <span className="fe-country-row__spark" aria-hidden="true">
+                    <Sparkline points={spark} trend={trend} sentiment="positive" height={34} />
+                  </span>
+                ) : null}
+              </span>
+            ) : null}
+            {inflation || unemployment ? (
+              <span className="fe-country-row__metrics">
+                {inflation ? <Metric label={t('w6b.catalog.inflation')} value={inflation} tone={metricTone('inflation', facts.inflation)} /> : null}
+                {unemployment ? <Metric label={t('w6b.catalog.unemployment')} value={unemployment} tone={metricTone('unemployment', facts.unemployment)} /> : null}
+              </span>
+            ) : null}
           </span>
         ) : null}
       </span>
-      {spark ? (
-        <span className="fe-country-row__spark" aria-hidden="true">
-          <Sparkline points={spark} trend="flat" sentiment="neutral" height={34} />
-        </span>
-      ) : null}
       <ChevronRight size={16} className="fe-country-row__chevron" aria-hidden="true" />
     </Link>
   );
@@ -89,7 +118,8 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
   const [query, setQuery] = useState('');
   const [region, setRegion] = useState('all');
   const [expanded, setExpanded] = useState(false);
-  const [sort, setSort] = useState('alpha');
+  // По умолчанию крупные экономики сверху; пока цифр размера нет (не пришли или недоступны), список идёт по алфавиту.
+  const [sort, setSort] = useState('size');
   // Те же ответы, что у карты и рейтинга главной: общий кэш, лишних запросов нет.
   const gdpQ = useWorldCompareSnapshot('gdp-usd');
   const inflationQ = useWorldCompareSnapshot('hicp-index');
@@ -134,9 +164,11 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
       })))
       .sort((a, b) => collator.compare(a.name, b.name));
   }, [groups, locale, t]);
+  const hasSizes = useMemo(() => [...facts.values()].some((fact) => Number.isFinite(fact.economyBn)), [facts]);
+  const effectiveSort = sort === 'size' && hasSizes ? 'size' : 'alpha';
   // «По размеру экономики»: крупные сверху, страны без значения в конце (по алфавиту).
   const ordered = useMemo(() => {
-    if (sort !== 'size') return entries;
+    if (effectiveSort !== 'size') return entries;
     const size = (entry) => facts.get(entry.country.code)?.economyBn;
     return [...entries].sort((a, b) => {
       const sa = size(a);
@@ -147,7 +179,11 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
       if (ha !== hb) return ha ? -1 : 1;
       return 0;
     });
-  }, [entries, facts, sort]);
+  }, [entries, facts, effectiveSort]);
+  const topCodes = useMemo(
+    () => (effectiveSort === 'size' ? new Set(ordered.slice(0, 10).map((entry) => entry.country.code)) : new Set()),
+    [ordered, effectiveSort],
+  );
 
   const needle = normalize(query);
   const filtered = useMemo(() => ordered.filter((entry) => {
@@ -159,8 +195,9 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
   }), [ordered, region, needle]);
 
   const narrowed = Boolean(needle) || region !== 'all';
-  const collapsible = !narrowed && filtered.length > COLLAPSED_COUNT;
-  const visible = collapsible && !expanded ? filtered.slice(0, COLLAPSED_COUNT) : filtered;
+  const collapsedCount = effectiveSort === 'size' ? COLLAPSED_COUNT_FEATURED : COLLAPSED_COUNT;
+  const collapsible = !narrowed && filtered.length > collapsedCount;
+  const visible = collapsible && !expanded ? filtered.slice(0, collapsedCount) : filtered;
 
   const countriesTotal = homeScopeCountriesCount(data);
   const countriesWord = locale === 'en'
@@ -191,11 +228,11 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
             id="home-countries-title"
             className="mt-1 text-lg font-semibold text-text-primary"
           >
-            {sort === 'size' ? t('w6b.catalog.titleSize') : t('shell3.catalog.title')}
+            {effectiveSort === 'size' ? t('w6b.catalog.titleSize') : t('shell3.catalog.title')}
           </h2>
           {countriesTotal ? (
             <p className="mt-1 text-sm text-text-secondary">
-              {t('shell3.catalog.lead', { n: countriesTotal, word: countriesWord })}
+              {t(effectiveSort === 'size' ? 'z3.catalog.leadSize' : 'shell3.catalog.lead', { n: countriesTotal, word: countriesWord })}
             </p>
           ) : null}
         </div>
@@ -235,14 +272,14 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
           ))}
         </ChipGroup>
         <ChipGroup label={t('w6b.catalog.sortAria')} nowrap className="fe-fade-x fe-country-sort">
-          <Chip active={sort === 'alpha'} onClick={() => { setSort('alpha'); setExpanded(false); }}>{t('w6b.catalog.sortAlpha')}</Chip>
-          <Chip active={sort === 'size'} onClick={() => { setSort('size'); setExpanded(false); }}>{t('w6b.catalog.sortSize')}</Chip>
+          <Chip active={effectiveSort === 'size'} onClick={() => { setSort('size'); setExpanded(false); }}>{t('w6b.catalog.sortSize')}</Chip>
+          <Chip active={effectiveSort === 'alpha'} onClick={() => { setSort('alpha'); setExpanded(false); }}>{t('w6b.catalog.sortAlpha')}</Chip>
         </ChipGroup>
       </div>
 
-      {isLoading ? (
+      {isLoading || (sort === 'size' && gdpQ.isLoading && gdpQ.failureCount === 0) ? (
         <div className="fe-country-grid" aria-hidden="true">
-          {[0, 1, 2, 3, 4, 5].map((i) => <SkeletonBox key={i} className="h-14 rounded-xl" />)}
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <SkeletonBox key={i} className="fe-country-skeleton" />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="fe-country-empty" role="status">
@@ -250,10 +287,16 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
           <Chip onClick={() => { setQuery(''); pickRegion('all'); }}>{t('shell3.catalog.reset')}</Chip>
         </div>
       ) : (
-        <ul className="fe-country-grid">
+        <ul className="fe-country-grid" data-featured={effectiveSort === 'size' && !narrowed ? 'true' : undefined}>
           {visible.map((entry) => (
             <li key={entry.country.slug}>
-              <CountryRow country={entry.country} regionLabel={entry.regionName} facts={facts.get(entry.country.code)} />
+              <CountryRow
+                country={entry.country}
+                regionLabel={entry.regionName}
+                regionId={entry.regionId}
+                facts={facts.get(entry.country.code)}
+                topTen={topCodes.has(entry.country.code)}
+              />
             </li>
           ))}
         </ul>

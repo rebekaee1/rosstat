@@ -1,27 +1,69 @@
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown } from 'lucide-react';
+import { BarChart3, ChevronDown, Globe2, History } from 'lucide-react';
 import { homeScopeCountriesCount } from '../../lib/homeWorkbench';
 import { compactIndicatorCount, historyYears, startYear } from '../../lib/homeStats';
 import { pluralRu, useWorldCountries } from '../../lib/worldApi';
 import { russiaCategoriesPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
 import '../../styles/shell.css';
+import '../../styles/z3-home.css';
 
 const groupDigits = (locale) => {
   const formatter = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU');
   return (n) => formatter.format(Math.round(n));
 };
 
+// Счёт от нуля до значения проигрывается один раз за открытие сайта и только если число уже видно в экране.
+// Число ниже экрана остаётся итоговым сразу: иначе снимок страницы целиком, поиск по странице и печать показали бы «0».
+let countPlayed = false;
+const COUNT_MS = 900;
+
 /**
- * Плитка числа: крупное значение сверху, пояснение фразой снизу (читается как предложение:
+ * Число, которое «набегает» один раз при открытии страницы. Итоговый текст всегда лежит в разметке
+ * (поиск, скринридер и печать видят его сразу); без requestAnimationFrame, при «уменьшить движение»
+ * и для чисел вне экрана счёта нет.
+ */
+function CountUp({ value, format }) {
+  const ref = useRef(null);
+  const text = format(value);
+  useLayoutEffect(() => {
+    const node = ref.current;
+    if (!node || countPlayed || !Number.isFinite(value) || value <= 0) return undefined;
+    if (typeof window.requestAnimationFrame !== 'function') return undefined;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const box = node.getBoundingClientRect();
+    if (!(box.width > 0 && box.height > 0 && box.top < window.innerHeight && box.bottom > 0)) return undefined;
+    let frame = 0;
+    let started = 0;
+    node.textContent = format(0);
+    const step = (now) => {
+      if (!started) started = now;
+      const progress = Math.min(1, (now - started) / COUNT_MS);
+      const eased = 1 - (1 - progress) ** 3;
+      node.textContent = format(value * eased);
+      if (progress < 1) frame = window.requestAnimationFrame(step);
+      else countPlayed = true;
+    };
+    frame = window.requestAnimationFrame(step);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      node.textContent = text;
+    };
+  }, [value, text, format]);
+  return <span ref={ref}>{text}</span>;
+}
+
+/**
+ * Плитка числа: значок и крупное золотое число сверху, пояснение фразой снизу (читается как предложение:
  * «268 тыс. показателей», «55 стран, и список растёт»). Если задан `to`, вся плитка нажимается.
  */
-function Stat({ to, label, children }) {
+function Stat({ to, label, icon: Icon, children }) {
   // Допустимая для <dl> разметка: группа dt + dd. Ссылка живёт внутри dd и растягивается на всю плитку.
   return (
     <div className="fe-scope-stat">
       <dd className="fe-stat-num">
+        {Icon ? <span className="fe-scope-stat__icon" aria-hidden="true"><Icon size={16} /></span> : null}
         {to ? <Link to={to} className="fe-scope-stat__link fe-press">{children}</Link> : children}
       </dd>
       <dt className="fe-scope-stat__label">{label}</dt>
@@ -30,9 +72,10 @@ function Stat({ to, label, children }) {
 }
 
 /**
- * Правая колонка hero: три числа платформы (показатели, страны, глубина истории), свёрнутая строка с
- * названиями источников и раскрывающиеся «Подробнее». Числа сразу итоговые, без «бега»: пока каталог не
- * ответил, на их месте «…», а не устаревший запасной набор. Те же значения показывает каталог стран.
+ * Колонка hero под «Миром сейчас»: три числа платформы (показатели, страны, глубина истории) золотым,
+ * строка «обновляется по мере публикации», свёрнутая строка с названиями источников и раскрывающиеся «Подробнее».
+ * Числа набегают один раз, когда блок попал в экран (без IntersectionObserver и при «уменьшить движение» сразу итоговые);
+ * пока каталог не ответил, на их месте «…», а не устаревший запасной набор. Те же значения показывает каталог стран.
  */
 export default function HomeDataScope() {
   const t = useT();
@@ -87,28 +130,34 @@ export default function HomeDataScope() {
           <Stat
             to={isEn ? worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT) : russiaCategoriesPath()}
             label={t('w6b.scope.indicators')}
+            icon={BarChart3}
           >
             {pending ? wait : indicators ? (
               <>
-                {numberFormat(indicators.value)}
+                <CountUp value={indicators.value} format={numberFormat} />
                 {indicators.unit ? (
                   <span className="fe-stat-unit">{t(`homehero.stat.${indicators.unit}`)}</span>
                 ) : null}
               </>
             ) : dash}
           </Stat>
-          <Stat to="/#countries" label={countriesLabel}>
-            {pending ? wait : countriesCount != null ? numberFormat(countriesCount) : dash}
+          <Stat to="/#countries" label={countriesLabel} icon={Globe2}>
+            {pending ? wait : countriesCount != null ? <CountUp value={countriesCount} format={numberFormat} /> : dash}
           </Stat>
-          <Stat label={t('w6b.scope.history', { years: yearsWord, since: since || '' })}>
+          <Stat label={t('w6b.scope.history', { years: yearsWord, since: since || '' })} icon={History}>
             {years ? (
               <>
                 <span className="fe-stat-unit fe-stat-unit--lead">{t('w6b.scope.upTo')}</span>
-                {numberFormat(years)}
+                <CountUp value={years} format={numberFormat} />
               </>
             ) : dash}
           </Stat>
         </dl>
+
+        <p className="fe-scope-update">
+          <span className="fe-scope-update__dot" aria-hidden="true" />
+          {t('home.scope.update')}
+        </p>
 
         <details className="fe-scope-more">
           <summary className="fe-scope-more__summary">
@@ -136,10 +185,6 @@ export default function HomeDataScope() {
             )}
             <p className="fe-scope-more__label">{t('home.scope.sources.label')}</p>
             <p>{t('home.scope.sources.list')}</p>
-            <p className="fe-scope-more__update">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-champagne" aria-hidden="true" />
-              {t('home.scope.update')}
-            </p>
           </div>
         </details>
       </div>

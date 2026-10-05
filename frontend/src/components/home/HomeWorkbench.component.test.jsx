@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import HomeWorkbench from './HomeWorkbench';
 import { renderPage, mockApiGet } from '../../test/renderPage';
@@ -119,8 +119,81 @@ describe('HomeWorkbench', () => {
     expect(workbench.contains(controls)).toBe(true);
 
     expect((await planetProps()).unit).toBe('%');
+    // Русский сайт стартует шар над Евразией, а не над пустой Атлантикой.
+    expect((await planetProps()).startFocus).toEqual([52, 38]);
     expect(screen.queryByRole('button', { name: /Германия/ })).toBeNull();
     expect(screen.queryByTestId('map-timeline-stub')).toBeNull();
+  });
+
+  it('левая колонка героя: быстрые ссылки ведут сразу на страницу, «Мир сейчас» из срезов, порядок в разметке как на телефоне', async () => {
+    const snapshot = (items) => ({ items, average: null });
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, INDICATORS],
+      ['/world/countries', {
+        countries: [
+          { code: 'US', slug: 'united-states', name: 'США', name_en: 'United States', indicators_count: 10 },
+          { code: 'CN', slug: 'china', name: 'Китай', name_en: 'China', indicators_count: 10 },
+          { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 10 },
+          { code: 'IN', slug: 'india', name: 'Индия', name_en: 'India', indicators_count: 10 },
+        ],
+        total: 4,
+      }],
+      [/^\/world\/rating\/concepts/, { concepts: [{ slug: 'gdp-usd', name: 'ВВП', unit: 'млрд $' }], total: 1 }],
+      ['/world/compare/snapshot/gdp-usd', snapshot([
+        { country_code: 'US', country_slug: 'united-states', indicator_code: 'weo-gdp-usd', date: '2025-12-31', value: 30767, unit: 'млрд $' },
+        { country_code: 'CN', country_slug: 'china', indicator_code: 'weo-gdp-usd', date: '2025-12-31', value: 19400, unit: 'млрд $' },
+        { country_code: 'DE', country_slug: 'germany', indicator_code: 'weo-gdp-usd', date: '2025-12-31', value: 4900, unit: 'млрд $' },
+        { country_code: 'IN', country_slug: 'india', indicator_code: 'in-gdp', date: '2025-12-31', value: 4100, unit: 'млрд $' },
+      ])],
+      ['/world/compare/snapshot/hicp-index', snapshot([
+        { country_code: 'US', country_slug: 'united-states', indicator_code: 'us-cpi', date: '2025-12-31', value: 2.9 },
+        { country_code: 'CN', country_slug: 'china', indicator_code: 'cn-cpi', date: '2025-12-31', value: 0.4 },
+        { country_code: 'DE', country_slug: 'germany', indicator_code: 'de-cpi', date: '2025-12-31', value: 2.2 },
+        { country_code: 'RU', country_slug: 'russia', indicator_code: 'cpi-yoy', date: '2025-12-31', value: 8.1 },
+      ])],
+      ['/world/compare/snapshot/unemployment-rate', snapshot([
+        { country_code: 'US', country_slug: 'united-states', indicator_code: 'us-un', date: '2025-12-31', value: 4.1 },
+        { country_code: 'DE', country_slug: 'germany', indicator_code: 'de-un', date: '2025-12-31', value: 3.1 },
+        { country_code: 'CN', country_slug: 'china', indicator_code: 'cn-un', date: '2025-12-31', value: 5.1 },
+      ])],
+      [/^\/world\/compare\/map-series\//, { years: [2025], values_by_year: {}, concept: { name: 'ВВП', unit: 'млрд $' }, benchmark_by_year: {} }],
+    ]);
+    renderPage(
+      <HomeWorkbench ratingConcepts={{ data: { concepts: [{ slug: 'gdp-usd', name: 'ВВП', unit: 'млрд $' }] } }} />,
+      { path: '/', route: '/' },
+    );
+
+    const quick = screen.getByRole('navigation', { name: 'Частые запросы' });
+    const hrefs = [...quick.querySelectorAll('a')].map((a) => [a.textContent, a.getAttribute('href')]);
+    expect(hrefs.slice(0, 3)).toEqual([
+      ['Курс доллара', '/currencies/indicator/usd-rub'],
+      ['Инфляция в России', '/russia/indicator/cpi-yoy'],
+      ['Ключевая ставка', '/russia/indicator/key-rate'],
+    ]);
+    // «ВВП Индии» после загрузки среза ведёт сразу на показатель, а не на страницу страны.
+    await waitFor(() => expect(within(quick).getByRole('link', { name: 'ВВП Индии' }).getAttribute('href')).toBe('/india/indicator/in-gdp'));
+
+    const today = await screen.findByRole('region', { name: 'Мир сейчас' });
+    await waitFor(() => expect(today.querySelectorAll('.fe-today__tile').length).toBe(4));
+    const tiles = [...today.querySelectorAll('.fe-today__tile')].map((tile) => tile.getAttribute('data-tile'));
+    expect(tiles).toEqual(['economy', 'prices', 'jobs', 'home']);
+    const economy = today.querySelector('[data-tile="economy"]');
+    expect(economy.textContent).toContain('30,8');
+    expect(economy.textContent).toContain('США');
+    expect(economy.textContent).toContain('Место 1 из 4');
+    expect(economy.getAttribute('href')).toBe('/united-states/indicator/weo-gdp-usd');
+    // Россия на русском сайте ведёт в российский раздел.
+    expect(today.querySelector('[data-tile="home"]').getAttribute('href')).toBe('/russia/indicator/cpi-yoy');
+    expect(today.querySelector('[data-tile="home"]').textContent).toContain('8,1');
+
+    // Порядок в разметке как на телефоне: поиск и ссылки, планета, «Мир сейчас», числа платформы.
+    const text = document.querySelector('.fe-hero-text');
+    const planet = document.querySelector('.fe-hero-planet');
+    const scope = document.querySelector('.fe-hero-scope');
+    expect(text.compareDocumentPosition(planet) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(planet.compareDocumentPosition(today) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(today.compareDocumentPosition(scope) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('для ВВП показывает справку МВФ и медиану с сервера, без выдуманного среднего', async () => {

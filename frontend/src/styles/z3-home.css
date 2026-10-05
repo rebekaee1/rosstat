@@ -1,0 +1,464 @@
+/* Главная (раунд 2, зона Z3): левая колонка героя («Мир сейчас», быстрые ссылки, числа платформы),
+   «Попробуйте сами», каталог стран. Переопределяет куски shell.css селекторами с `.fe-dashboard` (shell.css не правим).
+   Цвета и тени: токены `--fe-*` с запасным значением; светлая и тёмная тема идут через переменные темы. */
+
+.fe-dashboard {
+  --z3-gold: var(--fe-gold, var(--color-champagne, #AD8A48));
+  --z3-gold-ink: var(--fe-gold-ink, var(--color-champagne-ink, #80642F));
+  --z3-muted: var(--fe-text-muted, var(--color-text-secondary, #59697F));
+  --z3-gold-text: linear-gradient(118deg, var(--z3-gold-ink) 0%, var(--z3-gold) 52%, var(--z3-gold-ink) 100%);
+  --z3-card-shadow: var(--fe-card-shadow, var(--fe-shadow, 0 16px 45px -33px #26344E50));
+  --z3-ease: cubic-bezier(0.22, 0.7, 0.2, 1);
+  --z3-lift: var(--fe-lift, 2px);
+}
+
+/* Золотое число: градиент по тексту. В режиме высокого контраста остаётся обычный цвет текста. */
+.fe-today__num,
+.fe-tool__num,
+.fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num {
+  background: var(--z3-gold-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+@media (forced-colors: active) {
+  .fe-today__num, .fe-tool__num, .fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num {
+    background: none; color: CanvasText; -webkit-text-fill-color: currentColor;
+  }
+}
+
+/* ── Верх героя: подпись с золотой чертой, лид, быстрые ссылки ─────────────── */
+.fe-dashboard .fe-hero-text .fe-hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; }
+.fe-dashboard .fe-hero-text .fe-hero-eyebrow::before {
+  content: '';
+  width: 26px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--z3-gold), transparent);
+}
+.fe-hero-lead--short { display: none; }
+@media (max-width: 639px) {
+  .fe-hero-lead--full { display: none; }
+  .fe-hero-lead--short { display: inline; }
+}
+/* Примеры запросов под полем заменены быстрыми ссылками (они ведут сразу на страницу), подсказка внутри поля остаётся. */
+.fe-dashboard .fe-hero-text .fe-search-examples { display: none; }
+
+.fe-quick { margin-top: 14px; }
+.fe-quick__row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 2px 0; list-style: none; }
+.fe-quick__row > li { flex: none; }
+@media (max-width: 639px) {
+  .fe-quick__row { flex-wrap: nowrap; overflow-x: auto; padding-right: 34px; scroll-snap-type: x proximity; }
+  .fe-quick__row > li { scroll-snap-align: start; }
+}
+.fe-quick__chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 15px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  background: var(--fe-glass-soft);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 550;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.2s var(--z3-ease), background-color 0.2s var(--z3-ease), box-shadow 0.2s var(--z3-ease), transform 0.2s var(--z3-ease);
+}
+/* Зона нажатия 46 px по высоте, хотя видимая пилюля 40. */
+.fe-quick__chip::after { content: ''; position: absolute; inset: -3px 0; }
+.fe-quick__chip:hover {
+  border-color: color-mix(in srgb, var(--z3-gold) 55%, transparent);
+  background: color-mix(in srgb, var(--z3-gold) 9%, var(--color-surface, #fff));
+  box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--z3-gold) 70%, transparent);
+  transform: translateY(calc(var(--z3-lift) * -0.5));
+}
+.fe-quick__chip:focus-visible { outline: 2px solid var(--z3-gold-ink); outline-offset: 2px; }
+
+/* ── «Мир сейчас»: четыре живых факта ─────────────────────────────────────── */
+.fe-today { display: grid; gap: 12px; min-width: 0; }
+.fe-today__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; }
+.fe-today__title { display: inline-flex; align-items: center; gap: 9px; margin: 0; font-size: 16px; font-weight: 650; letter-spacing: -0.01em; color: var(--color-text-primary); }
+.fe-today__pulse { position: relative; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--z3-gold); }
+.fe-today__pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--z3-gold);
+  animation: fe-today-pulse 2.6s ease-out infinite;
+}
+.fe-today__sub { margin: 0; font-size: 13px; color: var(--z3-muted); }
+.fe-today__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.fe-today__grid > li { display: flex; min-width: 0; }
+@media (min-width: 900px) and (max-width: 1279px) {
+  /* Планшет и узкий ноутбук: колонка слева не нужна, четыре плитки встают в ряд под планетой. */
+  .fe-today__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.fe-today__skeleton { min-height: 150px; border-radius: 20px; }
+.fe-today__tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-width: 0;
+  padding: 14px 14px 12px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--z3-gold) 20%, var(--fe-glass-border, #FFFFFFE6));
+  border-radius: 20px;
+  background: var(--fe-glass);
+  box-shadow: var(--z3-card-shadow);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.28s var(--z3-ease), box-shadow 0.28s var(--z3-ease), border-color 0.28s var(--z3-ease);
+}
+.fe-today__tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 14px;
+  right: 14px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: linear-gradient(90deg, transparent, var(--z3-gold), transparent);
+  opacity: 0.55;
+  transition: opacity 0.28s var(--z3-ease);
+}
+.fe-today__tile:hover, .fe-today__tile:focus-visible {
+  transform: translateY(calc(var(--z3-lift) * -1));
+  border-color: color-mix(in srgb, var(--z3-gold) 55%, transparent);
+  box-shadow: var(--z3-card-shadow), 0 18px 30px -22px color-mix(in srgb, var(--z3-gold) 80%, transparent);
+}
+.fe-today__tile:hover::before, .fe-today__tile:focus-visible::before { opacity: 1; }
+.fe-today__tile:focus-visible { outline: 2px solid var(--z3-gold-ink); outline-offset: 2px; }
+.fe-today__label { font-size: 13px; font-weight: 600; line-height: 1.3; color: var(--z3-muted); text-wrap: balance; }
+.fe-today__value { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; white-space: nowrap; }
+.fe-today__num { font-size: clamp(28px, 2.4vw, 34px); font-weight: 650; line-height: 1.08; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
+.fe-today__unit { font-size: 14px; font-weight: 600; color: var(--z3-muted); }
+.fe-today__place { display: flex; align-items: center; gap: 7px; margin-top: 2px; min-width: 0; font-size: 14px; font-weight: 600; color: var(--color-text-primary); }
+.fe-today__flag { flex: none; font-size: 17px; line-height: 1; }
+.fe-today__country { min-width: 0; overflow-wrap: anywhere; }
+.fe-today__caption { font-size: 13px; line-height: 1.35; color: var(--z3-muted); }
+.fe-today__rank { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 10px; }
+.fe-today__ladder { flex: 1 1 auto; min-width: 0; height: 22px; }
+.fe-today__ladder rect {
+  fill: color-mix(in srgb, var(--z3-muted) 38%, transparent);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: fe-today-bar 0.7s var(--z3-ease) calc(var(--i) * 9ms + 180ms) both;
+}
+.fe-today__ladder rect.is-mark { fill: var(--z3-gold); }
+.fe-today__rank-text { flex: none; font-size: 12.5px; font-weight: 600; color: var(--z3-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fe-today__all {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--z3-gold-ink);
+  text-decoration: none;
+}
+.fe-today__all svg { transition: transform 0.2s var(--z3-ease); }
+.fe-today__all:hover svg { transform: translateX(3px); }
+.fe-today__all:hover { text-decoration: underline; text-underline-offset: 3px; }
+@keyframes fe-today-pulse { 0% { opacity: 0.55; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(2.6); } }
+@keyframes fe-today-bar { from { transform: scaleY(0); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ── Числа платформы под «Миром сейчас»: золотые цифры, значки, поднятие при наведении ─ */
+.fe-dashboard [data-block='home-data-scope'].fe-scope {
+  padding: 16px 16px 14px;
+  border-radius: 22px;
+  border-color: color-mix(in srgb, var(--z3-gold) 18%, var(--fe-glass-border, #FFFFFFE6));
+  box-shadow: var(--z3-card-shadow);
+}
+@media (min-width: 640px) {
+  .fe-dashboard [data-block='home-data-scope'].fe-scope { padding: 18px 20px 14px; }
+}
+.fe-dashboard .fe-scope-title { font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--z3-muted); }
+.fe-dashboard .fe-scope-stats { margin: 10px -8px 0; }
+.fe-dashboard .fe-scope-stat {
+  padding: 8px 10px 8px;
+  border-radius: 14px;
+  transition: transform 0.28s var(--z3-ease), background-color 0.28s var(--z3-ease);
+}
+.fe-dashboard .fe-scope-stat:hover { transform: translateY(calc(var(--z3-lift) * -1)); background: color-mix(in srgb, var(--z3-gold) 7%, transparent); }
+.fe-scope-stat__icon { position: absolute; top: 8px; right: 10px; color: var(--z3-gold); opacity: 0.75; pointer-events: none; }
+.fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num { font-size: clamp(28px, 8vw, 36px); font-weight: 650; }
+@media (min-width: 1280px) {
+  .fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num { font-size: 38px; }
+}
+@media (max-width: 359px) {
+  .fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num { font-size: 24px; }
+}
+.fe-dashboard [data-block='home-data-scope'] .fe-stat-unit { -webkit-text-fill-color: var(--z3-muted); color: var(--z3-muted); }
+.fe-dashboard [data-block='home-data-scope'] .fe-stat-wait { -webkit-text-fill-color: var(--z3-muted); }
+.fe-dashboard .fe-scope-stat__label { font-size: 13px; line-height: 1.3; color: var(--z3-muted); }
+.fe-scope-update { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: 13px; line-height: 1.4; color: var(--z3-muted); }
+.fe-scope-update__dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--z3-gold); }
+
+/* ── «Попробуйте сами» ────────────────────────────────────────────────────── */
+.fe-tools { margin: 6px 0 40px; }
+.fe-tools__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; margin-bottom: 14px; }
+.fe-tools__title { position: relative; margin: 0; padding-bottom: 8px; font-size: 20px; font-weight: 650; letter-spacing: -0.02em; color: var(--color-text-primary); }
+.fe-tools__title::after { content: ''; position: absolute; left: 0; bottom: 0; width: 38px; height: 2px; border-radius: 2px; background: var(--z3-gold); }
+.fe-tools__sub { margin: 0; font-size: 14px; color: var(--z3-muted); }
+.fe-tools__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+@media (min-width: 960px) { .fe-tools__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fe-tool {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px 18px 8px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--z3-gold) 18%, var(--fe-glass-border, #FFFFFFE6));
+  border-radius: 24px;
+  background: var(--fe-glass);
+  box-shadow: var(--z3-card-shadow);
+  transition: box-shadow 0.28s var(--z3-ease), border-color 0.28s var(--z3-ease);
+}
+.fe-tool::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 18px;
+  right: 18px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: linear-gradient(90deg, transparent, var(--z3-gold), transparent);
+  opacity: 0.6;
+}
+.fe-tool:hover, .fe-tool:focus-within { border-color: color-mix(in srgb, var(--z3-gold) 45%, transparent); }
+.fe-tool__head { display: flex; align-items: flex-start; gap: 12px; }
+.fe-tool__icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid color-mix(in srgb, var(--z3-gold) 35%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--z3-gold) 12%, transparent);
+  color: var(--z3-gold-ink);
+}
+.fe-tool__title { margin: 0; font-size: 16px; font-weight: 650; letter-spacing: -0.01em; color: var(--color-text-primary); }
+.fe-tool__lead { margin: 2px 0 0; font-size: 13px; line-height: 1.4; color: var(--z3-muted); }
+.fe-tool__body { display: grid; gap: 12px; flex: 1; align-content: start; }
+.fe-tool__row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: end; }
+.fe-tool__row--pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 420px) {
+  .fe-tool__row:not(.fe-tool__row--pair) { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .fe-tool__row:not(.fe-tool__row--pair) > .fe-tool__field:first-child { grid-column: 1 / -1; }
+}
+.fe-tool__field { display: grid; gap: 4px; min-width: 0; }
+.fe-tool__field--wide { gap: 2px; }
+.fe-tool__label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 600; color: var(--z3-muted); }
+.fe-tool__label-value { color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.fe-tool__input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.fe-tool__input:focus-visible { outline: none; border-color: var(--z3-gold-ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--z3-gold) 24%, transparent); }
+.fe-tool__input[aria-invalid='true'] { border-color: #b91c1c; }
+.fe-tool__swap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  min-height: 48px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--fe-glass-soft);
+  color: var(--z3-gold-ink);
+  cursor: pointer;
+}
+.fe-tool__swap:hover { border-color: color-mix(in srgb, var(--z3-gold) 55%, transparent); }
+.fe-tool__swap:focus-visible { outline: 2px solid var(--z3-gold-ink); outline-offset: 2px; }
+.fe-tool__result {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-height: 84px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--z3-gold) 20%, transparent);
+  border-radius: 16px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--z3-gold) 10%, transparent), transparent 70%), var(--fe-glass-soft);
+}
+.fe-tool__result--cta { justify-items: start; min-height: 64px; }
+.fe-tool__big { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex-wrap: wrap; }
+.fe-tool__num { font-size: clamp(28px, 2.4vw, 34px); font-weight: 650; line-height: 1.08; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.fe-tool__unit { font-size: 20px; font-weight: 600; color: var(--z3-gold-ink); }
+.fe-tool__note { font-size: 13px; line-height: 1.45; color: var(--z3-muted); }
+.fe-tool__range { width: 100%; height: 44px; margin: 0; background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none; }
+.fe-tool__range::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, color-mix(in srgb, var(--z3-gold) 30%, transparent), var(--z3-gold)); }
+.fe-tool__range::-moz-range-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, color-mix(in srgb, var(--z3-gold) 30%, transparent), var(--z3-gold)); }
+.fe-tool__range::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; margin-top: -9px; border: 2px solid var(--z3-gold-ink); border-radius: 50%; background: var(--color-surface, #fff); box-shadow: 0 3px 8px -2px rgb(38 52 78 / 0.4); }
+.fe-tool__range::-moz-range-thumb { width: 20px; height: 20px; border: 2px solid var(--z3-gold-ink); border-radius: 50%; background: var(--color-surface, #fff); box-shadow: 0 3px 8px -2px rgb(38 52 78 / 0.4); }
+.fe-tool__range:focus-visible { outline: 2px solid var(--z3-gold-ink); outline-offset: 2px; border-radius: 8px; }
+.fe-tool__seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.fe-tool__seg-btn {
+  position: relative;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  background: var(--fe-glass-soft);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 550;
+  cursor: pointer;
+}
+.fe-tool__seg-btn::after { content: ''; position: absolute; inset: -3px 0; }
+.fe-tool__seg-btn.is-active { border-color: var(--z3-gold-ink); background: color-mix(in srgb, var(--z3-gold) 14%, transparent); color: var(--z3-gold-ink); font-weight: 650; }
+.fe-tool__seg-btn:focus-visible { outline: 2px solid var(--z3-gold-ink); outline-offset: 2px; }
+.fe-tool__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #B8924A, #8F6D2F);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 650;
+  text-decoration: none;
+  box-shadow: 0 10px 20px -12px rgb(143 109 47 / 0.9), inset 0 1px 0 rgb(255 255 255 / 0.28);
+  transition: filter 0.2s ease, transform 0.2s var(--z3-ease);
+}
+.fe-tool__cta:hover { filter: brightness(1.07); transform: translateY(calc(var(--z3-lift) * -0.5)); }
+.fe-tool__cta:focus-visible { outline: 2px solid var(--z3-gold-ink); outline-offset: 3px; }
+.fe-tool__more {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: auto;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--z3-gold-ink);
+  text-decoration: none;
+}
+.fe-tool__more svg { transition: transform 0.2s var(--z3-ease); }
+.fe-tool__more:hover svg { transform: translateX(3px); }
+.fe-tool__more:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Каталог «Все страны»: карточки с цифрами, цветными маркерами и линией истории ───────────────── */
+.fe-dashboard .fe-country-grid { gap: 12px; }
+@media (min-width: 1280px) {
+  .fe-dashboard .fe-country-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+/* Три самые крупные экономики: ряд из трёх карточек крупнее, дальше обычная сетка. */
+@media (min-width: 1280px) {
+  .fe-dashboard .fe-country-grid[data-featured] { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .fe-dashboard .fe-country-grid[data-featured] > li { grid-column: span 3; }
+  .fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) { grid-column: span 4; }
+}
+@media (min-width: 640px) and (max-width: 1279px) {
+  .fe-dashboard .fe-country-grid[data-featured] > li:first-child { grid-column: 1 / -1; }
+}
+.fe-dashboard .fe-country-grid > li { display: flex; min-width: 0; }
+.fe-country-skeleton { min-height: 118px; border-radius: 18px; }
+
+.fe-dashboard .fe-country-row {
+  --z3-region: var(--color-text-tertiary, #5F6E84);
+  position: relative;
+  flex: 1;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  min-height: 96px;
+  padding: 14px 14px 14px 14px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 18px;
+  background: var(--color-surface);
+  transition: transform 0.28s var(--z3-ease), box-shadow 0.28s var(--z3-ease), border-color 0.28s var(--z3-ease);
+}
+.fe-dashboard .fe-country-row[data-region='europe'] { --z3-region: #4F7CAC; }
+.fe-dashboard .fe-country-row[data-region='americas'] { --z3-region: #C27C5A; }
+.fe-dashboard .fe-country-row[data-region='asia'] { --z3-region: #B08A3E; }
+.fe-dashboard .fe-country-row[data-region='africa'] { --z3-region: #5E9A78; }
+.fe-dashboard .fe-country-row[data-region='oceania'] { --z3-region: #4E9AA0; }
+.fe-dashboard .fe-country-row:hover, .fe-dashboard .fe-country-row:focus-visible {
+  transform: translateY(calc(var(--z3-lift) * -1));
+  border-color: color-mix(in srgb, var(--z3-gold) 62%, transparent);
+  box-shadow: 0 16px 28px -20px color-mix(in srgb, var(--z3-gold) 85%, transparent), 0 2px 6px -2px rgb(38 52 78 / 0.12);
+}
+.fe-dashboard .fe-country-row:focus-visible { outline: 2px solid var(--z3-gold-ink); outline-offset: 2px; }
+/* Десять самых крупных экономик помечены тонкой золотой полоской слева. */
+.fe-dashboard .fe-country-row.is-top::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, var(--z3-gold), color-mix(in srgb, var(--z3-gold) 35%, transparent));
+}
+.fe-dashboard .fe-country-row__flag {
+  width: 40px;
+  height: 40px;
+  margin-top: 0;
+  border-color: color-mix(in srgb, var(--z3-region) 38%, transparent);
+  background: color-mix(in srgb, var(--z3-region) 13%, transparent);
+  font-size: 22px;
+}
+.fe-country-row__main { display: flex; flex: 1; flex-direction: column; gap: 1px; min-width: 0; }
+.fe-dashboard .fe-country-row__name { font-size: 16px; }
+.fe-dashboard .fe-country-row__meta { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--z3-muted); }
+.fe-dashboard .fe-country-row__meta::before { content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--z3-region); }
+.fe-dashboard .fe-country-row__facts { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 600; }
+.fe-country-row__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.fe-country-row__gdp { display: flex; align-items: baseline; gap: 6px; min-width: 0; white-space: nowrap; }
+.fe-dashboard .fe-country-row__fact-label { margin-right: 0; font-weight: 500; color: var(--z3-muted); }
+.fe-country-row__gdp-num { font-size: 19px; font-weight: 650; letter-spacing: -0.02em; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.fe-dashboard .fe-country-row__spark { flex: 0 1 90px; align-self: center; width: 90px; min-width: 56px; min-height: 0; }
+.fe-country-row__metrics { display: flex; flex-wrap: wrap; gap: 3px 14px; }
+.fe-country-row__metric { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--color-text-primary); }
+.fe-country-row__metric .fe-country-row__fact-label { margin-right: 0; }
+.fe-country-row__dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--z3-muted); }
+.fe-country-row__metric[data-tone='good'] .fe-country-row__dot { background: #16A34A; }
+.fe-country-row__metric[data-tone='warn'] .fe-country-row__dot { background: #D99A1F; }
+.fe-country-row__metric[data-tone='bad'] .fe-country-row__dot { background: #DC2626; }
+.fe-dashboard .fe-country-row__chevron { position: absolute; top: 14px; right: 12px; opacity: 0; transform: translateX(-3px); }
+.fe-dashboard .fe-country-row:hover .fe-country-row__chevron, .fe-dashboard .fe-country-row:focus-visible .fe-country-row__chevron { opacity: 1; transform: none; }
+@media (hover: none) {
+  .fe-dashboard .fe-country-row__chevron { opacity: 0.55; transform: none; }
+}
+/* Первые три карточки по размеру экономики крупнее: название, цифра и линия истории. */
+@media (min-width: 640px) {
+  .fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) .fe-country-row { min-height: 124px; padding: 18px 18px 16px; }
+  .fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) .fe-country-row__name { font-size: 19px; }
+  .fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) .fe-country-row__gdp-num { font-size: 26px; }
+  .fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) .fe-country-row__spark { flex-basis: 130px; width: 130px; }
+  .fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) .fe-country-row__flag { width: 46px; height: 46px; font-size: 26px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-today__pulse::after, .fe-today__ladder rect { animation: none; }
+  .fe-today__tile, .fe-dashboard .fe-country-row, .fe-quick__chip, .fe-dashboard .fe-scope-stat { transition: none; }
+  .fe-today__tile:hover, .fe-dashboard .fe-country-row:hover, .fe-dashboard .fe-scope-stat:hover, .fe-quick__chip:hover { transform: none; }
+}

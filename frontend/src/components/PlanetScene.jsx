@@ -741,7 +741,7 @@ class SceneBoundary extends Component {
 }
 
 /** Three is a lazy leaf: HTML search/cards and SVG fallback never depend on a GPU. */
-export default function PlanetScene({ countries, defaultScope, onError, onReady, interactive = true, touchNavigation = false, ...props }) {
+export default function PlanetScene({ countries, defaultScope, onError, onReady, interactive = true, touchNavigation = false, startFocus = null, ...props }) {
   const t = useT();
   const { locale } = useLocale();
   const [features, setFeatures] = useState(WORLD_FEATURES);
@@ -800,7 +800,9 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
   }, []);
   const [introOffset] = useState(() => (reducedMotion ? [0, 0] : INTRO_OFFSET));
   // Стартовая сторона: где в поле зрения больше всего стран с данными (Америка и Европа), а не «пустая» Африка.
-  const [homeFocus] = useState(() => bestStartFocus(entries, props.valuesByCode, { fallback: DEFAULT_FOCUS }));
+  // Страница может задать свой стартовый вид (главная: Евразия на русском сайте, США на английском); иначе считаем сами.
+  const [homeFocus] = useState(() => (Array.isArray(startFocus) && startFocus.length === 2
+    ? startFocus : bestStartFocus(entries, props.valuesByCode, { fallback: DEFAULT_FOCUS })));
   const controlApi = useRef(null);
   const initialFocus = defaultScope === 'europe' ? [15, 47] : homeFocus;
   const initialPosition = lonLatToSphere([initialFocus[0] + introOffset[0], initialFocus[1] + introOffset[1]], INITIAL_DISTANCE);

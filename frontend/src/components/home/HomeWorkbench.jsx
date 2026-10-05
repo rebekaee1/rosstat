@@ -36,6 +36,10 @@ import { useLocale, useT } from '../../i18n';
 import '../../styles/world.css';
 import '../../styles/shell.css';
 
+// Стартовый поворот шара на первом экране: Евразия на русском сайте, США на английском (а не пустая Атлантика).
+const HOME_START_FOCUS_RU = [52, 38];
+const HOME_START_FOCUS_EN = [-96, 36];
+
 const loadPlanetView = () => import('../PlanetView');
 const PlanetView = lazy(loadPlanetView);
 
@@ -281,6 +285,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                   shareable
                   benchmarkSeries={benchmarkSeries}
                   initialCountry={shared?.country || ''}
+                  startFocus={locale === 'en' ? HOME_START_FOCUS_EN : HOME_START_FOCUS_RU}
                 />
               </Suspense>
               </ErrorBoundary>

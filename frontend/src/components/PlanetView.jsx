@@ -64,7 +64,7 @@ function writeHintSeen() {
 }
 
 /** Список на телефоне показывает первые строки, остальное — по кнопке: без вложенной прокрутки, которая «ест» свайп страницы. */
-const COMPACT_LIST_ROWS = 7;
+const COMPACT_LIST_ROWS = 5;
 const NO_ITEMS = [];
 
 function legendBinRange(bin, locale) {
@@ -95,6 +95,8 @@ export default function PlanetView({
   quickConcepts = [], onConceptChange, shareable = false, initialCountry = '',
   // Середина рейтинга по годам: рисуется крошечной линией рядом с числом «в середине рейтинга».
   benchmarkSeries = [],
+  // Стартовый поворот шара [долгота, широта]; без него планета выбирает вид сама (по числу окрашенных стран).
+  startFocus = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -114,6 +116,8 @@ export default function PlanetView({
   const [activeOption, setActiveOption] = useState(0);
   const [cameraCommand, setCameraCommand] = useState(null);
   const [comparisonCodes, setComparisonCodes] = useState([]);
+  // Узкий экран: в поле стране помещается короткая подсказка («Страна»), а не обрезанное «Найти стра».
+  const [narrowScreen, setNarrowScreen] = useState(() => window.matchMedia?.('(max-width: 520px)').matches || false);
   const [touchNavigation, setTouchNavigation] = useState(() => window.matchMedia?.('(pointer: coarse)').matches || false);
   const [listExpanded, setListExpanded] = useState(false);
   // Первое касание шара прекращает самовращение и подсказку.
@@ -127,6 +131,8 @@ export default function PlanetView({
   const [shared, setShared] = useState(false);
   const commandId = useRef(0);
   const stageRef = useRef(null);
+  const quickRef = useRef(null);
+  const [quickMore, setQuickMore] = useState(false);
   const searchInput = useRef(null);
   const searchResults = useRef(null);
   const countryCard = useRef(null);
@@ -138,6 +144,14 @@ export default function PlanetView({
   const playExpected = useRef(null);
   const lastPlayYear = useRef(year);
   const initialApplied = useRef(false);
+
+  useEffect(() => {
+    const narrow = window.matchMedia?.('(max-width: 520px)');
+    if (!narrow) return undefined;
+    const update = () => { setNarrowScreen(narrow.matches); };
+    narrow.addEventListener('change', update);
+    return () => narrow.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     const preference = window.matchMedia?.('(pointer: coarse)');
@@ -370,6 +384,18 @@ export default function PlanetView({
   const rowUnit = splitUnit(displayUnit).short;
   const hasMetric = Boolean(metricName || valuesByCode != null);
   const isMap = sceneStatus === 'error';
+
+  // Ряд быстрых чипов длиннее шара: пока справа есть непоказанные, у края стоит стрелка (чип не режется посреди слова).
+  useEffect(() => {
+    const node = quickRef.current;
+    if (!node) return undefined;
+    const measure = () => setQuickMore(node.scrollWidth - node.clientWidth - node.scrollLeft > 6);
+    measure();
+    node.addEventListener('scroll', measure, { passive: true });
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null;
+    observer?.observe(node);
+    return () => { node.removeEventListener('scroll', measure); observer?.disconnect(); };
+  }, [quickConcepts.length, isMap]);
   const showKey = !isMap && mode === 'data' && hasMetric;
   const activeCountry = searchCountries[Math.min(activeOption, searchCountries.length - 1)];
   const optionId = (code) => 'planet-' + id + '-country-' + code;
@@ -470,7 +496,7 @@ export default function PlanetView({
               <div className="planet-search-field">
                 <Search size={18} aria-hidden="true" />
                 <input ref={searchInput} id={'planet-' + id + '-search'} type="text" role="combobox" autoComplete="off" autoCapitalize="none" autoCorrect="off" enterKeyHint="search"
-                  placeholder={selectedCountry && !searchOpen ? countryName(selectedCountry, locale) : t('planet.searchPlaceholder')} value={query} aria-expanded={searchOpen} aria-autocomplete="list"
+                  placeholder={selectedCountry && !searchOpen ? countryName(selectedCountry, locale) : t(narrowScreen ? 'z3.planet.searchShort' : 'planet.searchPlaceholder')} value={query} aria-expanded={searchOpen} aria-autocomplete="list"
                   aria-controls={searchOpen && searchCountries.length > 0 ? 'planet-' + id + '-results' : undefined}
                   aria-activedescendant={searchOpen && activeCountry ? optionId(activeCountry.code) : undefined}
                   onFocus={() => { setSearchOpen(true); setActiveOption(0); }}
@@ -512,11 +538,11 @@ export default function PlanetView({
                   <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
                     valueDigits={digits} onHover={handleHover} onSelect={handleSceneSelect} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
                     interactive={!touchNavigation} touchNavigation={touchNavigation}
-                    autoRotate={!engaged && sceneStatus === 'ready'} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
+                    autoRotate={!engaged && sceneStatus === 'ready'} startFocus={startFocus} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
                 </Suspense></SceneBoundary>
                 <div className="planet-orb" aria-hidden="true" />
                 {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('planet.loading')}</div>}
-                {quickConcepts.length > 1 && <div className="planet-quick" role="group" aria-label={t('w6c.quick.label')}>
+                {quickConcepts.length > 1 && <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
                   {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip' + (!coverage && concept.slug === conceptSlug ? ' is-active' : '')}
                     aria-pressed={!coverage && concept.slug === conceptSlug} onClick={() => chooseConcept(concept.slug)}>{concept.label}</button>)}
                 </div>}
@@ -566,22 +592,25 @@ export default function PlanetView({
               </div>
             </div>
             {showKey && <div className="planet-key">
-              <div className="planet-key-title"><strong>{metricName}</strong>{(periodLabel || tagLabel) && <span>{periodLabel}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</span>}</div>
-              <div className="planet-key-bar" style={{ backgroundImage: keyGradient }} aria-hidden="true" />
-              {extent && <div className="planet-key-ends">
-                <span><small>{t(ranked ? 'w6c.key.worse' : 'w2.planet.keyLow')}</small>{fmt(keyLeft)} {rowUnit || displayUnit}</span>
-                <span><small>{t(ranked ? 'w6c.key.better' : 'w2.planet.keyHigh')}</small>{fmt(keyRight)} {rowUnit || displayUnit}</span>
-              </div>}
-              <p className="planet-key-order">{t(coverage ? 'w6c.key.ruleCoverage' : ranked ? 'w6c.key.rule' : 'w6c.key.ruleValue')}</p>
-              <p className="planet-key-note"><i aria-hidden="true" />{t('w6c.key.noData', { count: catalogCount })}</p>
-              <details className="planet-scale">
-                <summary>{t('planet.legend')}<ChevronDown size={14} aria-hidden="true" /></summary>
-                <div className="planet-legend" aria-label={t('planet.legend')}>
-                  <p>{t(colorModel.kind === 'diverging' ? 'world.map.scaleZero' : 'world.map.scaleMedian')}</p>
-                  <div className="planet-legend-bins">{colorModel.bins.map((bin, index) => <div key={index}><i style={{ backgroundColor: bin.color }} aria-hidden="true" /><span>{t(bin.labelKey)}</span><strong>{legendBinRange(bin, locale)} {displayUnit}</strong></div>)}</div>
-                  <small><i aria-hidden="true" />{t('planet.noDataLegend')}</small>
-                </div>
-              </details>
+              <div className="planet-key-head">
+                <div className="planet-key-title"><strong>{metricName}</strong>{(periodLabel || tagLabel) && <span>{periodLabel}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</span>}</div>
+                <details className="planet-scale">
+                  <summary>{t('planet.legend')}<ChevronDown size={14} aria-hidden="true" /></summary>
+                  <div className="planet-legend" aria-label={t('planet.legend')}>
+                    <p className="planet-key-order">{t(coverage ? 'w6c.key.ruleCoverage' : ranked ? 'w6c.key.rule' : 'w6c.key.ruleValue')}</p>
+                    <p className="planet-legend-scale">{t(colorModel.kind === 'diverging' ? 'world.map.scaleZero' : 'world.map.scaleMedian')}</p>
+                    <div className="planet-legend-bins">{colorModel.bins.map((bin, index) => <div key={index}><i style={{ backgroundColor: bin.color }} aria-hidden="true" /><span>{t(bin.labelKey)}</span><strong>{legendBinRange(bin, locale)} {displayUnit}</strong></div>)}</div>
+                    <p className="planet-key-note"><i aria-hidden="true" />{t('w6c.key.noData', { count: catalogCount })}</p>
+                  </div>
+                </details>
+              </div>
+              <div className="planet-key-scale">
+                <div className="planet-key-bar" style={{ backgroundImage: keyGradient }} aria-hidden="true" />
+                {extent && <div className="planet-key-ends">
+                  <span><small>{t(ranked ? 'w6c.key.worse' : 'w2.planet.keyLow')}</small>{fmt(keyLeft)} {rowUnit || displayUnit}</span>
+                  <span><small>{t(ranked ? 'w6c.key.better' : 'w2.planet.keyHigh')}</small>{fmt(keyRight)} {rowUnit || displayUnit}</span>
+                </div>}
+              </div>
             </div>}
           </div>
           <aside className="planet-info" aria-label={t('planet.country')}>
