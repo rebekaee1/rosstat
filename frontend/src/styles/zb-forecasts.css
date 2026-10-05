@@ -415,6 +415,11 @@
   .zb-fc__num-value { font-size: 1.45rem; }
 }
 
+/* Лента-картинка гаснет вместе с остальной сценой: Save-Data, reduced-transparency и тёмная тема (как герой K1). */
+html[data-fe-lite='on'] .zb-fc__ribbon,
+:root[data-theme='dark'] .zb-fc__ribbon,
+:root.dark .zb-fc__ribbon { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .zb-fc__plot { animation: none; }
   .zb-fc__card { transition: none; }

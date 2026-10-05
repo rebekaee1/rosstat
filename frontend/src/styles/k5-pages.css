@@ -100,6 +100,22 @@
   .k5-accent { background: none; -webkit-text-fill-color: CanvasText; color: CanvasText; }
 }
 
+/* Телефон: вместо блока справа главное число стоит строкой под названием («США: 30,8 трлн $ за 2025 год»), тоже золотом. */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  :root:root .fe-hero-line__value {
+    background: var(--k5-gold-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-size: 1.5em;
+  }
+  :root:root .fe-hero-line__value .fe-hero-line__unit {
+    -webkit-text-fill-color: var(--color-text-secondary);
+    color: var(--color-text-secondary);
+  }
+}
+
 /* Сигнальная точка перед подписью «Сейчас»: данные живые. Кольцо света расходится 6 раз и успокаивается. */
 .k5-signal {
   position: relative;
@@ -190,7 +206,7 @@
 /* На компьютере плот выше: график заполняет колонку рядом с тремя карточками справа, под ним не остаётся пустоты. */
 @supports (height: 1svh) {
   @media (min-width: 1100px) {
-    :root:root .z4-plot { height: clamp(340px, calc(100svh - 470px), 520px); }
+    :root:root .z4-plot { height: clamp(360px, calc(100svh - 500px), 520px); }
   }
 }
 
